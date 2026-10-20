@@ -1976,7 +1976,14 @@
               "duration": "untilDomainEnds",
               "when": "enemyEntersArea"
             }
-          ]
+          ],
+          "requiresOriginalVerification": true,
+          "versionConflictEvidence": {
+            "tooltip": "플레이어 영역 전체, 0.1초당 25만+0.9%, 시전시간 표기 없음",
+            "patchNotes": "시전자 중심 반경 1600, 0.1초당 45만+0.45%, 시전시간 0.7초",
+            "patch": "2.320",
+            "sourceUrl": "https://ordr.kr/patch-notes/2-320"
+          }
         },
         {
           "name": "술식 반전 혁",
@@ -1989,7 +1996,14 @@
               "type": "magical",
               "amount": 1500000
             }
-          ]
+          ],
+          "requiresOriginalVerification": true,
+          "versionConflictEvidence": {
+            "tooltip": "발동 확률 5%",
+            "patchNotes": "아카 발동 확률 10%로 변경, 이감 기능 추가",
+            "patch": "2.320",
+            "sourceUrl": "https://ordr.kr/patch-notes/2-320"
+          }
         },
         {
           "name": "무라사키",
@@ -2038,7 +2052,14 @@
             "패왕색 패기",
             "에이스 불기둥",
             "화권"
-          ]
+          ],
+          "requiresOriginalVerification": true,
+          "versionConflictEvidence": {
+            "tooltip": "0.2초당 15만 마법 피해, 20% 이감",
+            "patchNotes": "아오 0.1초당 15만으로 변경, 여진(이감) 기능 삭제",
+            "patch": "2.320",
+            "sourceUrl": "https://ordr.kr/patch-notes/2-320"
+          }
         }
       ],
       "skillSpecCompleteness": "partial",
@@ -2053,6 +2074,9 @@
         "원본 능력 rawcode",
         "평타 피해·공격 주기",
         "스킬 내부 판정과 비공개 쿨타임"
+      ],
+      "uncertaintyNotes": [
+        "2.323 도감 툴팁과 2.320 원본 패치 내용이 무량공처 피해/범위·아카 발동률·아오 주기/이감에서 일치하지 않아 실제 스킬 실행을 보류한다. 원본 W3X 스크립트 확인 전 임의 수치 교체 금지."
       ]
     },
     {
