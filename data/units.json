@@ -430,12 +430,12 @@
       "name": "트라팔가 로우",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/S5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -513,12 +513,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/S10",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -581,12 +581,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/S14",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -757,12 +757,12 @@
       "name": "쵸파 가드포인트",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/S25",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -776,12 +776,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/S26",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -828,12 +828,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/S29",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -846,12 +846,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/S30",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -882,12 +882,12 @@
         "광폭화딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/S32",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -916,12 +916,12 @@
       "name": "모건",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/SP1",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -935,12 +935,12 @@
         "마나재생"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/SP2",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -954,12 +954,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/SP3",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -974,12 +974,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/SP4",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -990,12 +990,12 @@
       "name": "오타마",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/SP5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -1006,12 +1006,12 @@
       "name": "페루",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/SP6",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -1024,12 +1024,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/SP7",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -1044,12 +1044,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R1",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -1066,12 +1066,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R2",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -1087,12 +1087,12 @@
         "증폭"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R3",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -1121,12 +1121,12 @@
       "name": "트라팔가 로우 죽음의 외과의사",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -1156,12 +1156,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R7",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -1273,12 +1273,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R14",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -1325,12 +1325,12 @@
         "마뎀"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R17",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -1343,12 +1343,12 @@
       "name": "브룩 음악가",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R18",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -1378,12 +1378,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R20",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -1446,12 +1446,12 @@
         "마나재생"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R24",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -1465,12 +1465,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R25",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -1485,12 +1485,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R26",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -1570,12 +1570,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R31",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -1636,12 +1636,12 @@
       "name": "쵸파 혼포인트",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R35",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -1670,12 +1670,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R37",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -1688,12 +1688,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R38",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -1738,12 +1738,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/R41",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -2611,12 +2611,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H1",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -2633,12 +2633,12 @@
         "보스딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H2",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -2654,12 +2654,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H3",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -2676,12 +2676,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H4",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -2697,12 +2697,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -2718,12 +2718,12 @@
         "체력재생"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H6",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -2734,12 +2734,12 @@
       "name": "반더데켄",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H7",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -2750,12 +2750,12 @@
       "name": "발라티에",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H8",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -2814,12 +2814,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H11",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -2836,12 +2836,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H12",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -2857,12 +2857,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H13",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -2875,12 +2875,12 @@
       "name": "시류",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H14",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -2895,12 +2895,12 @@
         "광폭화딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H15",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -2917,12 +2917,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H16",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -2939,12 +2939,12 @@
         "보스딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H17",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -2961,12 +2961,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H18",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -2982,12 +2982,12 @@
         "증폭"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H19",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3004,12 +3004,12 @@
         "광폭화딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H20",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3026,12 +3026,12 @@
         "보스딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H21",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3048,12 +3048,12 @@
         "광폭화딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H22",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3068,12 +3068,12 @@
         "마뎀"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/T1",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3090,12 +3090,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/T2",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3111,12 +3111,12 @@
         "암브"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/T3",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3132,12 +3132,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/T5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3154,12 +3154,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/T6",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -3173,12 +3173,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/Z1",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3195,12 +3195,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/Z2",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3217,12 +3217,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/Z3",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3239,12 +3239,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/Z4",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3260,12 +3260,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/Z5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3282,12 +3282,12 @@
         "암브"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/Z6",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3326,12 +3326,12 @@
         "암브"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/Z8",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3348,12 +3348,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/Z9",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3369,12 +3369,12 @@
         "암브"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/Z10",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3391,12 +3391,12 @@
         "광폭화딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/D1",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3413,12 +3413,12 @@
         "보스딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/D2",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3435,12 +3435,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/D3",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3457,12 +3457,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/D4",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -3477,12 +3477,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/D5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3498,12 +3498,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/D6",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4788,12 +4788,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD1",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4809,12 +4809,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD2",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4827,12 +4827,12 @@
       "name": "메구밍",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD3",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -4847,12 +4847,12 @@
         "증폭"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD4",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4867,12 +4867,12 @@
         "마뎀"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4887,12 +4887,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD6",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -4905,12 +4905,12 @@
         "마뎀"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD7",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4925,12 +4925,12 @@
         "마나재생"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD8",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -4944,12 +4944,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD9",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -4964,12 +4964,12 @@
         "마뎀"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD10",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4982,12 +4982,12 @@
       "name": "토우마",
       "roleTags": [],
       "roleTagsStatus": "not-collected",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD11",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },
@@ -5000,12 +5000,12 @@
         "마뎀"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD12",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -5021,12 +5021,12 @@
         "증폭"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD13",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -5041,12 +5041,12 @@
         "마뎀"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/RD14",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -5085,12 +5085,12 @@
         "증폭"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY2",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -5107,12 +5107,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY3",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -5129,12 +5129,12 @@
         "보스딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY4",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -5151,12 +5151,12 @@
         "보스딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -5172,12 +5172,12 @@
         "보스딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY6",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -5238,12 +5238,12 @@
         "증폭"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY9",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -5258,12 +5258,12 @@
         "마뎀"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY10",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -5280,12 +5280,12 @@
         "암브"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY11",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -5302,12 +5302,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY12",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -5323,12 +5323,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY13",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
