@@ -21,7 +21,8 @@ namespace Ordr.Mobile.Core
 
         public static bool IsRerollRoundEligible(int currentRound)
         {
-            if (currentRound < 1) throw new ArgumentOutOfRangeException(nameof(currentRound));
+            // 원본 BcN은 X3 < 10이며, 시작 전 라운드 변수 X3 = 0도 유효하다.
+            if (currentRound < 0) throw new ArgumentOutOfRangeException(nameof(currentRound));
             return currentRound < RerollUnavailableFromRound;
         }
     }
