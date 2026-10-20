@@ -53,7 +53,7 @@ namespace Ordr.Mobile.Combat
                         DamageSchool.ScriptDefined, DamageTraits.None);
                     var normalized = new CombatSkillSpec(skill.Id, trigger, chance,
                         skill.CooldownSeconds ??
-                        (OrdrJson.Number(new Dictionary<string, object>(skill.OriginalFields), "absoluteCooldownSeconds") ?? 0),
+                        (skill.Number("absoluteCooldownSeconds") ?? 0),
                         0, area, radius, new[] { marker }, profile.SourceUrl);
                     converted.Add(normalized);
                     lookup.Add(skill.Id, skill);
