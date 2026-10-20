@@ -114,6 +114,21 @@
             "items": {
               "type": "string"
             }
+          },
+          "stackMilestones": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "clearCountScaling": {
+            "type": "object"
+          },
+          "satellites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
           }
         },
         "additionalProperties": false
