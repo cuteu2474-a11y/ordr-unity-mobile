@@ -79,6 +79,12 @@ namespace Ordr.Mobile.Combat
             radius = 0;
             chance = 0;
             reason = null;
+            if (skill.Get("requiresOriginalVerification") is bool &&
+                (bool)skill.Get("requiresOriginalVerification"))
+            {
+                reason = "툴팁/패치 버전 충돌: 원본 W3X 대조 전 실행 금지";
+                return false;
+            }
             if (skill.Trigger == "onAttack")
             {
                 if (!skill.ChancePercent.HasValue)
