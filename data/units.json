@@ -1531,7 +1531,7 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "L-01",
@@ -2379,7 +2379,7 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "H-11",
@@ -2794,12 +2794,12 @@
         "광폭화딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/Z7",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "LI-08",
@@ -3244,7 +3244,7 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "TR-17",
@@ -3315,7 +3315,7 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "TR-21",
@@ -3689,7 +3689,7 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "E-12",
@@ -3779,7 +3779,7 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "I-05",
@@ -3851,7 +3851,7 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "I-09",
@@ -4346,7 +4346,7 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "MY-08",
