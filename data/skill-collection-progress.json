@@ -1,0 +1,146 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "collectionDate": "2026-10-21",
+  "summary": {
+    "catalogCharacters": 271,
+    "detailedEligible": 200,
+    "detailedProfilesCollected": 61,
+    "remainingDetailed": 139,
+    "skillRecordsCollected": 167
+  },
+  "byGrade": [
+    {
+      "grade": "흔함",
+      "allCharacters": 9,
+      "detailEligible": 0,
+      "detailProfilesCollected": 0,
+      "remaining": 0
+    },
+    {
+      "grade": "안흔함",
+      "allCharacters": 13,
+      "detailEligible": 0,
+      "detailProfilesCollected": 0,
+      "remaining": 0
+    },
+    {
+      "grade": "특별함",
+      "allCharacters": 33,
+      "detailEligible": 8,
+      "detailProfilesCollected": 0,
+      "remaining": 8
+    },
+    {
+      "grade": "특수함",
+      "allCharacters": 7,
+      "detailEligible": 7,
+      "detailProfilesCollected": 0,
+      "remaining": 7
+    },
+    {
+      "grade": "희귀함",
+      "allCharacters": 42,
+      "detailEligible": 18,
+      "detailProfilesCollected": 1,
+      "remaining": 17
+    },
+    {
+      "grade": "전설",
+      "allCharacters": 39,
+      "detailEligible": 39,
+      "detailProfilesCollected": 39,
+      "remaining": 0
+    },
+    {
+      "grade": "히든",
+      "allCharacters": 22,
+      "detailEligible": 22,
+      "detailProfilesCollected": 2,
+      "remaining": 20
+    },
+    {
+      "grade": "변화",
+      "allCharacters": 5,
+      "detailEligible": 5,
+      "detailProfilesCollected": 0,
+      "remaining": 5
+    },
+    {
+      "grade": "제한됨",
+      "allCharacters": 10,
+      "detailEligible": 10,
+      "detailProfilesCollected": 1,
+      "remaining": 9
+    },
+    {
+      "grade": "왜곡됨",
+      "allCharacters": 6,
+      "detailEligible": 6,
+      "detailProfilesCollected": 0,
+      "remaining": 6
+    },
+    {
+      "grade": "초월함",
+      "allCharacters": 30,
+      "detailEligible": 30,
+      "detailProfilesCollected": 5,
+      "remaining": 25
+    },
+    {
+      "grade": "영원한",
+      "allCharacters": 12,
+      "detailEligible": 12,
+      "detailProfilesCollected": 3,
+      "remaining": 9
+    },
+    {
+      "grade": "불멸의",
+      "allCharacters": 12,
+      "detailEligible": 12,
+      "detailProfilesCollected": 3,
+      "remaining": 9
+    },
+    {
+      "grade": "세라핌",
+      "allCharacters": 4,
+      "detailEligible": 4,
+      "detailProfilesCollected": 4,
+      "remaining": 0
+    },
+    {
+      "grade": "랜덤",
+      "allCharacters": 14,
+      "detailEligible": 14,
+      "detailProfilesCollected": 0,
+      "remaining": 14
+    },
+    {
+      "grade": "신비함",
+      "allCharacters": 13,
+      "detailEligible": 13,
+      "detailProfilesCollected": 3,
+      "remaining": 10
+    }
+  ],
+  "nextSuggestedGrades": [
+    "초월함",
+    "불멸의",
+    "영원한",
+    "히든",
+    "제한됨",
+    "왜곡됨",
+    "신비함",
+    "희귀함",
+    "특별함",
+    "특수함",
+    "변화",
+    "랜덤"
+  ],
+  "notes": [
+    "전설과 세라핌의 모든 상세 페이지 스킬을 부분 구조화했으나 게임 기능 구현 완료는 아니다.",
+    "기본 평타 능력치와 Warcraft III rawcode는 미확보이며 null 상태를 유지한다.",
+    "특별함/희귀함 중 상세 설명 미등록 유닛은 일괄적으로 없는 스킬로 취급하지 않는다.",
+    "기존 18종 및 신규 43종 모두 skillSpecCompleteness=partial; 상세스킬 데이터는 다수 조건/예외에 대한 원본 맵 검증이 필요.",
+    "요청에 따라 게임 기능 전체 구현 전 신규 테스트 작성·실행 보류."
+  ]
+}
