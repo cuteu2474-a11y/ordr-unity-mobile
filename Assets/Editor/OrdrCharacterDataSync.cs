@@ -31,6 +31,9 @@ namespace Ordr.Mobile.Editor
             string evidence = Path.Combine(source, "original-stat-evidence.json");
             if (File.Exists(evidence))
                 File.Copy(evidence, Path.Combine(target, "original-stat-evidence.json"), true);
+            string fusion = Path.Combine(source, "verified-mobile-fusion-recipes.json");
+            if (File.Exists(fusion))
+                File.Copy(fusion, Path.Combine(target, "verified-mobile-fusion-recipes.json"), true);
             AssetDatabase.Refresh();
             Debug.Log("ORDR 캐릭터 데이터가 Assets/Resources/OrdrData 로 동기화되었습니다.");
         }
