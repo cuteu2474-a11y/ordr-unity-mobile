@@ -11902,6 +11902,1003 @@
         "기본 공격 스탯·주기",
         "변신/광역 피해 중첩 및 방어 계산"
       ]
+    },
+    {
+      "unitId": "H-01",
+      "sourceUrl": "https://ordr.kr/character/H1",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 25
+        }
+      ],
+      "skills": [],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-02",
+      "sourceUrl": "https://ordr.kr/character/H2",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 20
+        },
+        {
+          "type": "allyAttackPowerBuff",
+          "percent": 35
+        }
+      ],
+      "skills": [
+        {
+          "name": "보스·광폭화 함포",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 275000,
+              "extraBossMaxHealthPercent": 1.75,
+              "extraEnragedMaxHealthPercent": 7.5
+            }
+          ],
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-03",
+      "sourceUrl": "https://ordr.kr/character/H3",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 18
+        }
+      ],
+      "skills": [],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-04",
+      "sourceUrl": "https://ordr.kr/character/H4",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 25
+        },
+        {
+          "type": "manaRestorationOnSkill",
+          "amount": 3
+        },
+        {
+          "type": "movementSlowOnSkill",
+          "percent": 20,
+          "durationSeconds": 3,
+          "radius": 500
+        }
+      ],
+      "skills": [
+        {
+          "name": "거대 숲 물리",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1500000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "extraStoryFixedPercentOfSkill": 225
+            },
+            {
+              "type": "armorReduction",
+              "amount": 15,
+              "durationSeconds": 3.5
+            }
+          ],
+          "manaCost": 85,
+          "radius": 600,
+          "target": "area"
+        },
+        {
+          "name": "숲 물리",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 400000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            }
+          ],
+          "chancePercent": 8,
+          "radius": 485,
+          "target": "area"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-05",
+      "sourceUrl": "https://ordr.kr/character/H5",
+      "passives": [
+        {
+          "type": "basicAttackExplosive",
+          "amount": 11500
+        }
+      ],
+      "skills": [
+        {
+          "name": "흑도 슈스이",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 80000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "explosive",
+              "basis": "targetCurrentHealth",
+              "percent": 20,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "chancePercent": 14,
+          "target": "area",
+          "radius": 350
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-06",
+      "sourceUrl": "https://ordr.kr/character/H6",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 40
+        },
+        {
+          "type": "healthRegeneration",
+          "perSecond": 1.25
+        }
+      ],
+      "skills": [],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-07",
+      "sourceUrl": "https://ordr.kr/character/H7",
+      "passives": [
+        {
+          "type": "underwaterMovement"
+        }
+      ],
+      "skills": [
+        {
+          "name": "갑판 포격",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 3000000,
+              "plusTargetMissingHealthPercent": 4
+            }
+          ],
+          "manaCost": 95,
+          "radius": 800,
+          "target": "area"
+        },
+        {
+          "name": "단일 선행 피해",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 300000
+            },
+            {
+              "type": "magical",
+              "extraDamagePercent": 60,
+              "radius": 400
+            }
+          ],
+          "chancePercent": 6.25,
+          "target": "singleWithArea"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-08",
+      "sourceUrl": "https://ordr.kr/character/H8",
+      "passives": [
+        {
+          "type": "allyAttackSpeedBuff",
+          "percent": 22
+        }
+      ],
+      "skills": [
+        {
+          "name": "선택 아군 가속",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "allyAttackSpeedBuff",
+              "percent": 150,
+              "durationSeconds": 12,
+              "scope": "selectedAlly"
+            }
+          ],
+          "cooldownSeconds": 50
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-11",
+      "sourceUrl": "https://ordr.kr/character/H11",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 11
+        }
+      ],
+      "skills": [
+        {
+          "name": "스턴 타격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 85000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.65
+            }
+          ],
+          "chancePercent": 12,
+          "target": "area",
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-12",
+      "sourceUrl": "https://ordr.kr/character/H12",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 20
+        },
+        {
+          "type": "movementSlowAura",
+          "percent": 25
+        }
+      ],
+      "skills": [
+        {
+          "name": "용의 발톱",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 50000
+            },
+            {
+              "type": "physical",
+              "amount": 500000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "physical",
+              "extraTargetMaxHealthPercent": 3,
+              "scope": "singlePrimaryTarget",
+              "onlyTargetKinds": [
+                "line"
+              ]
+            },
+            {
+              "type": "magical",
+              "extraAmount": 300000,
+              "scope": "singlePrimaryTarget",
+              "onlyTargetKinds": [
+                "boss",
+                "story"
+              ]
+            }
+          ],
+          "chancePercent": 14,
+          "target": "area",
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-13",
+      "sourceUrl": "https://ordr.kr/character/H13",
+      "passives": [],
+      "skills": [
+        {
+          "name": "흡혈 범위 타격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 100000
+            },
+            {
+              "type": "explosive",
+              "basis": "targetCurrentHealth",
+              "percent": 25,
+              "onlyTargetKinds": [
+                "line"
+              ],
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "magical",
+              "amount": 200000,
+              "onlyTargetKinds": [
+                "boss",
+                "story"
+              ]
+            }
+          ],
+          "chancePercent": 14,
+          "target": "area",
+          "radius": 315
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-14",
+      "sourceUrl": "https://ordr.kr/character/H14",
+      "passives": [],
+      "skills": [
+        {
+          "name": "혈우",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 2250000,
+              "plusTargetMaxHealthPercent": 1.75,
+              "exceptTargetKinds": [
+                "story"
+              ]
+            }
+          ],
+          "manaCost": 100,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "흉포한 검술",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 400000,
+              "extraLineMaxHealthPercent": 8
+            }
+          ],
+          "chancePercent": 14,
+          "target": "area",
+          "radius": 450
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-15",
+      "sourceUrl": "https://ordr.kr/character/H15",
+      "passives": [],
+      "skills": [
+        {
+          "name": "베가펑크 지식 탑재 포격",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 1850000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            }
+          ],
+          "manaCost": 100,
+          "requires": "vegapunkKnowledge",
+          "radius": 600,
+          "target": "area"
+        },
+        {
+          "name": "일반 포격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000,
+              "extraEnragedMaxHealthPercent": 45
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.2
+            }
+          ],
+          "chancePercent": 10,
+          "requires": "noVegapunkKnowledge",
+          "radius": 600,
+          "target": "area"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-16",
+      "sourceUrl": "https://ordr.kr/character/H16",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 35
+        },
+        {
+          "type": "explosiveDamageAmplification",
+          "percent": 10,
+          "targetZone": "line"
+        }
+      ],
+      "skills": [
+        {
+          "name": "얼음 충격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 120000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.7
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 415
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-17",
+      "sourceUrl": "https://ordr.kr/character/H17",
+      "passives": [],
+      "skills": [
+        {
+          "name": "명구",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "damage",
+              "amount": 250000,
+              "school": null
+            },
+            {
+              "type": "magical",
+              "extraSkillDamagePercentByTargetKind": {
+                "boss": 1000,
+                "story": 150
+              }
+            },
+            {
+              "type": "fixed",
+              "extraTargetMaxHealthPercent": 18,
+              "onlyTargetKinds": [
+                "enraged"
+              ]
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.75,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 16,
+          "target": "area",
+          "radius": 450
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ],
+      "uncertaintyNotes": [
+        "툴팁 원본 '25만 데미지'는 물리·마법 타입이 명시되지 않아 학교 구분 null."
+      ]
+    },
+    {
+      "unitId": "H-18",
+      "sourceUrl": "https://ordr.kr/character/H18",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 11
+        }
+      ],
+      "skills": [
+        {
+          "name": "체력회복 공격력 버프",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "allyAttackPowerBuff",
+              "percent": 45,
+              "durationSeconds": 50
+            },
+            {
+              "type": "healthRegeneration",
+              "perSecond": 1,
+              "durationSeconds": 50
+            }
+          ],
+          "cooldownSeconds": 30
+        },
+        {
+          "name": "광역 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 110000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.65
+            }
+          ],
+          "chancePercent": 11,
+          "target": "area",
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-19",
+      "sourceUrl": "https://ordr.kr/character/H19",
+      "passives": [],
+      "skills": [
+        {
+          "name": "범위 마법·증폭",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 300000
+            },
+            {
+              "type": "magicDamageAmplification",
+              "percent": 1
+            }
+          ],
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 425
+        },
+        {
+          "name": "라인 체력 비례",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "basis": "targetCurrentHealth",
+              "percent": 28,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "chancePercent": 15,
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-20",
+      "sourceUrl": "https://ordr.kr/character/H20",
+      "passives": [],
+      "skills": [
+        {
+          "name": "잔설검",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 450000,
+              "extraMaxHealthPercentByTargetKind": {
+                "line": 35,
+                "enraged": 35,
+                "boss": 7
+              }
+            }
+          ],
+          "manaCost": 35,
+          "target": "single"
+        },
+        {
+          "name": "눈보라",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000,
+              "extraSingleMultiplierRange": [
+                1,
+                3
+              ]
+            }
+          ],
+          "chancePercent": 14,
+          "target": "area",
+          "radius": 475
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-21",
+      "sourceUrl": "https://ordr.kr/character/H21",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 12
+        }
+      ],
+      "skills": [
+        {
+          "name": "돌격 연타",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 85000,
+              "multiplierRange": [
+                1,
+                3
+              ]
+            },
+            {
+              "type": "magical",
+              "extraBossCurrentHealthPercent": 0.9,
+              "extraEnragedMaxHealthPercent": 5.75
+            }
+          ],
+          "chancePercent": 10,
+          "overrides": [
+            {
+              "targetKinds": [
+                "boss"
+              ],
+              "chancePercent": 40
+            }
+          ],
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
+    },
+    {
+      "unitId": "H-22",
+      "sourceUrl": "https://ordr.kr/character/H22",
+      "passives": [
+        {
+          "type": "allyAttackPowerBuff",
+          "percent": 35
+        },
+        {
+          "type": "terrainIgnoreMovement"
+        }
+      ],
+      "skills": [
+        {
+          "name": "증오",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 177777,
+              "multiplierRange": [
+                1,
+                4
+              ]
+            },
+            {
+              "type": "fixed",
+              "extraCurrentHealthPercent": 2.5,
+              "onlyTargetKinds": [
+                "boss",
+                "enraged"
+              ]
+            }
+          ],
+          "chancePercent": 17,
+          "target": "single"
+        },
+        {
+          "name": "마리조아붕괴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 215000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 515
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 유닛·스킬 rawcode",
+        "실제 공격 스탯/공속",
+        "정확한 중첩·반올림"
+      ]
     }
   ]
 }
