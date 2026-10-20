@@ -8,10 +8,12 @@ namespace Ordr.Mobile.Mobile
     {
         public string UnitId { get; private set; }
         public int Count { get; private set; }
+        public string DisplayName { get; private set; }
 
-        internal VerifiedFusionIngredient(Dictionary<string, object> data)
+        internal VerifiedFusionIngredient(Dictionary<string, object> data, CharacterUnitCatalog units)
         {
             UnitId = OrdrJson.RequiredString(data, "unitId");
+            DisplayName = units.Require(UnitId).Name;
             double? count = OrdrJson.Number(data, "count");
             if (!count.HasValue || count.Value < 1 ||
                 count.Value > int.MaxValue || Math.Floor(count.Value) != count.Value)
@@ -55,7 +57,8 @@ namespace Ordr.Mobile.Mobile
             var uniqueIds = new HashSet<string>(StringComparer.Ordinal);
             foreach (var item in OrdrJson.Array(OrdrJson.Value(source, "ingredients"), "ingredients"))
             {
-                var material = new VerifiedFusionIngredient(OrdrJson.Object(item, "ingredient"));
+                var material = new VerifiedFusionIngredient(
+                    OrdrJson.Object(item, "ingredient"), units);
                 if (units.Find(material.UnitId) == null)
                     throw new FormatException(Id + "에 없는 재료 ID: " + material.UnitId);
                 if (!uniqueIds.Add(material.UnitId))
