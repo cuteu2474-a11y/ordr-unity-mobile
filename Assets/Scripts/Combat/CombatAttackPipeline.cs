@@ -127,7 +127,16 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("등록되지 않은 공격자입니다.");
             if (!scheduler.IsReady(attackerInstanceId)) return false;
 
-            string targetId = CombatTargeting.Select(candidates,
+            // 화면에 남아 있는 오래된 좌표 정보는 실제 살아 있는 적으로 취급하지 않는다.
+            var validCandidates = new List<TargetCandidate>();
+            foreach (var candidate in candidates)
+            {
+                if (candidate == null) throw new ArgumentException("null 대상은 허용하지 않습니다.");
+                if (!candidate.Alive) continue;
+                var tracked = resolution.GetEnemy(candidate.Id);
+                if (tracked != null && tracked.IsAlive) validCandidates.Add(candidate);
+            }
+            string targetId = CombatTargeting.Select(validCandidates,
                 unit.Spec.BasicAttack.Range, TargetPriority.Nearest);
             if (targetId == null) return false;
             var enemy = resolution.GetEnemy(targetId);
