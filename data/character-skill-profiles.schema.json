@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "원랜디 2.323 캐릭터 상세 스킬 프로필",
+  "type": "object",
+  "required": [
+    "gameVersion",
+    "catalogVersion",
+    "specCompleteness",
+    "profiles"
+  ],
+  "properties": {
+    "gameVersion": {
+      "const": "S2 2.323[C]"
+    },
+    "catalogVersion": {
+      "const": "2.323"
+    },
+    "specCompleteness": {
+      "enum": [
+        "partial",
+        "complete"
+      ]
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "unitId",
+          "sourceUrl",
+          "skills",
+          "passives",
+          "basicAttack",
+          "skillSpecCompleteness",
+          "gameRawCode",
+          "unconfirmedFields"
+        ],
+        "properties": {
+          "unitId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceUrl": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "trigger",
+                "components"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "trigger": {
+                  "type": "string"
+                },
+                "components": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "passives": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "enhancedChanges": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "enhancedCondition": {
+            "type": "object"
+          },
+          "enhancedDescription": {
+            "type": "string"
+          },
+          "basicAttack": {
+            "type": "object"
+          },
+          "gameRawCode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "skillSpecCompleteness": {
+            "enum": [
+              "partial",
+              "complete"
+            ]
+          },
+          "unconfirmedFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "source": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "collectedOn": {
+      "type": "string"
+    },
+    "verification": {
+      "type": "string"
+    },
+    "warning": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
