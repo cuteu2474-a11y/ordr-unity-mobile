@@ -66,6 +66,25 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
+        // 발동 스킬·광역 피해는 평타 쿨타임을 추가 소비하지 않는다.
+        // 최종 피해량은 확인된 원작 공식 구현체가 계산해 전달해야 한다.
+        public bool TryApplySkillDamage(string enemyId, long verifiedDamage, out long actualDamage)
+        {
+            actualDamage = 0;
+            if (verifiedDamage < 0) throw new ArgumentOutOfRangeException(nameof(verifiedDamage));
+            if (string.IsNullOrWhiteSpace(enemyId))
+                throw new ArgumentException("대상 ID가 필요합니다.", nameof(enemyId));
+            CombatEnemy enemy;
+            if (!enemies.TryGetValue(enemyId, out enemy) || !enemy.IsAlive) return false;
+            actualDamage = enemy.ReceiveDamage(verifiedDamage);
+            if (!enemy.IsAlive)
+            {
+                session.DefeatEnemy();
+                enemies.Remove(enemyId);
+            }
+            return true;
+        }
+
         public bool TryLeak(string enemyId)
         {
             CombatEnemy enemy;
