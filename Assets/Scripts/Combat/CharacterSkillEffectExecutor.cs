@@ -82,7 +82,7 @@ namespace Ordr.Mobile.Combat
 
     public enum CharacterCombatEventType
     {
-        UnitSpawned, Attack, SkillActivated, SkillDamage, StatusApplied,
+        UnitSpawned, UnitPlaced, Attack, SkillActivated, SkillDamage, StatusApplied,
         ArmorBreakApplied, EnemyDefeated, EffectDeferred
     }
 
