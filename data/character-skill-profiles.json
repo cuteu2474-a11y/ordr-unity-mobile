@@ -6,7 +6,7 @@
   "source": "https://ordr.kr/character",
   "verification": "tooltip-numeric-facts",
   "specCompleteness": "partial",
-  "warning": "캐릭터별 스킬 tooltip에서 확인 가능한 수치의 데이터 등록이다. 스킬 조건·대상 선택·일부 피해 계산식은 원본 스크립트와 추가 대조가 필요하다. 'trigger'는 도감 문구를 코드 관리용 용어로 표준화했으며 원본 JASS의 실제 스킬 rawcode와 다르다. 일부 캐릭터는 툴팁과 패치노트 사이에 수치 상충이 있으므로 해당 항목을 uncertaintyNotes로 기록하며 최종 전투 계산에 직접 투입하지 않는다. L01~L12 스킬은 2.323 도감 상세 페이지를 2026-10-21 재확인하여 구조화. 구 패치와 툴팁이 불일치하는 값은 uncertaintyNotes에 남겼다. L13~L24도 도감 2.323 상세 페이지를 확인. 최신 툴팁과 패치 이력의 차이를 별도 불확실성 필드로 유지한다. L25~L39 전설 15종의 스킬과 기본 공격 연계 효과는 도감 2.323 사실값으로 등록. 원본 피해 공식 추론 없이 저장. 세라핌 SR1~SR4 전체의 도감 스킬 데이터 입력. 툴팁 미확인 확률은 null. 2026-10-21 도감 2.323 초월 TR1~TR9(기존 TR4 제외) 스킬 수치·효과 추가, 툴팁과 패치 기록 상충 항목 유지. TR11~TR19(기존 TR16 제외) 8종의 2.323 도감 스킬·특성강화·소환물 상세 수집. 툴팁과 패치 불일치 항목 별도 기록.",
+  "warning": "캐릭터별 스킬 tooltip에서 확인 가능한 수치의 데이터 등록이다. 스킬 조건·대상 선택·일부 피해 계산식은 원본 스크립트와 추가 대조가 필요하다. 'trigger'는 도감 문구를 코드 관리용 용어로 표준화했으며 원본 JASS의 실제 스킬 rawcode와 다르다. 일부 캐릭터는 툴팁과 패치노트 사이에 수치 상충이 있으므로 해당 항목을 uncertaintyNotes로 기록하며 최종 전투 계산에 직접 투입하지 않는다. L01~L12 스킬은 2.323 도감 상세 페이지를 2026-10-21 재확인하여 구조화. 구 패치와 툴팁이 불일치하는 값은 uncertaintyNotes에 남겼다. L13~L24도 도감 2.323 상세 페이지를 확인. 최신 툴팁과 패치 이력의 차이를 별도 불확실성 필드로 유지한다. L25~L39 전설 15종의 스킬과 기본 공격 연계 효과는 도감 2.323 사실값으로 등록. 원본 피해 공식 추론 없이 저장. 세라핌 SR1~SR4 전체의 도감 스킬 데이터 입력. 툴팁 미확인 확률은 null. 2026-10-21 도감 2.323 초월 TR1~TR9(기존 TR4 제외) 스킬 수치·효과 추가, 툴팁과 패치 기록 상충 항목 유지. TR11~TR19(기존 TR16 제외) 8종의 2.323 도감 스킬·특성강화·소환물 상세 수집. 툴팁과 패치 불일치 항목 별도 기록. 도감 초월 TR21~TR30 9종의 도감 기반 소환수·연계·스택/강화 스킬 수치 입력, 초월 30종 전원 부분 스펙 확보.",
   "profiles": [
     {
       "unitId": "R-42",
@@ -8048,6 +8048,1380 @@
         "원본 능력 rawcode",
         "평타 스펙/공속",
         "발동 순서·피해 계산·중첩 공식"
+      ]
+    },
+    {
+      "unitId": "TR-21",
+      "sourceUrl": "https://ordr.kr/character/TR21",
+      "passives": [
+        {
+          "type": "ageStacksOnHit",
+          "perHit": 10,
+          "maxStacks": 40,
+          "armorReductionPerStack": 1
+        },
+        {
+          "type": "healthRecoveryAtThreshold",
+          "healthAtMost": 10,
+          "immobilizedUntilHealthRecovered": 150,
+          "manaRestored": 45
+        }
+      ],
+      "skills": [
+        {
+          "name": "니카같은 미래",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "transform",
+              "form": "nika",
+              "untilManaExhausted": true,
+              "attackSpeedIncrease": true,
+              "procChanceIncrease": true
+            },
+            {
+              "type": "manaCostPerSkill",
+              "skillCosts": {
+                "오일쇼크": 2,
+                "임사체험": 4
+              }
+            }
+          ],
+          "manaCost": 150
+        },
+        {
+          "name": "오일쇼크",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 400000
+            },
+            {
+              "type": "physical",
+              "bonusPercent": 150,
+              "requiresTargetState": "세월관통"
+            },
+            {
+              "type": "ageStacks",
+              "add": 2
+            }
+          ],
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 320,
+          "selfHealthCost": 1
+        },
+        {
+          "name": "임사체험",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 750000
+            },
+            {
+              "type": "ageStacks",
+              "add": 20
+            }
+          ],
+          "chancePercent": 30,
+          "target": "single",
+          "selfHealthCost": 4
+        },
+        {
+          "name": "해방의 니카 펀치",
+          "trigger": "onTransform",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 3000000
+            },
+            {
+              "type": "physical",
+              "bonusPercent": 200,
+              "requiresAgeStacks": 40
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3,
+              "ignoresResistance": true
+            }
+          ],
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "스턴 광역 마법",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 2650000,
+              "plusTargetCurrentHealthPercent": 4
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.05
+            }
+          ],
+          "chancePercent": 12,
+          "absoluteCooldownSeconds": 15,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "세월관통",
+          "trigger": "onAgeStacksReached",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000,
+              "plusTargetCurrentHealthPercent": 8
+            },
+            {
+              "type": "root",
+              "onlyTargetKinds": [
+                "line"
+              ]
+            },
+            {
+              "type": "scaleReduction",
+              "percent": 40,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "requiredStacks": 40
+        },
+        {
+          "name": "니카펀치",
+          "trigger": "onAgeStacksReached",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 150000,
+              "plusTargetCurrentHealthPercent": 12,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "requiredStacks": 40,
+          "target": "single"
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "transformReplacement",
+          "from": "니카같은 미래",
+          "to": "자유로워진 미래",
+          "skillManaCost": {
+            "오일쇼크": 3,
+            "임사체험": 6
+          }
+        },
+        {
+          "type": "replaceSkill",
+          "from": "오일쇼크",
+          "chancePercent": 30,
+          "magicalAmount": 400000,
+          "bonusPhysicalPercentAgainstPierced": 300,
+          "extraTargetMaxHealthPercentAgainstPiercedLine": 70
+        },
+        {
+          "type": "replaceSkill",
+          "from": "임사체험",
+          "chancePercent": 50,
+          "physicalAmount": 1500000,
+          "extraTargetMaxHealthPercentAgainstPiercedLine": 30
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS rawcode",
+        "기본 공격력·공격 주기",
+        "개별 스킬 중복·피해 적용 순서"
+      ]
+    },
+    {
+      "unitId": "TR-22",
+      "sourceUrl": "https://ordr.kr/character/TR22",
+      "passives": [
+        {
+          "type": "allyAttackSpeedBuff",
+          "percent": 20
+        },
+        {
+          "type": "selfManaRegeneration",
+          "perSecond": 3
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 315
+        },
+        {
+          "type": "bonusSkillDamagePerArmorBreak",
+          "percentPerArmorReduced": 1
+        }
+      ],
+      "skills": [
+        {
+          "name": "어인가라데",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 2500000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 3
+            },
+            {
+              "type": "armorReduction",
+              "amount": 25,
+              "requiredArmorBreakStacks": 10,
+              "oncePerEnemy": true,
+              "exclusiveWith": [
+                "징베 전설"
+              ]
+            }
+          ],
+          "manaCost": 100,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "해류 공격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 450000
+            },
+            {
+              "type": "physical",
+              "amount": 1750000
+            },
+            {
+              "type": "fixed",
+              "skillDamagePercent": 225,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 3,
+              "maxStacks": 75
+            },
+            {
+              "type": "movementSlow",
+              "percent": 50,
+              "durationSeconds": 3
+            }
+          ],
+          "chancePercent": 6.25,
+          "target": "area",
+          "radius": 625
+        },
+        {
+          "name": "진각",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1250000,
+              "strengthScalingPerPoint": 17500
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 1,
+              "maxStacks": 75
+            }
+          ],
+          "chancePercent": 14.25,
+          "target": "area",
+          "radius": 450
+        },
+        {
+          "name": "타격 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 1.5
+            }
+          ],
+          "chancePercent": 40,
+          "target": "single"
+        },
+        {
+          "name": "물리 추가 타격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1000000
+            }
+          ],
+          "chancePercent": 25,
+          "target": "single"
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "unlockSkill",
+          "name": "귀신기와정권",
+          "requiresTargetKinds": [
+            "line"
+          ],
+          "requiredArmorBreakStacks": 35,
+          "absoluteCooldownSeconds": 4,
+          "magicalAmount": 500000,
+          "physicalAmount": 1000000,
+          "bonusTargetMaxHealthPercentAt75Stacks": 2,
+          "areaRadius": 625,
+          "addArmorBreakStacks": 3,
+          "slowPercent": 50,
+          "slowSeconds": 3
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS rawcode",
+        "기본 공격력·공격 주기",
+        "개별 스킬 중복·피해 적용 순서"
+      ]
+    },
+    {
+      "unitId": "TR-24",
+      "sourceUrl": "https://ordr.kr/character/TR24",
+      "passives": [
+        {
+          "type": "allyAttackSpeedBuff",
+          "percent": 10,
+          "excludeSelf": true
+        },
+        {
+          "type": "ownZoneExplosiveDamageReduction",
+          "percent": 10
+        },
+        {
+          "type": "flyingMovement"
+        },
+        {
+          "type": "teleport",
+          "range": 600
+        },
+        {
+          "type": "buffCountScaling",
+          "skillCoefficients": {
+            "육식": 23,
+            "콤비네이션ProcChance": 0.23,
+            "어니스티임팩트": 2.3
+          }
+        }
+      ],
+      "skills": [
+        {
+          "name": "어니스티 임팩트",
+          "trigger": "activeHealth",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 3550000
+            }
+          ],
+          "healthCost": 150,
+          "target": "area",
+          "radius": 700
+        },
+        {
+          "name": "육식 Type 코비",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000
+            }
+          ],
+          "chancePercent": 17,
+          "target": "area",
+          "radius": 450
+        },
+        {
+          "name": "콤비네이션 어택",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "summon",
+              "unit": "코비 분신",
+              "durationSeconds": 5,
+              "inheritsBaseAttack": true,
+              "legendaryUpgradeAffected": true,
+              "basicAttackExplosivePercent": 60,
+              "explosiveRadius": 400,
+              "singleMagicalDamagePerHit": 60000
+            }
+          ],
+          "chancePercent": 5,
+          "target": "summon"
+        },
+        {
+          "name": "기본 공격 특수 피해",
+          "trigger": "onEveryAttack",
+          "components": [
+            {
+              "type": "fixed",
+              "amountPerBuff": 10000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.1,
+              "ignoresResistance": true,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "target": "area",
+          "radius": 325
+        },
+        {
+          "name": "군함 백",
+          "trigger": "everyNthRound",
+          "components": [
+            {
+              "type": "selfAttackSpeedBuff",
+              "percentPerLevel": 7,
+              "maxLevels": 6
+            }
+          ],
+          "everyRounds": 5
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "replaceSkill",
+          "name": "어니스티 임팩트",
+          "magicalAmount": 4250000,
+          "extraMaxHealthPercentPerSelfBuff": 0.4
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS rawcode",
+        "기본 공격력·공격 주기",
+        "개별 스킬 중복·피해 적용 순서"
+      ]
+    },
+    {
+      "unitId": "TR-25",
+      "sourceUrl": "https://ordr.kr/character/TR25",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 35
+        },
+        {
+          "type": "selfAttackPowerFlat",
+          "amount": 50000
+        },
+        {
+          "type": "skillDamageBonusPerEnemyInArea",
+          "percentPerEnemy": 0.25
+        },
+        {
+          "type": "basicAttackAreaMagic",
+          "amount": 40000,
+          "radius": 215,
+          "exceptPrimaryTarget": true
+        }
+      ],
+      "skills": [
+        {
+          "name": "펑크 깁슨",
+          "trigger": "activeHealth",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 4400000,
+              "strengthScalingPerPoint": 50000
+            },
+            {
+              "type": "magical",
+              "centerExtraPercent": 50,
+              "centerRadius": 250
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.2
+            }
+          ],
+          "healthCost": 40,
+          "castTimeSeconds": 0.5,
+          "target": "area",
+          "radius": 500
+        },
+        {
+          "name": "리펠",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "lineDamage": 300000,
+              "explosionDamage": 300000,
+              "extraExplosionWhenEnemyCountAtLeast": 15,
+              "checkRadius": 250
+            }
+          ],
+          "chancePercent": 10,
+          "target": "lineThenExplosion",
+          "lineRadius": 300,
+          "explosionRadius": 450
+        },
+        {
+          "name": "자성 타격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000,
+              "strengthScalingPerPoint": 5000
+            },
+            {
+              "type": "magical",
+              "singleExtraPercent": 200
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "magnetObjectGain",
+              "amount": 1,
+              "afterEvery": 5,
+              "empoweredTripleCast": true,
+              "empoweredDamagePercent": 20
+            }
+          ],
+          "chancePercent": 6.5,
+          "target": "area",
+          "radius": 500
+        },
+        {
+          "name": "단일 대체 공격",
+          "trigger": "onEveryAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 360000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.5
+            }
+          ],
+          "chancePercent": 35,
+          "overridesBasicMagicSplash": true
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "replaceSkill",
+          "from": "펑크 깁슨",
+          "to": "펑크 크래시",
+          "healthCost": 50,
+          "radius": 525,
+          "magicalDamagePerHit": 2000000,
+          "hits": 3,
+          "centerRadius": 325,
+          "centerBonusPercent": 50,
+          "strengthScalingPerPoint": 60000,
+          "stunPerHitSeconds": 2.85
+        },
+        {
+          "type": "replaceSkill",
+          "from": "리펠",
+          "to": "댐드 펑크",
+          "chancePercent": 10,
+          "lineRadius": 450,
+          "explosionRadius": 450,
+          "magicalLineDamage": 600000,
+          "magicalExplosionDamage": 450000,
+          "explosionDamageBonusPerEnemyPercent": 1
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS rawcode",
+        "기본 공격력·공격 주기",
+        "개별 스킬 중복·피해 적용 순서"
+      ]
+    },
+    {
+      "unitId": "TR-26",
+      "sourceUrl": "https://ordr.kr/character/TR26",
+      "passives": [
+        {
+          "type": "teleport",
+          "range": 3500
+        }
+      ],
+      "skills": [
+        {
+          "name": "마나 연타 광역기",
+          "trigger": "onAttackWithMana",
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 250000,
+              "agilityScalingPerPoint": 2500,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "hits": 15
+            }
+          ],
+          "chancePercent": 6,
+          "requiredMana": 75,
+          "manaCost": 50,
+          "target": "area",
+          "radius": 575
+        },
+        {
+          "name": "빛의 기둥",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 400000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.75
+            }
+          ],
+          "chancePercent": 8.25,
+          "target": "area",
+          "radius": 500
+        },
+        {
+          "name": "팔지경",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 350000,
+              "agilityScalingPerPoint": 3500,
+              "hits": 3
+            },
+            {
+              "type": "magical",
+              "singleExtraPercent": 325
+            }
+          ],
+          "chancePercent": 9,
+          "target": "area",
+          "radius": 475
+        },
+        {
+          "name": "단일 치명타",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "critical",
+              "multiplier": 8.88
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            }
+          ],
+          "chancePercent": 15,
+          "target": "single"
+        },
+        {
+          "name": "레이저",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000
+            }
+          ],
+          "chancePercent": 10,
+          "target": "line",
+          "radius": 310
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "replaceSkill",
+          "name": "팔지경",
+          "magicalPerHit": 190000,
+          "agilityScalingPerPoint": 1900,
+          "hitsBasedOnClones": true
+        },
+        {
+          "type": "addSkill",
+          "name": "천총운검",
+          "everyBasicAttackMagicalDamage": 37500,
+          "bonusPerCloneStack": 3750,
+          "radius": 375
+        },
+        {
+          "type": "addSummonProc",
+          "chancePercent": 10,
+          "magicalPerClone": 75000,
+          "extraFixedBossOrEnragedMaxHealthPercent": 0.375,
+          "range": 475
+        },
+        {
+          "type": "unlockActive",
+          "name": "광분열",
+          "traitPointsCost": 1,
+          "cloneStacksGained": 1
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS rawcode",
+        "기본 공격력·공격 주기",
+        "개별 스킬 중복·피해 적용 순서"
+      ]
+    },
+    {
+      "unitId": "TR-27",
+      "sourceUrl": "https://ordr.kr/character/TR27",
+      "passives": [
+        {
+          "type": "allStatsDoubleOnLevelUp"
+        }
+      ],
+      "skills": [
+        {
+          "name": "난향접",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 360000,
+              "strengthScalingPerHit": 4000,
+              "hits": 14
+            },
+            {
+              "type": "magical",
+              "targetMaxHealthPercent": 10,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "manaCost": 135,
+          "target": "area",
+          "radius": 800
+        },
+        {
+          "name": "박무",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 850000,
+              "strengthScalingPerPoint": 6000,
+              "basicAttackPercent": 900
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 5,
+              "maxStacks": 75
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 550
+        },
+        {
+          "name": "육식 체",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 350000,
+              "strengthScalingPerPoint": 2500,
+              "basicAttackPercent": 600
+            }
+          ],
+          "chancePercent": 17,
+          "target": "area",
+          "radius": 450
+        },
+        {
+          "name": "단일 스턴 타격",
+          "trigger": "onBasicAttackOrSkill",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000,
+              "skillTriggeredExtraSingleDamage": 500000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 25,
+          "target": "single"
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "addExperience",
+          "amount": 3000
+        },
+        {
+          "type": "replaceSkill",
+          "name": "난향접",
+          "hits": 16,
+          "bonusBossOrEnragedTargetMaxHealthPercent": 3
+        },
+        {
+          "type": "replaceSkill",
+          "name": "육식 체",
+          "damagePerHit": 400000,
+          "strengthScalingPerHit": 3500,
+          "basicAttackPercentPerHit": 375,
+          "hits": 2
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS rawcode",
+        "기본 공격력·공격 주기",
+        "개별 스킬 중복·피해 적용 순서"
+      ]
+    },
+    {
+      "unitId": "TR-28",
+      "sourceUrl": "https://ordr.kr/character/TR28",
+      "passives": [
+        {
+          "type": "allyManaRegeneration",
+          "perSecond": 5,
+          "excludeSelf": true
+        }
+      ],
+      "skills": [
+        {
+          "name": "라디칼 빔",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000
+            }
+          ],
+          "manaCost": 150,
+          "target": "line",
+          "radius": 425
+        },
+        {
+          "name": "조선공",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "craftUnit",
+              "unit": "싸우전드 써니호",
+              "count": 2,
+              "lumberCost": 8
+            }
+          ],
+          "target": "player"
+        },
+        {
+          "name": "꾸드방",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 400000,
+              "multiplierRange": [
+                0.8,
+                1.5
+              ],
+              "extraSingleTargetPercent": 50
+            }
+          ],
+          "chancePercent": 5,
+          "target": "area",
+          "radius": 400
+        },
+        {
+          "name": "제너럴 빔",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000,
+              "plusTargetMaxHealthPercent": 1
+            }
+          ],
+          "chancePercent": 7.5,
+          "requiresForm": "frankyGeneral",
+          "target": "area",
+          "radius": 800
+        },
+        {
+          "name": "제너럴 소드",
+          "trigger": "onEveryAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000
+            },
+            {
+              "type": "magical",
+              "amount": 600000,
+              "chancePercent": 33,
+              "radius": 450
+            }
+          ],
+          "target": "area",
+          "radius": 300,
+          "requiresForm": "frankyGeneral"
+        },
+        {
+          "name": "솔져도크 시스템",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "projectiles": 2,
+              "plusProjectilesPerSunny": 1
+            }
+          ],
+          "chancePercent": 8,
+          "requiresNearbyUnit": "싸우전드 써니호",
+          "target": "area",
+          "radius": 400
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "unlockTransform",
+          "name": "프랑키 장군",
+          "manaCost": 150,
+          "durationSeconds": 6,
+          "onTransformSkill": {
+            "name": "제너럴 프레스",
+            "magicalDamage": 4000000,
+            "radius": 800
+          }
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS rawcode",
+        "기본 공격력·공격 주기",
+        "개별 스킬 중복·피해 적용 순서"
+      ]
+    },
+    {
+      "unitId": "TR-29",
+      "sourceUrl": "https://ordr.kr/character/TR29",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 55
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 350,
+          "physicalDamagePercentOfBasic": 80
+        }
+      ],
+      "skills": [
+        {
+          "name": "씽크홀",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 6250000
+            },
+            {
+              "type": "movementSlow",
+              "percent": 99,
+              "durationSeconds": 4
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 9,
+              "maxStacks": 75
+            }
+          ],
+          "manaCost": 140,
+          "target": "area",
+          "radius": 650
+        },
+        {
+          "name": "중력장",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "basicAttackMultiplier": 5,
+              "flatAmount": 450000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.5
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 3,
+              "maxStacks": 75
+            }
+          ],
+          "chancePercent": 4.5,
+          "target": "area",
+          "radius": 475
+        },
+        {
+          "name": "중력검",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "basicAttackMultiplier": 2.5,
+              "flatAmount": 250000
+            },
+            {
+              "type": "magical",
+              "amount": 350000,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.6
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 2,
+              "maxStacks": 75
+            }
+          ],
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 475
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "replaceSkill",
+          "name": "중력장",
+          "physicalFlatAmount": 550000
+        },
+        {
+          "type": "unlockSkill",
+          "name": "운석낙하",
+          "requiredArmorBreakStacks": 40,
+          "absoluteCooldownSeconds": 5,
+          "magicalDamagePerHit": 120000,
+          "hits": 5,
+          "physicalDamage": 1000000,
+          "radius": 675,
+          "selfAttackSpeedBuffPercent": 100,
+          "buffDurationSeconds": 5
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS rawcode",
+        "기본 공격력·공격 주기",
+        "개별 스킬 중복·피해 적용 순서"
+      ]
+    },
+    {
+      "unitId": "TR-30",
+      "sourceUrl": "https://ordr.kr/character/TR30",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 40
+        },
+        {
+          "type": "allyAttackPowerBuff",
+          "percent": 40
+        },
+        {
+          "type": "allyAttackSpeedBuff",
+          "percent": 40
+        },
+        {
+          "type": "satelliteSystem",
+          "oneOfEachAllowed": true,
+          "experienceGainBasedOnCount": true
+        }
+      ],
+      "skills": [
+        {
+          "name": "베가펑크 마나 공격",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 4250000
+            },
+            {
+              "type": "fixed",
+              "amount": 4250000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.75
+            },
+            {
+              "type": "satelliteManaRegeneration",
+              "perSecond": 25,
+              "durationSeconds": 3
+            }
+          ],
+          "manaCost": 200,
+          "target": "area",
+          "radius": 575
+        },
+        {
+          "name": "릴리스 마나 공격",
+          "trigger": "satelliteActiveMana",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 2200000,
+              "agilityScalingPerPoint": 22000
+            },
+            {
+              "type": "fixed",
+              "basis": "targetMaxHealth",
+              "percentPerAgility": 0.2,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "satellite": "릴리스",
+          "manaCost": 90,
+          "target": "area",
+          "radius": 500
+        },
+        {
+          "name": "릴리스 단일 스턴",
+          "trigger": "satelliteOnAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 220000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.75,
+              "ignoresResistance": true
+            }
+          ],
+          "satellite": "릴리스",
+          "chancePercent": 22
+        },
+        {
+          "name": "릴리스 광역 마법",
+          "trigger": "satelliteOnAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 220000
+            },
+            {
+              "type": "magical",
+              "extraBossMaxHealthPercent": 2,
+              "extraEnragedMaxHealthPercent": 4.4,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "satellite": "릴리스",
+          "chancePercent": 11,
+          "target": "area",
+          "radius": 475
+        },
+        {
+          "name": "아틀라스 마나 공격",
+          "trigger": "satelliteActiveMana",
+          "components": [
+            {
+              "type": "fixed",
+              "amount": 2000000,
+              "plusTargetMaxHealthPercentPerStrength": 0.1
+            }
+          ],
+          "satellite": "아틀라스",
+          "manaCost": 110,
+          "target": "area",
+          "radius": 625
+        },
+        {
+          "name": "아틀라스 평타·치명타",
+          "trigger": "satelliteOnAttack",
+          "components": [
+            {
+              "type": "explosive",
+              "attackPowerPercent": 45,
+              "radius": 400
+            },
+            {
+              "type": "critical",
+              "multiplier": 2.5
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1
+            }
+          ],
+          "satellite": "아틀라스",
+          "chancePercent": 25
+        },
+        {
+          "name": "아틀라스 날뛰기",
+          "trigger": "satelliteOnAttack",
+          "components": [
+            {
+              "type": "selfAttackSpeedBuff",
+              "percent": 45,
+              "durationSeconds": 2.25
+            },
+            {
+              "type": "magical",
+              "amount": 400000,
+              "strengthScalingPerPoint": 4000
+            }
+          ],
+          "satellite": "아틀라스",
+          "chancePercent": 15
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "unlockSatellite",
+          "name": "요크",
+          "skills": [
+            {
+              "name": "마나 공격",
+              "manaCost": 100,
+              "radius": 575,
+              "physicalPerHit": 375000,
+              "magicalPerHit": 375000,
+              "hits": 6,
+              "intelligenceScalingPerPoint": 12500,
+              "stunDurationSeconds": 3.75
+            },
+            {
+              "name": "평타 광역",
+              "chancePercent": 10,
+              "radius": 575,
+              "physicalAmount": 375000,
+              "magicalAmount": 375000,
+              "intelligenceScalingPerPoint": 3750,
+              "stunDurationSeconds": 2.75
+            }
+          ]
+        }
+      ],
+      "satellites": [
+        {
+          "name": "릴리스",
+          "armorReductionAura": 40
+        },
+        {
+          "name": "아틀라스",
+          "basicAttackExplosivePercent": 45,
+          "basicAttackExplosiveRadius": 400
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS rawcode",
+        "기본 공격력·공격 주기",
+        "개별 스킬 중복·피해 적용 순서"
       ]
     }
   ]
