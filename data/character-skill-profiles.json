@@ -6,7 +6,7 @@
   "source": "https://ordr.kr/character",
   "verification": "tooltip-numeric-facts",
   "specCompleteness": "partial",
-  "warning": "캐릭터별 스킬 tooltip에서 확인 가능한 수치의 데이터 등록이다. 스킬 조건·대상 선택·일부 피해 계산식은 원본 스크립트와 추가 대조가 필요하다. 'trigger'는 도감 문구를 코드 관리용 용어로 표준화했으며 원본 JASS의 실제 스킬 rawcode와 다르다. 일부 캐릭터는 툴팁과 패치노트 사이에 수치 상충이 있으므로 해당 항목을 uncertaintyNotes로 기록하며 최종 전투 계산에 직접 투입하지 않는다. L01~L12 스킬은 2.323 도감 상세 페이지를 2026-10-21 재확인하여 구조화. 구 패치와 툴팁이 불일치하는 값은 uncertaintyNotes에 남겼다. L13~L24도 도감 2.323 상세 페이지를 확인. 최신 툴팁과 패치 이력의 차이를 별도 불확실성 필드로 유지한다. L25~L39 전설 15종의 스킬과 기본 공격 연계 효과는 도감 2.323 사실값으로 등록. 원본 피해 공식 추론 없이 저장. 세라핌 SR1~SR4 전체의 도감 스킬 데이터 입력. 툴팁 미확인 확률은 null. 2026-10-21 도감 2.323 초월 TR1~TR9(기존 TR4 제외) 스킬 수치·효과 추가, 툴팁과 패치 기록 상충 항목 유지.",
+  "warning": "캐릭터별 스킬 tooltip에서 확인 가능한 수치의 데이터 등록이다. 스킬 조건·대상 선택·일부 피해 계산식은 원본 스크립트와 추가 대조가 필요하다. 'trigger'는 도감 문구를 코드 관리용 용어로 표준화했으며 원본 JASS의 실제 스킬 rawcode와 다르다. 일부 캐릭터는 툴팁과 패치노트 사이에 수치 상충이 있으므로 해당 항목을 uncertaintyNotes로 기록하며 최종 전투 계산에 직접 투입하지 않는다. L01~L12 스킬은 2.323 도감 상세 페이지를 2026-10-21 재확인하여 구조화. 구 패치와 툴팁이 불일치하는 값은 uncertaintyNotes에 남겼다. L13~L24도 도감 2.323 상세 페이지를 확인. 최신 툴팁과 패치 이력의 차이를 별도 불확실성 필드로 유지한다. L25~L39 전설 15종의 스킬과 기본 공격 연계 효과는 도감 2.323 사실값으로 등록. 원본 피해 공식 추론 없이 저장. 세라핌 SR1~SR4 전체의 도감 스킬 데이터 입력. 툴팁 미확인 확률은 null. 2026-10-21 도감 2.323 초월 TR1~TR9(기존 TR4 제외) 스킬 수치·효과 추가, 툴팁과 패치 기록 상충 항목 유지. TR11~TR19(기존 TR16 제외) 8종의 2.323 도감 스킬·특성강화·소환물 상세 수집. 툴팁과 패치 불일치 항목 별도 기록.",
   "profiles": [
     {
       "unitId": "R-42",
@@ -6858,6 +6858,1196 @@
         "원본 스킬 rawcode",
         "실제 기본 공격력·공격 주기·방어 반영식",
         "다중 조건과 스킬 중첩 처리 순서"
+      ]
+    },
+    {
+      "unitId": "TR-11",
+      "sourceUrl": "https://ordr.kr/character/TR11",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 35
+        },
+        {
+          "type": "movementSlowAura",
+          "percent": 35
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 300
+        }
+      ],
+      "skills": [
+        {
+          "name": "마나 범위 타격",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 3750000,
+              "multiplierRange": [
+                1,
+                2
+              ],
+              "plusTargetMaxHealthPercent": 1
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.25,
+              "ignoresResistance": true
+            }
+          ],
+          "manaCost": 125,
+          "target": "area",
+          "radius": 500
+        },
+        {
+          "name": "불꽃 주먹",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 500000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "magical",
+              "amount": 500000,
+              "plusOwnBuffCountMultiplier": 50000,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "physical",
+              "plusTargetMaxHealthPercent": 4,
+              "onlyTargetKinds": [
+                "line"
+              ],
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.85,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 20,
+          "radius": 415,
+          "overrides": [
+            {
+              "targetKinds": [
+                "boss"
+              ],
+              "maxHealthPercent": 1
+            }
+          ]
+        },
+        {
+          "name": "넓은 주먹",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1150000
+            },
+            {
+              "type": "movementSlow",
+              "percent": 30,
+              "durationSeconds": 2
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 415
+        },
+        {
+          "name": "기본공격 크리티컬",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "critical",
+              "multiplier": 4
+            }
+          ],
+          "chancePercent": 15
+        },
+        {
+          "name": "화염용왕",
+          "trigger": "attackWithPeriodicCooldown",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 3250000
+            },
+            {
+              "type": "physical",
+              "amount": 1000000,
+              "plusBuffCountMultiplier": 1000000
+            },
+            {
+              "type": "fixed",
+              "amount": 4250000,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.5,
+              "resistanceIgnorePercent": 50
+            }
+          ],
+          "intervalSeconds": 12.5,
+          "target": "area",
+          "radius": 475,
+          "strengthScalingPerPoint": 15000
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스펙/공속",
+        "발동 순서·피해 계산·중첩 공식"
+      ]
+    },
+    {
+      "unitId": "TR-12",
+      "sourceUrl": "https://ordr.kr/character/TR12",
+      "passives": [
+        {
+          "type": "flyingMovement"
+        },
+        {
+          "type": "onEveryAttackBonus",
+          "school": "magical",
+          "plusTargetCurrentHealthPercent": 3.7,
+          "onlyTargetKinds": [
+            "line"
+          ]
+        }
+      ],
+      "skills": [
+        {
+          "name": "유성소바 킥",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 3330000
+            },
+            {
+              "type": "magical",
+              "amount": 2000000,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "manaCost": 115,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "검은다리",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 0.25
+            },
+            {
+              "type": "magical",
+              "amount": 450000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "whenAnySkill": [
+                "유성소바 킥",
+                "불꽃 스펙트럼",
+                "무등샷"
+              ]
+            }
+          ],
+          "chancePercent": 20,
+          "target": "single"
+        },
+        {
+          "name": "불꽃 스펙트럼",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 552500
+            }
+          ],
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 475
+        },
+        {
+          "name": "무통 샷",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 800000
+            },
+            {
+              "type": "movementSlow",
+              "percent": 50,
+              "durationSeconds": 3.5
+            }
+          ],
+          "chancePercent": 5,
+          "target": "area",
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스펙/공속",
+        "발동 순서·피해 계산·중첩 공식"
+      ]
+    },
+    {
+      "unitId": "TR-13",
+      "sourceUrl": "https://ordr.kr/character/TR13",
+      "passives": [
+        {
+          "type": "periodicNearbyDamage",
+          "intervalSeconds": 0.2,
+          "amountPerTick": 52500,
+          "school": null,
+          "radius": 900
+        }
+      ],
+      "skills": [
+        {
+          "name": "카무사리",
+          "trigger": "activeManaOrPeriodic",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 1500000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            }
+          ],
+          "manaCost": 35,
+          "intervalSeconds": 14.25,
+          "target": "area",
+          "radius": 1100
+        },
+        {
+          "name": "패기 접근 효과",
+          "trigger": "onEnemyEnterRange",
+          "components": [
+            {
+              "type": "magical",
+              "plusTargetMaxHealthPercent": 3
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.625
+            }
+          ],
+          "radius": 750,
+          "oncePerEnemy": true,
+          "overrides": [
+            {
+              "targetKinds": [
+                "boss",
+                "enraged"
+              ],
+              "bypassOnce": true
+            }
+          ],
+          "chained": [
+            {
+              "chancePercent": 16,
+              "magicalAmount": 1000000,
+              "extraMaxHealthPercent": 3
+            },
+            {
+              "chancePercent": 7.25,
+              "magicalAmount": 1000000,
+              "extraMaxHealthPercent": 6,
+              "additionalAreaMagicalAmount": 250000,
+              "stunSeconds": 3
+            }
+          ],
+          "exclusiveWith": [
+            "동일 패기"
+          ]
+        },
+        {
+          "name": "원형 마법 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 425000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2,
+              "resistanceIgnorePercent": 50
+            }
+          ],
+          "chancePercent": 9,
+          "target": "area",
+          "radius": 800
+        },
+        {
+          "name": "자신중심 마법 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 350000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2,
+              "resistanceIgnorePercent": 50
+            }
+          ],
+          "chancePercent": 10,
+          "target": "casterArea",
+          "radius": 800
+        },
+        {
+          "name": "단일 크리티컬",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "critical",
+              "multiplier": 10
+            },
+            {
+              "type": "physical",
+              "amount": 500000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2
+            }
+          ],
+          "chancePercent": 12,
+          "target": "single"
+        }
+      ],
+      "uncertaintyNotes": [
+        "0.2초 주기 주변 피해에 피해 유형 명시되지 않음."
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스펙/공속",
+        "발동 순서·피해 계산·중첩 공식"
+      ]
+    },
+    {
+      "unitId": "TR-14",
+      "sourceUrl": "https://ordr.kr/character/TR14",
+      "passives": [
+        {
+          "type": "basicAttackExplosive",
+          "attackPowerPercent": 50,
+          "radius": 525
+        },
+        {
+          "type": "flyingMovement"
+        },
+        {
+          "type": "skillScalingByEnemyMovementSpeed",
+          "maxBonusPercentBySkill": {
+            "무장색패기": 150,
+            "컬버린": 200,
+            "킹코브라": 50
+          }
+        }
+      ],
+      "skills": [
+        {
+          "name": "킹코브라",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 3500000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "singlePrimaryTargetExtraPercent": 50
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "manaCost": 85,
+          "target": "area",
+          "radius": 500
+        },
+        {
+          "name": "블랙 맘바 각성",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "transform",
+              "form": "blackMamba",
+              "durationSeconds": 8.5,
+              "attackPowerIncrease": 12500,
+              "attackIntervalReductionSeconds": 0.03
+            }
+          ],
+          "chancePercent": 7.5,
+          "castTimeSeconds": 2.5
+        },
+        {
+          "name": "무장색 패기",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 70000,
+              "multiplierRange": [
+                1,
+                2
+              ]
+            }
+          ],
+          "chancePercent": 35,
+          "overrides": [
+            {
+              "form": "blackMamba",
+              "chancePercent": 70,
+              "damageMultiplier": 1.5
+            }
+          ],
+          "target": "area",
+          "radius": 400
+        },
+        {
+          "name": "컬버린",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 300000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "extraSingleTargetAmount": 300000
+            }
+          ],
+          "chancePercent": 7.5,
+          "overrides": [
+            {
+              "form": "blackMamba",
+              "chanceIncreasePercent": 20
+            }
+          ],
+          "target": "area",
+          "radius": 475
+        },
+        {
+          "name": "크리티컬·단일 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "critical",
+              "multiplier": 3
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.5
+            }
+          ],
+          "chancePercent": 20,
+          "target": "single"
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "replaceStunDuration",
+          "skill": "크리티컬·단일 스턴",
+          "durationSeconds": 1
+        },
+        {
+          "type": "unlockSkill",
+          "name": "히드라",
+          "trigger": "onAttack",
+          "chancePercent": 8,
+          "hits": 9,
+          "magicalDamagePerHit": 85000,
+          "damageMultiplierRange": [
+            1,
+            1.5
+          ],
+          "extraBossMaxHealthPercent": 0.85,
+          "enragedDamageMultiplier": 2
+        }
+      ],
+      "uncertaintyNotes": [
+        "블랙 맘바의 각성 지속 8.5초와 이펙트 2.5초는 툴팁 문맥이 모호해 별도 필드 유지."
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스펙/공속",
+        "발동 순서·피해 계산·중첩 공식"
+      ]
+    },
+    {
+      "unitId": "TR-15",
+      "sourceUrl": "https://ordr.kr/character/TR15",
+      "passives": [
+        {
+          "type": "basicAttackSplash",
+          "radius": 300
+        },
+        {
+          "type": "flyingMovement"
+        }
+      ],
+      "skills": [
+        {
+          "name": "해왕류 다이브",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 3350000,
+              "plusTargetMissingHealthPercent": 6,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3,
+              "ignoresResistance": true
+            }
+          ],
+          "manaCost": 120,
+          "target": "area",
+          "radius": 800
+        },
+        {
+          "name": "고대병기 포세이돈",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magicalDamageOverTime",
+              "amountPerTick": 450000,
+              "intervalSeconds": 0.25,
+              "durationSeconds": 2.5,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            }
+          ],
+          "chancePercent": 4,
+          "absoluteCooldownSeconds": 5,
+          "target": "area",
+          "radius": 1000
+        },
+        {
+          "name": "해류조정",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 380000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.35,
+              "ignoresResistance": true
+            }
+          ],
+          "chancePercent": 12,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "물리 치명타",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 250000
+            },
+            {
+              "type": "critical",
+              "multiplier": 3
+            }
+          ],
+          "chancePercent": 17,
+          "target": "area",
+          "radius": 300
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "navigationExpBonus",
+          "perCompletedNavigationGoal": 270
+        },
+        {
+          "type": "unlockSummon",
+          "atLevel": 16,
+          "name": "해왕출현",
+          "chancePercent": 5,
+          "durationSeconds": 15,
+          "absoluteCooldownSeconds": 20
+        },
+        {
+          "type": "grantCurrency",
+          "atLevel": 20,
+          "name": "홀스",
+          "amount": 10
+        },
+        {
+          "type": "increaseSkillDamage",
+          "atLevel": 24,
+          "skill": "해왕류 다이브",
+          "magicalAmount": 4500000,
+          "missingHealthPercent": 8
+        }
+      ],
+      "uncertaintyNotes": [
+        "해왕 소환수 공격별 추가 스킬 및 성장 수치는 툴팁 명시값 일부만 확보."
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스펙/공속",
+        "발동 순서·피해 계산·중첩 공식"
+      ]
+    },
+    {
+      "unitId": "TR-17",
+      "sourceUrl": "https://ordr.kr/character/TR17",
+      "passives": [],
+      "skills": [
+        {
+          "name": "유성화산",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amountPerMeteor": 999999,
+              "meteorCount": 7
+            }
+          ],
+          "manaCost": 135,
+          "target": "meteorArea",
+          "radius": 465
+        },
+        {
+          "name": "범위 스턴 타격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 425000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.6,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 475
+        },
+        {
+          "name": "명구",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 725000
+            },
+            {
+              "type": "magical",
+              "amount": 7250000,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3,
+              "ignoresResistance": true,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "fixed",
+              "plusTargetMaxHealthPercent": 18,
+              "onlyTargetKinds": [
+                "enraged"
+              ]
+            }
+          ],
+          "chancePercent": 7.5,
+          "target": "area",
+          "radius": 600,
+          "strengthScaling": {
+            "aoePerPoint": 5000,
+            "singlePerPoint": 50000
+          }
+        },
+        {
+          "name": "스킬 사용 잔불",
+          "trigger": "onSkillActivated",
+          "components": [
+            {
+              "type": "magicalDoT",
+              "amountPerTick": 150000,
+              "intervalSeconds": 0.2,
+              "durationRangeSeconds": [
+                1,
+                2
+              ]
+            },
+            {
+              "type": "movementSlow",
+              "percent": 12,
+              "durationSeconds": 2
+            }
+          ],
+          "target": "area",
+          "radius": 700
+        },
+        {
+          "name": "철저한 정의",
+          "trigger": "onAttackAgainstSpecialTarget",
+          "components": [
+            {
+              "type": "forceCast",
+              "skill": "명구",
+              "damageIncreasePerRepeatPercent": 100
+            }
+          ],
+          "intervalSeconds": 3.5,
+          "targetKinds": [
+            "boss",
+            "enraged"
+          ]
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "replaceMeteor",
+          "skill": "유성화산",
+          "meteorCount": 8,
+          "strengthScalingPerMeteor": 50000,
+          "extraMagicalToSingleTarget": 2000000,
+          "focusCurrentTarget": true
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스펙/공속",
+        "발동 순서·피해 계산·중첩 공식"
+      ]
+    },
+    {
+      "unitId": "TR-18",
+      "sourceUrl": "https://ordr.kr/character/TR18",
+      "passives": [],
+      "skills": [
+        {
+          "name": "인수화",
+          "trigger": "activeHealth",
+          "components": [
+            {
+              "type": "transform",
+              "form": "beast",
+              "durationSeconds": 3.5,
+              "attackPowerIncrease": 75000,
+              "attackIntervalReductionSeconds": 0.07
+            }
+          ],
+          "healthCost": 95
+        },
+        {
+          "name": "패왕색 휘감기",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "fixed",
+              "basicAttackPercent": 20,
+              "flatAmount": 15000,
+              "onEveryAttackWhileBuffed": true
+            },
+            {
+              "type": "maxAttackSpeed",
+              "durationSeconds": 1.25
+            },
+            {
+              "type": "basicAttackSplashBonus",
+              "radiusIncrease": 100
+            }
+          ],
+          "chancePercent": 17,
+          "requiresForm": null,
+          "target": "self",
+          "overrides": [
+            {
+              "form": "beast",
+              "chancePercent": 25
+            }
+          ]
+        },
+        {
+          "name": "마환인",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "fixed",
+              "basicAttackPercent": 375,
+              "flatAmount": 350000,
+              "maxBonusByTargetSlowPercent": 88
+            }
+          ],
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 525,
+          "overrides": [
+            {
+              "state": "enemyMaxSlow",
+              "chancePercent": 33
+            },
+            {
+              "form": "beast",
+              "guaranteedEveryAttack": true
+            }
+          ]
+        },
+        {
+          "name": "스턴 물리 타격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 50000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.45,
+              "ignoresResistance": true
+            }
+          ],
+          "chancePercent": 30,
+          "target": "single"
+        },
+        {
+          "name": "미환인",
+          "trigger": "onAttackWithCondition",
+          "components": [
+            {
+              "type": "magical",
+              "basicAttackPercent": 115,
+              "flatAmount": 215000,
+              "extraSingleTargetPercent": 125
+            }
+          ],
+          "requires": "speedOrTransformation",
+          "target": "area",
+          "radius": 400
+        },
+        {
+          "name": "무시빙아",
+          "trigger": "firstAttackAfterTransform",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 2150000,
+              "multiplierRange": [
+                0.8,
+                1.5
+              ]
+            },
+            {
+              "type": "physical",
+              "amountPerHit": 700000,
+              "hits": 9,
+              "multiplierRange": [
+                0.8,
+                1.5
+              ]
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.25,
+              "ignoresResistance": true
+            }
+          ],
+          "target": "area",
+          "radius": 800
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "onAttackProc",
+          "skill": "마환인",
+          "chancePercent": 35
+        },
+        {
+          "type": "replaceSkill",
+          "from": "무시빙아",
+          "to": "신족 백사구",
+          "firstMagicalDamage": 2500000,
+          "physicalDamagePerHit": 800000,
+          "physicalHits": 9,
+          "multiplierRange": [
+            1,
+            2
+          ],
+          "stunSeconds": 2.25
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스펙/공속",
+        "발동 순서·피해 계산·중첩 공식"
+      ]
+    },
+    {
+      "unitId": "TR-19",
+      "sourceUrl": "https://ordr.kr/character/TR19",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 22
+        },
+        {
+          "type": "globalArmorReduction",
+          "amount": 8
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 300
+        },
+        {
+          "type": "allPhysicalDamagePenetrating"
+        }
+      ],
+      "skills": [
+        {
+          "name": "파이어 버드 스타",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 2250000
+            },
+            {
+              "type": "physical",
+              "amount": 1000000,
+              "plusTargetMaxHealthPercent": 2
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            }
+          ],
+          "manaCost": 140,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "저격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 250000
+            },
+            {
+              "type": "fixed",
+              "basis": "skillDamage",
+              "bonusPercentByTargetKind": {
+                "boss": 100,
+                "enraged": 200,
+                "story": 140
+              },
+              "extraMaxHealthPercentByTargetKind": {
+                "boss": 4.25,
+                "enraged": 14.25
+              }
+            }
+          ],
+          "chancePercent": 14,
+          "target": "area",
+          "radius": 400,
+          "overrides": [
+            {
+              "targetKinds": [
+                "boss",
+                "story",
+                "enraged"
+              ],
+              "chancePercent": 20,
+              "hits": 2
+            }
+          ]
+        },
+        {
+          "name": "화염성",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 600000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "magical",
+              "amount": 600000,
+              "scope": "singlePrimaryTarget",
+              "targetKindMultiplier": {
+                "boss": 1.25,
+                "story": 1.5
+              }
+            }
+          ],
+          "chancePercent": 11,
+          "target": "area",
+          "radius": 420
+        },
+        {
+          "name": "치명타",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "critical",
+              "multiplier": 3.5
+            }
+          ],
+          "chancePercent": 15,
+          "target": "single"
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "unlockSkill",
+          "name": "수상한 씨앗 상자",
+          "maxSummonedPlants": 3,
+          "plantTypes": [
+            {
+              "name": "완두콩",
+              "lumberCost": 5,
+              "fixedAttacksPerSecond": 1,
+              "attackPowerRange": [
+                175001,
+                175002
+              ],
+              "basicAttackSplashRadius": 325,
+              "critChancePercent": 17.5,
+              "critMultiplier": 1.75
+            },
+            {
+              "name": "백설콩",
+              "lumberCost": 4,
+              "fixedAttacksPerSecond": 1,
+              "onAttackStunChancePercent": 20,
+              "magicalDamage": 200000,
+              "stunRadius": 425,
+              "stunSeconds": 2
+            },
+            {
+              "name": "해바라기",
+              "lumberCost": 4,
+              "generatesLumberEverySeconds": 120,
+              "lumberPerTick": 1
+            },
+            {
+              "name": "먹깨비",
+              "lumberCost": 3,
+              "fixedAttacksPerSecond": 1,
+              "executesLineEnemy": true,
+              "absoluteCooldownSeconds": 20
+            }
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스펙/공속",
+        "발동 순서·피해 계산·중첩 공식"
       ]
     }
   ]
