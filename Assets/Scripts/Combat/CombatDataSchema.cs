@@ -32,7 +32,7 @@ namespace Ordr.Mobile.Combat
         public double Magnitude { get; }
         public double DurationSeconds { get; }
         public DamageSchool DamageSchool { get; }
-        public DamageTraits DamageTraits { get; }
+        public DamageTraits Traits { get; }
 
         // Magnitude의 단위는 원본 스킬 데이터에 의해 결정된다.
         // 특수 피해 공식, 오라 중첩 공식, 반올림은 여기서 추측해 넣지 않는다.
@@ -53,7 +53,7 @@ namespace Ordr.Mobile.Combat
             Magnitude = magnitude;
             DurationSeconds = durationSeconds;
             DamageSchool = damageSchool;
-            DamageTraits = damageTraits;
+            Traits = damageTraits;
         }
     }
 
