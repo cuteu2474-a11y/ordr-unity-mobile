@@ -105,13 +105,22 @@ namespace Ordr.Mobile.Combat
                 "requires", "requiresForm", "requiresHealthAtLeast", "onlyTargetKinds",
                 "exceptTargetKinds", "conditions", "overrides", "triggerOverride",
                 "exclusiveWith", "requiredAttacks", "guaranteedEveryNthHit",
-                "summonedCloneProcChanceMultiplier", "chancePercentRange"
+                "summonedCloneProcChanceMultiplier", "chancePercentRange",
+                "manaAtLeast", "manaCost", "requiredMana", "healthCost",
+                "requiredHealth", "requiresNearbyUnit", "requiredTargetArmorBreak",
+                "requiredTargetKind", "requiredForm", "onlyAffectsGradesAtLeast",
+                "triggerOnlyWhen", "requiresState", "requiresNearbyLivingEnemyWithin"
             })
                 if (skill.OriginalFields.ContainsKey(key))
                 { reason = "별도 발동 조건 미구현: " + key; return false; }
 
             string target = skill.Target;
-            if (target == "single" || target == null)
+            if (target == null)
+            {
+                reason = "스킬 대상 방식 미확인";
+                return false;
+            }
+            if (target == "single")
                 area = SkillTargetArea.Single;
             else if (target == "area" || target == "targetCircle")
                 area = SkillTargetArea.CircleAroundTarget;
