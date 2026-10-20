@@ -141,6 +141,23 @@
             "items": {
               "type": "object"
             }
+          },
+          "acquisition": {
+            "type": "object"
+          },
+          "verifiedAttackRange": {
+            "type": "number",
+            "minimum": 0
+          },
+          "sourceStatus": {
+            "enum": [
+              "secondary-needs-2.323-check",
+              "primary-2.323"
+            ]
+          },
+          "expectedPrimarySourceUrl": {
+            "type": "string",
+            "format": "uri"
           }
         },
         "additionalProperties": false
