@@ -124,6 +124,15 @@ namespace Ordr.Mobile.Combat
         public bool TryBasicAttack(string attackerInstanceId,
             IEnumerable<TargetCandidate> candidates, out BasicAttackResult result)
         {
+            return TryBasicAttack(attackerInstanceId, candidates, null, out result);
+        }
+
+        // 선호 대상은 원작 타깃 규칙이 검증한 경우에만 전달한다.
+        // 선호 대상이 죽었거나 사거리 밖이면 무시하고 기존 가까운 적을 공격한다.
+        public bool TryBasicAttack(string attackerInstanceId,
+            IEnumerable<TargetCandidate> candidates, string verifiedPreferredTargetId,
+            out BasicAttackResult result)
+        {
             result = null;
             if (string.IsNullOrWhiteSpace(attackerInstanceId))
                 throw new ArgumentException("공격자 인스턴스 ID가 필요합니다.");
@@ -144,6 +153,17 @@ namespace Ordr.Mobile.Combat
             }
             string targetId = CombatTargeting.Select(validCandidates,
                 unit.Spec.BasicAttack.Range, TargetPriority.Nearest);
+            if (!string.IsNullOrWhiteSpace(verifiedPreferredTargetId))
+            {
+                double maximumSquared = unit.Spec.BasicAttack.Range * unit.Spec.BasicAttack.Range;
+                foreach (var candidate in validCandidates)
+                    if (candidate.Id == verifiedPreferredTargetId &&
+                        candidate.DistanceSquared <= maximumSquared)
+                    {
+                        targetId = candidate.Id;
+                        break;
+                    }
+            }
             if (targetId == null) return false;
             var enemy = resolution.GetEnemy(targetId);
             if (enemy == null || !enemy.IsAlive) return false;
