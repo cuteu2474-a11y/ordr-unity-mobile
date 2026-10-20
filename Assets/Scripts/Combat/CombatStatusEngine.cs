@@ -7,7 +7,15 @@ namespace Ordr.Mobile.Combat
     {
         ArmorReduction,
         MovementSlowPercent,
-        Stun
+        Stun,
+        MagicResistanceReduction,
+        ArmorBreakStack,
+        AttackSpeedBuff,
+        AttackPowerBuff,
+        MagicDamageAmplification,
+        ExplosiveDamageAmplification,
+        AllDamageAmplification,
+        HealthRegeneration
     }
 
     public enum CombatEffectOrigin
@@ -59,20 +67,21 @@ namespace Ordr.Mobile.Combat
         public void Apply(CombatEffect effect)
         {
             if (effect == null) throw new ArgumentNullException(nameof(effect));
-            effects.Add(new ActiveEffect {
-                Effect = effect,
-                ExpiresAt = effect.Origin == CombatEffectOrigin.Aura
-                    ? double.PositiveInfinity : CurrentTime + effect.DurationSeconds
-            });
+            double expires = effect.Origin == CombatEffectOrigin.Aura
+                ? double.PositiveInfinity : CurrentTime + effect.DurationSeconds;
+            if (effect.Origin != CombatEffectOrigin.Aura && double.IsInfinity(expires))
+                throw new OverflowException("상태효과 만료 시각이 초과되었습니다.");
+            effects.Add(new ActiveEffect { Effect = effect, ExpiresAt = expires });
         }
 
         public void Advance(double seconds)
         {
             if (double.IsNaN(seconds) || double.IsInfinity(seconds) || seconds < 0)
                 throw new ArgumentOutOfRangeException(nameof(seconds));
-            CurrentTime += seconds;
-            if (double.IsInfinity(CurrentTime))
-                throw new InvalidOperationException("전투 시간이 허용 범위를 초과했습니다.");
+            double next = CurrentTime + seconds;
+            if (double.IsInfinity(next))
+                throw new OverflowException("전투 시간이 허용 범위를 초과했습니다.");
+            CurrentTime = next;
             effects.RemoveAll(item => item.ExpiresAt <= CurrentTime);
         }
 
