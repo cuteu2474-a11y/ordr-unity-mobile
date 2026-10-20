@@ -4,9 +4,9 @@
   "summary": {
     "catalogCharacters": 271,
     "detailedEligible": 200,
-    "detailedProfilesCollected": 104,
-    "remainingDetailed": 96,
-    "skillRecordsCollected": 382
+    "detailedProfilesCollected": 200,
+    "remainingDetailed": 0,
+    "skillRecordsCollected": 554
   },
   "byGrade": [
     {
@@ -27,22 +27,22 @@
       "grade": "특별함",
       "allCharacters": 33,
       "detailEligible": 8,
-      "detailProfilesCollected": 0,
-      "remaining": 8
+      "detailProfilesCollected": 8,
+      "remaining": 0
     },
     {
       "grade": "특수함",
       "allCharacters": 7,
       "detailEligible": 7,
-      "detailProfilesCollected": 0,
-      "remaining": 7
+      "detailProfilesCollected": 7,
+      "remaining": 0
     },
     {
       "grade": "희귀함",
       "allCharacters": 42,
       "detailEligible": 18,
-      "detailProfilesCollected": 1,
-      "remaining": 17
+      "detailProfilesCollected": 18,
+      "remaining": 0
     },
     {
       "grade": "전설",
@@ -55,29 +55,29 @@
       "grade": "히든",
       "allCharacters": 22,
       "detailEligible": 22,
-      "detailProfilesCollected": 2,
-      "remaining": 20
+      "detailProfilesCollected": 22,
+      "remaining": 0
     },
     {
       "grade": "변화",
       "allCharacters": 5,
       "detailEligible": 5,
-      "detailProfilesCollected": 0,
-      "remaining": 5
+      "detailProfilesCollected": 5,
+      "remaining": 0
     },
     {
       "grade": "제한됨",
       "allCharacters": 10,
       "detailEligible": 10,
-      "detailProfilesCollected": 1,
-      "remaining": 9
+      "detailProfilesCollected": 10,
+      "remaining": 0
     },
     {
       "grade": "왜곡됨",
       "allCharacters": 6,
       "detailEligible": 6,
-      "detailProfilesCollected": 0,
-      "remaining": 6
+      "detailProfilesCollected": 6,
+      "remaining": 0
     },
     {
       "grade": "초월함",
@@ -111,28 +111,18 @@
       "grade": "랜덤",
       "allCharacters": 14,
       "detailEligible": 14,
-      "detailProfilesCollected": 0,
-      "remaining": 14
+      "detailProfilesCollected": 14,
+      "remaining": 0
     },
     {
       "grade": "신비함",
       "allCharacters": 13,
       "detailEligible": 13,
-      "detailProfilesCollected": 3,
-      "remaining": 10
+      "detailProfilesCollected": 13,
+      "remaining": 0
     }
   ],
-  "nextSuggestedGrades": [
-    "히든",
-    "제한됨",
-    "왜곡됨",
-    "신비함",
-    "희귀함",
-    "특별함",
-    "특수함",
-    "변화",
-    "랜덤"
-  ],
+  "nextSuggestedGrades": [],
   "notes": [
     "전설과 세라핌의 모든 상세 페이지 스킬을 부분 구조화했으나 게임 기능 구현 완료는 아니다.",
     "기본 평타 능력치와 Warcraft III rawcode는 미확보이며 null 상태를 유지한다.",
@@ -141,6 +131,19 @@
     "요청에 따라 게임 기능 전체 구현 전 신규 테스트 작성·실행 보류.",
     "2026-10-21 초월함 TR1~TR30 전체 30종을 도감 원문 기준으로 상세 구조화; 스킬 정보는 기능 실행·원본 공식 검증 전 단계.",
     "2026-10-21 초월함 30/30 및 불멸의 12/12의 도감 툴팁 기반 상세 스킬을 등록했다. 모두 부분 수집이며 실제 게임 엔진 미연동.",
-    "2026-10-21 영원 12/12 캐릭터의 도감 상세 스킬 구조화 완료. 이후 히든·제한·왜곡 순으로 등록 권장."
-  ]
+    "2026-10-21 영원 12/12 캐릭터의 도감 상세 스킬 구조화 완료. 이후 히든·제한·왜곡 순으로 등록 권장.",
+    "200종 상세 프로필 수집 완료는 도감 항목 커버리지 의미이며 원본 최종 공식·숨은 조건·유닛 공격 스탯까지 확정한 것이 아니다."
+  ],
+  "verificationNotes": {
+    "profileCoverage": "2.323 도감의 상세 설명 제공 200종에 데이터 레코드가 있으며 스킬 수치를 부분 구조화했다. 게임 동작 검증이나 완성 스펙을 뜻하지 않는다.",
+    "secondarySourceUnitIds": [
+      "X-04",
+      "X-05",
+      "RN-08",
+      "RN-10"
+    ],
+    "missingOriginalUnitRawcodes": 271,
+    "partialProfiles": 200,
+    "noGameplayTestsUntilFeatureComplete": true
+  }
 }
