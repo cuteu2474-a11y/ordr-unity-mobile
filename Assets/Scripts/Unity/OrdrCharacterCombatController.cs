@@ -11,9 +11,11 @@ namespace Ordr.Mobile.Unity
     {
         [SerializeField] private TextAsset unitCatalogJson;
         [SerializeField] private TextAsset characterSkillsJson;
+        [SerializeField] private TextAsset originalStatEvidenceJson;
 
         public CharacterUnitCatalog Units { get; private set; }
         public CharacterSkillCatalog Skills { get; private set; }
+        public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
 
         // 전투 UI/로그가 스킬·피해·상태 적용 이벤트를 구독할 수 있다.
@@ -36,11 +38,17 @@ namespace Ordr.Mobile.Unity
             {
                 Units = CharacterUnitCatalog.FromJson(unitsData.text);
                 Skills = CharacterSkillCatalog.FromJson(skillsData.text);
+                var evidenceData = originalStatEvidenceJson != null ? originalStatEvidenceJson :
+                    Resources.Load<TextAsset>("OrdrData/original-stat-evidence");
+                if (evidenceData != null)
+                    StatEvidence = OriginalUnitStatEvidenceCatalog.FromJson(evidenceData.text, Units);
                 if (Units.Count != 271 || Skills.CharacterCount != 200)
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
                 Debug.Log("ORDR 캐릭터 카탈로그 로딩: " + Units.Count +
                     "종, 스킬 프로필 " + Skills.CharacterCount + "종, 스킬 항목 " +
-                    Skills.SkillCount + "개.");
+                    Skills.SkillCount + "개. 패치 확인 유닛 " +
+                    (StatEvidence == null ? 0 : StatEvidence.Count) +
+                    "종(스탯 전체 검증 및 공격 가능 상태와는 별개).");
             }
             catch (Exception ex)
             {
