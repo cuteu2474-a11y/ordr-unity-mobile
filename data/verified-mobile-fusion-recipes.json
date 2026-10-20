@@ -1,0 +1,99 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceCatalog": "https://ordr.kr/character",
+  "scope": "mobile-assisted-fusion",
+  "notice": "웹 도감 상세에서 재료/추가 비용을 확인한 조합식만 등록함. W3X 원본 제작 트리거·위치·조건 추가 검증 전 자동 제작 금지. 3종은 예시 데이터이지 전체 조합식이 아님.",
+  "recipes": [
+    {
+      "id": "R-24",
+      "resultUnitId": "R-24",
+      "name": "슈가 (희귀함)",
+      "sourceUrl": "https://ordr.kr/character/R24",
+      "verifiedAs": "ordr-2.323-web-catalog",
+      "ingredients": [
+        {
+          "unitId": "S-26",
+          "count": 1
+        },
+        {
+          "unitId": "S-22",
+          "count": 1
+        },
+        {
+          "unitId": "U-10",
+          "count": 1
+        },
+        {
+          "unitId": "C-04",
+          "count": 1
+        }
+      ],
+      "extraCost": {
+        "gold": 0,
+        "lumber": 0,
+        "items": []
+      },
+      "uncertain": [
+        "원본 제작 트리거 및 결과 생성 좌표"
+      ]
+    },
+    {
+      "id": "L-21",
+      "resultUnitId": "L-21",
+      "name": "시노부 (전설)",
+      "sourceUrl": "https://ordr.kr/character/L21",
+      "verifiedAs": "ordr-2.323-web-catalog",
+      "ingredients": [
+        {
+          "unitId": "R-07",
+          "count": 1
+        },
+        {
+          "unitId": "R-03",
+          "count": 1
+        },
+        {
+          "unitId": "R-40",
+          "count": 1
+        }
+      ],
+      "extraCost": {
+        "gold": 0,
+        "lumber": 3,
+        "items": []
+      },
+      "uncertain": [
+        "원본 제작 트리거 및 결과 생성 좌표"
+      ]
+    },
+    {
+      "id": "H-14",
+      "resultUnitId": "H-14",
+      "name": "시류 (히든)",
+      "sourceUrl": "https://ordr.kr/character/H14",
+      "verifiedAs": "ordr-2.323-web-catalog",
+      "ingredients": [
+        {
+          "unitId": "R-25",
+          "count": 1
+        },
+        {
+          "unitId": "R-17",
+          "count": 1
+        },
+        {
+          "unitId": "R-09",
+          "count": 1
+        }
+      ],
+      "extraCost": {
+        "gold": 0,
+        "lumber": 0,
+        "items": []
+      },
+      "uncertain": [
+        "원본 제작 트리거 및 결과 생성 좌표"
+      ]
+    }
+  ]
+}
