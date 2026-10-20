@@ -146,7 +146,16 @@ namespace Ordr.Mobile.Unity
                     Combat.Roster.Select(unit.InstanceId);
                     notice = name + " 선택";
                 }
-                if (GUILayout.Button("파견", GUILayout.Width(72), GUILayout.MinHeight(48)))
+                if (controller.ManualActions.IsStoryDeployed(unit.InstanceId))
+                {
+                    if (controller.ManualActions.CanRecallStory(unit.InstanceId))
+                    {
+                        if (GUILayout.Button("복귀", GUILayout.Width(72), GUILayout.MinHeight(48)))
+                            ShowResult(controller.ManualActions.RequestStoryRecall(unit.InstanceId));
+                    }
+                    else GUILayout.Label("파견 중", GUILayout.Width(72));
+                }
+                else if (GUILayout.Button("파견", GUILayout.Width(72), GUILayout.MinHeight(48)))
                     ShowResult(controller.ManualActions.RequestStoryDispatch(unit.InstanceId));
                 GUILayout.EndHorizontal();
             }
