@@ -6,7 +6,7 @@
   "source": "https://ordr.kr/character",
   "verification": "tooltip-numeric-facts",
   "specCompleteness": "partial",
-  "warning": "캐릭터별 스킬 tooltip에서 확인 가능한 수치의 데이터 등록이다. 스킬 조건·대상 선택·일부 피해 계산식은 원본 스크립트와 추가 대조가 필요하다. 'trigger'는 도감 문구를 코드 관리용 용어로 표준화했으며 원본 JASS의 실제 스킬 rawcode와 다르다.",
+  "warning": "캐릭터별 스킬 tooltip에서 확인 가능한 수치의 데이터 등록이다. 스킬 조건·대상 선택·일부 피해 계산식은 원본 스크립트와 추가 대조가 필요하다. 'trigger'는 도감 문구를 코드 관리용 용어로 표준화했으며 원본 JASS의 실제 스킬 rawcode와 다르다. 일부 캐릭터는 툴팁과 패치노트 사이에 수치 상충이 있으므로 해당 항목을 uncertaintyNotes로 기록하며 최종 전투 계산에 직접 투입하지 않는다.",
   "profiles": [
     {
       "unitId": "R-42",
@@ -1262,6 +1262,1164 @@
         "기본 공격 수치",
         "공격 주기",
         "실제 스킬 판정 순서"
+      ]
+    },
+    {
+      "unitId": "TR-23",
+      "sourceUrl": "https://ordr.kr/character/TR23",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 50
+        },
+        {
+          "type": "attackPowerBuff",
+          "percent": 40
+        },
+        {
+          "type": "attackSpeedBuff",
+          "percent": 40
+        },
+        {
+          "type": "medicine",
+          "target": "alliesExceptSelf",
+          "attackPowerIncreasePercent": 40
+        }
+      ],
+      "skills": [
+        {
+          "name": "럼블볼 폭주",
+          "trigger": "activeMana",
+          "manaCost": 150,
+          "target": "self",
+          "components": [
+            {
+              "type": "transform",
+              "form": "폭주",
+              "durationSeconds": 4
+            },
+            {
+              "type": "basicAttackSplash",
+              "radius": 400
+            },
+            {
+              "type": "attackSpeedReduction",
+              "amount": null
+            },
+            {
+              "type": "attackPowerIncrease",
+              "amount": null
+            }
+          ]
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "removeSkill",
+          "name": "의료품"
+        },
+        {
+          "type": "unlockSkill",
+          "name": "발굽야자",
+          "trigger": "onAttack",
+          "chancePercent": 10,
+          "castTimeSeconds": 0.7,
+          "radius": 800,
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1750000,
+              "basisMultiplier": "basicAttackDamage",
+              "percent": 175
+            },
+            {
+              "type": "fixed",
+              "basis": "skillDamage",
+              "percent": 175,
+              "scope": "primaryTarget",
+              "storyMultiplier": 0.5
+            }
+          ]
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 400
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 피해·공격 주기",
+        "스킬 내부 판정과 비공개 쿨타임"
+      ]
+    },
+    {
+      "unitId": "TR-04",
+      "sourceUrl": "https://ordr.kr/character/TR4",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 45
+        },
+        {
+          "type": "multiAttack",
+          "maxTargets": 7
+        },
+        {
+          "type": "attackPowerIncrease",
+          "amount": 25000
+        }
+      ],
+      "skills": [
+        {
+          "name": "체력 소모 광역 공격",
+          "trigger": "activeHealth",
+          "healthCost": 40,
+          "target": "area",
+          "radius": 600,
+          "components": [
+            {
+              "type": "physical",
+              "amount": 2250000
+            },
+            {
+              "type": "physical",
+              "basis": "targetMaxHealth",
+              "percent": 1
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.15
+            }
+          ]
+        },
+        {
+          "name": "범위 마법 스턴",
+          "trigger": "onAttack",
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 525,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 400000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.85
+            }
+          ]
+        },
+        {
+          "name": "혼합 타격",
+          "trigger": "onAttack",
+          "chancePercent": 5,
+          "target": "area",
+          "radius": 400,
+          "components": [
+            {
+              "type": "physical",
+              "amount": 600000
+            },
+            {
+              "type": "magical",
+              "amount": 120000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3,
+              "scope": "singlePrimaryTarget"
+            }
+          ]
+        },
+        {
+          "name": "멀티샷 추가 피해",
+          "trigger": "onAttack",
+          "chancePercent": 15,
+          "target": "eachMultishotTarget",
+          "components": [
+            {
+              "type": "physical",
+              "basis": "basicAttackDamage",
+              "multiplier": 2.5
+            }
+          ]
+        }
+      ],
+      "uncertaintyNotes": [
+        "공격력 증가 25000과 2.300 패치 기재 20000의 상충 가능성 — 실제값 추후 대조"
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 피해·공격 주기",
+        "스킬 내부 판정과 비공개 쿨타임"
+      ]
+    },
+    {
+      "unitId": "TR-10",
+      "sourceUrl": "https://ordr.kr/character/TR10",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 20
+        },
+        {
+          "type": "magicResistanceReduction",
+          "percent": 3
+        }
+      ],
+      "skills": [
+        {
+          "name": "마나 광역 공격",
+          "trigger": "activeMana",
+          "manaCost": 115,
+          "target": "area",
+          "radius": 525,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 3000000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            },
+            {
+              "type": "magicDamageAmplification",
+              "percent": 10,
+              "target": "hitEnemies"
+            }
+          ]
+        },
+        {
+          "name": "범위 마법타격",
+          "trigger": "onAttack",
+          "chancePercent": 14,
+          "target": "area",
+          "radius": 360,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 350000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "additionalCast",
+              "chancePercent": 40
+            }
+          ]
+        },
+        {
+          "name": "찌르기",
+          "trigger": "onAttack",
+          "chancePercent": 4.2,
+          "target": "self",
+          "durationSeconds": 0.85,
+          "components": [
+            {
+              "type": "attackSpeedBuff",
+              "percent": 100
+            },
+            {
+              "type": "basicAttackBonus",
+              "school": "physical",
+              "amount": 800000
+            },
+            {
+              "type": "explosive",
+              "basis": "targetMaxHealth",
+              "percent": 6,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            },
+            {
+              "type": "magical",
+              "amount": 75000,
+              "onlyTargetKinds": [
+                "boss",
+                "story"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "타격 스턴",
+          "trigger": "onAttack",
+          "chancePercent": 17.5,
+          "target": "single",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 1.75
+            }
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 피해·공격 주기",
+        "스킬 내부 판정과 비공개 쿨타임"
+      ]
+    },
+    {
+      "unitId": "E-09",
+      "sourceUrl": "https://ordr.kr/character/E9",
+      "passives": [
+        {
+          "type": "attackSpeedBuff",
+          "percent": 15
+        }
+      ],
+      "skills": [
+        {
+          "name": "광역 노래 마법",
+          "trigger": "activeMana",
+          "manaCost": 100,
+          "target": "area",
+          "radius": 800,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 2500000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "magicResistanceReduction",
+              "percent": 10
+            },
+            {
+              "type": "explosiveDamageAmplification",
+              "percent": 10
+            },
+            {
+              "type": "selfHeal",
+              "amount": 10
+            }
+          ]
+        },
+        {
+          "name": "확률 광역 스턴",
+          "trigger": "onAttack",
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 500,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 450000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.5
+            }
+          ]
+        },
+        {
+          "name": "음표 병사 연계",
+          "trigger": "onAttack",
+          "chancePercent": 25,
+          "target": "area",
+          "radius": 400,
+          "components": [
+            {
+              "type": "magical",
+              "amountPerSoldier": 700000
+            },
+            {
+              "type": "magical",
+              "amount": 1550000,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "explosive",
+              "basis": "targetCurrentHealth",
+              "percentPerSoldier": 10,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "3연타 마법",
+          "trigger": "onAttack",
+          "chancePercent": 4,
+          "target": "area",
+          "radius": 500,
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 750000,
+              "hits": 3,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "summonSoldier",
+              "chancePercent": 25,
+              "durationSeconds": 7
+            }
+          ]
+        },
+        {
+          "name": "라인·보스 추가 피해",
+          "trigger": "onAttack",
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 400,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 350000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "magical",
+              "amount": 500000,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            },
+            {
+              "type": "explosive",
+              "basis": "targetMaxHealth",
+              "percent": 5,
+              "plusMissingHealthPercent": 6,
+              "hits": 2,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            },
+            {
+              "type": "magical",
+              "amount": 1000000,
+              "onlyTargetKinds": [
+                "boss",
+                "story"
+              ]
+            }
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 피해·공격 주기",
+        "스킬 내부 판정과 비공개 쿨타임"
+      ]
+    },
+    {
+      "unitId": "I-11",
+      "sourceUrl": "https://ordr.kr/character/I11",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 60
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 500
+        },
+        {
+          "type": "attackPowerPenalty",
+          "percent": 75
+        }
+      ],
+      "skills": [
+        {
+          "name": "체력 소모 광역 공격",
+          "trigger": "activeHealth",
+          "healthCost": 100,
+          "target": "area",
+          "radius": 900,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 2850000
+            },
+            {
+              "type": "physical",
+              "amountPerHit": 1111111,
+              "hits": 9,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            }
+          ]
+        },
+        {
+          "name": "인간형 타격",
+          "trigger": "onAttack",
+          "chancePercent": 8,
+          "requiresForm": "human",
+          "target": "area",
+          "radius": 500,
+          "components": [
+            {
+              "type": "physical",
+              "amount": 500000,
+              "plusBasicAttackDamagePercent": 50
+            },
+            {
+              "type": "fixed",
+              "amount": 850000,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.5,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "critical",
+              "chancePercent": 40,
+              "multiplier": 1.5
+            }
+          ]
+        },
+        {
+          "name": "인간형 열 번째 공격",
+          "trigger": "everyNthAttack",
+          "requiredAttacks": 10,
+          "requiresForm": "human",
+          "target": "area",
+          "radius": 500,
+          "components": [
+            {
+              "type": "physical",
+              "amount": 2000000,
+              "plusBasicAttackDamagePercent": 400
+            },
+            {
+              "type": "fixed",
+              "bonusPercent": 150,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.5,
+              "ignoresResistance": true
+            }
+          ]
+        },
+        {
+          "name": "용형 타격",
+          "trigger": "onAttack",
+          "chancePercent": 8,
+          "requiresForm": "dragon",
+          "target": "area",
+          "radius": 500,
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1200000,
+              "multiplierRange": [
+                1,
+                2
+              ],
+              "plusBasicAttackDamagePercent": 30
+            }
+          ]
+        },
+        {
+          "name": "용형 열 번째 공격",
+          "trigger": "everyNthAttack",
+          "requiredAttacks": 10,
+          "requiresForm": "dragon",
+          "target": "area",
+          "radius": 500,
+          "components": [
+            {
+              "type": "physical",
+              "amount": 3600000,
+              "plusBasicAttackDamagePercent": 300
+            },
+            {
+              "type": "fixed",
+              "bonusPercent": 75,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.5,
+              "ignoresResistance": true
+            }
+          ]
+        },
+        {
+          "name": "약육강식",
+          "trigger": "onAttackAndSkill",
+          "target": "affectedEnemies",
+          "components": [
+            {
+              "type": "armorReduction",
+              "amount": 70,
+              "scope": "singlePrimaryTarget",
+              "additionalPerStack": 5,
+              "maxStacks": 10
+            },
+            {
+              "type": "armorReduction",
+              "amountPerStack": 3,
+              "scope": "area",
+              "maxStacks": 10
+            }
+          ],
+          "stackGainByForm": {
+            "human": {
+              "single": 2,
+              "area": 1
+            },
+            "dragon": {
+              "single": 1,
+              "area": 2
+            },
+            "special": {
+              "single": 3,
+              "area": 3
+            }
+          }
+        }
+      ],
+      "uncertaintyNotes": [
+        "폼별 매 공격 추가효과와 일부 타격은 후속 데이터 입력 필요"
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 피해·공격 주기",
+        "스킬 내부 판정과 비공개 쿨타임"
+      ]
+    },
+    {
+      "unitId": "MY-01",
+      "sourceUrl": "https://ordr.kr/character/MY1",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 30
+        }
+      ],
+      "skills": [
+        {
+          "name": "영역전개 무량공처",
+          "trigger": "activeMana",
+          "manaCost": 185,
+          "target": "entirePlayerZone",
+          "durationSeconds": 5,
+          "conditions": [
+            "스토리 공격 중에는 발동하지 않음"
+          ],
+          "components": [
+            {
+              "type": "fixed",
+              "amountPerTick": 250000,
+              "plusMaxHealthPercentPerTick": 0.9,
+              "tickIntervalSeconds": 0.1
+            },
+            {
+              "type": "immobilize",
+              "duration": "untilDomainEnds",
+              "when": "enemyEntersArea"
+            }
+          ]
+        },
+        {
+          "name": "술식 반전 혁",
+          "trigger": "onAttack",
+          "chancePercent": 5,
+          "target": "area",
+          "radius": 800,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 1500000
+            }
+          ]
+        },
+        {
+          "name": "무라사키",
+          "trigger": "onSkillActivated",
+          "afterSkill": "술식 반전 혁",
+          "cooldownSeconds": 15,
+          "target": "area",
+          "radius": 800,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 4500000,
+              "plusTargetMaxHealthPercent": 4
+            }
+          ]
+        },
+        {
+          "name": "술식 순전 창",
+          "trigger": "onAttack",
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 600,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 300000
+            },
+            {
+              "type": "magicalDoT",
+              "amountPerTick": 150000,
+              "durationSeconds": 2,
+              "tickIntervalSeconds": 0.2
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2,
+              "ignoresResistance": true
+            },
+            {
+              "type": "movementSlow",
+              "percent": 20,
+              "durationSeconds": 2
+            }
+          ],
+          "exclusiveWith": [
+            "패왕색 패기",
+            "에이스 불기둥",
+            "화권"
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 피해·공격 주기",
+        "스킬 내부 판정과 비공개 쿨타임"
+      ]
+    },
+    {
+      "unitId": "MY-08",
+      "sourceUrl": "https://ordr.kr/character/MY8",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 40
+        },
+        {
+          "type": "allyHealthRegeneration",
+          "perSecond": 2,
+          "radius": 800
+        },
+        {
+          "type": "allyManaRegeneration",
+          "perSecond": 1.75,
+          "radius": 800
+        },
+        {
+          "type": "allyAttackSpeedBuff",
+          "percent": 30,
+          "radius": 800
+        }
+      ],
+      "skills": [
+        {
+          "name": "독심술",
+          "trigger": "onEnemyEnterRange",
+          "target": "single",
+          "radius": 800,
+          "limitPerEnemy": 1,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 100000
+            },
+            {
+              "type": "magicResistanceReduction",
+              "percent": 10
+            }
+          ],
+          "exclusiveWith": [
+            "다른 패기 효과"
+          ]
+        },
+        {
+          "name": "로이드 포저",
+          "trigger": "activeHealth",
+          "healthCost": 45,
+          "target": "area",
+          "radius": 600,
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 100000,
+              "hits": 5
+            },
+            {
+              "type": "movementSlow",
+              "percent": 30,
+              "durationSeconds": 3
+            }
+          ]
+        },
+        {
+          "name": "요르 포저",
+          "trigger": "activeMana",
+          "manaCost": 75,
+          "target": "area",
+          "radius": 600,
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 300000,
+              "hits": 11
+            }
+          ]
+        },
+        {
+          "name": "스타캐치 애로우",
+          "trigger": "onAttack",
+          "chancePercent": 6.25,
+          "target": "area",
+          "radius": 500,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 300000
+            },
+            {
+              "type": "magicDamageAmplification",
+              "percent": 1
+            }
+          ]
+        },
+        {
+          "name": "와쿠와쿠",
+          "trigger": "onFamilySkill",
+          "chancePercent": 7.5,
+          "components": [
+            {
+              "type": "generateGiftBox",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "name": "선물상자",
+          "trigger": "onGiftBoxOpened",
+          "components": [
+            {
+              "type": "rewardGold",
+              "chancePercent": 70,
+              "amount": 2500
+            },
+            {
+              "type": "rewardLumber",
+              "chancePercent": 30,
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "name": "가족사진(Q)",
+          "trigger": "manual",
+          "cooldownSeconds": 75,
+          "components": [
+            {
+              "type": "generateGiftBox",
+              "count": 1
+            },
+            {
+              "type": "summonLloydAndYor",
+              "durationSeconds": 3
+            }
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 피해·공격 주기",
+        "스킬 내부 판정과 비공개 쿨타임"
+      ]
+    },
+    {
+      "unitId": "E-01",
+      "sourceUrl": "https://ordr.kr/character/E1",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 35
+        },
+        {
+          "type": "attackSpeedBuff",
+          "percent": 25
+        },
+        {
+          "type": "selfAttackPowerBuff",
+          "percent": 25
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 350
+        }
+      ],
+      "skills": [
+        {
+          "name": "거대화",
+          "trigger": "activeHealth",
+          "healthCost": 115,
+          "target": "self",
+          "components": [
+            {
+              "type": "transform",
+              "durationSeconds": 4.25
+            },
+            {
+              "type": "basicAttackSpeedReduction",
+              "percent": 225
+            },
+            {
+              "type": "physical",
+              "amount": 200000,
+              "plusBasicAttackDamagePercent": 200,
+              "radius": 450,
+              "trigger": "everyAttackWhileTransformed"
+            }
+          ]
+        },
+        {
+          "name": "마나 광역기",
+          "trigger": "activeMana",
+          "manaCost": 150,
+          "target": "area",
+          "radius": 750,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 2500000
+            },
+            {
+              "type": "physical",
+              "amount": 8500000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.5
+            }
+          ]
+        },
+        {
+          "name": "혼합 광역 타격",
+          "trigger": "onAttack",
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 500,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 150000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "physical",
+              "amount": 750000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2
+            }
+          ]
+        },
+        {
+          "name": "단일 크리티컬",
+          "trigger": "onAttack",
+          "chancePercent": 20,
+          "target": "single",
+          "components": [
+            {
+              "type": "critical",
+              "multiplier": 5
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2
+            }
+          ]
+        },
+        {
+          "name": "이동속도 연계 물리",
+          "trigger": "onAttack",
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 400,
+          "components": [
+            {
+              "type": "physical",
+              "amount": 450000
+            },
+            {
+              "type": "damageAmplificationPerTargetMovementSpeed",
+              "percentPerThreeMovementSpeed": 1
+            }
+          ]
+        },
+        {
+          "name": "거대화 타격",
+          "trigger": "onAttack",
+          "chancePercent": 20,
+          "requiresForm": "giant",
+          "target": "area",
+          "radius": 500,
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1000000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "plusBasicAttackDamagePercent": 500
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2
+            }
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 피해·공격 주기",
+        "스킬 내부 판정과 비공개 쿨타임"
+      ]
+    },
+    {
+      "unitId": "H-09",
+      "sourceUrl": "https://ordr.kr/character/H9",
+      "passives": [],
+      "skills": [
+        {
+          "name": "뇌영",
+          "trigger": "activeMana",
+          "manaCost": 150,
+          "target": "area",
+          "radius": 800,
+          "components": [
+            {
+              "type": "magical",
+              "amount": 2150000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.2
+            },
+            {
+              "type": "magicResistanceReduction",
+              "percent": 10
+            },
+            {
+              "type": "explosiveDamageAmplification",
+              "percent": 10
+            }
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 피해·공격 주기",
+        "스킬 내부 판정과 비공개 쿨타임"
       ]
     }
   ]
