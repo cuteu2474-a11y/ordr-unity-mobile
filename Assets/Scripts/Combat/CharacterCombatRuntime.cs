@@ -17,6 +17,7 @@ namespace Ordr.Mobile.Combat
             public CharacterSkillProfile Profile;
             public CharacterCombatMapping Mapping;
             public bool AttackReady;
+            public bool AttackBlockedByMissingFormula;
         }
 
         private readonly CharacterUnitCatalog units;
@@ -42,6 +43,16 @@ namespace Ordr.Mobile.Combat
         public UnitRoster Roster { get { return roster; } }
         public int CharacterCount { get { return characters.Count; } }
         public int EnemyCount { get { return enemies.Count; } }
+        public int ReadyAttackers
+        {
+            get
+            {
+                int count = 0;
+                foreach (var unit in characters.Values)
+                    if (unit.AttackReady && !unit.AttackBlockedByMissingFormula) count++;
+                return count;
+            }
+        }
         public double Time { get { return scheduler.Time; } }
         public IReadOnlyList<CharacterCombatEvent> LastEvents { get { return events.AsReadOnly(); } }
 
@@ -136,12 +147,33 @@ namespace Ordr.Mobile.Combat
             armorBreakStacks.Add(enemyId, 0);
         }
 
-        public void MoveEnemy(string enemyId, double x, double y, double progress)
+        // 실제 게임의 적 이동 루프에서 사용. 스턴은 이동을 막고,
+        // 이감 수치는 아직 원작 이동속도 공식이 없어 외부 경로 이동기가 확인해야 한다.
+        public bool TryMoveEnemy(string enemyId, double x, double y, double progress)
+        {
+            SpatialCombatEnemy enemy;
+            if (!enemies.TryGetValue(enemyId, out enemy))
+                throw new KeyNotFoundException("존재하지 않는 적 ID.");
+            if (statuses[enemyId].IsStunned()) return false;
+            enemy.Move(x, y, progress);
+            return true;
+        }
+
+        // 스턴 무시 강제 이동(원본 맵에 확인된 넉백/이동만 호출해야 한다).
+        public void ForceMoveEnemy(string enemyId, double x, double y, double progress)
         {
             SpatialCombatEnemy enemy;
             if (!enemies.TryGetValue(enemyId, out enemy))
                 throw new KeyNotFoundException("존재하지 않는 적 ID.");
             enemy.Move(x, y, progress);
+        }
+
+        public void ResumeAfterVerifiedFormulaUpdate(long instanceId)
+        {
+            CharacterInstance unit;
+            if (!characters.TryGetValue(instanceId, out unit))
+                throw new KeyNotFoundException("존재하지 않는 캐릭터.");
+            unit.AttackBlockedByMissingFormula = false;
         }
 
         public CombatStatusEngine StatusOf(string enemyId)
@@ -178,7 +210,7 @@ namespace Ordr.Mobile.Combat
             foreach (long id in ids)
             {
                 CharacterInstance unit = characters[id];
-                if (!unit.AttackReady) continue;
+                if (!unit.AttackReady || unit.AttackBlockedByMissingFormula) continue;
                 UnitState position = roster.Get(id);
                 var candidates = new List<TargetCandidate>();
                 foreach (var enemy in enemies.Values)
@@ -192,8 +224,19 @@ namespace Ordr.Mobile.Combat
                         enemy.PathProgress, true));
                 }
                 BasicAttackResult hit;
-                if (!attackPipeline.TryBasicAttack(InstanceKey(id), candidates, out hit))
+                try
+                {
+                    if (!attackPipeline.TryBasicAttack(InstanceKey(id), candidates, out hit))
+                        continue;
+                }
+                catch (NotSupportedException ex)
+                {
+                    unit.AttackBlockedByMissingFormula = true;
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                        InstanceKey(id), null, null,
+                        "평타 원본 피해 공식 미연결: " + ex.Message, 0));
                     continue;
+                }
                 events.Add(new CharacterCombatEvent(CharacterCombatEventType.Attack,
                     InstanceKey(id), hit.TargetId, null, "basic", hit.ActualDamage));
                 SpatialCombatEnemy primary;
