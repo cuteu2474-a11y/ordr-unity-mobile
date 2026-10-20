@@ -3520,12 +3520,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR1",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3542,12 +3542,12 @@
         "증폭"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR2",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3564,12 +3564,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR3",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3608,12 +3608,12 @@
         "광폭화딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3629,12 +3629,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR6",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3651,12 +3651,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR7",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3673,12 +3673,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR8",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3695,12 +3695,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR9",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3739,12 +3739,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR11",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3760,12 +3760,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR12",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3782,12 +3782,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR13",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3804,12 +3804,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR14",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3825,12 +3825,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR15",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3869,12 +3869,12 @@
         "광폭화딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR17",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3890,12 +3890,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR18",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3912,12 +3912,12 @@
         "보스딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR19",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -3955,12 +3955,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR21",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -3977,12 +3977,12 @@
         "암브"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR22",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -4020,12 +4020,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR24",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4042,12 +4042,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR25",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4064,12 +4064,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR26",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4086,12 +4086,12 @@
         "암브"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR27",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical",
         "Magical"
@@ -4108,12 +4108,12 @@
         "마나재생"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR28",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4130,12 +4130,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR29",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -4152,12 +4152,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR30",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
