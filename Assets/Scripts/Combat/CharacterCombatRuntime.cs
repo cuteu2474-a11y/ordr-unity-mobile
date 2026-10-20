@@ -131,10 +131,21 @@ namespace Ordr.Mobile.Combat
                 Id = id, Catalog = catalogUnit, Profile = profile,
                 Abilities = new CharacterActiveAbilities(profile)
             });
-            var spawnEvent = new CharacterCombatEvent(CharacterCombatEventType.UnitSpawned,
-                InstanceKey(id), null, null, catalogUnit.Name, 0);
-            pendingCommandEvents.Add(spawnEvent);
-            if (MobileAutomation.TryPlace(catalogUnit, roster, id))
+            bool placed;
+            try
+            {
+                placed = MobileAutomation.TryPlace(catalogUnit, roster, id);
+            }
+            catch
+            {
+                // 원작 배치 서비스가 실패한 생성은 소환 성공으로 기록하지 않는다.
+                characters.Remove(id);
+                roster.Remove(id);
+                throw;
+            }
+            pendingCommandEvents.Add(new CharacterCombatEvent(CharacterCombatEventType.UnitSpawned,
+                InstanceKey(id), null, null, catalogUnit.Name, 0));
+            if (placed)
                 pendingCommandEvents.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.UnitPlaced, InstanceKey(id), null,
                     null, "automatic-verified-position", 0));
