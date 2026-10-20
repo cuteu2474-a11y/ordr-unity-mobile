@@ -1,32 +1,34 @@
-# ORDR Unity Mobile
+# 원랜디 Unity 모바일 프로젝트
 
-Unity-based, standalone mobile recreation of the gameplay rules of ORDR S2 2.323[C].
+원랜디 **S2 2.323[C]**의 게임 규칙과 플레이 경험을 Unity 기반 모바일 독립 앱으로 재현하는 프로젝트입니다.
 
-## Priorities
-1. Original gameplay rules and outcomes
-2. Correct units, combat, skills, waves, crafting, economy and difficulty
-3. Touch-based Android gameplay
-4. New, minimal graphics; visual effects last
+## 개발 우선순위
+1. 원작 게임 규칙과 플레이 결과 일치
+2. 유닛·스킬·전투·라운드·조합·상점·도박·위습 구현
+3. 모바일 터치 조작
+4. 신규 그래픽은 최소한으로, 이펙트와 연출은 마지막에 개선
 
-No Warcraft III runtime or JASS interpreter is planned. Original map/JASS data are reference material for extracting rules, not runtime dependencies.
+워크래프트 3 실행 엔진이나 JASS 실행기를 이식하지 않습니다. 원본 W3X·JASS는 규칙 분석 자료로 사용합니다.
 
-## Status
-**Foundation only.** No original-game data has been verified or imported yet. No playable build or APK exists.
+## 현재 상태
+**기반 코드 작성 단계**입니다. 원작 데이터 추출과 게임 플레이 구현은 아직 완료되지 않았으며, Unity 컴파일 및 실기기 검증도 진행되지 않았습니다. APK는 없습니다.
 
-## Structure
-- `Assets/Scripts/Core`: engine-independent deterministic rule primitives
-- `Assets/Tests/EditMode`: automated correctness tests
-- `docs`: parity and development rules
+## 프로젝트 구조
+- `Assets/Scripts/Core`: 화면과 독립된 게임 로직의 기반
+- `Assets/Tests/EditMode`: 자동 테스트
+- `docs`: 원작 대조 기준과 개발 기록
 
-## Development policy
-- Do not invent unit stats, probabilities, recipes, enemy waves, or skill behavior.
-- Mark unknown original behavior as unverified; do not silently substitute approximations.
-- Verify rules with original source evidence and tests before claiming parity.
-- Keep the default `main` branch and avoid unnecessary CI workflows.
-- Do not claim an APK was built or tested without actual build and device evidence.
+## 작업 원칙
+- 원본에 없는 능력치·확률·조합법·웨이브·스킬을 임의로 만들지 않습니다.
+- 확인되지 않은 내용은 '미확인'으로 명시합니다.
+- 원본 W3X와 같은 버전의 인터넷 도감을 교차 검증합니다. 버전이 다른 도감은 참고용으로만 사용합니다.
+- 테스트를 실제 실행하지 않았다면 '테스트 통과'로 표시하지 않습니다.
+- 불필요한 브랜치와 자동 빌드 워크플로를 만들지 않습니다.
+- GitHub 문서·커밋·테스트 보고서는 한국어로 작성합니다.
+- 전체 핵심 기능 구현과 검증 전에는 정식 APK를 제작하지 않습니다.
 
-## Setup
-Open with a compatible Unity editor after selecting and recording an actual editor version. The Unity version has not yet been pinned. Add the editor-generated project settings and packages once an editor build is validated.
+## Unity 환경
+Unity 에디터 버전은 실제 개발 환경에서 확인한 후 고정합니다. 아직 Unity 프로젝트 설정 파일은 추가되지 않았습니다.
 
-## Legal
-Only include assets and game data for which use and distribution rights have been confirmed.
+## 권리 안내
+배포 전에 원작 관련 데이터 및 창작 요소의 이용·배포 권한을 확인해야 합니다.
