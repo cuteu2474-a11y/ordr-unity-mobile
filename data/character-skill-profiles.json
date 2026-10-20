@@ -6,7 +6,7 @@
   "source": "https://ordr.kr/character",
   "verification": "tooltip-numeric-facts",
   "specCompleteness": "partial",
-  "warning": "캐릭터별 스킬 tooltip에서 확인 가능한 수치의 데이터 등록이다. 스킬 조건·대상 선택·일부 피해 계산식은 원본 스크립트와 추가 대조가 필요하다. 'trigger'는 도감 문구를 코드 관리용 용어로 표준화했으며 원본 JASS의 실제 스킬 rawcode와 다르다. 일부 캐릭터는 툴팁과 패치노트 사이에 수치 상충이 있으므로 해당 항목을 uncertaintyNotes로 기록하며 최종 전투 계산에 직접 투입하지 않는다. L01~L12 스킬은 2.323 도감 상세 페이지를 2026-10-21 재확인하여 구조화. 구 패치와 툴팁이 불일치하는 값은 uncertaintyNotes에 남겼다. L13~L24도 도감 2.323 상세 페이지를 확인. 최신 툴팁과 패치 이력의 차이를 별도 불확실성 필드로 유지한다.",
+  "warning": "캐릭터별 스킬 tooltip에서 확인 가능한 수치의 데이터 등록이다. 스킬 조건·대상 선택·일부 피해 계산식은 원본 스크립트와 추가 대조가 필요하다. 'trigger'는 도감 문구를 코드 관리용 용어로 표준화했으며 원본 JASS의 실제 스킬 rawcode와 다르다. 일부 캐릭터는 툴팁과 패치노트 사이에 수치 상충이 있으므로 해당 항목을 uncertaintyNotes로 기록하며 최종 전투 계산에 직접 투입하지 않는다. L01~L12 스킬은 2.323 도감 상세 페이지를 2026-10-21 재확인하여 구조화. 구 패치와 툴팁이 불일치하는 값은 uncertaintyNotes에 남겼다. L13~L24도 도감 2.323 상세 페이지를 확인. 최신 툴팁과 패치 이력의 차이를 별도 불확실성 필드로 유지한다. L25~L39 전설 15종의 스킬과 기본 공격 연계 효과는 도감 2.323 사실값으로 등록. 원본 피해 공식 추론 없이 저장.",
   "profiles": [
     {
       "unitId": "R-42",
@@ -4185,6 +4185,1146 @@
           "chancePercent": 25,
           "target": "area",
           "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-25",
+      "sourceUrl": "https://ordr.kr/character/L25",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 27
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 275,
+          "physicalPercentOfBasicAttack": 33
+        }
+      ],
+      "skills": [
+        {
+          "name": "미티어 울두건",
+          "trigger": "activeHealth",
+          "components": [
+            {
+              "type": "fixed",
+              "basis": "basicAttackDamage",
+              "percent": 170,
+              "flatAmount": 230000,
+              "targetKindMultiplier": {
+                "boss": 2,
+                "story": 3
+              }
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 1,
+              "maxArmorReduction": 75
+            }
+          ],
+          "healthCost": 35,
+          "healthRegenPerSecond": 0.5,
+          "healthRegenPerAttack": 1,
+          "target": "area",
+          "radius": 450
+        },
+        {
+          "name": "울두건",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "basis": "basicAttackDamage",
+              "percent": 85,
+              "flatAmount": 115000
+            }
+          ],
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 425
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-26",
+      "sourceUrl": "https://ordr.kr/character/L26",
+      "passives": [],
+      "skills": [
+        {
+          "name": "흑완",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000
+            },
+            {
+              "type": "fixed",
+              "basis": "targetCurrentHealth",
+              "percent": 2,
+              "onlyTargetKinds": [
+                "boss"
+              ]
+            },
+            {
+              "type": "fixed",
+              "basis": "targetMaxHealth",
+              "percent": 12,
+              "onlyTargetKinds": [
+                "enraged"
+              ]
+            },
+            {
+              "type": "magical",
+              "basis": "targetMaxHealth",
+              "percent": 0.4,
+              "onlyTargetKinds": [
+                "boss",
+                "enraged"
+              ],
+              "radius": 650
+            }
+          ],
+          "chancePercent": 25,
+          "target": "area",
+          "radius": 325
+        },
+        {
+          "name": "무장색의 패기",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 150000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.8,
+              "ignoresResistance": true
+            }
+          ],
+          "chancePercent": 30,
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-27",
+      "sourceUrl": "https://ordr.kr/character/L27",
+      "passives": [],
+      "skills": [
+        {
+          "name": "사자의노래",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 150000
+            },
+            {
+              "type": "magical",
+              "amount": 900000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "delete",
+              "onlyTargetKinds": [
+                "line"
+              ],
+              "targetHealthAtMostPercent": 15,
+              "overrideChancePercent": 100
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 385
+        },
+        {
+          "name": "평타 크리티컬",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "critical",
+              "multiplier": 5
+            }
+          ],
+          "chancePercent": 66,
+          "target": "single"
+        },
+        {
+          "name": "보스 대상 일격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 500000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1,
+              "ignoresResistance": true
+            }
+          ],
+          "chancePercent": 30,
+          "onlyTargetKinds": [
+            "boss"
+          ],
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-28",
+      "sourceUrl": "https://ordr.kr/character/L28",
+      "passives": [
+        {
+          "type": "selfManaRegeneration",
+          "perSecond": 2
+        },
+        {
+          "type": "manaRegeneration",
+          "perSecond": 2.5
+        }
+      ],
+      "skills": [
+        {
+          "name": "어인가라데",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 1200000
+            },
+            {
+              "type": "magical",
+              "amount": 600000,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "armorReduction",
+              "amount": 25,
+              "condition": {
+                "requiredArmorBreakStacks": 10
+              },
+              "onlyOncePerEnemy": true,
+              "exclusiveWith": [
+                "징베 초월"
+              ]
+            }
+          ],
+          "manaCost": 85,
+          "target": "area",
+          "radius": 750
+        },
+        {
+          "name": "해류 한판 업어치기",
+          "trigger": "onBasicAttackWithAbsoluteCooldown",
+          "components": [
+            {
+              "type": "summonProjectiles",
+              "count": 10,
+              "durationSeconds": 2,
+              "magicalDamageEach": 150000
+            }
+          ],
+          "absoluteCooldownSeconds": 7,
+          "target": "area"
+        },
+        {
+          "name": "단일 타격 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 600000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.6
+            }
+          ],
+          "chancePercent": 25,
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-29",
+      "sourceUrl": "https://ordr.kr/character/L29",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 18
+        },
+        {
+          "type": "allyAttackSpeedBuff",
+          "percent": 20
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 300
+        },
+        {
+          "type": "teleport",
+          "range": 1500
+        }
+      ],
+      "skills": [
+        {
+          "name": "발굽 로제오",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 150000,
+              "multiplierRange": [
+                1,
+                3
+              ]
+            }
+          ],
+          "chancePercent": 15,
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-30",
+      "sourceUrl": "https://ordr.kr/character/L30",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 20
+        },
+        {
+          "type": "onBasicHitArmorReduction",
+          "byTargetKind": {
+            "line": 25,
+            "story": 25,
+            "boss": 40
+          },
+          "durationSeconds": 20,
+          "exclusiveWith": [
+            "방어구 관통 스킬"
+          ]
+        }
+      ],
+      "skills": [
+        {
+          "name": "샨디아의 창",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "selfAttackSpeedMax",
+              "durationSeconds": 5.25
+            }
+          ],
+          "manaCost": 40,
+          "target": "self"
+        },
+        {
+          "name": "평타 크리티컬",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "critical",
+              "multiplier": 10
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.4,
+              "ignoresResistance": true
+            }
+          ],
+          "chancePercent": 25,
+          "target": "single"
+        }
+      ],
+      "uncertaintyNotes": [
+        "2.300 패치 이력에는 라인/스토리 방어 관통 20, 현재 툴팁에는 25로 기재."
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-31",
+      "sourceUrl": "https://ordr.kr/character/L31",
+      "passives": [],
+      "skills": [
+        {
+          "name": "용기의 외침",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "allyAttackPowerBuff",
+              "percent": 20,
+              "durationSeconds": 5
+            },
+            {
+              "type": "allyHealthRegeneration",
+              "perSecond": 1,
+              "durationSeconds": 5
+            },
+            {
+              "type": "allyManaRegeneration",
+              "perSecond": 1,
+              "durationSeconds": 5
+            }
+          ],
+          "manaCost": 115,
+          "target": "alliedArea",
+          "radius": 900,
+          "exclusiveWith": [
+            "분노 스킬"
+          ]
+        },
+        {
+          "name": "육식 - 체",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 0.3
+            },
+            {
+              "type": "magical",
+              "amount": 155000
+            }
+          ],
+          "chancePercent": 20,
+          "target": "single"
+        },
+        {
+          "name": "지건",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 125000
+            },
+            {
+              "type": "explosive",
+              "basis": "targetCurrentHealth",
+              "percent": 25,
+              "onlyTargetKinds": [
+                "line"
+              ],
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "magical",
+              "amount": 125000,
+              "onlyTargetKinds": [
+                "boss",
+                "story"
+              ],
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 12.5,
+          "target": "area",
+          "radius": 375
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-32",
+      "sourceUrl": "https://ordr.kr/character/L32",
+      "passives": [
+        {
+          "type": "teleport",
+          "range": "unlimited"
+        }
+      ],
+      "skills": [
+        {
+          "name": "우르스스 쇼크",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 2450000,
+              "plusTargetMissingHealthPercent": 4
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.05
+            }
+          ],
+          "manaCost": 115,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "발바닥발바닥 열매",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.4
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 500
+        },
+        {
+          "name": "전이",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "pull",
+              "to": "inFrontOfCaster"
+            },
+            {
+              "type": "castOwnedStunSkill"
+            }
+          ],
+          "cooldownSeconds": 60,
+          "target": "enemiesOwnLine",
+          "radius": 275
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-33",
+      "sourceUrl": "https://ordr.kr/character/L33",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 25
+        },
+        {
+          "type": "onEachBasicAttackBonus",
+          "magicalAmount": 20000,
+          "target": "single"
+        }
+      ],
+      "skills": [
+        {
+          "name": "나선찌르기",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 250000
+            }
+          ],
+          "chancePercent": 8,
+          "target": "area",
+          "radius": 550
+        },
+        {
+          "name": "크래커 비스킷",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "allyAttackPowerBuff",
+              "percent": 19
+            },
+            {
+              "type": "allyAttackSpeedBuff",
+              "percent": 9
+            }
+          ],
+          "cooldownSeconds": 240,
+          "target": "ownedAlly",
+          "cannotStackOnSameUnit": true
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-34",
+      "sourceUrl": "https://ordr.kr/character/L34",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 5
+        },
+        {
+          "type": "movementSlowAura",
+          "percent": 10
+        },
+        {
+          "type": "onBasicHitDebuff",
+          "movementSlowPercent": 45,
+          "durationSeconds": 3,
+          "magicalDamagePerSecond": 250000
+        },
+        {
+          "type": "flyingMovement"
+        }
+      ],
+      "skills": [
+        {
+          "name": "화재",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000
+            },
+            {
+              "type": "magicalDoT",
+              "damagePerTick": 42500,
+              "tickIntervalSeconds": 0.27,
+              "durationSeconds": 2.7
+            },
+            {
+              "type": "armorReduction",
+              "amount": 20,
+              "exclusiveWith": [
+                "독약 스킬"
+              ]
+            },
+            {
+              "type": "armorReduction",
+              "amount": 10,
+              "durationSeconds": 2
+            }
+          ],
+          "chancePercent": 14.25,
+          "target": "area",
+          "radius": 450
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-35",
+      "sourceUrl": "https://ordr.kr/character/L35",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 25
+        },
+        {
+          "type": "allyAttackSpeedBuff",
+          "percent": 20
+        },
+        {
+          "type": "periodicAllyAttackSpeedBuff",
+          "intervalSeconds": 9,
+          "targetCount": 2,
+          "minGrade": "전설",
+          "radius": 450,
+          "durationSeconds": 6,
+          "percent": 35,
+          "exclusiveWith": [
+            "가속 스킬"
+          ],
+          "includesSelf": true
+        }
+      ],
+      "skills": [
+        {
+          "name": "시간시간열매",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 250000
+            },
+            {
+              "type": "magical",
+              "amount": 250000,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 400
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-36",
+      "sourceUrl": "https://ordr.kr/character/L36",
+      "passives": [],
+      "skills": [
+        {
+          "name": "매료매료 열매",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 150000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.8
+            },
+            {
+              "type": "magical",
+              "amount": 150000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "radius": 415,
+              "chancePercent": 10,
+              "requiresState": "pistolKissInactive",
+              "extraSinglePercent": 100
+            },
+            {
+              "type": "explosive",
+              "basis": "targetMaxHealth",
+              "percent": 5,
+              "onlyTargetKinds": [
+                "line"
+              ],
+              "requiresState": "pistolKissInactive"
+            },
+            {
+              "type": "explosive",
+              "basis": "targetMaxHealth",
+              "percent": 7,
+              "onlyTargetKinds": [
+                "line"
+              ],
+              "requiresState": "pistolKissActive",
+              "onEveryAttack": true
+            },
+            {
+              "type": "magical",
+              "amount": 150000,
+              "onlyTargetKinds": [
+                "boss",
+                "story"
+              ]
+            }
+          ],
+          "chancePercent": 20,
+          "target": "single"
+        },
+        {
+          "name": "피스톨 키스",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "selfAttackSpeedBuff",
+              "percent": 45,
+              "durationSeconds": 0.4
+            },
+            {
+              "type": "magical",
+              "basis": "basicAttackDamage",
+              "percent": 125,
+              "flatAmount": 85000,
+              "radius": 345,
+              "trigger": "everyAttackWhileActive"
+            }
+          ],
+          "chancePercent": 8,
+          "target": "self"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-37",
+      "sourceUrl": "https://ordr.kr/character/L37",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 25
+        }
+      ],
+      "skills": [
+        {
+          "name": "중력검",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 192500
+            },
+            {
+              "type": "physical",
+              "basis": "skillDamage",
+              "multiplier": 2.5,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.4
+            },
+            {
+              "type": "magicResistanceReduction",
+              "percent": 1
+            }
+          ],
+          "chancePercent": 14,
+          "target": "area",
+          "radius": 450
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-38",
+      "sourceUrl": "https://ordr.kr/character/L38",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 15
+        },
+        {
+          "type": "armorReductionByTargetKind",
+          "amount": 30,
+          "onlyTargetKinds": [
+            "boss",
+            "story"
+          ]
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 350
+        }
+      ],
+      "skills": [
+        {
+          "name": "기선 제압",
+          "trigger": "activeHealth",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1250000,
+              "plusTargetMaxHealthPercent": 2
+            },
+            {
+              "type": "fixed",
+              "basis": "skillDamage",
+              "percent": 50,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3,
+              "resistanceIgnorePercent": 50
+            }
+          ],
+          "healthCost": 115,
+          "healthRegenPerSecond": 0.8,
+          "healthRegenPerAttack": 1,
+          "target": "area",
+          "radius": 600,
+          "onceConditionBypassForTargetKinds": [
+            "boss",
+            "enraged"
+          ],
+          "exclusiveWith": [
+            "속공"
+          ]
+        },
+        {
+          "name": "흔들흔들 열매",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000
+            },
+            {
+              "type": "movementSlow",
+              "percent": 25,
+              "durationSeconds": 3
+            },
+            {
+              "type": "movementSlow",
+              "percent": 10,
+              "durationSeconds": 2,
+              "after": "primarySlow"
+            }
+          ],
+          "chancePercent": 11,
+          "target": "area",
+          "radius": 600
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 능력 rawcode",
+        "평타 기본 수치/공격주기",
+        "복합 조건·피해 공식의 실제 적용 순서"
+      ]
+    },
+    {
+      "unitId": "L-39",
+      "sourceUrl": "https://ordr.kr/character/L39",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 22
+        },
+        {
+          "type": "fixedAttackFrequency",
+          "attacksPerSecond": 0.9,
+          "ignoresAttackSpeedBuffs": true
+        }
+      ],
+      "skills": [
+        {
+          "name": "백발백중",
+          "trigger": "onNthSuccessfulBasicHit",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000
+            },
+            {
+              "type": "physical",
+              "basis": "targetMaxHealth",
+              "percent": 22.5,
+              "onlyTargetKinds": [
+                "line"
+              ],
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "magical",
+              "basis": "targetMaxHealth",
+              "percent": 7.5,
+              "onlyTargetKinds": [
+                "boss",
+                "enraged"
+              ],
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "magical",
+              "amount": 2000000,
+              "onlyTargetKinds": [
+                "story"
+              ],
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3,
+              "ignoresResistance": true,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "requiredSuccessfulHits": 4,
+          "target": "area",
+          "radius": 800
+        },
+        {
+          "name": "사랑의도시락(B)",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "permanentAllyAttackSpeedBuff",
+              "percent": 12,
+              "overridePercentForUnit": "코비 초월",
+              "overridePercent": 20,
+              "nonStackingWith": [
+                "포만감 스킬"
+              ],
+              "consumesItem": true
+            }
+          ],
+          "target": "ownedAlly",
+          "uses": 1
         }
       ],
       "skillSpecCompleteness": "partial",
