@@ -82,16 +82,20 @@ namespace Ordr.Mobile.Combat
         {
             if (string.IsNullOrWhiteSpace(instanceId)) throw new ArgumentException("유닛 인스턴스 ID가 필요합니다.");
             if (spec == null) throw new ArgumentNullException(nameof(spec));
-            if (units.ContainsKey(instanceId)) throw new InvalidOperationException("이미 등록된 인스턴스입니다.");
+            if (units.ContainsKey(instanceId) || skillTriggers.HasUnit(instanceId))
+                throw new InvalidOperationException("이미 등록된 인스턴스입니다.");
             scheduler.Register(instanceId, firstAttackDelay);
+            bool triggerRegistered = false;
             try
             {
                 skillTriggers.RegisterUnit(instanceId, spec);
+                triggerRegistered = true;
                 units.Add(instanceId, new RegisteredUnit { Spec = spec });
             }
             catch
             {
                 scheduler.Remove(instanceId);
+                if (triggerRegistered) skillTriggers.RemoveUnit(instanceId);
                 throw;
             }
         }
@@ -108,6 +112,8 @@ namespace Ordr.Mobile.Combat
         {
             if (double.IsNaN(seconds) || double.IsInfinity(seconds) || seconds < 0)
                 throw new ArgumentOutOfRangeException(nameof(seconds));
+            if (scheduler.Time != skillTriggers.Time)
+                throw new InvalidOperationException("공격 시계와 스킬 시계가 어긋났습니다.");
             if (double.IsInfinity(scheduler.Time + seconds) ||
                 double.IsInfinity(skillTriggers.Time + seconds))
                 throw new OverflowException("시간 진행이 불가능합니다.");
