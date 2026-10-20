@@ -2356,12 +2356,12 @@
         "증폭"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/H9",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "H-10",
@@ -3026,12 +3026,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR4",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "TR-05",
@@ -3133,12 +3133,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR10",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "TR-11",
@@ -3362,12 +3362,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/TR23",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "TR-24",
@@ -3505,12 +3505,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E1",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "E-02",
@@ -3648,12 +3648,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E9",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "E-10",
@@ -3900,12 +3900,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/I11",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "I-12",
@@ -4234,12 +4234,12 @@
         "스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY1",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "MY-02",
@@ -4359,12 +4359,12 @@
         "증폭"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/MY8",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "partial"
     },
     {
       "id": "MY-09",
