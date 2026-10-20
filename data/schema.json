@@ -35,7 +35,9 @@
           "attackPower",
           "attackIntervalSeconds",
           "attackRange",
-          "skillSpecsStatus"
+          "skillSpecsStatus",
+          "damageSchoolHints",
+          "damageSchoolHintsStatus"
         ],
         "properties": {
           "id": {
@@ -104,6 +106,22 @@
               "not-collected",
               "partial",
               "complete"
+            ]
+          },
+          "damageSchoolHints": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "Physical",
+                "Magical"
+              ]
+            }
+          },
+          "damageSchoolHintsStatus": {
+            "enum": [
+              "derived-from-index-role-tags",
+              "unknown"
             ]
           }
         },
