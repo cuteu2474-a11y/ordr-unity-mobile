@@ -88,6 +88,50 @@
       "blockingReasons": [
         "공격력·공속·타입·원본 rawcode 미확인"
       ]
+    },
+    {
+      "unitId": "X-01",
+      "name": "모건",
+      "sourceUrl": "https://ordr.kr/patch-notes/2-310",
+      "observations": [
+        {
+          "stat": "range",
+          "value": 525,
+          "fromPatch": "2.310",
+          "previousValue": 285,
+          "sourceUrl": "https://ordr.kr/patch-notes/2-310",
+          "evidence": "특수 모건 공격 사거리 285 -> 525",
+          "confidence": "patch-logged"
+        }
+      ],
+      "rawcode": null,
+      "damageSchool": null,
+      "usableForCombat": false,
+      "blockingReasons": [
+        "공격력·공격주기·피해 계열 및 원본 오브젝트 미확인"
+      ]
+    },
+    {
+      "unitId": "TR-07",
+      "name": "루치",
+      "sourceUrl": "https://ordr.kr/patch-notes/2-310",
+      "observations": [
+        {
+          "stat": "range",
+          "value": 650,
+          "fromPatch": "2.310",
+          "previousValue": 550,
+          "sourceUrl": "https://ordr.kr/patch-notes/2-310",
+          "evidence": "초월 루치 공격 사거리 550 -> 650",
+          "confidence": "patch-logged"
+        }
+      ],
+      "rawcode": null,
+      "damageSchool": null,
+      "usableForCombat": false,
+      "blockingReasons": [
+        "공격력·공격주기·피해 계열 및 원본 오브젝트 미확인"
+      ]
     }
   ],
   "conflicts": [
@@ -102,9 +146,20 @@
       "kind": "version-and-damage-school",
       "description": "물뎀/마뎀 도감 태그는 모든 기본공격의 원시 공격 타입을 의미하지 않는다.",
       "resolution": "원본 워크래프트 객체/데미지 함수 대조"
+    },
+    {
+      "kind": "catalog-vs-patch",
+      "sourceUrl": "https://ordr.kr/patch-notes/2-310",
+      "catalogUrl": "https://ordr.kr/character",
+      "description": "2.310 패치는 신규 특수함 유닛 '가이몬'을 추가했다고 기록하나 도감 271종의 특수함 7종 이름 목록에는 가이몬이 없다.",
+      "resolution": "원본 W3X에서 특수함 신규 유닛의 실제 존재·제거·교체 기록을 확인할 것"
     }
   ],
   "patchNotes": [
+    {
+      "patch": "2.310",
+      "url": "https://ordr.kr/patch-notes/2-310"
+    },
     {
       "patch": "2.320",
       "url": "https://ordr.kr/patch-notes/2-320"
