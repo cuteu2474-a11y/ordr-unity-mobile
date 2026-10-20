@@ -62,6 +62,15 @@ namespace Ordr.Mobile.Unity
                 verifiedBasicFormula, verifiedSkillFormula, random);
         }
 
+        // 원작 피해 공식 없이도 캐릭터 소환·선택·배치·웨이브 월드를 구성할 수 있다.
+        // 피해 공식은 반드시 미구현 예외로 보류된다. 실제 난이도/전투 검증에 사용하지 않는다.
+        public void ConfigureCatalogOnlyWorld(uint seed)
+        {
+            var unavailable = new RejectUnverifiedDamageFormula();
+            ConfigureRuntime(unavailable, unavailable, new SeededNonOriginalProcRandom(seed));
+            Debug.LogWarning("ORDR 도감/월드 전용 모드: 평타·스킬 피해 공식은 미구현으로 보류됩니다.");
+        }
+
         public void BeginSession()
         {
             if (Combat == null)
