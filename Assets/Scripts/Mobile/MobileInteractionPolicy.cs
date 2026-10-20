@@ -55,6 +55,23 @@ namespace Ordr.Mobile.Mobile
             double verifiedAttackRange);
     }
 
+    public sealed class MobileUnitSnapshot
+    {
+        public long InstanceId { get; private set; }
+        public CatalogUnit Unit { get; private set; }
+        public CharacterSkillProfile Profile { get; private set; }
+        public UnitState Position { get; private set; }
+
+        public MobileUnitSnapshot(long instanceId, CatalogUnit unit,
+            CharacterSkillProfile profile, UnitState position)
+        {
+            InstanceId = instanceId;
+            Unit = unit ?? throw new ArgumentNullException(nameof(unit));
+            Profile = profile;
+            Position = position;
+        }
+    }
+
     public sealed class MobileEnemySnapshot
     {
         public string Id { get; private set; }
