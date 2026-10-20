@@ -20,7 +20,7 @@ namespace Ordr.Mobile.Tests
         public void GameModeIsFixedToNightmareMutation()
         {
             Assert.AreEqual("nightmare", NightmareMutationRules.Difficulty);
-            Assert.AreEqual("mutation", NightmareMutationRules.Mode);
+            Assert.AreEqual("otherworld", NightmareMutationRules.Mode);
         }
     }
 }
