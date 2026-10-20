@@ -15261,6 +15261,1105 @@
         "공격 수치와 속도",
         "실제 스킬 조건 검증"
       ]
+    },
+    {
+      "unitId": "MY-02",
+      "sourceUrl": "https://ordr.kr/character/MY2",
+      "passives": [
+        {
+          "type": "onHitExplosiveAmplification",
+          "percent": 4,
+          "stackable": true,
+          "effectName": "상처"
+        }
+      ],
+      "skills": [
+        {
+          "name": "오니",
+          "trigger": "onEveryAttack",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 1,
+              "ignoresResistance": true
+            }
+          ],
+          "target": "single"
+        },
+        {
+          "name": "할퀴기",
+          "trigger": "onEveryAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 50000
+            },
+            {
+              "type": "explosive",
+              "targetCurrentHealthPercent": 8,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "target": "single"
+        },
+        {
+          "name": "휩쓸기",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 800000,
+              "multiplierRange": [
+                1,
+                1.25
+              ]
+            },
+            {
+              "type": "explosive",
+              "targetCurrentHealthPercent": 10,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "chancePercent": 9,
+          "target": "area",
+          "radius": 750
+        },
+        {
+          "name": "혈귀술 폭혈",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 1500000
+            },
+            {
+              "type": "explosive",
+              "targetMaxHealthPercent": 10,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "manaCost": 60,
+          "target": "allEnemiesWithWound",
+          "radius": null
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "기본 공격력 및 공속",
+        "실제 중첩 및 피해 계산 순서"
+      ]
+    },
+    {
+      "unitId": "MY-03",
+      "sourceUrl": "https://ordr.kr/character/MY3",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 44
+        }
+      ],
+      "skills": [
+        {
+          "name": "무명의 달",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1150000
+            },
+            {
+              "type": "physical",
+              "extraSingleDamage": 8150000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "maxHealthPercent": 30,
+              "bossStoryMaxHealthPercent": 3
+            }
+          ],
+          "chancePercent": 6.25,
+          "target": "area",
+          "radius": 425
+        },
+        {
+          "name": "은폐 나이프",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 1.25,
+              "ignoresResistance": true
+            }
+          ],
+          "chancePercent": 50,
+          "target": "single"
+        },
+        {
+          "name": "흔들리는 도의 소매",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 4000000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "plusTargetMaxHealthPercent": 15,
+              "bossStoryMaxHealthPercent": 1.5
+            },
+            {
+              "type": "repeatCast",
+              "firstChancePercent": 50,
+              "firstRadius": 385,
+              "secondChancePercent": 50,
+              "secondDamageMultiplier": 0.8
+            }
+          ],
+          "chancePercent": 25,
+          "target": "single"
+        },
+        {
+          "name": "직사의 마안",
+          "trigger": "onSkillActivated",
+          "components": [
+            {
+              "type": "fixed",
+              "amount": 2000000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.25,
+              "ignoresResistance": true
+            }
+          ],
+          "excludeSkill": "은폐 나이프",
+          "target": "single"
+        },
+        {
+          "name": "유식 직사의 마안",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "fixed",
+              "amount": 5000000
+            },
+            {
+              "type": "physical",
+              "extraSingleTargetMaxHealthPercent": 45,
+              "bossStoryMaxHealthPercent": 4.5
+            }
+          ],
+          "manaCost": 115,
+          "manaGainPerAttack": 1,
+          "manaGainPerSkill": 5,
+          "target": "area",
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "기본 공격력 및 공속",
+        "실제 중첩 및 피해 계산 순서"
+      ]
+    },
+    {
+      "unitId": "MY-04",
+      "sourceUrl": "https://ordr.kr/character/MY4",
+      "passives": [
+        {
+          "type": "selfAttackSpeedBuff",
+          "percent": 12
+        },
+        {
+          "type": "teleport",
+          "range": 2500
+        }
+      ],
+      "skills": [
+        {
+          "name": "비뢰신 이의 단 나선환",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 1750000
+            },
+            {
+              "type": "magical",
+              "singleTargetMaxHealthPercent": 25,
+              "bossStoryPercent": 1.5
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            }
+          ],
+          "chancePercent": 6.25,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "나선섬광초륜무후삼식",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "fixed",
+              "amountPerHit": 1000000,
+              "hits": 8
+            }
+          ],
+          "manaCost": 100,
+          "target": "area",
+          "radius": 525
+        },
+        {
+          "name": "섬광연무",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 800000
+            },
+            {
+              "type": "magicResistanceReduction",
+              "percent": 3
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            }
+          ],
+          "chancePercent": 13.5,
+          "target": "area",
+          "radius": 600
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "기본 공격력 및 공속",
+        "실제 중첩 및 피해 계산 순서"
+      ]
+    },
+    {
+      "unitId": "MY-05",
+      "sourceUrl": "https://ordr.kr/character/MY5",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 20
+        },
+        {
+          "type": "teleport",
+          "range": 800
+        }
+      ],
+      "skills": [
+        {
+          "name": "만해 천본앵경엄",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 850000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "섬경 천본앵경엄",
+          "trigger": "periodic",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 4500000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            }
+          ],
+          "periodSeconds": 14,
+          "target": "casterArea",
+          "radius": 925
+        },
+        {
+          "name": "종경백제검",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 5000000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            }
+          ],
+          "manaCost": 145,
+          "target": "area",
+          "radius": 700
+        },
+        {
+          "name": "천본앵",
+          "trigger": "onSkillActivated",
+          "components": [
+            {
+              "type": "selfAttackSpeedDebuff",
+              "percent": 25
+            },
+            {
+              "type": "fixedDamageOverTime",
+              "amountPerTick": 425000,
+              "plusTargetMaxHealthPercentPerTick": 1.75,
+              "intervalSeconds": 0.16,
+              "durationSeconds": 4,
+              "exceptBossStoryAmount": 600000
+            },
+            {
+              "type": "magicalDamageOverTime",
+              "amountPerTick": 180000,
+              "intervalSeconds": 0.16,
+              "durationSeconds": 4,
+              "radius": 750
+            }
+          ],
+          "maxStackingInstances": 2,
+          "target": "casterArea",
+          "exclusiveWith": [
+            "패기류",
+            "화권",
+            "아카이누 열기"
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "기본 공격력 및 공속",
+        "실제 중첩 및 피해 계산 순서"
+      ]
+    },
+    {
+      "unitId": "MY-06",
+      "sourceUrl": "https://ordr.kr/character/MY6",
+      "passives": [
+        {
+          "type": "selfAttackSpeedBuff",
+          "percent": 25
+        },
+        {
+          "type": "movementSpeedIncreaseOnMove"
+        }
+      ],
+      "skills": [
+        {
+          "name": "사이버 엔젤 cfg",
+          "trigger": "onSkillActivated",
+          "components": [
+            {
+              "type": "fixed",
+              "targetMaxHealthPercent": 6,
+              "exceptTargetKinds": [
+                "boss",
+                "story"
+              ]
+            }
+          ],
+          "target": "single"
+        },
+        {
+          "name": "이성의 창조물",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 7500000
+            }
+          ],
+          "manaCost": 145,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "데이터 질주",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 600000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "magical",
+              "extraSingleAmount": 3000000,
+              "plusTargetMaxHealthPercent": 2
+            },
+            {
+              "type": "manaRestoration",
+              "to": "nearbyAllies",
+              "amount": 5
+            }
+          ],
+          "chancePercent": 22.5,
+          "target": "area",
+          "radius": 415,
+          "damageBonusPercentByCurrentMana": 50,
+          "maxDamageBonusPercent": 75
+        },
+        {
+          "name": "무기화 빌드 Lv2",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 250000,
+              "multiplierRange": [
+                1,
+                2
+              ],
+              "hits": 2
+            },
+            {
+              "type": "magical",
+              "extraSingleTargetDamagePercent": 150
+            }
+          ],
+          "chancePercent": 17.5,
+          "target": "area",
+          "radius": 400,
+          "damageBonusPercentByCurrentMana": 50,
+          "maxDamageBonusPercent": 75
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "기본 공격력 및 공속",
+        "실제 중첩 및 피해 계산 순서"
+      ]
+    },
+    {
+      "unitId": "MY-09",
+      "sourceUrl": "https://ordr.kr/character/MY9",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 45
+        },
+        {
+          "type": "explosiveDamageAmplification",
+          "percent": 10,
+          "targetZone": "ownedLane"
+        },
+        {
+          "type": "teleport"
+        }
+      ],
+      "skills": [
+        {
+          "name": "행방불명",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "delete",
+              "onlyTargetKinds": [
+                "line"
+              ]
+            },
+            {
+              "type": "magical",
+              "amount": 2000000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "exceptTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "chancePercent": 4.75,
+          "target": "single"
+        },
+        {
+          "name": "비광충",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 400000
+            }
+          ],
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 450
+        },
+        {
+          "name": "생사의 경계",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 800000,
+              "hits": 3
+            }
+          ],
+          "chancePercent": 6.25,
+          "target": "area",
+          "radius": 800
+        },
+        {
+          "name": "폐역하차 여행",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 5000000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            },
+            {
+              "type": "delete",
+              "count": 1,
+              "selectRandom": true,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "manaCost": 125,
+          "target": "area",
+          "radius": 600
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "기본 공격력 및 공속",
+        "실제 중첩 및 피해 계산 순서"
+      ]
+    },
+    {
+      "unitId": "MY-10",
+      "sourceUrl": "https://ordr.kr/character/MY10",
+      "passives": [],
+      "skills": [
+        {
+          "name": "검술을 다루는 정도의 능력",
+          "trigger": "onEveryAttack",
+          "components": [
+            {
+              "type": "physical",
+              "basicAttackDamagePercent": 75,
+              "flatAmount": 100000,
+              "radius": 400
+            },
+            {
+              "type": "armorReduction",
+              "amount": 40,
+              "nonStackingWith": [
+                "방어구 관통"
+              ]
+            }
+          ],
+          "target": "area",
+          "alsoAppliesToClone": true
+        },
+        {
+          "name": "인귀 미래영겁참",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "initialAmount": 500000,
+              "finalAmount": 1000000
+            },
+            {
+              "type": "physical",
+              "targetMaxHealthPercentPerHit": 1,
+              "hits": 25,
+              "finalTargetMaxHealthPercent": 10
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3,
+              "ignoresResistance": true,
+              "onFirstAndLastHit": true
+            }
+          ],
+          "manaCost": 120,
+          "target": "casterArea",
+          "radius": 800
+        },
+        {
+          "name": "단령검 성불득탈참",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 250000
+            },
+            {
+              "type": "movementSlow",
+              "percent": 50,
+              "durationSeconds": 3
+            }
+          ],
+          "chancePercent": 10,
+          "target": "line",
+          "radius": 600,
+          "cloneDamageMultiplier": 0.5
+        },
+        {
+          "name": "단미검 미진자항참",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "basicAttackDamagePercent": 800,
+              "flatAmount": 900000
+            },
+            {
+              "type": "fixed",
+              "targetMaxHealthPercent": 4,
+              "exceptTargetKinds": [
+                "story"
+              ],
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 10,
+          "target": "line",
+          "radius": 800,
+          "cloneDamageMultiplier": 0.5
+        },
+        {
+          "name": "혼백 유명구문지총명의 법",
+          "trigger": "activeHealth",
+          "components": [
+            {
+              "type": "summon",
+              "unit": "반령",
+              "damageMultiplier": 0.5,
+              "durationSeconds": 25,
+              "inheritsUpgradesAndBuffs": true,
+              "usesSkills": [
+                "단령검 성불득탈참",
+                "단미검 미진자항참"
+              ]
+            }
+          ],
+          "healthCost": 200,
+          "absoluteCooldownSeconds": 25,
+          "target": "self"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "기본 공격력 및 공속",
+        "실제 중첩 및 피해 계산 순서"
+      ]
+    },
+    {
+      "unitId": "MY-11",
+      "sourceUrl": "https://ordr.kr/character/MY11",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 25
+        },
+        {
+          "type": "allyAttackPowerBuff",
+          "percent": 20
+        }
+      ],
+      "skills": [
+        {
+          "name": "마왕",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            }
+          ],
+          "chancePercent": 30,
+          "target": "single"
+        },
+        {
+          "name": "러쉬",
+          "trigger": "activeHealth",
+          "components": [
+            {
+              "type": "physical",
+              "amountPerHit": 850000,
+              "armorBreakPerHit": 1,
+              "maxArmorBreakPerActivation": 10,
+              "damageBonusPercentPerArmorBreak": 1.25
+            },
+            {
+              "type": "fixed",
+              "amountPerHit": 1000000,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "healthCost": 45,
+          "target": "area",
+          "radius": 400
+        },
+        {
+          "name": "스타 플라티나 더월드",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 9250000,
+              "multiplierRange": [
+                1,
+                1.5
+              ],
+              "plusTargetMissingHealthPercent": 2
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 4
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 15
+            },
+            {
+              "type": "selfHeal",
+              "amount": 5
+            }
+          ],
+          "manaCost": 145,
+          "target": "casterArea",
+          "radius": 850
+        },
+        {
+          "name": "스타 플라티나",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 850000
+            },
+            {
+              "type": "fixed",
+              "extraSingleTargetPercent": 50
+            }
+          ],
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 400
+        },
+        {
+          "name": "오라",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1850000
+            },
+            {
+              "type": "fixed",
+              "extraSingleTargetPercent": 50
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 2,
+              "damageBonusPercentPerArmorBreak": 1.25,
+              "maxStacks": 75
+            }
+          ],
+          "chancePercent": 6.25,
+          "target": "area",
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "기본 공격력 및 공속",
+        "실제 중첩 및 피해 계산 순서"
+      ]
+    },
+    {
+      "unitId": "MY-12",
+      "sourceUrl": "https://ordr.kr/character/MY12",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 50
+        },
+        {
+          "type": "flyingMovement"
+        }
+      ],
+      "skills": [
+        {
+          "name": "짓누르기",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 275000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.75
+            }
+          ],
+          "chancePercent": 18,
+          "target": "area",
+          "radius": 525
+        },
+        {
+          "name": "염동 회오리",
+          "trigger": "activeHealth",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 250000
+            },
+            {
+              "type": "physical",
+              "amount": 3000000
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 10
+            }
+          ],
+          "healthCost": 45,
+          "target": "area",
+          "radius": 525
+        },
+        {
+          "name": "협회수당",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "randomWisp",
+              "guaranteedRandomWisp": 2,
+              "additionalOdds": [
+                {
+                  "tier": "안흔함",
+                  "percent": 20
+                },
+                {
+                  "tier": "특별함",
+                  "percent": 5
+                },
+                {
+                  "tier": "희귀함",
+                  "percent": 3
+                },
+                {
+                  "tier": "전설",
+                  "percent": 2
+                }
+              ]
+            }
+          ],
+          "cooldownSeconds": 90
+        },
+        {
+          "name": "염동 운석낙하",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 1500000
+            },
+            {
+              "type": "physical",
+              "amount": 4000000
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 15
+            }
+          ],
+          "manaCost": 75,
+          "target": "area",
+          "radius": 625
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "기본 공격력 및 공속",
+        "실제 중첩 및 피해 계산 순서"
+      ]
+    },
+    {
+      "unitId": "MY-13",
+      "sourceUrl": "https://ordr.kr/character/MY13",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 30
+        }
+      ],
+      "skills": [
+        {
+          "name": "총알세례",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amountPerAttack": 350000
+            },
+            {
+              "type": "selfAttackSpeedMax",
+              "durationSeconds": 1.25
+            }
+          ],
+          "chancePercent": 8,
+          "target": "area",
+          "radius": 400
+        },
+        {
+          "name": "강탈",
+          "trigger": "activeHealth",
+          "components": [
+            {
+              "type": "fixed",
+              "amount": 5000000
+            },
+            {
+              "type": "currencyReward",
+              "outcomes": [
+                {
+                  "chancePercent": 55,
+                  "gold": 1500
+                },
+                {
+                  "chancePercent": 45,
+                  "lumber": 1
+                }
+              ]
+            }
+          ],
+          "healthCost": 75,
+          "target": "single"
+        },
+        {
+          "name": "권총 던지기",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 250000,
+              "hits": 10
+            }
+          ],
+          "chancePercent": 6.25,
+          "target": "area",
+          "radius": 375
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "기본 공격력 및 공속",
+        "실제 중첩 및 피해 계산 순서"
+      ]
     }
   ]
 }
