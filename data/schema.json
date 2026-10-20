@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORDR S2 2.323 캐릭터 기본 데이터",
+  "type": "object",
+  "required": [
+    "gameVersion",
+    "catalogVersion",
+    "expectedTotal",
+    "entries"
+  ],
+  "properties": {
+    "gameVersion": {
+      "const": "S2 2.323[C]"
+    },
+    "catalogVersion": {
+      "const": "2.323"
+    },
+    "expectedTotal": {
+      "const": 271
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 271,
+      "maxItems": 271,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "grade",
+          "gradeOrder",
+          "name",
+          "roleTags",
+          "roleTagsStatus",
+          "gameRawCode",
+          "attackPower",
+          "attackIntervalSeconds",
+          "attackRange",
+          "skillSpecsStatus"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "grade": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gradeOrder": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "roleTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "roleTagsStatus": {
+            "enum": [
+              "index-confirmed",
+              "not-collected"
+            ]
+          },
+          "detailUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "gameRawCode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "attackPower": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "attackIntervalSeconds": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "exclusiveMinimum": 0
+          },
+          "attackRange": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "skillSpecsStatus": {
+            "enum": [
+              "not-collected",
+              "partial",
+              "complete"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "scope": {
+      "type": "string"
+    },
+    "sourceIndex": {
+      "type": "string"
+    },
+    "disclaimer": {
+      "type": "string"
+    },
+    "collectedOn": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
