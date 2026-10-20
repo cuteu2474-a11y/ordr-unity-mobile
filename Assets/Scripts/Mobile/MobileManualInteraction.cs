@@ -130,6 +130,14 @@ namespace Ordr.Mobile.Mobile
 
         public bool HasStoryService { get { return story != null; } }
         public bool HasFusionService { get { return fusion != null; } }
+        public bool HasExecutableFusionService
+        {
+            get
+            {
+                var assist = fusion as AssistedFusionService;
+                return fusion != null && (assist == null || assist.CanCommit);
+            }
+        }
         public bool HasEconomyService { get { return economy != null; } }
 
         public void Configure(IOriginalStoryDispatchPort originalStory,
