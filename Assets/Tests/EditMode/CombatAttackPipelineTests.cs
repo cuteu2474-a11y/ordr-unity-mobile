@@ -174,6 +174,19 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void StaleTargetDoesNotHideARealAliveEnemy()
+        {
+            var c = Setup();
+            c.Resolution.Spawn(new CombatEnemy("alive", 100));
+            c.Pipeline.RegisterUnit("unit-1", Unit(), 0);
+            BasicAttackResult result;
+            Assert.IsTrue(c.Pipeline.TryBasicAttack("unit-1",
+                new[] { Target("already-gone", 1), Target("alive", 2) }, out result));
+            Assert.AreEqual("alive", result.TargetId);
+            Assert.AreEqual(60, c.Resolution.GetEnemy("alive").Health);
+        }
+
+        [Test]
         public void UnitRemovalDisablesFurtherAttacksAndSkillState()
         {
             var c = Setup();
