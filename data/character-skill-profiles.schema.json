@@ -158,6 +158,13 @@
           "expectedPrimarySourceUrl": {
             "type": "string",
             "format": "uri"
+          },
+          "basicAttackVerificationStatus": {
+            "enum": [
+              "original-confirmed",
+              "unverified",
+              "not-collected"
+            ]
           }
         },
         "additionalProperties": false
