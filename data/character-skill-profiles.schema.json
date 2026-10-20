@@ -129,6 +129,12 @@
             "items": {
               "type": "object"
             }
+          },
+          "skillTriggeredBuffs": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
           }
         },
         "additionalProperties": false
