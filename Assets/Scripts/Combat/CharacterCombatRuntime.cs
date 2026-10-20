@@ -117,6 +117,33 @@ namespace Ordr.Mobile.Combat
             return mapping.DeferredReasons;
         }
 
+        // 개별 스펙 수집이 끝나면 전체 캐릭터 데이터를 건드리지 않고 자동 등록할 수 있다.
+        // JSON에 basicAttackVerificationStatus == "original-confirmed"가 없으면 적용하지 않는다.
+        public bool TryBindCatalogVerifiedAttack(long instanceId, double firstAttackDelay)
+        {
+            CharacterInstance unit;
+            if (!characters.TryGetValue(instanceId, out unit))
+                throw new KeyNotFoundException("존재하지 않는 캐릭터.");
+            var profile = unit.Profile;
+            if (profile == null || !profile.HasVerifiedBasicAttack) return false;
+            object rawPower = profile.BasicAttack["nominalAttackPower"];
+            object rawInterval = profile.BasicAttack["intervalSeconds"];
+            object rawRange = profile.BasicAttack["range"];
+            object rawSchool = profile.BasicAttack["damageSchool"];
+            double power = (double)rawPower;
+            if (power < 0 || power > long.MaxValue || Math.Floor(power) != power)
+                throw new FormatException("원본 공격력은 0 이상의 정수여야 합니다.");
+            DamageSchool school;
+            if (!Enum.TryParse((string)rawSchool, true, out school) ||
+                !Enum.IsDefined(typeof(DamageSchool), school))
+                throw new FormatException("검증된 기본 피해 계열 값 오류.");
+            BindVerifiedBasicAttack(instanceId,
+                new BasicAttackSpec((long)power, (double)rawInterval, (double)rawRange,
+                    school, DamageTraits.None),
+                firstAttackDelay);
+            return true;
+        }
+
         public void RemoveCharacter(long instanceId)
         {
             CharacterInstance instance;
