@@ -8,6 +8,7 @@
 |---|---|---|
 | `units.json` | 원랜디 2.323 도감에 등록된 **271종**의 등급·이름·내부 카탈로그 ID | 입력 |
 | `units.json` → `roleTags` | **186종**의 도감 요약 역할(물뎀·마뎀·방깎·이감 등) | 출처 표시 항목만 입력 |
+| `units.json` → `damageSchoolHints` | 물딜 74종, 마딜 97종(둘 다 3종 중복), 미확인 103종 | 역할 분류 힌트이며 실제 공격/스킬 피해 타입과 다를 수 있음 |
 | `character-skill-profiles.json` | 각 등급 대표 캐릭터 **18종 / 74개 스킬 항목** | **부분 입력**, 원작 동일 동작은 미검증 |
 | `schema.json` | 기본 캐릭터 카탈로그 데이터 형식 | 등록 |
 | `character-skill-profiles.schema.json` | 스킬/특성강화 상세 데이터 형식 | 등록 |
@@ -25,6 +26,7 @@
 - 정확한 원작 유닛 rawcode는 `gameRawCode: null`로 두었다. 추정하지 않는다.
 - `attackPower`, `attackIntervalSeconds`, `attackRange`가 `null`이면 **수집되지 않은 값**이다. 공격력이 0 또는 사거리가 0이라는 뜻이 아니다.
 - `roleTags`는 도감의 **역할 요약 태그**이며, 개별 피해 계수나 발동 효과를 대신하지 않는다.
+- `damageSchoolHints`는 `roleTags`의 물뎀/마뎀만 분리한 값이다. `Physical`·`Magical`이 동시에 존재할 수 있고 실제 평타나 스킬의 피해 타입을 단정할 수 없다.
 - `roleTagsStatus: not-collected`는 캐릭터가 해당 역할을 갖지 않는다는 뜻이 아니다.
 - 상세 스킬의 `gameRawCode`도 `null`이며, 스킬 명칭/임시 식별자를 원본 JASS 능력 rawcode로 주장하지 않는다.
 - `specCompleteness: partial`: 표시된 값만 검증했고, 숨은 쿨다운, 발동 배제 조건, 스킬 중첩, 스탯 공식 등은 수집 전이다.
