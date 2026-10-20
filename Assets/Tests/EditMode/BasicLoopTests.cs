@@ -10,7 +10,7 @@ namespace Ordr.Mobile.Tests
         public void SessionTracksWaveAndEnemies()
         {
             var session = new GameSession();
-            Assert.AreEqual("nightmare-mutation", GameSession.ModeId);
+            Assert.AreEqual("nightmare-otherworld", GameSession.ModeId);
             session.Start();
             session.BeginWave(1);
             session.SpawnEnemy();
