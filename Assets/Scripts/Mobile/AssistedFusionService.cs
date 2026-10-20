@@ -47,9 +47,10 @@ namespace Ordr.Mobile.Mobile
             foreach (var recipe in recipes.All)
             {
                 List<long> selected;
-                if (!TryFindMaterials(recipe, owned, out selected)) continue;
+                List<string> missing;
+                FindMaterialsAndDeficits(recipe, owned, out selected, out missing);
                 result.Add(new MobileFusionPreview(recipe.Id, recipe.Name,
-                    BuildMaterialSummary(recipe), selected));
+                    BuildMaterialSummary(recipe), selected, missing));
             }
             result.Sort((a, b) => string.CompareOrdinal(a.RecipeId, b.RecipeId));
             return result.AsReadOnly();
@@ -121,10 +122,12 @@ namespace Ordr.Mobile.Mobile
                     "원작 조합 처리 결과가 없어 재료를 소비하지 않았습니다.");
         }
 
-        private bool TryFindMaterials(VerifiedFusionRecipe recipe,
-            IReadOnlyList<MobileUnitSnapshot> owned, out List<long> selected)
+        private void FindMaterialsAndDeficits(VerifiedFusionRecipe recipe,
+            IReadOnlyList<MobileUnitSnapshot> owned, out List<long> selected,
+            out List<string> missing)
         {
             selected = new List<long>();
+            missing = new List<string>();
             var byType = new Dictionary<string, List<long>>(StringComparer.Ordinal);
             foreach (var unit in owned)
             {
@@ -141,22 +144,23 @@ namespace Ordr.Mobile.Mobile
             foreach (var need in recipe.Ingredients)
             {
                 List<long> slots;
-                if (!byType.TryGetValue(need.UnitId, out slots) || slots.Count < need.Count)
-                {
-                    selected.Clear();
-                    return false;
-                }
-                for (int i = 0; i < need.Count; i++) selected.Add(slots[i]);
+                byType.TryGetValue(need.UnitId, out slots);
+                int available = slots == null ? 0 : Math.Min(slots.Count, need.Count);
+                for (int i = 0; i < available; i++) selected.Add(slots[i]);
+                if (available < need.Count)
+                    missing.Add(need.DisplayName + " (" + need.UnitId + ") " +
+                        (need.Count - available) + "개 부족");
             }
-            return true;
         }
 
         private static string BuildMaterialSummary(VerifiedFusionRecipe recipe)
         {
             var parts = new List<string>();
             foreach (var need in recipe.Ingredients)
-                parts.Add(need.UnitId + " x" + need.Count);
-            return string.Join(" + ", parts.ToArray()) + " | " + recipe.CostSummary;
+                parts.Add(need.DisplayName + " x" + need.Count);
+            return string.Join(" + ", parts.ToArray()) +
+                " | 골드 " + recipe.Gold + " / 목재 " + recipe.Lumber +
+                " (원본 트리거 확인 후 최종 제작)";
         }
     }
 }
