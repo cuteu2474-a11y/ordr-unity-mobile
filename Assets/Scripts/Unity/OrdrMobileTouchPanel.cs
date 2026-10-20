@@ -166,6 +166,8 @@ namespace Ordr.Mobile.Unity
             GUILayout.Label("보유 유닛을 바탕으로 조합식을 보여줍니다. 재료 소비는 확인 버튼에서만 실행합니다.");
             if (!controller.ManualActions.HasFusionService)
                 GUILayout.Label("원작 조합식·재료·비용 시스템 미연결");
+            else if (!controller.ManualActions.HasExecutableFusionService)
+                GUILayout.Label("검증된 조합식 미리보기만 가능: 원작 제작 트리거 미연결, 재료는 소비되지 않습니다.");
             if (GUILayout.Button("조합식 새로고침", GUILayout.MinHeight(48)))
                 RefreshCurrent();
             foreach (var offer in fusionOffers)
@@ -173,25 +175,39 @@ namespace Ordr.Mobile.Unity
                 GUILayout.BeginVertical(GUI.skin.box);
                 GUILayout.Label(offer.Title);
                 GUILayout.Label(offer.OriginalMaterialsAndCost);
-                GUILayout.Label("재료 인스턴스: " + string.Join(", ", ToStringArray(offer.SuggestedMaterialInstances)));
-                if (GUILayout.Button("조합 선택", GUILayout.MinHeight(48)))
+                if (offer.MissingMaterials.Count != 0)
+                {
+                    GUILayout.Label("미확보: " + string.Join(", ",
+                        ToStringArray(offer.MissingMaterials)));
+                }
+                else GUILayout.Label("재료 준비 완료");
+                GUILayout.Label("보유 재료 ID: " + string.Join(", ",
+                    ToStringArray(offer.SuggestedMaterialInstances)));
+                bool previousEnabled = GUI.enabled;
+                GUI.enabled = previousEnabled && offer.IsReady;
+                if (GUILayout.Button(offer.IsReady ? "조합 선택" : "재료 부족",
+                    GUILayout.MinHeight(48)))
                 {
                     pendingFusion = offer;
                     pendingEconomy = null;
                     notice = "아직 재료를 소비하지 않았습니다. 아래에서 조합을 확정하세요.";
                 }
+                GUI.enabled = previousEnabled;
                 GUILayout.EndVertical();
             }
             if (pendingFusion != null)
             {
                 GUILayout.Label("선택됨: " + pendingFusion.Title);
                 GUILayout.BeginHorizontal();
+                bool priorEnabled = GUI.enabled;
+                GUI.enabled = priorEnabled && controller.ManualActions.HasExecutableFusionService;
                 if (GUILayout.Button("조합 확정", GUILayout.MinHeight(52)))
                 {
                     ShowResult(controller.ManualActions.ConfirmFusion(pendingFusion));
                     pendingFusion = null;
                     RefreshCurrent();
                 }
+                GUI.enabled = priorEnabled;
                 if (GUILayout.Button("취소", GUILayout.MinHeight(52))) pendingFusion = null;
                 GUILayout.EndHorizontal();
             }
@@ -257,6 +273,13 @@ namespace Ordr.Mobile.Unity
                 case Tab.Wisp: return ManualEconomyCategory.Wisp;
                 default: throw new ArgumentOutOfRangeException(nameof(tab));
             }
+        }
+
+        private static string[] ToStringArray(IReadOnlyList<string> values)
+        {
+            var result = new string[values.Count];
+            for (int i = 0; i < result.Length; i++) result[i] = values[i];
+            return result;
         }
 
         private static string[] ToStringArray(IReadOnlyList<long> values)
