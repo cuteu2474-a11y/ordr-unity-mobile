@@ -20,7 +20,7 @@ namespace Ordr.Mobile.Core
     public static class NightmareMutationRules
     {
         public const string Difficulty = "nightmare";
-        public const string Mode = "mutation";
+        public const string Mode = "otherworld";
         public const string SourceUrl = "https://ordr.kr/guides/gorosei";
         public const string SourceVersion = "2.323";
 
