@@ -83,6 +83,9 @@ namespace Ordr.Mobile.Mobile
         // 파견된 유닛은 메인 전장에서 공격하거나 자동 시전하면 안 된다.
         // 복귀시 false를 반환하는 원작 스토리 상태를 외부 구현이 보유한다.
         bool IsDeployed(long unitInstanceId);
+        // 원작에서 유닛의 수동 복귀가 가능할 때만 노출. 불가능하면 false.
+        bool CanRecall(long unitInstanceId);
+        ManualActionResult Recall(long unitInstanceId);
     }
 
     public interface IOriginalFusionPort
@@ -131,6 +134,26 @@ namespace Ordr.Mobile.Mobile
                     "원작 파견 조건에 맞지 않는 유닛입니다.");
             return story.Dispatch(unitInstanceId) ??
                 new ManualActionResult(ManualActionState.Rejected, "스토리 파견 결과를 확인하지 못했습니다.");
+        }
+
+        public bool IsStoryDeployed(long instanceId)
+        {
+            return story != null && story.IsDeployed(instanceId);
+        }
+
+        public bool CanRecallStory(long instanceId)
+        {
+            return story != null && story.IsDeployed(instanceId) && story.CanRecall(instanceId);
+        }
+
+        public ManualActionResult RequestStoryRecall(long instanceId)
+        {
+            if (story == null) return ManualActionResult.Unavailable("스토리 복귀");
+            if (!story.IsDeployed(instanceId) || !story.CanRecall(instanceId))
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "현재 원작 규칙에서 복귀할 수 없는 유닛입니다.");
+            return story.Recall(instanceId) ??
+                new ManualActionResult(ManualActionState.Rejected, "복귀 결과를 확인하지 못했습니다.");
         }
 
         public IReadOnlyList<MobileFusionPreview> PreviewFusion(IReadOnlyList<MobileUnitSnapshot> ownedUnits)
