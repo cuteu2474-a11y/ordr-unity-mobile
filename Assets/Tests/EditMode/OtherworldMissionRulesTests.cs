@@ -21,7 +21,8 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(OtherworldMissionRules.IsRerollRoundEligible(9));
             Assert.IsFalse(OtherworldMissionRules.IsRerollRoundEligible(10));
             Assert.IsFalse(OtherworldMissionRules.IsRerollRoundEligible(11));
-            Assert.Throws<ArgumentOutOfRangeException>(() => OtherworldMissionRules.IsRerollRoundEligible(0));
+            Assert.IsTrue(OtherworldMissionRules.IsRerollRoundEligible(0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => OtherworldMissionRules.IsRerollRoundEligible(-1));
         }
     }
 }
