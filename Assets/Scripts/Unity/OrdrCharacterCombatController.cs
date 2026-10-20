@@ -24,6 +24,7 @@ namespace Ordr.Mobile.Unity
         private IOriginalPlacementRules placementRules;
         private IOriginalBossFocusRules bossFocusRules;
         private IOriginalAutoSkillRules autoSkillRules;
+        private IOriginalStoryDispatchPort storyDispatchRules;
 
         public void ConfigureMobileAutomation(IOriginalPlacementRules originalPlacement,
             IOriginalBossFocusRules originalBossFocus,
@@ -34,12 +35,15 @@ namespace Ordr.Mobile.Unity
             autoSkillRules = originalQwrAutoUse;
             if (Combat != null)
                 Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
+            Combat.ConfigureStoryDeployment(storyDispatchRules);
         }
 
         public void ConfigureManualMobileSystems(IOriginalStoryDispatchPort originalStory,
             IOriginalFusionPort originalFusion, IOriginalEconomyPort originalEconomy)
         {
+            storyDispatchRules = originalStory;
             ManualActions.Configure(originalStory, originalFusion, originalEconomy);
+            if (Combat != null) Combat.ConfigureStoryDeployment(originalStory);
         }
 
         // 전투 UI/로그가 스킬·피해·상태 적용 이벤트를 구독할 수 있다.
