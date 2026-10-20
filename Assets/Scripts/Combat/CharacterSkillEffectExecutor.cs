@@ -124,6 +124,17 @@ namespace Ordr.Mobile.Combat
             this.events = events ?? throw new ArgumentNullException(nameof(events));
         }
 
+        // 명시적 '미구현 공식' 정책을 쓰는 월드에서는 피해 스킬을 시전해
+        // 체력·마나만 소모하지 않도록 자원 차감 이전에 가로막는다.
+        public bool CanAttemptWithConfiguredFormula(ImportedCombatSkill skill)
+        {
+            if (skill == null) return false;
+            if (!(damageFormula is RejectUnverifiedDamageFormula)) return true;
+            foreach (var component in skill.Components)
+                if (IsDamage(component.Type)) return false;
+            return true;
+        }
+
         public void Execute(string casterId, CharacterSkillProfile profile,
             ImportedCombatSkill skill, SpatialCombatEnemy primary, double casterX, double casterY,
             IEnumerable<SpatialCombatEnemy> enemies)
