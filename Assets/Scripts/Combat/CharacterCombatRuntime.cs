@@ -16,6 +16,7 @@ namespace Ordr.Mobile.Combat
             public CatalogUnit Catalog;
             public CharacterSkillProfile Profile;
             public CharacterCombatMapping Mapping;
+            public CharacterActiveAbilities Abilities;
             public bool AttackReady;
             public bool AttackBlockedByMissingFormula;
         }
@@ -38,6 +39,8 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, int> armorBreakStacks =
             new Dictionary<string, int>(StringComparer.Ordinal);
         private readonly List<CharacterCombatEvent> events = new List<CharacterCombatEvent>();
+        private readonly List<CharacterCombatEvent> pendingCommandEvents =
+            new List<CharacterCombatEvent>();
 
         public GameSession Game { get { return game; } }
         public UnitRoster Roster { get { return roster; } }
@@ -84,8 +87,10 @@ namespace Ordr.Mobile.Combat
         {
             CatalogUnit catalogUnit = units.Require(catalogUnitId);
             long id = roster.Add(catalogUnitId, x, y);
+            var profile = profiles.Find(catalogUnitId);
             characters.Add(id, new CharacterInstance {
-                Id = id, Catalog = catalogUnit, Profile = profiles.Find(catalogUnitId)
+                Id = id, Catalog = catalogUnit, Profile = profile,
+                Abilities = new CharacterActiveAbilities(profile)
             });
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.UnitSpawned,
                 InstanceKey(id), null, null, catalogUnit.Name, 0));
@@ -142,6 +147,51 @@ namespace Ordr.Mobile.Combat
                     school, DamageTraits.None),
                 firstAttackDelay);
             return true;
+        }
+
+        public void ConfigureCharacterResources(long instanceId, CharacterResources verifiedResources)
+        {
+            CharacterInstance unit;
+            if (!characters.TryGetValue(instanceId, out unit))
+                throw new KeyNotFoundException("존재하지 않는 캐릭터.");
+            unit.Abilities.ConfigureResources(verifiedResources);
+        }
+
+        // UI의 스킬 버튼 또는 원본 조건 검증을 마친 자동 마나 스킬 호출 경로.
+        // 소비 자원·쿨타임·효과 종류가 확인되지 않은 스킬은 시전 실패로 반환한다.
+        public AbilityCastResult TryCastActiveSkill(long instanceId, string skillId,
+            string primaryEnemyId)
+        {
+            if (game.Phase != SessionPhase.Running)
+                throw new InvalidOperationException("게임 진행 중에만 시전할 수 있습니다.");
+            CharacterInstance caster;
+            if (!characters.TryGetValue(instanceId, out caster))
+                throw new KeyNotFoundException("존재하지 않는 캐릭터.");
+
+            SpatialCombatEnemy enemy;
+            bool hasTarget = !string.IsNullOrWhiteSpace(primaryEnemyId) &&
+                enemies.TryGetValue(primaryEnemyId, out enemy) &&
+                enemy.Enemy.IsAlive;
+            ImportedCombatSkill skill;
+            AbilityCastResult result = caster.Abilities.TryCast(skillId, hasTarget, out skill);
+            if (result != AbilityCastResult.Cast) return result;
+
+            UnitState position = roster.Get(instanceId);
+            int before = events.Count;
+            effectExecutor.Execute(InstanceKey(instanceId), caster.Profile, skill,
+                enemy, position.X, position.Y, enemies.Values);
+            for (int index = before; index < events.Count; index++)
+                pendingCommandEvents.Add(events[index]);
+            RemoveDefeatedEnemies();
+            return result;
+        }
+
+        public CharacterResources ResourcesOf(long instanceId)
+        {
+            CharacterInstance caster;
+            if (!characters.TryGetValue(instanceId, out caster))
+                throw new KeyNotFoundException("존재하지 않는 캐릭터.");
+            return caster.Abilities.Resources;
         }
 
         public void RemoveCharacter(long instanceId)
@@ -229,7 +279,14 @@ namespace Ordr.Mobile.Combat
             if (game.Phase != SessionPhase.Running)
                 throw new InvalidOperationException("게임이 진행 중이 아닙니다.");
             events.Clear();
+            if (pendingCommandEvents.Count != 0)
+            {
+                events.AddRange(pendingCommandEvents);
+                pendingCommandEvents.Clear();
+            }
             attackPipeline.Advance(deltaSeconds);
+            foreach (var unit in characters.Values)
+                unit.Abilities.Advance(deltaSeconds);
             foreach (var status in statuses.Values) status.Advance(deltaSeconds);
 
             var ids = new List<long>(characters.Keys);
