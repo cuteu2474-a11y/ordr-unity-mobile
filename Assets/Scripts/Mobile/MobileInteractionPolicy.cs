@@ -166,6 +166,10 @@ namespace Ordr.Mobile.Mobile
                     // 그런 스킬은 정확한 이벤트형 스케줄러 구현 전 보류한다.
                     double? cooldown = skill.Number("absoluteCooldownSeconds") ?? skill.CooldownSeconds;
                     if (!cooldown.HasValue || cooldown.Value <= 0) continue;
+                    // 캐스팅 중 공격/이동 잠금 미구현: 시전시간이 있는 스킬을
+                    // 즉시 시전하면 원작 DPS가 달라지므로 이 경로에선 보류.
+                    double? castTime = skill.Number("castTimeSeconds");
+                    if (castTime.HasValue && castTime.Value > 0) continue;
                     if (skill.Get("requiresOriginalVerification") is bool &&
                         (bool)skill.Get("requiresOriginalVerification")) continue;
                     string targetId;
