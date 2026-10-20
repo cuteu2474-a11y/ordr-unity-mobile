@@ -149,6 +149,21 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
+        // 모바일 UI가 캐릭터 상세 스킬·현재 적 체력을 읽는 조회 경로.
+        // 객체를 조회해도 공격 스펙이 자동으로 활성화되지는 않는다.
+        public CharacterSkillProfile ProfileOf(long instanceId)
+        {
+            CharacterInstance unit;
+            if (!characters.TryGetValue(instanceId, out unit))
+                throw new KeyNotFoundException("존재하지 않는 캐릭터.");
+            return unit.Profile;
+        }
+
+        public CombatEnemy EnemyOf(string enemyId)
+        {
+            return string.IsNullOrWhiteSpace(enemyId) ? null : resolution.GetEnemy(enemyId);
+        }
+
         public void ConfigureCharacterResources(long instanceId, CharacterResources verifiedResources)
         {
             CharacterInstance unit;
