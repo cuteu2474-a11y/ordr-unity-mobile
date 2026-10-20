@@ -172,6 +172,13 @@ namespace Ordr.Mobile.Combat
             bool hasTarget = !string.IsNullOrWhiteSpace(primaryEnemyId) &&
                 enemies.TryGetValue(primaryEnemyId, out enemy) &&
                 enemy.Enemy.IsAlive;
+            // 자원을 소모하기 전에 등록된 피해 계산기의 지원 여부를 확인한다.
+            if (caster.Profile != null)
+                foreach (var candidate in caster.Profile.Skills)
+                    if (candidate.Id == skillId &&
+                        !effectExecutor.CanAttemptWithConfiguredFormula(candidate))
+                        return AbilityCastResult.UnsupportedEffect;
+
             ImportedCombatSkill skill;
             AbilityCastResult result = caster.Abilities.TryCast(skillId, hasTarget, out skill);
             if (result != AbilityCastResult.Cast) return result;
