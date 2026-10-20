@@ -5,10 +5,10 @@ namespace Ordr.Mobile.Core
 {
     public enum SessionPhase { NotStarted, Running, Won, Lost }
 
-    // 악몽 변이 모드 전용 세션. 라운드와 패배 수치는 외부 검증 데이터에서 주입한다.
+    // 악몽 이세계모드 전용 세션. 라운드와 패배 수치는 외부 검증 데이터에서 주입한다.
     public sealed class GameSession
     {
-        public const string ModeId = "nightmare-mutation";
+        public const string ModeId = "nightmare-otherworld";
         public SessionPhase Phase { get; private set; } = SessionPhase.NotStarted;
         public int CurrentWave { get; private set; }
         public int AliveEnemies { get; private set; }
