@@ -1,0 +1,4457 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "catalogVersion": "2.323",
+  "scope": "nightmare-otherworld",
+  "collectedOn": "2026-10-21",
+  "sourceIndex": "https://ordr.kr/character",
+  "disclaimer": "도감 등급별 나열 순서를 내부 식별자로 변환했다. gameRawCode와 평타 스펙은 아직 검증되지 않았으므로 null이다. roleTags는 도감의 요약 분류이며 전투 스킬 전체를 나타내지 않는다.",
+  "expectedTotal": 271,
+  "entries": [
+    {
+      "id": "C-01",
+      "grade": "흔함",
+      "gradeOrder": 1,
+      "name": "루피",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "C-02",
+      "grade": "흔함",
+      "gradeOrder": 2,
+      "name": "조로",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "C-03",
+      "grade": "흔함",
+      "gradeOrder": 3,
+      "name": "나미",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "C-04",
+      "grade": "흔함",
+      "gradeOrder": 4,
+      "name": "우솝",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "C-05",
+      "grade": "흔함",
+      "gradeOrder": 5,
+      "name": "상디",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "C-06",
+      "grade": "흔함",
+      "gradeOrder": 6,
+      "name": "쵸파",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "C-07",
+      "grade": "흔함",
+      "gradeOrder": 7,
+      "name": "버기",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "C-08",
+      "grade": "흔함",
+      "gradeOrder": 8,
+      "name": "총병",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "C-09",
+      "grade": "흔함",
+      "gradeOrder": 9,
+      "name": "칼병",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-01",
+      "grade": "안흔함",
+      "gradeOrder": 1,
+      "name": "로빈",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-02",
+      "grade": "안흔함",
+      "gradeOrder": 2,
+      "name": "베포",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-03",
+      "grade": "안흔함",
+      "gradeOrder": 3,
+      "name": "브룩",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-04",
+      "grade": "안흔함",
+      "gradeOrder": 4,
+      "name": "블루노",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-05",
+      "grade": "안흔함",
+      "gradeOrder": 5,
+      "name": "에이스",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-06",
+      "grade": "안흔함",
+      "gradeOrder": 6,
+      "name": "이나즈마",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-07",
+      "grade": "안흔함",
+      "gradeOrder": 7,
+      "name": "저격왕",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-08",
+      "grade": "안흔함",
+      "gradeOrder": 8,
+      "name": "쵸파 럼블볼",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-09",
+      "grade": "안흔함",
+      "gradeOrder": 9,
+      "name": "타시기",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-10",
+      "grade": "안흔함",
+      "gradeOrder": 10,
+      "name": "페로나",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-11",
+      "grade": "안흔함",
+      "gradeOrder": 11,
+      "name": "프랑키",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-12",
+      "grade": "안흔함",
+      "gradeOrder": 12,
+      "name": "하찌",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "U-13",
+      "grade": "안흔함",
+      "gradeOrder": 13,
+      "name": "후쿠로",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-01",
+      "grade": "특별함",
+      "gradeOrder": 1,
+      "name": "X-드레이크",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-02",
+      "grade": "특별함",
+      "gradeOrder": 2,
+      "name": "갱 뱃지",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-03",
+      "grade": "특별함",
+      "gradeOrder": 3,
+      "name": "나미 크리마텍트",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-04",
+      "grade": "특별함",
+      "gradeOrder": 4,
+      "name": "로빈 오하라",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-05",
+      "grade": "특별함",
+      "gradeOrder": 5,
+      "name": "트라팔가 로우",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-06",
+      "grade": "특별함",
+      "gradeOrder": 6,
+      "name": "루치",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-07",
+      "grade": "특별함",
+      "gradeOrder": 7,
+      "name": "루피 기어세컨드",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-08",
+      "grade": "특별함",
+      "gradeOrder": 8,
+      "name": "마르코",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-09",
+      "grade": "특별함",
+      "gradeOrder": 9,
+      "name": "모리아",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-10",
+      "grade": "특별함",
+      "gradeOrder": 10,
+      "name": "바질호킨스",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-11",
+      "grade": "특별함",
+      "gradeOrder": 11,
+      "name": "버기 마기탄",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-12",
+      "grade": "특별함",
+      "gradeOrder": 12,
+      "name": "봉쿠레",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-13",
+      "grade": "특별함",
+      "gradeOrder": 13,
+      "name": "상디 검은다리",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-14",
+      "grade": "특별함",
+      "gradeOrder": 14,
+      "name": "스모커",
+      "roleTags": [
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-15",
+      "grade": "특별함",
+      "gradeOrder": 15,
+      "name": "스쿼드",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-16",
+      "grade": "특별함",
+      "gradeOrder": 16,
+      "name": "아론",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-17",
+      "grade": "특별함",
+      "gradeOrder": 17,
+      "name": "압살롬",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-18",
+      "grade": "특별함",
+      "gradeOrder": 18,
+      "name": "에넬",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-19",
+      "grade": "특별함",
+      "gradeOrder": 19,
+      "name": "에이스 2번 대대장",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-20",
+      "grade": "특별함",
+      "gradeOrder": 20,
+      "name": "우솝 화염탄",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-21",
+      "grade": "특별함",
+      "gradeOrder": 21,
+      "name": "이나즈마 혁명군",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-22",
+      "grade": "특별함",
+      "gradeOrder": 22,
+      "name": "조로 귀기",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-23",
+      "grade": "특별함",
+      "gradeOrder": 23,
+      "name": "징베",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-24",
+      "grade": "특별함",
+      "gradeOrder": 24,
+      "name": "챠카",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-25",
+      "grade": "특별함",
+      "gradeOrder": 25,
+      "name": "쵸파 가드포인트",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-26",
+      "grade": "특별함",
+      "gradeOrder": 26,
+      "name": "쵸파 두뇌강화",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-27",
+      "grade": "특별함",
+      "gradeOrder": 27,
+      "name": "캡틴 크로",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-28",
+      "grade": "특별함",
+      "gradeOrder": 28,
+      "name": "쿠마",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-29",
+      "grade": "특별함",
+      "gradeOrder": 29,
+      "name": "크로커다일",
+      "roleTags": [
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-30",
+      "grade": "특별함",
+      "gradeOrder": 30,
+      "name": "키드",
+      "roleTags": [
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-31",
+      "grade": "특별함",
+      "gradeOrder": 31,
+      "name": "킬러",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-32",
+      "grade": "특별함",
+      "gradeOrder": 32,
+      "name": "파이러츠 도킹5",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "광폭화딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "S-33",
+      "grade": "특별함",
+      "gradeOrder": 33,
+      "name": "헤르메포",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "X-01",
+      "grade": "특수함",
+      "gradeOrder": 1,
+      "name": "모건",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "X-02",
+      "grade": "특수함",
+      "gradeOrder": 2,
+      "name": "베티",
+      "roleTags": [
+        "체력재생",
+        "마나재생"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "X-03",
+      "grade": "특수함",
+      "gradeOrder": 3,
+      "name": "블고리",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "X-04",
+      "grade": "특수함",
+      "gradeOrder": 4,
+      "name": "아이스버그",
+      "roleTags": [
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "X-05",
+      "grade": "특수함",
+      "gradeOrder": 5,
+      "name": "오타마",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "X-06",
+      "grade": "특수함",
+      "gradeOrder": 6,
+      "name": "페루",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "X-07",
+      "grade": "특수함",
+      "gradeOrder": 7,
+      "name": "폭시",
+      "roleTags": [
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-01",
+      "grade": "희귀함",
+      "gradeOrder": 1,
+      "name": "X-드레이크",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-02",
+      "grade": "희귀함",
+      "gradeOrder": 2,
+      "name": "거프",
+      "roleTags": [
+        "물뎀",
+        "암브",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-03",
+      "grade": "희귀함",
+      "gradeOrder": 3,
+      "name": "검은수염",
+      "roleTags": [
+        "마뎀",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-04",
+      "grade": "희귀함",
+      "gradeOrder": 4,
+      "name": "도플라밍고",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-05",
+      "grade": "희귀함",
+      "gradeOrder": 5,
+      "name": "트라팔가 로우 죽음의 외과의사",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-06",
+      "grade": "희귀함",
+      "gradeOrder": 6,
+      "name": "루피 기어써드",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-07",
+      "grade": "희귀함",
+      "gradeOrder": 7,
+      "name": "류마",
+      "roleTags": [
+        "마뎀",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-08",
+      "grade": "희귀함",
+      "gradeOrder": 8,
+      "name": "마르코 불사조",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-09",
+      "grade": "희귀함",
+      "gradeOrder": 9,
+      "name": "마젤란",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-10",
+      "grade": "희귀함",
+      "gradeOrder": 10,
+      "name": "모몬가",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-11",
+      "grade": "희귀함",
+      "gradeOrder": 11,
+      "name": "미호크",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-12",
+      "grade": "희귀함",
+      "gradeOrder": 12,
+      "name": "바르톨로메오",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-13",
+      "grade": "희귀함",
+      "gradeOrder": 13,
+      "name": "바제스",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-14",
+      "grade": "희귀함",
+      "gradeOrder": 14,
+      "name": "바질 호킨스 스트로맨",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-15",
+      "grade": "희귀함",
+      "gradeOrder": 15,
+      "name": "반더 데켄",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-16",
+      "grade": "희귀함",
+      "gradeOrder": 16,
+      "name": "베이비 5",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-17",
+      "grade": "희귀함",
+      "gradeOrder": 17,
+      "name": "벤 베크만",
+      "roleTags": [
+        "마뎀"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-18",
+      "grade": "희귀함",
+      "gradeOrder": 18,
+      "name": "브룩 음악가",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-19",
+      "grade": "희귀함",
+      "gradeOrder": 19,
+      "name": "비비",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-20",
+      "grade": "희귀함",
+      "gradeOrder": 20,
+      "name": "사보",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-21",
+      "grade": "희귀함",
+      "gradeOrder": 21,
+      "name": "상디 디아블잠브",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-22",
+      "grade": "희귀함",
+      "gradeOrder": 22,
+      "name": "샹크스",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-23",
+      "grade": "희귀함",
+      "gradeOrder": 23,
+      "name": "센토마루",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-24",
+      "grade": "희귀함",
+      "gradeOrder": 24,
+      "name": "슈가",
+      "roleTags": [
+        "마나재생"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-25",
+      "grade": "희귀함",
+      "gradeOrder": 25,
+      "name": "시류",
+      "roleTags": [
+        "단일스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-26",
+      "grade": "희귀함",
+      "gradeOrder": 26,
+      "name": "아오키지",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-27",
+      "grade": "희귀함",
+      "gradeOrder": 27,
+      "name": "아카이누",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-28",
+      "grade": "희귀함",
+      "gradeOrder": 28,
+      "name": "오즈",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-29",
+      "grade": "희귀함",
+      "gradeOrder": 29,
+      "name": "와이퍼",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-30",
+      "grade": "희귀함",
+      "gradeOrder": 30,
+      "name": "우솝 보잉열도",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-31",
+      "grade": "희귀함",
+      "gradeOrder": 31,
+      "name": "이완코브",
+      "roleTags": [
+        "마뎀",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-32",
+      "grade": "희귀함",
+      "gradeOrder": 32,
+      "name": "제프",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-33",
+      "grade": "희귀함",
+      "gradeOrder": 33,
+      "name": "조로 현상금 사냥꾼",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-34",
+      "grade": "희귀함",
+      "gradeOrder": 34,
+      "name": "죠즈",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-35",
+      "grade": "희귀함",
+      "gradeOrder": 35,
+      "name": "쵸파 혼포인트",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-36",
+      "grade": "희귀함",
+      "gradeOrder": 36,
+      "name": "카쿠",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-37",
+      "grade": "희귀함",
+      "gradeOrder": 37,
+      "name": "캡틴 키드",
+      "roleTags": [
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-38",
+      "grade": "희귀함",
+      "gradeOrder": 38,
+      "name": "크로커다일 Mr.0",
+      "roleTags": [
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-39",
+      "grade": "희귀함",
+      "gradeOrder": 39,
+      "name": "키자루",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-40",
+      "grade": "희귀함",
+      "gradeOrder": 40,
+      "name": "킨에몬",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-41",
+      "grade": "희귀함",
+      "gradeOrder": 41,
+      "name": "페로나 홀로홀로",
+      "roleTags": [
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "R-42",
+      "grade": "희귀함",
+      "gradeOrder": 42,
+      "name": "핸콕",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": "https://ordr.kr/character/R42",
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-01",
+      "grade": "전설",
+      "gradeOrder": 1,
+      "name": "검은수염",
+      "roleTags": [
+        "마뎀",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-02",
+      "grade": "전설",
+      "gradeOrder": 2,
+      "name": "나미",
+      "roleTags": [
+        "마뎀",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-03",
+      "grade": "전설",
+      "gradeOrder": 3,
+      "name": "네코마무시",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "광폭화딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-04",
+      "grade": "전설",
+      "gradeOrder": 4,
+      "name": "드래곤",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-05",
+      "grade": "전설",
+      "gradeOrder": 5,
+      "name": "라분",
+      "roleTags": [
+        "마뎀",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-06",
+      "grade": "전설",
+      "gradeOrder": 6,
+      "name": "레이쥬",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-07",
+      "grade": "전설",
+      "gradeOrder": 7,
+      "name": "레일리",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-08",
+      "grade": "전설",
+      "gradeOrder": 8,
+      "name": "트라팔가 로우",
+      "roleTags": [
+        "마뎀",
+        "광폭화딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-09",
+      "grade": "전설",
+      "gradeOrder": 9,
+      "name": "루치",
+      "roleTags": [
+        "마뎀"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-10",
+      "grade": "전설",
+      "gradeOrder": 10,
+      "name": "루피 나이트메어",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-11",
+      "grade": "전설",
+      "gradeOrder": 11,
+      "name": "마르코 환수종",
+      "roleTags": [
+        "마뎀",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-12",
+      "grade": "전설",
+      "gradeOrder": 12,
+      "name": "모리아",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-13",
+      "grade": "전설",
+      "gradeOrder": 13,
+      "name": "바르톨로메오",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-14",
+      "grade": "전설",
+      "gradeOrder": 14,
+      "name": "브륄레",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-15",
+      "grade": "전설",
+      "gradeOrder": 15,
+      "name": "블랙마리아",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-16",
+      "grade": "전설",
+      "gradeOrder": 16,
+      "name": "상디",
+      "roleTags": [
+        "마뎀"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-17",
+      "grade": "전설",
+      "gradeOrder": 17,
+      "name": "샹크스",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-18",
+      "grade": "전설",
+      "gradeOrder": 18,
+      "name": "센고쿠",
+      "roleTags": [
+        "마뎀",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-19",
+      "grade": "전설",
+      "gradeOrder": 19,
+      "name": "슈가",
+      "roleTags": [
+        "마나재생",
+        "삭제"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-20",
+      "grade": "전설",
+      "gradeOrder": 20,
+      "name": "스모커",
+      "roleTags": [
+        "물뎀",
+        "암브",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-21",
+      "grade": "전설",
+      "gradeOrder": 21,
+      "name": "시노부",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-22",
+      "grade": "전설",
+      "gradeOrder": 22,
+      "name": "시저",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-23",
+      "grade": "전설",
+      "gradeOrder": 23,
+      "name": "시키",
+      "roleTags": [
+        "물뎀",
+        "암브",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-24",
+      "grade": "전설",
+      "gradeOrder": 24,
+      "name": "에이스",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-25",
+      "grade": "전설",
+      "gradeOrder": 25,
+      "name": "울티",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-26",
+      "grade": "전설",
+      "gradeOrder": 26,
+      "name": "제파",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-27",
+      "grade": "전설",
+      "gradeOrder": 27,
+      "name": "조로",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-28",
+      "grade": "전설",
+      "gradeOrder": 28,
+      "name": "징베",
+      "roleTags": [
+        "물뎀",
+        "암브",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-29",
+      "grade": "전설",
+      "gradeOrder": 29,
+      "name": "쵸파 유력강화",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-30",
+      "grade": "전설",
+      "gradeOrder": 30,
+      "name": "카르가라",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-31",
+      "grade": "전설",
+      "gradeOrder": 31,
+      "name": "코비",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-32",
+      "grade": "전설",
+      "gradeOrder": 32,
+      "name": "쿠마 폭군",
+      "roleTags": [
+        "마뎀",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-33",
+      "grade": "전설",
+      "gradeOrder": 33,
+      "name": "크래커",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-34",
+      "grade": "전설",
+      "gradeOrder": 34,
+      "name": "킹",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-35",
+      "grade": "전설",
+      "gradeOrder": 35,
+      "name": "토키",
+      "roleTags": [
+        "마뎀",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-36",
+      "grade": "전설",
+      "gradeOrder": 36,
+      "name": "핸콕",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-37",
+      "grade": "전설",
+      "gradeOrder": 37,
+      "name": "후지토라",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-38",
+      "grade": "전설",
+      "gradeOrder": 38,
+      "name": "흰수염",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "L-39",
+      "grade": "전설",
+      "gradeOrder": 39,
+      "name": "히바리",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-01",
+      "grade": "히든",
+      "gradeOrder": 1,
+      "name": "검호",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-02",
+      "grade": "히든",
+      "gradeOrder": 2,
+      "name": "레드포스호",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-03",
+      "grade": "히든",
+      "gradeOrder": 3,
+      "name": "레베카",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-04",
+      "grade": "히든",
+      "gradeOrder": 4,
+      "name": "료쿠규",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-05",
+      "grade": "히든",
+      "gradeOrder": 5,
+      "name": "류마",
+      "roleTags": [
+        "마뎀",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-06",
+      "grade": "히든",
+      "gradeOrder": 6,
+      "name": "모비딕호",
+      "roleTags": [
+        "이감",
+        "체력재생"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-07",
+      "grade": "히든",
+      "gradeOrder": 7,
+      "name": "반더데켄",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-08",
+      "grade": "히든",
+      "gradeOrder": 8,
+      "name": "발라티에",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-09",
+      "grade": "히든",
+      "gradeOrder": 9,
+      "name": "방주맥심",
+      "roleTags": [
+        "마뎀",
+        "마방깎",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-10",
+      "grade": "히든",
+      "gradeOrder": 10,
+      "name": "베르고",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": "https://ordr.kr/character/H10",
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-11",
+      "grade": "히든",
+      "gradeOrder": 11,
+      "name": "봉쿠레",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-12",
+      "grade": "히든",
+      "gradeOrder": 12,
+      "name": "사보",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-13",
+      "grade": "히든",
+      "gradeOrder": 13,
+      "name": "스튜시",
+      "roleTags": [
+        "마뎀",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-14",
+      "grade": "히든",
+      "gradeOrder": 14,
+      "name": "시류",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-15",
+      "grade": "히든",
+      "gradeOrder": 15,
+      "name": "써니호",
+      "roleTags": [
+        "마뎀",
+        "스턴",
+        "광폭화딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-16",
+      "grade": "히든",
+      "gradeOrder": 16,
+      "name": "아오키지",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-17",
+      "grade": "히든",
+      "gradeOrder": 17,
+      "name": "아카이누",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-18",
+      "grade": "히든",
+      "gradeOrder": 18,
+      "name": "이완코브",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-19",
+      "grade": "히든",
+      "gradeOrder": 19,
+      "name": "캐럿",
+      "roleTags": [
+        "마뎀",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-20",
+      "grade": "히든",
+      "gradeOrder": 20,
+      "name": "키쿠노죠",
+      "roleTags": [
+        "마뎀",
+        "보스딜러",
+        "광폭화딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-21",
+      "grade": "히든",
+      "gradeOrder": 21,
+      "name": "킬러",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "H-22",
+      "grade": "히든",
+      "gradeOrder": 22,
+      "name": "피셔타이거",
+      "roleTags": [
+        "마뎀",
+        "스턴",
+        "광폭화딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "T-01",
+      "grade": "변화",
+      "gradeOrder": 1,
+      "name": "도플라밍고",
+      "roleTags": [
+        "마뎀"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "T-02",
+      "grade": "변화",
+      "gradeOrder": 2,
+      "name": "비비",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "T-03",
+      "grade": "변화",
+      "gradeOrder": 3,
+      "name": "베이비 5",
+      "roleTags": [
+        "물뎀",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "T-04",
+      "grade": "변화",
+      "gradeOrder": 4,
+      "name": "카쿠",
+      "roleTags": [
+        "마뎀",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "T-05",
+      "grade": "변화",
+      "gradeOrder": 5,
+      "name": "캐럿",
+      "roleTags": [
+        "단일스턴",
+        "증폭",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "LI-01",
+      "grade": "제한됨",
+      "gradeOrder": 1,
+      "name": "레드필드",
+      "roleTags": [
+        "마뎀",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "LI-02",
+      "grade": "제한됨",
+      "gradeOrder": 2,
+      "name": "레베카",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "LI-03",
+      "grade": "제한됨",
+      "gradeOrder": 3,
+      "name": "마르코",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "LI-04",
+      "grade": "제한됨",
+      "gradeOrder": 4,
+      "name": "시노부",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "LI-05",
+      "grade": "제한됨",
+      "gradeOrder": 5,
+      "name": "아인",
+      "roleTags": [
+        "마뎀",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "LI-06",
+      "grade": "제한됨",
+      "gradeOrder": 6,
+      "name": "알비다",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "LI-07",
+      "grade": "제한됨",
+      "gradeOrder": 7,
+      "name": "에넬",
+      "roleTags": [
+        "마뎀",
+        "보스딜러",
+        "광폭화딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "LI-08",
+      "grade": "제한됨",
+      "gradeOrder": 8,
+      "name": "카타쿠리",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "LI-09",
+      "grade": "제한됨",
+      "gradeOrder": 9,
+      "name": "크로커다일",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "LI-10",
+      "grade": "제한됨",
+      "gradeOrder": 10,
+      "name": "킹",
+      "roleTags": [
+        "물뎀",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "D-01",
+      "grade": "왜곡됨",
+      "gradeOrder": 1,
+      "name": "블랙마리아",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "광폭화딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "D-02",
+      "grade": "왜곡됨",
+      "gradeOrder": 2,
+      "name": "코알라",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "D-03",
+      "grade": "왜곡됨",
+      "gradeOrder": 3,
+      "name": "퀸",
+      "roleTags": [
+        "물뎀",
+        "암브",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "D-04",
+      "grade": "왜곡됨",
+      "gradeOrder": 4,
+      "name": "페로나",
+      "roleTags": [
+        "이감",
+        "증폭",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "D-05",
+      "grade": "왜곡됨",
+      "gradeOrder": 5,
+      "name": "포트거스.D.에이스",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "D-06",
+      "grade": "왜곡됨",
+      "gradeOrder": 6,
+      "name": "바제스",
+      "roleTags": [
+        "마뎀",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-01",
+      "grade": "초월함",
+      "gradeOrder": 1,
+      "name": "검은수염",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-02",
+      "grade": "초월함",
+      "gradeOrder": 2,
+      "name": "나미",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-03",
+      "grade": "초월함",
+      "gradeOrder": 3,
+      "name": "도플라밍고",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-04",
+      "grade": "초월함",
+      "gradeOrder": 4,
+      "name": "로빈",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-05",
+      "grade": "초월함",
+      "gradeOrder": 5,
+      "name": "트라팔가 로우",
+      "roleTags": [
+        "마뎀",
+        "단일딜러",
+        "광폭화딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-06",
+      "grade": "초월함",
+      "gradeOrder": 6,
+      "name": "료쿠규",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-07",
+      "grade": "초월함",
+      "gradeOrder": 7,
+      "name": "루치",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-08",
+      "grade": "초월함",
+      "gradeOrder": 8,
+      "name": "루피",
+      "roleTags": [
+        "물뎀",
+        "암브",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-09",
+      "grade": "초월함",
+      "gradeOrder": 9,
+      "name": "바질호킨스",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-10",
+      "grade": "초월함",
+      "gradeOrder": 10,
+      "name": "브룩",
+      "roleTags": [
+        "마뎀",
+        "마방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-11",
+      "grade": "초월함",
+      "gradeOrder": 11,
+      "name": "사보",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-12",
+      "grade": "초월함",
+      "gradeOrder": 12,
+      "name": "상디",
+      "roleTags": [
+        "마뎀",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-13",
+      "grade": "초월함",
+      "gradeOrder": 13,
+      "name": "샹크스",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-14",
+      "grade": "초월함",
+      "gradeOrder": 14,
+      "name": "스네이크맨",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-15",
+      "grade": "초월함",
+      "gradeOrder": 15,
+      "name": "시라호시",
+      "roleTags": [
+        "마뎀",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-16",
+      "grade": "초월함",
+      "gradeOrder": 16,
+      "name": "아오키지",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": "https://ordr.kr/character/TR16",
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-17",
+      "grade": "초월함",
+      "gradeOrder": 17,
+      "name": "아카이누",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "광폭화딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-18",
+      "grade": "초월함",
+      "gradeOrder": 18,
+      "name": "야마토",
+      "roleTags": [
+        "물뎀",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-19",
+      "grade": "초월함",
+      "gradeOrder": 19,
+      "name": "우솝",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-20",
+      "grade": "초월함",
+      "gradeOrder": 20,
+      "name": "조로",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": "https://ordr.kr/character/TR20",
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-21",
+      "grade": "초월함",
+      "gradeOrder": 21,
+      "name": "보니",
+      "roleTags": [
+        "마뎀",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-22",
+      "grade": "초월함",
+      "gradeOrder": 22,
+      "name": "징베",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-23",
+      "grade": "초월함",
+      "gradeOrder": 23,
+      "name": "쵸파",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-24",
+      "grade": "초월함",
+      "gradeOrder": 24,
+      "name": "코비",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-25",
+      "grade": "초월함",
+      "gradeOrder": 25,
+      "name": "키드",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-26",
+      "grade": "초월함",
+      "gradeOrder": 26,
+      "name": "키자루",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-27",
+      "grade": "초월함",
+      "gradeOrder": 27,
+      "name": "타시기",
+      "roleTags": [
+        "물뎀",
+        "마뎀",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-28",
+      "grade": "초월함",
+      "gradeOrder": 28,
+      "name": "프랑키",
+      "roleTags": [
+        "마뎀",
+        "마나재생"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-29",
+      "grade": "초월함",
+      "gradeOrder": 29,
+      "name": "후지토라",
+      "roleTags": [
+        "물뎀",
+        "암브",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "TR-30",
+      "grade": "초월함",
+      "gradeOrder": 30,
+      "name": "베가펑크",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-01",
+      "grade": "영원한",
+      "gradeOrder": 1,
+      "name": "니카(루피)",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-02",
+      "grade": "영원한",
+      "gradeOrder": 2,
+      "name": "니카(스네이크)",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-03",
+      "grade": "영원한",
+      "gradeOrder": 3,
+      "name": "류마",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-04",
+      "grade": "영원한",
+      "gradeOrder": 4,
+      "name": "미호크",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-05",
+      "grade": "영원한",
+      "gradeOrder": 5,
+      "name": "버기",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-06",
+      "grade": "영원한",
+      "gradeOrder": 6,
+      "name": "비비",
+      "roleTags": [
+        "마뎀",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-07",
+      "grade": "영원한",
+      "gradeOrder": 7,
+      "name": "에이스",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-08",
+      "grade": "영원한",
+      "gradeOrder": 8,
+      "name": "오뎅",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-09",
+      "grade": "영원한",
+      "gradeOrder": 9,
+      "name": "우타",
+      "roleTags": [
+        "마뎀",
+        "마방깎",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-10",
+      "grade": "영원한",
+      "gradeOrder": 10,
+      "name": "카번딧슈",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-11",
+      "grade": "영원한",
+      "gradeOrder": 11,
+      "name": "테조로",
+      "roleTags": [
+        "마뎀",
+        "스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": "https://ordr.kr/character/E11",
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "E-12",
+      "grade": "영원한",
+      "gradeOrder": 12,
+      "name": "핸콕",
+      "roleTags": [
+        "물뎀",
+        "마뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-01",
+      "grade": "불멸의",
+      "gradeOrder": 1,
+      "name": "거프",
+      "roleTags": [
+        "단일스턴",
+        "스턴",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-02",
+      "grade": "불멸의",
+      "gradeOrder": 2,
+      "name": "드래곤",
+      "roleTags": [
+        "마뎀",
+        "스턴",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-03",
+      "grade": "불멸의",
+      "gradeOrder": 3,
+      "name": "레일리",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-04",
+      "grade": "불멸의",
+      "gradeOrder": 4,
+      "name": "로져",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": "https://ordr.kr/character/I4",
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-05",
+      "grade": "불멸의",
+      "gradeOrder": 5,
+      "name": "불릿",
+      "roleTags": [
+        "물뎀",
+        "암브",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-06",
+      "grade": "불멸의",
+      "gradeOrder": 6,
+      "name": "빅맘",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-07",
+      "grade": "불멸의",
+      "gradeOrder": 7,
+      "name": "센고쿠",
+      "roleTags": [
+        "마뎀",
+        "스턴",
+        "단일딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-08",
+      "grade": "불멸의",
+      "gradeOrder": 8,
+      "name": "스코퍼가반",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": "https://ordr.kr/character/I8",
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-09",
+      "grade": "불멸의",
+      "gradeOrder": 9,
+      "name": "시키",
+      "roleTags": [
+        "물뎀",
+        "마뎀",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-10",
+      "grade": "불멸의",
+      "gradeOrder": 10,
+      "name": "제트",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-11",
+      "grade": "불멸의",
+      "gradeOrder": 11,
+      "name": "카이도",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "I-12",
+      "grade": "불멸의",
+      "gradeOrder": 12,
+      "name": "흰수염",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "SR-01",
+      "grade": "세라핌",
+      "gradeOrder": 1,
+      "name": "S-스네이크",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "SR-02",
+      "grade": "세라핌",
+      "gradeOrder": 2,
+      "name": "S-호크",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "SR-03",
+      "grade": "세라핌",
+      "gradeOrder": 3,
+      "name": "S-샤크",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "SR-04",
+      "grade": "세라핌",
+      "gradeOrder": 4,
+      "name": "S-베어",
+      "roleTags": [
+        "마뎀",
+        "마방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-01",
+      "grade": "랜덤",
+      "gradeOrder": 1,
+      "name": "K",
+      "roleTags": [
+        "마뎀",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-02",
+      "grade": "랜덤",
+      "gradeOrder": 2,
+      "name": "나루토",
+      "roleTags": [
+        "마뎀",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-03",
+      "grade": "랜덤",
+      "gradeOrder": 3,
+      "name": "메구밍",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-04",
+      "grade": "랜덤",
+      "gradeOrder": 4,
+      "name": "센토 이스즈",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-05",
+      "grade": "랜덤",
+      "gradeOrder": 5,
+      "name": "야가미 라이토",
+      "roleTags": [
+        "마뎀"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-06",
+      "grade": "랜덤",
+      "gradeOrder": 6,
+      "name": "엘리자베스",
+      "roleTags": [
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-07",
+      "grade": "랜덤",
+      "gradeOrder": 7,
+      "name": "옌",
+      "roleTags": [
+        "마뎀"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-08",
+      "grade": "랜덤",
+      "gradeOrder": 8,
+      "name": "요츠바",
+      "roleTags": [
+        "마나재생"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-09",
+      "grade": "랜덤",
+      "gradeOrder": 9,
+      "name": "이사야마 요미",
+      "roleTags": [
+        "물뎀",
+        "방깎"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-10",
+      "grade": "랜덤",
+      "gradeOrder": 10,
+      "name": "이치의 율자",
+      "roleTags": [
+        "마뎀"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-11",
+      "grade": "랜덤",
+      "gradeOrder": 11,
+      "name": "토우마",
+      "roleTags": [],
+      "roleTagsStatus": "not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-12",
+      "grade": "랜덤",
+      "gradeOrder": 12,
+      "name": "이치고",
+      "roleTags": [
+        "마뎀"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-13",
+      "grade": "랜덤",
+      "gradeOrder": 13,
+      "name": "페이몬",
+      "roleTags": [
+        "마뎀",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "RN-14",
+      "grade": "랜덤",
+      "gradeOrder": 14,
+      "name": "하네카와 츠바사",
+      "roleTags": [
+        "마뎀"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-01",
+      "grade": "신비함",
+      "gradeOrder": 1,
+      "name": "고죠 사토루",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-02",
+      "grade": "신비함",
+      "gradeOrder": 2,
+      "name": "네즈코",
+      "roleTags": [
+        "마뎀",
+        "단일스턴",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-03",
+      "grade": "신비함",
+      "gradeOrder": 3,
+      "name": "료우기 시키",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "단일스턴"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-04",
+      "grade": "신비함",
+      "gradeOrder": 4,
+      "name": "미나토",
+      "roleTags": [
+        "마뎀",
+        "스턴",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-05",
+      "grade": "신비함",
+      "gradeOrder": 5,
+      "name": "바쿠야",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-06",
+      "grade": "신비함",
+      "gradeOrder": 6,
+      "name": "부릉냐",
+      "roleTags": [
+        "마뎀",
+        "보스딜러"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-07",
+      "grade": "신비함",
+      "gradeOrder": 7,
+      "name": "샌즈",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": "https://ordr.kr/character/MY7",
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-08",
+      "grade": "신비함",
+      "gradeOrder": 8,
+      "name": "아냐 포저",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-09",
+      "grade": "신비함",
+      "gradeOrder": 9,
+      "name": "야쿠모 유카리",
+      "roleTags": [
+        "마뎀",
+        "이감",
+        "증폭"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-10",
+      "grade": "신비함",
+      "gradeOrder": 10,
+      "name": "콘파쿠 요우무",
+      "roleTags": [
+        "마뎀"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-11",
+      "grade": "신비함",
+      "gradeOrder": 11,
+      "name": "쿠죠 죠타로",
+      "roleTags": [
+        "물뎀",
+        "방깎",
+        "암브"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-12",
+      "grade": "신비함",
+      "gradeOrder": 12,
+      "name": "타츠마키",
+      "roleTags": [
+        "물뎀",
+        "암브",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    },
+    {
+      "id": "MY-13",
+      "grade": "신비함",
+      "gradeOrder": 13,
+      "name": "히그마",
+      "roleTags": [
+        "마뎀",
+        "이감"
+      ],
+      "roleTagsStatus": "index-confirmed",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected"
+    }
+  ]
+}
