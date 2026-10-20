@@ -144,7 +144,8 @@ namespace Ordr.Mobile.Combat
             double? manaCost = skill.Number("manaCost");
             double? healthCost = skill.Number("healthCost");
             if (skill.Trigger == "activeMana" && !manaCost.HasValue ||
-                skill.Trigger == "activeHealth" && !healthCost.HasValue)
+                skill.Trigger == "activeHealth" && !healthCost.HasValue ||
+                skill.Trigger == "manual" && !manaCost.HasValue && !healthCost.HasValue)
                 return AbilityCastResult.MissingOrUnsupportedRequirement;
             double mana = manaCost ?? 0;
             double health = healthCost ?? 0;
