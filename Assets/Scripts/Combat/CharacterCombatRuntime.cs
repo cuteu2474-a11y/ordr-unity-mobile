@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
@@ -41,6 +42,8 @@ namespace Ordr.Mobile.Combat
         private readonly List<CharacterCombatEvent> events = new List<CharacterCombatEvent>();
         private readonly List<CharacterCombatEvent> pendingCommandEvents =
             new List<CharacterCombatEvent>();
+        private bool processingStep;
+        public MobileCombatAutomation MobileAutomation { get; } = new MobileCombatAutomation();
 
         public GameSession Game { get { return game; } }
         public UnitRoster Roster { get { return roster; } }
@@ -58,6 +61,31 @@ namespace Ordr.Mobile.Combat
         }
         public double Time { get { return scheduler.Time; } }
         public IReadOnlyList<CharacterCombatEvent> LastEvents { get { return events.AsReadOnly(); } }
+
+        // 프레임·HUD·모바일 행동 정책은 유닛과 적의 현재 상태만 조회할 수 있다.
+        public IReadOnlyList<MobileUnitSnapshot> MobileUnitSnapshot()
+        {
+            var result = new List<MobileUnitSnapshot>();
+            var ids = new List<long>(characters.Keys);
+            ids.Sort();
+            foreach (long id in ids)
+            {
+                CharacterInstance unit = characters[id];
+                result.Add(new MobileUnitSnapshot(id, unit.Catalog, unit.Profile, roster.Get(id)));
+            }
+            return result.AsReadOnly();
+        }
+
+        public IReadOnlyList<MobileEnemySnapshot> MobileEnemySnapshot()
+        {
+            var result = new List<MobileEnemySnapshot>();
+            foreach (var enemy in enemies.Values)
+                if (enemy.Enemy.IsAlive)
+                    result.Add(new MobileEnemySnapshot(enemy.Id, enemy.Kind,
+                        enemy.Enemy.Health, enemy.X, enemy.Y));
+            result.Sort((a,b) => string.CompareOrdinal(a.Id, b.Id));
+            return result.AsReadOnly();
+        }
 
         public CharacterCombatRuntime(CharacterUnitCatalog units, CharacterSkillCatalog profiles,
             IOriginalDamageResolver verifiedBasicDamage,
@@ -92,8 +120,13 @@ namespace Ordr.Mobile.Combat
                 Id = id, Catalog = catalogUnit, Profile = profile,
                 Abilities = new CharacterActiveAbilities(profile)
             });
-            events.Add(new CharacterCombatEvent(CharacterCombatEventType.UnitSpawned,
-                InstanceKey(id), null, null, catalogUnit.Name, 0));
+            var spawnEvent = new CharacterCombatEvent(CharacterCombatEventType.UnitSpawned,
+                InstanceKey(id), null, null, catalogUnit.Name, 0);
+            pendingCommandEvents.Add(spawnEvent);
+            if (MobileAutomation.TryPlace(catalogUnit, roster, id))
+                pendingCommandEvents.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.UnitPlaced, InstanceKey(id), null,
+                    null, "automatic-verified-position", 0));
             return id;
         }
 
@@ -202,8 +235,9 @@ namespace Ordr.Mobile.Combat
             int before = events.Count;
             effectExecutor.Execute(InstanceKey(instanceId), caster.Profile, skill,
                 enemy, position.X, position.Y, enemies.Values);
-            for (int index = before; index < events.Count; index++)
-                pendingCommandEvents.Add(events[index]);
+            if (!processingStep)
+                for (int index = before; index < events.Count; index++)
+                    pendingCommandEvents.Add(events[index]);
             RemoveDefeatedEnemies();
             return result;
         }
@@ -321,6 +355,11 @@ namespace Ordr.Mobile.Combat
             foreach (var unit in characters.Values)
                 unit.Abilities.Advance(deltaSeconds);
             foreach (var status in statuses.Values) status.Advance(deltaSeconds);
+            processingStep = true;
+            try
+            {
+                // 원작 규칙 승인 후 자동 Q/W/R. 조건 미확인 시 자원·쿨타임을 소비하지 않는다.
+                MobileAutomation.RunAutomaticAbilities(this);
 
             var ids = new List<long>(characters.Keys);
             ids.Sort();
@@ -340,10 +379,12 @@ namespace Ordr.Mobile.Combat
                     candidates.Add(new TargetCandidate(enemy.Id, distanceSquared,
                         enemy.PathProgress, true));
                 }
+                string originalApprovedBoss = ChooseApprovedBossTarget(unit, candidates);
                 BasicAttackResult hit;
                 try
                 {
-                    if (!attackPipeline.TryBasicAttack(InstanceKey(id), candidates, out hit))
+                    if (!attackPipeline.TryBasicAttack(InstanceKey(id), candidates,
+                        originalApprovedBoss, out hit))
                         continue;
                 }
                 catch (NotSupportedException ex)
@@ -375,6 +416,39 @@ namespace Ordr.Mobile.Combat
             }
             RemoveDefeatedEnemies();
             return events.AsReadOnly();
+            }
+            finally
+            {
+                processingStep = false;
+            }
+        }
+
+        private string ChooseApprovedBossTarget(CharacterInstance unit,
+            List<TargetCandidate> candidates)
+        {
+            var rules = MobileAutomation.BossRules;
+            if (rules == null || unit.Mapping == null) return null;
+            string preferred = null;
+            double nearestBossDistance = double.MaxValue;
+            double range = unit.Mapping.AttackSpec.BasicAttack.Range;
+            double maximumSquared = range * range;
+            foreach (var candidate in candidates)
+            {
+                if (!candidate.Alive || candidate.DistanceSquared > maximumSquared) continue;
+                SpatialCombatEnemy enemy;
+                if (!enemies.TryGetValue(candidate.Id, out enemy) ||
+                    enemy.Kind != CharacterEnemyKind.Boss || !enemy.Enemy.IsAlive) continue;
+                if (!rules.CanPreferBoss(unit.Catalog, enemy.Enemy,
+                    candidate.DistanceSquared, range)) continue;
+                if (candidate.DistanceSquared < nearestBossDistance ||
+                    (candidate.DistanceSquared == nearestBossDistance &&
+                     (preferred == null || string.CompareOrdinal(candidate.Id, preferred) < 0)))
+                {
+                    nearestBossDistance = candidate.DistanceSquared;
+                    preferred = candidate.Id;
+                }
+            }
+            return preferred;
         }
 
         private void RemoveDefeatedEnemies()
