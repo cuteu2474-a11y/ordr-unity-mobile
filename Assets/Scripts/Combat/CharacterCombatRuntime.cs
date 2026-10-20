@@ -214,13 +214,24 @@ namespace Ordr.Mobile.Combat
         public void SpawnEnemy(string enemyId, long health, CharacterEnemyKind kind,
             double x, double y, double pathProgress)
         {
+            SpawnEnemyWithDefenses(enemyId, health, kind, x, y, pathProgress,
+                EnemyDefenseProfile.UnverifiedKind(kind));
+        }
+
+        public void SpawnEnemyWithDefenses(string enemyId, long health,
+            CharacterEnemyKind kind, double x, double y, double pathProgress,
+            EnemyDefenseProfile verifiedDefenses)
+        {
             if (string.IsNullOrWhiteSpace(enemyId)) throw new ArgumentException("적 ID가 필요합니다.");
             if (enemies.ContainsKey(enemyId)) throw new InvalidOperationException("이미 존재하는 적 ID입니다.");
-            var enemy = new CombatEnemy(enemyId, health);
+            if (verifiedDefenses == null) throw new ArgumentNullException(nameof(verifiedDefenses));
+            if (verifiedDefenses.Kind.HasValue && verifiedDefenses.Kind.Value != kind)
+                throw new ArgumentException("적 분류와 방어 프로필 분류가 다릅니다.");
+            var enemy = new CombatEnemy(enemyId, health, verifiedDefenses);
             var spatial = new SpatialCombatEnemy(enemy, kind, x, y, pathProgress);
             resolution.Spawn(enemy);
             enemies.Add(enemyId, spatial);
-            statuses.Add(enemyId, new CombatStatusEngine());
+            statuses.Add(enemyId, enemy.Status);
             armorBreakStacks.Add(enemyId, 0);
         }
 
