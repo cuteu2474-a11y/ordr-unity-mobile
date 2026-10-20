@@ -30,10 +30,18 @@ namespace Ordr.Mobile.Core
         public void MoveSelected(double x, double y)
         {
             if (!SelectedId.HasValue) throw new InvalidOperationException("선택된 유닛이 없습니다.");
+            Move(SelectedId.Value, x, y);
+        }
+
+        // 자동 전투/드래그 조작은 현재 UI 선택 상태를 바꾸지 않고 좌표를 갱신한다.
+        public void Move(long id, double x, double y)
+        {
             if (double.IsNaN(x) || double.IsInfinity(x) || double.IsNaN(y) || double.IsInfinity(y))
                 throw new ArgumentOutOfRangeException(nameof(x));
-            UnitState unit = units[SelectedId.Value];
-            units[SelectedId.Value] = new UnitState(unit.InstanceId, unit.UnitId, x, y);
+            UnitState unit;
+            if (!units.TryGetValue(id, out unit))
+                throw new KeyNotFoundException("존재하지 않는 유닛입니다.");
+            units[id] = new UnitState(unit.InstanceId, unit.UnitId, x, y);
         }
 
         public UnitState Get(long id) => units[id];
