@@ -13836,6 +13836,500 @@
         "실제 평타·공속",
         "피해 공식·중첩 여부"
       ]
+    },
+    {
+      "unitId": "D-01",
+      "sourceUrl": "https://ordr.kr/character/D1",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 15
+        },
+        {
+          "type": "onEveryBasicAttackPhysical",
+          "targetMissingHealthPercent": 0.75,
+          "radius": 500
+        }
+      ],
+      "skills": [
+        {
+          "name": "범위 마법",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000
+            }
+          ],
+          "chancePercent": 30,
+          "target": "area",
+          "radius": 500
+        },
+        {
+          "name": "13타 고정피해",
+          "trigger": "everyNthAttack",
+          "components": [
+            {
+              "type": "fixed",
+              "amount": 500000,
+              "basicAttackMultiplier": 5,
+              "plusTargetMaxHealthPercent": 1
+            }
+          ],
+          "everyAttacks": 13,
+          "radius": 500
+        },
+        {
+          "name": "마리아네트 전환",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "cycleEffect",
+              "sequence": [
+                "꼼짝말란 마리아",
+                "멈춰서란 마리아",
+                "타오르란 마리아"
+              ],
+              "changeOnlyWhenPreviousExpired": true
+            }
+          ],
+          "cooldownSeconds": 30
+        },
+        {
+          "name": "꼼짝말란 마리아",
+          "trigger": "periodic",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 3.5
+            }
+          ],
+          "intervalSeconds": 5,
+          "radius": 900
+        },
+        {
+          "name": "멈춰서란 마리아",
+          "trigger": "passive",
+          "components": [
+            {
+              "type": "movementSlow",
+              "percent": 40
+            }
+          ],
+          "radius": 900,
+          "changeAfterSeconds": 6
+        },
+        {
+          "name": "타오르란 마리아",
+          "trigger": "periodic",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000
+            },
+            {
+              "type": "physical",
+              "extraTargetMissingHealthPercent": 5,
+              "onlyTargetKinds": [
+                "line",
+                "enraged"
+              ]
+            }
+          ],
+          "intervalSeconds": 5,
+          "radius": 900
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "평타 스탯·공속",
+        "피해/증폭 중첩 공식"
+      ]
+    },
+    {
+      "unitId": "D-02",
+      "sourceUrl": "https://ordr.kr/character/D2",
+      "passives": [
+        {
+          "type": "manaRegeneration",
+          "perSecond": 3.25
+        },
+        {
+          "type": "selfManaRegeneration",
+          "perSecond": 2
+        }
+      ],
+      "skills": [
+        {
+          "name": "어인공수도",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "fixed",
+              "amountPerHit": 600000,
+              "hits": 6
+            },
+            {
+              "type": "magical",
+              "amount": 1000000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.25
+            }
+          ],
+          "manaCost": 135,
+          "radius": 625
+        },
+        {
+          "name": "기와 돌려차기",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 625000
+            },
+            {
+              "type": "fixed",
+              "extraSkillDamagePercent": 100,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "fixed",
+              "extraTargetMaxHealthPercent": 2.5,
+              "onlyTargetKinds": [
+                "boss",
+                "enraged"
+              ]
+            }
+          ],
+          "chancePercent": 15,
+          "radius": 500
+        },
+        {
+          "name": "단일 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 0.75,
+              "ignoresResistance": true
+            }
+          ],
+          "chancePercent": 50,
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "평타 스탯·공속",
+        "피해/증폭 중첩 공식"
+      ]
+    },
+    {
+      "unitId": "D-03",
+      "sourceUrl": "https://ordr.kr/character/D3",
+      "passives": [],
+      "skills": [
+        {
+          "name": "브라키오 붐버",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 1650000,
+              "multiplierRange": [
+                1,
+                1.2
+              ]
+            },
+            {
+              "type": "magical",
+              "amount": 650000
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 3,
+              "max": 75
+            }
+          ],
+          "manaCost": 65,
+          "radius": 600,
+          "target": "area",
+          "oneTimeConditionBypass": [
+            "boss",
+            "enraged"
+          ]
+        },
+        {
+          "name": "역재",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 250000
+            },
+            {
+              "type": "armorReduction",
+              "amount": 20,
+              "durationSeconds": 2
+            }
+          ],
+          "chancePercent": 14,
+          "radius": 450
+        },
+        {
+          "name": "빙귀",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.95
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 1,
+              "max": 75
+            }
+          ],
+          "chancePercent": 15,
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "평타 스탯·공속",
+        "피해/증폭 중첩 공식"
+      ]
+    },
+    {
+      "unitId": "D-04",
+      "sourceUrl": "https://ordr.kr/character/D4",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 45
+        },
+        {
+          "type": "explosiveDamageAmplification",
+          "percent": 10,
+          "targetZone": "ownedLane"
+        }
+      ],
+      "skills": [
+        {
+          "name": "카미카제 랩",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "explosive",
+              "amount": 2000000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.5
+            }
+          ],
+          "manaCost": 100,
+          "radius": 500
+        },
+        {
+          "name": "고스트 랩",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "explosive",
+              "amount": 300000
+            },
+            {
+              "type": "explosive",
+              "extraAmount": 500000,
+              "chancePercent": 20
+            }
+          ],
+          "chancePercent": 12.5,
+          "radius": 360
+        },
+        {
+          "name": "네거티브 홀로우",
+          "trigger": "onAttackWithAbsoluteCooldown",
+          "components": [
+            {
+              "type": "delete",
+              "onlyTargetKinds": [
+                "line"
+              ]
+            },
+            {
+              "type": "explosive",
+              "amount": 1200000,
+              "onlyTargetKinds": [
+                "boss",
+                "story"
+              ]
+            },
+            {
+              "type": "explosiveDamageAmplification",
+              "percent": 2,
+              "radius": 500
+            }
+          ],
+          "chancePercent": 10,
+          "absoluteCooldownSeconds": 7.5
+        }
+      ],
+      "uncertaintyNotes": [
+        "2.300 패치에는 네거티브 홀로우 쿨타임 종료 시 발동률 100%로 변경됐다고 되어 있으나 현재 툴팁은 10%로 남아 있음. 실제 발동 확률 검증 필요."
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "평타 스탯·공속",
+        "피해/증폭 중첩 공식"
+      ]
+    },
+    {
+      "unitId": "D-05",
+      "sourceUrl": "https://ordr.kr/character/D5",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 40
+        },
+        {
+          "type": "movementSlowAura",
+          "percent": 25
+        },
+        {
+          "type": "allyAttackPowerBuff",
+          "percent": 25
+        }
+      ],
+      "skills": [
+        {
+          "name": "불주먹",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 350000,
+              "extraPrimaryTargetAmount": 500000
+            }
+          ],
+          "chancePercent": 10,
+          "target": "line",
+          "radius": 320
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "평타 스탯·공속",
+        "피해/증폭 중첩 공식"
+      ]
+    },
+    {
+      "unitId": "D-06",
+      "sourceUrl": "https://ordr.kr/character/D6",
+      "passives": [
+        {
+          "type": "underwaterMovement"
+        }
+      ],
+      "skills": [
+        {
+          "name": "매 평타 추가 피해",
+          "trigger": "onEveryHit",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 100000,
+              "extraLineCurrentHealthExplosivePercent": 11,
+              "extraSpecialMagicDamage": 220000
+            }
+          ],
+          "target": "single"
+        },
+        {
+          "name": "파동 엘보",
+          "trigger": "periodic",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 360000,
+              "extraLineCurrentHealthExplosivePercent": 36,
+              "extraSpecialMagicDamage": 720000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.5
+            }
+          ],
+          "periodSeconds": 12,
+          "reductionPer10000BasicAttackDamageSeconds": 1,
+          "maxReductionSeconds": 9,
+          "target": "area",
+          "radius": 425
+        }
+      ],
+      "uncertaintyNotes": [
+        "갈레온 레리어트 현 툴팁의 체력 비례 11%와 2.310 패치노트 10%, 대 특수 몹 22만/20만 충돌."
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "평타 스탯·공속",
+        "피해/증폭 중첩 공식"
+      ]
     }
   ]
 }
