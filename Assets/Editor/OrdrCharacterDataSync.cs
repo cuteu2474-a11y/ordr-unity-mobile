@@ -27,6 +27,10 @@ namespace Ordr.Mobile.Editor
                 Path.Combine(target, "units.json"), true);
             File.Copy(Path.Combine(source, "character-skill-profiles.json"),
                 Path.Combine(target, "character-skill-profiles.json"), true);
+            // 패치 근거 수치는 없어도 월드 소환을 중단시키지 않는다.
+            string evidence = Path.Combine(source, "original-stat-evidence.json");
+            if (File.Exists(evidence))
+                File.Copy(evidence, Path.Combine(target, "original-stat-evidence.json"), true);
             AssetDatabase.Refresh();
             Debug.Log("ORDR 캐릭터 데이터가 Assets/Resources/OrdrData 로 동기화되었습니다.");
         }
