@@ -80,6 +80,9 @@ namespace Ordr.Mobile.Mobile
     {
         bool CanDispatch(long unitInstanceId);
         ManualActionResult Dispatch(long unitInstanceId);
+        // 파견된 유닛은 메인 전장에서 공격하거나 자동 시전하면 안 된다.
+        // 복귀시 false를 반환하는 원작 스토리 상태를 외부 구현이 보유한다.
+        bool IsDeployed(long unitInstanceId);
     }
 
     public interface IOriginalFusionPort
