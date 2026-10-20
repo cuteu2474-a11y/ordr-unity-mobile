@@ -4,7 +4,7 @@
   "scope": "nightmare-otherworld",
   "collectedOn": "2026-10-21",
   "sourceIndex": "https://ordr.kr/character",
-  "disclaimer": "도감 등급별 나열 순서를 내부 식별자로 변환했다. gameRawCode와 평타 스펙은 아직 검증되지 않았으므로 null이다. roleTags는 도감의 요약 분류이며 전투 스킬 전체를 나타내지 않는다.",
+  "disclaimer": "도감 등급별 나열 순서를 내부 식별자로 변환했다. gameRawCode와 평타 스펙은 아직 검증되지 않았으므로 null이다. roleTags는 도감의 요약 분류이며 전투 스킬 전체를 나타내지 않는다. damageSchoolHints는 역할 태그에서만 도출한 분류로, 개별 스킬 피해 유형이나 워크래프트 공격 타입을 확정하지 않는다.",
   "expectedTotal": 271,
   "entries": [
     {
@@ -19,7 +19,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "C-02",
@@ -33,7 +35,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "C-03",
@@ -47,7 +51,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "C-04",
@@ -61,7 +67,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "C-05",
@@ -75,7 +83,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "C-06",
@@ -89,7 +99,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "C-07",
@@ -103,7 +115,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "C-08",
@@ -117,7 +131,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "C-09",
@@ -131,7 +147,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-01",
@@ -145,7 +163,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-02",
@@ -159,7 +179,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-03",
@@ -173,7 +195,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-04",
@@ -187,7 +211,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-05",
@@ -201,7 +227,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-06",
@@ -215,7 +243,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-07",
@@ -229,7 +259,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-08",
@@ -243,7 +275,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-09",
@@ -257,7 +291,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-10",
@@ -271,7 +307,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-11",
@@ -285,7 +323,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-12",
@@ -299,7 +339,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "U-13",
@@ -313,7 +355,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-01",
@@ -327,7 +371,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-02",
@@ -341,7 +387,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-03",
@@ -355,7 +403,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-04",
@@ -369,7 +419,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-05",
@@ -383,7 +435,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-06",
@@ -397,7 +451,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-07",
@@ -411,7 +467,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-08",
@@ -425,7 +483,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-09",
@@ -439,7 +499,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-10",
@@ -456,7 +518,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "S-11",
@@ -470,7 +536,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-12",
@@ -484,7 +552,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-13",
@@ -498,7 +568,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-14",
@@ -514,7 +586,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-15",
@@ -528,7 +602,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-16",
@@ -542,7 +618,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-17",
@@ -556,7 +634,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-18",
@@ -570,7 +650,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-19",
@@ -584,7 +666,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-20",
@@ -598,7 +682,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-21",
@@ -612,7 +698,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-22",
@@ -626,7 +714,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-23",
@@ -640,7 +730,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-24",
@@ -654,7 +746,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-25",
@@ -668,7 +762,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-26",
@@ -685,7 +781,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "S-27",
@@ -699,7 +799,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-28",
@@ -713,7 +815,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-29",
@@ -729,7 +833,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-30",
@@ -745,7 +851,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-31",
@@ -759,7 +867,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "S-32",
@@ -777,7 +887,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "S-33",
@@ -791,7 +905,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "X-01",
@@ -805,7 +921,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "X-02",
@@ -822,7 +940,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "X-03",
@@ -839,7 +959,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "X-04",
@@ -855,7 +979,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "X-05",
@@ -869,7 +995,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "X-06",
@@ -883,7 +1011,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "X-07",
@@ -899,7 +1029,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-01",
@@ -917,7 +1049,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "R-02",
@@ -935,7 +1071,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "R-03",
@@ -952,7 +1092,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "R-04",
@@ -966,7 +1110,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-05",
@@ -980,7 +1126,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-06",
@@ -994,7 +1142,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-07",
@@ -1011,7 +1161,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "R-08",
@@ -1025,7 +1179,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-09",
@@ -1039,7 +1195,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-10",
@@ -1053,7 +1211,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-11",
@@ -1067,7 +1227,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-12",
@@ -1081,7 +1243,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-13",
@@ -1095,7 +1259,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-14",
@@ -1112,7 +1278,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "R-15",
@@ -1126,7 +1296,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-16",
@@ -1140,7 +1312,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-17",
@@ -1156,7 +1330,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "R-18",
@@ -1170,7 +1348,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-19",
@@ -1184,7 +1364,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-20",
@@ -1201,7 +1383,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "R-21",
@@ -1215,7 +1401,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-22",
@@ -1229,7 +1417,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-23",
@@ -1243,7 +1433,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-24",
@@ -1259,7 +1451,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-25",
@@ -1276,7 +1470,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-26",
@@ -1294,7 +1490,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "R-27",
@@ -1308,7 +1508,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-28",
@@ -1322,7 +1524,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-29",
@@ -1336,7 +1540,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-30",
@@ -1350,7 +1556,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-31",
@@ -1367,7 +1575,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "R-32",
@@ -1381,7 +1593,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-33",
@@ -1395,7 +1609,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-34",
@@ -1409,7 +1625,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-35",
@@ -1423,7 +1641,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-36",
@@ -1437,7 +1657,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-37",
@@ -1453,7 +1675,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-38",
@@ -1469,7 +1693,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-39",
@@ -1483,7 +1709,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-40",
@@ -1497,7 +1725,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-41",
@@ -1513,7 +1743,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "R-42",
@@ -1531,7 +1763,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-01",
@@ -1548,7 +1784,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-02",
@@ -1565,7 +1805,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-03",
@@ -1583,7 +1827,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-04",
@@ -1601,7 +1849,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-05",
@@ -1618,7 +1870,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-06",
@@ -1636,7 +1892,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-07",
@@ -1654,7 +1914,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-08",
@@ -1671,7 +1935,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-09",
@@ -1687,7 +1955,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-10",
@@ -1705,7 +1977,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-11",
@@ -1722,7 +1998,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-12",
@@ -1740,7 +2020,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-13",
@@ -1758,7 +2042,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-14",
@@ -1772,7 +2060,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "L-15",
@@ -1790,7 +2080,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-16",
@@ -1806,7 +2100,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-17",
@@ -1824,7 +2122,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-18",
@@ -1841,7 +2143,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-19",
@@ -1858,7 +2164,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "L-20",
@@ -1876,7 +2184,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-21",
@@ -1894,7 +2206,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-22",
@@ -1911,7 +2227,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-23",
@@ -1929,7 +2249,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-24",
@@ -1947,7 +2271,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-25",
@@ -1965,7 +2293,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-26",
@@ -1983,7 +2315,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-27",
@@ -2001,7 +2337,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-28",
@@ -2019,7 +2359,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-29",
@@ -2036,7 +2380,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-30",
@@ -2053,7 +2401,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-31",
@@ -2071,7 +2423,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-32",
@@ -2088,7 +2444,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-33",
@@ -2105,7 +2465,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-34",
@@ -2123,7 +2487,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-35",
@@ -2140,7 +2508,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-36",
@@ -2158,7 +2530,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-37",
@@ -2176,7 +2552,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-38",
@@ -2193,7 +2573,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "L-39",
@@ -2211,7 +2595,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-01",
@@ -2228,7 +2616,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-02",
@@ -2246,7 +2638,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-03",
@@ -2263,7 +2659,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-04",
@@ -2281,7 +2681,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-05",
@@ -2298,7 +2702,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-06",
@@ -2315,7 +2723,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "H-07",
@@ -2329,7 +2739,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "H-08",
@@ -2343,7 +2755,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "H-09",
@@ -2361,7 +2775,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-10",
@@ -2379,7 +2797,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-11",
@@ -2397,7 +2819,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-12",
@@ -2415,7 +2841,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-13",
@@ -2432,7 +2862,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-14",
@@ -2446,7 +2880,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "H-15",
@@ -2464,7 +2900,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-16",
@@ -2482,7 +2922,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-17",
@@ -2500,7 +2944,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-18",
@@ -2518,7 +2966,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-19",
@@ -2535,7 +2987,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-20",
@@ -2553,7 +3009,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-21",
@@ -2571,7 +3031,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "H-22",
@@ -2589,7 +3053,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "T-01",
@@ -2605,7 +3073,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "T-02",
@@ -2623,7 +3095,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "T-03",
@@ -2640,7 +3116,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "T-04",
@@ -2657,7 +3137,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "T-05",
@@ -2675,7 +3159,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "LI-01",
@@ -2692,7 +3178,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "LI-02",
@@ -2710,7 +3200,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "LI-03",
@@ -2728,7 +3222,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "LI-04",
@@ -2746,7 +3244,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "LI-05",
@@ -2763,7 +3265,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "LI-06",
@@ -2781,7 +3287,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "LI-07",
@@ -2799,7 +3309,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "LI-08",
@@ -2817,7 +3331,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "LI-09",
@@ -2835,7 +3353,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "LI-10",
@@ -2852,7 +3374,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "D-01",
@@ -2870,7 +3396,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "D-02",
@@ -2888,7 +3418,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "D-03",
@@ -2906,7 +3440,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "D-04",
@@ -2924,7 +3462,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "D-05",
@@ -2942,7 +3482,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "D-06",
@@ -2959,7 +3503,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-01",
@@ -2977,7 +3525,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-02",
@@ -2995,7 +3547,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-03",
@@ -3013,7 +3569,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-04",
@@ -3031,7 +3591,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-05",
@@ -3049,7 +3613,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-06",
@@ -3066,7 +3634,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-07",
@@ -3084,7 +3656,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-08",
@@ -3102,7 +3678,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-09",
@@ -3120,7 +3700,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-10",
@@ -3138,7 +3722,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-11",
@@ -3156,7 +3744,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-12",
@@ -3173,7 +3765,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-13",
@@ -3191,7 +3787,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-14",
@@ -3209,7 +3809,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-15",
@@ -3226,7 +3830,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-16",
@@ -3244,7 +3852,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-17",
@@ -3262,7 +3874,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-18",
@@ -3279,7 +3895,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-19",
@@ -3297,7 +3917,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-20",
@@ -3315,7 +3939,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-21",
@@ -3332,7 +3960,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-22",
@@ -3350,7 +3982,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-23",
@@ -3367,7 +4003,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-24",
@@ -3385,7 +4025,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-25",
@@ -3403,7 +4047,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-26",
@@ -3421,7 +4069,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-27",
@@ -3439,7 +4091,12 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical",
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-28",
@@ -3456,7 +4113,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-29",
@@ -3474,7 +4135,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "TR-30",
@@ -3492,7 +4157,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-01",
@@ -3510,7 +4179,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-02",
@@ -3528,7 +4201,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-03",
@@ -3546,7 +4223,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-04",
@@ -3564,7 +4245,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-05",
@@ -3582,7 +4267,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-06",
@@ -3599,7 +4288,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-07",
@@ -3617,7 +4310,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-08",
@@ -3635,7 +4332,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-09",
@@ -3653,7 +4354,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-10",
@@ -3671,7 +4376,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-11",
@@ -3689,7 +4398,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "E-12",
@@ -3707,7 +4420,12 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical",
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-01",
@@ -3725,7 +4443,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "I-02",
@@ -3743,7 +4463,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-03",
@@ -3761,7 +4485,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-04",
@@ -3779,7 +4507,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-05",
@@ -3797,7 +4529,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-06",
@@ -3815,7 +4551,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-07",
@@ -3833,7 +4573,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-08",
@@ -3851,7 +4595,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-09",
@@ -3869,7 +4617,12 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical",
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-10",
@@ -3887,7 +4640,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-11",
@@ -3905,7 +4662,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "I-12",
@@ -3923,7 +4684,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "SR-01",
@@ -3941,7 +4706,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "SR-02",
@@ -3959,7 +4728,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "SR-03",
@@ -3977,7 +4750,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "SR-04",
@@ -3995,7 +4772,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "RN-01",
@@ -4012,7 +4793,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "RN-02",
@@ -4029,7 +4814,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "RN-03",
@@ -4043,7 +4832,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "RN-04",
@@ -4061,7 +4852,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "RN-05",
@@ -4077,7 +4872,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "RN-06",
@@ -4093,7 +4892,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "RN-07",
@@ -4109,7 +4910,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "RN-08",
@@ -4125,7 +4930,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "RN-09",
@@ -4142,7 +4949,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "RN-10",
@@ -4158,7 +4969,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "RN-11",
@@ -4172,7 +4987,9 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
     },
     {
       "id": "RN-12",
@@ -4188,7 +5005,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "RN-13",
@@ -4205,7 +5026,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "RN-14",
@@ -4221,7 +5046,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-01",
@@ -4239,7 +5068,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-02",
@@ -4257,7 +5090,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-03",
@@ -4275,7 +5112,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-04",
@@ -4293,7 +5134,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-05",
@@ -4311,7 +5156,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-06",
@@ -4328,7 +5177,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-07",
@@ -4346,7 +5199,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-08",
@@ -4364,7 +5221,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "partial"
+      "skillSpecsStatus": "partial",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-09",
@@ -4382,7 +5243,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-10",
@@ -4398,7 +5263,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-11",
@@ -4416,7 +5285,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-12",
@@ -4434,7 +5307,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Physical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     },
     {
       "id": "MY-13",
@@ -4451,7 +5328,11 @@
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected"
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [
+        "Magical"
+      ],
+      "damageSchoolHintsStatus": "derived-from-index-role-tags"
     }
   ]
 }
