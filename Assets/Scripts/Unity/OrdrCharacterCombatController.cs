@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Ordr.Mobile.Combat;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Unity
 {
@@ -17,6 +18,29 @@ namespace Ordr.Mobile.Unity
         public CharacterSkillCatalog Skills { get; private set; }
         public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
+
+        public MobileManualInteraction ManualActions { get; } = new MobileManualInteraction();
+
+        private IOriginalPlacementRules placementRules;
+        private IOriginalBossFocusRules bossFocusRules;
+        private IOriginalAutoSkillRules autoSkillRules;
+
+        public void ConfigureMobileAutomation(IOriginalPlacementRules originalPlacement,
+            IOriginalBossFocusRules originalBossFocus,
+            IOriginalAutoSkillRules originalQwrAutoUse)
+        {
+            placementRules = originalPlacement;
+            bossFocusRules = originalBossFocus;
+            autoSkillRules = originalQwrAutoUse;
+            if (Combat != null)
+                Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
+        }
+
+        public void ConfigureManualMobileSystems(IOriginalStoryDispatchPort originalStory,
+            IOriginalFusionPort originalFusion, IOriginalEconomyPort originalEconomy)
+        {
+            ManualActions.Configure(originalStory, originalFusion, originalEconomy);
+        }
 
         // 전투 UI/로그가 스킬·피해·상태 적용 이벤트를 구독할 수 있다.
         public event Action<CharacterCombatEvent> OnCombatEvent;
@@ -68,6 +92,7 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
             Combat = new CharacterCombatRuntime(Units, Skills,
                 verifiedBasicFormula, verifiedSkillFormula, random);
+            Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
         }
 
         // 원작 피해 공식 없이도 캐릭터 소환·선택·배치·웨이브 월드를 구성할 수 있다.
