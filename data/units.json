@@ -4196,12 +4196,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E2",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -4218,12 +4218,12 @@
         "단일딜러"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E3",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4240,12 +4240,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E4",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4262,12 +4262,12 @@
         "이감"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E5",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -4283,12 +4283,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E6",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4305,12 +4305,12 @@
         "단일스턴"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E7",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4327,12 +4327,12 @@
         "증폭"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E8",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Magical"
       ],
@@ -4371,12 +4371,12 @@
         "암브"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E10",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical"
       ],
@@ -4415,12 +4415,12 @@
         "방깎"
       ],
       "roleTagsStatus": "index-confirmed",
-      "detailUrl": null,
+      "detailUrl": "https://ordr.kr/character/E12",
       "gameRawCode": null,
       "attackPower": null,
       "attackIntervalSeconds": null,
       "attackRange": null,
-      "skillSpecsStatus": "not-collected",
+      "skillSpecsStatus": "partial",
       "damageSchoolHints": [
         "Physical",
         "Magical"
