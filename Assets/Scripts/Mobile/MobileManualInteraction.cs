@@ -50,15 +50,23 @@ namespace Ordr.Mobile.Mobile
         public string Title { get; private set; }
         public string OriginalMaterialsAndCost { get; private set; }
         public IReadOnlyList<long> SuggestedMaterialInstances { get; private set; }
+        public IReadOnlyList<string> MissingMaterials { get; private set; }
+        public bool IsReady { get { return MissingMaterials.Count == 0; } }
 
         // 보유 유닛 기반 재료 강조만 보조한다. 소비/성공 판정은 원작 서비스가 한다.
         public MobileFusionPreview(string recipeId, string title,
             string originalMaterialsAndCost, IEnumerable<long> materialIds)
+            : this(recipeId, title, originalMaterialsAndCost, materialIds, new string[0]) { }
+
+        public MobileFusionPreview(string recipeId, string title,
+            string originalMaterialsAndCost, IEnumerable<long> materialIds,
+            IEnumerable<string> missingMaterials)
         {
             if (string.IsNullOrWhiteSpace(recipeId) || string.IsNullOrWhiteSpace(title) ||
                 string.IsNullOrWhiteSpace(originalMaterialsAndCost))
                 throw new ArgumentException("검증된 조합식과 소모 설명이 필요합니다.");
             if (materialIds == null) throw new ArgumentNullException(nameof(materialIds));
+            if (missingMaterials == null) throw new ArgumentNullException(nameof(missingMaterials));
             var distinct = new HashSet<long>();
             var materials = new List<long>();
             foreach (long id in materialIds)
@@ -67,10 +75,18 @@ namespace Ordr.Mobile.Mobile
                     throw new ArgumentException("재료 인스턴스 ID가 중복되거나 유효하지 않습니다.");
                 materials.Add(id);
             }
+            var missing = new List<string>();
+            foreach (string value in missingMaterials)
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException("미확보 재료 설명이 비어 있습니다.");
+                missing.Add(value);
+            }
             RecipeId = recipeId;
             Title = title;
             OriginalMaterialsAndCost = originalMaterialsAndCost;
             SuggestedMaterialInstances = materials.AsReadOnly();
+            MissingMaterials = missing.AsReadOnly();
         }
     }
 
@@ -167,6 +183,9 @@ namespace Ordr.Mobile.Mobile
         {
             if (selected == null)
                 return new ManualActionResult(ManualActionState.Rejected, "조합식을 선택해 주세요.");
+            if (!selected.IsReady)
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "필요한 원본 조합 재료가 모두 준비되지 않았습니다.");
             if (fusion == null) return ManualActionResult.Unavailable("캐릭터 조합");
             return fusion.ConfirmFusion(selected.RecipeId, selected.SuggestedMaterialInstances) ??
                 new ManualActionResult(ManualActionState.Rejected, "조합 결과를 확인하지 못했습니다.");
