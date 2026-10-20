@@ -121,6 +121,10 @@ namespace Ordr.Mobile.Combat
             if (string.IsNullOrWhiteSpace(skillId) || !skills.TryGetValue(skillId, out skill))
                 return AbilityCastResult.SkillNotFound;
 
+            if (skill.Get("requiresOriginalVerification") is bool &&
+                (bool)skill.Get("requiresOriginalVerification"))
+                return AbilityCastResult.MissingOrUnsupportedRequirement;
+
             if (skill.Trigger != "activeMana" && skill.Trigger != "activeHealth" &&
                 skill.Trigger != "manual")
                 return AbilityCastResult.TriggerRequiresBattleEvent;
