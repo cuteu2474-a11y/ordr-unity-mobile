@@ -14330,6 +14330,295 @@
         "평타 스탯·공속",
         "피해/증폭 중첩 공식"
       ]
+    },
+    {
+      "unitId": "T-01",
+      "sourceUrl": "https://ordr.kr/character/T1",
+      "passives": [
+        {
+          "type": "flyingMovement"
+        }
+      ],
+      "skills": [
+        {
+          "name": "오버히트",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000,
+              "plusTargetCurrentHealthPercentAgainstLine": 25
+            }
+          ],
+          "chancePercent": 10,
+          "target": "single"
+        },
+        {
+          "name": "실실열매",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 100000
+            }
+          ],
+          "chancePercent": 10,
+          "radius": 400
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 rawcode",
+        "평타 공격력/공속",
+        "중첩·피해 공식"
+      ]
+    },
+    {
+      "unitId": "T-02",
+      "sourceUrl": "https://ordr.kr/character/T2",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 11
+        },
+        {
+          "type": "movementSlowAura",
+          "percent": 20
+        }
+      ],
+      "skills": [
+        {
+          "name": "공작스트링",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 100000
+            },
+            {
+              "type": "physical",
+              "amount": 250000,
+              "multiplierRange": [
+                0.7,
+                1.5
+              ]
+            }
+          ],
+          "chancePercent": 10,
+          "radius": 500
+        },
+        {
+          "name": "공작슬래셔",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 250000
+            }
+          ],
+          "chancePercent": 10,
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 rawcode",
+        "평타 공격력/공속",
+        "중첩·피해 공식"
+      ]
+    },
+    {
+      "unitId": "T-03",
+      "sourceUrl": "https://ordr.kr/character/T3",
+      "passives": [
+        {
+          "type": "selfAttackPowerFlat",
+          "amount": 22500
+        },
+        {
+          "type": "onEveryAttackMagicSplash",
+          "amount": 22500,
+          "radius": 285
+        }
+      ],
+      "skills": [
+        {
+          "name": "과열",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "allyAttackSpeedBuff",
+              "percent": 150,
+              "durationSeconds": 12,
+              "exclusiveWith": [
+                "다른 가속"
+              ]
+            }
+          ],
+          "cooldownSeconds": 50,
+          "target": "alliedSelected"
+        },
+        {
+          "name": "무기무기열매",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 100000,
+              "extraSingleMagicalAmount": 70000
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 1,
+              "max": 75
+            }
+          ],
+          "chancePercent": 10,
+          "radius": 450
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 rawcode",
+        "평타 공격력/공속",
+        "중첩·피해 공식"
+      ]
+    },
+    {
+      "unitId": "T-04",
+      "sourceUrl": "https://ordr.kr/character/T5",
+      "passives": [
+        {
+          "type": "teleport",
+          "range": 1500
+        }
+      ],
+      "skills": [
+        {
+          "name": "람각",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 300000
+            },
+            {
+              "type": "explosive",
+              "targetMaxHealthPercent": 5,
+              "onlyTargetKinds": [
+                "line"
+              ],
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 15,
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 rawcode",
+        "평타 공격력/공속",
+        "중첩·피해 공식"
+      ]
+    },
+    {
+      "unitId": "T-05",
+      "sourceUrl": "https://ordr.kr/character/T6",
+      "passives": [],
+      "skills": [
+        {
+          "name": "고속전격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 350000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.45
+            }
+          ],
+          "chancePercent": 50,
+          "target": "single"
+        },
+        {
+          "name": "일렉트리컬 루나",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "explosive",
+              "amount": 100000
+            },
+            {
+              "type": "explosiveDamageAmplification",
+              "percent": 1,
+              "maxPercent": 25
+            }
+          ],
+          "chancePercent": 50,
+          "radius": 425
+        },
+        {
+          "name": "달빛걸음",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "teleport",
+              "to": "randomEnemy",
+              "maxDistance": null
+            },
+            {
+              "type": "explosive",
+              "amount": 150000,
+              "radius": 400
+            }
+          ],
+          "chancePercent": 50
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 rawcode",
+        "평타 공격력/공속",
+        "중첩·피해 공식"
+      ]
     }
   ]
 }
