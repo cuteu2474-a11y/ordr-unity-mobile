@@ -155,6 +155,7 @@ namespace Ordr.Mobile.Mobile
             var enemies = runtime.MobileEnemySnapshot();
             foreach (var unit in runtime.MobileUnitSnapshot())
             {
+                if (runtime.IsStoryDeployed(unit.InstanceId)) continue;
                 if (unit.Profile == null) continue;
                 if (runtime.ResourcesOf(unit.InstanceId) == null) continue;
                 foreach (var skill in unit.Profile.Skills)
