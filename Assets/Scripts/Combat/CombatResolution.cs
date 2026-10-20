@@ -11,11 +11,19 @@ namespace Ordr.Mobile.Combat
         public long MaxHealth { get; }
         public long Health { get; private set; }
         public bool IsAlive => Health > 0;
+        public EnemyDefenseProfile Defenses { get; private set; }
+        public CombatStatusEngine Status { get; private set; }
+
         public CombatEnemy(string id, long health)
+            : this(id, health, EnemyDefenseProfile.Unknown) { }
+
+        public CombatEnemy(string id, long health, EnemyDefenseProfile defenses)
         {
             if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("적 ID가 필요합니다.");
             if (health <= 0) throw new ArgumentOutOfRangeException(nameof(health));
             Id = id; MaxHealth = health; Health = health;
+            Defenses = defenses ?? throw new ArgumentNullException(nameof(defenses));
+            Status = new CombatStatusEngine();
         }
         public long ReceiveDamage(long damage)
         {
