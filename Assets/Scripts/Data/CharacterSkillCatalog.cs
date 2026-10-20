@@ -16,13 +16,13 @@ namespace Ordr.Mobile.Data
 
         public double? Number(string field)
         {
-            var dict = new Dictionary<string, object>(Fields, StringComparer.Ordinal);
+            var dict = Fields as Dictionary<string, object>;
             return OrdrJson.Number(dict, field);
         }
 
         public string Text(string field)
         {
-            var dict = new Dictionary<string, object>(Fields, StringComparer.Ordinal);
+            var dict = Fields as Dictionary<string, object>;
             return OrdrJson.String(dict, field);
         }
 
@@ -75,6 +75,12 @@ namespace Ordr.Mobile.Data
         {
             object value;
             return OriginalFields.TryGetValue(field, out value) ? value : null;
+        }
+
+        public double? Number(string field)
+        {
+            var dict = OriginalFields as Dictionary<string, object>;
+            return OrdrJson.Number(dict, field);
         }
     }
 
