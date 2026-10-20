@@ -16939,6 +16939,403 @@
         "기본 공격력과 공속",
         "원작 피해 저항 공식"
       ]
+    },
+    {
+      "unitId": "SP-01",
+      "sourceUrl": "https://ordr.kr/character/SP1",
+      "passives": [],
+      "skills": [
+        {
+          "name": "도끼손",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "bonusDamage",
+              "amount": null,
+              "dependsOnTargetKind": [
+                "line",
+                "enraged",
+                "boss"
+              ]
+            },
+            {
+              "type": "stun",
+              "durationSeconds": null,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": null,
+          "target": "single"
+        }
+      ],
+      "acquisition": {
+        "from": "rareWisp",
+        "chancePercent": 1
+      },
+      "verifiedAttackRange": 525,
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스탯",
+        "2.323 버전에서의 기술 설명 일치 여부"
+      ],
+      "uncertaintyNotes": [
+        "도끼손 추가 피해와 스턴 시간은 도감에 수치가 없으므로 null."
+      ]
+    },
+    {
+      "unitId": "SP-02",
+      "sourceUrl": "https://ordr.kr/character/SP2",
+      "passives": [
+        {
+          "type": "allyAttackSpeedBuff",
+          "percent": 11
+        },
+        {
+          "type": "healthRegeneration",
+          "perSecond": 1.25
+        },
+        {
+          "type": "manaRegeneration",
+          "perSecond": 1.25
+        }
+      ],
+      "skills": [
+        {
+          "name": "고무",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "allyHealthRestoration",
+              "amount": null
+            },
+            {
+              "type": "allyManaRestoration",
+              "amount": null
+            }
+          ],
+          "target": "selectedAlly"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스탯",
+        "2.323 버전에서의 기술 설명 일치 여부"
+      ],
+      "uncertaintyNotes": [
+        "원작 고무 사용 체력·마나 즉시회복량은 미확인."
+      ]
+    },
+    {
+      "unitId": "SP-03",
+      "sourceUrl": "https://ordr.kr/character/SP3",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 25
+        }
+      ],
+      "skills": [],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스탯",
+        "2.323 버전에서의 기술 설명 일치 여부"
+      ],
+      "uncertaintyNotes": []
+    },
+    {
+      "unitId": "SP-04",
+      "sourceUrl": "https://ordsearch.net/characters?query=%EC%95%84%EC%9D%B4%EC%8A%A4%EB%B2%84%EA%B7%B8",
+      "passives": [
+        {
+          "type": "flyingMovement"
+        }
+      ],
+      "skills": [
+        {
+          "name": "조선공(B)",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "craftPirateShip",
+              "lumberCost": 2,
+              "permittedUses": 2
+            }
+          ],
+          "castTimeSeconds": 10,
+          "cooldownSeconds": 200
+        },
+        {
+          "name": "조선공의 망치",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 500000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2
+            }
+          ],
+          "chancePercent": 50,
+          "target": "single"
+        }
+      ],
+      "sourceStatus": "secondary-needs-2.323-check",
+      "expectedPrimarySourceUrl": "https://ordr.kr/character/SP4",
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스탯",
+        "2.323 버전에서의 기술 설명 일치 여부"
+      ],
+      "uncertaintyNotes": [
+        "ORDR SP4 상세 페이지 직접 접근 불가. 2025년 자료인 ordsearch.net의 스킬을 임시 데이터로 입력. 2.323 최종 버전 재검증 필요."
+      ]
+    },
+    {
+      "unitId": "SP-05",
+      "sourceUrl": "https://ordsearch.net/characters/225",
+      "passives": [],
+      "skills": [
+        {
+          "name": "경단먹이기(Q)",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "acquireUnitFromAlly",
+              "targetMaxGrade": "희귀함",
+              "requiresOwnerConsent": true,
+              "lumberToReceiver": 6,
+              "lumberToGiver": 12
+            }
+          ],
+          "uses": 1,
+          "target": "alliedUnit"
+        }
+      ],
+      "sourceStatus": "secondary-needs-2.323-check",
+      "expectedPrimarySourceUrl": "https://ordr.kr/character/SP5",
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스탯",
+        "2.323 버전에서의 기술 설명 일치 여부"
+      ],
+      "uncertaintyNotes": [
+        "ORDR SP5 상세 페이지 직접 접근 불가. ordsearch.net의 2024년 기록으로 수집한 스킬. 오프라인 싱글플레이에서 소유권 양도 기능은 원본 검증 후 처리."
+      ]
+    },
+    {
+      "unitId": "SP-06",
+      "sourceUrl": "https://ordr.kr/character/SP6",
+      "passives": [
+        {
+          "type": "allyAttackPowerBuff",
+          "percent": 40
+        }
+      ],
+      "skills": [
+        {
+          "name": "알라바스타의 수호신",
+          "trigger": "active",
+          "components": [
+            {
+              "type": "allyAttackPowerBuff",
+              "percent": 40,
+              "durationSeconds": 40
+            }
+          ],
+          "target": "alliedArea"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스탯",
+        "2.323 버전에서의 기술 설명 일치 여부"
+      ],
+      "uncertaintyNotes": []
+    },
+    {
+      "unitId": "SP-07",
+      "sourceUrl": "https://ordr.kr/character/SP7",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 20
+        }
+      ],
+      "skills": [
+        {
+          "name": "데비백 파이트",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "gambleSpecialUnit",
+              "winChancePercent": 50,
+              "rewardOptions": [
+                "randomSpecial",
+                "RayleighRare"
+              ],
+              "maxAttempts": 3,
+              "endsAfterFirstWin": true,
+              "lossConsumesSelectedUnit": true
+            }
+          ],
+          "target": "ownedSpecialUnit",
+          "maxAttempts": 3
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스탯",
+        "2.323 버전에서의 기술 설명 일치 여부"
+      ],
+      "uncertaintyNotes": []
+    },
+    {
+      "unitId": "RN-08",
+      "sourceUrl": "https://ordsearch.net/characters?level=16",
+      "passives": [
+        {
+          "type": "allyManaRegeneration",
+          "perSecond": 2,
+          "radius": 700
+        }
+      ],
+      "skills": [
+        {
+          "name": "떼쓰기(Q)",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "randomWisp",
+              "range": [
+                "랜덤",
+                "희귀함"
+              ],
+              "count": 1,
+              "distribution": null
+            }
+          ],
+          "cooldownSeconds": 90
+        }
+      ],
+      "sourceStatus": "secondary-needs-2.323-check",
+      "expectedPrimarySourceUrl": "https://ordr.kr/character/RD8",
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스탯",
+        "2.323 버전에서의 기술 설명 일치 여부"
+      ],
+      "uncertaintyNotes": [
+        "ORDR RD8 직접 접근 불가. 2026-02-12 ordsearch 기록에서 확인했으며 2.323에서 수치 변경 가능."
+      ]
+    },
+    {
+      "unitId": "RN-10",
+      "sourceUrl": "https://ordsearch.net/characters/278",
+      "passives": [],
+      "skills": [
+        {
+          "name": "무기화 빌드 Lv1",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 250000,
+              "multiplierRange": [
+                1,
+                2
+              ],
+              "extraSingleDamagePercent": 100
+            }
+          ],
+          "chancePercent": 15,
+          "target": "area",
+          "radius": 400
+        }
+      ],
+      "sourceStatus": "secondary-needs-2.323-check",
+      "expectedPrimarySourceUrl": "https://ordr.kr/character/RD10",
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 능력 rawcode",
+        "평타 스탯",
+        "2.323 버전에서의 기술 설명 일치 여부"
+      ],
+      "uncertaintyNotes": [
+        "ORDR RD10 직접 접근 불가. 2025-12-05 ordsearch 기록에서 확인했으며 2.323에서 수치 변경 가능."
+      ]
     }
   ]
 }
