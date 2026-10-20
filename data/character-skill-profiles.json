@@ -16360,6 +16360,585 @@
         "기본 공격력 및 공속",
         "실제 중첩 및 피해 계산 순서"
       ]
+    },
+    {
+      "unitId": "R-01",
+      "sourceUrl": "https://ordr.kr/character/R1",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 5
+        },
+        {
+          "type": "movementSlowAura",
+          "percent": 10
+        },
+        {
+          "type": "basicAttackExplosive",
+          "percentOfAttackPower": 22,
+          "excludedTargetKinds": [
+            "story"
+          ]
+        }
+      ],
+      "skills": [],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-02",
+      "sourceUrl": "https://ordr.kr/character/R2",
+      "passives": [],
+      "skills": [
+        {
+          "name": "거프 타격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 12500
+            },
+            {
+              "type": "magical",
+              "amount": 40000,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.5,
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 1,
+              "chancePercent": 50,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 12.5,
+          "target": "area",
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-03",
+      "sourceUrl": "https://ordr.kr/character/R3",
+      "passives": [],
+      "skills": [
+        {
+          "name": "검은수염 어둠",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 17000
+            },
+            {
+              "type": "magicDamageAmplification",
+              "percent": 4
+            },
+            {
+              "type": "pull",
+              "exceptTargetKinds": [
+                "boss",
+                "story"
+              ]
+            }
+          ],
+          "chancePercent": 12,
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-05",
+      "sourceUrl": "https://ordr.kr/character/R5",
+      "passives": [],
+      "skills": [
+        {
+          "name": "외과수술 가속",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "allyAttackSpeedBuff",
+              "percent": 120,
+              "durationSeconds": 8
+            }
+          ],
+          "cooldownSeconds": 50,
+          "target": "selectedAlly",
+          "exclusiveWith": [
+            "다른 가속"
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-07",
+      "sourceUrl": "https://ordr.kr/character/R7",
+      "passives": [
+        {
+          "type": "basicAttackExplosive",
+          "amount": 2000
+        }
+      ],
+      "skills": [
+        {
+          "name": "흑도 슈스이",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 4500
+            },
+            {
+              "type": "explosive",
+              "targetCurrentHealthPercent": 10,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 375
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-14",
+      "sourceUrl": "https://ordr.kr/character/R14",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 10
+        }
+      ],
+      "skills": [],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-17",
+      "sourceUrl": "https://ordr.kr/character/R17",
+      "passives": [
+        {
+          "type": "teleport",
+          "range": 1500
+        }
+      ],
+      "skills": [
+        {
+          "name": "단일 물리 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 2500
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.75
+            }
+          ],
+          "chancePercent": 35,
+          "target": "single"
+        },
+        {
+          "name": "마법 단일 강화",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 10000
+            },
+            {
+              "type": "fixed",
+              "amount": 20000,
+              "plusTargetCurrentHealthPercent": 1,
+              "exceptTargetKinds": [
+                "story"
+              ],
+              "onlyTargetKinds": [
+                "boss",
+                "enraged"
+              ]
+            }
+          ],
+          "chancePercent": 12.5,
+          "target": "single",
+          "specialChancePercent": 12.5
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-20",
+      "sourceUrl": "https://ordr.kr/character/R20",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 10
+        }
+      ],
+      "skills": [],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-24",
+      "sourceUrl": "https://ordr.kr/character/R24",
+      "passives": [
+        {
+          "type": "manaRegeneration",
+          "perSecond": 0.6
+        }
+      ],
+      "skills": [],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-25",
+      "sourceUrl": "https://ordr.kr/character/R25",
+      "passives": [],
+      "skills": [
+        {
+          "name": "단일 스턴 타격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 25000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.9
+            }
+          ],
+          "chancePercent": 15,
+          "target": "single"
+        },
+        {
+          "name": "현재 체력 폭발",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "explosive",
+              "targetCurrentHealthPercent": 15,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "chancePercent": 10,
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-26",
+      "sourceUrl": "https://ordr.kr/character/R26",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 10
+        }
+      ],
+      "skills": [
+        {
+          "name": "빙결 광역",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 9000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 0.95
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 405
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-31",
+      "sourceUrl": "https://ordr.kr/character/R31",
+      "passives": [],
+      "skills": [
+        {
+          "name": "호르몬 버프",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "allyAttackPowerBuff",
+              "percent": 35,
+              "durationSeconds": 25
+            }
+          ],
+          "cooldownSeconds": 50,
+          "target": "selectedAlly"
+        },
+        {
+          "name": "범위 마법 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 13000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.4
+            }
+          ],
+          "chancePercent": 7,
+          "target": "area",
+          "radius": 500
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-37",
+      "sourceUrl": "https://ordr.kr/character/R37",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 15
+        }
+      ],
+      "skills": [],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-38",
+      "sourceUrl": "https://ordr.kr/character/R38",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 15
+        }
+      ],
+      "skills": [
+        {
+          "name": "로어",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "allyAttackPowerBuff",
+              "percent": 20,
+              "durationSeconds": 15
+            }
+          ],
+          "cooldownSeconds": 35,
+          "target": "allyArea",
+          "radius": 500,
+          "exclusiveWith": [
+            "동일 로어"
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
+    },
+    {
+      "unitId": "R-41",
+      "sourceUrl": "https://ordr.kr/character/R41",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 20
+        }
+      ],
+      "skills": [],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 JASS 스킬 rawcode",
+        "기본 공격력과 공속",
+        "원작 피해 저항 공식"
+      ]
     }
   ]
 }
