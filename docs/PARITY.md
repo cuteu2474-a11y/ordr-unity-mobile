@@ -1,23 +1,29 @@
-# Original-game parity policy
+# 원작 동일성 검증 기준
 
-Target reference: ORDR S2 2.323[C], offline single-player.
+기준 원본: **ORDR S2 2.323[C]**, 오프라인 싱글플레이.
 
-## Acceptance gates
-- Exact unit and enemy definitions sourced from the original.
-- Exact attack/skill conditions, damage calculations, buffs and targeting.
-- Exact wave timing, path, difficulty and victory/defeat rules.
-- Exact crafting, shops, gambling and wisp rules.
-- Mobile input may differ, but must not confer gameplay advantages.
-- Every verified behavior needs a source reference and a regression test where feasible.
+## 필수 검증 항목
+- 유닛·몬스터 데이터와 능력치
+- 공격·스킬 발동 조건, 피해량, 대상 선택, 버프·디버프
+- 웨이브 출현, 이동 경로, 난이도, 승리·패배 조건
+- 조합법, 상점, 도박, 위습, 경제 규칙
+- 모바일 조작이 원작보다 유리한 게임 결과를 만들지 않는지
 
-## Evidence ledger
-| Area | Source extracted | Implemented | Verified |
+## 자료 활용 원칙
+1. 원본 W3X·JASS와 오브젝트 데이터에서 규칙을 추출합니다.
+2. 인터넷 도감·조합표·공략은 버전과 출처를 기록하여 대조합니다.
+3. 자료가 충돌하면 원본 실제 동작을 우선하며, 검증 전에는 미확인으로 표시합니다.
+4. 검증 가능한 항목에는 회귀 테스트를 작성합니다.
+
+## 검증 현황
+
+| 항목 | 원본 추출 | 구현 | 원작 대조 |
 | --- | --- | --- | --- |
-| Units | No | No | No |
-| Skills | No | No | No |
-| Waves and enemies | No | No | No |
-| Crafting | No | No | No |
-| Economy and wisps | No | No | No |
-| Difficulty and events | No | No | No |
+| 유닛 | 미완료 | 미완료 | 미검증 |
+| 스킬 | 미완료 | 미완료 | 미검증 |
+| 라운드·몬스터 | 미완료 | 미완료 | 미검증 |
+| 조합 | 미완료 | 미완료 | 미검증 |
+| 상점·도박·위습 | 미완료 | 미완료 | 미검증 |
+| 난이도·이벤트 | 미완료 | 미완료 | 미검증 |
 
-Do not replace missing original data with invented placeholder values.
+원본 자료가 확인되지 않은 값을 임의의 대체 수치로 채우지 않습니다.
