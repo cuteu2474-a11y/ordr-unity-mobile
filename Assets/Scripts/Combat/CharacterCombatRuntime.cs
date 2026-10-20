@@ -43,7 +43,18 @@ namespace Ordr.Mobile.Combat
         private readonly List<CharacterCombatEvent> pendingCommandEvents =
             new List<CharacterCombatEvent>();
         private bool processingStep;
+        private IOriginalStoryDispatchPort storyDispatch;
         public MobileCombatAutomation MobileAutomation { get; } = new MobileCombatAutomation();
+
+        public void ConfigureStoryDeployment(IOriginalStoryDispatchPort verifiedStory)
+        {
+            storyDispatch = verifiedStory;
+        }
+
+        public bool IsStoryDeployed(long instanceId)
+        {
+            return storyDispatch != null && storyDispatch.IsDeployed(instanceId);
+        }
 
         public GameSession Game { get { return game; } }
         public UnitRoster Roster { get { return roster; } }
@@ -366,7 +377,8 @@ namespace Ordr.Mobile.Combat
             foreach (long id in ids)
             {
                 CharacterInstance unit = characters[id];
-                if (!unit.AttackReady || unit.AttackBlockedByMissingFormula) continue;
+                if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
+                    IsStoryDeployed(id)) continue;
                 UnitState position = roster.Get(id);
                 var candidates = new List<TargetCandidate>();
                 foreach (var enemy in enemies.Values)
