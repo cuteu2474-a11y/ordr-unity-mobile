@@ -12,6 +12,7 @@
 | `character-skill-profiles.json` | 캐릭터 **61종 / 167개 스킬 항목** (전설 39종, 세라핌 4종 전원 포함) | **부분 입력**, 원작 동일 동작은 미검증 |
 | `schema.json` | 기본 캐릭터 카탈로그 데이터 형식 | 등록 |
 | `character-skill-profiles.schema.json` | 스킬/특성강화 상세 데이터 형식 | 등록 |
+| `skill-collection-progress.json` | 등급별 상세 스킬 수집 상태, 다음 수집 순서 | 등록 |
 | `sources.json` | 출처 및 확인 목적 | 등록 |
 
 ## 출처
