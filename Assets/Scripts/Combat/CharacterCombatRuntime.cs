@@ -168,7 +168,7 @@ namespace Ordr.Mobile.Combat
             if (!characters.TryGetValue(instanceId, out caster))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
 
-            SpatialCombatEnemy enemy;
+            SpatialCombatEnemy enemy = null;
             bool hasTarget = !string.IsNullOrWhiteSpace(primaryEnemyId) &&
                 enemies.TryGetValue(primaryEnemyId, out enemy) &&
                 enemy.Enemy.IsAlive;
