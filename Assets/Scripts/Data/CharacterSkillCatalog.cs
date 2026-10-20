@@ -122,7 +122,10 @@ namespace Ordr.Mobile.Data
         {
             get
             {
-                return ValueIsNumber("nominalAttackPower") &&
+                // 스탯 숫자만 적혀 있다고 원작 검증 완료로 판단하지 않는다.
+                return OrdrJson.String(OriginalFields as Dictionary<string, object>,
+                           "basicAttackVerificationStatus") == "original-confirmed" &&
+                       ValueIsNumber("nominalAttackPower") &&
                        ValueIsNumber("intervalSeconds") &&
                        ValueIsNumber("range") &&
                        HasText("damageSchool");
