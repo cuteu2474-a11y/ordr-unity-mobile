@@ -12899,6 +12899,943 @@
         "실제 공격 스탯/공속",
         "정확한 중첩·반올림"
       ]
+    },
+    {
+      "unitId": "LI-01",
+      "sourceUrl": "https://ordr.kr/character/Z1",
+      "passives": [],
+      "skills": [
+        {
+          "name": "핏빛 범위 공격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000,
+              "plusTargetMaxHealthPercent": 0.8
+            }
+          ],
+          "chancePercent": 4,
+          "target": "casterArea",
+          "radius": 750
+        },
+        {
+          "name": "광역 마법 공격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 500000
+            }
+          ],
+          "chancePercent": 5,
+          "radius": 700,
+          "target": "area"
+        },
+        {
+          "name": "단일 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 425000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.5
+            }
+          ],
+          "chancePercent": 20,
+          "target": "single",
+          "overrides": [
+            {
+              "targetKinds": [
+                "boss"
+              ],
+              "chanceMultiplier": 2,
+              "damageMultiplier": 2
+            }
+          ]
+        },
+        {
+          "name": "평타 단일 고정",
+          "trigger": "onEveryAttack",
+          "components": [
+            {
+              "type": "fixed",
+              "targetMaxHealthPercent": 2.15
+            },
+            {
+              "type": "magical",
+              "amount": 142500,
+              "onlyTargetKinds": [
+                "boss",
+                "story"
+              ]
+            }
+          ],
+          "target": "single"
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "unlockSkill",
+          "name": "핏빛 폭연",
+          "healthCost": 55,
+          "areaRadius": 900,
+          "fixedTargetMissingHealthPercent": 3
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "실제 평타·공속",
+        "피해 공식·중첩 여부"
+      ]
+    },
+    {
+      "unitId": "LI-02",
+      "sourceUrl": "https://ordr.kr/character/Z2",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 38
+        },
+        {
+          "type": "basicAttackSplash",
+          "radius": 325
+        },
+        {
+          "type": "legendaryDescendantStacks",
+          "maxLevel": 20,
+          "attackPowerPerLevel": 3000
+        }
+      ],
+      "skills": [
+        {
+          "name": "단일 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            }
+          ],
+          "chancePercent": 33,
+          "target": "single"
+        },
+        {
+          "name": "광역 물리 둔화",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 800000,
+              "plusLegacyLevelDamage": 30000
+            },
+            {
+              "type": "movementSlow",
+              "percent": 50
+            }
+          ],
+          "chancePercent": 8,
+          "target": "casterArea",
+          "radius": 850
+        },
+        {
+          "name": "물리 연계",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 600000,
+              "plusLegacyLevelDamage": 25000
+            },
+            {
+              "type": "magical",
+              "bonusPercent": 350,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 450,
+          "overrides": [
+            {
+              "targetKinds": [
+                "boss",
+                "enraged"
+              ],
+              "chancePercent": 20
+            }
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "실제 평타·공속",
+        "피해 공식·중첩 여부"
+      ]
+    },
+    {
+      "unitId": "LI-03",
+      "sourceUrl": "https://ordr.kr/character/Z3",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 45
+        },
+        {
+          "type": "healthRegeneration",
+          "perSecond": 3
+        },
+        {
+          "type": "flyingMovement"
+        },
+        {
+          "type": "basicAttackMagicSplash",
+          "basicDamagePercent": 100,
+          "radius": 375
+        }
+      ],
+      "skills": [
+        {
+          "name": "불사조 상태 폭발",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "basicAttackPercent": 400,
+              "flatAmount": 500000
+            },
+            {
+              "type": "fixed",
+              "bonusDamagePercent": 40,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 18,
+          "requiresForm": "phoenix",
+          "healthCost": 10,
+          "minHealth": 15,
+          "radius": 500,
+          "target": "area"
+        },
+        {
+          "name": "인간형 돌진",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 750000
+            },
+            {
+              "type": "explosive",
+              "targetCurrentHealthPercent": 30,
+              "onlyTargetKinds": [
+                "line"
+              ],
+              "scope": "singlePrimaryTarget"
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 15,
+          "requiresForm": "human",
+          "healthCost": 7,
+          "minHealth": 15,
+          "target": "area",
+          "radius": 450
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "changePassive",
+          "name": "healthRegeneration",
+          "perSecond": 4
+        },
+        {
+          "type": "changePassive",
+          "name": "movementSlowAura",
+          "percent": 60
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "실제 평타·공속",
+        "피해 공식·중첩 여부"
+      ]
+    },
+    {
+      "unitId": "LI-04",
+      "sourceUrl": "https://ordr.kr/character/Z4",
+      "passives": [
+        {
+          "type": "movementSlowAura",
+          "percent": 30
+        },
+        {
+          "type": "teleport"
+        }
+      ],
+      "skills": [
+        {
+          "name": "암습",
+          "trigger": "activeHealth",
+          "components": [
+            {
+              "type": "triggerSkill",
+              "name": "암행",
+              "damageMultiplier": 3,
+              "forceSummonClone": true
+            }
+          ],
+          "healthCost": 50,
+          "oncePerEnemyBossEnraged": true,
+          "exclusiveWith": [
+            "아카이누",
+            "카타쿠리",
+            "써니호"
+          ]
+        },
+        {
+          "name": "암행",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 600000,
+              "extraBossMaxHealthPercent": 2
+            },
+            {
+              "type": "explosive",
+              "targetMaxHealthPercent": 8,
+              "onlyTargetKinds": [
+                "line"
+              ]
+            }
+          ],
+          "chancePercent": 15,
+          "target": "single",
+          "cloneProcAndDamageMultiplier": 0.5
+        },
+        {
+          "name": "광역 마법",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 400000
+            }
+          ],
+          "chancePercent": 10,
+          "target": "area",
+          "radius": 475
+        },
+        {
+          "name": "인술 분신",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "summon",
+              "unit": "분신",
+              "basicAttackMagicArea": 300,
+              "basicAttackMagicDamage": 50000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.5,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 9,
+          "target": "single",
+          "cloneAbilityUses": "암행"
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "unlockSkill",
+          "name": "다중분신술",
+          "chancePercent": 4,
+          "cloneMagicAreaRadius": 325,
+          "cloneBasicMagicDamage": 70000,
+          "stunSeconds": 2.5,
+          "cloneSkillProcMultiplier": 0.6
+        }
+      ],
+      "uncertaintyNotes": [
+        "상세 툴팁 강화 분신 확률 4%, 2.310 패치 기록에는 5% 변경 기재. 수치 충돌 보류."
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "실제 평타·공속",
+        "피해 공식·중첩 여부"
+      ]
+    },
+    {
+      "unitId": "LI-05",
+      "sourceUrl": "https://ordr.kr/character/Z5",
+      "passives": [],
+      "skills": [
+        {
+          "name": "되감기",
+          "trigger": "onSkillActivated",
+          "components": [
+            {
+              "type": "enemyLevelReduction",
+              "chancePercent": 15,
+              "targets": 3,
+              "levelDecreaseRange": [
+                3,
+                5
+              ],
+              "healthRatioRetainedPercent": 85,
+              "teleportTo": "spawn",
+              "executeWhenRelativeLevelBelow": 7,
+              "exceptTargetKinds": [
+                "boss"
+              ]
+            }
+          ],
+          "target": "randomAffectedEnemies"
+        },
+        {
+          "name": "2연타 마법",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 320000,
+              "hits": 2,
+              "extraSingleMagicalAmount": 300000,
+              "enragedExtraMultiplier": 10
+            }
+          ],
+          "chancePercent": 16,
+          "target": "area",
+          "radius": 475
+        },
+        {
+          "name": "3연타 마법",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amountPerHit": 240000,
+              "hits": 3,
+              "extraSingleMagicalAmount": 300000,
+              "enragedExtraMultiplier": 10
+            }
+          ],
+          "chancePercent": 5,
+          "target": "area",
+          "radius": 500
+        },
+        {
+          "name": "단일 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 1.75
+            }
+          ],
+          "chancePercent": 25,
+          "target": "single"
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "실제 평타·공속",
+        "피해 공식·중첩 여부"
+      ]
+    },
+    {
+      "unitId": "LI-06",
+      "sourceUrl": "https://ordr.kr/character/Z6",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 25
+        }
+      ],
+      "skills": [
+        {
+          "name": "범위 광역 스턴",
+          "trigger": "activeMana",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 2500000,
+              "plusTargetMissingHealthPercentPhysical": 10
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 3
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 10
+            },
+            {
+              "type": "allyAttackPowerBuff",
+              "percent": 33,
+              "durationSeconds": 4.5
+            }
+          ],
+          "manaCost": 55,
+          "target": "area",
+          "radius": 600
+        },
+        {
+          "name": "확정 단일 스턴",
+          "trigger": "onEveryAttack",
+          "components": [
+            {
+              "type": "stun",
+              "durationSeconds": 3,
+              "overrideBossSeconds": 1.5
+            }
+          ],
+          "chancePercent": 100
+        },
+        {
+          "name": "3타 물리 넉백",
+          "trigger": "everyNthHit",
+          "components": [
+            {
+              "type": "physical",
+              "basicAttackMultiplier": 5
+            },
+            {
+              "type": "knockback",
+              "distance": 300
+            },
+            {
+              "type": "manaRestore",
+              "amount": 5
+            }
+          ],
+          "requiredHits": 3,
+          "radius": 800
+        },
+        {
+          "name": "미끌미끌 슈플",
+          "trigger": "onAttackWithAbsoluteCooldown",
+          "components": [
+            {
+              "type": "physical",
+              "amountPerHit": 500000,
+              "hits": 3,
+              "finalPhysicalAmount": 2000000,
+              "plusTargetMissingHealthPercent": 6
+            },
+            {
+              "type": "knockback",
+              "distance": 400
+            },
+            {
+              "type": "manaRestore",
+              "amount": 10
+            }
+          ],
+          "absoluteCooldownSeconds": 8,
+          "radius": 800,
+          "finalHitRadius": 450
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "실제 평타·공속",
+        "피해 공식·중첩 여부"
+      ]
+    },
+    {
+      "unitId": "LI-08",
+      "sourceUrl": "https://ordr.kr/character/Z8",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 30
+        },
+        {
+          "type": "healthRegeneration",
+          "perSecond": 2.85
+        }
+      ],
+      "skills": [
+        {
+          "name": "자기 가속",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "selfAttackSpeedMax",
+              "durationSeconds": 1.5
+            },
+            {
+              "type": "physical",
+              "basicAttackPercent": 75,
+              "flatAmount": 100000,
+              "onEveryAttackWhileBuffed": true
+            }
+          ],
+          "chancePercent": 15,
+          "requiresHealthAtLeast": 35,
+          "healthCost": 17,
+          "radius": 415
+        },
+        {
+          "name": "단일 타격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 150000
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 1.2
+            }
+          ],
+          "chancePercent": 20
+        },
+        {
+          "name": "광역 마법",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 375000
+            }
+          ],
+          "chancePercent": 14,
+          "radius": 500
+        },
+        {
+          "name": "접근 상대 강타",
+          "trigger": "onEnemyEnterRange",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 450000,
+              "extraSinglePhysicalAmount": 4500000
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 6
+            }
+          ],
+          "chancePercent": 20,
+          "triggerRadius": 850,
+          "targetRadius": 500,
+          "overrides": [
+            {
+              "targetKinds": [
+                "boss",
+                "enraged"
+              ],
+              "chancePercent": 100
+            }
+          ]
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "실제 평타·공속",
+        "피해 공식·중첩 여부"
+      ]
+    },
+    {
+      "unitId": "LI-09",
+      "sourceUrl": "https://ordr.kr/character/Z9",
+      "passives": [
+        {
+          "type": "armorReductionAura",
+          "amount": 25
+        },
+        {
+          "type": "movementSlowAura",
+          "percent": 40
+        }
+      ],
+      "skills": [
+        {
+          "name": "단일 참격",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 800000,
+              "multiplierRange": [
+                1,
+                2
+              ]
+            }
+          ],
+          "chancePercent": 6
+        },
+        {
+          "name": "광역 물리",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 850000
+            }
+          ],
+          "chancePercent": 10,
+          "radius": 425
+        },
+        {
+          "name": "혼합 스턴",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magical",
+              "amount": 200000
+            },
+            {
+              "type": "physical",
+              "amount": 1000000,
+              "multiplierRange": [
+                1,
+                1.5
+              ]
+            },
+            {
+              "type": "stun",
+              "durationSeconds": 2.5
+            }
+          ],
+          "chancePercent": 5,
+          "radius": 550
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "unlockSkill",
+          "name": "침식윤회",
+          "healthCost": 115,
+          "radius": 500,
+          "durationSeconds": 7,
+          "physicalDamagePerSecond": 400000,
+          "lastHitPhysicalDamage": 2000000,
+          "armorBreakPerHit": 1,
+          "lastHitExtraArmorBreak": 3,
+          "stunEveryHitSeconds": 0.2
+        }
+      ],
+      "uncertaintyNotes": [
+        "2.300 패치 이력에는 침식윤회 35만/초 및 최후타 190만으로 변경됐다고 기재되어 툴팁(40만/200만)과 충돌."
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "실제 평타·공속",
+        "피해 공식·중첩 여부"
+      ]
+    },
+    {
+      "unitId": "LI-10",
+      "sourceUrl": "https://ordr.kr/character/Z10",
+      "passives": [
+        {
+          "type": "basicAttackSplash",
+          "radius": 275
+        },
+        {
+          "type": "flyingMovement"
+        }
+      ],
+      "skills": [
+        {
+          "name": "처형자",
+          "trigger": "verifiedCondition",
+          "components": [
+            {
+              "type": "transform",
+              "form": "executioner",
+              "durationSeconds": 1.25
+            },
+            {
+              "type": "selfAttackSpeedBuff",
+              "percent": 25
+            }
+          ],
+          "requiredTargetArmorBreak": 50,
+          "manaAtLeast": 35,
+          "manaCost": 33
+        },
+        {
+          "name": "참수",
+          "trigger": "verifiedCondition",
+          "components": [
+            {
+              "type": "fixed",
+              "amount": 10000000,
+              "bossOverrideAmount": 100000
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 1,
+              "radiusMultiplier": 1.5
+            }
+          ],
+          "requiresForm": "executioner",
+          "requiredTargetArmorBreak": 50,
+          "target": "singlePlusArea"
+        },
+        {
+          "name": "잔혹한 검술",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "physical",
+              "amount": 800000
+            },
+            {
+              "type": "armorBreak",
+              "stacks": 4,
+              "scope": "singlePrimaryTarget"
+            }
+          ],
+          "chancePercent": 10,
+          "radius": 450
+        },
+        {
+          "name": "화재",
+          "trigger": "onAttack",
+          "components": [
+            {
+              "type": "magicalDoT",
+              "damagePerTick": 42500,
+              "intervalSeconds": 0.27,
+              "durationSeconds": 2.7
+            },
+            {
+              "type": "armorReduction",
+              "amount": 20,
+              "additionalAmount": 10,
+              "durationSeconds": 2
+            }
+          ],
+          "chancePercent": 14.25,
+          "radius": 450
+        },
+        {
+          "name": "단일 둔화",
+          "trigger": "onEveryAttack",
+          "components": [
+            {
+              "type": "magicalDoT",
+              "perSecond": 300000,
+              "durationSeconds": 3
+            },
+            {
+              "type": "movementSlow",
+              "percent": 45,
+              "durationSeconds": 3
+            }
+          ],
+          "target": "single"
+        }
+      ],
+      "enhancedChanges": [
+        {
+          "type": "replaceSkill",
+          "from": "화재",
+          "to": "카류우돈",
+          "chancePercent": 14.25,
+          "radius": 450,
+          "fixedDamage": 210000,
+          "additionalFixedPerArmorBreak": 7000,
+          "magicalDoTPerSecond": 300000,
+          "magicalDoTSeconds": 3,
+          "secondaryMagicalDoTPerTick": 80000,
+          "intervalSeconds": 0.27,
+          "durationSeconds": 2.7,
+          "armorReduction": 25
+        }
+      ],
+      "skillSpecCompleteness": "partial",
+      "gameRawCode": null,
+      "basicAttack": {
+        "nominalAttackPower": null,
+        "intervalSeconds": null,
+        "range": null,
+        "damageSchool": null
+      },
+      "unconfirmedFields": [
+        "원본 스킬 rawcode",
+        "실제 평타·공속",
+        "피해 공식·중첩 여부"
+      ]
     }
   ]
 }
