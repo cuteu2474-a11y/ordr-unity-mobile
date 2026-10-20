@@ -4,9 +4,9 @@
   "summary": {
     "catalogCharacters": 271,
     "detailedEligible": 200,
-    "detailedProfilesCollected": 86,
-    "remainingDetailed": 114,
-    "skillRecordsCollected": 287
+    "detailedProfilesCollected": 95,
+    "remainingDetailed": 105,
+    "skillRecordsCollected": 328
   },
   "byGrade": [
     {
@@ -97,8 +97,8 @@
       "grade": "불멸의",
       "allCharacters": 12,
       "detailEligible": 12,
-      "detailProfilesCollected": 3,
-      "remaining": 9
+      "detailProfilesCollected": 12,
+      "remaining": 0
     },
     {
       "grade": "세라핌",
@@ -123,7 +123,6 @@
     }
   ],
   "nextSuggestedGrades": [
-    "불멸의",
     "영원한",
     "히든",
     "제한됨",
@@ -141,6 +140,7 @@
     "특별함/희귀함 중 상세 설명 미등록 유닛은 일괄적으로 없는 스킬로 취급하지 않는다.",
     "기존 18종 및 신규 43종 모두 skillSpecCompleteness=partial; 상세스킬 데이터는 다수 조건/예외에 대한 원본 맵 검증이 필요.",
     "요청에 따라 게임 기능 전체 구현 전 신규 테스트 작성·실행 보류.",
-    "2026-10-21 초월함 TR1~TR30 전체 30종을 도감 원문 기준으로 상세 구조화; 스킬 정보는 기능 실행·원본 공식 검증 전 단계."
+    "2026-10-21 초월함 TR1~TR30 전체 30종을 도감 원문 기준으로 상세 구조화; 스킬 정보는 기능 실행·원본 공식 검증 전 단계.",
+    "2026-10-21 초월함 30/30 및 불멸의 12/12의 도감 툴팁 기반 상세 스킬을 등록했다. 모두 부분 수집이며 실제 게임 엔진 미연동."
   ]
 }
