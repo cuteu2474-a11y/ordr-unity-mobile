@@ -13,11 +13,14 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset unitCatalogJson;
         [SerializeField] private TextAsset characterSkillsJson;
         [SerializeField] private TextAsset originalStatEvidenceJson;
+        [SerializeField] private TextAsset verifiedFusionRecipesJson;
         [SerializeField] private bool enableMobileTouchPanel = true;
 
         public CharacterUnitCatalog Units { get; private set; }
         public CharacterSkillCatalog Skills { get; private set; }
         public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
+        public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
+        public AssistedFusionService FusionAssistance { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
 
         public MobileManualInteraction ManualActions { get; } = new MobileManualInteraction();
@@ -26,6 +29,8 @@ namespace Ordr.Mobile.Unity
         private IOriginalBossFocusRules bossFocusRules;
         private IOriginalAutoSkillRules autoSkillRules;
         private IOriginalStoryDispatchPort storyDispatchRules;
+        private IOriginalFusionPort originalFusionPort;
+        private IOriginalEconomyPort originalEconomyPort;
 
         public void ConfigureMobileAutomation(IOriginalPlacementRules originalPlacement,
             IOriginalBossFocusRules originalBossFocus,
@@ -37,14 +42,32 @@ namespace Ordr.Mobile.Unity
             if (Combat != null)
                 Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
             Combat.ConfigureStoryDeployment(storyDispatchRules);
+            if (VerifiedFusionRecipes != null)
+                FusionAssistance = new AssistedFusionService(VerifiedFusionRecipes,
+                    () => Combat.MobileUnitSnapshot(),
+                    instanceId => Combat.IsStoryDeployed(instanceId));
+            ManualActions.Configure(storyDispatchRules,
+                originalFusionPort ?? FusionAssistance, originalEconomyPort);
         }
 
         public void ConfigureManualMobileSystems(IOriginalStoryDispatchPort originalStory,
             IOriginalFusionPort originalFusion, IOriginalEconomyPort originalEconomy)
         {
             storyDispatchRules = originalStory;
-            ManualActions.Configure(originalStory, originalFusion, originalEconomy);
+            originalFusionPort = originalFusion;
+            originalEconomyPort = originalEconomy;
+            ManualActions.Configure(originalStory, originalFusion ?? FusionAssistance,
+                originalEconomy);
             if (Combat != null) Combat.ConfigureStoryDeployment(originalStory);
+        }
+
+        // 원본 조합 엔진이 실제 재료/재화 트랜잭션을 구현했을 때만 연결.
+        // 웹 도감 재료 미리보기만으로 유닛을 소비하지 않는다.
+        public void ConfigureVerifiedFusionCommit(IVerifiedOriginalFusionCommit originalCommit)
+        {
+            if (FusionAssistance == null)
+                throw new InvalidOperationException("조합 미리보기 카탈로그를 먼저 로드해야 합니다.");
+            FusionAssistance.AttachOriginalCommit(originalCommit);
         }
 
         // 전투 UI/로그가 스킬·피해·상태 적용 이벤트를 구독할 수 있다.
@@ -74,6 +97,10 @@ namespace Ordr.Mobile.Unity
                     Resources.Load<TextAsset>("OrdrData/original-stat-evidence");
                 if (evidenceData != null)
                     StatEvidence = OriginalUnitStatEvidenceCatalog.FromJson(evidenceData.text, Units);
+                var fusionData = verifiedFusionRecipesJson != null ? verifiedFusionRecipesJson :
+                    Resources.Load<TextAsset>("OrdrData/verified-mobile-fusion-recipes");
+                if (fusionData != null)
+                    VerifiedFusionRecipes = VerifiedFusionCatalog.FromJson(fusionData.text, Units);
                 if (Units.Count != 271 || Skills.CharacterCount != 200)
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
                 Debug.Log("ORDR 캐릭터 카탈로그 로딩: " + Units.Count +
