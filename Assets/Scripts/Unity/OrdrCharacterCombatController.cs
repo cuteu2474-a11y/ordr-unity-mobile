@@ -17,6 +17,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset originalJassFusionRegistryJson;
         [SerializeField] private TextAsset originalUnitRawcodeLabelsJson;
         [SerializeField] private bool enableMobileTouchPanel = true;
+        [SerializeField] private bool enableUnitWorldMarkers = true;
 
         public CharacterUnitCatalog Units { get; private set; }
         public CharacterSkillCatalog Skills { get; private set; }
@@ -106,6 +107,8 @@ namespace Ordr.Mobile.Unity
             // Unity 씬에 별도의 UI 프리팹이 없어도 터치 운용 메뉴를 사용할 수 있게 한다.
             if (enableMobileTouchPanel && GetComponent<OrdrMobileTouchPanel>() == null)
                 gameObject.AddComponent<OrdrMobileTouchPanel>();
+            if (enableUnitWorldMarkers && GetComponent<OrdrUnitWorldPresenter>() == null)
+                gameObject.AddComponent<OrdrUnitWorldPresenter>();
             // 동봉된 TextAsset이 없으면 Resources 폴더에서 읽는다.
             var unitsData = unitCatalogJson != null ? unitCatalogJson :
                 Resources.Load<TextAsset>("OrdrData/units");
