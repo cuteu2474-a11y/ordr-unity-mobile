@@ -99,9 +99,18 @@ namespace Ordr.Mobile.Combat
 
     public static class CombatTargeting
     {
-        // 타깃 우선순위는 원작 검증 전까지 외부에서 명시적으로 지정한다.
+        // 일반 워크래프트 방식은 기본 공격 사거리를 그대로 적용한다.
+        // 모바일 모드에서는 호출자가 먼저 전장(메인/스토리/도전)을 분리해야 한다.
         public static string Select(IEnumerable<TargetCandidate> candidates, double range,
             TargetPriority priority)
+        {
+            return Select(candidates, range, priority, false);
+        }
+
+        // ignoreUnitRange=true는 평타의 유닛별 '도달 거리'만 무시한다.
+        // 광역 스킬의 반경, 오라 범위, 타깃 우선순위는 바꾸지 않는다.
+        public static string Select(IEnumerable<TargetCandidate> candidates, double range,
+            TargetPriority priority, bool ignoreUnitRange)
         {
             if (candidates == null) throw new ArgumentNullException(nameof(candidates));
             if (double.IsNaN(range) || double.IsInfinity(range) || range < 0)
@@ -111,7 +120,9 @@ namespace Ordr.Mobile.Combat
             foreach (var candidate in candidates)
             {
                 if (candidate == null) throw new ArgumentException("null 대상은 허용하지 않습니다.");
-                if (!candidate.Alive || candidate.DistanceSquared > rangeSquared) continue;
+                if (!candidate.Alive ||
+                    (!ignoreUnitRange && candidate.DistanceSquared > rangeSquared))
+                    continue;
                 if (best == null || IsBetter(candidate, best, priority)) best = candidate;
             }
             return best == null ? null : best.Id;

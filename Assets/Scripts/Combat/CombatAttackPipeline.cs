@@ -35,6 +35,14 @@ namespace Ordr.Mobile.Combat
     }
 
     // 원작 버프/변신이 평타 공격력·속도·사거리를 바꾸면 외부 검증 정책이 계산한다.
+    // 스마트폰 조작 정책: 같은 전장의 적을 유닛 사거리 없이 공격한다.
+    // 다른 전장이나 도전 적을 향한 공격 자격은 월드에서 먼저 확인한다.
+    public enum CombatAttackReachMode
+    {
+        OriginalUnitRange,
+        UnlimitedWithinAssignedBattlefield
+    }
+
     public interface IOriginalUnitAttackModifiers
     {
         BasicAttackSpec Resolve(string attackerId, BasicAttackSpec originalStats,
@@ -79,6 +87,39 @@ namespace Ordr.Mobile.Combat
         private readonly CombatResolution resolution;
         private readonly CombatSkillTriggerEngine skillTriggers;
         private readonly IOriginalDamageResolver damageResolver;
+        private CombatAttackReachMode reachMode = CombatAttackReachMode.OriginalUnitRange;
+        public CombatAttackReachMode ReachMode { get { return reachMode; } }
+
+        // 기존 범위 제한 공격 API는 유지. 모바일 Runtime에서만 무제한 모드 활성화.
+        public void ConfigureReachMode(CombatAttackReachMode mode)
+        {
+            if (!Enum.IsDefined(typeof(CombatAttackReachMode), mode))
+                throw new ArgumentOutOfRangeException(nameof(mode));
+            reachMode = mode;
+        }
+
+        public double ReachForRuleEvaluation(string attackerId)
+        {
+            return reachMode == CombatAttackReachMode.UnlimitedWithinAssignedBattlefield
+                ? double.MaxValue : EffectiveAttack(attackerId).Range;
+        }
+
+        public string SelectDefaultTarget(string attackerId,
+            IEnumerable<TargetCandidate> candidates, TargetPriority priority)
+        {
+            return CombatTargeting.Select(candidates, EffectiveAttack(attackerId).Range,
+                priority, reachMode == CombatAttackReachMode.UnlimitedWithinAssignedBattlefield);
+        }
+
+        public bool CanReach(string attackerId, double distanceSquared)
+        {
+            if (double.IsNaN(distanceSquared) || distanceSquared < 0)
+                throw new ArgumentOutOfRangeException(nameof(distanceSquared));
+            return reachMode == CombatAttackReachMode.UnlimitedWithinAssignedBattlefield ||
+                distanceSquared <= EffectiveAttack(attackerId).Range *
+                                   EffectiveAttack(attackerId).Range;
+        }
+
         private IOriginalUnitAttackModifiers originalModifierRules;
         private Func<string, IReadOnlyList<CombatEffect>> getAttackerEffects;
         private readonly Dictionary<string, RegisteredUnit> units =
@@ -214,8 +255,8 @@ namespace Ordr.Mobile.Combat
             return TryBasicAttack(attackerInstanceId, candidates, null, out result);
         }
 
-        // 선호 대상은 원작 타깃 규칙이 검증한 경우에만 전달한다.
-        // 선호 대상이 죽었거나 사거리 밖이면 무시하고 기존 가까운 적을 공격한다.
+        // 선호 대상은 월드가 전달한 적 후보(같은 전장) 안에서만 인정한다.
+        // 모바일 모드는 거리 제한 없이 적용하고 일반 모드는 원작 거리 판정을 유지한다.
         public bool TryBasicAttack(string attackerInstanceId,
             IEnumerable<TargetCandidate> candidates, string verifiedPreferredTargetId,
             out BasicAttackResult result)
@@ -239,14 +280,13 @@ namespace Ordr.Mobile.Combat
                 if (tracked != null && tracked.IsAlive) validCandidates.Add(candidate);
             }
             BasicAttackSpec effective = EffectiveAttack(attackerInstanceId);
-            string targetId = CombatTargeting.Select(validCandidates,
-                effective.Range, TargetPriority.Nearest);
+            string targetId = SelectDefaultTarget(attackerInstanceId, validCandidates,
+                TargetPriority.Nearest);
             if (!string.IsNullOrWhiteSpace(verifiedPreferredTargetId))
             {
-                double maximumSquared = effective.Range * effective.Range;
                 foreach (var candidate in validCandidates)
                     if (candidate.Id == verifiedPreferredTargetId &&
-                        candidate.DistanceSquared <= maximumSquared)
+                        CanReach(attackerInstanceId, candidate.DistanceSquared))
                     {
                         targetId = candidate.Id;
                         break;

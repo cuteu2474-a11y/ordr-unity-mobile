@@ -48,7 +48,8 @@ namespace Ordr.Mobile.Mobile
     }
 
     // 보스를 선호하는 것이 원작에서도 허용되는 유닛/상황일 때만 true.
-    // 사거리 제한은 추가로 기존 공격 파이프라인에서 다시 검사한다.
+    // 모바일 무제한 평타 모드에서는 마지막 사거리 인자가 참고값일 뿐,
+    // 실제 사거리 제한은 적용되지 않는다. 전장 구분은 Runtime에서 반드시 유지한다.
     public interface IOriginalBossFocusRules
     {
         bool CanPreferBoss(CatalogUnit unit, CombatEnemy boss, double distanceSquared,
@@ -110,7 +111,7 @@ namespace Ordr.Mobile.Mobile
     }
 
     // 자동 조작 계층은 게임 규칙을 만들지 않고 원본 검증 서비스의 명령만 실행한다.
-    // 원본 서비스가 연결되지 않으면 기존 사거리/가까운 적 공격을 유지한다.
+    // 원본 서비스가 연결되지 않으면 같은 전장 안의 가까운 적 우선 정책을 유지한다.
     public sealed class MobileCombatAutomation
     {
         private IOriginalPlacementRules placement;

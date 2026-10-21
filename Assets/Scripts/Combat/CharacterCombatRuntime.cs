@@ -237,6 +237,9 @@ namespace Ordr.Mobile.Combat
             resolution = new CombatResolution(game, scheduler);
             attackPipeline = new CombatAttackPipeline(scheduler, resolution, triggers,
                 verifiedBasicDamage ?? throw new ArgumentNullException(nameof(verifiedBasicDamage)));
+            // 유닛 재배치가 어려운 모바일 플레이 기준: 같은 전장 안의 평타 사거리 무제한.
+            attackPipeline.ConfigureReachMode(
+                CombatAttackReachMode.UnlimitedWithinAssignedBattlefield);
             effectExecutor = new CharacterSkillEffectExecutor(resolution,
                 verifiedSkillDamage ?? throw new ArgumentNullException(nameof(verifiedSkillDamage)),
                 statuses, armorBreakStacks, events);
@@ -310,8 +313,9 @@ namespace Ordr.Mobile.Combat
             return instance.AttackEvidence;
         }
 
-        // 검증된 공격력·공속·사거리만 호출자가 제공한다.
-        // 이를 호출하지 않은 271종 유닛도 선택·배치할 수 있으나 실제 공격하지 않는다.
+        // 모바일에서는 평타의 사거리 수치가 없어도 등록할 수 있다.
+        // 공격력·공속·피해계열/공식은 여전히 원작 근거가 필요하다.
+        // 미등록 유닛은 선택·배치만 가능하고 공격하지 않는다.
         public IReadOnlyList<string> BindVerifiedBasicAttack(long instanceId,
             BasicAttackSpec verifiedStats, double firstAttackDelay)
         {
@@ -349,7 +353,16 @@ namespace Ordr.Mobile.Combat
             if (profile == null || !profile.HasVerifiedBasicAttack) return false;
             object rawPower = profile.BasicAttack["nominalAttackPower"];
             object rawInterval = profile.BasicAttack["intervalSeconds"];
-            object rawRange = profile.BasicAttack["range"];
+            object rawRange;
+            double rangeValue = 0; // 모바일 무제한 사거리 내부 표식, 실제 원작 사거리 아님
+            if (profile.BasicAttack.TryGetValue("range", out rawRange) &&
+                rawRange != null)
+            {
+                if (!(rawRange is double)) return false;
+                rangeValue = (double)rawRange;
+            }
+            else if (attackPipeline.ReachMode == CombatAttackReachMode.OriginalUnitRange)
+                return false;
             object rawSchool = profile.BasicAttack["damageSchool"];
             double power = (double)rawPower;
             if (power < 0 || power > long.MaxValue || Math.Floor(power) != power)
@@ -359,7 +372,7 @@ namespace Ordr.Mobile.Combat
                 !Enum.IsDefined(typeof(DamageSchool), school))
                 throw new FormatException("검증된 기본 피해 계열 값 오류.");
             BindVerifiedBasicAttack(instanceId,
-                new BasicAttackSpec((long)power, (double)rawInterval, (double)rawRange,
+                new BasicAttackSpec((long)power, (double)rawInterval, rangeValue,
                     school, DamageTraits.None),
                 firstAttackDelay);
             return true;
@@ -466,8 +479,7 @@ namespace Ordr.Mobile.Combat
             double dx = enemy.X - position.X;
             double dy = enemy.Y - position.Y;
             double distanceSquared = dx * dx + dy * dy;
-            double range = attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range;
-            if (distanceSquared > range * range ||
+            if (!attackPipeline.CanReach(InstanceKey(unit.Id), distanceSquared) ||
                 !specialEventRules.CanActivate(unit.Catalog, skill, enemy.Kind,
                     scheduler.Time))
                 return false;
@@ -653,9 +665,8 @@ namespace Ordr.Mobile.Combat
                     unit.Mapping == null) continue;
                 double? at = attackPipeline.NextAttackAt(InstanceKey(unit.Id));
                 var candidates = BuildTargetCandidates(unit);
-                if (CombatTargeting.Select(candidates,
-                    attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range,
-                    TargetPriority.Nearest) == null) continue;
+                if (attackPipeline.SelectDefaultTarget(InstanceKey(unit.Id),
+                    candidates, TargetPriority.Nearest) == null) continue;
                 if (at.HasValue && (!next.HasValue || at.Value < next.Value))
                     next = at;
                 foreach (var entry in unit.Mapping.ActivatedSkills)
@@ -740,8 +751,8 @@ namespace Ordr.Mobile.Combat
                 if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
                     unit.Mapping == null || unit.Profile == null) continue;
                 var candidates = BuildTargetCandidates(unit);
-                var primaryId = CombatTargeting.Select(candidates,
-                    attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range, TargetPriority.Nearest);
+                var primaryId = attackPipeline.SelectDefaultTarget(
+                    InstanceKey(unit.Id), candidates, TargetPriority.Nearest);
                 if (primaryId == null) continue;
                 var skills = new List<string>(unit.Mapping.ActivatedSkills.Keys);
                 skills.Sort(StringComparer.Ordinal);
@@ -766,9 +777,8 @@ namespace Ordr.Mobile.Combat
                         skill, primary, position.X, position.Y, enemies.Values);
                     if (!primary.Enemy.IsAlive)
                     {
-                        primaryId = CombatTargeting.Select(
-                            BuildTargetCandidates(unit),
-                            attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range,
+                        primaryId = attackPipeline.SelectDefaultTarget(
+                            InstanceKey(unit.Id), BuildTargetCandidates(unit),
                             TargetPriority.Nearest);
                         if (primaryId == null) break;
                     }
@@ -859,21 +869,20 @@ namespace Ordr.Mobile.Combat
                 string chosen;
                 if (targetSelectionRules.TryChoose(unit.Catalog,
                     contacts.AsReadOnly(),
-                    attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range,
+                    attackPipeline.ReachForRuleEvaluation(InstanceKey(unit.Id)),
                     out chosen))
                 {
                     if (string.IsNullOrWhiteSpace(chosen))
                         throw new InvalidOperationException("검증된 타깃 정책이 빈 ID를 반환했습니다.");
                     bool eligible = false;
-                    double maxRange = attackPipeline.EffectiveAttack(
-                        InstanceKey(unit.Id)).Range;
                     foreach (var contact in contacts)
                         if (contact.Candidate.Id == chosen &&
-                            contact.Candidate.DistanceSquared <= maxRange * maxRange)
+                            attackPipeline.CanReach(InstanceKey(unit.Id),
+                                contact.Candidate.DistanceSquared))
                         { eligible = true; break; }
                     if (!eligible)
                         throw new InvalidOperationException(
-                            "검증된 타깃 정책이 다른 전장 또는 사거리 밖 적을 반환했습니다.");
+                            "타깃 정책이 다른 전장 또는 공격 불가능한 적을 반환했습니다.");
                     return chosen;
                 }
             }
@@ -881,16 +890,18 @@ namespace Ordr.Mobile.Combat
             if (rules == null || unit.Mapping == null) return null;
             string preferred = null;
             double nearestBossDistance = double.MaxValue;
-            double range = attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range;
-            double maximumSquared = range * range;
+            double effectiveReach = attackPipeline.ReachForRuleEvaluation(
+                InstanceKey(unit.Id));
             foreach (var candidate in candidates)
             {
-                if (!candidate.Alive || candidate.DistanceSquared > maximumSquared) continue;
+                if (!candidate.Alive ||
+                    !attackPipeline.CanReach(InstanceKey(unit.Id),
+                        candidate.DistanceSquared)) continue;
                 SpatialCombatEnemy enemy;
                 if (!enemies.TryGetValue(candidate.Id, out enemy) ||
                     enemy.Kind != CharacterEnemyKind.Boss || !enemy.Enemy.IsAlive) continue;
                 if (!rules.CanPreferBoss(unit.Catalog, enemy.Enemy,
-                    candidate.DistanceSquared, range)) continue;
+                    candidate.DistanceSquared, effectiveReach)) continue;
                 if (candidate.DistanceSquared < nearestBossDistance ||
                     (candidate.DistanceSquared == nearestBossDistance &&
                      (preferred == null || string.CompareOrdinal(candidate.Id, preferred) < 0)))

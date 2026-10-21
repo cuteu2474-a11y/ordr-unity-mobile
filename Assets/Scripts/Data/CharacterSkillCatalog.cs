@@ -122,12 +122,12 @@ namespace Ordr.Mobile.Data
         {
             get
             {
-                // 스탯 숫자만 적혀 있다고 원작 검증 완료로 판단하지 않는다.
+                // 모바일에서는 평타가 같은 전장 전체를 공격하므로 사거리 값은 선택.
+                // 원작 검증 표시와 공격력·공속·피해계열은 여전히 반드시 필요.
                 return OrdrJson.String(OriginalFields as Dictionary<string, object>,
                            "basicAttackVerificationStatus") == "original-confirmed" &&
                        ValueIsNumber("nominalAttackPower") &&
                        ValueIsNumber("intervalSeconds") &&
-                       ValueIsNumber("range") &&
                        HasText("damageSchool");
             }
         }

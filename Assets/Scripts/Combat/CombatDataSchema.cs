@@ -127,6 +127,14 @@ namespace Ordr.Mobile.Combat
         public DamageTraits Traits { get; }
 
         // 공격력 표시값은 최종 피해량이 아니다. 방어/저항 계산기는 외부 주입.
+        // Range=0은 모바일 평타 무제한 모드에서 원본 사거리 미등록을 표현할 수 있다.
+        // 절대 원작 사거리가 0이라는 뜻은 아니며 스킬·오라 반경과 무관하다.
+        // 모바일 전장 전체 공격 전용: 원작 사거리가 미조사여도 등록할 수 있음.
+        // 이 생성자로 만든 스펙을 OriginalUnitRange 모드로 사용하면 안 된다.
+        public BasicAttackSpec(long nominalAttackPower, double intervalSeconds,
+            DamageSchool school, DamageTraits traits)
+            : this(nominalAttackPower, intervalSeconds, 0, school, traits) { }
+
         public BasicAttackSpec(long nominalAttackPower, double intervalSeconds, double range,
             DamageSchool school, DamageTraits traits)
         {

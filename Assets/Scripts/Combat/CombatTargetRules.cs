@@ -22,8 +22,10 @@ namespace Ordr.Mobile.Combat
 
     public interface IOriginalCombatTargetSelectionRules
     {
-        // true면 preferredTargetId가 반드시 후보 목록에 있고 사거리 안이어야 함.
-        // false면 기존 기본 타깃 정책(가까운 적 및 별도 보스 규칙)을 사용.
+        // true면 preferredTargetId는 반드시 현재 전장의 적 후보여야 한다.
+        // 모바일 모드에서는 verifiedRange에 double.MaxValue가 전달되어
+        // 캐릭터별 기본 사거리 제한을 적용하지 않는다.
+        // false면 가까운 적/기존 보스 우선 정책을 사용한다.
         bool TryChoose(CatalogUnit unit, IReadOnlyList<VerifiedTargetContact> candidates,
             double verifiedRange, out string preferredTargetId);
     }
