@@ -126,6 +126,24 @@ namespace Ordr.Mobile.Unity
                 originalCastPolicy);
         }
 
+        // Ordered CWR execution path. The supplied session factory MUST use the
+        // real original-object inventory, JASS condition readers and an atomic
+        // rollback capable world; an absent handler rejects its recipe.
+        public void ConfigureOriginalJassCraftingOrderedWorld(
+            IVerifiedUnitRawcodeMap verifiedObjectMap,
+            IOriginalJassSpecialConditionEvaluator conditionEvaluator,
+            IOriginalJassFusionResourceReader verifiedResourceReader,
+            IOriginalJassFusionOrderedSessionFactory originalSessionFactory,
+            IOriginalJassFusionCastPolicy originalCastPolicy)
+        {
+            if (originalSessionFactory == null)
+                throw new ArgumentNullException(nameof(originalSessionFactory));
+            ConfigureOriginalJassCraftingWorld(verifiedObjectMap, conditionEvaluator,
+                verifiedResourceReader,
+                new OriginalJassFusionOrderedWorldAdapter(originalSessionFactory),
+                originalCastPolicy);
+        }
+
         // 원본 조합 엔진이 실제 재료/재화 트랜잭션을 구현했을 때만 연결.
         // 웹 도감 재료 미리보기만으로 유닛을 소비하지 않는다.
         public void ConfigureVerifiedFusionCommit(IVerifiedOriginalFusionCommit originalCommit)
