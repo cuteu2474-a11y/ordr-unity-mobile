@@ -20,6 +20,7 @@ namespace Ordr.Mobile.Unity
 
         public CharacterUnitCatalog Units { get; private set; }
         public CharacterSkillCatalog Skills { get; private set; }
+        public UnitImplementationRegistry UnitDefinitions { get; private set; }
         public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
@@ -140,13 +141,19 @@ namespace Ordr.Mobile.Unity
                 if (labelsData != null)
                     OriginalUnitRawcodes = OriginalUnitRawcodeLabelCatalog.FromJson(
                         labelsData.text, Units, OriginalJassFusions);
-                if (Units.Count != 271 || Skills.CharacterCount != 200)
+                UnitDefinitions = UnitImplementationRegistry.Combine(Units, Skills,
+                    OriginalUnitRawcodes);
+                if (Units.Count != 271 || Skills.CharacterCount != 200 ||
+                    UnitDefinitions.Count != 271)
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
-                Debug.Log("ORDR 캐릭터 카탈로그 로딩: " + Units.Count +
-                    "종, 스킬 프로필 " + Skills.CharacterCount + "종, 스킬 항목 " +
-                    Skills.SkillCount + "개. 패치 확인 유닛 " +
-                    (StatEvidence == null ? 0 : StatEvidence.Count) +
-                    "종(스탯 전체 검증 및 공격 가능 상태와는 별개).");
+                Debug.Log("ORDR 전체 유닛 정의 " + UnitDefinitions.Count +
+                    "종 / 상세 스킬 프로필 " + UnitDefinitions.DetailedProfiles +
+                    "종 / 스킬 " + UnitDefinitions.CollectedSkills +
+                    "개 / 패시브 " + UnitDefinitions.CollectedPassives +
+                    "개 / JASS 이름-능력 연동 " + UnitDefinitions.LinkedJassLabels +
+                    "종 / 원본 공격 스탯 전체 확정 " +
+                    UnitDefinitions.VerifiedBasicAttacks + "종. " +
+                    "데이터 등록은 전투 구현 완료가 아닙니다.");
             }
             catch (Exception ex)
             {
