@@ -70,6 +70,30 @@ namespace Ordr.Mobile.Unity
             if (Combat != null) Combat.ConfigureStoryDeployment(originalStory);
         }
 
+        // Use the original JASS recipes when the game has authoritative
+        // object mapping, special-condition checks and atomic economy/spawn.
+        // The Bi8/Bi9 label map alone is intentionally insufficient.
+        public void ConfigureOriginalJassCrafting(
+            IVerifiedUnitRawcodeMap verifiedObjectMap,
+            IOriginalJassSpecialConditionEvaluator conditionEvaluator,
+            IOriginalJassFusionResourceReader verifiedResourceReader,
+            IOriginalJassFusionAtomicCommit originalTransaction)
+        {
+            if (Combat == null || OriginalFusionPlanner == null)
+                throw new InvalidOperationException(
+                    "원본 JASS 등록식 로딩과 전투 월드 구성이 먼저 필요합니다.");
+            if (verifiedObjectMap == null || conditionEvaluator == null ||
+                verifiedResourceReader == null || originalTransaction == null)
+                throw new ArgumentNullException(nameof(verifiedObjectMap),
+                    "원작 객체 매핑·추가조건·재화·원자적 조합 서비스가 모두 필요합니다.");
+            OriginalFusionPlanner.SetVerifiedObjectMap(verifiedObjectMap);
+            OriginalFusionPlanner.SetSpecialRules(conditionEvaluator);
+            originalFusionPort = new OriginalJassFusionPort(OriginalFusionPlanner,
+                () => Combat.MobileUnitSnapshot(), verifiedResourceReader,
+                originalTransaction);
+            ManualActions.Configure(storyDispatchRules, originalFusionPort, originalEconomyPort);
+        }
+
         // 원본 조합 엔진이 실제 재료/재화 트랜잭션을 구현했을 때만 연결.
         // 웹 도감 재료 미리보기만으로 유닛을 소비하지 않는다.
         public void ConfigureVerifiedFusionCommit(IVerifiedOriginalFusionCommit originalCommit)
