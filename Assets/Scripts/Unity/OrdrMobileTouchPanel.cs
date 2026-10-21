@@ -11,12 +11,17 @@ namespace Ordr.Mobile.Unity
     // 스토리·조합확인·상점·도박·위습 버튼은 실제 사용자 탭에서만 호출된다.
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
-        private enum Tab { Story, Fusion, Shop, Gambling, Wisp }
+        private enum Tab { Units, Story, Fusion, Shop, Gambling, Wisp }
 
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private bool openByDefault;
         private bool visible;
-        private Tab currentTab = Tab.Story;
+        private Tab currentTab = Tab.Units;
+        private bool browsingFullCatalog;
+        private int catalogGradeIndex;
+        private int catalogPage;
+        private int ownedPage;
+        private string selectedCatalogUnitId;
         private Vector2 scroll;
         private string notice = "모바일 조작 패널";
         private IReadOnlyList<MobileFusionPreview> fusionOffers =
@@ -78,12 +83,13 @@ namespace Ordr.Mobile.Unity
                 DrawTabs();
                 DrawModeStatus();
                 scroll = GUILayout.BeginScrollView(scroll, GUILayout.ExpandHeight(true));
-                if (Combat == null)
+                if (Combat == null && currentTab != Tab.Units)
                     GUILayout.Label("게임 월드 연결 전입니다. 원본 규칙이나 재화를 임의로 실행하지 않습니다.");
                 else
                 {
                     switch (currentTab)
                     {
+                        case Tab.Units: DrawUnits(); break;
                         case Tab.Story: DrawStory(); break;
                         case Tab.Fusion: DrawFusion(); break;
                         case Tab.Shop: DrawEconomy(ManualEconomyCategory.Shop); break;
@@ -102,6 +108,7 @@ namespace Ordr.Mobile.Unity
         private void DrawTabs()
         {
             GUILayout.BeginHorizontal();
+            DrawTab(Tab.Units, "유닛");
             DrawTab(Tab.Story, "스토리");
             DrawTab(Tab.Fusion, "조합");
             DrawTab(Tab.Shop, "상점");
@@ -132,6 +139,137 @@ namespace Ordr.Mobile.Unity
             string skill = status != null && status.AutoSkillsConnected ? "연결" : "규칙 미연결";
             GUILayout.Label("공격·확률 스킬: 자동 | 배치: " + placement +
                 " | 보스: " + boss + " | Q/W/R: " + skill);
+        }
+
+        // All 271 catalog units can be inspected; only units actually owned
+        // by the running world appear in the live selection list. No free spawns.
+        private void DrawUnits()
+        {
+            var definitions = controller.UnitDefinitions;
+            if (definitions == null)
+            {
+                GUILayout.Label("유닛 카탈로그가 로드되지 않았습니다.");
+                return;
+            }
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("유닛 " + definitions.Count + "종", GUILayout.ExpandWidth(true));
+            if (GUILayout.Button(browsingFullCatalog ? "보유 목록" : "전체 도감",
+                GUILayout.Width(110), GUILayout.MinHeight(46)))
+            {
+                browsingFullCatalog = !browsingFullCatalog;
+                selectedCatalogUnitId = null;
+                scroll = Vector2.zero;
+            }
+            GUILayout.EndHorizontal();
+
+            if (browsingFullCatalog)
+                DrawCatalogIndex(definitions);
+            else
+                DrawOwnedUnitIndex();
+
+            var detail = definitions.Find(selectedCatalogUnitId);
+            if (detail == null) return;
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label(detail.DisplayName + " · " + detail.Grade);
+            if (detail.Profile == null)
+                GUILayout.Label("상세 기술: 원본 도감 정보 미수집");
+            else
+            {
+                GUILayout.Label("스킬 " + detail.SkillCount +
+                    "개 / 패시브 " + detail.PassiveCount + "개");
+                int skillLimit = Math.Min(detail.Profile.Skills.Count, 8);
+                for (int i = 0; i < skillLimit; i++)
+                {
+                    var skill = detail.Profile.Skills[i];
+                    GUILayout.Label("· " + skill.Name);
+                }
+                if (detail.Profile.Skills.Count > skillLimit)
+                    GUILayout.Label("외 " + (detail.Profile.Skills.Count - skillLimit) + "개");
+            }
+            GUILayout.Label("원작 평타 스탯: " +
+                (detail.HasOriginalObjectStats ? "수치 원본 확인" : "아직 미확인"));
+            GUILayout.Label("원본 유닛 ID: " +
+                (string.IsNullOrWhiteSpace(detail.LabelLinkedOriginalRawcode)
+                    ? "미대응" : detail.LabelLinkedOriginalRawcode + " (이름 근거)"));
+            GUILayout.EndVertical();
+        }
+
+        private void DrawOwnedUnitIndex()
+        {
+            if (Combat == null)
+            {
+                GUILayout.Label("월드가 시작되면 보유한 유닛이 이곳에 표시됩니다.");
+                return;
+            }
+            var owned = Combat.MobileUnitSnapshot();
+            GUILayout.Label("보유 " + owned.Count + "기 · 선택 시 상세 보기");
+            const int pageSize = 12;
+            int pages = Math.Max(1, (owned.Count + pageSize - 1) / pageSize);
+            ownedPage = Math.Min(ownedPage, pages - 1);
+            for (int i = ownedPage * pageSize;
+                 i < Math.Min(owned.Count, (ownedPage + 1) * pageSize); i++)
+            {
+                var entry = owned[i];
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(entry.Unit.Name + " (" + entry.Unit.Grade + ")",
+                    GUILayout.ExpandWidth(true));
+                if (GUILayout.Button("선택", GUILayout.Width(78), GUILayout.MinHeight(48)))
+                {
+                    Combat.Roster.Select(entry.InstanceId);
+                    selectedCatalogUnitId = entry.Unit.Id;
+                    notice = entry.Unit.Name + " 선택";
+                }
+                GUILayout.EndHorizontal();
+            }
+            DrawPager(ownedPage, pages, next => ownedPage = next);
+        }
+
+        private void DrawCatalogIndex(Ordr.Mobile.Data.UnitImplementationRegistry definitions)
+        {
+            var grades = definitions.Grades;
+            if (grades.Count == 0) return;
+            catalogGradeIndex = Math.Min(catalogGradeIndex, grades.Count - 1);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("◀", GUILayout.Width(54), GUILayout.MinHeight(44)))
+            {
+                catalogGradeIndex = (catalogGradeIndex + grades.Count - 1) % grades.Count;
+                catalogPage = 0;
+            }
+            GUILayout.Label(grades[catalogGradeIndex], GUILayout.ExpandWidth(true));
+            if (GUILayout.Button("▶", GUILayout.Width(54), GUILayout.MinHeight(44)))
+            {
+                catalogGradeIndex = (catalogGradeIndex + 1) % grades.Count;
+                catalogPage = 0;
+            }
+            GUILayout.EndHorizontal();
+            var entries = definitions.OfGrade(grades[catalogGradeIndex]);
+            const int pageSize = 10;
+            int pages = Math.Max(1, (entries.Count + pageSize - 1) / pageSize);
+            catalogPage = Math.Min(catalogPage, pages - 1);
+            for (int i = catalogPage * pageSize;
+                 i < Math.Min(entries.Count, (catalogPage + 1) * pageSize); i++)
+            {
+                var unit = entries[i];
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(unit.DisplayName, GUILayout.ExpandWidth(true));
+                if (GUILayout.Button("정보", GUILayout.Width(78), GUILayout.MinHeight(48)))
+                    selectedCatalogUnitId = unit.UnitId;
+                GUILayout.EndHorizontal();
+            }
+            DrawPager(catalogPage, pages, next => catalogPage = next);
+        }
+
+        private void DrawPager(int page, int pages, Action<int> changePage)
+        {
+            if (pages < 2) return;
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("이전", GUILayout.MinHeight(44)))
+                changePage((page + pages - 1) % pages);
+            GUILayout.Label((page + 1) + " / " + pages,
+                GUILayout.ExpandWidth(true));
+            if (GUILayout.Button("다음", GUILayout.MinHeight(44)))
+                changePage((page + 1) % pages);
+            GUILayout.EndHorizontal();
         }
 
         private void DrawStory()
