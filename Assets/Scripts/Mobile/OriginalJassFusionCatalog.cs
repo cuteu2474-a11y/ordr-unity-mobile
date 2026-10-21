@@ -125,8 +125,16 @@ namespace Ordr.Mobile.Mobile
             var root = OrdrJson.Object(OrdrJson.Parse(json), "original-jass-fusion-registry");
             if (OrdrJson.RequiredString(root, "gameVersion") != "S2 2.323[C]")
                 throw new FormatException("다른 버전의 조합 규칙을 불러올 수 없습니다.");
+            object ordered = OrdrJson.Value(root, "conditionsInOriginalOrder");
+            if (!(ordered is bool) || !(bool)ordered)
+                throw new FormatException("BGI 원본 호출 순서가 보존되지 않은 조합 데이터는 실행할 수 없습니다.");
+            string fingerprint = OrdrJson.RequiredString(root, "sourceSha256");
+            if (!String.Equals(fingerprint,
+                OriginalVerifiedUnitObjectMap.ExpectedJassSha256,
+                StringComparison.OrdinalIgnoreCase))
+                throw new FormatException("기준 원본 S2 2.323[C] W3X SHA-256과 조합 자료가 다릅니다.");
             var result = new OriginalJassFusionCatalog();
-            result.SourceSha256 = OrdrJson.RequiredString(root, "sourceSha256");
+            result.SourceSha256 = fingerprint.ToLowerInvariant();
             foreach (object row in OrdrJson.Array(
                 OrdrJson.Value(root, "registrations"), "registrations"))
             {
