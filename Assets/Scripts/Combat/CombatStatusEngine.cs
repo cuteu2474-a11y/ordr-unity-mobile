@@ -9,6 +9,9 @@ namespace Ordr.Mobile.Combat
         MovementSlowPercent,
         Stun,
         MagicResistanceReduction,
+        // JASS Bd5가 A04Q 능력 레벨을 영구적으로 올리는 경우만 사용.
+        // 도감 퍼센트형 마방깎과는 별개.
+        OriginalA04QLevelIncrease,
         ArmorBreakStack,
         AttackSpeedBuff,
         AttackPowerBuff,

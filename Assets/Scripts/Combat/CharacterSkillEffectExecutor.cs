@@ -144,8 +144,16 @@ namespace Ordr.Mobile.Combat
         private readonly CombatTimedEffectQueue timedEffects;
         private IOriginalSkillHitTimingProvider hitTiming;
         private IOriginalSpecialCombatEffectHandler specialEffects;
+        private Ordr323VerifiedDefenseEffectRouter verified323DefenseRouter;
 
         public double Time { get { return timedEffects.Time; } }
+
+        public void ConfigureOriginal323DefenseSkillRouter(
+            Ordr323VerifiedDefenseEffectRouter router)
+        {
+            verified323DefenseRouter = router ??
+                throw new ArgumentNullException(nameof(router));
+        }
 
         public void ConfigureVerifiedSpecialEffects(IOriginalSpecialCombatEffectHandler handler)
         {
@@ -227,6 +235,11 @@ namespace Ordr.Mobile.Combat
                     if (IsTimedDamage(component) &&
                         !HasVerifiedTiming(profile, skill, component)) return false;
                 }
+                else if (verified323DefenseRouter != null &&
+                    (component.Type == "armorBreak" ||
+                     component.Type == "magicResistanceReduction") &&
+                    !verified323DefenseRouter.CanRoute(profile, skill, component))
+                    return false;
                 else if (!IsStandardEffect(component.Type) &&
                     !CanHandleSpecialComponent(profile, skill, component))
                     return false;
@@ -354,6 +367,29 @@ namespace Ordr.Mobile.Combat
                                 component, target, isPrimary, hitIndex, offsets.Count,
                                 elapsed));
                 }
+                return;
+            }
+
+            // 원본 2.323[C] 전투 모드: Bdq/Bd5의 확인된 JASS 콜백만
+            // A04M/A04Q 레벨·스택을 갱신한다. 미연결 스킬은 보류.
+            if (verified323DefenseRouter != null &&
+                (component.Type == "armorBreak" ||
+                 component.Type == "magicResistanceReduction"))
+            {
+                string reason;
+                if (verified323DefenseRouter.TryApply(casterId, profile, skill,
+                    component, target, isPrimary, out reason))
+                {
+                    events.Add(new CharacterCombatEvent(
+                        component.Type == "armorBreak"
+                            ? CharacterCombatEventType.ArmorBreakApplied
+                            : CharacterCombatEventType.StatusApplied,
+                        casterId, target.Id, skill.Name,
+                        component.Type == "armorBreak" ? "jass:A04M" : "jass:A04Q",
+                        0));
+                }
+                else
+                    Defer(casterId, target.Id, skill.Name, reason);
                 return;
             }
 

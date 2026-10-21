@@ -42,6 +42,9 @@ namespace Ordr.Mobile.Combat
             new Dictionary<string, CombatStatusEngine>(StringComparer.Ordinal);
         private readonly Dictionary<string, int> armorBreakStacks =
             new Dictionary<string, int>(StringComparer.Ordinal);
+        // Bdq(A04M) 원본 함수와 연결된 기술로 발생했음이 확인된 스택만 기록.
+        private readonly Dictionary<string, int> provenA04MStacks =
+            new Dictionary<string, int>(StringComparer.Ordinal);
         private readonly List<CharacterCombatEvent> events = new List<CharacterCombatEvent>();
         private readonly CombatAuraSystem auras = new CombatAuraSystem();
         private readonly List<CharacterCombatEvent> pendingCommandEvents =
@@ -54,6 +57,28 @@ namespace Ordr.Mobile.Combat
         private IOriginalSpecialSkillEventRules specialEventRules;
         private IOriginalCombatTargetSelectionRules targetSelectionRules;
         public MobileCombatAutomation MobileAutomation { get; } = new MobileCombatAutomation();
+
+        private bool original323DefenseLinksConfigured;
+
+        public void ConfigureOriginal323DefenseSkillLinks()
+        {
+            if (original323DefenseLinksConfigured || enemies.Count != 0 ||
+                characters.Count != 0 || game.Phase == SessionPhase.Running)
+                throw new InvalidOperationException(
+                    "원본 방깎·마방깎 연결은 게임 시작 전에 한 번만 설정할 수 있습니다.");
+            effectExecutor.ConfigureOriginal323DefenseSkillRouter(
+                new Ordr323VerifiedDefenseEffectRouter(armorBreakStacks,
+                    provenA04MStacks, statuses));
+            original323DefenseLinksConfigured = true;
+        }
+
+        public bool IsVerified323ArmorBreakStack(string enemyId, int stacks)
+        {
+            int verified;
+            return !string.IsNullOrWhiteSpace(enemyId) && stacks >= 0 &&
+                provenA04MStacks.TryGetValue(enemyId, out verified) &&
+                verified == stacks;
+        }
 
         public void ConfigureVerifiedSpecialEffects(
             IOriginalSpecialCombatEffectHandler handler)
@@ -445,7 +470,7 @@ namespace Ordr.Mobile.Combat
             UnitState position = roster.Get(instanceId);
             int before = events.Count;
             effectExecutor.Execute(InstanceKey(instanceId), caster.Profile, skill,
-                enemy, position.X, position.Y, enemies.Values);
+                enemy, position.X, position.Y, EligibleSkillTargets(caster));
             if (!processingStep)
                 for (int index = before; index < events.Count; index++)
                     pendingCommandEvents.Add(events[index]);
@@ -488,7 +513,7 @@ namespace Ordr.Mobile.Combat
                 return false;
             int before = events.Count;
             effectExecutor.Execute(InstanceKey(instanceId), unit.Profile,
-                skill, enemy, position.X, position.Y, enemies.Values);
+                skill, enemy, position.X, position.Y, EligibleSkillTargets(unit));
             if (!processingStep)
                 for (int i = before; i < events.Count; i++)
                     pendingCommandEvents.Add(events[i]);
@@ -562,6 +587,7 @@ namespace Ordr.Mobile.Combat
             enemies.Add(enemyId, spatial);
             statuses.Add(enemyId, enemy.Status);
             armorBreakStacks.Add(enemyId, 0);
+            provenA04MStacks.Add(enemyId, 0);
             RefreshEnemyAuras();
             pendingCommandEvents.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.EnemySpawned, enemyId, enemyId,
@@ -650,6 +676,16 @@ namespace Ordr.Mobile.Combat
                 : enemy.Kind == CharacterEnemyKind.Line ||
                   enemy.Kind == CharacterEnemyKind.Boss ||
                   enemy.Kind == CharacterEnemyKind.Enraged;
+        }
+
+        // 범위 기술과 상태 효과도 기본 공격과 같은 전장의 적만 대상으로.
+        private List<SpatialCombatEnemy> EligibleSkillTargets(CharacterInstance unit)
+        {
+            var eligible = new List<SpatialCombatEnemy>();
+            foreach (var enemy in enemies.Values)
+                if (enemy.Enemy.IsAlive && CanAttackInThisLane(unit, enemy))
+                    eligible.Add(enemy);
+            return eligible;
         }
 
         private List<TargetCandidate> BuildTargetCandidates(CharacterInstance unit)
@@ -747,7 +783,7 @@ namespace Ordr.Mobile.Combat
                     if (!unit.Mapping.ActivatedSkills.TryGetValue(skillId, out skill))
                         continue;
                     effectExecutor.Execute(InstanceKey(id), unit.Profile,
-                        skill, primary, position.X, position.Y, enemies.Values);
+                        skill, primary, position.X, position.Y, EligibleSkillTargets(unit));
                 }
             }
             RemoveDefeatedEnemies();
@@ -789,7 +825,7 @@ namespace Ordr.Mobile.Combat
                         !primary.Enemy.IsAlive) break;
                     var position = roster.Get(id);
                     effectExecutor.Execute(InstanceKey(id), unit.Profile,
-                        skill, primary, position.X, position.Y, enemies.Values);
+                        skill, primary, position.X, position.Y, EligibleSkillTargets(unit));
                     if (!primary.Enemy.IsAlive)
                     {
                         primaryId = attackPipeline.SelectDefaultTarget(
@@ -943,6 +979,7 @@ namespace Ordr.Mobile.Combat
             enemies.Remove(id);
             statuses.Remove(id);
             armorBreakStacks.Remove(id);
+            provenA04MStacks.Remove(id);
         }
 
         private static string InstanceKey(long id)

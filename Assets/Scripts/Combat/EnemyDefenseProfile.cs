@@ -10,6 +10,8 @@ namespace Ordr.Mobile.Combat
         public double? BaseArmor { get; private set; }
         public double? MagicResistancePercent { get; private set; }
         public string WarcraftArmorType { get; private set; }
+        // 원본 A04Q 부여 능력 레벨. 마법 저항률에서 거꾸로 추정하지 않는다.
+        public int? MagicAbilityLevel { get; private set; }
         public string Source { get; private set; }
 
         public bool HasVerifiedArmor
@@ -24,7 +26,8 @@ namespace Ordr.Mobile.Combat
         }
 
         public EnemyDefenseProfile(CharacterEnemyKind? kind, double? baseArmor,
-            double? magicResistancePercent, string warcraftArmorType, string source)
+            double? magicResistancePercent, string warcraftArmorType, string source,
+            int? verifiedA04QLevel = null)
         {
             if (baseArmor.HasValue && (double.IsNaN(baseArmor.Value) || double.IsInfinity(baseArmor.Value)))
                 throw new ArgumentOutOfRangeException(nameof(baseArmor));
@@ -34,7 +37,19 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentOutOfRangeException(nameof(magicResistancePercent));
             if (kind.HasValue && !Enum.IsDefined(typeof(CharacterEnemyKind), kind.Value))
                 throw new ArgumentOutOfRangeException(nameof(kind));
+            if (verifiedA04QLevel.HasValue)
+            {
+                double verified;
+                if (!Ordr323VerifiedDefenseAbilities.TryGetMagicResistancePercent(
+                    verifiedA04QLevel.Value, out verified) ||
+                    !magicResistancePercent.HasValue ||
+                    Math.Abs(magicResistancePercent.Value - verified) > 0.0001 ||
+                    string.IsNullOrWhiteSpace(source))
+                    throw new ArgumentException(
+                        "A04Q 능력 레벨의 마방 수치와 출처가 맞지 않습니다.");
+            }
             Kind = kind;
+            MagicAbilityLevel = verifiedA04QLevel;
             BaseArmor = baseArmor;
             MagicResistancePercent = magicResistancePercent;
             WarcraftArmorType = warcraftArmorType;

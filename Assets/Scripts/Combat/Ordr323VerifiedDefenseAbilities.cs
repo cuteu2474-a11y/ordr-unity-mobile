@@ -82,7 +82,8 @@ namespace Ordr.Mobile.Combat
                     "A04Q 레벨에 대한 원본 Def5 데이터 미확인: " + currentA04QLevel);
             return new EnemyDefenseProfile(kind, preAbilityArmor,
                 magicResistance, armorType,
-                evidence + " / W3X:A04Q:Def5:level=" + currentA04QLevel);
+                evidence + " / W3X:A04Q:Def5:level=" + currentA04QLevel,
+                currentA04QLevel);
         }
 
         // A04M은 JASS Bdq로 능력 레벨을 증가시키고
@@ -145,10 +146,29 @@ namespace Ordr.Mobile.Combat
             IReadOnlyList<CombatEffect> effects, out double effectivePercent)
         {
             effectivePercent = 0;
-            // A04Q 능력 레벨 직접 주입은 EnemyDefenseProfile에서 이미 반영.
-            // 스킬의 MagicResistanceReduction 필드만으로 실제 레벨 변경을
-            // 예측할 수 없으므로 추가 버프가 있는 경우 무조건 보류.
-            return false;
+            if (target == null || effects == null ||
+                !target.Defenses.MagicAbilityLevel.HasValue)
+                return false;
+            int level = target.Defenses.MagicAbilityLevel.Value;
+            bool hasOriginalA04Q = false;
+            foreach (var effect in effects)
+            {
+                if (effect.Type == CombatEffectType.MagicResistanceReduction)
+                    return false; // 도감 퍼센트 값은 A04Q 레벨과 동치가 아님
+                if (effect.Type != CombatEffectType.OriginalA04QLevelIncrease)
+                    continue;
+                if (!effect.SourceId.StartsWith("jass:A04Q:",
+                    StringComparison.Ordinal) ||
+                    effect.Origin != CombatEffectOrigin.Aura ||
+                    effect.Amount < 1 || effect.Amount > int.MaxValue ||
+                    Math.Floor(effect.Amount) != effect.Amount)
+                    return false;
+                level = checked(level + (int)effect.Amount);
+                hasOriginalA04Q = true;
+            }
+            return hasOriginalA04Q &&
+                Ordr323VerifiedDefenseAbilities.TryGetMagicResistancePercent(
+                    level, out effectivePercent);
         }
 
         public bool TryResolveAmplification(CombatEnemy target,

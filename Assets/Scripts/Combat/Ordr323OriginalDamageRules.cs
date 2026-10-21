@@ -180,7 +180,8 @@ namespace Ordr.Mobile.Combat
                 if (!defense.HasVerifiedMagicResistance)
                     throw new NotSupportedException("적 마법저항률 미확인: " + target.Id);
                 resistance = defense.MagicResistancePercent.Value;
-                if (Has(effects, CombatEffectType.MagicResistanceReduction))
+                if (Has(effects, CombatEffectType.MagicResistanceReduction) ||
+                    Has(effects, CombatEffectType.OriginalA04QLevelIncrease))
                 {
                     if (modifiers == null ||
                         !modifiers.TryResolveMagicResistancePercent(target, effects,
