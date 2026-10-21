@@ -132,6 +132,7 @@ namespace Ordr.Mobile.Mobile
             var materials = new List<JassFusionMaterial>();
             var bindings = new List<JassFusionMaterialBinding>();
             var selected = new List<long>();
+            var selectedOnce = new HashSet<long>();
             var allUnits = new Dictionary<string, List<long>>(StringComparer.Ordinal);
             var uniqueIds = new HashSet<long>();
             foreach (var unit in ownedUnits)
@@ -210,9 +211,19 @@ namespace Ordr.Mobile.Mobile
                     owned = Math.Min(list.Count, required);
                     for (int i = 0; i < owned; i++)
                     {
+                        // A malformed or inconsistent mapping can associate
+                        // distinct original rawcodes with one catalog ID.
+                        // Never plan to consume one live instance twice.
+                        if (!selectedOnce.Add(list[i]))
+                        {
+                            reasons.Add("동일 유닛이 서로 다른 원본 재료로 중복 선택됨: " +
+                                list[i]);
+                            continue;
+                        }
                         selected.Add(list[i]);
                         boundIds.Add(list[i]);
                     }
+                    owned = boundIds.Count;
                 }
                 bindings.Add(new JassFusionMaterialBinding(rawcode, boundIds));
                 materials.Add(new JassFusionMaterial(rawcode, ingredientId,
