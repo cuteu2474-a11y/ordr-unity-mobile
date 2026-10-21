@@ -64,6 +64,14 @@
 - [모바일 조작 정책 및 구현 상세](docs/모바일-조작-정책-구현.md)
 - 사용자 요청에 따라 전체 기능 구현 후까지 신규 테스트·Unity 빌드·APK는 보류합니다.
 
+## 원본 W3X 조합 시스템 조사 (2026-10-21)
+
+- 사용자 제공 S2 2.323[C] W3X의 `war3map.j`에서 조합 등록 함수 `CWR` **266건(테스트용 `TEST` 1건 포함)**을 추출했습니다.
+- [원본 조합 압축 조회 데이터](data/original-jass-fusion-registry.br.b64)와 [원본 호출 순서 보존 추출기](tools/extract_jass_fusions.py), [읽기 전용 Unity 카탈로그](Assets/Scripts/Mobile/OriginalJassFusionCatalog.cs)를 추가했습니다.
+- **실제 제작 가능 조합 265건이 구현됐다는 뜻이 아닙니다.** 원본 유닛 rawcode 매핑, 조건 판정, 재화 소모 및 결과 생성 트리거는 추가 구현이 필요합니다.
+- [원본 조합 레지스트리 분석 및 남은 구현](docs/원본-W3X-조합-등록식-추출.md)
+- 신규 테스트·빌드 및 GitHub Actions 추가는 하지 않았습니다.
+
 ## 프로젝트 구조
 - `Assets/Scripts/Core`: 화면과 독립된 게임 로직 기반
 - `Assets/Tests/EditMode`: 자동 테스트
