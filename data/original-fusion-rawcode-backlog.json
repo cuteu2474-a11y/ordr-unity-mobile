@@ -1,0 +1,7123 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "source": "CWR ordered UNIT conditions and existing BjB links",
+  "warning": "Unresolved rawcodes are not catalog IDs. Even label-linked IDs are not verified Warcraft object IDs; never authorize consumption from this queue.",
+  "uniqueUnitRawcodes": 280,
+  "labelLinkedRawcodes": 81,
+  "unresolvedIngredientRawcodes": 163,
+  "entries": [
+    {
+      "rawcode": "h04S",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 30,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR01",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR02",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR03",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR04",
+          "conditionIndex": 5,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR05",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR06",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR07",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR08",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR09",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR10",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR11",
+          "conditionIndex": 5,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR12",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR13",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR14",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR15",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR16",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR17",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR18",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR19",
+          "conditionIndex": 5,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR20",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR21",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR22",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR23",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR24",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR25",
+          "conditionIndex": 5,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR26",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR27",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR28",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR29",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR30",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h06G",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 14,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A19W",
+          "conditionIndex": 6,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0Y3",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0Y9",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19U",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0XT",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19S",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19V",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1AD",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0Y6",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19T",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0YK",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A10V",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A12C",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0QG",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h00U",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 10,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02W",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A028",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00F",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0ND",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03B",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY09",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR15",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR17",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR25",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0Y6",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A012"
+      ]
+    },
+    {
+      "rawcode": "h060",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 10,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "YY01",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY04",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY07",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY08",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY09",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY12",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0UH",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1A5",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET08",
+          "conditionIndex": 3,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A19W",
+          "conditionIndex": 5,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY26"
+      ]
+    },
+    {
+      "rawcode": "h005",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 9,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00L",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A018",
+          "conditionIndex": 0,
+          "requiredCount": 3
+        },
+        {
+          "abilityRawcode": "A0NA",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01X",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01C",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A014",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A030",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01E",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01Q",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h015",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 9,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02M",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01M",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A013",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03B",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY04",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY10",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY16",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A18P",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET05",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A018"
+      ]
+    },
+    {
+      "rawcode": "h00J",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 8,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A030",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01N",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A016",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02L",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01V",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF02",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR06",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR20",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00L"
+      ]
+    },
+    {
+      "rawcode": "h00P",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 8,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0ND",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02J",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01W",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00U",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1A5",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR01",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR14",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR19",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A015"
+      ]
+    },
+    {
+      "rawcode": "h001",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A006",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00L",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01L",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A015",
+          "conditionIndex": 0,
+          "requiredCount": 3
+        },
+        {
+          "abilityRawcode": "A01I",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1A1",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A029",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h002",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00W",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00P",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A032",
+          "conditionIndex": 0,
+          "requiredCount": 3
+        },
+        {
+          "abilityRawcode": "A017",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A019",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02Y",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0N8",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h003",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00D",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01H",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00E",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A012",
+          "conditionIndex": 0,
+          "requiredCount": 3
+        },
+        {
+          "abilityRawcode": "A01O",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01P",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET07",
+          "conditionIndex": 5,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h004",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A006",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00P",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01B",
+          "conditionIndex": 0,
+          "requiredCount": 3
+        },
+        {
+          "abilityRawcode": "A024",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00K",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A019",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01D",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h008",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00W",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02I",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A00E",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01A",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03E",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02B",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR23",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h00E",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A19Z",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01X",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02B",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01C",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR03",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR24",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR28",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01R"
+      ]
+    },
+    {
+      "rawcode": "h00S",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01J",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00C",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NC",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF04",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR05",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR24",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET01",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A03E"
+      ]
+    },
+    {
+      "rawcode": "h010",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01V",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00T",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A113",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY18",
+          "conditionIndex": 3,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "IF02",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0RP",
+          "conditionIndex": 3,
+          "requiredCount": 3
+        },
+        {
+          "abilityRawcode": "ET05",
+          "conditionIndex": 6,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A029"
+      ]
+    },
+    {
+      "rawcode": "h011",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0XP",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02F",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03G",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0ND",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY08",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR01",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR11",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01P"
+      ]
+    },
+    {
+      "rawcode": "h016",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0XP",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A013",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0IO",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A008",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY23",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR08",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR11",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01N"
+      ]
+    },
+    {
+      "rawcode": "h01C",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02V",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A039",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01W",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02A",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY01",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0S0",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR21",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0NA"
+      ]
+    },
+    {
+      "rawcode": "h01J",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01F",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01M",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00R",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02S",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR18",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR19",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR22",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00S"
+      ]
+    },
+    {
+      "rawcode": "h01N",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00O",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03C",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A026",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1CC",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF04",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET07",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0YK",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A1A0"
+      ]
+    },
+    {
+      "rawcode": "h023",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 7,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02P",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03D",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02X",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY12",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY13",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0K6",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR27",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00C"
+      ]
+    },
+    {
+      "rawcode": "h006",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0N7",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A01R",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19Z",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00B",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0N8",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A016",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h009",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00D",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0N5",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A01L",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01R",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19Z",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NA",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h00A",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01A",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NA",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01O",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02B",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01E",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF05",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0N7"
+      ]
+    },
+    {
+      "rawcode": "h00K",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A024",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00S",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A01E",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY07",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR07",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET02",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00D"
+      ]
+    },
+    {
+      "rawcode": "h00N",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01D",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01K",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A01Q",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A016",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF02",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR04",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00V"
+      ]
+    },
+    {
+      "rawcode": "h00O",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01O",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03E",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A01I",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A014",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF01",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR02",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A006"
+      ]
+    },
+    {
+      "rawcode": "h014",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00F",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A008",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02N",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY03",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY10",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET05",
+          "conditionIndex": 5,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01I"
+      ]
+    },
+    {
+      "rawcode": "h018",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01M",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02K",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03G",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02N",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01S",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET06",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01E"
+      ]
+    },
+    {
+      "rawcode": "h01G",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02F",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00A",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02Z",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY25",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR27",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET01",
+          "conditionIndex": 5,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02Y"
+      ]
+    },
+    {
+      "rawcode": "h01I",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02K",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03G",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0N6",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A010",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY23",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR29",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A019"
+      ]
+    },
+    {
+      "rawcode": "h01O",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00O",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00Y",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A113",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0K4",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF01",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR16",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02J"
+      ]
+    },
+    {
+      "rawcode": "h01R",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00M",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A009",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02Q",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR10",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR11",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR30",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0N6"
+      ]
+    },
+    {
+      "rawcode": "h01S",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A025",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A005",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY14",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0RP",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR20",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET01",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00Q"
+      ]
+    },
+    {
+      "rawcode": "h01X",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00T",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03D",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00J",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0S0",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET01",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET06",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00F"
+      ]
+    },
+    {
+      "rawcode": "h01Z",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00G",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03H",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02X",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY14",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF06",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET05",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01M"
+      ]
+    },
+    {
+      "rawcode": "h027",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02C",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NI",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY05",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY13",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR04",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19W",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02L"
+      ]
+    },
+    {
+      "rawcode": "h02D",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0XS",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02H",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY12",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY23",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR15",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET02",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00U"
+      ]
+    },
+    {
+      "rawcode": "h02I",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0N9",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01U",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A025",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY03",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF03",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0S0",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0NF"
+      ]
+    },
+    {
+      "rawcode": "h04H",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 6,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0NH",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0N9",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY17",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF02",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A18P",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19T",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02T"
+      ]
+    },
+    {
+      "rawcode": "h007",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00V",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A01H",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01N",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00S",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02L",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h00B",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A016",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02R",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A028",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A1A0",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR12",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00K"
+      ]
+    },
+    {
+      "rawcode": "h00C",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01X",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A017",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01D",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A030",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR26",
+          "conditionIndex": 2,
+          "requiredCount": 2
+        }
+      ],
+      "resultOfAbilities": [
+        "A00E"
+      ]
+    },
+    {
+      "rawcode": "h00D",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00K",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A019",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01C",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1A0",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY02",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00W"
+      ]
+    },
+    {
+      "rawcode": "h00L",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A017",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1A1",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02Y",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A01Q",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF03",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01H"
+      ]
+    },
+    {
+      "rawcode": "h00Q",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00F",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00Q",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NB",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NC",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY18",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01D"
+      ]
+    },
+    {
+      "rawcode": "h00V",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02F",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02A",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02T",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02S",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET09",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0N8"
+      ]
+    },
+    {
+      "rawcode": "h00W",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A016",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02R",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02L",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02T",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR21",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A032"
+      ]
+    },
+    {
+      "rawcode": "h00X",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00X",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00R",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01J",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A008",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY10",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00Z"
+      ]
+    },
+    {
+      "rawcode": "h00Y",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0N6",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NF",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00U",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY22",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR25",
+          "conditionIndex": 4,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A030"
+      ]
+    },
+    {
+      "rawcode": "h00Z",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00Q",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03B",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NB",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01W",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY03",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01K"
+      ]
+    },
+    {
+      "rawcode": "h012",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01F",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02A",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NC",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY15",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF06",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A1A1"
+      ]
+    },
+    {
+      "rawcode": "h017",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00A",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00X",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02V",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY06",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19S",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A017"
+      ]
+    },
+    {
+      "rawcode": "h01A",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02J",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00R",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01J",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02N",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR02",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01Q"
+      ]
+    },
+    {
+      "rawcode": "h01B",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0IO",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00U",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02S",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY15",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY23",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01C"
+      ]
+    },
+    {
+      "rawcode": "h01F",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02W",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02R",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02K",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00Q",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR03",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A19Z"
+      ]
+    },
+    {
+      "rawcode": "h01K",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0XP",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02W",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01F",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A039",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02T",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02B"
+      ]
+    },
+    {
+      "rawcode": "h01M",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02D",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0N9",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY10",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY25",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR19",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0ND"
+      ]
+    },
+    {
+      "rawcode": "h01T",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A037",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NE",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY08",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY15",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY25",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A03G"
+      ]
+    },
+    {
+      "rawcode": "h01V",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A037",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A036",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NG",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY05",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IF05",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A013"
+      ]
+    },
+    {
+      "rawcode": "h01W",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A03C",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00J",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY03",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY06",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR06",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02F"
+      ]
+    },
+    {
+      "rawcode": "h01Y",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00N",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03H",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY20",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR28",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET06",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02K"
+      ]
+    },
+    {
+      "rawcode": "h024",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0XS",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02X",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A026",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY01",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR09",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0NB"
+      ]
+    },
+    {
+      "rawcode": "h025",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01G",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00T",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0UG",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY02",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY06",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A016"
+      ]
+    },
+    {
+      "rawcode": "h026",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A03C",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A036",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01T",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY14",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET08",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A039"
+      ]
+    },
+    {
+      "rawcode": "h028",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A027",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01S",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A005",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02H",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY13",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02V"
+      ]
+    },
+    {
+      "rawcode": "h029",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A025",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01T",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY17",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET05",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19U",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A03B"
+      ]
+    },
+    {
+      "rawcode": "h02C",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00J",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NI",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A026",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A113",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY01",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01W"
+      ]
+    },
+    {
+      "rawcode": "h02H",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00G",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00H",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY16",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A18P",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02O",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02N"
+      ]
+    },
+    {
+      "rawcode": "h02J",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02C",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0UG",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02G",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00H",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY22",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02S"
+      ]
+    },
+    {
+      "rawcode": "h02L",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02P",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NE",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02H",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY11",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR25",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02Z"
+      ]
+    },
+    {
+      "rawcode": "h02M",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02D",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A027",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00G",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1CC",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0K3",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00A"
+      ]
+    },
+    {
+      "rawcode": "h030",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "SPH4",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR21",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR27",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM04",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A12C",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A027"
+      ]
+    },
+    {
+      "rawcode": "h05X",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 5,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01S",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A113",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY18",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY25",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET07",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "UU01"
+      ]
+    },
+    {
+      "rawcode": "h00R",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02M",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00A",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1A0",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00C",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01O"
+      ]
+    },
+    {
+      "rawcode": "h00T",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00I",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A013",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00X",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY07",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A024"
+      ]
+    },
+    {
+      "rawcode": "h013",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0NF",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A039",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NB",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01V",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01B"
+      ]
+    },
+    {
+      "rawcode": "h01D",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02M",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00I",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NF",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A010",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00B"
+      ]
+    },
+    {
+      "rawcode": "h01E",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02V",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02L",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02Z",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01V",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A014"
+      ]
+    },
+    {
+      "rawcode": "h01H",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0IO",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0N6",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A010",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02Z",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01X"
+      ]
+    },
+    {
+      "rawcode": "h01L",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A009",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A108",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00H",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0K2",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02M"
+      ]
+    },
+    {
+      "rawcode": "h01P",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00M",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NE",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1CC",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY15",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00R"
+      ]
+    },
+    {
+      "rawcode": "h01Q",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02P",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03H",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A009",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR29",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02W"
+      ]
+    },
+    {
+      "rawcode": "h01U",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01U",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NI",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A108",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR10",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0IO"
+      ]
+    },
+    {
+      "rawcode": "h021",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00N",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A036",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0UG",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY08",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01F"
+      ]
+    },
+    {
+      "rawcode": "h022",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00N",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02D",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02G",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET10",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00I"
+      ]
+    },
+    {
+      "rawcode": "h02A",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00Y",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01U",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY06",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY16",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01J"
+      ]
+    },
+    {
+      "rawcode": "h02B",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00M",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NG",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY20",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0RP",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0NC"
+      ]
+    },
+    {
+      "rawcode": "h02E",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02G",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY07",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY17",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY20",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02A"
+      ]
+    },
+    {
+      "rawcode": "h02F",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0NH",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02Q",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY02",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY22",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02R"
+      ]
+    },
+    {
+      "rawcode": "h02K",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A037",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A027",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A005",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY18",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A010"
+      ]
+    },
+    {
+      "rawcode": "h02R",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR02",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR05",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM06",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0YK",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02P"
+      ]
+    },
+    {
+      "rawcode": "h02T",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A011",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR13",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM09",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET11",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02D"
+      ]
+    },
+    {
+      "rawcode": "h02X",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "IF04",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A18P",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR02",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM10",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A03D"
+      ]
+    },
+    {
+      "rawcode": "h02Y",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR07",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR09",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM08",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0QG",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00T"
+      ]
+    },
+    {
+      "rawcode": "h032",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "SPH1",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0UH",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM08",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET06",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0N9"
+      ]
+    },
+    {
+      "rawcode": "h033",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "IM05",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM06",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM07",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0XT",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00G"
+      ]
+    },
+    {
+      "rawcode": "h035",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "YY04",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR15",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM07",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET07",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A025"
+      ]
+    },
+    {
+      "rawcode": "h037",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A007",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR20",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM10",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1AD",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0NI"
+      ]
+    },
+    {
+      "rawcode": "h03C",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR26",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET02",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET04",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET09",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02H"
+      ]
+    },
+    {
+      "rawcode": "h03E",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR03",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR10",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR29",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM03",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01T"
+      ]
+    },
+    {
+      "rawcode": "h03G",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "IF01",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "SPH3",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR16",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR22",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0NE"
+      ]
+    },
+    {
+      "rawcode": "h043",
+      "catalogUnitId": "H-01",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "SPH2",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR06",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR15",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET08",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY17"
+      ]
+    },
+    {
+      "rawcode": "h055",
+      "catalogUnitId": "H-13",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR21",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR30",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET12",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1AD",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY13"
+      ]
+    },
+    {
+      "rawcode": "h05K",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01G",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00O",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NH",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR12",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01V"
+      ]
+    },
+    {
+      "rawcode": "h05L",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00Y",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0NG",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY11",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR07",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00X"
+      ]
+    },
+    {
+      "rawcode": "h0AH",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 4,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "IF03",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A10A",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM11",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A12C",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A108"
+      ]
+    },
+    {
+      "rawcode": "h00F",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0N8",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01P",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "IF05",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01L"
+      ]
+    },
+    {
+      "rawcode": "h00G",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00B",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A014",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1A1",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02I"
+      ]
+    },
+    {
+      "rawcode": "h00I",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00Z",
+          "conditionIndex": 0,
+          "requiredCount": 2
+        },
+        {
+          "abilityRawcode": "A01I",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00B",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00P"
+      ]
+    },
+    {
+      "rawcode": "h00M",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A024",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01A",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01N",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0N5"
+      ]
+    },
+    {
+      "rawcode": "h019",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A00I",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A02J",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00C",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01A"
+      ]
+    },
+    {
+      "rawcode": "h020",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A01G",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A00T",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY11",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A028"
+      ]
+    },
+    {
+      "rawcode": "h02G",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02C",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A01T",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "YY09",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A008"
+      ]
+    },
+    {
+      "rawcode": "h02N",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "IF02",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM11",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET07",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01G"
+      ]
+    },
+    {
+      "rawcode": "h02P",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR01",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET05",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0Y9",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00O"
+      ]
+    },
+    {
+      "rawcode": "h02S",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR06",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR10",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM07",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0NH"
+      ]
+    },
+    {
+      "rawcode": "h02U",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A10A",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR08",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM12",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A036"
+      ]
+    },
+    {
+      "rawcode": "h02V",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "IM01",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM03",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM12",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A03H"
+      ]
+    },
+    {
+      "rawcode": "h02W",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "IM03",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM04",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM11",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00Y"
+      ]
+    },
+    {
+      "rawcode": "h02Z",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A1A6",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR09",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM09",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00J"
+      ]
+    },
+    {
+      "rawcode": "h031",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR11",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR17",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR28",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00H"
+      ]
+    },
+    {
+      "rawcode": "h036",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "IM01",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM06",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0Y6",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00M"
+      ]
+    },
+    {
+      "rawcode": "h038",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A1A5",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR03",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR26",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A009"
+      ]
+    },
+    {
+      "rawcode": "h039",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR01",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM02",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM12",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02X"
+      ]
+    },
+    {
+      "rawcode": "h03F",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR20",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM02",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET12",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A026"
+      ]
+    },
+    {
+      "rawcode": "h03H",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0S0",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR14",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM05",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02C"
+      ]
+    },
+    {
+      "rawcode": "h03I",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR24",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM10",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19V",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0NG"
+      ]
+    },
+    {
+      "rawcode": "h03K",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A011",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A1A6",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR23",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A037"
+      ]
+    },
+    {
+      "rawcode": "h03S",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR19",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR23",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM05",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A005"
+      ]
+    },
+    {
+      "rawcode": "h03T",
+      "catalogUnitId": "H-03",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A007",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET09",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0YK",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY05"
+      ]
+    },
+    {
+      "rawcode": "h03W",
+      "catalogUnitId": "H-10",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0RP",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR04",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A10V",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY03"
+      ]
+    },
+    {
+      "rawcode": "h03Z",
+      "catalogUnitId": "H-17",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02O",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR18",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19W",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY15"
+      ]
+    },
+    {
+      "rawcode": "h042",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0UH",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET10",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0Y3",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0UG"
+      ]
+    },
+    {
+      "rawcode": "h044",
+      "catalogUnitId": "H-05",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR12",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET04",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0Y9",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY02"
+      ]
+    },
+    {
+      "rawcode": "h05W",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02O",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET01",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19V",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0K4"
+      ]
+    },
+    {
+      "rawcode": "h07N",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR04",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR27",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0XT",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0K3"
+      ]
+    },
+    {
+      "rawcode": "h087",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR19",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET10",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0Y6",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02Q"
+      ]
+    },
+    {
+      "rawcode": "h09X",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0XS",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A03D",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A108",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0XP"
+      ]
+    },
+    {
+      "rawcode": "h09Z",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 3,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR25",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM04",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19U",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0XS"
+      ]
+    },
+    {
+      "rawcode": "h02O",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "IF06",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM01",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A00N"
+      ]
+    },
+    {
+      "rawcode": "h02Q",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR12",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR22",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A03C"
+      ]
+    },
+    {
+      "rawcode": "h034",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR14",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM02",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01U"
+      ]
+    },
+    {
+      "rawcode": "h03A",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR11",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM08",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A01S"
+      ]
+    },
+    {
+      "rawcode": "h03B",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR08",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "IM09",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02G"
+      ]
+    },
+    {
+      "rawcode": "h03J",
+      "catalogUnitId": "H-14",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "ET04",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0Y9",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY14"
+      ]
+    },
+    {
+      "rawcode": "h03M",
+      "catalogUnitId": "H-12",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "IF05",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR05",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY11"
+      ]
+    },
+    {
+      "rawcode": "h03N",
+      "catalogUnitId": "H-04",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR17",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET12",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY06"
+      ]
+    },
+    {
+      "rawcode": "h03O",
+      "catalogUnitId": "H-11",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A1A6",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET07",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY10"
+      ]
+    },
+    {
+      "rawcode": "h03Y",
+      "catalogUnitId": "H-18",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "ET05",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A0QG",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY16"
+      ]
+    },
+    {
+      "rawcode": "h041",
+      "catalogUnitId": "H-16",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR24",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A10V",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY20"
+      ]
+    },
+    {
+      "rawcode": "h045",
+      "catalogUnitId": "H-21",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR25",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET09",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY23"
+      ]
+    },
+    {
+      "rawcode": "h046",
+      "catalogUnitId": "H-20",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR28",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "ET10",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY22"
+      ]
+    },
+    {
+      "rawcode": "h048",
+      "catalogUnitId": "D-04",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "ET08",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19S",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IF02"
+      ]
+    },
+    {
+      "rawcode": "h05S",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A007",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR04",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0K2"
+      ]
+    },
+    {
+      "rawcode": "h05V",
+      "catalogUnitId": "D-05",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "ET11",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A19T",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IF06"
+      ]
+    },
+    {
+      "rawcode": "h05Y",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A02Q",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "A10A",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h0CM",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 2,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR18",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        },
+        {
+          "abilityRawcode": "TR29",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A1CC"
+      ]
+    },
+    {
+      "rawcode": "H08T",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "ET02",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h00H",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A029",
+          "conditionIndex": 0,
+          "requiredCount": 3
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h03L",
+      "catalogUnitId": "H-15",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0XT",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY12"
+      ]
+    },
+    {
+      "rawcode": "h03R",
+      "catalogUnitId": "H-07",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR16",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY08"
+      ]
+    },
+    {
+      "rawcode": "h03U",
+      "catalogUnitId": "H-02",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR07",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY04"
+      ]
+    },
+    {
+      "rawcode": "h03V",
+      "catalogUnitId": "D-02",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A19W",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IF01"
+      ]
+    },
+    {
+      "rawcode": "h03X",
+      "catalogUnitId": "H-09",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A1A5",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY01"
+      ]
+    },
+    {
+      "rawcode": "h047",
+      "catalogUnitId": "H-22",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "ET06",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY25"
+      ]
+    },
+    {
+      "rawcode": "h05F",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "ET01",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A02O"
+      ]
+    },
+    {
+      "rawcode": "h065",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A10V",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS03"
+      ]
+    },
+    {
+      "rawcode": "h06T",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0QG",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS13"
+      ]
+    },
+    {
+      "rawcode": "h06U",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A19W",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS01"
+      ]
+    },
+    {
+      "rawcode": "h06V",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0Y3",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS02"
+      ]
+    },
+    {
+      "rawcode": "h06W",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A12C",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS08"
+      ]
+    },
+    {
+      "rawcode": "h06X",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A19U",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS04"
+      ]
+    },
+    {
+      "rawcode": "h06Y",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0Y6",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS11"
+      ]
+    },
+    {
+      "rawcode": "h06Z",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A1AD",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS06"
+      ]
+    },
+    {
+      "rawcode": "h070",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0Y9",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS09"
+      ]
+    },
+    {
+      "rawcode": "h071",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A19T",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS12"
+      ]
+    },
+    {
+      "rawcode": "h072",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0YK",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS14"
+      ]
+    },
+    {
+      "rawcode": "h073",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A19S",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS05"
+      ]
+    },
+    {
+      "rawcode": "h07J",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0Y3",
+          "conditionIndex": 2,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0K7"
+      ]
+    },
+    {
+      "rawcode": "h07L",
+      "catalogUnitId": "H-19",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0K7",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "YY18"
+      ]
+    },
+    {
+      "rawcode": "h09K",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A19V",
+          "conditionIndex": 1,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS07"
+      ]
+    },
+    {
+      "rawcode": "h09L",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A0XT",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IS10"
+      ]
+    },
+    {
+      "rawcode": "h09V",
+      "catalogUnitId": "D-06",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR13",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "IF05"
+      ]
+    },
+    {
+      "rawcode": "h0AN",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "TR30",
+          "conditionIndex": 0,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": []
+    },
+    {
+      "rawcode": "h0CK",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 1,
+      "ingredientUses": [
+        {
+          "abilityRawcode": "A10V",
+          "conditionIndex": 3,
+          "requiredCount": 1
+        }
+      ],
+      "resultOfAbilities": [
+        "A0K6"
+      ]
+    },
+    {
+      "rawcode": "H05N",
+      "catalogUnitId": "TR-27",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR03"
+      ]
+    },
+    {
+      "rawcode": "H08U",
+      "catalogUnitId": "TR-15",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR16"
+      ]
+    },
+    {
+      "rawcode": "H08V",
+      "catalogUnitId": "TR-02",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR01"
+      ]
+    },
+    {
+      "rawcode": "H08W",
+      "catalogUnitId": "TR-07",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR05"
+      ]
+    },
+    {
+      "rawcode": "H08X",
+      "catalogUnitId": "TR-29",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR28"
+      ]
+    },
+    {
+      "rawcode": "H08Y",
+      "catalogUnitId": "TR-28",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR27"
+      ]
+    },
+    {
+      "rawcode": "H08Z",
+      "catalogUnitId": "TR-13",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR15"
+      ]
+    },
+    {
+      "rawcode": "H090",
+      "catalogUnitId": "TR-01",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR08"
+      ]
+    },
+    {
+      "rawcode": "H091",
+      "catalogUnitId": "TR-23",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR23"
+      ]
+    },
+    {
+      "rawcode": "H092",
+      "catalogUnitId": "TR-11",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR13"
+      ]
+    },
+    {
+      "rawcode": "H094",
+      "catalogUnitId": "TR-09",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR10"
+      ]
+    },
+    {
+      "rawcode": "H095",
+      "catalogUnitId": "TR-17",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR18"
+      ]
+    },
+    {
+      "rawcode": "H096",
+      "catalogUnitId": "TR-05",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR26"
+      ]
+    },
+    {
+      "rawcode": "H097",
+      "catalogUnitId": "TR-16",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR24"
+      ]
+    },
+    {
+      "rawcode": "H098",
+      "catalogUnitId": "TR-04",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR02"
+      ]
+    },
+    {
+      "rawcode": "H099",
+      "catalogUnitId": "TR-08",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR09"
+      ]
+    },
+    {
+      "rawcode": "H09A",
+      "catalogUnitId": "TR-22",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR22"
+      ]
+    },
+    {
+      "rawcode": "H09B",
+      "catalogUnitId": "TR-19",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR20"
+      ]
+    },
+    {
+      "rawcode": "H09E",
+      "catalogUnitId": "TR-03",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR04"
+      ]
+    },
+    {
+      "rawcode": "H09F",
+      "catalogUnitId": "TR-20",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR06"
+      ]
+    },
+    {
+      "rawcode": "H09H",
+      "catalogUnitId": "TR-12",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR14"
+      ]
+    },
+    {
+      "rawcode": "H09I",
+      "catalogUnitId": "TR-10",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR12"
+      ]
+    },
+    {
+      "rawcode": "H0AA",
+      "catalogUnitId": "TR-30",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR30"
+      ]
+    },
+    {
+      "rawcode": "H0B2",
+      "catalogUnitId": "TR-14",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR07"
+      ]
+    },
+    {
+      "rawcode": "H0B4",
+      "catalogUnitId": "TR-25",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR25"
+      ]
+    },
+    {
+      "rawcode": "H0B5",
+      "catalogUnitId": "TR-26",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR11"
+      ]
+    },
+    {
+      "rawcode": "H0BD",
+      "catalogUnitId": "TR-18",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR19"
+      ]
+    },
+    {
+      "rawcode": "H0BK",
+      "catalogUnitId": "E-01",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET02"
+      ]
+    },
+    {
+      "rawcode": "H0BL",
+      "catalogUnitId": "TR-06",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR17"
+      ]
+    },
+    {
+      "rawcode": "H0BX",
+      "catalogUnitId": "TR-21",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR21"
+      ]
+    },
+    {
+      "rawcode": "H0CO",
+      "catalogUnitId": "TR-24",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "TR29"
+      ]
+    },
+    {
+      "rawcode": "h03P",
+      "catalogUnitId": "H-08",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "YY09"
+      ]
+    },
+    {
+      "rawcode": "h03Q",
+      "catalogUnitId": "H-06",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "YY07"
+      ]
+    },
+    {
+      "rawcode": "h040",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A0RP"
+      ]
+    },
+    {
+      "rawcode": "h049",
+      "catalogUnitId": "I-03",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM08"
+      ]
+    },
+    {
+      "rawcode": "h04A",
+      "catalogUnitId": "I-12",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM09"
+      ]
+    },
+    {
+      "rawcode": "h04B",
+      "catalogUnitId": "I-09",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM02"
+      ]
+    },
+    {
+      "rawcode": "h04C",
+      "catalogUnitId": "I-01",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM03"
+      ]
+    },
+    {
+      "rawcode": "h04D",
+      "catalogUnitId": "I-02",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM04"
+      ]
+    },
+    {
+      "rawcode": "h04E",
+      "catalogUnitId": "I-07",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM06"
+      ]
+    },
+    {
+      "rawcode": "h04F",
+      "catalogUnitId": "I-08",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM07"
+      ]
+    },
+    {
+      "rawcode": "h04G",
+      "catalogUnitId": "I-10",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM10"
+      ]
+    },
+    {
+      "rawcode": "h04J",
+      "catalogUnitId": "I-04",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM01"
+      ]
+    },
+    {
+      "rawcode": "h04Q",
+      "catalogUnitId": "I-06",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM05"
+      ]
+    },
+    {
+      "rawcode": "h04U",
+      "catalogUnitId": "D-01",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IF04"
+      ]
+    },
+    {
+      "rawcode": "h057",
+      "catalogUnitId": "E-06",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET01"
+      ]
+    },
+    {
+      "rawcode": "h058",
+      "catalogUnitId": "E-04",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET08"
+      ]
+    },
+    {
+      "rawcode": "h059",
+      "catalogUnitId": "E-07",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET11"
+      ]
+    },
+    {
+      "rawcode": "h05A",
+      "catalogUnitId": "E-05",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET05"
+      ]
+    },
+    {
+      "rawcode": "h05B",
+      "catalogUnitId": "E-10",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET09"
+      ]
+    },
+    {
+      "rawcode": "h05C",
+      "catalogUnitId": "E-12",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET06"
+      ]
+    },
+    {
+      "rawcode": "h05E",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A1A5"
+      ]
+    },
+    {
+      "rawcode": "h05G",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A1A6"
+      ]
+    },
+    {
+      "rawcode": "h05H",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SP01"
+      ]
+    },
+    {
+      "rawcode": "h05I",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A007"
+      ]
+    },
+    {
+      "rawcode": "h05O",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SP04"
+      ]
+    },
+    {
+      "rawcode": "h05P",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SP05"
+      ]
+    },
+    {
+      "rawcode": "h05Q",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SP03"
+      ]
+    },
+    {
+      "rawcode": "h05R",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SP06"
+      ]
+    },
+    {
+      "rawcode": "h067",
+      "catalogUnitId": "E-09",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET07"
+      ]
+    },
+    {
+      "rawcode": "h06A",
+      "catalogUnitId": "E-11",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET12"
+      ]
+    },
+    {
+      "rawcode": "h07I",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A0S0"
+      ]
+    },
+    {
+      "rawcode": "h07M",
+      "catalogUnitId": "I-11",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM11"
+      ]
+    },
+    {
+      "rawcode": "h081",
+      "catalogUnitId": "I-05",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IM12"
+      ]
+    },
+    {
+      "rawcode": "h083",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A10V"
+      ]
+    },
+    {
+      "rawcode": "h084",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A0UH"
+      ]
+    },
+    {
+      "rawcode": "h08I",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A19T"
+      ]
+    },
+    {
+      "rawcode": "h08M",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A1AD"
+      ]
+    },
+    {
+      "rawcode": "h08N",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SP02"
+      ]
+    },
+    {
+      "rawcode": "h08O",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A011"
+      ]
+    },
+    {
+      "rawcode": "h08Q",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A18P"
+      ]
+    },
+    {
+      "rawcode": "h08R",
+      "catalogUnitId": "E-08",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET10"
+      ]
+    },
+    {
+      "rawcode": "h08S",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A113"
+      ]
+    },
+    {
+      "rawcode": "h09M",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A19W"
+      ]
+    },
+    {
+      "rawcode": "h09N",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A0XT"
+      ]
+    },
+    {
+      "rawcode": "h09R",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A0Y6"
+      ]
+    },
+    {
+      "rawcode": "h09T",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SP07"
+      ]
+    },
+    {
+      "rawcode": "h09W",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A0Y3"
+      ]
+    },
+    {
+      "rawcode": "h09Y",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SPH1"
+      ]
+    },
+    {
+      "rawcode": "h0A0",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SPH3"
+      ]
+    },
+    {
+      "rawcode": "h0A1",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SPH4"
+      ]
+    },
+    {
+      "rawcode": "h0A2",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A0Y9"
+      ]
+    },
+    {
+      "rawcode": "h0A3",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SPH2"
+      ]
+    },
+    {
+      "rawcode": "h0A6",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A19S"
+      ]
+    },
+    {
+      "rawcode": "h0AC",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A19U"
+      ]
+    },
+    {
+      "rawcode": "h0AI",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A10A"
+      ]
+    },
+    {
+      "rawcode": "h0BC",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A12C"
+      ]
+    },
+    {
+      "rawcode": "h0BF",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A0YK"
+      ]
+    },
+    {
+      "rawcode": "h0BG",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "SP08"
+      ]
+    },
+    {
+      "rawcode": "h0C2",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A0QG"
+      ]
+    },
+    {
+      "rawcode": "h0CC",
+      "catalogUnitId": null,
+      "mappingEvidence": "unresolved",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "A19V"
+      ]
+    },
+    {
+      "rawcode": "h0CI",
+      "catalogUnitId": "D-03",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "IF03"
+      ]
+    },
+    {
+      "rawcode": "h0CJ",
+      "catalogUnitId": "E-03",
+      "mappingEvidence": "BjB/Bi8/Bi9-label-only",
+      "objectDataVerified": false,
+      "ingredientUseCount": 0,
+      "ingredientUses": [],
+      "resultOfAbilities": [
+        "ET04"
+      ]
+    }
+  ]
+}

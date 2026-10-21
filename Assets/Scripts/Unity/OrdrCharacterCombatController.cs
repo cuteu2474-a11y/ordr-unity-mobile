@@ -106,6 +106,26 @@ namespace Ordr.Mobile.Unity
             ManualActions.Configure(storyDispatchRules, originalFusionPort, originalEconomyPort);
         }
 
+        // Authoritative world integration: after object data, all special
+        // conditions and CHu/CHx effects have been implemented, the same
+        // transaction lock must cover final inspection, payment and spawning.
+        // Do not provide a mock world in production to bypass unverified rules.
+        public void ConfigureOriginalJassCraftingWorld(
+            IVerifiedUnitRawcodeMap verifiedObjectMap,
+            IOriginalJassSpecialConditionEvaluator conditionEvaluator,
+            IOriginalJassFusionResourceReader verifiedResourceReader,
+            IOriginalJassFusionTransactionalWorld originalWorld,
+            IOriginalJassFusionCastPolicy originalCastPolicy)
+        {
+            if (originalWorld == null) throw new ArgumentNullException(nameof(originalWorld));
+            if (OriginalFusionPlanner == null)
+                throw new InvalidOperationException("원본 조합 플래너가 아직 구성되지 않았습니다.");
+            ConfigureOriginalJassCrafting(verifiedObjectMap, conditionEvaluator,
+                verifiedResourceReader,
+                new OriginalJassFusionAtomicCoordinator(OriginalFusionPlanner, originalWorld),
+                originalCastPolicy);
+        }
+
         // 원본 조합 엔진이 실제 재료/재화 트랜잭션을 구현했을 때만 연결.
         // 웹 도감 재료 미리보기만으로 유닛을 소비하지 않는다.
         public void ConfigureVerifiedFusionCommit(IVerifiedOriginalFusionCommit originalCommit)

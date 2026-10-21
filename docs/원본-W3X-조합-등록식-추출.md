@@ -73,6 +73,12 @@ python tools/unpack_ordered_jass_fusions.py
 
 ## 실제 조합 구현을 막는 미확인 부분
 
+### 원본 재료 ID 대조 대기열 및 거래 연결 (2026-10-21)
+
+`data/original-jass-fusion-registry.json`은 원본 순서를 보존하여 현재 `main`에 포함한다. `tools/build_fusion_rawcode_backlog.py`가 만든 `data/original-fusion-rawcode-backlog.json`은 CWR UNIT 재료의 각 출현 위치와 수량, BGH 결과의 출현 능력, 기존 BjB 이름 연동을 분리해 보존한다. 전체 고유 결과/재료 ID 280종 중 기존 이름 연동 81종, 매핑되지 않은 재료 ID 163종이다. 미매핑 재료의 정체는 원본 W3X 객체 정보 없이는 확정할 수 없다.
+
+`OriginalJassFusionAtomicCoordinator`는 UI 조합 확정 뒤 세계 상태를 독점한 거래 범위에서 재료와 재화, 시전 대상, 특수 조건을 다시 검증하고 `TryApplyOriginalFusion`과 `Commit`을 순서대로 호출한다. `IOriginalJassFusionWorldTransaction.Dispose`는 미커밋 변경 전체를 롤백해야 한다. 이 실제 월드 거래 어댑터, CHu/CHx 후속 효과 및 특수 BGI 지불은 **미구현**이므로 현재 원본 조합은 계속 실행 차단 상태다. `OrdrCharacterCombatController.ConfigureOriginalJassCraftingWorld`는 향후 검증된 월드 구현을 연결하는 진입점이다. 테스트·컴파일·APK 빌드는 요청에 따라 진행하지 않았다.
+
 1. **원본 유닛 rawcode와 Unity 캐릭터 ID 대조**: `h00K`와 `L-21` 등은 동일 ID가 아님. 워크래프트 오브젝트 테이블에서 이름/등급을 대조한 후 매핑
 2. **모든 BGI 조건의 의미와 순서**: `GOLD`, `WOOD`, `IFCT`, `KING`, `UBAN`, `SPEC`, `GREN` 등 원본 함수·게임 난이도 조건 검증
 3. **제작 트리거의 원자적 처리**: 실행 직전에 소유 재료/골드/목재/아이템/변경 횟수 재확인, 지불과 생성, 실패 시 롤백
