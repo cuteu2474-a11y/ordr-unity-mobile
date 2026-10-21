@@ -34,6 +34,10 @@ namespace Ordr.Mobile.Editor
             string fusion = Path.Combine(source, "verified-mobile-fusion-recipes.json");
             if (File.Exists(fusion))
                 File.Copy(fusion, Path.Combine(target, "verified-mobile-fusion-recipes.json"), true);
+            // 원본 스크립트에서 순서대로 추출한 등록식은 생성된 JSON이 있을 때만 동기화.
+            string jassFusion = Path.Combine(source, "original-jass-fusion-registry.json");
+            if (File.Exists(jassFusion))
+                File.Copy(jassFusion, Path.Combine(target, "original-jass-fusion-registry.json"), true);
             AssetDatabase.Refresh();
             Debug.Log("ORDR 캐릭터 데이터가 Assets/Resources/OrdrData 로 동기화되었습니다.");
         }
