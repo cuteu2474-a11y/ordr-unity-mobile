@@ -1,0 +1,154 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "mapFile": "ORDR_S2_2.323[C](2).w3x",
+  "mapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "originalFiles": {
+    "war3map.j": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+    "war3map.w3a": "aa938f02c22884f38c5e31bcd6229a35e917a8fab0128331fdab88980cfd50e0",
+    "war3mapMisc.txt": "131d8ca9c3b978d404a325a1f6f34ec79e97c8fc90cef491dab2608180df3223"
+  },
+  "origin": "2.323[C] MPQ 직접 추출→w3a binary version2 원본 오브젝트 수정 24개, 사용자 정의 35개 파싱; 전체 구조 EOF 검증",
+  "abilityFields": [
+    {
+      "rawcode": "A04Q",
+      "field": "Def5",
+      "levels": [
+        5,
+        41
+      ],
+      "sample": {
+        "5": 0.7900000214576721,
+        "16": 0.8999999761581421,
+        "21": 0.949999988079071,
+        "26": 1,
+        "41": 1.149999976158142
+      },
+      "valueFormula": "float32(0.74 + level*0.01)",
+      "role": "마법 피해 수령 배율",
+      "jassRawcode": "JV",
+      "jassConnection": "Bd4(Cm,LK[JG]), CUM Nightmare sets LK[JG]=16",
+      "unknown": "레벨1~4 및42 이상, 토글/타격 종류별 적용 조건 미검증"
+    },
+    {
+      "rawcode": "A04M",
+      "field": "Idef",
+      "levels": [
+        5,
+        76
+      ],
+      "sample": {
+        "5": -4,
+        "10": -9,
+        "11": -10,
+        "76": -75
+      },
+      "valueFormula": "1-level",
+      "role": "아이템 방어력 보정",
+      "jassRawcode": "Hl",
+      "jassConnection": "Bdq(target,stacks) and GetUnitAbilityLevel(target,Hl)-1",
+      "unknown": "레벨1~4 및77 이상; 모든 도감 armorBreak 태그의 Bdq(A04M) 출처 미검증"
+    },
+    {
+      "rawcode": "A04P",
+      "field": "Idef",
+      "levels": [
+        5,
+        41
+      ],
+      "sample": {
+        "5": -4,
+        "11": -10,
+        "41": -40
+      },
+      "valueFormula": "1-level",
+      "role": "아이템 방어력 보정",
+      "jassRawcode": "I2",
+      "jassConnection": "Bd2(target,levelAdd)",
+      "unknown": "적용 유닛/효과 합산 순서 미검증"
+    },
+    {
+      "rawcode": "A04N",
+      "field": "Idef",
+      "levels": [
+        5,
+        11
+      ],
+      "sample": {
+        "5": -12,
+        "11": -30
+      },
+      "valueFormula": "3*(1-level)",
+      "role": "아이템 방어력 보정",
+      "jassRawcode": "Jf",
+      "jassConnection": "Bdz(target,levelAdd)",
+      "unknown": "기준 레벨과 다른 방깎 중첩 미검증"
+    },
+    {
+      "rawcode": "A04O",
+      "field": "Idef",
+      "levels": [
+        5,
+        11
+      ],
+      "sample": {
+        "5": -85,
+        "11": -115
+      },
+      "valueFormula": "-5*(level+12)",
+      "role": "아이템 방어력 보정",
+      "jassRawcode": "Jg",
+      "jassConnection": "Bdw(target,levelAdd)",
+      "unknown": "기준 레벨과 다른 방깎 중첩 미검증"
+    }
+  ],
+  "verifiedCUM": "난이도 악몽 NE==NL (6) -> NJ=16; LK[0..3]=16, war3map.j around 58030~58039",
+  "observedProgression": [
+    {
+      "source": "war3map.j BhL around 10551",
+      "change": "+5 LK[JG]",
+      "meaning": "기록지침 아이템: 자신의 라인존 마법방어력 5% 감소"
+    },
+    {
+      "source": "war3map.j BzL around 24958",
+      "change": "+3 LK[JG]",
+      "meaning": "브룩 효과: 자신의 라인존 마법방어력 3% 감소"
+    }
+  ],
+  "jassInverse": {
+    "function": "BdV",
+    "lines": [
+      8434,
+      8457
+    ],
+    "buffPriority": [
+      {
+        "buff": "B06J",
+        "divide": 1.1
+      },
+      {
+        "buff": "B04W",
+        "divide": 1.25
+      },
+      {
+        "buff": "B07S",
+        "divide": 1.2
+      }
+    ],
+    "firstMatchingOnly": true,
+    "afterBuff": "divide by armorMultiplier if > 0",
+    "scope": "피해 역산, 실제 forward damage stacking으로 일반화 금지"
+  },
+  "verification": {
+    "extraction": "completed",
+    "formulaRowsComparedToSource": {
+      "A04Q": 37,
+      "A04M": 72,
+      "A04P": 37,
+      "A04N": 7,
+      "A04O": 7
+    },
+    "maxAbsoluteError": 0,
+    "unityRuntime": "not tested",
+    "nunit": "written but not run"
+  }
+}

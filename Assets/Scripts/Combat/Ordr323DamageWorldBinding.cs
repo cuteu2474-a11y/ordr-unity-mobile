@@ -16,7 +16,8 @@ namespace Ordr.Mobile.Combat
             ICombatProcRandom random)
         {
             CharacterCombatRuntime world = null;
-            var rules = new Ordr323OriginalDamageRules(hits, modifiers, quantizer);
+            var rules = new Ordr323OriginalDamageRules(hits,
+                modifiers ?? new Ordr323VerifiedPartialModifierRules(), quantizer);
             var adapter = new CombatDamageRulesAdapter(rules,
                 enemyId => world == null ? null : world.StatusOf(enemyId),
                 enemyId => world == null ? 0 : world.ArmorBreakStacksOf(enemyId));

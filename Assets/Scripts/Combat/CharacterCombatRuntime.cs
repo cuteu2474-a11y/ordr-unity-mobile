@@ -532,6 +532,21 @@ namespace Ordr.Mobile.Combat
                 EnemyDefenseProfile.UnverifiedKind(kind));
         }
 
+        // 2.323[C] 원본에서 확인한 A04Q/Def5 마법 저항값으로 생성.
+        // LK[JG]와 NJ는 아이템/이벤트로 바뀔 수 있어 현재 레벨을 필수로 받는다.
+        // 검증된 레벨 5..41 외에는 적을 아예 만들지 않는다.
+        public void SpawnEnemyWithVerified323MagicDefense(string enemyId, long health,
+            CharacterEnemyKind kind, double x, double y, double pathProgress,
+            double? preAbilityArmor, string armorType,
+            int currentA04QLevel, string evidence)
+        {
+            var defenses = Ordr323VerifiedDefenseAbilities
+                .FromVerifiedMagicAbilityLevel(kind, preAbilityArmor,
+                    armorType, currentA04QLevel, evidence);
+            SpawnEnemyWithDefenses(enemyId, health, kind, x, y, pathProgress,
+                defenses);
+        }
+
         public void SpawnEnemyWithDefenses(string enemyId, long health,
             CharacterEnemyKind kind, double x, double y, double pathProgress,
             EnemyDefenseProfile verifiedDefenses)
