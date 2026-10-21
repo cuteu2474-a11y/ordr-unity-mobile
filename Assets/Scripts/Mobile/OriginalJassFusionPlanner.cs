@@ -161,15 +161,17 @@ namespace Ordr.Mobile.Mobile
                     lumber = checked(lumber + condition.Count);
                 else
                 {
-                    string reason;
+                    string reason = null;
                     // UPUN appears as a special presentation/operation tag in CHV/CHX.
                     // Even when a handler approves it, original post-commit behavior
                     // must still be implemented by an authoritative transaction service.
                     if (specialRules == null ||
                         !specialRules.CanSatisfy(condition, recipe.AbilityRawcode, out reason))
                     {
-                        reasons.Add("원본 추가 조건 미검증: " + condition.Kind +
-                            "/" + condition.Rawcode);
+                        reasons.Add("원본 추가 조건 " + condition.Kind + "/" +
+                            condition.Rawcode + ": " +
+                            (string.IsNullOrWhiteSpace(reason)
+                                ? "검증 구현체 미연결" : reason));
                     }
                 }
             }
