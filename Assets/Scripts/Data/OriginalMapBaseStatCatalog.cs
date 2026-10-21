@@ -13,6 +13,13 @@ namespace Ordr.Mobile.Data
         public int? DiceCount { get; private set; }
         public int? DiceSides { get; private set; }
         public double? AttackCooldownSeconds { get; private set; }
+        // Map-object baseline only; buffs, upgrades and script timing can
+        // change the effective attacks per second at runtime.
+        public double? BaseAttacksPerSecond
+        {
+            get { return AttackCooldownSeconds.HasValue
+                ? (double?)(1.0 / AttackCooldownSeconds.Value) : null; }
+        }
         public double? OriginalRange { get; private set; }
         public double? AttackPointSeconds { get; private set; }
         public string OriginalAttackType { get; private set; }

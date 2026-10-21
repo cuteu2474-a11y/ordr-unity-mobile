@@ -186,11 +186,27 @@ namespace Ordr.Mobile.Unity
                 if (detail.Profile.Skills.Count > skillLimit)
                     GUILayout.Label("외 " + (detail.Profile.Skills.Count - skillLimit) + "개");
             }
-            GUILayout.Label("원작 평타 스탯: " +
-                (detail.HasOriginalObjectStats ? "수치 원본 확인" : "아직 미확인"));
-            GUILayout.Label("원본 유닛 ID: " +
-                (string.IsNullOrWhiteSpace(detail.LabelLinkedOriginalRawcode)
-                    ? "미대응" : detail.LabelLinkedOriginalRawcode + " (이름 근거)"));
+            // Original W3X base values are display-only until hit damage,
+            // modifiers and JASS timing have their independent verification.
+            var originalMap = controller.MapBaseStats == null ? null :
+                controller.MapBaseStats.Find(detail.Unit.Id);
+            var attack = originalMap == null ? null : originalMap.Attack1;
+            if (attack != null && attack.MinimumBaseDamage.HasValue &&
+                attack.MaximumBaseDamage.HasValue &&
+                attack.BaseAttacksPerSecond.HasValue)
+            {
+                GUILayout.Label("맵 기본 공격력: " +
+                    attack.MinimumBaseDamage.Value + "~" +
+                    attack.MaximumBaseDamage.Value);
+                GUILayout.Label("기본 공속: " +
+                    attack.BaseAttacksPerSecond.Value.ToString("0.##") +
+                    "회/초 (" + attack.AttackCooldownSeconds.Value.ToString("0.##") +
+                    "초/타)");
+            }
+            else
+            {
+                GUILayout.Label("공격력·기본 공속: 원본 수치 미확인");
+            }
             GUILayout.EndVertical();
         }
 

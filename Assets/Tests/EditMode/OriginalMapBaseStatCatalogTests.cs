@@ -43,6 +43,8 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(29.0, catalog.Find("C-01").Attack1.MinimumBaseDamage);
             Assert.AreEqual(31.0, catalog.Find("C-01").Attack1.MaximumBaseDamage);
             Assert.AreEqual(1.02, catalog.Find("C-01").Attack1.AttackCooldownSeconds);
+            Assert.AreEqual(1.0 / 1.02,
+                catalog.Find("C-01").Attack1.BaseAttacksPerSecond.Value, 1e-9);
             Assert.IsFalse(catalog.Find("C-01").CombatParityVerified);
             Assert.IsNull(catalog.Find("C-02").Attack1);
         }
