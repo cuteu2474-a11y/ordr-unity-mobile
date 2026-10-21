@@ -1,0 +1,98 @@
+using System;
+using System.Collections.Generic;
+using Ordr.Mobile.Data;
+
+namespace Ordr.Mobile.Combat
+{
+    // Exact object-data dice and Warcraft attack-type classification for the
+    // nine common units. These are native attack CANDIDATES, not proof that
+    // JASS/upgrades leave the attack untouched or that HP rounding is known.
+    public sealed class OriginalMapCommonNativeAttackEvidence
+    {
+        public string UnitId { get; private set; }
+        public string Rawcode { get; private set; }
+        public int BaseDamagePlus { get; private set; }
+        public int DiceCount { get; private set; }
+        public int DiceSides { get; private set; }
+        public double CooldownSeconds { get; private set; }
+        public Ordr323AttackType NativeAttackType { get; private set; }
+
+        internal OriginalMapCommonNativeAttackEvidence(OriginalMapCharacterBasics source)
+        {
+            var attack = source.Attack1;
+            UnitId = source.UnitId;
+            Rawcode = source.OriginalRawcode;
+            BaseDamagePlus = attack.BaseDamagePlus.Value;
+            DiceCount = attack.DiceCount.Value;
+            DiceSides = attack.DiceSides.Value;
+            CooldownSeconds = attack.AttackCooldownSeconds.Value;
+            switch (attack.OriginalAttackType)
+            {
+                // Warcraft Object Editor 'normal' is the normal/melee damage
+                // table row, not JASS ATTACK_TYPE_NORMAL ('spells').
+                case "normal": NativeAttackType = Ordr323AttackType.Melee; break;
+                case "pierce": NativeAttackType = Ordr323AttackType.Pierce; break;
+                case "siege": NativeAttackType = Ordr323AttackType.Siege; break;
+                default: throw new FormatException(
+                    UnitId + ": 분류하지 않은 워크래프트 평타 공격 타입입니다.");
+            }
+        }
+
+        // Only the dice expression is sourced. The supplied PRNG does not
+        // purport to reproduce the Warcraft RNG state/order.
+        public long RollObjectBaseDamage(ICombatProcRandom random)
+        {
+            if (random == null) throw new ArgumentNullException(nameof(random));
+            long raw = BaseDamagePlus;
+            for (int die = 0; die < DiceCount; die++)
+            {
+                int roll = random.Next(DiceSides);
+                if (roll < 0 || roll >= DiceSides)
+                    throw new InvalidOperationException("주사위 난수 공급자가 유효 범위를 벗어났습니다.");
+                raw = checked(raw + roll + 1);
+            }
+            return raw;
+        }
+
+        // A known map constant, useful before a complete verified hit exists.
+        // This does not decide buffs, target armor, resistance or rounding.
+        public double AttackTableFactor(Ordr323ArmorType armorType)
+        {
+            return Ordr323MapDamageMath.AttackVersusArmor(NativeAttackType, armorType);
+        }
+    }
+
+    public sealed class OriginalMapCommonNativeAttackEvidenceCatalog
+    {
+        private readonly Dictionary<string, OriginalMapCommonNativeAttackEvidence> entries =
+            new Dictionary<string, OriginalMapCommonNativeAttackEvidence>(StringComparer.Ordinal);
+
+        public int Count { get { return entries.Count; } }
+
+        public OriginalMapCommonNativeAttackEvidenceCatalog(OriginalMapBaseStatCatalog map)
+        {
+            if (map == null) throw new ArgumentNullException(nameof(map));
+            for (int index = 1; index <= 9; index++)
+            {
+                string id = "C-" + index.ToString("D2");
+                var entry = map.Find(id);
+                if (entry == null || entry.MappingStatus != "verified-common-map-identity" ||
+                    string.IsNullOrWhiteSpace(entry.OriginalRawcode) ||
+                    entry.Attack1 == null || !entry.Attack1.BaseDamagePlus.HasValue ||
+                    !entry.Attack1.DiceCount.HasValue ||
+                    !entry.Attack1.DiceSides.HasValue ||
+                    !entry.Attack1.AttackCooldownSeconds.HasValue ||
+                    string.IsNullOrWhiteSpace(entry.Attack1.OriginalAttackType))
+                    throw new FormatException(id + ": 원본 흔함 공격 데이터가 불완전합니다.");
+                entries.Add(id, new OriginalMapCommonNativeAttackEvidence(entry));
+            }
+        }
+
+        public OriginalMapCommonNativeAttackEvidence Find(string catalogUnitId)
+        {
+            OriginalMapCommonNativeAttackEvidence evidence;
+            return catalogUnitId != null && entries.TryGetValue(catalogUnitId, out evidence)
+                ? evidence : null;
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Ordr.Mobile.EditModeTests",
+  "rootNamespace": "Ordr.Mobile.Tests",
+  "references": ["Ordr.Mobile.Runtime"],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": ["nunit.framework.dll"],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

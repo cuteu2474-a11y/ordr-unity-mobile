@@ -17,6 +17,7 @@ namespace Ordr.Mobile.Editor
             "units.json",
             "character-skill-profiles.json",
             "original-stat-evidence.json",
+            "original-2323C-map-base-stats.json",
             "verified-mobile-fusion-recipes.json",
             "original-jass-fusion-registry.json",
             "original-unit-rawcode-label-links.json"

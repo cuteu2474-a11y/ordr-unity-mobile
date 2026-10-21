@@ -13,6 +13,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset unitCatalogJson;
         [SerializeField] private TextAsset characterSkillsJson;
         [SerializeField] private TextAsset originalStatEvidenceJson;
+        [SerializeField] private TextAsset originalMapBaseStatsJson;
         [SerializeField] private TextAsset verifiedFusionRecipesJson;
         [SerializeField] private TextAsset originalJassFusionRegistryJson;
         [SerializeField] private TextAsset originalUnitRawcodeLabelsJson;
@@ -23,6 +24,7 @@ namespace Ordr.Mobile.Unity
         public CharacterSkillCatalog Skills { get; private set; }
         public UnitImplementationRegistry UnitDefinitions { get; private set; }
         public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
+        public OriginalMapBaseStatCatalog MapBaseStats { get; private set; }
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
         public OriginalUnitRawcodeLabelCatalog OriginalUnitRawcodes { get; private set; }
@@ -182,6 +184,10 @@ namespace Ordr.Mobile.Unity
                     Resources.Load<TextAsset>("OrdrData/original-stat-evidence");
                 if (evidenceData != null)
                     StatEvidence = OriginalUnitStatEvidenceCatalog.FromJson(evidenceData.text, Units);
+                var mapBaseData = originalMapBaseStatsJson != null ? originalMapBaseStatsJson :
+                    Resources.Load<TextAsset>("OrdrData/original-2323C-map-base-stats");
+                if (mapBaseData != null)
+                    MapBaseStats = OriginalMapBaseStatCatalog.FromJson(mapBaseData.text, Units);
                 var fusionData = verifiedFusionRecipesJson != null ? verifiedFusionRecipesJson :
                     Resources.Load<TextAsset>("OrdrData/verified-mobile-fusion-recipes");
                 if (fusionData != null)
@@ -209,7 +215,8 @@ namespace Ordr.Mobile.Unity
                     "개 / 패시브 " + UnitDefinitions.CollectedPassives +
                     "개 / JASS 이름-능력 연동 " + UnitDefinitions.LinkedJassLabels +
                     "종 / 원본 공격 스탯 전체 확정 " +
-                    UnitDefinitions.VerifiedBasicAttacks + "종. " +
+                    UnitDefinitions.VerifiedBasicAttacks + "종 / 맵 기본 능력치 ID 연결 " +
+                    (MapBaseStats != null ? MapBaseStats.LinkedCount : 0) + "종. " +
                     "데이터 등록은 전투 구현 완료가 아닙니다.");
             }
             catch (Exception ex)
@@ -235,6 +242,30 @@ namespace Ordr.Mobile.Unity
                 Units, Skills, verifiedHits, verifiedModifiers, quantization, random));
         }
 
+        // Opt-in only: a map object row is not itself evidence that JASS leaves
+        // native attacks intact. A verified path, target defenses and HP
+        // quantization must be supplied before common attacks may cause damage.
+        public void ConfigureOriginalCommonNativeDamageWhenVerified(
+            IOriginalCommonNativeAttackVerification verifiedNativePath,
+            IOrdr323VerifiedModifierRules verifiedModifiers,
+            IOrdr323VerifiedDamageQuantization verifiedQuantization,
+            ICombatProcRandom diceRandom)
+        {
+            if (Combat != null)
+                throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
+            if (MapBaseStats == null)
+                throw new InvalidOperationException("원본 맵 흔함 공격 자료를 먼저 로드해야 합니다.");
+            if (verifiedNativePath == null || verifiedQuantization == null ||
+                diceRandom == null)
+                throw new ArgumentNullException(nameof(verifiedNativePath),
+                    "원본 평타 경로·HP 정수화·난수 근거가 모두 필요합니다.");
+            var native = new OriginalMapCommonNativeAttackBinding(
+                MapBaseStats, verifiedNativePath, diceRandom);
+            ConfigureVerifiedAllUnitAttacks(native);
+            ConfigureOriginal323DamageRuntime(native, verifiedModifiers,
+                verifiedQuantization, diceRandom);
+        }
+
         // 다른 별도 검증 계산기를 사용하던 기존 호출자와 호환.
         public void ConfigureRuntime(IOriginalDamageResolver verifiedBasicFormula,
             IVerifiedCharacterSkillDamageResolver verifiedSkillFormula,
@@ -256,6 +287,8 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
             Combat = world;
             Combat.ConfigureVerifiedUnitAttackProvider(verifiedUnitAttackSource);
+            if (MapBaseStats != null)
+                Combat.ConfigureOriginalMapCommonAttackPreview(MapBaseStats);
             Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
             Combat.ConfigureStoryDeployment(storyDispatchRules);
             if (OriginalJassFusions != null && OriginalUnitRawcodes != null)

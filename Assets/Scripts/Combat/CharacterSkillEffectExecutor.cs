@@ -100,7 +100,8 @@ namespace Ordr.Mobile.Combat
     public enum CharacterCombatEventType
     {
         UnitSpawned, UnitPlaced, Attack, SkillActivated, SkillDamage, StatusApplied,
-        ArmorBreakApplied, EnemyDefeated, EffectDeferred, EnemySpawned
+        ArmorBreakApplied, EnemyDefeated, EffectDeferred, EnemySpawned,
+        AttackPreview // W3X timing/target + visual cue; no damage or skill trigger
     }
 
     public sealed class CharacterCombatEvent

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using Ordr.Mobile.Combat;
 using Ordr.Mobile.Core;
@@ -18,11 +19,15 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private float selectionTapRadiusPixels = 48f;
         [SerializeField] private float worldTapMinimumScreenHeightRatio = 0.46f;
         [SerializeField] private float refreshIntervalSeconds = 0.12f;
+        [SerializeField] private float attackFlashDurationSeconds = 0.18f;
 
         private sealed class Visual
         {
             public GameObject Root;
             public SpriteRenderer Icon;
+            public SpriteRenderer AttackFlash;
+            public float AttackFlashStartedAt = -1f;
+            public bool IsPreviewFlash;
             public string Grade;
         }
 
@@ -42,6 +47,20 @@ namespace Ordr.Mobile.Unity
             CreateSharedMarker();
         }
 
+        private void OnEnable()
+        {
+            if (controller == null)
+                controller = GetComponent<OrdrCharacterCombatController>();
+            if (controller != null)
+                controller.OnCombatEvent += OnCombatEvent;
+        }
+
+        private void OnDisable()
+        {
+            if (controller != null)
+                controller.OnCombatEvent -= OnCombatEvent;
+        }
+
         private void Update()
         {
             var combat = controller == null ? null : controller.Combat;
@@ -51,7 +70,61 @@ namespace Ordr.Mobile.Unity
                 nextRefresh = Time.unscaledTime + Mathf.Max(0.02f, refreshIntervalSeconds);
                 SyncOwnedUnits(combat);
             }
+            UpdateAttackFlashes();
             ReadWorldSelection(combat);
+        }
+
+        // A short presentation-only pulse replaces character swing/movement
+        // animations. Verified hits and explicitly non-damaging map-timing
+        // previews emit it; the flash never affects any combat calculation.
+        private void OnCombatEvent(CharacterCombatEvent combatEvent)
+        {
+            if (combatEvent == null ||
+                (combatEvent.Type != CharacterCombatEventType.Attack &&
+                 combatEvent.Type != CharacterCombatEventType.AttackPreview))
+                return;
+            long instanceId;
+            if (!long.TryParse(combatEvent.ActorId, NumberStyles.None,
+                CultureInfo.InvariantCulture, out instanceId)) return;
+
+            Visual visual;
+            if (!visuals.TryGetValue(instanceId, out visual))
+            {
+                // A freshly recruited unit can attack before the next 0.12s
+                // presentation snapshot. Create its marker on demand.
+                if (controller != null && controller.Combat != null)
+                    SyncOwnedUnits(controller.Combat);
+                if (!visuals.TryGetValue(instanceId, out visual)) return;
+            }
+            if (!visual.Root.activeSelf) return;
+            visual.AttackFlashStartedAt = Time.unscaledTime;
+            visual.IsPreviewFlash = combatEvent.Type == CharacterCombatEventType.AttackPreview;
+            visual.AttackFlash.enabled = true;
+            visual.AttackFlash.color = visual.IsPreviewFlash
+                ? new Color(0.62f, 0.85f, 1f, 0.8f)
+                : new Color(1f, 0.88f, 0.3f, 0.8f);
+        }
+
+        private void UpdateAttackFlashes()
+        {
+            float duration = Mathf.Max(0.02f, attackFlashDurationSeconds);
+            foreach (var visual in visuals.Values)
+            {
+                if (visual.AttackFlashStartedAt < 0f) continue;
+                float progress = (Time.unscaledTime - visual.AttackFlashStartedAt) / duration;
+                if (progress >= 1f)
+                {
+                    visual.AttackFlash.enabled = false;
+                    visual.AttackFlashStartedAt = -1f;
+                    continue;
+                }
+                float remaining = 1f - Mathf.Clamp01(progress);
+                visual.AttackFlash.transform.localScale = Vector3.one *
+                    Mathf.Lerp(1.10f, 1.70f, progress);
+                visual.AttackFlash.color = visual.IsPreviewFlash
+                    ? new Color(0.62f, 0.85f, 1f, 0.8f * remaining)
+                    : new Color(1f, 0.88f, 0.3f, 0.8f * remaining);
+            }
         }
 
         private void CreateSharedMarker()
@@ -93,6 +166,12 @@ namespace Ordr.Mobile.Unity
                     visual.Icon = visual.Root.AddComponent<SpriteRenderer>();
                     visual.Icon.sprite = markerSprite;
                     visual.Icon.sortingOrder = 10;
+                    var flash = new GameObject("Attack flash");
+                    flash.transform.SetParent(visual.Root.transform, false);
+                    visual.AttackFlash = flash.AddComponent<SpriteRenderer>();
+                    visual.AttackFlash.sprite = markerSprite;
+                    visual.AttackFlash.sortingOrder = 9;
+                    visual.AttackFlash.enabled = false;
                     visual.Grade = entry.Unit.Grade;
                     visuals.Add(entry.InstanceId, visual);
                 }

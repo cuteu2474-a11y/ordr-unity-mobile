@@ -57,6 +57,7 @@ namespace Ordr.Mobile.Combat
         private double pendingStepSeconds;
         private IOriginalStoryDispatchPort storyDispatch;
         private IOriginalVerifiedUnitAttackProvider verifiedAttackProvider;
+        private OriginalMapCommonAttackPreview commonAttackPreview;
         private IOriginalSpecialSkillTriggerMapping specialTriggerMapping;
         private IOriginalSpecialSkillEventRules specialEventRules;
         private IOriginalCombatTargetSelectionRules targetSelectionRules;
@@ -277,6 +278,18 @@ namespace Ordr.Mobile.Combat
             verifiedAttackProvider = originalProvider;
         }
 
+        // Map object timings are useful for animation-less mobile attack cues,
+        // but MUST NOT be interpreted as verified final damage or skill procs.
+        public void ConfigureOriginalMapCommonAttackPreview(OriginalMapBaseStatCatalog map)
+        {
+            if (commonAttackPreview != null)
+                throw new InvalidOperationException("흔함 공격 미리보기는 한 번만 연결할 수 있습니다.");
+            commonAttackPreview = new OriginalMapCommonAttackPreview(map);
+            foreach (var unit in characters.Values)
+                if (!unit.AttackReady)
+                    commonAttackPreview.TryTrack(unit.Id, unit.Catalog.Id, scheduler.Time);
+        }
+
         public int BindExistingVerifiedAttacks()
         {
             if (verifiedAttackProvider == null) return 0;
@@ -319,6 +332,10 @@ namespace Ordr.Mobile.Combat
                     if (unit.AttackReady && !unit.AttackBlockedByMissingFormula) count++;
                 return count;
             }
+        }
+        public int PreviewAttackers
+        {
+            get { return commonAttackPreview != null ? commonAttackPreview.Count : 0; }
         }
         public double Time { get { return scheduler.Time; } }
         public double PendingSimulationSeconds { get { return pendingStepSeconds; } }
@@ -403,12 +420,15 @@ namespace Ordr.Mobile.Combat
                         characters[id].AttackEvidence = original.SourceEvidence;
                     }
                 }
+                if (!characters[id].AttackReady && commonAttackPreview != null)
+                    commonAttackPreview.TryTrack(id, catalogUnitId, scheduler.Time);
             }
             catch
             {
                 // Incomplete spawns never remain in the roster or skill engines.
                 if (characters[id].AttackReady)
                     attackPipeline.RemoveUnit(InstanceKey(id));
+                if (commonAttackPreview != null) commonAttackPreview.Remove(id);
                 characters.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
@@ -461,6 +481,7 @@ namespace Ordr.Mobile.Combat
                 specialTriggerMapping);
             attackPipeline.RegisterUnit(InstanceKey(instanceId), mapping.AttackSpec,
                 firstAttackDelay);
+            if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
             instance.Mapping = mapping;
             instance.AttackReady = true;
             return mapping.DeferredReasons;
@@ -634,6 +655,7 @@ namespace Ordr.Mobile.Combat
             if (!characters.TryGetValue(instanceId, out instance))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터 인스턴스.");
             if (instance.AttackReady) attackPipeline.RemoveUnit(InstanceKey(instanceId));
+            if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
             effectExecutor.CancelCaster(InstanceKey(instanceId));
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
@@ -830,7 +852,85 @@ namespace Ordr.Mobile.Combat
                         next = scheduled;
                 }
             }
+            if (commonAttackPreview != null)
+                foreach (var unit in characters.Values)
+                {
+                    if (unit.AttackReady) continue;
+                    double? scheduled = commonAttackPreview.NextAt(unit.Id);
+                    if (!scheduled.HasValue || BuildTargetCandidates(unit).Count == 0)
+                        continue;
+                    if (!next.HasValue || scheduled.Value < next.Value)
+                        next = scheduled;
+                }
             return next;
+        }
+
+        private int ExecuteReadyCommonAttackPreviews(int budget)
+        {
+            if (budget <= 0 || commonAttackPreview == null) return 0;
+            int shown = 0;
+            var ids = new List<long>(characters.Keys);
+            ids.Sort();
+            foreach (long id in ids)
+            {
+                if (shown >= budget) break;
+                var unit = characters[id];
+                if (unit.AttackReady) continue;
+                double? scheduled = commonAttackPreview.NextAt(id);
+                if (!scheduled.HasValue || scheduled.Value > scheduler.Time) continue;
+                var candidates = BuildTargetCandidates(unit);
+                if (candidates.Count == 0) continue;
+                string selected = ChoosePreviewTarget(unit, candidates);
+                if (selected == null) continue;
+
+                OriginalMapCharacterBasics evidence;
+                if (!commonAttackPreview.TryCommit(id, scheduler.Time, out evidence))
+                    continue;
+                shown++;
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.AttackPreview,
+                    InstanceKey(id), selected, null,
+                    evidence.OriginalRawcode + " map-base " +
+                    evidence.Attack1.MinimumBaseDamage.Value + "-" +
+                    evidence.Attack1.MaximumBaseDamage.Value +
+                    " (미검증 최종피해: 체력 감소 없음)", 0));
+            }
+            return shown;
+        }
+
+        private string ChoosePreviewTarget(CharacterInstance unit,
+            List<TargetCandidate> candidates)
+        {
+            if (targetSelectionRules != null)
+            {
+                var contacts = new List<VerifiedTargetContact>();
+                foreach (var candidate in candidates)
+                    contacts.Add(new VerifiedTargetContact(candidate,
+                        enemies[candidate.Id].Kind));
+                string approved;
+                if (targetSelectionRules.TryChoose(unit.Catalog,
+                    contacts.AsReadOnly(), double.MaxValue, out approved))
+                {
+                    foreach (var candidate in candidates)
+                        if (candidate.Id == approved) return approved;
+                    throw new InvalidOperationException(
+                        "미리보기 대상 정책이 다른 전장이나 존재하지 않는 적을 선택했습니다.");
+                }
+            }
+            var bossRules = MobileAutomation.BossRules;
+            if (bossRules != null)
+            {
+                foreach (var candidate in candidates)
+                {
+                    var enemy = enemies[candidate.Id];
+                    if (enemy.Kind == CharacterEnemyKind.Boss &&
+                        bossRules.CanPreferBoss(unit.Catalog, enemy.Enemy,
+                            candidate.DistanceSquared, double.MaxValue))
+                        return candidate.Id;
+                }
+            }
+            return CombatTargeting.Select(candidates, 0,
+                TargetPriority.Nearest, true);
         }
 
         private int ExecuteReadyAttacks(int budget)
@@ -983,10 +1083,13 @@ namespace Ordr.Mobile.Combat
                     MobileAutomation.RunAutomaticAbilities(this);
                     int fired = ExecuteReadyAttacks(maxAttacksPerStep - completed);
                     completed += fired;
+                    int previews = ExecuteReadyCommonAttackPreviews(
+                        maxAttacksPerStep - completed);
+                    completed += previews;
                     int periodic = ExecuteReadyPeriodicSkills(
                         maxAttacksPerStep - completed);
                     completed += periodic;
-                    if (fired == 0 && periodic == 0)
+                    if (fired == 0 && previews == 0 && periodic == 0)
                     {
                         // 자동 시전으로 적이 사라지는 경우 등 다음 시간으로 진행.
                         AdvanceCombatTime(pendingStepSeconds);

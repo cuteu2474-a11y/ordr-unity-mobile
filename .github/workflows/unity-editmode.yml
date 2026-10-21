@@ -1,0 +1,56 @@
+name: Unity EditMode 검증 (수동 실행)
+
+# 코드 수정 한 번마다 자동 빌드/취소하지 않는다.
+# 여러 변경을 검증한 뒤 Actions에서 필요할 때 한 번 수동 실행한다.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: ordr-unity-editmode
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: 원본맵 자료 검증 및 Unity EditMode
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 원본 맵 자료의 비 Unity 회귀 테스트
+        run: python3 -m unittest discover -s tests -q
+
+      - name: Unity 라이선스 설정 확인
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: |
+          if [ -z "$UNITY_LICENSE" ] || [ -z "$UNITY_EMAIL" ] || [ -z "$UNITY_PASSWORD" ]; then
+            echo 'Unity 실행을 위해 저장소 Secrets에 UNITY_LICENSE, UNITY_EMAIL, UNITY_PASSWORD가 필요합니다.'
+            exit 1
+          fi
+
+      - name: Unity 6 EditMode 테스트
+        id: tests
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          testMode: EditMode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          coverageEnabled: false
+
+      - name: Unity 테스트 결과 파일 첨부
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-editmode-results
+          path: ${{ steps.tests.outputs.artifactsPath }}
+          if-no-files-found: ignore
