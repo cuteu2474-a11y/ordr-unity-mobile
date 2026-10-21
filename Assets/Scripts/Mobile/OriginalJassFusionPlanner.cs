@@ -68,6 +68,7 @@ namespace Ordr.Mobile.Mobile
         private readonly OriginalUnitRawcodeLabelCatalog labels;
         private readonly Func<long, bool> deployed;
         private IOriginalJassSpecialConditionEvaluator specialRules;
+        private IVerifiedUnitRawcodeMap verifiedObjectMap;
 
         public OriginalJassFusionPlanner(OriginalJassFusionCatalog original,
             OriginalUnitRawcodeLabelCatalog labels, Func<long, bool> storyDeployed,
@@ -82,6 +83,13 @@ namespace Ordr.Mobile.Mobile
         public void SetSpecialRules(IOriginalJassSpecialConditionEvaluator rules)
         {
             specialRules = rules;
+        }
+
+        // Requires separately verified original object IDs; Bi8/Bi9 name links are
+        // insufficient evidence for an irreversible transaction.
+        public void SetVerifiedObjectMap(IVerifiedUnitRawcodeMap verified)
+        {
+            verifiedObjectMap = verified;
         }
 
         public int RegistrationCount { get { return original.Count; } }
@@ -123,6 +131,14 @@ namespace Ordr.Mobile.Mobile
                 reasons.Add("원본 결과 수량 또는 결과 타입 미지원: BGH");
             if (resultLabel == null)
                 reasons.Add("결과 캐릭터 원본 ID 미매핑: " + resultCode);
+            else
+            {
+                string catalogId;
+                if (verifiedObjectMap == null ||
+                    !verifiedObjectMap.TryResolveUnit(resultCode, out catalogId) ||
+                    catalogId != resultLabel.CatalogUnitId)
+                    reasons.Add("결과 원본 객체 ID의 최종 검증 미완료: " + resultCode);
+            }
 
             int gold = 0, lumber = 0;
             var needed = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -165,7 +181,15 @@ namespace Ordr.Mobile.Mobile
                 int owned = 0;
                 List<long> list = null;
                 if (link == null) reasons.Add("재료 유닛 원시 ID 미매핑: " + rawcode);
-                else if (allUnits.TryGetValue(link.CatalogUnitId, out list))
+                else
+                {
+                    string verifiedCatalogId;
+                    if (verifiedObjectMap == null ||
+                        !verifiedObjectMap.TryResolveUnit(rawcode, out verifiedCatalogId) ||
+                        verifiedCatalogId != link.CatalogUnitId)
+                        reasons.Add("재료 원본 객체 ID의 최종 검증 미완료: " + rawcode);
+                }
+                if (link != null && allUnits.TryGetValue(link.CatalogUnitId, out list))
                 {
                     owned = Math.Min(list.Count, required);
                     for (int i = 0; i < owned; i++) selected.Add(list[i]);
@@ -184,9 +208,8 @@ namespace Ordr.Mobile.Mobile
             else if (verifiedLumber.Value < lumber || verifiedLumber.Value < 0)
                 reasons.Add("목재 부족");
 
-            // 이름에 근거한 매핑은 확인자료일 뿐 실제 object ID 완전검증 아님.
-            // 전체가 충족되더라도 원자적인 원본 결제/소환 서비스 전에는 승인하지 않는다.
-            reasons.Add("원본 UNIT 오브젝트/제작 트랜잭션 최종 검증 필요");
+            // The commit service is a separate authorization gate; even a fully
+            // resolved plan must never mutate the game world without that service.
             return new JassFusionReadiness(recipe, resultCode, resultLabel,
                 materials, reasons, selected, gold, lumber);
         }
