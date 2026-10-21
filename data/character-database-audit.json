@@ -14,7 +14,7 @@
     "verifiedOriginalBasicAttacks": 0,
     "withPatchStatObservations": 5,
     "sourceCorrelatedDefenseSkills": 11,
-    "withWebRecipes": 7,
+    "withWebRecipes": 10,
     "originalJassFusionRegistrations": 266,
     "distinctJassFusionResultRawcodes": 265,
     "distinctJassFusionIngredientOrResultRawcodes": 280,
@@ -37,7 +37,7 @@
       "skills": 0,
       "passives": 0,
       "rawcodeCandidates": 0,
-      "webRecipes": 0,
+      "webRecipes": 3,
       "combatReady": 0
     },
     "특별함": {
@@ -349,7 +349,7 @@
       "originalBasicAttackVerified": false,
       "patchStatObservations": 1,
       "defenseSkillJassLinks": 0,
-      "webRecipeEntries": 0,
+      "webRecipeEntries": 1,
       "priority": "collect-missing-unit-skills-and-original-objects",
       "state": "not-combat-ready"
     },
@@ -397,7 +397,7 @@
       "originalBasicAttackVerified": false,
       "patchStatObservations": 0,
       "defenseSkillJassLinks": 0,
-      "webRecipeEntries": 0,
+      "webRecipeEntries": 1,
       "priority": "collect-missing-unit-skills-and-original-objects",
       "state": "not-combat-ready"
     },
@@ -493,7 +493,7 @@
       "originalBasicAttackVerified": false,
       "patchStatObservations": 0,
       "defenseSkillJassLinks": 0,
-      "webRecipeEntries": 0,
+      "webRecipeEntries": 1,
       "priority": "collect-missing-unit-skills-and-original-objects",
       "state": "not-combat-ready"
     },

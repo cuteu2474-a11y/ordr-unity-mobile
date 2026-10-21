@@ -2,8 +2,41 @@
   "gameVersion": "S2 2.323[C]",
   "sourceCatalog": "https://ordr.kr/character",
   "scope": "mobile-assisted-fusion",
-  "notice": "2.323 웹 도감에서 재료와 목재/골드 추가 비용을 직접 확인한 7개 조합식만 등록. 원본 W3X 제작 트리거·원작 비용/위치 확인 전 자동 소비 금지. 카탈로그 271종 전체 조합식이 아니며 미등록 조합은 사용하지 않는다.",
+  "notice": "기존 검증 7개 조합식 및 루피를 재료로 사용하는 웹 도감 3개 조합식을 등록. 신규 3개는 재료만 공개 확인됐으며 추가 비용이 명시되지 않아 미확인으로 처리. 실제 조합 거래는 구현 전까지 비활성.",
   "recipes": [
+    {
+      "id": "U-02",
+      "resultUnitId": "U-02",
+      "name": "베포 (안흔함)",
+      "sourceUrl": "https://ordr.kr/character/U2",
+      "verifiedAs": "ordr-2.323-web-catalog",
+      "ingredients": [{ "unitId": "C-01", "count": 1 }, { "unitId": "C-06", "count": 1 }],
+      "extraCost": { "gold": 0, "lumber": 0, "items": [] },
+      "extraCostStatus": "not-published",
+      "uncertain": ["추가 재화·아이템 비용은 공개 페이지에 명시되지 않음", "실제 제작 트랜잭션 미구현"]
+    },
+    {
+      "id": "U-05",
+      "resultUnitId": "U-05",
+      "name": "에이스 (안흔함)",
+      "sourceUrl": "https://ordr.kr/character/U5",
+      "verifiedAs": "ordr-2.323-web-catalog",
+      "ingredients": [{ "unitId": "C-01", "count": 1 }, { "unitId": "C-08", "count": 1 }],
+      "extraCost": { "gold": 0, "lumber": 0, "items": [] },
+      "extraCostStatus": "not-published",
+      "uncertain": ["추가 재화·아이템 비용은 공개 페이지에 명시되지 않음", "실제 제작 트랜잭션 미구현"]
+    },
+    {
+      "id": "U-11",
+      "resultUnitId": "U-11",
+      "name": "프랑키 (안흔함)",
+      "sourceUrl": "https://ordr.kr/character/U11",
+      "verifiedAs": "ordr-2.323-web-catalog",
+      "ingredients": [{ "unitId": "C-04", "count": 1 }, { "unitId": "C-01", "count": 1 }],
+      "extraCost": { "gold": 0, "lumber": 0, "items": [] },
+      "extraCostStatus": "not-published",
+      "uncertain": ["추가 재화·아이템 비용은 공개 페이지에 명시되지 않음", "실제 제작 트랜잭션 미구현"]
+    },
     {
       "id": "R-24",
       "resultUnitId": "R-24",

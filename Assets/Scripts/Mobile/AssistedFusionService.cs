@@ -66,6 +66,9 @@ namespace Ordr.Mobile.Mobile
             if (requestedMaterialIds == null)
                 return new ManualActionResult(ManualActionState.Rejected,
                     "선택한 재료가 없습니다.");
+            if (!recipe.ExtraCostVerified)
+                return ManualActionResult.Unavailable(
+                    "도감에 표시되지 않은 추가 재화 비용 확인");
 
             // 미리보기 후 보유 유닛의 사망·합성·스토리 파견이 바뀌었어도
             // 현재 재고를 다시 조회하여 유효하지 않은 선택은 거부한다.
@@ -158,9 +161,11 @@ namespace Ordr.Mobile.Mobile
             var parts = new List<string>();
             foreach (var need in recipe.Ingredients)
                 parts.Add(need.DisplayName + " x" + need.Count);
-            return string.Join(" + ", parts.ToArray()) +
-                " | 골드 " + recipe.Gold + " / 목재 " + recipe.Lumber +
-                " (원본 트리거 확인 후 최종 제작)";
+            return string.Join(" + ", parts.ToArray()) + " | " +
+                (recipe.ExtraCostVerified ?
+                    "골드 " + recipe.Gold + " / 목재 " + recipe.Lumber :
+                    "추가 재화 비용 미확인") +
+                " (조합 확정 기능 준비 중)";
         }
     }
 }

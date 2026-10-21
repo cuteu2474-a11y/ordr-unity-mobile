@@ -18,12 +18,18 @@
         "name": "루피",
         "roleTags": [],
         "roleTagsStatus": "not-collected",
-        "detailUrl": null,
+        "detailUrl": "https://ordr.kr/character/C1",
         "gameRawCode": null,
         "attackPower": null,
+        "attackPowerMin": 50,
+        "attackPowerMax": 52,
+        "attackPowerSourceUrl": "https://ordsearch.net/characters/1",
+        "attackPowerEvidenceDate": "2021-02-02",
+        "attackPowerVersionStatus": "historical-page-not-confirmed-for-2.323[C]",
         "attackIntervalSeconds": null,
         "attackRange": null,
-        "skillSpecsStatus": "not-collected",
+        "skillSpecsStatus": "no-published-skills",
+        "skillSourceUrl": "https://ordsearch.net/characters/1",
         "damageSchoolHints": [],
         "damageSchoolHintsStatus": "unknown"
       },
@@ -58,22 +64,19 @@
       },
       "completeness": {
         "catalog": "catalog-collected",
-        "details": "not-collected",
-        "passiveDefinitions": "not-collected",
+        "details": "web-basic-page-checked",
+        "passiveDefinitions": "no-published-description",
         "originalRawcode": "unresolved",
         "basicStats": "original-map-unverified",
-        "skills": "not-collected",
+        "skills": "no-published-description",
         "fusion": "not-original-verified",
-        "combat": "not-original-verified",
+        "combat": "pending-attack-interval-and-version-confirmation",
         "allowedForParityCombat": false
       },
       "blockers": [
-        "original-unit-rawcode-mapping",
-        "original-basic-attack-stats",
-        "warcraft-attack-damage-type-and-formula",
-        "original-ability-full-code-and-trigger-coverage",
-        "combat-skill-timing-and-conditional-gates",
-        "warcraft-object-data-confirmation"
+        "attack-interval-not-in-tooltip",
+        "basic-attack-damage-school-not-in-tooltip",
+        "attack-power-50-52-is-from-2021-page-not-2.323-confirmed"
       ]
     },
     {

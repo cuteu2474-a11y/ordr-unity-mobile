@@ -18,6 +18,7 @@ namespace Ordr.Mobile.Data
         public bool HasOriginalObjectStats { get; private set; }
         public bool CanSpawnIntoRoster { get { return true; } }
         public bool HasCollectedDetailedSkills { get { return Profile != null; } }
+        public bool HasConfirmedNoPublishedSkills { get { return Unit.HasNoPublishedSkills; } }
         public int SkillCount { get { return Profile == null ? 0 : Profile.Skills.Count; } }
         public int PassiveCount { get { return Profile == null ? 0 : Profile.Passives.Count; } }
         public IReadOnlyList<string> MissingImplementation { get; private set; }
@@ -44,14 +45,14 @@ namespace Ordr.Mobile.Data
             // table, and cannot make unknown attack values "verified".
             HasOriginalObjectStats = profile != null && profile.HasVerifiedBasicAttack;
             var issues = new List<string>();
-            if (originalLabel == null && string.IsNullOrWhiteSpace(unit.GameRawCode))
-                issues.Add("원본 Warcraft III 유닛 ID 미대응");
-            else if (originalLabel != null && string.IsNullOrWhiteSpace(unit.GameRawCode))
-                issues.Add("JASS 이름-능력 연결만 확인, 원본 객체 테이블 대조 필요");
+            // Unity 독립 리메이크는 원본 rawcode 대조를 실행 필수 조건으로
+            // 사용하지 않는다. 이 필드는 과거 분석 자료로만 유지한다.
             if (!HasOriginalObjectStats)
-                issues.Add("원본 평타 공격력·공격주기·사거리·피해 계열 최종 검증 필요");
-            if (profile == null)
-                issues.Add("도감 상세 스킬 데이터 없음 (원본 능력 트리거 확인 필요)");
+                issues.Add(unit.AttackPowerMin.HasValue
+                    ? "평타 공격력 범위 근거는 있으나 공격 주기·피해 계열 및 버전 확인이 필요"
+                    : "도감 평타 공격력·공격 주기·피해 계열 추가 수집 필요");
+            if (profile == null && !unit.HasNoPublishedSkills)
+                issues.Add("도감 상세 스킬 설명 아직 수집되지 않음");
             else
             {
                 if (profile.Completeness != "complete")

@@ -9,6 +9,15 @@ namespace Ordr.Mobile.Data
         public string Grade { get; private set; }
         public string Name { get; private set; }
         public string GameRawCode { get; private set; }
+        // Tooltip evidence is independent of Warcraft rawcodes and may be
+        // incomplete or older than the target version. A range is not a
+        // ready-to-run attack without timing and damage-school information.
+        public long? AttackPowerMin { get; private set; }
+        public long? AttackPowerMax { get; private set; }
+        public string AttackPowerSourceUrl { get; private set; }
+        public string AttackPowerVersionStatus { get; private set; }
+        public string SkillSpecsStatus { get; private set; }
+        public bool HasNoPublishedSkills { get { return SkillSpecsStatus == "no-published-skills"; } }
         public IReadOnlyList<string> RoleTags { get; private set; }
         public bool IsDetailAvailable { get; private set; }
         public IReadOnlyDictionary<string, object> OriginalFields { get; private set; }
@@ -19,8 +28,24 @@ namespace Ordr.Mobile.Data
             Grade = OrdrJson.RequiredString(fields, "grade");
             Name = OrdrJson.RequiredString(fields, "name");
             GameRawCode = OrdrJson.String(fields, "gameRawCode");
-            IsDetailAvailable = OrdrJson.String(fields, "skillSpecsStatus") == "partial" ||
-                                OrdrJson.String(fields, "skillSpecsStatus") == "complete";
+            SkillSpecsStatus = OrdrJson.String(fields, "skillSpecsStatus");
+            IsDetailAvailable = SkillSpecsStatus == "partial" || SkillSpecsStatus == "complete";
+            var min = OrdrJson.Number(fields, "attackPowerMin");
+            var max = OrdrJson.Number(fields, "attackPowerMax");
+            if (min.HasValue != max.HasValue)
+                throw new FormatException(Id + ": 공격력 범위는 최솟값과 최댓값이 모두 필요합니다.");
+            if (min.HasValue)
+            {
+                if (min.Value < 0 || max.Value < min.Value ||
+                    max.Value >= long.MaxValue ||
+                    Math.Floor(min.Value) != min.Value ||
+                    Math.Floor(max.Value) != max.Value)
+                    throw new FormatException(Id + ": 잘못된 평타 공격력 범위입니다.");
+                AttackPowerSourceUrl = OrdrJson.RequiredString(fields, "attackPowerSourceUrl");
+                AttackPowerVersionStatus = OrdrJson.RequiredString(fields, "attackPowerVersionStatus");
+                AttackPowerMin = (long)min.Value;
+                AttackPowerMax = (long)max.Value;
+            }
             var tags = new List<string>();
             foreach (var role in OrdrJson.Array(OrdrJson.Value(fields, "roleTags"), "roleTags"))
             {

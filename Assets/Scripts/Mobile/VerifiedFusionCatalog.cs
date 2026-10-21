@@ -30,6 +30,7 @@ namespace Ordr.Mobile.Mobile
         public string SourceUrl { get; private set; }
         public int Gold { get; private set; }
         public int Lumber { get; private set; }
+        public bool ExtraCostVerified { get; private set; }
         public IReadOnlyList<VerifiedFusionIngredient> Ingredients { get; private set; }
         public string CostSummary { get; private set; }
 
@@ -49,6 +50,10 @@ namespace Ordr.Mobile.Mobile
             var costs = OrdrJson.Object(OrdrJson.Value(source, "extraCost"), "extraCost");
             Gold = GetNonNegativeInt(costs, "gold");
             Lumber = GetNonNegativeInt(costs, "lumber");
+            var costStatus = OrdrJson.String(source, "extraCostStatus");
+            if (costStatus != null && costStatus != "not-published")
+                throw new FormatException("알 수 없는 추가 비용 상태: " + costStatus);
+            ExtraCostVerified = costStatus == null;
             var specialItems = OrdrJson.Array(OrdrJson.Value(costs, "items"), "extraCost.items");
             if (specialItems.Count != 0)
                 throw new FormatException("특수 아이템 비용을 계산하는 조합식은 아직 미지원.");
@@ -68,8 +73,9 @@ namespace Ordr.Mobile.Mobile
             if (materials.Count == 0)
                 throw new FormatException("재료가 없는 조합식은 등록할 수 없습니다.");
             Ingredients = materials.AsReadOnly();
-            CostSummary = "원작 재료 " + SumQuantity(materials) + "개 / 골드 " + Gold +
-                " / 목재 " + Lumber + " (최종 제작은 원본 트리거 검증 필요)";
+            CostSummary = "도감 재료 " + SumQuantity(materials) + "개 / " +
+                (ExtraCostVerified ? "골드 " + Gold + " / 목재 " + Lumber :
+                    "추가 재화 비용 미확인") + " (실제 제작은 별도 구현 필요)";
         }
 
         private static int SumQuantity(List<VerifiedFusionIngredient> materials)
@@ -89,8 +95,8 @@ namespace Ordr.Mobile.Mobile
         }
     }
 
-    // 현재 확인된 3개 조합식을 기반으로 작동한다.
-    // 이 카탈로그는 제작 완료를 주장하지 않고 원본 데이터 추가를 지원한다.
+    // 공개 도감에서 재료를 확인한 조합을 미리보기에 사용한다.
+    // 비용이 공개되지 않은 조합은 실제 거래를 차단한다.
     public sealed class VerifiedFusionCatalog
     {
         private readonly Dictionary<string, VerifiedFusionRecipe> recipes =

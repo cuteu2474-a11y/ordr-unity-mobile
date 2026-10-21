@@ -6,11 +6,11 @@
   "contentScope": "Complete 271-character WEB catalog snapshot joined to 200 tooltip profiles; NOT verified complete original W3X object database.",
   "integrity": {
     "sourceBlobShas": {
-      "data/units.json": "1a0ed4c1cb69a06497f9e27d2d4c2117e19005b3",
+      "data/units.json": "092ab3c4bf92f331b5f175d4ad5cf35cd7a2ed86",
       "data/character-skill-profiles.json": "8a2ceee1fbf283166445803a59e8d7bc54adc86e",
       "data/original-unit-rawcode-label-links.json": "67a2f8417ab9bf948d370f50dc66fff25d88c65e",
       "data/original-stat-evidence.json": "e462b0c37d6a6825fbdeb518908da3a8ed9f8ed4",
-      "data/verified-mobile-fusion-recipes.json": "3e4e133c51c70a1ce5f6fdde5cd12d3abd1f9b74",
+      "data/verified-mobile-fusion-recipes.json": "34cedf96cf9a436ef4ff4f3b1ab0ed11b9d520aa",
       "data/original-2323C-character-defense-skill-links.json": "9a79f9ba449c49557634a4f33decdd5ca589c99b",
       "data/original-fusion-rawcode-backlog.json": "60810178fc9a2c16cc7e5eb8e5e0d2d38af3a57e",
       "data/original-jass-fusion-registry.json": "75c4da90f56a486d2dd63f504e565692d6f8176e"
@@ -30,7 +30,7 @@
     "verifiedOriginalBasicAttacks": 0,
     "withPatchStatObservations": 5,
     "sourceCorrelatedDefenseSkills": 11,
-    "withWebRecipes": 7,
+    "withWebRecipes": 10,
     "originalJassFusionRegistrations": 266,
     "distinctJassFusionResultRawcodes": 265,
     "distinctJassFusionIngredientOrResultRawcodes": 280,

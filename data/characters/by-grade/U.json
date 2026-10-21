@@ -119,7 +119,16 @@
         ],
         "originalFusionResultAbilityCandidates": [],
         "originalFusionMappingStatus": "unresolved",
-        "catalogFusionRecipes": [],
+        "catalogFusionRecipes": [
+          {
+            "id": "U-02", "resultUnitId": "U-02", "name": "베포 (안흔함)",
+            "sourceUrl": "https://ordr.kr/character/U2", "verifiedAs": "ordr-2.323-web-catalog",
+            "ingredients": [{ "unitId": "C-01", "count": 1 }, { "unitId": "C-06", "count": 1 }],
+            "extraCost": { "gold": 0, "lumber": 0, "items": [] },
+            "extraCostStatus": "not-published",
+            "uncertain": ["추가 재화·아이템 비용은 공개 페이지에 명시되지 않음", "실제 제작 트랜잭션 미구현"]
+          }
+        ],
         "sourceChecksums": {
           "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
         }
@@ -329,7 +338,16 @@
         "patchStatBlockingReasons": [],
         "originalFusionResultAbilityCandidates": [],
         "originalFusionMappingStatus": "unresolved",
-        "catalogFusionRecipes": [],
+        "catalogFusionRecipes": [
+          {
+            "id": "U-05", "resultUnitId": "U-05", "name": "에이스 (안흔함)",
+            "sourceUrl": "https://ordr.kr/character/U5", "verifiedAs": "ordr-2.323-web-catalog",
+            "ingredients": [{ "unitId": "C-01", "count": 1 }, { "unitId": "C-08", "count": 1 }],
+            "extraCost": { "gold": 0, "lumber": 0, "items": [] },
+            "extraCostStatus": "not-published",
+            "uncertain": ["추가 재화·아이템 비용은 공개 페이지에 명시되지 않음", "실제 제작 트랜잭션 미구현"]
+          }
+        ],
         "sourceChecksums": {
           "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
         }
@@ -761,7 +779,16 @@
         "patchStatBlockingReasons": [],
         "originalFusionResultAbilityCandidates": [],
         "originalFusionMappingStatus": "unresolved",
-        "catalogFusionRecipes": [],
+        "catalogFusionRecipes": [
+          {
+            "id": "U-11", "resultUnitId": "U-11", "name": "프랑키 (안흔함)",
+            "sourceUrl": "https://ordr.kr/character/U11", "verifiedAs": "ordr-2.323-web-catalog",
+            "ingredients": [{ "unitId": "C-04", "count": 1 }, { "unitId": "C-01", "count": 1 }],
+            "extraCost": { "gold": 0, "lumber": 0, "items": [] },
+            "extraCostStatus": "not-published",
+            "uncertain": ["추가 재화·아이템 비용은 공개 페이지에 명시되지 않음", "실제 제작 트랜잭션 미구현"]
+          }
+        ],
         "sourceChecksums": {
           "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
         }
