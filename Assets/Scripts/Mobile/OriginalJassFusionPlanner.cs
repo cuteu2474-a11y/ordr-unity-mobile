@@ -24,6 +24,21 @@ namespace Ordr.Mobile.Mobile
         }
     }
 
+    // The exact instance assignment for each original UNIT rawcode. The UI may
+    // present a flat selection, but the transactional world must not guess which
+    // unit an original rawcode refers to (especially for duplicate materials).
+    public sealed class JassFusionMaterialBinding
+    {
+        public string Rawcode { get; private set; }
+        public IReadOnlyList<long> InstanceIds { get; private set; }
+
+        internal JassFusionMaterialBinding(string rawcode, List<long> ids)
+        {
+            Rawcode = rawcode;
+            InstanceIds = new List<long>(ids).AsReadOnly();
+        }
+    }
+
     public sealed class JassFusionReadiness
     {
         public string AbilityRawcode { get; private set; }
@@ -31,6 +46,8 @@ namespace Ordr.Mobile.Mobile
         public string ResultUnitId { get; private set; }
         public string ResultName { get; private set; }
         public IReadOnlyList<JassFusionMaterial> Materials { get; private set; }
+        public IReadOnlyList<JassFusionMaterialBinding> MaterialBindings { get; private set; }
+        internal OriginalJassFusionRegistration SourceRegistration { get; private set; }
         public IReadOnlyList<string> BlockingReasons { get; private set; }
         public IReadOnlyList<long> SuggestedMaterialIds { get; private set; }
         public int GoldCost { get; private set; }
@@ -39,14 +56,16 @@ namespace Ordr.Mobile.Mobile
 
         internal JassFusionReadiness(OriginalJassFusionRegistration registration,
             string resultRawcode, OriginalUnitRawcodeLabelLink result,
-            List<JassFusionMaterial> materials, List<string> reasons,
-            List<long> selected, int gold, int lumber)
+            List<JassFusionMaterial> materials, List<JassFusionMaterialBinding> bindings,
+            List<string> reasons, List<long> selected, int gold, int lumber)
         {
             AbilityRawcode = registration.AbilityRawcode;
             ResultRawcode = resultRawcode;
             ResultUnitId = result == null ? null : result.CatalogUnitId;
             ResultName = result == null ? "미매핑 " + resultRawcode : result.UnitDisplayName;
+            SourceRegistration = registration;
             Materials = materials.AsReadOnly();
+            MaterialBindings = bindings.AsReadOnly();
             BlockingReasons = reasons.AsReadOnly();
             SuggestedMaterialIds = selected.AsReadOnly();
             GoldCost = gold;
@@ -106,6 +125,7 @@ namespace Ordr.Mobile.Mobile
 
             var reasons = new List<string>();
             var materials = new List<JassFusionMaterial>();
+            var bindings = new List<JassFusionMaterialBinding>();
             var selected = new List<long>();
             var allUnits = new Dictionary<string, List<long>>(StringComparer.Ordinal);
             var uniqueIds = new HashSet<long>();
@@ -191,11 +211,17 @@ namespace Ordr.Mobile.Mobile
                         verifiedCatalogId != link.CatalogUnitId)
                         reasons.Add("재료 원본 객체 ID의 최종 검증 미완료: " + rawcode);
                 }
+                var boundIds = new List<long>();
                 if (link != null && allUnits.TryGetValue(link.CatalogUnitId, out list))
                 {
                     owned = Math.Min(list.Count, required);
-                    for (int i = 0; i < owned; i++) selected.Add(list[i]);
+                    for (int i = 0; i < owned; i++)
+                    {
+                        selected.Add(list[i]);
+                        boundIds.Add(list[i]);
+                    }
                 }
+                bindings.Add(new JassFusionMaterialBinding(rawcode, boundIds));
                 materials.Add(new JassFusionMaterial(rawcode, link, required, owned));
                 if (owned < required)
                     reasons.Add("재료 부족: " + rawcode + " " + (required - owned) + "기");
@@ -213,7 +239,7 @@ namespace Ordr.Mobile.Mobile
             // The commit service is a separate authorization gate; even a fully
             // resolved plan must never mutate the game world without that service.
             return new JassFusionReadiness(recipe, resultCode, resultLabel,
-                materials, reasons, selected, gold, lumber);
+                materials, bindings, reasons, selected, gold, lumber);
         }
 
         public IReadOnlyList<JassFusionReadiness> AssessNamedResults(
