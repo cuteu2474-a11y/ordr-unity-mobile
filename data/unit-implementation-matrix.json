@@ -1,0 +1,6880 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "generatedOn": "2026-10-21",
+  "purpose": "All-unit runtime registration and remaining original-combat implementation worklist; no invented stats.",
+  "scopeWarning": "271/271 are catalog-addressable roster units, not 271 fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
+  "summary": {
+    "units": 271,
+    "catalogRosterEligible": 271,
+    "partialSkillProfiles": 200,
+    "uncollectedProfiles": 71,
+    "skillEntries": 554,
+    "passiveEntries": 295,
+    "linkedJassRawcodes": 81,
+    "allStatsVerified": 0
+  },
+  "byGrade": {
+    "흔함": {
+      "units": 9,
+      "profiles": 0,
+      "rawcodeLinks": 0
+    },
+    "안흔함": {
+      "units": 13,
+      "profiles": 0,
+      "rawcodeLinks": 0
+    },
+    "특별함": {
+      "units": 33,
+      "profiles": 8,
+      "rawcodeLinks": 0
+    },
+    "특수함": {
+      "units": 7,
+      "profiles": 7,
+      "rawcodeLinks": 0
+    },
+    "희귀함": {
+      "units": 42,
+      "profiles": 18,
+      "rawcodeLinks": 0
+    },
+    "전설": {
+      "units": 39,
+      "profiles": 39,
+      "rawcodeLinks": 0
+    },
+    "히든": {
+      "units": 22,
+      "profiles": 22,
+      "rawcodeLinks": 22
+    },
+    "변화": {
+      "units": 5,
+      "profiles": 5,
+      "rawcodeLinks": 0
+    },
+    "제한됨": {
+      "units": 10,
+      "profiles": 10,
+      "rawcodeLinks": 0
+    },
+    "왜곡됨": {
+      "units": 6,
+      "profiles": 6,
+      "rawcodeLinks": 6
+    },
+    "초월함": {
+      "units": 30,
+      "profiles": 30,
+      "rawcodeLinks": 30
+    },
+    "영원한": {
+      "units": 12,
+      "profiles": 12,
+      "rawcodeLinks": 11
+    },
+    "불멸의": {
+      "units": 12,
+      "profiles": 12,
+      "rawcodeLinks": 12
+    },
+    "세라핌": {
+      "units": 4,
+      "profiles": 4,
+      "rawcodeLinks": 0
+    },
+    "랜덤": {
+      "units": 14,
+      "profiles": 14,
+      "rawcodeLinks": 0
+    },
+    "신비함": {
+      "units": 13,
+      "profiles": 13,
+      "rawcodeLinks": 0
+    }
+  },
+  "entries": [
+    {
+      "id": "C-01",
+      "name": "루피",
+      "grade": "흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "C-02",
+      "name": "조로",
+      "grade": "흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "C-03",
+      "name": "나미",
+      "grade": "흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "C-04",
+      "name": "우솝",
+      "grade": "흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "C-05",
+      "name": "상디",
+      "grade": "흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "C-06",
+      "name": "쵸파",
+      "grade": "흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "C-07",
+      "name": "버기",
+      "grade": "흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "C-08",
+      "name": "총병",
+      "grade": "흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "C-09",
+      "name": "칼병",
+      "grade": "흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-01",
+      "name": "로빈",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-02",
+      "name": "베포",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [
+        "range"
+      ],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-03",
+      "name": "브룩",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-04",
+      "name": "블루노",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-05",
+      "name": "에이스",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-06",
+      "name": "이나즈마",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [
+        "range"
+      ],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-07",
+      "name": "저격왕",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-08",
+      "name": "쵸파 럼블볼",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-09",
+      "name": "타시기",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-10",
+      "name": "페로나",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-11",
+      "name": "프랑키",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-12",
+      "name": "하찌",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-13",
+      "name": "후쿠로",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-01",
+      "name": "X-드레이크",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-02",
+      "name": "갱 뱃지",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-03",
+      "name": "나미 크리마텍트",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-04",
+      "name": "로빈 오하라",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-05",
+      "name": "트라팔가 로우",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "manual"
+      ],
+      "effectKinds": [
+        "allyAttackSpeedBuff"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-06",
+      "name": "루치",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-07",
+      "name": "루피 기어세컨드",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-08",
+      "name": "마르코",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-09",
+      "name": "모리아",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-10",
+      "name": "바질호킨스",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-11",
+      "name": "버기 마기탄",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-12",
+      "name": "봉쿠레",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-13",
+      "name": "상디 검은다리",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-14",
+      "name": "스모커",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-15",
+      "name": "스쿼드",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-16",
+      "name": "아론",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-17",
+      "name": "압살롬",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-18",
+      "name": "에넬",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-19",
+      "name": "에이스 2번 대대장",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-20",
+      "name": "우솝 화염탄",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-21",
+      "name": "이나즈마 혁명군",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-22",
+      "name": "조로 귀기",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-23",
+      "name": "징베",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-24",
+      "name": "챠카",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-25",
+      "name": "쵸파 가드포인트",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "allyAttackPowerBuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-26",
+      "name": "쵸파 두뇌강화",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-27",
+      "name": "캡틴 크로",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-28",
+      "name": "쿠마",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-29",
+      "name": "크로커다일",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-30",
+      "name": "키드",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-31",
+      "name": "킬러",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-32",
+      "name": "파이러츠 도킹5",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onSkillUse"
+      ],
+      "effectKinds": [
+        "magicResistanceReduction",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "S-33",
+      "name": "헤르메포",
+      "grade": "특별함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "X-01",
+      "name": "모건",
+      "grade": "특수함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "bonusDamage",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [
+        "range"
+      ],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "X-02",
+      "name": "베티",
+      "grade": "특수함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "manual"
+      ],
+      "effectKinds": [
+        "allyHealthRestoration",
+        "allyManaRestoration"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff",
+        "healthRegeneration",
+        "manaRegeneration"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "X-03",
+      "name": "블고리",
+      "grade": "특수함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "X-04",
+      "name": "아이스버그",
+      "grade": "특수함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "craftPirateShip",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "flyingMovement"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "X-05",
+      "name": "오타마",
+      "grade": "특수함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "manual"
+      ],
+      "effectKinds": [
+        "acquireUnitFromAlly"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "X-06",
+      "name": "페루",
+      "grade": "특수함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "active"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "X-07",
+      "name": "폭시",
+      "grade": "특수함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "manual"
+      ],
+      "effectKinds": [
+        "gambleSpecialUnit"
+      ],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-01",
+      "name": "X-드레이크",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 3,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "armorReductionAura",
+        "basicAttackExplosive",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-02",
+      "name": "거프",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-03",
+      "name": "검은수염",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magicDamageAmplification",
+        "magical",
+        "pull"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-04",
+      "name": "도플라밍고",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-05",
+      "name": "트라팔가 로우 죽음의 외과의사",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "manual"
+      ],
+      "effectKinds": [
+        "allyAttackSpeedBuff"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-06",
+      "name": "루피 기어써드",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-07",
+      "name": "류마",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "magical"
+      ],
+      "passiveKinds": [
+        "basicAttackExplosive"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-08",
+      "name": "마르코 불사조",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-09",
+      "name": "마젤란",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-10",
+      "name": "모몬가",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-11",
+      "name": "미호크",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-12",
+      "name": "바르톨로메오",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-13",
+      "name": "바제스",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-14",
+      "name": "바질 호킨스 스트로맨",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-15",
+      "name": "반더 데켄",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-16",
+      "name": "베이비 5",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-17",
+      "name": "벤 베크만",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "teleport"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-18",
+      "name": "브룩 음악가",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "allyAttackSpeedBuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-19",
+      "name": "비비",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-20",
+      "name": "사보",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-21",
+      "name": "상디 디아블잠브",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-22",
+      "name": "샹크스",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-23",
+      "name": "센토마루",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-24",
+      "name": "슈가",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "manaRegeneration"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-25",
+      "name": "시류",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-26",
+      "name": "아오키지",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-27",
+      "name": "아카이누",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-28",
+      "name": "오즈",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-29",
+      "name": "와이퍼",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-30",
+      "name": "우솝 보잉열도",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-31",
+      "name": "이완코브",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-32",
+      "name": "제프",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-33",
+      "name": "조로 현상금 사냥꾼",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-34",
+      "name": "죠즈",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-35",
+      "name": "쵸파 혼포인트",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "allyAttackPowerBuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-36",
+      "name": "카쿠",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-37",
+      "name": "캡틴 키드",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-38",
+      "name": "크로커다일 Mr.0",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "manual"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff"
+      ],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-39",
+      "name": "키자루",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-40",
+      "name": "킨에몬",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-41",
+      "name": "페로나 홀로홀로",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-42",
+      "name": "핸콕",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-01",
+      "name": "검은수염",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "allDamageAmplification",
+        "magicDamageAmplification",
+        "magical",
+        "pull",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-02",
+      "name": "나미",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "onAttackOrHealth"
+      ],
+      "effectKinds": [
+        "magicDamageAmplification",
+        "magical",
+        "movementSlow"
+      ],
+      "passiveKinds": [
+        "persistentPlayerGoldGainBonus",
+        "treasureRewardDoubleChance",
+        "treasureSearchRangeBonus"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-03",
+      "name": "네코마무시",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "onAttack",
+        "onBossAttackOrHealth"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magical"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff",
+        "movementSlowAura",
+        "onEachBasicAttackSplash",
+        "selfAttackPowerFlat"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-04",
+      "name": "드래곤",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 6,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff",
+        "allyAttackSpeedBuff",
+        "armorReductionAura",
+        "movementSlowAura",
+        "selfAttackPowerFlat",
+        "storyArmorReduction"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-05",
+      "name": "라분",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttackOrEveryNthAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "selfDisarm",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff",
+        "basicAttackSplash"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-06",
+      "name": "레이쥬",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "magical"
+      ],
+      "passiveKinds": [
+        "flyingMovement",
+        "movementSlowAura",
+        "onBasicHitDamageOverTime"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-07",
+      "name": "레일리",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff",
+        "armorReductionAura",
+        "basicAttackSplash"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-08",
+      "name": "트라팔가 로우",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "allyAttackSpeedBuff",
+        "fixed",
+        "magical",
+        "movementSlow"
+      ],
+      "passiveKinds": [
+        "teleport"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-09",
+      "name": "루치",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-10",
+      "name": "루피 나이트메어",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack",
+        "onDamageDealtThreshold",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "critical",
+        "fixed",
+        "magical",
+        "selfAttackPowerFlat",
+        "stun"
+      ],
+      "passiveKinds": [
+        "selfAttackPowerFlat"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-11",
+      "name": "마르코 환수종",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "fixed",
+        "magical",
+        "physical"
+      ],
+      "passiveKinds": [
+        "basicAttackSplash",
+        "flyingMovement",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-12",
+      "name": "모리아",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "delete",
+        "magical",
+        "selfAttackSpeedBuff",
+        "summon"
+      ],
+      "passiveKinds": [
+        "basicAttackExplosive",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [
+        "nominalAttackPower",
+        "intervalSeconds",
+        "range"
+      ],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-13",
+      "name": "바르톨로메오",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "damage",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-14",
+      "name": "브륄레",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "manual"
+      ],
+      "effectKinds": [
+        "attackSpeedDebuff",
+        "transformAllyUnit"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-15",
+      "name": "블랙마리아",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "everyNthAttack",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "damage",
+        "fixed",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "basicAttackExplosive"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-16",
+      "name": "상디",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack",
+        "onEachBasicAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-17",
+      "name": "샹크스",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack",
+        "onEnemyEnterRange"
+      ],
+      "effectKinds": [
+        "critical",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "periodicAuraDamage"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-18",
+      "name": "센고쿠",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff",
+        "allyHealthRegeneration",
+        "allyManaRegeneration",
+        "armorReduction",
+        "magical",
+        "physical"
+      ],
+      "passiveKinds": [
+        "basicAttackSplash",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-19",
+      "name": "슈가",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "delete",
+        "summon"
+      ],
+      "passiveKinds": [
+        "manaRegeneration"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-20",
+      "name": "스모커",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "magicDamageMultiplier",
+        "magical",
+        "physical",
+        "removeTargetBuffs",
+        "stun"
+      ],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-21",
+      "name": "시노부",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "detectTreasure",
+        "explosive",
+        "magical",
+        "stun",
+        "summon"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-22",
+      "name": "시저",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "periodic"
+      ],
+      "effectKinds": [
+        "damage"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "terrainIgnoreMovement"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-23",
+      "name": "시키",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "magical",
+        "physical",
+        "stun",
+        "summon"
+      ],
+      "passiveKinds": [
+        "flyingMovement"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-24",
+      "name": "에이스",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-25",
+      "name": "울티",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "fixed",
+        "physical"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "basicAttackSplash"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-26",
+      "name": "제파",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-27",
+      "name": "조로",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "delete",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-28",
+      "name": "징베",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onBasicAttackWithAbsoluteCooldown"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "magical",
+        "physical",
+        "stun",
+        "summonProjectiles"
+      ],
+      "passiveKinds": [
+        "manaRegeneration",
+        "selfManaRegeneration"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-29",
+      "name": "쵸파 유력강화",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff",
+        "armorReductionAura",
+        "basicAttackSplash",
+        "teleport"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-30",
+      "name": "카르가라",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "selfAttackSpeedMax",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "onBasicHitArmorReduction"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-31",
+      "name": "코비",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff",
+        "allyHealthRegeneration",
+        "allyManaRegeneration",
+        "explosive",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-32",
+      "name": "쿠마 폭군",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "castOwnedStunSkill",
+        "magical",
+        "pull",
+        "stun"
+      ],
+      "passiveKinds": [
+        "teleport"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-33",
+      "name": "크래커",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff",
+        "allyAttackSpeedBuff",
+        "magical"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "onEachBasicAttackBonus"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-34",
+      "name": "킹",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "magical",
+        "magicalDoT"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "flyingMovement",
+        "movementSlowAura",
+        "onBasicHitDebuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-35",
+      "name": "토키",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff",
+        "movementSlowAura",
+        "periodicAllyAttackSpeedBuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-36",
+      "name": "핸콕",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "magical",
+        "physical",
+        "selfAttackSpeedBuff",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-37",
+      "name": "후지토라",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magicResistanceReduction",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-38",
+      "name": "흰수염",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "armorReductionByTargetKind",
+        "basicAttackSplash"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "L-39",
+      "name": "히바리",
+      "grade": "전설",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "manual",
+        "onNthSuccessfulBasicHit"
+      ],
+      "effectKinds": [
+        "magical",
+        "permanentAllyAttackSpeedBuff",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "fixedAttackFrequency"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-01",
+      "name": "검호",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": "h043",
+      "jassAbilityRawcode": "YY17",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-02",
+      "name": "레드포스호",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff",
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": "h03U",
+      "jassAbilityRawcode": "YY04",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-03",
+      "name": "레베카",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 1,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": "h03T",
+      "jassAbilityRawcode": "YY05",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-04",
+      "name": "료쿠규",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "physical"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "manaRestorationOnSkill",
+        "movementSlowOnSkill"
+      ],
+      "jassLabelRawcode": "h03N",
+      "jassAbilityRawcode": "YY06",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-05",
+      "name": "류마",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "magical"
+      ],
+      "passiveKinds": [
+        "basicAttackExplosive"
+      ],
+      "jassLabelRawcode": "h044",
+      "jassAbilityRawcode": "YY02",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-06",
+      "name": "모비딕호",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 0,
+      "passiveEntries": 2,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [
+        "healthRegeneration",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h03Q",
+      "jassAbilityRawcode": "YY07",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-07",
+      "name": "반더데켄",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [
+        "underwaterMovement"
+      ],
+      "jassLabelRawcode": "h03R",
+      "jassAbilityRawcode": "YY08",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-08",
+      "name": "발라티에",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "manual"
+      ],
+      "effectKinds": [
+        "allyAttackSpeedBuff"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff"
+      ],
+      "jassLabelRawcode": "h03P",
+      "jassAbilityRawcode": "YY09",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-09",
+      "name": "방주맥심",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana"
+      ],
+      "effectKinds": [
+        "explosiveDamageAmplification",
+        "magicResistanceReduction",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h03X",
+      "jassAbilityRawcode": "YY01",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-10",
+      "name": "베르고",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "armorReduction",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h03W",
+      "jassAbilityRawcode": "YY03",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-11",
+      "name": "봉쿠레",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": "h03O",
+      "jassAbilityRawcode": "YY10",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-12",
+      "name": "사보",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "physical"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h03M",
+      "jassAbilityRawcode": "YY11",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-13",
+      "name": "스튜시",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "magical"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h055",
+      "jassAbilityRawcode": "YY13",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-14",
+      "name": "시류",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h03J",
+      "jassAbilityRawcode": "YY14",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-15",
+      "name": "써니호",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h03L",
+      "jassAbilityRawcode": "YY12",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-16",
+      "name": "아오키지",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "explosiveDamageAmplification",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h041",
+      "jassAbilityRawcode": "YY20",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-17",
+      "name": "아카이누",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "damage",
+        "fixed",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h03Z",
+      "jassAbilityRawcode": "YY15",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-18",
+      "name": "이완코브",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff",
+        "healthRegeneration",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": "h03Y",
+      "jassAbilityRawcode": "YY16",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-19",
+      "name": "캐럿",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magicDamageAmplification",
+        "magical"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h07L",
+      "jassAbilityRawcode": "YY18",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-20",
+      "name": "키쿠노죠",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h046",
+      "jassAbilityRawcode": "YY22",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-21",
+      "name": "킬러",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": "h045",
+      "jassAbilityRawcode": "YY23",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "H-22",
+      "name": "피셔타이거",
+      "grade": "히든",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff",
+        "terrainIgnoreMovement"
+      ],
+      "jassLabelRawcode": "h047",
+      "jassAbilityRawcode": "YY25",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "T-01",
+      "name": "도플라밍고",
+      "grade": "변화",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [
+        "flyingMovement"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "T-02",
+      "name": "비비",
+      "grade": "변화",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "physical"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "T-03",
+      "name": "베이비 5",
+      "grade": "변화",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "allyAttackSpeedBuff",
+        "armorBreak",
+        "magical"
+      ],
+      "passiveKinds": [
+        "onEveryAttackMagicSplash",
+        "selfAttackPowerFlat"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "T-04",
+      "name": "카쿠",
+      "grade": "변화",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "magical"
+      ],
+      "passiveKinds": [
+        "teleport"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "T-05",
+      "name": "캐럿",
+      "grade": "변화",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "explosiveDamageAmplification",
+        "physical",
+        "stun",
+        "teleport"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LI-01",
+      "name": "레드필드",
+      "grade": "제한됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LI-02",
+      "name": "레베카",
+      "grade": "제한됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "basicAttackSplash",
+        "legendaryDescendantStacks"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LI-03",
+      "name": "마르코",
+      "grade": "제한됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "fixed",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "basicAttackMagicSplash",
+        "flyingMovement",
+        "healthRegeneration",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LI-04",
+      "name": "시노부",
+      "grade": "제한됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "magical",
+        "stun",
+        "summon",
+        "triggerSkill"
+      ],
+      "passiveKinds": [
+        "movementSlowAura",
+        "teleport"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LI-05",
+      "name": "아인",
+      "grade": "제한됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "enemyLevelReduction",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LI-06",
+      "name": "알비다",
+      "grade": "제한됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "everyNthHit",
+        "onAttackWithAbsoluteCooldown",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff",
+        "armorBreak",
+        "knockback",
+        "magical",
+        "manaRestore",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LI-07",
+      "name": "에넬",
+      "grade": "제한됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onEnemyEnterRange",
+        "periodic"
+      ],
+      "effectKinds": [
+        "magicResistanceReduction",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LI-08",
+      "name": "카타쿠리",
+      "grade": "제한됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack",
+        "onEnemyEnterRange"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "magical",
+        "physical",
+        "selfAttackSpeedMax",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "healthRegeneration"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LI-09",
+      "name": "크로커다일",
+      "grade": "제한됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LI-10",
+      "name": "킹",
+      "grade": "제한됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack",
+        "onEveryAttack",
+        "verifiedCondition"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "armorReduction",
+        "fixed",
+        "magicalDoT",
+        "movementSlow",
+        "physical",
+        "selfAttackSpeedBuff",
+        "transform"
+      ],
+      "passiveKinds": [
+        "basicAttackSplash",
+        "flyingMovement"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "D-01",
+      "name": "블랙마리아",
+      "grade": "왜곡됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 6,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "everyNthAttack",
+        "manual",
+        "onAttack",
+        "passive",
+        "periodic"
+      ],
+      "effectKinds": [
+        "cycleEffect",
+        "fixed",
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "onEveryBasicAttackPhysical"
+      ],
+      "jassLabelRawcode": "h04U",
+      "jassAbilityRawcode": "IF04",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "D-02",
+      "name": "코알라",
+      "grade": "왜곡됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "manaRegeneration",
+        "selfManaRegeneration"
+      ],
+      "jassLabelRawcode": "h03V",
+      "jassAbilityRawcode": "IF01",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "D-03",
+      "name": "퀸",
+      "grade": "왜곡됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "armorReduction",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h0CI",
+      "jassAbilityRawcode": "IF03",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "D-04",
+      "name": "페로나",
+      "grade": "왜곡됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onAttackWithAbsoluteCooldown"
+      ],
+      "effectKinds": [
+        "delete",
+        "explosive",
+        "explosiveDamageAmplification",
+        "stun"
+      ],
+      "passiveKinds": [
+        "explosiveDamageAmplification",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h048",
+      "jassAbilityRawcode": "IF02",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "D-05",
+      "name": "포트거스.D.에이스",
+      "grade": "왜곡됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff",
+        "armorReductionAura",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h05V",
+      "jassAbilityRawcode": "IF06",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "D-06",
+      "name": "바제스",
+      "grade": "왜곡됨",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onEveryHit",
+        "periodic"
+      ],
+      "effectKinds": [
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "underwaterMovement"
+      ],
+      "jassLabelRawcode": "h09V",
+      "jassAbilityRawcode": "IF05",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-01",
+      "name": "검은수염",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "allDamageAmplification",
+        "lingeringSlow",
+        "magicDamageAmplification",
+        "magical",
+        "movementSlow",
+        "strengthScaling",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "H090",
+      "jassAbilityRawcode": "TR08",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-02",
+      "name": "나미",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "onAttack",
+        "onSkillActivated",
+        "periodic"
+      ],
+      "effectKinds": [
+        "magicDamageAmplification",
+        "magical",
+        "movementSlow"
+      ],
+      "passiveKinds": [
+        "selfAttackSpeedBuff",
+        "treasureRangeBuff",
+        "treasureSearchDoubleReward"
+      ],
+      "jassLabelRawcode": "H08V",
+      "jassAbilityRawcode": "TR01",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-03",
+      "name": "도플라밍고",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "attackTypeChange",
+        "explosive",
+        "lingeringSlow",
+        "magical",
+        "movementSlow",
+        "physical",
+        "transform"
+      ],
+      "passiveKinds": [
+        "basicAttackSplash",
+        "flyingMovement"
+      ],
+      "jassLabelRawcode": "H09E",
+      "jassAbilityRawcode": "TR04",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-04",
+      "name": "로빈",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "attackPowerIncrease",
+        "multiAttack"
+      ],
+      "jassLabelRawcode": "H098",
+      "jassAbilityRawcode": "TR02",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-05",
+      "name": "트라팔가 로우",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeHealth",
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff",
+        "areaSlow",
+        "fixed",
+        "magical",
+        "movementSlow",
+        "selfAttackPowerFlat",
+        "selfHeal"
+      ],
+      "passiveKinds": [
+        "basicAttackExplosive",
+        "teleport"
+      ],
+      "jassLabelRawcode": "H096",
+      "jassAbilityRawcode": "TR26",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-06",
+      "name": "료쿠규",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "periodicOnSkill"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "magical",
+        "movementSlow",
+        "nutrientGain",
+        "physical",
+        "transform"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "nutrientStacks"
+      ],
+      "jassLabelRawcode": "H0BL",
+      "jassAbilityRawcode": "TR17",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-07",
+      "name": "루치",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "fixed",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "explosiveDamageBuff",
+        "teleport"
+      ],
+      "jassLabelRawcode": "H08W",
+      "jassAbilityRawcode": "TR05",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [
+        "range"
+      ],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-08",
+      "name": "루피",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "fixed",
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "H099",
+      "jassAbilityRawcode": "TR09",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-09",
+      "name": "바질호킨스",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 7,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeHealth",
+        "activeMana",
+        "manual",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "cooldownReset",
+        "critical",
+        "magical",
+        "physical",
+        "randomWisp",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "skillDamageAmplificationPerBuffDebuff"
+      ],
+      "jassLabelRawcode": "H094",
+      "jassAbilityRawcode": "TR10",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-10",
+      "name": "브룩",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "additionalCast",
+        "attackSpeedBuff",
+        "basicAttackBonus",
+        "explosive",
+        "magicDamageAmplification",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "magicResistanceReduction",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "H09I",
+      "jassAbilityRawcode": "TR12",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-11",
+      "name": "사보",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeMana",
+        "attackWithPeriodicCooldown",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "fixed",
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "basicAttackSplash",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "H092",
+      "jassAbilityRawcode": "TR13",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-12",
+      "name": "상디",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "movementSlow",
+        "stun"
+      ],
+      "passiveKinds": [
+        "flyingMovement",
+        "onEveryAttackBonus"
+      ],
+      "jassLabelRawcode": "H09H",
+      "jassAbilityRawcode": "TR14",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-13",
+      "name": "샹크스",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeManaOrPeriodic",
+        "onAttack",
+        "onEnemyEnterRange"
+      ],
+      "effectKinds": [
+        "critical",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "periodicNearbyDamage"
+      ],
+      "jassLabelRawcode": "H08Z",
+      "jassAbilityRawcode": "TR15",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-14",
+      "name": "스네이크맨",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "magical",
+        "physical",
+        "stun",
+        "transform"
+      ],
+      "passiveKinds": [
+        "basicAttackExplosive",
+        "flyingMovement",
+        "skillScalingByEnemyMovementSpeed"
+      ],
+      "jassLabelRawcode": "H0B2",
+      "jassAbilityRawcode": "TR07",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-15",
+      "name": "시라호시",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "magical",
+        "magicalDamageOverTime",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "basicAttackSplash",
+        "flyingMovement"
+      ],
+      "jassLabelRawcode": "H08U",
+      "jassAbilityRawcode": "TR16",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-16",
+      "name": "아오키지",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "explosiveDamageAmplification",
+        "movementSlowAura",
+        "onBasicHitSlow"
+      ],
+      "jassLabelRawcode": "H097",
+      "jassAbilityRawcode": "TR24",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-17",
+      "name": "아카이누",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onAttackAgainstSpecialTarget",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "fixed",
+        "forceCast",
+        "magical",
+        "magicalDoT",
+        "movementSlow",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "H095",
+      "jassAbilityRawcode": "TR18",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-18",
+      "name": "야마토",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 6,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeHealth",
+        "firstAttackAfterTransform",
+        "onAttack",
+        "onAttackWithCondition"
+      ],
+      "effectKinds": [
+        "basicAttackSplashBonus",
+        "fixed",
+        "magical",
+        "maxAttackSpeed",
+        "physical",
+        "stun",
+        "transform"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "H0BD",
+      "jassAbilityRawcode": "TR19",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-19",
+      "name": "우솝",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "fixed",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allPhysicalDamagePenetrating",
+        "armorReductionAura",
+        "basicAttackSplash",
+        "globalArmorReduction"
+      ],
+      "jassLabelRawcode": "H09B",
+      "jassAbilityRawcode": "TR20",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-20",
+      "name": "조로",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "criticalMultiplier",
+        "magical",
+        "physical",
+        "physicalDamageOverTime",
+        "singleTargetPhysicalBonus",
+        "strengthScaling",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "H09F",
+      "jassAbilityRawcode": "TR06",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-21",
+      "name": "보니",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 7,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAgeStacksReached",
+        "onAttack",
+        "onTransform"
+      ],
+      "effectKinds": [
+        "ageStacks",
+        "magical",
+        "manaCostPerSkill",
+        "physical",
+        "root",
+        "scaleReduction",
+        "stun",
+        "transform"
+      ],
+      "passiveKinds": [
+        "ageStacksOnHit",
+        "healthRecoveryAtThreshold"
+      ],
+      "jassLabelRawcode": "H0BX",
+      "jassAbilityRawcode": "TR21",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-22",
+      "name": "징베",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "armorReduction",
+        "fixed",
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff",
+        "basicAttackSplash",
+        "bonusSkillDamagePerArmorBreak",
+        "selfManaRegeneration"
+      ],
+      "jassLabelRawcode": "H09A",
+      "jassAbilityRawcode": "TR22",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-23",
+      "name": "쵸파",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "activeMana"
+      ],
+      "effectKinds": [
+        "attackPowerIncrease",
+        "attackSpeedReduction",
+        "basicAttackSplash",
+        "transform"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "attackPowerBuff",
+        "attackSpeedBuff",
+        "medicine"
+      ],
+      "jassLabelRawcode": "H091",
+      "jassAbilityRawcode": "TR23",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-24",
+      "name": "코비",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 5,
+      "triggerKinds": [
+        "activeHealth",
+        "everyNthRound",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magical",
+        "selfAttackSpeedBuff",
+        "stun",
+        "summon"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff",
+        "buffCountScaling",
+        "flyingMovement",
+        "ownZoneExplosiveDamageReduction",
+        "teleport"
+      ],
+      "jassLabelRawcode": "H0CO",
+      "jassAbilityRawcode": "TR29",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-25",
+      "name": "키드",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "magnetObjectGain",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "basicAttackAreaMagic",
+        "movementSlowAura",
+        "selfAttackPowerFlat",
+        "skillDamageBonusPerEnemyInArea"
+      ],
+      "jassLabelRawcode": "H0B4",
+      "jassAbilityRawcode": "TR25",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-26",
+      "name": "키자루",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack",
+        "onAttackWithMana"
+      ],
+      "effectKinds": [
+        "critical",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "teleport"
+      ],
+      "jassLabelRawcode": "H0B5",
+      "jassAbilityRawcode": "TR11",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-27",
+      "name": "타시기",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onBasicAttackOrSkill"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allStatsDoubleOnLevelUp"
+      ],
+      "jassLabelRawcode": "H05N",
+      "jassAbilityRawcode": "TR03",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-28",
+      "name": "프랑키",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 6,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "manual",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "craftUnit",
+        "magical"
+      ],
+      "passiveKinds": [
+        "allyManaRegeneration"
+      ],
+      "jassLabelRawcode": "H08Y",
+      "jassAbilityRawcode": "TR27",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-29",
+      "name": "후지토라",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "basicAttackSplash",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "H08X",
+      "jassAbilityRawcode": "TR28",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "TR-30",
+      "name": "베가펑크",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 7,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "activeMana",
+        "satelliteActiveMana",
+        "satelliteOnAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "explosive",
+        "fixed",
+        "magical",
+        "physical",
+        "satelliteManaRegeneration",
+        "selfAttackSpeedBuff",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff",
+        "allyAttackSpeedBuff",
+        "movementSlowAura",
+        "satelliteSystem"
+      ],
+      "jassLabelRawcode": "H0AA",
+      "jassAbilityRawcode": "TR30",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-01",
+      "name": "니카(루피)",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 6,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "activeHealth",
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "basicAttackSpeedReduction",
+        "critical",
+        "damageAmplificationPerTargetMovementSpeed",
+        "magical",
+        "physical",
+        "stun",
+        "transform"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "attackSpeedBuff",
+        "basicAttackSplash",
+        "selfAttackPowerBuff"
+      ],
+      "jassLabelRawcode": "H0BK",
+      "jassAbilityRawcode": "ET02",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-02",
+      "name": "니카(스네이크)",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 6,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "activeHealth",
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "magical",
+        "physical",
+        "stun",
+        "transform"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff",
+        "armorReductionAura",
+        "basicAttackSplash",
+        "selfAttackPowerBuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-03",
+      "name": "류마",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 7,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "afterBasicDamageThreshold",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "explosive",
+        "fixed",
+        "magical",
+        "soulStacks",
+        "stun"
+      ],
+      "passiveKinds": [
+        "samuraiSoulStacks"
+      ],
+      "jassLabelRawcode": "h0CJ",
+      "jassAbilityRawcode": "ET04",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-04",
+      "name": "미호크",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 7,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "fixed",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "basicAttackExplosive",
+        "movementSlowAura",
+        "selfManaRegeneration"
+      ],
+      "jassLabelRawcode": "h058",
+      "jassAbilityRawcode": "ET08",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-05",
+      "name": "버기",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff",
+        "permanentAuraUpgrade",
+        "physical",
+        "stun",
+        "summon"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerFlat",
+        "allyAttackSpeedBuff",
+        "armorReductionAura",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h05A",
+      "jassAbilityRawcode": "ET05",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-06",
+      "name": "비비",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 7,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "manual",
+        "onAttack",
+        "onSkill",
+        "onSkillOrAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "fixed",
+        "magical",
+        "stun",
+        "upgradeSkill"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h057",
+      "jassAbilityRawcode": "ET01",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-07",
+      "name": "에이스",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "magical",
+        "magicalDoT",
+        "stun"
+      ],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h059",
+      "jassAbilityRawcode": "ET11",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-08",
+      "name": "오뎅",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 7,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onEveryAttack",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "magicDamageAmplification",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff"
+      ],
+      "jassLabelRawcode": "h08R",
+      "jassAbilityRawcode": "ET10",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-09",
+      "name": "우타",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "explosiveDamageAmplification",
+        "magicResistanceReduction",
+        "magical",
+        "selfHeal",
+        "stun",
+        "summonSoldier"
+      ],
+      "passiveKinds": [
+        "attackSpeedBuff"
+      ],
+      "jassLabelRawcode": "h067",
+      "jassAbilityRawcode": "ET07",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-10",
+      "name": "카번딧슈",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onSummon"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "critical",
+        "fixed",
+        "magical",
+        "physical",
+        "stun",
+        "summon"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "basicAttackSplash"
+      ],
+      "jassLabelRawcode": "h05B",
+      "jassAbilityRawcode": "ET09",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-11",
+      "name": "테조로",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeHealth",
+        "counter",
+        "onAttack",
+        "periodic"
+      ],
+      "effectKinds": [
+        "explosive",
+        "fixed",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "attackSpeedBuff",
+        "goldBasedSkillBonus"
+      ],
+      "jassLabelRawcode": "h06A",
+      "jassAbilityRawcode": "ET12",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "E-12",
+      "name": "핸콕",
+      "grade": "영원한",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 6,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onEnemyEnterRange"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "critical",
+        "magicResistanceReduction",
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": "h05C",
+      "jassAbilityRawcode": "ET06",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-01",
+      "name": "거프",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "fixed",
+        "physical",
+        "selfAttackSpeedBuff",
+        "stun"
+      ],
+      "passiveKinds": [
+        "damageScalingByOwnBuffCount",
+        "selfArmorIncrease"
+      ],
+      "jassLabelRawcode": "h04C",
+      "jassAbilityRawcode": "IM03",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-02",
+      "name": "드래곤",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "explosive",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff",
+        "lineExplosiveDamageAmplification"
+      ],
+      "jassLabelRawcode": "h04D",
+      "jassAbilityRawcode": "IM04",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-03",
+      "name": "레일리",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 6,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "clone",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff",
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": "h049",
+      "jassAbilityRawcode": "IM08",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-04",
+      "name": "로져",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "periodic"
+      ],
+      "effectKinds": [
+        "magical",
+        "movementSlow",
+        "physical",
+        "physicalBonusPercent",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "attackPowerBuff",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h04J",
+      "jassAbilityRawcode": "IM01",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-05",
+      "name": "불릿",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "itemUpgrade",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "critical",
+        "magical",
+        "physical",
+        "selfTransform",
+        "skillLevelByItemCount",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h081",
+      "jassAbilityRawcode": "IM12",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-06",
+      "name": "빅맘",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack",
+        "onEveryAttack",
+        "onExecute"
+      ],
+      "effectKinds": [
+        "execute",
+        "fixed",
+        "magical",
+        "soulStacks",
+        "stun"
+      ],
+      "passiveKinds": [
+        "flyingMovement",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h04Q",
+      "jassAbilityRawcode": "IM05",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-07",
+      "name": "센고쿠",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "magicalDamageOverTime",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff",
+        "basicAttackExplosive"
+      ],
+      "jassLabelRawcode": "h04E",
+      "jassAbilityRawcode": "IM06",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-08",
+      "name": "스코퍼가반",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 6,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onHit"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "attackPowerBuff",
+        "fixed",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h04F",
+      "jassAbilityRawcode": "IM07",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-09",
+      "name": "시키",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 6,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "summonedUnitOnAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "magicDamageAmplification",
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun",
+        "summon"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": "h04B",
+      "jassAbilityRawcode": "IM02",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-10",
+      "name": "제트",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "physical",
+        "selfBuff",
+        "stun"
+      ],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h04G",
+      "jassAbilityRawcode": "IM10",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-11",
+      "name": "카이도",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 6,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeHealth",
+        "everyNthAttack",
+        "onAttack",
+        "onAttackAndSkill"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "critical",
+        "fixed",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "attackPowerPenalty",
+        "basicAttackSplash",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": "h07M",
+      "jassAbilityRawcode": "IM11",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "I-12",
+      "name": "흰수염",
+      "grade": "불멸의",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "fixed",
+        "lingeringSlow",
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "basicAttackSplash"
+      ],
+      "jassLabelRawcode": "h04A",
+      "jassAbilityRawcode": "IM09",
+      "rawcodeEvidence": "Bi8/Bi9-label",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "SR-01",
+      "name": "S-스네이크",
+      "grade": "세라핌",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "afterNthSkillActivation",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "explosive",
+        "explosiveDamageAmplification",
+        "magical",
+        "selfAttackSpeedBuff",
+        "stun"
+      ],
+      "passiveKinds": [
+        "flyingMovement"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "SR-02",
+      "name": "S-호크",
+      "grade": "세라핌",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "critical",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "flyingMovement"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "SR-03",
+      "name": "S-샤크",
+      "grade": "세라핌",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "critical",
+        "fixed",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "basicAttackSplash",
+        "flyingMovement",
+        "periodicAllyBuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "SR-04",
+      "name": "S-베어",
+      "grade": "세라핌",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack",
+        "onAttackWithAbsoluteCooldown",
+        "periodicOrCounter"
+      ],
+      "effectKinds": [
+        "critical",
+        "magicDamageAmplification",
+        "magicResistanceReduction",
+        "magical",
+        "movementSlow",
+        "stun"
+      ],
+      "passiveKinds": [
+        "flyingMovement",
+        "teleport"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-01",
+      "name": "K",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical",
+        "magical",
+        "physical",
+        "selfAttackSpeedMax",
+        "stun",
+        "teleport"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-02",
+      "name": "나루토",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "magicalDamageOverTime",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-03",
+      "name": "메구밍",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "manual"
+      ],
+      "effectKinds": [
+        "fixed"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-04",
+      "name": "센토 이스즈",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "magicDamageAmplification",
+        "magical",
+        "physical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-05",
+      "name": "야가미 라이토",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-06",
+      "name": "엘리자베스",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "manual",
+        "onAttack",
+        "verifiedCondition"
+      ],
+      "effectKinds": [
+        "critical",
+        "exchange",
+        "generateLuckyToken",
+        "generateLumber",
+        "stun"
+      ],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-07",
+      "name": "옌",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-08",
+      "name": "요츠바",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "manual"
+      ],
+      "effectKinds": [
+        "randomWisp"
+      ],
+      "passiveKinds": [
+        "allyManaRegeneration"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-09",
+      "name": "이사야마 요미",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "critical"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "basicAttackSplash"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-10",
+      "name": "이치의 율자",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-11",
+      "name": "토우마",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "manual",
+        "onAttackAgainstBoss"
+      ],
+      "effectKinds": [
+        "allyAttackPowerBuff",
+        "allyHealthRegeneration",
+        "allyManaRegeneration",
+        "critical",
+        "stun"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-12",
+      "name": "이치고",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magical"
+      ],
+      "passiveKinds": [
+        "selfAttackSpeedBuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-13",
+      "name": "페이몬",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 2,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magicDamageAmplification",
+        "magical"
+      ],
+      "passiveKinds": [
+        "flyingMovement"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "RN-14",
+      "name": "하네카와 츠바사",
+      "grade": "랜덤",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 1,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "onAttack"
+      ],
+      "effectKinds": [
+        "magical",
+        "movementSlow"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-01",
+      "name": "고죠 사토루",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "fixed",
+        "immobilize",
+        "magical",
+        "magicalDoT",
+        "movementSlow",
+        "stun"
+      ],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-02",
+      "name": "네즈코",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "explosive",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "onHitExplosiveAmplification"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-03",
+      "name": "료우기 시키",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "fixed",
+        "physical",
+        "repeatCast",
+        "stun"
+      ],
+      "passiveKinds": [
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-04",
+      "name": "미나토",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magicResistanceReduction",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "selfAttackSpeedBuff",
+        "teleport"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-05",
+      "name": "바쿠야",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onSkillActivated",
+        "periodic"
+      ],
+      "effectKinds": [
+        "fixedDamageOverTime",
+        "magical",
+        "magicalDamageOverTime",
+        "selfAttackSpeedDebuff"
+      ],
+      "passiveKinds": [
+        "movementSlowAura",
+        "teleport"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-06",
+      "name": "부릉냐",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack",
+        "onSkillActivated"
+      ],
+      "effectKinds": [
+        "fixed",
+        "magical",
+        "manaRestoration"
+      ],
+      "passiveKinds": [
+        "movementSpeedIncreaseOnMove",
+        "selfAttackSpeedBuff"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-07",
+      "name": "샌즈",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeMana",
+        "afterBasicAttacks",
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "boneGain",
+        "extraCast",
+        "magical",
+        "physical",
+        "selfSleep"
+      ],
+      "passiveKinds": [
+        "armorReductionAura",
+        "movementSlowAura",
+        "upgradeImmunity"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-08",
+      "name": "아냐 포저",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 7,
+      "passiveEntries": 4,
+      "triggerKinds": [
+        "activeHealth",
+        "activeMana",
+        "manual",
+        "onAttack",
+        "onEnemyEnterRange",
+        "onFamilySkill",
+        "onGiftBoxOpened"
+      ],
+      "effectKinds": [
+        "generateGiftBox",
+        "magicDamageAmplification",
+        "magicResistanceReduction",
+        "magical",
+        "movementSlow",
+        "rewardGold",
+        "rewardLumber",
+        "summonLloydAndYor"
+      ],
+      "passiveKinds": [
+        "allyAttackSpeedBuff",
+        "allyHealthRegeneration",
+        "allyManaRegeneration",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-09",
+      "name": "야쿠모 유카리",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 3,
+      "triggerKinds": [
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "delete",
+        "magical",
+        "stun"
+      ],
+      "passiveKinds": [
+        "explosiveDamageAmplification",
+        "movementSlowAura",
+        "teleport"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-10",
+      "name": "콘파쿠 요우무",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 0,
+      "triggerKinds": [
+        "activeHealth",
+        "activeMana",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "effectKinds": [
+        "armorReduction",
+        "fixed",
+        "magical",
+        "movementSlow",
+        "physical",
+        "stun",
+        "summon"
+      ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-11",
+      "name": "쿠죠 죠타로",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 5,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeHealth",
+        "activeMana",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "fixed",
+        "physical",
+        "selfHeal",
+        "stun"
+      ],
+      "passiveKinds": [
+        "allyAttackPowerBuff",
+        "armorReductionAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-12",
+      "name": "타츠마키",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 4,
+      "passiveEntries": 2,
+      "triggerKinds": [
+        "activeHealth",
+        "activeMana",
+        "manual",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "armorBreak",
+        "magical",
+        "physical",
+        "randomWisp",
+        "stun"
+      ],
+      "passiveKinds": [
+        "flyingMovement",
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "MY-13",
+      "name": "히그마",
+      "grade": "신비함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "partial",
+      "skillEntries": 3,
+      "passiveEntries": 1,
+      "triggerKinds": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "effectKinds": [
+        "currencyReward",
+        "fixed",
+        "magical",
+        "selfAttackSpeedMax"
+      ],
+      "passiveKinds": [
+        "movementSlowAura"
+      ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    }
+  ]
+}
