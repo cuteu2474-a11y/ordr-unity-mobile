@@ -77,20 +77,22 @@ namespace Ordr.Mobile.Unity
             IVerifiedUnitRawcodeMap verifiedObjectMap,
             IOriginalJassSpecialConditionEvaluator conditionEvaluator,
             IOriginalJassFusionResourceReader verifiedResourceReader,
-            IOriginalJassFusionAtomicCommit originalTransaction)
+            IOriginalJassFusionAtomicCommit originalTransaction,
+            IOriginalJassFusionCastPolicy originalCastPolicy)
         {
             if (Combat == null || OriginalFusionPlanner == null)
                 throw new InvalidOperationException(
                     "원본 JASS 등록식 로딩과 전투 월드 구성이 먼저 필요합니다.");
             if (verifiedObjectMap == null || conditionEvaluator == null ||
-                verifiedResourceReader == null || originalTransaction == null)
+                verifiedResourceReader == null || originalTransaction == null ||
+                originalCastPolicy == null)
                 throw new ArgumentNullException(nameof(verifiedObjectMap),
                     "원작 객체 매핑·추가조건·재화·원자적 조합 서비스가 모두 필요합니다.");
             OriginalFusionPlanner.SetVerifiedObjectMap(verifiedObjectMap);
             OriginalFusionPlanner.SetSpecialRules(conditionEvaluator);
             originalFusionPort = new OriginalJassFusionPort(OriginalFusionPlanner,
                 () => Combat.MobileUnitSnapshot(), verifiedResourceReader,
-                originalTransaction);
+                originalTransaction, originalCastPolicy);
             ManualActions.Configure(storyDispatchRules, originalFusionPort, originalEconomyPort);
         }
 
