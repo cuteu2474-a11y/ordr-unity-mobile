@@ -18,9 +18,11 @@ namespace Ordr.Mobile.Combat
             CharacterCombatRuntime world = null;
             // 원본 스킬에서 확인된 Bdq(A04M)만 실제 스택 출처로 승인.
             var originalModifier = modifiers ??
-                new Ordr323VerifiedPartialModifierRules((enemyId, stacks) =>
-                    world != null &&
-                    world.IsVerified323ArmorBreakStack(enemyId, stacks));
+                new Ordr323VerifiedPartialModifierRules(
+                    (enemyId, stacks) => world != null &&
+                        world.IsVerified323ArmorBreakStack(enemyId, stacks),
+                    (enemyId, total) => world != null &&
+                        world.IsVerified323BonneyArmorTotal(enemyId, total));
             var rules = new Ordr323OriginalDamageRules(hits,
                 originalModifier, quantizer);
             var adapter = new CombatDamageRulesAdapter(rules,

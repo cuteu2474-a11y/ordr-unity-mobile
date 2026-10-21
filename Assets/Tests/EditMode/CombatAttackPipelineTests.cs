@@ -75,6 +75,52 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void AttackDeclaredCallbackExecutesBeforeBasicHitFormula()
+        {
+            var c = Setup();
+            c.Resolution.Spawn(new CombatEnemy("enemy", 100));
+            c.Pipeline.RegisterUnit("unit-1", Unit(), 0);
+            int callbacks = 0;
+            c.Pipeline.ConfigureVerifiedAttackDeclared((unitId, enemyId) =>
+            {
+                Assert.AreEqual("unit-1",unitId);
+                Assert.AreEqual("enemy",enemyId);
+                callbacks++;
+                // The formula sees this change only if declaration precedes damage.
+                c.Formula.OverrideDamage = 7;
+            });
+            BasicAttackResult hit;
+            Assert.IsTrue(c.Pipeline.TryBasicAttack("unit-1",
+                new[] { Target("enemy", 1) }, out hit));
+            Assert.AreEqual(7L,hit.ActualDamage);
+            Assert.AreEqual(1,callbacks);
+            Assert.IsFalse(c.Pipeline.TryBasicAttack("unit-1",
+                new[] { Target("enemy", 1) }, out hit));
+            Assert.AreEqual(1,callbacks);
+        }
+
+        [Test]
+        public void AttackDeclaredCanOccurBeforeFormulaFailureWithoutConsumingCooldown()
+        {
+            var c = Setup();
+            c.Resolution.Spawn(new CombatEnemy("enemy", 100));
+            c.Pipeline.RegisterUnit("unit-1", Unit(), 0);
+            int declarations = 0;
+            c.Pipeline.ConfigureVerifiedAttackDeclared((unitId,targetId) =>
+                declarations++);
+            c.Formula.OverrideDamage = -1;
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                BasicAttackResult hit;
+                c.Pipeline.TryBasicAttack("unit-1",
+                    new[] { Target("enemy", 1) }, out hit);
+            });
+            Assert.AreEqual(1,declarations);
+            Assert.AreEqual(100,c.Resolution.GetEnemy("enemy").Health);
+            Assert.IsTrue(c.Scheduler.IsReady("unit-1"));
+        }
+
+        [Test]
         public void BasicHitUsesInjectedFormulaAndTriggersBothSkills()
         {
             var c = Setup();

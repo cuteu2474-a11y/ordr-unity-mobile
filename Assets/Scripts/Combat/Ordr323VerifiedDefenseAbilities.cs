@@ -9,6 +9,7 @@ namespace Ordr.Mobile.Combat
     public static class Ordr323VerifiedDefenseAbilities
     {
         public const string ArmorBreakAbility = "A04M";
+        public const string BonneyArmorAbility = "A04P";
         public const string MagicDefenseAbility = "A04Q";
 
         public static bool TryGetArmorChange(string abilityRawcode, int level,
@@ -106,13 +107,16 @@ namespace Ordr.Mobile.Combat
     public sealed class Ordr323VerifiedPartialModifierRules : IOrdr323VerifiedModifierRules
     {
         private readonly Func<string, int, bool> originalA04MStackProvenance;
+        private readonly Func<string, int, bool> originalA04PTotalProvenance;
 
         // 전투 런타임의 'armorBreak' 도감 태그만으로는 A04M 사용이
         // 증명되지 않는다. 실제 JASS Bdq(A04M) 매핑된 이벤트만 승인한다.
         public Ordr323VerifiedPartialModifierRules(
-            Func<string, int, bool> verifiedA04MStackProvenance = null)
+            Func<string, int, bool> verifiedA04MStackProvenance = null,
+            Func<string, int, bool> verifiedA04PTotalProvenance = null)
         {
             originalA04MStackProvenance = verifiedA04MStackProvenance;
+            originalA04PTotalProvenance = verifiedA04PTotalProvenance;
         }
 
         public bool TryResolveArmor(CombatEnemy target,
@@ -127,6 +131,41 @@ namespace Ordr.Mobile.Combat
                 if (effect.Type == CombatEffectType.ArmorReduction ||
                     effect.Type == CombatEffectType.ArmorBreakStack)
                     return false;
+
+            // W3A confirms each item's individual Idef table, but does NOT
+            // establish whether simultaneous A04M+A04P or aura effects stack.
+            // Reject those combinations until their Warcraft behavior is verified.
+            int bonneyTotal = 0;
+            bool bonneyPresent = false;
+            foreach (var effect in effects)
+            {
+                if (effect.Type != CombatEffectType.OriginalA04PLevelIncrease)
+                    continue;
+                if (!effect.SourceId.StartsWith("jass:A04P:", StringComparison.Ordinal) ||
+                    effect.Origin != CombatEffectOrigin.Aura ||
+                    effect.DurationSeconds != 0 ||
+                    effect.Amount < 1 || effect.Amount > 40 ||
+                    Math.Floor(effect.Amount) != effect.Amount)
+                    return false;
+                bonneyPresent = true;
+                bonneyTotal = checked(bonneyTotal + (int)effect.Amount);
+            }
+            if (bonneyPresent)
+            {
+                if (armorBreakStacks != 0 || bonneyTotal > 40 ||
+                    originalA04PTotalProvenance == null ||
+                    !originalA04PTotalProvenance(target.Id, bonneyTotal))
+                    return false;
+                double bonneyArmorChange;
+                // Item Armor Bonus A04P: ability newly added at level 1,
+                // then Bd2 sets level to (1+sum). W3A only proves 5..41.
+                if (!Ordr323VerifiedDefenseAbilities.TryGetArmorChange(
+                    Ordr323VerifiedDefenseAbilities.BonneyArmorAbility,
+                    bonneyTotal + 1, out bonneyArmorChange))
+                    return false;
+                effectiveArmor = target.Defenses.BaseArmor.Value + bonneyArmorChange;
+                return !double.IsNaN(effectiveArmor) && !double.IsInfinity(effectiveArmor);
+            }
 
             // 수치 표 자체는 확인했지만 도감 스택의 출처가 다르면
             // 그 수치를 현재 적에게 적용하면 안 된다.

@@ -18,7 +18,10 @@ namespace Ordr.Mobile.Combat
         MagicDamageAmplification,
         ExplosiveDamageAmplification,
         AllDamageAmplification,
-        HealthRegeneration
+        HealthRegeneration,
+        // Append to preserve numeric values of older effect types.
+        // Bonney B4C/B4D Bd2(A04P) is NOT A04M ArmorBreakStack.
+        OriginalA04PLevelIncrease
     }
 
     public enum CombatEffectOrigin

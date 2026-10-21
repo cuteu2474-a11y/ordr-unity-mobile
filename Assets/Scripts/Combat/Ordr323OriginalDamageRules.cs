@@ -165,7 +165,8 @@ namespace Ordr.Mobile.Combat
                     throw new NotSupportedException("적 방어력 미확인: " + target.Id);
                 armor = defense.BaseArmor.Value;
                 if (armorBreakStacks != 0 || Has(effects, CombatEffectType.ArmorReduction) ||
-                    Has(effects, CombatEffectType.ArmorBreakStack))
+                    Has(effects, CombatEffectType.ArmorBreakStack) ||
+                    Has(effects, CombatEffectType.OriginalA04PLevelIncrease))
                 {
                     if (modifiers == null || !modifiers.TryResolveArmor(
                         target, effects, armorBreakStacks, out armor))

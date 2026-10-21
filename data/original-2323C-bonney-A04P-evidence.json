@@ -1,0 +1,70 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceFiles": {
+    "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+    "jass": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+    "w3a": "aa938f02c22884f38c5e31bcd6229a35e917a8fab0128331fdab88980cfd50e0"
+  },
+  "character": {
+    "catalogId": "TR-21",
+    "name": "보니",
+    "normalRawcode": "H0BX",
+    "transformedRawcode": "H0BY"
+  },
+  "event": "EVENT_PLAYER_UNIT_ATTACKED",
+  "registration": {
+    "normal": "B4H:31902 → B4C",
+    "transformed": "B4H:31903 → B4D",
+    "w5": "3123-3139"
+  },
+  "base": {
+    "value": 10,
+    "normal": "B4C:31720",
+    "transformed": "B4D:31787",
+    "ability": "A04P"
+  },
+  "procs": {
+    "normalSingle": {
+      "chancePercent": 30,
+      "increment": 20,
+      "call": "B4C:31745-31753"
+    },
+    "transformedSingle": {
+      "chancePercent": 50,
+      "increment": 20,
+      "call": "B4D:31803-31817"
+    },
+    "normalArea": {
+      "chancePercent": 15,
+      "increment": 2,
+      "areaRadius": 320,
+      "callback": "B39:31698-31703"
+    },
+    "transformedArea": {
+      "chancePercent": 30,
+      "increment": 2,
+      "areaRadius": 320,
+      "callback": "B4B:31705-31710"
+    }
+  },
+  "ability": {
+    "rawcode": "A04P",
+    "field": "Idef",
+    "verifiedLevels": [
+      5,
+      41
+    ],
+    "verifiedFormula": "1-level",
+    "extraAbilityIfMissing": true,
+    "initialAdditionAssumesUnitAddAbilityStartsAtLevel1": true,
+    "unspecifiedAtLevelAbove41": true
+  },
+  "competingArmorAbility": "A04M",
+  "utilityNote": "BIH:4374-4456 computes jP/jQ leaderboard totals, not final enemy armor formula",
+  "implementation": {
+    "autoAttackDeclared": "+10 only with verified form provider",
+    "conditionalProcs": "API for source-confirmed occurrence, not auto random",
+    "unknownStacking": "defer",
+    "runtimeTest": "not executed"
+  }
+}

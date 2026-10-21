@@ -120,6 +120,15 @@ namespace Ordr.Mobile.Combat
                                    EffectiveAttack(attackerId).Range;
         }
 
+        private Action<string, string> verifiedAttackDeclared;
+        // JASS w5 uses EVENT_PLAYER_UNIT_ATTACKED, before the normal attack hit.
+        // The callback only routes registered, source-checked original effects.
+        public void ConfigureVerifiedAttackDeclared(Action<string, string> callback)
+        {
+            verifiedAttackDeclared = callback ??
+                throw new ArgumentNullException(nameof(callback));
+        }
+
         private IOriginalUnitAttackModifiers originalModifierRules;
         private Func<string, IReadOnlyList<CombatEffect>> getAttackerEffects;
         private readonly Dictionary<string, RegisteredUnit> units =
@@ -296,6 +305,10 @@ namespace Ordr.Mobile.Combat
             var enemy = resolution.GetEnemy(targetId);
             if (enemy == null || !enemy.IsAlive) return false;
 
+            // Declared-attack effects precede damage. As in JASS ATTACKED,
+            // they may still occur if the later hit/formula cannot complete.
+            if (verifiedAttackDeclared != null)
+                verifiedAttackDeclared(attackerInstanceId, targetId);
             // 피해 계산 오류가 발생하면 공격 쿨타임은 소비하지 않는다.
             long resolved = damageResolver.ResolveBasicDamage(
                 new BasicDamageRequest(attackerInstanceId, unit.Spec.UnitRawCode,

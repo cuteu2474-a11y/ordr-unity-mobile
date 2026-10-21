@@ -45,6 +45,10 @@ namespace Ordr.Mobile.Combat
         // Bdq(A04M) 원본 함수와 연결된 기술로 발생했음이 확인된 스택만 기록.
         private readonly Dictionary<string, int> provenA04MStacks =
             new Dictionary<string, int>(StringComparer.Ordinal);
+        private readonly Dictionary<string, int> provenA04PTotals =
+            new Dictionary<string, int>(StringComparer.Ordinal);
+        private Ordr323BonneyDefenseController bonneyArmor;
+        private IOriginalBonneyFormEvidence bonneyFormEvidence;
         private readonly List<CharacterCombatEvent> events = new List<CharacterCombatEvent>();
         private readonly CombatAuraSystem auras = new CombatAuraSystem();
         private readonly List<CharacterCombatEvent> pendingCommandEvents =
@@ -69,7 +73,102 @@ namespace Ordr.Mobile.Combat
             effectExecutor.ConfigureOriginal323DefenseSkillRouter(
                 new Ordr323VerifiedDefenseEffectRouter(armorBreakStacks,
                     provenA04MStacks, statuses));
+            bonneyArmor = new Ordr323BonneyDefenseController(
+                statuses, provenA04PTotals);
+            attackPipeline.ConfigureVerifiedAttackDeclared(ApplyBonneyDeclaredAttack);
             original323DefenseLinksConfigured = true;
+        }
+
+        // Current original form has to come from an independent state/transform
+        // tracker. We NEVER guess H0BX vs H0BY from the tooltips.
+        public void ConfigureVerifiedBonneyFormEvidence(IOriginalBonneyFormEvidence provider)
+        {
+            if (!original323DefenseLinksConfigured)
+                throw new InvalidOperationException("원본 2.323[C] 연결부터 구성하세요.");
+            bonneyFormEvidence = provider ??
+                throw new ArgumentNullException(nameof(provider));
+        }
+
+        public bool IsVerified323BonneyArmorTotal(string enemyId, int total)
+        {
+            int value;
+            return !string.IsNullOrWhiteSpace(enemyId) && total > 0 &&
+                provenA04PTotals.TryGetValue(enemyId, out value) &&
+                value == total;
+        }
+
+        // Only a source-validated game combat event should call this for
+        // conditional bonuses (+20/+2). RNG is not invented here.
+        public bool TryApplyVerifiedBonneyArmorEvent(long casterId, string enemyId,
+            Ordr323BonneyArmorEvent kind, out string reason,
+            string areaCenterEnemyId = null)
+        {
+            reason = null;
+            if (game.Phase != SessionPhase.Running ||
+                bonneyArmor == null || bonneyFormEvidence == null)
+            {
+                reason = "원본 보니 전투/변신 상태 공급자 미연결";
+                return false;
+            }
+            CharacterInstance caster;
+            SpatialCombatEnemy target;
+            if (!characters.TryGetValue(casterId, out caster) ||
+                caster.Catalog.Id != "TR-21" ||
+                !enemies.TryGetValue(enemyId, out target) ||
+                !target.Enemy.IsAlive || !CanAttackInThisLane(caster, target))
+            {
+                reason = "보니 캐릭터/대상/전장 검증 실패";
+                return false;
+            }
+            if (kind == Ordr323BonneyArmorEvent.AreaProc)
+            {
+                SpatialCombatEnemy center;
+                if (string.IsNullOrWhiteSpace(areaCenterEnemyId) ||
+                    !enemies.TryGetValue(areaCenterEnemyId, out center) ||
+                    !CanAttackInThisLane(caster, center) ||
+                    !Ordr323BonneyDefenseController.IsWithinVerifiedAreaProc(
+                        center.X, center.Y, target.X, target.Y))
+                {
+                    reason = "원본 B39/B4B 320범위 대상 확인 실패";
+                    return false;
+                }
+            }
+            Ordr323BonneyForm form;
+            if (!bonneyFormEvidence.TryGetVerifiedForm(casterId, out form))
+            {
+                reason = "보니 원본 형태 미확인";
+                return false;
+            }
+            if (!bonneyArmor.TryApply(casterId, form, kind, target.Id, out reason))
+                return false;
+            var result = new CharacterCombatEvent(
+                CharacterCombatEventType.StatusApplied,
+                InstanceKey(casterId), target.Id, "보니 A04P",
+                "jass:A04P:" + kind.ToString(), 0);
+            if (processingStep) events.Add(result);
+            else pendingCommandEvents.Add(result);
+            return true;
+        }
+
+        private void ApplyBonneyDeclaredAttack(string attackerId, string enemyId)
+        {
+            if (bonneyFormEvidence == null) return;
+            long casterId;
+            if (!long.TryParse(attackerId, NumberStyles.None,
+                    CultureInfo.InvariantCulture, out casterId))
+                return;
+            CharacterInstance caster;
+            if (!characters.TryGetValue(casterId, out caster) ||
+                caster.Catalog.Id != "TR-21") return;
+            string reason;
+            if (!TryApplyVerifiedBonneyArmorEvent(casterId, enemyId,
+                Ordr323BonneyArmorEvent.AttackDeclared, out reason))
+            {
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.EffectDeferred,
+                    attackerId, enemyId, "보니 A04P",
+                    reason ?? "원본 보니 능력 적용 보류", 0));
+            }
         }
 
         public bool IsVerified323ArmorBreakStack(string enemyId, int stacks)
@@ -588,6 +687,7 @@ namespace Ordr.Mobile.Combat
             statuses.Add(enemyId, enemy.Status);
             armorBreakStacks.Add(enemyId, 0);
             provenA04MStacks.Add(enemyId, 0);
+            provenA04PTotals.Add(enemyId, 0);
             RefreshEnemyAuras();
             pendingCommandEvents.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.EnemySpawned, enemyId, enemyId,
@@ -980,6 +1080,7 @@ namespace Ordr.Mobile.Combat
             statuses.Remove(id);
             armorBreakStacks.Remove(id);
             provenA04MStacks.Remove(id);
+            provenA04PTotals.Remove(id);
         }
 
         private static string InstanceKey(long id)
