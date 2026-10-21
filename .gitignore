@@ -15,3 +15,8 @@
 *.aab
 *.keystore
 *.jks
+
+# Unity Editor가 원본 /data JSON에서 자동 복사하는 읽기 전용 캐시
+Assets/Resources/OrdrData/
+Assets/Resources/OrdrData.meta
+Assets/Resources.meta

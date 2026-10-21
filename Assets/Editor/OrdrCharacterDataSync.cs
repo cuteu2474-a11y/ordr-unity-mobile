@@ -1,49 +1,90 @@
 #if UNITY_EDITOR
 using System;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 namespace Ordr.Mobile.Editor
 {
-    // Unity 프로젝트 루트의 /data/*.json을 Resources TextAsset으로 복사한다.
-    // 원본 JSON의 중복 편집을 피하려면 반드시 data/ 파일을 수정하고 이 메뉴로 동기화한다.
+    // Imports existing /data JSON into Unity Resources. No fake units,
+    // combat values, random events or costs are created during import.
+    [InitializeOnLoad]
     public static class OrdrCharacterDataSync
     {
+        private static readonly string[] DataFiles =
+        {
+            "units.json",
+            "character-skill-profiles.json",
+            "original-stat-evidence.json",
+            "verified-mobile-fusion-recipes.json",
+            "original-jass-fusion-registry.json",
+            "original-unit-rawcode-label-links.json"
+        };
+
+        static OrdrCharacterDataSync()
+        {
+            EditorApplication.delayCall += SyncOnProjectOpen;
+        }
+
+        private static void SyncOnProjectOpen()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode) return;
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            {
+                EditorApplication.delayCall += SyncOnProjectOpen;
+                return;
+            }
+
+            try
+            {
+                CopySourceData(logIfUnchanged: false);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("ORDR 첫 프로젝트 데이터 연결 실패: " + ex.Message +
+                    " / 상단 ORDR 데이터 동기화 메뉴를 확인하세요.");
+            }
+        }
+
         [MenuItem("ORDR/캐릭터 데이터 271종 · 스킬 200종 동기화")]
         public static void Sync()
         {
-            string projectRoot = Directory.GetParent(Application.dataPath).FullName;
-            string source = Path.Combine(projectRoot, "data");
+            CopySourceData(logIfUnchanged: true);
+        }
+
+        private static void CopySourceData(bool logIfUnchanged)
+        {
+            string root = Directory.GetParent(Application.dataPath).FullName;
+            string source = Path.Combine(root, "data");
             string target = Path.Combine(Application.dataPath, "Resources", "OrdrData");
             if (!File.Exists(Path.Combine(source, "units.json")) ||
                 !File.Exists(Path.Combine(source, "character-skill-profiles.json")))
-            {
                 throw new FileNotFoundException(
-                    "프로젝트 루트 /data 폴더에서 카탈로그 JSON을 찾지 못했습니다.");
-            }
+                    "GitHub 전체 저장소의 /data 폴더가 없습니다. Assets 폴더만 열지 마세요.");
+
             Directory.CreateDirectory(target);
-            File.Copy(Path.Combine(source, "units.json"),
-                Path.Combine(target, "units.json"), true);
-            File.Copy(Path.Combine(source, "character-skill-profiles.json"),
-                Path.Combine(target, "character-skill-profiles.json"), true);
-            // 패치 근거 수치는 없어도 월드 소환을 중단시키지 않는다.
-            string evidence = Path.Combine(source, "original-stat-evidence.json");
-            if (File.Exists(evidence))
-                File.Copy(evidence, Path.Combine(target, "original-stat-evidence.json"), true);
-            string fusion = Path.Combine(source, "verified-mobile-fusion-recipes.json");
-            if (File.Exists(fusion))
-                File.Copy(fusion, Path.Combine(target, "verified-mobile-fusion-recipes.json"), true);
-            // 원본 스크립트에서 순서대로 추출한 등록식은 생성된 JSON이 있을 때만 동기화.
-            string jassFusion = Path.Combine(source, "original-jass-fusion-registry.json");
-            if (File.Exists(jassFusion))
-                File.Copy(jassFusion, Path.Combine(target, "original-jass-fusion-registry.json"), true);
-            string rawcodeLabels = Path.Combine(source, "original-unit-rawcode-label-links.json");
-            if (File.Exists(rawcodeLabels))
-                File.Copy(rawcodeLabels,
-                    Path.Combine(target, "original-unit-rawcode-label-links.json"), true);
-            AssetDatabase.Refresh();
-            Debug.Log("ORDR 캐릭터 데이터가 Assets/Resources/OrdrData 로 동기화되었습니다.");
+            int changed = 0;
+            foreach (string file in DataFiles)
+            {
+                string from = Path.Combine(source, file);
+                if (!File.Exists(from)) continue;
+                string to = Path.Combine(target, file);
+                if (File.Exists(to) &&
+                    new FileInfo(from).Length == new FileInfo(to).Length &&
+                    File.ReadAllBytes(from).SequenceEqual(File.ReadAllBytes(to)))
+                    continue;
+
+                File.Copy(from, to, overwrite: true);
+                changed++;
+            }
+
+            if (changed > 0)
+                AssetDatabase.Refresh();
+
+            if (changed > 0 || logIfUnchanged)
+                Debug.Log("ORDR 원본 도감 데이터 " + changed +
+                    "개 파일 동기화. 게임 기능·공식의 검증 또는 실행 결과는 아닙니다.");
         }
     }
 }

@@ -1,0 +1,36 @@
+# 1단계 — Unity 프로젝트와 첫 장면
+
+현재 목표: 원랜디 S2 2.323[C] 악몽·이세계모드를 위한 **게임의 빈 무대**를 준비한다.
+
+## 한눈에 보기
+
+- `Packages/manifest.json`: Unity에서 사용하는 기본 엔진 기능 목록.
+- `ProjectSettings/ProjectVersion.txt`: Unity 6.3 LTS의 `6000.3.26f1` 버전을 선택했다.
+- `ProjectSettings/EditorBuildSettings.asset`: `MainGame.unity`를 첫 장면으로 지정.
+- `Assets/Scenes/MainGame.unity`: 카메라 + 게임 컨트롤러 + 시작 화면 표시 컴포넌트를 연결한 장면.
+- `Assets/Scripts/Unity/OrdrMainSceneShell.cs`: 제목과 메인/스토리 전장의 위치만 표시. 실제 전투·웨이브는 **아직 없음**.
+- `Assets/Editor/OrdrCharacterDataSync.cs`: Unity 편집기로 프로젝트를 처음 열 때 루트 `data/`의 기본 도감 JSON을 `Resources`에 자동 복사. 기존 `ORDR > 캐릭터 데이터 271종 · 스킬 200종 동기화` 메뉴로 수동 재동기화도 가능.
+- 기존 컨트롤러, 전투 코어, 도감 271종/상세 프로필 200종, 모바일 조작 패널은 **삭제하지 않음**.
+- `.meta` 파일로 씬·컨트롤러 스크립트의 참조 GUID를 고정한다.
+
+## Windows에서 여는 순서
+
+1. Unity Hub를 설치하고 `Unity 6.3 LTS (6000.3.26f1)` 에디터를 설치한다. Android Build Support는 나중에 APK 제작 단계에서 설치해도 된다.
+2. GitHub `cuteu2474-a11y/ordr-unity-mobile` 저장소의 `main` 전체를 내려받아 압축을 푼다.
+3. Unity Hub에서 **Add project from disk(디스크에서 프로젝트 추가)** 를 누르고 압축을 푼 `ordr-unity-mobile` 폴더를 선택한다. `Assets` 폴더만 선택하지 말 것.
+4. 프로젝트가 열리면 `Assets > Scenes > MainGame`을 연다. 기본 장면 목록에는 이 씬을 넣어두었다.
+5. 데이터가 보이지 않으면 상단 `ORDR > 캐릭터 데이터 271종 · 스킬 200종 동기화`를 선택한다.
+
+## 지금 실제로 되는 것과 안 되는 것
+
+**코드 연결이 준비된 것**: Unity 프로젝트로 열기 위한 파일 배치, MainGame 씬, 카메라, 도감 로딩, 첫 화면과 기존 모바일 운용 패널 진입점.
+
+**아직 안 되는 것**: 실제 웨이브 진행, 적 이동, 공격 피해, 보스, 재화 변화, 실조합·스토리 진행, 완성된 모바일 게임.
+
+현재 첫 장면의 메인/스토리 전장은 구역을 알려주는 **표시용 상자**이고, 실제 필드 규칙은 다음 단계에서 구현한다.
+
+이번 작업은 Unity 에디터에서 씬을 열거나 Play 버튼을 누르지 않았다. 따라서 **컴파일 통과·실제 실행 성공은 검증하지 않은 상태**다. APK도 만들지 않았다.
+
+## 다음 단계
+
+2단계에서 실제 게임 월드의 메인 전장과 스토리 전장을 분리하고, 하나의 유닛·재화 상태를 공유하도록 연결한다. 도감에 없는 비용·확률을 임의로 추가하지 않는다.
