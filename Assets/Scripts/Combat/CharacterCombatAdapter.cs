@@ -22,7 +22,8 @@ namespace Ordr.Mobile.Combat
         }
 
         public static CharacterCombatMapping Build(string catalogUnitId,
-            CharacterSkillProfile profile, BasicAttackSpec verifiedBasic)
+            CharacterSkillProfile profile, BasicAttackSpec verifiedBasic,
+            string originalRawcode = null)
         {
             if (string.IsNullOrWhiteSpace(catalogUnitId))
                 throw new ArgumentException("캐릭터 ID가 필요합니다.");
@@ -62,8 +63,10 @@ namespace Ordr.Mobile.Combat
 
             // 원본 rawcode 미확보 시 catalog: 접두어로 가상 ID임을 명시한다.
             // 이 ID를 원작 Warcraft III 오브젝트 ID로 사용하면 안 된다.
-            string sourceCode = profile != null && !string.IsNullOrWhiteSpace(profile.GameRawCode)
-                ? profile.GameRawCode : "catalog:" + catalogUnitId;
+            string sourceCode = !string.IsNullOrWhiteSpace(originalRawcode)
+                ? originalRawcode : profile != null &&
+                    !string.IsNullOrWhiteSpace(profile.GameRawCode)
+                    ? profile.GameRawCode : "catalog:" + catalogUnitId;
             return new CharacterCombatMapping(
                 new UnitCombatSpec(sourceCode, verifiedBasic, converted,
                     profile == null ? "데이터 없음: 기본 공격 수치 외부 확인 필요" : profile.SourceUrl),
