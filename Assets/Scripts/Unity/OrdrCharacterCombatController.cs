@@ -236,7 +236,7 @@ namespace Ordr.Mobile.Unity
             if (OriginalJassFusions != null && OriginalUnitRawcodes != null)
                 OriginalFusionPlanner = new OriginalJassFusionPlanner(
                     OriginalJassFusions, OriginalUnitRawcodes,
-                    id => Combat.IsStoryDeployed(id));
+                    id => Combat.IsStoryDeployed(id), null, Units);
             if (VerifiedFusionRecipes != null)
                 FusionAssistance = new AssistedFusionService(VerifiedFusionRecipes,
                     () => Combat.MobileUnitSnapshot(),
