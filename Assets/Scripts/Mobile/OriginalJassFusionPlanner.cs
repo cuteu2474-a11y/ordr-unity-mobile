@@ -13,12 +13,13 @@ namespace Ordr.Mobile.Mobile
         public int OwnedCount { get; private set; }
         public int MissingCount { get { return Math.Max(0, RequiredCount - OwnedCount); } }
 
-        internal JassFusionMaterial(string rawcode, OriginalUnitRawcodeLabelLink link,
-            int required, int owned)
+        internal JassFusionMaterial(string rawcode, string catalogUnitId,
+            string unitName, int required, int owned)
         {
             Rawcode = rawcode;
-            CatalogUnitId = link == null ? null : link.CatalogUnitId;
-            Name = link == null ? "미매핑 원본 ID " + rawcode : link.UnitDisplayName;
+            CatalogUnitId = catalogUnitId;
+            Name = string.IsNullOrWhiteSpace(unitName) ?
+                "미매핑 원본 ID " + rawcode : unitName;
             RequiredCount = required;
             OwnedCount = owned;
         }
@@ -55,14 +56,15 @@ namespace Ordr.Mobile.Mobile
         public bool IsReadyForUserConfirmation { get { return BlockingReasons.Count == 0; } }
 
         internal JassFusionReadiness(OriginalJassFusionRegistration registration,
-            string resultRawcode, OriginalUnitRawcodeLabelLink result,
+            string resultRawcode, string resultUnitId, string resultName,
             List<JassFusionMaterial> materials, List<JassFusionMaterialBinding> bindings,
             List<string> reasons, List<long> selected, int gold, int lumber)
         {
             AbilityRawcode = registration.AbilityRawcode;
             ResultRawcode = resultRawcode;
-            ResultUnitId = result == null ? null : result.CatalogUnitId;
-            ResultName = result == null ? "미매핑 " + resultRawcode : result.UnitDisplayName;
+            ResultUnitId = resultUnitId;
+            ResultName = string.IsNullOrWhiteSpace(resultName) ?
+                "미매핑 " + resultRawcode : resultName;
             SourceRegistration = registration;
             Materials = materials.AsReadOnly();
             MaterialBindings = bindings.AsReadOnly();
@@ -86,17 +88,20 @@ namespace Ordr.Mobile.Mobile
         private readonly OriginalJassFusionCatalog original;
         private readonly OriginalUnitRawcodeLabelCatalog labels;
         private readonly Func<long, bool> deployed;
+        private readonly CharacterUnitCatalog catalog;
         private IOriginalJassSpecialConditionEvaluator specialRules;
         private IVerifiedUnitRawcodeMap verifiedObjectMap;
 
         public OriginalJassFusionPlanner(OriginalJassFusionCatalog original,
             OriginalUnitRawcodeLabelCatalog labels, Func<long, bool> storyDeployed,
-            IOriginalJassSpecialConditionEvaluator specialRules = null)
+            IOriginalJassSpecialConditionEvaluator specialRules = null,
+            CharacterUnitCatalog verifiedUnits = null)
         {
             this.original = original ?? throw new ArgumentNullException(nameof(original));
             this.labels = labels ?? throw new ArgumentNullException(nameof(labels));
             this.deployed = storyDeployed ?? throw new ArgumentNullException(nameof(storyDeployed));
             this.specialRules = specialRules;
+            this.catalog = verifiedUnits;
         }
 
         public void SetSpecialRules(IOriginalJassSpecialConditionEvaluator rules)
@@ -145,20 +150,13 @@ namespace Ordr.Mobile.Mobile
             foreach (var ids in allUnits.Values) ids.Sort();
 
             string resultCode = recipe.Results[0].Rawcode;
-            var resultLabel = labels.FindRawcode(resultCode);
+            string resultId, resultName, resultReason;
             if (recipe.Results.Count != 1 || recipe.Results[0].Kind != "UNIT" ||
                 recipe.Results[0].Count != 1)
                 reasons.Add("원본 결과 수량 또는 결과 타입 미지원: BGH");
-            if (resultLabel == null)
-                reasons.Add("결과 캐릭터 원본 ID 미매핑: " + resultCode);
-            else
-            {
-                string catalogId;
-                if (verifiedObjectMap == null ||
-                    !verifiedObjectMap.TryResolveUnit(resultCode, out catalogId) ||
-                    catalogId != resultLabel.CatalogUnitId)
-                    reasons.Add("결과 원본 객체 ID의 최종 검증 미완료: " + resultCode);
-            }
+            if (!ResolveOriginalUnit(resultCode, out resultId,
+                out resultName, out resultReason))
+                reasons.Add("결과 " + resultReason);
 
             int gold = 0, lumber = 0;
             var needed = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -198,21 +196,16 @@ namespace Ordr.Mobile.Mobile
 
             foreach (string rawcode in neededOrder)
             {
-                var link = labels.FindRawcode(rawcode);
+                string ingredientId, ingredientName, ingredientReason;
+                bool mapped = ResolveOriginalUnit(rawcode, out ingredientId,
+                    out ingredientName, out ingredientReason);
                 int required = needed[rawcode];
                 int owned = 0;
                 List<long> list = null;
-                if (link == null) reasons.Add("재료 유닛 원시 ID 미매핑: " + rawcode);
-                else
-                {
-                    string verifiedCatalogId;
-                    if (verifiedObjectMap == null ||
-                        !verifiedObjectMap.TryResolveUnit(rawcode, out verifiedCatalogId) ||
-                        verifiedCatalogId != link.CatalogUnitId)
-                        reasons.Add("재료 원본 객체 ID의 최종 검증 미완료: " + rawcode);
-                }
+                if (!mapped)
+                    reasons.Add("재료 " + ingredientReason);
                 var boundIds = new List<long>();
-                if (link != null && allUnits.TryGetValue(link.CatalogUnitId, out list))
+                if (mapped && allUnits.TryGetValue(ingredientId, out list))
                 {
                     owned = Math.Min(list.Count, required);
                     for (int i = 0; i < owned; i++)
@@ -222,7 +215,8 @@ namespace Ordr.Mobile.Mobile
                     }
                 }
                 bindings.Add(new JassFusionMaterialBinding(rawcode, boundIds));
-                materials.Add(new JassFusionMaterial(rawcode, link, required, owned));
+                materials.Add(new JassFusionMaterial(rawcode, ingredientId,
+                    ingredientName, required, owned));
                 if (owned < required)
                     reasons.Add("재료 부족: " + rawcode + " " + (required - owned) + "기");
             }
@@ -238,8 +232,61 @@ namespace Ordr.Mobile.Mobile
 
             // The commit service is a separate authorization gate; even a fully
             // resolved plan must never mutate the game world without that service.
-            return new JassFusionReadiness(recipe, resultCode, resultLabel,
-                materials, bindings, reasons, selected, gold, lumber);
+            return new JassFusionReadiness(recipe, resultCode, resultId,
+                resultName, materials, bindings, reasons, selected, gold, lumber);
+        }
+
+        // Original JASS labels are useful for display, not for spending.
+        // A manually reviewed object map can independently authorize previously
+        // unlabelled lower grades, provided their catalog ID is also known.
+        private bool ResolveOriginalUnit(string rawcode, out string unitId,
+            out string unitName, out string rejectionReason)
+        {
+            var label = labels.FindRawcode(rawcode);
+            unitId = label == null ? null : label.CatalogUnitId;
+            unitName = label == null ? null : label.UnitDisplayName;
+            rejectionReason = null;
+
+            string verifiedId;
+            if (verifiedObjectMap == null ||
+                !verifiedObjectMap.TryResolveUnit(rawcode, out verifiedId) ||
+                string.IsNullOrWhiteSpace(verifiedId))
+            {
+                rejectionReason = label == null ?
+                    "유닛 원시 ID 미매핑: " + rawcode :
+                    "원본 객체 ID의 최종 검증 미완료: " + rawcode;
+                return false;
+            }
+
+            if (label != null && verifiedId != label.CatalogUnitId)
+            {
+                rejectionReason = "객체 검수 결과와 JASS 이름이 충돌: " + rawcode;
+                return false;
+            }
+
+            if (catalog == null)
+            {
+                if (label == null)
+                {
+                    rejectionReason = "원본 매핑의 카탈로그 대조 서비스 미연결: " +
+                        rawcode;
+                    return false;
+                }
+            }
+            else
+            {
+                var unit = catalog.Find(verifiedId);
+                if (unit == null)
+                {
+                    rejectionReason = "객체 매핑 대상 캐릭터 카탈로그에 없음: " +
+                        rawcode;
+                    return false;
+                }
+                unitName = unit.Name;
+            }
+
+            unitId = verifiedId;
+            return true;
         }
 
         public IReadOnlyList<JassFusionReadiness> AssessNamedResults(
@@ -249,8 +296,16 @@ namespace Ordr.Mobile.Mobile
             var result = new List<JassFusionReadiness>();
             foreach (var entry in original.All)
             {
-                if (entry.Results.Count == 0 ||
-                    labels.FindRawcode(entry.Results[0].Rawcode) == null) continue;
+                if (entry.Results.Count == 0) continue;
+                // Previously unnamed lower-grade outputs become available only
+                // when their original object ID is independently approved.
+                string rawcode = entry.Results[0].Rawcode;
+                string resolved;
+                if (labels.FindRawcode(rawcode) == null &&
+                    (verifiedObjectMap == null ||
+                     !verifiedObjectMap.TryResolveUnit(rawcode, out resolved) ||
+                     catalog == null || catalog.Find(resolved) == null))
+                    continue;
                 result.Add(Assess(entry.AbilityRawcode, ownedUnits, verifiedGold, verifiedLumber));
             }
             result.Sort((a, b) => string.CompareOrdinal(a.ResultName, b.ResultName));
