@@ -45,7 +45,6 @@ jobs:
           projectPath: .
           testMode: EditMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          coverageEnabled: false
 
       - name: Unity 테스트 결과 파일 첨부
         if: ${{ always() && steps.tests.outputs.artifactsPath != '' }}
