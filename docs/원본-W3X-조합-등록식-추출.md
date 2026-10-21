@@ -90,3 +90,32 @@ python tools/unpack_ordered_jass_fusions.py
 **완료:** 소스 스크립트에서 조합 등록식 266건을 찾아, 압축 자료와 원본 순서 보존 변환기, C# 조회 경로까지 GitHub `main`에 저장.
 
 **미완료:** 전체 265건을 실제 게임에서 조합·소비 가능한 상태로 구현한 것은 아님. 원본 유닛 매핑, 특수 조건, 재화 처리, 조합 UI 연동 및 실제 Unity 컴파일·기기 테스트는 아직 필요. 사용자 요청에 따라 전체 게임 기능 완성 전 테스트와 APK 빌드는 보류.
+
+## 순서형 거래 및 W3U 객체 이름 검수 도구 (2026-10-21)
+
+### 실제 구현된 흐름
+
+- `OriginalJassFusionPlanner`는 동일 재료 rawcode를 여러 번 요구하는 조합도 필요한 수량만큼 합산하고, rawcode별 **정확한 소유 인스턴스 ID 목록**을 기록한다.
+- `OriginalJassFusionCommitOrder`는 원본 `CWR`의 `BGI` 순서와 `BGH` 결과, 각 재료 묶음, 골드·목재, 시전 대상을 보유한다.
+- `OriginalJassFusionAtomicCoordinator`는 플레이어 상태를 잠근 후 주문을 새로 구성하고, 원본 조건 승인과 실제 소모가 동일 주문을 사용하도록 한다.
+- `OriginalJassFusionOrderedWorldAdapter`는 거래 범위 안에서 모든 조건을 차례로 재검증하고, `UNIT` 인스턴스별 소비, `GOLD`·`WOOD` 차감, 나머지 원본 특수 태그의 효과, `BGH`·`CHu/CHx` 후속 효과까지 실행하도록 연결한다. 세계 상태는 **Commit 전까지 미확정**이어야 한다.
+- 원본 특수 태그의 정확한 검사/효과와 BGH 결과 소환은 `IOriginalJassFusionOrderedSession`이 책임지며, 실제 월드의 검증·원자적 롤백 구현체는 아직 없다. `Unity ConfigureOriginalJassCraftingOrderedWorld` 진입점은 추가했지만 실제 게임에서 조합 가능 상태가 아니다. 재료 수량·비용만으로 제작 실행을 승인하지 않는다.
+
+### rawcode 객체 근거 추출 (원본 파일을 확보한 경우에만)
+
+기존 `data/original-fusion-rawcode-backlog.json`의 280종 고유 ID 중 미확인 원재료 ID 163종을 대상으로 원본 `war3map.w3u` 객체 이름을 수집한다. 원본 맵에서 `war3map.w3u`와 (존재할 때) `war3map.wts`를 추출한 뒤 아래 명령을 실행한다.
+
+```powershell
+python tools/extract_w3u_fusion_unit_names.py --w3u "war3map.w3u" --wts "war3map.wts" --output "data/original-w3u-fusion-unit-name-evidence.json"
+```
+
+`war3map.wts`가 없는 맵에서는 `--wts`를 생략할 수 있다. 이 추출기는 원본 객체 파일의 수정 내역에 있는 이름 필드(`unam`), `TRIGSTR_` 참조, 원본 rawcode와 도감 이름의 **문자열 일치 후보**를 기록한다. 객체 파일에 등장하지 않는 ID(기본 게임 객체 등)는 미확인으로 둔다. 같은 이름이 여러 등급에 있을 수도 있으므로 추출 결과는 **즉시 사용 가능한 제작용 ID 매핑이 아니다.** 해당 W3U가 이 버전 원본 W3X에서 왔는지도 확인해야 한다.
+
+원본 객체와 카탈로그를 **개별적으로 확인한 뒤에만** `OriginalVerifiedUnitObjectMap.FromReviewedJson`이 읽는 승인 자료를 작성할 수 있다. JSON 최상위 필드는 `gameVersion: "S2 2.323[C]"`, `sourceJassSha256` (위 원본 값), `mappingEvidenceLevel: "manually-reviewed-original-object"`, `approvedMappings`이다. 각 승인 항목에는 `rawcode`, `catalogUnitId`, `sourceObjectFile`(`war3map.w3u` 또는 `Units/UnitData.slk`), `sourceObjectSha256`, `resolvedOriginalObjectName`, `manuallyReviewed: true`가 모두 필요하다. 이름/능력 관련 JASS 81종과 대응이 충돌하면 로더가 거부한다. 도감 조합식과 rawcode 순서만으로 임의 대응을 만들지 않는다.
+
+### 현재 실제 검증 상태
+
+- 원본 W3U 및 WTS 파일이 이번 작업 환경에 없어서 객체 대조 도구를 **실행하지 않았음**.
+- **새로 확정한 객체 rawcode 매핑 0종**, 기존 JASS 이름 연동 81종 유지. 현재 원본 실제 제작 가능 조합 수는 계속 **0건**.
+- `ITEM/IFCT/SKPT/CHCT/PICK/RDUN/SPEC/GREN` 등 원본 검사/지불/후속 효과를 담당하는 게임 월드 서비스가 미구현. 원본 무결성 확인, 실제 거래 롤백, Unity 프로젝트 기능 검증도 미완료.
+- 사용자 요구에 따라 신규 테스트·게임 실행·Unity 컴파일·APK 제작·GitHub Actions 생성은 하지 않았음.
