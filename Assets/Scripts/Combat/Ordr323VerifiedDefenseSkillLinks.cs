@@ -75,7 +75,28 @@ namespace Ordr.Mobile.Combat
                 "armorBreak",5,0,"A04M","B8x:37330 w5(h049,B8r) → B8q:37215"),
             new Ordr323VerifiedDefenseSkillLink(
                 "I-09","h04B",3,"범위 마법 스턴","onAttack",
-                "armorBreak",1,0,"A04M","B97:38668 w5(h04B,B93) → B92:38555")
+                "armorBreak",1,0,"A04M","B97:38668 w5(h04B,B93) → B92:38555"),
+            // 전설 계열은 실제 JASS 등록·대미지/방깎 값과 도감 프로필 대조.
+            new Ordr323VerifiedDefenseSkillLink(
+                "L-20","h02V",0,"화이트 아웃","activeMana",
+                "armorBreak",3,0,"A04M",
+                "main:62740 w5(h02V,Btx) → mana50 → Btv:19007~19009"),
+            new Ordr323VerifiedDefenseSkillLink(
+                "L-23","h039",0,"바위낙하","onAttack",
+                "armorBreak",2,0,"A04M",
+                "main:62742 w5(h039,Bt8) → chance5 → Bt7:19161~19162"),
+            new Ordr323VerifiedDefenseSkillLink(
+                "L-23","h039",1,"바닷물 가두기","onAttack",
+                "armorBreak",1,0,"A04M",
+                "main:62742 w5(h039,Bt8) → chance10 → Bt6:19157~19159"),
+            new Ordr323VerifiedDefenseSkillLink(
+                "L-07","h03A",0,"패기발산","activeMana",
+                "armorBreak",3,0,"A04M",
+                "main:62743 w5(h03A,BuD) → mana115 → BuC:19203~19206"),
+            new Ordr323VerifiedDefenseSkillLink(
+                "L-37","h031",0,"중력검","onAttack",
+                "magicResistanceReduction",1,0,"A04Q",
+                "main:62752 w5(h031,Bus) → chance14 → Bur:19759~19761")
         };
 
         public static IReadOnlyList<Ordr323VerifiedDefenseSkillLink> All
@@ -116,7 +137,9 @@ namespace Ordr.Mobile.Combat
             if (!Ordr323VerifiedDefenseSkillLinks.TryMatch(
                 profile, skill, component, out link)) return false;
             return link.UnitId == "H-10" && link.SkillId == "H-10:skill:1" ||
-                   link.UnitId == "H-09" && link.SkillId == "H-09:skill:0";
+                   link.UnitId == "H-09" && link.SkillId == "H-09:skill:0" ||
+                   link.UnitId == "L-07" && link.SkillId == "L-07:skill:0" ||
+                   link.UnitId == "L-23" && link.SkillId == "L-23:skill:0";
         }
 
         // 베르고의 직접 Bdq와 에넬의 영역 Bd5가 본 스킬 피해 전에 발생한다.
@@ -134,18 +157,20 @@ namespace Ordr.Mobile.Combat
             }
             bool vergo = link.UnitId == "H-10" &&
                          link.SkillId == "H-10:skill:1";
-            bool enel = link.UnitId == "H-09" &&
-                        link.SkillId == "H-09:skill:0";
+            bool preAreaDebuff =
+                link.UnitId == "H-09" && link.SkillId == "H-09:skill:0" ||
+                link.UnitId == "L-07" && link.SkillId == "L-07:skill:0" ||
+                link.UnitId == "L-23" && link.SkillId == "L-23:skill:0";
             if (phase == Ordr323DebuffTiming.BeforeDamage)
             {
                 if (vergo && primary)
                     return ApplyDelta(casterId, link, target, 1, out reason);
-                if (enel)
+                if (preAreaDebuff)
                     return ApplyDelta(casterId, link, target, link.Value, out reason);
                 reason = "skipped"; // 이 타깃에는 선행 효과가 없음.
                 return true;
             }
-            if (enel)
+            if (preAreaDebuff)
             {
                 reason = "skipped"; // 앞 단계에서 이미 적용했으므로 재적용 금지.
                 return true;

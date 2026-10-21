@@ -109,9 +109,9 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void SixOriginalJassLinksCoverFiveUnits()
+        public void ElevenOriginalJassLinksCoverNineUnits()
         {
-            Assert.AreEqual(6, Ordr323VerifiedDefenseSkillLinks.All.Count);
+            Assert.AreEqual(11, Ordr323VerifiedDefenseSkillLinks.All.Count);
             var ids = new HashSet<string>();
             foreach (var item in Ordr323VerifiedDefenseSkillLinks.All)
             {
@@ -120,7 +120,7 @@ namespace Ordr.Mobile.Tests
                               item.AbilityRawcode == "A04Q");
                 Assert.IsFalse(string.IsNullOrWhiteSpace(item.JassEvidence));
             }
-            Assert.AreEqual(5, ids.Count);
+            Assert.AreEqual(9, ids.Count);
         }
 
         [Test]
@@ -282,6 +282,88 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(f.Router.TryApplyAtPhase("unit",profile,skill,effect,
                 target,true,Ordr323DebuffTiming.AfterDamage,out why),why);
             Assert.AreEqual(5,f.Stacks[target.Id]);
+        }
+
+        [Test]
+        public void LegendRayleighAppliesA04MBeforeHisAttackDamage()
+        {
+            var f=new Fixture();var enemy=Enemy();
+            f.Track(enemy);
+            var profile=ProfileFixture("L-07","패기발산","activeMana","armorBreak",3);
+            var skill=profile.Skills[0];var effect=skill.Components[0];
+            Assert.IsTrue(f.Router.HasPreDamagePart(profile,skill,effect));
+            string reason;
+            Assert.IsTrue(f.Router.TryApplyAtPhase("rayleigh",profile,skill,effect,
+                enemy,true,Ordr323DebuffTiming.BeforeDamage,out reason),reason);
+            Assert.AreEqual(3,f.Stacks[enemy.Id]);
+            Assert.IsTrue(f.Router.TryApplyAtPhase("rayleigh",profile,skill,effect,
+                enemy,true,Ordr323DebuffTiming.AfterDamage,out reason),reason);
+            Assert.AreEqual("skipped",reason);
+            Assert.AreEqual(3,f.Stacks[enemy.Id]);
+        }
+
+        [Test]
+        public void LegendShikiSeparateFiveAndTenPercentDebuffCallbacks()
+        {
+            var f=new Fixture();
+            var beforeTarget=Enemy("rocks");var afterTarget=Enemy("sea");
+            f.Track(beforeTarget);f.Track(afterTarget);
+            var rocks=ProfileFixture("L-23","바위낙하",
+                "onAttack","armorBreak",2);
+            var sea=ProfileFixture("L-23","바닷물 가두기",
+                "onAttack","armorBreak",1,1);
+            string why;
+            Assert.IsTrue(f.Router.HasPreDamagePart(rocks,rocks.Skills[0],
+                rocks.Skills[0].Components[0]));
+            Assert.IsFalse(f.Router.HasPreDamagePart(sea,sea.Skills[1],
+                sea.Skills[1].Components[0]));
+            Assert.IsTrue(f.Router.TryApplyAtPhase("shiki",rocks,rocks.Skills[0],
+                rocks.Skills[0].Components[0],beforeTarget,true,
+                Ordr323DebuffTiming.BeforeDamage,out why),why);
+            Assert.AreEqual(2,f.Stacks[beforeTarget.Id]);
+            Assert.IsTrue(f.Router.TryApplyAtPhase("shiki",sea,sea.Skills[1],
+                sea.Skills[1].Components[0],afterTarget,true,
+                Ordr323DebuffTiming.BeforeDamage,out why),why);
+            Assert.AreEqual(0,f.Stacks[afterTarget.Id]);
+            Assert.IsTrue(f.Router.TryApplyAtPhase("shiki",sea,sea.Skills[1],
+                sea.Skills[1].Components[0],afterTarget,true,
+                Ordr323DebuffTiming.AfterDamage,out why),why);
+            Assert.AreEqual(1,f.Stacks[afterTarget.Id]);
+        }
+
+        [Test]
+        public void LegendSmokerAndIsshoWaitForDamageBeforeApplyingDebuffs()
+        {
+            var f=new Fixture();
+            var smokerTarget=Enemy("smoker");
+            var isshoTarget=Enemy("issho");
+            f.Track(smokerTarget);f.Track(isshoTarget);
+            var smoker=ProfileFixture("L-20","화이트 아웃",
+                "activeMana","armorBreak",3);
+            var issho=ProfileFixture("L-37","중력검",
+                "onAttack","magicResistanceReduction",1);
+            string why;
+            Assert.IsTrue(f.Router.TryApplyAtPhase("smoker",smoker,smoker.Skills[0],
+                smoker.Skills[0].Components[0],smokerTarget,true,
+                Ordr323DebuffTiming.BeforeDamage,out why),why);
+            Assert.AreEqual(0,f.Stacks[smokerTarget.Id]);
+            Assert.IsTrue(f.Router.TryApplyAtPhase("smoker",smoker,smoker.Skills[0],
+                smoker.Skills[0].Components[0],smokerTarget,true,
+                Ordr323DebuffTiming.AfterDamage,out why),why);
+            Assert.AreEqual(3,f.Stacks[smokerTarget.Id]);
+            Assert.IsTrue(f.Router.TryApplyAtPhase("issho",issho,issho.Skills[0],
+                issho.Skills[0].Components[0],isshoTarget,true,
+                Ordr323DebuffTiming.BeforeDamage,out why),why);
+            Assert.AreEqual(0,f.Status[isshoTarget.Id].ActiveCount);
+            Assert.IsTrue(f.Router.TryApplyAtPhase("issho",issho,issho.Skills[0],
+                issho.Skills[0].Components[0],isshoTarget,true,
+                Ordr323DebuffTiming.AfterDamage,out why),why);
+            Assert.AreEqual(1,f.Status[isshoTarget.Id].ActiveCount);
+            double percent;
+            Assert.IsTrue(new Ordr323VerifiedPartialModifierRules()
+                .TryResolveMagicResistancePercent(isshoTarget.Enemy,
+                    f.Status[isshoTarget.Id].Snapshot(),out percent));
+            Assert.AreEqual(9,percent,1e-4);
         }
 
         [Test]
