@@ -36,8 +36,24 @@ namespace Ordr.Mobile.Unity
         private IOriginalBossFocusRules bossFocusRules;
         private IOriginalAutoSkillRules autoSkillRules;
         private IOriginalStoryDispatchPort storyDispatchRules;
+        private IOriginalVerifiedUnitAttackProvider verifiedUnitAttackSource;
         private IOriginalFusionPort originalFusionPort;
         private IOriginalEconomyPort originalEconomyPort;
+
+        // All unit grades use the same automatic attack pipeline once their
+        // original attack power, interval, range, rawcode and initial delay
+        // have been independently verified.
+        public void ConfigureVerifiedAllUnitAttacks(
+            IOriginalVerifiedUnitAttackProvider originalSource)
+        {
+            verifiedUnitAttackSource = originalSource ??
+                throw new ArgumentNullException(nameof(originalSource));
+            if (Combat != null)
+            {
+                Combat.ConfigureVerifiedUnitAttackProvider(originalSource);
+                Combat.BindExistingVerifiedAttacks();
+            }
+        }
 
         public void ConfigureMobileAutomation(IOriginalPlacementRules originalPlacement,
             IOriginalBossFocusRules originalBossFocus,
@@ -176,6 +192,7 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
             Combat = new CharacterCombatRuntime(Units, Skills,
                 verifiedBasicFormula, verifiedSkillFormula, random);
+            Combat.ConfigureVerifiedUnitAttackProvider(verifiedUnitAttackSource);
             Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
             Combat.ConfigureStoryDeployment(storyDispatchRules);
             if (OriginalJassFusions != null && OriginalUnitRawcodes != null)
