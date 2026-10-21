@@ -15,6 +15,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset originalStatEvidenceJson;
         [SerializeField] private TextAsset verifiedFusionRecipesJson;
         [SerializeField] private TextAsset originalJassFusionRegistryJson;
+        [SerializeField] private TextAsset originalUnitRawcodeLabelsJson;
         [SerializeField] private bool enableMobileTouchPanel = true;
 
         public CharacterUnitCatalog Units { get; private set; }
@@ -22,6 +23,8 @@ namespace Ordr.Mobile.Unity
         public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
+        public OriginalUnitRawcodeLabelCatalog OriginalUnitRawcodes { get; private set; }
+        public OriginalJassFusionPlanner OriginalFusionPlanner { get; private set; }
         public AssistedFusionService FusionAssistance { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
 
@@ -44,6 +47,10 @@ namespace Ordr.Mobile.Unity
             if (Combat != null)
                 Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
             Combat.ConfigureStoryDeployment(storyDispatchRules);
+            if (OriginalJassFusions != null && OriginalUnitRawcodes != null)
+                OriginalFusionPlanner = new OriginalJassFusionPlanner(
+                    OriginalJassFusions, OriginalUnitRawcodes,
+                    id => Combat.IsStoryDeployed(id));
             if (VerifiedFusionRecipes != null)
                 FusionAssistance = new AssistedFusionService(VerifiedFusionRecipes,
                     () => Combat.MobileUnitSnapshot(),
@@ -109,6 +116,12 @@ namespace Ordr.Mobile.Unity
                     Resources.Load<TextAsset>("OrdrData/original-jass-fusion-registry");
                 if (originalJassData != null)
                     OriginalJassFusions = OriginalJassFusionCatalog.FromJson(originalJassData.text);
+                var labelsData = originalUnitRawcodeLabelsJson != null ?
+                    originalUnitRawcodeLabelsJson :
+                    Resources.Load<TextAsset>("OrdrData/original-unit-rawcode-label-links");
+                if (labelsData != null)
+                    OriginalUnitRawcodes = OriginalUnitRawcodeLabelCatalog.FromJson(
+                        labelsData.text, Units, OriginalJassFusions);
                 if (Units.Count != 271 || Skills.CharacterCount != 200)
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
                 Debug.Log("ORDR 캐릭터 카탈로그 로딩: " + Units.Count +
