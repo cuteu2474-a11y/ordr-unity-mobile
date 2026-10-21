@@ -1,0 +1,425 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassFunction": "BjB",
+  "sourceMethods": [
+    "Bi8(rawcode,abilityRawcode)",
+    "Bi9(rawcode,characterLabel)"
+  ],
+  "mappingEvidenceLevel": "jass-label-and-grade-correlated",
+  "useForPlayerFacingPreview": true,
+  "useForAutomaticUnitConsumption": false,
+  "notes": [
+    "Bi8/ Bi9 extracted from user-provided source map and manually aligned with catalog names and grade; not a verified Warcraft unit object database.",
+    "The suffix of a JASS ability rawcode is NOT the project's grade-indexed catalog number, e.g. TR01 labels Nami and maps to TR-02, not TR-01.",
+    "Only 81 labelled pairs are included. Do not guess rawcodes of the remaining characters or claim combat stats verified.",
+    "Original JASS ability/rawcode combinations should be rechecked against object data before an authoritative, transactional crafting adapter is enabled."
+  ],
+  "mappings": [
+    {
+      "rawcode": "h04U",
+      "catalogUnitId": "D-01",
+      "abilityRawcode": "IF04"
+    },
+    {
+      "rawcode": "h03V",
+      "catalogUnitId": "D-02",
+      "abilityRawcode": "IF01"
+    },
+    {
+      "rawcode": "h0CI",
+      "catalogUnitId": "D-03",
+      "abilityRawcode": "IF03"
+    },
+    {
+      "rawcode": "h048",
+      "catalogUnitId": "D-04",
+      "abilityRawcode": "IF02"
+    },
+    {
+      "rawcode": "h05V",
+      "catalogUnitId": "D-05",
+      "abilityRawcode": "IF06"
+    },
+    {
+      "rawcode": "h09V",
+      "catalogUnitId": "D-06",
+      "abilityRawcode": "IF05"
+    },
+    {
+      "rawcode": "H0BK",
+      "catalogUnitId": "E-01",
+      "abilityRawcode": "ET02"
+    },
+    {
+      "rawcode": "h0CJ",
+      "catalogUnitId": "E-03",
+      "abilityRawcode": "ET04"
+    },
+    {
+      "rawcode": "h058",
+      "catalogUnitId": "E-04",
+      "abilityRawcode": "ET08"
+    },
+    {
+      "rawcode": "h05A",
+      "catalogUnitId": "E-05",
+      "abilityRawcode": "ET05"
+    },
+    {
+      "rawcode": "h057",
+      "catalogUnitId": "E-06",
+      "abilityRawcode": "ET01"
+    },
+    {
+      "rawcode": "h059",
+      "catalogUnitId": "E-07",
+      "abilityRawcode": "ET11"
+    },
+    {
+      "rawcode": "h08R",
+      "catalogUnitId": "E-08",
+      "abilityRawcode": "ET10"
+    },
+    {
+      "rawcode": "h067",
+      "catalogUnitId": "E-09",
+      "abilityRawcode": "ET07"
+    },
+    {
+      "rawcode": "h05B",
+      "catalogUnitId": "E-10",
+      "abilityRawcode": "ET09"
+    },
+    {
+      "rawcode": "h06A",
+      "catalogUnitId": "E-11",
+      "abilityRawcode": "ET12"
+    },
+    {
+      "rawcode": "h05C",
+      "catalogUnitId": "E-12",
+      "abilityRawcode": "ET06"
+    },
+    {
+      "rawcode": "h043",
+      "catalogUnitId": "H-01",
+      "abilityRawcode": "YY17"
+    },
+    {
+      "rawcode": "h03U",
+      "catalogUnitId": "H-02",
+      "abilityRawcode": "YY04"
+    },
+    {
+      "rawcode": "h03T",
+      "catalogUnitId": "H-03",
+      "abilityRawcode": "YY05"
+    },
+    {
+      "rawcode": "h03N",
+      "catalogUnitId": "H-04",
+      "abilityRawcode": "YY06"
+    },
+    {
+      "rawcode": "h044",
+      "catalogUnitId": "H-05",
+      "abilityRawcode": "YY02"
+    },
+    {
+      "rawcode": "h03Q",
+      "catalogUnitId": "H-06",
+      "abilityRawcode": "YY07"
+    },
+    {
+      "rawcode": "h03R",
+      "catalogUnitId": "H-07",
+      "abilityRawcode": "YY08"
+    },
+    {
+      "rawcode": "h03P",
+      "catalogUnitId": "H-08",
+      "abilityRawcode": "YY09"
+    },
+    {
+      "rawcode": "h03X",
+      "catalogUnitId": "H-09",
+      "abilityRawcode": "YY01"
+    },
+    {
+      "rawcode": "h03W",
+      "catalogUnitId": "H-10",
+      "abilityRawcode": "YY03"
+    },
+    {
+      "rawcode": "h03O",
+      "catalogUnitId": "H-11",
+      "abilityRawcode": "YY10"
+    },
+    {
+      "rawcode": "h03M",
+      "catalogUnitId": "H-12",
+      "abilityRawcode": "YY11"
+    },
+    {
+      "rawcode": "h055",
+      "catalogUnitId": "H-13",
+      "abilityRawcode": "YY13"
+    },
+    {
+      "rawcode": "h03J",
+      "catalogUnitId": "H-14",
+      "abilityRawcode": "YY14"
+    },
+    {
+      "rawcode": "h03L",
+      "catalogUnitId": "H-15",
+      "abilityRawcode": "YY12"
+    },
+    {
+      "rawcode": "h041",
+      "catalogUnitId": "H-16",
+      "abilityRawcode": "YY20"
+    },
+    {
+      "rawcode": "h03Z",
+      "catalogUnitId": "H-17",
+      "abilityRawcode": "YY15"
+    },
+    {
+      "rawcode": "h03Y",
+      "catalogUnitId": "H-18",
+      "abilityRawcode": "YY16"
+    },
+    {
+      "rawcode": "h07L",
+      "catalogUnitId": "H-19",
+      "abilityRawcode": "YY18"
+    },
+    {
+      "rawcode": "h046",
+      "catalogUnitId": "H-20",
+      "abilityRawcode": "YY22"
+    },
+    {
+      "rawcode": "h045",
+      "catalogUnitId": "H-21",
+      "abilityRawcode": "YY23"
+    },
+    {
+      "rawcode": "h047",
+      "catalogUnitId": "H-22",
+      "abilityRawcode": "YY25"
+    },
+    {
+      "rawcode": "h04C",
+      "catalogUnitId": "I-01",
+      "abilityRawcode": "IM03"
+    },
+    {
+      "rawcode": "h04D",
+      "catalogUnitId": "I-02",
+      "abilityRawcode": "IM04"
+    },
+    {
+      "rawcode": "h049",
+      "catalogUnitId": "I-03",
+      "abilityRawcode": "IM08"
+    },
+    {
+      "rawcode": "h04J",
+      "catalogUnitId": "I-04",
+      "abilityRawcode": "IM01"
+    },
+    {
+      "rawcode": "h081",
+      "catalogUnitId": "I-05",
+      "abilityRawcode": "IM12"
+    },
+    {
+      "rawcode": "h04Q",
+      "catalogUnitId": "I-06",
+      "abilityRawcode": "IM05"
+    },
+    {
+      "rawcode": "h04E",
+      "catalogUnitId": "I-07",
+      "abilityRawcode": "IM06"
+    },
+    {
+      "rawcode": "h04F",
+      "catalogUnitId": "I-08",
+      "abilityRawcode": "IM07"
+    },
+    {
+      "rawcode": "h04B",
+      "catalogUnitId": "I-09",
+      "abilityRawcode": "IM02"
+    },
+    {
+      "rawcode": "h04G",
+      "catalogUnitId": "I-10",
+      "abilityRawcode": "IM10"
+    },
+    {
+      "rawcode": "h07M",
+      "catalogUnitId": "I-11",
+      "abilityRawcode": "IM11"
+    },
+    {
+      "rawcode": "h04A",
+      "catalogUnitId": "I-12",
+      "abilityRawcode": "IM09"
+    },
+    {
+      "rawcode": "H090",
+      "catalogUnitId": "TR-01",
+      "abilityRawcode": "TR08"
+    },
+    {
+      "rawcode": "H08V",
+      "catalogUnitId": "TR-02",
+      "abilityRawcode": "TR01"
+    },
+    {
+      "rawcode": "H09E",
+      "catalogUnitId": "TR-03",
+      "abilityRawcode": "TR04"
+    },
+    {
+      "rawcode": "H098",
+      "catalogUnitId": "TR-04",
+      "abilityRawcode": "TR02"
+    },
+    {
+      "rawcode": "H096",
+      "catalogUnitId": "TR-05",
+      "abilityRawcode": "TR26"
+    },
+    {
+      "rawcode": "H0BL",
+      "catalogUnitId": "TR-06",
+      "abilityRawcode": "TR17"
+    },
+    {
+      "rawcode": "H08W",
+      "catalogUnitId": "TR-07",
+      "abilityRawcode": "TR05"
+    },
+    {
+      "rawcode": "H099",
+      "catalogUnitId": "TR-08",
+      "abilityRawcode": "TR09"
+    },
+    {
+      "rawcode": "H094",
+      "catalogUnitId": "TR-09",
+      "abilityRawcode": "TR10"
+    },
+    {
+      "rawcode": "H09I",
+      "catalogUnitId": "TR-10",
+      "abilityRawcode": "TR12"
+    },
+    {
+      "rawcode": "H092",
+      "catalogUnitId": "TR-11",
+      "abilityRawcode": "TR13"
+    },
+    {
+      "rawcode": "H09H",
+      "catalogUnitId": "TR-12",
+      "abilityRawcode": "TR14"
+    },
+    {
+      "rawcode": "H08Z",
+      "catalogUnitId": "TR-13",
+      "abilityRawcode": "TR15"
+    },
+    {
+      "rawcode": "H0B2",
+      "catalogUnitId": "TR-14",
+      "abilityRawcode": "TR07"
+    },
+    {
+      "rawcode": "H08U",
+      "catalogUnitId": "TR-15",
+      "abilityRawcode": "TR16"
+    },
+    {
+      "rawcode": "H097",
+      "catalogUnitId": "TR-16",
+      "abilityRawcode": "TR24"
+    },
+    {
+      "rawcode": "H095",
+      "catalogUnitId": "TR-17",
+      "abilityRawcode": "TR18"
+    },
+    {
+      "rawcode": "H0BD",
+      "catalogUnitId": "TR-18",
+      "abilityRawcode": "TR19"
+    },
+    {
+      "rawcode": "H09B",
+      "catalogUnitId": "TR-19",
+      "abilityRawcode": "TR20"
+    },
+    {
+      "rawcode": "H09F",
+      "catalogUnitId": "TR-20",
+      "abilityRawcode": "TR06"
+    },
+    {
+      "rawcode": "H0BX",
+      "catalogUnitId": "TR-21",
+      "abilityRawcode": "TR21"
+    },
+    {
+      "rawcode": "H09A",
+      "catalogUnitId": "TR-22",
+      "abilityRawcode": "TR22"
+    },
+    {
+      "rawcode": "H091",
+      "catalogUnitId": "TR-23",
+      "abilityRawcode": "TR23"
+    },
+    {
+      "rawcode": "H0CO",
+      "catalogUnitId": "TR-24",
+      "abilityRawcode": "TR29"
+    },
+    {
+      "rawcode": "H0B4",
+      "catalogUnitId": "TR-25",
+      "abilityRawcode": "TR25"
+    },
+    {
+      "rawcode": "H0B5",
+      "catalogUnitId": "TR-26",
+      "abilityRawcode": "TR11"
+    },
+    {
+      "rawcode": "H05N",
+      "catalogUnitId": "TR-27",
+      "abilityRawcode": "TR03"
+    },
+    {
+      "rawcode": "H08Y",
+      "catalogUnitId": "TR-28",
+      "abilityRawcode": "TR27"
+    },
+    {
+      "rawcode": "H08X",
+      "catalogUnitId": "TR-29",
+      "abilityRawcode": "TR28"
+    },
+    {
+      "rawcode": "H0AA",
+      "catalogUnitId": "TR-30",
+      "abilityRawcode": "TR30"
+    }
+  ]
+}
