@@ -48,7 +48,7 @@ jobs:
           coverageEnabled: false
 
       - name: Unity 테스트 결과 파일 첨부
-        if: always()
+        if: ${{ always() && steps.tests.outputs.artifactsPath != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: unity-editmode-results

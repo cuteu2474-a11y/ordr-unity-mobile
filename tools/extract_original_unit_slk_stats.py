@@ -37,8 +37,9 @@ def rawcode(hextext):
     return bytes.fromhex(hextext).decode("latin-1")
 
 
-def parse_sylk(path):
-    text = path.read_bytes().decode("utf-8-sig", errors="replace")
+def parse_sylk_bytes(data):
+    """Parse the object-table SYLK cells directly from bytes in the W3X."""
+    text = data.decode("utf-8-sig", errors="replace")
     rows = {}
     x = y = None
     for line in text.splitlines():
@@ -58,7 +59,7 @@ def parse_sylk(path):
 
     header = rows.get(1)
     if not header:
-        raise ValueError("Missing SYLK header: " + str(path))
+        raise ValueError("Missing SYLK header")
     result = {}
     for y, cells in rows.items():
         if y == 1:
@@ -72,6 +73,10 @@ def parse_sylk(path):
                 if k != 1 and k in header
             }
     return result
+
+
+def parse_sylk(path):
+    return parse_sylk_bytes(path.read_bytes())
 
 
 def extract(jass, weapons, balance, abilities):
