@@ -38,6 +38,10 @@ namespace Ordr.Mobile.Editor
             string jassFusion = Path.Combine(source, "original-jass-fusion-registry.json");
             if (File.Exists(jassFusion))
                 File.Copy(jassFusion, Path.Combine(target, "original-jass-fusion-registry.json"), true);
+            string rawcodeLabels = Path.Combine(source, "original-unit-rawcode-label-links.json");
+            if (File.Exists(rawcodeLabels))
+                File.Copy(rawcodeLabels,
+                    Path.Combine(target, "original-unit-rawcode-label-links.json"), true);
             AssetDatabase.Refresh();
             Debug.Log("ORDR 캐릭터 데이터가 Assets/Resources/OrdrData 로 동기화되었습니다.");
         }
