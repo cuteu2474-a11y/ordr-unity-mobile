@@ -16,7 +16,8 @@ namespace Ordr.Mobile.Mobile
         // Replay ordered CWR/BGI restrictions against the locked player state.
         // Must reject every not-yet-implemented ITEM/IFCT/SKPT/CHCT/PICK/
         // RDUN/SPEC/GREN rule, including its later payment or side effects.
-        bool TryVerifyOriginalConditions(string abilityRawcode, out string reason);
+        bool TryVerifyOriginalConditions(OriginalJassFusionCommitOrder lockedOrder,
+            out string reason);
         // Apply must include all original CHu/CHx side effects, not just BGH spawn.
         // False or an exception must leave Commit uncalled so Dispose rolls back.
         bool TryApplyOriginalFusion(OriginalJassFusionCommitOrder order,
@@ -92,15 +93,15 @@ namespace Ordr.Mobile.Mobile
                         return Rejected(string.IsNullOrWhiteSpace(reason)
                             ? "원본 시전 대상이 변경됐습니다." : reason);
 
-                    if (!transaction.TryVerifyOriginalConditions(order.AbilityRawcode,
+                    // The exact BGI sequence, BGH result and rawcode-to-instance
+                    // bindings all originate from the freshly locked assessment.
+                    var lockedOrder = new OriginalJassFusionCommitOrder(fresh, target);
+                    if (!transaction.TryVerifyOriginalConditions(lockedOrder,
                         out reason))
                         return Rejected(string.IsNullOrWhiteSpace(reason)
                             ? "잠금된 원본 상태의 추가 조건 재검증이 완료되지 않았습니다."
                             : reason);
 
-                    // Never pass the caller-owned order to the world adapter: rebuild
-                    // an immutable spend order from the locked authoritative plan.
-                    var lockedOrder = new OriginalJassFusionCommitOrder(fresh, target);
                     if (!transaction.TryApplyOriginalFusion(lockedOrder, out reason))
                         return Rejected(string.IsNullOrWhiteSpace(reason)
                             ? "원본 재료 소비·생성 거래가 거절됐습니다." : reason);
