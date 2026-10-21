@@ -25,6 +25,9 @@ namespace Ordr.Mobile.Unity
             new List<MobileManualOffer>().AsReadOnly();
         private MobileFusionPreview pendingFusion;
         private MobileManualOffer pendingEconomy;
+        private bool showOriginalJassRecipes;
+        private IReadOnlyList<JassFusionReadiness> originalJassPreview =
+            new List<JassFusionReadiness>().AsReadOnly();
 
         private void Awake()
         {
@@ -164,6 +167,7 @@ namespace Ordr.Mobile.Unity
         private void DrawFusion()
         {
             GUILayout.Label("보유 유닛을 바탕으로 조합식을 보여줍니다. 재료 소비는 확인 버튼에서만 실행합니다.");
+            DrawOriginalJassAudit();
             if (!controller.ManualActions.HasFusionService)
                 GUILayout.Label("원작 조합식·재료·비용 시스템 미연결");
             else if (!controller.ManualActions.HasExecutableFusionService)
@@ -213,6 +217,51 @@ namespace Ordr.Mobile.Unity
             }
         }
 
+        private void DrawOriginalJassAudit()
+        {
+            var labels = controller.OriginalUnitRawcodes;
+            var planner = controller.OriginalFusionPlanner;
+            if (labels == null) return;
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label("원본 W3X 유닛 ID 대응 " + labels.Count + "종 (이름 근거, 소비 미승인)");
+            if (planner == null)
+            {
+                GUILayout.Label("원본 JASS 등록식 JSON 복원 전: 도감 7종만 미리보기 가능.");
+                GUILayout.Label("tools/unpack_ordered_jass_fusions.py 실행 후 Unity 데이터 동기화 필요.");
+                GUILayout.EndVertical();
+                return;
+            }
+            GUILayout.Label("원본 JASS 조합 등록 " + planner.RegistrationCount +
+                "건. 재료·특수조건 미확인 시 제작 금지.");
+            if (GUILayout.Button(showOriginalJassRecipes ?
+                "원본 조합 확인 목록 닫기" : "원본 조합 확인 목록 보기", GUILayout.MinHeight(48)))
+            {
+                showOriginalJassRecipes = !showOriginalJassRecipes;
+                RefreshCurrent();
+            }
+            if (showOriginalJassRecipes)
+            {
+                int visible = Math.Min(18, originalJassPreview.Count);
+                GUILayout.Label("결과 이름이 확인된 " + originalJassPreview.Count +
+                    "건 중 " + visible + "건 표시. 제작할 수 있다는 뜻은 아닙니다.");
+                for (int i = 0; i < visible; i++)
+                {
+                    var result = originalJassPreview[i];
+                    GUILayout.BeginVertical(GUI.skin.box);
+                    GUILayout.Label(result.ResultName + " [" + result.AbilityRawcode + "]");
+                    foreach (var material in result.Materials)
+                        GUILayout.Label(material.Name + " " + material.OwnedCount +
+                            " / " + material.RequiredCount);
+                    GUILayout.Label("골드 " + result.GoldCost +
+                        " / 목재 " + result.LumberCost);
+                    if (result.BlockingReasons.Count > 0)
+                        GUILayout.Label("미확인: " + result.BlockingReasons[0]);
+                    GUILayout.EndVertical();
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
         private void DrawEconomy(ManualEconomyCategory category)
         {
             GUILayout.Label("가격·확률·횟수는 원작 서비스가 판정합니다. 자동 구매/도박/위습 사용 없음.");
@@ -253,7 +302,12 @@ namespace Ordr.Mobile.Unity
         {
             if (Combat == null) return;
             if (currentTab == Tab.Fusion)
+            {
                 fusionOffers = controller.ManualActions.PreviewFusion(Combat.MobileUnitSnapshot());
+                if (showOriginalJassRecipes && controller.OriginalFusionPlanner != null)
+                    originalJassPreview = controller.OriginalFusionPlanner.AssessNamedResults(
+                        Combat.MobileUnitSnapshot(), null, null);
+            }
             else if (currentTab == Tab.Shop || currentTab == Tab.Gambling || currentTab == Tab.Wisp)
                 economyOffers = controller.ManualActions.ListEconomyOffers(ToEconomy(currentTab));
         }
