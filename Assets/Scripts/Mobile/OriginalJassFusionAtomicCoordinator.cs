@@ -64,11 +64,20 @@ namespace Ordr.Mobile.Mobile
                     // Special-condition evaluator and verified object map are
                     // required by the planner. They must read this same locked
                     // player state; otherwise the world adapter must decline.
-                    var fresh = planner.Assess(order.AbilityRawcode, owned, gold, lumber);
+                    JassFusionReadiness fresh;
+                    try
+                    {
+                        fresh = planner.Assess(order.AbilityRawcode, owned, gold, lumber);
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        return Rejected("원본에 등록되지 않은 조합 능력입니다.");
+                    }
                     if (!fresh.IsReadyForUserConfirmation)
                         return Rejected("확정 시점의 원작 조건 불충족: " +
                             fresh.BlockingReasons[0]);
-                    if (fresh.ResultUnitId != order.ResultUnitId ||
+                    if (fresh.AbilityRawcode != order.AbilityRawcode ||
+                        fresh.ResultUnitId != order.ResultUnitId ||
                         fresh.ResultRawcode != order.ResultRawcode ||
                         fresh.GoldCost != order.GoldCost ||
                         fresh.LumberCost != order.LumberCost ||
@@ -89,7 +98,10 @@ namespace Ordr.Mobile.Mobile
                             ? "잠금된 원본 상태의 추가 조건 재검증이 완료되지 않았습니다."
                             : reason);
 
-                    if (!transaction.TryApplyOriginalFusion(order, out reason))
+                    // Never pass the caller-owned order to the world adapter: rebuild
+                    // an immutable spend order from the locked authoritative plan.
+                    var lockedOrder = new OriginalJassFusionCommitOrder(fresh, target);
+                    if (!transaction.TryApplyOriginalFusion(lockedOrder, out reason))
                         return Rejected(string.IsNullOrWhiteSpace(reason)
                             ? "원본 재료 소비·생성 거래가 거절됐습니다." : reason);
                     transaction.Commit();
