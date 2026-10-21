@@ -113,6 +113,22 @@ namespace Ordr.Mobile.Mobile
         public ManualActionResult ConfirmFusion(string abilityRawcode,
             IReadOnlyList<long> selectedMaterialIds)
         {
+            try
+            {
+                return ConfirmFusionCore(abilityRawcode, selectedMaterialIds);
+            }
+            catch (Exception ex)
+            {
+                // The authoritative transaction must rollback on any exception.
+                // The manual UI must never crash or claim success on rejection.
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "원본 조합 요청이 중단됐습니다: " + ex.Message);
+            }
+        }
+
+        private ManualActionResult ConfirmFusionCore(string abilityRawcode,
+            IReadOnlyList<long> selectedMaterialIds)
+        {
             if (transaction == null)
                 return ManualActionResult.Unavailable("원본 조합 재료/자원 원자적 거래 서비스");
             if (selectedMaterialIds == null)
