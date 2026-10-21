@@ -219,7 +219,23 @@ namespace Ordr.Mobile.Unity
             }
         }
 
-        // 구현된 원작 물리/마법·스킬 피해 계산기와 난수 공급원을 연결한 후 호출한다.
+        // 원본 2.323[C] 맵에서 추출한 상수를 사용하는 전투 계산기 연동.
+        // 각 캐릭터·적의 수치와 미확정 공식에 대해서는 검증된 공급자가 필요.
+        public void ConfigureOriginal323DamageRuntime(
+            IOrdr323VerifiedHitSource verifiedHits,
+            IOrdr323VerifiedModifierRules verifiedModifiers,
+            IOrdr323VerifiedDamageQuantization quantization,
+            ICombatProcRandom random)
+        {
+            if (Units == null || Skills == null)
+                throw new InvalidOperationException("도감 JSON 로딩이 완료되지 않았습니다.");
+            if (Combat != null)
+                throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
+            ConfigureRuntimeWithWorld(Ordr323DamageWorldBinding.Create(
+                Units, Skills, verifiedHits, verifiedModifiers, quantization, random));
+        }
+
+        // 다른 별도 검증 계산기를 사용하던 기존 호출자와 호환.
         public void ConfigureRuntime(IOriginalDamageResolver verifiedBasicFormula,
             IVerifiedCharacterSkillDamageResolver verifiedSkillFormula,
             ICombatProcRandom random)
@@ -228,8 +244,17 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("도감 JSON 로딩이 완료되지 않았습니다.");
             if (Combat != null)
                 throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
-            Combat = new CharacterCombatRuntime(Units, Skills,
-                verifiedBasicFormula, verifiedSkillFormula, random);
+            ConfigureRuntimeWithWorld(new CharacterCombatRuntime(Units, Skills,
+                verifiedBasicFormula, verifiedSkillFormula, random));
+        }
+
+        private void ConfigureRuntimeWithWorld(CharacterCombatRuntime world)
+        {
+            if (Units == null || Skills == null || world == null)
+                throw new InvalidOperationException("전투 데이터와 원본 계산기가 필요합니다.");
+            if (Combat != null)
+                throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
+            Combat = world;
             Combat.ConfigureVerifiedUnitAttackProvider(verifiedUnitAttackSource);
             Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
             Combat.ConfigureStoryDeployment(storyDispatchRules);

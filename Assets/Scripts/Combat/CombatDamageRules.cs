@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
@@ -14,10 +15,19 @@ namespace Ordr.Mobile.Combat
             IReadOnlyList<CombatEffect> targetEffects);
     }
 
+    // 자원/스킬 쿨타임을 소비하기 *전* 사용할 수 없는 피해식을 차단.
+    // 실제 피해 타깃·상태를 포함한 최종 실행 승인과는 별도로 관리한다.
+    public interface IOriginalSkillDamagePreflight
+    {
+        bool CanResolveSkillDamage(CharacterSkillProfile profile,
+            ImportedCombatSkill skill, ImportedCombatEffect effect);
+    }
+
     // 원본 피해 공식을 연결하는 공통 입구. 모든 스킬/평타가 동일한 실시간
     // 대상 상태를 참조하게 하며, 미연결 수식은 예외로 정직하게 보류한다.
     public sealed class CombatDamageRulesAdapter :
-        IOriginalDamageResolver, IVerifiedCharacterSkillDamageResolver
+        IOriginalDamageResolver, IVerifiedCharacterSkillDamageResolver,
+        IOriginalSkillDamagePreflight
     {
         private readonly IOriginalCombatDamageRules originalRules;
         private readonly Func<string, CombatStatusEngine> getStatus;
@@ -57,6 +67,16 @@ namespace Ordr.Mobile.Combat
             if (damage < 0)
                 throw new InvalidOperationException("원작 스킬 피해 공식이 음수를 반환했습니다.");
             return damage;
+        }
+
+        public bool CanResolveSkillDamage(CharacterSkillProfile profile,
+            ImportedCombatSkill skill, ImportedCombatEffect effect)
+        {
+            var verified = originalRules as IOriginalSkillDamagePreflight;
+            // 보수적 차단: 이 어댑터에 피해 검증기가 없으면
+            // 액티브 스킬의 자원소모를 허용하지 않는다.
+            return verified != null && verified.CanResolveSkillDamage(
+                profile, skill, effect);
         }
 
         private static IReadOnlyList<CombatEffect> EmptyEffects()

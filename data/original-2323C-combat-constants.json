@@ -1,0 +1,97 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "source": "war3mapMisc.txt",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceMiscSha256": "131d8ca9c3b978d404a325a1f6f34ec79e97c8fc90cef491dab2608180df3223",
+  "defenseArmor": 0.02,
+  "negativeArmorJassInverse": {
+    "powerBase": 0.94,
+    "maximumMultiplier": 1.71,
+    "source": "war3map.j BdV 8434-8457",
+    "scope": "script inverse helper, actual Warcraft engine not runtime verified"
+  },
+  "damageBonusColumnOrder": [
+    "small",
+    "medium",
+    "large",
+    "fortified",
+    "normal",
+    "hero",
+    "divine",
+    "unarmored"
+  ],
+  "damageBonusRows": {
+    "Spells": [
+      1,
+      1,
+      0.85,
+      0.9,
+      1,
+      0.8,
+      0.9,
+      0.4
+    ],
+    "Melee": [
+      1,
+      1,
+      1,
+      0.75,
+      1.25,
+      1,
+      0.9,
+      0.8
+    ],
+    "Pierce": [
+      1,
+      1,
+      1.25,
+      1,
+      0.75,
+      0.9,
+      1,
+      0.6
+    ],
+    "Siege": [
+      1,
+      1,
+      0.75,
+      1.25,
+      1,
+      0.8,
+      1,
+      0.6
+    ],
+    "Magic": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      0.8,
+      0.9,
+      0.4
+    ],
+    "Chaos": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "Hero": [
+      1.05,
+      1.05,
+      1.05,
+      1.05,
+      1.05,
+      1.05,
+      1.05,
+      1.05
+    ]
+  },
+  "status": "map-extracted-confirmed, no Unity runtime verification"
+}

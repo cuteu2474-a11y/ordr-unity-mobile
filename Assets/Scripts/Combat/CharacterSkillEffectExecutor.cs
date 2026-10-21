@@ -220,6 +220,10 @@ namespace Ordr.Mobile.Combat
                 if (IsDamage(component.Type))
                 {
                     if (damageFormula is RejectUnverifiedDamageFormula) return false;
+                    var preflight = damageFormula as IOriginalSkillDamagePreflight;
+                    if (preflight != null &&
+                        !preflight.CanResolveSkillDamage(profile, skill, component))
+                        return false;
                     if (IsTimedDamage(component) &&
                         !HasVerifiedTiming(profile, skill, component)) return false;
                 }
