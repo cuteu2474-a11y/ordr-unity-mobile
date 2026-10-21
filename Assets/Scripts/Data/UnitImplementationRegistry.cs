@@ -78,6 +78,7 @@ namespace Ordr.Mobile.Data
             new Dictionary<string, List<UnitImplementationDefinition>>(StringComparer.Ordinal);
         private readonly List<UnitImplementationDefinition> ordered =
             new List<UnitImplementationDefinition>();
+        private readonly List<string> gradeOrder = new List<string>();
 
         public int Count { get { return ordered.Count; } }
         public int DetailedProfiles { get; private set; }
@@ -108,7 +109,7 @@ namespace Ordr.Mobile.Data
             return new List<UnitImplementationDefinition>().AsReadOnly();
         }
 
-        public IEnumerable<string> Grades { get { return byGrade.Keys; } }
+        public IReadOnlyList<string> Grades { get { return gradeOrder.AsReadOnly(); } }
 
         public static UnitImplementationRegistry Combine(
             CharacterUnitCatalog units, CharacterSkillCatalog skills,
@@ -133,6 +134,7 @@ namespace Ordr.Mobile.Data
                 {
                     gradeUnits = new List<UnitImplementationDefinition>();
                     result.byGrade.Add(unit.Grade, gradeUnits);
+                    result.gradeOrder.Add(unit.Grade);
                 }
                 gradeUnits.Add(definition);
                 if (profile != null)
