@@ -12,18 +12,33 @@ namespace Ordr.Mobile.Combat
         public DamageSchool School { get; }
         public DamageTraits Traits { get; }
 
-        public BasicDamageRequest(string unitInstanceId, UnitCombatSpec unit, string targetInstanceId)
+        public BasicDamageRequest(string unitInstanceId, UnitCombatSpec unit,
+            string targetInstanceId)
+            : this(unitInstanceId, unit == null ? null : unit.UnitRawCode,
+                unit == null ? null : unit.BasicAttack, targetInstanceId) { }
+
+        public BasicDamageRequest(string unitInstanceId, string unitRawCode,
+            BasicAttackSpec effectiveAttack, string targetInstanceId)
         {
-            if (string.IsNullOrWhiteSpace(unitInstanceId) || string.IsNullOrWhiteSpace(targetInstanceId))
+            if (string.IsNullOrWhiteSpace(unitInstanceId) ||
+                string.IsNullOrWhiteSpace(targetInstanceId))
                 throw new ArgumentException("공격자와 대상 ID가 필요합니다.");
-            if (unit == null) throw new ArgumentNullException(nameof(unit));
+            if (effectiveAttack == null)
+                throw new ArgumentNullException(nameof(effectiveAttack));
             UnitInstanceId = unitInstanceId;
-            UnitRawCode = unit.UnitRawCode;
+            UnitRawCode = unitRawCode;
             TargetInstanceId = targetInstanceId;
-            NominalAttackPower = unit.BasicAttack.NominalAttackPower;
-            School = unit.BasicAttack.School;
-            Traits = unit.BasicAttack.Traits;
+            NominalAttackPower = effectiveAttack.NominalAttackPower;
+            School = effectiveAttack.School;
+            Traits = effectiveAttack.Traits;
         }
+    }
+
+    // 원작 버프/변신이 평타 공격력·속도·사거리를 바꾸면 외부 검증 정책이 계산한다.
+    public interface IOriginalUnitAttackModifiers
+    {
+        BasicAttackSpec Resolve(string attackerId, BasicAttackSpec originalStats,
+            IReadOnlyList<CombatEffect> attackerEffects);
     }
 
     // 워크래프트 III 공격 타입/방어력·마법 저항·특성강화 및 반올림 규칙을
@@ -64,6 +79,8 @@ namespace Ordr.Mobile.Combat
         private readonly CombatResolution resolution;
         private readonly CombatSkillTriggerEngine skillTriggers;
         private readonly IOriginalDamageResolver damageResolver;
+        private IOriginalUnitAttackModifiers originalModifierRules;
+        private Func<string, IReadOnlyList<CombatEffect>> getAttackerEffects;
         private readonly Dictionary<string, RegisteredUnit> units =
             new Dictionary<string, RegisteredUnit>(StringComparer.Ordinal);
 
@@ -76,6 +93,25 @@ namespace Ordr.Mobile.Combat
             this.damageResolver = damageResolver ?? throw new ArgumentNullException(nameof(damageResolver));
             if (scheduler.Time != skillTriggers.Time)
                 throw new ArgumentException("공격과 스킬 시계가 일치해야 합니다.");
+        }
+
+        public void ConfigureVerifiedModifiers(IOriginalUnitAttackModifiers rules,
+            Func<string, IReadOnlyList<CombatEffect>> effectLookup)
+        {
+            originalModifierRules = rules ?? throw new ArgumentNullException(nameof(rules));
+            getAttackerEffects = effectLookup ??
+                throw new ArgumentNullException(nameof(effectLookup));
+        }
+
+        public BasicAttackSpec EffectiveAttack(string instanceId)
+        {
+            RegisteredUnit unit;
+            if (!units.TryGetValue(instanceId, out unit))
+                throw new InvalidOperationException("미등록 공격자");
+            if (originalModifierRules == null) return unit.Spec.BasicAttack;
+            return originalModifierRules.Resolve(instanceId, unit.Spec.BasicAttack,
+                getAttackerEffects(instanceId)) ??
+                throw new InvalidOperationException("공격력 보정 수치 미확인");
         }
 
         public void RegisterUnit(string instanceId, UnitCombatSpec spec, double firstAttackDelay)
@@ -98,6 +134,57 @@ namespace Ordr.Mobile.Combat
                 if (triggerRegistered) skillTriggers.RemoveUnit(instanceId);
                 throw;
             }
+        }
+
+        // 원작 조건이 게임 이벤트에서 충족되었음을 별도 검증한 후에만 호출.
+        public bool TryActivateVerifiedCondition(string instanceId, string skillId)
+        {
+            RegisteredUnit unit;
+            if (!units.TryGetValue(instanceId, out unit))
+                throw new InvalidOperationException("미등록 캐릭터 이벤트");
+            bool found = false;
+            foreach (var skill in unit.Spec.Skills)
+                if (skill.RawCode == skillId &&
+                    skill.Trigger == SkillTriggerKind.VerifiedCondition)
+                { found = true; break; }
+            if (!found) return false;
+            if (unit.NextEventSequence == long.MaxValue)
+                throw new OverflowException("스킬 이벤트 순번 초과");
+            return skillTriggers.TryActivate(instanceId, skillId,
+                SkillTriggerKind.VerifiedCondition, ++unit.NextEventSequence);
+        }
+
+        public double? NextPeriodicSkillAt(string instanceId, string skillId)
+        {
+            RegisteredUnit unit;
+            if (!units.TryGetValue(instanceId, out unit)) return null;
+            foreach (var skill in unit.Spec.Skills)
+                if (skill.RawCode == skillId &&
+                    skill.Trigger == SkillTriggerKind.Periodic)
+                    return skillTriggers.NextReadyAt(instanceId, skillId);
+            return null;
+        }
+
+        // 평타의 쿨타임을 소모하지 않는 주기 스킬 발동.
+        // 확률 판정에 실패한 경우에도 주기 시각은 다음으로 이동한다.
+        public bool TryActivatePeriodicSkill(string instanceId, string skillId)
+        {
+            RegisteredUnit unit;
+            if (!units.TryGetValue(instanceId, out unit))
+                throw new InvalidOperationException("미등록 유닛의 주기 스킬입니다.");
+            double? at = NextPeriodicSkillAt(instanceId, skillId);
+            if (!at.HasValue || at.Value > scheduler.Time) return false;
+            if (unit.NextEventSequence == long.MaxValue)
+                throw new OverflowException("유닛 스킬 이벤트 순번 초과");
+            return skillTriggers.TryActivate(instanceId, skillId,
+                SkillTriggerKind.Periodic, ++unit.NextEventSequence);
+        }
+
+        public double? NextAttackAt(string instanceId)
+        {
+            if (string.IsNullOrWhiteSpace(instanceId))
+                throw new ArgumentException("공격자 ID가 필요합니다.", nameof(instanceId));
+            return units.ContainsKey(instanceId) ? scheduler.NextReadyAt(instanceId) : null;
         }
 
         public void RemoveUnit(string instanceId)
@@ -151,11 +238,12 @@ namespace Ordr.Mobile.Combat
                 var tracked = resolution.GetEnemy(candidate.Id);
                 if (tracked != null && tracked.IsAlive) validCandidates.Add(candidate);
             }
+            BasicAttackSpec effective = EffectiveAttack(attackerInstanceId);
             string targetId = CombatTargeting.Select(validCandidates,
-                unit.Spec.BasicAttack.Range, TargetPriority.Nearest);
+                effective.Range, TargetPriority.Nearest);
             if (!string.IsNullOrWhiteSpace(verifiedPreferredTargetId))
             {
-                double maximumSquared = unit.Spec.BasicAttack.Range * unit.Spec.BasicAttack.Range;
+                double maximumSquared = effective.Range * effective.Range;
                 foreach (var candidate in validCandidates)
                     if (candidate.Id == verifiedPreferredTargetId &&
                         candidate.DistanceSquared <= maximumSquared)
@@ -170,13 +258,14 @@ namespace Ordr.Mobile.Combat
 
             // 피해 계산 오류가 발생하면 공격 쿨타임은 소비하지 않는다.
             long resolved = damageResolver.ResolveBasicDamage(
-                new BasicDamageRequest(attackerInstanceId, unit.Spec, targetId), enemy);
+                new BasicDamageRequest(attackerInstanceId, unit.Spec.UnitRawCode,
+                    effective, targetId), enemy);
             if (resolved < 0) throw new InvalidOperationException("최종 피해량이 음수입니다.");
             if (unit.NextEventSequence == long.MaxValue)
                 throw new OverflowException("전투 이벤트 순번을 더 늘릴 수 없습니다.");
             long actual;
             if (!resolution.TryAttack(attackerInstanceId, targetId,
-                unit.Spec.BasicAttack.IntervalSeconds, resolved, out actual)) return false;
+                effective.IntervalSeconds, resolved, out actual)) return false;
             long eventSequence = ++unit.NextEventSequence;
             var activated = new List<string>();
             foreach (var skill in unit.Spec.Skills)

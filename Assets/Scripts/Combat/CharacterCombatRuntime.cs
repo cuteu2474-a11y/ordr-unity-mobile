@@ -38,15 +38,106 @@ namespace Ordr.Mobile.Combat
             new Dictionary<string, SpatialCombatEnemy>(StringComparer.Ordinal);
         private readonly Dictionary<string, CombatStatusEngine> statuses =
             new Dictionary<string, CombatStatusEngine>(StringComparer.Ordinal);
+        private readonly Dictionary<string, CombatStatusEngine> unitStatuses =
+            new Dictionary<string, CombatStatusEngine>(StringComparer.Ordinal);
         private readonly Dictionary<string, int> armorBreakStacks =
             new Dictionary<string, int>(StringComparer.Ordinal);
         private readonly List<CharacterCombatEvent> events = new List<CharacterCombatEvent>();
+        private readonly CombatAuraSystem auras = new CombatAuraSystem();
         private readonly List<CharacterCombatEvent> pendingCommandEvents =
             new List<CharacterCombatEvent>();
         private bool processingStep;
+        private double pendingStepSeconds;
         private IOriginalStoryDispatchPort storyDispatch;
         private IOriginalVerifiedUnitAttackProvider verifiedAttackProvider;
+        private IOriginalSpecialSkillTriggerMapping specialTriggerMapping;
+        private IOriginalSpecialSkillEventRules specialEventRules;
+        private IOriginalCombatTargetSelectionRules targetSelectionRules;
         public MobileCombatAutomation MobileAutomation { get; } = new MobileCombatAutomation();
+
+        public void ConfigureVerifiedSpecialEffects(
+            IOriginalSpecialCombatEffectHandler handler)
+        {
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+            effectExecutor.ConfigureVerifiedSpecialEffects(handler);
+        }
+
+        public void ConfigureVerifiedUnitAttackModifiers(IOriginalUnitAttackModifiers rules)
+        {
+            if (rules == null) throw new ArgumentNullException(nameof(rules));
+            attackPipeline.ConfigureVerifiedModifiers(rules, id =>
+            {
+                CombatStatusEngine state;
+                if (!unitStatuses.TryGetValue(id, out state))
+                    throw new KeyNotFoundException("공격자 상태 정보가 없습니다.");
+                return state.Snapshot();
+            });
+        }
+
+        public CombatStatusEngine UnitStatusOf(long id)
+        {
+            CombatStatusEngine value;
+            if (!unitStatuses.TryGetValue(InstanceKey(id), out value))
+                throw new KeyNotFoundException("유닛 효과 정보가 없습니다.");
+            return value;
+        }
+
+        public void ApplyVerifiedUnitEffect(long id, CombatEffect effect)
+        {
+            if (effect == null) throw new ArgumentNullException(nameof(effect));
+            UnitStatusOf(id).Apply(effect);
+        }
+
+        // 기본 공격을 등록하기 전에 특수 이벤트 매핑을 제공한다.
+        // 조건 미확인 스킬은 자동으로 일반 평타 스킬로 바꾸지 않는다.
+        public void ConfigureVerifiedSpecialTriggers(
+            IOriginalSpecialSkillTriggerMapping mapping,
+            IOriginalSpecialSkillEventRules eventRules)
+        {
+            if (characters.Count != 0)
+                throw new InvalidOperationException(
+                    "기존 캐릭터 등록 전에 특수 스킬 규칙을 설정하세요.");
+            specialTriggerMapping = mapping ??
+                throw new ArgumentNullException(nameof(mapping));
+            specialEventRules = eventRules ??
+                throw new ArgumentNullException(nameof(eventRules));
+        }
+
+        public void ConfigureVerifiedTargetSelection(
+            IOriginalCombatTargetSelectionRules verifiedRules)
+        {
+            targetSelectionRules = verifiedRules ??
+                throw new ArgumentNullException(nameof(verifiedRules));
+        }
+
+        // 검증된 오라의 원작 반경/효과만 등록한다. 대상별 효과는 매번 재계산된다.
+        public void AddVerifiedEnemyAura(CombatAuraEmitter source)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (!characters.ContainsKey(source.UnitInstanceId))
+                throw new KeyNotFoundException("오라를 사용하는 캐릭터가 없습니다.");
+            auras.Add(source);
+            RefreshEnemyAuras();
+        }
+
+        public void RemoveVerifiedEnemyAura(long unitInstanceId, string auraId)
+        {
+            auras.Remove(unitInstanceId, auraId);
+            RefreshEnemyAuras();
+        }
+
+        private void RefreshEnemyAuras()
+        {
+            auras.Refresh(statuses, enemies.Values,
+                id => characters.ContainsKey(id)
+                    ? (UnitState?)roster.Get(id) : null);
+        }
+
+        // 다중 타격/지속 피해 실행 시각은 원작 출처를 가진 공급자만 연결한다.
+        public void ConfigureVerifiedSkillHitTiming(IOriginalSkillHitTimingProvider rules)
+        {
+            effectExecutor.ConfigureVerifiedHitTiming(rules);
+        }
 
         public void ConfigureStoryDeployment(IOriginalStoryDispatchPort verifiedStory)
         {
@@ -106,6 +197,7 @@ namespace Ordr.Mobile.Combat
             }
         }
         public double Time { get { return scheduler.Time; } }
+        public double PendingSimulationSeconds { get { return pendingStepSeconds; } }
         public IReadOnlyList<CharacterCombatEvent> LastEvents { get { return events.AsReadOnly(); } }
 
         // 프레임·HUD·모바일 행동 정책은 유닛과 적의 현재 상태만 조회할 수 있다.
@@ -166,6 +258,7 @@ namespace Ordr.Mobile.Combat
                 Id = id, Catalog = catalogUnit, Profile = profile,
                 Abilities = new CharacterActiveAbilities(profile)
             });
+            unitStatuses.Add(InstanceKey(id), new CombatStatusEngine());
             bool placed;
             try
             {
@@ -190,6 +283,7 @@ namespace Ordr.Mobile.Combat
                 if (characters[id].AttackReady)
                     attackPipeline.RemoveUnit(InstanceKey(id));
                 characters.Remove(id);
+                unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
                 throw;
             }
@@ -235,7 +329,8 @@ namespace Ordr.Mobile.Combat
             if (instance.AttackReady)
                 throw new InvalidOperationException("공격 스펙이 이미 등록되어 있습니다.");
             var mapping = CharacterCombatMapping.Build(instance.Catalog.Id,
-                instance.Profile, verifiedStats, originalUnitRawcode);
+                instance.Profile, verifiedStats, originalUnitRawcode,
+                specialTriggerMapping);
             attackPipeline.RegisterUnit(InstanceKey(instanceId), mapping.AttackSpec,
                 firstAttackDelay);
             instance.Mapping = mapping;
@@ -312,11 +407,26 @@ namespace Ordr.Mobile.Combat
             if (caster.Profile != null)
                 foreach (var candidate in caster.Profile.Skills)
                     if (candidate.Id == skillId &&
-                        !effectExecutor.CanAttemptWithConfiguredFormula(candidate))
+                        !effectExecutor.CanAttemptWithConfiguredFormula(
+                            caster.Profile, candidate))
                         return AbilityCastResult.UnsupportedEffect;
 
             ImportedCombatSkill skill;
-            AbilityCastResult result = caster.Abilities.TryCast(skillId, hasTarget, out skill);
+            bool verifiedTiming = false;
+            ImportedCombatSkill selectedSkill = null;
+            if (caster.Profile != null)
+                foreach (var candidate in caster.Profile.Skills)
+                    if (candidate.Id == skillId)
+                    {
+                        selectedSkill = candidate;
+                        verifiedTiming = effectExecutor.HasVerifiedTimings(
+                            caster.Profile, candidate);
+                        break;
+                    }
+            AbilityCastResult result = caster.Abilities.TryCast(
+                skillId, hasTarget, verifiedTiming,
+                c => effectExecutor.CanHandleSpecialComponent(
+                    caster.Profile, selectedSkill, c), out skill);
             if (result != AbilityCastResult.Cast) return result;
 
             UnitState position = roster.Get(instanceId);
@@ -328,6 +438,50 @@ namespace Ordr.Mobile.Combat
                     pendingCommandEvents.Add(events[index]);
             RemoveDefeatedEnemies();
             return result;
+        }
+
+        // 게임 이벤트(스택/변신/피격 등)가 원본 조건을 충족했다고 승인한 때만
+        // 해당 캐릭터의 이벤트형 스킬을 실행한다.
+        public bool TryActivateVerifiedSpecialEvent(long instanceId,
+            string skillId, string primaryEnemyId)
+        {
+            if (game.Phase != SessionPhase.Running || specialEventRules == null)
+                return false;
+            if (string.IsNullOrWhiteSpace(skillId) ||
+                string.IsNullOrWhiteSpace(primaryEnemyId)) return false;
+            CharacterInstance unit;
+            SpatialCombatEnemy enemy;
+            if (!characters.TryGetValue(instanceId, out unit) ||
+                !enemies.TryGetValue(primaryEnemyId, out enemy) ||
+                !enemy.Enemy.IsAlive || unit.Mapping == null ||
+                unit.Profile == null || !CanAttackInThisLane(unit, enemy))
+                return false;
+            ImportedCombatSkill skill;
+            if (!unit.Mapping.ActivatedSkills.TryGetValue(skillId, out skill))
+                return false;
+            if (attackPipeline.NextAttackAt(InstanceKey(instanceId)) == null ||
+                !effectExecutor.CanAttemptWithConfiguredFormula(unit.Profile, skill))
+                return false;
+            var position = roster.Get(instanceId);
+            double dx = enemy.X - position.X;
+            double dy = enemy.Y - position.Y;
+            double distanceSquared = dx * dx + dy * dy;
+            double range = attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range;
+            if (distanceSquared > range * range ||
+                !specialEventRules.CanActivate(unit.Catalog, skill, enemy.Kind,
+                    scheduler.Time))
+                return false;
+            if (!attackPipeline.TryActivateVerifiedCondition(
+                InstanceKey(instanceId), skillId))
+                return false;
+            int before = events.Count;
+            effectExecutor.Execute(InstanceKey(instanceId), unit.Profile,
+                skill, enemy, position.X, position.Y, enemies.Values);
+            if (!processingStep)
+                for (int i = before; i < events.Count; i++)
+                    pendingCommandEvents.Add(events[i]);
+            RemoveDefeatedEnemies();
+            return true;
         }
 
         public CharacterResources ResourcesOf(long instanceId)
@@ -344,7 +498,11 @@ namespace Ordr.Mobile.Combat
             if (!characters.TryGetValue(instanceId, out instance))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터 인스턴스.");
             if (instance.AttackReady) attackPipeline.RemoveUnit(InstanceKey(instanceId));
+            effectExecutor.CancelCaster(InstanceKey(instanceId));
+            auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
+            unitStatuses.Remove(InstanceKey(instanceId));
+            RefreshEnemyAuras();
             roster.Remove(instanceId);
         }
 
@@ -377,6 +535,10 @@ namespace Ordr.Mobile.Combat
             enemies.Add(enemyId, spatial);
             statuses.Add(enemyId, enemy.Status);
             armorBreakStacks.Add(enemyId, 0);
+            RefreshEnemyAuras();
+            pendingCommandEvents.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.EnemySpawned, enemyId, enemyId,
+                null, kind.ToString(), health));
         }
 
         // 실제 게임의 적 이동 루프에서 사용. 스턴은 이동을 막고,
@@ -388,6 +550,7 @@ namespace Ordr.Mobile.Combat
                 throw new KeyNotFoundException("존재하지 않는 적 ID.");
             if (statuses[enemyId].IsStunned()) return false;
             enemy.Move(x, y, progress);
+            RefreshEnemyAuras();
             return true;
         }
 
@@ -398,6 +561,7 @@ namespace Ordr.Mobile.Combat
             if (!enemies.TryGetValue(enemyId, out enemy))
                 throw new KeyNotFoundException("존재하지 않는 적 ID.");
             enemy.Move(x, y, progress);
+            RefreshEnemyAuras();
         }
 
         public void ResumeAfterVerifiedFormulaUpdate(long instanceId)
@@ -427,84 +591,251 @@ namespace Ordr.Mobile.Combat
             return leaked;
         }
 
-        // 엔진 시간을 진행하고, 현재 공격할 수 있는 유닛에만 1회씩 자동 공격을 시도한다.
-        // 한 Tick에서 지나간 공격 횟수 추적·원작 공속 가속 공식은 별도 구현 대상이다.
+        // 공격·지속피해·상태효과의 시간을 같은 시계로 진행한다.
+        // 큰 delta에서도 지나간 공격 시점을 순서대로 실행하고 누락하지 않는다.
+        private void AdvanceCombatTime(double seconds)
+        {
+            if (seconds < 0 || double.IsNaN(seconds) || double.IsInfinity(seconds))
+                throw new ArgumentOutOfRangeException(nameof(seconds));
+            effectExecutor.Advance(seconds, elapsed =>
+            {
+                attackPipeline.Advance(elapsed);
+                foreach (var unit in characters.Values)
+                    unit.Abilities.Advance(elapsed);
+                foreach (var status in statuses.Values)
+                    status.Advance(elapsed);
+                foreach (var status in unitStatuses.Values)
+                    status.Advance(elapsed);
+            });
+        }
+
+        private bool CanAttackInThisLane(CharacterInstance unit,
+            SpatialCombatEnemy enemy)
+        {
+            // 크립/해왕류/도전은 별도 출전 허가가 없는 한 일반 전장에 섞이지 않는다.
+            if (enemy.Kind == CharacterEnemyKind.Creep ||
+                enemy.Kind == CharacterEnemyKind.SeaKing ||
+                enemy.Kind == CharacterEnemyKind.Challenge)
+                return false;
+            bool dispatched = IsStoryDeployed(unit.Id);
+            return dispatched
+                ? enemy.Kind == CharacterEnemyKind.Story
+                : enemy.Kind == CharacterEnemyKind.Line ||
+                  enemy.Kind == CharacterEnemyKind.Boss ||
+                  enemy.Kind == CharacterEnemyKind.Enraged;
+        }
+
+        private List<TargetCandidate> BuildTargetCandidates(CharacterInstance unit)
+        {
+            var position = roster.Get(unit.Id);
+            var candidates = new List<TargetCandidate>();
+            foreach (var enemy in enemies.Values)
+            {
+                if (!enemy.Enemy.IsAlive || !CanAttackInThisLane(unit, enemy)) continue;
+                double dx = enemy.X - position.X;
+                double dy = enemy.Y - position.Y;
+                double distanceSquared = dx * dx + dy * dy;
+                if (double.IsInfinity(distanceSquared)) continue;
+                candidates.Add(new TargetCandidate(enemy.Id, distanceSquared,
+                    enemy.PathProgress, true));
+            }
+            candidates.Sort((a, b) => string.CompareOrdinal(a.Id, b.Id));
+            return candidates;
+        }
+
+        // 현재 표적을 가진 유닛 중 가장 빠른 공격 시점을 찾는다.
+        private double? NextEligibleAttackAt()
+        {
+            double? next = null;
+            foreach (var unit in characters.Values)
+            {
+                if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
+                    unit.Mapping == null) continue;
+                double? at = attackPipeline.NextAttackAt(InstanceKey(unit.Id));
+                var candidates = BuildTargetCandidates(unit);
+                if (CombatTargeting.Select(candidates,
+                    attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range,
+                    TargetPriority.Nearest) == null) continue;
+                if (at.HasValue && (!next.HasValue || at.Value < next.Value))
+                    next = at;
+                foreach (var entry in unit.Mapping.ActivatedSkills)
+                {
+                    if (entry.Value.Trigger != "periodic") continue;
+                    double? scheduled = attackPipeline.NextPeriodicSkillAt(
+                        InstanceKey(unit.Id), entry.Key);
+                    if (scheduled.HasValue &&
+                        (!next.HasValue || scheduled.Value < next.Value))
+                        next = scheduled;
+                }
+            }
+            return next;
+        }
+
+        private int ExecuteReadyAttacks(int budget)
+        {
+            int fired = 0;
+            var ids = new List<long>(characters.Keys);
+            ids.Sort();
+            foreach (long id in ids)
+            {
+                if (fired >= budget) break;
+                CharacterInstance unit = characters[id];
+                if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
+                    unit.Mapping == null) continue;
+                var at = attackPipeline.NextAttackAt(InstanceKey(id));
+                if (!at.HasValue || at.Value > scheduler.Time) continue;
+
+                var candidates = BuildTargetCandidates(unit);
+                string approvedBoss = ChooseApprovedBossTarget(unit, candidates);
+                BasicAttackResult hit;
+                try
+                {
+                    if (!attackPipeline.TryBasicAttack(InstanceKey(id), candidates,
+                        approvedBoss, out hit))
+                        continue;
+                }
+                catch (NotSupportedException ex)
+                {
+                    unit.AttackBlockedByMissingFormula = true;
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EffectDeferred,
+                        InstanceKey(id), null, null,
+                        "평타 피해 공식 미연결: " + ex.Message, 0));
+                    continue;
+                }
+                fired++;
+                events.Add(new CharacterCombatEvent(CharacterCombatEventType.Attack,
+                    InstanceKey(id), hit.TargetId, null, "basic", hit.ActualDamage));
+                SpatialCombatEnemy primary;
+                if (!enemies.TryGetValue(hit.TargetId, out primary))
+                    throw new InvalidOperationException("타격 대상 정보 소실");
+                if (!primary.Enemy.IsAlive)
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EnemyDefeated,
+                        InstanceKey(id), primary.Id, null, "basic", 0));
+                if (unit.Profile == null || unit.Mapping == null) continue;
+                var position = roster.Get(id);
+                foreach (string skillId in hit.ActivatedSkillRawCodes)
+                {
+                    ImportedCombatSkill skill;
+                    if (!unit.Mapping.ActivatedSkills.TryGetValue(skillId, out skill))
+                        continue;
+                    effectExecutor.Execute(InstanceKey(id), unit.Profile,
+                        skill, primary, position.X, position.Y, enemies.Values);
+                }
+            }
+            RemoveDefeatedEnemies();
+            return fired;
+        }
+
+        private int ExecuteReadyPeriodicSkills(int budget)
+        {
+            int processed = 0;
+            var ids = new List<long>(characters.Keys);
+            ids.Sort();
+            foreach (long id in ids)
+            {
+                if (processed >= budget) break;
+                var unit = characters[id];
+                if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
+                    unit.Mapping == null || unit.Profile == null) continue;
+                var candidates = BuildTargetCandidates(unit);
+                var primaryId = CombatTargeting.Select(candidates,
+                    attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range, TargetPriority.Nearest);
+                if (primaryId == null) continue;
+                var skills = new List<string>(unit.Mapping.ActivatedSkills.Keys);
+                skills.Sort(StringComparer.Ordinal);
+                foreach (string skillId in skills)
+                {
+                    if (processed >= budget) break;
+                    ImportedCombatSkill skill = unit.Mapping.ActivatedSkills[skillId];
+                    if (skill.Trigger != "periodic") continue;
+                    double? due = attackPipeline.NextPeriodicSkillAt(
+                        InstanceKey(id), skillId);
+                    if (!due.HasValue || due.Value > scheduler.Time) continue;
+                    // 확률 실패도 한 번의 예정 발동으로 처리해야 같은 시각에 무한 재시도하지 않는다.
+                    bool activated = attackPipeline.TryActivatePeriodicSkill(
+                        InstanceKey(id), skillId);
+                    processed++;
+                    if (!activated) continue;
+                    SpatialCombatEnemy primary;
+                    if (!enemies.TryGetValue(primaryId, out primary) ||
+                        !primary.Enemy.IsAlive) break;
+                    var position = roster.Get(id);
+                    effectExecutor.Execute(InstanceKey(id), unit.Profile,
+                        skill, primary, position.X, position.Y, enemies.Values);
+                    if (!primary.Enemy.IsAlive)
+                    {
+                        primaryId = CombatTargeting.Select(
+                            BuildTargetCandidates(unit),
+                            attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range,
+                            TargetPriority.Nearest);
+                        if (primaryId == null) break;
+                    }
+                }
+            }
+            RemoveDefeatedEnemies();
+            return processed;
+        }
+
+        // API에 전달한 시간은 모두 처리하거나 다음 Step으로 이월한다.
+        // 과도한 프레임 지연 시 전투 시뮬레이션을 조용히 건너뛰지 않는다.
         public IReadOnlyList<CharacterCombatEvent> Step(double deltaSeconds)
         {
             if (game.Phase != SessionPhase.Running)
                 throw new InvalidOperationException("게임이 진행 중이 아닙니다.");
+            if (double.IsNaN(deltaSeconds) || double.IsInfinity(deltaSeconds) ||
+                deltaSeconds < 0 || double.IsInfinity(pendingStepSeconds + deltaSeconds))
+                throw new ArgumentOutOfRangeException(nameof(deltaSeconds));
+            pendingStepSeconds += deltaSeconds;
             events.Clear();
             if (pendingCommandEvents.Count != 0)
             {
                 events.AddRange(pendingCommandEvents);
                 pendingCommandEvents.Clear();
             }
-            attackPipeline.Advance(deltaSeconds);
-            foreach (var unit in characters.Values)
-                unit.Abilities.Advance(deltaSeconds);
-            foreach (var status in statuses.Values) status.Advance(deltaSeconds);
             processingStep = true;
             try
             {
-                // 원작 규칙 승인 후 자동 Q/W/R. 조건 미확인 시 자원·쿨타임을 소비하지 않는다.
-                MobileAutomation.RunAutomaticAbilities(this);
-
-            var ids = new List<long>(characters.Keys);
-            ids.Sort();
-            foreach (long id in ids)
-            {
-                CharacterInstance unit = characters[id];
-                if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
-                    IsStoryDeployed(id)) continue;
-                UnitState position = roster.Get(id);
-                var candidates = new List<TargetCandidate>();
-                foreach (var enemy in enemies.Values)
+                RefreshEnemyAuras();
+                const int maxAttacksPerStep = 8192; // 무한 연산 방지, 잔여 시간은 이월
+                int completed = 0;
+                bool checkCurrentTime = true;
+                while ((checkCurrentTime || pendingStepSeconds > 0) &&
+                       completed < maxAttacksPerStep)
                 {
-                    if (!enemy.Enemy.IsAlive) continue;
-                    double dx = enemy.X - position.X;
-                    double dy = enemy.Y - position.Y;
-                    double distanceSquared = dx * dx + dy * dy;
-                    if (double.IsInfinity(distanceSquared)) continue;
-                    candidates.Add(new TargetCandidate(enemy.Id, distanceSquared,
-                        enemy.PathProgress, true));
+                    checkCurrentTime = false;
+                    double? next = NextEligibleAttackAt();
+                    if (!next.HasValue || next.Value > scheduler.Time + pendingStepSeconds)
+                    {
+                        AdvanceCombatTime(pendingStepSeconds);
+                        pendingStepSeconds = 0;
+                        MobileAutomation.RunAutomaticAbilities(this);
+                        break;
+                    }
+                    double wait = Math.Max(0, next.Value - scheduler.Time);
+                    if (wait > 0)
+                    {
+                        AdvanceCombatTime(wait);
+                        pendingStepSeconds -= wait;
+                    }
+                    MobileAutomation.RunAutomaticAbilities(this);
+                    int fired = ExecuteReadyAttacks(maxAttacksPerStep - completed);
+                    completed += fired;
+                    int periodic = ExecuteReadyPeriodicSkills(
+                        maxAttacksPerStep - completed);
+                    completed += periodic;
+                    if (fired == 0 && periodic == 0)
+                    {
+                        // 자동 시전으로 적이 사라지는 경우 등 다음 시간으로 진행.
+                        AdvanceCombatTime(pendingStepSeconds);
+                        pendingStepSeconds = 0;
+                        break;
+                    }
+                    if (pendingStepSeconds == 0) break;
                 }
-                string originalApprovedBoss = ChooseApprovedBossTarget(unit, candidates);
-                BasicAttackResult hit;
-                try
-                {
-                    if (!attackPipeline.TryBasicAttack(InstanceKey(id), candidates,
-                        originalApprovedBoss, out hit))
-                        continue;
-                }
-                catch (NotSupportedException ex)
-                {
-                    unit.AttackBlockedByMissingFormula = true;
-                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
-                        InstanceKey(id), null, null,
-                        "평타 원본 피해 공식 미연결: " + ex.Message, 0));
-                    continue;
-                }
-                events.Add(new CharacterCombatEvent(CharacterCombatEventType.Attack,
-                    InstanceKey(id), hit.TargetId, null, "basic", hit.ActualDamage));
-                SpatialCombatEnemy primary;
-                if (!enemies.TryGetValue(hit.TargetId, out primary))
-                    throw new InvalidOperationException("타격 직후 대상 좌표가 소실되었습니다.");
-                if (!primary.Enemy.IsAlive)
-                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.EnemyDefeated,
-                        InstanceKey(id), primary.Id, null, "basic", 0));
-
-                if (unit.Profile == null || unit.Mapping == null) continue;
-                foreach (string skillId in hit.ActivatedSkillRawCodes)
-                {
-                    ImportedCombatSkill skill;
-                    if (!unit.Mapping.ActivatedSkills.TryGetValue(skillId, out skill))
-                        continue;
-                    effectExecutor.Execute(InstanceKey(id), unit.Profile, skill,
-                        primary, position.X, position.Y, enemies.Values);
-                }
-            }
-            RemoveDefeatedEnemies();
-            return events.AsReadOnly();
+                RemoveDefeatedEnemies();
+                return events.AsReadOnly();
             }
             finally
             {
@@ -515,11 +846,42 @@ namespace Ordr.Mobile.Combat
         private string ChooseApprovedBossTarget(CharacterInstance unit,
             List<TargetCandidate> candidates)
         {
+            if (targetSelectionRules != null)
+            {
+                var contacts = new List<VerifiedTargetContact>();
+                foreach (var candidate in candidates)
+                {
+                    SpatialCombatEnemy enemy;
+                    if (!enemies.TryGetValue(candidate.Id, out enemy) ||
+                        !enemy.Enemy.IsAlive) continue;
+                    contacts.Add(new VerifiedTargetContact(candidate, enemy.Kind));
+                }
+                string chosen;
+                if (targetSelectionRules.TryChoose(unit.Catalog,
+                    contacts.AsReadOnly(),
+                    attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range,
+                    out chosen))
+                {
+                    if (string.IsNullOrWhiteSpace(chosen))
+                        throw new InvalidOperationException("검증된 타깃 정책이 빈 ID를 반환했습니다.");
+                    bool eligible = false;
+                    double maxRange = attackPipeline.EffectiveAttack(
+                        InstanceKey(unit.Id)).Range;
+                    foreach (var contact in contacts)
+                        if (contact.Candidate.Id == chosen &&
+                            contact.Candidate.DistanceSquared <= maxRange * maxRange)
+                        { eligible = true; break; }
+                    if (!eligible)
+                        throw new InvalidOperationException(
+                            "검증된 타깃 정책이 다른 전장 또는 사거리 밖 적을 반환했습니다.");
+                    return chosen;
+                }
+            }
             var rules = MobileAutomation.BossRules;
             if (rules == null || unit.Mapping == null) return null;
             string preferred = null;
             double nearestBossDistance = double.MaxValue;
-            double range = unit.Mapping.AttackSpec.BasicAttack.Range;
+            double range = attackPipeline.EffectiveAttack(InstanceKey(unit.Id)).Range;
             double maximumSquared = range * range;
             foreach (var candidate in candidates)
             {
@@ -551,6 +913,7 @@ namespace Ordr.Mobile.Combat
 
         private void RemoveEnemyRuntimeState(string id)
         {
+            effectExecutor.CancelTarget(id);
             enemies.Remove(id);
             statuses.Remove(id);
             armorBreakStacks.Remove(id);

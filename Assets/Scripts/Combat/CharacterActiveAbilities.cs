@@ -116,6 +116,20 @@ namespace Ordr.Mobile.Combat
         public AbilityCastResult TryCast(string skillId, bool hasLivingTarget,
             out ImportedCombatSkill skill)
         {
+            return TryCast(skillId, hasLivingTarget, false, null, out skill);
+        }
+
+        public AbilityCastResult TryCast(string skillId, bool hasLivingTarget,
+            bool hasVerifiedTimedDamage, out ImportedCombatSkill skill)
+        {
+            return TryCast(skillId, hasLivingTarget, hasVerifiedTimedDamage,
+                null, out skill);
+        }
+
+        public AbilityCastResult TryCast(string skillId, bool hasLivingTarget,
+            bool hasVerifiedTimedDamage, Func<ImportedCombatEffect, bool> specialAllowed,
+            out ImportedCombatSkill skill)
+        {
             skill = null;
             if (resources == null) return AbilityCastResult.NoResourceState;
             if (string.IsNullOrWhiteSpace(skillId) || !skills.TryGetValue(skillId, out skill))
@@ -162,7 +176,7 @@ namespace Ordr.Mobile.Combat
 
             // 원본 실행기의 지원 범위를 넘는 일부 효과를 발동하고
             // 자원만 차감하는 오류를 방지한다.
-            if (!CanExecuteAllComponents(skill))
+            if (!CanExecuteAllComponents(skill, hasVerifiedTimedDamage, specialAllowed))
                 return AbilityCastResult.UnsupportedEffect;
 
             double next = Time + (cooldown ?? 0);
@@ -173,7 +187,8 @@ namespace Ordr.Mobile.Combat
             return AbilityCastResult.Cast;
         }
 
-        private static bool CanExecuteAllComponents(ImportedCombatSkill skill)
+        private static bool CanExecuteAllComponents(ImportedCombatSkill skill,
+            bool verifiedTiming, Func<ImportedCombatEffect, bool> specialAllowed)
         {
             if (skill.Target != "single" && skill.Target != "area" &&
                 skill.Target != "targetCircle" && skill.Target != "casterArea")
@@ -185,10 +200,10 @@ namespace Ordr.Mobile.Combat
                 if (component.Type == "physical" || component.Type == "magical" ||
                     component.Type == "fixed" || component.Type == "explosive")
                 {
-                    if (component.Get("hits") != null ||
-                        component.Get("amountPerHit") != null ||
-                        component.Get("amountPerTick") != null ||
-                        component.Get("durationSeconds") != null)
+                    if ((component.Get("hits") != null ||
+                         component.Get("amountPerHit") != null ||
+                         component.Get("amountPerTick") != null ||
+                         component.Get("durationSeconds") != null) && !verifiedTiming)
                         return false;
                 }
                 else if (component.Type == "armorBreak")
@@ -205,7 +220,8 @@ namespace Ordr.Mobile.Combat
                 {
                     if (!component.Number("durationSeconds").HasValue) return false;
                 }
-                else return false;
+                else if (specialAllowed == null || !specialAllowed(component))
+                    return false;
             }
             return skill.Components.Count > 0;
         }

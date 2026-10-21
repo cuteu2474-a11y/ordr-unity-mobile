@@ -21,9 +21,11 @@ namespace Ordr.Mobile.Combat
             if (double.IsNaN(firstAttackDelaySeconds) ||
                 double.IsInfinity(firstAttackDelaySeconds) || firstAttackDelaySeconds < 0)
                 throw new ArgumentOutOfRangeException(nameof(firstAttackDelaySeconds));
-            if (string.IsNullOrWhiteSpace(originalUnitRawcode) ||
+            // 독립 Unity 게임에서 워크래프트 오브젝트 ID는 필수가 아니다.
+            // 외부에서 확인한 공격력·주기·사거리·피해 계열과 근거가 핵심이다.
+            if (!string.IsNullOrEmpty(originalUnitRawcode) &&
                 originalUnitRawcode.Length != 4)
-                throw new ArgumentException("공격 유닛의 원본 4글자 rawcode가 필요합니다.");
+                throw new ArgumentException("원본 rawcode를 제공할 경우 4글자여야 합니다.");
             if (string.IsNullOrWhiteSpace(sourceEvidence))
                 throw new ArgumentException("검증한 원본 공격 스펙 근거가 필요합니다.");
             Stats = stats;

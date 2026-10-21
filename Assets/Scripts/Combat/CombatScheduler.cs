@@ -31,6 +31,14 @@ namespace Ordr.Mobile.Combat
             return nextReady.TryGetValue(unitId, out readyAt) && Time >= readyAt;
         }
 
+        // 스텝이 길어질 때 공격 준비시각까지 정확히 진행할 수 있게 한다.
+        public double? NextReadyAt(string unitId)
+        {
+            ValidateId(unitId);
+            double value;
+            return nextReady.TryGetValue(unitId, out value) ? (double?)value : null;
+        }
+
         public bool TryCommitAttack(string unitId, double nextAttackDelay)
         {
             ValidateId(unitId);

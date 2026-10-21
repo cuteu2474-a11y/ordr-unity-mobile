@@ -111,6 +111,17 @@ namespace Ordr.Mobile.Combat
             return success;
         }
 
+        // 주기형 트리거의 예정 시각을 공통 전투 타임라인에 전달한다.
+        public double? NextReadyAt(string instanceId, string skillId)
+        {
+            Dictionary<string, SkillState> spells;
+            SkillState state;
+            return instanceId != null && skillId != null &&
+                units.TryGetValue(instanceId, out spells) &&
+                spells.TryGetValue(skillId, out state)
+                ? (double?)state.NextReadyAt : null;
+        }
+
         public bool HasUnit(string instanceId)
         {
             return instanceId != null && units.ContainsKey(instanceId);

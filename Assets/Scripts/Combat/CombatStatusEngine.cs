@@ -51,7 +51,13 @@ namespace Ordr.Mobile.Combat
         }
     }
 
-    // 지속효과를 시간 기반으로 관리한다. 동일 효과 중첩 공식은 아직 확정하지 않는다.
+    // 중첩 효과를 최종 수치로 합산하는 규칙은 명시적인 원작 정책을 요구한다.
+    public interface IOriginalEffectStackingRule
+    {
+        double Aggregate(CombatEffectType type, IReadOnlyList<CombatEffect> effects);
+    }
+
+    // 지속효과를 시간 기반으로 관리한다. 동일 효과 중첩 공식은 임의 계산하지 않는다.
     public sealed class CombatStatusEngine
     {
         private sealed class ActiveEffect
@@ -103,6 +109,18 @@ namespace Ordr.Mobile.Combat
             foreach (var item in effects)
                 if (item.Effect.Type == CombatEffectType.Stun) return true;
             return false;
+        }
+
+        public double Aggregate(CombatEffectType type, IOriginalEffectStackingRule originalRule)
+        {
+            if (originalRule == null) throw new ArgumentNullException(nameof(originalRule));
+            var matching = new List<CombatEffect>();
+            foreach (var active in effects)
+                if (active.Effect.Type == type) matching.Add(active.Effect);
+            double value = originalRule.Aggregate(type, matching.AsReadOnly());
+            if (double.IsNaN(value) || double.IsInfinity(value))
+                throw new InvalidOperationException("원작 중첩 공식이 유효하지 않은 값을 반환했습니다.");
+            return value;
         }
 
         // 방깎·이감 합산 방식이 검증되기 전에는 최종 보정치를 계산하지 않는다.

@@ -4,6 +4,14 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
+    // 변신·반격·스택·특수 이벤트는 해당 캐릭터의 원작 조건이 확인되면
+    // 공통 엔진에 검증된 트리거 스펙을 연결한다.
+    public interface IOriginalSpecialSkillTriggerMapping
+    {
+        bool TryBuildVerifiedSpec(CharacterSkillProfile profile,
+            ImportedCombatSkill skill, out CombatSkillSpec specification);
+    }
+
     // 스킬의 발동 여부는 기존 CombatSkillTriggerEngine이 관리한다.
     // CombatSkillSpec의 Effects는 실제 피해량 데이터가 아니라 발동 메타데이터 표식이다.
     // 실제 효과 적용은 원본 JSON component를 읽는 CharacterSkillEffectExecutor가 담당한다.
@@ -23,7 +31,8 @@ namespace Ordr.Mobile.Combat
 
         public static CharacterCombatMapping Build(string catalogUnitId,
             CharacterSkillProfile profile, BasicAttackSpec verifiedBasic,
-            string originalRawcode = null)
+            string originalRawcode = null,
+            IOriginalSpecialSkillTriggerMapping specialTriggers = null)
         {
             if (string.IsNullOrWhiteSpace(catalogUnitId))
                 throw new ArgumentException("캐릭터 ID가 필요합니다.");
@@ -44,7 +53,19 @@ namespace Ordr.Mobile.Combat
                     int chance;
                     if (!TryConvertTrigger(skill, out trigger, out area, out radius, out chance, out reason))
                     {
-                        deferred.Add(skill.Id + " (" + skill.Name + "): " + reason);
+                        CombatSkillSpec verified;
+                        if (specialTriggers != null &&
+                            specialTriggers.TryBuildVerifiedSpec(profile, skill, out verified))
+                        {
+                            if (verified == null || verified.RawCode != skill.Id ||
+                                verified.Trigger != SkillTriggerKind.VerifiedCondition)
+                                throw new InvalidOperationException(
+                                    "검증된 특수 트리거의 ID/종류가 맞지 않습니다.");
+                            converted.Add(verified);
+                            lookup.Add(skill.Id, skill);
+                        }
+                        else
+                            deferred.Add(skill.Id + " (" + skill.Name + "): " + reason);
                         continue;
                     }
 
@@ -55,7 +76,9 @@ namespace Ordr.Mobile.Combat
                     var normalized = new CombatSkillSpec(skill.Id, trigger, chance,
                         skill.CooldownSeconds ??
                         (skill.Number("absoluteCooldownSeconds") ?? 0),
-                        0, area, radius, new[] { marker }, profile.SourceUrl);
+                        trigger == SkillTriggerKind.Periodic
+                            ? skill.PeriodSeconds.Value : 0,
+                        area, radius, new[] { marker }, profile.SourceUrl);
                     converted.Add(normalized);
                     lookup.Add(skill.Id, skill);
                 }
@@ -96,6 +119,12 @@ namespace Ordr.Mobile.Combat
             else if (skill.Trigger == "onEveryAttack")
             {
                 // 매 타격 발동은 원본 데이터가 명시한 경우만 확정 발동 처리한다.
+            }
+            else if (skill.Trigger == "periodic")
+            {
+                if (!skill.PeriodSeconds.HasValue || skill.PeriodSeconds.Value <= 0)
+                { reason = "정확한 주기 간격 미확인"; return false; }
+                trigger = SkillTriggerKind.Periodic;
             }
             else if (skill.Trigger == "onHit")
             {
@@ -151,7 +180,8 @@ namespace Ordr.Mobile.Combat
                 radius = skill.Radius.Value;
             }
 
-            double prob = skill.Trigger == "onEveryAttack"
+            double prob = skill.Trigger == "onEveryAttack" ||
+                (skill.Trigger == "periodic" && !skill.ChancePercent.HasValue)
                 ? 100 : skill.ChancePercent.Value;
             if (prob < 0 || prob > 100)
             { reason = "발동 확률 범위 오류"; return false; }

@@ -4,7 +4,10 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
-    public enum CharacterEnemyKind { Line, Boss, Enraged, Story }
+    public enum CharacterEnemyKind
+    {
+        Line, Boss, Enraged, Story, Creep, SeaKing, Challenge
+    }
 
     public sealed class SpatialCombatEnemy
     {
@@ -43,6 +46,9 @@ namespace Ordr.Mobile.Combat
                     case CharacterEnemyKind.Boss: return "boss";
                     case CharacterEnemyKind.Enraged: return "enraged";
                     case CharacterEnemyKind.Story: return "story";
+                    case CharacterEnemyKind.Creep: return "creep";
+                    case CharacterEnemyKind.SeaKing: return "seaKing";
+                    case CharacterEnemyKind.Challenge: return "challenge";
                     default: throw new ArgumentOutOfRangeException(nameof(Kind));
                 }
             }
@@ -65,11 +71,22 @@ namespace Ordr.Mobile.Combat
         public SpatialCombatEnemy Target { get; private set; }
         public bool IsPrimaryTarget { get; private set; }
         public int TargetArmorBreakStacks { get; private set; }
+        public int HitIndex { get; private set; }
+        public int HitCount { get; private set; }
+        public double ElapsedFromActivationSeconds { get; private set; }
 
         internal CharacterSkillDamageRequest(string caster, CharacterSkillProfile profile,
             ImportedCombatSkill skill, ImportedCombatEffect effect, SpatialCombatEnemy target,
-            bool primary, int armorBreakStacks)
+            bool primary, int armorBreakStacks,
+            int hitIndex = 0, int hitCount = 1, double elapsedSeconds = 0)
         {
+            if (hitIndex < 0 || hitCount <= 0 || hitIndex >= hitCount ||
+                double.IsNaN(elapsedSeconds) || double.IsInfinity(elapsedSeconds) ||
+                elapsedSeconds < 0)
+                throw new ArgumentOutOfRangeException(nameof(hitIndex));
+            HitIndex = hitIndex;
+            HitCount = hitCount;
+            ElapsedFromActivationSeconds = elapsedSeconds;
             CasterInstanceId = caster;
             CasterProfile = profile;
             Skill = skill;
@@ -83,7 +100,7 @@ namespace Ordr.Mobile.Combat
     public enum CharacterCombatEventType
     {
         UnitSpawned, UnitPlaced, Attack, SkillActivated, SkillDamage, StatusApplied,
-        ArmorBreakApplied, EnemyDefeated, EffectDeferred
+        ArmorBreakApplied, EnemyDefeated, EffectDeferred, EnemySpawned
     }
 
     public sealed class CharacterCombatEvent
@@ -103,6 +120,19 @@ namespace Ordr.Mobile.Combat
         }
     }
 
+    // 소환·변신·아이템·보상·특성 스택은 검증된 외부 기능 모듈로 라우팅한다.
+    // 등록되지 않은 효과는 아무것도 소비/변경하지 않고 미구현 상태로 남긴다.
+    public interface IOriginalSpecialCombatEffectHandler
+    {
+        bool Supports(CharacterSkillProfile profile, ImportedCombatSkill skill,
+            ImportedCombatEffect effect);
+        bool ExecuteOncePerCast(CharacterSkillProfile profile, ImportedCombatSkill skill,
+            ImportedCombatEffect effect);
+        bool TryApply(string casterId, CharacterSkillProfile profile,
+            ImportedCombatSkill skill, ImportedCombatEffect effect,
+            SpatialCombatEnemy target, bool isPrimary, out string reason);
+    }
+
     // 지원된 효과만 실제 적용한다. 해석되지 않은 복잡한 수식은 계산하지 않고 이벤트로 기록.
     public sealed class CharacterSkillEffectExecutor
     {
@@ -111,12 +141,62 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, CombatStatusEngine> statuses;
         private readonly Dictionary<string, int> armorBreakStacks;
         private readonly List<CharacterCombatEvent> events;
+        private readonly CombatTimedEffectQueue timedEffects;
+        private IOriginalSkillHitTimingProvider hitTiming;
+        private IOriginalSpecialCombatEffectHandler specialEffects;
+
+        public double Time { get { return timedEffects.Time; } }
+
+        public void ConfigureVerifiedSpecialEffects(IOriginalSpecialCombatEffectHandler handler)
+        {
+            specialEffects = handler;
+        }
+
+        public bool CanHandleSpecialComponent(CharacterSkillProfile profile,
+            ImportedCombatSkill skill, ImportedCombatEffect effect)
+        {
+            return specialEffects != null &&
+                specialEffects.Supports(profile, skill, effect);
+        }
+
+        private static bool IsStandardEffect(string type)
+        {
+            return type == "stun" || type == "armorReduction" ||
+                type == "movementSlow" || type == "movementSlowPercent" ||
+                type == "magicResistanceReduction" ||
+                type == "magicDamageAmplification" ||
+                type == "explosiveDamageAmplification" || type == "armorBreak";
+        }
+
+        // 원작의 각 타격 시각을 확인한 공급자만 허용.
+        public void ConfigureVerifiedHitTiming(IOriginalSkillHitTimingProvider provider)
+        {
+            hitTiming = provider;
+        }
+
+        public void Advance(double seconds, Action<double> advanceOtherClocks)
+        {
+            timedEffects.Advance(seconds, advanceOtherClocks);
+        }
+
+        public void CancelCaster(string id) { timedEffects.CancelCaster(id); }
+        public void CancelTarget(string id) { timedEffects.CancelTarget(id); }
 
         public CharacterSkillEffectExecutor(CombatResolution resolution,
             IVerifiedCharacterSkillDamageResolver damageFormula,
             Dictionary<string, CombatStatusEngine> statuses,
             Dictionary<string, int> armorBreakStacks, List<CharacterCombatEvent> events)
+            : this(resolution, damageFormula, statuses, armorBreakStacks, events,
+                new CombatTimedEffectQueue()) { }
+
+        public CharacterSkillEffectExecutor(CombatResolution resolution,
+            IVerifiedCharacterSkillDamageResolver damageFormula,
+            Dictionary<string, CombatStatusEngine> statuses,
+            Dictionary<string, int> armorBreakStacks, List<CharacterCombatEvent> events,
+            CombatTimedEffectQueue timedEffects)
         {
+            this.timedEffects = timedEffects ??
+                throw new ArgumentNullException(nameof(timedEffects));
             this.resolution = resolution ?? throw new ArgumentNullException(nameof(resolution));
             this.damageFormula = damageFormula ?? throw new ArgumentNullException(nameof(damageFormula));
             this.statuses = statuses ?? throw new ArgumentNullException(nameof(statuses));
@@ -128,11 +208,52 @@ namespace Ordr.Mobile.Combat
         // 체력·마나만 소모하지 않도록 자원 차감 이전에 가로막는다.
         public bool CanAttemptWithConfiguredFormula(ImportedCombatSkill skill)
         {
+            return CanAttemptWithConfiguredFormula(null, skill);
+        }
+
+        public bool CanAttemptWithConfiguredFormula(
+            CharacterSkillProfile profile, ImportedCombatSkill skill)
+        {
             if (skill == null) return false;
-            if (!(damageFormula is RejectUnverifiedDamageFormula)) return true;
             foreach (var component in skill.Components)
-                if (IsDamage(component.Type)) return false;
+            {
+                if (IsDamage(component.Type))
+                {
+                    if (damageFormula is RejectUnverifiedDamageFormula) return false;
+                    if (IsTimedDamage(component) &&
+                        !HasVerifiedTiming(profile, skill, component)) return false;
+                }
+                else if (!IsStandardEffect(component.Type) &&
+                    !CanHandleSpecialComponent(profile, skill, component))
+                    return false;
+            }
             return true;
+        }
+
+        public bool HasVerifiedTimings(CharacterSkillProfile profile, ImportedCombatSkill skill)
+        {
+            if (skill == null) return false;
+            foreach (var component in skill.Components)
+                if (IsDamage(component.Type) && IsTimedDamage(component) &&
+                    !HasVerifiedTiming(profile, skill, component)) return false;
+            return true;
+        }
+
+        private bool HasVerifiedTiming(CharacterSkillProfile profile,
+            ImportedCombatSkill skill, ImportedCombatEffect component)
+        {
+            if (hitTiming == null || profile == null) return false;
+            IReadOnlyList<double> offsets;
+            return hitTiming.TryGetHitOffsets(profile, skill, component, out offsets) &&
+                CombatTimedEffectQueue.AreValidOffsets(component, offsets);
+        }
+
+        private static bool IsTimedDamage(ImportedCombatEffect component)
+        {
+            return component.Get("hits") != null ||
+                   component.Get("amountPerHit") != null ||
+                   component.Get("amountPerTick") != null ||
+                   component.Get("durationSeconds") != null;
         }
 
         public void Execute(string casterId, CharacterSkillProfile profile,
@@ -167,9 +288,23 @@ namespace Ordr.Mobile.Combat
                 }
                 targets.Add(enemy);
             }
+            // 사전 등록 순서와 무관하게 같은 타깃 집합에는 안정된 ID 순서로 처리한다.
+            targets.Sort((a, b) => string.CompareOrdinal(a.Id, b.Id));
             // 이미 평타에 사망한 대상은 광역 중심 좌표로 사용 가능하지만 재차 피해를 받지 않음.
             foreach (var component in skill.Components)
             {
+                if (!IsDamage(component.Type) && !IsStandardEffect(component.Type) &&
+                    specialEffects != null &&
+                    specialEffects.Supports(profile, skill, component) &&
+                    specialEffects.ExecuteOncePerCast(profile, skill, component))
+                {
+                    string failure;
+                    if (!specialEffects.TryApply(casterId, profile, skill, component,
+                        primary, true, out failure))
+                        Defer(casterId, primary.Id, skill.Name,
+                            failure ?? "검증된 특수효과 실행 거부");
+                    continue;
+                }
                 foreach (var target in targets)
                 {
                     if (!target.Enemy.IsAlive) continue;
@@ -186,37 +321,34 @@ namespace Ordr.Mobile.Combat
         {
             if (IsDamage(component.Type))
             {
-                // 멀티히트/DoT 실행 시점을 모른 채 한 번에 적용하지 않는다.
-                if (component.Get("hits") != null ||
-                    component.Get("amountPerHit") != null ||
-                    component.Get("amountPerTick") != null ||
-                    component.Get("durationSeconds") != null)
+                if (!IsTimedDamage(component))
                 {
-                    Defer(casterId, target.Id, skill.Name,
-                        "다중 타격/시간별 피해 일정 미연동: " + component.Type);
+                    ApplyDamagePulse(casterId, profile, skill, component, target,
+                        isPrimary, 0, 1, 0);
                     return;
                 }
-                try
+
+                IReadOnlyList<double> offsets;
+                if (hitTiming == null || !hitTiming.TryGetHitOffsets(
+                        profile, skill, component, out offsets) ||
+                    !CombatTimedEffectQueue.AreValidOffsets(component, offsets))
                 {
-                    int stacks;
-                    armorBreakStacks.TryGetValue(target.Id, out stacks);
-                    var request = new CharacterSkillDamageRequest(casterId, profile, skill,
-                        component, target, isPrimary, stacks);
-                    long damage = damageFormula.ResolveDamage(request);
-                    if (damage < 0) throw new InvalidOperationException("원작 피해 계산 결과가 음수입니다.");
-                    long dealt;
-                    if (resolution.TryApplySkillDamage(target.Id, damage, out dealt))
-                    {
-                        events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillDamage,
-                            casterId, target.Id, skill.Name, component.Type, dealt));
-                        if (!target.Enemy.IsAlive)
-                            events.Add(new CharacterCombatEvent(CharacterCombatEventType.EnemyDefeated,
-                                casterId, target.Id, skill.Name, "skill", 0));
-                    }
+                    Defer(casterId, target.Id, skill.Name,
+                        "타격 횟수/시각 미확인: " + component.Type);
+                    return;
                 }
-                catch (NotSupportedException ex)
+                for (int index = 0; index < offsets.Count; index++)
                 {
-                    Defer(casterId, target.Id, skill.Name, "검증된 피해 공식 미구현: " + ex.Message);
+                    int hitIndex = index;
+                    double elapsed = offsets[index];
+                    if (elapsed == 0)
+                        ApplyDamagePulse(casterId, profile, skill, component, target,
+                            isPrimary, hitIndex, offsets.Count, elapsed);
+                    else
+                        timedEffects.Schedule(casterId, target.Id, elapsed,
+                            () => ApplyDamagePulse(casterId, profile, skill,
+                                component, target, isPrimary, hitIndex, offsets.Count,
+                                elapsed));
                 }
                 return;
             }
@@ -269,7 +401,18 @@ namespace Ordr.Mobile.Combat
                         casterId, target.Id, skill.Name, "stack", next));
                     return;
                 default:
-                    Defer(casterId, target.Id, skill.Name, "별도 효과 실행기 미구현: " + component.Type);
+                    if (specialEffects != null &&
+                        specialEffects.Supports(profile, skill, component))
+                    {
+                        string failure;
+                        if (!specialEffects.TryApply(casterId, profile, skill,
+                            component, target, isPrimary, out failure))
+                            Defer(casterId, target.Id, skill.Name,
+                                failure ?? "특수효과 적용 조건 불일치");
+                        return;
+                    }
+                    Defer(casterId, target.Id, skill.Name,
+                        "별도 효과 실행기 미구현: " + component.Type);
                     return;
             }
 
@@ -291,6 +434,41 @@ namespace Ordr.Mobile.Combat
                 CombatEffectOrigin.TriggeredSkill, amount.Value, duration.Value));
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.StatusApplied,
                 casterId, target.Id, skill.Name, component.Type, 0));
+        }
+
+        private void ApplyDamagePulse(string casterId, CharacterSkillProfile profile,
+            ImportedCombatSkill skill, ImportedCombatEffect component,
+            SpatialCombatEnemy target, bool isPrimary, int hitIndex, int hitCount,
+            double elapsed)
+        {
+            if (!target.Enemy.IsAlive) return;
+            try
+            {
+                int stacks;
+                armorBreakStacks.TryGetValue(target.Id, out stacks);
+                var request = new CharacterSkillDamageRequest(casterId, profile,
+                    skill, component, target, isPrimary, stacks, hitIndex, hitCount,
+                    elapsed);
+                long damage = damageFormula.ResolveDamage(request);
+                if (damage < 0)
+                    throw new InvalidOperationException("스킬 피해 계산 결과가 음수입니다.");
+                long dealt;
+                if (resolution.TryApplySkillDamage(target.Id, damage, out dealt))
+                {
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.SkillDamage, casterId, target.Id,
+                        skill.Name, component.Type, dealt));
+                    if (!target.Enemy.IsAlive)
+                        events.Add(new CharacterCombatEvent(
+                            CharacterCombatEventType.EnemyDefeated, casterId,
+                            target.Id, skill.Name, "skill", 0));
+                }
+            }
+            catch (NotSupportedException ex)
+            {
+                Defer(casterId, target.Id, skill.Name,
+                    "검증된 피해 공식 미구현: " + ex.Message);
+            }
         }
 
         private static bool IsDamage(string type)
