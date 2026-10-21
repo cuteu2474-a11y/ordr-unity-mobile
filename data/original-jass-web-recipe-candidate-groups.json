@@ -1,0 +1,224 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceJassSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "scope": "unordered-web-dex-jass-candidate-groups",
+  "webRecipes": 7,
+  "candidateGroups": 2,
+  "ambiguousRawcodes": 7,
+  "objectRawcodeMappingsVerified": 0,
+  "authorizedForUnitConsumption": false,
+  "notice": "Ingredients are unordered sets. No 1-to-1 mapping is inferred from index.",
+  "rows": [
+    {
+      "resultCatalogUnitId": "R-24",
+      "resultName": "슈가 (희귀함)",
+      "dexSource": "https://ordr.kr/character/R24",
+      "jassAbilityRawcode": null,
+      "jassResultRawcode": null,
+      "status": "result-id-unlinked",
+      "jassMaterials": [],
+      "dexMaterials": [
+        {
+          "catalogUnitId": "S-26",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "S-22",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "U-10",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "C-04",
+          "count": 1
+        }
+      ],
+      "nonUnitConditions": []
+    },
+    {
+      "resultCatalogUnitId": "L-21",
+      "resultName": "시노부 (전설)",
+      "dexSource": "https://ordr.kr/character/L21",
+      "jassAbilityRawcode": null,
+      "jassResultRawcode": null,
+      "status": "result-id-unlinked",
+      "jassMaterials": [],
+      "dexMaterials": [
+        {
+          "catalogUnitId": "R-07",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-03",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-40",
+          "count": 1
+        }
+      ],
+      "nonUnitConditions": []
+    },
+    {
+      "resultCatalogUnitId": "H-14",
+      "resultName": "시류 (히든)",
+      "dexSource": "https://ordr.kr/character/H14",
+      "jassAbilityRawcode": "YY14",
+      "jassResultRawcode": "h03J",
+      "status": "unordered-ingredient-candidate-group",
+      "jassMaterials": [
+        {
+          "rawcode": "h026",
+          "count": 1
+        },
+        {
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Z",
+          "count": 1
+        }
+      ],
+      "dexMaterials": [
+        {
+          "catalogUnitId": "R-25",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-17",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-09",
+          "count": 1
+        }
+      ],
+      "nonUnitConditions": [
+        "UPUN/h0CJ/1"
+      ]
+    },
+    {
+      "resultCatalogUnitId": "R-42",
+      "resultName": "핸콕 (희귀함)",
+      "dexSource": "https://ordr.kr/character/R42",
+      "jassAbilityRawcode": null,
+      "jassResultRawcode": null,
+      "status": "result-id-unlinked",
+      "jassMaterials": [],
+      "dexMaterials": [
+        {
+          "catalogUnitId": "S-03",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "S-16",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "S-07",
+          "count": 1
+        }
+      ],
+      "nonUnitConditions": []
+    },
+    {
+      "resultCatalogUnitId": "R-38",
+      "resultName": "크로커다일 Mr.0 (희귀함)",
+      "dexSource": "https://ordr.kr/character/R38",
+      "jassAbilityRawcode": null,
+      "jassResultRawcode": null,
+      "status": "result-id-unlinked",
+      "jassMaterials": [],
+      "dexMaterials": [
+        {
+          "catalogUnitId": "S-29",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "S-12",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "S-23",
+          "count": 1
+        }
+      ],
+      "nonUnitConditions": []
+    },
+    {
+      "resultCatalogUnitId": "H-10",
+      "resultName": "베르고 (히든)",
+      "dexSource": "https://ordr.kr/character/H10",
+      "jassAbilityRawcode": "YY03",
+      "jassResultRawcode": "h03W",
+      "status": "unordered-ingredient-candidate-group",
+      "jassMaterials": [
+        {
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Z",
+          "count": 1
+        }
+      ],
+      "dexMaterials": [
+        {
+          "catalogUnitId": "R-12",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-21",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "S-12",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "S-20",
+          "count": 1
+        }
+      ],
+      "nonUnitConditions": [
+        "UPUN/H09E/1",
+        "UPUN/h040/1"
+      ]
+    },
+    {
+      "resultCatalogUnitId": "L-29",
+      "resultName": "쵸파 유력강화 (전설)",
+      "dexSource": "https://ordr.kr/character/L29",
+      "jassAbilityRawcode": null,
+      "jassResultRawcode": null,
+      "status": "result-id-unlinked",
+      "jassMaterials": [],
+      "dexMaterials": [
+        {
+          "catalogUnitId": "R-35",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-15",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-13",
+          "count": 1
+        }
+      ],
+      "nonUnitConditions": []
+    }
+  ]
+}
