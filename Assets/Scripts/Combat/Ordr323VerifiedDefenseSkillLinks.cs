@@ -99,8 +99,61 @@ namespace Ordr.Mobile.Combat
     }
 
     // 원작 능력 레벨의 영향을 받을 때만 적용. 다른 스킬의 미검증 상태는 거부.
+    public enum Ordr323DebuffTiming
+    {
+        BeforeDamage,
+        AfterDamage
+    }
+
     public sealed class Ordr323VerifiedDefenseEffectRouter
     {
+        // BrP: 주 타깃 Bdq(1) → 직접 Bcb → BrN의 광역 Bcb → 광역 Bdq(1).
+        // Br6: Bd5(10) → BeC(10) → Bcb. 다른 JASS 콜백은 뒤에 적힌 순서.
+        public bool HasPreDamagePart(CharacterSkillProfile profile,
+            ImportedCombatSkill skill, ImportedCombatEffect component)
+        {
+            Ordr323VerifiedDefenseSkillLink link;
+            if (!Ordr323VerifiedDefenseSkillLinks.TryMatch(
+                profile, skill, component, out link)) return false;
+            return link.UnitId == "H-10" && link.SkillId == "H-10:skill:1" ||
+                   link.UnitId == "H-09" && link.SkillId == "H-09:skill:0";
+        }
+
+        // 베르고의 직접 Bdq와 에넬의 영역 Bd5가 본 스킬 피해 전에 발생한다.
+        public bool TryApplyAtPhase(string casterId, CharacterSkillProfile profile,
+            ImportedCombatSkill skill, ImportedCombatEffect effect,
+            SpatialCombatEnemy target, bool primary,
+            Ordr323DebuffTiming phase, out string reason)
+        {
+            Ordr323VerifiedDefenseSkillLink link;
+            if (!Ordr323VerifiedDefenseSkillLinks.TryMatch(
+                profile, skill, effect, out link))
+            {
+                reason = "원본 JASS 스킬 미연결";
+                return false;
+            }
+            bool vergo = link.UnitId == "H-10" &&
+                         link.SkillId == "H-10:skill:1";
+            bool enel = link.UnitId == "H-09" &&
+                        link.SkillId == "H-09:skill:0";
+            if (phase == Ordr323DebuffTiming.BeforeDamage)
+            {
+                if (vergo && primary)
+                    return ApplyDelta(casterId, link, target, 1, out reason);
+                if (enel)
+                    return ApplyDelta(casterId, link, target, link.Value, out reason);
+                reason = "skipped"; // 이 타깃에는 선행 효과가 없음.
+                return true;
+            }
+            if (enel)
+            {
+                reason = "skipped"; // 앞 단계에서 이미 적용했으므로 재적용 금지.
+                return true;
+            }
+            // 베르고의 BrN 광역은 모든 타깃 +1. 주 대상의 +1은 이미 선행.
+            return ApplyDelta(casterId, link, target, link.Value, out reason);
+        }
+
         private readonly Dictionary<string,int> armorBreakStacks;
         private readonly Dictionary<string,int> provenA04MStacks;
         private readonly Dictionary<string,CombatStatusEngine> statuses;
@@ -132,18 +185,29 @@ namespace Ordr.Mobile.Combat
         {
             reason = null;
             Ordr323VerifiedDefenseSkillLink link;
-            if (!Ordr323VerifiedDefenseSkillLinks.TryMatch(profile, skill, effect, out link))
+            if (!Ordr323VerifiedDefenseSkillLinks.TryMatch(profile,skill,effect,out link))
             {
                 reason = "원본 Bdq/Bd5 효과 함수와 도감 스킬 연결 미확인";
                 return false;
             }
+            // 단독 실행 API는 베르고 2회 발생 결과까지 합산한다.
+            // 실제 엔진은 시간 순서 보존을 위해 TryApplyAtPhase를 사용.
+            return ApplyDelta(casterId,link,target,
+                checked(link.Value + (isPrimary ? link.PrimaryBonus : 0)),out reason);
+        }
+
+        private bool ApplyDelta(string casterId,
+            Ordr323VerifiedDefenseSkillLink link,
+            SpatialCombatEnemy target, int delta, out string reason)
+        {
+            reason = null;
             if (target == null || !target.Enemy.IsAlive ||
                 string.IsNullOrWhiteSpace(casterId))
             {
                 reason = "공격자나 살아 있는 적 정보가 없습니다";
                 return false;
             }
-            int delta = checked(link.Value + (isPrimary ? link.PrimaryBonus : 0));
+            if (delta == 0) return true;
             if (link.AbilityRawcode == "A04M")
             {
                 int current;

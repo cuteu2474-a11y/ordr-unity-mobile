@@ -307,6 +307,26 @@ namespace Ordr.Mobile.Combat
             }
             // 사전 등록 순서와 무관하게 같은 타깃 집합에는 안정된 ID 순서로 처리한다.
             targets.Sort((a, b) => string.CompareOrdinal(a.Id, b.Id));
+            if (verified323DefenseRouter != null)
+            {
+                // 원본 JASS에서 피해 전 적용되는 A04M/A04Q 이벤트를 먼저 처리.
+                // 효과 컴포넌트가 뒤에 있어도 JASS 선후 관계를 우선한다.
+                foreach (var component in skill.Components)
+                {
+                    if (!verified323DefenseRouter.HasPreDamagePart(profile,skill,component))
+                        continue;
+                    foreach (var target in targets)
+                    {
+                        if (!target.Enemy.IsAlive ||
+                            !TargetMatches(component,target,primary.Id)) continue;
+                        if (profile.UnitId == "H-10" && target.Id != primary.Id)
+                            continue; // 베르고 범위의 스택은 피해 이후
+                        ApplyVerified323DefensePhase(casterId,profile,skill,
+                            component,target,target.Id==primary.Id,
+                            Ordr323DebuffTiming.BeforeDamage);
+                    }
+                }
+            }
             // 이미 평타에 사망한 대상은 광역 중심 좌표로 사용 가능하지만 재차 피해를 받지 않음.
             foreach (var component in skill.Components)
             {
@@ -370,26 +390,13 @@ namespace Ordr.Mobile.Combat
                 return;
             }
 
-            // 원본 2.323[C] 전투 모드: Bdq/Bd5의 확인된 JASS 콜백만
-            // A04M/A04Q 레벨·스택을 갱신한다. 미연결 스킬은 보류.
+            // 후행 효과: 스킬의 피해 호출이 완료된 이후에 적용.
             if (verified323DefenseRouter != null &&
                 (component.Type == "armorBreak" ||
                  component.Type == "magicResistanceReduction"))
             {
-                string reason;
-                if (verified323DefenseRouter.TryApply(casterId, profile, skill,
-                    component, target, isPrimary, out reason))
-                {
-                    events.Add(new CharacterCombatEvent(
-                        component.Type == "armorBreak"
-                            ? CharacterCombatEventType.ArmorBreakApplied
-                            : CharacterCombatEventType.StatusApplied,
-                        casterId, target.Id, skill.Name,
-                        component.Type == "armorBreak" ? "jass:A04M" : "jass:A04Q",
-                        0));
-                }
-                else
-                    Defer(casterId, target.Id, skill.Name, reason);
+                ApplyVerified323DefensePhase(casterId,profile,skill,component,
+                    target,isPrimary,Ordr323DebuffTiming.AfterDamage);
                 return;
             }
 
@@ -474,6 +481,27 @@ namespace Ordr.Mobile.Combat
                 CombatEffectOrigin.TriggeredSkill, amount.Value, duration.Value));
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.StatusApplied,
                 casterId, target.Id, skill.Name, component.Type, 0));
+        }
+
+        private void ApplyVerified323DefensePhase(string casterId,
+            CharacterSkillProfile profile, ImportedCombatSkill skill,
+            ImportedCombatEffect component, SpatialCombatEnemy target,
+            bool primary, Ordr323DebuffTiming phase)
+        {
+            string reason;
+            if (verified323DefenseRouter.TryApplyAtPhase(casterId,profile,skill,
+                component,target,primary,phase,out reason))
+            {
+                if (reason == null)
+                    events.Add(new CharacterCombatEvent(
+                        component.Type == "armorBreak" ?
+                            CharacterCombatEventType.ArmorBreakApplied :
+                            CharacterCombatEventType.StatusApplied,
+                        casterId,target.Id,skill.Name,
+                        component.Type == "armorBreak" ? "jass:A04M" : "jass:A04Q",0));
+            }
+            else
+                Defer(casterId,target.Id,skill.Name,reason);
         }
 
         private void ApplyDamagePulse(string casterId, CharacterSkillProfile profile,

@@ -216,6 +216,75 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void JassVergoBrPAndBrNSplitDebuffsBeforeAndAfterDamage()
+        {
+            var f = new Fixture();
+            var target = Enemy("primary");
+            var nearby = Enemy("nearby");
+            f.Track(target); f.Track(nearby);
+            var profile = ProfileFixture("H-10","기본 공격 발동형 타격",
+                "onAttack","armorBreak",1,1);
+            var skill = profile.Skills[1];
+            var effect = skill.Components[0];
+            Assert.IsTrue(f.Router.HasPreDamagePart(profile,skill,effect));
+            string why;
+            Assert.IsTrue(f.Router.TryApplyAtPhase("unit",profile,skill,effect,
+                target,true,Ordr323DebuffTiming.BeforeDamage,out why),why);
+            Assert.AreEqual(1,f.Stacks[target.Id]);
+            Assert.AreEqual(0,f.Stacks[nearby.Id]);
+            // 아래는 BrN 광역 Bcb가 처리된 뒤 호출해야 하는 후행 Bdq.
+            Assert.IsTrue(f.Router.TryApplyAtPhase("unit",profile,skill,effect,
+                target,true,Ordr323DebuffTiming.AfterDamage,out why),why);
+            Assert.IsTrue(f.Router.TryApplyAtPhase("unit",profile,skill,effect,
+                nearby,false,Ordr323DebuffTiming.AfterDamage,out why),why);
+            Assert.AreEqual(2,f.Stacks[target.Id]);
+            Assert.AreEqual(1,f.Stacks[nearby.Id]);
+        }
+
+        [Test]
+        public void JassEnelBr6AppliesResistanceBeforeDamageOnlyOnce()
+        {
+            var f = new Fixture();
+            var target = Enemy();
+            f.Track(target);
+            var profile=ProfileFixture("H-09","뇌영",
+                "activeMana","magicResistanceReduction",10);
+            var skill=profile.Skills[0];var component=skill.Components[0];
+            Assert.IsTrue(f.Router.HasPreDamagePart(profile,skill,component));
+            string why;
+            Assert.IsTrue(f.Router.TryApplyAtPhase("unit",profile,skill,component,
+                target,true,Ordr323DebuffTiming.BeforeDamage,out why),why);
+            Assert.AreEqual(1,f.Status[target.Id].ActiveCount);
+            Assert.IsTrue(f.Router.TryApplyAtPhase("unit",profile,skill,component,
+                target,true,Ordr323DebuffTiming.AfterDamage,out why),why);
+            Assert.AreEqual("skipped",why);
+            Assert.AreEqual(1,f.Status[target.Id].ActiveCount);
+            var formula=new Ordr323VerifiedPartialModifierRules();
+            double percent;
+            Assert.IsTrue(formula.TryResolveMagicResistancePercent(
+                target.Enemy,f.Status[target.Id].Snapshot(),out percent));
+            Assert.AreEqual(0,percent,1e-4);
+        }
+
+        [Test]
+        public void JassCavendishB5ZAppliesFiveArmorBreakAfterDamage()
+        {
+            var f=new Fixture();
+            var target=Enemy();f.Track(target);
+            var profile=ProfileFixture("E-10","미검","onAttack","armorBreak",5,1);
+            var skill=profile.Skills[1];var effect=skill.Components[0];
+            Assert.IsFalse(f.Router.HasPreDamagePart(profile,skill,effect));
+            string why;
+            Assert.IsTrue(f.Router.TryApplyAtPhase("unit",profile,skill,effect,
+                target,true,Ordr323DebuffTiming.BeforeDamage,out why),why);
+            Assert.AreEqual("skipped",why);
+            Assert.AreEqual(0,f.Stacks[target.Id]);
+            Assert.IsTrue(f.Router.TryApplyAtPhase("unit",profile,skill,effect,
+                target,true,Ordr323DebuffTiming.AfterDamage,out why),why);
+            Assert.AreEqual(5,f.Stacks[target.Id]);
+        }
+
+        [Test]
         public void EnelA04QIncreasesVerifiedMonsterAbilityLevelInsteadOfPercentAura()
         {
             var f = new Fixture();
