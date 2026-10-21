@@ -14,12 +14,14 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset characterSkillsJson;
         [SerializeField] private TextAsset originalStatEvidenceJson;
         [SerializeField] private TextAsset verifiedFusionRecipesJson;
+        [SerializeField] private TextAsset originalJassFusionRegistryJson;
         [SerializeField] private bool enableMobileTouchPanel = true;
 
         public CharacterUnitCatalog Units { get; private set; }
         public CharacterSkillCatalog Skills { get; private set; }
         public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
+        public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
         public AssistedFusionService FusionAssistance { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
 
@@ -101,6 +103,12 @@ namespace Ordr.Mobile.Unity
                     Resources.Load<TextAsset>("OrdrData/verified-mobile-fusion-recipes");
                 if (fusionData != null)
                     VerifiedFusionRecipes = VerifiedFusionCatalog.FromJson(fusionData.text, Units);
+                // 압축된 원본 등록식은 개발 자료. 순서 보존 추출 JSON이 있을 때만 로딩한다.
+                var originalJassData = originalJassFusionRegistryJson != null ?
+                    originalJassFusionRegistryJson :
+                    Resources.Load<TextAsset>("OrdrData/original-jass-fusion-registry");
+                if (originalJassData != null)
+                    OriginalJassFusions = OriginalJassFusionCatalog.FromJson(originalJassData.text);
                 if (Units.Count != 271 || Skills.CharacterCount != 200)
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
                 Debug.Log("ORDR 캐릭터 카탈로그 로딩: " + Units.Count +
