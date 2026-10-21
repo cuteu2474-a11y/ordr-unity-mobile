@@ -44,19 +44,11 @@ namespace Ordr.Mobile.Unity
             placementRules = originalPlacement;
             bossFocusRules = originalBossFocus;
             autoSkillRules = originalQwrAutoUse;
+            // Config may arrive before the combat world exists.
+            // Only remember the policies here; world-linked services are built
+            // once in ConfigureRuntime (or updated after it has been created).
             if (Combat != null)
                 Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
-            Combat.ConfigureStoryDeployment(storyDispatchRules);
-            if (OriginalJassFusions != null && OriginalUnitRawcodes != null)
-                OriginalFusionPlanner = new OriginalJassFusionPlanner(
-                    OriginalJassFusions, OriginalUnitRawcodes,
-                    id => Combat.IsStoryDeployed(id));
-            if (VerifiedFusionRecipes != null)
-                FusionAssistance = new AssistedFusionService(VerifiedFusionRecipes,
-                    () => Combat.MobileUnitSnapshot(),
-                    instanceId => Combat.IsStoryDeployed(instanceId));
-            ManualActions.Configure(storyDispatchRules,
-                originalFusionPort ?? FusionAssistance, originalEconomyPort);
         }
 
         public void ConfigureManualMobileSystems(IOriginalStoryDispatchPort originalStory,
@@ -175,6 +167,17 @@ namespace Ordr.Mobile.Unity
             Combat = new CharacterCombatRuntime(Units, Skills,
                 verifiedBasicFormula, verifiedSkillFormula, random);
             Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
+            Combat.ConfigureStoryDeployment(storyDispatchRules);
+            if (OriginalJassFusions != null && OriginalUnitRawcodes != null)
+                OriginalFusionPlanner = new OriginalJassFusionPlanner(
+                    OriginalJassFusions, OriginalUnitRawcodes,
+                    id => Combat.IsStoryDeployed(id));
+            if (VerifiedFusionRecipes != null)
+                FusionAssistance = new AssistedFusionService(VerifiedFusionRecipes,
+                    () => Combat.MobileUnitSnapshot(),
+                    id => Combat.IsStoryDeployed(id));
+            ManualActions.Configure(storyDispatchRules,
+                originalFusionPort ?? FusionAssistance, originalEconomyPort);
         }
 
         // 원작 피해 공식 없이도 캐릭터 소환·선택·배치·웨이브 월드를 구성할 수 있다.
