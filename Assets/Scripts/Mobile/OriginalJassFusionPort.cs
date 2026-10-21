@@ -10,6 +10,15 @@ namespace Ordr.Mobile.Mobile
         bool TryReadBalances(out int gold, out int lumber);
     }
 
+    // Original CHu/CHx treat GetSpellTargetUnit separately from the unit
+    // inventory. Choosing a mobile cast target is a rule, not a UI convenience.
+    public interface IOriginalJassFusionCastPolicy
+    {
+        bool TryChooseCastTarget(string abilityRawcode,
+            IReadOnlyList<long> exactMaterialInstanceIds,
+            out long targetInstanceId, out string rejectionReason);
+    }
+
     // The authoritative implementation must re-check all conditions under one
     // exclusive transaction, then debit currency, consume exact units and spawn
     // the result. It must rollback the whole transaction on failure.
@@ -25,12 +34,17 @@ namespace Ordr.Mobile.Mobile
         public string ResultRawcode { get; private set; }
         public int GoldCost { get; private set; }
         public int LumberCost { get; private set; }
+        public long CastTargetInstanceId { get; private set; }
         public IReadOnlyList<long> MaterialInstanceIds { get; private set; }
 
-        internal OriginalJassFusionCommitOrder(JassFusionReadiness assessment)
+        internal OriginalJassFusionCommitOrder(JassFusionReadiness assessment,
+            long verifiedCastTargetInstanceId)
         {
             if (assessment == null || !assessment.IsReadyForUserConfirmation)
                 throw new ArgumentException("원본 조건이 미확인인 조합은 최종 실행할 수 없습니다.");
+            if (verifiedCastTargetInstanceId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(verifiedCastTargetInstanceId));
+            CastTargetInstanceId = verifiedCastTargetInstanceId;
             AbilityRawcode = assessment.AbilityRawcode;
             ResultUnitId = assessment.ResultUnitId;
             ResultRawcode = assessment.ResultRawcode;
@@ -48,18 +62,22 @@ namespace Ordr.Mobile.Mobile
         private readonly Func<IReadOnlyList<MobileUnitSnapshot>> ownedUnits;
         private readonly IOriginalJassFusionResourceReader resources;
         private readonly IOriginalJassFusionAtomicCommit transaction;
+        private readonly IOriginalJassFusionCastPolicy castPolicy;
 
         public bool CanCommit { get { return transaction != null; } }
 
         public OriginalJassFusionPort(OriginalJassFusionPlanner planner,
             Func<IReadOnlyList<MobileUnitSnapshot>> ownedUnits,
             IOriginalJassFusionResourceReader resourceReader,
-            IOriginalJassFusionAtomicCommit verifiedTransaction)
+            IOriginalJassFusionAtomicCommit verifiedTransaction,
+            IOriginalJassFusionCastPolicy originalCastPolicy)
         {
             this.planner = planner ?? throw new ArgumentNullException(nameof(planner));
             this.ownedUnits = ownedUnits ?? throw new ArgumentNullException(nameof(ownedUnits));
             this.resources = resourceReader;
             this.transaction = verifiedTransaction;
+            this.castPolicy = originalCastPolicy ??
+                throw new ArgumentNullException(nameof(originalCastPolicy));
         }
 
         public IReadOnlyList<MobileFusionPreview> AvailableRecipes(
@@ -120,9 +138,21 @@ namespace Ordr.Mobile.Mobile
                 return new ManualActionResult(ManualActionState.Rejected,
                     "선택 이후 재료가 변경됐습니다. 조합 목록을 갱신하세요.");
 
+            long verifiedTarget;
+            string reason;
+            if (!castPolicy.TryChooseCastTarget(assessed.AbilityRawcode,
+                assessed.SuggestedMaterialIds, out verifiedTarget, out reason) ||
+                verifiedTarget <= 0)
+                return new ManualActionResult(ManualActionState.Rejected,
+                    string.IsNullOrWhiteSpace(reason)
+                        ? "원본 조합 스킬 대상 판정 미완료"
+                        : reason);
+
             // The external transaction handles currency debit, unit removal,
             // spawning/placement and full rollback as one indivisible operation.
-            return transaction.TryCommit(new OriginalJassFusionCommitOrder(assessed)) ??
+            // It MUST recheck the approved target before committing.
+            return transaction.TryCommit(
+                new OriginalJassFusionCommitOrder(assessed, verifiedTarget)) ??
                 new ManualActionResult(ManualActionState.Rejected,
                     "원본 조합 트랜잭션이 결과를 반환하지 않았습니다.");
         }
