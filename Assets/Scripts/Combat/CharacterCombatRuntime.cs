@@ -20,6 +20,7 @@ namespace Ordr.Mobile.Combat
             public CharacterActiveAbilities Abilities;
             public bool AttackReady;
             public bool AttackBlockedByMissingFormula;
+            public string AttackEvidence;
         }
 
         private readonly CharacterUnitCatalog units;
@@ -44,11 +45,45 @@ namespace Ordr.Mobile.Combat
             new List<CharacterCombatEvent>();
         private bool processingStep;
         private IOriginalStoryDispatchPort storyDispatch;
+        private IOriginalVerifiedUnitAttackProvider verifiedAttackProvider;
         public MobileCombatAutomation MobileAutomation { get; } = new MobileCombatAutomation();
 
         public void ConfigureStoryDeployment(IOriginalStoryDispatchPort verifiedStory)
         {
             storyDispatch = verifiedStory;
+        }
+
+        // Supports ALL 271 catalogue types, including the 71 without a detailed
+        // skill profile. A provider must supply original-verified basic stats;
+        // an unsupported unit remains spawnable but unable to attack.
+        public void ConfigureVerifiedUnitAttackProvider(
+            IOriginalVerifiedUnitAttackProvider originalProvider)
+        {
+            verifiedAttackProvider = originalProvider;
+        }
+
+        public int BindExistingVerifiedAttacks()
+        {
+            if (verifiedAttackProvider == null) return 0;
+            int bound = 0;
+            var ids = new List<long>(characters.Keys);
+            ids.Sort();
+            foreach (long id in ids)
+            {
+                CharacterInstance instance = characters[id];
+                if (instance.AttackReady) continue;
+                OriginalVerifiedAttackBinding found;
+                if (!verifiedAttackProvider.TryResolve(instance.Catalog,
+                    instance.Profile, out found)) continue;
+                if (found == null)
+                    throw new InvalidOperationException(
+                        "원본 공격 스탯 공급자가 비어 있는 성공 결과를 반환했습니다.");
+                BindVerifiedBasicAttack(id, found.Stats, found.FirstAttackDelaySeconds,
+                    found.OriginalUnitRawcode);
+                instance.AttackEvidence = found.SourceEvidence;
+                bound++;
+            }
+            return bound;
         }
 
         public bool IsStoryDeployed(long instanceId)
@@ -135,10 +170,25 @@ namespace Ordr.Mobile.Combat
             try
             {
                 placed = MobileAutomation.TryPlace(catalogUnit, roster, id);
+                if (verifiedAttackProvider != null)
+                {
+                    OriginalVerifiedAttackBinding original;
+                    if (verifiedAttackProvider.TryResolve(catalogUnit, profile, out original))
+                    {
+                        if (original == null)
+                            throw new InvalidOperationException(
+                                "원본 공격 스탯 공급자가 null로 등록 승인을 반환했습니다.");
+                        BindVerifiedBasicAttack(id, original.Stats,
+                            original.FirstAttackDelaySeconds, original.OriginalUnitRawcode);
+                        characters[id].AttackEvidence = original.SourceEvidence;
+                    }
+                }
             }
             catch
             {
-                // 원작 배치 서비스가 실패한 생성은 소환 성공으로 기록하지 않는다.
+                // Incomplete spawns never remain in the roster or skill engines.
+                if (characters[id].AttackReady)
+                    attackPipeline.RemoveUnit(InstanceKey(id));
                 characters.Remove(id);
                 roster.Remove(id);
                 throw;
@@ -158,18 +208,34 @@ namespace Ordr.Mobile.Combat
             return characters.TryGetValue(instanceId, out instance) && instance.AttackReady;
         }
 
+        public string AttackEvidenceOf(long instanceId)
+        {
+            CharacterInstance instance;
+            if (!characters.TryGetValue(instanceId, out instance))
+                throw new KeyNotFoundException("존재하지 않는 유닛 인스턴스.");
+            return instance.AttackEvidence;
+        }
+
         // 검증된 공격력·공속·사거리만 호출자가 제공한다.
         // 이를 호출하지 않은 271종 유닛도 선택·배치할 수 있으나 실제 공격하지 않는다.
         public IReadOnlyList<string> BindVerifiedBasicAttack(long instanceId,
             BasicAttackSpec verifiedStats, double firstAttackDelay)
+        {
+            return BindVerifiedBasicAttack(instanceId, verifiedStats,
+                firstAttackDelay, null);
+        }
+
+        public IReadOnlyList<string> BindVerifiedBasicAttack(long instanceId,
+            BasicAttackSpec verifiedStats, double firstAttackDelay,
+            string originalUnitRawcode)
         {
             CharacterInstance instance;
             if (!characters.TryGetValue(instanceId, out instance))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터 인스턴스.");
             if (instance.AttackReady)
                 throw new InvalidOperationException("공격 스펙이 이미 등록되어 있습니다.");
-            var mapping = CharacterCombatMapping.Build(instance.Catalog.Id, instance.Profile,
-                verifiedStats);
+            var mapping = CharacterCombatMapping.Build(instance.Catalog.Id,
+                instance.Profile, verifiedStats, originalUnitRawcode);
             attackPipeline.RegisterUnit(InstanceKey(instanceId), mapping.AttackSpec,
                 firstAttackDelay);
             instance.Mapping = mapping;
