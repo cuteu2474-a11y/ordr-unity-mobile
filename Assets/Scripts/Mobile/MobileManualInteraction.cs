@@ -134,8 +134,12 @@ namespace Ordr.Mobile.Mobile
         {
             get
             {
+                if (fusion == null) return false;
                 var assist = fusion as AssistedFusionService;
-                return fusion != null && (assist == null || assist.CanCommit);
+                if (assist != null) return assist.CanCommit;
+                var jass = fusion as OriginalJassFusionPort;
+                if (jass != null) return jass.CanCommit;
+                return true;
             }
         }
         public bool HasEconomyService { get { return economy != null; } }
