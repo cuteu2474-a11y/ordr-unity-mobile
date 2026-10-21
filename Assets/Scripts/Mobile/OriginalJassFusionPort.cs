@@ -36,6 +36,11 @@ namespace Ordr.Mobile.Mobile
         public int LumberCost { get; private set; }
         public long CastTargetInstanceId { get; private set; }
         public IReadOnlyList<long> MaterialInstanceIds { get; private set; }
+        // The exact original CWR registration is carried into the world transaction.
+        // Never synthesize a recipe from UI totals: BGI order and BGH effects matter.
+        public IReadOnlyList<OriginalJassFusionInstruction> OrderedConditions { get; private set; }
+        public IReadOnlyList<OriginalJassFusionInstruction> ResultInstructions { get; private set; }
+        public IReadOnlyList<JassFusionMaterialBinding> MaterialBindings { get; private set; }
 
         internal OriginalJassFusionCommitOrder(JassFusionReadiness assessment,
             long verifiedCastTargetInstanceId)
@@ -51,6 +56,12 @@ namespace Ordr.Mobile.Mobile
             GoldCost = assessment.GoldCost;
             LumberCost = assessment.LumberCost;
             MaterialInstanceIds = new List<long>(assessment.SuggestedMaterialIds).AsReadOnly();
+            OrderedConditions = new List<OriginalJassFusionInstruction>(
+                assessment.SourceRegistration.OrderedConditions).AsReadOnly();
+            ResultInstructions = new List<OriginalJassFusionInstruction>(
+                assessment.SourceRegistration.Results).AsReadOnly();
+            MaterialBindings = new List<JassFusionMaterialBinding>(
+                assessment.MaterialBindings).AsReadOnly();
         }
     }
 
