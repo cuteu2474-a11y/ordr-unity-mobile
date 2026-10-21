@@ -39,10 +39,12 @@ namespace Ordr.Mobile.Mobile
                 throw new FormatException("조합 능력 rawcode는 정확히 4자입니다.");
 
             var line = OrdrJson.Number(values, "jassLine");
-            if (!line.HasValue || line.Value < 1 || line.Value > int.MaxValue ||
-                Math.Floor(line.Value) != line.Value)
+            // The ordered compressed archive intentionally omits source line
+            // numbers. A source-JASS extraction includes exact line numbers.
+            if (line.HasValue && (line.Value < 1 || line.Value > int.MaxValue ||
+                Math.Floor(line.Value) != line.Value))
                 throw new FormatException("원본 JASS 줄 번호가 잘못됐습니다.");
-            SourceLine = (int)line.Value;
+            SourceLine = line.HasValue ? (int)line.Value : 0;
 
             var results = new List<OriginalJassFusionInstruction>();
             foreach (object item in OrdrJson.Array(OrdrJson.Value(values, "results"), "results"))
