@@ -16,12 +16,14 @@ namespace Ordr.Mobile.Combat
         public bool UseArmorRating { get; private set; }
         public bool UseMagicResistance { get; private set; }
         public DamageTraits Traits { get; private set; }
+        public DamageSchool School { get; private set; }
         public string Evidence { get; private set; }
 
         public Ordr323VerifiedDamageHit(double rawDamage,
             Ordr323AttackType attackType, bool useAttackTable,
             bool useArmorRating, bool useMagicResistance,
-            DamageTraits traits, string evidence)
+            DamageTraits traits, string evidence,
+            DamageSchool school = DamageSchool.ScriptDefined)
         {
             if (double.IsNaN(rawDamage) || double.IsInfinity(rawDamage) ||
                 rawDamage < 0)
@@ -30,6 +32,8 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentOutOfRangeException(nameof(attackType));
             if ((traits & ~DamageTraits.Explosive) != DamageTraits.None)
                 throw new ArgumentOutOfRangeException(nameof(traits));
+            if (!Enum.IsDefined(typeof(DamageSchool), school))
+                throw new ArgumentOutOfRangeException(nameof(school));
             if (string.IsNullOrWhiteSpace(evidence))
                 throw new ArgumentException("원작 공격 타입/피해 공식의 출처가 필요합니다.");
             RawDamage = rawDamage;
@@ -38,6 +42,7 @@ namespace Ordr.Mobile.Combat
             UseArmorRating = useArmorRating;
             UseMagicResistance = useMagicResistance;
             Traits = traits;
+            School = school;
             Evidence = evidence;
         }
     }
@@ -186,17 +191,22 @@ namespace Ordr.Mobile.Combat
             }
 
             double amplification = 1.0;
+            bool hasMagicAmp = Has(effects, CombatEffectType.MagicDamageAmplification);
+            bool uncertainSchoolWithMagicAmp =
+                hasMagicAmp && hit.School == DamageSchool.ScriptDefined;
             if (Has(effects, CombatEffectType.AllDamageAmplification) ||
-                (hit.UseMagicResistance &&
-                 Has(effects, CombatEffectType.MagicDamageAmplification)) ||
+                (hasMagicAmp && hit.School == DamageSchool.Magical) ||
+                uncertainSchoolWithMagicAmp ||
                 ((hit.Traits & DamageTraits.Explosive) != 0 &&
                  Has(effects, CombatEffectType.ExplosiveDamageAmplification)))
             {
+                // 마법 피해 분류와 마법 저항 적용 여부는 서로 독립적이다.
+                // 피해 계열 미확인일 때 마법 증폭을 임의로 무시하지 않는다.
                 if (modifiers == null ||
                     !modifiers.TryResolveAmplification(target, effects,
                         hit, out amplification))
                     throw new NotSupportedException(
-                        "2.323[C] 피해 증폭 중첩·상한 계산식 미연결");
+                        "2.323[C] 피해 증폭/스킬 계열·중첩 계산식 미연결");
             }
 
             double amount = Ordr323MapDamageMath.ApplyVerifiedFactors(hit.RawDamage,
