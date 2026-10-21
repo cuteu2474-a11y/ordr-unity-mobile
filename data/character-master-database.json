@@ -1,0 +1,2867 @@
+{
+  "format": "ordr-character-database-v1",
+  "gameVersion": "S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "collectedOn": "2026-10-21",
+  "contentScope": "Complete 271-character WEB catalog snapshot joined to 200 tooltip profiles; NOT verified complete original W3X object database.",
+  "integrity": {
+    "sourceBlobShas": {
+      "data/units.json": "1a0ed4c1cb69a06497f9e27d2d4c2117e19005b3",
+      "data/character-skill-profiles.json": "8a2ceee1fbf283166445803a59e8d7bc54adc86e",
+      "data/original-unit-rawcode-label-links.json": "67a2f8417ab9bf948d370f50dc66fff25d88c65e",
+      "data/original-stat-evidence.json": "e462b0c37d6a6825fbdeb518908da3a8ed9f8ed4",
+      "data/verified-mobile-fusion-recipes.json": "3e4e133c51c70a1ce5f6fdde5cd12d3abd1f9b74",
+      "data/original-2323C-character-defense-skill-links.json": "9a79f9ba449c49557634a4f33decdd5ca589c99b",
+      "data/original-fusion-rawcode-backlog.json": "60810178fc9a2c16cc7e5eb8e5e0d2d38af3a57e",
+      "data/original-jass-fusion-registry.json": "75c4da90f56a486d2dd63f504e565692d6f8176e"
+    },
+    "originalW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+    "authoritativeUnitRawcodes": 0,
+    "note": "Candidate rawcodes and patch observations are provenance only. Null combat values are intentional; never infer zeros or upgrade to verified."
+  },
+  "summary": {
+    "catalogCharacters": 271,
+    "withTooltipProfiles": 200,
+    "withoutTooltipProfiles": 71,
+    "totalSkillEntries": 554,
+    "totalPassiveEntries": 295,
+    "jassLabelCandidateLinks": 81,
+    "originalRawcodesVerifiedAgainstWarcraftUnitData": 0,
+    "verifiedOriginalBasicAttacks": 0,
+    "withPatchStatObservations": 5,
+    "sourceCorrelatedDefenseSkills": 11,
+    "withWebRecipes": 7,
+    "originalJassFusionRegistrations": 266,
+    "distinctJassFusionResultRawcodes": 265,
+    "distinctJassFusionIngredientOrResultRawcodes": 280,
+    "unmatchedOriginalRawcodes": 199,
+    "allowedForOriginalParityCombat": 0
+  },
+  "storage": "Manifest with all 271 character references. Full original catalog, tooltip skills, JASS evidence, unknown combat fields and blockers are stored in per-grade character record files listed in gradeFiles.",
+  "gradeFiles": [
+    {
+      "path": "data/characters/by-grade/C.json",
+      "grade": "흔함",
+      "catalogCount": 9,
+      "profiles": 0,
+      "skills": 0
+    },
+    {
+      "path": "data/characters/by-grade/U.json",
+      "grade": "안흔함",
+      "catalogCount": 13,
+      "profiles": 0,
+      "skills": 0
+    },
+    {
+      "path": "data/characters/by-grade/S.json",
+      "grade": "특별함",
+      "catalogCount": 33,
+      "profiles": 8,
+      "skills": 2
+    },
+    {
+      "path": "data/characters/by-grade/X.json",
+      "grade": "특수함",
+      "catalogCount": 7,
+      "profiles": 7,
+      "skills": 7
+    },
+    {
+      "path": "data/characters/by-grade/R.json",
+      "grade": "희귀함",
+      "catalogCount": 42,
+      "profiles": 18,
+      "skills": 14
+    },
+    {
+      "path": "data/characters/by-grade/L.json",
+      "grade": "전설",
+      "catalogCount": 39,
+      "profiles": 39,
+      "skills": 80
+    },
+    {
+      "path": "data/characters/by-grade/H.json",
+      "grade": "히든",
+      "catalogCount": 22,
+      "profiles": 22,
+      "skills": 28
+    },
+    {
+      "path": "data/characters/by-grade/T.json",
+      "grade": "변화",
+      "catalogCount": 5,
+      "profiles": 5,
+      "skills": 10
+    },
+    {
+      "path": "data/characters/by-grade/LI.json",
+      "grade": "제한됨",
+      "catalogCount": 10,
+      "profiles": 10,
+      "skills": 37
+    },
+    {
+      "path": "data/characters/by-grade/D.json",
+      "grade": "왜곡됨",
+      "catalogCount": 6,
+      "profiles": 6,
+      "skills": 18
+    },
+    {
+      "path": "data/characters/by-grade/TR.json",
+      "grade": "초월함",
+      "catalogCount": 30,
+      "profiles": 30,
+      "skills": 138
+    },
+    {
+      "path": "data/characters/by-grade/E.json",
+      "grade": "영원한",
+      "catalogCount": 12,
+      "profiles": 12,
+      "skills": 69
+    },
+    {
+      "path": "data/characters/by-grade/I.json",
+      "grade": "불멸의",
+      "catalogCount": 12,
+      "profiles": 12,
+      "skills": 58
+    },
+    {
+      "path": "data/characters/by-grade/SR.json",
+      "grade": "세라핌",
+      "catalogCount": 4,
+      "profiles": 4,
+      "skills": 13
+    },
+    {
+      "path": "data/characters/by-grade/RN.json",
+      "grade": "랜덤",
+      "catalogCount": 14,
+      "profiles": 14,
+      "skills": 24
+    },
+    {
+      "path": "data/characters/by-grade/MY.json",
+      "grade": "신비함",
+      "catalogCount": 13,
+      "profiles": 13,
+      "skills": 56
+    }
+  ],
+  "characters": [
+    {
+      "id": "C-01",
+      "name": "루피",
+      "grade": "흔함",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/C.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "C-02",
+      "name": "조로",
+      "grade": "흔함",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/C.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "C-03",
+      "name": "나미",
+      "grade": "흔함",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/C.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "C-04",
+      "name": "우솝",
+      "grade": "흔함",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/C.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "C-05",
+      "name": "상디",
+      "grade": "흔함",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/C.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "C-06",
+      "name": "쵸파",
+      "grade": "흔함",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/C.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "C-07",
+      "name": "버기",
+      "grade": "흔함",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/C.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "C-08",
+      "name": "총병",
+      "grade": "흔함",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/C.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "C-09",
+      "name": "칼병",
+      "grade": "흔함",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/C.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-01",
+      "name": "로빈",
+      "grade": "안흔함",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-02",
+      "name": "베포",
+      "grade": "안흔함",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-03",
+      "name": "브룩",
+      "grade": "안흔함",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-04",
+      "name": "블루노",
+      "grade": "안흔함",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-05",
+      "name": "에이스",
+      "grade": "안흔함",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-06",
+      "name": "이나즈마",
+      "grade": "안흔함",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-07",
+      "name": "저격왕",
+      "grade": "안흔함",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-08",
+      "name": "쵸파 럼블볼",
+      "grade": "안흔함",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-09",
+      "name": "타시기",
+      "grade": "안흔함",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-10",
+      "name": "페로나",
+      "grade": "안흔함",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-11",
+      "name": "프랑키",
+      "grade": "안흔함",
+      "gradeOrder": 11,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-12",
+      "name": "하찌",
+      "grade": "안흔함",
+      "gradeOrder": 12,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-13",
+      "name": "후쿠로",
+      "grade": "안흔함",
+      "gradeOrder": 13,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-01",
+      "name": "X-드레이크",
+      "grade": "특별함",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-02",
+      "name": "갱 뱃지",
+      "grade": "특별함",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-03",
+      "name": "나미 크리마텍트",
+      "grade": "특별함",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-04",
+      "name": "로빈 오하라",
+      "grade": "특별함",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-05",
+      "name": "트라팔가 로우",
+      "grade": "특별함",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-06",
+      "name": "루치",
+      "grade": "특별함",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-07",
+      "name": "루피 기어세컨드",
+      "grade": "특별함",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-08",
+      "name": "마르코",
+      "grade": "특별함",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-09",
+      "name": "모리아",
+      "grade": "특별함",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-10",
+      "name": "바질호킨스",
+      "grade": "특별함",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-11",
+      "name": "버기 마기탄",
+      "grade": "특별함",
+      "gradeOrder": 11,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-12",
+      "name": "봉쿠레",
+      "grade": "특별함",
+      "gradeOrder": 12,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-13",
+      "name": "상디 검은다리",
+      "grade": "특별함",
+      "gradeOrder": 13,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-14",
+      "name": "스모커",
+      "grade": "특별함",
+      "gradeOrder": 14,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-15",
+      "name": "스쿼드",
+      "grade": "특별함",
+      "gradeOrder": 15,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-16",
+      "name": "아론",
+      "grade": "특별함",
+      "gradeOrder": 16,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-17",
+      "name": "압살롬",
+      "grade": "특별함",
+      "gradeOrder": 17,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-18",
+      "name": "에넬",
+      "grade": "특별함",
+      "gradeOrder": 18,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-19",
+      "name": "에이스 2번 대대장",
+      "grade": "특별함",
+      "gradeOrder": 19,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-20",
+      "name": "우솝 화염탄",
+      "grade": "특별함",
+      "gradeOrder": 20,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-21",
+      "name": "이나즈마 혁명군",
+      "grade": "특별함",
+      "gradeOrder": 21,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-22",
+      "name": "조로 귀기",
+      "grade": "특별함",
+      "gradeOrder": 22,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-23",
+      "name": "징베",
+      "grade": "특별함",
+      "gradeOrder": 23,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-24",
+      "name": "챠카",
+      "grade": "특별함",
+      "gradeOrder": 24,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-25",
+      "name": "쵸파 가드포인트",
+      "grade": "특별함",
+      "gradeOrder": 25,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-26",
+      "name": "쵸파 두뇌강화",
+      "grade": "특별함",
+      "gradeOrder": 26,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-27",
+      "name": "캡틴 크로",
+      "grade": "특별함",
+      "gradeOrder": 27,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-28",
+      "name": "쿠마",
+      "grade": "특별함",
+      "gradeOrder": 28,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-29",
+      "name": "크로커다일",
+      "grade": "특별함",
+      "gradeOrder": 29,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-30",
+      "name": "키드",
+      "grade": "특별함",
+      "gradeOrder": 30,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-31",
+      "name": "킬러",
+      "grade": "특별함",
+      "gradeOrder": 31,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-32",
+      "name": "파이러츠 도킹5",
+      "grade": "특별함",
+      "gradeOrder": 32,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "S-33",
+      "name": "헤르메포",
+      "grade": "특별함",
+      "gradeOrder": 33,
+      "recordFile": "data/characters/by-grade/S.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "X-01",
+      "name": "모건",
+      "grade": "특수함",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/X.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "X-02",
+      "name": "베티",
+      "grade": "특수함",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/X.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "X-03",
+      "name": "블고리",
+      "grade": "특수함",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/X.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "X-04",
+      "name": "아이스버그",
+      "grade": "특수함",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/X.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "X-05",
+      "name": "오타마",
+      "grade": "특수함",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/X.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "X-06",
+      "name": "페루",
+      "grade": "특수함",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/X.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "X-07",
+      "name": "폭시",
+      "grade": "특수함",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/X.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-01",
+      "name": "X-드레이크",
+      "grade": "희귀함",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-02",
+      "name": "거프",
+      "grade": "희귀함",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-03",
+      "name": "검은수염",
+      "grade": "희귀함",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-04",
+      "name": "도플라밍고",
+      "grade": "희귀함",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-05",
+      "name": "트라팔가 로우 죽음의 외과의사",
+      "grade": "희귀함",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-06",
+      "name": "루피 기어써드",
+      "grade": "희귀함",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-07",
+      "name": "류마",
+      "grade": "희귀함",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-08",
+      "name": "마르코 불사조",
+      "grade": "희귀함",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-09",
+      "name": "마젤란",
+      "grade": "희귀함",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-10",
+      "name": "모몬가",
+      "grade": "희귀함",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-11",
+      "name": "미호크",
+      "grade": "희귀함",
+      "gradeOrder": 11,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-12",
+      "name": "바르톨로메오",
+      "grade": "희귀함",
+      "gradeOrder": 12,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-13",
+      "name": "바제스",
+      "grade": "희귀함",
+      "gradeOrder": 13,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-14",
+      "name": "바질 호킨스 스트로맨",
+      "grade": "희귀함",
+      "gradeOrder": 14,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-15",
+      "name": "반더 데켄",
+      "grade": "희귀함",
+      "gradeOrder": 15,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-16",
+      "name": "베이비 5",
+      "grade": "희귀함",
+      "gradeOrder": 16,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-17",
+      "name": "벤 베크만",
+      "grade": "희귀함",
+      "gradeOrder": 17,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-18",
+      "name": "브룩 음악가",
+      "grade": "희귀함",
+      "gradeOrder": 18,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-19",
+      "name": "비비",
+      "grade": "희귀함",
+      "gradeOrder": 19,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-20",
+      "name": "사보",
+      "grade": "희귀함",
+      "gradeOrder": 20,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-21",
+      "name": "상디 디아블잠브",
+      "grade": "희귀함",
+      "gradeOrder": 21,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-22",
+      "name": "샹크스",
+      "grade": "희귀함",
+      "gradeOrder": 22,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-23",
+      "name": "센토마루",
+      "grade": "희귀함",
+      "gradeOrder": 23,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-24",
+      "name": "슈가",
+      "grade": "희귀함",
+      "gradeOrder": 24,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-25",
+      "name": "시류",
+      "grade": "희귀함",
+      "gradeOrder": 25,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-26",
+      "name": "아오키지",
+      "grade": "희귀함",
+      "gradeOrder": 26,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-27",
+      "name": "아카이누",
+      "grade": "희귀함",
+      "gradeOrder": 27,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-28",
+      "name": "오즈",
+      "grade": "희귀함",
+      "gradeOrder": 28,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-29",
+      "name": "와이퍼",
+      "grade": "희귀함",
+      "gradeOrder": 29,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-30",
+      "name": "우솝 보잉열도",
+      "grade": "희귀함",
+      "gradeOrder": 30,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-31",
+      "name": "이완코브",
+      "grade": "희귀함",
+      "gradeOrder": 31,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-32",
+      "name": "제프",
+      "grade": "희귀함",
+      "gradeOrder": 32,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-33",
+      "name": "조로 현상금 사냥꾼",
+      "grade": "희귀함",
+      "gradeOrder": 33,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-34",
+      "name": "죠즈",
+      "grade": "희귀함",
+      "gradeOrder": 34,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-35",
+      "name": "쵸파 혼포인트",
+      "grade": "희귀함",
+      "gradeOrder": 35,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-36",
+      "name": "카쿠",
+      "grade": "희귀함",
+      "gradeOrder": 36,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-37",
+      "name": "캡틴 키드",
+      "grade": "희귀함",
+      "gradeOrder": 37,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-38",
+      "name": "크로커다일 Mr.0",
+      "grade": "희귀함",
+      "gradeOrder": 38,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-39",
+      "name": "키자루",
+      "grade": "희귀함",
+      "gradeOrder": 39,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-40",
+      "name": "킨에몬",
+      "grade": "희귀함",
+      "gradeOrder": 40,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-41",
+      "name": "페로나 홀로홀로",
+      "grade": "희귀함",
+      "gradeOrder": 41,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "R-42",
+      "name": "핸콕",
+      "grade": "희귀함",
+      "gradeOrder": 42,
+      "recordFile": "data/characters/by-grade/R.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-01",
+      "name": "검은수염",
+      "grade": "전설",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-02",
+      "name": "나미",
+      "grade": "전설",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-03",
+      "name": "네코마무시",
+      "grade": "전설",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-04",
+      "name": "드래곤",
+      "grade": "전설",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-05",
+      "name": "라분",
+      "grade": "전설",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-06",
+      "name": "레이쥬",
+      "grade": "전설",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-07",
+      "name": "레일리",
+      "grade": "전설",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-08",
+      "name": "트라팔가 로우",
+      "grade": "전설",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-09",
+      "name": "루치",
+      "grade": "전설",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-10",
+      "name": "루피 나이트메어",
+      "grade": "전설",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-11",
+      "name": "마르코 환수종",
+      "grade": "전설",
+      "gradeOrder": 11,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-12",
+      "name": "모리아",
+      "grade": "전설",
+      "gradeOrder": 12,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-13",
+      "name": "바르톨로메오",
+      "grade": "전설",
+      "gradeOrder": 13,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-14",
+      "name": "브륄레",
+      "grade": "전설",
+      "gradeOrder": 14,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-15",
+      "name": "블랙마리아",
+      "grade": "전설",
+      "gradeOrder": 15,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-16",
+      "name": "상디",
+      "grade": "전설",
+      "gradeOrder": 16,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-17",
+      "name": "샹크스",
+      "grade": "전설",
+      "gradeOrder": 17,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-18",
+      "name": "센고쿠",
+      "grade": "전설",
+      "gradeOrder": 18,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-19",
+      "name": "슈가",
+      "grade": "전설",
+      "gradeOrder": 19,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-20",
+      "name": "스모커",
+      "grade": "전설",
+      "gradeOrder": 20,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-21",
+      "name": "시노부",
+      "grade": "전설",
+      "gradeOrder": 21,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-22",
+      "name": "시저",
+      "grade": "전설",
+      "gradeOrder": 22,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-23",
+      "name": "시키",
+      "grade": "전설",
+      "gradeOrder": 23,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-24",
+      "name": "에이스",
+      "grade": "전설",
+      "gradeOrder": 24,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-25",
+      "name": "울티",
+      "grade": "전설",
+      "gradeOrder": 25,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-26",
+      "name": "제파",
+      "grade": "전설",
+      "gradeOrder": 26,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-27",
+      "name": "조로",
+      "grade": "전설",
+      "gradeOrder": 27,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-28",
+      "name": "징베",
+      "grade": "전설",
+      "gradeOrder": 28,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-29",
+      "name": "쵸파 유력강화",
+      "grade": "전설",
+      "gradeOrder": 29,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-30",
+      "name": "카르가라",
+      "grade": "전설",
+      "gradeOrder": 30,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-31",
+      "name": "코비",
+      "grade": "전설",
+      "gradeOrder": 31,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-32",
+      "name": "쿠마 폭군",
+      "grade": "전설",
+      "gradeOrder": 32,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-33",
+      "name": "크래커",
+      "grade": "전설",
+      "gradeOrder": 33,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-34",
+      "name": "킹",
+      "grade": "전설",
+      "gradeOrder": 34,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-35",
+      "name": "토키",
+      "grade": "전설",
+      "gradeOrder": 35,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-36",
+      "name": "핸콕",
+      "grade": "전설",
+      "gradeOrder": 36,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-37",
+      "name": "후지토라",
+      "grade": "전설",
+      "gradeOrder": 37,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-38",
+      "name": "흰수염",
+      "grade": "전설",
+      "gradeOrder": 38,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "L-39",
+      "name": "히바리",
+      "grade": "전설",
+      "gradeOrder": 39,
+      "recordFile": "data/characters/by-grade/L.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "H-01",
+      "name": "검호",
+      "grade": "히든",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-02",
+      "name": "레드포스호",
+      "grade": "히든",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-03",
+      "name": "레베카",
+      "grade": "히든",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-04",
+      "name": "료쿠규",
+      "grade": "히든",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-05",
+      "name": "류마",
+      "grade": "히든",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-06",
+      "name": "모비딕호",
+      "grade": "히든",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-07",
+      "name": "반더데켄",
+      "grade": "히든",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-08",
+      "name": "발라티에",
+      "grade": "히든",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-09",
+      "name": "방주맥심",
+      "grade": "히든",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-10",
+      "name": "베르고",
+      "grade": "히든",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-11",
+      "name": "봉쿠레",
+      "grade": "히든",
+      "gradeOrder": 11,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-12",
+      "name": "사보",
+      "grade": "히든",
+      "gradeOrder": 12,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-13",
+      "name": "스튜시",
+      "grade": "히든",
+      "gradeOrder": 13,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-14",
+      "name": "시류",
+      "grade": "히든",
+      "gradeOrder": 14,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-15",
+      "name": "써니호",
+      "grade": "히든",
+      "gradeOrder": 15,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-16",
+      "name": "아오키지",
+      "grade": "히든",
+      "gradeOrder": 16,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-17",
+      "name": "아카이누",
+      "grade": "히든",
+      "gradeOrder": 17,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-18",
+      "name": "이완코브",
+      "grade": "히든",
+      "gradeOrder": 18,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-19",
+      "name": "캐럿",
+      "grade": "히든",
+      "gradeOrder": 19,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-20",
+      "name": "키쿠노죠",
+      "grade": "히든",
+      "gradeOrder": 20,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-21",
+      "name": "킬러",
+      "grade": "히든",
+      "gradeOrder": 21,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "H-22",
+      "name": "피셔타이거",
+      "grade": "히든",
+      "gradeOrder": 22,
+      "recordFile": "data/characters/by-grade/H.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "T-01",
+      "name": "도플라밍고",
+      "grade": "변화",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/T.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "T-02",
+      "name": "비비",
+      "grade": "변화",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/T.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "T-03",
+      "name": "베이비 5",
+      "grade": "변화",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/T.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "T-04",
+      "name": "카쿠",
+      "grade": "변화",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/T.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "T-05",
+      "name": "캐럿",
+      "grade": "변화",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/T.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "LI-01",
+      "name": "레드필드",
+      "grade": "제한됨",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/LI.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "LI-02",
+      "name": "레베카",
+      "grade": "제한됨",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/LI.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "LI-03",
+      "name": "마르코",
+      "grade": "제한됨",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/LI.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "LI-04",
+      "name": "시노부",
+      "grade": "제한됨",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/LI.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "LI-05",
+      "name": "아인",
+      "grade": "제한됨",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/LI.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "LI-06",
+      "name": "알비다",
+      "grade": "제한됨",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/LI.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "LI-07",
+      "name": "에넬",
+      "grade": "제한됨",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/LI.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "LI-08",
+      "name": "카타쿠리",
+      "grade": "제한됨",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/LI.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "LI-09",
+      "name": "크로커다일",
+      "grade": "제한됨",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/LI.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "LI-10",
+      "name": "킹",
+      "grade": "제한됨",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/LI.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "D-01",
+      "name": "블랙마리아",
+      "grade": "왜곡됨",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/D.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "D-02",
+      "name": "코알라",
+      "grade": "왜곡됨",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/D.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "D-03",
+      "name": "퀸",
+      "grade": "왜곡됨",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/D.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "D-04",
+      "name": "페로나",
+      "grade": "왜곡됨",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/D.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "D-05",
+      "name": "포트거스.D.에이스",
+      "grade": "왜곡됨",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/D.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "D-06",
+      "name": "바제스",
+      "grade": "왜곡됨",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/D.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-01",
+      "name": "검은수염",
+      "grade": "초월함",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-02",
+      "name": "나미",
+      "grade": "초월함",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-03",
+      "name": "도플라밍고",
+      "grade": "초월함",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-04",
+      "name": "로빈",
+      "grade": "초월함",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-05",
+      "name": "트라팔가 로우",
+      "grade": "초월함",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-06",
+      "name": "료쿠규",
+      "grade": "초월함",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-07",
+      "name": "루치",
+      "grade": "초월함",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-08",
+      "name": "루피",
+      "grade": "초월함",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-09",
+      "name": "바질호킨스",
+      "grade": "초월함",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-10",
+      "name": "브룩",
+      "grade": "초월함",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-11",
+      "name": "사보",
+      "grade": "초월함",
+      "gradeOrder": 11,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-12",
+      "name": "상디",
+      "grade": "초월함",
+      "gradeOrder": 12,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-13",
+      "name": "샹크스",
+      "grade": "초월함",
+      "gradeOrder": 13,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-14",
+      "name": "스네이크맨",
+      "grade": "초월함",
+      "gradeOrder": 14,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-15",
+      "name": "시라호시",
+      "grade": "초월함",
+      "gradeOrder": 15,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-16",
+      "name": "아오키지",
+      "grade": "초월함",
+      "gradeOrder": 16,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-17",
+      "name": "아카이누",
+      "grade": "초월함",
+      "gradeOrder": 17,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-18",
+      "name": "야마토",
+      "grade": "초월함",
+      "gradeOrder": 18,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-19",
+      "name": "우솝",
+      "grade": "초월함",
+      "gradeOrder": 19,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-20",
+      "name": "조로",
+      "grade": "초월함",
+      "gradeOrder": 20,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-21",
+      "name": "보니",
+      "grade": "초월함",
+      "gradeOrder": 21,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-22",
+      "name": "징베",
+      "grade": "초월함",
+      "gradeOrder": 22,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-23",
+      "name": "쵸파",
+      "grade": "초월함",
+      "gradeOrder": 23,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-24",
+      "name": "코비",
+      "grade": "초월함",
+      "gradeOrder": 24,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-25",
+      "name": "키드",
+      "grade": "초월함",
+      "gradeOrder": 25,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-26",
+      "name": "키자루",
+      "grade": "초월함",
+      "gradeOrder": 26,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-27",
+      "name": "타시기",
+      "grade": "초월함",
+      "gradeOrder": 27,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-28",
+      "name": "프랑키",
+      "grade": "초월함",
+      "gradeOrder": 28,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-29",
+      "name": "후지토라",
+      "grade": "초월함",
+      "gradeOrder": 29,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "TR-30",
+      "name": "베가펑크",
+      "grade": "초월함",
+      "gradeOrder": 30,
+      "recordFile": "data/characters/by-grade/TR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-01",
+      "name": "니카(루피)",
+      "grade": "영원한",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-02",
+      "name": "니카(스네이크)",
+      "grade": "영원한",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "E-03",
+      "name": "류마",
+      "grade": "영원한",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-04",
+      "name": "미호크",
+      "grade": "영원한",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-05",
+      "name": "버기",
+      "grade": "영원한",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-06",
+      "name": "비비",
+      "grade": "영원한",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-07",
+      "name": "에이스",
+      "grade": "영원한",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-08",
+      "name": "오뎅",
+      "grade": "영원한",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-09",
+      "name": "우타",
+      "grade": "영원한",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-10",
+      "name": "카번딧슈",
+      "grade": "영원한",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-11",
+      "name": "테조로",
+      "grade": "영원한",
+      "gradeOrder": 11,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "E-12",
+      "name": "핸콕",
+      "grade": "영원한",
+      "gradeOrder": 12,
+      "recordFile": "data/characters/by-grade/E.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-01",
+      "name": "거프",
+      "grade": "불멸의",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-02",
+      "name": "드래곤",
+      "grade": "불멸의",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-03",
+      "name": "레일리",
+      "grade": "불멸의",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-04",
+      "name": "로져",
+      "grade": "불멸의",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-05",
+      "name": "불릿",
+      "grade": "불멸의",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-06",
+      "name": "빅맘",
+      "grade": "불멸의",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-07",
+      "name": "센고쿠",
+      "grade": "불멸의",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-08",
+      "name": "스코퍼가반",
+      "grade": "불멸의",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-09",
+      "name": "시키",
+      "grade": "불멸의",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-10",
+      "name": "제트",
+      "grade": "불멸의",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-11",
+      "name": "카이도",
+      "grade": "불멸의",
+      "gradeOrder": 11,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "I-12",
+      "name": "흰수염",
+      "grade": "불멸의",
+      "gradeOrder": 12,
+      "recordFile": "data/characters/by-grade/I.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": true,
+      "combatVerified": false
+    },
+    {
+      "id": "SR-01",
+      "name": "S-스네이크",
+      "grade": "세라핌",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/SR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "SR-02",
+      "name": "S-호크",
+      "grade": "세라핌",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/SR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "SR-03",
+      "name": "S-샤크",
+      "grade": "세라핌",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/SR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "SR-04",
+      "name": "S-베어",
+      "grade": "세라핌",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/SR.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-01",
+      "name": "K",
+      "grade": "랜덤",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-02",
+      "name": "나루토",
+      "grade": "랜덤",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-03",
+      "name": "메구밍",
+      "grade": "랜덤",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-04",
+      "name": "센토 이스즈",
+      "grade": "랜덤",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-05",
+      "name": "야가미 라이토",
+      "grade": "랜덤",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-06",
+      "name": "엘리자베스",
+      "grade": "랜덤",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-07",
+      "name": "옌",
+      "grade": "랜덤",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-08",
+      "name": "요츠바",
+      "grade": "랜덤",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-09",
+      "name": "이사야마 요미",
+      "grade": "랜덤",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-10",
+      "name": "이치의 율자",
+      "grade": "랜덤",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-11",
+      "name": "토우마",
+      "grade": "랜덤",
+      "gradeOrder": 11,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-12",
+      "name": "이치고",
+      "grade": "랜덤",
+      "gradeOrder": 12,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-13",
+      "name": "페이몬",
+      "grade": "랜덤",
+      "gradeOrder": 13,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "RN-14",
+      "name": "하네카와 츠바사",
+      "grade": "랜덤",
+      "gradeOrder": 14,
+      "recordFile": "data/characters/by-grade/RN.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-01",
+      "name": "고죠 사토루",
+      "grade": "신비함",
+      "gradeOrder": 1,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-02",
+      "name": "네즈코",
+      "grade": "신비함",
+      "gradeOrder": 2,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-03",
+      "name": "료우기 시키",
+      "grade": "신비함",
+      "gradeOrder": 3,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-04",
+      "name": "미나토",
+      "grade": "신비함",
+      "gradeOrder": 4,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-05",
+      "name": "바쿠야",
+      "grade": "신비함",
+      "gradeOrder": 5,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-06",
+      "name": "부릉냐",
+      "grade": "신비함",
+      "gradeOrder": 6,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-07",
+      "name": "샌즈",
+      "grade": "신비함",
+      "gradeOrder": 7,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-08",
+      "name": "아냐 포저",
+      "grade": "신비함",
+      "gradeOrder": 8,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-09",
+      "name": "야쿠모 유카리",
+      "grade": "신비함",
+      "gradeOrder": 9,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-10",
+      "name": "콘파쿠 요우무",
+      "grade": "신비함",
+      "gradeOrder": 10,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-11",
+      "name": "쿠죠 죠타로",
+      "grade": "신비함",
+      "gradeOrder": 11,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-12",
+      "name": "타츠마키",
+      "grade": "신비함",
+      "gradeOrder": 12,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "MY-13",
+      "name": "히그마",
+      "grade": "신비함",
+      "gradeOrder": 13,
+      "recordFile": "data/characters/by-grade/MY.json",
+      "hasProfile": true,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    }
+  ]
+}

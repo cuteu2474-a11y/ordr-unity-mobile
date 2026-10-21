@@ -1,0 +1,1758 @@
+{
+  "format": "ordr-character-grade-v1",
+  "gameVersion": "S2 2.323[C]",
+  "grade": "랜덤",
+  "gradePrefix": "RN",
+  "catalogCount": 14,
+  "masterIndex": "data/character-master-database.json",
+  "characters": [
+    {
+      "id": "RN-01",
+      "name": "K",
+      "grade": "랜덤",
+      "gradeOrder": 1,
+      "catalog": {
+        "id": "RN-01",
+        "grade": "랜덤",
+        "gradeOrder": 1,
+        "name": "K",
+        "roleTags": [
+          "마뎀",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD1",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "RN-01",
+        "sourceUrl": "https://ordr.kr/character/RD1",
+        "passives": [],
+        "skills": [
+          {
+            "name": "미닛츠 스파이크",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 600000,
+                "multiplierRange": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3
+              }
+            ],
+            "chancePercent": 3,
+            "target": "area",
+            "radius": 460
+          },
+          {
+            "name": "체인 드라이브",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 6.25
+              },
+              {
+                "type": "magical",
+                "amount": 400000
+              }
+            ],
+            "chancePercent": 18,
+            "target": "single"
+          },
+          {
+            "name": "최대 속도",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "selfAttackSpeedMax",
+                "durationSeconds": 5
+              }
+            ],
+            "chancePercent": 3
+          },
+          {
+            "name": "히트 드라이브",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 350000
+              },
+              {
+                "type": "teleport",
+                "range": 2000
+              }
+            ],
+            "chancePercent": 14,
+            "target": "area",
+            "radius": 350
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD1",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-02",
+      "name": "나루토",
+      "grade": "랜덤",
+      "gradeOrder": 2,
+      "catalog": {
+        "id": "RN-02",
+        "grade": "랜덤",
+        "gradeOrder": 2,
+        "name": "나루토",
+        "roleTags": [
+          "마뎀",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD2",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "RN-02",
+        "sourceUrl": "https://ordr.kr/character/RD2",
+        "passives": [],
+        "skills": [
+          {
+            "name": "대옥 나선환",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 450000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.85
+              }
+            ],
+            "chancePercent": 4,
+            "target": "area",
+            "radius": 600
+          },
+          {
+            "name": "풍둔 나선 수리검",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magicalDamageOverTime",
+                "perSecond": 180000,
+                "durationSeconds": 3
+              }
+            ],
+            "chancePercent": 4,
+            "target": "area",
+            "radius": 550
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD2",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-03",
+      "name": "메구밍",
+      "grade": "랜덤",
+      "gradeOrder": 3,
+      "catalog": {
+        "id": "RN-03",
+        "grade": "랜덤",
+        "gradeOrder": 3,
+        "name": "메구밍",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": "https://ordr.kr/character/RD3",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "RN-03",
+        "sourceUrl": "https://ordr.kr/character/RD3",
+        "passives": [],
+        "skills": [
+          {
+            "name": "폭렬 익스플로전",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "fixed",
+                "targetMaxHealthPercent": 12.5
+              }
+            ],
+            "cooldownSeconds": 150,
+            "target": "area",
+            "radius": 800
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD3",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-04",
+      "name": "센토 이스즈",
+      "grade": "랜덤",
+      "gradeOrder": 4,
+      "catalog": {
+        "id": "RN-04",
+        "grade": "랜덤",
+        "gradeOrder": 4,
+        "name": "센토 이스즈",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "증폭"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD4",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "RN-04",
+        "sourceUrl": "https://ordr.kr/character/RD4",
+        "passives": [],
+        "skills": [
+          {
+            "name": "페인 브링어",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 1500000
+              },
+              {
+                "type": "armorReduction",
+                "amount": 50,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magicDamageAmplification",
+                "percent": 18
+              }
+            ],
+            "chancePercent": 17,
+            "target": "area",
+            "radius": 375
+          },
+          {
+            "name": "저격(Q)",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 80000000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "cooldownSeconds": 250,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD4",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-05",
+      "name": "야가미 라이토",
+      "grade": "랜덤",
+      "gradeOrder": 5,
+      "catalog": {
+        "id": "RN-05",
+        "grade": "랜덤",
+        "gradeOrder": 5,
+        "name": "야가미 라이토",
+        "roleTags": [
+          "마뎀"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD5",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "RN-05",
+        "sourceUrl": "https://ordr.kr/character/RD5",
+        "passives": [],
+        "skills": [
+          {
+            "name": "데스노트",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "targetCurrentHealthPercent": 25,
+                "exceptTargetKinds": [
+                  "boss",
+                  "story"
+                ]
+              }
+            ],
+            "chancePercent": 10,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD5",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-06",
+      "name": "엘리자베스",
+      "grade": "랜덤",
+      "gradeOrder": 6,
+      "catalog": {
+        "id": "RN-06",
+        "grade": "랜덤",
+        "gradeOrder": 6,
+        "name": "엘리자베스",
+        "roleTags": [
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD6",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "RN-06",
+        "sourceUrl": "https://ordr.kr/character/RD6",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 20
+          }
+        ],
+        "skills": [
+          {
+            "name": "다크니스 에로우",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 14.9
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3,
+                "bossOverrideSeconds": 1.5
+              }
+            ],
+            "chancePercent": 14,
+            "target": "single"
+          },
+          {
+            "name": "행운의 토큰(Q)",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "generateLuckyToken",
+                "amount": 1
+              },
+              {
+                "type": "generateLuckyToken",
+                "additional": 1,
+                "chancePercent": 33
+              },
+              {
+                "type": "generateLumber",
+                "amount": 1,
+                "chancePercent": 33
+              }
+            ],
+            "cooldownSeconds": 110,
+            "castTimeSeconds": 2
+          },
+          {
+            "name": "토큰 교환",
+            "trigger": "verifiedCondition",
+            "components": [
+              {
+                "type": "exchange",
+                "costLuckyTokens": 3,
+                "options": [
+                  {
+                    "name": "특별함 선택위습",
+                    "chancePercent": 80
+                  },
+                  {
+                    "name": "희귀함 선택위습",
+                    "chancePercent": 20
+                  }
+                ]
+              }
+            ],
+            "requiredLuckyTokens": 3
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD6",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-07",
+      "name": "옌",
+      "grade": "랜덤",
+      "gradeOrder": 7,
+      "catalog": {
+        "id": "RN-07",
+        "grade": "랜덤",
+        "gradeOrder": 7,
+        "name": "옌",
+        "roleTags": [
+          "마뎀"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD7",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "RN-07",
+        "sourceUrl": "https://ordr.kr/character/RD7",
+        "passives": [],
+        "skills": [
+          {
+            "name": "광역 마법",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 400000
+              }
+            ],
+            "chancePercent": 25,
+            "target": "area",
+            "radius": 415
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD7",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-08",
+      "name": "요츠바",
+      "grade": "랜덤",
+      "gradeOrder": 8,
+      "catalog": {
+        "id": "RN-08",
+        "grade": "랜덤",
+        "gradeOrder": 8,
+        "name": "요츠바",
+        "roleTags": [
+          "마나재생"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD8",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "RN-08",
+        "sourceUrl": "https://ordsearch.net/characters?level=16",
+        "passives": [
+          {
+            "type": "allyManaRegeneration",
+            "perSecond": 2,
+            "radius": 700
+          }
+        ],
+        "skills": [
+          {
+            "name": "떼쓰기(Q)",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "randomWisp",
+                "range": [
+                  "랜덤",
+                  "희귀함"
+                ],
+                "count": 1,
+                "distribution": null
+              }
+            ],
+            "cooldownSeconds": 90
+          }
+        ],
+        "sourceStatus": "secondary-needs-2.323-check",
+        "expectedPrimarySourceUrl": "https://ordr.kr/character/RD8",
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 스탯",
+          "2.323 버전에서의 기술 설명 일치 여부"
+        ],
+        "uncertaintyNotes": [
+          "ORDR RD8 직접 접근 불가. 2026-02-12 ordsearch 기록에서 확인했으며 2.323에서 수치 변경 가능."
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordsearch.net/characters?level=16",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-09",
+      "name": "이사야마 요미",
+      "grade": "랜덤",
+      "gradeOrder": 9,
+      "catalog": {
+        "id": "RN-09",
+        "grade": "랜덤",
+        "gradeOrder": 9,
+        "name": "이사야마 요미",
+        "roleTags": [
+          "물뎀",
+          "방깎"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD9",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "RN-09",
+        "sourceUrl": "https://ordr.kr/character/RD9",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 15
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 275
+          }
+        ],
+        "skills": [
+          {
+            "name": "영능력",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 2.5
+              }
+            ],
+            "chancePercent": 14,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD9",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-10",
+      "name": "이치의 율자",
+      "grade": "랜덤",
+      "gradeOrder": 10,
+      "catalog": {
+        "id": "RN-10",
+        "grade": "랜덤",
+        "gradeOrder": 10,
+        "name": "이치의 율자",
+        "roleTags": [
+          "마뎀"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD10",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "RN-10",
+        "sourceUrl": "https://ordsearch.net/characters/278",
+        "passives": [],
+        "skills": [
+          {
+            "name": "무기화 빌드 Lv1",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 250000,
+                "multiplierRange": [
+                  1,
+                  2
+                ],
+                "extraSingleDamagePercent": 100
+              }
+            ],
+            "chancePercent": 15,
+            "target": "area",
+            "radius": 400
+          }
+        ],
+        "sourceStatus": "secondary-needs-2.323-check",
+        "expectedPrimarySourceUrl": "https://ordr.kr/character/RD10",
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 스탯",
+          "2.323 버전에서의 기술 설명 일치 여부"
+        ],
+        "uncertaintyNotes": [
+          "ORDR RD10 직접 접근 불가. 2025-12-05 ordsearch 기록에서 확인했으며 2.323에서 수치 변경 가능."
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordsearch.net/characters/278",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-11",
+      "name": "토우마",
+      "grade": "랜덤",
+      "gradeOrder": 11,
+      "catalog": {
+        "id": "RN-11",
+        "grade": "랜덤",
+        "gradeOrder": 11,
+        "name": "토우마",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": "https://ordr.kr/character/RD11",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "RN-11",
+        "sourceUrl": "https://ordr.kr/character/RD11",
+        "passives": [],
+        "skills": [
+          {
+            "name": "보스 크리티컬",
+            "trigger": "onAttackAgainstBoss",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 2
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3
+              }
+            ],
+            "chancePercent": 100,
+            "target": "single"
+          },
+          {
+            "name": "판단력(Q)",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "allyHealthRegeneration",
+                "perSecond": 0.3,
+                "durationSeconds": 50
+              },
+              {
+                "type": "allyManaRegeneration",
+                "perSecond": 0.3,
+                "durationSeconds": 50
+              },
+              {
+                "type": "allyAttackPowerBuff",
+                "percent": 40,
+                "durationSeconds": 50
+              }
+            ],
+            "cooldownSeconds": 30,
+            "target": "alliedArea",
+            "radius": 900,
+            "exclusiveWith": [
+              "다른 분노 스킬"
+            ]
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD11",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-12",
+      "name": "이치고",
+      "grade": "랜덤",
+      "gradeOrder": 12,
+      "catalog": {
+        "id": "RN-12",
+        "grade": "랜덤",
+        "gradeOrder": 12,
+        "name": "이치고",
+        "roleTags": [
+          "마뎀"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD12",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "RN-12",
+        "sourceUrl": "https://ordr.kr/character/RD12",
+        "passives": [
+          {
+            "type": "selfAttackSpeedBuff",
+            "percent": 35
+          }
+        ],
+        "skills": [
+          {
+            "name": "검은 월아천충",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 450000
+              }
+            ],
+            "chancePercent": 4.5,
+            "target": "area",
+            "radius": 600
+          },
+          {
+            "name": "천쇄참월",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000
+              },
+              {
+                "type": "fixed",
+                "targetMaxHealthPercent": 1.5,
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": 20,
+            "target": "area",
+            "radius": 385
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD12",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-13",
+      "name": "페이몬",
+      "grade": "랜덤",
+      "gradeOrder": 13,
+      "catalog": {
+        "id": "RN-13",
+        "grade": "랜덤",
+        "gradeOrder": 13,
+        "name": "페이몬",
+        "roleTags": [
+          "마뎀",
+          "증폭"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD13",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "RN-13",
+        "sourceUrl": "https://ordr.kr/character/RD13",
+        "passives": [
+          {
+            "type": "flyingMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "비상식량",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 300000
+              }
+            ],
+            "chancePercent": 15,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "슈퍼 페이몬 선풍",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 1800000
+              },
+              {
+                "type": "magicDamageAmplification",
+                "percent": 10
+              }
+            ],
+            "manaCost": 100,
+            "target": "area",
+            "radius": 600
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD13",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "RN-14",
+      "name": "하네카와 츠바사",
+      "grade": "랜덤",
+      "gradeOrder": 14,
+      "catalog": {
+        "id": "RN-14",
+        "grade": "랜덤",
+        "gradeOrder": 14,
+        "name": "하네카와 츠바사",
+        "roleTags": [
+          "마뎀"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/RD14",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "RN-14",
+        "sourceUrl": "https://ordr.kr/character/RD14",
+        "passives": [
+          {
+            "type": "allyAttackSpeedBuff",
+            "percent": 10
+          }
+        ],
+        "skills": [
+          {
+            "name": "고양이 발톱",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 150000
+              },
+              {
+                "type": "movementSlow",
+                "percent": 70,
+                "durationSeconds": 3
+              }
+            ],
+            "chancePercent": 4,
+            "target": "area",
+            "radius": 500
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "공격 수치와 속도",
+          "실제 스킬 조건 검증"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/RD14",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    }
+  ]
+}

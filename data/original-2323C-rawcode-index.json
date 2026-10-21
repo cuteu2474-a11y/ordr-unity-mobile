@@ -1,0 +1,3226 @@
+{
+  "format": "ordr-jass-rawcode-index-v1",
+  "version": "S2 2.323[C]",
+  "source": "data/original-fusion-rawcode-backlog.json and data/original-unit-rawcode-label-links.json",
+  "warning": "JASS-listed units are not one-to-one with 271 web catalog entries; some are ingredients or helpers. Candidate catalog IDs are not original object-verified.",
+  "summary": {
+    "totalOriginalRawcodes": 280,
+    "fusionResultRawcodes": 265,
+    "labelCorrelatedRawcodes": 81,
+    "unidentifiedRawcodes": 199
+  },
+  "entries": [
+    {
+      "rawcode": "h04S",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 30,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h06G",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 14,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00U",
+      "resultOfAbilities": [
+        "A012"
+      ],
+      "originalIngredientUseCount": 10,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h060",
+      "resultOfAbilities": [
+        "YY26"
+      ],
+      "originalIngredientUseCount": 10,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h005",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 9,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h015",
+      "resultOfAbilities": [
+        "A018"
+      ],
+      "originalIngredientUseCount": 9,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00J",
+      "resultOfAbilities": [
+        "A00L"
+      ],
+      "originalIngredientUseCount": 8,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00P",
+      "resultOfAbilities": [
+        "A015"
+      ],
+      "originalIngredientUseCount": 8,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h001",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h002",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h003",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h004",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h008",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00E",
+      "resultOfAbilities": [
+        "A01R"
+      ],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00S",
+      "resultOfAbilities": [
+        "A03E"
+      ],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h010",
+      "resultOfAbilities": [
+        "A029"
+      ],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h011",
+      "resultOfAbilities": [
+        "A01P"
+      ],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h016",
+      "resultOfAbilities": [
+        "A01N"
+      ],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01C",
+      "resultOfAbilities": [
+        "A0NA"
+      ],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01J",
+      "resultOfAbilities": [
+        "A00S"
+      ],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01N",
+      "resultOfAbilities": [
+        "A1A0"
+      ],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h023",
+      "resultOfAbilities": [
+        "A00C"
+      ],
+      "originalIngredientUseCount": 7,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h006",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h009",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00A",
+      "resultOfAbilities": [
+        "A0N7"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00K",
+      "resultOfAbilities": [
+        "A00D"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00N",
+      "resultOfAbilities": [
+        "A00V"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00O",
+      "resultOfAbilities": [
+        "A006"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h014",
+      "resultOfAbilities": [
+        "A01I"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h018",
+      "resultOfAbilities": [
+        "A01E"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01G",
+      "resultOfAbilities": [
+        "A02Y"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01I",
+      "resultOfAbilities": [
+        "A019"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01O",
+      "resultOfAbilities": [
+        "A02J"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01R",
+      "resultOfAbilities": [
+        "A0N6"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01S",
+      "resultOfAbilities": [
+        "A00Q"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01X",
+      "resultOfAbilities": [
+        "A00F"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01Z",
+      "resultOfAbilities": [
+        "A01M"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h027",
+      "resultOfAbilities": [
+        "A02L"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02D",
+      "resultOfAbilities": [
+        "A00U"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02I",
+      "resultOfAbilities": [
+        "A0NF"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04H",
+      "resultOfAbilities": [
+        "A02T"
+      ],
+      "originalIngredientUseCount": 6,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h007",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00B",
+      "resultOfAbilities": [
+        "A00K"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00C",
+      "resultOfAbilities": [
+        "A00E"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00D",
+      "resultOfAbilities": [
+        "A00W"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00L",
+      "resultOfAbilities": [
+        "A01H"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00Q",
+      "resultOfAbilities": [
+        "A01D"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00V",
+      "resultOfAbilities": [
+        "A0N8"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00W",
+      "resultOfAbilities": [
+        "A032"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00X",
+      "resultOfAbilities": [
+        "A00Z"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00Y",
+      "resultOfAbilities": [
+        "A030"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00Z",
+      "resultOfAbilities": [
+        "A01K"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h012",
+      "resultOfAbilities": [
+        "A1A1"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h017",
+      "resultOfAbilities": [
+        "A017"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01A",
+      "resultOfAbilities": [
+        "A01Q"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01B",
+      "resultOfAbilities": [
+        "A01C"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01F",
+      "resultOfAbilities": [
+        "A19Z"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01K",
+      "resultOfAbilities": [
+        "A02B"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01M",
+      "resultOfAbilities": [
+        "A0ND"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01T",
+      "resultOfAbilities": [
+        "A03G"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01V",
+      "resultOfAbilities": [
+        "A013"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01W",
+      "resultOfAbilities": [
+        "A02F"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01Y",
+      "resultOfAbilities": [
+        "A02K"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h024",
+      "resultOfAbilities": [
+        "A0NB"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h025",
+      "resultOfAbilities": [
+        "A016"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h026",
+      "resultOfAbilities": [
+        "A039"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h028",
+      "resultOfAbilities": [
+        "A02V"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h029",
+      "resultOfAbilities": [
+        "A03B"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02C",
+      "resultOfAbilities": [
+        "A01W"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02H",
+      "resultOfAbilities": [
+        "A02N"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02J",
+      "resultOfAbilities": [
+        "A02S"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02L",
+      "resultOfAbilities": [
+        "A02Z"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02M",
+      "resultOfAbilities": [
+        "A00A"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h030",
+      "resultOfAbilities": [
+        "A027"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05X",
+      "resultOfAbilities": [
+        "UU01"
+      ],
+      "originalIngredientUseCount": 5,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00R",
+      "resultOfAbilities": [
+        "A01O"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00T",
+      "resultOfAbilities": [
+        "A024"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h013",
+      "resultOfAbilities": [
+        "A01B"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01D",
+      "resultOfAbilities": [
+        "A00B"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01E",
+      "resultOfAbilities": [
+        "A014"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01H",
+      "resultOfAbilities": [
+        "A01X"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01L",
+      "resultOfAbilities": [
+        "A02M"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01P",
+      "resultOfAbilities": [
+        "A00R"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01Q",
+      "resultOfAbilities": [
+        "A02W"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h01U",
+      "resultOfAbilities": [
+        "A0IO"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h021",
+      "resultOfAbilities": [
+        "A01F"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h022",
+      "resultOfAbilities": [
+        "A00I"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02A",
+      "resultOfAbilities": [
+        "A01J"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02B",
+      "resultOfAbilities": [
+        "A0NC"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02E",
+      "resultOfAbilities": [
+        "A02A"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02F",
+      "resultOfAbilities": [
+        "A02R"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02K",
+      "resultOfAbilities": [
+        "A010"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02R",
+      "resultOfAbilities": [
+        "A02P"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02T",
+      "resultOfAbilities": [
+        "A02D"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02X",
+      "resultOfAbilities": [
+        "A03D"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02Y",
+      "resultOfAbilities": [
+        "A00T"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h032",
+      "resultOfAbilities": [
+        "A0N9"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h033",
+      "resultOfAbilities": [
+        "A00G"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h035",
+      "resultOfAbilities": [
+        "A025"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h037",
+      "resultOfAbilities": [
+        "A0NI"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03C",
+      "resultOfAbilities": [
+        "A02H"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03E",
+      "resultOfAbilities": [
+        "A01T"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03G",
+      "resultOfAbilities": [
+        "A0NE"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h043",
+      "resultOfAbilities": [
+        "YY17"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [
+        "H-01"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h055",
+      "resultOfAbilities": [
+        "YY13"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [
+        "H-13"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05K",
+      "resultOfAbilities": [
+        "A01V"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05L",
+      "resultOfAbilities": [
+        "A00X"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0AH",
+      "resultOfAbilities": [
+        "A108"
+      ],
+      "originalIngredientUseCount": 4,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00F",
+      "resultOfAbilities": [
+        "A01L"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00G",
+      "resultOfAbilities": [
+        "A02I"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00I",
+      "resultOfAbilities": [
+        "A00P"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00M",
+      "resultOfAbilities": [
+        "A0N5"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h019",
+      "resultOfAbilities": [
+        "A01A"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h020",
+      "resultOfAbilities": [
+        "A028"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02G",
+      "resultOfAbilities": [
+        "A008"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02N",
+      "resultOfAbilities": [
+        "A01G"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02P",
+      "resultOfAbilities": [
+        "A00O"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02S",
+      "resultOfAbilities": [
+        "A0NH"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02U",
+      "resultOfAbilities": [
+        "A036"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02V",
+      "resultOfAbilities": [
+        "A03H"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02W",
+      "resultOfAbilities": [
+        "A00Y"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02Z",
+      "resultOfAbilities": [
+        "A00J"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h031",
+      "resultOfAbilities": [
+        "A00H"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h036",
+      "resultOfAbilities": [
+        "A00M"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h038",
+      "resultOfAbilities": [
+        "A009"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h039",
+      "resultOfAbilities": [
+        "A02X"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03F",
+      "resultOfAbilities": [
+        "A026"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03H",
+      "resultOfAbilities": [
+        "A02C"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03I",
+      "resultOfAbilities": [
+        "A0NG"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03K",
+      "resultOfAbilities": [
+        "A037"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03S",
+      "resultOfAbilities": [
+        "A005"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03T",
+      "resultOfAbilities": [
+        "YY05"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [
+        "H-03"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03W",
+      "resultOfAbilities": [
+        "YY03"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [
+        "H-10"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03Z",
+      "resultOfAbilities": [
+        "YY15"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [
+        "H-17"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h042",
+      "resultOfAbilities": [
+        "A0UG"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h044",
+      "resultOfAbilities": [
+        "YY02"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [
+        "H-05"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05W",
+      "resultOfAbilities": [
+        "A0K4"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h07N",
+      "resultOfAbilities": [
+        "A0K3"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h087",
+      "resultOfAbilities": [
+        "A02Q"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09X",
+      "resultOfAbilities": [
+        "A0XP"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09Z",
+      "resultOfAbilities": [
+        "A0XS"
+      ],
+      "originalIngredientUseCount": 3,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02O",
+      "resultOfAbilities": [
+        "A00N"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h02Q",
+      "resultOfAbilities": [
+        "A03C"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h034",
+      "resultOfAbilities": [
+        "A01U"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03A",
+      "resultOfAbilities": [
+        "A01S"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03B",
+      "resultOfAbilities": [
+        "A02G"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03J",
+      "resultOfAbilities": [
+        "YY14"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [
+        "H-14"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03M",
+      "resultOfAbilities": [
+        "YY11"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [
+        "H-12"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03N",
+      "resultOfAbilities": [
+        "YY06"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [
+        "H-04"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03O",
+      "resultOfAbilities": [
+        "YY10"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [
+        "H-11"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03Y",
+      "resultOfAbilities": [
+        "YY16"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [
+        "H-18"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h041",
+      "resultOfAbilities": [
+        "YY20"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [
+        "H-16"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h045",
+      "resultOfAbilities": [
+        "YY23"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [
+        "H-21"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h046",
+      "resultOfAbilities": [
+        "YY22"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [
+        "H-20"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h048",
+      "resultOfAbilities": [
+        "IF02"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [
+        "D-04"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05S",
+      "resultOfAbilities": [
+        "A0K2"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05V",
+      "resultOfAbilities": [
+        "IF06"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [
+        "D-05"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05Y",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0CM",
+      "resultOfAbilities": [
+        "A1CC"
+      ],
+      "originalIngredientUseCount": 2,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H08T",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h00H",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03L",
+      "resultOfAbilities": [
+        "YY12"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [
+        "H-15"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03R",
+      "resultOfAbilities": [
+        "YY08"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [
+        "H-07"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03U",
+      "resultOfAbilities": [
+        "YY04"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [
+        "H-02"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03V",
+      "resultOfAbilities": [
+        "IF01"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [
+        "D-02"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03X",
+      "resultOfAbilities": [
+        "YY01"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [
+        "H-09"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h047",
+      "resultOfAbilities": [
+        "YY25"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [
+        "H-22"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05F",
+      "resultOfAbilities": [
+        "A02O"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h065",
+      "resultOfAbilities": [
+        "IS03"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h06T",
+      "resultOfAbilities": [
+        "IS13"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h06U",
+      "resultOfAbilities": [
+        "IS01"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h06V",
+      "resultOfAbilities": [
+        "IS02"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h06W",
+      "resultOfAbilities": [
+        "IS08"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h06X",
+      "resultOfAbilities": [
+        "IS04"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h06Y",
+      "resultOfAbilities": [
+        "IS11"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h06Z",
+      "resultOfAbilities": [
+        "IS06"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h070",
+      "resultOfAbilities": [
+        "IS09"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h071",
+      "resultOfAbilities": [
+        "IS12"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h072",
+      "resultOfAbilities": [
+        "IS14"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h073",
+      "resultOfAbilities": [
+        "IS05"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h07J",
+      "resultOfAbilities": [
+        "A0K7"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h07L",
+      "resultOfAbilities": [
+        "YY18"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [
+        "H-19"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09K",
+      "resultOfAbilities": [
+        "IS07"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09L",
+      "resultOfAbilities": [
+        "IS10"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09V",
+      "resultOfAbilities": [
+        "IF05"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [
+        "D-06"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0AN",
+      "resultOfAbilities": [],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0CK",
+      "resultOfAbilities": [
+        "A0K6"
+      ],
+      "originalIngredientUseCount": 1,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H05N",
+      "resultOfAbilities": [
+        "TR03"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-27"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H08U",
+      "resultOfAbilities": [
+        "TR16"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-15"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H08V",
+      "resultOfAbilities": [
+        "TR01"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-02"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H08W",
+      "resultOfAbilities": [
+        "TR05"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-07"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H08X",
+      "resultOfAbilities": [
+        "TR28"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-29"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H08Y",
+      "resultOfAbilities": [
+        "TR27"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-28"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H08Z",
+      "resultOfAbilities": [
+        "TR15"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-13"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H090",
+      "resultOfAbilities": [
+        "TR08"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-01"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H091",
+      "resultOfAbilities": [
+        "TR23"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-23"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H092",
+      "resultOfAbilities": [
+        "TR13"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-11"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H094",
+      "resultOfAbilities": [
+        "TR10"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-09"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H095",
+      "resultOfAbilities": [
+        "TR18"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-17"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H096",
+      "resultOfAbilities": [
+        "TR26"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-05"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H097",
+      "resultOfAbilities": [
+        "TR24"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-16"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H098",
+      "resultOfAbilities": [
+        "TR02"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-04"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H099",
+      "resultOfAbilities": [
+        "TR09"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-08"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H09A",
+      "resultOfAbilities": [
+        "TR22"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-22"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H09B",
+      "resultOfAbilities": [
+        "TR20"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-19"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H09E",
+      "resultOfAbilities": [
+        "TR04"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-03"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H09F",
+      "resultOfAbilities": [
+        "TR06"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-20"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H09H",
+      "resultOfAbilities": [
+        "TR14"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-12"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H09I",
+      "resultOfAbilities": [
+        "TR12"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-10"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H0AA",
+      "resultOfAbilities": [
+        "TR30"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-30"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H0B2",
+      "resultOfAbilities": [
+        "TR07"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-14"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H0B4",
+      "resultOfAbilities": [
+        "TR25"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-25"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H0B5",
+      "resultOfAbilities": [
+        "TR11"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-26"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H0BD",
+      "resultOfAbilities": [
+        "TR19"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-18"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H0BK",
+      "resultOfAbilities": [
+        "ET02"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-01"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H0BL",
+      "resultOfAbilities": [
+        "TR17"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-06"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H0BX",
+      "resultOfAbilities": [
+        "TR21"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-21"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "H0CO",
+      "resultOfAbilities": [
+        "TR29"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "TR-24"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03P",
+      "resultOfAbilities": [
+        "YY09"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "H-08"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h03Q",
+      "resultOfAbilities": [
+        "YY07"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "H-06"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h040",
+      "resultOfAbilities": [
+        "A0RP"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h049",
+      "resultOfAbilities": [
+        "IM08"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-03"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04A",
+      "resultOfAbilities": [
+        "IM09"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-12"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04B",
+      "resultOfAbilities": [
+        "IM02"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-09"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04C",
+      "resultOfAbilities": [
+        "IM03"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-01"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04D",
+      "resultOfAbilities": [
+        "IM04"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-02"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04E",
+      "resultOfAbilities": [
+        "IM06"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-07"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04F",
+      "resultOfAbilities": [
+        "IM07"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-08"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04G",
+      "resultOfAbilities": [
+        "IM10"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-10"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04J",
+      "resultOfAbilities": [
+        "IM01"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-04"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04Q",
+      "resultOfAbilities": [
+        "IM05"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-06"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h04U",
+      "resultOfAbilities": [
+        "IF04"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "D-01"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h057",
+      "resultOfAbilities": [
+        "ET01"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-06"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h058",
+      "resultOfAbilities": [
+        "ET08"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-04"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h059",
+      "resultOfAbilities": [
+        "ET11"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-07"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05A",
+      "resultOfAbilities": [
+        "ET05"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-05"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05B",
+      "resultOfAbilities": [
+        "ET09"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-10"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05C",
+      "resultOfAbilities": [
+        "ET06"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-12"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05E",
+      "resultOfAbilities": [
+        "A1A5"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05G",
+      "resultOfAbilities": [
+        "A1A6"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05H",
+      "resultOfAbilities": [
+        "SP01"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05I",
+      "resultOfAbilities": [
+        "A007"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05O",
+      "resultOfAbilities": [
+        "SP04"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05P",
+      "resultOfAbilities": [
+        "SP05"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05Q",
+      "resultOfAbilities": [
+        "SP03"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h05R",
+      "resultOfAbilities": [
+        "SP06"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h067",
+      "resultOfAbilities": [
+        "ET07"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-09"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h06A",
+      "resultOfAbilities": [
+        "ET12"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-11"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h07I",
+      "resultOfAbilities": [
+        "A0S0"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h07M",
+      "resultOfAbilities": [
+        "IM11"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-11"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h081",
+      "resultOfAbilities": [
+        "IM12"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "I-05"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h083",
+      "resultOfAbilities": [
+        "A10V"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h084",
+      "resultOfAbilities": [
+        "A0UH"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h08I",
+      "resultOfAbilities": [
+        "A19T"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h08M",
+      "resultOfAbilities": [
+        "A1AD"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h08N",
+      "resultOfAbilities": [
+        "SP02"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h08O",
+      "resultOfAbilities": [
+        "A011"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h08Q",
+      "resultOfAbilities": [
+        "A18P"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h08R",
+      "resultOfAbilities": [
+        "ET10"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-08"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h08S",
+      "resultOfAbilities": [
+        "A113"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09M",
+      "resultOfAbilities": [
+        "A19W"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09N",
+      "resultOfAbilities": [
+        "A0XT"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09R",
+      "resultOfAbilities": [
+        "A0Y6"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09T",
+      "resultOfAbilities": [
+        "SP07"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09W",
+      "resultOfAbilities": [
+        "A0Y3"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h09Y",
+      "resultOfAbilities": [
+        "SPH1"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0A0",
+      "resultOfAbilities": [
+        "SPH3"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0A1",
+      "resultOfAbilities": [
+        "SPH4"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0A2",
+      "resultOfAbilities": [
+        "A0Y9"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0A3",
+      "resultOfAbilities": [
+        "SPH2"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0A6",
+      "resultOfAbilities": [
+        "A19S"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0AC",
+      "resultOfAbilities": [
+        "A19U"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0AI",
+      "resultOfAbilities": [
+        "A10A"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0BC",
+      "resultOfAbilities": [
+        "A12C"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0BF",
+      "resultOfAbilities": [
+        "A0YK"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0BG",
+      "resultOfAbilities": [
+        "SP08"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0C2",
+      "resultOfAbilities": [
+        "A0QG"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0CC",
+      "resultOfAbilities": [
+        "A19V"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [],
+      "catalogMappingEvidence": "unresolved",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0CI",
+      "resultOfAbilities": [
+        "IF03"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "D-03"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    },
+    {
+      "rawcode": "h0CJ",
+      "resultOfAbilities": [
+        "ET04"
+      ],
+      "originalIngredientUseCount": 0,
+      "candidateCatalogIds": [
+        "E-03"
+      ],
+      "catalogMappingEvidence": "jass-label-grade-correlated-not-object-verified",
+      "originalObjectVerified": false,
+      "source": "data/original-fusion-rawcode-backlog.json"
+    }
+  ]
+}

@@ -1,0 +1,763 @@
+{
+  "format": "ordr-character-grade-v1",
+  "gameVersion": "S2 2.323[C]",
+  "grade": "세라핌",
+  "gradePrefix": "SR",
+  "catalogCount": 4,
+  "masterIndex": "data/character-master-database.json",
+  "characters": [
+    {
+      "id": "SR-01",
+      "name": "S-스네이크",
+      "grade": "세라핌",
+      "gradeOrder": 1,
+      "catalog": {
+        "id": "SR-01",
+        "grade": "세라핌",
+        "gradeOrder": 1,
+        "name": "S-스네이크",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "증폭"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/SR1",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "SR-01",
+        "sourceUrl": "https://ordr.kr/character/SR1",
+        "passives": [
+          {
+            "type": "flyingMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "단일 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 2.5
+              },
+              {
+                "type": "critical",
+                "multiplier": 5.25
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "single"
+          },
+          {
+            "name": "매료 범위기",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000,
+                "multiplierRange": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "type": "explosive",
+                "basis": "targetMaxHealth",
+                "percent": 5,
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magical",
+                "amount": 400000,
+                "multiplierRange": [
+                  1,
+                  2
+                ],
+                "onlyTargetKinds": [
+                  "boss",
+                  "story",
+                  "enraged"
+                ]
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 425
+          },
+          {
+            "name": "피스톨 키스",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "selfAttackSpeedBuff",
+                "percent": 45
+              },
+              {
+                "type": "magical",
+                "amount": 150000,
+                "multiplierRange": [
+                  1,
+                  2
+                ],
+                "onEveryAttackWhileActive": true,
+                "radius": 425
+              },
+              {
+                "type": "explosive",
+                "basis": "targetMaxHealth",
+                "percent": 7,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              },
+              {
+                "type": "magical",
+                "amount": 300000,
+                "multiplierRange": [
+                  1,
+                  2
+                ],
+                "onlyTargetKinds": [
+                  "boss",
+                  "story",
+                  "enraged"
+                ]
+              }
+            ],
+            "chancePercent": 8,
+            "target": "self"
+          },
+          {
+            "name": "피스톨 키스 6회 발동 보너스",
+            "trigger": "afterNthSkillActivation",
+            "components": [
+              {
+                "type": "explosive",
+                "basis": "targetMaxHealth",
+                "percent": 6,
+                "targetCount": 2,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              },
+              {
+                "type": "explosiveDamageAmplification",
+                "percent": 3,
+                "maxPercent": 25
+              }
+            ],
+            "afterSkill": "피스톨 키스",
+            "requiredOccurrences": 6,
+            "target": "area",
+            "radius": 525
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "피해 공식과 특수 스킬 발동 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/SR1",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "SR-02",
+      "name": "S-호크",
+      "grade": "세라핌",
+      "gradeOrder": 2,
+      "catalog": {
+        "id": "SR-02",
+        "grade": "세라핌",
+        "gradeOrder": 2,
+        "name": "S-호크",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "암브"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/SR2",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "SR-02",
+        "sourceUrl": "https://ordr.kr/character/SR2",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 35
+          },
+          {
+            "type": "flyingMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "단일 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 2.5
+              },
+              {
+                "type": "critical",
+                "multiplier": 5.25
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "single"
+          },
+          {
+            "name": "일섬",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 350000
+              },
+              {
+                "type": "magical",
+                "bonusPercent": 100,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 2,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": 10,
+            "extraChancePercentAgainst": [
+              "boss",
+              "enraged"
+            ],
+            "extraChancePercent": 10,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "광역 참격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 1000000
+              },
+              {
+                "type": "magical",
+                "basis": "targetMaxHealth",
+                "percent": 5,
+                "onlyTargetKinds": [
+                  "boss",
+                  "enraged"
+                ]
+              }
+            ],
+            "chancePercent": 7,
+            "extraChancePercentAgainst": [
+              "boss",
+              "enraged"
+            ],
+            "extraChancePercent": 10,
+            "absoluteCooldownSeconds": 3,
+            "target": "area",
+            "radius": 550
+          }
+        ],
+        "uncertaintyNotes": [
+          "현 툴팁 방깎 오라는 35이나 2.301 패치에 35→32 변경 기록이 있음. 실제 최종값 충돌이므로 현재 수치로 전투 적용 보류."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "피해 공식과 특수 스킬 발동 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/SR2",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "SR-03",
+      "name": "S-샤크",
+      "grade": "세라핌",
+      "gradeOrder": 3,
+      "catalog": {
+        "id": "SR-03",
+        "grade": "세라핌",
+        "gradeOrder": 3,
+        "name": "S-샤크",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "암브"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/SR3",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "SR-03",
+        "sourceUrl": "https://ordr.kr/character/SR3",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 20
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 350
+          },
+          {
+            "type": "flyingMovement"
+          },
+          {
+            "type": "periodicAllyBuff",
+            "intervalSeconds": 20,
+            "radius": 450,
+            "targetCount": 2,
+            "minGrade": "전설",
+            "allyAttackPowerPercent": 55,
+            "allyHealthRegenerationPerSecond": 1.75
+          }
+        ],
+        "skills": [
+          {
+            "name": "체력 소모 광역공격",
+            "trigger": "activeHealth",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 2100000
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 3
+              },
+              {
+                "type": "fixed",
+                "basis": "skillDamage",
+                "percent": 250,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "healthCost": 60,
+            "target": "area",
+            "radius": 625
+          },
+          {
+            "name": "단일 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 2.5
+              },
+              {
+                "type": "critical",
+                "multiplier": 5.25
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "피해 공식과 특수 스킬 발동 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/SR3",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "SR-04",
+      "name": "S-베어",
+      "grade": "세라핌",
+      "gradeOrder": 4,
+      "catalog": {
+        "id": "SR-04",
+        "grade": "세라핌",
+        "gradeOrder": 4,
+        "name": "S-베어",
+        "roleTags": [
+          "마뎀",
+          "마방깎",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/SR4",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "SR-04",
+        "sourceUrl": "https://ordr.kr/character/SR4",
+        "passives": [
+          {
+            "type": "flyingMovement"
+          },
+          {
+            "type": "teleport"
+          }
+        ],
+        "skills": [
+          {
+            "name": "단일 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 2.5
+              },
+              {
+                "type": "critical",
+                "multiplier": 5.25
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "single"
+          },
+          {
+            "name": "우르수스 쇼크",
+            "trigger": "periodicOrCounter",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 1250000,
+                "plusTargetMissingHealthPercent": 4
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1.05
+              }
+            ],
+            "intervalSeconds": 15,
+            "afterSkill": "압력포 :: 베어",
+            "requiredOccurrences": 11,
+            "target": "area",
+            "radius": 600
+          },
+          {
+            "name": "압력포 :: 베어",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000
+              },
+              {
+                "type": "magicResistanceReduction",
+                "percent": 1
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "파시피스타 레이저",
+            "trigger": "onAttackWithAbsoluteCooldown",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 500000
+              },
+              {
+                "type": "magical",
+                "basis": "targetMaxHealth",
+                "percent": 5,
+                "onlyTargetKinds": [
+                  "boss"
+                ],
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magical",
+                "basis": "targetMaxHealth",
+                "percent": 30,
+                "onlyTargetKinds": [
+                  "enraged"
+                ],
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magicDamageAmplification",
+                "percent": 3
+              },
+              {
+                "type": "movementSlow",
+                "percent": 30,
+                "durationSeconds": 4
+              }
+            ],
+            "chancePercent": null,
+            "absoluteCooldownSeconds": 5,
+            "target": "area",
+            "radius": 725
+          }
+        ],
+        "uncertaintyNotes": [
+          "파시피스타 레이저 공격 시 발동 확률은 상세 툴팁에 명시되지 않으므로 null."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "피해 공식과 특수 스킬 발동 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/SR4",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    }
+  ]
+}

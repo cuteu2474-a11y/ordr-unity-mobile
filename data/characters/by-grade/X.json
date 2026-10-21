@@ -1,0 +1,824 @@
+{
+  "format": "ordr-character-grade-v1",
+  "gameVersion": "S2 2.323[C]",
+  "grade": "특수함",
+  "gradePrefix": "X",
+  "catalogCount": 7,
+  "masterIndex": "data/character-master-database.json",
+  "characters": [
+    {
+      "id": "X-01",
+      "name": "모건",
+      "grade": "특수함",
+      "gradeOrder": 1,
+      "catalog": {
+        "id": "X-01",
+        "grade": "특수함",
+        "gradeOrder": 1,
+        "name": "모건",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": "https://ordr.kr/character/SP1",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "X-01",
+        "sourceUrl": "https://ordr.kr/character/SP1",
+        "passives": [],
+        "skills": [
+          {
+            "name": "도끼손",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "bonusDamage",
+                "amount": null,
+                "dependsOnTargetKind": [
+                  "line",
+                  "enraged",
+                  "boss"
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": null,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": null,
+            "target": "single"
+          }
+        ],
+        "acquisition": {
+          "from": "rareWisp",
+          "chancePercent": 1
+        },
+        "verifiedAttackRange": 525,
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 스탯",
+          "2.323 버전에서의 기술 설명 일치 여부"
+        ],
+        "uncertaintyNotes": [
+          "도끼손 추가 피해와 스턴 시간은 도감에 수치가 없으므로 null."
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/SP1",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [
+          {
+            "stat": "range",
+            "value": 525,
+            "fromPatch": "2.310",
+            "previousValue": 285,
+            "sourceUrl": "https://ordr.kr/patch-notes/2-310",
+            "evidence": "특수 모건 공격 사거리 285 -> 525",
+            "confidence": "patch-logged"
+          }
+        ],
+        "patchStatBlockingReasons": [
+          "공격력·공격주기·피해 계열 및 원본 오브젝트 미확인"
+        ],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "X-02",
+      "name": "베티",
+      "grade": "특수함",
+      "gradeOrder": 2,
+      "catalog": {
+        "id": "X-02",
+        "grade": "특수함",
+        "gradeOrder": 2,
+        "name": "베티",
+        "roleTags": [
+          "체력재생",
+          "마나재생"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/SP2",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "X-02",
+        "sourceUrl": "https://ordr.kr/character/SP2",
+        "passives": [
+          {
+            "type": "allyAttackSpeedBuff",
+            "percent": 11
+          },
+          {
+            "type": "healthRegeneration",
+            "perSecond": 1.25
+          },
+          {
+            "type": "manaRegeneration",
+            "perSecond": 1.25
+          }
+        ],
+        "skills": [
+          {
+            "name": "고무",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "allyHealthRestoration",
+                "amount": null
+              },
+              {
+                "type": "allyManaRestoration",
+                "amount": null
+              }
+            ],
+            "target": "selectedAlly"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 스탯",
+          "2.323 버전에서의 기술 설명 일치 여부"
+        ],
+        "uncertaintyNotes": [
+          "원작 고무 사용 체력·마나 즉시회복량은 미확인."
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/SP2",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "X-03",
+      "name": "블고리",
+      "grade": "특수함",
+      "gradeOrder": 3,
+      "catalog": {
+        "id": "X-03",
+        "grade": "특수함",
+        "gradeOrder": 3,
+        "name": "블고리",
+        "roleTags": [
+          "물뎀",
+          "방깎"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/SP3",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "X-03",
+        "sourceUrl": "https://ordr.kr/character/SP3",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 25
+          }
+        ],
+        "skills": [],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 스탯",
+          "2.323 버전에서의 기술 설명 일치 여부"
+        ],
+        "uncertaintyNotes": []
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/SP3",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "X-04",
+      "name": "아이스버그",
+      "grade": "특수함",
+      "gradeOrder": 4,
+      "catalog": {
+        "id": "X-04",
+        "grade": "특수함",
+        "gradeOrder": 4,
+        "name": "아이스버그",
+        "roleTags": [
+          "단일스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/SP4",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "X-04",
+        "sourceUrl": "https://ordsearch.net/characters?query=%EC%95%84%EC%9D%B4%EC%8A%A4%EB%B2%84%EA%B7%B8",
+        "passives": [
+          {
+            "type": "flyingMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "조선공(B)",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "craftPirateShip",
+                "lumberCost": 2,
+                "permittedUses": 2
+              }
+            ],
+            "castTimeSeconds": 10,
+            "cooldownSeconds": 200
+          },
+          {
+            "name": "조선공의 망치",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 500000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2
+              }
+            ],
+            "chancePercent": 50,
+            "target": "single"
+          }
+        ],
+        "sourceStatus": "secondary-needs-2.323-check",
+        "expectedPrimarySourceUrl": "https://ordr.kr/character/SP4",
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 스탯",
+          "2.323 버전에서의 기술 설명 일치 여부"
+        ],
+        "uncertaintyNotes": [
+          "ORDR SP4 상세 페이지 직접 접근 불가. 2025년 자료인 ordsearch.net의 스킬을 임시 데이터로 입력. 2.323 최종 버전 재검증 필요."
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordsearch.net/characters?query=%EC%95%84%EC%9D%B4%EC%8A%A4%EB%B2%84%EA%B7%B8",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "X-05",
+      "name": "오타마",
+      "grade": "특수함",
+      "gradeOrder": 5,
+      "catalog": {
+        "id": "X-05",
+        "grade": "특수함",
+        "gradeOrder": 5,
+        "name": "오타마",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": "https://ordr.kr/character/SP5",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "X-05",
+        "sourceUrl": "https://ordsearch.net/characters/225",
+        "passives": [],
+        "skills": [
+          {
+            "name": "경단먹이기(Q)",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "acquireUnitFromAlly",
+                "targetMaxGrade": "희귀함",
+                "requiresOwnerConsent": true,
+                "lumberToReceiver": 6,
+                "lumberToGiver": 12
+              }
+            ],
+            "uses": 1,
+            "target": "alliedUnit"
+          }
+        ],
+        "sourceStatus": "secondary-needs-2.323-check",
+        "expectedPrimarySourceUrl": "https://ordr.kr/character/SP5",
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 스탯",
+          "2.323 버전에서의 기술 설명 일치 여부"
+        ],
+        "uncertaintyNotes": [
+          "ORDR SP5 상세 페이지 직접 접근 불가. ordsearch.net의 2024년 기록으로 수집한 스킬. 오프라인 싱글플레이에서 소유권 양도 기능은 원본 검증 후 처리."
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordsearch.net/characters/225",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "X-06",
+      "name": "페루",
+      "grade": "특수함",
+      "gradeOrder": 6,
+      "catalog": {
+        "id": "X-06",
+        "grade": "특수함",
+        "gradeOrder": 6,
+        "name": "페루",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": "https://ordr.kr/character/SP6",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "X-06",
+        "sourceUrl": "https://ordr.kr/character/SP6",
+        "passives": [
+          {
+            "type": "allyAttackPowerBuff",
+            "percent": 40
+          }
+        ],
+        "skills": [
+          {
+            "name": "알라바스타의 수호신",
+            "trigger": "active",
+            "components": [
+              {
+                "type": "allyAttackPowerBuff",
+                "percent": 40,
+                "durationSeconds": 40
+              }
+            ],
+            "target": "alliedArea"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 스탯",
+          "2.323 버전에서의 기술 설명 일치 여부"
+        ],
+        "uncertaintyNotes": []
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/SP6",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "X-07",
+      "name": "폭시",
+      "grade": "특수함",
+      "gradeOrder": 7,
+      "catalog": {
+        "id": "X-07",
+        "grade": "특수함",
+        "gradeOrder": 7,
+        "name": "폭시",
+        "roleTags": [
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/SP7",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "X-07",
+        "sourceUrl": "https://ordr.kr/character/SP7",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 20
+          }
+        ],
+        "skills": [
+          {
+            "name": "데비백 파이트",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "gambleSpecialUnit",
+                "winChancePercent": 50,
+                "rewardOptions": [
+                  "randomSpecial",
+                  "RayleighRare"
+                ],
+                "maxAttempts": 3,
+                "endsAfterFirstWin": true,
+                "lossConsumesSelectedUnit": true
+              }
+            ],
+            "target": "ownedSpecialUnit",
+            "maxAttempts": 3
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 스탯",
+          "2.323 버전에서의 기술 설명 일치 여부"
+        ],
+        "uncertaintyNotes": []
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/SP7",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    }
+  ]
+}

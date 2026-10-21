@@ -1,0 +1,2834 @@
+{
+  "format": "ordr-character-grade-v1",
+  "gameVersion": "S2 2.323[C]",
+  "grade": "영원한",
+  "gradePrefix": "E",
+  "catalogCount": 12,
+  "masterIndex": "data/character-master-database.json",
+  "characters": [
+    {
+      "id": "E-01",
+      "name": "니카(루피)",
+      "grade": "영원한",
+      "gradeOrder": 1,
+      "catalog": {
+        "id": "E-01",
+        "grade": "영원한",
+        "gradeOrder": 1,
+        "name": "니카(루피)",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "단일스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E1",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-01",
+        "sourceUrl": "https://ordr.kr/character/E1",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 35
+          },
+          {
+            "type": "attackSpeedBuff",
+            "percent": 25
+          },
+          {
+            "type": "selfAttackPowerBuff",
+            "percent": 25
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 350
+          }
+        ],
+        "skills": [
+          {
+            "name": "거대화",
+            "trigger": "activeHealth",
+            "healthCost": 115,
+            "target": "self",
+            "components": [
+              {
+                "type": "transform",
+                "durationSeconds": 4.25
+              },
+              {
+                "type": "basicAttackSpeedReduction",
+                "percent": 225
+              },
+              {
+                "type": "physical",
+                "amount": 200000,
+                "plusBasicAttackDamagePercent": 200,
+                "radius": 450,
+                "trigger": "everyAttackWhileTransformed"
+              }
+            ]
+          },
+          {
+            "name": "마나 광역기",
+            "trigger": "activeMana",
+            "manaCost": 150,
+            "target": "area",
+            "radius": 750,
+            "components": [
+              {
+                "type": "magical",
+                "amount": 2500000
+              },
+              {
+                "type": "physical",
+                "amount": 8500000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.5
+              }
+            ]
+          },
+          {
+            "name": "혼합 광역 타격",
+            "trigger": "onAttack",
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 500,
+            "components": [
+              {
+                "type": "magical",
+                "amount": 150000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "physical",
+                "amount": 750000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2
+              }
+            ]
+          },
+          {
+            "name": "단일 크리티컬",
+            "trigger": "onAttack",
+            "chancePercent": 20,
+            "target": "single",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 5
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2
+              }
+            ]
+          },
+          {
+            "name": "이동속도 연계 물리",
+            "trigger": "onAttack",
+            "chancePercent": 15,
+            "target": "area",
+            "radius": 400,
+            "components": [
+              {
+                "type": "physical",
+                "amount": 450000
+              },
+              {
+                "type": "damageAmplificationPerTargetMovementSpeed",
+                "percentPerThreeMovementSpeed": 1
+              }
+            ]
+          },
+          {
+            "name": "거대화 타격",
+            "trigger": "onAttack",
+            "chancePercent": 20,
+            "requiresForm": "giant",
+            "target": "area",
+            "radius": 500,
+            "components": [
+              {
+                "type": "physical",
+                "amount": 1000000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ],
+                "plusBasicAttackDamagePercent": 500
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2
+              }
+            ]
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 피해·공격 주기",
+          "스킬 내부 판정과 비공개 쿨타임"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E1",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "H0BK",
+            "evidenceAbilityRawcode": "ET02",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET02"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-02",
+      "name": "니카(스네이크)",
+      "grade": "영원한",
+      "gradeOrder": 2,
+      "catalog": {
+        "id": "E-02",
+        "grade": "영원한",
+        "gradeOrder": 2,
+        "name": "니카(스네이크)",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "단일스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E2",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-02",
+        "sourceUrl": "https://ordr.kr/character/E2",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 35
+          },
+          {
+            "type": "allyAttackSpeedBuff",
+            "percent": 25
+          },
+          {
+            "type": "selfAttackPowerBuff",
+            "percent": 25
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 350
+          }
+        ],
+        "skills": [
+          {
+            "name": "거대화",
+            "trigger": "activeHealth",
+            "components": [
+              {
+                "type": "transform",
+                "form": "giant",
+                "durationSeconds": 4.25,
+                "attackSpeedReductionPercent": 225
+              },
+              {
+                "type": "physical",
+                "basicAttackPercent": 200,
+                "flatAmount": 200000,
+                "onEveryAttackWhileTransformed": true
+              }
+            ],
+            "healthCost": 115,
+            "target": "area",
+            "radius": 450
+          },
+          {
+            "name": "마나 광역 공격",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 2500000
+              },
+              {
+                "type": "physical",
+                "amount": 8500000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.5
+              }
+            ],
+            "manaCost": 150,
+            "target": "area",
+            "radius": 750
+          },
+          {
+            "name": "혼합 광역 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 150000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "physical",
+                "amount": 750000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "치명타",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 5
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2
+              }
+            ],
+            "chancePercent": 20,
+            "target": "single"
+          },
+          {
+            "name": "속도비례 물리타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 450000,
+                "damageIncreasePercentPerEnemyMovementSpeedThree": 1
+              }
+            ],
+            "chancePercent": 15,
+            "target": "area",
+            "radius": 400
+          },
+          {
+            "name": "거대화 전용 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 1000000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ],
+                "basicAttackPercent": 500
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2
+              }
+            ],
+            "chancePercent": 20,
+            "requiresForm": "giant",
+            "target": "area",
+            "radius": 500
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력·유닛 rawcode",
+          "기본 공격 스탯·주기",
+          "변신/광역 피해 중첩 및 방어 계산"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E2",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-03",
+      "name": "류마",
+      "grade": "영원한",
+      "gradeOrder": 3,
+      "catalog": {
+        "id": "E-03",
+        "grade": "영원한",
+        "gradeOrder": 3,
+        "name": "류마",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E3",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-03",
+        "sourceUrl": "https://ordr.kr/character/E3",
+        "passives": [
+          {
+            "type": "samuraiSoulStacks",
+            "thresholds": [
+              {
+                "stacks": 100,
+                "unlockSkill": "참룡도"
+              },
+              {
+                "stacks": 400,
+                "attackSpeedIncreasePercent": 50
+              },
+              {
+                "stacks": 700,
+                "attackPowerIncrease": 100000
+              }
+            ]
+          }
+        ],
+        "skills": [
+          {
+            "name": "마나 공격",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 2500000,
+                "maxHealthPercentPerSoulStack": 0.005
+              }
+            ],
+            "manaCost": 150,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "영혼 고정 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "fixed",
+                "amountPerSoulStack": 160,
+                "flatAmount": 160000
+              }
+            ],
+            "chancePercent": 25,
+            "target": "area",
+            "radius": 300
+          },
+          {
+            "name": "기본 피해량 조건 범위 공격",
+            "trigger": "afterBasicDamageThreshold",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 180000
+              }
+            ],
+            "minimumBasicDamage": 120000,
+            "target": "area",
+            "radius": 600
+          },
+          {
+            "name": "영혼 마법 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 400000,
+                "plusSoulStackMultiplier": 450
+              },
+              {
+                "type": "soulStacks",
+                "chancePercent": 20,
+                "add": 2,
+                "absoluteCooldownSeconds": 5
+              }
+            ],
+            "chancePercent": 15,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "혼 스택 마법 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 250000,
+                "plusSoulStackMultiplier": 2500000
+              },
+              {
+                "type": "explosive",
+                "plusTargetMissingHealthPercent": 9,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              }
+            ],
+            "chancePercent": 12,
+            "target": "area",
+            "radius": 400
+          },
+          {
+            "name": "영혼 획득",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "soulStacks",
+                "add": 1
+              }
+            ],
+            "chancePercent": 10
+          },
+          {
+            "name": "참룡도",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 12
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3,
+                "ignoresResistance": true
+              }
+            ],
+            "chancePercent": 8.5,
+            "requiresSoulStacks": 100,
+            "target": "single"
+          }
+        ],
+        "fusionMilestones": [
+          {
+            "fusedUnit": "시노부",
+            "onAttackChancePercent": 5,
+            "extraExplosiveTargetCurrentHealthPercent": 10
+          },
+          {
+            "fusedUnit": "오뎅",
+            "soulStacksGained": 200,
+            "attackPowerIncreasePercent": 50
+          },
+          {
+            "fusedUnit": "토키",
+            "attackSpeedIncreasePercent": 20
+          }
+        ],
+        "uncertaintyNotes": [
+          "2.300 패치 설명에 기본 피해 조건 10만·마법 20만으로 변경되었다고 기재되나 현 툴팁 12만·18만과 상충."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력·유닛 rawcode",
+          "기본 공격 스탯·주기",
+          "변신/광역 피해 중첩 및 방어 계산"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E3",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h0CJ",
+            "evidenceAbilityRawcode": "ET04",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET04"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-04",
+      "name": "미호크",
+      "grade": "영원한",
+      "gradeOrder": 4,
+      "catalog": {
+        "id": "E-04",
+        "grade": "영원한",
+        "gradeOrder": 4,
+        "name": "미호크",
+        "roleTags": [
+          "마뎀",
+          "이감",
+          "단일스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E4",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-04",
+        "sourceUrl": "https://ordr.kr/character/E4",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 45
+          },
+          {
+            "type": "selfManaRegeneration",
+            "perSecond": 2
+          },
+          {
+            "type": "basicAttackExplosive",
+            "attackPowerPercent": 80
+          }
+        ],
+        "skills": [
+          {
+            "name": "마나 고정 피해",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "fixed",
+                "amount": 5250000,
+                "plusTargetMaxHealthPercent": 5
+              }
+            ],
+            "manaCost": 175,
+            "target": "area",
+            "radius": 750
+          },
+          {
+            "name": "원형·직선 마법 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "circleDamage": 450000,
+                "lineDamage": 700000
+              }
+            ],
+            "chancePercent": 12,
+            "target": "circlePlusLine",
+            "circleRadius": 500,
+            "lineRadius": 400
+          },
+          {
+            "name": "매 타격 추가 마법",
+            "trigger": "onEveryAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 250000
+              }
+            ],
+            "target": "single"
+          },
+          {
+            "name": "치명타",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 3.5
+              }
+            ],
+            "chancePercent": 14,
+            "target": "single"
+          },
+          {
+            "name": "연속 범위 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amountPerHit": 300000,
+                "hits": 2
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "범위 마법 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 400000
+              }
+            ],
+            "chancePercent": 15,
+            "target": "area",
+            "radius": 450
+          },
+          {
+            "name": "확정 스턴",
+            "trigger": "onEveryAttack",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 1.2,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "target": "single"
+          }
+        ],
+        "uncertaintyNotes": [
+          "특성강화 툴팁 버튼의 세부 조건은 별도로 추가 조사 예정."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력·유닛 rawcode",
+          "기본 공격 스탯·주기",
+          "변신/광역 피해 중첩 및 방어 계산"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E4",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h058",
+            "evidenceAbilityRawcode": "ET08",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET08"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-05",
+      "name": "버기",
+      "grade": "영원한",
+      "gradeOrder": 5,
+      "catalog": {
+        "id": "E-05",
+        "grade": "영원한",
+        "gradeOrder": 5,
+        "name": "버기",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E5",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-05",
+        "sourceUrl": "https://ordr.kr/character/E5",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 30
+          },
+          {
+            "type": "movementSlowAura",
+            "percent": 25
+          },
+          {
+            "type": "allyAttackPowerFlat",
+            "amount": 10000
+          },
+          {
+            "type": "allyAttackSpeedBuff",
+            "percent": 60
+          }
+        ],
+        "skills": [
+          {
+            "name": "버기 필살타",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 3333333,
+                "criticalMultiplier": 7.77
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 7.77,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": 7.77,
+            "target": "single"
+          },
+          {
+            "name": "해적단 소환",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "summon",
+                "candidates": [
+                  {
+                    "unit": "파견 해적",
+                    "chancePercent": 9,
+                    "grade": "전설적인",
+                    "durationSeconds": 3
+                  },
+                  {
+                    "unit": "파견 해군",
+                    "chancePercent": 5,
+                    "grade": "변화된",
+                    "durationSeconds": 3,
+                    "radius": 325,
+                    "physicalDamagePercentOfAttack": 90
+                  },
+                  {
+                    "unit": "이완코브",
+                    "chancePercent": 4.25,
+                    "grade": "히든",
+                    "durationSeconds": 4
+                  },
+                  {
+                    "unit": "거인족",
+                    "chancePercent": 2.55,
+                    "grade": "초월함",
+                    "durationSeconds": 4,
+                    "radius": 400,
+                    "criticalChancePercent": 20,
+                    "criticalMultiplier": 1.5
+                  }
+                ]
+              }
+            ],
+            "target": "summon"
+          },
+          {
+            "name": "전투 아군 공격력 버프",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "allyAttackPowerBuff",
+                "percent": 33,
+                "durationSeconds": 4.5,
+                "exclusiveWith": [
+                  "코비 용기의 외침"
+                ]
+              }
+            ],
+            "chancePercent": 4.5,
+            "target": "allyArea",
+            "radius": 750
+          },
+          {
+            "name": "언변 강화",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "permanentAuraUpgrade",
+                "attackPowerIncreasePerUse": 1000,
+                "attackSpeedPercentIncreasePerUse": 1,
+                "maxUses": 5
+              }
+            ],
+            "goldCost": 3333
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력·유닛 rawcode",
+          "기본 공격 스탯·주기",
+          "변신/광역 피해 중첩 및 방어 계산"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E5",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h05A",
+            "evidenceAbilityRawcode": "ET05",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET05"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-06",
+      "name": "비비",
+      "grade": "영원한",
+      "gradeOrder": 6,
+      "catalog": {
+        "id": "E-06",
+        "grade": "영원한",
+        "gradeOrder": 6,
+        "name": "비비",
+        "roleTags": [
+          "마뎀",
+          "단일스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E6",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-06",
+        "sourceUrl": "https://ordr.kr/character/E6",
+        "passives": [],
+        "skills": [
+          {
+            "name": "광역 난사",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "fixed",
+                "amountPerHit": 300000,
+                "plusTargetMaxHealthPercentPerHit": 10,
+                "hits": 20
+              },
+              {
+                "type": "magical",
+                "amount": 500000,
+                "onlyTargetKinds": [
+                  "boss"
+                ]
+              }
+            ],
+            "manaCost": 150,
+            "target": "twoRandomTargets"
+          },
+          {
+            "name": "알라바스타 강화",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "upgradeSkill",
+                "name": "알라바스타",
+                "successChancePercentByLevel": [
+                  81,
+                  72,
+                  63,
+                  54,
+                  45,
+                  36,
+                  27,
+                  18,
+                  9
+                ]
+              }
+            ],
+            "lumberCost": 2,
+            "basicRandomWispCost": 3
+          },
+          {
+            "name": "건 공격",
+            "trigger": "onSkillOrAttack",
+            "components": [
+              {
+                "type": "fixed",
+                "amountPerHit": 250000,
+                "plusTargetCurrentHealthPercent": 7,
+                "hits": 6
+              },
+              {
+                "type": "fixed",
+                "damageBonusPercentPerGunLevel": 10
+              },
+              {
+                "type": "magical",
+                "amount": 400000,
+                "onlyTargetKinds": [
+                  "boss",
+                  "story"
+                ]
+              }
+            ],
+            "target": "twoRandomTargets"
+          },
+          {
+            "name": "범위 마법",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 350000,
+                "multiplierRange": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 450
+          },
+          {
+            "name": "헤드샷",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "fixed",
+                "amount": 750000,
+                "plusTargetMaxHealthPercent": 14,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1.5
+              }
+            ],
+            "chancePercent": 25,
+            "target": "targetPlusRandomEnemy",
+            "radius": 900
+          },
+          {
+            "name": "3연사",
+            "trigger": "onSkill",
+            "components": [
+              {
+                "type": "magical",
+                "amountPerHitPerGunLevel": 100000,
+                "plusTargetMaxHealthPercent": 12,
+                "hits": 3
+              }
+            ],
+            "absoluteCooldownSeconds": 5,
+            "target": "single",
+            "overrides": [
+              {
+                "targetKinds": [
+                  "boss"
+                ],
+                "onlyGunLevelDamage": true
+              }
+            ]
+          },
+          {
+            "name": "알라바스타 건",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 5
+              },
+              {
+                "type": "fixed",
+                "extraMaxHealthPercentPerGunLevelOnNamedSkills": 1.5,
+                "extraMaxHealthPercentPerGunLevelOnBarrageHit": 0.5
+              }
+            ],
+            "chancePercent": 10,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력·유닛 rawcode",
+          "기본 공격 스탯·주기",
+          "변신/광역 피해 중첩 및 방어 계산"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E6",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h057",
+            "evidenceAbilityRawcode": "ET01",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET01"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-07",
+      "name": "에이스",
+      "grade": "영원한",
+      "gradeOrder": 7,
+      "catalog": {
+        "id": "E-07",
+        "grade": "영원한",
+        "gradeOrder": 7,
+        "name": "에이스",
+        "roleTags": [
+          "마뎀",
+          "이감",
+          "단일스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E7",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-07",
+        "sourceUrl": "https://ordr.kr/character/E7",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 45
+          }
+        ],
+        "skills": [
+          {
+            "name": "대염계 염제",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 4500000,
+                "plusTargetMaxHealthPercent": 2,
+                "multiplierRange": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3,
+                "beforeAndAfterHit": true
+              }
+            ],
+            "manaCost": 185,
+            "target": "area",
+            "radius": 850,
+            "damageDelaySeconds": 2
+          },
+          {
+            "name": "발동형 불꽃 지속 피해",
+            "trigger": "onSkillActivated",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 3.5,
+                "ignoresResistance": true,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magicalDoT",
+                "perSource": [
+                  {
+                    "name": "불주먹",
+                    "damagePerTick": 120000,
+                    "intervalSeconds": 0.2,
+                    "durationSeconds": 2
+                  },
+                  {
+                    "name": "불기둥",
+                    "damagePerTick": 200000,
+                    "intervalSeconds": 0.2,
+                    "durationSeconds": 1.6
+                  },
+                  {
+                    "name": "대염계",
+                    "damagePerTick": 250000,
+                    "intervalSeconds": 0.2,
+                    "durationSeconds": 3
+                  }
+                ],
+                "stacking": "highestDamageOnly"
+              }
+            ],
+            "target": "singlePlusAffectedArea"
+          },
+          {
+            "name": "불기둥",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 1000000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              }
+            ],
+            "chancePercent": 3,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "불주먹",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 1150000
+              }
+            ],
+            "chancePercent": 10,
+            "absoluteCooldownSeconds": 4.25,
+            "target": "area",
+            "radius": 750
+          },
+          {
+            "name": "적 중심 마법",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 300000,
+                "extraSingleAmount": 1250000
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "area",
+            "radius": 475
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력·유닛 rawcode",
+          "기본 공격 스탯·주기",
+          "변신/광역 피해 중첩 및 방어 계산"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E7",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h059",
+            "evidenceAbilityRawcode": "ET11",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET11"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-08",
+      "name": "오뎅",
+      "grade": "영원한",
+      "gradeOrder": 8,
+      "catalog": {
+        "id": "E-08",
+        "grade": "영원한",
+        "gradeOrder": 8,
+        "name": "오뎅",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "증폭"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E8",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-08",
+        "sourceUrl": "https://ordr.kr/character/E8",
+        "passives": [
+          {
+            "type": "allyAttackPowerBuff",
+            "percent": 50
+          }
+        ],
+        "skills": [
+          {
+            "name": "마나 광역 스턴",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 4200000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3.25,
+                "ignoresResistance": true
+              }
+            ],
+            "manaCost": 145,
+            "target": "area",
+            "radius": 700
+          },
+          {
+            "name": "적중 시 마법 증폭",
+            "trigger": "onSkillActivated",
+            "components": [
+              {
+                "type": "magicDamageAmplification",
+                "percent": 1
+              }
+            ],
+            "target": "affectedEnemies"
+          },
+          {
+            "name": "단일 스턴",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 0.45
+              }
+            ],
+            "chancePercent": 35,
+            "target": "single"
+          },
+          {
+            "name": "범위 물리",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 1500000
+              }
+            ],
+            "chancePercent": 7.5,
+            "target": "area",
+            "radius": 450
+          },
+          {
+            "name": "기본 공격 추가",
+            "trigger": "onEveryAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 950000
+              },
+              {
+                "type": "magical",
+                "amount": 95000,
+                "radius": 400
+              }
+            ],
+            "target": "singlePlusArea"
+          },
+          {
+            "name": "마법 광역",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 1150000
+              }
+            ],
+            "chancePercent": 5,
+            "target": "area",
+            "radius": 600
+          },
+          {
+            "name": "꺼지지 않는 상처",
+            "trigger": "onSkillActivated",
+            "components": [
+              {
+                "type": "magical",
+                "amountOnNextBasicHit": 28000,
+                "areaRadius": 175,
+                "extraSingleMultiplier": 6.25
+              }
+            ],
+            "durationSeconds": 3.25,
+            "onlyAffectsGradesAtLeast": "특별함"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력·유닛 rawcode",
+          "기본 공격 스탯·주기",
+          "변신/광역 피해 중첩 및 방어 계산"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E8",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h08R",
+            "evidenceAbilityRawcode": "ET10",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET10"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-09",
+      "name": "우타",
+      "grade": "영원한",
+      "gradeOrder": 9,
+      "catalog": {
+        "id": "E-09",
+        "grade": "영원한",
+        "gradeOrder": 9,
+        "name": "우타",
+        "roleTags": [
+          "마뎀",
+          "마방깎",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E9",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-09",
+        "sourceUrl": "https://ordr.kr/character/E9",
+        "passives": [
+          {
+            "type": "attackSpeedBuff",
+            "percent": 15
+          }
+        ],
+        "skills": [
+          {
+            "name": "광역 노래 마법",
+            "trigger": "activeMana",
+            "manaCost": 100,
+            "target": "area",
+            "radius": 800,
+            "components": [
+              {
+                "type": "magical",
+                "amount": 2500000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "magicResistanceReduction",
+                "percent": 10
+              },
+              {
+                "type": "explosiveDamageAmplification",
+                "percent": 10
+              },
+              {
+                "type": "selfHeal",
+                "amount": 10
+              }
+            ]
+          },
+          {
+            "name": "확률 광역 스턴",
+            "trigger": "onAttack",
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 500,
+            "components": [
+              {
+                "type": "magical",
+                "amount": 450000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1.5
+              }
+            ]
+          },
+          {
+            "name": "음표 병사 연계",
+            "trigger": "onAttack",
+            "chancePercent": 25,
+            "target": "area",
+            "radius": 400,
+            "components": [
+              {
+                "type": "magical",
+                "amountPerSoldier": 700000
+              },
+              {
+                "type": "magical",
+                "amount": 1550000,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "explosive",
+                "basis": "targetCurrentHealth",
+                "percentPerSoldier": 10,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "3연타 마법",
+            "trigger": "onAttack",
+            "chancePercent": 4,
+            "target": "area",
+            "radius": 500,
+            "components": [
+              {
+                "type": "magical",
+                "amountPerHit": 750000,
+                "hits": 3,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "summonSoldier",
+                "chancePercent": 25,
+                "durationSeconds": 7
+              }
+            ]
+          },
+          {
+            "name": "라인·보스 추가 피해",
+            "trigger": "onAttack",
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 400,
+            "components": [
+              {
+                "type": "magical",
+                "amount": 350000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "magical",
+                "amount": 500000,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              },
+              {
+                "type": "explosive",
+                "basis": "targetMaxHealth",
+                "percent": 5,
+                "plusMissingHealthPercent": 6,
+                "hits": 2,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              },
+              {
+                "type": "magical",
+                "amount": 1000000,
+                "onlyTargetKinds": [
+                  "boss",
+                  "story"
+                ]
+              }
+            ]
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 능력 rawcode",
+          "평타 피해·공격 주기",
+          "스킬 내부 판정과 비공개 쿨타임"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E9",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h067",
+            "evidenceAbilityRawcode": "ET07",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET07"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-10",
+      "name": "카번딧슈",
+      "grade": "영원한",
+      "gradeOrder": 10,
+      "catalog": {
+        "id": "E-10",
+        "grade": "영원한",
+        "gradeOrder": 10,
+        "name": "카번딧슈",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "암브"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E10",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-10",
+        "sourceUrl": "https://ordr.kr/character/E10",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 35
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 325,
+            "physicalPercentOfAttack": 25
+          }
+        ],
+        "skills": [
+          {
+            "name": "기면증",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 2350000,
+                "plusTargetCurrentHealthPercent": 1
+              },
+              {
+                "type": "magical",
+                "amount": 1100000,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3
+              }
+            ],
+            "manaCost": 100,
+            "target": "casterArea",
+            "radius": 800,
+            "stunRadius": 500,
+            "chanceToSummonAlterEgoPercent": 20,
+            "sleepSeconds": 3
+          },
+          {
+            "name": "미검",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 855000
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 5,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "fixed",
+                "extraSkillDamagePercent": 300,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": 11,
+            "target": "area",
+            "radius": 450
+          },
+          {
+            "name": "치명타 단일 스턴",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 10
+              },
+              {
+                "type": "physical",
+                "amount": 400000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3
+              }
+            ],
+            "chancePercent": 20,
+            "target": "single"
+          },
+          {
+            "name": "혼합 범위 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 450000
+              },
+              {
+                "type": "magical",
+                "amount": 550000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.3
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 550
+          },
+          {
+            "name": "하쿠바 인격",
+            "trigger": "onSummon",
+            "components": [
+              {
+                "type": "summon",
+                "unit": "하쿠바",
+                "baseAttackPower": 600000,
+                "baseAttackIntervalSeconds": 0.11,
+                "basicAttackFixedDamage": 350000,
+                "critChancePercent": 20,
+                "stunDurationSeconds": 3,
+                "onExpiryFixedDamage": 1500000,
+                "extraCurrentHealthPhysicalPercent": 2
+              }
+            ],
+            "target": "self",
+            "durationSeconds": 3
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력·유닛 rawcode",
+          "기본 공격 스탯·주기",
+          "변신/광역 피해 중첩 및 방어 계산"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E10",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h05B",
+            "evidenceAbilityRawcode": "ET09",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [
+          {
+            "unitId": "E-10",
+            "unitRawcode": "h05B",
+            "skillOrdinal": 1,
+            "skillName": "미검",
+            "trigger": "onAttack",
+            "type": "armorBreak",
+            "value": 5,
+            "ability": "A04M",
+            "function": "B5Z",
+            "registration": "B5a:33489",
+            "effectLines": "B5Z:33474",
+            "primaryBonus": 0,
+            "note": "B5Z 11% 추첨 분기에 Bdq(RN,5)."
+          }
+        ],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET09"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-11",
+      "name": "테조로",
+      "grade": "영원한",
+      "gradeOrder": 11,
+      "catalog": {
+        "id": "E-11",
+        "grade": "영원한",
+        "gradeOrder": 11,
+        "name": "테조로",
+        "roleTags": [
+          "마뎀",
+          "스턴",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E11",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-11",
+        "sourceUrl": "https://ordr.kr/character/E11",
+        "passives": [
+          {
+            "type": "attackSpeedBuff",
+            "percent": 25
+          },
+          {
+            "type": "goldBasedSkillBonus",
+            "goldCap": 250000
+          }
+        ],
+        "skills": [
+          {
+            "name": "골드 연계 체력 소모 공격",
+            "trigger": "activeHealth",
+            "healthCost": 90,
+            "target": "area",
+            "radius": 625,
+            "components": [
+              {
+                "type": "magical",
+                "amount": 2500000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.4
+              },
+              {
+                "type": "explosive",
+                "basis": "targetMissingHealth",
+                "percentPer25000Gold": 0.9,
+                "goldCap": 250000
+              }
+            ]
+          },
+          {
+            "name": "공격 발동 마법 타격",
+            "trigger": "onAttack",
+            "chancePercent": 12,
+            "target": "area",
+            "radius": 625,
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.4
+              },
+              {
+                "type": "fixed",
+                "basis": "playerGold",
+                "multiplier": 2,
+                "goldCap": 250000
+              }
+            ]
+          },
+          {
+            "name": "곤 인페르노",
+            "trigger": "periodic",
+            "intervalSeconds": 1.5,
+            "target": "area",
+            "radius": 325,
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "explosive",
+                "percent": 15,
+                "basis": "targetMaxHealth",
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "fixed",
+                "amount": 400000,
+                "onlyTargetKinds": [
+                  "boss",
+                  "enraged",
+                  "story"
+                ],
+                "scope": "singlePrimaryTarget"
+              }
+            ]
+          },
+          {
+            "name": "곤 인페르노 2회 누적 발동",
+            "trigger": "counter",
+            "afterSkill": "곤 인페르노",
+            "requiredOccurrences": 2,
+            "target": "area",
+            "radius": 425,
+            "components": [
+              {
+                "type": "magical",
+                "amount": 500000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "explosive",
+                "basis": "targetMissingHealth",
+                "percentPer25000Gold": 0.45,
+                "onlyTargetKinds": [
+                  "line",
+                  "boss",
+                  "story",
+                  "enraged"
+                ],
+                "goldCap": 250000
+              },
+              {
+                "type": "explosive",
+                "basis": "targetMaxHealth",
+                "percent": 20,
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "scope": "singlePrimaryTarget"
+              }
+            ]
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격 수치",
+          "공격 주기",
+          "실제 스킬 판정 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E11",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h06A",
+            "evidenceAbilityRawcode": "ET12",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET12"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "E-12",
+      "name": "핸콕",
+      "grade": "영원한",
+      "gradeOrder": 12,
+      "catalog": {
+        "id": "E-12",
+        "grade": "영원한",
+        "gradeOrder": 12,
+        "name": "핸콕",
+        "roleTags": [
+          "물뎀",
+          "마뎀",
+          "방깎"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/E12",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical",
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "E-12",
+        "sourceUrl": "https://ordr.kr/character/E12",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 35
+          }
+        ],
+        "skills": [
+          {
+            "name": "마나 25회 타격",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "physical",
+                "amountPerHit": 360000,
+                "hits": 25
+              },
+              {
+                "type": "magical",
+                "amountPerHit": 50000,
+                "hits": 25
+              },
+              {
+                "type": "magical",
+                "extraTargetMaxHealthPercentPerHit": 16,
+                "overrides": [
+                  {
+                    "targetKinds": [
+                      "boss",
+                      "story"
+                    ],
+                    "flatAmount": 300000
+                  }
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.5,
+                "ignoresResistance": true,
+                "onFirstAndLastHit": true
+              }
+            ],
+            "manaCost": 175,
+            "target": "casterArea",
+            "radius": 750
+          },
+          {
+            "name": "패기 접근",
+            "trigger": "onEnemyEnterRange",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000,
+                "plusTargetMaxHealthPercent": 3
+              },
+              {
+                "type": "magicResistanceReduction",
+                "percent": 5
+              },
+              {
+                "type": "armorReduction",
+                "amount": 5
+              }
+            ],
+            "range": 900,
+            "oncePerEnemy": true,
+            "exclusiveWith": [
+              "에넬 제한 멘트라"
+            ]
+          },
+          {
+            "name": "단일 치명타",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 8
+              },
+              {
+                "type": "physical",
+                "amount": 500000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3
+              }
+            ],
+            "chancePercent": 15,
+            "target": "single"
+          },
+          {
+            "name": "혼합 공격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 850000
+              },
+              {
+                "type": "magical",
+                "amount": 150000
+              },
+              {
+                "type": "movementSlow",
+                "percent": 60,
+                "durationSeconds": 2.5
+              }
+            ],
+            "chancePercent": 7.5,
+            "target": "area",
+            "radius": 460
+          },
+          {
+            "name": "직선 마법 버프",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amountPerAttack": 400000,
+                "extraSingleAmount": 300000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              }
+            ],
+            "chancePercent": 7.5,
+            "durationSeconds": 0.7,
+            "attackSpeedReductionPercent": 15,
+            "target": "line"
+          },
+          {
+            "name": "혼합 스턴 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 250000
+              },
+              {
+                "type": "physical",
+                "amount": 850000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.75
+              }
+            ],
+            "chancePercent": 7.5,
+            "enhancedChancePercent": 10,
+            "target": "area",
+            "radius": 650
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력·유닛 rawcode",
+          "기본 공격 스탯·주기",
+          "변신/광역 피해 중첩 및 방어 계산"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/E12",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h05C",
+            "evidenceAbilityRawcode": "ET06",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "ET06"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    }
+  ]
+}

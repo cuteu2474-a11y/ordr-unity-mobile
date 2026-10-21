@@ -1,0 +1,668 @@
+{
+  "format": "ordr-character-grade-v1",
+  "gameVersion": "S2 2.323[C]",
+  "grade": "변화",
+  "gradePrefix": "T",
+  "catalogCount": 5,
+  "masterIndex": "data/character-master-database.json",
+  "characters": [
+    {
+      "id": "T-01",
+      "name": "도플라밍고",
+      "grade": "변화",
+      "gradeOrder": 1,
+      "catalog": {
+        "id": "T-01",
+        "grade": "변화",
+        "gradeOrder": 1,
+        "name": "도플라밍고",
+        "roleTags": [
+          "마뎀"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/T1",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "T-01",
+        "sourceUrl": "https://ordr.kr/character/T1",
+        "passives": [
+          {
+            "type": "flyingMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "오버히트",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000,
+                "plusTargetCurrentHealthPercentAgainstLine": 25
+              }
+            ],
+            "chancePercent": 10,
+            "target": "single"
+          },
+          {
+            "name": "실실열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 100000
+              }
+            ],
+            "chancePercent": 10,
+            "radius": 400
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 rawcode",
+          "평타 공격력/공속",
+          "중첩·피해 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/T1",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "T-02",
+      "name": "비비",
+      "grade": "변화",
+      "gradeOrder": 2,
+      "catalog": {
+        "id": "T-02",
+        "grade": "변화",
+        "gradeOrder": 2,
+        "name": "비비",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/T2",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "T-02",
+        "sourceUrl": "https://ordr.kr/character/T2",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 11
+          },
+          {
+            "type": "movementSlowAura",
+            "percent": 20
+          }
+        ],
+        "skills": [
+          {
+            "name": "공작스트링",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 100000
+              },
+              {
+                "type": "physical",
+                "amount": 250000,
+                "multiplierRange": [
+                  0.7,
+                  1.5
+                ]
+              }
+            ],
+            "chancePercent": 10,
+            "radius": 500
+          },
+          {
+            "name": "공작슬래셔",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 250000
+              }
+            ],
+            "chancePercent": 10,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 rawcode",
+          "평타 공격력/공속",
+          "중첩·피해 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/T2",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "T-03",
+      "name": "베이비 5",
+      "grade": "변화",
+      "gradeOrder": 3,
+      "catalog": {
+        "id": "T-03",
+        "grade": "변화",
+        "gradeOrder": 3,
+        "name": "베이비 5",
+        "roleTags": [
+          "물뎀",
+          "암브"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/T3",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "T-03",
+        "sourceUrl": "https://ordr.kr/character/T3",
+        "passives": [
+          {
+            "type": "selfAttackPowerFlat",
+            "amount": 22500
+          },
+          {
+            "type": "onEveryAttackMagicSplash",
+            "amount": 22500,
+            "radius": 285
+          }
+        ],
+        "skills": [
+          {
+            "name": "과열",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "allyAttackSpeedBuff",
+                "percent": 150,
+                "durationSeconds": 12,
+                "exclusiveWith": [
+                  "다른 가속"
+                ]
+              }
+            ],
+            "cooldownSeconds": 50,
+            "target": "alliedSelected"
+          },
+          {
+            "name": "무기무기열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 100000,
+                "extraSingleMagicalAmount": 70000
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 1,
+                "max": 75
+              }
+            ],
+            "chancePercent": 10,
+            "radius": 450
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 rawcode",
+          "평타 공격력/공속",
+          "중첩·피해 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/T3",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "T-04",
+      "name": "카쿠",
+      "grade": "변화",
+      "gradeOrder": 4,
+      "catalog": {
+        "id": "T-04",
+        "grade": "변화",
+        "gradeOrder": 4,
+        "name": "카쿠",
+        "roleTags": [
+          "마뎀",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/T5",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "T-04",
+        "sourceUrl": "https://ordr.kr/character/T5",
+        "passives": [
+          {
+            "type": "teleport",
+            "range": 1500
+          }
+        ],
+        "skills": [
+          {
+            "name": "람각",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 300000
+              },
+              {
+                "type": "explosive",
+                "targetMaxHealthPercent": 5,
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": 15,
+            "radius": 500
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 rawcode",
+          "평타 공격력/공속",
+          "중첩·피해 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/T5",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "T-05",
+      "name": "캐럿",
+      "grade": "변화",
+      "gradeOrder": 5,
+      "catalog": {
+        "id": "T-05",
+        "grade": "변화",
+        "gradeOrder": 5,
+        "name": "캐럿",
+        "roleTags": [
+          "단일스턴",
+          "증폭",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/T6",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "T-05",
+        "sourceUrl": "https://ordr.kr/character/T6",
+        "passives": [],
+        "skills": [
+          {
+            "name": "고속전격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 350000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.45
+              }
+            ],
+            "chancePercent": 50,
+            "target": "single"
+          },
+          {
+            "name": "일렉트리컬 루나",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "explosive",
+                "amount": 100000
+              },
+              {
+                "type": "explosiveDamageAmplification",
+                "percent": 1,
+                "maxPercent": 25
+              }
+            ],
+            "chancePercent": 50,
+            "radius": 425
+          },
+          {
+            "name": "달빛걸음",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "teleport",
+                "to": "randomEnemy",
+                "maxDistance": null
+              },
+              {
+                "type": "explosive",
+                "amount": 150000,
+                "radius": 400
+              }
+            ],
+            "chancePercent": 50
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 rawcode",
+          "평타 공격력/공속",
+          "중첩·피해 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/T6",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3776 @@
+{
+  "format": "ordr-character-grade-v1",
+  "gameVersion": "S2 2.323[C]",
+  "grade": "희귀함",
+  "gradePrefix": "R",
+  "catalogCount": 42,
+  "masterIndex": "data/character-master-database.json",
+  "characters": [
+    {
+      "id": "R-01",
+      "name": "X-드레이크",
+      "grade": "희귀함",
+      "gradeOrder": 1,
+      "catalog": {
+        "id": "R-01",
+        "grade": "희귀함",
+        "gradeOrder": 1,
+        "name": "X-드레이크",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R1",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "R-01",
+        "sourceUrl": "https://ordr.kr/character/R1",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 5
+          },
+          {
+            "type": "movementSlowAura",
+            "percent": 10
+          },
+          {
+            "type": "basicAttackExplosive",
+            "percentOfAttackPower": 22,
+            "excludedTargetKinds": [
+              "story"
+            ]
+          }
+        ],
+        "skills": [],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R1",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-02",
+      "name": "거프",
+      "grade": "희귀함",
+      "gradeOrder": 2,
+      "catalog": {
+        "id": "R-02",
+        "grade": "희귀함",
+        "gradeOrder": 2,
+        "name": "거프",
+        "roleTags": [
+          "물뎀",
+          "암브",
+          "단일스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R2",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "R-02",
+        "sourceUrl": "https://ordr.kr/character/R2",
+        "passives": [],
+        "skills": [
+          {
+            "name": "거프 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 12500
+              },
+              {
+                "type": "magical",
+                "amount": 40000,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.5,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 1,
+                "chancePercent": 50,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "area",
+            "radius": 500
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R2",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-03",
+      "name": "검은수염",
+      "grade": "희귀함",
+      "gradeOrder": 3,
+      "catalog": {
+        "id": "R-03",
+        "grade": "희귀함",
+        "gradeOrder": 3,
+        "name": "검은수염",
+        "roleTags": [
+          "마뎀",
+          "증폭"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R3",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "R-03",
+        "sourceUrl": "https://ordr.kr/character/R3",
+        "passives": [],
+        "skills": [
+          {
+            "name": "검은수염 어둠",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 17000
+              },
+              {
+                "type": "magicDamageAmplification",
+                "percent": 4
+              },
+              {
+                "type": "pull",
+                "exceptTargetKinds": [
+                  "boss",
+                  "story"
+                ]
+              }
+            ],
+            "chancePercent": 12,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R3",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-04",
+      "name": "도플라밍고",
+      "grade": "희귀함",
+      "gradeOrder": 4,
+      "catalog": {
+        "id": "R-04",
+        "grade": "희귀함",
+        "gradeOrder": 4,
+        "name": "도플라밍고",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-05",
+      "name": "트라팔가 로우 죽음의 외과의사",
+      "grade": "희귀함",
+      "gradeOrder": 5,
+      "catalog": {
+        "id": "R-05",
+        "grade": "희귀함",
+        "gradeOrder": 5,
+        "name": "트라팔가 로우 죽음의 외과의사",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": "https://ordr.kr/character/R5",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "R-05",
+        "sourceUrl": "https://ordr.kr/character/R5",
+        "passives": [],
+        "skills": [
+          {
+            "name": "외과수술 가속",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "allyAttackSpeedBuff",
+                "percent": 120,
+                "durationSeconds": 8
+              }
+            ],
+            "cooldownSeconds": 50,
+            "target": "selectedAlly",
+            "exclusiveWith": [
+              "다른 가속"
+            ]
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R5",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-06",
+      "name": "루피 기어써드",
+      "grade": "희귀함",
+      "gradeOrder": 6,
+      "catalog": {
+        "id": "R-06",
+        "grade": "희귀함",
+        "gradeOrder": 6,
+        "name": "루피 기어써드",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-07",
+      "name": "류마",
+      "grade": "희귀함",
+      "gradeOrder": 7,
+      "catalog": {
+        "id": "R-07",
+        "grade": "희귀함",
+        "gradeOrder": 7,
+        "name": "류마",
+        "roleTags": [
+          "마뎀",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R7",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "R-07",
+        "sourceUrl": "https://ordr.kr/character/R7",
+        "passives": [
+          {
+            "type": "basicAttackExplosive",
+            "amount": 2000
+          }
+        ],
+        "skills": [
+          {
+            "name": "흑도 슈스이",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 4500
+              },
+              {
+                "type": "explosive",
+                "targetCurrentHealthPercent": 10,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 375
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R7",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-08",
+      "name": "마르코 불사조",
+      "grade": "희귀함",
+      "gradeOrder": 8,
+      "catalog": {
+        "id": "R-08",
+        "grade": "희귀함",
+        "gradeOrder": 8,
+        "name": "마르코 불사조",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-09",
+      "name": "마젤란",
+      "grade": "희귀함",
+      "gradeOrder": 9,
+      "catalog": {
+        "id": "R-09",
+        "grade": "희귀함",
+        "gradeOrder": 9,
+        "name": "마젤란",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-10",
+      "name": "모몬가",
+      "grade": "희귀함",
+      "gradeOrder": 10,
+      "catalog": {
+        "id": "R-10",
+        "grade": "희귀함",
+        "gradeOrder": 10,
+        "name": "모몬가",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-11",
+      "name": "미호크",
+      "grade": "희귀함",
+      "gradeOrder": 11,
+      "catalog": {
+        "id": "R-11",
+        "grade": "희귀함",
+        "gradeOrder": 11,
+        "name": "미호크",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-12",
+      "name": "바르톨로메오",
+      "grade": "희귀함",
+      "gradeOrder": 12,
+      "catalog": {
+        "id": "R-12",
+        "grade": "희귀함",
+        "gradeOrder": 12,
+        "name": "바르톨로메오",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-13",
+      "name": "바제스",
+      "grade": "희귀함",
+      "gradeOrder": 13,
+      "catalog": {
+        "id": "R-13",
+        "grade": "희귀함",
+        "gradeOrder": 13,
+        "name": "바제스",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-14",
+      "name": "바질 호킨스 스트로맨",
+      "grade": "희귀함",
+      "gradeOrder": 14,
+      "catalog": {
+        "id": "R-14",
+        "grade": "희귀함",
+        "gradeOrder": 14,
+        "name": "바질 호킨스 스트로맨",
+        "roleTags": [
+          "물뎀",
+          "방깎"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R14",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "R-14",
+        "sourceUrl": "https://ordr.kr/character/R14",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 10
+          }
+        ],
+        "skills": [],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R14",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-15",
+      "name": "반더 데켄",
+      "grade": "희귀함",
+      "gradeOrder": 15,
+      "catalog": {
+        "id": "R-15",
+        "grade": "희귀함",
+        "gradeOrder": 15,
+        "name": "반더 데켄",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-16",
+      "name": "베이비 5",
+      "grade": "희귀함",
+      "gradeOrder": 16,
+      "catalog": {
+        "id": "R-16",
+        "grade": "희귀함",
+        "gradeOrder": 16,
+        "name": "베이비 5",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-17",
+      "name": "벤 베크만",
+      "grade": "희귀함",
+      "gradeOrder": 17,
+      "catalog": {
+        "id": "R-17",
+        "grade": "희귀함",
+        "gradeOrder": 17,
+        "name": "벤 베크만",
+        "roleTags": [
+          "마뎀"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R17",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "R-17",
+        "sourceUrl": "https://ordr.kr/character/R17",
+        "passives": [
+          {
+            "type": "teleport",
+            "range": 1500
+          }
+        ],
+        "skills": [
+          {
+            "name": "단일 물리 스턴",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 2500
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.75
+              }
+            ],
+            "chancePercent": 35,
+            "target": "single"
+          },
+          {
+            "name": "마법 단일 강화",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 10000
+              },
+              {
+                "type": "fixed",
+                "amount": 20000,
+                "plusTargetCurrentHealthPercent": 1,
+                "exceptTargetKinds": [
+                  "story"
+                ],
+                "onlyTargetKinds": [
+                  "boss",
+                  "enraged"
+                ]
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "single",
+            "specialChancePercent": 12.5
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R17",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-18",
+      "name": "브룩 음악가",
+      "grade": "희귀함",
+      "gradeOrder": 18,
+      "catalog": {
+        "id": "R-18",
+        "grade": "희귀함",
+        "gradeOrder": 18,
+        "name": "브룩 음악가",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": "https://ordr.kr/character/R18",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "R-18",
+        "sourceUrl": "https://ordr.kr/character/R18",
+        "passives": [
+          {
+            "type": "allyAttackSpeedBuff",
+            "percent": 10
+          }
+        ],
+        "skills": [],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 유닛 및 능력 rawcode",
+          "평타 공격력·주기·사거리",
+          "스킬별 숨은 조건 및 최종 피해 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R18",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-19",
+      "name": "비비",
+      "grade": "희귀함",
+      "gradeOrder": 19,
+      "catalog": {
+        "id": "R-19",
+        "grade": "희귀함",
+        "gradeOrder": 19,
+        "name": "비비",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-20",
+      "name": "사보",
+      "grade": "희귀함",
+      "gradeOrder": 20,
+      "catalog": {
+        "id": "R-20",
+        "grade": "희귀함",
+        "gradeOrder": 20,
+        "name": "사보",
+        "roleTags": [
+          "물뎀",
+          "방깎"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R20",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "R-20",
+        "sourceUrl": "https://ordr.kr/character/R20",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 10
+          }
+        ],
+        "skills": [],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R20",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-21",
+      "name": "상디 디아블잠브",
+      "grade": "희귀함",
+      "gradeOrder": 21,
+      "catalog": {
+        "id": "R-21",
+        "grade": "희귀함",
+        "gradeOrder": 21,
+        "name": "상디 디아블잠브",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-22",
+      "name": "샹크스",
+      "grade": "희귀함",
+      "gradeOrder": 22,
+      "catalog": {
+        "id": "R-22",
+        "grade": "희귀함",
+        "gradeOrder": 22,
+        "name": "샹크스",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-23",
+      "name": "센토마루",
+      "grade": "희귀함",
+      "gradeOrder": 23,
+      "catalog": {
+        "id": "R-23",
+        "grade": "희귀함",
+        "gradeOrder": 23,
+        "name": "센토마루",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-24",
+      "name": "슈가",
+      "grade": "희귀함",
+      "gradeOrder": 24,
+      "catalog": {
+        "id": "R-24",
+        "grade": "희귀함",
+        "gradeOrder": 24,
+        "name": "슈가",
+        "roleTags": [
+          "마나재생"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R24",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "R-24",
+        "sourceUrl": "https://ordr.kr/character/R24",
+        "passives": [
+          {
+            "type": "manaRegeneration",
+            "perSecond": 0.6
+          }
+        ],
+        "skills": [],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R24",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [
+          {
+            "id": "R-24",
+            "resultUnitId": "R-24",
+            "name": "슈가 (희귀함)",
+            "sourceUrl": "https://ordr.kr/character/R24",
+            "verifiedAs": "ordr-2.323-web-catalog",
+            "ingredients": [
+              {
+                "unitId": "S-26",
+                "count": 1
+              },
+              {
+                "unitId": "S-22",
+                "count": 1
+              },
+              {
+                "unitId": "U-10",
+                "count": 1
+              },
+              {
+                "unitId": "C-04",
+                "count": 1
+              }
+            ],
+            "extraCost": {
+              "gold": 0,
+              "lumber": 0,
+              "items": []
+            },
+            "uncertain": [
+              "원본 제작 트리거 및 결과 생성 좌표"
+            ]
+          }
+        ],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "web-recipe-sourced-original-trigger-unverified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-25",
+      "name": "시류",
+      "grade": "희귀함",
+      "gradeOrder": 25,
+      "catalog": {
+        "id": "R-25",
+        "grade": "희귀함",
+        "gradeOrder": 25,
+        "name": "시류",
+        "roleTags": [
+          "단일스턴",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R25",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "R-25",
+        "sourceUrl": "https://ordr.kr/character/R25",
+        "passives": [],
+        "skills": [
+          {
+            "name": "단일 스턴 타격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 25000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.9
+              }
+            ],
+            "chancePercent": 15,
+            "target": "single"
+          },
+          {
+            "name": "현재 체력 폭발",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "explosive",
+                "targetCurrentHealthPercent": 15,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              }
+            ],
+            "chancePercent": 10,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R25",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-26",
+      "name": "아오키지",
+      "grade": "희귀함",
+      "gradeOrder": 26,
+      "catalog": {
+        "id": "R-26",
+        "grade": "희귀함",
+        "gradeOrder": 26,
+        "name": "아오키지",
+        "roleTags": [
+          "마뎀",
+          "이감",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R26",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "R-26",
+        "sourceUrl": "https://ordr.kr/character/R26",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 10
+          }
+        ],
+        "skills": [
+          {
+            "name": "빙결 광역",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 9000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.95
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 405
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R26",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-27",
+      "name": "아카이누",
+      "grade": "희귀함",
+      "gradeOrder": 27,
+      "catalog": {
+        "id": "R-27",
+        "grade": "희귀함",
+        "gradeOrder": 27,
+        "name": "아카이누",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-28",
+      "name": "오즈",
+      "grade": "희귀함",
+      "gradeOrder": 28,
+      "catalog": {
+        "id": "R-28",
+        "grade": "희귀함",
+        "gradeOrder": 28,
+        "name": "오즈",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-29",
+      "name": "와이퍼",
+      "grade": "희귀함",
+      "gradeOrder": 29,
+      "catalog": {
+        "id": "R-29",
+        "grade": "희귀함",
+        "gradeOrder": 29,
+        "name": "와이퍼",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-30",
+      "name": "우솝 보잉열도",
+      "grade": "희귀함",
+      "gradeOrder": 30,
+      "catalog": {
+        "id": "R-30",
+        "grade": "희귀함",
+        "gradeOrder": 30,
+        "name": "우솝 보잉열도",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-31",
+      "name": "이완코브",
+      "grade": "희귀함",
+      "gradeOrder": 31,
+      "catalog": {
+        "id": "R-31",
+        "grade": "희귀함",
+        "gradeOrder": 31,
+        "name": "이완코브",
+        "roleTags": [
+          "마뎀",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R31",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "R-31",
+        "sourceUrl": "https://ordr.kr/character/R31",
+        "passives": [],
+        "skills": [
+          {
+            "name": "호르몬 버프",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "allyAttackPowerBuff",
+                "percent": 35,
+                "durationSeconds": 25
+              }
+            ],
+            "cooldownSeconds": 50,
+            "target": "selectedAlly"
+          },
+          {
+            "name": "범위 마법 스턴",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 13000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1.4
+              }
+            ],
+            "chancePercent": 7,
+            "target": "area",
+            "radius": 500
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R31",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-32",
+      "name": "제프",
+      "grade": "희귀함",
+      "gradeOrder": 32,
+      "catalog": {
+        "id": "R-32",
+        "grade": "희귀함",
+        "gradeOrder": 32,
+        "name": "제프",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-33",
+      "name": "조로 현상금 사냥꾼",
+      "grade": "희귀함",
+      "gradeOrder": 33,
+      "catalog": {
+        "id": "R-33",
+        "grade": "희귀함",
+        "gradeOrder": 33,
+        "name": "조로 현상금 사냥꾼",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-34",
+      "name": "죠즈",
+      "grade": "희귀함",
+      "gradeOrder": 34,
+      "catalog": {
+        "id": "R-34",
+        "grade": "희귀함",
+        "gradeOrder": 34,
+        "name": "죠즈",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-35",
+      "name": "쵸파 혼포인트",
+      "grade": "희귀함",
+      "gradeOrder": 35,
+      "catalog": {
+        "id": "R-35",
+        "grade": "희귀함",
+        "gradeOrder": 35,
+        "name": "쵸파 혼포인트",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": "https://ordr.kr/character/R35",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "R-35",
+        "sourceUrl": "https://ordr.kr/character/R35",
+        "passives": [
+          {
+            "type": "allyAttackPowerBuff",
+            "percent": 30
+          }
+        ],
+        "skills": [],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 유닛 및 능력 rawcode",
+          "평타 공격력·주기·사거리",
+          "스킬별 숨은 조건 및 최종 피해 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R35",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-36",
+      "name": "카쿠",
+      "grade": "희귀함",
+      "gradeOrder": 36,
+      "catalog": {
+        "id": "R-36",
+        "grade": "희귀함",
+        "gradeOrder": 36,
+        "name": "카쿠",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-37",
+      "name": "캡틴 키드",
+      "grade": "희귀함",
+      "gradeOrder": 37,
+      "catalog": {
+        "id": "R-37",
+        "grade": "희귀함",
+        "gradeOrder": 37,
+        "name": "캡틴 키드",
+        "roleTags": [
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R37",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "R-37",
+        "sourceUrl": "https://ordr.kr/character/R37",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 15
+          }
+        ],
+        "skills": [],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R37",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-38",
+      "name": "크로커다일 Mr.0",
+      "grade": "희귀함",
+      "gradeOrder": 38,
+      "catalog": {
+        "id": "R-38",
+        "grade": "희귀함",
+        "gradeOrder": 38,
+        "name": "크로커다일 Mr.0",
+        "roleTags": [
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R38",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "R-38",
+        "sourceUrl": "https://ordr.kr/character/R38",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 15
+          }
+        ],
+        "skills": [
+          {
+            "name": "로어",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "allyAttackPowerBuff",
+                "percent": 20,
+                "durationSeconds": 15
+              }
+            ],
+            "cooldownSeconds": 35,
+            "target": "allyArea",
+            "radius": 500,
+            "exclusiveWith": [
+              "동일 로어"
+            ]
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R38",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [
+          {
+            "id": "R-38",
+            "resultUnitId": "R-38",
+            "name": "크로커다일 Mr.0 (희귀함)",
+            "sourceUrl": "https://ordr.kr/character/R38",
+            "verifiedAs": "ordr-2.323-web-catalog",
+            "ingredients": [
+              {
+                "unitId": "S-29",
+                "count": 1
+              },
+              {
+                "unitId": "S-12",
+                "count": 1
+              },
+              {
+                "unitId": "S-23",
+                "count": 1
+              }
+            ],
+            "extraCost": {
+              "gold": 0,
+              "lumber": 0,
+              "items": []
+            },
+            "uncertain": [
+              "원본 제작 트리거 및 결과 생성 좌표"
+            ]
+          }
+        ],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "web-recipe-sourced-original-trigger-unverified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-39",
+      "name": "키자루",
+      "grade": "희귀함",
+      "gradeOrder": 39,
+      "catalog": {
+        "id": "R-39",
+        "grade": "희귀함",
+        "gradeOrder": 39,
+        "name": "키자루",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-40",
+      "name": "킨에몬",
+      "grade": "희귀함",
+      "gradeOrder": 40,
+      "catalog": {
+        "id": "R-40",
+        "grade": "희귀함",
+        "gradeOrder": 40,
+        "name": "킨에몬",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": null,
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "not-collected",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": null,
+      "evidence": {
+        "profileSource": null,
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "not-collected",
+        "passiveDefinitions": "not-collected",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "not-collected",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-41",
+      "name": "페로나 홀로홀로",
+      "grade": "희귀함",
+      "gradeOrder": 41,
+      "catalog": {
+        "id": "R-41",
+        "grade": "희귀함",
+        "gradeOrder": 41,
+        "name": "페로나 홀로홀로",
+        "roleTags": [
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R41",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "R-41",
+        "sourceUrl": "https://ordr.kr/character/R41",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 20
+          }
+        ],
+        "skills": [],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격력과 공속",
+          "원작 피해 저항 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R41",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "R-42",
+      "name": "핸콕",
+      "grade": "희귀함",
+      "gradeOrder": 42,
+      "catalog": {
+        "id": "R-42",
+        "grade": "희귀함",
+        "gradeOrder": 42,
+        "name": "핸콕",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/R42",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "R-42",
+        "sourceUrl": "https://ordr.kr/character/R42",
+        "passives": [],
+        "skills": [
+          {
+            "name": "단일 타격·스턴",
+            "trigger": "onAttack",
+            "chancePercent": 10,
+            "target": "single",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 10000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.6
+              }
+            ]
+          },
+          {
+            "name": "매혹 계열 범위 공격",
+            "trigger": "onAttack",
+            "chancePercent": 10,
+            "radius": 350,
+            "target": "targetCircle",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 6000
+              },
+              {
+                "type": "explosive",
+                "basis": "targetCurrentHealth",
+                "percent": 10,
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "scope": "singlePrimaryTarget"
+              }
+            ]
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 스킬 rawcode",
+          "기본 공격 수치",
+          "공격 주기",
+          "실제 스킬 판정 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/R42",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [
+          {
+            "id": "R-42",
+            "resultUnitId": "R-42",
+            "name": "핸콕 (희귀함)",
+            "sourceUrl": "https://ordr.kr/character/R42",
+            "verifiedAs": "ordr-2.323-web-catalog",
+            "ingredients": [
+              {
+                "unitId": "S-03",
+                "count": 1
+              },
+              {
+                "unitId": "S-16",
+                "count": 1
+              },
+              {
+                "unitId": "S-07",
+                "count": 1
+              }
+            ],
+            "extraCost": {
+              "gold": 0,
+              "lumber": 0,
+              "items": []
+            },
+            "uncertain": [
+              "원본 제작 트리거 및 결과 생성 좌표"
+            ]
+          }
+        ],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "web-recipe-sourced-original-trigger-unverified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    }
+  ]
+}

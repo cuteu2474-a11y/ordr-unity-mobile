@@ -1,0 +1,1005 @@
+{
+  "format": "ordr-character-grade-v1",
+  "gameVersion": "S2 2.323[C]",
+  "grade": "왜곡됨",
+  "gradePrefix": "D",
+  "catalogCount": 6,
+  "masterIndex": "data/character-master-database.json",
+  "characters": [
+    {
+      "id": "D-01",
+      "name": "블랙마리아",
+      "grade": "왜곡됨",
+      "gradeOrder": 1,
+      "catalog": {
+        "id": "D-01",
+        "grade": "왜곡됨",
+        "gradeOrder": 1,
+        "name": "블랙마리아",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "광폭화딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/D1",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "D-01",
+        "sourceUrl": "https://ordr.kr/character/D1",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 15
+          },
+          {
+            "type": "onEveryBasicAttackPhysical",
+            "targetMissingHealthPercent": 0.75,
+            "radius": 500
+          }
+        ],
+        "skills": [
+          {
+            "name": "범위 마법",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 500000
+              }
+            ],
+            "chancePercent": 30,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "13타 고정피해",
+            "trigger": "everyNthAttack",
+            "components": [
+              {
+                "type": "fixed",
+                "amount": 500000,
+                "basicAttackMultiplier": 5,
+                "plusTargetMaxHealthPercent": 1
+              }
+            ],
+            "everyAttacks": 13,
+            "radius": 500
+          },
+          {
+            "name": "마리아네트 전환",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "cycleEffect",
+                "sequence": [
+                  "꼼짝말란 마리아",
+                  "멈춰서란 마리아",
+                  "타오르란 마리아"
+                ],
+                "changeOnlyWhenPreviousExpired": true
+              }
+            ],
+            "cooldownSeconds": 30
+          },
+          {
+            "name": "꼼짝말란 마리아",
+            "trigger": "periodic",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 3.5
+              }
+            ],
+            "intervalSeconds": 5,
+            "radius": 900
+          },
+          {
+            "name": "멈춰서란 마리아",
+            "trigger": "passive",
+            "components": [
+              {
+                "type": "movementSlow",
+                "percent": 40
+              }
+            ],
+            "radius": 900,
+            "changeAfterSeconds": 6
+          },
+          {
+            "name": "타오르란 마리아",
+            "trigger": "periodic",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000
+              },
+              {
+                "type": "physical",
+                "extraTargetMissingHealthPercent": 5,
+                "onlyTargetKinds": [
+                  "line",
+                  "enraged"
+                ]
+              }
+            ],
+            "intervalSeconds": 5,
+            "radius": 900
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 스킬 rawcode",
+          "평타 스탯·공속",
+          "피해/증폭 중첩 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/D1",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h04U",
+            "evidenceAbilityRawcode": "IF04",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "IF04"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "D-02",
+      "name": "코알라",
+      "grade": "왜곡됨",
+      "gradeOrder": 2,
+      "catalog": {
+        "id": "D-02",
+        "grade": "왜곡됨",
+        "gradeOrder": 2,
+        "name": "코알라",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "보스딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/D2",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "D-02",
+        "sourceUrl": "https://ordr.kr/character/D2",
+        "passives": [
+          {
+            "type": "manaRegeneration",
+            "perSecond": 3.25
+          },
+          {
+            "type": "selfManaRegeneration",
+            "perSecond": 2
+          }
+        ],
+        "skills": [
+          {
+            "name": "어인공수도",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "fixed",
+                "amountPerHit": 600000,
+                "hits": 6
+              },
+              {
+                "type": "magical",
+                "amount": 1000000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1.25
+              }
+            ],
+            "manaCost": 135,
+            "radius": 625
+          },
+          {
+            "name": "기와 돌려차기",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 625000
+              },
+              {
+                "type": "fixed",
+                "extraSkillDamagePercent": 100,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "fixed",
+                "extraTargetMaxHealthPercent": 2.5,
+                "onlyTargetKinds": [
+                  "boss",
+                  "enraged"
+                ]
+              }
+            ],
+            "chancePercent": 15,
+            "radius": 500
+          },
+          {
+            "name": "단일 스턴",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 0.75,
+                "ignoresResistance": true
+              }
+            ],
+            "chancePercent": 50,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 스킬 rawcode",
+          "평타 스탯·공속",
+          "피해/증폭 중첩 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/D2",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h03V",
+            "evidenceAbilityRawcode": "IF01",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "IF01"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "D-03",
+      "name": "퀸",
+      "grade": "왜곡됨",
+      "gradeOrder": 3,
+      "catalog": {
+        "id": "D-03",
+        "grade": "왜곡됨",
+        "gradeOrder": 3,
+        "name": "퀸",
+        "roleTags": [
+          "물뎀",
+          "암브",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/D3",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "D-03",
+        "sourceUrl": "https://ordr.kr/character/D3",
+        "passives": [],
+        "skills": [
+          {
+            "name": "브라키오 붐버",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 1650000,
+                "multiplierRange": [
+                  1,
+                  1.2
+                ]
+              },
+              {
+                "type": "magical",
+                "amount": 650000
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 3,
+                "max": 75
+              }
+            ],
+            "manaCost": 65,
+            "radius": 600,
+            "target": "area",
+            "oneTimeConditionBypass": [
+              "boss",
+              "enraged"
+            ]
+          },
+          {
+            "name": "역재",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 250000
+              },
+              {
+                "type": "armorReduction",
+                "amount": 20,
+                "durationSeconds": 2
+              }
+            ],
+            "chancePercent": 14,
+            "radius": 450
+          },
+          {
+            "name": "빙귀",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 500000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.95
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 1,
+                "max": 75
+              }
+            ],
+            "chancePercent": 15,
+            "radius": 500
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 스킬 rawcode",
+          "평타 스탯·공속",
+          "피해/증폭 중첩 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/D3",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h0CI",
+            "evidenceAbilityRawcode": "IF03",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "IF03"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "D-04",
+      "name": "페로나",
+      "grade": "왜곡됨",
+      "gradeOrder": 4,
+      "catalog": {
+        "id": "D-04",
+        "grade": "왜곡됨",
+        "gradeOrder": 4,
+        "name": "페로나",
+        "roleTags": [
+          "이감",
+          "증폭",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/D4",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "D-04",
+        "sourceUrl": "https://ordr.kr/character/D4",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 45
+          },
+          {
+            "type": "explosiveDamageAmplification",
+            "percent": 10,
+            "targetZone": "ownedLane"
+          }
+        ],
+        "skills": [
+          {
+            "name": "카미카제 랩",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "explosive",
+                "amount": 2000000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1.5
+              }
+            ],
+            "manaCost": 100,
+            "radius": 500
+          },
+          {
+            "name": "고스트 랩",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "explosive",
+                "amount": 300000
+              },
+              {
+                "type": "explosive",
+                "extraAmount": 500000,
+                "chancePercent": 20
+              }
+            ],
+            "chancePercent": 12.5,
+            "radius": 360
+          },
+          {
+            "name": "네거티브 홀로우",
+            "trigger": "onAttackWithAbsoluteCooldown",
+            "components": [
+              {
+                "type": "delete",
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              },
+              {
+                "type": "explosive",
+                "amount": 1200000,
+                "onlyTargetKinds": [
+                  "boss",
+                  "story"
+                ]
+              },
+              {
+                "type": "explosiveDamageAmplification",
+                "percent": 2,
+                "radius": 500
+              }
+            ],
+            "chancePercent": 10,
+            "absoluteCooldownSeconds": 7.5
+          }
+        ],
+        "uncertaintyNotes": [
+          "2.300 패치에는 네거티브 홀로우 쿨타임 종료 시 발동률 100%로 변경됐다고 되어 있으나 현재 툴팁은 10%로 남아 있음. 실제 발동 확률 검증 필요."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 스킬 rawcode",
+          "평타 스탯·공속",
+          "피해/증폭 중첩 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/D4",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h048",
+            "evidenceAbilityRawcode": "IF02",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "IF02"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "D-05",
+      "name": "포트거스.D.에이스",
+      "grade": "왜곡됨",
+      "gradeOrder": 5,
+      "catalog": {
+        "id": "D-05",
+        "grade": "왜곡됨",
+        "gradeOrder": 5,
+        "name": "포트거스.D.에이스",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/D5",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "D-05",
+        "sourceUrl": "https://ordr.kr/character/D5",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 40
+          },
+          {
+            "type": "movementSlowAura",
+            "percent": 25
+          },
+          {
+            "type": "allyAttackPowerBuff",
+            "percent": 25
+          }
+        ],
+        "skills": [
+          {
+            "name": "불주먹",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 350000,
+                "extraPrimaryTargetAmount": 500000
+              }
+            ],
+            "chancePercent": 10,
+            "target": "line",
+            "radius": 320
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 스킬 rawcode",
+          "평타 스탯·공속",
+          "피해/증폭 중첩 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/D5",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h05V",
+            "evidenceAbilityRawcode": "IF06",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "IF06"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "D-06",
+      "name": "바제스",
+      "grade": "왜곡됨",
+      "gradeOrder": 6,
+      "catalog": {
+        "id": "D-06",
+        "grade": "왜곡됨",
+        "gradeOrder": 6,
+        "name": "바제스",
+        "roleTags": [
+          "마뎀",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/D6",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "D-06",
+        "sourceUrl": "https://ordr.kr/character/D6",
+        "passives": [
+          {
+            "type": "underwaterMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "매 평타 추가 피해",
+            "trigger": "onEveryHit",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 100000,
+                "extraLineCurrentHealthExplosivePercent": 11,
+                "extraSpecialMagicDamage": 220000
+              }
+            ],
+            "target": "single"
+          },
+          {
+            "name": "파동 엘보",
+            "trigger": "periodic",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 360000,
+                "extraLineCurrentHealthExplosivePercent": 36,
+                "extraSpecialMagicDamage": 720000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.5
+              }
+            ],
+            "periodSeconds": 12,
+            "reductionPer10000BasicAttackDamageSeconds": 1,
+            "maxReductionSeconds": 9,
+            "target": "area",
+            "radius": 425
+          }
+        ],
+        "uncertaintyNotes": [
+          "갈레온 레리어트 현 툴팁의 체력 비례 11%와 2.310 패치노트 10%, 대 특수 몹 22만/20만 충돌."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 스킬 rawcode",
+          "평타 스탯·공속",
+          "피해/증폭 중첩 공식"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/D6",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [
+          {
+            "rawcode": "h09V",
+            "evidenceAbilityRawcode": "IF05",
+            "evidence": "war3map.j Bi8/Bi9 label and grade correlated; Warcraft unit object not verified",
+            "confidence": "candidate-unverified",
+            "appearsInJassFusionRegistry": true
+          }
+        ],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [
+          "IF05"
+        ],
+        "originalFusionMappingStatus": "jass-label-correlated-unverified",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "correlated-unverified",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    }
+  ]
+}

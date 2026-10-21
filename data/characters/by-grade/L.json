@@ -1,0 +1,6009 @@
+{
+  "format": "ordr-character-grade-v1",
+  "gameVersion": "S2 2.323[C]",
+  "grade": "전설",
+  "gradePrefix": "L",
+  "catalogCount": 39,
+  "masterIndex": "data/character-master-database.json",
+  "characters": [
+    {
+      "id": "L-01",
+      "name": "검은수염",
+      "grade": "전설",
+      "gradeOrder": 1,
+      "catalog": {
+        "id": "L-01",
+        "grade": "전설",
+        "gradeOrder": 1,
+        "name": "검은수염",
+        "roleTags": [
+          "마뎀",
+          "증폭"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L1",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-01",
+        "sourceUrl": "https://ordr.kr/character/L1",
+        "passives": [],
+        "skills": [
+          {
+            "name": "어둠어둠 열매",
+            "trigger": "activeHealth",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 500000,
+                "plusTargetCurrentHealthPercent": 1
+              }
+            ],
+            "healthCost": 40,
+            "healthRegenPerSecond": 0.5,
+            "healthRegenPerAttack": 1,
+            "radius": 700,
+            "target": "targetCircle"
+          },
+          {
+            "name": "크로우즈 Lv2",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 300000,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magicDamageAmplification",
+                "percent": 8
+              },
+              {
+                "type": "allDamageAmplification",
+                "percent": 10
+              },
+              {
+                "type": "pull",
+                "exemptTargetKinds": [
+                  "boss",
+                  "story"
+                ]
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3
+              }
+            ],
+            "chancePercent": 15,
+            "target": "single",
+            "triggerOverride": [
+              {
+                "targetKinds": [
+                  "boss",
+                  "enraged"
+                ],
+                "oncePerTarget": true,
+                "conditionBypass": true
+              }
+            ],
+            "damageOverride": [
+              {
+                "targetKinds": [
+                  "enraged"
+                ],
+                "magicalAmount": 4000000
+              },
+              {
+                "targetKinds": [
+                  "boss",
+                  "story"
+                ],
+                "extraMagicalAmount": 300000
+              }
+            ],
+            "exclusiveWith": [
+              "속공"
+            ]
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L1",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-02",
+      "name": "나미",
+      "grade": "전설",
+      "gradeOrder": 2,
+      "catalog": {
+        "id": "L-02",
+        "grade": "전설",
+        "gradeOrder": 2,
+        "name": "나미",
+        "roleTags": [
+          "마뎀",
+          "증폭"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L2",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-02",
+        "sourceUrl": "https://ordr.kr/character/L2",
+        "passives": [
+          {
+            "type": "treasureSearchRangeBonus",
+            "percent": 15,
+            "when": "summoned"
+          },
+          {
+            "type": "treasureRewardDoubleChance",
+            "chancePercent": 50,
+            "when": "successfulTreasureSearch"
+          },
+          {
+            "type": "persistentPlayerGoldGainBonus",
+            "percent": 60,
+            "when": "everFused"
+          }
+        ],
+        "skills": [
+          {
+            "name": "크리마텍트 Lv2",
+            "trigger": "onAttackOrHealth",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 225000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "magicDamageAmplification",
+                "percent": 1
+              },
+              {
+                "type": "movementSlow",
+                "percent": 42,
+                "durationSeconds": 3
+              }
+            ],
+            "chancePercent": 8.8,
+            "healthCost": 35,
+            "healthRegenPerAttack": 1,
+            "radius": 575,
+            "target": "area"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L2",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-03",
+      "name": "네코마무시",
+      "grade": "전설",
+      "gradeOrder": 3,
+      "catalog": {
+        "id": "L-03",
+        "grade": "전설",
+        "gradeOrder": 3,
+        "name": "네코마무시",
+        "roleTags": [
+          "마뎀",
+          "이감",
+          "광폭화딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L3",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-03",
+        "sourceUrl": "https://ordr.kr/character/L3",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 30
+          },
+          {
+            "type": "allyAttackPowerBuff",
+            "percent": 32
+          },
+          {
+            "type": "selfAttackPowerFlat",
+            "amount": 40000
+          },
+          {
+            "type": "onEachBasicAttackSplash",
+            "radius": 315,
+            "magicalAmount": 40000,
+            "extraSingleTargetPercent": 50
+          }
+        ],
+        "skills": [
+          {
+            "name": "분노 폭발",
+            "trigger": "onBossAttackOrHealth",
+            "components": [
+              {
+                "type": "fixed",
+                "amount": 2000000,
+                "plusTargetMaxHealthPercent": 5
+              },
+              {
+                "type": "magical",
+                "amount": 500000,
+                "plusTargetMaxHealthPercent": 0.25
+              }
+            ],
+            "healthCost": 33,
+            "healthRegenPerSecond": 0.5,
+            "target": "area",
+            "radius": 600
+          },
+          {
+            "name": "전격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "fixed",
+                "amount": 222500,
+                "plusTargetMaxHealthPercent": 0.24
+              },
+              {
+                "type": "fixed",
+                "extraTargetMaxHealthPercent": 7.5,
+                "onlyTargetKinds": [
+                  "enraged"
+                ]
+              }
+            ],
+            "chancePercent": 14,
+            "target": "area",
+            "radius": 500
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L3",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-04",
+      "name": "드래곤",
+      "grade": "전설",
+      "gradeOrder": 4,
+      "catalog": {
+        "id": "L-04",
+        "grade": "전설",
+        "gradeOrder": 4,
+        "name": "드래곤",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L4",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-04",
+        "sourceUrl": "https://ordr.kr/character/L4",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 10
+          },
+          {
+            "type": "movementSlowAura",
+            "percent": 10
+          },
+          {
+            "type": "allyAttackPowerBuff",
+            "percent": 25
+          },
+          {
+            "type": "allyAttackSpeedBuff",
+            "percent": 5
+          },
+          {
+            "type": "storyArmorReduction",
+            "amount": 45
+          },
+          {
+            "type": "selfAttackPowerFlat",
+            "amount": 30000
+          }
+        ],
+        "skills": [
+          {
+            "name": "바람바람 열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 180000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.75
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 500
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L4",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-05",
+      "name": "라분",
+      "grade": "전설",
+      "gradeOrder": 5,
+      "catalog": {
+        "id": "L-05",
+        "grade": "전설",
+        "gradeOrder": 5,
+        "name": "라분",
+        "roleTags": [
+          "마뎀",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L5",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-05",
+        "sourceUrl": "https://ordr.kr/character/L5",
+        "passives": [
+          {
+            "type": "allyAttackSpeedBuff",
+            "percent": 10
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 250
+          }
+        ],
+        "skills": [
+          {
+            "name": "박치기",
+            "trigger": "onAttackOrEveryNthAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 175000
+              },
+              {
+                "type": "magical",
+                "amount": 300000,
+                "scope": "singlePrimaryTarget",
+                "targetKindMultiplier": {
+                  "line": 1,
+                  "boss": 2,
+                  "story": 3
+                }
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.25
+              },
+              {
+                "type": "selfDisarm",
+                "durationSeconds": 0.65
+              }
+            ],
+            "chancePercent": 27,
+            "guaranteedEveryNthHit": 7,
+            "target": "area",
+            "radius": 575
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L5",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-06",
+      "name": "레이쥬",
+      "grade": "전설",
+      "gradeOrder": 6,
+      "catalog": {
+        "id": "L-06",
+        "grade": "전설",
+        "gradeOrder": 6,
+        "name": "레이쥬",
+        "roleTags": [
+          "마뎀",
+          "이감",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L6",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-06",
+        "sourceUrl": "https://ordr.kr/character/L6",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 35
+          },
+          {
+            "type": "onBasicHitDamageOverTime",
+            "magicalDamagePerSecond": 200000,
+            "durationSeconds": 6,
+            "slowPercent": 15
+          },
+          {
+            "type": "flyingMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "핑크호넷",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amountPerHit": 100000,
+                "hits": 3
+              },
+              {
+                "type": "explosive",
+                "basis": "targetCurrentHealth",
+                "percentPerHit": 8.25,
+                "hits": 3,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              }
+            ],
+            "chancePercent": 5.5,
+            "target": "area",
+            "radius": 333
+          },
+          {
+            "name": "독구슬",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 210000
+              },
+              {
+                "type": "explosive",
+                "basis": "targetCurrentHealth",
+                "percentPerHit": 10.5,
+                "hits": 2,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 333
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L6",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-07",
+      "name": "레일리",
+      "grade": "전설",
+      "gradeOrder": 7,
+      "catalog": {
+        "id": "L-07",
+        "grade": "전설",
+        "gradeOrder": 7,
+        "name": "레일리",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "암브"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L7",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-07",
+        "sourceUrl": "https://ordr.kr/character/L7",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 20
+          },
+          {
+            "type": "allyAttackPowerBuff",
+            "percent": 25
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 325
+          }
+        ],
+        "skills": [
+          {
+            "name": "패기발산",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 1200000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "magical",
+                "amount": 1000000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 3,
+                "maxArmorReduction": 75
+              }
+            ],
+            "manaCost": 115,
+            "target": "area",
+            "radius": 800
+          },
+          {
+            "name": "명왕의 검술",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 80000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.6
+              }
+            ],
+            "chancePercent": 12,
+            "target": "single"
+          }
+        ],
+        "uncertaintyNotes": [
+          "2.300 패치 이력에는 명왕의검술 8만→7만이라고 되어 있지만 현재 툴팁은 8만. 피해 수치 충돌 확인 필요."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L7",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [
+          {
+            "unitId": "L-07",
+            "unitRawcode": "h03A",
+            "skillOrdinal": 0,
+            "skillName": "패기발산",
+            "trigger": "activeMana",
+            "type": "armorBreak",
+            "value": 3,
+            "ability": "A04M",
+            "function": "BuD/BuC",
+            "registration": "main:62743",
+            "effectLines": "BuC:19203~19206",
+            "primaryBonus": 0,
+            "phase": "beforeDamage",
+            "mappingEvidence": "Icon BTN0527_laily + mana115/Bdq3/1200000+1000000 + tooltip",
+            "note": "Bdq3 먼저, CHAOS 데미지1200000(1~1.5) 및 NORMAL1000000 이후"
+          }
+        ],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-08",
+      "name": "트라팔가 로우",
+      "grade": "전설",
+      "gradeOrder": 8,
+      "catalog": {
+        "id": "L-08",
+        "grade": "전설",
+        "gradeOrder": 8,
+        "name": "트라팔가 로우",
+        "roleTags": [
+          "마뎀",
+          "광폭화딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L8",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-08",
+        "sourceUrl": "https://ordr.kr/character/L8",
+        "passives": [
+          {
+            "type": "teleport"
+          }
+        ],
+        "skills": [
+          {
+            "name": "인젝션 샷",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "fixed",
+                "amount": 175000,
+                "plusTargetCurrentHealthPercent": 0.35,
+                "targetKindRatio": {
+                  "boss": 0.5,
+                  "story": 0.33
+                }
+              },
+              {
+                "type": "movementSlow",
+                "percent": 99,
+                "durationSeconds": 2.5,
+                "initialRootSeconds": 1.25
+              },
+              {
+                "type": "magical",
+                "basis": "targetCurrentHealth",
+                "percent": 15,
+                "onlyTargetKinds": [
+                  "enraged"
+                ]
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "area",
+            "radius": 400
+          },
+          {
+            "name": "수술수술열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "fixed",
+                "amount": 285000,
+                "plusTargetCurrentHealthPercent": 1,
+                "targetKindRatio": {
+                  "boss": 0.5,
+                  "story": 0.33
+                }
+              }
+            ],
+            "chancePercent": 4.5,
+            "target": "area",
+            "radius": 525
+          },
+          {
+            "name": "외과수술(W)",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "allyAttackSpeedBuff",
+                "percent": 150,
+                "durationSeconds": 12,
+                "scope": "selectedAlly"
+              }
+            ],
+            "cooldownSeconds": 50,
+            "target": "ally",
+            "exclusiveWith": [
+              "가속 스킬"
+            ]
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L8",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-09",
+      "name": "루치",
+      "grade": "전설",
+      "gradeOrder": 9,
+      "catalog": {
+        "id": "L-09",
+        "grade": "전설",
+        "gradeOrder": 9,
+        "name": "루치",
+        "roleTags": [
+          "마뎀"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L9",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-09",
+        "sourceUrl": "https://ordr.kr/character/L9",
+        "passives": [],
+        "skills": [
+          {
+            "name": "육왕건",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 100000
+              },
+              {
+                "type": "magical",
+                "amount": 345000,
+                "multiplierRange": [
+                  1,
+                  2
+                ],
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magical",
+                "basis": "targetCurrentHealth",
+                "percent": 34,
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": 12,
+            "radius": 315,
+            "target": "area"
+          },
+          {
+            "name": "육식 Lv4",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 250000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.6
+              }
+            ],
+            "chancePercent": 15,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L9",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-10",
+      "name": "루피 나이트메어",
+      "grade": "전설",
+      "gradeOrder": 10,
+      "catalog": {
+        "id": "L-10",
+        "grade": "전설",
+        "gradeOrder": 10,
+        "name": "루피 나이트메어",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "보스딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L10",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-10",
+        "sourceUrl": "https://ordr.kr/character/L10",
+        "passives": [
+          {
+            "type": "selfAttackPowerFlat",
+            "amount": 100000
+          }
+        ],
+        "skills": [
+          {
+            "name": "기본공격 치명타",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 11
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3,
+                "ignoresResistance": true
+              }
+            ],
+            "chancePercent": 18,
+            "target": "single"
+          },
+          {
+            "name": "원혼 폭발",
+            "trigger": "onDamageDealtThreshold",
+            "components": [
+              {
+                "type": "magical",
+                "damageDealtPercent": 8,
+                "flatAmount": 250000
+              },
+              {
+                "type": "fixed",
+                "amount": 500000,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "fixed",
+                "basis": "targetMaxHealth",
+                "percent": 2,
+                "onlyTargetKinds": [
+                  "boss",
+                  "enraged"
+                ]
+              }
+            ],
+            "damageAfterDefenseThreshold": 360000,
+            "radius": 500,
+            "target": "area",
+            "conditionBypassForTargetKinds": [
+              "boss",
+              "enraged"
+            ]
+          },
+          {
+            "name": "원혼폭발 추가 공격력 성장",
+            "trigger": "onSkillActivated",
+            "components": [
+              {
+                "type": "selfAttackPowerFlat",
+                "amount": 20000,
+                "maximumBonus": 200000
+              }
+            ],
+            "afterSkill": "원혼 폭발",
+            "chancePercent": 3
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L10",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-11",
+      "name": "마르코 환수종",
+      "grade": "전설",
+      "gradeOrder": 11,
+      "catalog": {
+        "id": "L-11",
+        "grade": "전설",
+        "gradeOrder": 11,
+        "name": "마르코 환수종",
+        "roleTags": [
+          "마뎀",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L11",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-11",
+        "sourceUrl": "https://ordr.kr/character/L11",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 30
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 285,
+            "physicalFlatAmount": 10000,
+            "plusBasicAttackDamagePercent": 80
+          },
+          {
+            "type": "flyingMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "깃털폭격",
+            "trigger": "activeHealth",
+            "components": [
+              {
+                "type": "physical",
+                "basis": "basicAttackDamage",
+                "multiplier": 4.75,
+                "plusFlatAmount": 475000
+              },
+              {
+                "type": "fixed",
+                "basis": "skillDamage",
+                "percent": 40,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magical",
+                "amount": 400000,
+                "maxExtraTargets": 7
+              }
+            ],
+            "healthCost": 25,
+            "healthRegenPerSecond": 0.5,
+            "healthRegenPerAttack": 1,
+            "radius": 525,
+            "target": "area",
+            "criticalCanApply": true
+          },
+          {
+            "name": "불사조불사조열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 100000
+              },
+              {
+                "type": "critical",
+                "multiplier": 3
+              }
+            ],
+            "chancePercent": 15,
+            "radius": 285,
+            "target": "area"
+          }
+        ],
+        "uncertaintyNotes": [
+          "2.300 패치 이력에는 평타 스플래시가 기본공격 피해 85%+1만으로 변경됐다고 적혀 있으나 현재 툴팁은 80%+1만."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L11",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-12",
+      "name": "모리아",
+      "grade": "전설",
+      "gradeOrder": 12,
+      "catalog": {
+        "id": "L-12",
+        "grade": "전설",
+        "gradeOrder": 12,
+        "name": "모리아",
+        "roleTags": [
+          "마뎀",
+          "이감",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L12",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-12",
+        "sourceUrl": "https://ordr.kr/character/L12",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 30
+          },
+          {
+            "type": "basicAttackExplosive",
+            "percentOfAttackPower": 50
+          }
+        ],
+        "skills": [
+          {
+            "name": "그림자흡수",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "delete",
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "absoluteCooldownSeconds": 8.5
+              },
+              {
+                "type": "magical",
+                "amount": 800000,
+                "exceptTargetKinds": [
+                  "line"
+                ]
+              },
+              {
+                "type": "selfAttackSpeedBuff",
+                "percent": 35,
+                "durationSeconds": 3
+              },
+              {
+                "type": "summon",
+                "unit": "장군좀비",
+                "durationSeconds": 18,
+                "inheritsAttackSpeedAndAttackPower": true,
+                "basicAttackExplosivePercent": 60,
+                "basicAttackRadius": 375
+              }
+            ],
+            "target": "single",
+            "chancePercent": null
+          }
+        ],
+        "uncertaintyNotes": [
+          "현재 툴팁에는 그림자흡수 자체의 발동확률이 명시되지 않음. 2.310 패치에서 다른 그림자 스킬의 발동 확률 10%가 기재됐으나 동일 스킬로 간주하지 않음."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L12",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [
+          {
+            "stat": "nominalAttackPower",
+            "value": 56000,
+            "fromPatch": "2.310",
+            "previousValue": 74000,
+            "sourceUrl": "https://ordr.kr/character/L12",
+            "evidence": "2.310 패치 기록: 공격력 74000 -> 56000",
+            "confidence": "patch-logged"
+          },
+          {
+            "stat": "intervalSeconds",
+            "value": 1.25,
+            "fromPatch": "2.300",
+            "previousValue": 1.45,
+            "sourceUrl": "https://ordr.kr/character/L12",
+            "evidence": "2.300 패치 기록: 공격쿨타임 1.45 -> 1.25",
+            "confidence": "patch-logged"
+          },
+          {
+            "stat": "range",
+            "value": 850,
+            "fromPatch": "2.322",
+            "previousValue": 600,
+            "sourceUrl": "https://ordr.kr/patch-notes/2-322",
+            "evidence": "2.322 패치 기록: 기본 공격 사거리 600 -> 850",
+            "confidence": "patch-logged"
+          }
+        ],
+        "patchStatBlockingReasons": [
+          "원본 유닛 rawcode 미확인",
+          "워크래프트 기본 공격 타입 및 실데미지 처리 미확인",
+          "원본 2.323 오브젝트 데이터와 최종 일치 검증 전"
+        ],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-13",
+      "name": "바르톨로메오",
+      "grade": "전설",
+      "gradeOrder": 13,
+      "catalog": {
+        "id": "L-13",
+        "grade": "전설",
+        "gradeOrder": 13,
+        "name": "바르톨로메오",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L13",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-13",
+        "sourceUrl": "https://ordr.kr/character/L13",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 12
+          }
+        ],
+        "skills": [
+          {
+            "name": "배리어 볼",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 350000
+              }
+            ],
+            "chancePercent": 3,
+            "radius": 255,
+            "target": "area"
+          },
+          {
+            "name": "배리어배리어열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "damage",
+                "amount": 200000,
+                "targetKindMultiplier": {
+                  "line": 1,
+                  "boss": 2,
+                  "story": 3
+                },
+                "school": null
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.75
+              }
+            ],
+            "chancePercent": 10,
+            "radius": 550,
+            "target": "area"
+          },
+          {
+            "name": "배리어 피스트",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 6000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.5
+              }
+            ],
+            "chancePercent": 17,
+            "target": "single"
+          }
+        ],
+        "uncertaintyNotes": [
+          "배리어배리어열매 20만 피해는 툴팁에 마법/물리 유형이 지정되지 않아서 school:null로 남김."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L13",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-14",
+      "name": "브륄레",
+      "grade": "전설",
+      "gradeOrder": 14,
+      "catalog": {
+        "id": "L-14",
+        "grade": "전설",
+        "gradeOrder": 14,
+        "name": "브륄레",
+        "roleTags": [],
+        "roleTagsStatus": "not-collected",
+        "detailUrl": "https://ordr.kr/character/L14",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "L-14",
+        "sourceUrl": "https://ordr.kr/character/L14",
+        "passives": [],
+        "skills": [
+          {
+            "name": "미러미러열매",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "transformAllyUnit",
+                "toSelectedLegendaryUnit": true,
+                "validTargetKinds": [
+                  "fusionRecipeUnit",
+                  "ownedUnit"
+                ],
+                "traitPointsCost": 1
+              },
+              {
+                "type": "attackSpeedDebuff",
+                "percent": 5,
+                "to": "transformedUnit"
+              }
+            ],
+            "target": "alliedUnit"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L14",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-15",
+      "name": "블랙마리아",
+      "grade": "전설",
+      "gradeOrder": 15,
+      "catalog": {
+        "id": "L-15",
+        "grade": "전설",
+        "gradeOrder": 15,
+        "name": "블랙마리아",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L15",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-15",
+        "sourceUrl": "https://ordr.kr/character/L15",
+        "passives": [
+          {
+            "type": "basicAttackExplosive",
+            "radius": 375,
+            "percentOfAttackPower": 50
+          }
+        ],
+        "skills": [
+          {
+            "name": "왼손은 수면제",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 450000
+              }
+            ],
+            "chancePercent": 30,
+            "radius": 500,
+            "target": "area"
+          },
+          {
+            "name": "오른손은 황천길",
+            "trigger": "everyNthAttack",
+            "components": [
+              {
+                "type": "damage",
+                "amount": 450000,
+                "school": null,
+                "plusBasicAttackDamageMultiplier": 5
+              },
+              {
+                "type": "fixed",
+                "basis": "targetMaxHealth",
+                "percent": 0.9
+              }
+            ],
+            "requiredAttacks": 13,
+            "radius": 500,
+            "target": "area"
+          },
+          {
+            "name": "타격 스턴",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 1
+              }
+            ],
+            "chancePercent": 15,
+            "target": "single"
+          }
+        ],
+        "uncertaintyNotes": [
+          "오른손은 황천길: 현재 툴팁은 0.9% 추가 고정 피해로 표시하나 2.310 패치 이력은 폭발형 피해라고 기술함. 계산 엔진에는 아직 적용하지 않는다."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L15",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-16",
+      "name": "상디",
+      "grade": "전설",
+      "gradeOrder": 16,
+      "catalog": {
+        "id": "L-16",
+        "grade": "전설",
+        "gradeOrder": 16,
+        "name": "상디",
+        "roleTags": [
+          "마뎀"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L16",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-16",
+        "sourceUrl": "https://ordr.kr/character/L16",
+        "passives": [],
+        "skills": [
+          {
+            "name": "슈트코스",
+            "trigger": "onEachBasicAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 40000,
+                "multiplierRange": [
+                  0.8,
+                  1.5
+                ]
+              },
+              {
+                "type": "magical",
+                "basis": "targetCurrentHealth",
+                "percent": 3.5,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              }
+            ],
+            "target": "single",
+            "chancePercent": 100
+          },
+          {
+            "name": "검은다리",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 100000,
+                "multiplierRange": [
+                  0.8,
+                  1.5
+                ]
+              }
+            ],
+            "chancePercent": 14.25,
+            "target": "area",
+            "radius": 315
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L16",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-17",
+      "name": "샹크스",
+      "grade": "전설",
+      "gradeOrder": 17,
+      "catalog": {
+        "id": "L-17",
+        "grade": "전설",
+        "gradeOrder": 17,
+        "name": "샹크스",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L17",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-17",
+        "sourceUrl": "https://ordr.kr/character/L17",
+        "passives": [
+          {
+            "type": "periodicAuraDamage",
+            "school": "magical",
+            "radius": 1050,
+            "intervalSeconds": 0.2,
+            "amountPerTick": 12500
+          }
+        ],
+        "skills": [
+          {
+            "name": "패왕색의 검무",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 125000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 600
+          },
+          {
+            "name": "패왕색 패기 접근 발동",
+            "trigger": "onEnemyEnterRange",
+            "components": [
+              {
+                "type": "magical",
+                "basis": "targetMaxHealth",
+                "percent": 3
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.64
+              }
+            ],
+            "triggerRadius": 1050,
+            "limitPerEnemy": 1,
+            "target": "enemiesEnteringRange",
+            "exclusiveWith": [
+              "동일 패기 중복"
+            ]
+          },
+          {
+            "name": "기본공격 치명타",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 10
+              },
+              {
+                "type": "physical",
+                "amount": 250000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.75
+              }
+            ],
+            "chancePercent": 20,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L17",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-18",
+      "name": "센고쿠",
+      "grade": "전설",
+      "gradeOrder": 18,
+      "catalog": {
+        "id": "L-18",
+        "grade": "전설",
+        "gradeOrder": 18,
+        "name": "센고쿠",
+        "roleTags": [
+          "마뎀",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L18",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-18",
+        "sourceUrl": "https://ordr.kr/character/L18",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 20
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 285
+          }
+        ],
+        "skills": [
+          {
+            "name": "사람사람열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 245000
+              },
+              {
+                "type": "physical",
+                "basis": "skillDamage",
+                "percent": 225,
+                "scope": "singlePrimaryTarget",
+                "exceptTargetKinds": [
+                  "line"
+                ]
+              }
+            ],
+            "chancePercent": 10,
+            "radius": 600,
+            "target": "area"
+          },
+          {
+            "name": "인의는 사라지지 않는다",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "allyAttackPowerBuff",
+                "percent": 30
+              },
+              {
+                "type": "allyHealthRegeneration",
+                "perSecond": 0.25
+              },
+              {
+                "type": "allyManaRegeneration",
+                "perSecond": 0.25
+              },
+              {
+                "type": "armorReduction",
+                "amount": 20,
+                "durationSeconds": 6
+              }
+            ],
+            "chancePercent": 10,
+            "radius": 900,
+            "durationSeconds": 6,
+            "target": "area",
+            "exclusiveWith": [
+              "격노 스킬"
+            ]
+          }
+        ],
+        "uncertaintyNotes": [
+          "2.300 패치에는 회복 기능 삭제가 기재되어 있으나 현 툴팁에 초당 체력·마나 0.25 회복이 적혀 있어 서로 불일치."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L18",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-19",
+      "name": "슈가",
+      "grade": "전설",
+      "gradeOrder": 19,
+      "catalog": {
+        "id": "L-19",
+        "grade": "전설",
+        "gradeOrder": 19,
+        "name": "슈가",
+        "roleTags": [
+          "마나재생",
+          "삭제"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L19",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [],
+        "damageSchoolHintsStatus": "unknown"
+      },
+      "profile": {
+        "unitId": "L-19",
+        "sourceUrl": "https://ordr.kr/character/L19",
+        "passives": [
+          {
+            "type": "manaRegeneration",
+            "perSecond": 1.25
+          }
+        ],
+        "skills": [
+          {
+            "name": "하비하비열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "summon",
+                "unit": "자폭 장난감",
+                "explosionDamageSchool": "physical",
+                "explosionDamage": 500000,
+                "explosionRadius": 500
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "장난감 No.31",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "summon",
+                "unit": "장난감 No.31",
+                "durationSeconds": 4.5,
+                "onDestructionSaleableLootChancePercent": 33
+              }
+            ],
+            "chancePercent": 0.8,
+            "target": "summon"
+          },
+          {
+            "name": "장난감화(R)",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "delete",
+                "target": "enemy"
+              },
+              {
+                "type": "summon",
+                "unit": "장난감 No.31",
+                "durationSeconds": 30,
+                "onExpirationSaleableLoot": true
+              }
+            ],
+            "cooldownSeconds": 85,
+            "target": "enemy"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L19",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-20",
+      "name": "스모커",
+      "grade": "전설",
+      "gradeOrder": 20,
+      "catalog": {
+        "id": "L-20",
+        "grade": "전설",
+        "gradeOrder": 20,
+        "name": "스모커",
+        "roleTags": [
+          "물뎀",
+          "암브",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L20",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-20",
+        "sourceUrl": "https://ordr.kr/character/L20",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 50
+          }
+        ],
+        "skills": [
+          {
+            "name": "화이트 아웃",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 450000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "magicDamageMultiplier",
+                "scope": "singlePrimaryTarget",
+                "multiplier": 2
+              },
+              {
+                "type": "removeTargetBuffs",
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.5,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 3,
+                "maxArmorReduction": 75
+              }
+            ],
+            "manaCost": 50,
+            "manaRegenPerSecond": 0.5,
+            "manaRegenPerAttack": 0.5,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "화이트바인",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ]
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 2,
+                "maxArmorReduction": 75
+              }
+            ],
+            "chancePercent": 16,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "화이트블로우",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 250000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.85,
+                "ignoresResistance": true
+              }
+            ],
+            "chancePercent": 18,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L20",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [
+          {
+            "unitId": "L-20",
+            "unitRawcode": "h02V",
+            "skillOrdinal": 0,
+            "skillName": "화이트 아웃",
+            "trigger": "activeMana",
+            "type": "armorBreak",
+            "value": 3,
+            "ability": "A04M",
+            "function": "Btx/Btv",
+            "registration": "main:62740",
+            "effectLines": "Btv:19007~19009; Btx:19022~19034",
+            "primaryBonus": 0,
+            "phase": "afterDamage",
+            "mappingEvidence": "Icon BTN0114_smoker + JASS 450000/Bdq3 + 2.323 tooltip",
+            "note": "한 시전의 Bcb 직접피해/광역피해 뒤 Bdq3. 원본 나머지 효과 미구현"
+          }
+        ],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-21",
+      "name": "시노부",
+      "grade": "전설",
+      "gradeOrder": 21,
+      "catalog": {
+        "id": "L-21",
+        "grade": "전설",
+        "gradeOrder": 21,
+        "name": "시노부",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L21",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-21",
+        "sourceUrl": "https://ordr.kr/character/L21",
+        "passives": [],
+        "skills": [
+          {
+            "name": "급습",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 400000
+              },
+              {
+                "type": "explosive",
+                "basis": "targetMaxHealth",
+                "percent": 7,
+                "onlyTargetKinds": [
+                  "line"
+                ]
+              },
+              {
+                "type": "magical",
+                "basis": "targetMaxHealth",
+                "percent": 1.25,
+                "onlyTargetKinds": [
+                  "boss"
+                ]
+              }
+            ],
+            "chancePercent": 15,
+            "target": "single",
+            "summonedCloneProcChanceMultiplier": 0.5,
+            "summonedCloneEffectMultiplier": 0.5
+          },
+          {
+            "name": "인술 분신",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "summon",
+                "unit": "분신",
+                "durationSeconds": 2,
+                "basicAttackRadius": 325,
+                "basicAttackMagicalDamage": 50000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1.5,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": 8,
+            "target": "single"
+          },
+          {
+            "name": "보물 색별(R)",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "detectTreasure",
+                "zone": "selfLane"
+              }
+            ],
+            "cooldownSeconds": 300,
+            "target": "self"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L21",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [
+          {
+            "id": "L-21",
+            "resultUnitId": "L-21",
+            "name": "시노부 (전설)",
+            "sourceUrl": "https://ordr.kr/character/L21",
+            "verifiedAs": "ordr-2.323-web-catalog",
+            "ingredients": [
+              {
+                "unitId": "R-07",
+                "count": 1
+              },
+              {
+                "unitId": "R-03",
+                "count": 1
+              },
+              {
+                "unitId": "R-40",
+                "count": 1
+              }
+            ],
+            "extraCost": {
+              "gold": 0,
+              "lumber": 3,
+              "items": []
+            },
+            "uncertain": [
+              "원본 제작 트리거 및 결과 생성 좌표"
+            ]
+          }
+        ],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "web-recipe-sourced-original-trigger-unverified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-22",
+      "name": "시저",
+      "grade": "전설",
+      "gradeOrder": 22,
+      "catalog": {
+        "id": "L-22",
+        "grade": "전설",
+        "gradeOrder": 22,
+        "name": "시저",
+        "roleTags": [
+          "물뎀",
+          "방깎"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L22",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-22",
+        "sourceUrl": "https://ordr.kr/character/L22",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 30
+          },
+          {
+            "type": "terrainIgnoreMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "가스가스열매",
+            "trigger": "periodic",
+            "components": [
+              {
+                "type": "damage",
+                "amountPerTick": 33333,
+                "school": null,
+                "intervalSeconds": 0.4
+              }
+            ],
+            "target": "area",
+            "radius": 1000,
+            "intervalSeconds": 0.4
+          }
+        ],
+        "uncertaintyNotes": [
+          "지속 피해 33,333의 피해 유형은 원본 툴팁에서 지정하지 않으므로 보류."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L22",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-23",
+      "name": "시키",
+      "grade": "전설",
+      "gradeOrder": 23,
+      "catalog": {
+        "id": "L-23",
+        "grade": "전설",
+        "gradeOrder": 23,
+        "name": "시키",
+        "roleTags": [
+          "물뎀",
+          "암브",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L23",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-23",
+        "sourceUrl": "https://ordr.kr/character/L23",
+        "passives": [
+          {
+            "type": "flyingMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "바위낙하",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "summon",
+                "unit": "부유물",
+                "durationSeconds": 1.05,
+                "benefitsFromAttackSpeedAura": true
+              },
+              {
+                "type": "physical",
+                "amountPerHit": 182500
+              },
+              {
+                "type": "physical",
+                "amount": 172500,
+                "scope": "singlePrimaryTarget",
+                "chancePercent": 20
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 2
+              }
+            ],
+            "chancePercent": 5,
+            "target": "area",
+            "radius": 400
+          },
+          {
+            "name": "바닷물 가두기",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 145000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 1,
+                "maxArmorReduction": 75
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 525
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L23",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [
+          {
+            "unitId": "L-23",
+            "unitRawcode": "h039",
+            "skillOrdinal": 0,
+            "skillName": "바위낙하",
+            "trigger": "onAttack",
+            "type": "armorBreak",
+            "value": 2,
+            "ability": "A04M",
+            "function": "Bt8/Bt7",
+            "registration": "main:62742",
+            "effectLines": "Bt8:19181~19187; Bt7:19161~19162",
+            "primaryBonus": 0,
+            "phase": "beforeSummonedHit",
+            "mappingEvidence": "Icon BTN0526_Shiki + JASS 5%/Bdq2 + 2.323 tooltip",
+            "note": "5% 조건이 생성한 소환체의 실제 타격과 Bdq 순서까지는 추가 확인 필요"
+          },
+          {
+            "unitId": "L-23",
+            "unitRawcode": "h039",
+            "skillOrdinal": 1,
+            "skillName": "바닷물 가두기",
+            "trigger": "onAttack",
+            "type": "armorBreak",
+            "value": 1,
+            "ability": "A04M",
+            "function": "Bt8/Bt6",
+            "registration": "main:62742",
+            "effectLines": "Bt8:19172~19179; Bt6:19157~19159",
+            "primaryBonus": 0,
+            "phase": "afterDamage",
+            "mappingEvidence": "Icon BTN0526_Shiki + JASS 10% 145000/Bdq1 + tooltip",
+            "note": "마법피해 Bcb145000 후 Bdq1"
+          }
+        ],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-24",
+      "name": "에이스",
+      "grade": "전설",
+      "gradeOrder": 24,
+      "catalog": {
+        "id": "L-24",
+        "grade": "전설",
+        "gradeOrder": 24,
+        "name": "에이스",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "단일스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L24",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-24",
+        "sourceUrl": "https://ordr.kr/character/L24",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 33
+          }
+        ],
+        "skills": [
+          {
+            "name": "산화 부지화",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amountPerHit": 200000,
+                "hits": 2
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2
+              }
+            ],
+            "chancePercent": 10,
+            "target": "single"
+          },
+          {
+            "name": "십자화",
+            "trigger": "onSkillActivated",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000
+              }
+            ],
+            "afterSkill": "산화 부지화",
+            "chancePercent": 25,
+            "target": "area",
+            "radius": 500
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L24",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-25",
+      "name": "울티",
+      "grade": "전설",
+      "gradeOrder": 25,
+      "catalog": {
+        "id": "L-25",
+        "grade": "전설",
+        "gradeOrder": 25,
+        "name": "울티",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "암브"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L25",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-25",
+        "sourceUrl": "https://ordr.kr/character/L25",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 27
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 275,
+            "physicalPercentOfBasicAttack": 33
+          }
+        ],
+        "skills": [
+          {
+            "name": "미티어 울두건",
+            "trigger": "activeHealth",
+            "components": [
+              {
+                "type": "fixed",
+                "basis": "basicAttackDamage",
+                "percent": 170,
+                "flatAmount": 230000,
+                "targetKindMultiplier": {
+                  "boss": 2,
+                  "story": 3
+                }
+              },
+              {
+                "type": "armorBreak",
+                "stacks": 1,
+                "maxArmorReduction": 75
+              }
+            ],
+            "healthCost": 35,
+            "healthRegenPerSecond": 0.5,
+            "healthRegenPerAttack": 1,
+            "target": "area",
+            "radius": 450
+          },
+          {
+            "name": "울두건",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "basis": "basicAttackDamage",
+                "percent": 85,
+                "flatAmount": 115000
+              }
+            ],
+            "chancePercent": 15,
+            "target": "area",
+            "radius": 425
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L25",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-26",
+      "name": "제파",
+      "grade": "전설",
+      "gradeOrder": 26,
+      "catalog": {
+        "id": "L-26",
+        "grade": "전설",
+        "gradeOrder": 26,
+        "name": "제파",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "보스딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L26",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-26",
+        "sourceUrl": "https://ordr.kr/character/L26",
+        "passives": [],
+        "skills": [
+          {
+            "name": "흑완",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000
+              },
+              {
+                "type": "fixed",
+                "basis": "targetCurrentHealth",
+                "percent": 2,
+                "onlyTargetKinds": [
+                  "boss"
+                ]
+              },
+              {
+                "type": "fixed",
+                "basis": "targetMaxHealth",
+                "percent": 12,
+                "onlyTargetKinds": [
+                  "enraged"
+                ]
+              },
+              {
+                "type": "magical",
+                "basis": "targetMaxHealth",
+                "percent": 0.4,
+                "onlyTargetKinds": [
+                  "boss",
+                  "enraged"
+                ],
+                "radius": 650
+              }
+            ],
+            "chancePercent": 25,
+            "target": "area",
+            "radius": 325
+          },
+          {
+            "name": "무장색의 패기",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 150000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.8,
+                "ignoresResistance": true
+              }
+            ],
+            "chancePercent": 30,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L26",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-27",
+      "name": "조로",
+      "grade": "전설",
+      "gradeOrder": 27,
+      "catalog": {
+        "id": "L-27",
+        "grade": "전설",
+        "gradeOrder": 27,
+        "name": "조로",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "보스딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L27",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-27",
+        "sourceUrl": "https://ordr.kr/character/L27",
+        "passives": [],
+        "skills": [
+          {
+            "name": "사자의노래",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 150000
+              },
+              {
+                "type": "magical",
+                "amount": 900000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ],
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "delete",
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "targetHealthAtMostPercent": 15,
+                "overrideChancePercent": 100
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 385
+          },
+          {
+            "name": "평타 크리티컬",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 5
+              }
+            ],
+            "chancePercent": 66,
+            "target": "single"
+          },
+          {
+            "name": "보스 대상 일격",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 500000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1,
+                "ignoresResistance": true
+              }
+            ],
+            "chancePercent": 30,
+            "onlyTargetKinds": [
+              "boss"
+            ],
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L27",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-28",
+      "name": "징베",
+      "grade": "전설",
+      "gradeOrder": 28,
+      "catalog": {
+        "id": "L-28",
+        "grade": "전설",
+        "gradeOrder": 28,
+        "name": "징베",
+        "roleTags": [
+          "물뎀",
+          "암브",
+          "단일스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L28",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-28",
+        "sourceUrl": "https://ordr.kr/character/L28",
+        "passives": [
+          {
+            "type": "selfManaRegeneration",
+            "perSecond": 2
+          },
+          {
+            "type": "manaRegeneration",
+            "perSecond": 2.5
+          }
+        ],
+        "skills": [
+          {
+            "name": "어인가라데",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 1200000
+              },
+              {
+                "type": "magical",
+                "amount": 600000,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "armorReduction",
+                "amount": 25,
+                "condition": {
+                  "requiredArmorBreakStacks": 10
+                },
+                "onlyOncePerEnemy": true,
+                "exclusiveWith": [
+                  "징베 초월"
+                ]
+              }
+            ],
+            "manaCost": 85,
+            "target": "area",
+            "radius": 750
+          },
+          {
+            "name": "해류 한판 업어치기",
+            "trigger": "onBasicAttackWithAbsoluteCooldown",
+            "components": [
+              {
+                "type": "summonProjectiles",
+                "count": 10,
+                "durationSeconds": 2,
+                "magicalDamageEach": 150000
+              }
+            ],
+            "absoluteCooldownSeconds": 7,
+            "target": "area"
+          },
+          {
+            "name": "단일 타격 스턴",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 600000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.6
+              }
+            ],
+            "chancePercent": 25,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L28",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-29",
+      "name": "쵸파 유력강화",
+      "grade": "전설",
+      "gradeOrder": 29,
+      "catalog": {
+        "id": "L-29",
+        "grade": "전설",
+        "gradeOrder": 29,
+        "name": "쵸파 유력강화",
+        "roleTags": [
+          "물뎀",
+          "방깎"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L29",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-29",
+        "sourceUrl": "https://ordr.kr/character/L29",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 18
+          },
+          {
+            "type": "allyAttackSpeedBuff",
+            "percent": 20
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 300
+          },
+          {
+            "type": "teleport",
+            "range": 1500
+          }
+        ],
+        "skills": [
+          {
+            "name": "발굽 로제오",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 150000,
+                "multiplierRange": [
+                  1,
+                  3
+                ]
+              }
+            ],
+            "chancePercent": 15,
+            "target": "single"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L29",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [
+          {
+            "id": "L-29",
+            "resultUnitId": "L-29",
+            "name": "쵸파 유력강화 (전설)",
+            "sourceUrl": "https://ordr.kr/character/L29",
+            "verifiedAs": "ordr-2.323-web-catalog",
+            "ingredients": [
+              {
+                "unitId": "R-35",
+                "count": 1
+              },
+              {
+                "unitId": "R-15",
+                "count": 1
+              },
+              {
+                "unitId": "R-13",
+                "count": 1
+              }
+            ],
+            "extraCost": {
+              "gold": 0,
+              "lumber": 3,
+              "items": []
+            },
+            "uncertain": [
+              "원본 제작 트리거 및 결과 생성 좌표"
+            ]
+          }
+        ],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "web-recipe-sourced-original-trigger-unverified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-30",
+      "name": "카르가라",
+      "grade": "전설",
+      "gradeOrder": 30,
+      "catalog": {
+        "id": "L-30",
+        "grade": "전설",
+        "gradeOrder": 30,
+        "name": "카르가라",
+        "roleTags": [
+          "물뎀",
+          "방깎"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L30",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-30",
+        "sourceUrl": "https://ordr.kr/character/L30",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 20
+          },
+          {
+            "type": "onBasicHitArmorReduction",
+            "byTargetKind": {
+              "line": 25,
+              "story": 25,
+              "boss": 40
+            },
+            "durationSeconds": 20,
+            "exclusiveWith": [
+              "방어구 관통 스킬"
+            ]
+          }
+        ],
+        "skills": [
+          {
+            "name": "샨디아의 창",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "selfAttackSpeedMax",
+                "durationSeconds": 5.25
+              }
+            ],
+            "manaCost": 40,
+            "target": "self"
+          },
+          {
+            "name": "평타 크리티컬",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "critical",
+                "multiplier": 10
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.4,
+                "ignoresResistance": true
+              }
+            ],
+            "chancePercent": 25,
+            "target": "single"
+          }
+        ],
+        "uncertaintyNotes": [
+          "2.300 패치 이력에는 라인/스토리 방어 관통 20, 현재 툴팁에는 25로 기재."
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L30",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-31",
+      "name": "코비",
+      "grade": "전설",
+      "gradeOrder": 31,
+      "catalog": {
+        "id": "L-31",
+        "grade": "전설",
+        "gradeOrder": 31,
+        "name": "코비",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L31",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-31",
+        "sourceUrl": "https://ordr.kr/character/L31",
+        "passives": [],
+        "skills": [
+          {
+            "name": "용기의 외침",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "allyAttackPowerBuff",
+                "percent": 20,
+                "durationSeconds": 5
+              },
+              {
+                "type": "allyHealthRegeneration",
+                "perSecond": 1,
+                "durationSeconds": 5
+              },
+              {
+                "type": "allyManaRegeneration",
+                "perSecond": 1,
+                "durationSeconds": 5
+              }
+            ],
+            "manaCost": 115,
+            "target": "alliedArea",
+            "radius": 900,
+            "exclusiveWith": [
+              "분노 스킬"
+            ]
+          },
+          {
+            "name": "육식 - 체",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "stun",
+                "durationSeconds": 0.3
+              },
+              {
+                "type": "magical",
+                "amount": 155000
+              }
+            ],
+            "chancePercent": 20,
+            "target": "single"
+          },
+          {
+            "name": "지건",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 125000
+              },
+              {
+                "type": "explosive",
+                "basis": "targetCurrentHealth",
+                "percent": 25,
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magical",
+                "amount": 125000,
+                "onlyTargetKinds": [
+                  "boss",
+                  "story"
+                ],
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": 12.5,
+            "target": "area",
+            "radius": 375
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L31",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-32",
+      "name": "쿠마 폭군",
+      "grade": "전설",
+      "gradeOrder": 32,
+      "catalog": {
+        "id": "L-32",
+        "grade": "전설",
+        "gradeOrder": 32,
+        "name": "쿠마 폭군",
+        "roleTags": [
+          "마뎀",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L32",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-32",
+        "sourceUrl": "https://ordr.kr/character/L32",
+        "passives": [
+          {
+            "type": "teleport",
+            "range": "unlimited"
+          }
+        ],
+        "skills": [
+          {
+            "name": "우르스스 쇼크",
+            "trigger": "activeMana",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 2450000,
+                "plusTargetMissingHealthPercent": 4
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1.05
+              }
+            ],
+            "manaCost": 115,
+            "target": "area",
+            "radius": 600
+          },
+          {
+            "name": "발바닥발바닥 열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 1.4
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 500
+          },
+          {
+            "name": "전이",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "pull",
+                "to": "inFrontOfCaster"
+              },
+              {
+                "type": "castOwnedStunSkill"
+              }
+            ],
+            "cooldownSeconds": 60,
+            "target": "enemiesOwnLine",
+            "radius": 275
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L32",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-33",
+      "name": "크래커",
+      "grade": "전설",
+      "gradeOrder": 33,
+      "catalog": {
+        "id": "L-33",
+        "grade": "전설",
+        "gradeOrder": 33,
+        "name": "크래커",
+        "roleTags": [
+          "물뎀",
+          "방깎"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L33",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-33",
+        "sourceUrl": "https://ordr.kr/character/L33",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 25
+          },
+          {
+            "type": "onEachBasicAttackBonus",
+            "magicalAmount": 20000,
+            "target": "single"
+          }
+        ],
+        "skills": [
+          {
+            "name": "나선찌르기",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 250000
+              }
+            ],
+            "chancePercent": 8,
+            "target": "area",
+            "radius": 550
+          },
+          {
+            "name": "크래커 비스킷",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "allyAttackPowerBuff",
+                "percent": 19
+              },
+              {
+                "type": "allyAttackSpeedBuff",
+                "percent": 9
+              }
+            ],
+            "cooldownSeconds": 240,
+            "target": "ownedAlly",
+            "cannotStackOnSameUnit": true
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L33",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-34",
+      "name": "킹",
+      "grade": "전설",
+      "gradeOrder": 34,
+      "catalog": {
+        "id": "L-34",
+        "grade": "전설",
+        "gradeOrder": 34,
+        "name": "킹",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L34",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-34",
+        "sourceUrl": "https://ordr.kr/character/L34",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 5
+          },
+          {
+            "type": "movementSlowAura",
+            "percent": 10
+          },
+          {
+            "type": "onBasicHitDebuff",
+            "movementSlowPercent": 45,
+            "durationSeconds": 3,
+            "magicalDamagePerSecond": 250000
+          },
+          {
+            "type": "flyingMovement"
+          }
+        ],
+        "skills": [
+          {
+            "name": "화재",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000
+              },
+              {
+                "type": "magicalDoT",
+                "damagePerTick": 42500,
+                "tickIntervalSeconds": 0.27,
+                "durationSeconds": 2.7
+              },
+              {
+                "type": "armorReduction",
+                "amount": 20,
+                "exclusiveWith": [
+                  "독약 스킬"
+                ]
+              },
+              {
+                "type": "armorReduction",
+                "amount": 10,
+                "durationSeconds": 2
+              }
+            ],
+            "chancePercent": 14.25,
+            "target": "area",
+            "radius": 450
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L34",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-35",
+      "name": "토키",
+      "grade": "전설",
+      "gradeOrder": 35,
+      "catalog": {
+        "id": "L-35",
+        "grade": "전설",
+        "gradeOrder": 35,
+        "name": "토키",
+        "roleTags": [
+          "마뎀",
+          "이감"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L35",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-35",
+        "sourceUrl": "https://ordr.kr/character/L35",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 25
+          },
+          {
+            "type": "allyAttackSpeedBuff",
+            "percent": 20
+          },
+          {
+            "type": "periodicAllyAttackSpeedBuff",
+            "intervalSeconds": 9,
+            "targetCount": 2,
+            "minGrade": "전설",
+            "radius": 450,
+            "durationSeconds": 6,
+            "percent": 35,
+            "exclusiveWith": [
+              "가속 스킬"
+            ],
+            "includesSelf": true
+          }
+        ],
+        "skills": [
+          {
+            "name": "시간시간열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 250000
+              },
+              {
+                "type": "magical",
+                "amount": 250000,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "chancePercent": 10,
+            "target": "area",
+            "radius": 400
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L35",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-36",
+      "name": "핸콕",
+      "grade": "전설",
+      "gradeOrder": 36,
+      "catalog": {
+        "id": "L-36",
+        "grade": "전설",
+        "gradeOrder": 36,
+        "name": "핸콕",
+        "roleTags": [
+          "마뎀",
+          "단일스턴",
+          "단일딜러"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L36",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-36",
+        "sourceUrl": "https://ordr.kr/character/L36",
+        "passives": [],
+        "skills": [
+          {
+            "name": "매료매료 열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 150000
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 0.8
+              },
+              {
+                "type": "magical",
+                "amount": 150000,
+                "multiplierRange": [
+                  1,
+                  1.5
+                ],
+                "radius": 415,
+                "chancePercent": 10,
+                "requiresState": "pistolKissInactive",
+                "extraSinglePercent": 100
+              },
+              {
+                "type": "explosive",
+                "basis": "targetMaxHealth",
+                "percent": 5,
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "requiresState": "pistolKissInactive"
+              },
+              {
+                "type": "explosive",
+                "basis": "targetMaxHealth",
+                "percent": 7,
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "requiresState": "pistolKissActive",
+                "onEveryAttack": true
+              },
+              {
+                "type": "magical",
+                "amount": 150000,
+                "onlyTargetKinds": [
+                  "boss",
+                  "story"
+                ]
+              }
+            ],
+            "chancePercent": 20,
+            "target": "single"
+          },
+          {
+            "name": "피스톨 키스",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "selfAttackSpeedBuff",
+                "percent": 45,
+                "durationSeconds": 0.4
+              },
+              {
+                "type": "magical",
+                "basis": "basicAttackDamage",
+                "percent": 125,
+                "flatAmount": 85000,
+                "radius": 345,
+                "trigger": "everyAttackWhileActive"
+              }
+            ],
+            "chancePercent": 8,
+            "target": "self"
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L36",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "none-recorded-in-source",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-37",
+      "name": "후지토라",
+      "grade": "전설",
+      "gradeOrder": 37,
+      "catalog": {
+        "id": "L-37",
+        "grade": "전설",
+        "gradeOrder": 37,
+        "name": "후지토라",
+        "roleTags": [
+          "마뎀",
+          "이감",
+          "스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L37",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Magical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-37",
+        "sourceUrl": "https://ordr.kr/character/L37",
+        "passives": [
+          {
+            "type": "movementSlowAura",
+            "percent": 25
+          }
+        ],
+        "skills": [
+          {
+            "name": "중력검",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 192500
+              },
+              {
+                "type": "physical",
+                "basis": "skillDamage",
+                "multiplier": 2.5,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 2.4
+              },
+              {
+                "type": "magicResistanceReduction",
+                "percent": 1
+              }
+            ],
+            "chancePercent": 14,
+            "target": "area",
+            "radius": 450
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L37",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [
+          {
+            "unitId": "L-37",
+            "unitRawcode": "h031",
+            "skillOrdinal": 0,
+            "skillName": "중력검",
+            "trigger": "onAttack",
+            "type": "magicResistanceReduction",
+            "value": 1,
+            "ability": "A04Q",
+            "function": "Bus/Bur",
+            "registration": "main:62752",
+            "effectLines": "Bus:19770~19773; Bur:19759~19761",
+            "primaryBonus": 0,
+            "phase": "afterDamage",
+            "mappingEvidence": "Icon BTN0537_Issho + 14% 192500/Bd5+1 + Fujitora tooltip",
+            "note": "Bcb192500 먼저, A04Q 레벨+1 다음"
+          }
+        ],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-38",
+      "name": "흰수염",
+      "grade": "전설",
+      "gradeOrder": 38,
+      "catalog": {
+        "id": "L-38",
+        "grade": "전설",
+        "gradeOrder": 38,
+        "name": "흰수염",
+        "roleTags": [
+          "물뎀",
+          "방깎"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L38",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-38",
+        "sourceUrl": "https://ordr.kr/character/L38",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 15
+          },
+          {
+            "type": "armorReductionByTargetKind",
+            "amount": 30,
+            "onlyTargetKinds": [
+              "boss",
+              "story"
+            ]
+          },
+          {
+            "type": "basicAttackSplash",
+            "radius": 350
+          }
+        ],
+        "skills": [
+          {
+            "name": "기선 제압",
+            "trigger": "activeHealth",
+            "components": [
+              {
+                "type": "physical",
+                "amount": 1250000,
+                "plusTargetMaxHealthPercent": 2
+              },
+              {
+                "type": "fixed",
+                "basis": "skillDamage",
+                "percent": 50,
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3,
+                "resistanceIgnorePercent": 50
+              }
+            ],
+            "healthCost": 115,
+            "healthRegenPerSecond": 0.8,
+            "healthRegenPerAttack": 1,
+            "target": "area",
+            "radius": 600,
+            "onceConditionBypassForTargetKinds": [
+              "boss",
+              "enraged"
+            ],
+            "exclusiveWith": [
+              "속공"
+            ]
+          },
+          {
+            "name": "흔들흔들 열매",
+            "trigger": "onAttack",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 200000
+              },
+              {
+                "type": "movementSlow",
+                "percent": 25,
+                "durationSeconds": 3
+              },
+              {
+                "type": "movementSlow",
+                "percent": 10,
+                "durationSeconds": 2,
+                "after": "primarySlow"
+              }
+            ],
+            "chancePercent": 11,
+            "target": "area",
+            "radius": 600
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L38",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    },
+    {
+      "id": "L-39",
+      "name": "히바리",
+      "grade": "전설",
+      "gradeOrder": 39,
+      "catalog": {
+        "id": "L-39",
+        "grade": "전설",
+        "gradeOrder": 39,
+        "name": "히바리",
+        "roleTags": [
+          "물뎀",
+          "방깎",
+          "단일스턴"
+        ],
+        "roleTagsStatus": "index-confirmed",
+        "detailUrl": "https://ordr.kr/character/L39",
+        "gameRawCode": null,
+        "attackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "skillSpecsStatus": "partial",
+        "damageSchoolHints": [
+          "Physical"
+        ],
+        "damageSchoolHintsStatus": "derived-from-index-role-tags"
+      },
+      "profile": {
+        "unitId": "L-39",
+        "sourceUrl": "https://ordr.kr/character/L39",
+        "passives": [
+          {
+            "type": "armorReductionAura",
+            "amount": 22
+          },
+          {
+            "type": "fixedAttackFrequency",
+            "attacksPerSecond": 0.9,
+            "ignoresAttackSpeedBuffs": true
+          }
+        ],
+        "skills": [
+          {
+            "name": "백발백중",
+            "trigger": "onNthSuccessfulBasicHit",
+            "components": [
+              {
+                "type": "magical",
+                "amount": 500000
+              },
+              {
+                "type": "physical",
+                "basis": "targetMaxHealth",
+                "percent": 22.5,
+                "onlyTargetKinds": [
+                  "line"
+                ],
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magical",
+                "basis": "targetMaxHealth",
+                "percent": 7.5,
+                "onlyTargetKinds": [
+                  "boss",
+                  "enraged"
+                ],
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "magical",
+                "amount": 2000000,
+                "onlyTargetKinds": [
+                  "story"
+                ],
+                "scope": "singlePrimaryTarget"
+              },
+              {
+                "type": "stun",
+                "durationSeconds": 3,
+                "ignoresResistance": true,
+                "scope": "singlePrimaryTarget"
+              }
+            ],
+            "requiredSuccessfulHits": 4,
+            "target": "area",
+            "radius": 800
+          },
+          {
+            "name": "사랑의도시락(B)",
+            "trigger": "manual",
+            "components": [
+              {
+                "type": "permanentAllyAttackSpeedBuff",
+                "percent": 12,
+                "overridePercentForUnit": "코비 초월",
+                "overridePercent": 20,
+                "nonStackingWith": [
+                  "포만감 스킬"
+                ],
+                "consumesItem": true
+              }
+            ],
+            "target": "ownedAlly",
+            "uses": 1
+          }
+        ],
+        "skillSpecCompleteness": "partial",
+        "gameRawCode": null,
+        "basicAttack": {
+          "nominalAttackPower": null,
+          "intervalSeconds": null,
+          "range": null,
+          "damageSchool": null
+        },
+        "unconfirmedFields": [
+          "원본 JASS 능력 rawcode",
+          "평타 기본 수치/공격주기",
+          "복합 조건·피해 공식의 실제 적용 순서"
+        ]
+      },
+      "evidence": {
+        "profileSource": "https://ordr.kr/character/L39",
+        "originalRawcodeVerified": null,
+        "originalRawcodeCandidates": [],
+        "originalBattleAbilities": [],
+        "patchStatObservations": [],
+        "patchStatBlockingReasons": [],
+        "originalFusionResultAbilityCandidates": [],
+        "originalFusionMappingStatus": "unresolved",
+        "catalogFusionRecipes": [],
+        "sourceChecksums": {
+          "w3x": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
+        }
+      },
+      "coreCombat": {
+        "baseAttackPower": null,
+        "attackIntervalSeconds": null,
+        "attackRange": null,
+        "attackType": null,
+        "damageType": null,
+        "projectileSpeed": null,
+        "baseArmor": null,
+        "hitPoints": null,
+        "maximumMana": null,
+        "manaRegeneration": null,
+        "finalDps": null,
+        "numericValuesFromPatchAreNotCombatVerified": true
+      },
+      "completeness": {
+        "catalog": "catalog-collected",
+        "details": "tooltip-profile-partial",
+        "passiveDefinitions": "tooltip-profile-partial",
+        "originalRawcode": "unresolved",
+        "basicStats": "original-map-unverified",
+        "skills": "original-triggers-formulas-not-fully-verified",
+        "fusion": "not-original-verified",
+        "combat": "not-original-verified",
+        "allowedForParityCombat": false
+      },
+      "blockers": [
+        "original-unit-rawcode-mapping",
+        "original-basic-attack-stats",
+        "warcraft-attack-damage-type-and-formula",
+        "original-ability-full-code-and-trigger-coverage",
+        "combat-skill-timing-and-conditional-gates",
+        "warcraft-object-data-confirmation"
+      ]
+    }
+  ]
+}
