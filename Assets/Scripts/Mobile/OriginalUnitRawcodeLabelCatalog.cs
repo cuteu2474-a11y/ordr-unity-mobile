@@ -63,6 +63,17 @@ namespace Ordr.Mobile.Mobile
             var doc = OrdrJson.Object(OrdrJson.Parse(json), "rawcode evidence");
             if (OrdrJson.RequiredString(doc, "gameVersion") != "S2 2.323[C]")
                 throw new FormatException("원본 유닛 매핑 버전 불일치.");
+            string sourceFingerprint = OrdrJson.RequiredString(doc, "sourceMapSha256");
+            if (originalFusions != null &&
+                !String.Equals(sourceFingerprint, originalFusions.SourceSha256,
+                    StringComparison.OrdinalIgnoreCase))
+                throw new FormatException(
+                    "이름 대응표와 조합 등록식이 서로 다른 원본 W3X에서 추출됐습니다.");
+            if (!String.Equals(sourceFingerprint,
+                OriginalVerifiedUnitObjectMap.ExpectedJassSha256,
+                StringComparison.OrdinalIgnoreCase))
+                throw new FormatException(
+                    "원본 S2 2.323[C] 기준 맵과 이름 대응표의 SHA-256이 다릅니다.");
             object spendFlag = OrdrJson.Value(doc, "useForAutomaticUnitConsumption");
             if (!(spendFlag is bool) || (bool)spendFlag)
                 throw new FormatException("이름 매칭 자료로 제작 소비를 승인할 수 없습니다.");
