@@ -13,6 +13,10 @@ namespace Ordr.Mobile.Mobile
         bool TryChooseCastTarget(string abilityRawcode,
             IReadOnlyList<long> materialInstanceIds, out long targetId, out string reason);
 
+        // Must read the actual original object rawcode for each selected unit
+        // while holding the transaction lock. A catalog name/id is not proof.
+        bool TryReadOriginalUnitRawcode(long instanceId, out string rawcode);
+
         // Called under the same lock, for every BGI in its original CWR order.
         // Unimplemented ITEM/IFCT/SKPT/CHCT/PICK/RDUN/SPEC/GREN etc. MUST
         // reject rather than supply an optimistic default.
@@ -103,6 +107,25 @@ namespace Ordr.Mobile.Mobile
                 reason = null;
                 if (verifiedOrder != null || attempted || !ValidateBindings(order, out reason))
                     return Reject(ref reason, "원본 조합 주문 또는 재료 결합 정보가 유효하지 않습니다.");
+
+                // Independently verify EVERY real owned instance's original
+                // object rawcode before touching any unit or currency.
+                // JASS display-name mappings and catalog IDs alone never authorize
+                // consumption. Duplicate instance IDs were already rejected.
+                foreach (var binding in order.MaterialBindings)
+                {
+                    foreach (long instanceId in binding.InstanceIds)
+                    {
+                        string actualRawcode;
+                        if (!session.TryReadOriginalUnitRawcode(instanceId,
+                                out actualRawcode) ||
+                            !String.Equals(actualRawcode, binding.Rawcode,
+                                StringComparison.Ordinal))
+                            return Reject(ref reason,
+                                "원본 객체 rawcode와 선택 재료가 다릅니다: " +
+                                binding.Rawcode);
+                    }
+                }
 
                 // Verification of every instruction (even simple UNIT/GOLD/WOOD)
                 // occurs on the same locked world as the subsequent payment.
