@@ -49,6 +49,11 @@ class GeneratedDataTests(unittest.TestCase):
             encoding="utf-8"))
         cls.labels = json.loads((ROOT / "data/original-unit-rawcode-label-links.json").read_text(
             encoding="utf-8"))
+        cls.defense_links = json.loads((
+            ROOT / "data/original-2323C-character-defense-skill-links.json"
+        ).read_text(encoding="utf-8"))
+        cls.profiles = json.loads((ROOT / "data/character-skill-profiles.json").read_text(
+            encoding="utf-8"))
 
     def test_full_source_index_and_partial_verified_join(self):
         report = self.source["summary"]
@@ -255,6 +260,34 @@ class GeneratedDataTests(unittest.TestCase):
         self.assertEqual(sum(x["skillCount"] for x in self.skills["templateGroups"]), 554)
         self.assertEqual(len(set(x["skillId"] for x in self.skills["skills"])), 554)
         self.assertTrue(all(x["originalJassSkillRawcode"] is None for x in self.skills["skills"]))
+
+    def test_jass_defense_links_match_original_rawcodes_and_exact_tooltip_components(self):
+        original = {r["catalogId"]: r for r in self.source["catalogEntries"]}
+        profiles = {r["unitId"]: r for r in self.profiles["profiles"]}
+        links = self.defense_links["links"]
+        self.assertEqual(self.defense_links["sourceMapSha256"],
+                         self.source["sourceW3xSha256"])
+        self.assertEqual(len(links), 11)
+        self.assertEqual(len({r["unitId"] for r in links}), 9)
+        distinct_skills = set()
+        for link in links:
+            uid = link["unitId"]
+            ordinal = link["skillOrdinal"]
+            self.assertEqual(original[uid]["originalRawcode"], link["unitRawcode"])
+            self.assertIn(original[uid]["mappingStatus"], (
+                "unique-map-name-and-grade", "reviewed-map-name-alias-and-grade",
+                "verified-jass-label-and-fusion-result",
+            ))
+            skill = profiles[uid]["skills"][ordinal]
+            self.assertEqual(skill["name"], link["skillName"])
+            self.assertEqual(skill["trigger"], link["trigger"])
+            field = "stacks" if link["type"] == "armorBreak" else "percent"
+            self.assertTrue(any(component["type"] == link["type"] and
+                                component[field] == link["value"]
+                                for component in skill["components"]))
+            self.assertIn(link["ability"], {"A04M", "A04Q"})
+            self.assertNotIn((uid, ordinal, link["type"]), distinct_skills)
+            distinct_skills.add((uid, ordinal, link["type"]))
 
     def test_trigger_families_do_not_invent_special_behavior(self):
         self.assertEqual(family("onAttack"), "attack-triggered")

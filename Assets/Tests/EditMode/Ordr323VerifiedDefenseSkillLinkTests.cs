@@ -88,9 +88,10 @@ namespace Ordr.Mobile.Tests
                 new Dictionary<string,CombatStatusEngine>();
             public readonly Ordr323VerifiedDefenseEffectRouter Router;
 
-            public Fixture()
+            public Fixture(Func<string,string> verifiedCasterRawcode = null)
             {
-                Router = new Ordr323VerifiedDefenseEffectRouter(Stacks,Proof,Status);
+                Router = new Ordr323VerifiedDefenseEffectRouter(
+                    Stacks,Proof,Status,verifiedCasterRawcode);
             }
 
             public void Track(SpatialCombatEnemy enemy)
@@ -139,6 +140,100 @@ namespace Ordr.Mobile.Tests
             Assert.IsFalse(f.Apply(matchingNameWrongTrigger, enemy,true,out reason));
             var wrongValue = ProfileFixture("E-10","미검","onAttack","armorBreak",4);
             Assert.IsFalse(f.Apply(wrongValue,enemy,true,out reason));
+        }
+
+        [Test]
+        public void OriginalSkillLinkRejectsWrongOrMissingBoundUnitRawcode()
+        {
+            // The profile and tooltip alone cannot authorize a W3X debuff.
+            // A similarly named transformed/duplicate unit needs its own JASS registration.
+            string resolved = "h000";
+            var f = new Fixture(_ => resolved);
+            var enemy = Enemy();
+            f.Track(enemy);
+            var profile = ProfileFixture("E-10", "미검", "onAttack",
+                "armorBreak", 5, 1);
+            var skill = profile.Skills[1];
+            var component = skill.Components[0];
+            string reason;
+            Assert.IsFalse(f.Router.CanRoute("unit",profile,skill,component));
+            Assert.IsFalse(f.Apply(profile,enemy,true,out reason,1));
+            StringAssert.Contains("rawcode",reason);
+            Assert.AreEqual(0,f.Stacks[enemy.Id]);
+            Assert.AreEqual(0,f.Proof[enemy.Id]);
+
+            resolved = null;
+            Assert.IsFalse(f.Router.CanRoute("unit",profile,skill,component));
+            Assert.IsFalse(f.Apply(profile,enemy,true,out reason,1));
+            Assert.AreEqual(0,f.Stacks[enemy.Id]);
+
+            resolved = "h05B"; // JASS w5(h05B,B5Z)
+            Assert.IsTrue(f.Router.CanRoute("unit",profile,skill,component));
+            Assert.IsTrue(f.Apply(profile,enemy,true,out reason,1),reason);
+            Assert.AreEqual(5,f.Stacks[enemy.Id]);
+        }
+
+        [Test]
+        public void VerifiedPreDamageRouterRequiresCorrectCasterRawcode()
+        {
+            var f = new Fixture(_ => "h000");
+            var enemy = Enemy(); f.Track(enemy);
+            var profile = ProfileFixture("H-10", "기본 공격 발동형 타격",
+                "onAttack", "armorBreak", 1, 1);
+            var skill = profile.Skills[1];
+            var component = skill.Components[0];
+            Assert.IsFalse(f.Router.HasPreDamagePart("unit",profile,skill,component));
+            string reason;
+            Assert.IsFalse(f.Router.TryApplyAtPhase("unit",profile,skill,component,
+                enemy,true,Ordr323DebuffTiming.BeforeDamage,out reason));
+            Assert.AreEqual(0,f.Stacks[enemy.Id]);
+            StringAssert.Contains("rawcode",reason);
+        }
+
+        [Test]
+        public void ActiveManaCannotConsumeResourcesWithWrongJassCasterRawcode()
+        {
+            var catalog = CharacterUnitCatalog.FromJson(
+                "{\"gameVersion\":\"S2 2.323[C]\",\"entries\":[" +
+                "{\"id\":\"H-10\",\"grade\":\"히든\",\"name\":\"베르고\"," +
+                "\"roleTags\":[]}]}");
+            var profiles = CharacterSkillCatalog.FromJson(
+                "{\"gameVersion\":\"S2 2.323[C]\",\"profiles\":[" +
+                "{\"unitId\":\"H-10\",\"sourceUrl\":\"TEST_FIXTURE\"," +
+                "\"skillSpecCompleteness\":\"partial\",\"basicAttack\":{}," +
+                "\"passives\":[],\"skills\":[{" +
+                "\"name\":\"맥시멈 스윙\",\"trigger\":\"activeMana\"," +
+                "\"manaCost\":100,\"target\":\"single\",\"components\":[{" +
+                "\"type\":\"armorBreak\",\"stacks\":4}]}]}]}");
+            foreach (string rawcode in new[] { "h000", "h03W" })
+            {
+                var missing = new RejectUnverifiedDamageFormula();
+                var world = new CharacterCombatRuntime(catalog,profiles,
+                    missing,missing,new SeededNonOriginalProcRandom(7));
+                world.ConfigureOriginal323DefenseSkillLinks();
+                world.Start(); world.BeginWave(1);
+                long caster = world.SpawnCharacter("H-10",0,0);
+                world.BindVerifiedBasicAttack(caster,
+                    new BasicAttackSpec(10,1,DamageSchool.Physical,
+                        DamageTraits.None),0,rawcode);
+                world.ConfigureCharacterResources(caster,
+                    new CharacterResources(100,100,100,100));
+                world.SpawnEnemy("target",1000,CharacterEnemyKind.Line,0,0,0);
+
+                var result = world.TryCastActiveSkill(caster,"H-10:skill:0","target");
+                if (rawcode == "h000")
+                {
+                    Assert.AreEqual(AbilityCastResult.UnsupportedEffect,result);
+                    Assert.AreEqual(100,world.ResourcesOf(caster).Mana);
+                    Assert.AreEqual(0,world.ArmorBreakStacksOf("target"));
+                }
+                else
+                {
+                    Assert.AreEqual(AbilityCastResult.Cast,result);
+                    Assert.AreEqual(0,world.ResourcesOf(caster).Mana);
+                    Assert.AreEqual(4,world.ArmorBreakStacksOf("target"));
+                }
+            }
         }
 
         [Test]

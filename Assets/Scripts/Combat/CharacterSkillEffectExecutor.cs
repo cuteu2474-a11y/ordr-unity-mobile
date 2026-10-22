@@ -223,6 +223,12 @@ namespace Ordr.Mobile.Combat
         public bool CanAttemptWithConfiguredFormula(
             CharacterSkillProfile profile, ImportedCombatSkill skill)
         {
+            return CanAttemptWithConfiguredFormula(null, profile, skill);
+        }
+
+        public bool CanAttemptWithConfiguredFormula(string casterId,
+            CharacterSkillProfile profile, ImportedCombatSkill skill)
+        {
             if (skill == null) return false;
             foreach (var component in skill.Components)
             {
@@ -239,7 +245,7 @@ namespace Ordr.Mobile.Combat
                 else if (verified323DefenseRouter != null &&
                     (component.Type == "armorBreak" ||
                      component.Type == "magicResistanceReduction") &&
-                    !verified323DefenseRouter.CanRoute(profile, skill, component))
+                    !verified323DefenseRouter.CanRoute(casterId, profile, skill, component))
                     return false;
                 else if (!IsStandardEffect(component.Type) &&
                     !CanHandleSpecialComponent(profile, skill, component))
@@ -314,7 +320,8 @@ namespace Ordr.Mobile.Combat
                 // 효과 컴포넌트가 뒤에 있어도 JASS 선후 관계를 우선한다.
                 foreach (var component in skill.Components)
                 {
-                    if (!verified323DefenseRouter.HasPreDamagePart(profile,skill,component))
+                    if (!verified323DefenseRouter.HasPreDamagePart(
+                        casterId,profile,skill,component))
                         continue;
                     foreach (var target in targets)
                     {

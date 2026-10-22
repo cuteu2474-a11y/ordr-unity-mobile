@@ -133,9 +133,16 @@ namespace Ordr.Mobile.Combat
         public bool HasPreDamagePart(CharacterSkillProfile profile,
             ImportedCombatSkill skill, ImportedCombatEffect component)
         {
+            return HasPreDamagePart(null, profile, skill, component);
+        }
+
+        public bool HasPreDamagePart(string casterId, CharacterSkillProfile profile,
+            ImportedCombatSkill skill, ImportedCombatEffect component)
+        {
             Ordr323VerifiedDefenseSkillLink link;
             if (!Ordr323VerifiedDefenseSkillLinks.TryMatch(
-                profile, skill, component, out link)) return false;
+                profile, skill, component, out link) ||
+                !IsVerifiedCaster(casterId, link)) return false;
             return link.UnitId == "H-10" && link.SkillId == "H-10:skill:1" ||
                    link.UnitId == "H-09" && link.SkillId == "H-09:skill:0" ||
                    link.UnitId == "L-07" && link.SkillId == "L-07:skill:0" ||
@@ -153,6 +160,11 @@ namespace Ordr.Mobile.Combat
                 profile, skill, effect, out link))
             {
                 reason = "원본 JASS 스킬 미연결";
+                return false;
+            }
+            if (!IsVerifiedCaster(casterId, link))
+            {
+                reason = "원본 유닛 rawcode와 JASS 스킬 등록 대상 불일치";
                 return false;
             }
             bool vergo = link.UnitId == "H-10" &&
@@ -182,24 +194,43 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string,int> armorBreakStacks;
         private readonly Dictionary<string,int> provenA04MStacks;
         private readonly Dictionary<string,CombatStatusEngine> statuses;
+        private readonly Func<string,string> casterRawcode;
         private long applicationId;
 
         public Ordr323VerifiedDefenseEffectRouter(Dictionary<string,int> stacks,
             Dictionary<string,int> provenStacks,
-            Dictionary<string,CombatStatusEngine> enemyStatuses)
+            Dictionary<string,CombatStatusEngine> enemyStatuses,
+            Func<string,string> verifiedCasterRawcode = null)
         {
             armorBreakStacks = stacks ?? throw new ArgumentNullException(nameof(stacks));
             provenA04MStacks = provenStacks ??
                 throw new ArgumentNullException(nameof(provenStacks));
             statuses = enemyStatuses ?? throw new ArgumentNullException(nameof(enemyStatuses));
+            // The runtime supplies its independently verified attack binding here.
+            // Null is retained only for isolated, explicitly synthetic router tests.
+            casterRawcode = verifiedCasterRawcode;
+        }
+
+        private bool IsVerifiedCaster(string casterId, Ordr323VerifiedDefenseSkillLink link)
+        {
+            return casterRawcode == null ||
+                (!string.IsNullOrWhiteSpace(casterId) &&
+                 string.Equals(casterRawcode(casterId), link.UnitRawcode,
+                     StringComparison.Ordinal));
         }
 
         public bool CanRoute(CharacterSkillProfile profile,
             ImportedCombatSkill skill, ImportedCombatEffect effect)
         {
+            return CanRoute(null, profile, skill, effect);
+        }
+
+        public bool CanRoute(string casterId, CharacterSkillProfile profile,
+            ImportedCombatSkill skill, ImportedCombatEffect effect)
+        {
             Ordr323VerifiedDefenseSkillLink link;
             return Ordr323VerifiedDefenseSkillLinks.TryMatch(
-                profile, skill, effect, out link);
+                profile, skill, effect, out link) && IsVerifiedCaster(casterId, link);
         }
 
         // W3X 원본이 확인된 능력 변동만 실제 상태에 등록.
@@ -213,6 +244,11 @@ namespace Ordr.Mobile.Combat
             if (!Ordr323VerifiedDefenseSkillLinks.TryMatch(profile,skill,effect,out link))
             {
                 reason = "원본 Bdq/Bd5 효과 함수와 도감 스킬 연결 미확인";
+                return false;
+            }
+            if (!IsVerifiedCaster(casterId, link))
+            {
+                reason = "원본 유닛 rawcode와 JASS 스킬 등록 대상 불일치";
                 return false;
             }
             // 단독 실행 API는 베르고 2회 발생 결과까지 합산한다.

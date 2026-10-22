@@ -73,11 +73,26 @@ namespace Ordr.Mobile.Combat
                     "원본 방깎·마방깎 연결은 게임 시작 전에 한 번만 설정할 수 있습니다.");
             effectExecutor.ConfigureOriginal323DefenseSkillRouter(
                 new Ordr323VerifiedDefenseEffectRouter(armorBreakStacks,
-                    provenA04MStacks, statuses));
+                    provenA04MStacks, statuses, VerifiedCasterRawcode));
             bonneyArmor = new Ordr323BonneyDefenseController(
                 statuses, provenA04PTotals);
             attackPipeline.ConfigureVerifiedAttackDeclared(ApplyBonneyDeclaredAttack);
             original323DefenseLinksConfigured = true;
+        }
+
+        // Never infer an original W3X unit type from the catalog ID or tooltip.
+        // Only a separately approved attack binding can attest the rawcode.
+        private string VerifiedCasterRawcode(string casterId)
+        {
+            long id;
+            CharacterInstance unit;
+            if (!long.TryParse(casterId, NumberStyles.None,
+                    CultureInfo.InvariantCulture, out id) ||
+                !characters.TryGetValue(id, out unit) ||
+                !unit.AttackReady || unit.Mapping == null)
+                return null;
+            string rawcode = unit.Mapping.AttackSpec.UnitRawCode;
+            return rawcode != null && rawcode.Length == 4 ? rawcode : null;
         }
 
         // Current original form has to come from an independent state/transform
@@ -560,13 +575,13 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy enemy = null;
             bool hasTarget = !string.IsNullOrWhiteSpace(primaryEnemyId) &&
                 enemies.TryGetValue(primaryEnemyId, out enemy) &&
-                enemy.Enemy.IsAlive;
+                enemy.Enemy.IsAlive && CanAttackInThisLane(caster, enemy);
             // 자원을 소모하기 전에 등록된 피해 계산기의 지원 여부를 확인한다.
             if (caster.Profile != null)
                 foreach (var candidate in caster.Profile.Skills)
                     if (candidate.Id == skillId &&
                         !effectExecutor.CanAttemptWithConfiguredFormula(
-                            caster.Profile, candidate))
+                            InstanceKey(instanceId), caster.Profile, candidate))
                         return AbilityCastResult.UnsupportedEffect;
 
             ImportedCombatSkill skill;
@@ -618,7 +633,8 @@ namespace Ordr.Mobile.Combat
             if (!unit.Mapping.ActivatedSkills.TryGetValue(skillId, out skill))
                 return false;
             if (attackPipeline.NextAttackAt(InstanceKey(instanceId)) == null ||
-                !effectExecutor.CanAttemptWithConfiguredFormula(unit.Profile, skill))
+                !effectExecutor.CanAttemptWithConfiguredFormula(
+                    InstanceKey(instanceId), unit.Profile, skill))
                 return false;
             var position = roster.Get(instanceId);
             double dx = enemy.X - position.X;
