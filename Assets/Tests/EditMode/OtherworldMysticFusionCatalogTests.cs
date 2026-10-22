@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
 using Ordr.Mobile.Mobile;
+using UnityEngine;
 
 namespace Ordr.Mobile.Tests
 {
@@ -29,6 +30,15 @@ namespace Ordr.Mobile.Tests
             "\"ingredients\":[{\"kind\":\"unit\",\"unitId\":\"RN-01\",\"count\":1}," +
             "{\"kind\":\"any-random\",\"count\":1}," +
             "{\"kind\":\"unit\",\"unitId\":\"D-02\",\"count\":1}]}]}";
+
+        private const string RegularRecipeJson =
+            "{\"gameVersion\":\"S2 2.323[C]\",\"recipes\":[{" +
+            "\"id\":\"REG-01\",\"resultUnitId\":\"D-02\",\"name\":\"코알라\"," +
+            "\"verifiedAs\":\"ordr-2.323-web-catalog\"," +
+            "\"sourceUrl\":\"https://ordr.kr/character/D2\"," +
+            "\"extraCost\":{\"gold\":0,\"lumber\":0,\"items\":[]}," +
+            "\"extraCostStatus\":\"not-published\"," +
+            "\"ingredients\":[{\"unitId\":\"RN-01\",\"count\":1}]}]}";
 
         private static OtherworldMysticFusionCatalog Read(string json = null)
         {
@@ -263,6 +273,61 @@ namespace Ordr.Mobile.Tests
                 executor.TryCommit(catalog.Find("MY-01"), ids).State);
             Assert.AreEqual(0, world.Commits);
             Assert.AreEqual(3, world.Owned.Count);
+        }
+
+        [Test]
+        public void CombinedModeListsNormalAndOtherworldMysticAndRoutesExplicitConfirmation()
+        {
+            var catalog = Read();
+            var units = CharacterUnitCatalog.FromJson(UnitsJson);
+            var regularCatalog = VerifiedFusionCatalog.FromJson(RegularRecipeJson, units);
+            var world = World();
+            var normal = new AssistedFusionService(regularCatalog,
+                () => world.Owned, id => false);
+            var mystic = new OtherworldMysticFusionPreviewPort(catalog, id => false);
+            var combined = new CombinedOriginalFusionPort(normal, mystic);
+            var manual = new MobileManualInteraction();
+            manual.Configure(null, combined, null);
+
+            var first = manual.PreviewFusion(world.Owned);
+            Assert.AreEqual(2, first.Count);
+            Assert.AreEqual("MY-01", first[0].RecipeId);
+            Assert.AreEqual("REG-01", first[1].RecipeId);
+            Assert.IsFalse(manual.HasExecutableFusionService);
+            Assert.IsFalse(first[0].IsReady);
+            Assert.AreEqual(ManualActionState.Rejected,
+                combined.ConfirmFusion("unknown", new long[] { 11 }).State);
+            Assert.AreEqual(ManualActionState.NotImplemented,
+                combined.ConfirmFusion("REG-01", new long[] { 11 }).State);
+
+            world.AllowOriginalVerification = true;
+            mystic.AttachVerifiedCommit(Coordinator(catalog, world));
+            Assert.IsTrue(manual.HasExecutableFusionService);
+            var selected = manual.PreviewFusion(world.Owned)[0];
+            Assert.IsTrue(selected.IsReady);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                manual.ConfirmFusion(selected).State);
+            Assert.AreEqual("MY-01", world.Owned[0].Unit.Id);
+        }
+
+        [Test]
+        public void ProjectResourcesContainAllThirteenFixedModeMysticRecipes()
+        {
+            var catalogAsset = Resources.Load<TextAsset>(
+                "OrdrData/otherworld-2323C-mystic-web-recipes");
+            var unitsAsset = Resources.Load<TextAsset>("OrdrData/units");
+            Assert.IsNotNull(catalogAsset, "Unity 동기화에서 신비 조합 JSON이 빠졌습니다.");
+            Assert.IsNotNull(unitsAsset, "Unity 유닛 카탈로그를 찾을 수 없습니다.");
+            var units = CharacterUnitCatalog.FromJson(unitsAsset.text);
+            var catalog = OtherworldMysticFusionCatalog.FromJson(catalogAsset.text, units);
+            Assert.AreEqual(13, catalog.Count);
+            foreach (var recipe in catalog.All)
+            {
+                Assert.AreEqual(10000, recipe.Gold);
+                Assert.AreEqual(7, recipe.Lumber);
+                CollectionAssert.Contains(recipe.SpecialRequirements, "행운의토큰");
+                Assert.IsFalse(recipe.AuthorizedForConsumption);
+            }
         }
 
         // Test-only world: proving the atomic call/rollback integration does NOT

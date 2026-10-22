@@ -19,6 +19,7 @@ namespace Ordr.Mobile.Editor
             "original-stat-evidence.json",
             "original-2323C-map-base-stats.json",
             "verified-mobile-fusion-recipes.json",
+            "otherworld-2323C-mystic-web-recipes.json",
             "original-jass-fusion-registry.json",
             "original-unit-rawcode-label-links.json"
         };

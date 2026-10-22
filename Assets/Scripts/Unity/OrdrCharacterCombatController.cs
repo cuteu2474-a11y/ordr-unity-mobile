@@ -15,6 +15,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset originalStatEvidenceJson;
         [SerializeField] private TextAsset originalMapBaseStatsJson;
         [SerializeField] private TextAsset verifiedFusionRecipesJson;
+        [SerializeField] private TextAsset otherworldMysticFusionRecipesJson;
         [SerializeField] private TextAsset originalJassFusionRegistryJson;
         [SerializeField] private TextAsset originalUnitRawcodeLabelsJson;
         [SerializeField] private TextAsset verifiedMonsterWavesJson;
@@ -27,6 +28,7 @@ namespace Ordr.Mobile.Unity
         public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
         public OriginalMapBaseStatCatalog MapBaseStats { get; private set; }
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
+        public OtherworldMysticFusionCatalog OtherworldMysticFusions { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
         public OriginalUnitRawcodeLabelCatalog OriginalUnitRawcodes { get; private set; }
         public Original323VerifiedMonsterWaveCatalog VerifiedMonsterWaves { get; private set; }
@@ -43,6 +45,7 @@ namespace Ordr.Mobile.Unity
         private IOriginalStoryDispatchPort storyDispatchRules;
         private IOriginalVerifiedUnitAttackProvider verifiedUnitAttackSource;
         private IOriginalFusionPort originalFusionPort;
+        private OtherworldMysticFusionPreviewPort mysticFusionPort;
         private IOriginalEconomyPort originalEconomyPort;
 
         // All unit grades use the same automatic attack pipeline once their
@@ -156,8 +159,11 @@ namespace Ordr.Mobile.Unity
             if (Combat == null)
                 throw new InvalidOperationException("신비 조합 화면을 연결할 전투 월드가 없습니다.");
             if (mysticCatalog == null) throw new ArgumentNullException(nameof(mysticCatalog));
-            originalFusionPort = new OtherworldMysticFusionPreviewPort(
+            mysticFusionPort = new OtherworldMysticFusionPreviewPort(
                 mysticCatalog, id => Combat.IsStoryDeployed(id));
+            originalFusionPort = FusionAssistance == null ?
+                (IOriginalFusionPort)mysticFusionPort :
+                new CombinedOriginalFusionPort(FusionAssistance, mysticFusionPort);
             ManualActions.Configure(storyDispatchRules, originalFusionPort, originalEconomyPort);
         }
 
@@ -169,7 +175,7 @@ namespace Ordr.Mobile.Unity
         {
             if (originalWorld == null) throw new ArgumentNullException(nameof(originalWorld));
             ConfigureOtherworldMysticFusionPreview(mysticCatalog);
-            ((OtherworldMysticFusionPreviewPort)originalFusionPort).AttachVerifiedCommit(
+            mysticFusionPort.AttachVerifiedCommit(
                 new OtherworldMysticFusionAtomicCoordinator(mysticCatalog, originalWorld));
         }
 
@@ -219,6 +225,18 @@ namespace Ordr.Mobile.Unity
                     Resources.Load<TextAsset>("OrdrData/verified-mobile-fusion-recipes");
                 if (fusionData != null)
                     VerifiedFusionRecipes = VerifiedFusionCatalog.FromJson(fusionData.text, Units);
+                var mysticData = otherworldMysticFusionRecipesJson != null ?
+                    otherworldMysticFusionRecipesJson :
+                    Resources.Load<TextAsset>("OrdrData/otherworld-2323C-mystic-web-recipes");
+                if (mysticData != null)
+                {
+                    OtherworldMysticFusions = OtherworldMysticFusionCatalog.FromJson(
+                        mysticData.text, Units);
+                    if (OtherworldMysticFusions.Count != 13)
+                        throw new FormatException("악몽 이세계 신비 조합 데이터는 13종이어야 합니다.");
+                }
+                else Debug.LogWarning(
+                    "악몽 이세계 신비 조합 JSON 누락: 조합 탭에 13종 재료 안내가 표시되지 않습니다.");
                 // 압축된 원본 등록식은 개발 자료. 순서 보존 추출 JSON이 있을 때만 로딩한다.
                 var originalJassData = originalJassFusionRegistryJson != null ?
                     originalJassFusionRegistryJson :
@@ -334,6 +352,16 @@ namespace Ordr.Mobile.Unity
                 FusionAssistance = new AssistedFusionService(VerifiedFusionRecipes,
                     () => Combat.MobileUnitSnapshot(),
                     id => Combat.IsStoryDeployed(id));
+            // 악몽 + 이세계모드는 항상 기본 모드다. 원본 트랜잭션이 없는
+            // 상태에서는 신비 도감 13종의 재료 미리보기만 노출한다.
+            if (originalFusionPort == null && OtherworldMysticFusions != null)
+            {
+                mysticFusionPort = new OtherworldMysticFusionPreviewPort(
+                    OtherworldMysticFusions, id => Combat.IsStoryDeployed(id));
+                originalFusionPort = FusionAssistance == null ?
+                    (IOriginalFusionPort)mysticFusionPort :
+                    new CombinedOriginalFusionPort(FusionAssistance, mysticFusionPort);
+            }
             ManualActions.Configure(storyDispatchRules,
                 originalFusionPort ?? FusionAssistance, originalEconomyPort);
         }
