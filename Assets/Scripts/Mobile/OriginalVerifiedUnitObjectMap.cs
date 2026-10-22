@@ -63,6 +63,13 @@ namespace Ordr.Mobile.Mobile
                 if (jassNameLink != null && jassNameLink.CatalogUnitId != unitId)
                     throw new FormatException("원본 JASS 이름 근거와 객체 검수 결과가 충돌: " +
                         rawcode);
+                // 반대 방향 검사도 필수: 동일 카탈로그의 원본 조합 결과가
+                // 다른 객체(h0C7 vs h0CJ 등)일 때 이름만으로 동일 폼 취급 불가.
+                var catalogJassLink = labels.FindUnit(unitId);
+                if (catalogJassLink != null && catalogJassLink.Rawcode != rawcode)
+                    throw new FormatException(
+                        "원본 객체와 JASS 조합 결과의 형태/ID 불일치 검토 필요: " +
+                        unitId + " (" + rawcode + "/" + catalogJassLink.Rawcode + ")");
                 if (result.verified.ContainsKey(rawcode) || !usedCatalogIds.Add(unitId))
                     throw new FormatException("중복 원본 rawcode 또는 카탈로그 ID: " + rawcode);
                 result.verified.Add(rawcode, unitId);
