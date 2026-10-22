@@ -149,6 +149,30 @@ namespace Ordr.Mobile.Unity
                 originalCastPolicy);
         }
 
+        // 이세계 신비 도감 UI 연결. 공개 도감만으로는 실제 소모를 절대 실행하지 않는다.
+        public void ConfigureOtherworldMysticFusionPreview(
+            OtherworldMysticFusionCatalog mysticCatalog)
+        {
+            if (Combat == null)
+                throw new InvalidOperationException("신비 조합 화면을 연결할 전투 월드가 없습니다.");
+            if (mysticCatalog == null) throw new ArgumentNullException(nameof(mysticCatalog));
+            originalFusionPort = new OtherworldMysticFusionPreviewPort(
+                mysticCatalog, id => Combat.IsStoryDeployed(id));
+            ManualActions.Configure(storyDispatchRules, originalFusionPort, originalEconomyPort);
+        }
+
+        // 원본 아이템·rawcode·시전·CHu/CHx 후속 처리까지 구현한 실제
+        // 독점/롤백 거래 월드를 확보한 뒤에만 활성화한다. 테스트 모의 월드는 금지.
+        public void ConfigureVerifiedOtherworldMysticFusionWorld(
+            OtherworldMysticFusionCatalog mysticCatalog,
+            IOriginalOtherworldMysticTransactionalWorld originalWorld)
+        {
+            if (originalWorld == null) throw new ArgumentNullException(nameof(originalWorld));
+            ConfigureOtherworldMysticFusionPreview(mysticCatalog);
+            ((OtherworldMysticFusionPreviewPort)originalFusionPort).AttachVerifiedCommit(
+                new OtherworldMysticFusionAtomicCoordinator(mysticCatalog, originalWorld));
+        }
+
         // 원본 조합 엔진이 실제 재료/재화 트랜잭션을 구현했을 때만 연결.
         // 웹 도감 재료 미리보기만으로 유닛을 소비하지 않는다.
         public void ConfigureVerifiedFusionCommit(IVerifiedOriginalFusionCommit originalCommit)
