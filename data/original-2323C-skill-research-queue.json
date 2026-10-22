@@ -8,7 +8,7 @@
     "tooltipProfiles": 200,
     "skillEntries": 554,
     "passiveEntries": 295,
-    "skillEntriesOnMappedUnits": 474,
+    "skillEntriesOnMappedUnits": 548,
     "skillFamilies": {
       "active-or-automatic-mobile": 146,
       "attack-triggered": 365,
@@ -4057,8 +4057,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h01M",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -4076,8 +4076,8 @@
         "explosive",
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h01M",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -4667,8 +4667,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05E",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -4685,8 +4685,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05E",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -4703,8 +4703,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05E",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -4721,8 +4721,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05E",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5515,8 +5515,8 @@
         "magical",
         "movementSlow"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02P",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5571,8 +5571,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02W",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5610,8 +5610,8 @@
         "explosive",
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h033",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5629,8 +5629,8 @@
         "explosive",
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h033",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5650,8 +5650,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h03A",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5669,8 +5669,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h03A",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5743,8 +5743,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02R",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5762,8 +5762,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02R",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5878,8 +5878,8 @@
         "selfAttackSpeedBuff",
         "summon"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02N",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5896,8 +5896,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02Z",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5915,8 +5915,8 @@
         "damage",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02Z",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5934,8 +5934,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02Z",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -5953,8 +5953,8 @@
         "attackSpeedDebuff",
         "transformAllyUnit"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h08S",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6026,8 +6026,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h034",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6044,8 +6044,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h034",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6331,8 +6331,8 @@
       "documentedEffectTypes": [
         "damage"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h038",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6351,8 +6351,8 @@
         "physical",
         "summon"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h039",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6371,8 +6371,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h039",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6390,8 +6390,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02O",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6408,8 +6408,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02O",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6503,8 +6503,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02S",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6521,8 +6521,8 @@
       "documentedEffectTypes": [
         "critical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02S",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6540,8 +6540,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02S",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6728,8 +6728,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h030",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6747,8 +6747,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h030",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6766,8 +6766,8 @@
         "castOwnedStunSkill",
         "pull"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h030",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6784,8 +6784,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h03H",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6803,8 +6803,8 @@
         "allyAttackPowerBuff",
         "allyAttackSpeedBuff"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h03H",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6841,8 +6841,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h087",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6862,8 +6862,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h032",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6881,8 +6881,8 @@
         "magical",
         "selfAttackSpeedBuff"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h032",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -6902,8 +6902,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h031",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -11777,8 +11777,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05G",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -11795,8 +11795,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05G",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -11814,8 +11814,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05G",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -11833,8 +11833,8 @@
         "fixed",
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05G",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12172,8 +12172,8 @@
         "physical",
         "selfAttackSpeedMax"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h07I",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12191,8 +12191,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h07I",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12209,8 +12209,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h07I",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12228,8 +12228,8 @@
         "armorBreak",
         "physical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h07I",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12734,8 +12734,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05S",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12752,8 +12752,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05S",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12771,8 +12771,8 @@
         "magical",
         "physical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05W",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12789,8 +12789,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h05W",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12864,8 +12864,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h07J",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12883,8 +12883,8 @@
         "explosive",
         "explosiveDamageAmplification"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h07J",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12902,8 +12902,8 @@
         "explosive",
         "teleport"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h07J",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -12996,8 +12996,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h06V",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13014,8 +13014,8 @@
       "documentedEffectTypes": [
         "magicalDamageOverTime"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h06V",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13200,8 +13200,8 @@
         "critical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h06Y",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13220,8 +13220,8 @@
         "allyHealthRegeneration",
         "allyManaRegeneration"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h06Y",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13238,8 +13238,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h071",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13257,8 +13257,8 @@
         "fixed",
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h071",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13331,8 +13331,8 @@
       "documentedEffectTypes": [
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h0BF",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13350,8 +13350,8 @@
         "explosive",
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h0BF",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13369,8 +13369,8 @@
         "explosive",
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h0BF",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13388,8 +13388,8 @@
         "explosive",
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h0BF",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13500,8 +13500,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h09W",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13518,8 +13518,8 @@
       "documentedEffectTypes": [
         "fixed"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h09W",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13538,8 +13538,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h09W",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13556,8 +13556,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h08I",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13574,8 +13574,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h08I",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13592,8 +13592,8 @@
       "documentedEffectTypes": [
         "magical"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h08I",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -13612,8 +13612,8 @@
         "magicalDamageOverTime",
         "selfAttackSpeedDebuff"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h08I",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -14106,8 +14106,8 @@
         "physical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h01Q",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -14144,8 +14144,8 @@
       "documentedEffectTypes": [
         "allyAttackSpeedBuff"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02L",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -14275,8 +14275,8 @@
       "documentedEffectTypes": [
         "allyAttackPowerBuff"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02A",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",
@@ -14294,8 +14294,8 @@
         "magical",
         "stun"
       ],
-      "mapUnitRawcode": null,
-      "mapObjectMappingStatus": "unmatched",
+      "mapUnitRawcode": "h02A",
+      "mapObjectMappingStatus": "reviewed-map-name-alias-and-grade",
       "originalJassSkillRawcode": null,
       "originalExecutionVerified": false,
       "implementationStatus": "requires-original-JASS-analysis",

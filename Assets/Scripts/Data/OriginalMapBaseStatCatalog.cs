@@ -105,6 +105,7 @@ namespace Ordr.Mobile.Data
             if (OriginalRawcode.Length != 4 || string.IsNullOrEmpty(MapName) ||
                 (MappingStatus != "verified-common-map-identity" &&
                  MappingStatus != "unique-map-name-and-grade" &&
+                 MappingStatus != "reviewed-map-name-alias-and-grade" &&
                  MappingStatus != "verified-jass-fusion-result" &&
                  MappingStatus != "verified-jass-label-and-fusion-result"))
                 throw new FormatException(UnitId + ": 원본 rawcode 매핑 근거가 불완전합니다.");

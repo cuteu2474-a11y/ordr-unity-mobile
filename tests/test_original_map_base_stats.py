@@ -14,7 +14,9 @@ from build_original_map_base_stats import (  # noqa: E402
     COMMON_RAWCODES, attack_stats, clean_name, normalize_name,
 )
 from classify_character_skills import family  # noqa: E402
-from reconcile_ambiguous_original_map_objects import reconcile  # noqa: E402
+from reconcile_ambiguous_original_map_objects import (  # noqa: E402
+    REVIEWED_MAP_NAME_ALIASES, reconcile,
+)
 
 
 class WarcraftObjectAttackTests(unittest.TestCase):
@@ -52,9 +54,10 @@ class GeneratedDataTests(unittest.TestCase):
         report = self.source["summary"]
         self.assertEqual(report["originalNamedObjects"], 1493)
         self.assertEqual(report["catalogCharacters"], 271)
-        self.assertEqual(report["linkedCatalogCharacters"], 216)
-        self.assertEqual(report["unresolvedCatalogCharacters"], 55)
-        self.assertEqual(report["linkedWithAttack1"], 214)
+        self.assertEqual(report["linkedCatalogCharacters"], 270)
+        self.assertEqual(report["unresolvedCatalogCharacters"], 1)
+        self.assertEqual(report["linkedWithAttack1"], 268)
+        self.assertEqual(report["mappingStatusCounts"]["reviewed-map-name-alias-and-grade"], 54)
         self.assertEqual(report["mappingStatusCounts"]["verified-jass-fusion-result"], 5)
         self.assertEqual(report["mappingStatusCounts"]["verified-jass-label-and-fusion-result"], 49)
         self.assertEqual(report["gameplayParityVerified"], 0)
@@ -68,6 +71,44 @@ class GeneratedDataTests(unittest.TestCase):
                 self.assertIsNone(row["attack1"])
                 self.assertIsNone(row["baseStats"])
                 self.assertIsNone(row["sourceMapName"])
+        self.assertEqual([row["catalogId"] for row in rows if not row["originalRawcode"]],
+                         ["E-02"])
+
+    def test_54_reviewed_aliases_use_pinned_names_and_actual_object_stats(self):
+        rows = {row["catalogId"]: row for row in self.source["catalogEntries"]}
+        objects = {obj["rawcode"]: obj for obj in self.source["mapObjects"]}
+        self.assertEqual(len(REVIEWED_MAP_NAME_ALIASES), 54)
+        for catalog_id, (code, original_name) in REVIEWED_MAP_NAME_ALIASES.items():
+            row = rows[catalog_id]
+            obj = objects[code]
+            self.assertEqual(row["mappingStatus"], "reviewed-map-name-alias-and-grade")
+            self.assertEqual(row["originalRawcode"], code)
+            self.assertEqual(row["sourceMapName"], original_name)
+            self.assertEqual(obj["mapName"], original_name)
+            self.assertEqual(row["attack1"], obj["attack1"])
+            self.assertEqual(row["attack2"], obj["attack2"])
+            self.assertEqual(row["baseStats"], obj["baseStats"])
+            self.assertEqual(row["originalAbilityList"], obj["originalAbilityList"])
+            self.assertIs(row["combatParityVerified"], False)
+        self.assertEqual(reconcile(deepcopy(self.source), self.registry, self.labels),
+                         self.source)
+
+    def test_reviewed_alias_fails_closed_on_name_grade_or_rawcode_drift(self):
+        for field, invalid, expected_error in (
+            ("mapName", "니코 로빈 임시 - 안흔함", "source"),
+            ("mapGradeSuffix", "전설", "grade"),
+        ):
+            before = deepcopy(self.source)
+            original = next(o for o in before["mapObjects"] if o["rawcode"] == "h00O")
+            original[field] = invalid
+            with self.assertRaisesRegex(ValueError, expected_error):
+                reconcile(before, self.registry, self.labels)
+
+        before = deepcopy(self.source)
+        row = next(r for r in before["catalogEntries"] if r["catalogId"] == "U-01")
+        row["originalRawcode"] = "h00K"
+        with self.assertRaisesRegex(ValueError, "drifted"):
+            reconcile(before, self.registry, self.labels)
 
     def test_five_ambiguous_units_are_resolved_using_jass_fusion_results(self):
         expected = {

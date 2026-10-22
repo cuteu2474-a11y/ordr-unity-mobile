@@ -43,6 +43,9 @@ namespace Ordr.Mobile.Tests
             "verified-jass-fusion-result", "verified-jass-label-and-fusion-result")
             .Replace("\"alternateRawcodes\":[\"h0XX\"],", "");
 
+        private static readonly string ReviewedAlias = Luffy.Replace(
+            "verified-common-map-identity", "reviewed-map-name-alias-and-grade");
+
         [Test]
         public void OriginalMapLuffyIsReadableWithoutEnablingCombat()
         {
@@ -59,6 +62,22 @@ namespace Ordr.Mobile.Tests
                 catalog.Find("C-01").Attack1.BaseAttacksPerSecond.Value, 1e-9);
             Assert.IsFalse(catalog.Find("C-01").CombatParityVerified);
             Assert.IsNull(catalog.Find("C-02").Attack1);
+        }
+
+        [Test]
+        public void ReviewedMapNameAliasImportsItsStatsWithoutApprovingCombat()
+        {
+            var units = CharacterUnitCatalog.FromJson(UnitFixture);
+            var catalog = OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + ReviewedAlias + "," + Unmatched + "]}", units);
+            Assert.AreEqual(1, catalog.LinkedCount);
+            Assert.AreEqual("reviewed-map-name-alias-and-grade",
+                catalog.Find("C-01").MappingStatus);
+            Assert.AreEqual(29.0, catalog.Find("C-01").Attack1.MinimumBaseDamage);
+            Assert.IsFalse(catalog.Find("C-01").CombatParityVerified);
+            Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + ReviewedAlias.Replace("\"combatParityVerified\":false",
+                    "\"combatParityVerified\":true") + "," + Unmatched + "]}", units));
         }
 
         [Test]
