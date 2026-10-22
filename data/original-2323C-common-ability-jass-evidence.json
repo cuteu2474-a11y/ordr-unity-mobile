@@ -1,0 +1,157 @@
+{
+  "format": "ordr-2323C-common-ability-jass-callback-review-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceLineCount": 63651,
+  "characterUnit": "C-01",
+  "originalRawcode": "h003",
+  "verifiedLuffyIndividualOffensiveAbilityRawcodes": [],
+  "commonAbilities": [
+    {
+      "rawcode": "A0JE",
+      "classification": "noncombat-same-type-group-move-and-hold",
+      "callback": "CRh",
+      "registrationLine": 62966,
+      "checks": [
+        {
+          "line": 62966,
+          "contains": "call BC5(KH,$41304A45,function CRh)"
+        },
+        {
+          "line": 55785,
+          "contains": "function CRh takes nothing returns nothing"
+        },
+        {
+          "line": 55789,
+          "contains": "call IssueImmediateOrder(Hv,\"holdposition\")"
+        },
+        {
+          "line": 55790,
+          "contains": "call GroupEnumUnitsOfPlayer(Hp[Cl],sU,Filter(function CRg))"
+        },
+        {
+          "line": 55778,
+          "contains": "call Bc6(Hw,GetUnitX(Hv),GetUnitY(Hv))"
+        }
+      ]
+    },
+    {
+      "rawcode": "A09G",
+      "classification": "noncombat-common-unit-sale",
+      "callback": "CRO",
+      "registrationLine": 55692,
+      "checks": [
+        {
+          "line": 55692,
+          "contains": "call BC5(KH,$41303947,function CRO)"
+        },
+        {
+          "line": 55576,
+          "contains": "function CRO takes nothing returns nothing"
+        },
+        {
+          "line": 55579,
+          "contains": "call BdD(GetTriggerUnit())"
+        },
+        {
+          "line": 55580,
+          "contains": "set LY[JG]=LY[JG]+1"
+        },
+        {
+          "line": 55582,
+          "contains": "if sS-sS/3*3==0 then"
+        },
+        {
+          "line": 55584,
+          "contains": "call Bcz(Player(JG),1)"
+        },
+        {
+          "line": 55585,
+          "contains": "if BFi(1,100)<=35 then"
+        },
+        {
+          "line": 55587,
+          "contains": "call Bci(Player(JG),1)"
+        }
+      ]
+    },
+    {
+      "rawcode": "A00D",
+      "classification": "noncombat-CWR-fusion-command",
+      "callback": "CWR",
+      "registrationLine": 60316,
+      "checks": [
+        {
+          "line": 60316,
+          "contains": "call BGG($41303044)"
+        },
+        {
+          "line": 60317,
+          "contains": "call BGH($554E4954,$6830304B,1)"
+        },
+        {
+          "line": 60318,
+          "contains": "call BGI($554E4954,$68303033,1)"
+        },
+        {
+          "line": 60319,
+          "contains": "call BGI($554E4954,$68303039,1)"
+        }
+      ]
+    },
+    {
+      "rawcode": "A012",
+      "classification": "noncombat-CWR-fusion-command",
+      "callback": "CWR",
+      "registrationLine": 60407,
+      "checks": [
+        {
+          "line": 60407,
+          "contains": "call BGG($41303132)"
+        },
+        {
+          "line": 60408,
+          "contains": "call BGH($554E4954,$68303055,1)"
+        },
+        {
+          "line": 60409,
+          "contains": "call BGI($554E4954,$68303033,3)"
+        }
+      ]
+    },
+    {
+      "rawcode": "Avul",
+      "classification": "native-invulnerability-ability-not-luffy-personal-attack",
+      "callback": "native",
+      "registrationLine": null,
+      "checks": [
+        {
+          "line": 56969,
+          "contains": "call UnitAddAbility(LoadUnitHandle(E2,0,DR*EM+1),$4176756C)"
+        },
+        {
+          "line": 56983,
+          "contains": "call UnitRemoveAbility(LoadUnitHandle(E2,0,DR*EM+1),$4176756C)"
+        }
+      ]
+    }
+  ],
+  "saleRewardRule": {
+    "saleAbilityRawcode": "A09G",
+    "playerCounter": "LY[player]",
+    "requiredSaleCountPerRandomWisp": 3,
+    "randomWispPerMilestone": 1,
+    "bonusWoodProbabilityPercent": 35,
+    "extraWoodOnSuccess": 1,
+    "consumedUnitOperation": "BdD: hide and kill GetTriggerUnit",
+    "gameplayTransactionReady": false
+  },
+  "importantLimits": [
+    "No C-01-specific offensive ability identified among its five attached rawcodes.",
+    "Global JASS on-attack/on-damage effects and final native hit timing were not exhaustively ruled out.",
+    "The common sale reward rule is proven by JASS but atomic game-world inventory removal and wallet/wisp grant remain unimplemented.",
+    "Avul is a native engine ability; callbacks cited do not certify every native effect.",
+    "TEST_ONLY synthetic hit/quantization fixtures are not evidence of actual retail Warcraft parity."
+  ]
+}
