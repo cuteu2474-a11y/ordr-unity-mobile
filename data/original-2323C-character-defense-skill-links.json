@@ -33,6 +33,7 @@
       "registration": "BrQ:17134",
       "effectLines": "BrO:17095; BrP:17121",
       "primaryBonus": 0,
+      "verifiedManaThreshold": 100,
       "note": "BrP의 마나100 분기에서 BrO 범위 대상+4; 원본 자동 공격으로 마나 충전."
     },
     {
@@ -48,6 +49,7 @@
       "registration": "Br9:17645",
       "effectLines": "Br6:17604; Br8:17624",
       "primaryBonus": 0,
+      "verifiedManaThreshold": 150,
       "note": "Br8 마나 150 분기, Br6가 범위 적마다 Bd5(target,10). 영구 능력 레벨 상승. 추가 BeC 체력 비례 보정 미구현."
     },
     {
@@ -63,6 +65,7 @@
       "registration": "B5a:33489",
       "effectLines": "B5Z:33474",
       "primaryBonus": 0,
+      "verifiedProcChancePercent": 11,
       "note": "B5Z 11% 추첨 분기에 Bdq(RN,5)."
     },
     {
@@ -78,6 +81,7 @@
       "registration": "B8x:37330",
       "effectLines": "B8q:37215",
       "primaryBonus": 0,
+      "verifiedManaThreshold": 115,
       "note": "B8r 마나115에서 800 영역에 B8q Bdq(대상,5)."
     },
     {
@@ -93,6 +97,7 @@
       "registration": "B97:38668",
       "effectLines": "B92:38555",
       "primaryBonus": 0,
+      "verifiedProcChancePercent": 10,
       "note": "B93 10% 추첨에서 반경600 적마다 B92 Bdq(대상,1)."
     },
     {
@@ -108,6 +113,7 @@
       "registration": "main:62740",
       "effectLines": "Btv:19007~19009; Btx:19022~19034",
       "primaryBonus": 0,
+      "verifiedManaThreshold": 50,
       "phase": "afterDamage",
       "mappingEvidence": "Icon BTN0114_smoker + JASS 450000/Bdq3 + 2.323 tooltip",
       "note": "한 시전의 Bcb 직접피해/광역피해 뒤 Bdq3. 원본 나머지 효과 미구현"
@@ -125,6 +131,7 @@
       "registration": "main:62742",
       "effectLines": "Bt8:19181~19187; Bt7:19161~19162",
       "primaryBonus": 0,
+      "verifiedProcChancePercent": 5,
       "phase": "beforeSummonedHit",
       "mappingEvidence": "Icon BTN0526_Shiki + JASS 5%/Bdq2 + 2.323 tooltip",
       "note": "5% 조건이 생성한 소환체의 실제 타격과 Bdq 순서까지는 추가 확인 필요"
@@ -142,6 +149,7 @@
       "registration": "main:62742",
       "effectLines": "Bt8:19172~19179; Bt6:19157~19159",
       "primaryBonus": 0,
+      "verifiedProcChancePercent": 10,
       "phase": "afterDamage",
       "mappingEvidence": "Icon BTN0526_Shiki + JASS 10% 145000/Bdq1 + tooltip",
       "note": "마법피해 Bcb145000 후 Bdq1"
@@ -159,6 +167,7 @@
       "registration": "main:62743",
       "effectLines": "BuC:19203~19206",
       "primaryBonus": 0,
+      "verifiedManaThreshold": 115,
       "phase": "beforeDamage",
       "mappingEvidence": "Icon BTN0527_laily + mana115/Bdq3/1200000+1000000 + tooltip",
       "note": "Bdq3 먼저, CHAOS 데미지1200000(1~1.5) 및 NORMAL1000000 이후"
@@ -176,6 +185,7 @@
       "registration": "main:62752",
       "effectLines": "Bus:19770~19773; Bur:19759~19761",
       "primaryBonus": 0,
+      "verifiedProcChancePercent": 14,
       "phase": "afterDamage",
       "mappingEvidence": "Icon BTN0537_Issho + 14% 192500/Bd5+1 + Fujitora tooltip",
       "note": "Bcb192500 먼저, A04Q 레벨+1 다음"

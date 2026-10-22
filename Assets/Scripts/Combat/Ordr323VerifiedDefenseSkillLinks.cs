@@ -18,17 +18,25 @@ namespace Ordr.Mobile.Combat
         public int PrimaryBonus { get; private set; }
         public string AbilityRawcode { get; private set; }
         public string JassEvidence { get; private set; }
+        public int? VerifiedProcChancePercent { get; private set; }
+        public int? VerifiedManaThreshold { get; private set; }
 
         public Ordr323VerifiedDefenseSkillLink(string unitId, string unitRawcode,
             int ordinal, string skillName, string trigger, string componentType,
-            int value, int primaryBonus, string abilityRawcode, string evidence)
+            int value, int primaryBonus, string abilityRawcode, string evidence,
+            int? verifiedProcChancePercent = null, int? verifiedManaThreshold = null)
         {
             if (string.IsNullOrWhiteSpace(unitId) || string.IsNullOrWhiteSpace(unitRawcode) ||
                 string.IsNullOrWhiteSpace(skillName) || string.IsNullOrWhiteSpace(trigger) ||
                 string.IsNullOrWhiteSpace(evidence) || ordinal < 0 || value <= 0 ||
                 primaryBonus < 0 || (componentType != "armorBreak" &&
                 componentType != "magicResistanceReduction") ||
-                (abilityRawcode != "A04M" && abilityRawcode != "A04Q"))
+                (abilityRawcode != "A04M" && abilityRawcode != "A04Q") ||
+                (verifiedProcChancePercent.HasValue &&
+                 (trigger != "onAttack" || verifiedProcChancePercent.Value < 0 ||
+                  verifiedProcChancePercent.Value > 100)) ||
+                (verifiedManaThreshold.HasValue &&
+                 (trigger != "activeMana" || verifiedManaThreshold.Value <= 0)))
                 throw new ArgumentException("검증된 JASS 방깎 연결 정보가 부족합니다.");
             UnitId = unitId; UnitRawcode = unitRawcode;
             SkillId = unitId + ":skill:" + ordinal;
@@ -36,6 +44,8 @@ namespace Ordr.Mobile.Combat
             ComponentType = componentType; Value = value;
             PrimaryBonus = primaryBonus; AbilityRawcode = abilityRawcode;
             JassEvidence = evidence;
+            VerifiedProcChancePercent = verifiedProcChancePercent;
+            VerifiedManaThreshold = verifiedManaThreshold;
         }
 
         public bool Matches(CharacterSkillProfile profile,
@@ -44,7 +54,11 @@ namespace Ordr.Mobile.Combat
             if (profile == null || skill == null || component == null ||
                 profile.UnitId != UnitId || skill.Id != SkillId ||
                 skill.Name != SkillName || skill.Trigger != Trigger ||
-                component.Type != ComponentType) return false;
+                component.Type != ComponentType ||
+                (VerifiedProcChancePercent.HasValue &&
+                 skill.ChancePercent != VerifiedProcChancePercent.Value) ||
+                (VerifiedManaThreshold.HasValue &&
+                 skill.Number("manaCost") != VerifiedManaThreshold.Value)) return false;
             double? stated = component.Number(
                 ComponentType == "armorBreak" ? "stacks" : "percent");
             return stated.HasValue && stated.Value == Value;
@@ -62,41 +76,51 @@ namespace Ordr.Mobile.Combat
                 "armorBreak",1,1,"A04M","BrQ:w5(h03W,BrP) → BrP:17108 & BrN:17091"),
             new Ordr323VerifiedDefenseSkillLink(
                 "H-10","h03W",0,"맥시멈 스윙","activeMana",
-                "armorBreak",4,0,"A04M","BrQ:w5(h03W,BrP) → BrP mana100 → BrO:17095"),
+                "armorBreak",4,0,"A04M","BrQ:w5(h03W,BrP) → BrP mana100 → BrO:17095",
+                verifiedManaThreshold:100),
             new Ordr323VerifiedDefenseSkillLink(
                 "H-09","h03X",0,"뇌영","activeMana",
                 "magicResistanceReduction",10,0,"A04Q",
-                "Br9:17645 w5(h03X,Br8) → Br8 mana150 → Br6:17604 Bd5"),
+                "Br9:17645 w5(h03X,Br8) → Br8 mana150 → Br6:17604 Bd5",
+                verifiedManaThreshold:150),
             new Ordr323VerifiedDefenseSkillLink(
                 "E-10","h05B",1,"미검","onAttack",
-                "armorBreak",5,0,"A04M","B5a:w5(h05B,B5Z) → B5Z:33474"),
+                "armorBreak",5,0,"A04M","B5a:w5(h05B,B5Z) → B5Z:33474",
+                verifiedProcChancePercent:11),
             new Ordr323VerifiedDefenseSkillLink(
                 "I-03","h049",0,"패기발산","activeMana",
-                "armorBreak",5,0,"A04M","B8x:37330 w5(h049,B8r) → B8q:37215"),
+                "armorBreak",5,0,"A04M","B8x:37330 w5(h049,B8r) → B8q:37215",
+                verifiedManaThreshold:115),
             new Ordr323VerifiedDefenseSkillLink(
                 "I-09","h04B",3,"범위 마법 스턴","onAttack",
-                "armorBreak",1,0,"A04M","B97:38668 w5(h04B,B93) → B92:38555"),
+                "armorBreak",1,0,"A04M","B97:38668 w5(h04B,B93) → B92:38555",
+                verifiedProcChancePercent:10),
             // 전설 계열은 실제 JASS 등록·대미지/방깎 값과 도감 프로필 대조.
             new Ordr323VerifiedDefenseSkillLink(
                 "L-20","h02V",0,"화이트 아웃","activeMana",
                 "armorBreak",3,0,"A04M",
-                "main:62740 w5(h02V,Btx) → mana50 → Btv:19007~19009"),
+                "main:62740 w5(h02V,Btx) → mana50 → Btv:19007~19009",
+                verifiedManaThreshold:50),
             new Ordr323VerifiedDefenseSkillLink(
                 "L-23","h039",0,"바위낙하","onAttack",
                 "armorBreak",2,0,"A04M",
-                "main:62742 w5(h039,Bt8) → chance5 → Bt7:19161~19162"),
+                "main:62742 w5(h039,Bt8) → chance5 → Bt7:19161~19162",
+                verifiedProcChancePercent:5),
             new Ordr323VerifiedDefenseSkillLink(
                 "L-23","h039",1,"바닷물 가두기","onAttack",
                 "armorBreak",1,0,"A04M",
-                "main:62742 w5(h039,Bt8) → chance10 → Bt6:19157~19159"),
+                "main:62742 w5(h039,Bt8) → chance10 → Bt6:19157~19159",
+                verifiedProcChancePercent:10),
             new Ordr323VerifiedDefenseSkillLink(
                 "L-07","h03A",0,"패기발산","activeMana",
                 "armorBreak",3,0,"A04M",
-                "main:62743 w5(h03A,BuD) → mana115 → BuC:19203~19206"),
+                "main:62743 w5(h03A,BuD) → mana115 → BuC:19203~19206",
+                verifiedManaThreshold:115),
             new Ordr323VerifiedDefenseSkillLink(
                 "L-37","h031",0,"중력검","onAttack",
                 "magicResistanceReduction",1,0,"A04Q",
-                "main:62752 w5(h031,Bus) → chance14 → Bur:19759~19761")
+                "main:62752 w5(h031,Bus) → chance14 → Bur:19759~19761",
+                verifiedProcChancePercent:14)
         };
 
         public static IReadOnlyList<Ordr323VerifiedDefenseSkillLink> All
@@ -116,6 +140,46 @@ namespace Ordr.Mobile.Combat
                 }
             match = null;
             return false;
+        }
+
+        // Called before adding a source-linked attack proc to the RNG engine.
+        // Otherwise a drifted tooltip can consume rolls and emit phantom casts,
+        // even when the effect router eventually rejects its wrong payload.
+        public static bool CanRegisterAttackProc(CharacterSkillProfile profile,
+            ImportedCombatSkill skill, string independentlyVerifiedUnitRawcode,
+            out string reason)
+        {
+            reason = null;
+            if (profile == null || skill == null) return true;
+            foreach (var link in Links)
+            {
+                if (link.UnitId != profile.UnitId || link.SkillId != skill.Id ||
+                    link.Trigger != "onAttack") continue;
+                if (!string.Equals(independentlyVerifiedUnitRawcode,
+                        link.UnitRawcode, StringComparison.Ordinal))
+                {
+                    reason = "원본 JASS 공격 이벤트 rawcode 인증 없음";
+                    return false;
+                }
+                if (!link.VerifiedProcChancePercent.HasValue)
+                {
+                    reason = "원본 JASS 발동 확률 미확인";
+                    return false;
+                }
+                bool matched = false;
+                foreach (var effect in skill.Components)
+                    if (link.Matches(profile,skill,effect))
+                    {
+                        matched = true;
+                        break;
+                    }
+                if (!matched)
+                {
+                    reason = "원본 JASS 발동 조건·스킬 설명·효과 수치 불일치";
+                    return false;
+                }
+            }
+            return true;
         }
     }
 

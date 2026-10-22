@@ -13,20 +13,35 @@ namespace Ordr.Mobile.Tests
     {
         private static CharacterSkillProfile ProfileFixture(string unitId, string skillName,
             string trigger, string componentType, int componentValue,
-            int ordinal = 0)
+            int ordinal = 0, int? chanceOverride = null,
+            int? manaThresholdOverride = null)
         {
             string prefix = "";
             for (int i = 0; i < ordinal; i++)
                 prefix += "{\"name\":\"dummy\",\"trigger\":\"onAttack\"," +
                           "\"target\":\"single\",\"components\":[]},";
             string field = componentType == "armorBreak" ? "stacks" : "percent";
+            int? chance = chanceOverride;
+            int? mana = manaThresholdOverride;
+            foreach (var link in Ordr323VerifiedDefenseSkillLinks.All)
+                if (link.SkillId == unitId + ":skill:" + ordinal &&
+                    link.ComponentType == componentType)
+                {
+                    if (!chance.HasValue) chance = link.VerifiedProcChancePercent;
+                    if (!mana.HasValue) mana = link.VerifiedManaThreshold;
+                    break;
+                }
+            string triggerFields =
+                (chance.HasValue ? ",\"chancePercent\":" + chance.Value : "") +
+                (mana.HasValue ? ",\"manaCost\":" + mana.Value : "");
             string json = "{\"gameVersion\":\"S2 2.323[C]\",\"profiles\":[" +
               "{\"unitId\":\"" + unitId + "\",\"sourceUrl\":\"TEST_FIXTURE\"," +
               "\"skillSpecCompleteness\":\"partial\",\"passives\":[]," +
               "\"basicAttack\":{}," +
               "\"skills\":[" + prefix +
               "{\"name\":\"" + skillName + "\",\"trigger\":\"" +
-              trigger + "\",\"target\":\"single\",\"components\":[{" +
+              trigger + "\"" + triggerFields +
+              ",\"target\":\"single\",\"components\":[{" +
               "\"type\":\"" + componentType + "\",\"" + field + "\":" +
               componentValue + "}]}]}]}";
             return CharacterSkillCatalog.FromJson(json).Require(unitId);
@@ -122,6 +137,104 @@ namespace Ordr.Mobile.Tests
                 Assert.IsFalse(string.IsNullOrWhiteSpace(item.JassEvidence));
             }
             Assert.AreEqual(9, ids.Count);
+        }
+
+        [Test]
+        public void VerifiedAttackChancesAndManaThresholdsStayPinnedToJass()
+        {
+            var chance = new Dictionary<string,int> {
+                {"E-10:skill:1",11}, {"I-09:skill:3",10},
+                {"L-23:skill:0",5}, {"L-23:skill:1",10},
+                {"L-37:skill:0",14}
+            };
+            var mana = new Dictionary<string,int> {
+                {"H-10:skill:0",100}, {"H-09:skill:0",150},
+                {"I-03:skill:0",115}, {"L-20:skill:0",50},
+                {"L-07:skill:0",115}
+            };
+            int known = 0;
+            foreach (var link in Ordr323VerifiedDefenseSkillLinks.All)
+            {
+                int verified;
+                if (chance.TryGetValue(link.SkillId,out verified))
+                {
+                    Assert.AreEqual(verified,link.VerifiedProcChancePercent);
+                    Assert.IsNull(link.VerifiedManaThreshold);
+                    known++;
+                }
+                else if (mana.TryGetValue(link.SkillId,out verified))
+                {
+                    Assert.AreEqual(verified,link.VerifiedManaThreshold);
+                    Assert.IsNull(link.VerifiedProcChancePercent);
+                    known++;
+                }
+                else
+                {
+                    // H-10 skill 1: chance from this JASS evidence is still unpinned.
+                    Assert.AreEqual("H-10:skill:1",link.SkillId);
+                    Assert.IsNull(link.VerifiedProcChancePercent);
+                    Assert.IsNull(link.VerifiedManaThreshold);
+                }
+            }
+            Assert.AreEqual(10,known);
+        }
+
+        [Test]
+        public void TooltipChanceOrManaDriftCannotApplyOriginalJassDebuff()
+        {
+            var f = new Fixture();
+            var enemy = Enemy(); f.Track(enemy);
+            string reason;
+            var wrongChance = ProfileFixture("E-10","미검","onAttack",
+                "armorBreak",5,1,chanceOverride:12);
+            Assert.IsFalse(f.Apply(wrongChance,enemy,true,out reason,1));
+            Assert.AreEqual(0,f.Stacks[enemy.Id]);
+
+            var wrongMana = ProfileFixture("H-09","뇌영","activeMana",
+                "magicResistanceReduction",10,0,manaThresholdOverride:149);
+            Assert.IsFalse(f.Apply(wrongMana,enemy,true,out reason));
+            Assert.AreEqual(0,f.Status[enemy.Id].ActiveCount);
+
+            var matching = ProfileFixture("E-10","미검","onAttack", "armorBreak",5,1);
+            Assert.IsTrue(f.Apply(matching,enemy,true,out reason,1),reason);
+            Assert.AreEqual(5,f.Stacks[enemy.Id]);
+        }
+
+        [Test]
+        public void VerifiedJassAttackProcIsRegisteredOnlyWithMatchingRawcodeAndChance()
+        {
+            var basic = new BasicAttackSpec(10,1,DamageSchool.Physical,
+                DamageTraits.None);
+            var correct = ProfileFixture("E-10","미검","onAttack",
+                "armorBreak",5,1);
+            var accepted = CharacterCombatMapping.Build("E-10",correct,basic,"h05B");
+            Assert.IsTrue(accepted.ActivatedSkills.ContainsKey("E-10:skill:1"));
+
+            var wrongUnit = CharacterCombatMapping.Build("E-10",correct,basic,"h000");
+            Assert.IsFalse(wrongUnit.ActivatedSkills.ContainsKey("E-10:skill:1"));
+            StringAssert.Contains("rawcode",string.Join(" ",wrongUnit.DeferredReasons));
+
+            var missingUnit = CharacterCombatMapping.Build("E-10",correct,basic);
+            Assert.IsFalse(missingUnit.ActivatedSkills.ContainsKey("E-10:skill:1"));
+            StringAssert.Contains("rawcode",string.Join(" ",missingUnit.DeferredReasons));
+
+            var changed = ProfileFixture("E-10","미검","onAttack",
+                "armorBreak",5,1,chanceOverride:12);
+            var wrongChance = CharacterCombatMapping.Build("E-10",changed,basic,"h05B");
+            Assert.IsFalse(wrongChance.ActivatedSkills.ContainsKey("E-10:skill:1"));
+            StringAssert.Contains("불일치",string.Join(" ",wrongChance.DeferredReasons));
+        }
+
+        [Test]
+        public void UnverifiedJassProcChanceIsNeverRegisteredFromTooltipAlone()
+        {
+            var profile = ProfileFixture("H-10","기본 공격 발동형 타격",
+                "onAttack","armorBreak",1,1,chanceOverride:20);
+            var mapping = CharacterCombatMapping.Build("H-10",profile,
+                new BasicAttackSpec(10,1,DamageSchool.Physical,DamageTraits.None),
+                "h03W");
+            Assert.IsFalse(mapping.ActivatedSkills.ContainsKey("H-10:skill:1"));
+            StringAssert.Contains("발동 확률 미확인",string.Join(" ",mapping.DeferredReasons));
         }
 
         [Test]

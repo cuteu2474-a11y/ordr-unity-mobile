@@ -289,6 +289,31 @@ class GeneratedDataTests(unittest.TestCase):
             self.assertNotIn((uid, ordinal, link["type"]), distinct_skills)
             distinct_skills.add((uid, ordinal, link["type"]))
 
+    def test_verified_jass_proc_chances_and_mana_thresholds_are_not_guessed(self):
+        expected_chances = {
+            ("E-10", 1): 11, ("I-09", 3): 10, ("L-23", 0): 5,
+            ("L-23", 1): 10, ("L-37", 0): 14,
+        }
+        expected_mana = {
+            ("H-10", 0): 100, ("H-09", 0): 150, ("I-03", 0): 115,
+            ("L-20", 0): 50, ("L-07", 0): 115,
+        }
+        profiles = {r["unitId"]: r for r in self.profiles["profiles"]}
+        for link in self.defense_links["links"]:
+            key = (link["unitId"], link["skillOrdinal"])
+            skill = profiles[key[0]]["skills"][key[1]]
+            self.assertEqual(link.get("verifiedProcChancePercent"),
+                             expected_chances.get(key))
+            self.assertEqual(link.get("verifiedManaThreshold"),
+                             expected_mana.get(key))
+            if key in expected_chances:
+                self.assertEqual(skill["chancePercent"], expected_chances[key])
+            if key in expected_mana:
+                self.assertEqual(skill["manaCost"], expected_mana[key])
+        # H-10 on-attack metadata is intentionally omitted until a JASS
+        # probability has been independently verified; its tooltip is not proof.
+        self.assertNotIn(("H-10", 1), expected_chances)
+
     def test_trigger_families_do_not_invent_special_behavior(self):
         self.assertEqual(family("onAttack"), "attack-triggered")
         self.assertEqual(family("manual"), "active-or-automatic-mobile")

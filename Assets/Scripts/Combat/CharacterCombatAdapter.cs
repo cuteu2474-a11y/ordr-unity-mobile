@@ -47,6 +47,14 @@ namespace Ordr.Mobile.Combat
                 foreach (var skill in profile.Skills)
                 {
                     string reason;
+                    // 원본 JASS 공격 이벤트에 연결된 스킬은 RNG 등록 전에
+                    // 별도로 검증한 rawcode·발동률·효과를 모두 확인한다.
+                    if (!Ordr323VerifiedDefenseSkillLinks.CanRegisterAttackProc(
+                        profile, skill, originalRawcode, out reason))
+                    {
+                        deferred.Add(skill.Id + " (" + skill.Name + "): " + reason);
+                        continue;
+                    }
                     SkillTriggerKind trigger;
                     SkillTargetArea area;
                     double radius;
