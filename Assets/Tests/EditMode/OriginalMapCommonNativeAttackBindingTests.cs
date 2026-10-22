@@ -319,7 +319,7 @@ namespace Ordr.Mobile.Tests
         {
             var units = CharacterUnitCatalog.FromJson(ProjectFile("units.json"));
             var skills = CharacterSkillCatalog.FromJson(
-                "{\\\"gameVersion\\\":\\\"S2 2.323[C]\\\",\\\"profiles\\\":[]}");
+                "{\"gameVersion\":\"S2 2.323[C]\",\"profiles\":[]}");
             var map = OriginalMapBaseStatCatalog.FromJson(
                 ProjectFile("original-2323C-map-base-stats.json"), units);
             var dice = new MinimumDieRoll();
