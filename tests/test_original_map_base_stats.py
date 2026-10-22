@@ -63,7 +63,7 @@ class GeneratedDataTests(unittest.TestCase):
         self.assertEqual(report["unresolvedCatalogCharacters"], 1)
         self.assertEqual(report["linkedWithAttack1"], 269)
         self.assertEqual(report["mappingStatusCounts"]["reviewed-map-name-alias-and-grade"], 54)
-        self.assertEqual(report["mappingStatusCounts"]["verified-jass-fusion-result"], 5)
+        self.assertEqual(report["mappingStatusCounts"]["verified-jass-fusion-result"], 6)
         self.assertEqual(report["mappingStatusCounts"]["verified-jass-label-and-fusion-result"], 49)
         self.assertEqual(report["gameplayParityVerified"], 0)
         rows = self.source["catalogEntries"]
