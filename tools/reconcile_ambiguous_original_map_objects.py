@@ -112,6 +112,48 @@ def reconcile(stats, registry, labels):
     objects = {item["rawcode"]: item for item in stats["mapObjects"]}
     used = {row["originalRawcode"] for row in stats["catalogEntries"]
             if row["originalRawcode"]}
+
+    # JASS ET04 produces h0CJ. The literal-name match h0C7 is a non-attacking
+    # Aloc helper, not the unit obtained from the original fusion.
+    # This override is pinned to both source objects and exact JASS evidence.
+    ryuma = next((r for r in stats["catalogEntries"] if r["catalogId"] == "E-03"), None)
+    helper, fighter = objects.get("h0C7"), objects.get("h0CJ")
+    label = label_index.get("E-03")
+    if (ryuma is None or helper is None or fighter is None or label is None or
+            label["rawcode"] != "h0CJ" or label["abilityRawcode"] != "ET04" or
+            "ET04" not in results.get("h0CJ", set()) or
+            helper["mapName"] != "류마 - 영원" or
+            helper["attack1"] is not None or
+            "Aloc" not in helper["originalAbilityList"].split(",") or
+            fighter["mapName"] != "시모츠키 류마 - 영원" or
+            fighter["mapGradeSuffix"] != "영원" or fighter["attack1"] is None):
+        raise ValueError("E-03 original helper/fusion-result evidence changed")
+    if ryuma["originalRawcode"] == "h0C7":
+        if ryuma["mappingStatus"] != "unique-map-name-and-grade" or "h0CJ" in used:
+            raise ValueError("E-03 object result is not uniquely resolvable")
+        used.remove("h0C7")
+        ryuma.update({
+            "mappingStatus": "verified-jass-fusion-result",
+            "originalRawcode": "h0CJ",
+            "candidateRawcodes": [],
+            "alternateRawcodes": ["h0C7"],
+            "sourceJassFusionAbilityRawcodes": ["ET04"],
+            "sourceMapName": fighter["mapName"],
+            "attack1": fighter["attack1"],
+            "attack2": fighter["attack2"],
+            "baseStats": fighter["baseStats"],
+            "originalAbilityList": fighter["originalAbilityList"],
+        })
+        used.add("h0CJ")
+    elif (ryuma["originalRawcode"] != "h0CJ" or
+          ryuma["mappingStatus"] != "verified-jass-fusion-result" or
+          ryuma.get("alternateRawcodes") != ["h0C7"] or
+          ryuma.get("sourceJassFusionAbilityRawcodes") != ["ET04"] or
+          ryuma["sourceMapName"] != fighter["mapName"] or
+          ryuma["attack1"] != fighter["attack1"] or
+          ryuma["baseStats"] != fighter["baseStats"]):
+        raise ValueError("E-03 previously reconciled mapping drifted")
+
     for row in stats["catalogEntries"]:
         if row["mappingStatus"] != "ambiguous-name-and-grade":
             continue

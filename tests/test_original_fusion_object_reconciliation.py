@@ -33,7 +33,7 @@ class OriginalFusionObjectReconciliationTests(unittest.TestCase):
     def test_all_source_identities_are_not_approvals(self):
         s = self.result["summary"]
         self.assertEqual(s["uniqueCwrUnitRawcodes"], 280)
-        self.assertEqual(s["originalCatalogObjectMatchedRawcodes"], 269)
+        self.assertEqual(s["originalCatalogObjectMatchedRawcodes"], 270)
         self.assertEqual(s["previouslyUnresolvedIngredientRawcodes"], 163)
         self.assertEqual(s["newlyCrossReferencedIngredients"], 155)
         self.assertEqual(s["stillWithoutCatalogIdentity"], 8)
@@ -60,13 +60,13 @@ class OriginalFusionObjectReconciliationTests(unittest.TestCase):
             {"h04S","h06G","h060","h05X","h05Y","H08T","h00H","h0AN"})
         self.assertEqual(unknown["h00H"]["originalW3xObjectName"], "좀비 - 안흔함")
 
-    def test_et04_ryuma_conflict_requires_manual_review(self):
-        self.assertEqual(self.result["summary"]["catalogVsJassLabelConflicts"], 1)
-        row = self.result["conflictingCatalogJassLabels"][0]
-        self.assertEqual((row["catalogUnitId"], row["catalogObjectRawcode"],
-                          row["jassLabelRawcode"], row["jassAbilityRawcode"]),
-                         ("E-03", "h0C7", "h0CJ", "ET04"))
-        self.assertTrue(row["requiresManualFormOrIdentityReview"])
+    def test_et04_ryuma_object_and_jass_result_agree(self):
+        self.assertEqual(self.result["summary"]["catalogVsJassLabelConflicts"], 0)
+        self.assertEqual(self.result["conflictingCatalogJassLabels"], [])
+        row = next(r for r in self.result["entries"] if r["rawcode"] == "h0CJ")
+        self.assertEqual(row["catalogUnitId"], "E-03")
+        self.assertEqual(row["jassLabelCatalogUnitId"], "E-03")
+        self.assertFalse(row["approvedForMaterialConsumption"])
 
     def test_reject_wrong_version_hash_and_stale_backlog(self):
         inputs = copy.deepcopy(self.inputs)

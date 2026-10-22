@@ -7,7 +7,7 @@
   "warning": "Object rawcode links and material/cost matches do NOT prove UPUN and other side conditions, transactional consumption, world effects or gameplay parity.",
   "summary": {
     "uniqueCwrUnitRawcodes": 280,
-    "originalCatalogObjectMatchedRawcodes": 269,
+    "originalCatalogObjectMatchedRawcodes": 270,
     "previouslyUnresolvedIngredientRawcodes": 163,
     "newlyCrossReferencedIngredients": 155,
     "stillWithoutCatalogIdentity": 8,
@@ -15,18 +15,9 @@
     "catalogMatchedIngredientConditionOccurrences": 711,
     "webRecipeCount": 10,
     "matchingWebRecipes": 10,
-    "catalogVsJassLabelConflicts": 1
+    "catalogVsJassLabelConflicts": 0
   },
-  "conflictingCatalogJassLabels": [
-    {
-      "catalogUnitId": "E-03",
-      "catalogObjectRawcode": "h0C7",
-      "jassLabelRawcode": "h0CJ",
-      "jassAbilityRawcode": "ET04",
-      "jassLabelObjectName": "시모츠키 류마 - 영원",
-      "requiresManualFormOrIdentityReview": true
-    }
-  ],
+  "conflictingCatalogJassLabels": [],
   "webRecipes": [
     {
       "resultCatalogUnitId": "U-02",
@@ -3794,8 +3785,8 @@
       "resultOfAbilities": [
         "ET04"
       ],
-      "catalogUnitId": null,
-      "objectCatalogMappingStatus": null,
+      "catalogUnitId": "E-03",
+      "objectCatalogMappingStatus": "verified-jass-fusion-result",
       "originalW3xObjectName": "시모츠키 류마 - 영원",
       "jassLabelCatalogUnitId": "E-03",
       "approvedForMaterialConsumption": false

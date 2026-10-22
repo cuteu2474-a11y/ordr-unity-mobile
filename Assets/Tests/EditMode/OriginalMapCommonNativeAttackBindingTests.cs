@@ -146,7 +146,11 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(Ordr323AttackType.Melee,
                 commons.Find("C-03").NativeAttackType);
             var mapped = new OriginalMapMappedNativeAttackEvidenceCatalog(map);
-            Assert.AreEqual(268, mapped.Count);
+            Assert.AreEqual(269, mapped.Count);
+            var ryuma = mapped.Find("E-03");
+            Assert.AreEqual("h0CJ", ryuma.Rawcode);
+            Assert.AreEqual(140001L, ryuma.RollObjectBaseDamage(new MinimumDieRoll()));
+            Assert.AreEqual(0.71, ryuma.CooldownSeconds, 1e-9);
             // Reviewed names are original W3X objects, not new guessed stats.
             var robin = mapped.Find("U-01");
             Assert.AreEqual("h00O", robin.Rawcode);

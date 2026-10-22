@@ -61,7 +61,7 @@ class GeneratedDataTests(unittest.TestCase):
         self.assertEqual(report["catalogCharacters"], 271)
         self.assertEqual(report["linkedCatalogCharacters"], 270)
         self.assertEqual(report["unresolvedCatalogCharacters"], 1)
-        self.assertEqual(report["linkedWithAttack1"], 268)
+        self.assertEqual(report["linkedWithAttack1"], 269)
         self.assertEqual(report["mappingStatusCounts"]["reviewed-map-name-alias-and-grade"], 54)
         self.assertEqual(report["mappingStatusCounts"]["verified-jass-fusion-result"], 5)
         self.assertEqual(report["mappingStatusCounts"]["verified-jass-label-and-fusion-result"], 49)
@@ -115,8 +115,9 @@ class GeneratedDataTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "drifted"):
             reconcile(before, self.registry, self.labels)
 
-    def test_five_ambiguous_units_are_resolved_using_jass_fusion_results(self):
+    def test_six_ambiguous_units_are_resolved_using_jass_fusion_results(self):
         expected = {
+            "E-03": ("h0CJ", "ET04", ["h0C7"]),
             "LI-03": ("h08O", "A011", ["h09Q"]),
             "D-04": ("h048", "IF02", ["h000"]),
             "E-09": ("h067", "ET07", ["h0AF"]),
@@ -141,6 +142,29 @@ class GeneratedDataTests(unittest.TestCase):
             self.assertFalse(row["combatParityVerified"])
         self.assertEqual(reconcile(deepcopy(self.source), self.registry, self.labels),
                          self.source)
+
+    def test_ryuma_helper_is_replaced_only_by_original_et04_result(self):
+        source = deepcopy(self.source)
+        row = next(r for r in source["catalogEntries"] if r["catalogId"] == "E-03")
+        obj = next(o for o in source["mapObjects"] if o["rawcode"] == "h0C7")
+        row.update({
+            "mappingStatus": "unique-map-name-and-grade",
+            "originalRawcode": "h0C7",
+            "candidateRawcodes": [],
+            "sourceMapName": obj["mapName"],
+            "attack1": obj["attack1"],
+            "attack2": obj["attack2"],
+            "baseStats": obj["baseStats"],
+            "originalAbilityList": obj["originalAbilityList"],
+        })
+        row.pop("alternateRawcodes")
+        row.pop("sourceJassFusionAbilityRawcodes")
+        self.assertEqual(reconcile(source, self.registry, self.labels), self.source)
+
+        bad = deepcopy(self.source)
+        next(o for o in bad["mapObjects"] if o["rawcode"] == "h0CJ")["attack1"] = None
+        with self.assertRaisesRegex(ValueError, "E-03 original helper"):
+            reconcile(bad, self.registry, self.labels)
 
     def test_49_different_named_units_join_only_when_jass_label_and_result_agree(self):
         rows = {row["catalogId"]: row for row in self.source["catalogEntries"]}
