@@ -21,6 +21,7 @@ namespace Ordr.Mobile.Tests
             "{\"catalogId\":\"C-01\",\"catalogName\":\"루피\",\"grade\":\"흔함\"," +
             "\"mappingStatus\":\"verified-common-map-identity\",\"originalRawcode\":\"h003\"," +
             "\"sourceMapName\":\"몽키.D.루피 - 흔함\",\"combatParityVerified\":false," +
+            "\"originalAbilityList\":\"A0JE,A09G,A00D,A012,Avul\"," +
             "\"attack1\":{\"minimumBaseDamage\":29,\"maximumBaseDamage\":31," +
             "\"attackCooldownSeconds\":1.02,\"originalRange\":500}," +
             "\"attack2\":null,\"baseStats\":{\"armor\":0,\"hitPoints\":10}}";
@@ -61,7 +62,22 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1.0 / 1.02,
                 catalog.Find("C-01").Attack1.BaseAttacksPerSecond.Value, 1e-9);
             Assert.IsFalse(catalog.Find("C-01").CombatParityVerified);
+            CollectionAssert.AreEqual(new[] { "A0JE", "A09G", "A00D", "A012", "Avul" },
+                catalog.Find("C-01").OriginalAbilityRawcodes);
             Assert.IsNull(catalog.Find("C-02").Attack1);
+            Assert.AreEqual(0, catalog.Find("C-02").OriginalAbilityRawcodes.Count);
+        }
+
+        [Test]
+        public void OriginalMapAbilitiesPreserveOrderButRejectInvalidOrDuplicateCodes()
+        {
+            var units = CharacterUnitCatalog.FromJson(UnitFixture);
+            Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + Luffy.Replace("A0JE,A09G,A00D,A012,Avul",
+                    "A0JE,A0JE,A00D,A012,Avul") + "," + Unmatched + "]}", units));
+            Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + Luffy.Replace("A0JE,A09G,A00D,A012,Avul",
+                    "A0JE,INVALID,A00D,A012,Avul") + "," + Unmatched + "]}", units));
         }
 
         [Test]

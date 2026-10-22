@@ -18,6 +18,7 @@ namespace Ordr.Mobile.Editor
             "character-skill-profiles.json",
             "original-stat-evidence.json",
             "original-2323C-map-base-stats.json",
+            "original-2323C-missing-skill-profile-evidence.json",
             "verified-mobile-fusion-recipes.json",
             "otherworld-2323C-mystic-web-recipes.json",
             "original-jass-fusion-registry.json",

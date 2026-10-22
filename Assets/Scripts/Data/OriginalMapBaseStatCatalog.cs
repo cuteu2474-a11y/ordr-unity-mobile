@@ -73,6 +73,8 @@ namespace Ordr.Mobile.Data
         public string MappingStatus { get; private set; }
         public IReadOnlyList<string> AlternateRawcodes { get; private set; }
         public IReadOnlyList<string> SourceJassFusionAbilityRawcodes { get; private set; }
+        // 실제 원본 유닛 객체의 스킬 rawcode 순서. 효과/발동 검증과는 별개다.
+        public IReadOnlyList<string> OriginalAbilityRawcodes { get; private set; }
         public OriginalMapBasicAttack Attack1 { get; private set; }
         public OriginalMapBasicAttack Attack2 { get; private set; }
         public double? BaseArmor { get; private set; }
@@ -92,6 +94,7 @@ namespace Ordr.Mobile.Data
             MappingStatus = OrdrJson.RequiredString(source, "mappingStatus");
             AlternateRawcodes = new List<string>().AsReadOnly();
             SourceJassFusionAbilityRawcodes = new List<string>().AsReadOnly();
+            OriginalAbilityRawcodes = new List<string>().AsReadOnly();
             object parity = OrdrJson.Value(source, "combatParityVerified");
             if (!(parity is bool) || (bool)parity)
                 throw new FormatException(UnitId + ": 기본 스탯만으로 전투 완성을 선언할 수 없습니다.");
@@ -109,6 +112,17 @@ namespace Ordr.Mobile.Data
                  MappingStatus != "verified-jass-fusion-result" &&
                  MappingStatus != "verified-jass-label-and-fusion-result"))
                 throw new FormatException(UnitId + ": 원본 rawcode 매핑 근거가 불완전합니다.");
+            string abilityList = OrdrJson.String(source, "originalAbilityList");
+            var originalAbilities = new List<string>();
+            if (!string.IsNullOrEmpty(abilityList))
+                foreach (string value in abilityList.Split(','))
+                {
+                    string raw = value.Trim();
+                    if (raw.Length != 4 || originalAbilities.Contains(raw))
+                        throw new FormatException(UnitId + ": 원본 객체 스킬 rawcode가 잘못되었습니다.");
+                    originalAbilities.Add(raw);
+                }
+            OriginalAbilityRawcodes = originalAbilities.AsReadOnly();
             if (MappingStatus == "verified-jass-fusion-result" ||
                 MappingStatus == "verified-jass-label-and-fusion-result")
             {
