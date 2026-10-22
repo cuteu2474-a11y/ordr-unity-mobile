@@ -1,5 +1,7 @@
 # 원본 재료 rawcode 후보군 — 확정 매핑과 구분
 
+> **기록 해석 기준:** 이 문서는 단계별 조사·구현 기록입니다. 본문의 미완료·미실행·다음 작업과 정책은 해당 작성 시점 기준이며, 현재 운영·전체 현황은 [최신 인수인계](새채팅-인수인계.md)의 ‘현재 작업 기준’을 우선합니다. 특히 과거 테스트 보류, 사거리 유지, 프로젝트/원본 수치 미확보 설명을 현재 상태로 적용하지 않습니다. 원본 규칙의 근거와 미검증 한계는 계속 구분합니다.
+
 기준: ORDR S2 2.323[C] 악몽·이세계모드
 작업 브랜치: `main`
 자료: `data/original-jass-fusion-registry.json`, `data/original-unit-rawcode-label-links.json`, `data/verified-mobile-fusion-recipes.json`

@@ -1,7 +1,14 @@
 # Unity 6.3 EditMode 테스트 실행
 
-GitHub `main`의 **Actions → Unity EditMode 검증 (수동 실행) → Run workflow**에서
-필요할 때만 한 번 실행합니다. 소스 변경마다 자동 실행하거나 기존 실행을 취소하지 않습니다.
+현재 워크플로 이름은 **Unity EditMode 검증 (main 자동 + 수동)**입니다.
+
+- `main`에 push하면 Python 회귀 검사와 Unity EditMode 검증이 자동 실행됩니다.
+- 필요한 경우 Actions에서 해당 워크플로의 **Run workflow**로 수동 실행할 수 있습니다. 같은 변경의 중복 실행은 피합니다.
+- 동시 실행 그룹은 `ordr-unity-editmode`, `cancel-in-progress: false`로 진행 중 실행을 자동 취소하지 않습니다.
+- 테스트 실행 설정은 통과 증거가 아닙니다. 해당 커밋의 실행 결과를 확인해야 합니다.
+- APK 제작은 이 워크플로의 작업이 아닙니다. 핵심 기능 완성 및 검증 후 진행합니다.
+
+설정의 기준: [unity-editmode.yml](../.github/workflows/unity-editmode.yml).
 
 ## 선행 설정
 
