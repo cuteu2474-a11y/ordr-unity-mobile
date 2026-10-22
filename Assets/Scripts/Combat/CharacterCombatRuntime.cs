@@ -649,7 +649,7 @@ namespace Ordr.Mobile.Combat
                     attackPipeline.NextAttackAt(InstanceKey(instanceId)));
             }
             double? next = attackPipeline.NextAttackAt(InstanceKey(instanceId));
-            return next.HasValue && next.Value > scheduler.Time
+            return next.HasValue && !CombatScheduler.HasReached(scheduler.Time, next.Value)
                 ? new BasicAttackReadiness(instanceId, id,
                     BasicAttackReadinessKind.Cooldown, "검증된 평타 공격 시점 대기", next)
                 : new BasicAttackReadiness(instanceId, id,
@@ -1108,7 +1108,8 @@ namespace Ordr.Mobile.Combat
                 var unit = characters[id];
                 if (unit.AttackReady) continue;
                 double? scheduled = commonAttackPreview.NextAt(id);
-                if (!scheduled.HasValue || scheduled.Value > scheduler.Time) continue;
+                if (!scheduled.HasValue ||
+                    !CombatScheduler.HasReached(scheduler.Time, scheduled.Value)) continue;
                 var candidates = BuildTargetCandidates(unit);
                 if (candidates.Count == 0) continue;
                 string selected = ChoosePreviewTarget(unit, candidates);
@@ -1176,7 +1177,8 @@ namespace Ordr.Mobile.Combat
                 if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
                     unit.Mapping == null) continue;
                 var at = attackPipeline.NextAttackAt(InstanceKey(id));
-                if (!at.HasValue || at.Value > scheduler.Time) continue;
+                if (!at.HasValue ||
+                    !CombatScheduler.HasReached(scheduler.Time, at.Value)) continue;
 
                 var candidates = BuildBasicAttackCandidates(unit);
                 string approvedBoss = ChooseApprovedBossTarget(unit, candidates);
@@ -1246,7 +1248,8 @@ namespace Ordr.Mobile.Combat
                     if (skill.Trigger != "periodic") continue;
                     double? due = attackPipeline.NextPeriodicSkillAt(
                         InstanceKey(id), skillId);
-                    if (!due.HasValue || due.Value > scheduler.Time) continue;
+                    if (!due.HasValue ||
+                        !CombatScheduler.HasReached(scheduler.Time, due.Value)) continue;
                     // 확률 실패도 한 번의 예정 발동으로 처리해야 같은 시각에 무한 재시도하지 않는다.
                     bool activated = attackPipeline.TryActivatePeriodicSkill(
                         InstanceKey(id), skillId);
@@ -1299,14 +1302,17 @@ namespace Ordr.Mobile.Combat
                 {
                     checkCurrentTime = false;
                     double? next = NextEligibleAttackAt();
-                    if (!next.HasValue || next.Value > scheduler.Time + pendingStepSeconds)
+                    if (!next.HasValue || !CombatScheduler.HasReached(
+                        scheduler.Time + pendingStepSeconds, next.Value))
                     {
                         AdvanceCombatTime(pendingStepSeconds);
                         pendingStepSeconds = 0;
                         MobileAutomation.RunAutomaticAbilities(this);
                         break;
                     }
-                    double wait = Math.Max(0, next.Value - scheduler.Time);
+                    // Never deduct a rounding residual larger than pending time.
+                    double wait = Math.Min(pendingStepSeconds,
+                        Math.Max(0, next.Value - scheduler.Time));
                     if (wait > 0)
                     {
                         AdvanceCombatTime(wait);

@@ -9,6 +9,18 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, double> nextReady = new Dictionary<string, double>(StringComparer.Ordinal);
         public double Time { get; private set; }
 
+        // Small tolerance for IEEE-754 additions (e.g. 2 + .34 + .01).
+        // double.Epsilon is subnormal minimum, not machine epsilon.
+        internal static bool HasReached(double time, double due)
+        {
+            if (double.IsNaN(time) || double.IsNaN(due)) return false;
+            if (time >= due) return true;
+            if (double.IsInfinity(time) || double.IsInfinity(due)) return false;
+            const double binary64UnitRoundoff = 2.2204460492503131e-16;
+            double scale = Math.Max(1.0, Math.Max(Math.Abs(time), Math.Abs(due)));
+            return due - time <= 8.0 * binary64UnitRoundoff * scale;
+        }
+
         public void Register(string unitId, double firstAttackDelay)
         {
             ValidateId(unitId);
@@ -28,7 +40,7 @@ namespace Ordr.Mobile.Combat
         {
             ValidateId(unitId);
             double readyAt;
-            return nextReady.TryGetValue(unitId, out readyAt) && Time >= readyAt;
+            return nextReady.TryGetValue(unitId, out readyAt) && HasReached(Time, readyAt);
         }
 
         // 스텝이 길어질 때 공격 준비시각까지 정확히 진행할 수 있게 한다.

@@ -20,6 +20,22 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void MidWaveTimestampRoundingDoesNotDelayAttackOrFireEarly()
+        {
+            var scheduler = new CombatScheduler();
+            scheduler.Advance(2.0);
+            scheduler.Register("midwave", 0.35);
+            scheduler.Advance(0.34);
+            Assert.IsFalse(scheduler.IsReady("midwave"));
+            scheduler.Advance(0.009);
+            Assert.IsFalse(scheduler.IsReady("midwave"));
+            scheduler.Advance(0.001);
+            Assert.IsTrue(scheduler.IsReady("midwave"));
+            Assert.IsTrue(scheduler.TryCommitAttack("midwave", 1.02));
+            Assert.IsFalse(scheduler.IsReady("midwave"));
+        }
+
+        [Test]
         public void TargetingFiltersDeadAndOutOfRange()
         {
             var targets = new[] {

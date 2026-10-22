@@ -87,7 +87,7 @@ namespace Ordr.Mobile.Combat
             if (state.Spec.Trigger != observedTrigger ||
                 state.Spec.Trigger == SkillTriggerKind.PassiveAura) return false;
             state.LastEventSequence = eventSequence;
-            if (Time < state.NextReadyAt) return false;
+            if (!CombatScheduler.HasReached(Time, state.NextReadyAt)) return false;
 
             bool success;
             if (state.Spec.ChancePerMillion == 0)

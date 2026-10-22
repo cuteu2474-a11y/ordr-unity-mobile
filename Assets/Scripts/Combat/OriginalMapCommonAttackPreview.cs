@@ -67,7 +67,7 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentOutOfRangeException(nameof(currentTime));
             TrackedAttack item;
             if (!tracked.TryGetValue(instanceId, out item) ||
-                currentTime < item.NextAt) return false;
+                !CombatScheduler.HasReached(currentTime, item.NextAt)) return false;
             sourceStats = item.Basics;
             double next = Math.Max(item.NextAt, currentTime) +
                 item.Basics.Attack1.AttackCooldownSeconds.Value;
