@@ -17,6 +17,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset verifiedFusionRecipesJson;
         [SerializeField] private TextAsset originalJassFusionRegistryJson;
         [SerializeField] private TextAsset originalUnitRawcodeLabelsJson;
+        [SerializeField] private TextAsset verifiedMonsterWavesJson;
         [SerializeField] private bool enableMobileTouchPanel = true;
         [SerializeField] private bool enableUnitWorldMarkers = true;
 
@@ -28,6 +29,8 @@ namespace Ordr.Mobile.Unity
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
         public OriginalUnitRawcodeLabelCatalog OriginalUnitRawcodes { get; private set; }
+        public Original323VerifiedMonsterWaveCatalog VerifiedMonsterWaves { get; private set; }
+        public CombatWaveDirector VerifiedWaveDirector { get; } = new CombatWaveDirector();
         public OriginalJassFusionPlanner OriginalFusionPlanner { get; private set; }
         public AssistedFusionService FusionAssistance { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
@@ -204,6 +207,14 @@ namespace Ordr.Mobile.Unity
                 if (labelsData != null)
                     OriginalUnitRawcodes = OriginalUnitRawcodeLabelCatalog.FromJson(
                         labelsData.text, Units, OriginalJassFusions);
+                // Optional: no verified monster dataset ships yet. Never
+                // substitute playable units' HP or an invented wave schedule.
+                var monsterData = verifiedMonsterWavesJson != null ?
+                    verifiedMonsterWavesJson :
+                    Resources.Load<TextAsset>("OrdrData/original-2323C-verified-monster-waves");
+                if (monsterData != null)
+                    VerifiedMonsterWaves = Original323VerifiedMonsterWaveCatalog
+                        .FromJson(monsterData.text);
                 UnitDefinitions = UnitImplementationRegistry.Combine(Units, Skills,
                     OriginalUnitRawcodes);
                 if (Units.Count != 271 || Skills.CharacterCount != 200 ||
@@ -319,11 +330,28 @@ namespace Ordr.Mobile.Unity
             Combat.Start();
         }
 
+        // Begins only a wave whose spawn positions, final HP and armor have
+        // individually reviewed source evidence. Unknown waves stay disabled.
+        public void BeginVerifiedMonsterWave(int waveNumber)
+        {
+            if (Combat == null || VerifiedMonsterWaves == null)
+                throw new InvalidOperationException(
+                    "원본 몬스터/라운드 검증 데이터가 아직 연결되지 않았습니다.");
+            VerifiedWavePlan plan;
+            if (!VerifiedMonsterWaves.TryGetPlan(waveNumber, out plan))
+                throw new InvalidOperationException(
+                    "요청한 라운드에는 검증된 2.323[C] 몬스터 데이터가 없습니다.");
+            VerifiedWaveDirector.Begin(Combat, plan);
+        }
+
         private void Update()
         {
             if (Combat == null || Combat.Game.Phase != Ordr.Mobile.Core.SessionPhase.Running)
                 return;
-            foreach (var item in Combat.Step(Time.deltaTime))
+            var results = VerifiedWaveDirector.IsActive
+                ? VerifiedWaveDirector.Step(Combat, Time.deltaTime)
+                : Combat.Step(Time.deltaTime);
+            foreach (var item in results)
             {
                 var handler = OnCombatEvent;
                 if (handler != null) handler(item);

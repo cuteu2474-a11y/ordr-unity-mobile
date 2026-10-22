@@ -15,10 +15,19 @@ namespace Ordr.Mobile.Combat
         public double Y { get; private set; }
         public double PathProgress { get; private set; }
         public EnemyDefenseProfile Defenses { get; private set; }
+        // Identifies the original monster object, not the runtime instance ID.
+        // Older manually verified wave callers can leave it unknown.
+        public string OriginalRawcode { get; private set; }
 
         public VerifiedWaveEnemy(double atSeconds, string enemyId, long health,
             CharacterEnemyKind kind, double x, double y, double pathProgress,
             EnemyDefenseProfile defenses)
+            : this(atSeconds, enemyId, health, kind, x, y, pathProgress,
+                defenses, null) { }
+
+        public VerifiedWaveEnemy(double atSeconds, string enemyId, long health,
+            CharacterEnemyKind kind, double x, double y, double pathProgress,
+            EnemyDefenseProfile defenses, string originalRawcode)
         {
             if (double.IsNaN(atSeconds) || double.IsInfinity(atSeconds) || atSeconds < 0)
                 throw new ArgumentOutOfRangeException(nameof(atSeconds));
@@ -29,9 +38,12 @@ namespace Ordr.Mobile.Combat
                 double.IsNaN(y) || double.IsInfinity(y) ||
                 double.IsNaN(pathProgress) || double.IsInfinity(pathProgress))
                 throw new ArgumentException("웨이브 적 위치가 유효하지 않습니다.");
+            if (originalRawcode != null && originalRawcode.Length != 4)
+                throw new ArgumentException("몬스터 원본 rawcode는 4글자여야 합니다.");
             AtSeconds = atSeconds; EnemyId = enemyId; Health = health;
             Kind = kind; X = x; Y = y; PathProgress = pathProgress;
             Defenses = defenses ?? throw new ArgumentNullException(nameof(defenses));
+            OriginalRawcode = originalRawcode;
         }
     }
 

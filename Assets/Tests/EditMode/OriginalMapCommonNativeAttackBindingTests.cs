@@ -55,7 +55,7 @@ namespace Ordr.Mobile.Tests
         }
 
         private static CharacterCombatRuntime Create(bool approveNativePath,
-            string approvedUnitId = "C-01")
+            string approvedUnitId = "C-01", bool startWave = true)
         {
             var units = CharacterUnitCatalog.FromJson(ProjectFile("units.json"));
             var skills = CharacterSkillCatalog.FromJson(
@@ -70,8 +70,29 @@ namespace Ordr.Mobile.Tests
             world.ConfigureVerifiedUnitAttackProvider(bridge);
             world.ConfigureOriginalMapCommonAttackPreview(map);
             world.Start();
-            world.BeginWave(1);
+            if (startWave) world.BeginWave(1);
             return world;
+        }
+
+        [Test]
+        public void VerifiedWaveSpawnArmorFlowsIntoActualHitInSyntheticNativeFixture()
+        {
+            // TEST-ONLY: independent path, armor and quantization are synthetic.
+            var world = Create(true, "C-01", false);
+            world.SpawnCharacter("C-01", 0, 0);
+            var defense = new EnemyDefenseProfile(CharacterEnemyKind.Line,
+                10, null, "normal", "TEST_ONLY: independently verified armor");
+            var wave = new VerifiedWavePlan(1, new[] {
+                new VerifiedWaveEnemy(0, "first", 1000,
+                    CharacterEnemyKind.Line, 20, 0, 0, defense, "n001")
+            }, "TEST_ONLY: schedule");
+            var director = new CombatWaveDirector();
+            director.Begin(world, wave);
+            director.Step(world, 0.34);
+            Assert.AreEqual(1000L, world.EnemyOf("first").Health);
+            director.Step(world, 0.01);
+            Assert.AreEqual(976L, world.EnemyOf("first").Health);
+            Assert.AreEqual(1, world.Game.AliveEnemies);
         }
 
         [Test]
