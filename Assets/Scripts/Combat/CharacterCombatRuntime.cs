@@ -62,7 +62,74 @@ namespace Ordr.Mobile.Combat
         private IOriginalSpecialSkillTriggerMapping specialTriggerMapping;
         private IOriginalSpecialSkillEventRules specialEventRules;
         private IOriginalCombatTargetSelectionRules targetSelectionRules;
+        private ISpecialGradeLawCastService lawCastService;
+        private readonly Dictionary<long, double> lawReadyAt = new Dictionary<long, double>();
+        private readonly MoriaParticipationLedger moriaParticipation = new MoriaParticipationLedger();
+        public long MoriaZombieMaterials { get; private set; }
         public MobileCombatAutomation MobileAutomation { get; } = new MobileCombatAutomation();
+
+        public void ConfigureSpecialGradeLawCasting(ISpecialGradeLawCastService service)
+        {
+            lawCastService = service ?? throw new ArgumentNullException(nameof(service));
+        }
+
+        // 시전 가능한 시점마다 현재 전장의 전체 후보를 다시 평가한다.
+        // 실제 가속 효과·자원/중복 검증 서비스 없이는 시전 성공으로 처리하지 않는다.
+        public bool TryRunLawAcceleration(long lawId)
+        {
+            CharacterInstance law;
+            if (game.Phase != SessionPhase.Running || lawCastService == null ||
+                !characters.TryGetValue(lawId, out law) ||
+                law.Catalog.Id != SpecialGradeMobilePolicy.Law) return false;
+            double ready;
+            if (lawReadyAt.TryGetValue(lawId, out ready) && Time < ready) return false;
+            if (!lawCastService.CanCastNow(lawId, Time)) return false;
+            bool inStory = IsStoryDeployed(lawId);
+            var candidates = new List<LawDpsCandidate>();
+            foreach (var target in MobileUnitSnapshot())
+            {
+                if (IsStoryDeployed(target.InstanceId) != inStory) continue;
+                double dps;
+                if (!lawCastService.TryEvaluateTarget(lawId, target.InstanceId, Time, out dps))
+                    continue;
+                candidates.Add(new LawDpsCandidate(target.InstanceId, inStory, true, dps));
+            }
+            long? chosen = SpecialGradeMobilePolicy.ChooseLawTarget(inStory, candidates);
+            if (!chosen.HasValue || !characters.ContainsKey(chosen.Value) ||
+                IsStoryDeployed(lawId) != IsStoryDeployed(chosen.Value)) return false;
+            if (!lawCastService.TryCast(lawId, chosen.Value, Time)) return false;
+            lawReadyAt[lawId] = Time + 50;
+            return true;
+        }
+
+        // 평타의 보스/선두 선택 정책을 동일하게 사용한다. 별도 스킬 타깃 AI 없음.
+        public string CurrentAttackTargetOf(long instanceId)
+        {
+            CharacterInstance unit;
+            if (!characters.TryGetValue(instanceId, out unit) || !unit.AttackReady ||
+                unit.AttackBlockedByMissingFormula || unit.Mapping == null) return null;
+            var candidates = BuildBasicAttackCandidates(unit);
+            return ChooseApprovedBossTarget(unit, candidates) ??
+                attackPipeline.SelectDefaultTarget(InstanceKey(instanceId), candidates,
+                    TargetPriority.Nearest);
+        }
+
+        private void OnActualDamage(string actor, string enemyId, long actualDamage, bool killed)
+        {
+            SpatialCombatEnemy enemy;
+            if (!enemies.TryGetValue(enemyId, out enemy)) return;
+            long actorId;
+            CharacterInstance unit;
+            bool isMoria = long.TryParse(actor, NumberStyles.None, CultureInfo.InvariantCulture,
+                out actorId) && characters.TryGetValue(actorId, out unit) &&
+                unit.Catalog.Id == SpecialGradeMobilePolicy.Moria;
+            moriaParticipation.Record(enemyId, isMoria, actualDamage, enemy.Kind);
+            if (!killed || !moriaParticipation.Complete(enemyId)) return;
+            MoriaZombieMaterials = checked(MoriaZombieMaterials + 1);
+            var earned = new CharacterCombatEvent(CharacterCombatEventType.ZombieMaterialEarned,
+                actor, enemyId, null, "모리아 처치 참여", 1);
+            if (processingStep) events.Add(earned); else pendingCommandEvents.Add(earned);
+        }
 
         private bool original323DefenseLinksConfigured;
 
@@ -394,6 +461,7 @@ namespace Ordr.Mobile.Combat
             if (random == null) throw new ArgumentNullException(nameof(random));
             triggers = new CombatSkillTriggerEngine(random);
             resolution = new CombatResolution(game, scheduler);
+            resolution.DamageApplied += OnActualDamage;
             attackPipeline = new CombatAttackPipeline(scheduler, resolution, triggers,
                 verifiedBasicDamage ?? throw new ArgumentNullException(nameof(verifiedBasicDamage)));
             // 유닛 재배치가 어려운 모바일 플레이 기준: 같은 전장 안의 평타 사거리 무제한.
@@ -693,6 +761,7 @@ namespace Ordr.Mobile.Combat
             if (instance.AttackReady) attackPipeline.RemoveUnit(InstanceKey(instanceId));
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
             effectExecutor.CancelCaster(InstanceKey(instanceId));
+            lawReadyAt.Remove(instanceId);
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
@@ -1226,6 +1295,7 @@ namespace Ordr.Mobile.Combat
 
         private void RemoveEnemyRuntimeState(string id)
         {
+            moriaParticipation.Forget(id);
             effectExecutor.CancelTarget(id);
             enemies.Remove(id);
             statuses.Remove(id);
@@ -1240,3 +1310,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

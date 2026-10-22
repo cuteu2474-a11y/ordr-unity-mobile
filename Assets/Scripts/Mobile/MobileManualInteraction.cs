@@ -120,6 +120,12 @@ namespace Ordr.Mobile.Mobile
         ManualActionResult Confirm(ManualEconomyCategory category, string offerId);
     }
 
+    // 갱 뱃지 분해: 실제 5초 시전·유닛 교환·실패 복구를 담당하는 월드 서비스.
+    public interface IManualUnitDecompositionPort
+    {
+        ManualActionResult Request(long unitInstanceId);
+    }
+
     // 이 클래스에는 자동 실행 Tick이 없다.
     // 스토리 파견, 조합, 상점/도박/위습은 오직 화면의 명시적 탭을 통해 호출한다.
     public sealed class MobileManualInteraction
@@ -127,6 +133,21 @@ namespace Ordr.Mobile.Mobile
         private IOriginalStoryDispatchPort story;
         private IOriginalFusionPort fusion;
         private IOriginalEconomyPort economy;
+        private IManualUnitDecompositionPort decomposition;
+
+        public void ConfigureUnitDecomposition(IManualUnitDecompositionPort service)
+        {
+            decomposition = service ?? throw new ArgumentNullException(nameof(service));
+        }
+
+        public ManualActionResult RequestUnitDecomposition(MobileUnitSnapshot selected)
+        {
+            if (selected == null || !SpecialGradeMobilePolicy.IsManualOnly(selected.Unit.Id))
+                return new ManualActionResult(ManualActionState.Rejected, "분해할 갱 뱃지를 선택해 주세요.");
+            return decomposition == null ? ManualActionResult.Unavailable("갱 뱃지 분해") :
+                decomposition.Request(selected.InstanceId) ??
+                new ManualActionResult(ManualActionState.Rejected, "분해 결과를 확인하지 못했습니다.");
+        }
 
         public bool HasStoryService { get { return story != null; } }
         public bool HasFusionService { get { return fusion != null; } }
@@ -228,3 +249,4 @@ namespace Ordr.Mobile.Mobile
         }
     }
 }
+

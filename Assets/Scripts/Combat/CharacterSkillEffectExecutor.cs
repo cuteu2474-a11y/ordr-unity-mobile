@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
@@ -101,7 +102,8 @@ namespace Ordr.Mobile.Combat
     {
         UnitSpawned, UnitPlaced, Attack, SkillActivated, SkillDamage, StatusApplied,
         ArmorBreakApplied, EnemyDefeated, EffectDeferred, EnemySpawned,
-        AttackPreview // W3X timing/target + visual cue; no damage or skill trigger
+        AttackPreview, // W3X timing/target + visual cue; no damage or skill trigger
+        ZombieMaterialEarned
     }
 
     public sealed class CharacterCombatEvent
@@ -295,8 +297,10 @@ namespace Ordr.Mobile.Combat
 
             var targets = new List<SpatialCombatEnemy>();
             bool circle = skill.Target != "single";
-            double centerX = skill.Target == "casterArea" ? casterX : primary.X;
-            double centerY = skill.Target == "casterArea" ? casterY : primary.Y;
+            bool casterCentered = skill.Target == "casterArea" &&
+                !SpecialGradeMobilePolicy.UsesEnemyCenteredArea(profile.UnitId);
+            double centerX = casterCentered ? casterX : primary.X;
+            double centerY = casterCentered ? casterY : primary.Y;
             double r2 = circle && skill.Radius.HasValue
                 ? skill.Radius.Value * skill.Radius.Value : 0;
 
@@ -529,7 +533,7 @@ namespace Ordr.Mobile.Combat
                 if (damage < 0)
                     throw new InvalidOperationException("스킬 피해 계산 결과가 음수입니다.");
                 long dealt;
-                if (resolution.TryApplySkillDamage(target.Id, damage, out dealt))
+                if (resolution.TryApplySkillDamage(casterId, target.Id, damage, out dealt))
                 {
                     events.Add(new CharacterCombatEvent(
                         CharacterCombatEventType.SkillDamage, casterId, target.Id,
@@ -580,3 +584,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

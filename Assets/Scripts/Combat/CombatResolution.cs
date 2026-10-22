@@ -42,6 +42,9 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, CombatEnemy> enemies =
             new Dictionary<string, CombatEnemy>(StringComparer.Ordinal);
 
+        // 실제 적용된 피해만 전달. 평타/즉발/지속 스킬의 처치 참여를 공통 집계한다.
+        public event Action<string, string, long, bool> DamageApplied;
+
         public CombatResolution(GameSession session, CombatScheduler scheduler)
         {
             this.session = session ?? throw new ArgumentNullException(nameof(session));
@@ -71,12 +74,19 @@ namespace Ordr.Mobile.Combat
                 session.DefeatEnemy();
                 enemies.Remove(enemyId);
             }
+            DamageApplied?.Invoke(attackerId, enemyId, actualDamage, !enemy.IsAlive);
             return true;
         }
 
         // 발동 스킬·광역 피해는 평타 쿨타임을 추가 소비하지 않는다.
         // 최종 피해량은 확인된 원작 공식 구현체가 계산해 전달해야 한다.
         public bool TryApplySkillDamage(string enemyId, long verifiedDamage, out long actualDamage)
+        {
+            return TryApplySkillDamage(null, enemyId, verifiedDamage, out actualDamage);
+        }
+
+        public bool TryApplySkillDamage(string attackerId, string enemyId,
+            long verifiedDamage, out long actualDamage)
         {
             actualDamage = 0;
             if (verifiedDamage < 0) throw new ArgumentOutOfRangeException(nameof(verifiedDamage));
@@ -90,6 +100,7 @@ namespace Ordr.Mobile.Combat
                 session.DefeatEnemy();
                 enemies.Remove(enemyId);
             }
+            DamageApplied?.Invoke(attackerId, enemyId, actualDamage, !enemy.IsAlive);
             return true;
         }
 
@@ -109,3 +120,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

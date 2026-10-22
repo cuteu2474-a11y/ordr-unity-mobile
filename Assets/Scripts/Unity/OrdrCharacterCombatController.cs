@@ -382,6 +382,15 @@ namespace Ordr.Mobile.Unity
             Combat.Start();
         }
 
+        public void ConfigureSpecialGradeMobileServices(ISpecialGradeLawCastService law,
+            IManualUnitDecompositionPort decomposition)
+        {
+            if (Combat == null)
+                throw new InvalidOperationException("특별함 서비스를 연결할 전투 월드가 없습니다.");
+            if (law != null) Combat.ConfigureSpecialGradeLawCasting(law);
+            if (decomposition != null) ManualActions.ConfigureUnitDecomposition(decomposition);
+        }
+
         // Begins only a wave whose spawn positions, final HP and armor have
         // individually reviewed source evidence. Unknown waves stay disabled.
         public void BeginVerifiedMonsterWave(int waveNumber)
@@ -411,3 +420,4 @@ namespace Ordr.Mobile.Unity
         }
     }
 }
+

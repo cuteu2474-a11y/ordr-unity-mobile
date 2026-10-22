@@ -236,6 +236,9 @@ namespace Ordr.Mobile.Unity
                     notice = entry.Unit.Name + " 선택";
                 }
                 GUILayout.EndHorizontal();
+                if (SpecialGradeMobilePolicy.IsManualOnly(entry.Unit.Id) &&
+                    GUILayout.Button("갱 뱃지 분해", GUILayout.MinHeight(48)))
+                    notice = controller.ManualActions.RequestUnitDecomposition(entry).Message;
             }
             DrawPager(ownedPage, pages, next => ownedPage = next);
         }
@@ -499,3 +502,4 @@ namespace Ordr.Mobile.Unity
         }
     }
 }
+

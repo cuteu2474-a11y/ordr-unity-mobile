@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
@@ -140,7 +141,9 @@ namespace Ordr.Mobile.Combat
                 return AbilityCastResult.MissingOrUnsupportedRequirement;
 
             if (skill.Trigger != "activeMana" && skill.Trigger != "activeHealth" &&
-                skill.Trigger != "manual")
+                skill.Trigger != "manual" &&
+                !(profile.UnitId == SpecialGradeMobilePolicy.DockingFive &&
+                  skill.Trigger == "onSkillUse"))
                 return AbilityCastResult.TriggerRequiresBattleEvent;
 
             if (!hasLivingTarget) return AbilityCastResult.MissingTarget;
@@ -159,7 +162,8 @@ namespace Ordr.Mobile.Combat
             double? healthCost = skill.Number("healthCost");
             if (skill.Trigger == "activeMana" && !manaCost.HasValue ||
                 skill.Trigger == "activeHealth" && !healthCost.HasValue ||
-                skill.Trigger == "manual" && !manaCost.HasValue && !healthCost.HasValue)
+                (skill.Trigger == "manual" || skill.Trigger == "onSkillUse") &&
+                    !manaCost.HasValue && !healthCost.HasValue)
                 return AbilityCastResult.MissingOrUnsupportedRequirement;
             double mana = manaCost ?? 0;
             double health = healthCost ?? 0;
@@ -227,3 +231,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

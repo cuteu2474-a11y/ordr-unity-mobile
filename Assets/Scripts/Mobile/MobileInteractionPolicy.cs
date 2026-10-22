@@ -161,17 +161,24 @@ namespace Ordr.Mobile.Mobile
         public void RunAutomaticAbilities(CharacterCombatRuntime runtime)
         {
             if (runtime == null) throw new ArgumentNullException(nameof(runtime));
+            foreach (var unit in runtime.MobileUnitSnapshot())
+                if (unit.Unit.Id == SpecialGradeMobilePolicy.Law)
+                    runtime.TryRunLawAcceleration(unit.InstanceId);
             if (autoSkills == null) return;
             var enemies = runtime.MobileEnemySnapshot();
             foreach (var unit in runtime.MobileUnitSnapshot())
             {
-                if (runtime.IsStoryDeployed(unit.InstanceId)) continue;
+                if (SpecialGradeMobilePolicy.IsManualOnly(unit.Unit.Id) ||
+                    unit.Unit.Id == SpecialGradeMobilePolicy.Law) continue;
+                bool useCurrent = SpecialGradeMobilePolicy.UsesCurrentAttackTarget(unit.Unit.Id);
+                if (runtime.IsStoryDeployed(unit.InstanceId) && !useCurrent) continue;
                 if (unit.Profile == null) continue;
                 if (runtime.ResourcesOf(unit.InstanceId) == null) continue;
                 foreach (var skill in unit.Profile.Skills)
                 {
                     if (skill.Trigger != "manual" && skill.Trigger != "activeMana" &&
-                        skill.Trigger != "activeHealth") continue;
+                        skill.Trigger != "activeHealth" &&
+                        !(useCurrent && skill.Trigger == "onSkillUse")) continue;
                     // 원본에서 확실한 쿨다운이 없으면 매 프레임 자동 연타할 수 있다.
                     // 그런 스킬은 정확한 이벤트형 스케줄러 구현 전 보류한다.
                     double? cooldown = skill.Number("absoluteCooldownSeconds") ?? skill.CooldownSeconds;
@@ -183,8 +190,20 @@ namespace Ordr.Mobile.Mobile
                     if (skill.Get("requiresOriginalVerification") is bool &&
                         (bool)skill.Get("requiresOriginalVerification")) continue;
                     string targetId;
-                    if (!autoSkills.TryApproveCast(unit.Unit, skill, unit.Position, enemies,
+                    IReadOnlyList<MobileEnemySnapshot> allowed = enemies;
+                    string current = null;
+                    if (useCurrent)
+                    {
+                        current = runtime.CurrentAttackTargetOf(unit.InstanceId);
+                        if (current == null) continue;
+                        var exact = new List<MobileEnemySnapshot>();
+                        foreach (var enemy in enemies)
+                            if (enemy.Id == current) exact.Add(enemy);
+                        allowed = exact.AsReadOnly();
+                    }
+                    if (!autoSkills.TryApproveCast(unit.Unit, skill, unit.Position, allowed,
                         runtime.Time, out targetId)) continue;
+                    if (useCurrent && targetId != current) continue;
                     if (string.IsNullOrWhiteSpace(targetId)) continue;
                     bool liveTarget = false;
                     foreach (var enemy in enemies)
@@ -200,3 +219,4 @@ namespace Ordr.Mobile.Mobile
         }
     }
 }
+
