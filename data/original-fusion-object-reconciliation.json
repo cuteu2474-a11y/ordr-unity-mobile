@@ -1,0 +1,3804 @@
+{
+  "format": "ordr-original-fusion-object-reconciliation-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "scope": "source-identity-and-web-multiset-cross-check-only",
+  "authorizedForFusionExecution": false,
+  "warning": "Object rawcode links and material/cost matches do NOT prove UPUN and other side conditions, transactional consumption, world effects or gameplay parity.",
+  "summary": {
+    "uniqueCwrUnitRawcodes": 280,
+    "originalCatalogObjectMatchedRawcodes": 269,
+    "previouslyUnresolvedIngredientRawcodes": 163,
+    "newlyCrossReferencedIngredients": 155,
+    "stillWithoutCatalogIdentity": 8,
+    "ingredientConditionOccurrences": 775,
+    "catalogMatchedIngredientConditionOccurrences": 711,
+    "webRecipeCount": 10,
+    "matchingWebRecipes": 10,
+    "catalogVsJassLabelConflicts": 1
+  },
+  "conflictingCatalogJassLabels": [
+    {
+      "catalogUnitId": "E-03",
+      "catalogObjectRawcode": "h0C7",
+      "jassLabelRawcode": "h0CJ",
+      "jassAbilityRawcode": "ET04",
+      "jassLabelObjectName": "시모츠키 류마 - 영원",
+      "requiresManualFormOrIdentityReview": true
+    }
+  ],
+  "webRecipes": [
+    {
+      "resultCatalogUnitId": "U-02",
+      "resultOriginalRawcode": "h00C",
+      "jassAbilityRawcode": "A00E",
+      "ingredientMultisetMatches": true,
+      "listedGoldWoodMatches": true,
+      "originalOrderedUnitMaterials": [
+        {
+          "rawcode": "h008",
+          "catalogUnitId": "C-06",
+          "count": 1
+        },
+        {
+          "rawcode": "h003",
+          "catalogUnitId": "C-01",
+          "count": 1
+        }
+      ],
+      "originalNonUnitConditionsInOrder": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h01H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h017",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h00Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h00Q",
+          "count": 1
+        }
+      ],
+      "status": "source-objects-material-and-listed-cost-match",
+      "approvedForFusionExecution": false
+    },
+    {
+      "resultCatalogUnitId": "U-05",
+      "resultOriginalRawcode": "h00K",
+      "jassAbilityRawcode": "A00D",
+      "ingredientMultisetMatches": true,
+      "listedGoldWoodMatches": true,
+      "originalOrderedUnitMaterials": [
+        {
+          "rawcode": "h003",
+          "catalogUnitId": "C-01",
+          "count": 1
+        },
+        {
+          "rawcode": "h009",
+          "catalogUnitId": "C-08",
+          "count": 1
+        }
+      ],
+      "originalNonUnitConditionsInOrder": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h00T",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h018",
+          "count": 1
+        }
+      ],
+      "status": "source-objects-material-and-listed-cost-match",
+      "approvedForFusionExecution": false
+    },
+    {
+      "resultCatalogUnitId": "U-11",
+      "resultOriginalRawcode": "h00L",
+      "jassAbilityRawcode": "A01H",
+      "ingredientMultisetMatches": true,
+      "listedGoldWoodMatches": true,
+      "originalOrderedUnitMaterials": [
+        {
+          "rawcode": "h007",
+          "catalogUnitId": "C-04",
+          "count": 1
+        },
+        {
+          "rawcode": "h003",
+          "catalogUnitId": "C-01",
+          "count": 1
+        }
+      ],
+      "originalNonUnitConditionsInOrder": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h012",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h017",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h01A",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h01G",
+          "count": 1
+        }
+      ],
+      "status": "source-objects-material-and-listed-cost-match",
+      "approvedForFusionExecution": false
+    },
+    {
+      "resultCatalogUnitId": "R-24",
+      "resultOriginalRawcode": "h027",
+      "jassAbilityRawcode": "A02L",
+      "ingredientMultisetMatches": true,
+      "listedGoldWoodMatches": true,
+      "originalOrderedUnitMaterials": [
+        {
+          "rawcode": "h01E",
+          "catalogUnitId": "S-26",
+          "count": 1
+        },
+        {
+          "rawcode": "h00W",
+          "catalogUnitId": "S-22",
+          "count": 1
+        },
+        {
+          "rawcode": "h00J",
+          "catalogUnitId": "U-10",
+          "count": 1
+        },
+        {
+          "rawcode": "h007",
+          "catalogUnitId": "C-04",
+          "count": 1
+        }
+      ],
+      "originalNonUnitConditionsInOrder": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h03H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h037",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03T",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h055",
+          "count": 1
+        }
+      ],
+      "status": "source-objects-material-and-listed-cost-match",
+      "approvedForFusionExecution": false
+    },
+    {
+      "resultCatalogUnitId": "L-21",
+      "resultOriginalRawcode": "h042",
+      "jassAbilityRawcode": "A0UG",
+      "ingredientMultisetMatches": true,
+      "listedGoldWoodMatches": true,
+      "originalOrderedUnitMaterials": [
+        {
+          "rawcode": "h025",
+          "catalogUnitId": "R-07",
+          "count": 1
+        },
+        {
+          "rawcode": "h021",
+          "catalogUnitId": "R-03",
+          "count": 1
+        },
+        {
+          "rawcode": "h02J",
+          "catalogUnitId": "R-40",
+          "count": 1
+        }
+      ],
+      "originalNonUnitConditionsInOrder": [
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h084",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08R",
+          "count": 1
+        }
+      ],
+      "status": "source-objects-material-and-listed-cost-match",
+      "approvedForFusionExecution": false
+    },
+    {
+      "resultCatalogUnitId": "H-14",
+      "resultOriginalRawcode": "h03J",
+      "jassAbilityRawcode": "YY14",
+      "ingredientMultisetMatches": true,
+      "listedGoldWoodMatches": true,
+      "originalOrderedUnitMaterials": [
+        {
+          "rawcode": "h026",
+          "catalogUnitId": "R-25",
+          "count": 1
+        },
+        {
+          "rawcode": "h01S",
+          "catalogUnitId": "R-17",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Z",
+          "catalogUnitId": "R-09",
+          "count": 1
+        }
+      ],
+      "originalNonUnitConditionsInOrder": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h0CJ",
+          "count": 1
+        }
+      ],
+      "status": "source-objects-material-and-listed-cost-match",
+      "approvedForFusionExecution": false
+    },
+    {
+      "resultCatalogUnitId": "R-42",
+      "resultOriginalRawcode": "h01M",
+      "jassAbilityRawcode": "A0ND",
+      "ingredientMultisetMatches": true,
+      "listedGoldWoodMatches": true,
+      "originalOrderedUnitMaterials": [
+        {
+          "rawcode": "h00P",
+          "catalogUnitId": "S-03",
+          "count": 1
+        },
+        {
+          "rawcode": "h011",
+          "catalogUnitId": "S-16",
+          "count": 1
+        },
+        {
+          "rawcode": "h00U",
+          "catalogUnitId": "S-07",
+          "count": 1
+        }
+      ],
+      "originalNonUnitConditionsInOrder": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h02T",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h032",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03O",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h047",
+          "count": 1
+        }
+      ],
+      "status": "source-objects-material-and-listed-cost-match",
+      "approvedForFusionExecution": false
+    },
+    {
+      "resultCatalogUnitId": "R-38",
+      "resultOriginalRawcode": "h02H",
+      "jassAbilityRawcode": "A02N",
+      "ingredientMultisetMatches": true,
+      "listedGoldWoodMatches": true,
+      "originalOrderedUnitMaterials": [
+        {
+          "rawcode": "h01A",
+          "catalogUnitId": "S-29",
+          "count": 1
+        },
+        {
+          "rawcode": "h018",
+          "catalogUnitId": "S-23",
+          "count": 1
+        },
+        {
+          "rawcode": "h014",
+          "catalogUnitId": "S-12",
+          "count": 1
+        }
+      ],
+      "originalNonUnitConditionsInOrder": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h031",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05F",
+          "count": 1
+        }
+      ],
+      "status": "source-objects-material-and-listed-cost-match",
+      "approvedForFusionExecution": false
+    },
+    {
+      "resultCatalogUnitId": "H-10",
+      "resultOriginalRawcode": "h03W",
+      "jassAbilityRawcode": "YY03",
+      "ingredientMultisetMatches": true,
+      "listedGoldWoodMatches": true,
+      "originalOrderedUnitMaterials": [
+        {
+          "rawcode": "h02I",
+          "catalogUnitId": "R-21",
+          "count": 1
+        },
+        {
+          "rawcode": "h01W",
+          "catalogUnitId": "R-12",
+          "count": 1
+        },
+        {
+          "rawcode": "h014",
+          "catalogUnitId": "S-12",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Z",
+          "catalogUnitId": "S-20",
+          "count": 1
+        }
+      ],
+      "originalNonUnitConditionsInOrder": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H09E",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h040",
+          "count": 1
+        }
+      ],
+      "status": "source-objects-material-and-listed-cost-match",
+      "approvedForFusionExecution": false
+    },
+    {
+      "resultCatalogUnitId": "L-29",
+      "resultOriginalRawcode": "h03K",
+      "jassAbilityRawcode": "A037",
+      "ingredientMultisetMatches": true,
+      "listedGoldWoodMatches": true,
+      "originalOrderedUnitMaterials": [
+        {
+          "rawcode": "h02K",
+          "catalogUnitId": "R-35",
+          "count": 1
+        },
+        {
+          "rawcode": "h01T",
+          "catalogUnitId": "R-15",
+          "count": 1
+        },
+        {
+          "rawcode": "h01V",
+          "catalogUnitId": "R-13",
+          "count": 1
+        }
+      ],
+      "originalNonUnitConditionsInOrder": [
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H091",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08O",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05G",
+          "count": 1
+        }
+      ],
+      "status": "source-objects-material-and-listed-cost-match",
+      "approvedForFusionExecution": false
+    }
+  ],
+  "entries": [
+    {
+      "rawcode": "h04S",
+      "ingredientUseCount": 30,
+      "resultOfAbilities": [],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "바솔로뮤 쿠마 - 초월",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h06G",
+      "ingredientUseCount": 14,
+      "resultOfAbilities": [],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "행운의 토큰",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00U",
+      "ingredientUseCount": 10,
+      "resultOfAbilities": [
+        "A012"
+      ],
+      "catalogUnitId": "S-07",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "루피 기어세컨드 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h060",
+      "ingredientUseCount": 10,
+      "resultOfAbilities": [
+        "YY26"
+      ],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "해적선",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h005",
+      "ingredientUseCount": 9,
+      "resultOfAbilities": [],
+      "catalogUnitId": "C-07",
+      "objectCatalogMappingStatus": "verified-common-map-identity",
+      "originalW3xObjectName": "버기 - 흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h015",
+      "ingredientUseCount": 9,
+      "resultOfAbilities": [
+        "A018"
+      ],
+      "catalogUnitId": "S-11",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "버기 마기탄 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00J",
+      "ingredientUseCount": 8,
+      "resultOfAbilities": [
+        "A00L"
+      ],
+      "catalogUnitId": "U-10",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "페로나 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00P",
+      "ingredientUseCount": 8,
+      "resultOfAbilities": [
+        "A015"
+      ],
+      "catalogUnitId": "S-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "나미 크리마텍트 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h001",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [],
+      "catalogUnitId": "C-03",
+      "objectCatalogMappingStatus": "verified-common-map-identity",
+      "originalW3xObjectName": "나미 - 흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h002",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [],
+      "catalogUnitId": "C-02",
+      "objectCatalogMappingStatus": "verified-common-map-identity",
+      "originalW3xObjectName": "롤로노아 조로 - 흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h003",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [],
+      "catalogUnitId": "C-01",
+      "objectCatalogMappingStatus": "verified-common-map-identity",
+      "originalW3xObjectName": "몽키.D.루피 - 흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h004",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [],
+      "catalogUnitId": "C-05",
+      "objectCatalogMappingStatus": "verified-common-map-identity",
+      "originalW3xObjectName": "상디 - 흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h008",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [],
+      "catalogUnitId": "C-06",
+      "objectCatalogMappingStatus": "verified-common-map-identity",
+      "originalW3xObjectName": "토니토니 쵸파 - 흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00E",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [
+        "A01R"
+      ],
+      "catalogUnitId": "U-09",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "타시기 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00S",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [
+        "A03E"
+      ],
+      "catalogUnitId": "S-04",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "로빈 오하라 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h010",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [
+        "A029"
+      ],
+      "catalogUnitId": "S-17",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "압살롬 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h011",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [
+        "A01P"
+      ],
+      "catalogUnitId": "S-16",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "아론 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h016",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [
+        "A01N"
+      ],
+      "catalogUnitId": "S-10",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "바질 호킨스 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01C",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [
+        "A0NA"
+      ],
+      "catalogUnitId": "S-02",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "카포네 갱 벳지 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01J",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [
+        "A00S"
+      ],
+      "catalogUnitId": "S-19",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "포트거스.D.에이스 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01N",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [
+        "A1A0"
+      ],
+      "catalogUnitId": "R-18",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "브룩 음악가 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h023",
+      "ingredientUseCount": 7,
+      "resultOfAbilities": [
+        "A00C"
+      ],
+      "catalogUnitId": "R-36",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "카쿠 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h006",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [],
+      "catalogUnitId": "C-09",
+      "objectCatalogMappingStatus": "verified-common-map-identity",
+      "originalW3xObjectName": "해군 칼병 - 흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h009",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [],
+      "catalogUnitId": "C-08",
+      "objectCatalogMappingStatus": "verified-common-map-identity",
+      "originalW3xObjectName": "해군 총병 - 흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00A",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A0N7"
+      ],
+      "catalogUnitId": "U-13",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "후쿠로 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00K",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A00D"
+      ],
+      "catalogUnitId": "U-05",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "포트거스.D.에이스 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00N",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A00V"
+      ],
+      "catalogUnitId": "U-07",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "우솝 저격왕 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00O",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A006"
+      ],
+      "catalogUnitId": "U-01",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "니코 로빈 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h014",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A01I"
+      ],
+      "catalogUnitId": "S-12",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "봉쿠레 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h018",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A01E"
+      ],
+      "catalogUnitId": "S-23",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "징베 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01G",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A02Y"
+      ],
+      "catalogUnitId": "S-32",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "파이러츠 도킹5 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01I",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A019"
+      ],
+      "catalogUnitId": "S-33",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "헤르메포 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01O",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A02J"
+      ],
+      "catalogUnitId": "R-19",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "네펠타리 비비 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01R",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A0N6"
+      ],
+      "catalogUnitId": "R-39",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "키자루 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01S",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A00Q"
+      ],
+      "catalogUnitId": "R-17",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "벤 베크만 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01X",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A00F"
+      ],
+      "catalogUnitId": "R-06",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "루피 기어서드 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01Z",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A01M"
+      ],
+      "catalogUnitId": "R-09",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "마젤란 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h027",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A02L"
+      ],
+      "catalogUnitId": "R-24",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "슈가 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02D",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A00U"
+      ],
+      "catalogUnitId": "R-37",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "유스타스 키드 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02I",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A0NF"
+      ],
+      "catalogUnitId": "R-21",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "상디 디아블잠브 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04H",
+      "ingredientUseCount": 6,
+      "resultOfAbilities": [
+        "A02T"
+      ],
+      "catalogUnitId": "R-11",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "쥬라클 미호크 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h007",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [],
+      "catalogUnitId": "C-04",
+      "objectCatalogMappingStatus": "verified-common-map-identity",
+      "originalW3xObjectName": "우솝 - 흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00B",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A00K"
+      ],
+      "catalogUnitId": "S-09",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "겟코 모리아 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00C",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A00E"
+      ],
+      "catalogUnitId": "U-02",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "베포 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00D",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A00W"
+      ],
+      "catalogUnitId": "U-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "브룩 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00L",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A01H"
+      ],
+      "catalogUnitId": "U-11",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "프랑키 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00Q",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A01D"
+      ],
+      "catalogUnitId": "S-18",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "에넬 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00V",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A0N8"
+      ],
+      "catalogUnitId": "S-27",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "캡틴 크로 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00W",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A032"
+      ],
+      "catalogUnitId": "S-22",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "조로 귀기 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00X",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A00Z"
+      ],
+      "catalogUnitId": "S-21",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "이나즈마 혁명군 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00Y",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A030"
+      ],
+      "catalogUnitId": "S-30",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "유스타스 키드 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00Z",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A01K"
+      ],
+      "catalogUnitId": "S-20",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "우솝 화염탄 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h012",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A1A1"
+      ],
+      "catalogUnitId": "S-15",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "스쿼드 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h017",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A017"
+      ],
+      "catalogUnitId": "S-28",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "바솔로뮤 쿠마 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01A",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A01Q"
+      ],
+      "catalogUnitId": "S-29",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "크로커다일 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01B",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A01C"
+      ],
+      "catalogUnitId": "S-31",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "킬러 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01F",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A19Z"
+      ],
+      "catalogUnitId": "S-14",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "스모커 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01K",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A02B"
+      ],
+      "catalogUnitId": "S-01",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "X-드레이크 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01M",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A0ND"
+      ],
+      "catalogUnitId": "R-42",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "보아 핸콕 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01T",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A03G"
+      ],
+      "catalogUnitId": "R-15",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "반 더 데켄 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01V",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A013"
+      ],
+      "catalogUnitId": "R-13",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "바제스 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01W",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A02F"
+      ],
+      "catalogUnitId": "R-12",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "바르토로메오 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01Y",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A02K"
+      ],
+      "catalogUnitId": "R-10",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "모몬가 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h024",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A0NB"
+      ],
+      "catalogUnitId": "R-29",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "와이퍼 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h025",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A016"
+      ],
+      "catalogUnitId": "R-07",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "류마 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h026",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A039"
+      ],
+      "catalogUnitId": "R-25",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "시류 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h028",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A02V"
+      ],
+      "catalogUnitId": "R-23",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "센토마루 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h029",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A03B"
+      ],
+      "catalogUnitId": "R-22",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "샹크스 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02C",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A01W"
+      ],
+      "catalogUnitId": "R-30",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "우솝 보잉열도 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02H",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A02N"
+      ],
+      "catalogUnitId": "R-38",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "크로커다일 Mr.0 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02J",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A02S"
+      ],
+      "catalogUnitId": "R-40",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "킨에몬 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02L",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A02Z"
+      ],
+      "catalogUnitId": "R-05",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "트라팔가 로우 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02M",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A00A"
+      ],
+      "catalogUnitId": "R-16",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "베이비5 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h030",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "A027"
+      ],
+      "catalogUnitId": "L-32",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "바솔로뮤 쿠마 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05X",
+      "ingredientUseCount": 5,
+      "resultOfAbilities": [
+        "UU01"
+      ],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "실버즈 레일리 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00R",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A01O"
+      ],
+      "catalogUnitId": "S-06",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "로브 루치 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00T",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A024"
+      ],
+      "catalogUnitId": "S-08",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "마르코 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h013",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A01B"
+      ],
+      "catalogUnitId": "S-13",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "상디 검은다리 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01D",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A00B"
+      ],
+      "catalogUnitId": "S-25",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "쵸파 가드포인트 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01E",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A014"
+      ],
+      "catalogUnitId": "S-26",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "쵸파 두뇌강화 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01H",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A01X"
+      ],
+      "catalogUnitId": "S-05",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "트라팔가 로우 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01L",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A02M"
+      ],
+      "catalogUnitId": "R-04",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "돈키호테 도플라밍고 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01P",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A00R"
+      ],
+      "catalogUnitId": "R-27",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "아카이누 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01Q",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A02W"
+      ],
+      "catalogUnitId": "R-02",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "몽키.D.거프 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h01U",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A0IO"
+      ],
+      "catalogUnitId": "R-14",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "바질 호킨스 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h021",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A01F"
+      ],
+      "catalogUnitId": "R-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "검은수염 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h022",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A00I"
+      ],
+      "catalogUnitId": "R-08",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "마르코 불사조 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02A",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A01J"
+      ],
+      "catalogUnitId": "R-31",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "엠포리오 이완코브 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02B",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A0NC"
+      ],
+      "catalogUnitId": "R-26",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "아오키지 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02E",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A02A"
+      ],
+      "catalogUnitId": "R-34",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "다이아몬드 죠즈 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02F",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A02R"
+      ],
+      "catalogUnitId": "R-33",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "조로 현상금사냥꾼 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02K",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A010"
+      ],
+      "catalogUnitId": "R-35",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "쵸파 혼포인트 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02R",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A02P"
+      ],
+      "catalogUnitId": "L-09",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "로브 루치 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02T",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A02D"
+      ],
+      "catalogUnitId": "L-11",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "마르코 환수종 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02X",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A03D"
+      ],
+      "catalogUnitId": "L-15",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "블랙마리아 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02Y",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A00T"
+      ],
+      "catalogUnitId": "L-10",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "루피 나이트메어 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h032",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A0N9"
+      ],
+      "catalogUnitId": "L-36",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "보아 핸콕 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h033",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A00G"
+      ],
+      "catalogUnitId": "L-06",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "빈스모크 레이쥬 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h035",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A025"
+      ],
+      "catalogUnitId": "L-17",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "샹크스 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h037",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A0NI"
+      ],
+      "catalogUnitId": "L-19",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "슈가 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03C",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A02H"
+      ],
+      "catalogUnitId": "L-08",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "트라팔가 로우 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03E",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A01T"
+      ],
+      "catalogUnitId": "L-31",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "코비 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03G",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A0NE"
+      ],
+      "catalogUnitId": "L-28",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "징베 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h043",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "YY17"
+      ],
+      "catalogUnitId": "H-01",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "쥬라클 미호크 - 히든",
+      "jassLabelCatalogUnitId": "H-01",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h055",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "YY13"
+      ],
+      "catalogUnitId": "H-13",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "스튜시 - 히든",
+      "jassLabelCatalogUnitId": "H-13",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05K",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A01V"
+      ],
+      "catalogUnitId": "R-41",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "페로나 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05L",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A00X"
+      ],
+      "catalogUnitId": "R-20",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "사보 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0AH",
+      "ingredientUseCount": 4,
+      "resultOfAbilities": [
+        "A108"
+      ],
+      "catalogUnitId": "L-34",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "킹 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00F",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A01L"
+      ],
+      "catalogUnitId": "U-12",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "하찌 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00G",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A02I"
+      ],
+      "catalogUnitId": "U-08",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "쵸파 럼블볼강화 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00I",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A00P"
+      ],
+      "catalogUnitId": "U-06",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "이나즈마 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00M",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A0N5"
+      ],
+      "catalogUnitId": "U-04",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "블루노 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h019",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A01A"
+      ],
+      "catalogUnitId": "S-24",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "챠카 - 특별",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h020",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A028"
+      ],
+      "catalogUnitId": "R-28",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "마인 오즈 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02G",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A008"
+      ],
+      "catalogUnitId": "R-32",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "제프 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02N",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A01G"
+      ],
+      "catalogUnitId": "L-12",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "겟코 모리아 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02P",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A00O"
+      ],
+      "catalogUnitId": "L-02",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "나미 도둑고양이 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02S",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A0NH"
+      ],
+      "catalogUnitId": "L-27",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "조로 죽음의경지 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02U",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A036"
+      ],
+      "catalogUnitId": "L-01",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "검은수염 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02V",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A03H"
+      ],
+      "catalogUnitId": "L-20",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "스모커 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02W",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A00Y"
+      ],
+      "catalogUnitId": "L-04",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "몽키.D.드래곤 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02Z",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A00J"
+      ],
+      "catalogUnitId": "L-13",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "바르토로메오 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h031",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A00H"
+      ],
+      "catalogUnitId": "L-37",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "후지토라 잇쇼우 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h036",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A00M"
+      ],
+      "catalogUnitId": "L-18",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "센고쿠 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h038",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A009"
+      ],
+      "catalogUnitId": "L-22",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "시저 크라운 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h039",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A02X"
+      ],
+      "catalogUnitId": "L-23",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "금사자 시키 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03F",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A026"
+      ],
+      "catalogUnitId": "L-30",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "카르가라 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03H",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A02C"
+      ],
+      "catalogUnitId": "L-33",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "샬롯 크래커 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03I",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A0NG"
+      ],
+      "catalogUnitId": "L-26",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "제파 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03K",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A037"
+      ],
+      "catalogUnitId": "L-29",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "쵸파 유력강화 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03S",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A005"
+      ],
+      "catalogUnitId": "L-25",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "울티 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03T",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "YY05"
+      ],
+      "catalogUnitId": "H-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "레베카 - 히든",
+      "jassLabelCatalogUnitId": "H-03",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03W",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "YY03"
+      ],
+      "catalogUnitId": "H-10",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "베르고 - 히든",
+      "jassLabelCatalogUnitId": "H-10",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03Z",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "YY15"
+      ],
+      "catalogUnitId": "H-17",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "아카이누 - 히든",
+      "jassLabelCatalogUnitId": "H-17",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h042",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A0UG"
+      ],
+      "catalogUnitId": "L-21",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "시노부 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h044",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "YY02"
+      ],
+      "catalogUnitId": "H-05",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "류마 - 히든",
+      "jassLabelCatalogUnitId": "H-05",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05W",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A0K4"
+      ],
+      "catalogUnitId": "T-02",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "네펠타리 비비 - 변화",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h07N",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A0K3"
+      ],
+      "catalogUnitId": "T-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "베이비5 - 변화",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h087",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A02Q"
+      ],
+      "catalogUnitId": "L-35",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "아마츠키 토키 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09X",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A0XP"
+      ],
+      "catalogUnitId": "R-01",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "X-드레이크 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09Z",
+      "ingredientUseCount": 3,
+      "resultOfAbilities": [
+        "A0XS"
+      ],
+      "catalogUnitId": "L-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "네코마무시 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02O",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "A00N"
+      ],
+      "catalogUnitId": "L-24",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "포트거스.D.에이스 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h02Q",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "A03C"
+      ],
+      "catalogUnitId": "L-05",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "라분 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h034",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "A01U"
+      ],
+      "catalogUnitId": "L-16",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "상디 슈트코스 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03A",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "A01S"
+      ],
+      "catalogUnitId": "L-07",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "실버즈 레일리 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03B",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "A02G"
+      ],
+      "catalogUnitId": "L-38",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "흰수염 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03J",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "YY14"
+      ],
+      "catalogUnitId": "H-14",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "비의 시류 - 히든",
+      "jassLabelCatalogUnitId": "H-14",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03M",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "YY11"
+      ],
+      "catalogUnitId": "H-12",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "사보 용조권 - 히든",
+      "jassLabelCatalogUnitId": "H-12",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03N",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "YY06"
+      ],
+      "catalogUnitId": "H-04",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "료쿠규 - 히든",
+      "jassLabelCatalogUnitId": "H-04",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03O",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "YY10"
+      ],
+      "catalogUnitId": "H-11",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "봉쿠레 - 히든",
+      "jassLabelCatalogUnitId": "H-11",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03Y",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "YY16"
+      ],
+      "catalogUnitId": "H-18",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "엠포리오 이완코브 - 히든",
+      "jassLabelCatalogUnitId": "H-18",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h041",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "YY20"
+      ],
+      "catalogUnitId": "H-16",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "아오키지 - 히든",
+      "jassLabelCatalogUnitId": "H-16",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h045",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "YY23"
+      ],
+      "catalogUnitId": "H-21",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "킬러 - 히든",
+      "jassLabelCatalogUnitId": "H-21",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h046",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "YY22"
+      ],
+      "catalogUnitId": "H-20",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "키쿠노죠 - 히든",
+      "jassLabelCatalogUnitId": "H-20",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h048",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "IF02"
+      ],
+      "catalogUnitId": "D-04",
+      "objectCatalogMappingStatus": "verified-jass-fusion-result",
+      "originalW3xObjectName": "페로나 - 왜곡",
+      "jassLabelCatalogUnitId": "D-04",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05S",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "A0K2"
+      ],
+      "catalogUnitId": "T-01",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "돈키호테 도플라밍고 - 변화",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05V",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "IF06"
+      ],
+      "catalogUnitId": "D-05",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "포트거스.D.에이스 - 왜곡",
+      "jassLabelCatalogUnitId": "D-05",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05Y",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "고대의 배 - 희귀",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0CM",
+      "ingredientUseCount": 2,
+      "resultOfAbilities": [
+        "A1CC"
+      ],
+      "catalogUnitId": "L-39",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "히바리 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h00H",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "좀비 - 안흔함",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03L",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "YY12"
+      ],
+      "catalogUnitId": "H-15",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "사우전드 써니호 - 히든",
+      "jassLabelCatalogUnitId": "H-15",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03R",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "YY08"
+      ],
+      "catalogUnitId": "H-07",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "반 더 데켄 - 히든",
+      "jassLabelCatalogUnitId": "H-07",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03U",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "YY04"
+      ],
+      "catalogUnitId": "H-02",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "레드포스호 - 히든",
+      "jassLabelCatalogUnitId": "H-02",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03V",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IF01"
+      ],
+      "catalogUnitId": "D-02",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "코알라 - 왜곡",
+      "jassLabelCatalogUnitId": "D-02",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03X",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "YY01"
+      ],
+      "catalogUnitId": "H-09",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "방주맥심 - 히든",
+      "jassLabelCatalogUnitId": "H-09",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h047",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "YY25"
+      ],
+      "catalogUnitId": "H-22",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "피셔 타이거 - 히든",
+      "jassLabelCatalogUnitId": "H-22",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05F",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "A02O"
+      ],
+      "catalogUnitId": "LI-09",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "크로커다일 - 제한",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h065",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS03"
+      ],
+      "catalogUnitId": "RN-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "메구밍 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h06T",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS13"
+      ],
+      "catalogUnitId": "RN-13",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "페이몬 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h06U",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS01"
+      ],
+      "catalogUnitId": "RN-01",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "K - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h06V",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS02"
+      ],
+      "catalogUnitId": "RN-02",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "우즈마키 나루토 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h06W",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS08"
+      ],
+      "catalogUnitId": "RN-08",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "요츠바! - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h06X",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS04"
+      ],
+      "catalogUnitId": "RN-04",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "센토 이스즈 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h06Y",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS11"
+      ],
+      "catalogUnitId": "RN-11",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "카미조 토우마 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h06Z",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS06"
+      ],
+      "catalogUnitId": "RN-06",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "엘리자베스 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h070",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS09"
+      ],
+      "catalogUnitId": "RN-09",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "이사야마 요미 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h071",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS12"
+      ],
+      "catalogUnitId": "RN-12",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "쿠로사키 이치고 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h072",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS14"
+      ],
+      "catalogUnitId": "RN-14",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "하네카와 츠바사 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h073",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS05"
+      ],
+      "catalogUnitId": "RN-05",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "야가미 라이토 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h07J",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "A0K7"
+      ],
+      "catalogUnitId": "T-05",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "캐럿 스론 - 변화",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h07L",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "YY18"
+      ],
+      "catalogUnitId": "H-19",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "캐럿 - 히든",
+      "jassLabelCatalogUnitId": "H-19",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08T",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "해적왕이 될 사나이 / 다섯번째 황제",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09K",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS07"
+      ],
+      "catalogUnitId": "RN-07",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "옌 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09L",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IS10"
+      ],
+      "catalogUnitId": "RN-10",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "이치의 율자 - 랜덤전용",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09V",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "IF05"
+      ],
+      "catalogUnitId": "D-06",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "바제스 - 왜곡",
+      "jassLabelCatalogUnitId": "D-06",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0AN",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "세라핌 등급 유닛",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0CK",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [
+        "A0K6"
+      ],
+      "catalogUnitId": "T-04",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "카쿠 - 변화",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03P",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "YY09"
+      ],
+      "catalogUnitId": "H-08",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "발라티에 - 히든",
+      "jassLabelCatalogUnitId": "H-08",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h03Q",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "YY07"
+      ],
+      "catalogUnitId": "H-06",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "모비딕호 - 히든",
+      "jassLabelCatalogUnitId": "H-06",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h040",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A0RP"
+      ],
+      "catalogUnitId": "LI-05",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "아인 - 제한",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h049",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM08"
+      ],
+      "catalogUnitId": "I-03",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "실버즈 레일리 - 불멸",
+      "jassLabelCatalogUnitId": "I-03",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04A",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM09"
+      ],
+      "catalogUnitId": "I-12",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "흰수염 - 불멸",
+      "jassLabelCatalogUnitId": "I-12",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04B",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM02"
+      ],
+      "catalogUnitId": "I-09",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "금사자 시키 - 불멸",
+      "jassLabelCatalogUnitId": "I-09",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04C",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM03"
+      ],
+      "catalogUnitId": "I-01",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "몽키.D.거프 - 불멸",
+      "jassLabelCatalogUnitId": "I-01",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04D",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM04"
+      ],
+      "catalogUnitId": "I-02",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "몽키.D.드래곤 - 불멸",
+      "jassLabelCatalogUnitId": "I-02",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04E",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM06"
+      ],
+      "catalogUnitId": "I-07",
+      "objectCatalogMappingStatus": "verified-jass-fusion-result",
+      "originalW3xObjectName": "센고쿠 - 불멸",
+      "jassLabelCatalogUnitId": "I-07",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04F",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM07"
+      ],
+      "catalogUnitId": "I-08",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "스코퍼 가반 - 불멸",
+      "jassLabelCatalogUnitId": "I-08",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04G",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM10"
+      ],
+      "catalogUnitId": "I-10",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "제트 - 불멸",
+      "jassLabelCatalogUnitId": "I-10",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04J",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM01"
+      ],
+      "catalogUnitId": "I-04",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "골.D.로져 - 불멸",
+      "jassLabelCatalogUnitId": "I-04",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04Q",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM05"
+      ],
+      "catalogUnitId": "I-06",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "빅 맘 - 불멸",
+      "jassLabelCatalogUnitId": "I-06",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h04U",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IF04"
+      ],
+      "catalogUnitId": "D-01",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "블랙마리아 - 왜곡",
+      "jassLabelCatalogUnitId": "D-01",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h057",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET01"
+      ],
+      "catalogUnitId": "E-06",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "네펠타리 비비 - 영원",
+      "jassLabelCatalogUnitId": "E-06",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h058",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET08"
+      ],
+      "catalogUnitId": "E-04",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "쥬라클 미호크 - 영원",
+      "jassLabelCatalogUnitId": "E-04",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h059",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET11"
+      ],
+      "catalogUnitId": "E-07",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "포트거스.D.에이스 - 영원",
+      "jassLabelCatalogUnitId": "E-07",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05A",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET05"
+      ],
+      "catalogUnitId": "E-05",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "버기 - 영원",
+      "jassLabelCatalogUnitId": "E-05",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05B",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET09"
+      ],
+      "catalogUnitId": "E-10",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "카벤딧슈 - 영원",
+      "jassLabelCatalogUnitId": "E-10",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05C",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET06"
+      ],
+      "catalogUnitId": "E-12",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "보아 핸콕 - 영원",
+      "jassLabelCatalogUnitId": "E-12",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05E",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A1A5"
+      ],
+      "catalogUnitId": "LI-07",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "갓 에넬 - 제한",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05G",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A1A6"
+      ],
+      "catalogUnitId": "LI-01",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "패트릭 레드필드 - 제한",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05H",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SP01"
+      ],
+      "catalogUnitId": "X-01",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "모건 - 특수",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05I",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A007"
+      ],
+      "catalogUnitId": "LI-02",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "레베카 - 제한",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H05N",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR03"
+      ],
+      "catalogUnitId": "TR-27",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해군의 홍일점",
+      "jassLabelCatalogUnitId": "TR-27",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05O",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SP04"
+      ],
+      "catalogUnitId": "X-04",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "아이스버그 - 특수",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05P",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SP05"
+      ],
+      "catalogUnitId": "X-05",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "오타마 - 특수",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05Q",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SP03"
+      ],
+      "catalogUnitId": "X-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "블고리 - 특수",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h05R",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SP06"
+      ],
+      "catalogUnitId": "X-06",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "페루 - 특수",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h067",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET07"
+      ],
+      "catalogUnitId": "E-09",
+      "objectCatalogMappingStatus": "verified-jass-fusion-result",
+      "originalW3xObjectName": "우타 - 영원",
+      "jassLabelCatalogUnitId": "E-09",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h06A",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET12"
+      ],
+      "catalogUnitId": "E-11",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "길드 테조로 - 영원",
+      "jassLabelCatalogUnitId": "E-11",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h07I",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A0S0"
+      ],
+      "catalogUnitId": "LI-08",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "샬롯 카타쿠리 - 제한",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h07M",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM11"
+      ],
+      "catalogUnitId": "I-11",
+      "objectCatalogMappingStatus": "verified-jass-fusion-result",
+      "originalW3xObjectName": "카이도 - 불멸",
+      "jassLabelCatalogUnitId": "I-11",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h081",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IM12"
+      ],
+      "catalogUnitId": "I-05",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "더글라스 불릿 - 불멸",
+      "jassLabelCatalogUnitId": "I-05",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h083",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A10V"
+      ],
+      "catalogUnitId": "MY-07",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "샌즈 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h084",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A0UH"
+      ],
+      "catalogUnitId": "LI-04",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "시노부 - 제한",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h08I",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A19T"
+      ],
+      "catalogUnitId": "MY-05",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "쿠치키 뱌쿠야 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h08M",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A1AD"
+      ],
+      "catalogUnitId": "MY-08",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "아냐 포저 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h08N",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SP02"
+      ],
+      "catalogUnitId": "X-02",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "베티 - 특수",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h08O",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A011"
+      ],
+      "catalogUnitId": "LI-03",
+      "objectCatalogMappingStatus": "verified-jass-fusion-result",
+      "originalW3xObjectName": "마르코 - 제한",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h08Q",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A18P"
+      ],
+      "catalogUnitId": "LI-06",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "알비다 - 제한",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h08R",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET10"
+      ],
+      "catalogUnitId": "E-08",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "코즈키 오뎅 - 영원",
+      "jassLabelCatalogUnitId": "E-08",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h08S",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A113"
+      ],
+      "catalogUnitId": "L-14",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "샬롯 브륄레 - 전설",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08U",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR16"
+      ],
+      "catalogUnitId": "TR-15",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해왕류를 다스리는 인어공주",
+      "jassLabelCatalogUnitId": "TR-15",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08V",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR01"
+      ],
+      "catalogUnitId": "TR-02",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "날씨는 맑음",
+      "jassLabelCatalogUnitId": "TR-02",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08W",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR05"
+      ],
+      "catalogUnitId": "TR-07",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "검은 정의를 좇는 하얀 새",
+      "jassLabelCatalogUnitId": "TR-07",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08X",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR28"
+      ],
+      "catalogUnitId": "TR-29",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "분노하는 맹호",
+      "jassLabelCatalogUnitId": "TR-29",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08Y",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR27"
+      ],
+      "catalogUnitId": "TR-28",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "무적의 아이언 파이러츠",
+      "jassLabelCatalogUnitId": "TR-28",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08Z",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR15"
+      ],
+      "catalogUnitId": "TR-13",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "정상해전 종결자",
+      "jassLabelCatalogUnitId": "TR-13",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H090",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR08"
+      ],
+      "catalogUnitId": "TR-01",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "치밀하고 비열한 어둠",
+      "jassLabelCatalogUnitId": "TR-01",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H091",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR23"
+      ],
+      "catalogUnitId": "TR-23",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "순록 의사",
+      "jassLabelCatalogUnitId": "TR-23",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H092",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR13"
+      ],
+      "catalogUnitId": "TR-11",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "혁명군 참모총장",
+      "jassLabelCatalogUnitId": "TR-11",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H094",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR10"
+      ],
+      "catalogUnitId": "TR-09",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "운명의 마술사",
+      "jassLabelCatalogUnitId": "TR-09",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H095",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR18"
+      ],
+      "catalogUnitId": "TR-17",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해군원수 붉은 개",
+      "jassLabelCatalogUnitId": "TR-17",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H096",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR26"
+      ],
+      "catalogUnitId": "TR-05",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "백개의 심장을 바친 자",
+      "jassLabelCatalogUnitId": "TR-05",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H097",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR24"
+      ],
+      "catalogUnitId": "TR-16",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "전 해군대장 푸른 꿩",
+      "jassLabelCatalogUnitId": "TR-16",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H098",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR02"
+      ],
+      "catalogUnitId": "TR-04",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "악마의 자식",
+      "jassLabelCatalogUnitId": "TR-04",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H099",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR09"
+      ],
+      "catalogUnitId": "TR-08",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해적왕이 될 사나이",
+      "jassLabelCatalogUnitId": "TR-08",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09A",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR22"
+      ],
+      "catalogUnitId": "TR-22",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "바다의 협객",
+      "jassLabelCatalogUnitId": "TR-22",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09B",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR20"
+      ],
+      "catalogUnitId": "TR-19",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "바다의 전사",
+      "jassLabelCatalogUnitId": "TR-19",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09E",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR04"
+      ],
+      "catalogUnitId": "TR-03",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "어둠의 조커",
+      "jassLabelCatalogUnitId": "TR-03",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09F",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR06"
+      ],
+      "catalogUnitId": "TR-20",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "최강의 검사",
+      "jassLabelCatalogUnitId": "TR-20",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09H",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR14"
+      ],
+      "catalogUnitId": "TR-12",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "지옥에서 돌아온 자",
+      "jassLabelCatalogUnitId": "TR-12",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09I",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR12"
+      ],
+      "catalogUnitId": "TR-10",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "소울 킹",
+      "jassLabelCatalogUnitId": "TR-10",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09M",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A19W"
+      ],
+      "catalogUnitId": "MY-01",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "고죠 사토루 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09N",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A0XT"
+      ],
+      "catalogUnitId": "MY-06",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "부릉냐 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09R",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A0Y6"
+      ],
+      "catalogUnitId": "MY-11",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "쿠죠 죠타로 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09T",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SP07"
+      ],
+      "catalogUnitId": "X-07",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "폭시 - 특수",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09W",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A0Y3"
+      ],
+      "catalogUnitId": "MY-04",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "나미카제 미나토 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h09Y",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SPH1"
+      ],
+      "catalogUnitId": "SR-01",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "S-스네이크 - 세라핌",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0A0",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SPH3"
+      ],
+      "catalogUnitId": "SR-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "S-샤크 - 세라핌",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0A1",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SPH4"
+      ],
+      "catalogUnitId": "SR-04",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "S-베어 - 세라핌",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0A2",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A0Y9"
+      ],
+      "catalogUnitId": "MY-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "료우기 시키 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0A3",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SPH2"
+      ],
+      "catalogUnitId": "SR-02",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "S-호크 - 세라핌",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0A6",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A19S"
+      ],
+      "catalogUnitId": "MY-09",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "야쿠모 유카리 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0AA",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR30"
+      ],
+      "catalogUnitId": "TR-30",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "세계 최고의 과학자",
+      "jassLabelCatalogUnitId": "TR-30",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0AC",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A19U"
+      ],
+      "catalogUnitId": "MY-13",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "히그마 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0AI",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A10A"
+      ],
+      "catalogUnitId": "LI-10",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "킹 - 제한",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0B2",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR07"
+      ],
+      "catalogUnitId": "TR-14",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "다섯번째 황제",
+      "jassLabelCatalogUnitId": "TR-14",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0B4",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR25"
+      ],
+      "catalogUnitId": "TR-25",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "신세대의 이단아",
+      "jassLabelCatalogUnitId": "TR-25",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0B5",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR11"
+      ],
+      "catalogUnitId": "TR-26",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해군대장 노란 원숭이",
+      "jassLabelCatalogUnitId": "TR-26",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0BC",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A12C"
+      ],
+      "catalogUnitId": "MY-12",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "타츠마키 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0BD",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR19"
+      ],
+      "catalogUnitId": "TR-18",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "오니히메",
+      "jassLabelCatalogUnitId": "TR-18",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0BF",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A0YK"
+      ],
+      "catalogUnitId": "MY-02",
+      "objectCatalogMappingStatus": "reviewed-map-name-alias-and-grade",
+      "originalW3xObjectName": "카마도 네즈코 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0BG",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "SP08"
+      ],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "가이몬 - 특수",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0BK",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET02"
+      ],
+      "catalogUnitId": "E-01",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "태양의 신",
+      "jassLabelCatalogUnitId": "E-01",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0BL",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR17"
+      ],
+      "catalogUnitId": "TR-06",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "신 해군대장 초록 소",
+      "jassLabelCatalogUnitId": "TR-06",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0BX",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR21"
+      ],
+      "catalogUnitId": "TR-21",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "일그러진 미래",
+      "jassLabelCatalogUnitId": "TR-21",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0C2",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A0QG"
+      ],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "한마 유지로 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0CC",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "A19V"
+      ],
+      "catalogUnitId": "MY-10",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "콘파쿠 요우무 - 신비",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0CI",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "IF03"
+      ],
+      "catalogUnitId": "D-03",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
+      "originalW3xObjectName": "퀸 - 왜곡",
+      "jassLabelCatalogUnitId": "D-03",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "h0CJ",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET04"
+      ],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "시모츠키 류마 - 영원",
+      "jassLabelCatalogUnitId": "E-03",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0CO",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR29"
+      ],
+      "catalogUnitId": "TR-24",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해군의 미래",
+      "jassLabelCatalogUnitId": "TR-24",
+      "approvedForMaterialConsumption": false
+    }
+  ]
+}
