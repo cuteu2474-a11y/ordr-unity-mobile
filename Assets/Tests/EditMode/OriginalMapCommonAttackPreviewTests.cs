@@ -117,5 +117,23 @@ namespace Ordr.Mobile.Tests
             world.RemoveCharacter(zoro);
             Assert.AreEqual(0, world.PreviewAttackers);
         }
+
+        [Test]
+        public void PresentationOnlyReadsDamageSchoolFromVerifiedAttackBinding()
+        {
+            var world = World();
+            long luffy = world.SpawnCharacter("C-01", 0, 0);
+            DamageSchool school;
+            Assert.IsFalse(world.TryGetVerifiedAttackSchool(luffy, out school));
+
+            world.BindVerifiedBasicAttack(luffy,
+                new BasicAttackSpec(40, 1.02, DamageSchool.Magical,
+                    DamageTraits.None), 0, "h003");
+            Assert.IsTrue(world.TryGetVerifiedAttackSchool(luffy, out school));
+            Assert.AreEqual(DamageSchool.Magical, school);
+
+            world.RemoveCharacter(luffy);
+            Assert.IsFalse(world.TryGetVerifiedAttackSchool(luffy, out school));
+        }
     }
 }

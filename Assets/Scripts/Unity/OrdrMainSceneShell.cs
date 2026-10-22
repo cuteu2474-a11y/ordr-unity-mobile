@@ -56,10 +56,16 @@ namespace Ordr.Mobile.Unity
             float gap = Mathf.Max(8f, w * 0.012f);
             float battleWidth = w - storyWidth - gap;
 
+            // World sprites (units, enemies, attack cues) must remain visible.
+            // An opaque IMGUI Box would cover them every frame.
+            var areaStyle = new GUIStyle(GUI.skin.label);
+            areaStyle.alignment = TextAnchor.UpperLeft;
+            areaStyle.fontStyle = FontStyle.Bold;
+            areaStyle.normal.textColor = new Color(0.80f, 0.88f, 0.98f);
             GUI.Box(new Rect(x, mapTop, battleWidth, available),
-                "메인 전장  /  전투 구역 준비 중");
+                "메인 전장", areaStyle);
             GUI.Box(new Rect(x + battleWidth + gap, mapTop, storyWidth, available),
-                "스토리 전장  /  수동 파견 준비 중");
+                "스토리 전장", areaStyle);
 
             float textTop = mapTop + available + 10f;
             GUI.Label(new Rect(x, textTop, w, 46f),

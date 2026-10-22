@@ -464,6 +464,21 @@ namespace Ordr.Mobile.Combat
             return characters.TryGetValue(instanceId, out instance) && instance.AttackReady;
         }
 
+        // Read-only visual hint for the Unity presenter. Map weapon types alone
+        // cannot establish a physical/magical damage school.
+        public bool TryGetVerifiedAttackSchool(long instanceId, out DamageSchool school)
+        {
+            CharacterInstance instance;
+            if (characters.TryGetValue(instanceId, out instance) &&
+                instance.AttackReady && instance.Mapping != null)
+            {
+                school = instance.Mapping.AttackSpec.BasicAttack.School;
+                return true;
+            }
+            school = DamageSchool.ScriptDefined;
+            return false;
+        }
+
         public string AttackEvidenceOf(long instanceId)
         {
             CharacterInstance instance;

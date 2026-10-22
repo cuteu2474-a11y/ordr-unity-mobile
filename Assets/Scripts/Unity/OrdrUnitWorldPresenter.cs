@@ -20,6 +20,8 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private float worldTapMinimumScreenHeightRatio = 0.46f;
         [SerializeField] private float refreshIntervalSeconds = 0.12f;
         [SerializeField] private float attackFlashDurationSeconds = 0.18f;
+        [SerializeField] private float attackCueDurationSeconds = 0.22f;
+        [SerializeField] private int maximumSimultaneousAttackCues = 48;
 
         private sealed class Visual
         {
@@ -29,9 +31,41 @@ namespace Ordr.Mobile.Unity
             public float AttackFlashStartedAt = -1f;
             public bool IsPreviewFlash;
             public string Grade;
+            public string OriginalWeaponType;
+        }
+
+        private sealed class EnemyVisual
+        {
+            public GameObject Root;
+            public SpriteRenderer Icon;
+            public Color BaseColor;
+            public float HitAt = -1f;
+        }
+
+        private sealed class AttackCueVisual
+        {
+            public GameObject Root;
+            public SpriteRenderer Body;
+            public SpriteRenderer Impact;
+            public BasicAttackCueKind Kind;
+            public Vector3 From;
+            public Vector3 To;
+            public Color Tint;
+            public float StartedAt;
+        }
+
+        private sealed class LastEnemyPosition
+        {
+            public Vector3 Position;
+            public float LastSeenAt;
         }
 
         private readonly Dictionary<long, Visual> visuals = new Dictionary<long, Visual>();
+        private readonly Dictionary<string, EnemyVisual> enemyVisuals =
+            new Dictionary<string, EnemyVisual>(StringComparer.Ordinal);
+        private readonly Dictionary<string, LastEnemyPosition> recentEnemyPositions =
+            new Dictionary<string, LastEnemyPosition>(StringComparer.Ordinal);
+        private readonly List<AttackCueVisual> attackCues = new List<AttackCueVisual>();
         private Sprite markerSprite;
         private Texture2D markerTexture;
         private float nextRefresh;
@@ -69,8 +103,11 @@ namespace Ordr.Mobile.Unity
             {
                 nextRefresh = Time.unscaledTime + Mathf.Max(0.02f, refreshIntervalSeconds);
                 SyncOwnedUnits(combat);
+                SyncEnemies(combat);
             }
             UpdateAttackFlashes();
+            UpdateEnemyFlashes();
+            UpdateAttackCues();
             ReadWorldSelection(combat);
         }
 
@@ -79,9 +116,16 @@ namespace Ordr.Mobile.Unity
         // previews emit it; the flash never affects any combat calculation.
         private void OnCombatEvent(CharacterCombatEvent combatEvent)
         {
-            if (combatEvent == null ||
-                (combatEvent.Type != CharacterCombatEventType.Attack &&
-                 combatEvent.Type != CharacterCombatEventType.AttackPreview))
+            if (combatEvent == null) return;
+            if (combatEvent.Type == CharacterCombatEventType.EnemySpawned)
+            {
+                // The same enemy ID may be used in a later wave at a new position.
+                if (!string.IsNullOrEmpty(combatEvent.EnemyId))
+                    recentEnemyPositions.Remove(combatEvent.EnemyId);
+                return;
+            }
+            if (combatEvent.Type != CharacterCombatEventType.Attack &&
+                combatEvent.Type != CharacterCombatEventType.AttackPreview)
                 return;
             long instanceId;
             if (!long.TryParse(combatEvent.ActorId, NumberStyles.None,
@@ -103,6 +147,22 @@ namespace Ordr.Mobile.Unity
             visual.AttackFlash.color = visual.IsPreviewFlash
                 ? new Color(0.62f, 0.85f, 1f, 0.8f)
                 : new Color(1f, 0.88f, 0.3f, 0.8f);
+
+            Vector3 target;
+            if (!string.IsNullOrEmpty(combatEvent.EnemyId) &&
+                TryFindEnemyPosition(combatEvent.EnemyId, out target))
+            {
+                bool preview = visual.IsPreviewFlash;
+                DamageSchool verifiedSchool;
+                DamageSchool? school = !preview && controller.Combat != null &&
+                    controller.Combat.TryGetVerifiedAttackSchool(instanceId, out verifiedSchool)
+                    ? (DamageSchool?)verifiedSchool : null;
+                SpawnAttackCue(BasicAttackCueStyle.Choose(visual.OriginalWeaponType, school),
+                    preview, visual.Root.transform.position, target);
+                EnemyVisual enemy;
+                if (enemyVisuals.TryGetValue(combatEvent.EnemyId, out enemy))
+                    enemy.HitAt = Time.unscaledTime;
+            }
         }
 
         private void UpdateAttackFlashes()
@@ -124,6 +184,196 @@ namespace Ordr.Mobile.Unity
                 visual.AttackFlash.color = visual.IsPreviewFlash
                     ? new Color(0.62f, 0.85f, 1f, 0.8f * remaining)
                     : new Color(1f, 0.88f, 0.3f, 0.8f * remaining);
+            }
+        }
+
+        private void SyncEnemies(CharacterCombatRuntime combat)
+        {
+            var active = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var entry in combat.MobileEnemySnapshot())
+            {
+                active.Add(entry.Id);
+                Vector3 position = new Vector3((float)entry.X, (float)entry.Y, 0f);
+                LastEnemyPosition last;
+                if (!recentEnemyPositions.TryGetValue(entry.Id, out last))
+                {
+                    last = new LastEnemyPosition();
+                    recentEnemyPositions.Add(entry.Id, last);
+                }
+                last.Position = position;
+                last.LastSeenAt = Time.unscaledTime;
+
+                EnemyVisual enemy;
+                if (!enemyVisuals.TryGetValue(entry.Id, out enemy))
+                {
+                    enemy = new EnemyVisual();
+                    enemy.Root = new GameObject("ORDR Enemy " + entry.Id);
+                    enemy.Root.transform.SetParent(transform, false);
+                    enemy.Icon = enemy.Root.AddComponent<SpriteRenderer>();
+                    enemy.Icon.sprite = markerSprite;
+                    enemy.Icon.sortingOrder = 7;
+                    enemy.BaseColor = entry.Kind == CharacterEnemyKind.Boss
+                        ? new Color(1f, 0.34f, 0.23f, 1f)
+                        : new Color(0.90f, 0.36f, 0.37f, 1f);
+                    enemy.Icon.color = enemy.BaseColor;
+                    enemyVisuals.Add(entry.Id, enemy);
+                }
+                enemy.Root.transform.position = position;
+                enemy.Root.transform.localScale = Vector3.one *
+                    Mathf.Max(1f, markerDiameterWorldUnits) * 0.57f;
+            }
+
+            var gone = new List<string>();
+            foreach (var pair in enemyVisuals)
+                if (!active.Contains(pair.Key))
+                {
+                    Destroy(pair.Value.Root);
+                    gone.Add(pair.Key);
+                }
+            foreach (string id in gone) enemyVisuals.Remove(id);
+
+            gone.Clear();
+            foreach (var pair in recentEnemyPositions)
+                if (!active.Contains(pair.Key) &&
+                    Time.unscaledTime - pair.Value.LastSeenAt > 0.7f)
+                    gone.Add(pair.Key);
+            foreach (string id in gone) recentEnemyPositions.Remove(id);
+        }
+
+        private bool TryFindEnemyPosition(string enemyId, out Vector3 position)
+        {
+            LastEnemyPosition recent;
+            if (recentEnemyPositions.TryGetValue(enemyId, out recent))
+            {
+                position = recent.Position;
+                return true;
+            }
+            // A new enemy may be attacked before the next visual refresh.
+            if (controller != null && controller.Combat != null)
+                SyncEnemies(controller.Combat);
+            if (recentEnemyPositions.TryGetValue(enemyId, out recent))
+            {
+                position = recent.Position;
+                return true;
+            }
+            position = Vector3.zero;
+            return false;
+        }
+
+        private void UpdateEnemyFlashes()
+        {
+            foreach (var enemy in enemyVisuals.Values)
+            {
+                float progress = (Time.unscaledTime - enemy.HitAt) / 0.16f;
+                if (enemy.HitAt < 0f || progress >= 1f)
+                {
+                    enemy.Icon.color = enemy.BaseColor;
+                    continue;
+                }
+                enemy.Icon.color = Color.Lerp(Color.white, enemy.BaseColor,
+                    Mathf.Clamp01(progress));
+            }
+        }
+
+        private AttackCueVisual GetAvailableCue()
+        {
+            foreach (var existing in attackCues)
+                if (!existing.Root.activeSelf) return existing;
+
+            if (attackCues.Count >= Mathf.Clamp(maximumSimultaneousAttackCues, 1, 128))
+            {
+                // The oldest cue can be recycled during a very dense attack burst.
+                // This only drops visual frames, never an actual combat event.
+                AttackCueVisual oldest = attackCues[0];
+                foreach (var cue in attackCues)
+                    if (cue.StartedAt < oldest.StartedAt) oldest = cue;
+                return oldest;
+            }
+
+            var created = new AttackCueVisual();
+            created.Root = new GameObject("ORDR Basic Attack Cue");
+            created.Root.transform.SetParent(transform, false);
+            created.Body = created.Root.AddComponent<SpriteRenderer>();
+            created.Body.sprite = markerSprite;
+            created.Body.sortingOrder = 18;
+            var impact = new GameObject("Impact");
+            impact.transform.SetParent(created.Root.transform, false);
+            created.Impact = impact.AddComponent<SpriteRenderer>();
+            created.Impact.sprite = markerSprite;
+            created.Impact.sortingOrder = 17;
+            attackCues.Add(created);
+            return created;
+        }
+
+        private void SpawnAttackCue(BasicAttackCueKind kind, bool preview,
+            Vector3 attacker, Vector3 target)
+        {
+            var cue = GetAvailableCue();
+            cue.Root.SetActive(true);
+            cue.Kind = kind;
+            cue.From = attacker;
+            cue.To = target;
+            cue.StartedAt = Time.unscaledTime;
+            cue.Tint = preview ? new Color(0.58f, 0.80f, 1f, 0.60f)
+                : kind == BasicAttackCueKind.Magic
+                    ? new Color(0.73f, 0.47f, 1f, 0.90f)
+                    : new Color(1f, 0.87f, 0.29f, 0.92f);
+            UpdateAttackCue(cue, 0f);
+        }
+
+        private void UpdateAttackCues()
+        {
+            float duration = Mathf.Max(0.04f, attackCueDurationSeconds);
+            foreach (var cue in attackCues)
+            {
+                if (!cue.Root.activeSelf) continue;
+                float progress = (Time.unscaledTime - cue.StartedAt) / duration;
+                if (progress >= 1f)
+                {
+                    cue.Root.SetActive(false);
+                    continue;
+                }
+                UpdateAttackCue(cue, Mathf.Clamp01(progress));
+            }
+        }
+
+        private void UpdateAttackCue(AttackCueVisual cue, float progress)
+        {
+            float size = Mathf.Max(1f, markerDiameterWorldUnits);
+            float fade = 1f - progress;
+            var tint = cue.Tint;
+            tint.a *= fade;
+            cue.Body.color = tint;
+            cue.Body.transform.rotation = Quaternion.identity;
+
+            if (cue.Kind == BasicAttackCueKind.Slash)
+            {
+                cue.Body.transform.position = cue.To;
+                cue.Body.transform.rotation = Quaternion.Euler(0f, 0f, 40f);
+                cue.Body.transform.localScale = new Vector3(
+                    size * (0.52f + 0.25f * progress),
+                    size * 0.075f * fade, 1f);
+                cue.Body.enabled = true;
+                cue.Impact.enabled = false;
+                return;
+            }
+
+            float flight = Mathf.Clamp01(progress / 0.72f);
+            cue.Body.transform.position = Vector3.Lerp(cue.From, cue.To, flight);
+            float dot = cue.Kind == BasicAttackCueKind.Magic ? 0.21f : 0.13f;
+            cue.Body.transform.localScale = Vector3.one * (size * dot);
+            cue.Body.enabled = flight < 1f;
+            cue.Impact.enabled = progress >= 0.72f;
+            if (cue.Impact.enabled)
+            {
+                float hit = (progress - 0.72f) / 0.28f;
+                cue.Impact.transform.position = cue.To;
+                cue.Impact.transform.localScale = Vector3.one * size *
+                    Mathf.Lerp(0.16f, cue.Kind == BasicAttackCueKind.Magic ? 0.80f : 0.44f,
+                        hit);
+                var color = tint;
+                color.a *= 1f - hit;
+                cue.Impact.color = color;
             }
         }
 
@@ -173,6 +423,10 @@ namespace Ordr.Mobile.Unity
                     visual.AttackFlash.sortingOrder = 9;
                     visual.AttackFlash.enabled = false;
                     visual.Grade = entry.Unit.Grade;
+                    var basic = controller != null && controller.MapBaseStats != null
+                        ? controller.MapBaseStats.Find(entry.Unit.Id) : null;
+                    visual.OriginalWeaponType = basic != null && basic.Attack1 != null
+                        ? basic.Attack1.OriginalWeaponType : null;
                     visuals.Add(entry.InstanceId, visual);
                 }
 
@@ -274,6 +528,13 @@ namespace Ordr.Mobile.Unity
             foreach (var item in visuals.Values)
                 if (item.Root != null) Destroy(item.Root);
             visuals.Clear();
+            foreach (var item in enemyVisuals.Values)
+                if (item.Root != null) Destroy(item.Root);
+            enemyVisuals.Clear();
+            recentEnemyPositions.Clear();
+            foreach (var cue in attackCues)
+                if (cue.Root != null) Destroy(cue.Root);
+            attackCues.Clear();
             if (markerSprite != null) Destroy(markerSprite);
             if (markerTexture != null) Destroy(markerTexture);
         }
