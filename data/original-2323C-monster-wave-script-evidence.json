@@ -1,0 +1,1653 @@
+{
+  "format": "ordr-original-monster-wave-script-evidence-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "originalObjectSource": "Units\\UnitBalance.slk",
+  "jassArrayFunction": "CUl",
+  "jassSpawnFunctions": [
+    "CVo",
+    "CVp",
+    "CVs",
+    "CVw",
+    "CVX",
+    "CVY",
+    "CVZ",
+    "CVa",
+    "CVb",
+    "CVc",
+    "CVd",
+    "CVf"
+  ],
+  "scope": "original-script-spawn-ids-and-cadence-with-object-base-stats-only",
+  "safeForVerifiedMonsterWaveRuntime": false,
+  "modeAdjustedCombatStatsVerified": false,
+  "summary": {
+    "rounds": 65,
+    "distinctLineObjectTypes": 60,
+    "distinctBossObjectTypes": 8,
+    "normalRoundPerActivePlayerSpawnCount": 35,
+    "bossPerActivePlayerSpawnCount": 1,
+    "cadenceSeconds": 0.5,
+    "preNewWorldBossRounds": [
+      10,
+      20,
+      30,
+      40,
+      50
+    ],
+    "newWorldBossRounds": [
+      55,
+      60,
+      65
+    ],
+    "conditionalBerserkRounds": [
+      51,
+      52,
+      53,
+      54,
+      56,
+      57,
+      58,
+      59,
+      61,
+      62,
+      63,
+      64
+    ]
+  },
+  "waves": [
+    {
+      "waveNumber": 1,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00I",
+          "originalMapName": "레벨 01 알비다",
+          "sourceArray": "ZD[1]",
+          "sourceJassLine": 58529,
+          "sourceJassAssignment": "set ZD[1]=$6F303049",
+          "objectBaseHitPoints": 135,
+          "objectBaseArmor": 0,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 2,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o004",
+          "originalMapName": "레벨 02 찌질한 해왕류",
+          "sourceArray": "ZD[2]",
+          "sourceJassLine": 58530,
+          "sourceJassAssignment": "set ZD[2]=$6F303034",
+          "objectBaseHitPoints": 170,
+          "objectBaseArmor": 1,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 3,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00A",
+          "originalMapName": "레벨 03 해적사냥꾼조로",
+          "sourceArray": "ZD[3]",
+          "sourceJassLine": 58531,
+          "sourceJassAssignment": "set ZD[3]=$6F303041",
+          "objectBaseHitPoints": 230,
+          "objectBaseArmor": 1,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 4,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o009",
+          "originalMapName": "레벨 04 모건",
+          "sourceArray": "ZD[4]",
+          "sourceJassLine": 58532,
+          "sourceJassAssignment": "set ZD[4]=$6F303039",
+          "objectBaseHitPoints": 300,
+          "objectBaseArmor": 2,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 5,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o008",
+          "originalMapName": "레벨 05 캡틴 버기",
+          "sourceArray": "ZD[5]",
+          "sourceJassLine": 58533,
+          "sourceJassAssignment": "set ZD[5]=$6F303038",
+          "objectBaseHitPoints": 380,
+          "objectBaseArmor": 3,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 6,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00D",
+          "originalMapName": "레벨 06 캡틴 크로",
+          "sourceArray": "ZD[6]",
+          "sourceJassLine": 58534,
+          "sourceJassAssignment": "set ZD[6]=$6F303044",
+          "objectBaseHitPoints": 510,
+          "objectBaseArmor": 3,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 7,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o006",
+          "originalMapName": "레벨 07 깅",
+          "sourceArray": "ZD[7]",
+          "sourceJassLine": 58535,
+          "sourceJassAssignment": "set ZD[7]=$6F303036",
+          "objectBaseHitPoints": 650,
+          "objectBaseArmor": 4,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 8,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o005",
+          "originalMapName": "레벨 08 클리크",
+          "sourceArray": "ZD[8]",
+          "sourceJassLine": 58536,
+          "sourceJassAssignment": "set ZD[8]=$6F303035",
+          "objectBaseHitPoints": 860,
+          "objectBaseArmor": 5,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 9,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00B",
+          "originalMapName": "레벨 09 하찌",
+          "sourceArray": "ZD[9]",
+          "sourceJassLine": 58537,
+          "sourceJassAssignment": "set ZD[9]=$6F303042",
+          "objectBaseHitPoints": 1020,
+          "objectBaseArmor": 6,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 10,
+      "normalAndBossSpawns": [
+        {
+          "role": "boss",
+          "rawcode": "o01V",
+          "originalMapName": "레벨 10 [보스]아론",
+          "sourceArray": "uO[10]",
+          "sourceJassLine": 58589,
+          "sourceJassAssignment": "set uO[10]=$6F303156",
+          "objectBaseHitPoints": 14500,
+          "objectBaseArmor": 13,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 1,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 11,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o003",
+          "originalMapName": "레벨 11 타시기",
+          "sourceArray": "ZD[11]",
+          "sourceJassLine": 58538,
+          "sourceJassAssignment": "set ZD[11]=$6F303033",
+          "objectBaseHitPoints": 1100,
+          "objectBaseArmor": 7,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 12,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00C",
+          "originalMapName": "레벨 12 스모커",
+          "sourceArray": "ZD[12]",
+          "sourceJassLine": 58539,
+          "sourceJassAssignment": "set ZD[12]=$6F303043",
+          "objectBaseHitPoints": 1400,
+          "objectBaseArmor": 8,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 13,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00F",
+          "originalMapName": "레벨 13 Mr.9",
+          "sourceArray": "ZD[13]",
+          "sourceJassLine": 58540,
+          "sourceJassAssignment": "set ZD[13]=$6F303046",
+          "objectBaseHitPoints": 1790,
+          "objectBaseArmor": 9,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 14,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00M",
+          "originalMapName": "레벨 14 Mr.6",
+          "sourceArray": "ZD[14]",
+          "sourceJassLine": 58541,
+          "sourceJassAssignment": "set ZD[14]=$6F30304D",
+          "objectBaseHitPoints": 2240,
+          "objectBaseArmor": 11,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 15,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00H",
+          "originalMapName": "레벨 15 Mr.5",
+          "sourceArray": "ZD[15]",
+          "sourceJassLine": 58542,
+          "sourceJassAssignment": "set ZD[15]=$6F303048",
+          "objectBaseHitPoints": 2670,
+          "objectBaseArmor": 12,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 16,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00G",
+          "originalMapName": "레벨 16 Mr.4",
+          "sourceArray": "ZD[16]",
+          "sourceJassLine": 58543,
+          "sourceJassAssignment": "set ZD[16]=$6F303047",
+          "objectBaseHitPoints": 3660,
+          "objectBaseArmor": 14,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 17,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00N",
+          "originalMapName": "레벨 17 Mr.3",
+          "sourceArray": "ZD[17]",
+          "sourceJassLine": 58544,
+          "sourceJassAssignment": "set ZD[17]=$6F30304E",
+          "objectBaseHitPoints": 4450,
+          "objectBaseArmor": 16,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 18,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00E",
+          "originalMapName": "레벨 18 Mr.2",
+          "sourceArray": "ZD[18]",
+          "sourceJassLine": 58545,
+          "sourceJassAssignment": "set ZD[18]=$6F303045",
+          "objectBaseHitPoints": 4970,
+          "objectBaseArmor": 17,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 19,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00O",
+          "originalMapName": "레벨 19 Mr.1",
+          "sourceArray": "ZD[19]",
+          "sourceJassLine": 58546,
+          "sourceJassAssignment": "set ZD[19]=$6F30304F",
+          "objectBaseHitPoints": 5600,
+          "objectBaseArmor": 18,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 20,
+      "normalAndBossSpawns": [
+        {
+          "role": "boss",
+          "rawcode": "o01W",
+          "originalMapName": "레벨 20 [보스]크로커다일",
+          "sourceArray": "uO[20]",
+          "sourceJassLine": 58590,
+          "sourceJassAssignment": "set uO[20]=$6F303157",
+          "objectBaseHitPoints": 85000,
+          "objectBaseArmor": 29,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 1,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 21,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00P",
+          "originalMapName": "레벨 21 체스",
+          "sourceArray": "ZD[21]",
+          "sourceJassLine": 58547,
+          "sourceJassAssignment": "set ZD[21]=$6F303050",
+          "objectBaseHitPoints": 6500,
+          "objectBaseArmor": 19,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 22,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00Q",
+          "originalMapName": "레벨 22 마리모",
+          "sourceArray": "ZD[22]",
+          "sourceJassLine": 58548,
+          "sourceJassAssignment": "set ZD[22]=$6F303051",
+          "objectBaseHitPoints": 7200,
+          "objectBaseArmor": 20,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 23,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00R",
+          "originalMapName": "레벨 23 도르돈",
+          "sourceArray": "ZD[23]",
+          "sourceJassLine": 58549,
+          "sourceJassAssignment": "set ZD[23]=$6F303052",
+          "objectBaseHitPoints": 9400,
+          "objectBaseArmor": 21,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 24,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00S",
+          "originalMapName": "레벨 24 와포루",
+          "sourceArray": "ZD[24]",
+          "sourceJassLine": 58550,
+          "sourceJassAssignment": "set ZD[24]=$6F303053",
+          "objectBaseHitPoints": 12700,
+          "objectBaseArmor": 22,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 25,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00T",
+          "originalMapName": "레벨 25 베라미",
+          "sourceArray": "ZD[25]",
+          "sourceJassLine": 58551,
+          "sourceJassAssignment": "set ZD[25]=$6F303054",
+          "objectBaseHitPoints": 15850,
+          "objectBaseArmor": 23,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 26,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o007",
+          "originalMapName": "레벨 26 사토리",
+          "sourceArray": "ZD[26]",
+          "sourceJassLine": 58552,
+          "sourceJassAssignment": "set ZD[26]=$6F303037",
+          "objectBaseHitPoints": 18900,
+          "objectBaseArmor": 25,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 27,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00U",
+          "originalMapName": "레벨 27 게다츠",
+          "sourceArray": "ZD[27]",
+          "sourceJassLine": 58553,
+          "sourceJassAssignment": "set ZD[27]=$6F303055",
+          "objectBaseHitPoints": 23250,
+          "objectBaseArmor": 26,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 28,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00V",
+          "originalMapName": "레벨 28 오움",
+          "sourceArray": "ZD[28]",
+          "sourceJassLine": 58554,
+          "sourceJassAssignment": "set ZD[28]=$6F303056",
+          "objectBaseHitPoints": 26000,
+          "objectBaseArmor": 27,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 29,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00X",
+          "originalMapName": "레벨 29 슈라",
+          "sourceArray": "ZD[29]",
+          "sourceJassLine": 58555,
+          "sourceJassAssignment": "set ZD[29]=$6F303058",
+          "objectBaseHitPoints": 32000,
+          "objectBaseArmor": 29,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 30,
+      "normalAndBossSpawns": [
+        {
+          "role": "boss",
+          "rawcode": "o01X",
+          "originalMapName": "레벨 30 [보스]에넬",
+          "sourceArray": "uO[30]",
+          "sourceJassLine": 58591,
+          "sourceJassAssignment": "set uO[30]=$6F303158",
+          "objectBaseHitPoints": 750000,
+          "objectBaseArmor": 115,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 1,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 31,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01G",
+          "originalMapName": "레벨 31 폭시",
+          "sourceArray": "ZD[31]",
+          "sourceJassLine": 58556,
+          "sourceJassAssignment": "set ZD[31]=$6F303147",
+          "objectBaseHitPoints": 54500,
+          "objectBaseArmor": 31,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 32,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o010",
+          "originalMapName": "레벨 32 칼리파",
+          "sourceArray": "ZD[32]",
+          "sourceJassLine": 58557,
+          "sourceJassAssignment": "set ZD[32]=$6F303130",
+          "objectBaseHitPoints": 67000,
+          "objectBaseArmor": 35,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 33,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o011",
+          "originalMapName": "레벨 33 후쿠로",
+          "sourceArray": "ZD[33]",
+          "sourceJassLine": 58558,
+          "sourceJassAssignment": "set ZD[33]=$6F303131",
+          "objectBaseHitPoints": 80000,
+          "objectBaseArmor": 36,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 34,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o012",
+          "originalMapName": "레벨 34 쿠마도리",
+          "sourceArray": "ZD[34]",
+          "sourceJassLine": 58559,
+          "sourceJassAssignment": "set ZD[34]=$6F303132",
+          "objectBaseHitPoints": 90300,
+          "objectBaseArmor": 37,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 35,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o017",
+          "originalMapName": "레벨 35 블루노",
+          "sourceArray": "ZD[35]",
+          "sourceJassLine": 58560,
+          "sourceJassAssignment": "set ZD[35]=$6F303137",
+          "objectBaseHitPoints": 108870,
+          "objectBaseArmor": 40,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 36,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o018",
+          "originalMapName": "레벨 36 재브라",
+          "sourceArray": "ZD[36]",
+          "sourceJassLine": 58561,
+          "sourceJassAssignment": "set ZD[36]=$6F303138",
+          "objectBaseHitPoints": 124200,
+          "objectBaseArmor": 41,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 37,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o019",
+          "originalMapName": "레벨 37 카쿠",
+          "sourceArray": "ZD[37]",
+          "sourceJassLine": 58562,
+          "sourceJassAssignment": "set ZD[37]=$6F303139",
+          "objectBaseHitPoints": 138400,
+          "objectBaseArmor": 42,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 38,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01A",
+          "originalMapName": "레벨 38 루치",
+          "sourceArray": "ZD[38]",
+          "sourceJassLine": 58563,
+          "sourceJassAssignment": "set ZD[38]=$6F303141",
+          "objectBaseHitPoints": 145000,
+          "objectBaseArmor": 44,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 39,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o015",
+          "originalMapName": "레벨 39 찌질이 스팬담",
+          "sourceArray": "ZD[39]",
+          "sourceJassLine": 58564,
+          "sourceJassAssignment": "set ZD[39]=$6F303135",
+          "objectBaseHitPoints": 1,
+          "objectBaseArmor": 39,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 40,
+      "normalAndBossSpawns": [
+        {
+          "role": "boss",
+          "rawcode": "o01Y",
+          "originalMapName": "레벨 40 [보스]루치",
+          "sourceArray": "uO[40]",
+          "sourceJassLine": 58592,
+          "sourceJassAssignment": "set uO[40]=$6F303159",
+          "objectBaseHitPoints": 2900000,
+          "objectBaseArmor": 170,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 1,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 41,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01B",
+          "originalMapName": "레벨 41 압살롬",
+          "sourceArray": "ZD[41]",
+          "sourceJassLine": 58565,
+          "sourceJassAssignment": "set ZD[41]=$6F303142",
+          "objectBaseHitPoints": 350000,
+          "objectBaseArmor": 45,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 42,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01F",
+          "originalMapName": "레벨 42 오즈",
+          "sourceArray": "ZD[42]",
+          "sourceJassLine": 58566,
+          "sourceJassAssignment": "set ZD[42]=$6F303146",
+          "objectBaseHitPoints": 450000,
+          "objectBaseArmor": 46,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 43,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01E",
+          "originalMapName": "레벨 43 모리아",
+          "sourceArray": "ZD[43]",
+          "sourceJassLine": 58567,
+          "sourceJassAssignment": "set ZD[43]=$6F303145",
+          "objectBaseHitPoints": 600000,
+          "objectBaseArmor": 47,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 44,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01D",
+          "originalMapName": "레벨 44 쿠마",
+          "sourceArray": "ZD[44]",
+          "sourceJassLine": 58568,
+          "sourceJassAssignment": "set ZD[44]=$6F303144",
+          "objectBaseHitPoints": 750000,
+          "objectBaseArmor": 47,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 45,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01O",
+          "originalMapName": "레벨 45 키자루",
+          "sourceArray": "ZD[45]",
+          "sourceJassLine": 58569,
+          "sourceJassAssignment": "set ZD[45]=$6F30314F",
+          "objectBaseHitPoints": 950000,
+          "objectBaseArmor": 48,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 46,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01H",
+          "originalMapName": "레벨 46 마리골드",
+          "sourceArray": "ZD[46]",
+          "sourceJassLine": 58570,
+          "sourceJassAssignment": "set ZD[46]=$6F303148",
+          "objectBaseHitPoints": 1880000,
+          "objectBaseArmor": 48,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 47,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01L",
+          "originalMapName": "레벨 47 마젤란",
+          "sourceArray": "ZD[47]",
+          "sourceJassLine": 58571,
+          "sourceJassAssignment": "set ZD[47]=$6F30314C",
+          "objectBaseHitPoints": 2285000,
+          "objectBaseArmor": 49,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 48,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01M",
+          "originalMapName": "레벨 48 미호크",
+          "sourceArray": "ZD[48]",
+          "sourceJassLine": 58572,
+          "sourceJassAssignment": "set ZD[48]=$6F30314D",
+          "objectBaseHitPoints": 2845200,
+          "objectBaseArmor": 49,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 49,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01T",
+          "originalMapName": "레벨 49 아카이누",
+          "sourceArray": "ZD[49]",
+          "sourceJassLine": 58573,
+          "sourceJassAssignment": "set ZD[49]=$6F303154",
+          "objectBaseHitPoints": 3300000,
+          "objectBaseArmor": 50,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 50,
+      "normalAndBossSpawns": [
+        {
+          "role": "boss",
+          "rawcode": "o01Z",
+          "originalMapName": "레벨 50 [보스]센고쿠",
+          "sourceArray": "uO[50]",
+          "sourceJassLine": 58593,
+          "sourceJassAssignment": "set uO[50]=$6F30315A",
+          "objectBaseHitPoints": 20800000,
+          "objectBaseArmor": 350,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 1,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 51,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01U",
+          "originalMapName": "레벨 51 호디존스",
+          "sourceArray": "ZD[51]",
+          "sourceJassLine": 58574,
+          "sourceJassAssignment": "set ZD[51]=$6F303155",
+          "objectBaseHitPoints": 5700000,
+          "objectBaseArmor": 58,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 52,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01N",
+          "originalMapName": "레벨 52 베르고",
+          "sourceArray": "ZD[52]",
+          "sourceJassLine": 58575,
+          "sourceJassAssignment": "set ZD[52]=$6F30314E",
+          "objectBaseHitPoints": 6500000,
+          "objectBaseArmor": 68,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 53,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01Q",
+          "originalMapName": "레벨 53 시저",
+          "sourceArray": "ZD[53]",
+          "sourceJassLine": 58576,
+          "sourceJassAssignment": "set ZD[53]=$6F303151",
+          "objectBaseHitPoints": 7150000,
+          "objectBaseArmor": 69,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 54,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01R",
+          "originalMapName": "레벨 54 피카",
+          "sourceArray": "ZD[54]",
+          "sourceJassLine": 58577,
+          "sourceJassAssignment": "set ZD[54]=$6F303152",
+          "objectBaseHitPoints": 7550000,
+          "objectBaseArmor": 70,
+          "warcraftArmorType": "fort",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 55,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o01S",
+          "originalMapName": "레벨 55 트레볼",
+          "sourceArray": "ZD[55]",
+          "sourceJassLine": 58578,
+          "sourceJassAssignment": "set ZD[55]=$6F303153",
+          "objectBaseHitPoints": 8690000,
+          "objectBaseArmor": 73,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        },
+        {
+          "role": "boss",
+          "rawcode": "o001",
+          "originalMapName": "레벨 55 [보스]도플라밍고",
+          "sourceArray": "uO[55]",
+          "sourceJassLine": 58594,
+          "sourceJassAssignment": "set uO[55]=$6F303031",
+          "objectBaseHitPoints": 12297000,
+          "objectBaseArmor": 360,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 1,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 56,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o028",
+          "originalMapName": "레벨 56 호미즈",
+          "sourceArray": "ZD[56]",
+          "sourceJassLine": 58579,
+          "sourceJassAssignment": "set ZD[56]=$6F303238",
+          "objectBaseHitPoints": 9400000,
+          "objectBaseArmor": 77,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 57,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00Z",
+          "originalMapName": "레벨 57 샬롯 크래커",
+          "sourceArray": "ZD[57]",
+          "sourceJassLine": 58580,
+          "sourceJassAssignment": "set ZD[57]=$6F30305A",
+          "objectBaseHitPoints": 10200000,
+          "objectBaseArmor": 71,
+          "warcraftArmorType": "fort",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 58,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o020",
+          "originalMapName": "레벨 58 샬롯 스무디",
+          "sourceArray": "ZD[58]",
+          "sourceJassLine": 58581,
+          "sourceJassAssignment": "set ZD[58]=$6F303230",
+          "objectBaseHitPoints": 10990000,
+          "objectBaseArmor": 72,
+          "warcraftArmorType": "hero",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 59,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o021",
+          "originalMapName": "레벨 59 샬롯 카타쿠리",
+          "sourceArray": "ZD[59]",
+          "sourceJassLine": 58582,
+          "sourceJassAssignment": "set ZD[59]=$6F303231",
+          "objectBaseHitPoints": 11590000,
+          "objectBaseArmor": 129,
+          "warcraftArmorType": "hero",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 60,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o02G",
+          "originalMapName": "레벨 60 제우스",
+          "sourceArray": "ZD[60]",
+          "sourceJassLine": 58583,
+          "sourceJassAssignment": "set ZD[60]=$6F303247",
+          "objectBaseHitPoints": 12450000,
+          "objectBaseArmor": 70,
+          "warcraftArmorType": "normal",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        },
+        {
+          "role": "boss",
+          "rawcode": "o02C",
+          "originalMapName": "레벨 60 [보스]빅 맘",
+          "sourceArray": "uO[60]",
+          "sourceJassLine": 58595,
+          "sourceJassAssignment": "set uO[60]=$6F303243",
+          "objectBaseHitPoints": 12750000,
+          "objectBaseArmor": 372,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 1,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 61,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o026",
+          "originalMapName": "레벨 61 바질 호킨스",
+          "sourceArray": "ZD[61]",
+          "sourceJassLine": 58584,
+          "sourceJassAssignment": "set ZD[61]=$6F303236",
+          "objectBaseHitPoints": 13582115,
+          "objectBaseArmor": 76,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 62,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o025",
+          "originalMapName": "레벨 62 잭",
+          "sourceArray": "ZD[62]",
+          "sourceJassLine": 58585,
+          "sourceJassAssignment": "set ZD[62]=$6F303235",
+          "objectBaseHitPoints": 14120000,
+          "objectBaseArmor": 81,
+          "warcraftArmorType": "fort",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 63,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o027",
+          "originalMapName": "레벨 63 퀸",
+          "sourceArray": "ZD[63]",
+          "sourceJassLine": 58586,
+          "sourceJassAssignment": "set ZD[63]=$6F303237",
+          "objectBaseHitPoints": 15610000,
+          "objectBaseArmor": 84,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 64,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o00K",
+          "originalMapName": "레벨 64 킹",
+          "sourceArray": "ZD[64]",
+          "sourceJassLine": 58587,
+          "sourceJassAssignment": "set ZD[64]=$6F30304B",
+          "objectBaseHitPoints": 16610000,
+          "objectBaseArmor": 80,
+          "warcraftArmorType": "hero",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": {
+        "sameRawcodeAsLine": true,
+        "spawnAtTick": 15,
+        "maxSpawnEventsAcrossPlayers": 4,
+        "condition": "vK==15 and vL<=4 and Ji[player]",
+        "evidenceFunctions": [
+          "CVc",
+          "CVa",
+          "CVZ"
+        ]
+      },
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    },
+    {
+      "waveNumber": 65,
+      "normalAndBossSpawns": [
+        {
+          "role": "line",
+          "rawcode": "o02H",
+          "originalMapName": "레벨 65 오로치",
+          "sourceArray": "ZD[65]",
+          "sourceJassLine": 58588,
+          "sourceJassAssignment": "set ZD[65]=$6F303248",
+          "objectBaseHitPoints": 16210000,
+          "objectBaseArmor": 81,
+          "warcraftArmorType": "hero",
+          "spawnsPerActivePlayer": 35,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        },
+        {
+          "role": "boss",
+          "rawcode": "o02B",
+          "originalMapName": "레벨 65 [보스]카이도",
+          "sourceArray": "uO[65]",
+          "sourceJassLine": 58596,
+          "sourceJassAssignment": "set uO[65]=$6F303242",
+          "objectBaseHitPoints": 13595000,
+          "objectBaseArmor": 395,
+          "warcraftArmorType": "large",
+          "spawnsPerActivePlayer": 1,
+          "cadenceSeconds": 0.5,
+          "firstSpawnTick": 1
+        }
+      ],
+      "conditionalBerserk": null,
+      "finalHealthAndArmorVerified": false,
+      "exactSpawnPositionsVerified": false
+    }
+  ]
+}
