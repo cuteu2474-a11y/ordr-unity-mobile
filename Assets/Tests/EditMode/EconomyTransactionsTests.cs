@@ -46,6 +46,39 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OneTimeRewardIsAtomicAndRestoredWithWallet()
+        {
+            var wallet = new EconomyWallet();
+            var reward = new ResourceBundle().Add("wood", 16);
+            Assert.IsTrue(wallet.TryGrantOnce("otama-dango:1", reward));
+            Assert.IsFalse(wallet.TryGrantOnce("otama-dango:1", reward));
+            var restored = new EconomyWallet();
+            restored.RestoreState(wallet.CaptureState());
+            Assert.AreEqual(16, restored.Balance("wood"));
+            Assert.IsFalse(restored.TryGrantOnce("otama-dango:1", reward));
+            Assert.IsTrue(restored.TryGrantOnce("otama-dango:2", reward));
+            Assert.AreEqual(32, restored.Balance("wood"));
+        }
+
+        [Test]
+        public void FailedRewardAndInvalidSaveCannotConsumeUse()
+        {
+            var wallet = new EconomyWallet();
+            var reward = new ResourceBundle().Add("wood", 16);
+            wallet.Grant(new ResourceBundle().Add("wood", long.MaxValue));
+            Assert.Throws<OverflowException>(() => wallet.TryGrantOnce("once", reward));
+            Assert.Throws<FormatException>(() => wallet.RestoreState(new EconomyWalletState {
+                Balances = new System.Collections.Generic.List<EconomyBalanceState> {
+                    new EconomyBalanceState { Id = "wood", Amount = -1 }
+                }
+            }));
+            Assert.AreEqual(long.MaxValue, wallet.Balance("wood"));
+            wallet.RestoreState(new EconomyWalletState());
+            Assert.IsTrue(wallet.TryGrantOnce("once", reward));
+            Assert.AreEqual(16, wallet.Balance("wood"));
+        }
+
+        [Test]
         public void UnverifiedGamblingIsBlocked()
         {
             var gambling = new GamblingTable("test-gambling");

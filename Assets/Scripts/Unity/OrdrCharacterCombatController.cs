@@ -382,6 +382,14 @@ namespace Ordr.Mobile.Unity
             Combat.Start();
         }
 
+        // 지갑 저장 이력까지 복원한 뒤 전투 자동 시전을 시작해야 한다.
+        public void ConfigureOtamaWoodRewards(Ordr.Mobile.Core.EconomyWallet sharedWallet)
+        {
+            if (Combat == null)
+                throw new InvalidOperationException("전투 런타임이 없습니다.");
+            Combat.ConfigureOtamaWoodWallet(sharedWallet);
+        }
+
         public void ConfigureSpecialGradeMobileServices(ISpecialGradeLawCastService law,
             IManualUnitDecompositionPort decomposition)
         {

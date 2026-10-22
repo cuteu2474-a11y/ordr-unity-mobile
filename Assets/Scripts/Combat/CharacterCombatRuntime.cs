@@ -63,10 +63,46 @@ namespace Ordr.Mobile.Combat
         private IOriginalSpecialSkillEventRules specialEventRules;
         private IOriginalCombatTargetSelectionRules targetSelectionRules;
         private ISpecialGradeLawCastService lawCastService;
+        private EconomyWallet otamaRewardWallet;
         private readonly Dictionary<long, double> lawReadyAt = new Dictionary<long, double>();
         private readonly MoriaParticipationLedger moriaParticipation = new MoriaParticipationLedger();
         public long MoriaZombieMaterials { get; private set; }
         public MobileCombatAutomation MobileAutomation { get; } = new MobileCombatAutomation();
+
+        // 실제 경제/조합과 공유한 지갑만 주입한다. 별도 임시 지갑을 만들지 않는다.
+        public void ConfigureOtamaWoodWallet(EconomyWallet sharedWallet)
+        {
+            if (sharedWallet == null) throw new ArgumentNullException(nameof(sharedWallet));
+            if (otamaRewardWallet != null && !ReferenceEquals(otamaRewardWallet, sharedWallet))
+                throw new InvalidOperationException("세션 중 공유 지갑 변경은 불가능합니다.");
+            otamaRewardWallet = sharedWallet;
+        }
+
+        public bool TryUseOtamaDango(long instanceId)
+        {
+            CharacterInstance unit;
+            if (game.Phase != SessionPhase.Running || otamaRewardWallet == null ||
+                !characters.TryGetValue(instanceId, out unit) ||
+                unit.Catalog.Id != SpecialGradeMobilePolicy.Otama) return false;
+            bool paid;
+            try
+            {
+                paid = otamaRewardWallet.TryGrantOnce(
+                    SpecialGradeMobilePolicy.OtamaRewardId(instanceId),
+                    new ResourceBundle().Add("wood", SpecialGradeMobilePolicy.OtamaWoodReward));
+            }
+            catch (OverflowException)
+            {
+                // 지급에 실패했으면 1회 사용권도 소모되지 않는다.
+                return false;
+            }
+            if (!paid) return false;
+            var evt = new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                InstanceKey(instanceId), null, "경단먹이기",
+                "wood +16", SpecialGradeMobilePolicy.OtamaWoodReward);
+            if (processingStep) events.Add(evt); else pendingCommandEvents.Add(evt);
+            return true;
+        }
 
         public void ConfigureSpecialGradeLawCasting(ISpecialGradeLawCastService service)
         {

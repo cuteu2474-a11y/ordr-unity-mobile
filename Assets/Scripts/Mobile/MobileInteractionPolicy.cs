@@ -162,14 +162,19 @@ namespace Ordr.Mobile.Mobile
         {
             if (runtime == null) throw new ArgumentNullException(nameof(runtime));
             foreach (var unit in runtime.MobileUnitSnapshot())
+            {
                 if (unit.Unit.Id == SpecialGradeMobilePolicy.Law)
                     runtime.TryRunLawAcceleration(unit.InstanceId);
+                else if (unit.Unit.Id == SpecialGradeMobilePolicy.Otama)
+                    runtime.TryUseOtamaDango(unit.InstanceId);
+            }
             if (autoSkills == null) return;
             var enemies = runtime.MobileEnemySnapshot();
             foreach (var unit in runtime.MobileUnitSnapshot())
             {
                 if (SpecialGradeMobilePolicy.IsManualOnly(unit.Unit.Id) ||
-                    unit.Unit.Id == SpecialGradeMobilePolicy.Law) continue;
+                    unit.Unit.Id == SpecialGradeMobilePolicy.Law ||
+                    unit.Unit.Id == SpecialGradeMobilePolicy.Otama) continue;
                 bool useCurrent = SpecialGradeMobilePolicy.UsesCurrentAttackTarget(unit.Unit.Id);
                 if (runtime.IsStoryDeployed(unit.InstanceId) && !useCurrent) continue;
                 if (unit.Profile == null) continue;

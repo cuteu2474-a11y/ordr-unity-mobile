@@ -13,6 +13,13 @@ namespace Ordr.Mobile.Mobile
         public const string Moria = "S-09";
         public const string Absalom = "S-17";
         public const string DockingFive = "S-32";
+        public const string Otama = "X-05";
+        public const long OtamaWoodReward = 16;
+        public static string OtamaRewardId(long instanceId)
+        {
+            if (instanceId <= 0) throw new ArgumentOutOfRangeException(nameof(instanceId));
+            return "otama-dango:" + instanceId.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
 
         public static bool IsManualOnly(string unitId)
         {

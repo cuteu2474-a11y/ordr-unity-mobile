@@ -26,6 +26,7 @@ namespace Ordr.Mobile.Tests
                 "{\"id\":\"S-05\",\"grade\":\"특별함\",\"name\":\"로우\",\"roleTags\":[]}," +
                 "{\"id\":\"S-08\",\"grade\":\"특별함\",\"name\":\"마르코\",\"roleTags\":[]}," +
                 "{\"id\":\"S-32\",\"grade\":\"특별함\",\"name\":\"도킹\",\"roleTags\":[]}," +
+                "{\"id\":\"X-05\",\"grade\":\"특별함\",\"name\":\"오타마\",\"roleTags\":[]}," +
                 "{\"id\":\"TEST-01\",\"grade\":\"흔함\",\"name\":\"가상 유닛\",\"roleTags\":[]}]}" );
             var profiles = CharacterSkillCatalog.FromJson(skillJson ??
                 "{\"gameVersion\":\"S2 2.323[C]\",\"profiles\":[]}");
@@ -59,6 +60,42 @@ namespace Ordr.Mobile.Tests
             { return Scores.TryGetValue(target, out dps); }
             public bool TryCast(long caster, long target, double time)
             { if (!Accept) return false; LastTarget = target; Casts++; return true; }
+        }
+
+        [Test]
+        public void OtamaAutoGrantsSixteenOncePerInstance()
+        {
+            var world = World();
+            var wallet = new Ordr.Mobile.Core.EconomyWallet();
+            world.ConfigureOtamaWoodWallet(wallet);
+            long first = world.SpawnCharacter("X-05", 0, 0);
+            world.Step(0);
+            Assert.AreEqual(16, wallet.Balance("wood"));
+            world.Step(1);
+            Assert.IsFalse(world.TryUseOtamaDango(first));
+            world.SpawnCharacter("X-05", 0, 0);
+            world.Step(0);
+            Assert.AreEqual(32, wallet.Balance("wood"));
+        }
+
+        [Test]
+        public void OtamaSavedRewardPreventsRegrantAndOverflowPreservesUse()
+        {
+            var world = World();
+            long id = world.SpawnCharacter("X-05", 0, 0);
+            world.Step(0); // no wallet: no payout
+            var wallet = new Ordr.Mobile.Core.EconomyWallet();
+            var rewardId = SpecialGradeMobilePolicy.OtamaRewardId(id);
+            Assert.IsTrue(wallet.TryGrantOnce(rewardId,
+                new Ordr.Mobile.Core.ResourceBundle().Add("wood", 16)));
+            var loaded = new Ordr.Mobile.Core.EconomyWallet();
+            loaded.RestoreState(wallet.CaptureState());
+            world.ConfigureOtamaWoodWallet(loaded);
+            world.Step(0);
+            Assert.AreEqual(16, loaded.Balance("wood"));
+            Assert.IsFalse(world.TryUseOtamaDango(id));
+            world.RemoveCharacter(id);
+            Assert.IsFalse(world.TryUseOtamaDango(id));
         }
 
         [Test]

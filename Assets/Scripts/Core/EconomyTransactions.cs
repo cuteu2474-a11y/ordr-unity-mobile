@@ -19,10 +19,73 @@ namespace Ordr.Mobile.Core
         public long Get(string id) { long amount; return amounts.TryGetValue(id, out amount) ? amount : 0; }
     }
 
+    // 잔액과 1회 보상 처리 이력을 같은 저장 슬롯에 보존한다.
+    [Serializable]
+    public sealed class EconomyBalanceState
+    {
+        public string Id;
+        public long Amount;
+    }
+
+    [Serializable]
+    public sealed class EconomyWalletState
+    {
+        public List<EconomyBalanceState> Balances = new List<EconomyBalanceState>();
+        public List<string> CompletedRewards = new List<string>();
+    }
+
     public sealed class EconomyWallet
     {
         private readonly Dictionary<string, long> balances = new Dictionary<string, long>(StringComparer.Ordinal);
+        private readonly HashSet<string> completedRewards =
+            new HashSet<string>(StringComparer.Ordinal);
         public long Balance(string id) { long value; return balances.TryGetValue(id, out value) ? value : 0; }
+
+        // 중복 시 false. 오버플로 등 예외 발생 시 잔액/사용 기록 모두 보존.
+        public bool TryGrantOnce(string rewardId, ResourceBundle reward)
+        {
+            if (string.IsNullOrWhiteSpace(rewardId)) throw new ArgumentException(nameof(rewardId));
+            if (reward == null) throw new ArgumentNullException(nameof(reward));
+            if (completedRewards.Contains(rewardId)) return false;
+            var next = Snapshot();
+            Apply(next, reward, 1);
+            Replace(next);
+            completedRewards.Add(rewardId);
+            return true;
+        }
+
+        // Unity JsonUtility 직렬화 가능한 DTO. 실제 저장 시스템 연동은 별도.
+        public EconomyWalletState CaptureState()
+        {
+            var state = new EconomyWalletState();
+            foreach (var pair in balances)
+                state.Balances.Add(new EconomyBalanceState { Id = pair.Key, Amount = pair.Value });
+            state.Balances.Sort((a, b) => string.CompareOrdinal(a.Id, b.Id));
+            state.CompletedRewards.AddRange(completedRewards);
+            state.CompletedRewards.Sort(StringComparer.Ordinal);
+            return state;
+        }
+
+        public void RestoreState(EconomyWalletState state)
+        {
+            if (state == null || state.Balances == null || state.CompletedRewards == null)
+                throw new ArgumentException("재화 저장 상태가 불완전합니다.", nameof(state));
+            var next = new Dictionary<string, long>(StringComparer.Ordinal);
+            foreach (var entry in state.Balances)
+            {
+                if (entry == null || string.IsNullOrWhiteSpace(entry.Id) ||
+                    entry.Amount < 0 || next.ContainsKey(entry.Id))
+                    throw new FormatException("재화 잔액 저장 상태가 잘못됐습니다.");
+                next.Add(entry.Id, entry.Amount);
+            }
+            var done = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string key in state.CompletedRewards)
+                if (string.IsNullOrWhiteSpace(key) || !done.Add(key))
+                    throw new FormatException("1회 보상 저장 상태가 잘못됐습니다.");
+            Replace(next);
+            completedRewards.Clear();
+            foreach (var key in done) completedRewards.Add(key);
+        }
 
         public void Grant(ResourceBundle rewards)
         {
