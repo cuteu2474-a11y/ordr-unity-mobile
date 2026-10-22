@@ -383,6 +383,17 @@ namespace Ordr.Mobile.Unity
         }
 
         // 지갑 저장 이력까지 복원한 뒤 전투 자동 시전을 시작해야 한다.
+        // 개발 로그용. 원본 검증 미승인, 방어력 미검증, 공식 보류를 별도 구분.
+        public string ExportBasicAttackDiagnosticReport()
+        {
+            if (Combat == null) return "전투 월드가 아직 구성되지 않았습니다.";
+            var lines = new System.Collections.Generic.List<string>();
+            foreach (var state in Combat.CaptureBasicAttackDiagnostics())
+                lines.Add(state.InstanceId + " (" + state.CatalogId + ") " +
+                    state.Kind + ": " + state.Detail);
+            return string.Join("\n", lines.ToArray());
+        }
+
         public void ConfigureOtamaWoodRewards(Ordr.Mobile.Core.EconomyWallet sharedWallet)
         {
             if (Combat == null)

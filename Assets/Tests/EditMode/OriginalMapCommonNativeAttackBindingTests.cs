@@ -12,9 +12,37 @@ namespace Ordr.Mobile.Tests
     // the production 2.323[C] JASS, defense or rounding is fully reproduced.
     public sealed class OriginalMapCommonNativeAttackBindingTests
     {
+        private sealed class MaximumDieRoll : ICombatProcRandom
+        {
+            public int Next(int upperExclusive) { return upperExclusive - 1; }
+        }
+
         private sealed class MinimumDieRoll : ICombatProcRandom
         {
             public int Next(int upperExclusive) { return 0; }
+        }
+
+        private sealed class MixedQuantizer : IOrdr323VerifiedDamageQuantization
+        {
+            public long Quantize(double value, Ordr323VerifiedDamageHit hit)
+            {
+                if (hit.Evidence.Contains("UnitWeapons.slk:h003"))
+                    throw new NotSupportedException("TEST_ONLY: 루피 피해 정수화 미확정");
+                return (long)Math.Truncate(value);
+            }
+        }
+
+        private sealed class BothCommonsVerified : IOriginalCommonNativeAttackVerification
+        {
+            public bool TryVerify(string id, string raw, out double delay,
+                out DamageSchool school, out string proof)
+            {
+                delay = 0.35; school = DamageSchool.Physical;
+                bool allowed = (id == "C-01" && raw == "h003") ||
+                    (id == "C-02" && raw == "h002");
+                proof = allowed ? "TEST_ONLY: synthetic native approval" : null;
+                return allowed;
+            }
         }
 
         private sealed class FixtureQuantizer : IOrdr323VerifiedDamageQuantization
@@ -111,6 +139,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1.02, luffy.CooldownSeconds, 1e-9);
             Assert.AreEqual(Ordr323AttackType.Siege, luffy.NativeAttackType);
             Assert.AreEqual(29L, luffy.RollObjectBaseDamage(new MinimumDieRoll()));
+            Assert.AreEqual(31L, luffy.RollObjectBaseDamage(new MaximumDieRoll()));
             Assert.AreEqual(1.0, luffy.AttackTableFactor(Ordr323ArmorType.Normal), 1e-9);
             Assert.AreEqual(Ordr323AttackType.Pierce,
                 commons.Find("C-02").NativeAttackType);
@@ -253,6 +282,68 @@ namespace Ordr.Mobile.Tests
             world.Step(0);
             Assert.AreEqual(971L, world.EnemyOf("verified").Health);
             Assert.AreEqual(1000L, world.EnemyOf("unknown").Health);
+        }
+
+        [Test]
+        public void AttackReadinessSeparatesUnapprovedSourceAndUnverifiedDefender()
+        {
+            var blocked = Create(false);
+            long unknown = blocked.SpawnCharacter("C-01", 0, 0);
+            blocked.SpawnEnemy("enemy", 1000, CharacterEnemyKind.Line, 0, 0, 0);
+            var missing = blocked.InspectBasicAttack(unknown);
+            Assert.AreEqual(BasicAttackReadinessKind.UnverifiedSource, missing.Kind);
+            StringAssert.Contains("독립 검증", missing.Detail);
+            blocked.Step(0.35);
+            Assert.AreEqual(1000L, blocked.EnemyOf("enemy").Health);
+
+            var world = Create(true);
+            long luffy = world.SpawnCharacter("C-01", 0, 0);
+            world.SpawnEnemy("unknown", 1000, CharacterEnemyKind.Line, 0, 0, 0);
+            Assert.AreEqual(BasicAttackReadinessKind.UnverifiedTarget,
+                world.InspectBasicAttack(luffy).Kind);
+            StringAssert.Contains("방어력", world.InspectBasicAttack(luffy).Detail);
+            world.Step(1.0);
+            Assert.AreEqual(1, world.ReadyAttackers);
+            world.SpawnEnemyWithDefenses("verified", 1000, CharacterEnemyKind.Line,
+                5, 0, 0, new EnemyDefenseProfile(CharacterEnemyKind.Line,
+                    0, null, "normal", "TEST_ONLY: known armor"));
+            Assert.AreEqual(BasicAttackReadinessKind.Ready,
+                world.InspectBasicAttack(luffy).Kind);
+            world.Step(0);
+            Assert.AreEqual(971L, world.EnemyOf("verified").Health);
+            Assert.AreEqual(1000L, world.EnemyOf("unknown").Health);
+        }
+
+        [Test]
+        public void DeferredLuffyFormulaDoesNotBlockVerifiedZoro()
+        {
+            var units = CharacterUnitCatalog.FromJson(ProjectFile("units.json"));
+            var skills = CharacterSkillCatalog.FromJson(
+                "{\\\"gameVersion\\\":\\\"S2 2.323[C]\\\",\\\"profiles\\\":[]}");
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                ProjectFile("original-2323C-map-base-stats.json"), units);
+            var dice = new MinimumDieRoll();
+            var bridge = new OriginalMapCommonNativeAttackBinding(map,
+                new BothCommonsVerified(), dice);
+            var world = Ordr323DamageWorldBinding.Create(units, skills,
+                bridge, null, new MixedQuantizer(), dice);
+            world.ConfigureVerifiedUnitAttackProvider(bridge);
+            world.Start(); world.BeginWave(1);
+            long luffy = world.SpawnCharacter("C-01", 0, 0);
+            long zoro = world.SpawnCharacter("C-02", 0, 0);
+            world.SpawnEnemyWithDefenses("target", 1000, CharacterEnemyKind.Line,
+                3, 0, 0, new EnemyDefenseProfile(CharacterEnemyKind.Line,
+                    0, null, "normal", "TEST_ONLY: known armor"));
+            world.Step(0.35);
+            var report = world.CaptureBasicAttackDiagnostics();
+            Assert.AreEqual(2, report.Count);
+            Assert.AreEqual(BasicAttackReadinessKind.FormulaDeferred, report[0].Kind);
+            StringAssert.Contains("정수화", report[0].Detail);
+            Assert.AreEqual(BasicAttackReadinessKind.Cooldown, report[1].Kind);
+            Assert.AreEqual(1, world.ReadyAttackers);
+            Assert.Less(world.EnemyOf("target").Health, 1000L);
+            Assert.AreEqual(luffy, report[0].InstanceId);
+            Assert.AreEqual(zoro, report[1].InstanceId);
         }
 
         [Test]

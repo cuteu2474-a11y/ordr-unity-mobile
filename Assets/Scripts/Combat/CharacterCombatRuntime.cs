@@ -9,6 +9,27 @@ namespace Ordr.Mobile.Combat
 {
     // 271종 카탈로그를 소환하고, 200종 상세 정보가 존재하면 공격·발동 스킬과 연결.
     // 원작 평타 수치/피해 공식 미확인 유닛은 의도적으로 공격을 시작하지 않는다.
+    public enum BasicAttackReadinessKind
+    {
+        UnverifiedSource, UnverifiedTarget, FormulaDeferred,
+        NoBattlefieldTarget, Cooldown, Ready
+    }
+
+    public sealed class BasicAttackReadiness
+    {
+        public long InstanceId { get; private set; }
+        public string CatalogId { get; private set; }
+        public BasicAttackReadinessKind Kind { get; private set; }
+        public string Detail { get; private set; }
+        public double? NextAttackAtSeconds { get; private set; }
+        internal BasicAttackReadiness(long id, string catalog, BasicAttackReadinessKind kind,
+            string detail, double? nextAt)
+        {
+            InstanceId = id; CatalogId = catalog; Kind = kind;
+            Detail = detail; NextAttackAtSeconds = nextAt;
+        }
+    }
+
     public sealed class CharacterCombatRuntime
     {
         private sealed class CharacterInstance
@@ -20,6 +41,7 @@ namespace Ordr.Mobile.Combat
             public CharacterActiveAbilities Abilities;
             public bool AttackReady;
             public bool AttackBlockedByMissingFormula;
+            public string DeferredAttackReason;
             public string AttackEvidence;
             public IOriginalVerifiedBasicAttackTargetFilter BasicTargetFilter;
         }
@@ -588,6 +610,61 @@ namespace Ordr.Mobile.Combat
             return false;
         }
 
+        // RNG/공격 쿨타임을 움직이지 않는 읽기 전용 진단.
+        public BasicAttackReadiness InspectBasicAttack(long instanceId)
+        {
+            CharacterInstance unit;
+            if (!characters.TryGetValue(instanceId, out unit))
+                throw new KeyNotFoundException("존재하지 않는 캐릭터 인스턴스.");
+            string id = unit.Catalog.Id;
+            if (!unit.AttackReady || unit.Mapping == null)
+            {
+                var diagnostics = verifiedAttackProvider as IOriginalBasicAttackEvidenceDiagnostics;
+                string detail = verifiedAttackProvider == null
+                    ? "원본 평타 승인 공급자 미연결"
+                    : diagnostics == null ? "원본 평타 공급자가 미승인"
+                    : diagnostics.ExplainUnapprovedUnit(unit.Catalog);
+                return new BasicAttackReadiness(instanceId, id,
+                    BasicAttackReadinessKind.UnverifiedSource, detail, null);
+            }
+            if (unit.AttackBlockedByMissingFormula)
+                return new BasicAttackReadiness(instanceId, id,
+                    BasicAttackReadinessKind.FormulaDeferred,
+                    unit.DeferredAttackReason ?? "최종 피해 공식 미확인",
+                    attackPipeline.NextAttackAt(InstanceKey(instanceId)));
+            var visible = BuildTargetCandidates(unit);
+            if (visible.Count == 0)
+                return new BasicAttackReadiness(instanceId, id,
+                    BasicAttackReadinessKind.NoBattlefieldTarget,
+                    "현재 소속 전장에 살아 있는 적 없음", null);
+            var eligible = BuildBasicAttackCandidates(unit);
+            if (eligible.Count == 0)
+            {
+                var diagnostics = unit.BasicTargetFilter as IOriginalBasicAttackEvidenceDiagnostics;
+                string detail = diagnostics == null
+                    ? "원본 대상/방어 검증 보류"
+                    : diagnostics.ExplainRejectedTarget(unit.Catalog, enemies[visible[0].Id].Enemy);
+                return new BasicAttackReadiness(instanceId, id,
+                    BasicAttackReadinessKind.UnverifiedTarget, detail,
+                    attackPipeline.NextAttackAt(InstanceKey(instanceId)));
+            }
+            double? next = attackPipeline.NextAttackAt(InstanceKey(instanceId));
+            return next.HasValue && next.Value > scheduler.Time
+                ? new BasicAttackReadiness(instanceId, id,
+                    BasicAttackReadinessKind.Cooldown, "검증된 평타 공격 시점 대기", next)
+                : new BasicAttackReadiness(instanceId, id,
+                    BasicAttackReadinessKind.Ready, "평타 사전 검증을 통과한 대상 존재", next);
+        }
+
+        public IReadOnlyList<BasicAttackReadiness> CaptureBasicAttackDiagnostics()
+        {
+            var ids = new List<long>(characters.Keys);
+            ids.Sort();
+            var report = new List<BasicAttackReadiness>();
+            foreach (long id in ids) report.Add(InspectBasicAttack(id));
+            return report.AsReadOnly();
+        }
+
         public string AttackEvidenceOf(long instanceId)
         {
             CharacterInstance instance;
@@ -1112,6 +1189,7 @@ namespace Ordr.Mobile.Combat
                 catch (NotSupportedException ex)
                 {
                     unit.AttackBlockedByMissingFormula = true;
+                    unit.DeferredAttackReason = "평타 피해 공식 미연결: " + ex.Message;
                     events.Add(new CharacterCombatEvent(
                         CharacterCombatEventType.EffectDeferred,
                         InstanceKey(id), null, null,

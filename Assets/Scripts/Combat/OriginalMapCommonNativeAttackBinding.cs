@@ -23,9 +23,17 @@ namespace Ordr.Mobile.Combat
         bool CanAttemptBasicAttack(CatalogUnit unit, CombatEnemy enemy);
     }
 
+    // 승인/방어 미확정 사유를 읽는 전용 포트. 타격·주사위는 실행하지 않는다.
+    public interface IOriginalBasicAttackEvidenceDiagnostics
+    {
+        string ExplainUnapprovedUnit(CatalogUnit unit);
+        string ExplainRejectedTarget(CatalogUnit unit, CombatEnemy enemy);
+    }
+
     public sealed class OriginalMapCommonNativeAttackBinding :
         IOriginalVerifiedUnitAttackProvider, IOrdr323VerifiedHitSource,
-        IOriginalVerifiedBasicAttackTargetFilter
+        IOriginalVerifiedBasicAttackTargetFilter,
+        IOriginalBasicAttackEvidenceDiagnostics
     {
         private readonly OriginalMapMappedNativeAttackEvidenceCatalog evidence;
         private readonly IOriginalCommonNativeAttackVerification verification;
@@ -105,6 +113,29 @@ namespace Ordr.Mobile.Combat
                 approvalEvidence + " / original UnitWeapons.slk:" + native.Rawcode,
                 school);
             return true;
+        }
+
+        public string ExplainUnapprovedUnit(CatalogUnit unit)
+        {
+            if (unit == null) return "카탈로그 유닛 누락";
+            var native = evidence.Find(unit.Id);
+            return native == null
+                ? "원본 평타 객체/주사위·쿨타임 근거 미확인"
+                : "원본 네이티브 공격 경로·첫 타격 시점·피해 계열의 독립 검증 대기: " + native.Rawcode;
+        }
+
+        public string ExplainRejectedTarget(CatalogUnit unit, CombatEnemy enemy)
+        {
+            if (enemy == null || !enemy.IsAlive) return "대상이 없거나 사망";
+            if (unit == null || evidence.Find(unit.Id) == null)
+                return "공격자의 원본 기본 공격 자료 미확정";
+            if (!enemy.Defenses.HasVerifiedArmor)
+                return "대상 " + enemy.Id + "의 원본 방어력 미검증";
+            Ordr323ArmorType armor;
+            if (!Ordr323OriginalDamageRules.TryReadArmorType(
+                enemy.Defenses.WarcraftArmorType, out armor))
+                return "대상 " + enemy.Id + "의 워크래프트 방어 타입 미검증";
+            return "원본 대상 승인 조건 미충족";
         }
 
         public bool CanAttemptBasicAttack(CatalogUnit unit, CombatEnemy enemy)
