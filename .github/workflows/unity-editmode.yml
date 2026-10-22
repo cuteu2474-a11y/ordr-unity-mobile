@@ -1,8 +1,11 @@
-name: Unity EditMode 검증 (수동 실행)
+name: Unity EditMode 검증 (main 자동 + 수동)
 
-# 코드 수정 한 번마다 자동 빌드/취소하지 않는다.
-# 여러 변경을 검증한 뒤 Actions에서 필요할 때 한 번 수동 실행한다.
+# main 브랜치에 반영된 변경사항을 자동 검증하고 수동 실행도 허용한다.
+# 진행 중인 작업은 자동 취소하지 않는다.
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
