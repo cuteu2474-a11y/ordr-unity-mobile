@@ -22,6 +22,7 @@ import sys
 import unicodedata
 
 from extract_original_unit_slk_stats import parse_sylk_bytes
+from reconcile_ambiguous_original_map_objects import reconcile
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -171,7 +172,7 @@ def object_stats(rawcode, name, weapons, balance, abilities):
         attacks = 0
     if not isinstance(attacks, int) or attacks < 0 or attacks > 3:
         raise ValueError("Unexpected weapon flags for " + rawcode)
-    return {
+    result = {
         "rawcode": rawcode,
         "mapName": name,
         "mapGradeSuffix": grade,
@@ -299,6 +300,10 @@ def build(w3x, catalog):
         "catalogEntries": links,
         "mapObjects": list(objects.values()),
     }
+    # JASS BGH fusion results disambiguate identical map name/grade entries.
+    read = lambda name: json.loads((PROJECT_ROOT / "data" / name).read_text(encoding="utf-8"))
+    return reconcile(result, read("original-jass-fusion-registry.json"),
+                     read("original-unit-rawcode-label-links.json"))
 
 
 def main():

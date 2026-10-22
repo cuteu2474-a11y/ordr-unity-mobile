@@ -71,6 +71,8 @@ namespace Ordr.Mobile.Data
         public string OriginalRawcode { get; private set; }
         public string MapName { get; private set; }
         public string MappingStatus { get; private set; }
+        public IReadOnlyList<string> AlternateRawcodes { get; private set; }
+        public IReadOnlyList<string> SourceJassFusionAbilityRawcodes { get; private set; }
         public OriginalMapBasicAttack Attack1 { get; private set; }
         public OriginalMapBasicAttack Attack2 { get; private set; }
         public double? BaseArmor { get; private set; }
@@ -88,6 +90,8 @@ namespace Ordr.Mobile.Data
             OriginalRawcode = OrdrJson.String(source, "originalRawcode");
             MapName = OrdrJson.String(source, "sourceMapName");
             MappingStatus = OrdrJson.RequiredString(source, "mappingStatus");
+            AlternateRawcodes = new List<string>().AsReadOnly();
+            SourceJassFusionAbilityRawcodes = new List<string>().AsReadOnly();
             object parity = OrdrJson.Value(source, "combatParityVerified");
             if (!(parity is bool) || (bool)parity)
                 throw new FormatException(UnitId + ": 기본 스탯만으로 전투 완성을 선언할 수 없습니다.");
@@ -100,8 +104,36 @@ namespace Ordr.Mobile.Data
             }
             if (OriginalRawcode.Length != 4 || string.IsNullOrEmpty(MapName) ||
                 (MappingStatus != "verified-common-map-identity" &&
-                 MappingStatus != "unique-map-name-and-grade"))
+                 MappingStatus != "unique-map-name-and-grade" &&
+                 MappingStatus != "verified-jass-fusion-result"))
                 throw new FormatException(UnitId + ": 원본 rawcode 매핑 근거가 불완전합니다.");
+            if (MappingStatus == "verified-jass-fusion-result")
+            {
+                var abilities = new List<string>();
+                foreach (var item in OrdrJson.Array(
+                    OrdrJson.Value(source, "sourceJassFusionAbilityRawcodes"),
+                    "sourceJassFusionAbilityRawcodes"))
+                {
+                    var raw = item as string;
+                    if (raw == null || raw.Length != 4 || abilities.Contains(raw))
+                        throw new FormatException(UnitId + ": JASS 조합 결과 출처 오류");
+                    abilities.Add(raw);
+                }
+                var alternatives = new List<string>();
+                foreach (var item in OrdrJson.Array(
+                    OrdrJson.Value(source, "alternateRawcodes"), "alternateRawcodes"))
+                {
+                    var raw = item as string;
+                    if (raw == null || raw.Length != 4 || raw == OriginalRawcode ||
+                        alternatives.Contains(raw))
+                        throw new FormatException(UnitId + ": 원본 대체 유닛 ID 오류");
+                    alternatives.Add(raw);
+                }
+                if (abilities.Count == 0 || alternatives.Count == 0)
+                    throw new FormatException(UnitId + ": 중복 유닛 JASS 근거가 없습니다.");
+                SourceJassFusionAbilityRawcodes = abilities.AsReadOnly();
+                AlternateRawcodes = alternatives.AsReadOnly();
+            }
             object primary = OrdrJson.Value(source, "attack1");
             if (primary != null)
                 Attack1 = new OriginalMapBasicAttack(OrdrJson.Object(primary, "attack1"), UnitId);

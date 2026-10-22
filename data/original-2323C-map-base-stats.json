@@ -18,15 +18,15 @@
   "summary": {
     "originalNamedObjects": 1493,
     "catalogCharacters": 271,
-    "linkedCatalogCharacters": 162,
-    "unresolvedCatalogCharacters": 109,
+    "linkedCatalogCharacters": 167,
+    "unresolvedCatalogCharacters": 104,
     "mappingStatusCounts": {
-      "ambiguous-name-and-grade": 5,
       "unique-map-name-and-grade": 153,
       "unmatched": 104,
-      "verified-common-map-identity": 9
+      "verified-common-map-identity": 9,
+      "verified-jass-fusion-result": 5
     },
-    "linkedWithAttack1": 160,
+    "linkedWithAttack1": 165,
     "gameplayParityVerified": 0
   },
   "catalogEntries": [
@@ -4730,18 +4730,40 @@
       "catalogId": "LI-03",
       "catalogName": "마르코",
       "grade": "제한됨",
-      "mappingStatus": "ambiguous-name-and-grade",
-      "originalRawcode": null,
-      "candidateRawcodes": [
-        "h08O",
+      "mappingStatus": "verified-jass-fusion-result",
+      "originalRawcode": "h08O",
+      "candidateRawcodes": [],
+      "sourceMapName": "마르코 - 제한",
+      "attack1": {
+        "attackCooldownSeconds": 0.64,
+        "baseDamagePlus": 43500,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 850,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "normal",
+        "attackPointSeconds": 0.39,
+        "minimumBaseDamage": 43501,
+        "maximumBaseDamage": 43503
+      },
+      "attack2": null,
+      "baseStats": {
+        "hitPoints": 85,
+        "mana": null,
+        "healthRegeneration": 0.5,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A907,A175,A15N,A172,A173,A174,A179,A1B0,AInv,Avul",
+      "combatParityVerified": false,
+      "alternateRawcodes": [
         "h09Q"
       ],
-      "sourceMapName": null,
-      "attack1": null,
-      "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "sourceJassFusionAbilityRawcodes": [
+        "A011"
+      ]
     },
     {
       "catalogId": "LI-04",
@@ -5039,18 +5061,40 @@
       "catalogId": "D-04",
       "catalogName": "페로나",
       "grade": "왜곡됨",
-      "mappingStatus": "ambiguous-name-and-grade",
-      "originalRawcode": null,
-      "candidateRawcodes": [
-        "h000",
-        "h048"
-      ],
-      "sourceMapName": null,
-      "attack1": null,
+      "mappingStatus": "verified-jass-fusion-result",
+      "originalRawcode": "h048",
+      "candidateRawcodes": [],
+      "sourceMapName": "페로나 - 왜곡",
+      "attack1": {
+        "attackCooldownSeconds": 0.82,
+        "baseDamagePlus": 48000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 850,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.17,
+        "minimumBaseDamage": 48001,
+        "maximumBaseDamage": 48002
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 100,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0QH,A0BI,A0BJ,A0BK,A0BL,Avul",
+      "combatParityVerified": false,
+      "alternateRawcodes": [
+        "h000"
+      ],
+      "sourceJassFusionAbilityRawcodes": [
+        "IF02"
+      ]
     },
     {
       "catalogId": "D-05",
@@ -5681,18 +5725,40 @@
       "catalogId": "E-09",
       "catalogName": "우타",
       "grade": "영원한",
-      "mappingStatus": "ambiguous-name-and-grade",
-      "originalRawcode": null,
-      "candidateRawcodes": [
-        "h067",
+      "mappingStatus": "verified-jass-fusion-result",
+      "originalRawcode": "h067",
+      "candidateRawcodes": [],
+      "sourceMapName": "우타 - 영원",
+      "attack1": {
+        "attackCooldownSeconds": 0.67,
+        "baseDamagePlus": 32500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 850,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.44,
+        "minimumBaseDamage": 32501,
+        "maximumBaseDamage": 32501
+      },
+      "attack2": null,
+      "baseStats": {
+        "hitPoints": 150,
+        "mana": 100,
+        "healthRegeneration": 0.2,
+        "manaRegeneration": 1.25,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A14M,A906,A0D1,A0D2,A0D3,A0D4,A14L,AInv,Avul",
+      "combatParityVerified": false,
+      "alternateRawcodes": [
         "h0AF"
       ],
-      "sourceMapName": null,
-      "attack1": null,
-      "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "sourceJassFusionAbilityRawcodes": [
+        "ET07"
+      ]
     },
     {
       "catalogId": "E-10",
@@ -5843,18 +5909,40 @@
       "catalogId": "I-07",
       "catalogName": "센고쿠",
       "grade": "불멸의",
-      "mappingStatus": "ambiguous-name-and-grade",
-      "originalRawcode": null,
-      "candidateRawcodes": [
-        "h04E",
+      "mappingStatus": "verified-jass-fusion-result",
+      "originalRawcode": "h04E",
+      "candidateRawcodes": [],
+      "sourceMapName": "센고쿠 - 불멸",
+      "attack1": {
+        "attackCooldownSeconds": 0.7,
+        "baseDamagePlus": 77500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 600,
+        "originalAttackType": "hero",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.37,
+        "minimumBaseDamage": 77501,
+        "maximumBaseDamage": 77501
+      },
+      "attack2": null,
+      "baseStats": {
+        "hitPoints": 75,
+        "mana": null,
+        "healthRegeneration": 1,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A905,A0LY,A0WS,A0LZ,A142,A0GA,A0HY,Avul",
+      "combatParityVerified": false,
+      "alternateRawcodes": [
         "h0BM"
       ],
-      "sourceMapName": null,
-      "attack1": null,
-      "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "sourceJassFusionAbilityRawcodes": [
+        "IM06"
+      ]
     },
     {
       "catalogId": "I-08",
@@ -5940,19 +6028,41 @@
       "catalogId": "I-11",
       "catalogName": "카이도",
       "grade": "불멸의",
-      "mappingStatus": "ambiguous-name-and-grade",
-      "originalRawcode": null,
-      "candidateRawcodes": [
-        "h07M",
+      "mappingStatus": "verified-jass-fusion-result",
+      "originalRawcode": "h07M",
+      "candidateRawcodes": [],
+      "sourceMapName": "카이도 - 불멸",
+      "attack1": {
+        "attackCooldownSeconds": 1.41,
+        "baseDamagePlus": 325000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 800,
+        "originalAttackType": "hero",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.47,
+        "minimumBaseDamage": 325001,
+        "maximumBaseDamage": 325001
+      },
+      "attack2": null,
+      "baseStats": {
+        "hitPoints": 100,
+        "mana": null,
+        "healthRegeneration": 0.33,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0P0,A905,A0PX,A0PY,A0Q1,A0Q2,A0Q3,A0PZ,Avul",
+      "combatParityVerified": false,
+      "alternateRawcodes": [
         "h0AD",
         "h0BW"
       ],
-      "sourceMapName": null,
-      "attack1": null,
-      "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "sourceJassFusionAbilityRawcodes": [
+        "IM11"
+      ]
     },
     {
       "catalogId": "I-12",

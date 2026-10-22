@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from copy import deepcopy
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +14,7 @@ from build_original_map_base_stats import (  # noqa: E402
     COMMON_RAWCODES, attack_stats, clean_name, normalize_name,
 )
 from classify_character_skills import family  # noqa: E402
+from reconcile_ambiguous_original_map_objects import reconcile  # noqa: E402
 
 
 class WarcraftObjectAttackTests(unittest.TestCase):
@@ -41,13 +43,19 @@ class GeneratedDataTests(unittest.TestCase):
             encoding="utf-8"))
         cls.skills = json.loads((ROOT / "data/original-2323C-skill-research-queue.json").read_text(
             encoding="utf-8"))
+        cls.registry = json.loads((ROOT / "data/original-jass-fusion-registry.json").read_text(
+            encoding="utf-8"))
+        cls.labels = json.loads((ROOT / "data/original-unit-rawcode-label-links.json").read_text(
+            encoding="utf-8"))
 
     def test_full_source_index_and_partial_verified_join(self):
         report = self.source["summary"]
         self.assertEqual(report["originalNamedObjects"], 1493)
         self.assertEqual(report["catalogCharacters"], 271)
-        self.assertEqual(report["linkedCatalogCharacters"], 162)
-        self.assertEqual(report["unresolvedCatalogCharacters"], 109)
+        self.assertEqual(report["linkedCatalogCharacters"], 167)
+        self.assertEqual(report["unresolvedCatalogCharacters"], 104)
+        self.assertEqual(report["linkedWithAttack1"], 165)
+        self.assertEqual(report["mappingStatusCounts"]["verified-jass-fusion-result"], 5)
         self.assertEqual(report["gameplayParityVerified"], 0)
         rows = self.source["catalogEntries"]
         self.assertEqual(len({r["catalogId"] for r in rows}), 271)
@@ -59,6 +67,46 @@ class GeneratedDataTests(unittest.TestCase):
                 self.assertIsNone(row["attack1"])
                 self.assertIsNone(row["baseStats"])
                 self.assertIsNone(row["sourceMapName"])
+
+    def test_five_ambiguous_units_are_resolved_using_jass_fusion_results(self):
+        expected = {
+            "LI-03": ("h08O", "A011", ["h09Q"]),
+            "D-04": ("h048", "IF02", ["h000"]),
+            "E-09": ("h067", "ET07", ["h0AF"]),
+            "I-07": ("h04E", "IM06", ["h0BM"]),
+            "I-11": ("h07M", "IM11", ["h0AD", "h0BW"]),
+        }
+        rows = {row["catalogId"]: row for row in self.source["catalogEntries"]}
+        results = {(reg["abilityRawcode"], result["rawcode"])
+                   for reg in self.registry["registrations"]
+                   for result in reg["results"] if result["kind"] == "UNIT"}
+        labels = {row["catalogUnitId"]: row for row in self.labels["mappings"]}
+        for unit_id, (code, ability, alternatives) in expected.items():
+            row = rows[unit_id]
+            self.assertEqual(row["mappingStatus"], "verified-jass-fusion-result")
+            self.assertEqual(row["originalRawcode"], code)
+            self.assertEqual(row["alternateRawcodes"], alternatives)
+            self.assertIn(ability, row["sourceJassFusionAbilityRawcodes"])
+            self.assertIn((ability, code), results)
+            if unit_id in labels:
+                self.assertEqual(labels[unit_id]["rawcode"], code)
+                self.assertEqual(labels[unit_id]["abilityRawcode"], ability)
+            self.assertFalse(row["combatParityVerified"])
+        self.assertEqual(reconcile(deepcopy(self.source), self.registry, self.labels),
+                         self.source)
+
+    def test_reconcile_rejects_conflicting_jass_label(self):
+        before = deepcopy(self.source)
+        row = next(row for row in before["catalogEntries"] if row["catalogId"] == "E-09")
+        row["mappingStatus"] = "ambiguous-name-and-grade"
+        row["originalRawcode"] = None
+        row["candidateRawcodes"] = ["h067", "h0AF"]
+        labels = deepcopy(self.labels)
+        for entry in labels["mappings"]:
+            if entry["catalogUnitId"] == "E-09":
+                entry["rawcode"] = "h0AF"
+        with self.assertRaisesRegex(ValueError, "JASS fusion/label conflict"):
+            reconcile(before, self.registry, labels)
 
     def test_common_nine_match_original_map_damage_and_interval(self):
         report = {x["catalogId"]: x for x in self.source["catalogEntries"]}

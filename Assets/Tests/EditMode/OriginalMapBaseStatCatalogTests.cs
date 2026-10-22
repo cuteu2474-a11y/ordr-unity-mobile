@@ -31,6 +31,14 @@ namespace Ordr.Mobile.Tests
             "\"sourceMapName\":null,\"attack1\":null,\"baseStats\":null," +
             "\"combatParityVerified\":false}";
 
+        private const string JassReconciled =
+            "{\"catalogId\":\"C-02\",\"catalogName\":\"조로\",\"grade\":\"흔함\"," +
+            "\"mappingStatus\":\"verified-jass-fusion-result\",\"originalRawcode\":\"h002\"," +
+            "\"sourceMapName\":\"조로 - 흔함\",\"combatParityVerified\":false," +
+            "\"sourceJassFusionAbilityRawcodes\":[\"A011\"]," +
+            "\"alternateRawcodes\":[\"h0XX\"],\"attack1\":null," +
+            "\"baseStats\":{\"armor\":0,\"hitPoints\":10}}";
+
         [Test]
         public void OriginalMapLuffyIsReadableWithoutEnablingCombat()
         {
@@ -57,6 +65,23 @@ namespace Ordr.Mobile.Tests
                                     "\"combatParityVerified\":true");
             Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
                 MapHeader + bad + "," + Unmatched + "]}", units));
+        }
+
+        [Test]
+        public void JassObjectEvidencePreservesAlternatesWithoutClaimingCombatParity()
+        {
+            var units = CharacterUnitCatalog.FromJson(UnitFixture);
+            var catalog = OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + Luffy + "," + JassReconciled + "]}", units);
+            var row = catalog.Find("C-02");
+            Assert.AreEqual("h002", row.OriginalRawcode);
+            CollectionAssert.AreEqual(new[] { "h0XX" }, row.AlternateRawcodes);
+            CollectionAssert.AreEqual(new[] { "A011" }, row.SourceJassFusionAbilityRawcodes);
+            Assert.IsFalse(row.CombatParityVerified);
+            Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + Luffy + "," + JassReconciled.Replace(
+                    "\"sourceJassFusionAbilityRawcodes\":[\"A011\"]",
+                    "\"sourceJassFusionAbilityRawcodes\":[]") + "]}", units));
         }
     }
 }
