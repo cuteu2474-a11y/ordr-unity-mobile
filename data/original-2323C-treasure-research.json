@@ -1,0 +1,90 @@
+{
+  "format": "ordr-original-treasure-research-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "scope": "source-research-only; mobile gacha probabilities not calibrated; not runtime configuration",
+  "gaimon": {
+    "rawcode": "h0BG",
+    "originalObjectName": "가이몬 - 특수",
+    "identityEvidence": "Units\\CampaignUnitStrings.txt and CH8 creation callback -> CCP"
+  },
+  "observations": {
+    "treasureSpawnRect": [
+      -6016,
+      -2336,
+      3744,
+      6080
+    ],
+    "treasuresAddedPerScheduledSpawn": 4,
+    "scheduledSpawnRounds": [
+      10,
+      20,
+      30,
+      40,
+      50
+    ],
+    "extraTreasureMapSpawnCount": 3,
+    "spawnAccumulation": "BeM appends; BeN marks collected coordinates zero; no pool reset established",
+    "collectionGeometry": "axis-aligned square: abs(dx)<=Is and abs(dy)<=Is",
+    "defaultSearchHalfExtent": 850,
+    "gaimonSearchHalfExtent": 978,
+    "gaimonAndNamiSearchHalfExtent": 1125,
+    "beforeRound50RewardWeights": {
+      "e0IX_randomWisp": 1,
+      "e017_uncommonWisp": 1
+    },
+    "gaimonBeforeRound50RewardWeights": {
+      "e018_commonSelectionWisp": 1,
+      "e017_uncommonWisp": 1
+    },
+    "round50AndLaterReward": "e0IX_randomWisp",
+    "gaimonQuantityPerFoundTreasure": 2,
+    "optionalBerryChancePerFoundTreasure": "25/1000 when YU is false; not doubled by YM",
+    "gaimonR": "CCQ reveals treasures in square half-extent 2000 at player start; BeN(...,false) does not collect",
+    "oneSearchCanFindMultiple": true,
+    "importantLimit": "Hit chance depends on remaining pool, search location/coverage, reveal information and cadence; no source constant for fixed jackpot percent"
+  },
+  "functions": {
+    "BFi": {
+      "firstLine": 3596,
+      "source": "function BFi takes integer H2,integer H3 returns integer\nlocal integer Hy=BFd(H2,H3)\nlocal integer H5=BFa(H3-H2)\nreturn R2I(BFh()*(H5+1))+Hy\nendfunction"
+    },
+    "BFj": {
+      "firstLine": 3601,
+      "source": "function BFj takes real H2,real H3 returns real\nlocal real Hy=BFb(H2,H3)\nlocal real H5=BFZ(H3-H2)\nreturn Hy+H5*BFh()\nendfunction"
+    },
+    "BeH": {
+      "firstLine": 8584,
+      "source": "function BeH takes real YD,real YE,real YF,real YG,real YH returns boolean\nreturn YD>=YF-YH and YD<=YF+YH and YE>=YG-YH and YE<=YG+YH\nendfunction"
+    },
+    "BeI": {
+      "firstLine": 8587,
+      "source": "function BeI takes integer JG,real EN,real JS returns nothing\nlocal integer YK\nlocal integer YM=1\nlocal unit Cm\nlocal integer YJ=X3\nset YI=YI+1\nif YJ<50 then\nset YK=BFi(1,2)\nelse\nset YK=1\nendif\nset Cm=CreateUnit(HY,$68304335,EN,JS,bj_UNIT_FACING)\ncall BdJ(Cm,$42487765,2)\ncall SetUnitScale(Cm,3,1,1)\ncall DestroyEffect(AddSpecialEffectTarget(\"Objects\\\\InventoryItems\\\\TreasureChest\\\\treasurechest.mdx\",Cm,\"origin\"))\ncall DestroyEffect(AddSpecialEffectTarget(\"Abilities\\\\Spells\\\\Other\\\\Transmute\\\\PileofGold.mdx\",Cm,\"origin\"))\nif YL[JG]==true then\nset YM=BFi(1,2)\nendif\nif YN[JG]==true then\nset YM=2\nendif\nif YK==1 then\nif YN[JG]==true and YJ<50 then\nset YO[JG]=YO[JG]+1\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,GetPlayerName(Player(JG))+\"님이 |cff00ced1보물상자|r를 발견하여 |cffff8200\"+GetObjectName(YP)+\"|r \"+I2S(YM)+\"기 획득!|r\")\ncall Bc4(Player(JG),YM)\nelse\nset YQ[JG]=YQ[JG]+1\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,GetPlayerName(Player(JG))+\"님이 |cff00ced1보물상자|r를 발견하여 |cffffd700\"+GetObjectName(YR)+\"|r \"+I2S(YM)+\"기 획득!|r\")\ncall Bcz(Player(JG),YM)\nendif\nelseif YK==2 then\nset YS[JG]=YS[JG]+1\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,GetPlayerName(Player(JG))+\"님이 |cff00ced1보물상자|r를 발견하여 |cff9553ec\"+GetObjectName(YT)+\"|r \"+I2S(YM)+\"기 획득!|r\")\ncall Bc0(Player(JG),YM)\nendif\nif not YU and BFi(1,1000)<=25 then\nset Sx[JG]=Sx[JG]+1\ncall DisplayTimedTextToPlayer(Player(JG),0,0,5,\"|cff04ffc4[보물 발견]|r |cff00d9ff1 베리|r를 추가로 획득했습니다!\")\nendif\ncall TriggerEvaluate(YV)\nset Cm=null\nendfunction"
+    },
+    "BeM": {
+      "firstLine": 8663,
+      "source": "function BeM takes integer C1,string U6 returns nothing\nlocal integer EK=0\nloop\nexitwhen EK>=C1\nset X9[X7]=BFj(GetRectMinX(CB),GetRectMaxX(CB))\nset YC[X7]=BFj(GetRectMinY(CB),GetRectMaxY(CB))\nset X7=X7+1\nset EK=EK+1\nendloop\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,\"|cff04ffc4[알림]|r 보물이 \"+I2S(C1)+\"개 스폰되었습니다. \"+U6)\nendfunction"
+    },
+    "BeN": {
+      "firstLine": 8674,
+      "source": "function BeN takes integer JG,location Xp,real Is,integer Xq,boolean Xr returns nothing\nlocal integer EK\nlocal location It\nlocal real X4\nlocal real X5\nlocal real X8=0\nlocal real YB=0\nlocal string YX\ncall BJI(JG,0,Xq-3,GetTriggerUnit(),\"보물찾기\")\nset X4=GetLocationX(Xp)\nset X5=GetLocationY(Xp)\nif Xr then\ncall BeJ(JG,X4,X5)\nendif\nset EK=0\nloop\nexitwhen EK>=X7\nset X8=X9[EK]\nset YB=YC[EK]\nif not (X8==0 and YB==0) then\nif BeH(X8,YB,X4,X5,Is) then\nif Xr then\nset X9[EK]=0\nset YC[EK]=0\ncall BeI(JG,X8,YB)\nif YW[EK]!=null then\ncall DestroyEffect(YW[EK])\nendif\nelse\nset It=Location(X8,YB)\nif YW[EK]==null then\nif GetLocalPlayer()==Player(JG) then\nset YX=\"war3mapImported\\\\Etc Quest To Me.mdx\"\nelse\nset YX=\"\"\nendif\nset YW[EK]=AddSpecialEffectLoc(YX,It)\nendif\ncall RemoveLocation(It)\ncall PingMinimapForPlayer(Player(JG),X8,YB,3)\nendif\nendif\nendif\nset EK=EK+1\nendloop\ncall RemoveLocation(Xp)\nset Xp=null\nset It=null\nendfunction"
+    },
+    "CCP": {
+      "firstLine": 41635,
+      "source": "function CCP takes integer JG returns nothing\nif iK[JG]==true then\ncall DisplayTimedTextToPlayer(Player(JG),0,0,5,\"|cffff0000[오류]|r 이미 '가이몬의 꿈' 스킬이 적용 중입니다.\")\nelse\ncall DisplayTimedTextToPlayer(Player(JG),0,0,5,\"|cffff0000[시스템]|r '가이몬의 꿈' 스킬이 적용됩니다.\")\nif YL[JG]==true then\nset LM[JG]=1125\nelse\nset LM[JG]=978\nendif\nset YN[JG]=true\nset iK[JG]=true\nendif\nendfunction"
+    },
+    "CCQ": {
+      "firstLine": 41649,
+      "source": "function CCQ takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nlocal location It=GetStartLocationLoc(GetPlayerStartLocation(Player(JG)))\ncall BeN(JG,It,2000,300,false)\ncall RemoveLocation(It)\nset It=null\nendfunction"
+    },
+    "CJm": {
+      "firstLine": 49756,
+      "source": "function CJm takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nlocal integer Xq\nif GetUnitAbilityLevel(GetTriggerUnit(),GetSpellAbilityId())==1 then\nset Xq=100\nelseif GetUnitAbilityLevel(GetTriggerUnit(),GetSpellAbilityId())==2 then\nset Xq=80\nendif\ncall BeN(JG,GetSpellTargetLoc(),LM[JG],Xq,true)\nendfunction"
+    },
+    "CVC": {
+      "firstLine": 59119,
+      "source": "function CVC takes nothing returns nothing\nlocal integer YJ=X3\nlocal integer EK=0\nif ModuloInteger(X3,10)==0 and X3>0 and (X3>0 and X3<=50) then\ncall BeM(n9,\"(신세계 이전까지 매 10라운드마다 갱신)\")\nendif\nif YJ==1 then\ncall SetPlayerTechResearched(HY,$52303030,12)\ncall SetPlayerTechResearched(HY,$52303031,12)\ncall SetPlayerTechResearched(HY,$52303032,12)\ncall SetPlayerTechResearched(HY,$52303033,12)\ncall SetPlayerTechResearched(HY,$52303034,12)\ncall SetPlayerTechResearched(HY,$52303139,12)\ncall SetPlayerTechResearched(HY,$52303256,12)\nelseif YJ==10 then\ncall BhG()\nset EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall CUT(Player(EK))\nendif\nset EK=EK+1\nendloop\nelseif YJ==15 then\nset EK=0\nloop\nexitwhen EK>=LG\ncall SetPlayerTechResearched(Player(EK),$52303047,1)\nset EK=EK+1\nendloop\ncall DisplayTimedTextToPlayer(GetLocalPlayer(),0,0,5,\"|cffF15F5F[시스템]|r 깅 제압 미션 활성화\")\nelseif YJ==20 then\ncall SetPlayerTechResearched(HY,$52303030,21)\ncall SetPlayerTechResearched(HY,$52303031,21)\ncall SetPlayerTechResearched(HY,$52303032,21)\ncall SetPlayerTechResearched(HY,$52303033,21)\ncall SetPlayerTechResearched(HY,$52303034,21)\ncall SetPlayerTechResearched(HY,$52303139,21)\ncall SetPlayerTechResearched(HY,$52303256,21)\nelseif YJ==31 then\nset EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall CUU(Player(EK))\nendif\nset EK=EK+1\nendloop\nelseif YJ==41 then\nif NE==NF then\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,\"|cff04ffc4[알림]|r 41라운드가 되어 유닛 카운트가 |cffff00ff55|r (으)로 줄어듭니다. 유닛 카운트 경고 알림이 45부터 활성화됩니다.\")\nset ia=55\nelseif NE==NL then\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,\"|cff04ffc4[알림]|r 41라운드가 되어 유닛 카운트가 |cffff00ff50|r (으)로 줄어듭니다. 유닛 카운트 경고 알림이 40부터 활성화됩니다.\")\nset ia=50\nendif\ncall MultiboardSetTitleText(iZ[iV],\"|cffffb0ff유닛 카운트 제한 : |cff00FF00\"+(I2S(ia)+\" |cffffb0ff도달시 패배\"))\nendif\nif YJ>=3 and YJ<10 then\nset EK=0\nloop\nexitwhen EK>=LG\nif not jJ[EK] and not jK[EK] and Ji[EK] then\ncall DisplayTimedTextToPlayer(Player(EK),0,0,3,\"|cff04ffc4[알림]|r 좌측 상단에 |cffffcc00'로그인'|r 버튼을 눌러 로드를 진행해주세요. |cffFF00009라운드|r까지만 로드가 가능합니다.\")\ncall DisplayTimedTextToPlayer(Player(EK),0,0,3,\"|cff04ffc4[알림]|r |cffffcc00'-오프라인모드'|r 명령어를 통해 세이브횟수 50회를 획득할 수 있습니다.\\n|cffFF0000※ 주의 : 세이브를 할 수 없습니다.|r \")\nendif\nset EK=EK+1\nendloop\nendif\nif YJ>=21 and YJ<25 then\nset EK=0\nloop\nexitwhen EK>=LG\nif not P9[EK] and Ji[EK] then\nif YJ==21 then\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 지금부터 기록지침을 통해 항법을 선택할 수 있습니다.\")\nelse\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 항법을 아직 선택하지 않으셨습니다.\\n|cffFF0000※ 주의 : 25라운드 시작전까지 항법을 선택하지 않으시면 강제 선택됩니다.|r\")\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 항법을 아직 선택하지 않으셨습니다.\\n|cffFF0000※ 주의 : 25라운드 시작전까지 항법을 선택하지 않으시면 강제 선택됩니다.|r\")\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 항법을 아직 선택하지 않으셨습니다.\\n|cffFF0000※ 주의 : 25라운드 시작전까지 항법을 선택하지 않으시면 강제 선택됩니다.|r\")\nendif\nendif\nset EK=EK+1\nendloop\nendif\nendfunction"
+    }
+  }
+}
