@@ -185,5 +185,67 @@ namespace Ordr.Mobile.Tests
             world.Step(0.35);
             Assert.AreEqual(1000L, world.EnemyOf("unknown-defense").Health);
         }
+
+        [Test]
+        public void NativeAttackSkipsUnverifiedClosestMonsterButHitsVerifiedDefender()
+        {
+            var world = Create(true);
+            long attacker = world.SpawnCharacter("C-01", 0, 0);
+            world.SpawnEnemy("closer-unverified", 1000,
+                CharacterEnemyKind.Line, 1, 0, 0);
+            world.SpawnEnemyWithDefenses("farther-verified", 1000,
+                CharacterEnemyKind.Line, 20, 0, 0,
+                new EnemyDefenseProfile(CharacterEnemyKind.Line,
+                    10, null, "normal", "TEST_ONLY: known original armor"));
+
+            world.Step(0.35);
+            Assert.AreEqual(1000L, world.EnemyOf("closer-unverified").Health);
+            Assert.AreEqual(976L, world.EnemyOf("farther-verified").Health);
+            var enemySnapshot = world.MobileEnemySnapshot();
+            foreach (var snapshot in enemySnapshot)
+                if (snapshot.Id == "farther-verified")
+                {
+                    Assert.AreEqual(976L, snapshot.Health);
+                    Assert.AreEqual(1000L, snapshot.MaxHealth);
+                }
+            Assert.IsTrue(world.HasVerifiedAttack(attacker));
+            Assert.AreEqual(1, world.ReadyAttackers);
+            world.Step(1.02);
+            Assert.AreEqual(952L, world.EnemyOf("farther-verified").Health);
+        }
+
+        [Test]
+        public void UnknownOnlyTargetDoesNotDisableVerifiedAttackWhenNewDefenderSpawns()
+        {
+            var world = Create(true);
+            world.SpawnCharacter("C-01", 0, 0);
+            world.SpawnEnemy("unknown", 1000,
+                CharacterEnemyKind.Line, 1, 0, 0);
+            world.Step(3.0);
+            Assert.AreEqual(1000L, world.EnemyOf("unknown").Health);
+            Assert.AreEqual(1, world.ReadyAttackers);
+
+            world.SpawnEnemyWithDefenses("verified", 1000,
+                CharacterEnemyKind.Line, 10, 0, 0,
+                new EnemyDefenseProfile(CharacterEnemyKind.Line,
+                    0, null, "normal", "TEST_ONLY: verified armor"));
+            world.Step(0);
+            Assert.AreEqual(971L, world.EnemyOf("verified").Health);
+            Assert.AreEqual(1000L, world.EnemyOf("unknown").Health);
+        }
+
+        [Test]
+        public void PreflightRejectsUnrecognizedArmorTypeWithoutRollingDice()
+        {
+            var units = CharacterUnitCatalog.FromJson(ProjectFile("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                ProjectFile("original-2323C-map-base-stats.json"), units);
+            var source = new OriginalMapCommonNativeAttackBinding(map,
+                new FixtureNativePath(true, "C-01"), new MinimumDieRoll());
+            var enemy = new CombatEnemy("enemy", 1000,
+                new EnemyDefenseProfile(CharacterEnemyKind.Line,
+                    0, null, "not-a-warcraft-armor-type", "TEST_ONLY"));
+            Assert.IsFalse(source.CanAttemptBasicAttack(units.Require("C-01"), enemy));
+        }
     }
 }

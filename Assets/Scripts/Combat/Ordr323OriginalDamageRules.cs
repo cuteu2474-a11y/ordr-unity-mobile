@@ -223,7 +223,7 @@ namespace Ordr.Mobile.Combat
             return result;
         }
 
-        private static bool TryReadArmorType(string source, out Ordr323ArmorType armor)
+        internal static bool TryReadArmorType(string source, out Ordr323ArmorType armor)
         {
             armor = Ordr323ArmorType.Normal;
             if (string.IsNullOrWhiteSpace(source)) return false;

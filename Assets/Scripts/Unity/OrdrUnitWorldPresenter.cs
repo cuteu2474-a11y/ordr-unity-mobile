@@ -38,6 +38,8 @@ namespace Ordr.Mobile.Unity
         {
             public GameObject Root;
             public SpriteRenderer Icon;
+            public SpriteRenderer HealthBarBack;
+            public SpriteRenderer HealthBarFill;
             public Color BaseColor;
             public float HitAt = -1f;
         }
@@ -68,6 +70,8 @@ namespace Ordr.Mobile.Unity
         private readonly List<AttackCueVisual> attackCues = new List<AttackCueVisual>();
         private Sprite markerSprite;
         private Texture2D markerTexture;
+        private Sprite healthBarSprite;
+        private Texture2D healthBarTexture;
         private float nextRefresh;
 
         public int VisibleUnitCount { get { return visuals.Count; } }
@@ -212,6 +216,19 @@ namespace Ordr.Mobile.Unity
                     enemy.Icon = enemy.Root.AddComponent<SpriteRenderer>();
                     enemy.Icon.sprite = markerSprite;
                     enemy.Icon.sortingOrder = 7;
+                    var barBack = new GameObject("HP background");
+                    barBack.transform.SetParent(enemy.Root.transform, false);
+                    enemy.HealthBarBack = barBack.AddComponent<SpriteRenderer>();
+                    enemy.HealthBarBack.sprite = healthBarSprite;
+                    enemy.HealthBarBack.color = new Color(0.12f, 0.15f, 0.2f, 0.95f);
+                    enemy.HealthBarBack.sortingOrder = 11;
+                    barBack.transform.localPosition = new Vector3(0f, 0.70f, 0f);
+                    barBack.transform.localScale = new Vector3(1.18f, 0.16f, 1f);
+                    var barFill = new GameObject("HP actual fill");
+                    barFill.transform.SetParent(enemy.Root.transform, false);
+                    enemy.HealthBarFill = barFill.AddComponent<SpriteRenderer>();
+                    enemy.HealthBarFill.sprite = healthBarSprite;
+                    enemy.HealthBarFill.sortingOrder = 12;
                     enemy.BaseColor = entry.Kind == CharacterEnemyKind.Boss
                         ? new Color(1f, 0.34f, 0.23f, 1f)
                         : new Color(0.90f, 0.36f, 0.37f, 1f);
@@ -221,6 +238,16 @@ namespace Ordr.Mobile.Unity
                 enemy.Root.transform.position = position;
                 enemy.Root.transform.localScale = Vector3.one *
                     Mathf.Max(1f, markerDiameterWorldUnits) * 0.57f;
+                // MaxHealth is from the live CombatEnemy, never from a
+                // display-only estimated damage or a preview attack event.
+                float ratio = Mathf.Clamp01((float)((double)entry.Health / entry.MaxHealth));
+                enemy.HealthBarFill.transform.localPosition = new Vector3(
+                    -0.56f * (1f - ratio), 0.70f, 0f);
+                enemy.HealthBarFill.transform.localScale = new Vector3(
+                    1.12f * ratio, 0.11f, 1f);
+                enemy.HealthBarFill.color = Color.Lerp(
+                    new Color(0.94f, 0.30f, 0.28f),
+                    new Color(0.32f, 0.90f, 0.47f), ratio);
             }
 
             var gone = new List<string>();
@@ -397,6 +424,11 @@ namespace Ordr.Mobile.Unity
             markerTexture.Apply();
             markerSprite = Sprite.Create(markerTexture,
                 new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+            healthBarTexture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            healthBarTexture.SetPixel(0, 0, Color.white);
+            healthBarTexture.Apply();
+            healthBarSprite = Sprite.Create(healthBarTexture,
+                new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
         }
 
         private void SyncOwnedUnits(CharacterCombatRuntime combat)
@@ -537,6 +569,8 @@ namespace Ordr.Mobile.Unity
             attackCues.Clear();
             if (markerSprite != null) Destroy(markerSprite);
             if (markerTexture != null) Destroy(markerTexture);
+            if (healthBarSprite != null) Destroy(healthBarSprite);
+            if (healthBarTexture != null) Destroy(healthBarTexture);
         }
     }
 }

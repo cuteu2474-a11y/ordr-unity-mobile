@@ -78,12 +78,21 @@ namespace Ordr.Mobile.Mobile
         public string Id { get; private set; }
         public CharacterEnemyKind Kind { get; private set; }
         public long Health { get; private set; }
+        public long MaxHealth { get; private set; }
         public double X { get; private set; }
         public double Y { get; private set; }
 
         public MobileEnemySnapshot(string id, CharacterEnemyKind kind, long health, double x, double y)
+            : this(id, kind, health, health, x, y) { }
+
+        public MobileEnemySnapshot(string id, CharacterEnemyKind kind, long health,
+            long maxHealth, double x, double y)
         {
-            Id = id; Kind = kind; Health = health; X = x; Y = y;
+            if (string.IsNullOrWhiteSpace(id) || maxHealth <= 0 ||
+                health < 0 || health > maxHealth)
+                throw new ArgumentException("적 체력/최대 체력이 유효하지 않습니다.");
+            Id = id; Kind = kind; Health = health; MaxHealth = maxHealth;
+            X = x; Y = y;
         }
     }
 

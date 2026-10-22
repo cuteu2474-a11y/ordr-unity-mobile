@@ -15,8 +15,17 @@ namespace Ordr.Mobile.Combat
             out string originalEvidence);
     }
 
+    // A native hit requiring Warcraft armor must not select an enemy whose
+    // armor data are unknown. Target preflight never rolls damage dice or
+    // supplies a substitute defense value.
+    public interface IOriginalVerifiedBasicAttackTargetFilter
+    {
+        bool CanAttemptBasicAttack(CatalogUnit unit, CombatEnemy enemy);
+    }
+
     public sealed class OriginalMapCommonNativeAttackBinding :
-        IOriginalVerifiedUnitAttackProvider, IOrdr323VerifiedHitSource
+        IOriginalVerifiedUnitAttackProvider, IOrdr323VerifiedHitSource,
+        IOriginalVerifiedBasicAttackTargetFilter
     {
         private readonly OriginalMapMappedNativeAttackEvidenceCatalog evidence;
         private readonly IOriginalCommonNativeAttackVerification verification;
@@ -70,6 +79,12 @@ namespace Ordr.Mobile.Combat
             OriginalMapCommonNativeAttackEvidence native;
             if (request.UnitRawCode == null ||
                 !byRawcode.TryGetValue(request.UnitRawCode, out native)) return false;
+            // A direct damage-resolver call must obey the same target safety
+            // gate as the automated targeting path, before consuming RNG.
+            Ordr323ArmorType armorType;
+            if (!enemy.Defenses.HasVerifiedArmor ||
+                !Ordr323OriginalDamageRules.TryReadArmorType(
+                    enemy.Defenses.WarcraftArmorType, out armorType)) return false;
             double firstDelay;
             DamageSchool school;
             string approvalEvidence;
@@ -90,6 +105,23 @@ namespace Ordr.Mobile.Combat
                 approvalEvidence + " / original UnitWeapons.slk:" + native.Rawcode,
                 school);
             return true;
+        }
+
+        public bool CanAttemptBasicAttack(CatalogUnit unit, CombatEnemy enemy)
+        {
+            if (unit == null || enemy == null || !enemy.IsAlive) return false;
+            OriginalMapCommonNativeAttackEvidence native = evidence.Find(unit.Id);
+            if (native == null || !enemy.Defenses.HasVerifiedArmor) return false;
+            Ordr323ArmorType armorType;
+            if (!Ordr323OriginalDamageRules.TryReadArmorType(
+                enemy.Defenses.WarcraftArmorType, out armorType)) return false;
+            double delay;
+            DamageSchool school;
+            string proof;
+            return verification.TryVerify(unit.Id, native.Rawcode,
+                out delay, out school, out proof) &&
+                !string.IsNullOrWhiteSpace(proof) &&
+                Enum.IsDefined(typeof(DamageSchool), school);
         }
 
         public bool TryResolveSkill(CharacterSkillDamageRequest request,

@@ -21,6 +21,7 @@ namespace Ordr.Mobile.Combat
             public bool AttackReady;
             public bool AttackBlockedByMissingFormula;
             public string AttackEvidence;
+            public IOriginalVerifiedBasicAttackTargetFilter BasicTargetFilter;
         }
 
         private readonly CharacterUnitCatalog units;
@@ -324,6 +325,8 @@ namespace Ordr.Mobile.Combat
                 BindVerifiedBasicAttack(id, found.Stats, found.FirstAttackDelaySeconds,
                     found.OriginalUnitRawcode);
                 instance.AttackEvidence = found.SourceEvidence;
+                instance.BasicTargetFilter = verifiedAttackProvider as
+                    IOriginalVerifiedBasicAttackTargetFilter;
                 bound++;
             }
             return bound;
@@ -376,7 +379,7 @@ namespace Ordr.Mobile.Combat
             foreach (var enemy in enemies.Values)
                 if (enemy.Enemy.IsAlive)
                     result.Add(new MobileEnemySnapshot(enemy.Id, enemy.Kind,
-                        enemy.Enemy.Health, enemy.X, enemy.Y));
+                        enemy.Enemy.Health, enemy.Enemy.MaxHealth, enemy.X, enemy.Y));
             result.Sort((a,b) => string.CompareOrdinal(a.Id, b.Id));
             return result.AsReadOnly();
         }
@@ -433,6 +436,8 @@ namespace Ordr.Mobile.Combat
                         BindVerifiedBasicAttack(id, original.Stats,
                             original.FirstAttackDelaySeconds, original.OriginalUnitRawcode);
                         characters[id].AttackEvidence = original.SourceEvidence;
+                        characters[id].BasicTargetFilter = verifiedAttackProvider as
+                            IOriginalVerifiedBasicAttackTargetFilter;
                     }
                 }
                 if (!characters[id].AttackReady && commonAttackPreview != null)
@@ -859,6 +864,15 @@ namespace Ordr.Mobile.Combat
             return candidates;
         }
 
+        private List<TargetCandidate> BuildBasicAttackCandidates(CharacterInstance unit)
+        {
+            var candidates = BuildTargetCandidates(unit);
+            if (unit.BasicTargetFilter != null)
+                candidates.RemoveAll(candidate => !unit.BasicTargetFilter
+                    .CanAttemptBasicAttack(unit.Catalog, enemies[candidate.Id].Enemy));
+            return candidates;
+        }
+
         // 현재 표적을 가진 유닛 중 가장 빠른 공격 시점을 찾는다.
         private double? NextEligibleAttackAt()
         {
@@ -868,11 +882,14 @@ namespace Ordr.Mobile.Combat
                 if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
                     unit.Mapping == null) continue;
                 double? at = attackPipeline.NextAttackAt(InstanceKey(unit.Id));
-                var candidates = BuildTargetCandidates(unit);
+                var candidates = BuildBasicAttackCandidates(unit);
                 if (attackPipeline.SelectDefaultTarget(InstanceKey(unit.Id),
-                    candidates, TargetPriority.Nearest) == null) continue;
-                if (at.HasValue && (!next.HasValue || at.Value < next.Value))
+                    candidates, TargetPriority.Nearest) != null &&
+                    at.HasValue && (!next.HasValue || at.Value < next.Value))
                     next = at;
+                // A separately verified periodic skill may target an enemy
+                // whose native basic-attack armor has not been established.
+                if (BuildTargetCandidates(unit).Count == 0) continue;
                 foreach (var entry in unit.Mapping.ActivatedSkills)
                 {
                     if (entry.Value.Trigger != "periodic") continue;
@@ -978,7 +995,7 @@ namespace Ordr.Mobile.Combat
                 var at = attackPipeline.NextAttackAt(InstanceKey(id));
                 if (!at.HasValue || at.Value > scheduler.Time) continue;
 
-                var candidates = BuildTargetCandidates(unit);
+                var candidates = BuildBasicAttackCandidates(unit);
                 string approvedBoss = ChooseApprovedBossTarget(unit, candidates);
                 BasicAttackResult hit;
                 try
