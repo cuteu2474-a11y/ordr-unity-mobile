@@ -2355,6 +2355,16 @@
       "approvedForMaterialConsumption": false
     },
     {
+      "rawcode": "H08T",
+      "ingredientUseCount": 1,
+      "resultOfAbilities": [],
+      "catalogUnitId": null,
+      "objectCatalogMappingStatus": null,
+      "originalW3xObjectName": "해적왕이 될 사나이 / 다섯번째 황제",
+      "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
       "rawcode": "h00H",
       "ingredientUseCount": 1,
       "resultOfAbilities": [],
@@ -2617,16 +2627,6 @@
       "approvedForMaterialConsumption": false
     },
     {
-      "rawcode": "H08T",
-      "ingredientUseCount": 1,
-      "resultOfAbilities": [],
-      "catalogUnitId": null,
-      "objectCatalogMappingStatus": null,
-      "originalW3xObjectName": "해적왕이 될 사나이 / 다섯번째 황제",
-      "jassLabelCatalogUnitId": null,
-      "approvedForMaterialConsumption": false
-    },
-    {
       "rawcode": "h09K",
       "ingredientUseCount": 1,
       "resultOfAbilities": [
@@ -2682,6 +2682,378 @@
       "objectCatalogMappingStatus": "unique-map-name-and-grade",
       "originalW3xObjectName": "카쿠 - 변화",
       "jassLabelCatalogUnitId": null,
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H05N",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR03"
+      ],
+      "catalogUnitId": "TR-27",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해군의 홍일점",
+      "jassLabelCatalogUnitId": "TR-27",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08U",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR16"
+      ],
+      "catalogUnitId": "TR-15",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해왕류를 다스리는 인어공주",
+      "jassLabelCatalogUnitId": "TR-15",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08V",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR01"
+      ],
+      "catalogUnitId": "TR-02",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "날씨는 맑음",
+      "jassLabelCatalogUnitId": "TR-02",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08W",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR05"
+      ],
+      "catalogUnitId": "TR-07",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "검은 정의를 좇는 하얀 새",
+      "jassLabelCatalogUnitId": "TR-07",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08X",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR28"
+      ],
+      "catalogUnitId": "TR-29",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "분노하는 맹호",
+      "jassLabelCatalogUnitId": "TR-29",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08Y",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR27"
+      ],
+      "catalogUnitId": "TR-28",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "무적의 아이언 파이러츠",
+      "jassLabelCatalogUnitId": "TR-28",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H08Z",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR15"
+      ],
+      "catalogUnitId": "TR-13",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "정상해전 종결자",
+      "jassLabelCatalogUnitId": "TR-13",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H090",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR08"
+      ],
+      "catalogUnitId": "TR-01",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "치밀하고 비열한 어둠",
+      "jassLabelCatalogUnitId": "TR-01",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H091",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR23"
+      ],
+      "catalogUnitId": "TR-23",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "순록 의사",
+      "jassLabelCatalogUnitId": "TR-23",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H092",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR13"
+      ],
+      "catalogUnitId": "TR-11",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "혁명군 참모총장",
+      "jassLabelCatalogUnitId": "TR-11",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H094",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR10"
+      ],
+      "catalogUnitId": "TR-09",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "운명의 마술사",
+      "jassLabelCatalogUnitId": "TR-09",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H095",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR18"
+      ],
+      "catalogUnitId": "TR-17",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해군원수 붉은 개",
+      "jassLabelCatalogUnitId": "TR-17",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H096",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR26"
+      ],
+      "catalogUnitId": "TR-05",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "백개의 심장을 바친 자",
+      "jassLabelCatalogUnitId": "TR-05",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H097",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR24"
+      ],
+      "catalogUnitId": "TR-16",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "전 해군대장 푸른 꿩",
+      "jassLabelCatalogUnitId": "TR-16",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H098",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR02"
+      ],
+      "catalogUnitId": "TR-04",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "악마의 자식",
+      "jassLabelCatalogUnitId": "TR-04",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H099",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR09"
+      ],
+      "catalogUnitId": "TR-08",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해적왕이 될 사나이",
+      "jassLabelCatalogUnitId": "TR-08",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09A",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR22"
+      ],
+      "catalogUnitId": "TR-22",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "바다의 협객",
+      "jassLabelCatalogUnitId": "TR-22",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09B",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR20"
+      ],
+      "catalogUnitId": "TR-19",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "바다의 전사",
+      "jassLabelCatalogUnitId": "TR-19",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09E",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR04"
+      ],
+      "catalogUnitId": "TR-03",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "어둠의 조커",
+      "jassLabelCatalogUnitId": "TR-03",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09F",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR06"
+      ],
+      "catalogUnitId": "TR-20",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "최강의 검사",
+      "jassLabelCatalogUnitId": "TR-20",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09H",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR14"
+      ],
+      "catalogUnitId": "TR-12",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "지옥에서 돌아온 자",
+      "jassLabelCatalogUnitId": "TR-12",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H09I",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR12"
+      ],
+      "catalogUnitId": "TR-10",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "소울 킹",
+      "jassLabelCatalogUnitId": "TR-10",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0AA",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR30"
+      ],
+      "catalogUnitId": "TR-30",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "세계 최고의 과학자",
+      "jassLabelCatalogUnitId": "TR-30",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0B2",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR07"
+      ],
+      "catalogUnitId": "TR-14",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "다섯번째 황제",
+      "jassLabelCatalogUnitId": "TR-14",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0B4",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR25"
+      ],
+      "catalogUnitId": "TR-25",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "신세대의 이단아",
+      "jassLabelCatalogUnitId": "TR-25",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0B5",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR11"
+      ],
+      "catalogUnitId": "TR-26",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해군대장 노란 원숭이",
+      "jassLabelCatalogUnitId": "TR-26",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0BD",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR19"
+      ],
+      "catalogUnitId": "TR-18",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "오니히메",
+      "jassLabelCatalogUnitId": "TR-18",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0BK",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "ET02"
+      ],
+      "catalogUnitId": "E-01",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "태양의 신",
+      "jassLabelCatalogUnitId": "E-01",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0BL",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR17"
+      ],
+      "catalogUnitId": "TR-06",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "신 해군대장 초록 소",
+      "jassLabelCatalogUnitId": "TR-06",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0BX",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR21"
+      ],
+      "catalogUnitId": "TR-21",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "일그러진 미래",
+      "jassLabelCatalogUnitId": "TR-21",
+      "approvedForMaterialConsumption": false
+    },
+    {
+      "rawcode": "H0CO",
+      "ingredientUseCount": 0,
+      "resultOfAbilities": [
+        "TR29"
+      ],
+      "catalogUnitId": "TR-24",
+      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
+      "originalW3xObjectName": "해군의 미래",
+      "jassLabelCatalogUnitId": "TR-24",
       "approvedForMaterialConsumption": false
     },
     {
@@ -2973,18 +3345,6 @@
       "approvedForMaterialConsumption": false
     },
     {
-      "rawcode": "H05N",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR03"
-      ],
-      "catalogUnitId": "TR-27",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "해군의 홍일점",
-      "jassLabelCatalogUnitId": "TR-27",
-      "approvedForMaterialConsumption": false
-    },
-    {
       "rawcode": "h05O",
       "ingredientUseCount": 0,
       "resultOfAbilities": [
@@ -3201,258 +3561,6 @@
       "approvedForMaterialConsumption": false
     },
     {
-      "rawcode": "H08U",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR16"
-      ],
-      "catalogUnitId": "TR-15",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "해왕류를 다스리는 인어공주",
-      "jassLabelCatalogUnitId": "TR-15",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H08V",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR01"
-      ],
-      "catalogUnitId": "TR-02",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "날씨는 맑음",
-      "jassLabelCatalogUnitId": "TR-02",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H08W",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR05"
-      ],
-      "catalogUnitId": "TR-07",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "검은 정의를 좇는 하얀 새",
-      "jassLabelCatalogUnitId": "TR-07",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H08X",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR28"
-      ],
-      "catalogUnitId": "TR-29",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "분노하는 맹호",
-      "jassLabelCatalogUnitId": "TR-29",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H08Y",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR27"
-      ],
-      "catalogUnitId": "TR-28",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "무적의 아이언 파이러츠",
-      "jassLabelCatalogUnitId": "TR-28",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H08Z",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR15"
-      ],
-      "catalogUnitId": "TR-13",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "정상해전 종결자",
-      "jassLabelCatalogUnitId": "TR-13",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H090",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR08"
-      ],
-      "catalogUnitId": "TR-01",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "치밀하고 비열한 어둠",
-      "jassLabelCatalogUnitId": "TR-01",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H091",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR23"
-      ],
-      "catalogUnitId": "TR-23",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "순록 의사",
-      "jassLabelCatalogUnitId": "TR-23",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H092",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR13"
-      ],
-      "catalogUnitId": "TR-11",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "혁명군 참모총장",
-      "jassLabelCatalogUnitId": "TR-11",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H094",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR10"
-      ],
-      "catalogUnitId": "TR-09",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "운명의 마술사",
-      "jassLabelCatalogUnitId": "TR-09",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H095",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR18"
-      ],
-      "catalogUnitId": "TR-17",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "해군원수 붉은 개",
-      "jassLabelCatalogUnitId": "TR-17",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H096",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR26"
-      ],
-      "catalogUnitId": "TR-05",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "백개의 심장을 바친 자",
-      "jassLabelCatalogUnitId": "TR-05",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H097",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR24"
-      ],
-      "catalogUnitId": "TR-16",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "전 해군대장 푸른 꿩",
-      "jassLabelCatalogUnitId": "TR-16",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H098",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR02"
-      ],
-      "catalogUnitId": "TR-04",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "악마의 자식",
-      "jassLabelCatalogUnitId": "TR-04",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H099",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR09"
-      ],
-      "catalogUnitId": "TR-08",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "해적왕이 될 사나이",
-      "jassLabelCatalogUnitId": "TR-08",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H09A",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR22"
-      ],
-      "catalogUnitId": "TR-22",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "바다의 협객",
-      "jassLabelCatalogUnitId": "TR-22",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H09B",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR20"
-      ],
-      "catalogUnitId": "TR-19",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "바다의 전사",
-      "jassLabelCatalogUnitId": "TR-19",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H09E",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR04"
-      ],
-      "catalogUnitId": "TR-03",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "어둠의 조커",
-      "jassLabelCatalogUnitId": "TR-03",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H09F",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR06"
-      ],
-      "catalogUnitId": "TR-20",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "최강의 검사",
-      "jassLabelCatalogUnitId": "TR-20",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H09H",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR14"
-      ],
-      "catalogUnitId": "TR-12",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "지옥에서 돌아온 자",
-      "jassLabelCatalogUnitId": "TR-12",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H09I",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR12"
-      ],
-      "catalogUnitId": "TR-10",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "소울 킹",
-      "jassLabelCatalogUnitId": "TR-10",
-      "approvedForMaterialConsumption": false
-    },
-    {
       "rawcode": "h09M",
       "ingredientUseCount": 0,
       "resultOfAbilities": [
@@ -3585,18 +3693,6 @@
       "approvedForMaterialConsumption": false
     },
     {
-      "rawcode": "H0AA",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR30"
-      ],
-      "catalogUnitId": "TR-30",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "세계 최고의 과학자",
-      "jassLabelCatalogUnitId": "TR-30",
-      "approvedForMaterialConsumption": false
-    },
-    {
       "rawcode": "h0AC",
       "ingredientUseCount": 0,
       "resultOfAbilities": [
@@ -3621,42 +3717,6 @@
       "approvedForMaterialConsumption": false
     },
     {
-      "rawcode": "H0B2",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR07"
-      ],
-      "catalogUnitId": "TR-14",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "다섯번째 황제",
-      "jassLabelCatalogUnitId": "TR-14",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H0B4",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR25"
-      ],
-      "catalogUnitId": "TR-25",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "신세대의 이단아",
-      "jassLabelCatalogUnitId": "TR-25",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H0B5",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR11"
-      ],
-      "catalogUnitId": "TR-26",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "해군대장 노란 원숭이",
-      "jassLabelCatalogUnitId": "TR-26",
-      "approvedForMaterialConsumption": false
-    },
-    {
       "rawcode": "h0BC",
       "ingredientUseCount": 0,
       "resultOfAbilities": [
@@ -3666,18 +3726,6 @@
       "objectCatalogMappingStatus": "unique-map-name-and-grade",
       "originalW3xObjectName": "타츠마키 - 신비",
       "jassLabelCatalogUnitId": null,
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H0BD",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR19"
-      ],
-      "catalogUnitId": "TR-18",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "오니히메",
-      "jassLabelCatalogUnitId": "TR-18",
       "approvedForMaterialConsumption": false
     },
     {
@@ -3702,42 +3750,6 @@
       "objectCatalogMappingStatus": null,
       "originalW3xObjectName": "가이몬 - 특수",
       "jassLabelCatalogUnitId": null,
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H0BK",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "ET02"
-      ],
-      "catalogUnitId": "E-01",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "태양의 신",
-      "jassLabelCatalogUnitId": "E-01",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H0BL",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR17"
-      ],
-      "catalogUnitId": "TR-06",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "신 해군대장 초록 소",
-      "jassLabelCatalogUnitId": "TR-06",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H0BX",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR21"
-      ],
-      "catalogUnitId": "TR-21",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "일그러진 미래",
-      "jassLabelCatalogUnitId": "TR-21",
       "approvedForMaterialConsumption": false
     },
     {
@@ -3786,18 +3798,6 @@
       "objectCatalogMappingStatus": null,
       "originalW3xObjectName": "시모츠키 류마 - 영원",
       "jassLabelCatalogUnitId": "E-03",
-      "approvedForMaterialConsumption": false
-    },
-    {
-      "rawcode": "H0CO",
-      "ingredientUseCount": 0,
-      "resultOfAbilities": [
-        "TR29"
-      ],
-      "catalogUnitId": "TR-24",
-      "objectCatalogMappingStatus": "verified-jass-label-and-fusion-result",
-      "originalW3xObjectName": "해군의 미래",
-      "jassLabelCatalogUnitId": "TR-24",
       "approvedForMaterialConsumption": false
     }
   ]
