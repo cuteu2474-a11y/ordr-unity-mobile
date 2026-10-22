@@ -52,10 +52,11 @@ class GeneratedDataTests(unittest.TestCase):
         report = self.source["summary"]
         self.assertEqual(report["originalNamedObjects"], 1493)
         self.assertEqual(report["catalogCharacters"], 271)
-        self.assertEqual(report["linkedCatalogCharacters"], 167)
-        self.assertEqual(report["unresolvedCatalogCharacters"], 104)
-        self.assertEqual(report["linkedWithAttack1"], 165)
+        self.assertEqual(report["linkedCatalogCharacters"], 216)
+        self.assertEqual(report["unresolvedCatalogCharacters"], 55)
+        self.assertEqual(report["linkedWithAttack1"], 214)
         self.assertEqual(report["mappingStatusCounts"]["verified-jass-fusion-result"], 5)
+        self.assertEqual(report["mappingStatusCounts"]["verified-jass-label-and-fusion-result"], 49)
         self.assertEqual(report["gameplayParityVerified"], 0)
         rows = self.source["catalogEntries"]
         self.assertEqual(len({r["catalogId"] for r in rows}), 271)
@@ -94,6 +95,54 @@ class GeneratedDataTests(unittest.TestCase):
             self.assertFalse(row["combatParityVerified"])
         self.assertEqual(reconcile(deepcopy(self.source), self.registry, self.labels),
                          self.source)
+
+    def test_49_different_named_units_join_only_when_jass_label_and_result_agree(self):
+        rows = {row["catalogId"]: row for row in self.source["catalogEntries"]}
+        objects = {obj["rawcode"]: obj for obj in self.source["mapObjects"]}
+        fusion_results = {(r["abilityRawcode"], obj["rawcode"])
+                          for r in self.registry["registrations"]
+                          for obj in r["results"]
+                          if obj["kind"] == "UNIT" and obj["count"] == 1}
+        labels = {row["catalogUnitId"]: row for row in self.labels["mappings"]}
+        linked = [row for row in rows.values()
+                  if row["mappingStatus"] == "verified-jass-label-and-fusion-result"]
+        self.assertEqual(len(linked), 49)
+        self.assertEqual(len([row for row in linked if row["catalogId"].startswith("TR-")]), 30)
+        for row in linked:
+            label = labels[row["catalogId"]]
+            obj = objects[row["originalRawcode"]]
+            self.assertEqual(row["originalRawcode"], label["rawcode"])
+            self.assertIn((label["abilityRawcode"], label["rawcode"]), fusion_results)
+            self.assertEqual(row["sourceJassFusionAbilityRawcodes"],
+                             [label["abilityRawcode"]])
+            self.assertEqual(row["sourceMapName"], obj["mapName"])
+            self.assertEqual(row["attack1"], obj["attack1"])
+            self.assertFalse(row["combatParityVerified"])
+        self.assertEqual(rows["TR-08"]["originalRawcode"], "H099")
+        self.assertEqual(rows["TR-20"]["originalRawcode"], "H09F")
+        self.assertEqual(rows["E-01"]["sourceMapName"], "태양의 신")
+
+    def test_jass_label_reconciliation_rejects_wrong_grade_and_skips_wrong_fusion(self):
+        before = deepcopy(self.source)
+        row = next(r for r in before["catalogEntries"] if r["catalogId"] == "H-01")
+        row["mappingStatus"] = "unmatched"
+        row["originalRawcode"] = None
+        original = next(o for o in before["mapObjects"] if o["rawcode"] == "h043")
+        original["mapGradeSuffix"] = "전설"
+        with self.assertRaisesRegex(ValueError, "JASS label conflicts with map grade"):
+            reconcile(before, self.registry, self.labels)
+
+        before = deepcopy(self.source)
+        row = next(r for r in before["catalogEntries"] if r["catalogId"] == "TR-08")
+        row["mappingStatus"] = "unmatched"
+        row["originalRawcode"] = None
+        labels = deepcopy(self.labels)
+        next(l for l in labels["mappings"] if l["catalogUnitId"] == "TR-08")[
+            "abilityRawcode"] = "XXXX"
+        after = reconcile(before, self.registry, labels)
+        row = next(r for r in after["catalogEntries"] if r["catalogId"] == "TR-08")
+        self.assertEqual(row["mappingStatus"], "unmatched")
+        self.assertIsNone(row["originalRawcode"])
 
     def test_reconcile_rejects_conflicting_jass_label(self):
         before = deepcopy(self.source)

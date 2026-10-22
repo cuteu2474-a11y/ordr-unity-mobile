@@ -39,6 +39,10 @@ namespace Ordr.Mobile.Tests
             "\"alternateRawcodes\":[\"h0XX\"],\"attack1\":null," +
             "\"baseStats\":{\"armor\":0,\"hitPoints\":10}}";
 
+        private static readonly string JassLabelled = JassReconciled.Replace(
+            "verified-jass-fusion-result", "verified-jass-label-and-fusion-result")
+            .Replace("\"alternateRawcodes\":[\"h0XX\"],", "");
+
         [Test]
         public void OriginalMapLuffyIsReadableWithoutEnablingCombat()
         {
@@ -82,6 +86,28 @@ namespace Ordr.Mobile.Tests
                 MapHeader + Luffy + "," + JassReconciled.Replace(
                     "\"sourceJassFusionAbilityRawcodes\":[\"A011\"]",
                     "\"sourceJassFusionAbilityRawcodes\":[]") + "]}", units));
+        }
+
+        [Test]
+        public void JassLabelAndFusionEvidenceLinksAnUnmatchedObjectWithoutInventingForms()
+        {
+            var units = CharacterUnitCatalog.FromJson(UnitFixture);
+            var catalog = OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + Luffy + "," + JassLabelled + "]}", units);
+            var row = catalog.Find("C-02");
+            Assert.AreEqual(2, catalog.LinkedCount);
+            Assert.AreEqual("h002", row.OriginalRawcode);
+            CollectionAssert.AreEqual(new[] { "A011" }, row.SourceJassFusionAbilityRawcodes);
+            Assert.AreEqual(0, row.AlternateRawcodes.Count);
+            Assert.IsFalse(row.CombatParityVerified);
+            Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + Luffy + "," + JassLabelled.Replace(
+                    "\"sourceJassFusionAbilityRawcodes\":[\"A011\"]",
+                    "\"sourceJassFusionAbilityRawcodes\":[]") + "]}", units));
+            Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + Luffy + "," + JassLabelled.Replace(
+                    "\"attack1\":null", "\"alternateRawcodes\":[\"h0XX\"],\"attack1\":null") +
+                    "]}", units));
         }
     }
 }

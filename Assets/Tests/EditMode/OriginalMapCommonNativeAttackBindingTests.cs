@@ -28,15 +28,22 @@ namespace Ordr.Mobile.Tests
         private sealed class FixtureNativePath : IOriginalCommonNativeAttackVerification
         {
             private readonly bool approved;
+            private readonly string approvedUnitId;
 
-            public FixtureNativePath(bool approved) { this.approved = approved; }
+            public FixtureNativePath(bool approved, string approvedUnitId)
+            {
+                this.approved = approved;
+                this.approvedUnitId = approvedUnitId;
+            }
 
             public bool TryVerify(string unitId, string rawcode,
                 out double firstDelay, out DamageSchool school, out string evidence)
             {
-                firstDelay = 0.35; // original h003 attack-point fixture
+                firstDelay = unitId == "TR-08" ? 0.38 : 0.35;
                 school = DamageSchool.Physical;
-                evidence = approved && unitId == "C-01" && rawcode == "h003"
+                evidence = approved && unitId == approvedUnitId &&
+                    ((unitId == "C-01" && rawcode == "h003") ||
+                     (unitId == "TR-08" && rawcode == "H099"))
                     ? "TEST_ONLY: synthetic native path/quantizer approval" : null;
                 return evidence != null;
             }
@@ -47,7 +54,8 @@ namespace Ordr.Mobile.Tests
             return File.ReadAllText(Path.Combine(Application.dataPath, "..", "data", name));
         }
 
-        private static CharacterCombatRuntime Create(bool approveNativePath)
+        private static CharacterCombatRuntime Create(bool approveNativePath,
+            string approvedUnitId = "C-01")
         {
             var units = CharacterUnitCatalog.FromJson(ProjectFile("units.json"));
             var skills = CharacterSkillCatalog.FromJson(
@@ -56,7 +64,7 @@ namespace Ordr.Mobile.Tests
                 ProjectFile("original-2323C-map-base-stats.json"), units);
             var dice = new MinimumDieRoll();
             var bridge = new OriginalMapCommonNativeAttackBinding(map,
-                new FixtureNativePath(approveNativePath), dice);
+                new FixtureNativePath(approveNativePath, approvedUnitId), dice);
             var world = Ordr323DamageWorldBinding.Create(units, skills,
                 bridge, null, new FixtureQuantizer(), dice);
             world.ConfigureVerifiedUnitAttackProvider(bridge);
@@ -87,6 +95,46 @@ namespace Ordr.Mobile.Tests
                 commons.Find("C-02").NativeAttackType);
             Assert.AreEqual(Ordr323AttackType.Melee,
                 commons.Find("C-03").NativeAttackType);
+            var mapped = new OriginalMapMappedNativeAttackEvidenceCatalog(map);
+            Assert.AreEqual(214, mapped.Count);
+            var transcendent = mapped.Find("TR-08");
+            Assert.AreEqual("H099", transcendent.Rawcode);
+            Assert.AreEqual(30001L,
+                transcendent.RollObjectBaseDamage(new MinimumDieRoll()));
+            Assert.AreEqual(0.38, transcendent.CooldownSeconds, 1e-9);
+            Assert.AreEqual(Ordr323AttackType.Siege, transcendent.NativeAttackType);
+        }
+
+        [Test]
+        public void NewlyMappedTranscendentCanDamageHPOnlyWithIndependentFixtureProof()
+        {
+            var world = Create(true, "TR-08");
+            long luffy = world.SpawnCharacter("TR-08", 0, 0);
+            world.SpawnEnemyWithDefenses("target", 100000,
+                CharacterEnemyKind.Line, 20, 0, 0,
+                new EnemyDefenseProfile(CharacterEnemyKind.Line,
+                    0, null, "normal", "TEST_ONLY: known enemy armor/type"));
+            Assert.IsTrue(world.HasVerifiedAttack(luffy));
+            Assert.AreEqual(0, world.PreviewAttackers);
+            world.Step(0.37);
+            Assert.AreEqual(100000L, world.EnemyOf("target").Health);
+            world.Step(0.01);
+            Assert.AreEqual(69999L, world.EnemyOf("target").Health);
+            world.Step(0.38);
+            Assert.AreEqual(39998L, world.EnemyOf("target").Health);
+            Assert.IsTrue(world.AttackEvidenceOf(luffy).Contains("TEST_ONLY"));
+        }
+
+        [Test]
+        public void UnapprovedTranscendentOnlyEmitsPreviewWithoutChangingHP()
+        {
+            var world = Create(false);
+            long luffy = world.SpawnCharacter("TR-08", 0, 0);
+            world.SpawnEnemy("target", 100000, CharacterEnemyKind.Line, 20, 0, 0);
+            Assert.IsFalse(world.HasVerifiedAttack(luffy));
+            Assert.AreEqual(1, world.PreviewAttackers);
+            world.Step(0.38);
+            Assert.AreEqual(100000L, world.EnemyOf("target").Health);
         }
 
         [Test]

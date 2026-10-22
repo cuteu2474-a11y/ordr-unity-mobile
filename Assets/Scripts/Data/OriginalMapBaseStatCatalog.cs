@@ -105,9 +105,11 @@ namespace Ordr.Mobile.Data
             if (OriginalRawcode.Length != 4 || string.IsNullOrEmpty(MapName) ||
                 (MappingStatus != "verified-common-map-identity" &&
                  MappingStatus != "unique-map-name-and-grade" &&
-                 MappingStatus != "verified-jass-fusion-result"))
+                 MappingStatus != "verified-jass-fusion-result" &&
+                 MappingStatus != "verified-jass-label-and-fusion-result"))
                 throw new FormatException(UnitId + ": 원본 rawcode 매핑 근거가 불완전합니다.");
-            if (MappingStatus == "verified-jass-fusion-result")
+            if (MappingStatus == "verified-jass-fusion-result" ||
+                MappingStatus == "verified-jass-label-and-fusion-result")
             {
                 var abilities = new List<string>();
                 foreach (var item in OrdrJson.Array(
@@ -120,16 +122,25 @@ namespace Ordr.Mobile.Data
                     abilities.Add(raw);
                 }
                 var alternatives = new List<string>();
-                foreach (var item in OrdrJson.Array(
-                    OrdrJson.Value(source, "alternateRawcodes"), "alternateRawcodes"))
+                var alternativesValue = OrdrJson.Value(source, "alternateRawcodes");
+                if (MappingStatus == "verified-jass-fusion-result" ||
+                    alternativesValue != null)
                 {
-                    var raw = item as string;
-                    if (raw == null || raw.Length != 4 || raw == OriginalRawcode ||
-                        alternatives.Contains(raw))
-                        throw new FormatException(UnitId + ": 원본 대체 유닛 ID 오류");
-                    alternatives.Add(raw);
+                    foreach (var item in OrdrJson.Array(
+                        alternativesValue, "alternateRawcodes"))
+                    {
+                        var raw = item as string;
+                        if (raw == null || raw.Length != 4 || raw == OriginalRawcode ||
+                            alternatives.Contains(raw))
+                            throw new FormatException(UnitId + ": 원본 대체 유닛 ID 오류");
+                        alternatives.Add(raw);
+                    }
                 }
-                if (abilities.Count == 0 || alternatives.Count == 0)
+                if (abilities.Count == 0 ||
+                    (MappingStatus == "verified-jass-fusion-result" &&
+                     alternatives.Count == 0) ||
+                    (MappingStatus == "verified-jass-label-and-fusion-result" &&
+                     alternatives.Count != 0))
                     throw new FormatException(UnitId + ": 중복 유닛 JASS 근거가 없습니다.");
                 SourceJassFusionAbilityRawcodes = abilities.AsReadOnly();
                 AlternateRawcodes = alternatives.AsReadOnly();
@@ -153,6 +164,7 @@ namespace Ordr.Mobile.Data
 
         public int Count { get { return entries.Count; } }
         public int LinkedCount { get; private set; }
+        public IEnumerable<OriginalMapCharacterBasics> All { get { return entries.Values; } }
 
         public OriginalMapCharacterBasics Find(string id)
         {

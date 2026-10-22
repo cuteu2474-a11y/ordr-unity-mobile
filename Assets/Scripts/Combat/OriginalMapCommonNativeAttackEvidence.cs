@@ -4,8 +4,8 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
-    // Exact object-data dice and Warcraft attack-type classification for the
-    // nine common units. These are native attack CANDIDATES, not proof that
+    // Exact object-data dice and Warcraft attack-type classification for
+    // catalogued units. These are native attack CANDIDATES, not proof that
     // JASS/upgrades leave the attack untouched or that HP rounding is known.
     public sealed class OriginalMapCommonNativeAttackEvidence
     {
@@ -33,6 +33,7 @@ namespace Ordr.Mobile.Combat
                 case "normal": NativeAttackType = Ordr323AttackType.Melee; break;
                 case "pierce": NativeAttackType = Ordr323AttackType.Pierce; break;
                 case "siege": NativeAttackType = Ordr323AttackType.Siege; break;
+                case "hero": NativeAttackType = Ordr323AttackType.Hero; break;
                 default: throw new FormatException(
                     UnitId + ": 분류하지 않은 워크래프트 평타 공격 타입입니다.");
             }
@@ -59,6 +60,48 @@ namespace Ordr.Mobile.Combat
         public double AttackTableFactor(Ordr323ArmorType armorType)
         {
             return Ordr323MapDamageMath.AttackVersusArmor(NativeAttackType, armorType);
+        }
+    }
+
+    // Every linked map object can supply attack dice/cooldown. Native combat
+    // is *still* disabled unless the independent attack-path verifier approves
+    // that specific catalog ID and rawcode (including any splash/JASS effects).
+    public sealed class OriginalMapMappedNativeAttackEvidenceCatalog
+    {
+        private readonly Dictionary<string, OriginalMapCommonNativeAttackEvidence> entries =
+            new Dictionary<string, OriginalMapCommonNativeAttackEvidence>(StringComparer.Ordinal);
+
+        public int Count { get { return entries.Count; } }
+        public IEnumerable<OriginalMapCommonNativeAttackEvidence> All
+        {
+            get { return entries.Values; }
+        }
+
+        public OriginalMapMappedNativeAttackEvidenceCatalog(OriginalMapBaseStatCatalog map)
+        {
+            if (map == null) throw new ArgumentNullException(nameof(map));
+            var rawcodes = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var entry in map.All)
+            {
+                var attack = entry.Attack1;
+                if (entry.OriginalRawcode == null || attack == null ||
+                    !attack.BaseDamagePlus.HasValue || !attack.DiceCount.HasValue ||
+                    !attack.DiceSides.HasValue || !attack.AttackCooldownSeconds.HasValue ||
+                    string.IsNullOrEmpty(attack.OriginalAttackType))
+                    continue;
+                if (!rawcodes.Add(entry.OriginalRawcode))
+                    throw new FormatException("동일한 원본 공격 rawcode가 중복 연결됐습니다: " +
+                        entry.OriginalRawcode);
+                var candidate = new OriginalMapCommonNativeAttackEvidence(entry);
+                entries.Add(entry.UnitId, candidate);
+            }
+        }
+
+        public OriginalMapCommonNativeAttackEvidence Find(string catalogId)
+        {
+            OriginalMapCommonNativeAttackEvidence evidence;
+            return catalogId != null && entries.TryGetValue(catalogId, out evidence)
+                ? evidence : null;
         }
     }
 

@@ -18,15 +18,16 @@
   "summary": {
     "originalNamedObjects": 1493,
     "catalogCharacters": 271,
-    "linkedCatalogCharacters": 167,
-    "unresolvedCatalogCharacters": 104,
+    "linkedCatalogCharacters": 216,
+    "unresolvedCatalogCharacters": 55,
     "mappingStatusCounts": {
       "unique-map-name-and-grade": 153,
-      "unmatched": 104,
+      "unmatched": 55,
       "verified-common-map-identity": 9,
-      "verified-jass-fusion-result": 5
+      "verified-jass-fusion-result": 5,
+      "verified-jass-label-and-fusion-result": 49
     },
-    "linkedWithAttack1": 165,
+    "linkedWithAttack1": 214,
     "gameplayParityVerified": 0
   },
   "catalogEntries": [
@@ -3944,15 +3945,37 @@
       "catalogId": "H-01",
       "catalogName": "검호",
       "grade": "히든",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h043",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "쥬라클 미호크 - 히든",
+      "attack1": {
+        "attackCooldownSeconds": 1.05,
+        "baseDamagePlus": 8500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 675,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.397,
+        "minimumBaseDamage": 8501,
+        "maximumBaseDamage": 8501
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A07N,Avul,A0GV,A0GW,A0GY,A0GZ,A0H0",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "YY17"
+      ]
     },
     {
       "catalogId": "H-02",
@@ -4288,15 +4311,37 @@
       "catalogId": "H-12",
       "catalogName": "사보",
       "grade": "히든",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h03M",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "사보 용조권 - 히든",
+      "attack1": {
+        "attackCooldownSeconds": 0.83,
+        "baseDamagePlus": 25000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 550,
+        "originalAttackType": "hero",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.41,
+        "minimumBaseDamage": 25001,
+        "maximumBaseDamage": 25002
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0DM,A0DN,A0DO,A07N,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "YY11"
+      ]
     },
     {
       "catalogId": "H-13",
@@ -4335,29 +4380,73 @@
       "catalogId": "H-14",
       "catalogName": "시류",
       "grade": "히든",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h03J",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "비의 시류 - 히든",
+      "attack1": {
+        "attackCooldownSeconds": 0.7,
+        "baseDamagePlus": 14500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 600,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.26,
+        "minimumBaseDamage": 14501,
+        "maximumBaseDamage": 14501
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 100,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0C3,A0C4,A0C5,A07N,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "YY14"
+      ]
     },
     {
       "catalogId": "H-15",
       "catalogName": "써니호",
       "grade": "히든",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h03L",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "사우전드 써니호 - 히든",
+      "attack1": {
+        "attackCooldownSeconds": 0.45,
+        "baseDamagePlus": 19000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 650,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.05,
+        "minimumBaseDamage": 19001,
+        "maximumBaseDamage": 19001
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 100,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "Avul,A0HC,A0HD,A07N,A0HE",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "YY12"
+      ]
     },
     {
       "catalogId": "H-16",
@@ -4429,15 +4518,37 @@
       "catalogId": "H-18",
       "catalogName": "이완코브",
       "grade": "히든",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h03Y",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "엠포리오 이완코브 - 히든",
+      "attack1": {
+        "attackCooldownSeconds": 0.86,
+        "baseDamagePlus": 30000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.1,
+        "minimumBaseDamage": 30001,
+        "maximumBaseDamage": 30001
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0DF,A0DP,A07N,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "YY16"
+      ]
     },
     {
       "catalogId": "H-19",
@@ -5166,435 +5277,1117 @@
       "catalogId": "TR-01",
       "catalogName": "검은수염",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H090",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "치밀하고 비열한 어둠",
+      "attack1": {
+        "attackCooldownSeconds": 0.61,
+        "baseDamagePlus": 15000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 725,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.29,
+        "minimumBaseDamage": 15001,
+        "maximumBaseDamage": 15003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 85,
+        "mana": null,
+        "healthRegeneration": 0.5,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A13N,A0WP,AInv,A0VP,A0HS,A0HU,A0GX,A0D0,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR08"
+      ]
     },
     {
       "catalogId": "TR-02",
       "catalogName": "나미",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H08V",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "날씨는 맑음",
+      "attack1": {
+        "attackCooldownSeconds": 0.63,
+        "baseDamagePlus": 27000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 1000,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.33,
+        "minimumBaseDamage": 27001,
+        "maximumBaseDamage": 27003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0SO,A0W0,A0I4,A0I5,A0I6,A0I7,A0WP,AInv,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR01"
+      ]
     },
     {
       "catalogId": "TR-03",
       "catalogName": "도플라밍고",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H09E",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "어둠의 조커",
+      "attack1": {
+        "attackCooldownSeconds": 0.62,
+        "baseDamagePlus": 26250,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 615,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.34,
+        "minimumBaseDamage": 26251,
+        "maximumBaseDamage": 26252
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 150,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,A07O,Avul,A0BM,A0CB,A0CC,A0CD,A0CG,A0CJ,A0CK",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR04"
+      ]
     },
     {
       "catalogId": "TR-04",
       "catalogName": "로빈",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H098",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "악마의 자식",
+      "attack1": {
+        "attackCooldownSeconds": 0.71,
+        "baseDamagePlus": 33333,
+        "diceCount": 1,
+        "diceSides": 4,
+        "originalRange": 825,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.17,
+        "minimumBaseDamage": 33334,
+        "maximumBaseDamage": 33337
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 40,
+        "mana": null,
+        "healthRegeneration": 0.5,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "AInv,A0B3,A0B2,A0B0,A0B1,A0AY,Avul,A07O,A0AZ",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR02"
+      ]
     },
     {
       "catalogId": "TR-05",
       "catalogName": "트라팔가 로우",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H096",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "백개의 심장을 바친 자",
+      "attack1": {
+        "attackCooldownSeconds": 0.64,
+        "baseDamagePlus": 25000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 700,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.3,
+        "minimumBaseDamage": 25001,
+        "maximumBaseDamage": 25003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 250,
+        "mana": 135,
+        "healthRegeneration": 0.15,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A10T,A0IX,A0J9,A0DY,A0IZ,A0KD,Avul,A07O,A0WP,AInv",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR26"
+      ]
     },
     {
       "catalogId": "TR-06",
       "catalogName": "료쿠규",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H0BL",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "신 해군대장 초록 소",
+      "attack1": {
+        "attackCooldownSeconds": 0.84,
+        "baseDamagePlus": 105000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 650,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.35,
+        "minimumBaseDamage": 105001,
+        "maximumBaseDamage": 105002
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 130,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A11Y,A0SY,A15F,A15G,A15I,A15J,Avul,A07O,A0WP,AInv",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR17"
+      ]
     },
     {
       "catalogId": "TR-07",
       "catalogName": "루치",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H08W",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "검은 정의를 좇는 하얀 새",
+      "attack1": {
+        "attackCooldownSeconds": 0.54,
+        "baseDamagePlus": 32500,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.3,
+        "minimumBaseDamage": 32501,
+        "maximumBaseDamage": 32503
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A129,A0WP,AInv,A0RB,A07O,A0R5,A0R4,A0R2,A0R3,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR05"
+      ]
     },
     {
       "catalogId": "TR-08",
       "catalogName": "루피",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H099",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "해적왕이 될 사나이",
+      "attack1": {
+        "attackCooldownSeconds": 0.38,
+        "baseDamagePlus": 30000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.38,
+        "minimumBaseDamage": 30001,
+        "maximumBaseDamage": 30003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 160,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A04C,A04B,A04A,A048,AInv,Avul,A07O,A049,A04E",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR09"
+      ]
     },
     {
       "catalogId": "TR-09",
       "catalogName": "바질호킨스",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H094",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "운명의 마술사",
+      "attack1": {
+        "attackCooldownSeconds": 0.71,
+        "baseDamagePlus": 32500,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 700,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.32,
+        "minimumBaseDamage": 32501,
+        "maximumBaseDamage": 32503
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 40,
+        "mana": 100,
+        "healthRegeneration": 0.33,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,A0PJ,A0PE,A0PI,A0PK,A0PH,A0PG,A0PF,A07O,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR10"
+      ]
     },
     {
       "catalogId": "TR-10",
       "catalogName": "브룩",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H09I",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "소울 킹",
+      "attack1": {
+        "attackCooldownSeconds": 0.61,
+        "baseDamagePlus": 14500,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.12,
+        "minimumBaseDamage": 14501,
+        "maximumBaseDamage": 14503
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 115,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,A0VO,A0Q7,A0LT,A0SR,A0LU,A0AU,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR12"
+      ]
     },
     {
       "catalogId": "TR-11",
       "catalogName": "사보",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H092",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "혁명군 참모총장",
+      "attack1": {
+        "attackCooldownSeconds": 0.79,
+        "baseDamagePlus": 35000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.41,
+        "minimumBaseDamage": 35001,
+        "maximumBaseDamage": 35002
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 145,
+        "mana": 125,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0MI,AInv,Avul,A07O,A0M4,A0M3,A0M1,A0M5,A0M2",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR13"
+      ]
     },
     {
       "catalogId": "TR-12",
       "catalogName": "상디",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H09H",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "지옥에서 돌아온 자",
+      "attack1": {
+        "attackCooldownSeconds": 0.46,
+        "baseDamagePlus": 38000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.32,
+        "minimumBaseDamage": 38001,
+        "maximumBaseDamage": 38003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 115,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,Avul,A07O,A04S,A04V,A04U,A04T,A04W,A04X",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR14"
+      ]
     },
     {
       "catalogId": "TR-13",
       "catalogName": "샹크스",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H08Z",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "정상해전 종결자",
+      "attack1": {
+        "attackCooldownSeconds": 0.6,
+        "baseDamagePlus": 50000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 1050,
+        "originalAttackType": "hero",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.17,
+        "minimumBaseDamage": 50001,
+        "maximumBaseDamage": 50003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 35,
+        "healthRegeneration": 0,
+        "manaRegeneration": 1.35,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,A0S2,A0I2,A0I1,A0I0,A0DE,Avul,A07O,A0XO",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR15"
+      ]
     },
     {
       "catalogId": "TR-14",
       "catalogName": "스네이크맨",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H0B2",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "다섯번째 황제",
+      "attack1": {
+        "attackCooldownSeconds": 0.48,
+        "baseDamagePlus": 30000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 835,
+        "originalAttackType": "hero",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.21,
+        "minimumBaseDamage": 30001,
+        "maximumBaseDamage": 30003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 85,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A186,A0WP,AInv,A1BE,A0XI,A0XH,A0F2,A0X4,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR07"
+      ]
     },
     {
       "catalogId": "TR-15",
       "catalogName": "시라호시",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H08U",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "해왕류를 다스리는 인어공주",
+      "attack1": {
+        "attackCooldownSeconds": 0.7,
+        "baseDamagePlus": 40000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 825,
+        "originalAttackType": "normal",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.21,
+        "minimumBaseDamage": 40001,
+        "maximumBaseDamage": 40002
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 120,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,A0RS,A0KZ,A0L1,A0L0,A0L7,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR16"
+      ]
     },
     {
       "catalogId": "TR-16",
       "catalogName": "아오키지",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H097",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "전 해군대장 푸른 꿩",
+      "attack1": {
+        "attackCooldownSeconds": 0.69,
+        "baseDamagePlus": 37500,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.5,
+        "minimumBaseDamage": 37501,
+        "maximumBaseDamage": 37503
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 85,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,A0SU,A0ZG,A0ZF,A0FR,A0G1,A0D5,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR24"
+      ]
     },
     {
       "catalogId": "TR-17",
       "catalogName": "아카이누",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H095",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "해군원수 붉은 개",
+      "attack1": {
+        "attackCooldownSeconds": 0.73,
+        "baseDamagePlus": 42525,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 625,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.29,
+        "minimumBaseDamage": 42526,
+        "maximumBaseDamage": 42528
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 135,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,A0YQ,A0LO,A0HG,A0HB,A0E8,A06S,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR18"
+      ]
     },
     {
       "catalogId": "TR-18",
       "catalogName": "야마토",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H0BD",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "오니히메",
+      "attack1": {
+        "attackCooldownSeconds": 0.99,
+        "baseDamagePlus": 25000,
+        "diceCount": 2,
+        "diceSides": 6,
+        "originalRange": 700,
+        "originalAttackType": "hero",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.325,
+        "minimumBaseDamage": 25002,
+        "maximumBaseDamage": 25012
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 95,
+        "mana": null,
+        "healthRegeneration": 0.33,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "hero",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A12Z,A12H,A12G,A12B,A12A,A0WP,AInv,A12P,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR19"
+      ]
     },
     {
       "catalogId": "TR-19",
       "catalogName": "우솝",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H09B",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "바다의 전사",
+      "attack1": {
+        "attackCooldownSeconds": 0.52,
+        "baseDamagePlus": 23000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 1050,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.18,
+        "minimumBaseDamage": 23001,
+        "maximumBaseDamage": 23003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 140,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0OT,A0OW,A0OY,A0OU,A0OS,A0OX,A0OR,A0WP,AInv,A07O,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR20"
+      ]
     },
     {
       "catalogId": "TR-20",
       "catalogName": "조로",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H09F",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "최강의 검사",
+      "attack1": {
+        "attackCooldownSeconds": 0.67,
+        "baseDamagePlus": 50000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 575,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.485,
+        "minimumBaseDamage": 50001,
+        "maximumBaseDamage": 50003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 145,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0Q8,A0Q9,A0QA,A0QB,A0QC,A0QE,A0WP,AInv,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR06"
+      ]
     },
     {
       "catalogId": "TR-21",
       "catalogName": "보니",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H0BX",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "일그러진 미래",
+      "attack1": {
+        "attackCooldownSeconds": 0.9,
+        "baseDamagePlus": 49001,
+        "diceCount": 2,
+        "diceSides": 1,
+        "originalRange": 625,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "normal",
+        "attackPointSeconds": 0.8,
+        "minimumBaseDamage": 49003,
+        "maximumBaseDamage": 49003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 150,
+        "mana": 150,
+        "healthRegeneration": 0.25,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "hero",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "AInv,Avul,A07O,A0V8,A0V9,A0VA,A0VB,A0VC,A0VH",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR21"
+      ]
     },
     {
       "catalogId": "TR-22",
       "catalogName": "징베",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H09A",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "바다의 협객",
+      "attack1": {
+        "attackCooldownSeconds": 0.89,
+        "baseDamagePlus": 75000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 625,
+        "originalAttackType": "siege",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.3,
+        "minimumBaseDamage": 75001,
+        "maximumBaseDamage": 75002
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 100,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A11Q,A0P3,A0P4,A0P5,A0P6,A0P7,A0WP,AInv,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR22"
+      ]
     },
     {
       "catalogId": "TR-23",
       "catalogName": "쵸파",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H091",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "순록 의사",
+      "attack1": {
+        "attackCooldownSeconds": 0.62,
+        "baseDamagePlus": 250000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.2,
+        "minimumBaseDamage": 250001,
+        "maximumBaseDamage": 250003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 150,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0OO,A0ON,A0OK,A0OJ,A0OI,A0OL,A0WP,AInv,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR23"
+      ]
     },
     {
       "catalogId": "TR-24",
       "catalogName": "코비",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H0CO",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "해군의 미래",
+      "attack1": {
+        "attackCooldownSeconds": 0.71,
+        "baseDamagePlus": 43000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "normal",
+        "attackPointSeconds": 0.5,
+        "minimumBaseDamage": 43001,
+        "maximumBaseDamage": 43003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 150,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0.5,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,Avul,A07O,A1CS,A1CQ,A1CT,A1CR,A1CU,A1CV,A1CW",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR29"
+      ]
     },
     {
       "catalogId": "TR-25",
       "catalogName": "키드",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H0B4",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "신세대의 이단아",
+      "attack1": {
+        "attackCooldownSeconds": 0.99,
+        "baseDamagePlus": 37000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 1000,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.5,
+        "minimumBaseDamage": 37001,
+        "maximumBaseDamage": 37003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 40,
+        "mana": null,
+        "healthRegeneration": 0.2,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A12I,A104,A10F,A10E,A10D,A103,A102,A101,Avul,A07O,A0WP,AInv",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR25"
+      ]
     },
     {
       "catalogId": "TR-26",
       "catalogName": "키자루",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H0B5",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "해군대장 노란 원숭이",
+      "attack1": {
+        "attackCooldownSeconds": 0.64,
+        "baseDamagePlus": 43000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 900,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.41,
+        "minimumBaseDamage": 43001,
+        "maximumBaseDamage": 43003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 100,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0.5,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0DX,A0P1,A0MD,A0ME,A0MF,A0MG,A0WP,AInv,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR11"
+      ]
     },
     {
       "catalogId": "TR-27",
       "catalogName": "타시기",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H05N",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "해군의 홍일점",
+      "attack1": {
+        "attackCooldownSeconds": 0.88,
+        "baseDamagePlus": 8850,
+        "diceCount": 2,
+        "diceSides": 6,
+        "originalRange": 625,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.275,
+        "minimumBaseDamage": 8852,
+        "maximumBaseDamage": 8862
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 100,
+        "mana": 135,
+        "healthRegeneration": 0.25,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "hero",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,A0KL,A0JH,A0JG,Avul,A07O,A0JI,A0JJ,A0C8",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR03"
+      ]
     },
     {
       "catalogId": "TR-28",
       "catalogName": "프랑키",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H08Y",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "무적의 아이언 파이러츠",
+      "attack1": {
+        "attackCooldownSeconds": 0.75,
+        "baseDamagePlus": 70000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.35,
+        "minimumBaseDamage": 70001,
+        "maximumBaseDamage": 70003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 150,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A12D,A0E2,A0E3,A0E4,A0G7,A0G6,A0WP,AInv,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR27"
+      ]
     },
     {
       "catalogId": "TR-29",
       "catalogName": "후지토라",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H08X",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "분노하는 맹호",
+      "attack1": {
+        "attackCooldownSeconds": 0.94,
+        "baseDamagePlus": 200000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.45,
+        "minimumBaseDamage": 200001,
+        "maximumBaseDamage": 200003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 140,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0WP,AInv,Avul,A07O,A11X,A0CM,A0CL,A0CN,A0CO,A0CP",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR28"
+      ]
     },
     {
       "catalogId": "TR-30",
       "catalogName": "베가펑크",
       "grade": "초월함",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H0AA",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "세계 최고의 과학자",
+      "attack1": {
+        "attackCooldownSeconds": 0.62,
+        "baseDamagePlus": 55000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.2,
+        "minimumBaseDamage": 55001,
+        "maximumBaseDamage": 55003
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 200,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A05M,A05G,A06K,A14N,A14U,A0WP,AInv,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "TR30"
+      ]
     },
     {
       "catalogId": "E-01",
       "catalogName": "니카(루피)",
       "grade": "영원한",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "H0BK",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "태양의 신",
+      "attack1": {
+        "attackCooldownSeconds": 0.57,
+        "baseDamagePlus": 105000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 835,
+        "originalAttackType": "hero",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.21,
+        "minimumBaseDamage": 105001,
+        "maximumBaseDamage": 105002
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 115,
+        "mana": 150,
+        "healthRegeneration": 0.25,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A906,A0UF,A0UC,A0UM,A0UK,A0UL,A0UD,A0UI,AInv,Avul,A07O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "ET02"
+      ]
     },
     {
       "catalogId": "E-02",
@@ -5636,15 +6429,37 @@
       "catalogId": "E-04",
       "catalogName": "미호크",
       "grade": "영원한",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h058",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "쥬라클 미호크 - 영원",
+      "attack1": {
+        "attackCooldownSeconds": 0.93,
+        "baseDamagePlus": 70000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 675,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.495,
+        "minimumBaseDamage": 70001,
+        "maximumBaseDamage": 70001
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 175,
+        "healthRegeneration": 0,
+        "manaRegeneration": 2,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A906,A0OB,A0CE,A0OD,A0OF,A0OH,A0AF,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "ET08"
+      ]
     },
     {
       "catalogId": "E-05",
@@ -5683,43 +6498,109 @@
       "catalogId": "E-06",
       "catalogName": "비비",
       "grade": "영원한",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h057",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "네펠타리 비비 - 영원",
+      "attack1": {
+        "attackCooldownSeconds": 0.74,
+        "baseDamagePlus": 40000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 900,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.335,
+        "minimumBaseDamage": 40001,
+        "maximumBaseDamage": 40001
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 150,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A12M,A906,A0L8,A0L9,A0LA,A0LD,A0LE,A0LC,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "ET01"
+      ]
     },
     {
       "catalogId": "E-07",
       "catalogName": "에이스",
       "grade": "영원한",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h059",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "포트거스.D.에이스 - 영원",
+      "attack1": {
+        "attackCooldownSeconds": 0.58,
+        "baseDamagePlus": 32500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 850,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.26,
+        "minimumBaseDamage": 32501,
+        "maximumBaseDamage": 32501
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 185,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A906,A0IK,A0HT,A0HV,A0HW,Avul,A0MB,A193",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "ET11"
+      ]
     },
     {
       "catalogId": "E-08",
       "catalogName": "오뎅",
       "grade": "영원한",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h08R",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "코즈키 오뎅 - 영원",
+      "attack1": {
+        "attackCooldownSeconds": 0.64,
+        "baseDamagePlus": 70000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 675,
+        "originalAttackType": "hero",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.385,
+        "minimumBaseDamage": 70001,
+        "maximumBaseDamage": 70001
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 145,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A906,A19C,A0YF,A0Y2,A0Y0,A0XY,A0XZ,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "ET10"
+      ]
     },
     {
       "catalogId": "E-09",
@@ -5764,113 +6645,289 @@
       "catalogId": "E-10",
       "catalogName": "카번딧슈",
       "grade": "영원한",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h05B",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "카벤딧슈 - 영원",
+      "attack1": {
+        "attackCooldownSeconds": 0.71,
+        "baseDamagePlus": 35000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.27,
+        "minimumBaseDamage": 35001,
+        "maximumBaseDamage": 35001
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 100,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A126,A0TI,A0TK,A0TM,A0TN,A0TO,A906,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "ET09"
+      ]
     },
     {
       "catalogId": "E-11",
       "catalogName": "테조로",
       "grade": "영원한",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h06A",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "길드 테조로 - 영원",
+      "attack1": {
+        "attackCooldownSeconds": 0.7,
+        "baseDamagePlus": 42500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.24,
+        "minimumBaseDamage": 42501,
+        "maximumBaseDamage": 42501
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 90,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A906,A11G,A11F,A11I,A11J,A11K,AInv,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "ET12"
+      ]
     },
     {
       "catalogId": "E-12",
       "catalogName": "핸콕",
       "grade": "영원한",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h05C",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "보아 핸콕 - 영원",
+      "attack1": {
+        "attackCooldownSeconds": 0.74,
+        "baseDamagePlus": 35000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 650,
+        "originalAttackType": "hero",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.42,
+        "minimumBaseDamage": 35001,
+        "maximumBaseDamage": 35001
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 175,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "normal",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A906,A0RN,A0NN,A0NO,A0NQ,A0NR,A0NS,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "ET06"
+      ]
     },
     {
       "catalogId": "I-01",
       "catalogName": "거프",
       "grade": "불멸의",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h04C",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "몽키.D.거프 - 불멸",
+      "attack1": {
+        "attackCooldownSeconds": 0.63,
+        "baseDamagePlus": 53250,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 625,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.38,
+        "minimumBaseDamage": 53251,
+        "maximumBaseDamage": 53251
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 160,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A905,A0VE,A0SM,A0SN,A0SP,A0SQ,A0SS,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "IM03"
+      ]
     },
     {
       "catalogId": "I-02",
       "catalogName": "드래곤",
       "grade": "불멸의",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h04D",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "몽키.D.드래곤 - 불멸",
+      "attack1": {
+        "attackCooldownSeconds": 0.61,
+        "baseDamagePlus": 47500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 700,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.25,
+        "minimumBaseDamage": 47501,
+        "maximumBaseDamage": 47501
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 160,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A905,A0V0,A0JV,A0KG,A0KF,A0KE,A0KH,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "IM04"
+      ]
     },
     {
       "catalogId": "I-03",
       "catalogName": "레일리",
       "grade": "불멸의",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h049",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "실버즈 레일리 - 불멸",
+      "attack1": {
+        "attackCooldownSeconds": 0.58,
+        "baseDamagePlus": 72500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 625,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.27,
+        "minimumBaseDamage": 72501,
+        "maximumBaseDamage": 72501
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 115,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A905,Avul,A0J5,A0J6,A0J7,A0J8,A0JA,A0JB,A11O",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "IM08"
+      ]
     },
     {
       "catalogId": "I-04",
       "catalogName": "로져",
       "grade": "불멸의",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h04J",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "골.D.로져 - 불멸",
+      "attack1": {
+        "attackCooldownSeconds": 0.49,
+        "baseDamagePlus": 122222,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 625,
+        "originalAttackType": "hero",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.38,
+        "minimumBaseDamage": 122223,
+        "maximumBaseDamage": 122224
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 150,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A905,Avul,A0JM,A0JN,A0JO,A0JP,A0JQ,A0WJ,A0WI,A11E",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "IM01"
+      ]
     },
     {
       "catalogId": "I-05",
       "catalogName": "불릿",
       "grade": "불멸의",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h081",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "더글라스 불릿 - 불멸",
+      "attack1": {
+        "attackCooldownSeconds": 1.2,
+        "baseDamagePlus": 260000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 600,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.47,
+        "minimumBaseDamage": 260001,
+        "maximumBaseDamage": 260001
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 150,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A905,Avul,AInv,A0WU,A0WK,A0WL,A0WT,A0WR,A203",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "IM12"
+      ]
     },
     {
       "catalogId": "I-06",
@@ -5981,15 +7038,37 @@
       "catalogId": "I-09",
       "catalogName": "시키",
       "grade": "불멸의",
-      "mappingStatus": "unmatched",
-      "originalRawcode": null,
+      "mappingStatus": "verified-jass-label-and-fusion-result",
+      "originalRawcode": "h04B",
       "candidateRawcodes": [],
-      "sourceMapName": null,
-      "attack1": null,
+      "sourceMapName": "금사자 시키 - 불멸",
+      "attack1": {
+        "attackCooldownSeconds": 0.49,
+        "baseDamagePlus": 55000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 750,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.2,
+        "minimumBaseDamage": 55001,
+        "maximumBaseDamage": 55002
+      },
       "attack2": null,
-      "baseStats": null,
-      "originalAbilityList": null,
-      "combatParityVerified": false
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": 125,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A905,A0T1,A0T3,A0QK,A0QL,A0QM,A0QO,Avul",
+      "combatParityVerified": false,
+      "sourceJassFusionAbilityRawcodes": [
+        "IM02"
+      ]
     },
     {
       "catalogId": "I-10",

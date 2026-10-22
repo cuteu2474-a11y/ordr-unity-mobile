@@ -275,7 +275,7 @@ def build(w3x, catalog):
         })
 
     status_count = Counter(link["mappingStatus"] for link in links)
-    return {
+    result = {
         "format": "ordr-source-map-base-stats-v1",
         "gameVersion": EXPECTED_VERSION,
         "sourceW3xSha256": map_sha,
@@ -300,7 +300,8 @@ def build(w3x, catalog):
         "catalogEntries": links,
         "mapObjects": list(objects.values()),
     }
-    # JASS BGH fusion results disambiguate identical map name/grade entries.
+    # CWR/BGH fusion results resolve ambiguities, while BjB confirms catalog
+    # aliases and named transcendent titles using the exact fusion rawcodes.
     read = lambda name: json.loads((PROJECT_ROOT / "data" / name).read_text(encoding="utf-8"))
     return reconcile(result, read("original-jass-fusion-registry.json"),
                      read("original-unit-rawcode-label-links.json"))

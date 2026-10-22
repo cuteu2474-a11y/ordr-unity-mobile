@@ -402,7 +402,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void VerifiedEnelBuffChangesActualDamageCalculationFrom900To1000()
+        public void EnelFloat32DefenseWithFixtureTruncationGives899Then1000()
         {
             var f = new Fixture();
             var enemy = Enemy();
@@ -411,7 +411,10 @@ namespace Ordr.Mobile.Tests
                 new Ordr323VerifiedPartialModifierRules(),
                 new TruncateOnlyForTest());
             var attack = FakeMagicAttack(enemy.Id);
-            Assert.AreEqual(900L,rules.ResolveBasic(attack,enemy.Enemy,
+            // W3A Def5 level 16 is stored as float32 (slightly below 0.9).
+            // The synthetic truncation fixture therefore yields 899, not 900.
+            // This does NOT establish Warcraft's real final HP quantization.
+            Assert.AreEqual(899L,rules.ResolveBasic(attack,enemy.Enemy,
                 f.Status[enemy.Id].Snapshot(),0));
             var profile = ProfileFixture("H-09","뇌영","activeMana",
                 "magicResistanceReduction",10);

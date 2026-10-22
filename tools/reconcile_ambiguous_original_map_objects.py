@@ -1,6 +1,9 @@
-"""Join same-name map objects only when JASS registered one fusion result.
+"""Link map objects using original JASS results and their catalog labels.
 
-Preserves every alternate rawcode; never verifies form behavior or damage.
+Resolve ambiguous same-name objects by a unique fusion result. Also recover
+objects with different display titles only when the original BjB label points
+to the same rawcode/ability as the original CWR fusion registry. Neither form
+behavior nor combat damage is verified by these identity links.
 """
 import argparse
 from collections import Counter, defaultdict
@@ -9,11 +12,19 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+EXPECTED_MAP_GRADE = {
+    "히든": "히든",
+    "초월함": "초월",
+    "영원한": "영원",
+    "불멸의": "불멸",
+}
+
 
 def reconcile(stats, registry, labels):
     if stats["gameVersion"] != registry["gameVersion"] or \
             stats["gameVersion"] != labels["gameVersion"] or \
-            stats["sourceW3xSha256"] != labels["sourceMapSha256"]:
+            stats["sourceW3xSha256"] != labels["sourceMapSha256"] or \
+            stats["sourceW3xSha256"] != registry["sourceSha256"]:
         raise ValueError("JASS and map identities do not share a source W3X/version")
     results = defaultdict(set)
     for reg in registry["registrations"]:
@@ -21,10 +32,14 @@ def reconcile(stats, registry, labels):
             if hit["kind"] == "UNIT" and hit["count"] == 1:
                 results[hit["rawcode"]].add(reg["abilityRawcode"])
     label_index = {}
+    label_rawcodes = {}
     for item in labels["mappings"]:
         if item["catalogUnitId"] in label_index:
             raise ValueError("Duplicate catalog label: " + item["catalogUnitId"])
+        if item["rawcode"] in label_rawcodes:
+            raise ValueError("Duplicate label rawcode: " + item["rawcode"])
         label_index[item["catalogUnitId"]] = item
+        label_rawcodes[item["rawcode"]] = item["catalogUnitId"]
     objects = {item["rawcode"]: item for item in stats["mapObjects"]}
     used = {row["originalRawcode"] for row in stats["catalogEntries"]
             if row["originalRawcode"]}
@@ -49,6 +64,37 @@ def reconcile(stats, registry, labels):
             "candidateRawcodes": [],
             "alternateRawcodes": [candidate for candidate in candidates if candidate != code],
             "sourceJassFusionAbilityRawcodes": sorted(results[code]),
+            "sourceMapName": original["mapName"],
+            "attack1": original["attack1"],
+            "attack2": original["attack2"],
+            "baseStats": original["baseStats"],
+            "originalAbilityList": original["originalAbilityList"],
+        })
+        used.add(code)
+
+    for row in stats["catalogEntries"]:
+        if row["mappingStatus"] != "unmatched":
+            continue
+        label = label_index.get(row["catalogId"])
+        if not label:
+            continue  # The character name alone cannot establish an object ID.
+        code = label["rawcode"]
+        original = objects.get(code)
+        # A BjB label alone is not sufficient; the precise CWR ability must
+        # also create this one unit rawcode in the same source W3X.
+        if original is None or label["abilityRawcode"] not in results.get(code, set()):
+            continue
+        if code in used:
+            raise ValueError("Map rawcode already linked: " + code)
+        suffix = original["mapGradeSuffix"]
+        expected = EXPECTED_MAP_GRADE.get(row["grade"])
+        if expected is None or (suffix is not None and suffix != expected):
+            raise ValueError("JASS label conflicts with map grade: " + row["catalogId"])
+        row.update({
+            "mappingStatus": "verified-jass-label-and-fusion-result",
+            "originalRawcode": code,
+            "candidateRawcodes": [],
+            "sourceJassFusionAbilityRawcodes": [label["abilityRawcode"]],
             "sourceMapName": original["mapName"],
             "attack1": original["attack1"],
             "attack2": original["attack2"],

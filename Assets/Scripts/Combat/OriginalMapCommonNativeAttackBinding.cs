@@ -5,7 +5,7 @@ using Ordr.Mobile.Data;
 namespace Ordr.Mobile.Combat
 {
     // Native object stats alone do not prove the first swing delay, JASS damage
-    // replacement or whether its effective attack stays in the native path.
+    // replacement, splash behavior or whether attacks stay in the native path.
     // This gate must be implemented with external evidence before real HP can
     // be affected; an absent gate cannot silently enable the prototype.
     public interface IOriginalCommonNativeAttackVerification
@@ -18,7 +18,7 @@ namespace Ordr.Mobile.Combat
     public sealed class OriginalMapCommonNativeAttackBinding :
         IOriginalVerifiedUnitAttackProvider, IOrdr323VerifiedHitSource
     {
-        private readonly OriginalMapCommonNativeAttackEvidenceCatalog evidence;
+        private readonly OriginalMapMappedNativeAttackEvidenceCatalog evidence;
         private readonly IOriginalCommonNativeAttackVerification verification;
         private readonly ICombatProcRandom diceRandom;
         private readonly Dictionary<string, OriginalMapCommonNativeAttackEvidence> byRawcode =
@@ -29,16 +29,13 @@ namespace Ordr.Mobile.Combat
             IOriginalCommonNativeAttackVerification verifiedNativePath,
             ICombatProcRandom nativeDiceRandom)
         {
-            evidence = new OriginalMapCommonNativeAttackEvidenceCatalog(map);
+            evidence = new OriginalMapMappedNativeAttackEvidenceCatalog(map);
             verification = verifiedNativePath ??
                 throw new ArgumentNullException(nameof(verifiedNativePath));
             diceRandom = nativeDiceRandom ??
                 throw new ArgumentNullException(nameof(nativeDiceRandom));
-            for (int index = 1; index <= 9; index++)
-            {
-                var common = evidence.Find("C-" + index.ToString("D2"));
-                byRawcode.Add(common.Rawcode, common);
-            }
+            foreach (var mapped in evidence.All)
+                byRawcode.Add(mapped.Rawcode, mapped);
         }
 
         public bool TryResolve(CatalogUnit unit, CharacterSkillProfile detailed,
@@ -56,7 +53,7 @@ namespace Ordr.Mobile.Combat
             if (string.IsNullOrWhiteSpace(approvalEvidence) ||
                 !Enum.IsDefined(typeof(DamageSchool), school))
                 throw new InvalidOperationException(
-                    "원본 흔함 공격 승인에 피해 계열/검증 출처가 빠졌습니다.");
+                    "원본 공격 승인에 피해 계열/검증 출처가 빠졌습니다.");
             original = new OriginalVerifiedAttackBinding(
                 new BasicAttackSpec(native.BaseDamagePlus + (long)native.DiceCount,
                     native.CooldownSeconds, school, DamageTraits.None),
@@ -80,7 +77,7 @@ namespace Ordr.Mobile.Combat
                 out firstDelay, out school, out approvalEvidence)) return false;
             if (string.IsNullOrWhiteSpace(approvalEvidence) ||
                 !Enum.IsDefined(typeof(DamageSchool), school))
-                throw new InvalidOperationException("원본 흔함 공격 피해 계열/검증 근거 누락");
+                throw new InvalidOperationException("원본 공격 피해 계열/검증 근거 누락");
 
             // Original Warcraft object attack and armor table, *provided*
             // the independent verification attests the native path. Target

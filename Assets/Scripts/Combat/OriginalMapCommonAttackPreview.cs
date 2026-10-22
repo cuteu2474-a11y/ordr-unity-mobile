@@ -4,8 +4,9 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
-    // Non-damaging preview of native Warcraft object attack timing for the nine
-    // common units. Object damage dice and cooldown are sourced from the W3X;
+    // Non-damaging preview of mapped Warcraft object attack timing. Historical
+    // class name retained for compatibility with existing runtime wiring.
+    // Object damage dice and cooldown are sourced from the W3X;
     // target armor, upgrades, JASS effects and final damage remain unverified.
     public sealed class OriginalMapCommonAttackPreview
     {
@@ -32,15 +33,8 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentOutOfRangeException(nameof(currentTime));
             if (tracked.ContainsKey(instanceId))
                 throw new InvalidOperationException("이미 미리보기 공격이 등록된 유닛입니다.");
-            int commonIndex;
-            if (string.IsNullOrEmpty(catalogId) || catalogId.Length != 4 ||
-                !catalogId.StartsWith("C-", StringComparison.Ordinal) ||
-                !int.TryParse(catalogId.Substring(2), out commonIndex) ||
-                commonIndex < 1 || commonIndex > 9)
-                return false;
-
             var entry = source.Find(catalogId);
-            if (entry == null || entry.MappingStatus != "verified-common-map-identity" ||
+            if (entry == null ||
                 string.IsNullOrEmpty(entry.OriginalRawcode) || entry.Attack1 == null)
                 return false;
             var attack = entry.Attack1;
@@ -48,7 +42,7 @@ namespace Ordr.Mobile.Combat
                 !attack.AttackCooldownSeconds.HasValue ||
                 !attack.AttackPointSeconds.HasValue ||
                 attack.AttackPointSeconds.Value < 0 ||
-                attack.AttackPointSeconds.Value >= attack.AttackCooldownSeconds.Value)
+                attack.AttackPointSeconds.Value > attack.AttackCooldownSeconds.Value)
                 return false;
             tracked.Add(instanceId, new TrackedAttack {
                 Basics = entry,
