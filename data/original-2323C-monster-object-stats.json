@@ -1,0 +1,1037 @@
+{
+  "format": "ordr-original-monster-object-stats-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceFiles": [
+    {
+      "path": "Units\\UnitBalance.slk",
+      "sha256": "f7f26217d8097b9791723feb02d9181277d9afb1947dc0a3bf553ce590ab3af5"
+    },
+    {
+      "path": "Units\\CampaignUnitStrings.txt",
+      "sha256": "3e16625f147113e5e4c58a4ad1a58a8b259eeccba57e638db6f9e21cd0cf1a10"
+    }
+  ],
+  "sourceColumns": {
+    "HP": "HP",
+    "armor": "def",
+    "armorType": "defType"
+  },
+  "scope": "original-object-base-stats-not-mode-adjusted-wave-spawns",
+  "safeForVerifiedMonsterWaveRuntime": false,
+  "summary": {
+    "candidateObjectCount": 100,
+    "nameBasedCategoryCounts": {
+      "boss-labeled": 8,
+      "creep-labeled": 3,
+      "level-labeled": 60,
+      "other-o-object-unconfirmed": 4,
+      "quest-labeled": 11,
+      "story-labeled": 14
+    },
+    "runtimeEnemyRolesVerified": 0,
+    "nightmareOtherworldFinalStatsVerified": 0
+  },
+  "entries": [
+    {
+      "rawcode": "n000",
+      "originalMapName": "1. 로그타운",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 70200,
+      "objectBaseArmor": 10,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n001",
+      "originalMapName": "10. 펑크해저드",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 115000000,
+      "objectBaseArmor": 188,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n002",
+      "originalMapName": "2. 알라바스타",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 255150,
+      "objectBaseArmor": 29,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n003",
+      "originalMapName": "3. 하늘섬",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 850500,
+      "objectBaseArmor": 46,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n004",
+      "originalMapName": "4. 워터세븐",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 2064300,
+      "objectBaseArmor": 60,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n005",
+      "originalMapName": "5. 스릴러바크",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 4456200,
+      "objectBaseArmor": 75,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n006",
+      "originalMapName": "6. 샤봉디제도",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 11700000,
+      "objectBaseArmor": 92,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n007",
+      "originalMapName": "7. 임펠다운",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 21100000,
+      "objectBaseArmor": 115,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n008",
+      "originalMapName": "8. 마린포드",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 45140000,
+      "objectBaseArmor": 129,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n009",
+      "originalMapName": "14. 에그헤드",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 288800000,
+      "objectBaseArmor": 300,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n00A",
+      "originalMapName": "9. 어인섬",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 99225000,
+      "objectBaseArmor": 132,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n00B",
+      "originalMapName": "13. 와노쿠니",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 190000000,
+      "objectBaseArmor": 275,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n00C",
+      "originalMapName": "11. 드레스로자",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 140000000,
+      "objectBaseArmor": 210,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n00D",
+      "originalMapName": "12. 홀케이크섬",
+      "nameBasedCategory": "story-labeled",
+      "objectBaseHitPoints": 155000000,
+      "objectBaseArmor": 240,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n00E",
+      "originalMapName": "1단계 크립 듀공",
+      "nameBasedCategory": "creep-labeled",
+      "objectBaseHitPoints": 360000,
+      "objectBaseArmor": 27,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n00F",
+      "originalMapName": "2단계 크립 파파구",
+      "nameBasedCategory": "creep-labeled",
+      "objectBaseHitPoints": 1000000,
+      "objectBaseArmor": 125,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "n00G",
+      "originalMapName": "3단계 크립 슈슈",
+      "nameBasedCategory": "creep-labeled",
+      "objectBaseHitPoints": 1200000,
+      "objectBaseArmor": 150,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o001",
+      "originalMapName": "레벨 55 [보스]도플라밍고",
+      "nameBasedCategory": "boss-labeled",
+      "objectBaseHitPoints": 12297000,
+      "objectBaseArmor": 360,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o002",
+      "originalMapName": "고런트-체력2000만",
+      "nameBasedCategory": "other-o-object-unconfirmed",
+      "objectBaseHitPoints": 20000000,
+      "objectBaseArmor": 150,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o003",
+      "originalMapName": "레벨 11 타시기",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 1100,
+      "objectBaseArmor": 7,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o004",
+      "originalMapName": "레벨 02 찌질한 해왕류",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 170,
+      "objectBaseArmor": 1,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o005",
+      "originalMapName": "레벨 08 클리크",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 860,
+      "objectBaseArmor": 5,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o006",
+      "originalMapName": "레벨 07 깅",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 650,
+      "objectBaseArmor": 4,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o007",
+      "originalMapName": "레벨 26 사토리",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 18900,
+      "objectBaseArmor": 25,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o008",
+      "originalMapName": "레벨 05 캡틴 버기",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 380,
+      "objectBaseArmor": 3,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o009",
+      "originalMapName": "레벨 04 모건",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 300,
+      "objectBaseArmor": 2,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00A",
+      "originalMapName": "레벨 03 해적사냥꾼조로",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 230,
+      "objectBaseArmor": 1,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00B",
+      "originalMapName": "레벨 09 하찌",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 1020,
+      "objectBaseArmor": 6,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00C",
+      "originalMapName": "레벨 12 스모커",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 1400,
+      "objectBaseArmor": 8,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00D",
+      "originalMapName": "레벨 06 캡틴 크로",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 510,
+      "objectBaseArmor": 3,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00E",
+      "originalMapName": "레벨 18 Mr.2",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 4970,
+      "objectBaseArmor": 17,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00F",
+      "originalMapName": "레벨 13 Mr.9",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 1790,
+      "objectBaseArmor": 9,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00G",
+      "originalMapName": "레벨 16 Mr.4",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 3660,
+      "objectBaseArmor": 14,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00H",
+      "originalMapName": "레벨 15 Mr.5",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 2670,
+      "objectBaseArmor": 12,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00I",
+      "originalMapName": "레벨 01 알비다",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 135,
+      "objectBaseArmor": 0,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00J",
+      "originalMapName": "[퀘스트]바제스",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 2050000,
+      "objectBaseArmor": 8,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00K",
+      "originalMapName": "레벨 64 킹",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 16610000,
+      "objectBaseArmor": 80,
+      "warcraftArmorType": "hero",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00M",
+      "originalMapName": "레벨 14 Mr.6",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 2240,
+      "objectBaseArmor": 11,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00N",
+      "originalMapName": "레벨 17 Mr.3",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 4450,
+      "objectBaseArmor": 16,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00O",
+      "originalMapName": "레벨 19 Mr.1",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 5600,
+      "objectBaseArmor": 18,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00P",
+      "originalMapName": "레벨 21 체스",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 6500,
+      "objectBaseArmor": 19,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00Q",
+      "originalMapName": "레벨 22 마리모",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 7200,
+      "objectBaseArmor": 20,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00R",
+      "originalMapName": "레벨 23 도르돈",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 9400,
+      "objectBaseArmor": 21,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00S",
+      "originalMapName": "레벨 24 와포루",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 12700,
+      "objectBaseArmor": 22,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00T",
+      "originalMapName": "레벨 25 베라미",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 15850,
+      "objectBaseArmor": 23,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00U",
+      "originalMapName": "레벨 27 게다츠",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 23250,
+      "objectBaseArmor": 26,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00V",
+      "originalMapName": "레벨 28 오움",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 26000,
+      "objectBaseArmor": 27,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00X",
+      "originalMapName": "레벨 29 슈라",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 32000,
+      "objectBaseArmor": 29,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o00Z",
+      "originalMapName": "레벨 57 샬롯 크래커",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 10200000,
+      "objectBaseArmor": 71,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o010",
+      "originalMapName": "레벨 32 칼리파",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 67000,
+      "objectBaseArmor": 35,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o011",
+      "originalMapName": "레벨 33 후쿠로",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 80000,
+      "objectBaseArmor": 36,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o012",
+      "originalMapName": "레벨 34 쿠마도리",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 90300,
+      "objectBaseArmor": 37,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o015",
+      "originalMapName": "레벨 39 찌질이 스팬담",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 1,
+      "objectBaseArmor": 39,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o017",
+      "originalMapName": "레벨 35 블루노",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 108870,
+      "objectBaseArmor": 40,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o018",
+      "originalMapName": "레벨 36 재브라",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 124200,
+      "objectBaseArmor": 41,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o019",
+      "originalMapName": "레벨 37 카쿠",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 138400,
+      "objectBaseArmor": 42,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01A",
+      "originalMapName": "레벨 38 루치",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 145000,
+      "objectBaseArmor": 44,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01B",
+      "originalMapName": "레벨 41 압살롬",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 350000,
+      "objectBaseArmor": 45,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01D",
+      "originalMapName": "레벨 44 쿠마",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 750000,
+      "objectBaseArmor": 47,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01E",
+      "originalMapName": "레벨 43 모리아",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 600000,
+      "objectBaseArmor": 47,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01F",
+      "originalMapName": "레벨 42 오즈",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 450000,
+      "objectBaseArmor": 46,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01G",
+      "originalMapName": "레벨 31 폭시",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 54500,
+      "objectBaseArmor": 31,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01H",
+      "originalMapName": "레벨 46 마리골드",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 1880000,
+      "objectBaseArmor": 48,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01L",
+      "originalMapName": "레벨 47 마젤란",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 2285000,
+      "objectBaseArmor": 49,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01M",
+      "originalMapName": "레벨 48 미호크",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 2845200,
+      "objectBaseArmor": 49,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01N",
+      "originalMapName": "레벨 52 베르고",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 6500000,
+      "objectBaseArmor": 68,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01O",
+      "originalMapName": "레벨 45 키자루",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 950000,
+      "objectBaseArmor": 48,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01Q",
+      "originalMapName": "레벨 53 시저",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 7150000,
+      "objectBaseArmor": 69,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01R",
+      "originalMapName": "레벨 54 피카",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 7550000,
+      "objectBaseArmor": 70,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01S",
+      "originalMapName": "레벨 55 트레볼",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 8690000,
+      "objectBaseArmor": 73,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01T",
+      "originalMapName": "레벨 49 아카이누",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 3300000,
+      "objectBaseArmor": 50,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01U",
+      "originalMapName": "레벨 51 호디존스",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 5700000,
+      "objectBaseArmor": 58,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01V",
+      "originalMapName": "레벨 10 [보스]아론",
+      "nameBasedCategory": "boss-labeled",
+      "objectBaseHitPoints": 14500,
+      "objectBaseArmor": 13,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01W",
+      "originalMapName": "레벨 20 [보스]크로커다일",
+      "nameBasedCategory": "boss-labeled",
+      "objectBaseHitPoints": 85000,
+      "objectBaseArmor": 29,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01X",
+      "originalMapName": "레벨 30 [보스]에넬",
+      "nameBasedCategory": "boss-labeled",
+      "objectBaseHitPoints": 750000,
+      "objectBaseArmor": 115,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01Y",
+      "originalMapName": "레벨 40 [보스]루치",
+      "nameBasedCategory": "boss-labeled",
+      "objectBaseHitPoints": 2900000,
+      "objectBaseArmor": 170,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o01Z",
+      "originalMapName": "레벨 50 [보스]센고쿠",
+      "nameBasedCategory": "boss-labeled",
+      "objectBaseHitPoints": 20800000,
+      "objectBaseArmor": 350,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o020",
+      "originalMapName": "레벨 58 샬롯 스무디",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 10990000,
+      "objectBaseArmor": 72,
+      "warcraftArmorType": "hero",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o021",
+      "originalMapName": "레벨 59 샬롯 카타쿠리",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 11590000,
+      "objectBaseArmor": 129,
+      "warcraftArmorType": "hero",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o025",
+      "originalMapName": "레벨 62 잭",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 14120000,
+      "objectBaseArmor": 81,
+      "warcraftArmorType": "fort",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o026",
+      "originalMapName": "레벨 61 바질 호킨스",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 13582115,
+      "objectBaseArmor": 76,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o027",
+      "originalMapName": "레벨 63 퀸",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 15610000,
+      "objectBaseArmor": 84,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o028",
+      "originalMapName": "레벨 56 호미즈",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 9400000,
+      "objectBaseArmor": 77,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02B",
+      "originalMapName": "레벨 65 [보스]카이도",
+      "nameBasedCategory": "boss-labeled",
+      "objectBaseHitPoints": 13595000,
+      "objectBaseArmor": 395,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02C",
+      "originalMapName": "레벨 60 [보스]빅 맘",
+      "nameBasedCategory": "boss-labeled",
+      "objectBaseHitPoints": 12750000,
+      "objectBaseArmor": 372,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02D",
+      "originalMapName": "[퀘스트]깅",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 12000,
+      "objectBaseArmor": 10,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02E",
+      "originalMapName": "토프먼 워큐리 - 오로성",
+      "nameBasedCategory": "other-o-object-unconfirmed",
+      "objectBaseHitPoints": 10,
+      "objectBaseArmor": 10,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02F",
+      "originalMapName": "[퀘스트]피카",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 32700000,
+      "objectBaseArmor": 325,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02G",
+      "originalMapName": "레벨 60 제우스",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 12450000,
+      "objectBaseArmor": 70,
+      "warcraftArmorType": "normal",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02H",
+      "originalMapName": "레벨 65 오로치",
+      "nameBasedCategory": "level-labeled",
+      "objectBaseHitPoints": 16210000,
+      "objectBaseArmor": 81,
+      "warcraftArmorType": "hero",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02J",
+      "originalMapName": "[퀘스트]와포루",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 3500000,
+      "objectBaseArmor": 90,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02K",
+      "originalMapName": "[퀘스트]클리크",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 3250000,
+      "objectBaseArmor": 140,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02L",
+      "originalMapName": "[퀘스트]모리아",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 14000000,
+      "objectBaseArmor": 170,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02M",
+      "originalMapName": "[퀘스트]붉은개",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 33700000,
+      "objectBaseArmor": 140,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02N",
+      "originalMapName": "[퀘스트]후샤.D.뉴에이지",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 36000000,
+      "objectBaseArmor": 141,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02Q",
+      "originalMapName": "[퀘스트]노란원숭이",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 33700000,
+      "objectBaseArmor": 140,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02R",
+      "originalMapName": "[퀘스트]푸른꿩",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 33700000,
+      "objectBaseArmor": 140,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o02S",
+      "originalMapName": "[퀘스트]거프",
+      "nameBasedCategory": "quest-labeled",
+      "objectBaseHitPoints": 8250000,
+      "objectBaseArmor": 105,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o031",
+      "originalMapName": "제이가르시아 새턴 - 오로성",
+      "nameBasedCategory": "other-o-object-unconfirmed",
+      "objectBaseHitPoints": 10,
+      "objectBaseArmor": 10,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    },
+    {
+      "rawcode": "o032",
+      "originalMapName": "에단바론 V. 나스쥬로 - 오로성",
+      "nameBasedCategory": "other-o-object-unconfirmed",
+      "objectBaseHitPoints": 10,
+      "objectBaseArmor": 10,
+      "warcraftArmorType": "large",
+      "runtimeEnemyRoleVerified": false,
+      "nightmareOtherworldFinalStatsVerified": false
+    }
+  ]
+}
