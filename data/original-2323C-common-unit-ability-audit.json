@@ -1,0 +1,595 @@
+{
+  "format": "ordr-2323C-common-object-and-cwr-ability-audit-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "scope": "object-attack-and-CWR-ability-identity-only",
+  "importantLimits": [
+    "CWR fusion abilities are not combat procs.",
+    "A0JE/A09G/Avul shared native/system behavior is not proven and cannot be assumed to be absent.",
+    "Original object attack timing does not establish the first real Warcraft hit or final HP damage.",
+    "Synthetic NUnit attack gates must not be shipped as real-map verification."
+  ],
+  "summary": {
+    "commons": 9,
+    "cwrFusionAbilities": 19,
+    "uncategorizedSharedOrNativeAbilities": 27,
+    "actualCombatVerifiedUnits": 0
+  },
+  "commonUnits": [
+    {
+      "catalogUnitId": "C-01",
+      "catalogName": "루피",
+      "originalUnitRawcode": "h003",
+      "originalMapName": "몽키.D.루피 - 흔함",
+      "objectAttack1": {
+        "attackCooldownSeconds": 1.02,
+        "baseDamagePlus": 28,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 420,
+        "originalAttackType": "siege",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.35,
+        "minimumBaseDamage": 29,
+        "maximumBaseDamage": 31
+      },
+      "abilityCodesInObjectOrder": [
+        {
+          "rawcode": "A0JE",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 55,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A09G",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 9,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A00D",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00K",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A012",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00U",
+          "jassUnitIngredientCount": 3,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "Avul",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 270,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        }
+      ],
+      "individuallyConfirmedCombatSkillCount": 0,
+      "allCombatSkillsProvenAbsent": false,
+      "actualCombatReady": false
+    },
+    {
+      "catalogUnitId": "C-02",
+      "catalogName": "조로",
+      "originalUnitRawcode": "h002",
+      "originalMapName": "롤로노아 조로 - 흔함",
+      "objectAttack1": {
+        "attackCooldownSeconds": 1.03,
+        "baseDamagePlus": 30,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 420,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.25,
+        "minimumBaseDamage": 31,
+        "maximumBaseDamage": 33
+      },
+      "abilityCodesInObjectOrder": [
+        {
+          "rawcode": "A0JE",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 55,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A09G",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 9,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A00W",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00D",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A032",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00W",
+          "jassUnitIngredientCount": 3,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "Avul",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 270,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        }
+      ],
+      "individuallyConfirmedCombatSkillCount": 0,
+      "allCombatSkillsProvenAbsent": false,
+      "actualCombatReady": false
+    },
+    {
+      "catalogUnitId": "C-03",
+      "catalogName": "나미",
+      "originalUnitRawcode": "h001",
+      "originalMapName": "나미 - 흔함",
+      "objectAttack1": {
+        "attackCooldownSeconds": 0.98,
+        "baseDamagePlus": 24,
+        "diceCount": 2,
+        "diceSides": 3,
+        "originalRange": 420,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.35,
+        "minimumBaseDamage": 26,
+        "maximumBaseDamage": 30
+      },
+      "abilityCodesInObjectOrder": [
+        {
+          "rawcode": "A0JE",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 55,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A09G",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 9,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A006",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00O",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A015",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00P",
+          "jassUnitIngredientCount": 3,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "Avul",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 270,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        }
+      ],
+      "individuallyConfirmedCombatSkillCount": 0,
+      "allCombatSkillsProvenAbsent": false,
+      "actualCombatReady": false
+    },
+    {
+      "catalogUnitId": "C-04",
+      "catalogName": "우솝",
+      "originalUnitRawcode": "h007",
+      "originalMapName": "우솝 - 흔함",
+      "objectAttack1": {
+        "attackCooldownSeconds": 0.84,
+        "baseDamagePlus": 24,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 420,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.2,
+        "minimumBaseDamage": 25,
+        "maximumBaseDamage": 27
+      },
+      "abilityCodesInObjectOrder": [
+        {
+          "rawcode": "A0JE",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 55,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A09G",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 9,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A00V",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00N",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A01H",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00L",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "Avul",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 270,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        }
+      ],
+      "individuallyConfirmedCombatSkillCount": 0,
+      "allCombatSkillsProvenAbsent": false,
+      "actualCombatReady": false
+    },
+    {
+      "catalogUnitId": "C-05",
+      "catalogName": "상디",
+      "originalUnitRawcode": "h004",
+      "originalMapName": "상디 - 흔함",
+      "objectAttack1": {
+        "attackCooldownSeconds": 0.77,
+        "baseDamagePlus": 22,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 420,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.1,
+        "minimumBaseDamage": 23,
+        "maximumBaseDamage": 25
+      },
+      "abilityCodesInObjectOrder": [
+        {
+          "rawcode": "A0JE",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 55,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A09G",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 9,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A01B",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h013",
+          "jassUnitIngredientCount": 3,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A00P",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00I",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "Avul",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 270,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        }
+      ],
+      "individuallyConfirmedCombatSkillCount": 0,
+      "allCombatSkillsProvenAbsent": false,
+      "actualCombatReady": false
+    },
+    {
+      "catalogUnitId": "C-06",
+      "catalogName": "쵸파",
+      "originalUnitRawcode": "h008",
+      "originalMapName": "토니토니 쵸파 - 흔함",
+      "objectAttack1": {
+        "attackCooldownSeconds": 0.57,
+        "baseDamagePlus": 21,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 420,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.2,
+        "minimumBaseDamage": 22,
+        "maximumBaseDamage": 24
+      },
+      "abilityCodesInObjectOrder": [
+        {
+          "rawcode": "A0JE",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 55,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A09G",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 9,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A02I",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00G",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A00E",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00C",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "Avul",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 270,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        }
+      ],
+      "individuallyConfirmedCombatSkillCount": 0,
+      "allCombatSkillsProvenAbsent": false,
+      "actualCombatReady": false
+    },
+    {
+      "catalogUnitId": "C-07",
+      "catalogName": "버기",
+      "originalUnitRawcode": "h005",
+      "originalMapName": "버기 - 흔함",
+      "objectAttack1": {
+        "attackCooldownSeconds": 0.99,
+        "baseDamagePlus": 28,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 420,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.1,
+        "minimumBaseDamage": 29,
+        "maximumBaseDamage": 31
+      },
+      "abilityCodesInObjectOrder": [
+        {
+          "rawcode": "A0JE",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 55,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A09G",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 9,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A00L",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00J",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A018",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h015",
+          "jassUnitIngredientCount": 3,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "Avul",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 270,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        }
+      ],
+      "individuallyConfirmedCombatSkillCount": 0,
+      "allCombatSkillsProvenAbsent": false,
+      "actualCombatReady": false
+    },
+    {
+      "catalogUnitId": "C-08",
+      "catalogName": "총병",
+      "originalUnitRawcode": "h009",
+      "originalMapName": "해군 총병 - 흔함",
+      "objectAttack1": {
+        "attackCooldownSeconds": 0.96,
+        "baseDamagePlus": 29,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 420,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.17,
+        "minimumBaseDamage": 30,
+        "maximumBaseDamage": 32
+      },
+      "abilityCodesInObjectOrder": [
+        {
+          "rawcode": "A0JE",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 55,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A09G",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 9,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A0N5",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00M",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A01L",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00F",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A19Z",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h01F",
+          "jassUnitIngredientCount": 3,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "Avul",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 270,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        }
+      ],
+      "individuallyConfirmedCombatSkillCount": 0,
+      "allCombatSkillsProvenAbsent": false,
+      "actualCombatReady": false
+    },
+    {
+      "catalogUnitId": "C-09",
+      "catalogName": "칼병",
+      "originalUnitRawcode": "h006",
+      "originalMapName": "해군 칼병 - 흔함",
+      "objectAttack1": {
+        "attackCooldownSeconds": 0.94,
+        "baseDamagePlus": 27,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 420,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.17,
+        "minimumBaseDamage": 28,
+        "maximumBaseDamage": 30
+      },
+      "abilityCodesInObjectOrder": [
+        {
+          "rawcode": "A0JE",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 55,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A09G",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 9,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A0N7",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00A",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "A01R",
+          "kind": "original-cwr-fusion-ability",
+          "catalogCharacterOccurrences": 1,
+          "jassResultRawcode": "h00E",
+          "jassUnitIngredientCount": 2,
+          "nativeCombatSkillVerified": false
+        },
+        {
+          "rawcode": "Avul",
+          "kind": "shared-or-native-ability-not-combat-classified",
+          "catalogCharacterOccurrences": 270,
+          "jassResultRawcode": null,
+          "jassUnitIngredientCount": 0,
+          "nativeCombatSkillVerified": false
+        }
+      ],
+      "individuallyConfirmedCombatSkillCount": 0,
+      "allCombatSkillsProvenAbsent": false,
+      "actualCombatReady": false
+    }
+  ]
+}

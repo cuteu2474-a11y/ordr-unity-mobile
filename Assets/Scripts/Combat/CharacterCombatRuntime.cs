@@ -963,6 +963,7 @@ namespace Ordr.Mobile.Combat
             if (!characters.TryGetValue(instanceId, out unit))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
             unit.AttackBlockedByMissingFormula = false;
+            unit.DeferredAttackReason = null; // 재승인 후 이전의 실패 사유를 남기지 않는다.
         }
 
         public CombatStatusEngine StatusOf(string enemyId)
