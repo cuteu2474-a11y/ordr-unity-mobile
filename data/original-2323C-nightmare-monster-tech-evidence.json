@@ -1,0 +1,2395 @@
+{
+  "format": "ordr-original-2323C-nightmare-monster-tech-evidence-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sources": [
+    "war3map.j:CUM",
+    "Units\\UnitBalance.slk:upgrades",
+    "Units\\UpgradeData.slk:effect/base/mod"
+  ],
+  "difficulty": "악몽",
+  "otherworldMode": {
+    "independentChoiceFlag": "th[tn]",
+    "playerZeroThroughThreeResearch": "R00P",
+    "doesNotSetAnAdditionalEnemyResearchInThisBranch": true,
+    "modeWideEffectiveMonsterStatsVerified": false
+  },
+  "nightmareMonsterMagicDefense": {
+    "sourceJassField": "LK[0..3]",
+    "initialA04QAbilityLevel": 16,
+    "affectedByOtherGameplayEvents": true
+  },
+  "startingDifficultyResearch": [
+    {
+      "rawcode": "R01A",
+      "researchedLevel": 1,
+      "playerIndex": 5,
+      "sourceJassLine": 58044,
+      "originalUpgradeEffects": [
+        {
+          "originalEffectTag": "rhpo",
+          "baseAtLevelOne": 0.5,
+          "incrementPerAdditionalLevel": 0.0,
+          "rawEffectValueAtResearchedLevel": 0.5
+        }
+      ]
+    },
+    {
+      "rawcode": "R012",
+      "researchedLevel": 1,
+      "playerIndex": 5,
+      "sourceJassLine": 58045,
+      "originalUpgradeEffects": [
+        {
+          "originalEffectTag": "rhpo",
+          "baseAtLevelOne": 0.58,
+          "incrementPerAdditionalLevel": 0.58,
+          "rawEffectValueAtResearchedLevel": 0.58
+        }
+      ]
+    },
+    {
+      "rawcode": "R01R",
+      "researchedLevel": 1,
+      "playerIndex": 6,
+      "sourceJassLine": 58046,
+      "originalUpgradeEffects": []
+    },
+    {
+      "rawcode": "R024",
+      "researchedLevel": 3,
+      "playerIndex": 6,
+      "sourceJassLine": 58047,
+      "originalUpgradeEffects": [
+        {
+          "originalEffectTag": "rmvx",
+          "baseAtLevelOne": 29.0,
+          "incrementPerAdditionalLevel": 29.0,
+          "rawEffectValueAtResearchedLevel": 87.0
+        }
+      ]
+    },
+    {
+      "rawcode": "R00J",
+      "researchedLevel": 11,
+      "playerIndex": 6,
+      "sourceJassLine": 58048,
+      "originalUpgradeEffects": [
+        {
+          "originalEffectTag": "rarm",
+          "baseAtLevelOne": 0.1,
+          "incrementPerAdditionalLevel": 0.0,
+          "rawEffectValueAtResearchedLevel": 0.1
+        }
+      ]
+    },
+    {
+      "rawcode": "R02M",
+      "researchedLevel": 1,
+      "playerIndex": 6,
+      "sourceJassLine": 58049,
+      "originalUpgradeEffects": [
+        {
+          "originalEffectTag": "rhpo",
+          "baseAtLevelOne": 8.5,
+          "incrementPerAdditionalLevel": 0.0,
+          "rawEffectValueAtResearchedLevel": 8.5
+        }
+      ]
+    },
+    {
+      "rawcode": "R00A",
+      "researchedLevel": 15,
+      "playerIndex": 6,
+      "sourceJassLine": 58050,
+      "originalUpgradeEffects": [
+        {
+          "originalEffectTag": "rhpo",
+          "baseAtLevelOne": 0.1,
+          "incrementPerAdditionalLevel": 0.1,
+          "rawEffectValueAtResearchedLevel": 1.5
+        }
+      ]
+    },
+    {
+      "rawcode": "R00T",
+      "researchedLevel": 4,
+      "playerIndex": 6,
+      "sourceJassLine": 58051,
+      "originalUpgradeEffects": [
+        {
+          "originalEffectTag": "rhpo",
+          "baseAtLevelOne": 0.27,
+          "incrementPerAdditionalLevel": 0.27,
+          "rawEffectValueAtResearchedLevel": 1.08
+        }
+      ]
+    },
+    {
+      "rawcode": "R00V",
+      "researchedLevel": 6,
+      "playerIndex": 6,
+      "sourceJassLine": 58052,
+      "originalUpgradeEffects": [
+        {
+          "originalEffectTag": "rhpo",
+          "baseAtLevelOne": 0.96,
+          "incrementPerAdditionalLevel": 0.96,
+          "rawEffectValueAtResearchedLevel": 5.76
+        }
+      ]
+    },
+    {
+      "rawcode": "R00U",
+      "researchedLevel": 8,
+      "playerIndex": 6,
+      "sourceJassLine": 58053,
+      "originalUpgradeEffects": [
+        {
+          "originalEffectTag": "rhpo",
+          "baseAtLevelOne": 1.0,
+          "incrementPerAdditionalLevel": 1.0,
+          "rawEffectValueAtResearchedLevel": 8.0
+        }
+      ]
+    },
+    {
+      "rawcode": "R00W",
+      "researchedLevel": 9,
+      "playerIndex": 6,
+      "sourceJassLine": 58054,
+      "originalUpgradeEffects": [
+        {
+          "originalEffectTag": "rhpo",
+          "baseAtLevelOne": 1.0,
+          "incrementPerAdditionalLevel": 0.81,
+          "rawEffectValueAtResearchedLevel": 7.48
+        }
+      ]
+    }
+  ],
+  "lateConditionalGoroseiResearch": [
+    {
+      "event": "워큐리",
+      "conditionalJassFunction": "BeR",
+      "nightmareResearchAtActivation": [
+        {
+          "rawcode": "R00S",
+          "researchedLevel": 10
+        },
+        {
+          "rawcode": "R01W",
+          "researchedLevel": 25
+        }
+      ],
+      "alwaysAppliedAtWaveStart": false
+    },
+    {
+      "event": "새턴",
+      "conditionalJassFunction": "BeR",
+      "nightmareResearchAtActivation": [
+        {
+          "rawcode": "R00S",
+          "researchedLevel": 10
+        },
+        {
+          "rawcode": "R01W",
+          "researchedLevel": 10
+        }
+      ],
+      "alwaysAppliedAtWaveStart": false
+    },
+    {
+      "event": "나스쥬로",
+      "conditionalJassFunction": "BeR",
+      "nightmareResearchAtActivation": [
+        {
+          "rawcode": "R00S",
+          "researchedLevel": 25
+        },
+        {
+          "rawcode": "R01W",
+          "researchedLevel": 10
+        }
+      ],
+      "alwaysAppliedAtWaveStart": false
+    }
+  ],
+  "enemyOwnerPlayerIndex": 6,
+  "scope": "initial-researched-tech-intersected-with-each-wave-unit-upgrade-list",
+  "lateConditionalGoroseiTechIdentifiedNotApplied": true,
+  "otherRuntimeTechAndAbilityEventsExhaustivelyVerified": false,
+  "engineUpgradeApplicationAndRoundingVerified": false,
+  "safeForVerifiedMonsterWaveRuntime": false,
+  "summary": {
+    "monsterTypesFromJassSpawnArrays": 68,
+    "differentMatchingUpgradeLists": 7,
+    "matchedUpgradeListCounts": [
+      {
+        "researchRawcodes": [
+          "R024"
+        ],
+        "monsterTypes": 1
+      },
+      {
+        "researchRawcodes": [
+          "R024",
+          "R00J",
+          "R00A"
+        ],
+        "monsterTypes": 13
+      },
+      {
+        "researchRawcodes": [
+          "R024",
+          "R00T",
+          "R00J",
+          "R00A"
+        ],
+        "monsterTypes": 14
+      },
+      {
+        "researchRawcodes": [
+          "R024",
+          "R00U",
+          "R00J",
+          "R00A"
+        ],
+        "monsterTypes": 9
+      },
+      {
+        "researchRawcodes": [
+          "R024",
+          "R00V",
+          "R00J",
+          "R00A"
+        ],
+        "monsterTypes": 8
+      },
+      {
+        "researchRawcodes": [
+          "R024",
+          "R00W",
+          "R00J",
+          "R00A"
+        ],
+        "monsterTypes": 15
+      },
+      {
+        "researchRawcodes": [
+          "R02M"
+        ],
+        "monsterTypes": 8
+      }
+    ]
+  },
+  "waveMonsterUpgrades": [
+    {
+      "waveNumber": 1,
+      "role": "line",
+      "monsterRawcode": "o00I",
+      "originalMapName": "레벨 01 알비다",
+      "objectBaseHitPoints": 135,
+      "objectBaseArmor": 0,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 2,
+      "role": "line",
+      "monsterRawcode": "o004",
+      "originalMapName": "레벨 02 찌질한 해왕류",
+      "objectBaseHitPoints": 170,
+      "objectBaseArmor": 1,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 3,
+      "role": "line",
+      "monsterRawcode": "o00A",
+      "originalMapName": "레벨 03 해적사냥꾼조로",
+      "objectBaseHitPoints": 230,
+      "objectBaseArmor": 1,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 4,
+      "role": "line",
+      "monsterRawcode": "o009",
+      "originalMapName": "레벨 04 모건",
+      "objectBaseHitPoints": 300,
+      "objectBaseArmor": 2,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 5,
+      "role": "line",
+      "monsterRawcode": "o008",
+      "originalMapName": "레벨 05 캡틴 버기",
+      "objectBaseHitPoints": 380,
+      "objectBaseArmor": 3,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 6,
+      "role": "line",
+      "monsterRawcode": "o00D",
+      "originalMapName": "레벨 06 캡틴 크로",
+      "objectBaseHitPoints": 510,
+      "objectBaseArmor": 3,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 7,
+      "role": "line",
+      "monsterRawcode": "o006",
+      "originalMapName": "레벨 07 깅",
+      "objectBaseHitPoints": 650,
+      "objectBaseArmor": 4,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 8,
+      "role": "line",
+      "monsterRawcode": "o005",
+      "originalMapName": "레벨 08 클리크",
+      "objectBaseHitPoints": 860,
+      "objectBaseArmor": 5,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 9,
+      "role": "line",
+      "monsterRawcode": "o00B",
+      "originalMapName": "레벨 09 하찌",
+      "objectBaseHitPoints": 1020,
+      "objectBaseArmor": 6,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 10,
+      "role": "boss",
+      "monsterRawcode": "o01V",
+      "originalMapName": "레벨 10 [보스]아론",
+      "objectBaseHitPoints": 14500,
+      "objectBaseArmor": 13,
+      "sourceUnitBalanceUpgradeList": [
+        "R00O",
+        "R00B",
+        "R00N",
+        "R00K",
+        "R00L",
+        "R00M",
+        "R02M",
+        "R01W"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R02M"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00A",
+        "R00J",
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R024"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 11,
+      "role": "line",
+      "monsterRawcode": "o003",
+      "originalMapName": "레벨 11 타시기",
+      "objectBaseHitPoints": 1100,
+      "objectBaseArmor": 7,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 12,
+      "role": "line",
+      "monsterRawcode": "o00C",
+      "originalMapName": "레벨 12 스모커",
+      "objectBaseHitPoints": 1400,
+      "objectBaseArmor": 8,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 13,
+      "role": "line",
+      "monsterRawcode": "o00F",
+      "originalMapName": "레벨 13 Mr.9",
+      "objectBaseHitPoints": 1790,
+      "objectBaseArmor": 9,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 14,
+      "role": "line",
+      "monsterRawcode": "o00M",
+      "originalMapName": "레벨 14 Mr.6",
+      "objectBaseHitPoints": 2240,
+      "objectBaseArmor": 11,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 15,
+      "role": "line",
+      "monsterRawcode": "o00H",
+      "originalMapName": "레벨 15 Mr.5",
+      "objectBaseHitPoints": 2670,
+      "objectBaseArmor": 12,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 16,
+      "role": "line",
+      "monsterRawcode": "o00G",
+      "originalMapName": "레벨 16 Mr.4",
+      "objectBaseHitPoints": 3660,
+      "objectBaseArmor": 14,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 17,
+      "role": "line",
+      "monsterRawcode": "o00N",
+      "originalMapName": "레벨 17 Mr.3",
+      "objectBaseHitPoints": 4450,
+      "objectBaseArmor": 16,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 18,
+      "role": "line",
+      "monsterRawcode": "o00E",
+      "originalMapName": "레벨 18 Mr.2",
+      "objectBaseHitPoints": 4970,
+      "objectBaseArmor": 17,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 19,
+      "role": "line",
+      "monsterRawcode": "o00O",
+      "originalMapName": "레벨 19 Mr.1",
+      "objectBaseHitPoints": 5600,
+      "objectBaseArmor": 18,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 20,
+      "role": "boss",
+      "monsterRawcode": "o01W",
+      "originalMapName": "레벨 20 [보스]크로커다일",
+      "objectBaseHitPoints": 85000,
+      "objectBaseArmor": 29,
+      "sourceUnitBalanceUpgradeList": [
+        "R00O",
+        "R00B",
+        "R00N",
+        "R00K",
+        "R00L",
+        "R00M",
+        "R02M",
+        "R01W"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R02M"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00A",
+        "R00J",
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R024"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 21,
+      "role": "line",
+      "monsterRawcode": "o00P",
+      "originalMapName": "레벨 21 체스",
+      "objectBaseHitPoints": 6500,
+      "objectBaseArmor": 19,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 22,
+      "role": "line",
+      "monsterRawcode": "o00Q",
+      "originalMapName": "레벨 22 마리모",
+      "objectBaseHitPoints": 7200,
+      "objectBaseArmor": 20,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 23,
+      "role": "line",
+      "monsterRawcode": "o00R",
+      "originalMapName": "레벨 23 도르돈",
+      "objectBaseHitPoints": 9400,
+      "objectBaseArmor": 21,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 24,
+      "role": "line",
+      "monsterRawcode": "o00S",
+      "originalMapName": "레벨 24 와포루",
+      "objectBaseHitPoints": 12700,
+      "objectBaseArmor": 22,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 25,
+      "role": "line",
+      "monsterRawcode": "o00T",
+      "originalMapName": "레벨 25 베라미",
+      "objectBaseHitPoints": 15850,
+      "objectBaseArmor": 23,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 26,
+      "role": "line",
+      "monsterRawcode": "o007",
+      "originalMapName": "레벨 26 사토리",
+      "objectBaseHitPoints": 18900,
+      "objectBaseArmor": 25,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 27,
+      "role": "line",
+      "monsterRawcode": "o00U",
+      "originalMapName": "레벨 27 게다츠",
+      "objectBaseHitPoints": 23250,
+      "objectBaseArmor": 26,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 28,
+      "role": "line",
+      "monsterRawcode": "o00V",
+      "originalMapName": "레벨 28 오움",
+      "objectBaseHitPoints": 26000,
+      "objectBaseArmor": 27,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 29,
+      "role": "line",
+      "monsterRawcode": "o00X",
+      "originalMapName": "레벨 29 슈라",
+      "objectBaseHitPoints": 32000,
+      "objectBaseArmor": 29,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00T",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 30,
+      "role": "boss",
+      "monsterRawcode": "o01X",
+      "originalMapName": "레벨 30 [보스]에넬",
+      "objectBaseHitPoints": 750000,
+      "objectBaseArmor": 115,
+      "sourceUnitBalanceUpgradeList": [
+        "R00O",
+        "R00B",
+        "R00N",
+        "R00K",
+        "R00L",
+        "R00M",
+        "R02M",
+        "R01W"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R02M"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00A",
+        "R00J",
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R024"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 31,
+      "role": "line",
+      "monsterRawcode": "o01G",
+      "originalMapName": "레벨 31 폭시",
+      "objectBaseHitPoints": 54500,
+      "objectBaseArmor": 31,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 32,
+      "role": "line",
+      "monsterRawcode": "o010",
+      "originalMapName": "레벨 32 칼리파",
+      "objectBaseHitPoints": 67000,
+      "objectBaseArmor": 35,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 33,
+      "role": "line",
+      "monsterRawcode": "o011",
+      "originalMapName": "레벨 33 후쿠로",
+      "objectBaseHitPoints": 80000,
+      "objectBaseArmor": 36,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 34,
+      "role": "line",
+      "monsterRawcode": "o012",
+      "originalMapName": "레벨 34 쿠마도리",
+      "objectBaseHitPoints": 90300,
+      "objectBaseArmor": 37,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 35,
+      "role": "line",
+      "monsterRawcode": "o017",
+      "originalMapName": "레벨 35 블루노",
+      "objectBaseHitPoints": 108870,
+      "objectBaseArmor": 40,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 36,
+      "role": "line",
+      "monsterRawcode": "o018",
+      "originalMapName": "레벨 36 재브라",
+      "objectBaseHitPoints": 124200,
+      "objectBaseArmor": 41,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 37,
+      "role": "line",
+      "monsterRawcode": "o019",
+      "originalMapName": "레벨 37 카쿠",
+      "objectBaseHitPoints": 138400,
+      "objectBaseArmor": 42,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 38,
+      "role": "line",
+      "monsterRawcode": "o01A",
+      "originalMapName": "레벨 38 루치",
+      "objectBaseHitPoints": 145000,
+      "objectBaseArmor": 44,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00V",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 39,
+      "role": "line",
+      "monsterRawcode": "o015",
+      "originalMapName": "레벨 39 찌질이 스팬담",
+      "objectBaseHitPoints": 1,
+      "objectBaseArmor": 39,
+      "sourceUnitBalanceUpgradeList": [
+        "R024"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00A",
+        "R00J",
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 40,
+      "role": "boss",
+      "monsterRawcode": "o01Y",
+      "originalMapName": "레벨 40 [보스]루치",
+      "objectBaseHitPoints": 2900000,
+      "objectBaseArmor": 170,
+      "sourceUnitBalanceUpgradeList": [
+        "R00O",
+        "R00B",
+        "R00N",
+        "R00K",
+        "R00L",
+        "R00M",
+        "R02M",
+        "R01W"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R02M"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00A",
+        "R00J",
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R024"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 41,
+      "role": "line",
+      "monsterRawcode": "o01B",
+      "originalMapName": "레벨 41 압살롬",
+      "objectBaseHitPoints": 350000,
+      "objectBaseArmor": 45,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 42,
+      "role": "line",
+      "monsterRawcode": "o01F",
+      "originalMapName": "레벨 42 오즈",
+      "objectBaseHitPoints": 450000,
+      "objectBaseArmor": 46,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 43,
+      "role": "line",
+      "monsterRawcode": "o01E",
+      "originalMapName": "레벨 43 모리아",
+      "objectBaseHitPoints": 600000,
+      "objectBaseArmor": 47,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 44,
+      "role": "line",
+      "monsterRawcode": "o01D",
+      "originalMapName": "레벨 44 쿠마",
+      "objectBaseHitPoints": 750000,
+      "objectBaseArmor": 47,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 45,
+      "role": "line",
+      "monsterRawcode": "o01O",
+      "originalMapName": "레벨 45 키자루",
+      "objectBaseHitPoints": 950000,
+      "objectBaseArmor": 48,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 46,
+      "role": "line",
+      "monsterRawcode": "o01H",
+      "originalMapName": "레벨 46 마리골드",
+      "objectBaseHitPoints": 1880000,
+      "objectBaseArmor": 48,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 47,
+      "role": "line",
+      "monsterRawcode": "o01L",
+      "originalMapName": "레벨 47 마젤란",
+      "objectBaseHitPoints": 2285000,
+      "objectBaseArmor": 49,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 48,
+      "role": "line",
+      "monsterRawcode": "o01M",
+      "originalMapName": "레벨 48 미호크",
+      "objectBaseHitPoints": 2845200,
+      "objectBaseArmor": 49,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 49,
+      "role": "line",
+      "monsterRawcode": "o01T",
+      "originalMapName": "레벨 49 아카이누",
+      "objectBaseHitPoints": 3300000,
+      "objectBaseArmor": 50,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00U",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 50,
+      "role": "boss",
+      "monsterRawcode": "o01Z",
+      "originalMapName": "레벨 50 [보스]센고쿠",
+      "objectBaseHitPoints": 20800000,
+      "objectBaseArmor": 350,
+      "sourceUnitBalanceUpgradeList": [
+        "R00O",
+        "R00B",
+        "R00N",
+        "R00K",
+        "R00L",
+        "R00M",
+        "R02M",
+        "R01W"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R02M"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00A",
+        "R00J",
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R024"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 51,
+      "role": "line",
+      "monsterRawcode": "o01U",
+      "originalMapName": "레벨 51 호디존스",
+      "objectBaseHitPoints": 5700000,
+      "objectBaseArmor": 58,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 52,
+      "role": "line",
+      "monsterRawcode": "o01N",
+      "originalMapName": "레벨 52 베르고",
+      "objectBaseHitPoints": 6500000,
+      "objectBaseArmor": 68,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 53,
+      "role": "line",
+      "monsterRawcode": "o01Q",
+      "originalMapName": "레벨 53 시저",
+      "objectBaseHitPoints": 7150000,
+      "objectBaseArmor": 69,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 54,
+      "role": "line",
+      "monsterRawcode": "o01R",
+      "originalMapName": "레벨 54 피카",
+      "objectBaseHitPoints": 7550000,
+      "objectBaseArmor": 70,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 55,
+      "role": "line",
+      "monsterRawcode": "o01S",
+      "originalMapName": "레벨 55 트레볼",
+      "objectBaseHitPoints": 8690000,
+      "objectBaseArmor": 73,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 55,
+      "role": "boss",
+      "monsterRawcode": "o001",
+      "originalMapName": "레벨 55 [보스]도플라밍고",
+      "objectBaseHitPoints": 12297000,
+      "objectBaseArmor": 360,
+      "sourceUnitBalanceUpgradeList": [
+        "R00O",
+        "R00B",
+        "R00N",
+        "R00K",
+        "R00L",
+        "R00M",
+        "R02M",
+        "R01W"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R02M"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00A",
+        "R00J",
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R024"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 56,
+      "role": "line",
+      "monsterRawcode": "o028",
+      "originalMapName": "레벨 56 호미즈",
+      "objectBaseHitPoints": 9400000,
+      "objectBaseArmor": 77,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 57,
+      "role": "line",
+      "monsterRawcode": "o00Z",
+      "originalMapName": "레벨 57 샬롯 크래커",
+      "objectBaseHitPoints": 10200000,
+      "objectBaseArmor": 71,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 58,
+      "role": "line",
+      "monsterRawcode": "o020",
+      "originalMapName": "레벨 58 샬롯 스무디",
+      "objectBaseHitPoints": 10990000,
+      "objectBaseArmor": 72,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 59,
+      "role": "line",
+      "monsterRawcode": "o021",
+      "originalMapName": "레벨 59 샬롯 카타쿠리",
+      "objectBaseHitPoints": 11590000,
+      "objectBaseArmor": 129,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 60,
+      "role": "line",
+      "monsterRawcode": "o02G",
+      "originalMapName": "레벨 60 제우스",
+      "objectBaseHitPoints": 12450000,
+      "objectBaseArmor": 70,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 60,
+      "role": "boss",
+      "monsterRawcode": "o02C",
+      "originalMapName": "레벨 60 [보스]빅 맘",
+      "objectBaseHitPoints": 12750000,
+      "objectBaseArmor": 372,
+      "sourceUnitBalanceUpgradeList": [
+        "R00O",
+        "R00B",
+        "R00N",
+        "R00K",
+        "R00L",
+        "R00M",
+        "R02M",
+        "R01W"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R02M"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00A",
+        "R00J",
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R024"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 61,
+      "role": "line",
+      "monsterRawcode": "o026",
+      "originalMapName": "레벨 61 바질 호킨스",
+      "objectBaseHitPoints": 13582115,
+      "objectBaseArmor": 76,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 62,
+      "role": "line",
+      "monsterRawcode": "o025",
+      "originalMapName": "레벨 62 잭",
+      "objectBaseHitPoints": 14120000,
+      "objectBaseArmor": 81,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 63,
+      "role": "line",
+      "monsterRawcode": "o027",
+      "originalMapName": "레벨 63 퀸",
+      "objectBaseHitPoints": 15610000,
+      "objectBaseArmor": 84,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 64,
+      "role": "line",
+      "monsterRawcode": "o00K",
+      "originalMapName": "레벨 64 킹",
+      "objectBaseHitPoints": 16610000,
+      "objectBaseArmor": 80,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 65,
+      "role": "line",
+      "monsterRawcode": "o02H",
+      "originalMapName": "레벨 65 오로치",
+      "objectBaseHitPoints": 16210000,
+      "objectBaseArmor": 81,
+      "sourceUnitBalanceUpgradeList": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00P",
+        "R00S",
+        "R00A"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R024",
+        "R00W",
+        "R00J",
+        "R00A"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00T",
+        "R00U",
+        "R00V",
+        "R01R",
+        "R02M"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    },
+    {
+      "waveNumber": 65,
+      "role": "boss",
+      "monsterRawcode": "o02B",
+      "originalMapName": "레벨 65 [보스]카이도",
+      "objectBaseHitPoints": 13595000,
+      "objectBaseArmor": 395,
+      "sourceUnitBalanceUpgradeList": [
+        "R00O",
+        "R00B",
+        "R00N",
+        "R00K",
+        "R00L",
+        "R00M",
+        "R02M",
+        "R01W"
+      ],
+      "matchedInitialEnemyOwnerResearch": [
+        "R02M"
+      ],
+      "unmatchedInitialEnemyOwnerResearch": [
+        "R00A",
+        "R00J",
+        "R00T",
+        "R00U",
+        "R00V",
+        "R00W",
+        "R01R",
+        "R024"
+      ],
+      "effectiveHitPointsVerified": false,
+      "effectiveArmorVerified": false
+    }
+  ]
+}
