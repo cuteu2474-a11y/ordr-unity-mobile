@@ -1,0 +1,421 @@
+{
+  "format": "ordr-otherworld-mystic-web-recipes-v1",
+  "gameVersion": "S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "source": "https://ordr.kr/character",
+  "sourceVersion": "2.323",
+  "catalogGrade": "신비함",
+  "recipeCount": 13,
+  "authorizedForConsumption": false,
+  "originalJassConditionsVerified": false,
+  "notes": [
+    "재료·골드·목재·특수 요구 사항은 2.323 공개 도감 표기 기준으로만 확인되었습니다. 원본 JASS 제작 능력 및 소비 순서는 미확인입니다.",
+    "any-random은 별도의 랜덤 등급 유닛 한 기를 의미하며 이미 고정 재료로 잡힌 유닛 인스턴스를 중복 사용하지 않습니다.",
+    "해적선/행운의토큰은 도감 표기 그대로 보존합니다. 원본 아이템/유닛/플래그와 소모 메커니즘은 추측하지 않습니다.",
+    "도감에 빠진 유지로(2.322 추가)는 별도 원본 검증이 필요하므로 완전한 신비 목록이라고 가정하지 않습니다."
+  ],
+  "recipes": [
+    {
+      "resultUnitId": "MY-01",
+      "resultName": "고죠 사토루",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-01",
+          "count": 1
+        },
+        {
+          "kind": "any-random",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "D-02",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "H-17",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "R-24",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "해적선",
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY1"
+    },
+    {
+      "resultUnitId": "MY-02",
+      "resultName": "네즈코",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-14",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-09",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "H-03",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "R-18",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY2"
+    },
+    {
+      "resultUnitId": "MY-03",
+      "resultName": "료우기 시키",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-09",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "H-14",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "H-05",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-02",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY3"
+    },
+    {
+      "resultUnitId": "MY-04",
+      "resultName": "미나토",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-02",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "T-05",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-21",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY4"
+    },
+    {
+      "resultUnitId": "MY-05",
+      "resultName": "바쿠야",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-12",
+          "count": 1
+        },
+        {
+          "kind": "any-random",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "D-05",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "R-11",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY5"
+    },
+    {
+      "resultUnitId": "MY-06",
+      "resultName": "부릉냐",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-10",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-06",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "H-15",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "T-03",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY6"
+    },
+    {
+      "resultUnitId": "MY-07",
+      "resultName": "샌즈",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-03",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "H-10",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "H-16",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "T-04",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY7"
+    },
+    {
+      "resultUnitId": "MY-08",
+      "resultName": "아냐 포저",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-06",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-19",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "H-13",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY8"
+    },
+    {
+      "resultUnitId": "MY-09",
+      "resultName": "야쿠모 유카리",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-05",
+          "count": 1
+        },
+        {
+          "kind": "any-random",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "D-04",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "S-28",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY9"
+    },
+    {
+      "resultUnitId": "MY-10",
+      "resultName": "콘파쿠 요우무",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-07",
+          "count": 1
+        },
+        {
+          "kind": "any-random",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-26",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "T-02",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY10"
+    },
+    {
+      "resultUnitId": "MY-11",
+      "resultName": "쿠죠 죠타로",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-11",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-35",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-18",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "S-07",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY11"
+    },
+    {
+      "resultUnitId": "MY-12",
+      "resultName": "타츠마키",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-08",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-34",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-32",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY12"
+    },
+    {
+      "resultUnitId": "MY-13",
+      "resultName": "히그마",
+      "ingredients": [
+        {
+          "kind": "unit",
+          "unitId": "RN-04",
+          "count": 1
+        },
+        {
+          "kind": "any-random",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "L-03",
+          "count": 1
+        },
+        {
+          "kind": "unit",
+          "unitId": "R-22",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "lumber": 7,
+      "specialItems": [
+        "행운의토큰"
+      ],
+      "sourceUrl": "https://ordr.kr/character/MY13"
+    }
+  ]
+}

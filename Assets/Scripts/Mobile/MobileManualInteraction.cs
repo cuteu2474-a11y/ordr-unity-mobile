@@ -139,6 +139,7 @@ namespace Ordr.Mobile.Mobile
                 if (assist != null) return assist.CanCommit;
                 var jass = fusion as OriginalJassFusionPort;
                 if (jass != null) return jass.CanCommit;
+                if (fusion is OtherworldMysticFusionPreviewPort) return false;
                 return true;
             }
         }

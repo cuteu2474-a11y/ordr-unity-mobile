@@ -54,6 +54,7 @@ ORDR 2.310 패치에 신규 특수 유닛 **가이몬**이 기록되지만 목�
 
 - `original-unit-rawcode-label-links.json`: W3X의 `BjB/Bi8/Bi9` 이름+조합 능력 기록을 참고해 프로젝트 유닛 81종과 Warcraft rawcode를 교차 연결. 전투 스탯이나 제작 커밋 허가의 근거로 단독 사용 불가.
 - `original-jass-fusion-ordered.xz.b64`: 사용자 원본 W3X의 `CWR`에 등록된 조합 **266건(TEST 1건 포함)**을 BGI 원본 호출 순서 그대로 보존한 압축 아카이브.
+- `otherworld-2323C-mystic-web-recipes.json`: 2.323 공개 도감의 신비 13종 조합식(고정 재료, 랜덤 등급 추가 슬롯, 공통 비용, 해적선·행운의토큰 표기). 모바일 미리보기용이며 원본 소비 트리거 미확인 상태로 실행 금지.
 - `tools/unpack_ordered_jass_fusions.py`: 위 압축본을 `original-jass-fusion-registry.json`으로 복원. 게임 재화나 유닛을 소비하지 않는 데이터 변환.
 - `tools/extract_jass_unit_labels.py`: 원본 `war3map.j`가 있을 때 유닛/조합 능력/원문 이름을 전수 추출하고 81종 레이블 연결을 소스와 대조.
 - 현재 결과 유닛을 이름·등급으로 연결한 원본 조합 81건 중 **재료 유닛 rawcode 전체를 매핑한 것은 0건**이므로 실제 합성은 아직 비활성. 나머지 재료 매핑과 원본 특수 조건 및 원자적 소비가 필요하다.
