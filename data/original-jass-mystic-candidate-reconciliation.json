@@ -1,0 +1,2138 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "mode": "악몽 난이도 + 이세계모드 고정",
+  "sourceJassSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "webRecipeCount": 13,
+  "matchingGoldWoodRegistrations": 14,
+  "positiveLabelCorrelationRecipes": 8,
+  "structuralHypotheses": [
+    "h06G (shared UNIT condition) may be the web lucky token; not verified",
+    "PICK:A800 may encode a web any-random ingredient; not verified",
+    "Each web special item after the common token may occupy an extra UNIT slot; not verified",
+    "JASS Bi8/Bi9 catalog labels are grade/name-correlated, not object-verified"
+  ],
+  "verifiedObjectRawcodeMappings": 0,
+  "authorizedForUnitConsumption": false,
+  "warning": "Research-only alternatives, not a 1:1 mapping. Never select the first candidate for gameplay.",
+  "rows": [
+    {
+      "resultUnitId": "MY-01",
+      "resultName": "고죠 사토루",
+      "webSourceUrl": "https://ordr.kr/character/MY1",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "D-02",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "H-17",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-24",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-01",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 1,
+      "webSpecialItems": [
+        "해적선",
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A19W",
+          "resultRawcode": "h09M",
+          "labelMatchedIngredients": [
+            {
+              "catalogUnitId": "D-02",
+              "count": 1
+            },
+            {
+              "catalogUnitId": "H-17",
+              "count": 1
+            }
+          ],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06U",
+              "count": 1
+            },
+            {
+              "rawcode": "h027",
+              "count": 1
+            },
+            {
+              "rawcode": "h060",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06U",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h03V",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h03Z",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h027",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h060",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h09M",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A19W"
+      ],
+      "strongestLabelEvidenceCount": 2,
+      "matchStatus": "positive-label-correlation",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-02",
+      "resultName": "네즈코",
+      "webSourceUrl": "https://ordr.kr/character/MY2",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "H-03",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "L-09",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-18",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-14",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 0,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A0YK",
+          "resultRawcode": "h0BF",
+          "labelMatchedIngredients": [
+            {
+              "catalogUnitId": "H-03",
+              "count": 1
+            }
+          ],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h072",
+              "count": 1
+            },
+            {
+              "rawcode": "h02R",
+              "count": 1
+            },
+            {
+              "rawcode": "h01N",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h072",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h02R",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h03T",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h01N",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0BF",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A0Y6",
+          "resultRawcode": "h09R",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06Y",
+              "count": 1
+            },
+            {
+              "rawcode": "h087",
+              "count": 1
+            },
+            {
+              "rawcode": "h036",
+              "count": 1
+            },
+            {
+              "rawcode": "h00U",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06Y",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h087",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h036",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h00U",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h09R",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A0YK"
+      ],
+      "strongestLabelEvidenceCount": 1,
+      "matchStatus": "positive-label-correlation",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-03",
+      "resultName": "료우기 시키",
+      "webSourceUrl": "https://ordr.kr/character/MY3",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "H-05",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "H-14",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "L-02",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-09",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 0,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A0Y9",
+          "resultRawcode": "h0A2",
+          "labelMatchedIngredients": [
+            {
+              "catalogUnitId": "H-05",
+              "count": 1
+            },
+            {
+              "catalogUnitId": "H-14",
+              "count": 1
+            }
+          ],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h070",
+              "count": 1
+            },
+            {
+              "rawcode": "h02P",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h070",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h03J",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h044",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h02P",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0A2",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A0Y6",
+          "resultRawcode": "h09R",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06Y",
+              "count": 1
+            },
+            {
+              "rawcode": "h087",
+              "count": 1
+            },
+            {
+              "rawcode": "h036",
+              "count": 1
+            },
+            {
+              "rawcode": "h00U",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06Y",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h087",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h036",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h00U",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h09R",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A0Y9"
+      ],
+      "strongestLabelEvidenceCount": 2,
+      "matchStatus": "positive-label-correlation",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-04",
+      "resultName": "미나토",
+      "webSourceUrl": "https://ordr.kr/character/MY4",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "L-21",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-02",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "T-05",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 0,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A0Y3",
+          "resultRawcode": "h09W",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06V",
+              "count": 1
+            },
+            {
+              "rawcode": "h042",
+              "count": 1
+            },
+            {
+              "rawcode": "h07J",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06V",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h042",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h07J",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h09W",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A12C",
+          "resultRawcode": "h0BC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06W",
+              "count": 1
+            },
+            {
+              "rawcode": "h0AH",
+              "count": 1
+            },
+            {
+              "rawcode": "h030",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06W",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h0AH",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h030",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0BC",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A0Y3",
+        "A12C"
+      ],
+      "strongestLabelEvidenceCount": 0,
+      "matchStatus": "structural-only-ambiguous",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-05",
+      "resultName": "바쿠야",
+      "webSourceUrl": "https://ordr.kr/character/MY5",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "D-05",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-11",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-12",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 1,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A19T",
+          "resultRawcode": "h08I",
+          "labelMatchedIngredients": [
+            {
+              "catalogUnitId": "D-05",
+              "count": 1
+            }
+          ],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h071",
+              "count": 1
+            },
+            {
+              "rawcode": "h04H",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h071",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h05V",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h04H",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h08I",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A19U",
+          "resultRawcode": "h0AC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06X",
+              "count": 1
+            },
+            {
+              "rawcode": "h09Z",
+              "count": 1
+            },
+            {
+              "rawcode": "h029",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06X",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h09Z",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h029",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0AC",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A19V",
+          "resultRawcode": "h0CC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h09K",
+              "count": 1
+            },
+            {
+              "rawcode": "h03I",
+              "count": 1
+            },
+            {
+              "rawcode": "h05W",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h09K",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h03I",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h05W",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0CC",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A19T"
+      ],
+      "strongestLabelEvidenceCount": 1,
+      "matchStatus": "positive-label-correlation",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-06",
+      "resultName": "부릉냐",
+      "webSourceUrl": "https://ordr.kr/character/MY6",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "H-15",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "L-06",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-10",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "T-03",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 0,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A0XT",
+          "resultRawcode": "h09N",
+          "labelMatchedIngredients": [
+            {
+              "catalogUnitId": "H-15",
+              "count": 1
+            }
+          ],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h09L",
+              "count": 1
+            },
+            {
+              "rawcode": "h033",
+              "count": 1
+            },
+            {
+              "rawcode": "h07N",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h09L",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h033",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h07N",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h03L",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h09N",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A0Y6",
+          "resultRawcode": "h09R",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06Y",
+              "count": 1
+            },
+            {
+              "rawcode": "h087",
+              "count": 1
+            },
+            {
+              "rawcode": "h036",
+              "count": 1
+            },
+            {
+              "rawcode": "h00U",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06Y",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h087",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h036",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h00U",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h09R",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A0XT"
+      ],
+      "strongestLabelEvidenceCount": 1,
+      "matchStatus": "positive-label-correlation",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-07",
+      "resultName": "샌즈",
+      "webSourceUrl": "https://ordr.kr/character/MY7",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "H-10",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "H-16",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-03",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "T-04",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 0,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A10V",
+          "resultRawcode": "h083",
+          "labelMatchedIngredients": [
+            {
+              "catalogUnitId": "H-10",
+              "count": 1
+            },
+            {
+              "catalogUnitId": "H-16",
+              "count": 1
+            }
+          ],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h065",
+              "count": 1
+            },
+            {
+              "rawcode": "h0CK",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h065",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h03W",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h041",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h0CK",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h083",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A0Y6",
+          "resultRawcode": "h09R",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06Y",
+              "count": 1
+            },
+            {
+              "rawcode": "h087",
+              "count": 1
+            },
+            {
+              "rawcode": "h036",
+              "count": 1
+            },
+            {
+              "rawcode": "h00U",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06Y",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h087",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h036",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h00U",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h09R",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A10V"
+      ],
+      "strongestLabelEvidenceCount": 2,
+      "matchStatus": "positive-label-correlation",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-08",
+      "resultName": "아냐 포저",
+      "webSourceUrl": "https://ordr.kr/character/MY8",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "H-13",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "L-19",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-06",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 0,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A1AD",
+          "resultRawcode": "h08M",
+          "labelMatchedIngredients": [
+            {
+              "catalogUnitId": "H-13",
+              "count": 1
+            }
+          ],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06Z",
+              "count": 1
+            },
+            {
+              "rawcode": "h037",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06Z",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h037",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h055",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h08M",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A0Y3",
+          "resultRawcode": "h09W",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06V",
+              "count": 1
+            },
+            {
+              "rawcode": "h042",
+              "count": 1
+            },
+            {
+              "rawcode": "h07J",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06V",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h042",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h07J",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h09W",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A12C",
+          "resultRawcode": "h0BC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06W",
+              "count": 1
+            },
+            {
+              "rawcode": "h0AH",
+              "count": 1
+            },
+            {
+              "rawcode": "h030",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06W",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h0AH",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h030",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0BC",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A1AD"
+      ],
+      "strongestLabelEvidenceCount": 1,
+      "matchStatus": "positive-label-correlation",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-09",
+      "resultName": "야쿠모 유카리",
+      "webSourceUrl": "https://ordr.kr/character/MY9",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "D-04",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-05",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "S-28",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 1,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A19S",
+          "resultRawcode": "h0A6",
+          "labelMatchedIngredients": [
+            {
+              "catalogUnitId": "D-04",
+              "count": 1
+            }
+          ],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h073",
+              "count": 1
+            },
+            {
+              "rawcode": "h017",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h073",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h048",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h017",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0A6",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A19U",
+          "resultRawcode": "h0AC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06X",
+              "count": 1
+            },
+            {
+              "rawcode": "h09Z",
+              "count": 1
+            },
+            {
+              "rawcode": "h029",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06X",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h09Z",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h029",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0AC",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A19V",
+          "resultRawcode": "h0CC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h09K",
+              "count": 1
+            },
+            {
+              "rawcode": "h03I",
+              "count": 1
+            },
+            {
+              "rawcode": "h05W",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h09K",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h03I",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h05W",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0CC",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A19S"
+      ],
+      "strongestLabelEvidenceCount": 1,
+      "matchStatus": "positive-label-correlation",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-10",
+      "resultName": "콘파쿠 요우무",
+      "webSourceUrl": "https://ordr.kr/character/MY10",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "L-26",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-07",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "T-02",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 1,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A19U",
+          "resultRawcode": "h0AC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06X",
+              "count": 1
+            },
+            {
+              "rawcode": "h09Z",
+              "count": 1
+            },
+            {
+              "rawcode": "h029",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06X",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h09Z",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h029",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0AC",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A19V",
+          "resultRawcode": "h0CC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h09K",
+              "count": 1
+            },
+            {
+              "rawcode": "h03I",
+              "count": 1
+            },
+            {
+              "rawcode": "h05W",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h09K",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h03I",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h05W",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0CC",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A19U",
+        "A19V"
+      ],
+      "strongestLabelEvidenceCount": 0,
+      "matchStatus": "structural-only-ambiguous",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-11",
+      "resultName": "쿠죠 죠타로",
+      "webSourceUrl": "https://ordr.kr/character/MY11",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "L-18",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "L-35",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-11",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "S-07",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 0,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A0Y6",
+          "resultRawcode": "h09R",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06Y",
+              "count": 1
+            },
+            {
+              "rawcode": "h087",
+              "count": 1
+            },
+            {
+              "rawcode": "h036",
+              "count": 1
+            },
+            {
+              "rawcode": "h00U",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06Y",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h087",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h036",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h00U",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h09R",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A0Y6"
+      ],
+      "strongestLabelEvidenceCount": 0,
+      "matchStatus": "structural-only-ambiguous",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-12",
+      "resultName": "타츠마키",
+      "webSourceUrl": "https://ordr.kr/character/MY12",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "L-32",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "L-34",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-08",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 0,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A0Y3",
+          "resultRawcode": "h09W",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06V",
+              "count": 1
+            },
+            {
+              "rawcode": "h042",
+              "count": 1
+            },
+            {
+              "rawcode": "h07J",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06V",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h042",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h07J",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h09W",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A12C",
+          "resultRawcode": "h0BC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06W",
+              "count": 1
+            },
+            {
+              "rawcode": "h0AH",
+              "count": 1
+            },
+            {
+              "rawcode": "h030",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "UNIT",
+              "rawcode": "h06W",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h0AH",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h030",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0BC",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A0Y3",
+        "A12C"
+      ],
+      "strongestLabelEvidenceCount": 0,
+      "matchStatus": "structural-only-ambiguous",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    },
+    {
+      "resultUnitId": "MY-13",
+      "resultName": "히그마",
+      "webSourceUrl": "https://ordr.kr/character/MY13",
+      "webFixedIngredients": [
+        {
+          "catalogUnitId": "L-03",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "R-22",
+          "count": 1
+        },
+        {
+          "catalogUnitId": "RN-04",
+          "count": 1
+        }
+      ],
+      "webWildcardCount": 1,
+      "webSpecialItems": [
+        "행운의토큰"
+      ],
+      "compatibleCandidatesUnderHypotheses": [
+        {
+          "abilityRawcode": "A19U",
+          "resultRawcode": "h0AC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h06X",
+              "count": 1
+            },
+            {
+              "rawcode": "h09Z",
+              "count": 1
+            },
+            {
+              "rawcode": "h029",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06X",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h09Z",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h029",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0AC",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "abilityRawcode": "A19V",
+          "resultRawcode": "h0CC",
+          "labelMatchedIngredients": [],
+          "unidentifiedMaterialRawcodes": [
+            {
+              "rawcode": "h09K",
+              "count": 1
+            },
+            {
+              "rawcode": "h03I",
+              "count": 1
+            },
+            {
+              "rawcode": "h05W",
+              "count": 1
+            }
+          ],
+          "jassConditionsInOriginalOrder": [
+            {
+              "kind": "PICK",
+              "rawcode": "A800",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h09K",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h03I",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h05W",
+              "count": 1
+            },
+            {
+              "kind": "UNIT",
+              "rawcode": "h06G",
+              "count": 1
+            },
+            {
+              "kind": "GOLD",
+              "rawcode": "GOLD",
+              "count": 10000
+            },
+            {
+              "kind": "WOOD",
+              "rawcode": "WOOD",
+              "count": 7
+            },
+            {
+              "kind": "KING",
+              "rawcode": "h0CC",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "strongestLabelEvidenceCandidateAbilities": [
+        "A19U",
+        "A19V"
+      ],
+      "strongestLabelEvidenceCount": 0,
+      "matchStatus": "structural-only-ambiguous",
+      "verifiedResultRawcode": null,
+      "authorizedForUnitConsumption": false
+    }
+  ]
+}
