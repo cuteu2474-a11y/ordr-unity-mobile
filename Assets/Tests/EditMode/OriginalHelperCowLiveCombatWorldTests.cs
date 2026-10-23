@@ -133,22 +133,28 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void OriginalEarthquakeAppliesRealStunAndExpiresInCombatClock()
+        public void EarthquakeCannotPretendA04RLevelsAreStunSeconds()
         {
             var runtime = World();
             runtime.SpawnEnemy("line", 10000000, CharacterEnemyKind.Line, 100, 0, 0);
             var cow = new TestCow { BurstLevel = 0, QuakeLevel = 1 };
             var live = new OriginalHelperCowLiveCombatWorld(runtime,
                 () => cow, new TestData(), new TestResolver());
-            Assert.IsTrue(live.TryCommitCast("A07T", 90, 0));
-            Assert.AreEqual(9000000, runtime.EnemyOf("line").Health);
-            Assert.IsTrue(runtime.StatusOf("line").IsStunned());
-            Assert.IsFalse(runtime.TryMoveEnemy("line", 150, 0, 1));
-            runtime.Step(4.9);
-            Assert.IsTrue(runtime.StatusOf("line").IsStunned());
-            runtime.Step(0.2);
+
+            // Verified JASS has Bd8(Cm,5), i.e. +5 A04R ability LEVELS.
+            // Until persistent A04R state is represented, any auto/manual
+            // path must reject A07T without charging mana or damaging enemy.
+            Assert.AreEqual(5, OriginalHelperCowAreaEvidence.JassA04RLevelIncrease(
+                "A07T", 1));
+            Assert.AreEqual(0, live.AvailableReadyAbilities().Count);
+            Assert.IsFalse(live.TryCommitCast("A07T", 90, 0));
+            Assert.IsFalse(runtime.TryApplyOriginalHelperCowAreaEffects(
+                "A07T", 1, new[] {
+                    new OriginalHelperCowResolvedHit("line", 1000000)
+                }));
+            Assert.AreEqual(200, cow.CurrentMana);
+            Assert.AreEqual(10000000, runtime.EnemyOf("line").Health);
             Assert.IsFalse(runtime.StatusOf("line").IsStunned());
-            Assert.IsTrue(runtime.TryMoveEnemy("line", 150, 0, 1));
         }
 
         [Test]

@@ -763,8 +763,8 @@ namespace Ordr.Mobile.Combat
         }
 
         // Concrete source-backed helper-cow damage/stun sink. This uses the
-        // existing CombatResolution for HP, kills, participation and wave
-        // counters, and CombatStatusEngine for actual movement-blocking stun.
+        // existing CombatResolution for HP, kills and participation.
+        // A07T remains blocked pending correct original A04R behavior.
         // The external world MUST resolve CHAOS/UNIVERSAL defense, ability
         // range, mana cost and immunity before passing prepared final hits.
         public bool TryApplyOriginalHelperCowAreaEffects(string originalAbilityId,
@@ -775,8 +775,12 @@ namespace Ordr.Mobile.Combat
             // Reject unverified abilities/levels; do not treat every Q/W/R
             // as a helper-cow area spell.
             OriginalHelperCowAreaEvidence.JassDamage(originalAbilityId, level);
-            int stunSeconds = OriginalHelperCowAreaEvidence.JassStunSeconds(
-                originalAbilityId, level);
+            // CJg/CJh call Bd8 -> A04R ability-level increase, NOT a
+            // 5/8-second stun. Refuse A07T until that persistent ability
+            // mutation and damage-reduction behavior are verified.
+            if (OriginalHelperCowAreaEvidence.JassA04RLevelIncrease(
+                originalAbilityId, level) != 0)
+                return false;
 
             var distinct = new HashSet<string>(StringComparer.Ordinal);
             // Preflight the entire batch before mutating HP or statuses.
@@ -816,23 +820,6 @@ namespace Ordr.Mobile.Combat
                 if (processingStep) events.Add(dealt);
                 else pendingCommandEvents.Add(dealt);
 
-                // CJg/CJh call Bcb then Bd8: stun only surviving targets.
-                if (stunSeconds > 0)
-                {
-                    var target = resolution.GetEnemy(hit.EnemyId);
-                    if (target != null && target.IsAlive)
-                    {
-                        target.Status.Apply(new CombatEffect(
-                            actorId + ":" + originalAbilityId,
-                            CombatEffectType.Stun, CombatEffectOrigin.TriggeredSkill,
-                            1, stunSeconds));
-                        var applied = new CharacterCombatEvent(
-                            CharacterCombatEventType.StatusApplied, actorId, hit.EnemyId,
-                            originalAbilityId, "원본 도움소 스턴", stunSeconds);
-                        if (processingStep) events.Add(applied);
-                        else pendingCommandEvents.Add(applied);
-                    }
-                }
                 if (resolution.GetEnemy(hit.EnemyId) == null)
                 {
                     var killed = new CharacterCombatEvent(

@@ -40,7 +40,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void PinnedJassRadiusDamageAndStunAreNotInvented()
+        public void PinnedJassRadiusDamageAndA04RIncrementsAreNotInvented()
         {
             Assert.AreEqual(450, OriginalHelperCowAreaEvidence.VerifiedRadius("A0BZ"));
             Assert.AreEqual(625, OriginalHelperCowAreaEvidence.VerifiedRadius("A07T"));
@@ -48,9 +48,9 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(10000000L, OriginalHelperCowAreaEvidence.JassDamage("A0BZ", 2));
             Assert.AreEqual(1000000L, OriginalHelperCowAreaEvidence.JassDamage("A07T", 1));
             Assert.AreEqual(2000000L, OriginalHelperCowAreaEvidence.JassDamage("A07T", 2));
-            Assert.AreEqual(0, OriginalHelperCowAreaEvidence.JassStunSeconds("A0BZ", 2));
-            Assert.AreEqual(5, OriginalHelperCowAreaEvidence.JassStunSeconds("A07T", 1));
-            Assert.AreEqual(8, OriginalHelperCowAreaEvidence.JassStunSeconds("A07T", 2));
+            Assert.AreEqual(0, OriginalHelperCowAreaEvidence.JassA04RLevelIncrease("A0BZ", 2));
+            Assert.AreEqual(5, OriginalHelperCowAreaEvidence.JassA04RLevelIncrease("A07T", 1));
+            Assert.AreEqual(8, OriginalHelperCowAreaEvidence.JassA04RLevelIncrease("A07T", 2));
             Assert.Throws<ArgumentException>(() =>
                 OriginalHelperCowAreaEvidence.VerifiedRadius("A05D"));
             Assert.Throws<ArgumentOutOfRangeException>(() =>

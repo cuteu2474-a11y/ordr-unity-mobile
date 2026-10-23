@@ -145,6 +145,11 @@ namespace Ordr.Mobile.Combat
             verified = null;
             if (!Valid(cow) || combat.Game.Phase != SessionPhase.Running ||
                 !cow.IsOriginalCastReady(ability)) return false;
+            // CJg/CJh do not stun: Bd8 increases ability A04R levels.
+            // Until that persistent enemy ability mutation has a verified
+            // live transaction, block A07T rather than inventing stun.
+            if (ability == OriginalHelperCowAreaEvidence.EarthquakeAbility)
+                return false;
             int level = cow.GetAbilityLevel(ability);
             if (level < 1 || level > 2 ||
                 !castData.TryRead(ability, level, out verified) ||

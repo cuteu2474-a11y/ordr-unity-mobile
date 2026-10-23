@@ -8,13 +8,16 @@ namespace Ordr.Mobile.Combat
     // Source: ORDR S2 2.323[C] war3map.j SHA-256
     // 96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d
     // CJb / A0BZ: location-targeted area damage, 450 radius.
-    // CJi / A07T: location-targeted area damage + stun, 625 radius.
+    // CJi / A07T: location-targeted area damage, 625 radius.
+    // CJg/CJh call Bd8, raising XL=A04R ability levels by 5/8.
+    // A04R is an isr2 damage-reduction field, NOT a timed stun.
     // Ability cast RANGE, mana, cooldown and immunity are NOT given by these
     // callbacks; only an original-verified live world may supply/execute them.
     public static class OriginalHelperCowAreaEvidence
     {
         public const string PointDamageAbility = "A0BZ";
         public const string EarthquakeAbility = "A07T";
+        public const string A04RDamageReductionAbility = "A04R";
         public const double PointDamageRadius = 450.0;
         public const double EarthquakeRadius = 625.0;
 
@@ -43,7 +46,7 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        public static int JassStunSeconds(string abilityRawcode, int abilityLevel)
+        public static int JassA04RLevelIncrease(string abilityRawcode, int abilityLevel)
         {
             if (abilityLevel != 1 && abilityLevel != 2)
                 throw new ArgumentOutOfRangeException(nameof(abilityLevel));
@@ -95,7 +98,8 @@ namespace Ordr.Mobile.Combat
     }
 
     // Combat/world port must handle the real original mana debit, cooldown,
-    // target ownership/immunity, damage, stun, and skill-level strengthening.
+    // target ownership/immunity, damage and the separate A04R ability-level
+    // increase (which must be implemented before A07T may be cast).
     // The target selector only computes a cast POSITION, never applies damage.
     public interface IOriginalHelperCowAreaSpellWorld
     {
