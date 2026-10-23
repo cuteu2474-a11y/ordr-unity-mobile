@@ -54,6 +54,8 @@ namespace Ordr.Mobile.Unity
         public OriginalHelperCowManaRecharge HelperCowRecharge { get; private set; }
         public OriginalHelperCowAutoAreaCasting HelperCowAutoArea { get; private set; }
         public Ordr323OriginalHelperCowActor Original323HelperCow { get; private set; }
+        public Ordr323OriginalHelperNavigation Original323HelperNavigation { get; private set; }
+        public Ordr323OriginalHelperManaPotion Original323ManaPotion { get; private set; }
 
         // The original SOLO CUo h08A unit is a noncombat support actor.
         // Create only after BeginSession succeeds, never at menu preview.
@@ -64,8 +66,36 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("원본 도움소가 이미 만들어졌습니다.");
             var actor = new Ordr323OriginalHelperCowActor(0);
             Original323HelperCow = actor;
+            Original323HelperNavigation = new Ordr323OriginalHelperNavigation(Combat.Game, actor);
             ConfigureOriginalHelperCowWorld(new OriginalHelperCowManaWorld(
                 () => Original323HelperCow, 0));
+        }
+
+        // Original CKX -> CKS(1) grants upgrades + A0UY on a user choice
+        // at wave 21 or later. It must never be selected automatically.
+        public bool ChooseOriginal323MaximumOutput()
+        {
+            return Original323HelperNavigation != null &&
+                Original323HelperNavigation.TryChooseMaximumOutput();
+        }
+
+        // This is intentionally not supplied by default: A0UY's SLK does
+        // not prove the inherited AOsf mana cost, so a guessed free cast
+        // would distort the actual gameplay economy.
+        public void ConfigureOriginal323ManaPotionCasting(
+            IOrdr323VerifiedManaPotionCastPort originalCastWorld)
+        {
+            if (Combat == null || Original323HelperCow == null)
+                throw new InvalidOperationException("게임 시작과 원본 도움소 생성이 먼저 필요합니다.");
+            if (Original323ManaPotion != null)
+                throw new InvalidOperationException("마나 포션 시전 처리기가 이미 연결되었습니다.");
+            Original323ManaPotion = new Ordr323OriginalHelperManaPotion(
+                Combat.Game, Original323HelperCow, originalCastWorld);
+        }
+
+        public bool UseOriginal323ManaPotion()
+        {
+            return Original323ManaPotion != null && Original323ManaPotion.TryUse();
         }
 
         // A0BZ/A07T original range, mana and cooldown now come directly

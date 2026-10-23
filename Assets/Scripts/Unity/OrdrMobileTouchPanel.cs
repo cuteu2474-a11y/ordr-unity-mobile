@@ -37,6 +37,7 @@ namespace Ordr.Mobile.Unity
         private MobileManualOffer pendingEconomy;
         private string pendingChoiceRawcode;
         private bool pendingHelperRecharge;
+        private bool pendingMaximumOutput;
         private bool showOriginalJassRecipes;
         private IReadOnlyList<JassFusionReadiness> originalJassPreview =
             new List<JassFusionReadiness>().AsReadOnly();
@@ -79,6 +80,7 @@ namespace Ordr.Mobile.Unity
             pendingEconomy = null;
             pendingChoiceRawcode = null;
             pendingHelperRecharge = false;
+            pendingMaximumOutput = false;
             pendingCommonSaleId = null;
             notice = "";
             RefreshCurrent();
@@ -91,6 +93,7 @@ namespace Ordr.Mobile.Unity
             pendingEconomy = null;
             pendingChoiceRawcode = null;
             pendingHelperRecharge = false;
+            pendingMaximumOutput = false;
             pendingCommonSaleId = null;
         }
 
@@ -618,6 +621,47 @@ namespace Ordr.Mobile.Unity
                             " · 쿨타임 " + verified.CooldownSeconds.ToString("0") + "초");
                     else
                         GUILayout.Label(ability + " · 원본 시전 수치 확인 필요");
+                }
+                var navigation = controller.Original323HelperNavigation;
+                if (navigation != null && navigation.ChosenNavigation != null)
+                    GUILayout.Label("항법 선택: " + navigation.ChosenNavigation);
+                else if (navigation != null)
+                {
+                    GUILayout.Label("항법은 21라운드부터 단 한 번 선택합니다.");
+                    bool wasEnabled = GUI.enabled;
+                    GUI.enabled = wasEnabled && navigation.CanChooseMaximumOutput;
+                    if (!pendingMaximumOutput)
+                    {
+                        if (GUILayout.Button("최고의도움: 최대출력 선택", GUILayout.MinHeight(48)))
+                            pendingMaximumOutput = true;
+                    }
+                    else
+                    {
+                        GUILayout.Label("이 항법을 선택하면 다른 항법을 선택할 수 없습니다.");
+                        if (GUILayout.Button("최대출력 항법 확정", GUILayout.MinHeight(48)))
+                        {
+                            notice = controller.ChooseOriginal323MaximumOutput()
+                                ? "최대출력 항법을 선택했습니다." : "항법 선택 조건을 확인해 주세요.";
+                            pendingMaximumOutput = false;
+                        }
+                    }
+                    GUI.enabled = wasEnabled;
+                    if (pendingMaximumOutput && GUILayout.Button("항법 선택 취소", GUILayout.MinHeight(40)))
+                        pendingMaximumOutput = false;
+                }
+                if (helper.ManaPotionChargesRemaining > 0)
+                {
+                    GUILayout.Label("마나 포션: " + helper.ManaPotionChargesRemaining +
+                        "회 남음 · 성공적으로 시전한 뒤 마나 300 회복");
+                    bool wasEnabled = GUI.enabled;
+                    GUI.enabled = wasEnabled && controller.Original323ManaPotion != null &&
+                        controller.Original323ManaPotion.CanAttempt;
+                    if (GUILayout.Button("마나 포션 사용", GUILayout.MinHeight(48)))
+                        notice = controller.UseOriginal323ManaPotion()
+                            ? "마나 포션 사용 완료" : "원본 마나 포션 시전 조건 미충족";
+                    GUI.enabled = wasEnabled;
+                    if (controller.Original323ManaPotion == null)
+                        GUILayout.Label("포션 시전 비용 검증 대기: 사용 불가");
                 }
             }
             GUILayout.Label(controller.HelperCowAutoArea == null

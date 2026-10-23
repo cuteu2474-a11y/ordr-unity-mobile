@@ -53,7 +53,7 @@
       "baseSlkIsr2Levels": [
         {
           "level": 1,
-          "value": 0
+          "value": 0.0
         },
         {
           "level": 2,
@@ -70,6 +70,32 @@
       ],
       "higherOverridesData": "original-2323C-helper-A04R-evidence.json"
     }
+  },
+  "maximumOutputNavigation": {
+    "choiceJass": "CKX -> CKS(1, player)",
+    "availableAfterRound": 20,
+    "oncePerPlayer": true,
+    "upgradedAbilities": [
+      "A0BZ",
+      "A0BY",
+      "A07T",
+      "A07X",
+      "A07W"
+    ],
+    "newAbility": "A0UY"
+  },
+  "manaPotion": {
+    "rawcode": "A0UY",
+    "baseAbility": "AOsf",
+    "jassFunction": "CJk",
+    "charges": 3,
+    "postCastManaGain": 300,
+    "originalCooldownSeconds": [
+      0,
+      0,
+      0
+    ],
+    "inheritedManaCostsUnknown": true
   },
   "helper": {
     "rawcode": "h08A",
@@ -119,6 +145,7 @@
     "a0bzLevel3ManaCost": true,
     "originalTargetImmunity": true,
     "originalDamageAfterDefense": true,
-    "a04rEngineFormula": true
+    "a04rEngineFormula": true,
+    "manaPotionInheritedManaCosts": true
   }
 }

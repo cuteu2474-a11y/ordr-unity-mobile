@@ -16,6 +16,10 @@ namespace Ordr.Mobile.Combat
         public const double StartingMana = 15.0;
         public const double MaximumMana = 10000.0;
         public const double BaseManaRegenPerSecond = 0.3;
+        // CJk: each successful A0UY cast restores 300, after the engine has
+        // already resolved the ability's inherited mana cost and readiness.
+        public const double ManaPotionGain = 300.0;
+        public const int ManaPotionCharges = 3;
         public const string CastSourceSha256 =
             "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda";
 
@@ -83,6 +87,10 @@ namespace Ordr.Mobile.Combat
         public bool IsAlive { get; private set; } = true;
         public double CurrentMana { get; private set; }
         public double MaximumMana => Ordr323OriginalHelperSource.MaximumMana;
+        public bool MaximumOutputNavigationChosen { get; private set; }
+        public int ManaPotionChargesRemaining =>
+            GetAbilityLevel("A0UY") == 0 ? 0 :
+            Ordr323OriginalHelperSource.ManaPotionCharges - GetAbilityLevel("A0UY") + 1;
 
         public Ordr323OriginalHelperCowActor(int ownerPlayerId)
         {
@@ -97,6 +105,43 @@ namespace Ordr.Mobile.Combat
             // A07T, among the default h08A abilities. Initial level is 1.
             levels["A0BZ"] = 1;
             levels["A07T"] = 1;
+            levels["A0BY"] = 1;
+            levels["A07X"] = 1;
+            levels["A07W"] = 1;
+        }
+
+        // CKS(1, player): one of the original mutually exclusive navigation
+        // choices. These five upgrades AND A0UY are one indivisible effect.
+        // Round/unselected checks belong to the session navigation service.
+        internal void ApplyVerifiedMaximumOutputNavigation()
+        {
+            if (!IsAlive || MaximumOutputNavigationChosen)
+                throw new InvalidOperationException("도움소 최대출력 항법 중복 또는 대상 부재");
+            foreach (string rawcode in new[] { "A0BZ", "A0BY", "A07T", "A07X", "A07W" })
+            {
+                if (GetAbilityLevel(rawcode) != 1)
+                    throw new InvalidOperationException("원본 도움소 초기 능력 상태가 다릅니다: " + rawcode);
+            }
+            if (GetAbilityLevel("A0UY") != 0)
+                throw new InvalidOperationException("마나 포션이 이미 존재합니다.");
+            foreach (string rawcode in new[] { "A0BZ", "A0BY", "A07T", "A07X", "A07W" })
+                levels[rawcode] = 2;
+            levels["A0UY"] = 1;
+            MaximumOutputNavigationChosen = true;
+        }
+
+        // Called ONLY after the host has committed an authentic A0UY cast,
+        // including any inherited Warcraft base ability cost. CJk advances
+        // level 1->2->3->removed, then applies +300 even at maximum mana.
+        internal void ApplyManaPotionEffectAfterCommittedCast()
+        {
+            int level = GetAbilityLevel("A0UY");
+            if (!IsAlive || !MaximumOutputNavigationChosen || level < 1 || level > 3)
+                throw new InvalidOperationException("유효하지 않은 마나 포션 시전");
+            if (level == 3) levels.Remove("A0UY");
+            else levels["A0UY"] = level + 1;
+            SetMana(Math.Min(MaximumMana, CurrentMana +
+                Ordr323OriginalHelperSource.ManaPotionGain));
         }
 
         public int GetAbilityLevel(string originalAbilityRawcode)

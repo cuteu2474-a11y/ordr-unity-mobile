@@ -46,7 +46,7 @@ def as_float(row, field):
 
 def inspect_source(ability, balance, unit_abilities, jass):
     """Check every published profile value against independently read rows."""
-    spell_rows = {key: ability[key] for key in ("A0BZ", "A07T", "A04R")}
+    spell_rows = {key: ability[key] for key in ("A0BZ", "A07T", "A04R", "A0UY")}
     h08a = balance["h08A"]
     h08a_abilities = unit_abilities["h08A"]["abilList"].split(",")
     require_equal(spell_rows["A0BZ"]["code"], "ANcs", "A0BZ base code")
@@ -55,6 +55,16 @@ def inspect_source(ability, balance, unit_abilities, jass):
     require_equal(int(spell_rows["A0BZ"]["levels"]), 3, "A0BZ levels")
     require_equal(int(spell_rows["A07T"]["levels"]), 2, "A07T levels")
     require_equal(int(spell_rows["A04R"]["levels"]), 26, "A04R levels")
+    potion = spell_rows["A0UY"]
+    require_equal(potion["code"], "AOsf", "A0UY inherited base ability")
+    require_equal(int(potion["levels"]), 3, "A0UY charges / levels")
+    for level in (1, 2, 3):
+        require_equal(as_float(potion, f"Cool{level}"), 0.0,
+                      f"A0UY cooldown level {level}")
+        # Missing fields in imported custom SLK are *not* proof of a zero
+        # mana cost: AOsf may inherit it from the Warcraft base table.
+        if potion.get(f"Cost{level}") not in (None, "", "_"):
+            raise ValueError(f"A0UY mana cost level {level} is no longer inherited")
 
     spells = {}
     for code, requested_levels in (("A0BZ", 2), ("A07T", 2)):
@@ -117,6 +127,26 @@ def inspect_source(ability, balance, unit_abilities, jass):
     ):
         if anchor not in jass:
             raise ValueError("Missing original spawn evidence: " + anchor)
+    for anchor in (
+        "function CKX takes nothing returns nothing",
+        "if X3<=20 then",
+        "if kt[JG] then",
+        "call CKS(K7,JG)",
+        "function CKS takes integer Hk,integer JG returns nothing",
+        "call SetUnitAbilityLevel(kk[JG],$4130425A,2)",  # A0BZ
+        "call SetUnitAbilityLevel(kk[JG],$41304259,2)",  # A0BY
+        "call SetUnitAbilityLevel(kk[JG],$41303754,2)",  # A07T
+        "call SetUnitAbilityLevel(kk[JG],$41303758,2)",  # A07X
+        "call SetUnitAbilityLevel(kk[JG],$41303757,2)",  # A07W
+        "call UnitAddAbility(kk[JG],$41305559)",       # A0UY
+        "function CJk takes nothing returns nothing",
+        "if GetUnitAbilityLevel(GetTriggerUnit(),$41305559)==3 then",
+        "call UnitRemoveAbility(GetTriggerUnit(),$41305559)",
+        "call IncUnitAbilityLevel(GetTriggerUnit(),$41305559)",
+        "call SetUnitState(kk[JG],UNIT_STATE_MANA,(GetUnitState(kk[JG],UNIT_STATE_MANA)+300)*1.)",
+    ):
+        if anchor not in jass:
+            raise ValueError("Missing original navigation/potion JASS: " + anchor)
     base_rects = [(-5888, 5664), (128, 5664), (-5888, 544), (128, 544)]
     for i, (x, y) in enumerate(base_rects):
         if f"set B{i + 2}=Rect({float(x):.0f}.,{float(y):.0f}.," not in jass:
@@ -131,6 +161,22 @@ def inspect_source(ability, balance, unit_abilities, jass):
         "sourceUnitBalanceSlkSha256": SLK_HASHES["UnitBalance"],
         "sourceUnitAbilitiesSlkSha256": SLK_HASHES["UnitAbilities"],
         "abilities": spells,
+        "maximumOutputNavigation": {
+            "choiceJass": "CKX -> CKS(1, player)",
+            "availableAfterRound": 20,
+            "oncePerPlayer": True,
+            "upgradedAbilities": ["A0BZ", "A0BY", "A07T", "A07X", "A07W"],
+            "newAbility": "A0UY",
+        },
+        "manaPotion": {
+            "rawcode": "A0UY",
+            "baseAbility": "AOsf",
+            "jassFunction": "CJk",
+            "charges": 3,
+            "postCastManaGain": 300,
+            "originalCooldownSeconds": [0, 0, 0],
+            "inheritedManaCostsUnknown": True,
+        },
         "helper": {
             "rawcode": "h08A",
             "startingMana": 15,
@@ -151,6 +197,7 @@ def inspect_source(ability, balance, unit_abilities, jass):
             "originalTargetImmunity": True,
             "originalDamageAfterDefense": True,
             "a04rEngineFormula": True,
+            "manaPotionInheritedManaCosts": True,
         },
     }
 
