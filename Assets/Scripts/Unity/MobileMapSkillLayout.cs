@@ -3,18 +3,18 @@ using UnityEngine;
 
 namespace Ordr.Mobile.Unity
 {
-    // Landscape-only, top-to-bottom battlefield layout.
-    // Shared by the shell, manual skill ribbon and world-tap hit testing.
-    // Rect coordinates follow OnGUI (origin at the top left of the screen).
+    // Landscape-only map with permanent left navigation and a right-side
+    // detail drawer. The actual battlefield is not covered by the tab rail.
+    // Coordinates follow OnGUI: origin at top left, physical screen pixels.
     public sealed class MobileMapSkillLayout
     {
         public Rect Battle { get; private set; }
         public Rect SkillMargin { get; private set; }
         public Rect Story { get; private set; }
-        public Rect BottomControls { get; private set; }
+        public Rect LeftTabs { get; private set; }
+        public Rect RightDrawer { get; private set; }
         public float HeaderHeight { get; private set; }
 
-        // Avoid enormous touch controls on very high-DPI landscape phones.
         public static float UiScale(Rect safe, float dpi)
         {
             float density = dpi > 0f ? dpi / 160f : 1f;
@@ -32,35 +32,50 @@ namespace Ordr.Mobile.Unity
             float margin = Mathf.Clamp(safe.width * 0.015f, 10f, 24f);
             float top = screenHeight - safe.yMax;
             float left = safe.xMin + margin;
-            float width = safe.width - 2f * margin;
+            float usableWidth = safe.width - 2f * margin;
             float headerHeight = Mathf.Clamp(safe.height * 0.09f, 44f, 68f);
             float gap = Mathf.Clamp(safe.height * 0.009f, 5f, 9f);
-            float dockHeight = 54f * uiScale;
+            float railWidth = Mathf.Min(usableWidth * 0.17f,
+                Mathf.Clamp(76f * uiScale, 64f, 116f));
+            float mapLeft = left + railWidth + gap;
+            float mapWidth = usableWidth - railWidth - gap;
 
             float mapTop = top + headerHeight + gap;
-            float dockTop = top + safe.height - dockHeight;
-            float available = dockTop - gap - mapTop;
-            if (available < 120f || width < 120f)
+            // The former bottom "운용 메뉴" is replaced by the permanent
+            // rail; return its unused dock space to the playable map.
+            float available = top + safe.height - margin - mapTop;
+            if (available < 120f || mapWidth < 120f)
                 throw new ArgumentOutOfRangeException(nameof(safe), "가로 전장 표시 공간이 부족합니다.");
 
-            // Horizontal swipe ribbon; never a side rail or portrait layout.
-            float ribbon = Mathf.Min(Mathf.Max(52f * uiScale, safe.height * 0.083f),
-                available * 0.19f);
-            float fieldSpace = available - ribbon - gap * 2f;
-            // 80:20 main/story split of the actual playable field area.
+            float ribbonHeight = Mathf.Min(
+                Mathf.Max(52f * uiScale, safe.height * 0.083f), available * 0.19f);
+            float fieldSpace = available - ribbonHeight - gap * 2f;
             float storyHeight = fieldSpace * 0.20f;
             float battleHeight = fieldSpace - storyHeight;
             float ribbonTop = mapTop + battleHeight + gap;
-            float storyTop = ribbonTop + ribbon + gap;
+            float storyTop = ribbonTop + ribbonHeight + gap;
+
+            float drawerWidth = Mathf.Min(mapWidth,
+                Mathf.Max(Mathf.Min(270f * uiScale, mapWidth), mapWidth * 0.48f));
 
             return new MobileMapSkillLayout
             {
                 HeaderHeight = headerHeight,
-                Battle = new Rect(left, mapTop, width, battleHeight),
-                SkillMargin = new Rect(left, ribbonTop, width, ribbon),
-                Story = new Rect(left, storyTop, width, storyHeight),
-                BottomControls = new Rect(left, dockTop, width, dockHeight)
+                LeftTabs = new Rect(left, mapTop, railWidth, available),
+                Battle = new Rect(mapLeft, mapTop, mapWidth, battleHeight),
+                SkillMargin = new Rect(mapLeft, ribbonTop, mapWidth, ribbonHeight),
+                Story = new Rect(mapLeft, storyTop, mapWidth, storyHeight),
+                RightDrawer = new Rect(mapLeft + mapWidth - drawerWidth,
+                    mapTop, drawerWidth, battleHeight)
             };
+        }
+
+        // Used by the world presenter to reject UI taps even when
+        // underlying unit markers occupy the same world-space point.
+        public bool BlocksWorldTap(Vector2 onGui, bool drawerOpen)
+        {
+            return LeftTabs.Contains(onGui) ||
+                (drawerOpen && RightDrawer.Contains(onGui));
         }
 
         // Unity camera.rect uses normalized bottom-left viewport coordinates.

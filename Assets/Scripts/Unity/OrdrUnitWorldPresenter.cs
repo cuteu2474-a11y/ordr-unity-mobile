@@ -525,6 +525,10 @@ namespace Ordr.Mobile.Unity
                 MobileMapSkillLayout.UiScale(safe, dpi));
             Vector2 onGui = new Vector2(screen.x, Screen.height - screen.y);
             if (!layout.Battle.Contains(onGui)) return;
+            // The right-side tab content overlays the main battlefield;
+            // never select a unit through its buttons.
+            var touchPanel = GetComponent<OrdrMobileTouchPanel>();
+            if (touchPanel != null && touchPanel.BlocksWorldTap(onGui)) return;
 
             long nearestId = 0;
             float nearestPixels2 = Mathf.Max(16f, selectionTapRadiusPixels);

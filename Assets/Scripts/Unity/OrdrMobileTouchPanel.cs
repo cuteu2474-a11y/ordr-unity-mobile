@@ -25,6 +25,7 @@ namespace Ordr.Mobile.Unity
         private long? pendingCommonSaleId;
         private string selectedCatalogUnitId;
         private Vector2 scroll;
+        private Vector2 tabsScroll;
         private Vector2 dedicatedScroll;
         private string dedicatedNotice;
         private string notice = "모바일 조작 패널";
@@ -44,6 +45,16 @@ namespace Ordr.Mobile.Unity
             if (controller == null)
                 controller = GetComponent<OrdrCharacterCombatController>();
             visible = openByDefault;
+            if (visible) RefreshCurrent();
+        }
+
+        public bool BlocksWorldTap(Vector2 onGui)
+        {
+            Rect safe = Screen.safeArea;
+            if (safe.width <= safe.height) return false;
+            var layout = MobileMapSkillLayout.Calculate(safe, Screen.height,
+                MobileMapSkillLayout.UiScale(safe, Screen.dpi));
+            return layout.BlocksWorldTap(onGui, visible);
         }
 
         private Ordr.Mobile.Combat.CharacterCombatRuntime Combat
@@ -51,89 +62,134 @@ namespace Ordr.Mobile.Unity
             get { return controller != null ? controller.Combat : null; }
         }
 
+        // The tab rail always stays visible. Tapping the selected tab again
+        // closes its details; another tab replaces the right-hand content.
+        private void SelectTab(Tab selected)
+        {
+            if (visible && currentTab == selected)
+            {
+                CloseDrawer();
+                return;
+            }
+            currentTab = selected;
+            visible = true;
+            scroll = Vector2.zero;
+            pendingFusion = null;
+            pendingEconomy = null;
+            pendingChoiceRawcode = null;
+            pendingCommonSaleId = null;
+            notice = "";
+            RefreshCurrent();
+        }
+
+        private void CloseDrawer()
+        {
+            visible = false;
+            pendingFusion = null;
+            pendingEconomy = null;
+            pendingChoiceRawcode = null;
+            pendingCommonSaleId = null;
+        }
+
         private void OnGUI()
         {
             if (controller == null) return;
-
             Rect safe = Screen.safeArea;
-            // Portrait has no gameplay UI; mobile builds rotate to landscape.
             if (safe.width <= safe.height) return;
+
             float dpi = Screen.dpi > 0f ? Screen.dpi : 160f;
             float scale = MobileMapSkillLayout.UiScale(safe, dpi);
             var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
-            float left = safe.x / scale;
-            float top = (Screen.height - safe.yMax) / scale;
-            float width = safe.width / scale;
-            float height = safe.height / scale;
-            if (width < 120 || height < 100) return;
+            if (safe.width / scale < 120f || safe.height / scale < 100f) return;
 
             Matrix4x4 previous = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
 
-            // Bottom dock remains below the small story field.
-            Rect dock = MobileMapSkillLayout.Scaled(layout.BottomControls, scale);
-            float toggleHeight = dock.height;
-            float toggleWidth = Mathf.Min(132f, dock.width);
-            Rect toggle = new Rect(dock.xMax - toggleWidth, dock.y,
-                toggleWidth, toggleHeight);
-            if (GUI.Button(toggle, visible ? "운용 닫기" : "운용 메뉴"))
-            {
-                visible = !visible;
-                if (visible) RefreshCurrent();
-            }
-
-            // Frequent manual random-Wisp actions remain one tap away from
-            // the battlefield. The button itself never consumes currency.
-            if (width >= 300f && controller.WispBalance(WispResourceIds.Random) > 0)
-            {
-                Rect quick = new Rect(toggle.x - 151f, toggle.y, 145f, toggleHeight);
-                if (GUI.Button(quick, "랜덤위습 " +
-                    controller.WispBalance(WispResourceIds.Random)))
-                {
-                    visible = true;
-                    currentTab = Tab.Wisp;
-                    scroll = Vector2.zero;
-                    pendingEconomy = null;
-                    RefreshCurrent();
-                }
-            }
-
+            DrawLeftTabs(layout, scale);
             if (visible)
-            {
-                // A temporary drawer may cover part of the main battle while
-                // open, but never occupies the dedicated ribbon or story field.
-                Rect battle = MobileMapSkillLayout.Scaled(layout.Battle, scale);
-                float panelWidth = Mathf.Min(battle.width * 0.64f, 690f);
-                Rect area = new Rect(battle.xMax - panelWidth, battle.y,
-                    panelWidth, battle.height);
-                GUILayout.BeginArea(area, GUI.skin.box);
-                GUILayout.BeginVertical();
-                GUILayout.Label("원랜디 모바일 운용");
-                DrawTabs();
-                DrawModeStatus();
-                scroll = GUILayout.BeginScrollView(scroll, GUILayout.ExpandHeight(true));
-                if (Combat == null && currentTab != Tab.Units)
-                    GUILayout.Label("게임 월드 연결 전입니다. 원본 규칙이나 재화를 임의로 실행하지 않습니다.");
-                else
-                {
-                    switch (currentTab)
-                    {
-                        case Tab.Units: DrawUnits(); break;
-                        case Tab.Story: DrawStory(); break;
-                        case Tab.Fusion: DrawFusion(); break;
-                        case Tab.Shop: DrawEconomy(ManualEconomyCategory.Shop); break;
-                        case Tab.Gambling: DrawEconomy(ManualEconomyCategory.Gambling); break;
-                        case Tab.Wisp: DrawWisp(); break;
-                    }
-                }
-                GUILayout.EndScrollView();
-                GUILayout.Label(notice, GUILayout.MinHeight(30));
-                GUILayout.EndVertical();
-                GUILayout.EndArea();
-            }
-            // Pinned to the full-width horizontal strip even when the menu is open.
+                DrawRightDrawer(layout, scale);
+
+            // The horizontal dedicated-skill ribbon stays accessible between
+            // the main and small story battlefields while a menu is open.
             DrawDedicatedSkillMargin(safe, scale);
             GUI.matrix = previous;
+        }
+
+        private void DrawLeftTabs(MobileMapSkillLayout layout, float scale)
+        {
+            Rect area = MobileMapSkillLayout.Scaled(layout.LeftTabs, scale);
+            GUILayout.BeginArea(area, GUI.skin.box);
+            tabsScroll = GUILayout.BeginScrollView(tabsScroll,
+                false, true, GUILayout.ExpandHeight(true));
+
+            // Order matches the most common manual activities.
+            DrawLeftTab(Tab.Wisp, "위습");
+            DrawLeftTab(Tab.Units, "유닛");
+            DrawLeftTab(Tab.Fusion, "조합");
+            DrawLeftTab(Tab.Story, "스토리");
+            DrawLeftTab(Tab.Shop, "상점");
+            DrawLeftTab(Tab.Gambling, "도박");
+
+            GUILayout.EndScrollView();
+            GUILayout.EndArea();
+        }
+
+        private void DrawLeftTab(Tab tab, string title)
+        {
+            bool chosen = visible && currentTab == tab;
+            string label = chosen ? "●\n" + title : title;
+            if (GUILayout.Button(label, GUILayout.MinHeight(46f),
+                GUILayout.ExpandWidth(true)))
+                SelectTab(tab);
+        }
+
+        private void DrawRightDrawer(MobileMapSkillLayout layout, float scale)
+        {
+            Rect area = MobileMapSkillLayout.Scaled(layout.RightDrawer, scale);
+            GUILayout.BeginArea(area, GUI.skin.box);
+            GUILayout.BeginVertical();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(TabTitle(currentTab), GUILayout.ExpandWidth(true));
+            if (GUILayout.Button("닫기 ×", GUILayout.Width(82f), GUILayout.MinHeight(40f)))
+                CloseDrawer();
+            GUILayout.EndHorizontal();
+
+            scroll = GUILayout.BeginScrollView(scroll, GUILayout.ExpandHeight(true));
+            if (Combat == null && currentTab != Tab.Units)
+                GUILayout.Label("게임 월드 연결 전입니다. 재화나 유닛을 임의로 처리하지 않습니다.");
+            else
+            {
+                switch (currentTab)
+                {
+                    case Tab.Units: DrawUnits(); break;
+                    case Tab.Story: DrawStory(); break;
+                    case Tab.Fusion: DrawFusion(); break;
+                    case Tab.Shop: DrawEconomy(ManualEconomyCategory.Shop); break;
+                    case Tab.Gambling: DrawEconomy(ManualEconomyCategory.Gambling); break;
+                    case Tab.Wisp: DrawWisp(); break;
+                }
+            }
+            GUILayout.EndScrollView();
+            if (!string.IsNullOrWhiteSpace(notice))
+                GUILayout.Label(notice, GUILayout.MinHeight(24f));
+
+            GUILayout.EndVertical();
+            GUILayout.EndArea();
+        }
+
+        private static string TabTitle(Tab tab)
+        {
+            switch (tab)
+            {
+                case Tab.Wisp: return "위습";
+                case Tab.Units: return "유닛";
+                case Tab.Fusion: return "조합";
+                case Tab.Story: return "스토리";
+                case Tab.Shop: return "상점";
+                case Tab.Gambling: return "도박";
+                default: throw new ArgumentOutOfRangeException(nameof(tab));
+            }
         }
 
         // These are facility/unit-specific manual actions (e.g. record
@@ -185,43 +241,6 @@ namespace Ordr.Mobile.Unity
             }
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
-        }
-
-        private void DrawTabs()
-        {
-            GUILayout.BeginHorizontal();
-            DrawTab(Tab.Units, "유닛");
-            DrawTab(Tab.Story, "스토리");
-            DrawTab(Tab.Fusion, "조합");
-            DrawTab(Tab.Shop, "상점");
-            DrawTab(Tab.Gambling, "도박");
-            DrawTab(Tab.Wisp, "위습");
-            GUILayout.EndHorizontal();
-        }
-
-        private void DrawTab(Tab tab, string text)
-        {
-            string label = currentTab == tab ? "● " + text : text;
-            if (GUILayout.Button(label, GUILayout.MinHeight(49)))
-            {
-                if (currentTab == tab) return;
-                currentTab = tab;
-                scroll = Vector2.zero;
-                pendingFusion = null;
-                pendingEconomy = null;
-                pendingChoiceRawcode = null;
-                RefreshCurrent();
-            }
-        }
-
-        private void DrawModeStatus()
-        {
-            var status = Combat != null ? Combat.MobileAutomation.Status : null;
-            string placement = status != null && status.PlacementConnected ? "연결" : "규칙 미연결";
-            string boss = status != null && status.BossFocusConnected ? "연결" : "규칙 미연결";
-            string skill = status != null && status.AutoSkillsConnected ? "연결" : "규칙 미연결";
-            GUILayout.Label("공격·확률 스킬: 자동 | 배치: " + placement +
-                " | 보스: " + boss + " | Q/W/R: " + skill);
         }
 
         // All 271 catalog units can be inspected; only units actually owned

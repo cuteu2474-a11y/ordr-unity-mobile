@@ -53,8 +53,14 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(layout.Battle.width, layout.Story.width, 0.01f);
             Assert.Less(layout.Battle.yMax, layout.SkillMargin.yMin);
             Assert.Less(layout.SkillMargin.yMax, layout.Story.yMin);
-            Assert.Less(layout.Story.yMax, layout.BottomControls.yMin);
-            Assert.LessOrEqual(layout.BottomControls.yMax, screenHeight + 0.01f);
+            Assert.LessOrEqual(layout.Story.yMax, screenHeight + 0.01f);
+            Assert.Less(layout.LeftTabs.xMax, layout.Battle.xMin);
+            Assert.AreEqual(layout.LeftTabs.yMin, layout.Battle.yMin, 0.01f);
+            Assert.GreaterOrEqual(layout.LeftTabs.yMax, layout.Story.yMax - 0.01f);
+            Assert.AreEqual(layout.Battle.yMin, layout.RightDrawer.yMin, 0.01f);
+            Assert.AreEqual(layout.Battle.yMax, layout.RightDrawer.yMax, 0.01f);
+            Assert.AreEqual(layout.Battle.xMax, layout.RightDrawer.xMax, 0.01f);
+            Assert.Greater(layout.RightDrawer.width, 0f);
             var viewport = layout.MainCameraViewport(safe.xMax + (screenHeight - safe.yMax), screenHeight);
             Assert.Greater(viewport.height, 0f);
             Assert.Less(viewport.yMax, 1f);
@@ -67,6 +73,23 @@ namespace Ordr.Mobile.Tests
             AssertStackedLandscape(new Rect(0f, 0f, 1920f, 1080f), 1080f, 240f);
             AssertStackedLandscape(new Rect(24f, 12f, 1152f, 700f), 724f, 300f);
             AssertStackedLandscape(new Rect(44f, 0f, 756f, 390f), 390f, 460f);
+        }
+
+
+        [Test]
+        public void LeftTabsAlwaysRejectWorldInputAndRightDrawerBlocksOnlyWhileOpen()
+        {
+            var layout = MobileMapSkillLayout.Calculate(
+                new Rect(24f, 12f, 1152f, 700f), 724f, 1.2f);
+            Vector2 left = layout.LeftTabs.center;
+            Vector2 drawer = layout.RightDrawer.center;
+            Vector2 unobstructedBattle = new Vector2(
+                layout.Battle.xMin + 10f, layout.Battle.yMin + 10f);
+            Assert.IsTrue(layout.BlocksWorldTap(left, false));
+            Assert.IsTrue(layout.BlocksWorldTap(left, true));
+            Assert.IsFalse(layout.BlocksWorldTap(drawer, false));
+            Assert.IsTrue(layout.BlocksWorldTap(drawer, true));
+            Assert.IsFalse(layout.BlocksWorldTap(unobstructedBattle, true));
         }
 
         [Test]
