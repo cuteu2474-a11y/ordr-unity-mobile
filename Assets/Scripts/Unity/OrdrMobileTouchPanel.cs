@@ -41,6 +41,7 @@ namespace Ordr.Mobile.Unity
         private bool pendingAlchemy;
         private bool alchemyTargetsExpanded;
         private long? selectedAlchemyTargetId;
+        private long? pendingAlchemyCastId;
         private Vector2 alchemyTargetsScroll;
         private bool showOriginalJassRecipes;
         private IReadOnlyList<JassFusionReadiness> originalJassPreview =
@@ -88,6 +89,7 @@ namespace Ordr.Mobile.Unity
             pendingAlchemy = false;
             alchemyTargetsExpanded = false;
             selectedAlchemyTargetId = null;
+            pendingAlchemyCastId = null;
             alchemyTargetsScroll = Vector2.zero;
             pendingCommonSaleId = null;
             notice = "";
@@ -105,6 +107,7 @@ namespace Ordr.Mobile.Unity
             pendingAlchemy = false;
             alchemyTargetsExpanded = false;
             selectedAlchemyTargetId = null;
+            pendingAlchemyCastId = null;
             pendingCommonSaleId = null;
         }
 
@@ -769,7 +772,10 @@ namespace Ordr.Mobile.Unity
                         break;
                     }
             if (selected == null)
+            {
                 selectedAlchemyTargetId = null; // vanished/consumed elsewhere
+                pendingAlchemyCastId = null;
+            }
 
             if (GUILayout.Button("연금술 대상 " + (alchemyTargetsExpanded ? "▲" : "▼") +
                 "  " + selectedTitle + "  (보유 " + count + "기)", GUILayout.MinHeight(46)))
@@ -792,6 +798,7 @@ namespace Ordr.Mobile.Unity
                             ? "선택됨" : "선택", GUILayout.Width(72), GUILayout.MinHeight(36)))
                         {
                             selectedAlchemyTargetId = item.InstanceId;
+                            pendingAlchemyCastId = null;
                             alchemyTargetsExpanded = false;
                             selected = item;
                         }
@@ -808,23 +815,58 @@ namespace Ordr.Mobile.Unity
             var recipe = link == null || refunds == null ? null : refunds.Find(link.Rawcode);
             if (recipe == null)
             {
-                GUILayout.Label("원본 유닛 ID 또는 환급 규칙 미확인 · 시전 불가");
+                GUILayout.Label("이름상 원본 R3 환급표 미확인: 대상의 실제 ID 검증 필요");
+            }
+            else
+            {
+                // Names are preview hints only; the locked world inspects the
+                // actual original target rawcode immediately before spending.
+                GUILayout.Label("원본 조합 재료 환급 미리보기 (실제 대상 검증 전)");
+                if (recipe.RefundUnits.Count == 0)
+                    GUILayout.Label("반환되는 UNIT 재료 없음");
+                foreach (var unit in recipe.RefundUnits)
+                {
+                    var material = links.FindRawcode(unit.Rawcode);
+                    string name = material != null ? material.UnitDisplayName :
+                        "원본 ID " + unit.Rawcode;
+                    GUILayout.Label("· " + name + " ×" + unit.Count);
+                }
+            }
+            var casting = controller.Original323AlchemyCasting;
+            if (casting == null)
+            {
+                GUILayout.Label("원본 객체/원자적 소비 월드 미연결 · 실행 대기");
                 return;
             }
-
-            // These names are label evidence for PREVIEW only. They are not
-            // independently reviewed rawcode-to-live-unit mappings.
-            GUILayout.Label("원본 조합 재료 환급 미리보기");
-            if (recipe.RefundUnits.Count == 0)
-                GUILayout.Label("반환되는 UNIT 재료 없음");
-            foreach (var unit in recipe.RefundUnits)
+            if (casting.CooldownRemaining > 0)
+                GUILayout.Label("연금술 남은 쿨타임: " +
+                    casting.CooldownRemaining.ToString("0.0") + "초");
+            bool enabledBefore = GUI.enabled;
+            GUI.enabled = enabledBefore && casting.CanAttempt;
+            if (pendingAlchemyCastId != selected.InstanceId)
             {
-                var material = links.FindRawcode(unit.Rawcode);
-                string name = material != null ? material.UnitDisplayName :
-                    "원본 ID " + unit.Rawcode;
-                GUILayout.Label("· " + name + " ×" + unit.Count);
+                if (GUILayout.Button("연금술 실행 선택", GUILayout.MinHeight(46)))
+                    pendingAlchemyCastId = selected.InstanceId;
             }
-            GUILayout.Label("연금술 실행은 원본 대상 자격·소비 처리 연결 후 활성화됩니다.");
+            else
+            {
+                GUILayout.Label("선택한 유닛이 영구 소비됩니다. 원본 조건과 재료는 확정 시 재검증됩니다.");
+                if (GUILayout.Button("유닛 소비 및 연금술 확정", GUILayout.MinHeight(48)))
+                {
+                    var result = controller.TryUseOriginal323Alchemy(selected.InstanceId);
+                    ShowResult(result);
+                    pendingAlchemyCastId = null;
+                    if (result.State == ManualActionState.Succeeded)
+                    {
+                        selectedAlchemyTargetId = null;
+                        RefreshCurrent();
+                    }
+                }
+                GUI.enabled = enabledBefore;
+                if (GUILayout.Button("연금술 취소", GUILayout.MinHeight(40)))
+                    pendingAlchemyCastId = null;
+            }
+            GUI.enabled = enabledBefore;
         }
 
         private void DrawOriginalJassAudit()

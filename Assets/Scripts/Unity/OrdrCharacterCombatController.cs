@@ -58,6 +58,7 @@ namespace Ordr.Mobile.Unity
         public Ordr323OriginalHelperCowActor Original323HelperCow { get; private set; }
         public Ordr323OriginalHelperNavigation Original323HelperNavigation { get; private set; }
         public Ordr323OriginalHelperManaPotion Original323ManaPotion { get; private set; }
+        public Ordr323OriginalAlchemyCastService Original323AlchemyCasting { get; private set; }
 
         // The original SOLO CUo h08A unit is a noncombat support actor.
         // Create only after BeginSession succeeds, never at menu preview.
@@ -85,6 +86,31 @@ namespace Ordr.Mobile.Unity
         {
             return Original323HelperNavigation != null &&
                 Original323HelperNavigation.TryChooseAlchemy();
+        }
+
+        // The real world must expose independently verified target objects and
+        // an exclusive rollback-capable inventory/mana/spawn transaction.
+        // JASS name links are preview evidence, not authority to remove units.
+        public void ConfigureOriginal323AlchemyCasting(
+            IOrdr323AlchemyTransactionalWorld originalWorld)
+        {
+            if (Combat == null || Original323HelperCow == null ||
+                OriginalAlchemyRefunds == null)
+                throw new InvalidOperationException(
+                    "원본 도움소·전투 월드·CJY 환급표가 먼저 필요합니다.");
+            if (originalWorld == null) throw new ArgumentNullException(nameof(originalWorld));
+            if (Original323AlchemyCasting != null)
+                throw new InvalidOperationException("연금술 거래 월드가 이미 연결되었습니다.");
+            Original323AlchemyCasting = new Ordr323OriginalAlchemyCastService(
+                Combat.Game, Original323HelperCow, OriginalAlchemyRefunds,
+                originalWorld, () => Combat.Time);
+        }
+
+        public ManualActionResult TryUseOriginal323Alchemy(long targetInstanceId)
+        {
+            return Original323AlchemyCasting == null ?
+                ManualActionResult.Unavailable("연금술") :
+                Original323AlchemyCasting.TryCast(targetInstanceId);
         }
 
         // This is intentionally not supplied by default: A0UY's SLK does
