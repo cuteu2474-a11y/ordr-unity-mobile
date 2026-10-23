@@ -52,6 +52,30 @@ namespace Ordr.Mobile.Unity
         public SharedEconomySession SharedEconomy { get; private set; }
         public OriginalRandomWispResourceExchange RandomWispExchange { get; private set; }
         public OriginalHelperCowManaRecharge HelperCowRecharge { get; private set; }
+        public OriginalHelperCowAutoAreaCasting HelperCowAutoArea { get; private set; }
+
+        private IOriginalHelperCowAreaSpellWorld originalHelperCowAreaWorld;
+
+        // Requires a real h08A and source-verified cast range / readiness /
+        // target eligibility / damage / stun. No fake spells are added here.
+        public void ConfigureOriginalHelperCowAreaWorld(
+            IOriginalHelperCowAreaSpellWorld verifiedWorld)
+        {
+            if (verifiedWorld == null) throw new ArgumentNullException(nameof(verifiedWorld));
+            if (originalHelperCowAreaWorld != null)
+                throw new InvalidOperationException("도움소 범위시전 월드 중복 연결");
+            originalHelperCowAreaWorld = verifiedWorld;
+            if (Combat != null)
+                AttachOriginalHelperCowArea();
+        }
+
+        private void AttachOriginalHelperCowArea()
+        {
+            if (HelperCowAutoArea != null) return;
+            HelperCowAutoArea = new OriginalHelperCowAutoAreaCasting(
+                Combat.Game, () => Combat.Time, () => Combat.MobileEnemySnapshot(),
+                originalHelperCowAreaWorld);
+        }
 
         private IOriginalHelperCowManaWorld originalHelperCowWorld;
 
@@ -517,6 +541,8 @@ namespace Ordr.Mobile.Unity
                 originalFusionPort ?? FusionAssistance, originalEconomyPort);
             if (originalHelperCowWorld != null)
                 AttachOriginalHelperCow();
+            if (originalHelperCowAreaWorld != null)
+                AttachOriginalHelperCowArea();
         }
 
         // 원작 피해 공식 없이도 캐릭터 소환·선택·배치·웨이브 월드를 구성할 수 있다.
@@ -614,6 +640,10 @@ namespace Ordr.Mobile.Unity
                 var handler = OnCombatEvent;
                 if (handler != null) handler(item);
             }
+            // Source-verified helper-cow point spells are cast ONLY by the
+            // real live-world port, after the current enemy positions update.
+            if (HelperCowAutoArea != null)
+                HelperCowAutoArea.Tick();
         }
     }
 }

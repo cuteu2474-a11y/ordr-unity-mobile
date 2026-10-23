@@ -579,6 +579,9 @@ namespace Ordr.Mobile.Unity
                     " / " + helper.Maximum.ToString("0.#"));
             else
                 GUILayout.Label("도움소 마나: 실제 유닛 연결 대기");
+            GUILayout.Label(controller.HelperCowAutoArea == null
+                ? "도움소 광역 자동 시전: 원작 월드 미연결"
+                : "도움소 광역 자동 시전: 원작 월드 연결됨");
             GUILayout.Label("랜덤위습 " + controller.WispBalance(WispResourceIds.Random) +
                 "개 · 선택위습 " + controller.WispBalance(WispResourceIds.Choice) + "개");
             GUILayout.Label("자동: 안흔함 " + controller.WispBalance(WispResourceIds.Uncommon) +
