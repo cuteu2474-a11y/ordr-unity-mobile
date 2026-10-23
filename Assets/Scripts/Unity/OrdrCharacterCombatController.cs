@@ -41,6 +41,14 @@ namespace Ordr.Mobile.Unity
         public CharacterCombatRuntime Combat { get; private set; }
 
         public MobileManualInteraction ManualActions { get; } = new MobileManualInteraction();
+        public MobileDedicatedSkillActions DedicatedSkills { get; } =
+            new MobileDedicatedSkillActions();
+
+        // Explicit tap-only, source-verified actions. Do not repurpose Q/W/R.
+        public void ConfigureOriginalDedicatedSkills(IOriginalDedicatedSkillPort originalWorld)
+        {
+            DedicatedSkills.Configure(originalWorld);
+        }
         public SharedEconomySession SharedEconomy { get; private set; }
         public MobileWispService Wisps { get; private set; }
         private IVerifiedChoiceWispMergeWorld choiceWispWorld;

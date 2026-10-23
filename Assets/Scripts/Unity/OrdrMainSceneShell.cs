@@ -48,26 +48,23 @@ namespace Ordr.Mobile.Unity
             GUI.Label(new Rect(x, top + headerHeight * 0.57f, w, headerHeight * 0.42f),
                 status, detail);
 
-            // Reserve recognisable zones before actual battlefield physics
-            // and original monster/wave rules are implemented.
-            float mapTop = top + headerHeight + 8f;
-            float available = Mathf.Max(30f, safe.height * 0.49f);
-            float storyWidth = w * 0.285f;
-            float gap = Mathf.Max(8f, w * 0.012f);
-            float battleWidth = w - storyWidth - gap;
+            // Reserve a real GUI margin for source-verified dedicated skill
+            // buttons; battlefield/story rectangles never share this space.
+            float dpi = Screen.dpi > 0f ? Screen.dpi : 160f;
+            float scale = Mathf.Clamp(dpi / 160f, 1f, 3f);
+            var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
 
-            // World sprites (units, enemies, attack cues) must remain visible.
-            // An opaque IMGUI Box would cover them every frame.
+            // World objects need their own camera mapping in a later stage.
+            // These placeholders do not claim to clip or run the game world.
             var areaStyle = new GUIStyle(GUI.skin.label);
             areaStyle.alignment = TextAnchor.UpperLeft;
             areaStyle.fontStyle = FontStyle.Bold;
             areaStyle.normal.textColor = new Color(0.80f, 0.88f, 0.98f);
-            GUI.Box(new Rect(x, mapTop, battleWidth, available),
-                "메인 전장", areaStyle);
-            GUI.Box(new Rect(x + battleWidth + gap, mapTop, storyWidth, available),
-                "스토리 전장", areaStyle);
+            GUI.Box(layout.Battle, "메인 전장", areaStyle);
+            GUI.Box(layout.Story, "스토리 전장", areaStyle);
+            GUI.Box(layout.SkillMargin, "전용 스킬", areaStyle);
 
-            float textTop = mapTop + available + 10f;
+            float textTop = Mathf.Max(layout.Battle.yMax, layout.SkillMargin.yMax) + 10f;
             GUI.Label(new Rect(x, textTop, w, 46f),
                 "1단계: Unity 프로젝트와 첫 화면 구성. " +
                 "유닛·적 생성, 웨이브, 경제와 전투는 아직 작동하지 않습니다.", detail);

@@ -25,6 +25,8 @@ namespace Ordr.Mobile.Unity
         private long? pendingCommonSaleId;
         private string selectedCatalogUnitId;
         private Vector2 scroll;
+        private Vector2 dedicatedScroll;
+        private string dedicatedNotice;
         private string notice = "모바일 조작 패널";
         private IReadOnlyList<MobileFusionPreview> fusionOffers =
             new List<MobileFusionPreview>().AsReadOnly();
@@ -90,6 +92,9 @@ namespace Ordr.Mobile.Unity
                 }
             }
 
+            if (!visible)
+                DrawDedicatedSkillMargin(safe, scale);
+
             if (visible)
             {
                 // 모바일 전장 전체를 덮지 않도록 기본 최대 54%만 사용.
@@ -122,6 +127,58 @@ namespace Ordr.Mobile.Unity
                 GUILayout.EndArea();
             }
             GUI.matrix = previous;
+        }
+
+        // These are facility/unit-specific manual actions (e.g. record
+        // instructions or Vivi), not Q/W/R combat buttons.
+        // Buttons appear ONLY when a verified original action port supplies them.
+        private void DrawDedicatedSkillMargin(Rect safe, float scale)
+        {
+            var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
+            Rect area = MobileMapSkillLayout.Scaled(layout.SkillMargin, scale);
+            GUILayout.BeginArea(area, GUI.skin.box);
+            GUILayout.Label("전용 스킬");
+
+            var actions = controller.DedicatedSkills;
+            if (!actions.IsConnected)
+                GUILayout.Label("원작 실행 기능 연결 대기");
+            else
+            {
+                var available = actions.Available();
+                if (available.Count == 0)
+                    GUILayout.Label("현재 사용 가능한 전용 스킬 없음");
+                else
+                {
+                    dedicatedScroll = GUILayout.BeginScrollView(dedicatedScroll,
+                        !layout.SideMargin, layout.SideMargin);
+                    if (layout.SideMargin) GUILayout.BeginVertical();
+                    else GUILayout.BeginHorizontal();
+                    foreach (var skill in available)
+                    {
+                        if (skill == null) continue;
+                        bool previous = GUI.enabled;
+                        GUI.enabled = previous && skill.IsUnlocked && skill.CanExecute;
+                        string label = skill.Title + "\n" + skill.OriginalCostAndRules;
+                        bool pressed = layout.SideMargin ?
+                            GUILayout.Button(label, GUILayout.MinHeight(54f)) :
+                            GUILayout.Button(label, GUILayout.Width(134f), GUILayout.MinHeight(54f));
+                        GUI.enabled = previous;
+                        if (pressed)
+                        {
+                            ManualActionResult result = actions.Request(skill.Id);
+                            dedicatedNotice = result.Message;
+                            ShowResult(result);
+                        }
+                    }
+                    if (layout.SideMargin) GUILayout.EndVertical();
+                    else GUILayout.EndHorizontal();
+                    GUILayout.EndScrollView();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(dedicatedNotice) && layout.SideMargin)
+                GUILayout.Label(dedicatedNotice);
+            GUILayout.EndArea();
         }
 
         private void DrawTabs()
