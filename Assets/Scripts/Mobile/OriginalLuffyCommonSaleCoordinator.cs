@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Ordr.Mobile.Core;
+using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Mobile
 {
@@ -35,8 +37,8 @@ namespace Ordr.Mobile.Mobile
         IOriginalCommonSaleTransaction BeginCommonSale();
     }
 
-    // Only the C-01 (h003) path is authorized during the common-first rollout.
-    // Other common units are deferred until their own source proof is consumed.
+    // Legacy C-01 entry point retained for existing callers/tests. All nine
+    // commons now share the source-checked coordinator below.
     public sealed class OriginalLuffyCommonSaleCoordinator : IOriginalCommonSalePort
     {
         public const string UnitCatalogId = "C-01";
@@ -58,8 +60,17 @@ namespace Ordr.Mobile.Mobile
 
         public ManualActionResult ConfirmSale(long exactInstanceId)
         {
+            return ExecuteSale(world, exactInstanceId,
+                (catalog, rawcode) => catalog == UnitCatalogId && rawcode == UnitOriginalRawcode,
+                "루피");
+        }
+
+        internal static ManualActionResult ExecuteSale(
+            IOriginalCommonSaleTransactionalWorld world, long exactInstanceId,
+            Func<string, string, bool> isSourceBackedCommon, string unitName)
+        {
             if (exactInstanceId <= 0)
-                return Reject("판매할 루피 인스턴스 ID가 유효하지 않습니다.");
+                return Reject("판매할 흔함 유닛 인스턴스 ID가 유효하지 않습니다.");
 
             try
             {
@@ -71,10 +82,10 @@ namespace Ordr.Mobile.Mobile
                     bool deployed;
                     if (!transaction.TryReadUnit(exactInstanceId, out catalog,
                             out rawcode, out deployed, out reason) ||
-                        catalog != UnitCatalogId || rawcode != UnitOriginalRawcode)
-                        return Reject("판매할 유닛이 원본 h003 루피가 아니거나 소유하지 않았습니다.");
+                        !isSourceBackedCommon(catalog, rawcode))
+                        return Reject("원본 A09G 흔함 유닛이 아니거나 소유하지 않았습니다.");
                     if (deployed)
-                        return Reject("스토리 파견 중인 루피는 판매할 수 없습니다.");
+                        return Reject("스토리 파견 중인 유닛은 판매할 수 없습니다.");
 
                     int alreadySold;
                     if (!transaction.TryReadSaleCount(out alreadySold, out reason) ||
@@ -102,7 +113,7 @@ namespace Ordr.Mobile.Mobile
                             : reason);
                     transaction.Commit();
                     return new ManualActionResult(ManualActionState.Succeeded,
-                        "루피 판매: 누적 " + outcome.PointsTowardNextWisp + "/3, " +
+                        unitName + " 판매: 누적 " + outcome.PointsTowardNextWisp + "/3, " +
                         "위습 " + outcome.RandomWispsAwarded + ", 목재 " +
                         outcome.BonusWoodAwarded);
                 }
@@ -118,6 +129,59 @@ namespace Ordr.Mobile.Mobile
         private static ManualActionResult Reject(string reason)
         {
             return new ManualActionResult(ManualActionState.Rejected, reason);
+        }
+    }
+    // The original object records A09G on every C-01..C-09, and the original
+    // CRO JASS callback consumes a common LY counter. Only those nine exact
+    // source rawcodes may use this shared sale transaction. A catalogue grade
+    // or display name alone never authorizes sale.
+    public sealed class OriginalCommonSaleCoordinator : IOriginalCommonSalePort
+    {
+        // Source-audited C-01..09 identities in source object order, never
+        // inferred from a mutable name or the "흔함" grade alone.
+        private static readonly string[] VerifiedRawcodes = {
+            "h003", "h002", "h001", "h007", "h004",
+            "h008", "h005", "h009", "h006"
+        };
+        private readonly IOriginalCommonSaleTransactionalWorld world;
+        private readonly Dictionary<string, string> originalRawcodes =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+
+        public OriginalCommonSaleCoordinator(IOriginalCommonSaleTransactionalWorld verifiedWorld,
+            OriginalMapBaseStatCatalog originalMap)
+        {
+            world = verifiedWorld ?? throw new ArgumentNullException(nameof(verifiedWorld));
+            if (originalMap == null) throw new ArgumentNullException(nameof(originalMap));
+            var seenRawcodes = new HashSet<string>(StringComparer.Ordinal);
+            for (int index = 1; index <= 9; index++)
+            {
+                string id = "C-" + index.ToString("D2");
+                var original = originalMap.Find(id);
+                if (original == null || original.MappingStatus != "verified-common-map-identity" ||
+                    original.OriginalRawcode != VerifiedRawcodes[index - 1] ||
+                    !HasSaleAbility(original) ||
+                    !seenRawcodes.Add(original.OriginalRawcode))
+                    throw new FormatException(id + ": 원본 A09G 판매 유닛 근거가 불완전합니다.");
+                originalRawcodes.Add(id, original.OriginalRawcode);
+            }
+        }
+
+        public ManualActionResult ConfirmSale(long exactInstanceId)
+        {
+            return OriginalLuffyCommonSaleCoordinator.ExecuteSale(world, exactInstanceId,
+                (catalog, rawcode) =>
+                {
+                    string expected;
+                    return catalog != null && originalRawcodes.TryGetValue(catalog, out expected) &&
+                        expected == rawcode;
+                }, "흔함 유닛");
+        }
+
+        private static bool HasSaleAbility(OriginalMapCharacterBasics source)
+        {
+            foreach (string ability in source.OriginalAbilityRawcodes)
+                if (ability == OriginalCommonSaleRules.AbilityRawcode) return true;
+            return false;
         }
     }
 }

@@ -23,6 +23,7 @@ namespace Ordr.Mobile.Unity
         private int catalogPage;
         private int ownedPage;
         private long? pendingCommonSaleId;
+        private string pendingCommonSaleName;
         private string selectedCatalogUnitId;
         private Vector2 scroll;
         private Vector2 tabsScroll;
@@ -92,6 +93,7 @@ namespace Ordr.Mobile.Unity
             pendingAlchemyCastId = null;
             alchemyTargetsScroll = Vector2.zero;
             pendingCommonSaleId = null;
+            pendingCommonSaleName = null;
             notice = "";
             RefreshCurrent();
         }
@@ -109,6 +111,7 @@ namespace Ordr.Mobile.Unity
             selectedAlchemyTargetId = null;
             pendingAlchemyCastId = null;
             pendingCommonSaleId = null;
+            pendingCommonSaleName = null;
         }
 
         private void OnGUI()
@@ -395,16 +398,18 @@ namespace Ordr.Mobile.Unity
                     notice = entry.Unit.Name + " 선택";
                 }
                 GUILayout.EndHorizontal();
-                // No A0JE/Avul buttons: mobile placement and protection are
-                // non-manual policies. C-01 sale is manually confirmed only.
-                if (entry.Unit.Id == OriginalLuffyCommonSaleCoordinator.UnitCatalogId)
+                // All nine original common objects have A09G. Never display
+                // A0JE/Avul as manual abilities; the transaction rechecks
+                // exact original rawcode and ownership under its world lock.
+                if (entry.Unit.Grade == "흔함")
                 {
                     bool oldEnabled = GUI.enabled;
                     GUI.enabled = oldEnabled && controller.ManualActions.HasOriginalCommonSaleService;
-                    if (GUILayout.Button("흔함 루피 판매", GUILayout.MinHeight(48)))
+                    if (GUILayout.Button(entry.Unit.Name + " 판매", GUILayout.MinHeight(48)))
                     {
                         pendingCommonSaleId = entry.InstanceId;
-                        notice = "루피를 판매하면 되돌릴 수 없습니다. 아래에서 확인하세요.";
+                        pendingCommonSaleName = entry.Unit.Name;
+                        notice = entry.Unit.Name + "을(를) 판매하면 되돌릴 수 없습니다. 아래에서 확인하세요.";
                     }
                     GUI.enabled = oldEnabled;
                     if (!controller.ManualActions.HasOriginalCommonSaleService)
@@ -416,16 +421,21 @@ namespace Ordr.Mobile.Unity
             }
             if (pendingCommonSaleId.HasValue)
             {
-                GUILayout.Label("루피 #" + pendingCommonSaleId.Value + " 판매 확정?");
+                GUILayout.Label((pendingCommonSaleName ?? "흔함 유닛") + " #" +
+                    pendingCommonSaleId.Value + " 판매 확정?");
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("판매 확인", GUILayout.MinHeight(48)))
                 {
                     ShowResult(controller.ManualActions.RequestCommonSale(
                         pendingCommonSaleId.Value));
                     pendingCommonSaleId = null;
+                    pendingCommonSaleName = null;
                 }
                 if (GUILayout.Button("취소", GUILayout.MinHeight(48)))
+                {
                     pendingCommonSaleId = null;
+                    pendingCommonSaleName = null;
+                }
                 GUILayout.EndHorizontal();
             }
             DrawPager(ownedPage, pages, next => ownedPage = next);

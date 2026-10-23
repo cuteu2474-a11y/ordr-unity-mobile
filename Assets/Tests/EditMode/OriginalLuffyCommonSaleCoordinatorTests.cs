@@ -1,12 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using NUnit.Framework;
+using Ordr.Mobile.Data;
 using Ordr.Mobile.Mobile;
+using UnityEngine;
 
 namespace Ordr.Mobile.Tests
 {
     public sealed class OriginalLuffyCommonSaleCoordinatorTests
     {
+        private static OriginalMapBaseStatCatalog OriginalMap()
+        {
+            string data = Path.Combine(Application.dataPath, "..", "data");
+            var units = CharacterUnitCatalog.FromJson(
+                File.ReadAllText(Path.Combine(data, "units.json")));
+            return OriginalMapBaseStatCatalog.FromJson(
+                File.ReadAllText(Path.Combine(data, "original-2323C-map-base-stats.json")),
+                units);
+        }
+
         // Explicitly a simulated atomic world: original runtime worlds must
         // implement this transaction before exposing sale on a device.
         private sealed class FakeWorld : IOriginalCommonSaleTransactionalWorld
@@ -200,6 +213,58 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(world.HasUnit);
             Assert.AreEqual(0, world.RngCalls);
             Assert.AreEqual(0, world.Wisps);
+        }
+        [Test]
+        public void AllNineCommonsShareOneSaleCounterAndOriginalWispMilestones()
+        {
+            var map = OriginalMap();
+            var state = new FakeWorld();
+            var service = new OriginalCommonSaleCoordinator(state, map);
+            for (int index = 1; index <= 9; index++)
+            {
+                string id = "C-" + index.ToString("D2");
+                state.Catalog = id;
+                state.Rawcode = map.Find(id).OriginalRawcode;
+                state.HasUnit = true; // TEST_ONLY: different owned unit in each transaction.
+                Assert.AreEqual(ManualActionState.Succeeded,
+                    service.ConfirmSale(3).State, id);
+                Assert.AreEqual(index, state.Sold, id);
+                Assert.AreEqual(index / 3, state.Wisps, id);
+                Assert.AreEqual(index / 3, state.Wood, id);
+                Assert.AreEqual(index / 3, state.RngCalls, id);
+            }
+        }
+
+        [Test]
+        public void AllCommonCoordinatorRejectsSpoofedRawcodeAndDifferentGrade()
+        {
+            var state = new FakeWorld { Catalog = "C-02", Rawcode = "h003" };
+            var service = new OriginalCommonSaleCoordinator(state, OriginalMap());
+            Assert.AreEqual(ManualActionState.Rejected, service.ConfirmSale(3).State);
+            Assert.IsTrue(state.HasUnit);
+            Assert.AreEqual(0, state.Sold);
+
+            state.Catalog = "U-01";
+            state.Rawcode = "h002";
+            Assert.AreEqual(ManualActionState.Rejected, service.ConfirmSale(3).State);
+            Assert.AreEqual(0, state.Sold);
+        }
+
+        [Test]
+        public void AllCommonCoordinatorRollsBackThirdSaleAcrossUnitKinds()
+        {
+            var state = new FakeWorld {
+                Catalog = "C-02", Rawcode = "h002", Sold = 2,
+                Roll = 35, ThrowOnCommit = true
+            };
+            var service = new OriginalCommonSaleCoordinator(state, OriginalMap());
+            Assert.AreEqual(ManualActionState.Rejected, service.ConfirmSale(3).State);
+            Assert.IsTrue(state.HasUnit);
+            Assert.AreEqual(2, state.Sold);
+            Assert.AreEqual(0, state.Wisps);
+            Assert.AreEqual(0, state.Wood);
+            Assert.AreEqual(0, state.RngCalls);
+            Assert.AreEqual(1, state.Rollbacks);
         }
     }
 }

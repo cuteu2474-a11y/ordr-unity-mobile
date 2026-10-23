@@ -336,8 +336,10 @@ namespace Ordr.Mobile.Unity
             if (originalWorld == null) throw new ArgumentNullException(nameof(originalWorld));
             if (Combat == null) throw new InvalidOperationException(
                 "원본 판매 대상의 실제 월드를 먼저 구성해야 합니다.");
+            if (MapBaseStats == null) throw new InvalidOperationException(
+                "원본 흔함 9종의 A09G 객체 근거를 먼저 로드해야 합니다.");
             ManualActions.ConfigureOriginalCommonSale(
-                new OriginalLuffyCommonSaleCoordinator(originalWorld));
+                new OriginalCommonSaleCoordinator(originalWorld, MapBaseStats));
         }
 
         // All unit grades use the same automatic attack pipeline once their
