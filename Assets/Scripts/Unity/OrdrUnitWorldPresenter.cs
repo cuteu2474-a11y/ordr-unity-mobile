@@ -17,7 +17,6 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private Camera worldCamera;
         [SerializeField] private float markerDiameterWorldUnits = 44f;
         [SerializeField] private float selectionTapRadiusPixels = 48f;
-        [SerializeField] private float worldTapMinimumScreenHeightRatio = 0.46f;
         [SerializeField] private float refreshIntervalSeconds = 0.12f;
         [SerializeField] private float attackFlashDurationSeconds = 0.18f;
         [SerializeField] private float attackCueDurationSeconds = 0.22f;
@@ -503,10 +502,15 @@ namespace Ordr.Mobile.Unity
                 screen = Input.mousePosition;
             else return;
 
-            // Lower screen is reserved for the touch command panel. Never
-            // redirect economy/dispatch/fusion taps into the world.
-            if (screen.y < Screen.height *
-                Mathf.Clamp01(worldTapMinimumScreenHeightRatio)) return;
+            // Only the main map accepts direct unit selection. The skill
+            // ribbon, story field and bottom controls must never click through.
+            Rect safe = Screen.safeArea;
+            if (safe.width <= safe.height) return;
+            float dpi = Screen.dpi > 0f ? Screen.dpi : 160f;
+            var layout = MobileMapSkillLayout.Calculate(safe, Screen.height,
+                MobileMapSkillLayout.UiScale(safe, dpi));
+            Vector2 onGui = new Vector2(screen.x, Screen.height - screen.y);
+            if (!layout.Battle.Contains(onGui)) return;
 
             long nearestId = 0;
             float nearestPixels2 = Mathf.Max(16f, selectionTapRadiusPixels);

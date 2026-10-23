@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Ordr.Mobile.Mobile;
@@ -41,15 +42,35 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, world.Calls);
         }
 
-        [Test]
-        public void DedicatedMarginNeverOverlapsStoryOrBattle()
+        private static void AssertStackedLandscape(Rect safe, float screenHeight, float dpi)
         {
-            var wide = MobileMapSkillLayout.Calculate(new Rect(0, 0, 1920, 1080), 1080, 1.5f);
-            Assert.IsTrue(wide.SideMargin);
-            Assert.GreaterOrEqual(wide.SkillMargin.xMin, wide.Story.xMax);
-            var portrait = MobileMapSkillLayout.Calculate(new Rect(0, 0, 390, 844), 844, 1f);
-            Assert.IsFalse(portrait.SideMargin);
-            Assert.GreaterOrEqual(portrait.SkillMargin.yMin, portrait.Story.yMax);
+            var layout = MobileMapSkillLayout.Calculate(
+                safe, screenHeight, MobileMapSkillLayout.UiScale(safe, dpi));
+            Assert.Greater(layout.Battle.height, layout.Story.height * 3.9f);
+            Assert.AreEqual(layout.Battle.xMin, layout.SkillMargin.xMin, 0.01f);
+            Assert.AreEqual(layout.Battle.xMin, layout.Story.xMin, 0.01f);
+            Assert.AreEqual(layout.Battle.width, layout.SkillMargin.width, 0.01f);
+            Assert.AreEqual(layout.Battle.width, layout.Story.width, 0.01f);
+            Assert.Less(layout.Battle.yMax, layout.SkillMargin.yMin);
+            Assert.Less(layout.SkillMargin.yMax, layout.Story.yMin);
+            Assert.Less(layout.Story.yMax, layout.BottomControls.yMin);
+            Assert.LessOrEqual(layout.BottomControls.yMax, screenHeight, 0.01f);
+            Assert.Greater(layout.SkillMargin.height, 30f);
+        }
+
+        [Test]
+        public void LandscapeTabletAndPhonePlaceMainAboveRibbonAboveSmallStory()
+        {
+            AssertStackedLandscape(new Rect(0f, 0f, 1920f, 1080f), 1080f, 240f);
+            AssertStackedLandscape(new Rect(24f, 12f, 1152f, 700f), 724f, 300f);
+            AssertStackedLandscape(new Rect(44f, 0f, 756f, 390f), 390f, 460f);
+        }
+
+        [Test]
+        public void PortraitHasNoAlternateMapLayout()
+        {
+            Assert.Throws<ArgumentException>(() =>
+                MobileMapSkillLayout.Calculate(new Rect(0, 0, 390, 844), 844, 1f));
         }
     }
 }

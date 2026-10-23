@@ -55,9 +55,12 @@ namespace Ordr.Mobile.Unity
         {
             if (controller == null) return;
 
-            float dpi = Screen.dpi > 0 ? Screen.dpi : 160f;
-            float scale = Mathf.Clamp(dpi / 160f, 1f, 3f);
             Rect safe = Screen.safeArea;
+            // Portrait has no gameplay UI; mobile builds rotate to landscape.
+            if (safe.width <= safe.height) return;
+            float dpi = Screen.dpi > 0f ? Screen.dpi : 160f;
+            float scale = MobileMapSkillLayout.UiScale(safe, dpi);
+            var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
             float left = safe.x / scale;
             float top = (Screen.height - safe.yMax) / scale;
             float width = safe.width / scale;
@@ -67,9 +70,12 @@ namespace Ordr.Mobile.Unity
             Matrix4x4 previous = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
 
-            float toggleHeight = 54f;
-            Rect toggle = new Rect(left + width - Math.Min(132f, width), top + height -
-                toggleHeight, Math.Min(132f, width), toggleHeight);
+            // Bottom dock remains below the small story field.
+            Rect dock = MobileMapSkillLayout.Scaled(layout.BottomControls, scale);
+            float toggleHeight = dock.height;
+            float toggleWidth = Mathf.Min(132f, dock.width);
+            Rect toggle = new Rect(dock.xMax - toggleWidth, dock.y,
+                toggleWidth, toggleHeight);
             if (GUI.Button(toggle, visible ? "운용 닫기" : "운용 메뉴"))
             {
                 visible = !visible;
@@ -92,15 +98,14 @@ namespace Ordr.Mobile.Unity
                 }
             }
 
-            if (!visible)
-                DrawDedicatedSkillMargin(safe, scale);
-
             if (visible)
             {
-                // 모바일 전장 전체를 덮지 않도록 기본 최대 54%만 사용.
-                float panelHeight = Mathf.Min(height * 0.54f, 480f);
-                Rect area = new Rect(left, top + height - toggleHeight - panelHeight,
-                    width, panelHeight);
+                // A temporary drawer may cover part of the main battle while
+                // open, but never occupies the dedicated ribbon or story field.
+                Rect battle = MobileMapSkillLayout.Scaled(layout.Battle, scale);
+                float panelWidth = Mathf.Min(battle.width * 0.64f, 690f);
+                Rect area = new Rect(battle.xMax - panelWidth, battle.y,
+                    panelWidth, battle.height);
                 GUILayout.BeginArea(area, GUI.skin.box);
                 GUILayout.BeginVertical();
                 GUILayout.Label("원랜디 모바일 운용");
@@ -126,6 +131,8 @@ namespace Ordr.Mobile.Unity
                 GUILayout.EndVertical();
                 GUILayout.EndArea();
             }
+            // Pinned to the full-width horizontal strip even when the menu is open.
+            DrawDedicatedSkillMargin(safe, scale);
             GUI.matrix = previous;
         }
 
@@ -137,7 +144,9 @@ namespace Ordr.Mobile.Unity
             var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
             Rect area = MobileMapSkillLayout.Scaled(layout.SkillMargin, scale);
             GUILayout.BeginArea(area, GUI.skin.box);
-            GUILayout.Label("전용 스킬");
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("전용 스킬", GUILayout.Width(76f),
+                GUILayout.MinHeight(Mathf.Max(40f, area.height - 9f)));
 
             var actions = controller.DedicatedSkills;
             if (!actions.IsConnected)
@@ -146,22 +155,22 @@ namespace Ordr.Mobile.Unity
             {
                 var available = actions.Available();
                 if (available.Count == 0)
-                    GUILayout.Label("현재 사용 가능한 전용 스킬 없음");
+                    GUILayout.Label("현재 전용 스킬 없음");
                 else
                 {
-                    dedicatedScroll = GUILayout.BeginScrollView(dedicatedScroll,
-                        !layout.SideMargin, layout.SideMargin);
-                    if (layout.SideMargin) GUILayout.BeginVertical();
-                    else GUILayout.BeginHorizontal();
+                    // Always a single horizontal row, swiped left/right.
+                    dedicatedScroll = GUILayout.BeginScrollView(dedicatedScroll, true, false,
+                        GUILayout.Height(Mathf.Max(45f, area.height - 5f)));
+                    GUILayout.BeginHorizontal();
                     foreach (var skill in available)
                     {
                         if (skill == null) continue;
                         bool previous = GUI.enabled;
                         GUI.enabled = previous && skill.IsUnlocked && skill.CanExecute;
-                        string label = skill.Title + "\n" + skill.OriginalCostAndRules;
-                        bool pressed = layout.SideMargin ?
-                            GUILayout.Button(label, GUILayout.MinHeight(54f)) :
-                            GUILayout.Button(label, GUILayout.Width(134f), GUILayout.MinHeight(54f));
+                        bool pressed = GUILayout.Button(
+                            skill.Title + "\n" + skill.OriginalCostAndRules,
+                            GUILayout.Width(140f),
+                            GUILayout.Height(Mathf.Max(34f, area.height - 27f)));
                         GUI.enabled = previous;
                         if (pressed)
                         {
@@ -170,14 +179,11 @@ namespace Ordr.Mobile.Unity
                             ShowResult(result);
                         }
                     }
-                    if (layout.SideMargin) GUILayout.EndVertical();
-                    else GUILayout.EndHorizontal();
+                    GUILayout.EndHorizontal();
                     GUILayout.EndScrollView();
                 }
             }
-
-            if (!string.IsNullOrEmpty(dedicatedNotice) && layout.SideMargin)
-                GUILayout.Label(dedicatedNotice);
+            GUILayout.EndHorizontal();
             GUILayout.EndArea();
         }
 
