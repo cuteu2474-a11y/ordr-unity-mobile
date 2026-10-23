@@ -186,6 +186,58 @@
           "contains": "call Bcy(Cl,YR,C1,EN,JS,bj_UNIT_FACING)"
         }
       ]
+    },
+    "originalSharedJassRng": {
+      "jassCall": "BFi(1,100)",
+      "seedState": "H6",
+      "initialSeed": "GetRandomInt(1,1000000) if H6 == 0",
+      "multiplier": 69069,
+      "increment": 1,
+      "modulus": 2147483647,
+      "arithmeticAndDistributionVerifiedAgainstRetailWarcraft": false,
+      "randomSeedAndCrossFeatureCallOrderMustBeShared": true,
+      "checks": [
+        {
+          "line": 93,
+          "contains": "integer H6=0"
+        },
+        {
+          "line": 94,
+          "contains": "integer H9=$7FFFFFFF"
+        },
+        {
+          "line": 95,
+          "contains": "integer H7=69069"
+        },
+        {
+          "line": 96,
+          "contains": "integer H8=1"
+        },
+        {
+          "line": 3589,
+          "contains": "function BFh takes nothing returns real"
+        },
+        {
+          "line": 3591,
+          "contains": "set H6=GetRandomInt(1,$F4240)"
+        },
+        {
+          "line": 3593,
+          "contains": "set H6=ModuloInteger(H7*H6+H8,H9)"
+        },
+        {
+          "line": 3594,
+          "contains": "return I2R(H6)/I2R(H9)"
+        },
+        {
+          "line": 3596,
+          "contains": "function BFi takes integer H2,integer H3 returns integer"
+        },
+        {
+          "line": 3599,
+          "contains": "return R2I(BFh()*(H5+1))+Hy"
+        }
+      ]
     }
   },
   "importantLimits": [

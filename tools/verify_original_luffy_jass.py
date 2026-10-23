@@ -32,6 +32,12 @@ def verify(jass_path, evidence):
         if not (1 <= idx <= len(lines)) or point["contains"] not in lines[idx-1]:
             raise ValueError("Original physical Wisp spawn JASS anchor mismatch: " + str(idx))
         count += 1
+    # The original BFi draw is NOT an independent fresh RNG instance.
+    for point in evidence["saleRewardRule"]["originalSharedJassRng"]["checks"]:
+        idx = point["line"]
+        if not (1 <= idx <= len(lines)) or point["contains"] not in lines[idx-1]:
+            raise ValueError("Original global JASS BFh/BFi state mismatch: " + str(idx))
+        count += 1
     return count
 
 

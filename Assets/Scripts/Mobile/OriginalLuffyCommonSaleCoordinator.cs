@@ -15,8 +15,11 @@ namespace Ordr.Mobile.Mobile
         bool TryReadUnit(long instanceId, out string catalogId,
             out string originalRawcode, out bool storyDeployed, out string reason);
         bool TryReadSaleCount(out int confirmedSales, out string reason);
-        // Called ONLY on sale #3, #6, #9...; inclusive 1..100.
-        bool TryRollOriginalBonusWood(out int result, out string reason);
+        // Called ONLY on sale #3, #6, #9...;
+        // Must consume the player's ORIGINAL SHARED JASS H6/BFh/BFi RNG
+        // stream, preserving its sequence and rolling it back on abort.
+        // Using a new independent 35%-chance RNG per sale is NOT equivalent.
+        bool TryRollOriginalSharedBFiOneToHundred(out int result, out string reason);
         // Must stage all original effects; rollback Dispose on false/throw.
         bool TryApplySale(long instanceId, int newConfirmedSales,
             string originalWispRawcode, double wispSpawnX, double wispSpawnY,
@@ -82,7 +85,7 @@ namespace Ordr.Mobile.Mobile
                     if (OriginalCommonSaleRules.RequiresBonusWoodRoll(alreadySold))
                     {
                         int sampled;
-                        if (!transaction.TryRollOriginalBonusWood(out sampled, out reason))
+                        if (!transaction.TryRollOriginalSharedBFiOneToHundred(out sampled, out reason))
                             return Reject("원본 1~100 판매 목재 난수 확인 실패");
                         roll = sampled;
                     }

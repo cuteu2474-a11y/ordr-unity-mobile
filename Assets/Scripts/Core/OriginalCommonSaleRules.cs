@@ -37,9 +37,10 @@ namespace Ordr.Mobile.Core
             return (alreadySold + 1) % MilestoneSaleCount == 0;
         }
 
-        // Random sample is an independent integer in inclusive [1,100].
-        // It is requested only when the confirmed sale makes LY a multiple
-        // of three. Reject RNG consumption on non-milestone sale.
+        // The provided roll is the result of the GLOBAL JASS BFi(1,100)
+        // backed by H6/BFh, not a new independent per-sale RNG. The host
+        // must preserve the original cross-feature RNG sequence. Only
+        // request it when confirmed LY becomes a multiple of three.
         public static OriginalCommonSaleOutcome PlanAfterConfirmedSale(
             int alreadySold, int? bonusWoodRollOneToHundred)
         {

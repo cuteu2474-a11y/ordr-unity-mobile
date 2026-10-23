@@ -62,7 +62,7 @@ namespace Ordr.Mobile.Tests
                     reason = null;
                     return world.Readable;
                 }
-                public bool TryRollOriginalBonusWood(out int result, out string reason)
+                public bool TryRollOriginalSharedBFiOneToHundred(out int result, out string reason)
                 {
                     world.RngCalls++;
                     result = world.Roll;

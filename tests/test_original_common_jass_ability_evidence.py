@@ -53,6 +53,16 @@ class CommonLuffyJassEvidenceTests(unittest.TestCase):
         self.assertEqual(spawn["facing"], "bj_UNIT_FACING")
         self.assertEqual(len(spawn["checks"]), 6)
 
+    def test_sales_use_single_original_shared_jass_bfh_state(self):
+        rng = self.proof["saleRewardRule"]["originalSharedJassRng"]
+        self.assertEqual(rng["jassCall"], "BFi(1,100)")
+        self.assertEqual(rng["seedState"], "H6")
+        self.assertEqual((rng["multiplier"], rng["increment"], rng["modulus"]),
+                         (69069, 1, 2147483647))
+        self.assertEqual(len(rng["checks"]), 10)
+        self.assertFalse(rng["arithmeticAndDistributionVerifiedAgainstRetailWarcraft"])
+        self.assertTrue(rng["randomSeedAndCrossFeatureCallOrderMustBeShared"])
+
     def test_jass_sales_have_exact_milestone_and_probability(self):
         rule = self.proof["saleRewardRule"]
         self.assertEqual(rule["saleAbilityRawcode"], "A09G")
