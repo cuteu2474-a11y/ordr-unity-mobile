@@ -1,0 +1,124 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceAbilitySlkSha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda",
+  "sourceUnitBalanceSlkSha256": "f7f26217d8097b9791723feb02d9181277d9afb1947dc0a3bf553ce590ab3af5",
+  "sourceUnitAbilitiesSlkSha256": "fbd47be22d1482d63df15d70d7a8fa38f7f26b288443a5d74aa056104aef139d",
+  "abilities": {
+    "A0BZ": {
+      "originalBaseCode": "ANcs",
+      "declaredLevels": 3,
+      "verifiedLevels": [
+        {
+          "level": 1,
+          "castRange": 99999,
+          "manaCost": 500,
+          "cooldown": 100,
+          "effectRadius": 450
+        },
+        {
+          "level": 2,
+          "castRange": 99999,
+          "manaCost": 333,
+          "cooldown": 66,
+          "effectRadius": 450
+        }
+      ],
+      "unverifiedLevel3ManaCost": true
+    },
+    "A07T": {
+      "originalBaseCode": "AOeq",
+      "declaredLevels": 2,
+      "verifiedLevels": [
+        {
+          "level": 1,
+          "castRange": 99999,
+          "manaCost": 320,
+          "cooldown": 150,
+          "effectRadius": 625
+        },
+        {
+          "level": 2,
+          "castRange": 99999,
+          "manaCost": 320,
+          "cooldown": 100,
+          "effectRadius": 625
+        }
+      ]
+    },
+    "A04R": {
+      "originalBaseCode": "AIsr",
+      "declaredLevels": 26,
+      "baseSlkIsr2Levels": [
+        {
+          "level": 1,
+          "value": 0
+        },
+        {
+          "level": 2,
+          "value": -0.01
+        },
+        {
+          "level": 3,
+          "value": -0.02
+        },
+        {
+          "level": 4,
+          "value": -0.03
+        }
+      ],
+      "higherOverridesData": "original-2323C-helper-A04R-evidence.json"
+    }
+  },
+  "helper": {
+    "rawcode": "h08A",
+    "startingMana": 15,
+    "maxMana": 10000,
+    "manaRegenPerSecond": 0.3,
+    "defaultAbilities": [
+      "A07W",
+      "A07T",
+      "A07X",
+      "A0BZ",
+      "A082",
+      "A07Z",
+      "A07U",
+      "A07V",
+      "A0BY",
+      "A081",
+      "Avul"
+    ],
+    "playerSpawnPositions": [
+      {
+        "player": 0,
+        "x": -5888,
+        "y": 4464
+      },
+      {
+        "player": 1,
+        "x": 128,
+        "y": 4464
+      },
+      {
+        "player": 2,
+        "x": -5888,
+        "y": -656
+      },
+      {
+        "player": 3,
+        "x": 128,
+        "y": -656
+      }
+    ],
+    "sourceJassFunction": "CUo",
+    "sourceRectArray": "Ll[0..3]=B2..B5",
+    "positionExpression": "GetRectMinX(Ll[player]), GetRectMinY(Ll[player]) - 1200"
+  },
+  "cannotInfer": {
+    "a0bzLevel3ManaCost": true,
+    "originalTargetImmunity": true,
+    "originalDamageAfterDefense": true,
+    "a04rEngineFormula": true
+  }
+}

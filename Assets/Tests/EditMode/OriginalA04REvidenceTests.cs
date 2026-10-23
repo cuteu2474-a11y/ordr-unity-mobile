@@ -6,6 +6,10 @@ namespace Ordr.Mobile.Tests
 {
     public sealed class OriginalA04REvidenceTests
     {
+        [TestCase(1, 0.00)]
+        [TestCase(2, -0.01)]
+        [TestCase(3, -0.02)]
+        [TestCase(4, -0.03)]
         [TestCase(5, -0.04)]
         [TestCase(6, -0.05)]
         [TestCase(11, -0.10)]
@@ -19,10 +23,10 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void UnknownOriginalFirstFourLevelsAndBeyondTwentySixAreNotInvented()
+        public void OriginalSlkMakesOneThroughFourKnownButOutsideStillBlocked()
         {
             double ignored;
-            foreach (int level in new[] { -1, 0, 1, 2, 3, 4, 27, 100 })
+            foreach (int level in new[] { -1, 0, 27, 100 })
                 Assert.IsFalse(Ordr323OriginalA04R.TryReadIsr2(level, out ignored));
         }
 

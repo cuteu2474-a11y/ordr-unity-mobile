@@ -257,6 +257,46 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OriginalSourceCowWispRechargeAndAutoCastUseOneManaStore()
+        {
+            var runtime = World();
+            runtime.SpawnEnemy("line", 20000000, CharacterEnemyKind.Line,
+                -5600, 4464, 0);
+            var cow = new Ordr323OriginalHelperCowActor(0);
+            var wallet = new EconomyWallet();
+            wallet.Grant(new ResourceBundle().Add(WispResourceIds.Random, 2));
+            var recharge = new OriginalHelperCowManaRecharge(wallet, runtime.Game,
+                new OriginalHelperCowManaWorld(() => cow));
+            cow.AdvanceBaseManaRegeneration(10);
+            Assert.AreEqual(18, cow.CurrentMana, 0.000001);
+            Assert.AreEqual(39, recharge.SpendOne().CurrentMana, 0.000001);
+            // TEST_ONLY mana grant; validates the 500 mana threshold, not
+            // any extra production source of mana.
+            cow.SetMana(490);
+            Assert.AreEqual(511, recharge.SpendOne().CurrentMana, 0.000001);
+            Assert.AreEqual(0, wallet.Balance(WispResourceIds.Random));
+
+            var live = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new Ordr323OriginalHelperCastDataSource(),
+                new TestResolver()); // TEST_ONLY final-damage implementation
+            var auto = new OriginalHelperCowAutoAreaCasting(runtime.Game,
+                () => runtime.Time, () => runtime.MobileEnemySnapshot(), live);
+            Assert.IsTrue(auto.Tick());
+            Assert.AreEqual(11, cow.CurrentMana, 0.000001);
+            Assert.AreEqual(13000000L, runtime.EnemyOf("line").Health);
+            // Even if the actor receives enough mana, A0BZ is on its
+            // verified 100-second cooldown; A07T is blocked without A04R.
+            cow.SetMana(600);
+            runtime.Step(0.2);
+            Assert.IsFalse(auto.Tick());
+            Assert.AreEqual(600, cow.CurrentMana, 0.000001);
+            runtime.Step(100);
+            Assert.IsTrue(auto.Tick());
+            Assert.AreEqual(100, cow.CurrentMana, 0.000001);
+            Assert.AreEqual(6000000L, runtime.EnemyOf("line").Health);
+        }
+
+        [Test]
         public void CannotDamageStoryEnemyOrUnauthorisedTarget()
         {
             var runtime = World();

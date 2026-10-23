@@ -12,7 +12,7 @@ namespace Ordr.Mobile.Unity
     // 스토리·조합확인·상점·도박·위습 버튼은 실제 사용자 탭에서만 호출된다.
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
-        private enum Tab { Units, Story, Fusion, Shop, Gambling, Wisp }
+        private enum Tab { Units, Story, Fusion, Shop, Gambling, Wisp, Helper }
 
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private bool openByDefault;
@@ -36,6 +36,7 @@ namespace Ordr.Mobile.Unity
         private MobileFusionPreview pendingFusion;
         private MobileManualOffer pendingEconomy;
         private string pendingChoiceRawcode;
+        private bool pendingHelperRecharge;
         private bool showOriginalJassRecipes;
         private IReadOnlyList<JassFusionReadiness> originalJassPreview =
             new List<JassFusionReadiness>().AsReadOnly();
@@ -77,6 +78,7 @@ namespace Ordr.Mobile.Unity
             pendingFusion = null;
             pendingEconomy = null;
             pendingChoiceRawcode = null;
+            pendingHelperRecharge = false;
             pendingCommonSaleId = null;
             notice = "";
             RefreshCurrent();
@@ -88,6 +90,7 @@ namespace Ordr.Mobile.Unity
             pendingFusion = null;
             pendingEconomy = null;
             pendingChoiceRawcode = null;
+            pendingHelperRecharge = false;
             pendingCommonSaleId = null;
         }
 
@@ -151,6 +154,7 @@ namespace Ordr.Mobile.Unity
 
             // Order matches the most common manual activities.
             DrawLeftTab(Tab.Wisp, "위습");
+            DrawLeftTab(Tab.Helper, "도움소");
             DrawLeftTab(Tab.Units, "유닛");
             DrawLeftTab(Tab.Fusion, "조합");
             DrawLeftTab(Tab.Story, "스토리");
@@ -195,6 +199,7 @@ namespace Ordr.Mobile.Unity
                     case Tab.Shop: DrawEconomy(ManualEconomyCategory.Shop); break;
                     case Tab.Gambling: DrawEconomy(ManualEconomyCategory.Gambling); break;
                     case Tab.Wisp: DrawWisp(); break;
+                    case Tab.Helper: DrawHelperCow(); break;
                 }
             }
             GUILayout.EndScrollView();
@@ -210,6 +215,7 @@ namespace Ordr.Mobile.Unity
             switch (tab)
             {
                 case Tab.Wisp: return "위습";
+                case Tab.Helper: return "도움소";
                 case Tab.Units: return "유닛";
                 case Tab.Fusion: return "조합";
                 case Tab.Story: return "스토리";
@@ -573,15 +579,6 @@ namespace Ordr.Mobile.Unity
 
         private void DrawWisp()
         {
-            OriginalHelperCowManaSnapshot helper;
-            if (controller.ManualActions.TryGetHelperCowMana(out helper))
-                GUILayout.Label("도움소 마나 " + helper.Current.ToString("0.#") +
-                    " / " + helper.Maximum.ToString("0.#"));
-            else
-                GUILayout.Label("도움소 마나: 실제 유닛 연결 대기");
-            GUILayout.Label(controller.HelperCowAutoArea == null
-                ? "도움소 자동 시전: 실제 월드 미연결"
-                : "도움소 자동 시전: 원본 사용 조건 확인 중");
             GUILayout.Label("랜덤위습 " + controller.WispBalance(WispResourceIds.Random) +
                 "개 · 선택위습 " + controller.WispBalance(WispResourceIds.Choice) + "개");
             GUILayout.Label("자동: 안흔함 " + controller.WispBalance(WispResourceIds.Uncommon) +
@@ -592,6 +589,69 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("자동 위습 보상 월드 미연결: 보유분 유지");
             DrawEconomy(ManualEconomyCategory.Wisp);
             GUILayout.Label("선택위습은 조합 탭의 Merge에서 사용합니다.");
+        }
+
+        // The resource and the two combat abilities are separate:
+        // a recharge remains explicitly manual; auto casts require a verified
+        // damage/immunity port and an A04R mechanics port for A07T.
+        private void DrawHelperCow()
+        {
+            OriginalHelperCowManaSnapshot mana;
+            bool connected = controller.ManualActions.TryGetHelperCowMana(out mana);
+            GUILayout.Label(connected
+                ? "도움소 h08A · 마나 " + mana.Current.ToString("0.#") +
+                  " / " + mana.Maximum.ToString("0.#")
+                : "도움소 생성 또는 실제 마나 월드 연결 대기");
+            GUILayout.Label("랜덤위습 보유 " +
+                controller.WispBalance(WispResourceIds.Random) + "개");
+            if (controller.Original323HelperCow != null)
+            {
+                var helper = controller.Original323HelperCow;
+                var values = new Ordr323OriginalHelperCastDataSource();
+                foreach (string ability in new[] { "A0BZ", "A07T" })
+                {
+                    int level = helper.GetAbilityLevel(ability);
+                    OriginalHelperCowVerifiedCastData verified;
+                    if (values.TryRead(ability, level, out verified))
+                        GUILayout.Label(ability + " · 레벨 " + level +
+                            " · 마나 " + verified.ManaCost.ToString("0") +
+                            " · 쿨타임 " + verified.CooldownSeconds.ToString("0") + "초");
+                    else
+                        GUILayout.Label(ability + " · 원본 시전 수치 확인 필요");
+                }
+            }
+            GUILayout.Label(controller.HelperCowAutoArea == null
+                ? "자동 광역 스킬: 원본 피해·대상 판정기 미연결"
+                : "자동 광역 스킬: 전투 조건 충족 시 검증된 처리기로 실행");
+            GUILayout.Label("A07T의 A04R은 지속 능력 레벨 증가(+5/+8)이며 스턴이 아닙니다.");
+
+            int round = Combat == null ? 0 : Combat.Game.CurrentWave;
+            int gain = OriginalHelperCowRules.RechargeAmount(round);
+            GUILayout.Label("랜덤위습 1개 사용 → 마나 " + gain +
+                " 회복 (최대 마나 상태에서도 위습 소비)");
+            bool canRecharge = controller.HelperCowRecharge != null &&
+                controller.HelperCowRecharge.CanRecharge;
+            bool previouslyEnabled = GUI.enabled;
+            GUI.enabled = previouslyEnabled && canRecharge;
+            if (!pendingHelperRecharge)
+            {
+                if (GUILayout.Button("도움소 마나 충전 선택", GUILayout.MinHeight(50)))
+                    pendingHelperRecharge = true;
+            }
+            else
+            {
+                GUILayout.Label("랜덤위습 1개가 소비됩니다. 실행하시겠습니까?");
+                if (GUILayout.Button("충전 확정", GUILayout.MinHeight(50)))
+                {
+                    ShowResult(controller.ManualActions.RequestEconomyAction(
+                        ManualEconomyCategory.Wisp, OriginalHelperCowRules.OfferId));
+                    pendingHelperRecharge = false;
+                }
+            }
+            GUI.enabled = previouslyEnabled;
+            if (pendingHelperRecharge &&
+                GUILayout.Button("취소", GUILayout.MinHeight(44)))
+                pendingHelperRecharge = false;
         }
 
         private void DrawOriginalJassAudit()

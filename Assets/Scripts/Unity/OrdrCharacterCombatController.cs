@@ -53,6 +53,38 @@ namespace Ordr.Mobile.Unity
         public OriginalRandomWispResourceExchange RandomWispExchange { get; private set; }
         public OriginalHelperCowManaRecharge HelperCowRecharge { get; private set; }
         public OriginalHelperCowAutoAreaCasting HelperCowAutoArea { get; private set; }
+        public Ordr323OriginalHelperCowActor Original323HelperCow { get; private set; }
+
+        // The original SOLO CUo h08A unit is a noncombat support actor.
+        // Create only after BeginSession succeeds, never at menu preview.
+        private void AttachVerifiedSoloHelperCow()
+        {
+            if (originalHelperCowWorld != null) return; // explicit external real actor wins
+            if (Original323HelperCow != null)
+                throw new InvalidOperationException("원본 도움소가 이미 만들어졌습니다.");
+            var actor = new Ordr323OriginalHelperCowActor(0);
+            Original323HelperCow = actor;
+            ConfigureOriginalHelperCowWorld(new OriginalHelperCowManaWorld(
+                () => Original323HelperCow, 0));
+        }
+
+        // A0BZ/A07T original range, mana and cooldown now come directly
+        // from Units/AbilityData.slk. Damage/immunity and A04R's physical
+        // reduction semantics must still come from an approved combat port.
+        public void ConfigureOriginal323HelperAreaCombat(
+            IOriginalHelperCowVerifiedAreaDamage originalDamage,
+            IOriginalA04REffectEngine originalA04REffects = null)
+        {
+            if (Combat == null || Original323HelperCow == null)
+                throw new InvalidOperationException(
+                    "검증된 게임 시작과 원본 도움소 유닛 생성 후에 연결할 수 있습니다.");
+            if (originalDamage == null)
+                throw new ArgumentNullException(nameof(originalDamage));
+            ConfigureOriginalHelperCowAreaWorld(new OriginalHelperCowLiveCombatWorld(
+                Combat, () => Original323HelperCow,
+                new Ordr323OriginalHelperCastDataSource(),
+                originalDamage, 0, originalA04REffects));
+        }
 
         private IOriginalHelperCowAreaSpellWorld originalHelperCowAreaWorld;
 
@@ -611,6 +643,7 @@ namespace Ordr.Mobile.Unity
                     else Combat.RemoveCharacter(id);
                 });
             Combat.Start();
+            AttachVerifiedSoloHelperCow();
         }
 
         // 지갑 저장 이력까지 복원한 뒤 전투 자동 시전을 시작해야 한다.
@@ -661,9 +694,15 @@ namespace Ordr.Mobile.Unity
         {
             if (Combat == null || Combat.Game.Phase != Ordr.Mobile.Core.SessionPhase.Running)
                 return;
+            double timeBeforeStep = Combat.Time;
             var results = VerifiedWaveDirector.IsActive
                 ? VerifiedWaveDirector.Step(Combat, Time.deltaTime)
                 : Combat.Step(Time.deltaTime);
+            // The same advancing combat clock drives helper mana regen.
+            // UI redraws and wall time must not regenerate extra mana.
+            if (Original323HelperCow != null)
+                Original323HelperCow.AdvanceBaseManaRegeneration(
+                    Math.Max(0.0, Combat.Time - timeBeforeStep));
             foreach (var item in results)
             {
                 var handler = OnCombatEvent;
