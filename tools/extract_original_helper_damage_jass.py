@@ -44,6 +44,7 @@ def inspect_jass(jass):
         "CJh": function_body(jass, "CJh"),
         "CJi": function_body(jass, "CJi"),
         "Bd8": function_body(jass, "Bd8"),
+        "Bcb": function_body(jass, "Bcb"),
     }
     require_fragment(source["CJb"],
                      "call UnitDamagePointLoc(Cm,0.,450.,Ie,V0,ATTACK_TYPE_CHAOS,DAMAGE_TYPE_UNIVERSAL)",
@@ -72,6 +73,10 @@ def inspect_jass(jass):
     require_fragment(source["Bd8"],
                      "call SetUnitAbilityLevel(Cm,XL,GetUnitAbilityLevel(Cm,XL)+Hk)",
                      "Bd8")
+    require_fragment(source["Bcb"], "local real H4=BFj(Hy,Hz)", "Bcb")
+    require_fragment(source["Bcb"],
+                     "call UnitDamageTarget(Hv,Hw,IB,true,false,H0,H1,WEAPON_TYPE_WHOKNOWS)",
+                     "Bcb")
 
     calls = []
     current_function = ""
@@ -93,7 +98,8 @@ def inspect_jass(jass):
         "sourceJassSha256": JASS_SHA,
         "A0BZ": {
             "function": "CJb",
-            "native": "UnitDamagePointLoc",
+            "wrapper": "UnitDamagePointLoc",
+            "native": "UnitDamagePoint",
             "radius": 450,
             "explicitEnemyFilter": False,
             "allNativeVictimsModeled": False,
@@ -105,6 +111,29 @@ def inspect_jass(jass):
             "radius": 625,
             "callbacks": ["CJg", "CJh"],
             "A04RLevelIncrease": [5, 8],
+        },
+        "damageInvocations": {
+            "A0BZ": {
+                "originalJassFunction": "CJb",
+                "originalWrapper": "UnitDamagePointLoc",
+                "underlyingNative": "UnitDamagePoint",
+                "attack": True,
+                "ranged": False,
+                "attackType": "CHAOS",
+                "damageType": "UNIVERSAL",
+                "weaponType": "WHOKNOWS",
+                "wrapperSource": "https://jass.sourceforge.net/doc/api/Blizzard_j-source.shtml",
+                "wrapperSourceIncludedInW3x": False,
+            },
+            "A07T": {
+                "originalJassFunction": "CJg/CJh via Bcb",
+                "underlyingNative": "UnitDamageTarget",
+                "attack": True,
+                "ranged": False,
+                "attackType": "CHAOS",
+                "damageType": "UNIVERSAL",
+                "weaponType": "WHOKNOWS",
+            },
         },
         "sharedA04R": {
             "function": "Bd8",

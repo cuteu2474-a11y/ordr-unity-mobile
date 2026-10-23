@@ -65,6 +65,7 @@ namespace Ordr.Mobile.Tests
             public bool CompletePointVictimRoster = true;
             public bool SupportsFinalDamage = true;
             public string RejectedId;
+            public OriginalHelperCowDamageInvocation LastInvocation;
             public bool CanHit(string ability, MobileEnemySnapshot s, CombatEnemy enemy)
             {
                 return Permit && s.Id != RejectedId;
@@ -78,12 +79,13 @@ namespace Ordr.Mobile.Tests
                 return CompletePointVictimRoster && included != null &&
                     included.Count > 0;
             }
-            public bool TryFinalDamage(string id, int level, CombatEnemy enemy,
-                IReadOnlyList<CombatEffect> effects, long raw, out long damage)
+            public bool TryFinalDamage(OriginalHelperCowDamageInvocation originalCall,
+                CombatEnemy enemy, IReadOnlyList<CombatEffect> effects, out long damage)
             {
                 damage = 0;
                 if (!SupportsFinalDamage) return false;
-                damage = raw; // TEST_ONLY; never use raw as production final damage
+                LastInvocation = originalCall;
+                damage = originalCall.OriginalDamage; // TEST_ONLY; not production
                 return true;
             }
         }
@@ -93,9 +95,9 @@ namespace Ordr.Mobile.Tests
             public bool CanHit(string ability, MobileEnemySnapshot enemy,
                 CombatEnemy original) { return true; }
             public bool CanCastPoint(string ability, double x, double y) { return true; }
-            public bool TryFinalDamage(string ability, int level, CombatEnemy enemy,
-                IReadOnlyList<CombatEffect> effects, long raw, out long result)
-            { result = raw; return true; } // TEST_ONLY
+            public bool TryFinalDamage(OriginalHelperCowDamageInvocation originalCall,
+                CombatEnemy enemy, IReadOnlyList<CombatEffect> effects, out long result)
+            { result = originalCall.OriginalDamage; return true; } // TEST_ONLY
         }
 
         // TEST_ONLY: verifies that the runtime invokes a real A04R ability
@@ -134,6 +136,37 @@ namespace Ordr.Mobile.Tests
             return runtime;
         }
 
+        [TestCase("A0BZ", 1, 7000000L, true, "CJb")]
+        [TestCase("A0BZ", 2, 10000000L, true, "CJb")]
+        [TestCase("A07T", 1, 1000000L, false, "CJg")]
+        [TestCase("A07T", 2, 2000000L, false, "CJh")]
+        public void OriginalJassDamageInvocationKeepsAttackFlagsAndNativeMode(
+            string ability, int level, long originalDamage, bool pointDamage,
+            string sourceFunction)
+        {
+            var invocation = OriginalHelperCowDamageInvocation.FromOriginalJass(
+                ability, level);
+            Assert.AreEqual(ability, invocation.AbilityRawcode);
+            Assert.AreEqual(level, invocation.Level);
+            Assert.AreEqual(originalDamage, invocation.OriginalDamage);
+            Assert.AreEqual(pointDamage, invocation.IsPointDamage);
+            Assert.AreEqual(sourceFunction, invocation.SourceJassFunction);
+            Assert.AreEqual("CHAOS", invocation.AttackType);
+            Assert.AreEqual("UNIVERSAL", invocation.DamageType);
+            Assert.AreEqual("WHOKNOWS", invocation.WeaponType);
+            Assert.IsTrue(invocation.IsAttack);
+            Assert.IsFalse(invocation.IsRanged);
+        }
+
+        [Test]
+        public void UnverifiedOriginalDamageInvocationCannotBeCreated()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                OriginalHelperCowDamageInvocation.FromOriginalJass("A0BZ", 3));
+            Assert.Throws<ArgumentException>(() =>
+                OriginalHelperCowDamageInvocation.FromOriginalJass("unknown", 1));
+        }
+
         [Test]
         public void OriginalHelperAreaUsesOneCombatRuntimeForHpAndKillCounting()
         {
@@ -149,6 +182,9 @@ namespace Ordr.Mobile.Tests
 
             Assert.AreEqual(1, live.AvailableReadyAbilities().Count);
             Assert.IsTrue(live.TryCommitCast("A0BZ", 70, 0));
+            Assert.AreEqual("CJb", resolver.LastInvocation.SourceJassFunction);
+            Assert.IsTrue(resolver.LastInvocation.IsAttack);
+            Assert.IsFalse(resolver.LastInvocation.IsRanged);
             Assert.AreEqual(180, cow.CurrentMana);
             Assert.AreEqual(13000000, runtime.EnemyOf("a").Health);
             Assert.AreEqual(13000000, runtime.EnemyOf("b").Health);

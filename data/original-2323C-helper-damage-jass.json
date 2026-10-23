@@ -4,7 +4,8 @@
   "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
   "A0BZ": {
     "function": "CJb",
-    "native": "UnitDamagePointLoc",
+    "wrapper": "UnitDamagePointLoc",
+    "native": "UnitDamagePoint",
     "radius": 450,
     "explicitEnemyFilter": false,
     "allNativeVictimsModeled": false,
@@ -22,6 +23,29 @@
       5,
       8
     ]
+  },
+  "damageInvocations": {
+    "A0BZ": {
+      "originalJassFunction": "CJb",
+      "originalWrapper": "UnitDamagePointLoc",
+      "underlyingNative": "UnitDamagePoint",
+      "attack": true,
+      "ranged": false,
+      "attackType": "CHAOS",
+      "damageType": "UNIVERSAL",
+      "weaponType": "WHOKNOWS",
+      "wrapperSource": "https://jass.sourceforge.net/doc/api/Blizzard_j-source.shtml",
+      "wrapperSourceIncludedInW3x": false
+    },
+    "A07T": {
+      "originalJassFunction": "CJg/CJh via Bcb",
+      "underlyingNative": "UnitDamageTarget",
+      "attack": true,
+      "ranged": false,
+      "attackType": "CHAOS",
+      "damageType": "UNIVERSAL",
+      "weaponType": "WHOKNOWS"
+    }
   },
   "sharedA04R": {
     "function": "Bd8",

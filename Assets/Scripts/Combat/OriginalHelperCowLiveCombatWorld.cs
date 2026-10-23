@@ -54,6 +54,41 @@ namespace Ordr.Mobile.Combat
             out OriginalHelperCowVerifiedCastData source);
     }
 
+    // Immutable Warcraft damage invocation, traced through the source JASS
+    // (CJb -> Blizzard.j UnitDamagePointLoc -> UnitDamagePoint, or
+    // CJg/CJh -> Bcb -> UnitDamageTarget). Both pass ATTACK_TYPE_CHAOS,
+    // DAMAGE_TYPE_UNIVERSAL, attack=true, ranged=false and an unknown weapon.
+    // None of these fields on its own supplies a final-defense formula.
+    public sealed class OriginalHelperCowDamageInvocation
+    {
+        public string AbilityRawcode { get; private set; }
+        public int Level { get; private set; }
+        public long OriginalDamage { get; private set; }
+        public bool IsAttack { get { return true; } }
+        public bool IsRanged { get { return false; } }
+        public string AttackType { get { return "CHAOS"; } }
+        public string DamageType { get { return "UNIVERSAL"; } }
+        public string WeaponType { get { return "WHOKNOWS"; } }
+        public bool IsPointDamage { get; private set; }
+        public string SourceJassFunction { get; private set; }
+
+        private OriginalHelperCowDamageInvocation(string ability, int level)
+        {
+            OriginalDamage = OriginalHelperCowAreaEvidence.JassDamage(ability, level);
+            AbilityRawcode = ability;
+            Level = level;
+            IsPointDamage = ability == OriginalHelperCowAreaEvidence.PointDamageAbility;
+            SourceJassFunction = IsPointDamage ? "CJb" :
+                (level == 1 ? "CJg" : "CJh");
+        }
+
+        public static OriginalHelperCowDamageInvocation FromOriginalJass(
+            string ability, int level)
+        {
+            return new OriginalHelperCowDamageInvocation(ability, level);
+        }
+    }
+
     public interface IOriginalHelperCowVerifiedAreaDamage
     {
         // Warcraft's enemy/ally/structure/magic-immune targeting and any
@@ -62,12 +97,13 @@ namespace Ordr.Mobile.Combat
             CombatEnemy originalEnemy);
         bool CanCastPoint(string abilityRawcode, double x, double y);
 
-        // Convert JASS CHAOS/UNIVERSAL base damage into a verified final long
-        // after the actual target's defense, buffs and integer quantization.
+        // Resolve the exact source call's attack/ranged/type/native-mode
+        // semantics, armor, immunity, buffs and HP quantization together.
+        // Do not assume that DAMAGE_TYPE_UNIVERSAL ignores A04R or defense.
         // False = missing evidence; do not charge mana or inflict partial harm.
-        bool TryFinalDamage(string abilityRawcode, int level,
+        bool TryFinalDamage(OriginalHelperCowDamageInvocation originalCall,
             CombatEnemy target, IReadOnlyList<CombatEffect> currentEffects,
-            long originalDamage, out long verifiedDamage);
+            out long verifiedDamage);
     }
 
     // CJb uses native UnitDamagePointLoc without CJf's enemy-only filter.
@@ -255,7 +291,7 @@ namespace Ordr.Mobile.Combat
             // Fully resolve all current LIVE targets before any mana debit.
             // No damage is applied until the entire target set has evidence.
             double radius = OriginalHelperCowAreaEvidence.VerifiedRadius(ability);
-            long originalDamage = OriginalHelperCowAreaEvidence.JassDamage(
+            var originalCall = OriginalHelperCowDamageInvocation.FromOriginalJass(
                 ability, verified.Level);
             var hits = new List<OriginalHelperCowResolvedHit>();
             var snapshots = combat.MobileEnemySnapshot();
@@ -267,8 +303,8 @@ namespace Ordr.Mobile.Combat
                 var live = combat.EnemyOf(enemy.Id);
                 if (live == null || !live.IsAlive) return false;
                 long finalDamage;
-                if (!damage.TryFinalDamage(ability, verified.Level,
-                    live, live.Status.Snapshot(), originalDamage, out finalDamage) ||
+                if (!damage.TryFinalDamage(originalCall,
+                    live, live.Status.Snapshot(), out finalDamage) ||
                     finalDamage < 0) return false;
                 hits.Add(new OriginalHelperCowResolvedHit(enemy.Id, finalDamage));
             }
