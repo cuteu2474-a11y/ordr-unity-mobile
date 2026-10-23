@@ -12,7 +12,7 @@ namespace Ordr.Mobile.Unity
     // 스토리·조합확인·상점·도박·위습 버튼은 실제 사용자 탭에서만 호출된다.
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
-        private enum Tab { Units, Story, Fusion, Shop, Gambling, Wisp, Helper }
+        private enum Tab { Units, Story, Fusion, Shop, Gambling, Wisp, Helper, Alchemy }
 
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private bool openByDefault;
@@ -39,6 +39,9 @@ namespace Ordr.Mobile.Unity
         private bool pendingHelperRecharge;
         private bool pendingMaximumOutput;
         private bool pendingAlchemy;
+        private bool alchemyTargetsExpanded;
+        private long? selectedAlchemyTargetId;
+        private Vector2 alchemyTargetsScroll;
         private bool showOriginalJassRecipes;
         private IReadOnlyList<JassFusionReadiness> originalJassPreview =
             new List<JassFusionReadiness>().AsReadOnly();
@@ -83,6 +86,9 @@ namespace Ordr.Mobile.Unity
             pendingHelperRecharge = false;
             pendingMaximumOutput = false;
             pendingAlchemy = false;
+            alchemyTargetsExpanded = false;
+            selectedAlchemyTargetId = null;
+            alchemyTargetsScroll = Vector2.zero;
             pendingCommonSaleId = null;
             notice = "";
             RefreshCurrent();
@@ -97,6 +103,8 @@ namespace Ordr.Mobile.Unity
             pendingHelperRecharge = false;
             pendingMaximumOutput = false;
             pendingAlchemy = false;
+            alchemyTargetsExpanded = false;
+            selectedAlchemyTargetId = null;
             pendingCommonSaleId = null;
         }
 
@@ -161,6 +169,9 @@ namespace Ordr.Mobile.Unity
             // Order matches the most common manual activities.
             DrawLeftTab(Tab.Wisp, "위습");
             DrawLeftTab(Tab.Helper, "도움소");
+            if (controller.Original323HelperCow != null &&
+                controller.Original323HelperCow.AlchemyNavigationChosen)
+                DrawLeftTab(Tab.Alchemy, "연금술");
             DrawLeftTab(Tab.Units, "유닛");
             DrawLeftTab(Tab.Fusion, "조합");
             DrawLeftTab(Tab.Story, "스토리");
@@ -206,6 +217,7 @@ namespace Ordr.Mobile.Unity
                     case Tab.Gambling: DrawEconomy(ManualEconomyCategory.Gambling); break;
                     case Tab.Wisp: DrawWisp(); break;
                     case Tab.Helper: DrawHelperCow(); break;
+                    case Tab.Alchemy: DrawAlchemyPanel(); break;
                 }
             }
             GUILayout.EndScrollView();
@@ -222,6 +234,7 @@ namespace Ordr.Mobile.Unity
             {
                 case Tab.Wisp: return "위습";
                 case Tab.Helper: return "도움소";
+                case Tab.Alchemy: return "연금술";
                 case Tab.Units: return "유닛";
                 case Tab.Fusion: return "조합";
                 case Tab.Story: return "스토리";
@@ -674,12 +687,8 @@ namespace Ordr.Mobile.Unity
                 }
                 if (helper.AlchemyNavigationChosen)
                 {
-                    GUILayout.Label("연금술 A0J2 · 마나 100 · 쿨타임 5초 · 사거리 99999");
-                    GUILayout.Label(controller.OriginalAlchemyRefunds != null
-                        ? "원본 CJY 유닛별 환급표 " +
-                          controller.OriginalAlchemyRefunds.Count + "종 검증됨"
-                        : "원본 연금술 환급표 불러오기 대기");
-                    GUILayout.Label("유닛 선택·소비·마나 차감의 원자적 연결 전까지 시전 불가");
+                    if (GUILayout.Button("연금술 대상 목록 열기", GUILayout.MinHeight(44)))
+                        SelectTab(Tab.Alchemy);
                 }
                 if (helper.ManaPotionChargesRemaining > 0)
                 {
@@ -728,6 +737,94 @@ namespace Ordr.Mobile.Unity
             if (pendingHelperRecharge &&
                 GUILayout.Button("취소", GUILayout.MinHeight(44)))
                 pendingHelperRecharge = false;
+        }
+
+        private void DrawAlchemyPanel()
+        {
+            if (controller.Original323HelperCow == null ||
+                !controller.Original323HelperCow.AlchemyNavigationChosen)
+            {
+                GUILayout.Label("도움소에서 연금술 항법을 선택하면 열립니다.");
+                return;
+            }
+            GUILayout.Label("연금술 · 마나 100 / 쿨타임 5초");
+            DrawAlchemyTargetDropdown();
+        }
+
+        // A compact, expandable picker. The UI selection is NOT a spell cast:
+        // verified original ownership/ability flags and unit-transaction hooks
+        // are still required before the target can ever be consumed.
+        private void DrawAlchemyTargetDropdown()
+        {
+            var owned = Combat == null ? null : Combat.MobileUnitSnapshot();
+            int count = owned == null ? 0 : owned.Count;
+            string selectedTitle = "대상 미선택";
+            MobileUnitSnapshot selected = null;
+            if (owned != null && selectedAlchemyTargetId.HasValue)
+                foreach (var item in owned)
+                    if (item.InstanceId == selectedAlchemyTargetId.Value)
+                    {
+                        selected = item;
+                        selectedTitle = item.Unit.Name + " #" + item.InstanceId;
+                        break;
+                    }
+            if (selected == null)
+                selectedAlchemyTargetId = null; // vanished/consumed elsewhere
+
+            if (GUILayout.Button("연금술 대상 " + (alchemyTargetsExpanded ? "▲" : "▼") +
+                "  " + selectedTitle + "  (보유 " + count + "기)", GUILayout.MinHeight(46)))
+                alchemyTargetsExpanded = !alchemyTargetsExpanded;
+
+            if (alchemyTargetsExpanded)
+            {
+                if (count == 0)
+                    GUILayout.Label("선택할 보유 유닛이 없습니다.");
+                else
+                {
+                    alchemyTargetsScroll = GUILayout.BeginScrollView(
+                        alchemyTargetsScroll, GUILayout.Height(195f));
+                    foreach (var item in owned)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label(item.Unit.Name + " · " + item.Unit.Grade +
+                            "  #" + item.InstanceId, GUILayout.ExpandWidth(true));
+                        if (GUILayout.Button(selectedAlchemyTargetId == item.InstanceId
+                            ? "선택됨" : "선택", GUILayout.Width(72), GUILayout.MinHeight(36)))
+                        {
+                            selectedAlchemyTargetId = item.InstanceId;
+                            alchemyTargetsExpanded = false;
+                            selected = item;
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    GUILayout.EndScrollView();
+                }
+            }
+
+            if (selected == null) return;
+            var links = controller.OriginalUnitRawcodes;
+            var refunds = controller.OriginalAlchemyRefunds;
+            var link = links == null ? null : links.FindUnit(selected.Unit.Id);
+            var recipe = link == null || refunds == null ? null : refunds.Find(link.Rawcode);
+            if (recipe == null)
+            {
+                GUILayout.Label("원본 유닛 ID 또는 환급 규칙 미확인 · 시전 불가");
+                return;
+            }
+
+            // These names are label evidence for PREVIEW only. They are not
+            // independently reviewed rawcode-to-live-unit mappings.
+            GUILayout.Label("원본 조합 재료 환급 미리보기");
+            if (recipe.RefundUnits.Count == 0)
+                GUILayout.Label("반환되는 UNIT 재료 없음");
+            foreach (var unit in recipe.RefundUnits)
+            {
+                var material = links.FindRawcode(unit.Rawcode);
+                string name = material != null ? material.UnitDisplayName :
+                    "원본 ID " + unit.Rawcode;
+                GUILayout.Label("· " + name + " ×" + unit.Count);
+            }
+            GUILayout.Label("연금술 실행은 원본 대상 자격·소비 처리 연결 후 활성화됩니다.");
         }
 
         private void DrawOriginalJassAudit()
