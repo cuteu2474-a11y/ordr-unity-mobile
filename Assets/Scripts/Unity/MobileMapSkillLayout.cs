@@ -43,21 +43,24 @@ namespace Ordr.Mobile.Unity
             // reserved right column for the tab detail panel. Showing or
             // closing the drawer never changes camera size or map geometry.
             float horizontalSpace = usableWidth - railWidth - gap * 2f;
-            float drawerWidth = Mathf.Clamp(horizontalSpace * 0.29f,
-                Mathf.Min(184f * uiScale, horizontalSpace * 0.38f),
-                Mathf.Min(300f * uiScale, horizontalSpace * 0.38f));
-            float mapWidth = horizontalSpace - drawerWidth;
+            // Smaller battlefields: 54% of the post-navigation area is
+            // reserved for the maps; 46% remains for readable right-hand tabs.
+            // The drawer never covers the main battlefield.
+            float mapWidth = horizontalSpace * 0.54f;
+            float drawerWidth = horizontalSpace - mapWidth;
 
             float mapTop = top + headerHeight + gap;
             float available = top + safe.height - margin - mapTop;
             if (available < 120f || mapWidth < 120f)
                 throw new ArgumentOutOfRangeException(nameof(safe), "가로 전장 표시 공간이 부족합니다.");
 
-            // Scale down both maps vertically, leaving a breathing margin
-            // below the small story field for future economy/status controls.
-            float playableHeight = available * 0.90f;
+            // The main/story map stack is 78% of the usable height,
+            // leaving space below for future resource/status controls.
+            // Keep the swipeable ribbon comfortably touch-sized even as the
+            // battlefields shrink.
+            float playableHeight = available * 0.78f;
             float ribbonHeight = Mathf.Min(
-                Mathf.Max(52f * uiScale, safe.height * 0.083f), playableHeight * 0.19f);
+                Mathf.Max(52f * uiScale, safe.height * 0.083f), playableHeight * 0.27f);
             float fieldSpace = playableHeight - ribbonHeight - gap * 2f;
             float storyHeight = fieldSpace * 0.20f;
             float battleHeight = fieldSpace - storyHeight;
@@ -71,8 +74,10 @@ namespace Ordr.Mobile.Unity
                 Battle = new Rect(mapLeft, mapTop, mapWidth, battleHeight),
                 SkillMargin = new Rect(mapLeft, ribbonTop, mapWidth, ribbonHeight),
                 Story = new Rect(mapLeft, storyTop, mapWidth, storyHeight),
+                // Right-side content retains the full available height even
+                // though the battlefields themselves have become smaller.
                 RightDrawer = new Rect(mapLeft + mapWidth + gap,
-                    mapTop, drawerWidth, playableHeight)
+                    mapTop, drawerWidth, available)
             };
         }
 

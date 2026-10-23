@@ -58,15 +58,18 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(layout.LeftTabs.yMin, layout.Battle.yMin, 0.01f);
             Assert.GreaterOrEqual(layout.LeftTabs.yMax, layout.Story.yMax - 0.01f);
             Assert.AreEqual(layout.Battle.yMin, layout.RightDrawer.yMin, 0.01f);
-            Assert.AreEqual(layout.Story.yMax, layout.RightDrawer.yMax, 0.01f);
+            Assert.Greater(layout.RightDrawer.yMax, layout.Story.yMax);
             Assert.Less(layout.Battle.xMax, layout.RightDrawer.xMin);
             Assert.Greater(layout.RightDrawer.width, 0f);
             Assert.Less(layout.RightDrawer.xMax, safe.xMax);
             // Both battlefields are intentionally smaller than the former
             // full-width, full-height layout.  Right details never overlap.
-            Assert.Less(layout.Battle.width, safe.width * 0.78f);
-            Assert.Less(layout.Story.width, safe.width * 0.78f);
-            Assert.Less(layout.RightDrawer.height, safe.height * 0.90f);
+            Assert.Less(layout.Battle.width, safe.width * 0.60f);
+            Assert.Less(layout.Story.width, safe.width * 0.60f);
+            Assert.Less(layout.Battle.height + layout.SkillMargin.height +
+                layout.Story.height, safe.height * 0.78f);
+            Assert.Greater(layout.RightDrawer.width, layout.Battle.width * 0.80f);
+            Assert.LessOrEqual(layout.RightDrawer.yMax, screenHeight + 0.01f);
             var viewport = layout.MainCameraViewport(safe.xMax + (screenHeight - safe.yMax), screenHeight);
             Assert.Greater(viewport.height, 0f);
             Assert.Less(viewport.yMax, 1f);
@@ -97,6 +100,19 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(layout.BlocksWorldTap(drawer, true));
             Assert.IsFalse(layout.BlocksWorldTap(unobstructedBattle, true));
             Assert.Less(layout.Battle.xMax, layout.RightDrawer.xMin);
+        }
+
+
+        [Test]
+        public void ReducedMapsKeepSkillRibbonAndStorySeparateOnSmallLandscapeScreens()
+        {
+            var layout = MobileMapSkillLayout.Calculate(
+                new Rect(0f, 0f, 844f, 390f), 390f, 1f);
+            Assert.Greater(layout.SkillMargin.height, 40f);
+            Assert.Greater(layout.Story.height, 28f);
+            Assert.Greater(layout.Battle.height, 120f);
+            Assert.Less(layout.Story.yMax, layout.RightDrawer.yMax);
+            Assert.Greater(layout.RightDrawer.width, 250f);
         }
 
         [Test]
