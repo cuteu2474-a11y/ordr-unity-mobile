@@ -58,9 +58,15 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(layout.LeftTabs.yMin, layout.Battle.yMin, 0.01f);
             Assert.GreaterOrEqual(layout.LeftTabs.yMax, layout.Story.yMax - 0.01f);
             Assert.AreEqual(layout.Battle.yMin, layout.RightDrawer.yMin, 0.01f);
-            Assert.AreEqual(layout.Battle.yMax, layout.RightDrawer.yMax, 0.01f);
-            Assert.AreEqual(layout.Battle.xMax, layout.RightDrawer.xMax, 0.01f);
+            Assert.AreEqual(layout.Story.yMax, layout.RightDrawer.yMax, 0.01f);
+            Assert.Less(layout.Battle.xMax, layout.RightDrawer.xMin);
             Assert.Greater(layout.RightDrawer.width, 0f);
+            Assert.Less(layout.RightDrawer.xMax, safe.xMax);
+            // Both battlefields are intentionally smaller than the former
+            // full-width, full-height layout.  Right details never overlap.
+            Assert.Less(layout.Battle.width, safe.width * 0.78f);
+            Assert.Less(layout.Story.width, safe.width * 0.78f);
+            Assert.Less(layout.RightDrawer.height, safe.height * 0.90f);
             var viewport = layout.MainCameraViewport(safe.xMax + (screenHeight - safe.yMax), screenHeight);
             Assert.Greater(viewport.height, 0f);
             Assert.Less(viewport.yMax, 1f);
@@ -90,6 +96,7 @@ namespace Ordr.Mobile.Tests
             Assert.IsFalse(layout.BlocksWorldTap(drawer, false));
             Assert.IsTrue(layout.BlocksWorldTap(drawer, true));
             Assert.IsFalse(layout.BlocksWorldTap(unobstructedBattle, true));
+            Assert.Less(layout.Battle.xMax, layout.RightDrawer.xMin);
         }
 
         [Test]

@@ -63,6 +63,8 @@ namespace Ordr.Mobile.Unity
             area.normal.textColor = new Color(0.80f, 0.88f, 0.98f);
             GUI.Box(layout.Battle, "메인 전장", area);
             GUI.Box(layout.Story, "스토리 전장", area);
+            // Right-hand area stays free for the selected left-hand tab.
+            // The panel draws itself only when a tab has been opened.
         }
     }
 }

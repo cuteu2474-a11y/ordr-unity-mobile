@@ -38,25 +38,31 @@ namespace Ordr.Mobile.Unity
             float railWidth = Mathf.Min(usableWidth * 0.17f,
                 Mathf.Clamp(76f * uiScale, 64f, 116f));
             float mapLeft = left + railWidth + gap;
-            float mapWidth = usableWidth - railWidth - gap;
+
+            // Two modest battlefields in the center, with a permanently
+            // reserved right column for the tab detail panel. Showing or
+            // closing the drawer never changes camera size or map geometry.
+            float horizontalSpace = usableWidth - railWidth - gap * 2f;
+            float drawerWidth = Mathf.Clamp(horizontalSpace * 0.29f,
+                Mathf.Min(184f * uiScale, horizontalSpace * 0.38f),
+                Mathf.Min(300f * uiScale, horizontalSpace * 0.38f));
+            float mapWidth = horizontalSpace - drawerWidth;
 
             float mapTop = top + headerHeight + gap;
-            // The former bottom "운용 메뉴" is replaced by the permanent
-            // rail; return its unused dock space to the playable map.
             float available = top + safe.height - margin - mapTop;
             if (available < 120f || mapWidth < 120f)
                 throw new ArgumentOutOfRangeException(nameof(safe), "가로 전장 표시 공간이 부족합니다.");
 
+            // Scale down both maps vertically, leaving a breathing margin
+            // below the small story field for future economy/status controls.
+            float playableHeight = available * 0.90f;
             float ribbonHeight = Mathf.Min(
-                Mathf.Max(52f * uiScale, safe.height * 0.083f), available * 0.19f);
-            float fieldSpace = available - ribbonHeight - gap * 2f;
+                Mathf.Max(52f * uiScale, safe.height * 0.083f), playableHeight * 0.19f);
+            float fieldSpace = playableHeight - ribbonHeight - gap * 2f;
             float storyHeight = fieldSpace * 0.20f;
             float battleHeight = fieldSpace - storyHeight;
             float ribbonTop = mapTop + battleHeight + gap;
             float storyTop = ribbonTop + ribbonHeight + gap;
-
-            float drawerWidth = Mathf.Min(mapWidth,
-                Mathf.Max(Mathf.Min(270f * uiScale, mapWidth), mapWidth * 0.48f));
 
             return new MobileMapSkillLayout
             {
@@ -65,8 +71,8 @@ namespace Ordr.Mobile.Unity
                 Battle = new Rect(mapLeft, mapTop, mapWidth, battleHeight),
                 SkillMargin = new Rect(mapLeft, ribbonTop, mapWidth, ribbonHeight),
                 Story = new Rect(mapLeft, storyTop, mapWidth, storyHeight),
-                RightDrawer = new Rect(mapLeft + mapWidth - drawerWidth,
-                    mapTop, drawerWidth, battleHeight)
+                RightDrawer = new Rect(mapLeft + mapWidth + gap,
+                    mapTop, drawerWidth, playableHeight)
             };
         }
 
