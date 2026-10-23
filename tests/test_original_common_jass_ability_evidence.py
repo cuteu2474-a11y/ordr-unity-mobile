@@ -45,6 +45,14 @@ class CommonLuffyJassEvidenceTests(unittest.TestCase):
         for item in self.proof["commonAbilities"]:
             self.assertNotIn("combat-damage", item["classification"])
 
+    def test_sales_spawn_original_physical_wisp_at_verified_rect_center(self):
+        spawn = self.proof["saleRewardRule"]["originalWispSpawn"]
+        self.assertEqual((spawn["rawcode"], spawn["name"]), ("e0IX", "랜덤위습"))
+        self.assertEqual(spawn["rectangle"], [-3584, -9824, -3328, -9568])
+        self.assertEqual([spawn["centerX"], spawn["centerY"]], [-3456, -9696])
+        self.assertEqual(spawn["facing"], "bj_UNIT_FACING")
+        self.assertEqual(len(spawn["checks"]), 6)
+
     def test_jass_sales_have_exact_milestone_and_probability(self):
         rule = self.proof["saleRewardRule"]
         self.assertEqual(rule["saleAbilityRawcode"], "A09G")

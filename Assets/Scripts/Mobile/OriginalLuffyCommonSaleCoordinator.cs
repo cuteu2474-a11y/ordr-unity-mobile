@@ -19,7 +19,8 @@ namespace Ordr.Mobile.Mobile
         bool TryRollOriginalBonusWood(out int result, out string reason);
         // Must stage all original effects; rollback Dispose on false/throw.
         bool TryApplySale(long instanceId, int newConfirmedSales,
-            string originalWispRawcode, int wispCount, int woodCount,
+            string originalWispRawcode, double wispSpawnX, double wispSpawnY,
+            int wispCount, int woodCount,
             out string reason);
         void Commit();
     }
@@ -39,6 +40,10 @@ namespace Ordr.Mobile.Mobile
         public const string UnitOriginalRawcode = "h003";
         // war3map.j L318: constant integer YR=$65304958 ('e0IX')
         public const string OriginalWispRawcode = "e0IX";
+        // war3map.j L14767 CJ=Rect(-3584,-9824,-3328,-9568);
+        // Bcz L8291..8293 creates e0IX at the center of this rectangle.
+        public const double OriginalWispSpawnX = -3456.0;
+        public const double OriginalWispSpawnY = -9696.0;
 
         private readonly IOriginalCommonSaleTransactionalWorld world;
 
@@ -86,7 +91,8 @@ namespace Ordr.Mobile.Mobile
                     OriginalCommonSaleOutcome outcome =
                         OriginalCommonSaleRules.PlanAfterConfirmedSale(alreadySold, roll);
                     if (!transaction.TryApplySale(exactInstanceId, outcome.TotalSold,
-                            OriginalWispRawcode, outcome.RandomWispsAwarded,
+                            OriginalWispRawcode, OriginalWispSpawnX,
+                            OriginalWispSpawnY, outcome.RandomWispsAwarded,
                             outcome.BonusWoodAwarded, out reason))
                         return Reject(string.IsNullOrWhiteSpace(reason)
                             ? "원본 판매 유닛 제거·위습/목재 지급 거래를 완료하지 못했습니다."

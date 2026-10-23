@@ -25,6 +25,13 @@ def verify(jass_path, evidence):
                 raise ValueError("%s original callback anchor mismatch on line %d" %
                                  (ability["rawcode"], idx))
             count += 1
+    # The common-sale physical Wisp spawn must use the same original unit
+    # type and source rectangle, not an invented resource counter.
+    for point in evidence["saleRewardRule"]["originalWispSpawn"]["checks"]:
+        idx = point["line"]
+        if not (1 <= idx <= len(lines)) or point["contains"] not in lines[idx-1]:
+            raise ValueError("Original physical Wisp spawn JASS anchor mismatch: " + str(idx))
+        count += 1
     return count
 
 

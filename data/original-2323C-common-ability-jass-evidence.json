@@ -145,7 +145,48 @@
     "bonusWoodProbabilityPercent": 35,
     "extraWoodOnSuccess": 1,
     "consumedUnitOperation": "BdD: hide and kill GetTriggerUnit",
-    "gameplayTransactionReady": false
+    "gameplayTransactionReady": false,
+    "originalWispSpawn": {
+      "rawcode": "e0IX",
+      "name": "랜덤위습",
+      "originalObjectSource": "Units\\CampaignUnitStrings.txt:[e0IX]",
+      "rect": "CJ",
+      "rectangle": [
+        -3584,
+        -9824,
+        -3328,
+        -9568
+      ],
+      "centerX": -3456,
+      "centerY": -9696,
+      "facing": "bj_UNIT_FACING",
+      "checks": [
+        {
+          "line": 318,
+          "contains": "constant integer YR=$65304958"
+        },
+        {
+          "line": 14767,
+          "contains": "set CJ=Rect(-3584.,-9824.,-3328.,-9568.)"
+        },
+        {
+          "line": 8286,
+          "contains": "call CreateUnit(Cl,TK,EN,JS,H0)"
+        },
+        {
+          "line": 8291,
+          "contains": "local real EN=GetRectCenterX(CJ)"
+        },
+        {
+          "line": 8292,
+          "contains": "local real JS=GetRectCenterY(CJ)"
+        },
+        {
+          "line": 8293,
+          "contains": "call Bcy(Cl,YR,C1,EN,JS,bj_UNIT_FACING)"
+        }
+      ]
+    }
   },
   "importantLimits": [
     "No C-01-specific offensive ability identified among its five attached rawcodes.",

@@ -70,11 +70,13 @@ namespace Ordr.Mobile.Tests
                     return true;
                 }
                 public bool TryApplySale(long id, int count, string wispRaw,
+                    double wispSpawnX, double wispSpawnY,
                     int wisps, int wood, out string reason)
                 {
                     reason = world.RejectApply ? "TEST_ONLY: original unit spawn unavailable" : null;
                     if (world.RejectApply) return false;
                     if (!world.HasUnit || id != 3 || wispRaw != "e0IX" ||
+                        wispSpawnX != -3456.0 || wispSpawnY != -9696.0 ||
                         count != world.Sold + 1)
                         throw new InvalidOperationException("TEST_ONLY: stale locked unit");
                     // Stage all mutations before the optional injected error.
