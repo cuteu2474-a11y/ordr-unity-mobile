@@ -762,25 +762,36 @@ namespace Ordr.Mobile.Combat
             return string.IsNullOrWhiteSpace(enemyId) ? null : resolution.GetEnemy(enemyId);
         }
 
-        // Concrete source-backed helper-cow damage/stun sink. This uses the
-        // existing CombatResolution for HP, kills and participation.
-        // A07T remains blocked pending correct original A04R behavior.
+        // Called only after the source-verified monster spawner resolves
+        // each unit's existing A04R level. Unknown level is never zero.
+        public void ConfigureVerifiedEnemyOriginalA04R(
+            string enemyId, int originalLevel, string sourceEvidence)
+        {
+            var live = EnemyOf(enemyId);
+            if (live == null)
+                throw new KeyNotFoundException("A04R 설정할 실제 적이 없습니다.");
+            live.SetVerifiedOriginalA04RBaseline(originalLevel, sourceEvidence);
+        }
+
+        // Concrete source-backed helper-cow damage / persistent A04R sink.
+        // Uses CombatResolution for HP/defeats and CombatEnemy for the
+        // authoritative per-enemy A04R level.
         // The external world MUST resolve CHAOS/UNIVERSAL defense, ability
         // range, mana cost and immunity before passing prepared final hits.
         public bool TryApplyOriginalHelperCowAreaEffects(string originalAbilityId,
-            int level, IReadOnlyList<OriginalHelperCowResolvedHit> hits)
+            int level, IReadOnlyList<OriginalHelperCowResolvedHit> hits,
+            IOriginalA04REffectEngine originalA04REffects = null)
         {
             if (game.Phase != SessionPhase.Running || hits == null ||
                 hits.Count == 0) return false;
             // Reject unverified abilities/levels; do not treat every Q/W/R
             // as a helper-cow area spell.
             OriginalHelperCowAreaEvidence.JassDamage(originalAbilityId, level);
-            // CJg/CJh call Bd8 -> A04R ability-level increase, NOT a
-            // 5/8-second stun. Refuse A07T until that persistent ability
-            // mutation and damage-reduction behavior are verified.
-            if (OriginalHelperCowAreaEvidence.JassA04RLevelIncrease(
-                originalAbilityId, level) != 0)
-                return false;
+            // The original CJg/CJh apply Bd8 after dealing damage.
+            // A04R is a persistent ability level, NOT a timed stun.
+            int a04rIncrement = OriginalHelperCowAreaEvidence.JassA04RLevelIncrease(
+                originalAbilityId, level);
+            var preparedA04R = new Dictionary<string, int>(StringComparer.Ordinal);
 
             var distinct = new HashSet<string>(StringComparer.Ordinal);
             // Preflight the entire batch before mutating HP or statuses.
@@ -795,6 +806,25 @@ namespace Ordr.Mobile.Combat
                      enemy.Kind != CharacterEnemyKind.Boss &&
                      enemy.Kind != CharacterEnemyKind.Enraged))
                     return false;
+                if (a04rIncrement > 0 && hit.FinalDamage < enemy.Enemy.Health)
+                {
+                    int next;
+                    // The same verified physical enemy owns the A04R level.
+                    // If starting level/max is unknown, do NOT cast at all.
+                    if (!enemy.Enemy.TryPrepareOriginalA04RIncrease(
+                        a04rIncrement, out next)) return false;
+                    double sourceIsr2;
+                    // The field table is verified, but its actual effect on
+                    // Warcraft's outgoing/incoming attack pipeline is not.
+                    // A genuine mechanics provider is required before ANY
+                    // A07T damage/mana mutation can be committed.
+                    if (originalA04REffects == null ||
+                        !Ordr323OriginalA04R.TryReadIsr2(next, out sourceIsr2) ||
+                        !originalA04REffects.CanApplyOriginalA04RLevel(
+                            enemy.Enemy, next, sourceIsr2))
+                        return false;
+                    preparedA04R.Add(hit.EnemyId, next);
+                }
             }
 
             const string actorId = "helper:h08A";
@@ -819,6 +849,31 @@ namespace Ordr.Mobile.Combat
                     originalAbilityId, "원본 최종 피해량", actualDamage);
                 if (processingStep) events.Add(dealt);
                 else pendingCommandEvents.Add(dealt);
+
+                // Bd8 runs after Bcb; a surviving enemy accumulates +5/+8
+                // A04R levels on its canonical CombatEnemy instance.
+                var survived = resolution.GetEnemy(hit.EnemyId);
+                if (survived != null && survived.IsAlive && a04rIncrement > 0)
+                {
+                    int next;
+                    if (!preparedA04R.TryGetValue(hit.EnemyId, out next) ||
+                        !survived.OriginalA04RLevel.HasValue)
+                        throw new InvalidOperationException("A04R 검증 시점이 변경되었습니다.");
+                    int previous = survived.OriginalA04RLevel.Value;
+                    double originalIsr2;
+                    if (!Ordr323OriginalA04R.TryReadIsr2(next, out originalIsr2))
+                        throw new InvalidOperationException("원본 A04R isr2 근거가 없습니다.");
+                    survived.ApplyPreparedOriginalA04RIncrease(previous, next);
+                    // Apply the actual original ability modifier in addition
+                    // to storing the persistent enemy level. Never infer it.
+                    originalA04REffects.ApplyOriginalA04RLevel(
+                        survived, next, originalIsr2);
+                    var leveled = new CharacterCombatEvent(
+                        CharacterCombatEventType.StatusApplied, actorId, hit.EnemyId,
+                        originalAbilityId, "A04R 영구 능력 레벨 증가", a04rIncrement);
+                    if (processingStep) events.Add(leveled);
+                    else pendingCommandEvents.Add(leveled);
+                }
 
                 if (resolution.GetEnemy(hit.EnemyId) == null)
                 {

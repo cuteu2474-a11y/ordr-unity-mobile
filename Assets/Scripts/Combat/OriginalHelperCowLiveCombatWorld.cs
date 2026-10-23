@@ -95,6 +95,7 @@ namespace Ordr.Mobile.Combat
         private readonly Func<IOriginalHelperCowCombatActor> actorSource;
         private readonly IOriginalHelperCowVerifiedCastDataSource castData;
         private readonly IOriginalHelperCowVerifiedAreaDamage damage;
+        private readonly IOriginalA04REffectEngine a04rEffects;
         private readonly int ownerPlayerId;
         private readonly Dictionary<string, double> nextReady =
             new Dictionary<string, double>(StringComparer.Ordinal);
@@ -104,13 +105,15 @@ namespace Ordr.Mobile.Combat
             Func<IOriginalHelperCowCombatActor> originalCow,
             IOriginalHelperCowVerifiedCastDataSource originalAbilityValues,
             IOriginalHelperCowVerifiedAreaDamage originalDamage,
-            int verifiedOwnerPlayerId = 0)
+            int verifiedOwnerPlayerId = 0,
+            IOriginalA04REffectEngine originalA04RMechanics = null)
         {
             combat = runtime ?? throw new ArgumentNullException(nameof(runtime));
             actorSource = originalCow ?? throw new ArgumentNullException(nameof(originalCow));
             castData = originalAbilityValues ??
                 throw new ArgumentNullException(nameof(originalAbilityValues));
             damage = originalDamage ?? throw new ArgumentNullException(nameof(originalDamage));
+            a04rEffects = originalA04RMechanics;
             if (verifiedOwnerPlayerId < 0)
                 throw new ArgumentOutOfRangeException(nameof(verifiedOwnerPlayerId));
             ownerPlayerId = verifiedOwnerPlayerId;
@@ -145,11 +148,11 @@ namespace Ordr.Mobile.Combat
             verified = null;
             if (!Valid(cow) || combat.Game.Phase != SessionPhase.Running ||
                 !cow.IsOriginalCastReady(ability)) return false;
-            // CJg/CJh do not stun: Bd8 increases ability A04R levels.
-            // Until that persistent enemy ability mutation has a verified
-            // live transaction, block A07T rather than inventing stun.
-            if (ability == OriginalHelperCowAreaEvidence.EarthquakeAbility)
-                return false;
+            // CJg/CJh increase A04R ability levels, not stun seconds.
+            // The map's isr2 field alone does not verify Warcraft damage
+            // reduction mechanics; the physical effect port is mandatory.
+            if (ability == OriginalHelperCowAreaEvidence.EarthquakeAbility &&
+                a04rEffects == null) return false;
             int level = cow.GetAbilityLevel(ability);
             if (level < 1 || level > 2 ||
                 !castData.TryRead(ability, level, out verified) ||
@@ -243,9 +246,9 @@ namespace Ordr.Mobile.Combat
                 cow.CurrentMana < verified.ManaCost ||
                 !cow.IsOriginalCastReady(ability)) return false;
 
-            // Unity processes this on one simulation thread. The runtime
-            // revalidates every target and then resolves damage and stun
-            // through the same canonical CombatResolution/GameSession.
+            // Unity processes this on one simulation thread. Runtime
+            // revalidates targets then resolves damage and A04R level changes
+            // through the same CombatEnemy/CombatResolution/GameSession.
             committing = true;
             double previousMana = cow.CurrentMana;
             bool applied = false;
@@ -257,7 +260,7 @@ namespace Ordr.Mobile.Combat
                         (previousMana - verified.ManaCost)) > 0.0001)
                     throw new InvalidOperationException("검증된 마나 소비값이 일치하지 않습니다.");
                 if (!combat.TryApplyOriginalHelperCowAreaEffects(
-                    ability, verified.Level, hits))
+                    ability, verified.Level, hits, a04rEffects))
                     return false;
                 applied = true;
                 nextReady[ability] = combat.Time + verified.CooldownSeconds;

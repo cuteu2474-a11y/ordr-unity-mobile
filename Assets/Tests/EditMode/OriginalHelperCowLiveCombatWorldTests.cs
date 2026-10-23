@@ -78,6 +78,24 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        // TEST_ONLY: verifies that the runtime invokes a real A04R ability
+        // modifier provider, rather than changing only a decorative counter.
+        private sealed class TestA04REffects : IOriginalA04REffectEngine
+        {
+            public int Applied;
+            public bool Allow = true;
+            public bool CanApplyOriginalA04RLevel(CombatEnemy enemy, int level, double raw)
+            {
+                return Allow && enemy != null && raw < 0;
+            }
+            public void ApplyOriginalA04RLevel(CombatEnemy enemy, int level, double raw)
+            {
+                if (!Allow || enemy.OriginalA04RLevel != level)
+                    throw new InvalidOperationException("TEST_ONLY");
+                Applied++;
+            }
+        }
+
         private static CharacterCombatRuntime World()
         {
             var units = CharacterUnitCatalog.FromJson(
@@ -142,8 +160,8 @@ namespace Ordr.Mobile.Tests
                 () => cow, new TestData(), new TestResolver());
 
             // Verified JASS has Bd8(Cm,5), i.e. +5 A04R ability LEVELS.
-            // Until persistent A04R state is represented, any auto/manual
-            // path must reject A07T without charging mana or damaging enemy.
+            // Without a SOURCE-VERIFIED baseline on the affected survivor,
+            // committing the spell is forbidden and its mana is untouched.
             Assert.AreEqual(5, OriginalHelperCowAreaEvidence.JassA04RLevelIncrease(
                 "A07T", 1));
             Assert.AreEqual(0, live.AvailableReadyAbilities().Count);
@@ -155,6 +173,27 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(200, cow.CurrentMana);
             Assert.AreEqual(10000000, runtime.EnemyOf("line").Health);
             Assert.IsFalse(runtime.StatusOf("line").IsStunned());
+        }
+
+        [Test]
+        public void A04RMechanicsProviderMustPreflightBeforeManaOrHpChanges()
+        {
+            var runtime = World();
+            runtime.SpawnEnemy("line", 20000000, CharacterEnemyKind.Line, 100, 0, 0);
+            runtime.ConfigureVerifiedEnemyOriginalA04R("line", 0, "TEST_ONLY");
+            var cow = new TestCow { BurstLevel = 0, QuakeLevel = 1 };
+            var effects = new TestA04REffects { Allow = false };
+            var live = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), new TestResolver(),
+                originalA04RMechanics: effects);
+            Assert.IsFalse(live.TryCommitCast("A07T", 90, 0));
+            Assert.AreEqual(200, cow.CurrentMana);
+            Assert.AreEqual(0, runtime.EnemyOf("line").OriginalA04RLevel);
+            Assert.AreEqual(20000000L, runtime.EnemyOf("line").Health);
+            effects.Allow = true;
+            Assert.IsTrue(live.TryCommitCast("A07T", 90, 0));
+            Assert.AreEqual(6, runtime.EnemyOf("line").OriginalA04RLevel);
+            Assert.AreEqual(1, effects.Applied);
         }
 
         [Test]
@@ -231,6 +270,101 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(20000000, runtime.EnemyOf("line").Health);
             Assert.AreEqual(20000000, runtime.EnemyOf("story").Health);
             Assert.AreEqual(200, cow.CurrentMana);
+        }
+
+        [Test]
+        public void QuakeAppliesPersistentA04RLevelsInsteadOfInventedStun()
+        {
+            var runtime = World();
+            runtime.SpawnEnemy("line", 20000000, CharacterEnemyKind.Line, 50, 0, 0);
+            runtime.ConfigureVerifiedEnemyOriginalA04R("line", 0, "TEST_ONLY baseline");
+
+            var cow = new TestCow { BurstLevel = 0, QuakeLevel = 1 };
+            var live = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), new TestResolver(),
+                originalA04RMechanics: new TestA04REffects());
+
+            Assert.IsTrue(live.TryCommitCast("A07T", 50, 0));
+            Assert.AreEqual(19000000L, runtime.EnemyOf("line").Health);
+            Assert.AreEqual(6, runtime.EnemyOf("line").OriginalA04RLevel);
+            Assert.IsFalse(runtime.StatusOf("line").IsStunned());
+            Assert.AreEqual(180, cow.CurrentMana);
+
+            runtime.Step(3.1);
+            Assert.IsTrue(live.TryCommitCast("A07T", 50, 0));
+            Assert.AreEqual(18000000L, runtime.EnemyOf("line").Health);
+            Assert.AreEqual(11, runtime.EnemyOf("line").OriginalA04RLevel);
+            Assert.AreEqual(160, cow.CurrentMana);
+            Assert.IsFalse(runtime.StatusOf("line").IsStunned());
+            double isr2;
+            Assert.IsTrue(Ordr323OriginalA04R.TryReadIsr2(
+                runtime.EnemyOf("line").OriginalA04RLevel.Value, out isr2));
+            Assert.AreEqual(-0.10, isr2, 0.0000001);
+        }
+
+        [Test]
+        public void EnhancedQuakeAddsEightA04RLevelsAndUsesVerifiedBaseDamage()
+        {
+            var runtime = World();
+            runtime.SpawnEnemy("line", 20000000, CharacterEnemyKind.Line, 50, 0, 0);
+            runtime.ConfigureVerifiedEnemyOriginalA04R("line", 6, "TEST_ONLY baseline");
+            var cow = new TestCow { BurstLevel = 0, QuakeLevel = 2 };
+            var live = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), new TestResolver(),
+                originalA04RMechanics: new TestA04REffects());
+            Assert.IsTrue(live.TryCommitCast("A07T", 50, 0));
+            Assert.AreEqual(18000000L, runtime.EnemyOf("line").Health);
+            Assert.AreEqual(14, runtime.EnemyOf("line").OriginalA04RLevel);
+            Assert.IsFalse(runtime.EnemyOf("line").Status.IsStunned());
+        }
+
+        [Test]
+        public void UnknownA04ROnOneSurvivorRejectsWholeAreaWithoutManaCost()
+        {
+            var runtime = World();
+            runtime.SpawnEnemy("known", 20000000, CharacterEnemyKind.Line, 50, 0, 0);
+            runtime.SpawnEnemy("unknown", 20000000, CharacterEnemyKind.Line, 80, 0, 0);
+            runtime.ConfigureVerifiedEnemyOriginalA04R("known", 0, "TEST_ONLY baseline");
+            var cow = new TestCow { BurstLevel = 0, QuakeLevel = 1 };
+            var live = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), new TestResolver(),
+                originalA04RMechanics: new TestA04REffects());
+
+            Assert.IsFalse(live.TryCommitCast("A07T", 50, 0));
+            Assert.AreEqual(200, cow.CurrentMana);
+            Assert.AreEqual(20000000L, runtime.EnemyOf("known").Health);
+            Assert.AreEqual(20000000L, runtime.EnemyOf("unknown").Health);
+            Assert.AreEqual(0, runtime.EnemyOf("known").OriginalA04RLevel);
+            Assert.IsNull(runtime.EnemyOf("unknown").OriginalA04RLevel);
+        }
+
+        [Test]
+        public void A04RBeyondHighestSourceProvenLevelRejectsSpell()
+        {
+            var runtime = World();
+            runtime.SpawnEnemy("line", 20000000, CharacterEnemyKind.Line, 50, 0, 0);
+            runtime.ConfigureVerifiedEnemyOriginalA04R("line", 24, "TEST_ONLY baseline");
+            var cow = new TestCow { BurstLevel = 0, QuakeLevel = 1 };
+            var live = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), new TestResolver(),
+                originalA04RMechanics: new TestA04REffects());
+            Assert.IsFalse(live.TryCommitCast("A07T", 50, 0));
+            Assert.AreEqual(24, runtime.EnemyOf("line").OriginalA04RLevel);
+            Assert.AreEqual(200, cow.CurrentMana);
+        }
+
+        [Test]
+        public void DeadFromQuakeDoesNotNeedPersistentAbilityBaseline()
+        {
+            var runtime = World();
+            runtime.SpawnEnemy("weak", 500000, CharacterEnemyKind.Line, 40, 0, 0);
+            var cow = new TestCow { BurstLevel = 0, QuakeLevel = 1 };
+            var live = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), new TestResolver(),
+                originalA04RMechanics: new TestA04REffects());
+            Assert.IsTrue(live.TryCommitCast("A07T", 40, 0));
+            Assert.IsNull(runtime.EnemyOf("weak"));
+            Assert.AreEqual(1, runtime.Game.DefeatedEnemies);
         }
     }
 }

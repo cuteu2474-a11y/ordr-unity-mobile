@@ -14,6 +14,47 @@ namespace Ordr.Mobile.Combat
         public EnemyDefenseProfile Defenses { get; private set; }
         public CombatStatusEngine Status { get; private set; }
 
+        // Only source-proven levels may be loaded. Unknown is nullable,
+        // not level 0; an absent original value must not be guessed.
+        public int? OriginalA04RLevel { get; private set; }
+        public string OriginalA04RProvenance { get; private set; }
+
+        public void SetVerifiedOriginalA04RBaseline(int originalLevel, string evidence)
+        {
+            if (string.IsNullOrWhiteSpace(evidence) ||
+                originalLevel < 0 ||
+                originalLevel > Ordr323OriginalA04R.LastVerifiedFieldLevel)
+                throw new ArgumentException("원본 A04R 능력 레벨과 출처가 필요합니다.");
+            if (OriginalA04RLevel.HasValue)
+                throw new InvalidOperationException("A04R 시작 레벨 중복 지정");
+            if (!IsAlive) throw new InvalidOperationException("죽은 적은 변경할 수 없습니다.");
+            OriginalA04RLevel = originalLevel;
+            OriginalA04RProvenance = evidence;
+        }
+
+        internal bool TryPrepareOriginalA04RIncrease(int delta, out int nextLevel)
+        {
+            nextLevel = 0;
+            return IsAlive && OriginalA04RLevel.HasValue &&
+                Ordr323OriginalA04R.TryPlanIncrease(
+                    OriginalA04RLevel.Value, delta, out nextLevel);
+        }
+
+        internal void ApplyPreparedOriginalA04RIncrease(
+            int expectedPreviousLevel, int nextLevel)
+        {
+            int computed;
+            if (!IsAlive || !OriginalA04RLevel.HasValue ||
+                OriginalA04RLevel.Value != expectedPreviousLevel ||
+                !Ordr323OriginalA04R.TryPlanIncrease(
+                    expectedPreviousLevel, nextLevel - expectedPreviousLevel -
+                    (expectedPreviousLevel == 0 ? 1 : 0), out computed) ||
+                computed != nextLevel)
+                throw new InvalidOperationException(
+                    "원본 A04R 누적 레벨이 사전 검증된 결과와 다릅니다.");
+            OriginalA04RLevel = nextLevel;
+        }
+
         public CombatEnemy(string id, long health)
             : this(id, health, EnemyDefenseProfile.Unknown) { }
 

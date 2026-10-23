@@ -1,0 +1,115 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceW3aSha256": "aa938f02c22884f38c5e31bcd6229a35e917a8fab0128331fdab88980cfd50e0",
+  "abilityRawcode": "A04R",
+  "fieldId": "isr2",
+  "sourceFieldMeaning": "DAMAGE_REDUCTION_ISR2",
+  "sourceTable": "original",
+  "sourceLevelOverrides": [
+    {
+      "level": 5,
+      "value": -0.04
+    },
+    {
+      "level": 6,
+      "value": -0.05
+    },
+    {
+      "level": 7,
+      "value": -0.06
+    },
+    {
+      "level": 8,
+      "value": -0.07
+    },
+    {
+      "level": 9,
+      "value": -0.08
+    },
+    {
+      "level": 10,
+      "value": -0.09
+    },
+    {
+      "level": 11,
+      "value": -0.1
+    },
+    {
+      "level": 12,
+      "value": -0.11
+    },
+    {
+      "level": 13,
+      "value": -0.12
+    },
+    {
+      "level": 14,
+      "value": -0.13
+    },
+    {
+      "level": 15,
+      "value": -0.14
+    },
+    {
+      "level": 16,
+      "value": -0.15
+    },
+    {
+      "level": 17,
+      "value": -0.16
+    },
+    {
+      "level": 18,
+      "value": -0.17
+    },
+    {
+      "level": 19,
+      "value": -0.18
+    },
+    {
+      "level": 20,
+      "value": -0.19
+    },
+    {
+      "level": 21,
+      "value": -0.2
+    },
+    {
+      "level": 22,
+      "value": -0.21
+    },
+    {
+      "level": 23,
+      "value": -0.22
+    },
+    {
+      "level": 24,
+      "value": -0.23
+    },
+    {
+      "level": 25,
+      "value": -0.24
+    },
+    {
+      "level": 26,
+      "value": -0.25
+    }
+  ],
+  "jassMechanics": {
+    "function": "Bd8",
+    "onMissingAbility": "UnitAddAbility then GetUnitAbilityLevel",
+    "abilityLevelIncreaseA07TLevel1": 5,
+    "abilityLevelIncreaseA07TLevel2": 8,
+    "isTimedStun": false
+  },
+  "castObjectDataA0BZPresentInW3a": false,
+  "castObjectDataA07TPresentInW3a": false,
+  "originalCastRanges": null,
+  "originalManaCosts": null,
+  "originalCooldownSeconds": null,
+  "originalEnemyStartingA04RLevels": null,
+  "engineDamageApplicationOfIsr2Verified": false,
+  "sourceNote": "Original JASS + W3A map overrides; no inferred defaults."
+}

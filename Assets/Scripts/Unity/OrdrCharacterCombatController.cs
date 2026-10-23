@@ -84,7 +84,8 @@ namespace Ordr.Mobile.Unity
             Func<IOriginalHelperCowCombatActor> actualHelperCow,
             IOriginalHelperCowVerifiedCastDataSource originalObjectValues,
             IOriginalHelperCowVerifiedAreaDamage originalHitRules,
-            int ownerPlayerId = 0)
+            int ownerPlayerId = 0,
+            IOriginalA04REffectEngine originalA04RMechanics = null)
         {
             if (Combat == null || SharedEconomy == null)
                 throw new InvalidOperationException(
@@ -99,7 +100,8 @@ namespace Ordr.Mobile.Unity
             var mana = new OriginalHelperCowManaWorld(
                 () => actualHelperCow(), ownerPlayerId);
             var area = new OriginalHelperCowLiveCombatWorld(Combat,
-                actualHelperCow, originalObjectValues, originalHitRules, ownerPlayerId);
+                actualHelperCow, originalObjectValues, originalHitRules,
+                ownerPlayerId, originalA04RMechanics);
             ConfigureOriginalHelperCowWorld(mana);
             ConfigureOriginalHelperCowAreaWorld(area);
         }
