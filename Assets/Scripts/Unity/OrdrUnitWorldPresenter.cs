@@ -114,6 +114,20 @@ namespace Ordr.Mobile.Unity
             ReadWorldSelection(combat);
         }
 
+        private void LateUpdate()
+        {
+            // The actual main camera must occupy the main battlefield only,
+            // not the ribbon or the separate (currently placeholder) story area.
+            if (worldCamera == null) worldCamera = Camera.main;
+            if (worldCamera == null) return;
+            Rect safe = Screen.safeArea;
+            if (safe.width <= safe.height) return;
+            var layout = MobileMapSkillLayout.Calculate(safe, Screen.height,
+                MobileMapSkillLayout.UiScale(safe, Screen.dpi));
+            Rect target = layout.MainCameraViewport(Screen.width, Screen.height);
+            if (worldCamera.rect != target) worldCamera.rect = target;
+        }
+
         // A short presentation-only pulse replaces character swing/movement
         // animations. Verified hits and explicitly non-damaging map-timing
         // previews emit it; the flash never affects any combat calculation.

@@ -63,6 +63,17 @@ namespace Ordr.Mobile.Unity
             };
         }
 
+        // Unity camera.rect uses normalized bottom-left viewport coordinates.
+        public Rect MainCameraViewport(float screenWidth, float screenHeight)
+        {
+            if (screenWidth <= 0f || screenHeight <= 0f)
+                throw new ArgumentOutOfRangeException(nameof(screenWidth));
+            return new Rect(Battle.xMin / screenWidth,
+                1f - Battle.yMax / screenHeight,
+                Battle.width / screenWidth,
+                Battle.height / screenHeight);
+        }
+
         public static Rect Scaled(Rect rect, float factor)
         {
             if (factor <= 0f) throw new ArgumentOutOfRangeException(nameof(factor));
