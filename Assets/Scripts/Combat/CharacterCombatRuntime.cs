@@ -762,6 +762,91 @@ namespace Ordr.Mobile.Combat
             return string.IsNullOrWhiteSpace(enemyId) ? null : resolution.GetEnemy(enemyId);
         }
 
+        // Concrete source-backed helper-cow damage/stun sink. This uses the
+        // existing CombatResolution for HP, kills, participation and wave
+        // counters, and CombatStatusEngine for actual movement-blocking stun.
+        // The external world MUST resolve CHAOS/UNIVERSAL defense, ability
+        // range, mana cost and immunity before passing prepared final hits.
+        public bool TryApplyOriginalHelperCowAreaEffects(string originalAbilityId,
+            int level, IReadOnlyList<OriginalHelperCowResolvedHit> hits)
+        {
+            if (game.Phase != SessionPhase.Running || hits == null ||
+                hits.Count == 0) return false;
+            // Reject unverified abilities/levels; do not treat every Q/W/R
+            // as a helper-cow area spell.
+            OriginalHelperCowAreaEvidence.JassDamage(originalAbilityId, level);
+            int stunSeconds = OriginalHelperCowAreaEvidence.JassStunSeconds(
+                originalAbilityId, level);
+
+            var distinct = new HashSet<string>(StringComparer.Ordinal);
+            // Preflight the entire batch before mutating HP or statuses.
+            foreach (var hit in hits)
+            {
+                if (hit == null || !distinct.Add(hit.EnemyId))
+                    return false;
+                SpatialCombatEnemy enemy;
+                if (!enemies.TryGetValue(hit.EnemyId, out enemy) ||
+                    !enemy.Enemy.IsAlive || resolution.GetEnemy(hit.EnemyId) == null ||
+                    (enemy.Kind != CharacterEnemyKind.Line &&
+                     enemy.Kind != CharacterEnemyKind.Boss &&
+                     enemy.Kind != CharacterEnemyKind.Enraged))
+                    return false;
+            }
+
+            const string actorId = "helper:h08A";
+            var activated = new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated, actorId, null,
+                originalAbilityId, "원본 도움소 광역 시전", 0);
+            if (processingStep) events.Add(activated);
+            else pendingCommandEvents.Add(activated);
+
+            foreach (var hit in hits)
+            {
+                long actualDamage;
+                // The target is still present in CombatResolution until its
+                // current hit kills it; never bypass the canonical kill count.
+                if (!resolution.TryApplySkillDamage(actorId, hit.EnemyId,
+                    hit.FinalDamage, out actualDamage))
+                    throw new InvalidOperationException(
+                        "도움소 사전 검증된 적이 타격 직전 사라졌습니다.");
+
+                var dealt = new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillDamage, actorId, hit.EnemyId,
+                    originalAbilityId, "원본 최종 피해량", actualDamage);
+                if (processingStep) events.Add(dealt);
+                else pendingCommandEvents.Add(dealt);
+
+                // CJg/CJh call Bcb then Bd8: stun only surviving targets.
+                if (stunSeconds > 0)
+                {
+                    var target = resolution.GetEnemy(hit.EnemyId);
+                    if (target != null && target.IsAlive)
+                    {
+                        target.Status.Apply(new CombatEffect(
+                            actorId + ":" + originalAbilityId,
+                            CombatEffectType.Stun, CombatEffectOrigin.TriggeredSkill,
+                            1, stunSeconds));
+                        var applied = new CharacterCombatEvent(
+                            CharacterCombatEventType.StatusApplied, actorId, hit.EnemyId,
+                            originalAbilityId, "원본 도움소 스턴", stunSeconds);
+                        if (processingStep) events.Add(applied);
+                        else pendingCommandEvents.Add(applied);
+                    }
+                }
+                if (resolution.GetEnemy(hit.EnemyId) == null)
+                {
+                    var killed = new CharacterCombatEvent(
+                        CharacterCombatEventType.EnemyDefeated, actorId, hit.EnemyId,
+                        originalAbilityId, "도움소 타격으로 처치", actualDamage);
+                    if (processingStep) events.Add(killed);
+                    else pendingCommandEvents.Add(killed);
+                }
+            }
+
+            RemoveDefeatedEnemies();
+            return true;
+        }
+
         public void ConfigureCharacterResources(long instanceId, CharacterResources verifiedResources)
         {
             CharacterInstance unit;

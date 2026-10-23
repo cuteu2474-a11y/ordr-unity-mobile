@@ -77,6 +77,33 @@ namespace Ordr.Mobile.Unity
                 originalHelperCowAreaWorld);
         }
 
+        // End-to-end adapter for ONE real source-verified h08A actor.
+        // Manual Wisp mana recharge and automatic area casts always read/write
+        // the same physical mana state; there are no test-only fake actors.
+        public void ConfigureVerifiedHelperCowGameplay(
+            Func<IOriginalHelperCowCombatActor> actualHelperCow,
+            IOriginalHelperCowVerifiedCastDataSource originalObjectValues,
+            IOriginalHelperCowVerifiedAreaDamage originalHitRules,
+            int ownerPlayerId = 0)
+        {
+            if (Combat == null || SharedEconomy == null)
+                throw new InvalidOperationException(
+                    "도움소 실제 연결에는 전투 월드와 공유 경제 지갑이 필요합니다.");
+            if (actualHelperCow == null || originalObjectValues == null ||
+                originalHitRules == null)
+                throw new ArgumentNullException("원본 도움소와 능력/피해 검증기가 필요합니다.");
+            if (originalHelperCowAreaWorld != null || originalHelperCowWorld != null)
+                throw new InvalidOperationException("이미 도움소 월드가 연결되어 있습니다.");
+
+            // Construct and validate both connections before publishing either.
+            var mana = new OriginalHelperCowManaWorld(
+                () => actualHelperCow(), ownerPlayerId);
+            var area = new OriginalHelperCowLiveCombatWorld(Combat,
+                actualHelperCow, originalObjectValues, originalHitRules, ownerPlayerId);
+            ConfigureOriginalHelperCowWorld(mana);
+            ConfigureOriginalHelperCowAreaWorld(area);
+        }
+
         private IOriginalHelperCowManaWorld originalHelperCowWorld;
 
         // The actual h08A's current/max mana is supplied by the game world.
