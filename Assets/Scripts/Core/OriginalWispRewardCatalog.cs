@@ -46,12 +46,17 @@ namespace Ordr.Mobile.Core
             List<Branch> branches;
             if (!byWisp.TryGetValue(id ?? "", out branches))
                 throw new InvalidOperationException("원본에 없는 자동 위습입니다.");
-            int roll = CheckedRandom(1, 100);
-            Branch chosen = null;
-            foreach (var branch in branches)
+            Branch chosen = branches.Count == 1 ? branches[0] : null;
+            if (chosen == null)
             {
-                if (roll <= branch.ChancePercent) { chosen = branch; break; }
-                roll -= branch.ChancePercent;
+                // Only CSI (rare Wisp) calls BFi(1,100) before selecting
+                // its pool. CSF/CSC/CR6 call PlaceRandomUnit directly.
+                int roll = CheckedRandom(1, 100);
+                foreach (var branch in branches)
+                {
+                    if (roll <= branch.ChancePercent) { chosen = branch; break; }
+                    roll -= branch.ChancePercent;
+                }
             }
             if (chosen == null) throw new InvalidOperationException("위습 확률표 오류");
             int index = CheckedRandom(0, chosen.Units.Count - 1);

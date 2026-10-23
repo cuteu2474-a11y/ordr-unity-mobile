@@ -12,12 +12,16 @@ namespace Ordr.Mobile.Tests
         private sealed class FixedRandom : IOriginalWispRandom
         {
             private readonly Queue<int> rolls = new Queue<int>();
+            public int Calls { get; private set; }
             public FixedRandom(params int[] values)
             {
                 foreach (var value in values) rolls.Enqueue(value);
             }
-            public int NextInclusive(int min, int max) =>
-                rolls.Count == 0 ? min : rolls.Dequeue();
+            public int NextInclusive(int min, int max)
+            {
+                Calls++;
+                return rolls.Count == 0 ? min : rolls.Dequeue();
+            }
         }
 
         private static string Source() => File.ReadAllText(Path.Combine(
@@ -49,6 +53,15 @@ namespace Ordr.Mobile.Tests
                 new FixedRandom(100, 0)).Roll(WispResourceIds.Rare);
             Assert.AreEqual("h05H", special.UnitRawcode);
             Assert.IsNull(special.BonusAbilityRawcode);
+        }
+
+        [Test]
+        public void NonRareWispDoesNotDrawAnExtraPercentageRoll()
+        {
+            var random = new FixedRandom(0);
+            var catalog = OriginalWispRewardCatalog.FromOriginalJassJson(Source(), random);
+            Assert.AreEqual("h00M", catalog.Roll(WispResourceIds.Uncommon).UnitRawcode);
+            Assert.AreEqual(1, random.Calls);
         }
 
         [Test]
