@@ -51,6 +51,17 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0,w.Balance("wood")); Assert.AreEqual(0,r.Count);
             Assert.IsFalse(s.HasStarted);
         }
+        [Test] public void MismatchedSpawnIsAlsoRemovedBeforeWalletRollback()
+        {
+            var w = new EconomyWallet(); var r = new UnitRoster();
+            var s = new SharedEconomySession(w, r);
+            Assert.Throws<InvalidOperationException>(() =>
+                s.ApplyVerifiedStart(Plan(), (id, x, y) => r.Add("WRONG", x, y),
+                    id => { r.Remove(id); }));
+            Assert.AreEqual(0, r.Count);
+            Assert.AreEqual(0, w.Balance("gold"));
+            Assert.IsFalse(s.HasStarted);
+        }
         [Test] public void SubsequentPurchasesUseSameWalletAndPhysicalUnits()
         {
             var w = new EconomyWallet(); var r = new UnitRoster();

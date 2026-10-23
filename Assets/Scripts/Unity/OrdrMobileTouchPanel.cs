@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Ordr.Mobile.Mobile;
 using Ordr.Mobile.Combat;
+using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Unity
 {
@@ -31,6 +32,7 @@ namespace Ordr.Mobile.Unity
             new List<MobileManualOffer>().AsReadOnly();
         private MobileFusionPreview pendingFusion;
         private MobileManualOffer pendingEconomy;
+        private string pendingChoiceRawcode;
         private bool showOriginalJassRecipes;
         private IReadOnlyList<JassFusionReadiness> originalJassPreview =
             new List<JassFusionReadiness>().AsReadOnly();
@@ -72,6 +74,22 @@ namespace Ordr.Mobile.Unity
                 if (visible) RefreshCurrent();
             }
 
+            // Frequent manual random-Wisp actions remain one tap away from
+            // the battlefield. The button itself never consumes currency.
+            if (width >= 300f && controller.WispBalance(WispResourceIds.Random) > 0)
+            {
+                Rect quick = new Rect(toggle.x - 151f, toggle.y, 145f, toggleHeight);
+                if (GUI.Button(quick, "랜덤위습 " +
+                    controller.WispBalance(WispResourceIds.Random)))
+                {
+                    visible = true;
+                    currentTab = Tab.Wisp;
+                    scroll = Vector2.zero;
+                    pendingEconomy = null;
+                    RefreshCurrent();
+                }
+            }
+
             if (visible)
             {
                 // 모바일 전장 전체를 덮지 않도록 기본 최대 54%만 사용.
@@ -95,7 +113,7 @@ namespace Ordr.Mobile.Unity
                         case Tab.Fusion: DrawFusion(); break;
                         case Tab.Shop: DrawEconomy(ManualEconomyCategory.Shop); break;
                         case Tab.Gambling: DrawEconomy(ManualEconomyCategory.Gambling); break;
-                        case Tab.Wisp: DrawEconomy(ManualEconomyCategory.Wisp); break;
+                        case Tab.Wisp: DrawWisp(); break;
                     }
                 }
                 GUILayout.EndScrollView();
@@ -128,6 +146,7 @@ namespace Ordr.Mobile.Unity
                 scroll = Vector2.zero;
                 pendingFusion = null;
                 pendingEconomy = null;
+                pendingChoiceRawcode = null;
                 RefreshCurrent();
             }
         }
@@ -356,6 +375,7 @@ namespace Ordr.Mobile.Unity
         private void DrawFusion()
         {
             GUILayout.Label("보유 유닛을 바탕으로 조합식을 보여줍니다. 재료 소비는 확인 버튼에서만 실행합니다.");
+            DrawChoiceWispMerge();
             DrawOriginalJassAudit();
             if (!controller.ManualActions.HasFusionService)
                 GUILayout.Label("원작 조합식·재료·비용 시스템 미연결");
@@ -404,6 +424,56 @@ namespace Ordr.Mobile.Unity
                 if (GUILayout.Button("취소", GUILayout.MinHeight(52))) pendingFusion = null;
                 GUILayout.EndHorizontal();
             }
+        }
+
+        private void DrawChoiceWispMerge()
+        {
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label("선택위습 Merge · " + controller.WispBalance(WispResourceIds.Choice) + "개");
+            var targets = controller.ChoiceWispTargets;
+            if (targets.Count == 0)
+                GUILayout.Label("원본 선택·조합 규칙 미연결");
+            else if (controller.WispBalance(WispResourceIds.Choice) > 0)
+            {
+                foreach (var target in targets)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(target.Name + " · " + target.OriginalRequirements,
+                        GUILayout.ExpandWidth(true));
+                    if (GUILayout.Button("선택", GUILayout.Width(78), GUILayout.MinHeight(48)))
+                        pendingChoiceRawcode = target.Rawcode;
+                    GUILayout.EndHorizontal();
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(pendingChoiceRawcode))
+            {
+                GUILayout.Label("Merge 선택: " + pendingChoiceRawcode);
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Merge 확정", GUILayout.MinHeight(52)))
+                {
+                    ShowResult(controller.RequestChoiceWispMerge(pendingChoiceRawcode));
+                    pendingChoiceRawcode = null;
+                    RefreshCurrent();
+                }
+                if (GUILayout.Button("취소", GUILayout.MinHeight(52)))
+                    pendingChoiceRawcode = null;
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndVertical();
+        }
+
+        private void DrawWisp()
+        {
+            GUILayout.Label("랜덤위습 " + controller.WispBalance(WispResourceIds.Random) +
+                "개 · 선택위습 " + controller.WispBalance(WispResourceIds.Choice) + "개");
+            GUILayout.Label("자동: 안흔함 " + controller.WispBalance(WispResourceIds.Uncommon) +
+                " / 특별 " + controller.WispBalance(WispResourceIds.Special) +
+                " / 희귀 " + controller.WispBalance(WispResourceIds.Rare) +
+                " / 전설 " + controller.WispBalance(WispResourceIds.Legendary));
+            if (controller.Wisps == null)
+                GUILayout.Label("자동 위습 보상 월드 미연결: 보유분 유지");
+            DrawEconomy(ManualEconomyCategory.Wisp);
+            GUILayout.Label("선택위습은 조합 탭의 Merge에서 사용합니다.");
         }
 
         private void DrawOriginalJassAudit()

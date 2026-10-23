@@ -890,6 +890,20 @@ namespace Ordr.Mobile.Combat
             roster.Remove(instanceId);
         }
 
+        // Used only by an uncommitted Wisp transaction. A failed reward must
+        // not leave a phantom Spawned/Placed cue in the next mobile frame.
+        public void RollbackUncommittedSpawn(long instanceId)
+        {
+            string key = InstanceKey(instanceId);
+            RemoveCharacter(instanceId);
+            pendingCommandEvents.RemoveAll(evt => evt.ActorId == key &&
+                (evt.Type == CharacterCombatEventType.UnitSpawned ||
+                 evt.Type == CharacterCombatEventType.UnitPlaced));
+            events.RemoveAll(evt => evt.ActorId == key &&
+                (evt.Type == CharacterCombatEventType.UnitSpawned ||
+                 evt.Type == CharacterCombatEventType.UnitPlaced));
+        }
+
         public void MoveCharacter(long instanceId, double x, double y)
         {
             if (!characters.ContainsKey(instanceId))

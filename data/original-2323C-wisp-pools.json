@@ -1,0 +1,856 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "source": "original war3map.j",
+  "rollSelection": "unit-pool-weights",
+  "wisps": [
+    {
+      "wispRawcode": "e017",
+      "initializerFunction": "CSE",
+      "consumerFunction": "CSF",
+      "consumerJassLine": 56388,
+      "branches": [
+        {
+          "poolVariable": "su",
+          "chancePercent": 100,
+          "bonusAbilityRawcode": null,
+          "entries": [
+            {
+              "rawcode": "h00M",
+              "weight": 1,
+              "jassLine": 56374
+            },
+            {
+              "rawcode": "h00A",
+              "weight": 1,
+              "jassLine": 56375
+            },
+            {
+              "rawcode": "h00O",
+              "weight": 1,
+              "jassLine": 56376
+            },
+            {
+              "rawcode": "h00C",
+              "weight": 1,
+              "jassLine": 56377
+            },
+            {
+              "rawcode": "h00D",
+              "weight": 1,
+              "jassLine": 56378
+            },
+            {
+              "rawcode": "h00I",
+              "weight": 1,
+              "jassLine": 56379
+            },
+            {
+              "rawcode": "h00N",
+              "weight": 1,
+              "jassLine": 56380
+            },
+            {
+              "rawcode": "h00E",
+              "weight": 1,
+              "jassLine": 56381
+            },
+            {
+              "rawcode": "h00G",
+              "weight": 1,
+              "jassLine": 56382
+            },
+            {
+              "rawcode": "h00J",
+              "weight": 1,
+              "jassLine": 56383
+            },
+            {
+              "rawcode": "h00K",
+              "weight": 1,
+              "jassLine": 56384
+            },
+            {
+              "rawcode": "h00L",
+              "weight": 1,
+              "jassLine": 56385
+            },
+            {
+              "rawcode": "h00F",
+              "weight": 1,
+              "jassLine": 56386
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "wispRawcode": "e016",
+      "initializerFunction": "CSB",
+      "consumerFunction": "CSC",
+      "consumerJassLine": 56357,
+      "branches": [
+        {
+          "poolVariable": "st",
+          "chancePercent": 100,
+          "bonusAbilityRawcode": null,
+          "entries": [
+            {
+              "rawcode": "h01K",
+              "weight": 1,
+              "jassLine": 56323
+            },
+            {
+              "rawcode": "h00Q",
+              "weight": 1,
+              "jassLine": 56324
+            },
+            {
+              "rawcode": "h00B",
+              "weight": 1,
+              "jassLine": 56325
+            },
+            {
+              "rawcode": "h00P",
+              "weight": 1,
+              "jassLine": 56326
+            },
+            {
+              "rawcode": "h00S",
+              "weight": 1,
+              "jassLine": 56327
+            },
+            {
+              "rawcode": "h00R",
+              "weight": 1,
+              "jassLine": 56328
+            },
+            {
+              "rawcode": "h00W",
+              "weight": 1,
+              "jassLine": 56329
+            },
+            {
+              "rawcode": "h00T",
+              "weight": 1,
+              "jassLine": 56330
+            },
+            {
+              "rawcode": "h00U",
+              "weight": 1,
+              "jassLine": 56331
+            },
+            {
+              "rawcode": "h017",
+              "weight": 1,
+              "jassLine": 56332
+            },
+            {
+              "rawcode": "h016",
+              "weight": 1,
+              "jassLine": 56333
+            },
+            {
+              "rawcode": "h015",
+              "weight": 1,
+              "jassLine": 56334
+            },
+            {
+              "rawcode": "h014",
+              "weight": 1,
+              "jassLine": 56335
+            },
+            {
+              "rawcode": "h013",
+              "weight": 1,
+              "jassLine": 56336
+            },
+            {
+              "rawcode": "h01F",
+              "weight": 1,
+              "jassLine": 56337
+            },
+            {
+              "rawcode": "h012",
+              "weight": 1,
+              "jassLine": 56338
+            },
+            {
+              "rawcode": "h011",
+              "weight": 1,
+              "jassLine": 56339
+            },
+            {
+              "rawcode": "h010",
+              "weight": 1,
+              "jassLine": 56340
+            },
+            {
+              "rawcode": "h00Z",
+              "weight": 1,
+              "jassLine": 56341
+            },
+            {
+              "rawcode": "h00Y",
+              "weight": 1,
+              "jassLine": 56342
+            },
+            {
+              "rawcode": "h00X",
+              "weight": 1,
+              "jassLine": 56343
+            },
+            {
+              "rawcode": "h018",
+              "weight": 1,
+              "jassLine": 56344
+            },
+            {
+              "rawcode": "h019",
+              "weight": 1,
+              "jassLine": 56345
+            },
+            {
+              "rawcode": "h01C",
+              "weight": 1,
+              "jassLine": 56346
+            },
+            {
+              "rawcode": "h00V",
+              "weight": 1,
+              "jassLine": 56347
+            },
+            {
+              "rawcode": "h01A",
+              "weight": 1,
+              "jassLine": 56348
+            },
+            {
+              "rawcode": "h01B",
+              "weight": 1,
+              "jassLine": 56349
+            },
+            {
+              "rawcode": "h01D",
+              "weight": 1,
+              "jassLine": 56350
+            },
+            {
+              "rawcode": "h01E",
+              "weight": 1,
+              "jassLine": 56351
+            },
+            {
+              "rawcode": "h01H",
+              "weight": 1,
+              "jassLine": 56352
+            },
+            {
+              "rawcode": "h01G",
+              "weight": 1,
+              "jassLine": 56353
+            },
+            {
+              "rawcode": "h01J",
+              "weight": 1,
+              "jassLine": 56354
+            },
+            {
+              "rawcode": "h01I",
+              "weight": 1,
+              "jassLine": 56355
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "wispRawcode": "e019",
+      "initializerFunction": "CSH",
+      "consumerFunction": "CSI",
+      "consumerJassLine": 56456,
+      "branches": [
+        {
+          "poolVariable": "sv",
+          "chancePercent": 99,
+          "bonusAbilityRawcode": "A0YE",
+          "entries": [
+            {
+              "rawcode": "h09X",
+              "weight": 1,
+              "jassLine": 56405
+            },
+            {
+              "rawcode": "h01Q",
+              "weight": 1,
+              "jassLine": 56406
+            },
+            {
+              "rawcode": "h025",
+              "weight": 1,
+              "jassLine": 56407
+            },
+            {
+              "rawcode": "h01L",
+              "weight": 1,
+              "jassLine": 56408
+            },
+            {
+              "rawcode": "h022",
+              "weight": 1,
+              "jassLine": 56409
+            },
+            {
+              "rawcode": "h021",
+              "weight": 1,
+              "jassLine": 56410
+            },
+            {
+              "rawcode": "h020",
+              "weight": 1,
+              "jassLine": 56411
+            },
+            {
+              "rawcode": "h01Z",
+              "weight": 1,
+              "jassLine": 56412
+            },
+            {
+              "rawcode": "h01Y",
+              "weight": 1,
+              "jassLine": 56413
+            },
+            {
+              "rawcode": "h01X",
+              "weight": 1,
+              "jassLine": 56414
+            },
+            {
+              "rawcode": "h01W",
+              "weight": 1,
+              "jassLine": 56415
+            },
+            {
+              "rawcode": "h01V",
+              "weight": 1,
+              "jassLine": 56416
+            },
+            {
+              "rawcode": "h01U",
+              "weight": 1,
+              "jassLine": 56417
+            },
+            {
+              "rawcode": "h01T",
+              "weight": 1,
+              "jassLine": 56418
+            },
+            {
+              "rawcode": "h02M",
+              "weight": 1,
+              "jassLine": 56419
+            },
+            {
+              "rawcode": "h01S",
+              "weight": 1,
+              "jassLine": 56420
+            },
+            {
+              "rawcode": "h01R",
+              "weight": 1,
+              "jassLine": 56421
+            },
+            {
+              "rawcode": "h01M",
+              "weight": 1,
+              "jassLine": 56422
+            },
+            {
+              "rawcode": "h01N",
+              "weight": 1,
+              "jassLine": 56423
+            },
+            {
+              "rawcode": "h01O",
+              "weight": 1,
+              "jassLine": 56424
+            },
+            {
+              "rawcode": "h05L",
+              "weight": 1,
+              "jassLine": 56425
+            },
+            {
+              "rawcode": "h01P",
+              "weight": 1,
+              "jassLine": 56426
+            },
+            {
+              "rawcode": "h02I",
+              "weight": 1,
+              "jassLine": 56427
+            },
+            {
+              "rawcode": "h029",
+              "weight": 1,
+              "jassLine": 56428
+            },
+            {
+              "rawcode": "h028",
+              "weight": 1,
+              "jassLine": 56429
+            },
+            {
+              "rawcode": "h027",
+              "weight": 1,
+              "jassLine": 56430
+            },
+            {
+              "rawcode": "h026",
+              "weight": 1,
+              "jassLine": 56431
+            },
+            {
+              "rawcode": "h02A",
+              "weight": 1,
+              "jassLine": 56432
+            },
+            {
+              "rawcode": "h024",
+              "weight": 1,
+              "jassLine": 56433
+            },
+            {
+              "rawcode": "h02C",
+              "weight": 1,
+              "jassLine": 56434
+            },
+            {
+              "rawcode": "h02D",
+              "weight": 1,
+              "jassLine": 56435
+            },
+            {
+              "rawcode": "h02G",
+              "weight": 1,
+              "jassLine": 56436
+            },
+            {
+              "rawcode": "h02F",
+              "weight": 1,
+              "jassLine": 56437
+            },
+            {
+              "rawcode": "h02E",
+              "weight": 1,
+              "jassLine": 56438
+            },
+            {
+              "rawcode": "h04H",
+              "weight": 1,
+              "jassLine": 56439
+            },
+            {
+              "rawcode": "h023",
+              "weight": 1,
+              "jassLine": 56440
+            },
+            {
+              "rawcode": "h02B",
+              "weight": 1,
+              "jassLine": 56441
+            },
+            {
+              "rawcode": "h02H",
+              "weight": 1,
+              "jassLine": 56442
+            },
+            {
+              "rawcode": "h02J",
+              "weight": 1,
+              "jassLine": 56443
+            },
+            {
+              "rawcode": "h02K",
+              "weight": 1,
+              "jassLine": 56444
+            },
+            {
+              "rawcode": "h02L",
+              "weight": 1,
+              "jassLine": 56445
+            },
+            {
+              "rawcode": "h05K",
+              "weight": 1,
+              "jassLine": 56446
+            }
+          ]
+        },
+        {
+          "poolVariable": "sw",
+          "chancePercent": 1,
+          "bonusAbilityRawcode": null,
+          "entries": [
+            {
+              "rawcode": "h05H",
+              "weight": 1,
+              "jassLine": 56447
+            },
+            {
+              "rawcode": "h08N",
+              "weight": 1,
+              "jassLine": 56448
+            },
+            {
+              "rawcode": "h05Q",
+              "weight": 1,
+              "jassLine": 56449
+            },
+            {
+              "rawcode": "h05O",
+              "weight": 1,
+              "jassLine": 56450
+            },
+            {
+              "rawcode": "h05P",
+              "weight": 1,
+              "jassLine": 56451
+            },
+            {
+              "rawcode": "h05R",
+              "weight": 1,
+              "jassLine": 56452
+            },
+            {
+              "rawcode": "h09T",
+              "weight": 1,
+              "jassLine": 56453
+            },
+            {
+              "rawcode": "h0BG",
+              "weight": 1,
+              "jassLine": 56454
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "wispRawcode": "e015",
+      "initializerFunction": "CR5",
+      "consumerFunction": "CR6",
+      "consumerJassLine": 56293,
+      "branches": [
+        {
+          "poolVariable": "ss",
+          "chancePercent": 100,
+          "bonusAbilityRawcode": null,
+          "entries": [
+            {
+              "rawcode": "h03K",
+              "weight": 1,
+              "jassLine": 56232
+            },
+            {
+              "rawcode": "h02N",
+              "weight": 1,
+              "jassLine": 56233
+            },
+            {
+              "rawcode": "h02O",
+              "weight": 1,
+              "jassLine": 56234
+            },
+            {
+              "rawcode": "h02P",
+              "weight": 1,
+              "jassLine": 56235
+            },
+            {
+              "rawcode": "h09Z",
+              "weight": 1,
+              "jassLine": 56236
+            },
+            {
+              "rawcode": "h02Q",
+              "weight": 1,
+              "jassLine": 56237
+            },
+            {
+              "rawcode": "h02R",
+              "weight": 1,
+              "jassLine": 56238
+            },
+            {
+              "rawcode": "h02S",
+              "weight": 1,
+              "jassLine": 56239
+            },
+            {
+              "rawcode": "h02T",
+              "weight": 1,
+              "jassLine": 56240
+            },
+            {
+              "rawcode": "h02U",
+              "weight": 1,
+              "jassLine": 56241
+            },
+            {
+              "rawcode": "h02W",
+              "weight": 1,
+              "jassLine": 56242
+            },
+            {
+              "rawcode": "h02X",
+              "weight": 1,
+              "jassLine": 56243
+            },
+            {
+              "rawcode": "h02Y",
+              "weight": 1,
+              "jassLine": 56244
+            },
+            {
+              "rawcode": "h02Z",
+              "weight": 1,
+              "jassLine": 56245
+            },
+            {
+              "rawcode": "h030",
+              "weight": 1,
+              "jassLine": 56246
+            },
+            {
+              "rawcode": "h032",
+              "weight": 1,
+              "jassLine": 56247
+            },
+            {
+              "rawcode": "h033",
+              "weight": 1,
+              "jassLine": 56248
+            },
+            {
+              "rawcode": "h034",
+              "weight": 1,
+              "jassLine": 56249
+            },
+            {
+              "rawcode": "h03H",
+              "weight": 1,
+              "jassLine": 56250
+            },
+            {
+              "rawcode": "h035",
+              "weight": 1,
+              "jassLine": 56251
+            },
+            {
+              "rawcode": "h036",
+              "weight": 1,
+              "jassLine": 56252
+            },
+            {
+              "rawcode": "h037",
+              "weight": 1,
+              "jassLine": 56253
+            },
+            {
+              "rawcode": "h02V",
+              "weight": 1,
+              "jassLine": 56254
+            },
+            {
+              "rawcode": "h042",
+              "weight": 1,
+              "jassLine": 56255
+            },
+            {
+              "rawcode": "h038",
+              "weight": 1,
+              "jassLine": 56256
+            },
+            {
+              "rawcode": "h039",
+              "weight": 1,
+              "jassLine": 56257
+            },
+            {
+              "rawcode": "h03A",
+              "weight": 1,
+              "jassLine": 56258
+            },
+            {
+              "rawcode": "h03B",
+              "weight": 1,
+              "jassLine": 56259
+            },
+            {
+              "rawcode": "h03S",
+              "weight": 1,
+              "jassLine": 56260
+            },
+            {
+              "rawcode": "h03I",
+              "weight": 1,
+              "jassLine": 56261
+            },
+            {
+              "rawcode": "h03G",
+              "weight": 1,
+              "jassLine": 56262
+            },
+            {
+              "rawcode": "h03F",
+              "weight": 1,
+              "jassLine": 56263
+            },
+            {
+              "rawcode": "h03E",
+              "weight": 1,
+              "jassLine": 56264
+            },
+            {
+              "rawcode": "h0AH",
+              "weight": 1,
+              "jassLine": 56265
+            },
+            {
+              "rawcode": "h03C",
+              "weight": 1,
+              "jassLine": 56266
+            },
+            {
+              "rawcode": "h031",
+              "weight": 1,
+              "jassLine": 56267
+            },
+            {
+              "rawcode": "h087",
+              "weight": 1,
+              "jassLine": 56268
+            },
+            {
+              "rawcode": "h08S",
+              "weight": 1,
+              "jassLine": 56269
+            },
+            {
+              "rawcode": "h03X",
+              "weight": 1,
+              "jassLine": 56270
+            },
+            {
+              "rawcode": "h044",
+              "weight": 1,
+              "jassLine": 56271
+            },
+            {
+              "rawcode": "h03W",
+              "weight": 1,
+              "jassLine": 56272
+            },
+            {
+              "rawcode": "h03U",
+              "weight": 1,
+              "jassLine": 56273
+            },
+            {
+              "rawcode": "h03T",
+              "weight": 1,
+              "jassLine": 56274
+            },
+            {
+              "rawcode": "h03N",
+              "weight": 1,
+              "jassLine": 56275
+            },
+            {
+              "rawcode": "h03Q",
+              "weight": 1,
+              "jassLine": 56276
+            },
+            {
+              "rawcode": "h03R",
+              "weight": 1,
+              "jassLine": 56277
+            },
+            {
+              "rawcode": "h03P",
+              "weight": 1,
+              "jassLine": 56278
+            },
+            {
+              "rawcode": "h03O",
+              "weight": 1,
+              "jassLine": 56279
+            },
+            {
+              "rawcode": "h03M",
+              "weight": 1,
+              "jassLine": 56280
+            },
+            {
+              "rawcode": "h03L",
+              "weight": 1,
+              "jassLine": 56281
+            },
+            {
+              "rawcode": "h055",
+              "weight": 1,
+              "jassLine": 56282
+            },
+            {
+              "rawcode": "h03J",
+              "weight": 1,
+              "jassLine": 56283
+            },
+            {
+              "rawcode": "h03Z",
+              "weight": 1,
+              "jassLine": 56284
+            },
+            {
+              "rawcode": "h03Y",
+              "weight": 1,
+              "jassLine": 56285
+            },
+            {
+              "rawcode": "h043",
+              "weight": 1,
+              "jassLine": 56286
+            },
+            {
+              "rawcode": "h07L",
+              "weight": 1,
+              "jassLine": 56287
+            },
+            {
+              "rawcode": "h041",
+              "weight": 1,
+              "jassLine": 56288
+            },
+            {
+              "rawcode": "h046",
+              "weight": 1,
+              "jassLine": 56289
+            },
+            {
+              "rawcode": "h045",
+              "weight": 1,
+              "jassLine": 56290
+            },
+            {
+              "rawcode": "h047",
+              "weight": 1,
+              "jassLine": 56291
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

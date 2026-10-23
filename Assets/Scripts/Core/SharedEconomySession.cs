@@ -32,16 +32,27 @@ namespace Ordr.Mobile.Core
                 foreach (var unit in profile.StartingUnits)
                 {
                     long id = spawn(unit.CatalogId, unit.X, unit.Y);
-                    if (id <= 0 || Units.Get(id).UnitId != unit.CatalogId)
+                    if (id <= 0)
                         throw new InvalidOperationException("시작 유닛 생성 불일치");
                     created.Add(id);
+                    if (Units.Get(id).UnitId != unit.CatalogId)
+                        throw new InvalidOperationException("시작 유닛 생성 불일치");
                 }
                 HasStarted = true;
             }
-            catch
+            catch (Exception original)
             {
-                for (int i = created.Count - 1; i >= 0; i--) remove(created[i]);
-                Wallet.RestoreState(before);
+                var rollbackErrors = new List<Exception>();
+                for (int i = created.Count - 1; i >= 0; i--)
+                    try { remove(created[i]); }
+                    catch (Exception failure) { rollbackErrors.Add(failure); }
+                try { Wallet.RestoreState(before); }
+                catch (Exception failure) { rollbackErrors.Add(failure); }
+                if (rollbackErrors.Count != 0)
+                {
+                    rollbackErrors.Insert(0, original);
+                    throw new AggregateException("시작 실패 및 롤백 중 오류", rollbackErrors);
+                }
                 throw;
             }
             finally { starting = false; }

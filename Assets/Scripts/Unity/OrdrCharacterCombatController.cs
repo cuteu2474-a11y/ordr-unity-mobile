@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Combat;
@@ -20,6 +21,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset originalJassFusionRegistryJson;
         [SerializeField] private TextAsset originalUnitRawcodeLabelsJson;
         [SerializeField] private TextAsset verifiedMonsterWavesJson;
+        [SerializeField] private TextAsset originalWispPoolsJson;
         [SerializeField] private bool enableMobileTouchPanel = true;
         [SerializeField] private bool enableUnitWorldMarkers = true;
 
@@ -40,7 +42,79 @@ namespace Ordr.Mobile.Unity
 
         public MobileManualInteraction ManualActions { get; } = new MobileManualInteraction();
         public SharedEconomySession SharedEconomy { get; private set; }
+        public MobileWispService Wisps { get; private set; }
+        private IVerifiedChoiceWispMergeWorld choiceWispWorld;
         private VerifiedEconomyStartProfile verifiedStartingProfile;
+        private IOriginalStartEvolutionWorld startEvolutionWorld;
+
+        public void ConfigureOriginal323SoloStart(IOriginalStartEvolutionWorld originalEvolution)
+        {
+            startEvolutionWorld = originalEvolution ??
+                throw new ArgumentNullException(nameof(originalEvolution));
+            ConfigureVerifiedStartingEconomy(Original323SoloStartProfile.Create());
+        }
+
+        // Requires the source-derived roll catalog, a session RNG and a real
+        // transactional world that maps rawcodes to the live Combat.Roster.
+        // No automatic rewards run before all three are connected.
+        public void ConfigureVerifiedWispWorld(IOriginalWispRandom originalRng,
+            IWispRewardWorld world, IVerifiedChoiceWispMergeWorld choiceMerge)
+        {
+            if (SharedEconomy == null || Combat == null)
+                throw new InvalidOperationException("공유 경제/전투 월드를 먼저 구성해야 합니다.");
+            if (Wisps != null)
+                throw new InvalidOperationException("위습 거래 월드 중복 연결");
+            if (world == null || choiceMerge == null)
+                throw new ArgumentNullException(nameof(world), "위습 보상과 Merge 원본 월드 모두 필요");
+            var source = originalWispPoolsJson != null ? originalWispPoolsJson :
+                Resources.Load<TextAsset>("OrdrData/original-2323C-wisp-pools");
+            if (source == null)
+                throw new InvalidOperationException("원본 JASS 위습 풀 JSON을 찾을 수 없습니다.");
+            var roller = OriginalWispRewardCatalog.FromOriginalJassJson(source.text, originalRng);
+            Wisps = new MobileWispService(SharedEconomy.Wallet, roller, world);
+            choiceWispWorld = choiceMerge;
+            Wisps.FlushAutomatic();
+        }
+
+        // Uses the exact same roster as CharacterCombatRuntime; unreviewed
+        // rawcode mappings, spawn positions and missing A0YE block the grant.
+        public void ConfigureVerifiedWispCombatRoster(IOriginalWispRandom originalRng,
+            IVerifiedUnitRawcodeMap reviewedObjectMap,
+            IOriginalWispSpawnPositionPort originalPositions,
+            IOriginalWispBonusAbilityPort originalAbilities,
+            IVerifiedChoiceWispMergeWorld choiceMerge)
+        {
+            if (Combat == null) throw new InvalidOperationException("전투 월드 필요");
+            ConfigureVerifiedWispWorld(originalRng,
+                new OriginalWispCombatRewardWorld(Combat, reviewedObjectMap,
+                    originalPositions, originalAbilities), choiceMerge);
+        }
+
+        public long WispBalance(string id) => SharedEconomy == null ? 0 :
+            SharedEconomy.Wallet.Balance(id);
+
+        public IReadOnlyList<VerifiedChoiceWispTarget> ChoiceWispTargets =>
+            choiceWispWorld == null ? new VerifiedChoiceWispTarget[0] :
+                choiceWispWorld.AvailableTargets() ?? new VerifiedChoiceWispTarget[0];
+
+        public ManualActionResult RequestChoiceWispMerge(string originalUnitRawcode)
+        {
+            if (Wisps == null || choiceWispWorld == null)
+                return ManualActionResult.Unavailable("선택위습 Merge");
+            try
+            {
+                return Wisps.MergeChoice(originalUnitRawcode, choiceWispWorld) ?
+                    new ManualActionResult(ManualActionState.Succeeded, "선택위습 Merge 완료") :
+                    new ManualActionResult(ManualActionState.Rejected,
+                        "위습이 부족하거나 원본 Merge 조건을 충족하지 못했습니다.");
+            }
+            catch (Exception error)
+            {
+                Debug.LogException(error);
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "Merge 거래 실패: 원본 유닛/재화 변경을 롤백했습니다.");
+            }
+        }
 
         public void ConfigureVerifiedStartingEconomy(VerifiedEconomyStartProfile profile)
         {
@@ -412,8 +486,25 @@ namespace Ordr.Mobile.Unity
                 !verifiedStartingProfile.IsSourceVerified)
                 throw new InvalidOperationException(
                     "원본 악몽 이세계 시작 재화·유닛 프로필 검증 전에는 세션을 시작하지 않습니다.");
+            if (!Original323SoloStartProfile.MatchesPinnedSource(verifiedStartingProfile) ||
+                startEvolutionWorld == null)
+                throw new InvalidOperationException("원본 시작 e0HP 진화체 월드가 미연결입니다.");
+            var external = new HashSet<long>();
             SharedEconomy.ApplyVerifiedStart(verifiedStartingProfile,
-                Combat.SpawnCharacter, Combat.RemoveCharacter);
+                (catalogId, x, y) =>
+                {
+                    if (catalogId != Original323SoloStartProfile.EvolutionRawcode)
+                        return Combat.SpawnCharacter(catalogId, x, y);
+                    long id = startEvolutionWorld.SpawnAndTrack(SharedEconomy, catalogId, x, y);
+                    if (id > 0) external.Add(id);
+                    return id;
+                },
+                id =>
+                {
+                    if (external.Contains(id))
+                        startEvolutionWorld.RemoveAndUntrack(SharedEconomy, id);
+                    else Combat.RemoveCharacter(id);
+                });
             Combat.Start();
         }
 

@@ -23,7 +23,8 @@ namespace Ordr.Mobile.Editor
             "otherworld-2323C-mystic-web-recipes.json",
             "original-jass-fusion-registry.json",
             "original-unit-rawcode-label-links.json",
-            "original-jass-mystic-candidate-reconciliation.json"
+            "original-jass-mystic-candidate-reconciliation.json",
+            "original-2323C-wisp-pools.json"
         };
 
         static OrdrCharacterDataSync()

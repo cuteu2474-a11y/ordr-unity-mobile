@@ -36,6 +36,9 @@ namespace Ordr.Mobile.Core
 
     public sealed class EconomyWallet
     {
+        // Shared session consumers (e.g. automatic Wisp redemption) observe
+        // all reward paths, including missions, commerce and direct exchanges.
+        public event Action<ResourceBundle> Granted;
         private readonly Dictionary<string, long> balances = new Dictionary<string, long>(StringComparer.Ordinal);
         private readonly HashSet<string> completedRewards =
             new HashSet<string>(StringComparer.Ordinal);
@@ -51,6 +54,7 @@ namespace Ordr.Mobile.Core
             Apply(next, reward, 1);
             Replace(next);
             completedRewards.Add(rewardId);
+            NotifyGranted(reward);
             return true;
         }
 
@@ -93,6 +97,7 @@ namespace Ordr.Mobile.Core
             var next = Snapshot();
             Apply(next, rewards, 1);
             Replace(next);
+            NotifyGranted(rewards);
         }
 
         public bool TryExchange(ResourceBundle costs, ResourceBundle rewards)
@@ -103,7 +108,18 @@ namespace Ordr.Mobile.Core
             Apply(next, costs, -1);
             Apply(next, rewards, 1);
             Replace(next);
+            NotifyGranted(rewards);
             return true;
+        }
+
+        private void NotifyGranted(ResourceBundle rewards)
+        {
+            if (Granted == null) return;
+            foreach (var entry in rewards.Entries)
+            {
+                Granted(rewards);
+                return;
+            }
         }
 
         private Dictionary<string, long> Snapshot() => new Dictionary<string, long>(balances, StringComparer.Ordinal);
