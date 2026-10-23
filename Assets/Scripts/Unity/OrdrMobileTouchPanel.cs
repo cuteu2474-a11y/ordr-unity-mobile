@@ -573,6 +573,12 @@ namespace Ordr.Mobile.Unity
 
         private void DrawWisp()
         {
+            OriginalHelperCowManaSnapshot helper;
+            if (controller.ManualActions.TryGetHelperCowMana(out helper))
+                GUILayout.Label("도움소 마나 " + helper.Current.ToString("0.#") +
+                    " / " + helper.Maximum.ToString("0.#"));
+            else
+                GUILayout.Label("도움소 마나: 실제 유닛 연결 대기");
             GUILayout.Label("랜덤위습 " + controller.WispBalance(WispResourceIds.Random) +
                 "개 · 선택위습 " + controller.WispBalance(WispResourceIds.Choice) + "개");
             GUILayout.Label("자동: 안흔함 " + controller.WispBalance(WispResourceIds.Uncommon) +

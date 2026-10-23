@@ -142,7 +142,20 @@ namespace Ordr.Mobile.Mobile
         private IOriginalFusionPort fusion;
         private IOriginalEconomyPort economy;
         private OriginalRandomWispResourceExchange resourceWispExchange;
+        private OriginalHelperCowManaRecharge helperCowRecharge;
         private IOriginalCommonSalePort commonSale;
+
+        public void ConfigureHelperCowRecharge(OriginalHelperCowManaRecharge originalRecharge)
+        {
+            helperCowRecharge = originalRecharge ??
+                throw new ArgumentNullException(nameof(originalRecharge));
+        }
+
+        public bool TryGetHelperCowMana(out OriginalHelperCowManaSnapshot current)
+        {
+            current = null;
+            return helperCowRecharge != null && helperCowRecharge.TryGetCurrentMana(out current);
+        }
 
         public void ConfigureRandomWispResourceExchange(
             OriginalRandomWispResourceExchange verifiedExchange)
@@ -200,7 +213,10 @@ namespace Ordr.Mobile.Mobile
                 return true;
             }
         }
-        public bool HasEconomyService { get { return economy != null || resourceWispExchange != null; } }
+        public bool HasEconomyService
+        {
+            get { return economy != null || resourceWispExchange != null || helperCowRecharge != null; }
+        }
 
         public void Configure(IOriginalStoryDispatchPort originalStory,
             IOriginalFusionPort originalFusion, IOriginalEconomyPort originalEconomy)
@@ -275,13 +291,19 @@ namespace Ordr.Mobile.Mobile
                     if (offer == null) continue;
                     // Reserved ID must always route to the source-backed action.
                     if (category == ManualEconomyCategory.Wisp &&
-                        offer.Id == OriginalRandomWispResourceExchange.OfferId) continue;
+                        (offer.Id == OriginalRandomWispResourceExchange.OfferId ||
+                         offer.Id == OriginalHelperCowRules.OfferId)) continue;
                     combined.Add(offer);
                 }
             if (category == ManualEconomyCategory.Wisp && resourceWispExchange != null)
                 combined.Insert(0, new MobileManualOffer(
                     OriginalRandomWispResourceExchange.OfferId, "랜덤위습: 골드·목재 추첨",
                     "랜덤위습 1개 | 목재 1개 67% / 현재 라운드 × 75골드 33%"));
+            if (category == ManualEconomyCategory.Wisp && helperCowRecharge != null)
+                combined.Insert(resourceWispExchange != null ? 1 : 0,
+                    new MobileManualOffer(OriginalHelperCowRules.OfferId,
+                        "랜덤위습: 도움소 마나 충전",
+                        "랜덤위습 1개 | 20 + (라운드 × 1.5), 최대 100 마나 회복"));
             return combined.AsReadOnly();
         }
 
@@ -291,6 +313,28 @@ namespace Ordr.Mobile.Mobile
                 throw new ArgumentOutOfRangeException(nameof(category));
             if (string.IsNullOrWhiteSpace(offerId))
                 return new ManualActionResult(ManualActionState.Rejected, "실행할 항목을 선택해 주세요.");
+
+            if (category == ManualEconomyCategory.Wisp &&
+                offerId == OriginalHelperCowRules.OfferId)
+            {
+                if (helperCowRecharge == null)
+                    return ManualActionResult.Unavailable("도움소 마나 충전");
+                try
+                {
+                    var result = helperCowRecharge.SpendOne();
+                    if (result == null)
+                        return new ManualActionResult(ManualActionState.Rejected,
+                            "게임 시작·랜덤위습·실제 도움소 유닛 연결 상태를 확인하세요.");
+                    return new ManualActionResult(ManualActionState.Succeeded,
+                        "도움소 충전량 " + result.RequestedMana +
+                        " / 현재 마나 " + result.CurrentMana.ToString("0.#"));
+                }
+                catch (Exception)
+                {
+                    return new ManualActionResult(ManualActionState.Rejected,
+                        "도움소 마나 충전 실패. 유닛 상태와 위습 거래를 확인하세요.");
+                }
+            }
 
             if (category == ManualEconomyCategory.Wisp &&
                 offerId == OriginalRandomWispResourceExchange.OfferId)

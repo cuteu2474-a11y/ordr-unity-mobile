@@ -51,6 +51,29 @@ namespace Ordr.Mobile.Unity
         }
         public SharedEconomySession SharedEconomy { get; private set; }
         public OriginalRandomWispResourceExchange RandomWispExchange { get; private set; }
+        public OriginalHelperCowManaRecharge HelperCowRecharge { get; private set; }
+
+        private IOriginalHelperCowManaWorld originalHelperCowWorld;
+
+        // The actual h08A's current/max mana is supplied by the game world.
+        // This port can be configured before or after the combat world exists.
+        public void ConfigureOriginalHelperCowWorld(IOriginalHelperCowManaWorld originalWorld)
+        {
+            if (originalWorld == null) throw new ArgumentNullException(nameof(originalWorld));
+            if (originalHelperCowWorld != null)
+                throw new InvalidOperationException("도움소 마나 월드 중복 연결");
+            originalHelperCowWorld = originalWorld;
+            if (Combat != null && SharedEconomy != null)
+                AttachOriginalHelperCow();
+        }
+
+        private void AttachOriginalHelperCow()
+        {
+            if (HelperCowRecharge != null) return;
+            HelperCowRecharge = new OriginalHelperCowManaRecharge(
+                SharedEconomy.Wallet, Combat.Game, originalHelperCowWorld);
+            ManualActions.ConfigureHelperCowRecharge(HelperCowRecharge);
+        }
 
         // Optional source-compatible RNG. Default mobile RNG preserves the
         // original probabilities, not the exact Warcraft random sequence.
@@ -492,6 +515,8 @@ namespace Ordr.Mobile.Unity
             }
             ManualActions.Configure(storyDispatchRules,
                 originalFusionPort ?? FusionAssistance, originalEconomyPort);
+            if (originalHelperCowWorld != null)
+                AttachOriginalHelperCow();
         }
 
         // 원작 피해 공식 없이도 캐릭터 소환·선택·배치·웨이브 월드를 구성할 수 있다.
