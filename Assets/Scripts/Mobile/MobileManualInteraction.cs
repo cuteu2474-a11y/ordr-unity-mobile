@@ -113,6 +113,13 @@ namespace Ordr.Mobile.Mobile
             IReadOnlyList<long> selectedMaterialInstances);
     }
 
+    // Voluntary common sale is distinct from shop, gambling and Wisp usage.
+    // Implement the atomic transaction in the live player world before exposing UI.
+    public interface IOriginalCommonSalePort
+    {
+        ManualActionResult ConfirmSale(long exactUnitInstanceId);
+    }
+
     public interface IOriginalEconomyPort
     {
         IReadOnlyList<MobileManualOffer> AvailableOffers(ManualEconomyCategory category);
@@ -133,6 +140,23 @@ namespace Ordr.Mobile.Mobile
         private IOriginalStoryDispatchPort story;
         private IOriginalFusionPort fusion;
         private IOriginalEconomyPort economy;
+        private IOriginalCommonSalePort commonSale;
+
+        public bool HasOriginalCommonSaleService { get { return commonSale != null; } }
+        public void ConfigureOriginalCommonSale(IOriginalCommonSalePort verifiedSale)
+        {
+            commonSale = verifiedSale ?? throw new ArgumentNullException(nameof(verifiedSale));
+        }
+        public ManualActionResult RequestCommonSale(long instanceId)
+        {
+            if (instanceId <= 0)
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "판매할 실제 유닛을 선택해 주세요.");
+            return commonSale == null ? ManualActionResult.Unavailable("원본 흔함 판매 거래") :
+                commonSale.ConfirmSale(instanceId) ??
+                new ManualActionResult(ManualActionState.Rejected,
+                    "판매 원본 거래 결과가 확인되지 않았습니다.");
+        }
         private IManualUnitDecompositionPort decomposition;
 
         public void ConfigureUnitDecomposition(IManualUnitDecompositionPort service)

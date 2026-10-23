@@ -21,6 +21,7 @@ namespace Ordr.Mobile.Unity
         private int catalogGradeIndex;
         private int catalogPage;
         private int ownedPage;
+        private long? pendingCommonSaleId;
         private string selectedCatalogUnitId;
         private Vector2 scroll;
         private string notice = "모바일 조작 패널";
@@ -236,9 +237,38 @@ namespace Ordr.Mobile.Unity
                     notice = entry.Unit.Name + " 선택";
                 }
                 GUILayout.EndHorizontal();
+                // No A0JE/Avul buttons: mobile placement and protection are
+                // non-manual policies. C-01 sale is manually confirmed only.
+                if (entry.Unit.Id == OriginalLuffyCommonSaleCoordinator.UnitCatalogId)
+                {
+                    bool oldEnabled = GUI.enabled;
+                    GUI.enabled = oldEnabled && controller.ManualActions.HasOriginalCommonSaleService;
+                    if (GUILayout.Button("흔함 루피 판매", GUILayout.MinHeight(48)))
+                    {
+                        pendingCommonSaleId = entry.InstanceId;
+                        notice = "루피를 판매하면 되돌릴 수 없습니다. 아래에서 확인하세요.";
+                    }
+                    GUI.enabled = oldEnabled;
+                    if (!controller.ManualActions.HasOriginalCommonSaleService)
+                        GUILayout.Label("원본 위습/재화 거래 미연결: 판매 불가");
+                }
                 if (SpecialGradeMobilePolicy.IsManualOnly(entry.Unit.Id) &&
                     GUILayout.Button("갱 뱃지 분해", GUILayout.MinHeight(48)))
                     notice = controller.ManualActions.RequestUnitDecomposition(entry).Message;
+            }
+            if (pendingCommonSaleId.HasValue)
+            {
+                GUILayout.Label("루피 #" + pendingCommonSaleId.Value + " 판매 확정?");
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("판매 확인", GUILayout.MinHeight(48)))
+                {
+                    ShowResult(controller.ManualActions.RequestCommonSale(
+                        pendingCommonSaleId.Value));
+                    pendingCommonSaleId = null;
+                }
+                if (GUILayout.Button("취소", GUILayout.MinHeight(48)))
+                    pendingCommonSaleId = null;
+                GUILayout.EndHorizontal();
             }
             DrawPager(ownedPage, pages, next => ownedPage = next);
         }

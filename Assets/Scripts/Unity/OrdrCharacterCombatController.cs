@@ -48,6 +48,19 @@ namespace Ordr.Mobile.Unity
         private OtherworldMysticFusionPreviewPort mysticFusionPort;
         private IOriginalEconomyPort originalEconomyPort;
 
+        // The original reward is a physical e0IX Wisp, not a synthetic wallet
+        // item. Connect only a session-wide transaction with rollback and
+        // authoritative ownership/LY state (never a TEST_ONLY fake world).
+        public void ConfigureOriginalCommonSaleWorld(
+            IOriginalCommonSaleTransactionalWorld originalWorld)
+        {
+            if (originalWorld == null) throw new ArgumentNullException(nameof(originalWorld));
+            if (Combat == null) throw new InvalidOperationException(
+                "원본 판매 대상의 실제 월드를 먼저 구성해야 합니다.");
+            ManualActions.ConfigureOriginalCommonSale(
+                new OriginalLuffyCommonSaleCoordinator(originalWorld));
+        }
+
         // All unit grades use the same automatic attack pipeline once their
         // original attack power, interval, range, rawcode and initial delay
         // have been independently verified.
