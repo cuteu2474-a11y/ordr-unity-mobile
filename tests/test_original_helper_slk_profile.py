@@ -34,6 +34,12 @@ class HelperSourceProfileTests(unittest.TestCase):
         self.assertEqual(3, p["manaPotion"]["charges"])
         self.assertEqual(300, p["manaPotion"]["postCastManaGain"])
         self.assertTrue(p["manaPotion"]["inheritedManaCostsUnknown"])
+        self.assertEqual("R037", p["maximumOutputNavigation"]["playerTechResearched"])
+        self.assertEqual("R037", p["alchemyNavigation"]["playerTechResearched"])
+        self.assertEqual(100, p["alchemyNavigation"]["manaCost"])
+        self.assertEqual(5, p["alchemyNavigation"]["cooldownSeconds"])
+        self.assertEqual(["A0BA", "A0B9"],
+                         p["alchemyNavigation"]["targetAbilityAnyPositive"])
 
     def test_parser_rejects_modified_original_fields(self):
         p = self.profile
@@ -55,6 +61,8 @@ class HelperSourceProfileTests(unittest.TestCase):
             for level in p["abilities"]["A04R"]["baseSlkIsr2Levels"]}}
         spells["A0UY"] = {"code": "AOsf", "levels": "3",
                           "Cool1": "0", "Cool2": "0", "Cool3": "0"}
+        spells["A0J2"] = {"code": "ANcl", "levels": "1", "Cost1": "100",
+                          "Cool1": "5", "Rng1": "99999"}
         cow = {"mana0": "15", "manaN": "10000", "regenMana": "0.3"}
         abilities = {"abilList": ",".join(p["helper"]["defaultAbilities"])}
         rects = [(-5888, 5664, -5632, 5920), (128, 5664, 384, 5920),
@@ -74,6 +82,18 @@ class HelperSourceProfileTests(unittest.TestCase):
             "call SetUnitAbilityLevel(kk[JG],$41303758,2)",
             "call SetUnitAbilityLevel(kk[JG],$41303757,2)",
             "call UnitAddAbility(kk[JG],$41305559)",
+            "call SetPlayerTechResearched(Player(JG),$52303337,1)",
+            "call UnitAddAbility(kk[JG],$41304A32)",
+            "function CJZ takes nothing returns nothing",
+            "if GetOwningPlayer(GetSpellTargetUnit())!=Player(JG) then",
+            "if GetUnitAbilityLevel(GetSpellTargetUnit(),$41304241)<=0 and GetUnitTypeId(GetSpellTargetUnit())!=$68303143 and GetUnitTypeId(GetSpellTargetUnit())!=$68303135 and GetUnitAbilityLevel(GetSpellTargetUnit(),$41304239)<=0 then",
+            "call BdD(GetSpellTargetUnit())",
+            "function CJY takes integer JG,integer hP,integer Hk returns nothing",
+            "local integer R2=LoadInteger(R3,hP,Hk)",
+            "local integer Rf=LoadInteger(Wb,R2,We)",
+            "set hT=LoadInteger(Wq,R2,EK)",
+            "set hU=LoadInteger(Wr,R2,EK)",
+            "set hV=LoadInteger(Ws,R2,EK)",
             "function CJk takes nothing returns nothing",
             "if GetUnitAbilityLevel(GetTriggerUnit(),$41305559)==3 then",
             "call UnitRemoveAbility(GetTriggerUnit(),$41305559)",
@@ -94,6 +114,11 @@ class HelperSourceProfileTests(unittest.TestCase):
         cow["regenMana"] = "0.3"
         spells["A0UY"]["Cost1"] = "0"
         with self.assertRaisesRegex(ValueError, "A0UY mana cost"):
+            inspect_source(spells, {"h08A": cow},
+                           {"h08A": abilities}, jass)
+        del spells["A0UY"]["Cost1"]
+        spells["A0J2"]["Cost1"] = "90"
+        with self.assertRaisesRegex(ValueError, "A0J2 mana cost"):
             inspect_source(spells, {"h08A": cow},
                            {"h08A": abilities}, jass)
 

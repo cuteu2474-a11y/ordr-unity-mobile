@@ -46,7 +46,7 @@ def as_float(row, field):
 
 def inspect_source(ability, balance, unit_abilities, jass):
     """Check every published profile value against independently read rows."""
-    spell_rows = {key: ability[key] for key in ("A0BZ", "A07T", "A04R", "A0UY")}
+    spell_rows = {key: ability[key] for key in ("A0BZ", "A07T", "A04R", "A0UY", "A0J2")}
     h08a = balance["h08A"]
     h08a_abilities = unit_abilities["h08A"]["abilList"].split(",")
     require_equal(spell_rows["A0BZ"]["code"], "ANcs", "A0BZ base code")
@@ -65,6 +65,12 @@ def inspect_source(ability, balance, unit_abilities, jass):
         # mana cost: AOsf may inherit it from the Warcraft base table.
         if potion.get(f"Cost{level}") not in (None, "", "_"):
             raise ValueError(f"A0UY mana cost level {level} is no longer inherited")
+    alchemy = spell_rows["A0J2"]
+    require_equal(alchemy["code"], "ANcl", "A0J2 base ability")
+    require_equal(int(alchemy["levels"]), 1, "A0J2 levels")
+    require_equal(int(as_float(alchemy, "Cost1")), 100, "A0J2 mana cost")
+    require_equal(int(as_float(alchemy, "Cool1")), 5, "A0J2 cooldown")
+    require_equal(int(as_float(alchemy, "Rng1")), 99999, "A0J2 cast range")
 
     spells = {}
     for code, requested_levels in (("A0BZ", 2), ("A07T", 2)):
@@ -139,6 +145,18 @@ def inspect_source(ability, balance, unit_abilities, jass):
         "call SetUnitAbilityLevel(kk[JG],$41303758,2)",  # A07X
         "call SetUnitAbilityLevel(kk[JG],$41303757,2)",  # A07W
         "call UnitAddAbility(kk[JG],$41305559)",       # A0UY
+        "call SetPlayerTechResearched(Player(JG),$52303337,1)",  # R037
+        "call UnitAddAbility(kk[JG],$41304A32)",       # A0J2
+        "function CJZ takes nothing returns nothing",
+        "if GetOwningPlayer(GetSpellTargetUnit())!=Player(JG) then",
+        "if GetUnitAbilityLevel(GetSpellTargetUnit(),$41304241)<=0 and GetUnitTypeId(GetSpellTargetUnit())!=$68303143 and GetUnitTypeId(GetSpellTargetUnit())!=$68303135 and GetUnitAbilityLevel(GetSpellTargetUnit(),$41304239)<=0 then",
+        "call BdD(GetSpellTargetUnit())",
+        "function CJY takes integer JG,integer hP,integer Hk returns nothing",
+        "local integer R2=LoadInteger(R3,hP,Hk)",
+        "local integer Rf=LoadInteger(Wb,R2,We)",
+        "set hT=LoadInteger(Wq,R2,EK)",
+        "set hU=LoadInteger(Wr,R2,EK)",
+        "set hV=LoadInteger(Ws,R2,EK)",
         "function CJk takes nothing returns nothing",
         "if GetUnitAbilityLevel(GetTriggerUnit(),$41305559)==3 then",
         "call UnitRemoveAbility(GetTriggerUnit(),$41305559)",
@@ -167,6 +185,23 @@ def inspect_source(ability, balance, unit_abilities, jass):
             "oncePerPlayer": True,
             "upgradedAbilities": ["A0BZ", "A0BY", "A07T", "A07X", "A07W"],
             "newAbility": "A0UY",
+            "playerTechResearched": "R037",
+        },
+        "alchemyNavigation": {
+            "choiceJass": "CKX -> CKS(2, player)",
+            "newAbility": "A0J2",
+            "playerTechResearched": "R037",
+            "abilityBase": "ANcl",
+            "manaCost": 100,
+            "cooldownSeconds": 5,
+            "castRange": 99999,
+            "targetPreflightJass": "CJZ",
+            "targetOwnerMustEqualCaster": True,
+            "targetAbilityAnyPositive": ["A0BA", "A0B9"],
+            "targetRawcodeExceptions": ["h01C", "h015"],
+            "targetConsumptionJass": "BdD",
+            "ingredientRefundJass": "CJY",
+            "dynamicRefundTables": ["R3", "Wb", "Wq", "Wr", "Ws"],
         },
         "manaPotion": {
             "rawcode": "A0UY",
@@ -198,6 +233,7 @@ def inspect_source(ability, balance, unit_abilities, jass):
             "originalDamageAfterDefense": True,
             "a04rEngineFormula": True,
             "manaPotionInheritedManaCosts": True,
+            "alchemyUnitConsumptionTransaction": True,
         },
     }
 

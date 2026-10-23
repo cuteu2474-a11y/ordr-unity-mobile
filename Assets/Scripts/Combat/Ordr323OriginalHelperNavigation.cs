@@ -22,7 +22,20 @@ namespace Ordr.Mobile.Combat
         public bool CanChooseMaximumOutput =>
             game.Phase == SessionPhase.Running && game.CurrentWave > 20 &&
             ChosenNavigation == null && helper.IsAlive &&
-            !helper.MaximumOutputNavigationChosen;
+            !helper.MaximumOutputNavigationChosen && !helper.AlchemyNavigationChosen;
+
+        public bool CanChooseAlchemy =>
+            game.Phase == SessionPhase.Running && game.CurrentWave > 20 &&
+            ChosenNavigation == null && helper.IsAlive &&
+            !helper.MaximumOutputNavigationChosen && !helper.AlchemyNavigationChosen;
+
+        public bool TryChooseAlchemy()
+        {
+            if (!CanChooseAlchemy) return false;
+            helper.ApplyVerifiedAlchemyNavigation();
+            ChosenNavigation = "최고의도움 :: 연금술";
+            return true;
+        }
 
         public bool TryChooseMaximumOutput()
         {

@@ -22,6 +22,7 @@ namespace Ordr.Mobile.Editor
             "verified-mobile-fusion-recipes.json",
             "otherworld-2323C-mystic-web-recipes.json",
             "original-jass-fusion-registry.json",
+            "original-2323C-helper-alchemy-recipes.json",
             "original-unit-rawcode-label-links.json",
             "original-jass-mystic-candidate-reconciliation.json",
             "original-2323C-wisp-pools.json"

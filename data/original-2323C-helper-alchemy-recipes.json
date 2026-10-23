@@ -1,0 +1,5486 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceFunctions": [
+    "BjB/Bi8",
+    "CWR/BGG/BGI",
+    "CJZ",
+    "CJY"
+  ],
+  "targetCount": 265,
+  "existingFusionArchiveInterleavingMismatches": 143,
+  "entries": [
+    {
+      "targetRawcode": "H05N",
+      "fusionAbilities": [
+        "TR03"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03E",
+          "count": 1
+        },
+        {
+          "rawcode": "h038",
+          "count": 1
+        },
+        {
+          "rawcode": "h01F",
+          "count": 1
+        },
+        {
+          "rawcode": "h00E",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H08U",
+      "fusionAbilities": [
+        "TR16"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03G",
+          "count": 1
+        },
+        {
+          "rawcode": "h03R",
+          "count": 1
+        },
+        {
+          "rawcode": "h01O",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H08V",
+      "fusionAbilities": [
+        "TR01"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02P",
+          "count": 1
+        },
+        {
+          "rawcode": "h039",
+          "count": 1
+        },
+        {
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H08W",
+      "fusionAbilities": [
+        "TR05"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02R",
+          "count": 1
+        },
+        {
+          "rawcode": "h03M",
+          "count": 1
+        },
+        {
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H08X",
+      "fusionAbilities": [
+        "TR28"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h031",
+          "count": 1
+        },
+        {
+          "rawcode": "h046",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h00E",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H08Y",
+      "fusionAbilities": [
+        "TR27"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h030",
+          "count": 1
+        },
+        {
+          "rawcode": "h07N",
+          "count": 1
+        },
+        {
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "rawcode": "h01G",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H08Z",
+      "fusionAbilities": [
+        "TR15"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "rawcode": "h043",
+          "count": 1
+        },
+        {
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H090",
+      "fusionAbilities": [
+        "TR08"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02U",
+          "count": 1
+        },
+        {
+          "rawcode": "h03B",
+          "count": 1
+        },
+        {
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H091",
+      "fusionAbilities": [
+        "TR23"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03S",
+          "count": 1
+        },
+        {
+          "rawcode": "h03K",
+          "count": 1
+        },
+        {
+          "rawcode": "h008",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H092",
+      "fusionAbilities": [
+        "TR13"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h09V",
+          "count": 1
+        },
+        {
+          "rawcode": "h02T",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H094",
+      "fusionAbilities": [
+        "TR10"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02S",
+          "count": 1
+        },
+        {
+          "rawcode": "h03E",
+          "count": 1
+        },
+        {
+          "rawcode": "h01R",
+          "count": 1
+        },
+        {
+          "rawcode": "h01U",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H095",
+      "fusionAbilities": [
+        "TR18"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h0CM",
+          "count": 1
+        },
+        {
+          "rawcode": "h03Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H096",
+      "fusionAbilities": [
+        "TR26"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03C",
+          "count": 1
+        },
+        {
+          "rawcode": "h038",
+          "count": 1
+        },
+        {
+          "rawcode": "h00C",
+          "count": 2
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H097",
+      "fusionAbilities": [
+        "TR24"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03I",
+          "count": 1
+        },
+        {
+          "rawcode": "h041",
+          "count": 1
+        },
+        {
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "rawcode": "h00E",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H098",
+      "fusionAbilities": [
+        "TR02"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02X",
+          "count": 1
+        },
+        {
+          "rawcode": "h02R",
+          "count": 1
+        },
+        {
+          "rawcode": "h01A",
+          "count": 1
+        },
+        {
+          "rawcode": "h00O",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H099",
+      "fusionAbilities": [
+        "TR09"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h02Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h024",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "H09A",
+      "fusionAbilities": [
+        "TR22"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03G",
+          "count": 1
+        },
+        {
+          "rawcode": "h02Q",
+          "count": 1
+        },
+        {
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H09B",
+      "fusionAbilities": [
+        "TR20"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03F",
+          "count": 1
+        },
+        {
+          "rawcode": "h037",
+          "count": 1
+        },
+        {
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H09E",
+      "fusionAbilities": [
+        "TR04"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h05S",
+          "count": 1
+        },
+        {
+          "rawcode": "h07N",
+          "count": 1
+        },
+        {
+          "rawcode": "h03W",
+          "count": 1
+        },
+        {
+          "rawcode": "h027",
+          "count": 1
+        },
+        {
+          "rawcode": "h00N",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H09F",
+      "fusionAbilities": [
+        "TR06"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02S",
+          "count": 1
+        },
+        {
+          "rawcode": "h043",
+          "count": 1
+        },
+        {
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H09H",
+      "fusionAbilities": [
+        "TR14"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h034",
+          "count": 1
+        },
+        {
+          "rawcode": "h03H",
+          "count": 1
+        },
+        {
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H09I",
+      "fusionAbilities": [
+        "TR12"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02Q",
+          "count": 1
+        },
+        {
+          "rawcode": "h044",
+          "count": 1
+        },
+        {
+          "rawcode": "h05K",
+          "count": 1
+        },
+        {
+          "rawcode": "h00B",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H0AA",
+      "fusionAbilities": [
+        "TR30"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h0AN",
+          "count": 1
+        },
+        {
+          "rawcode": "h055",
+          "count": 1
+        },
+        {
+          "rawcode": "h01R",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H0B2",
+      "fusionAbilities": [
+        "TR07"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h03U",
+          "count": 1
+        },
+        {
+          "rawcode": "h05L",
+          "count": 1
+        },
+        {
+          "rawcode": "h00K",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "H0B4",
+      "fusionAbilities": [
+        "TR25"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h09Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h045",
+          "count": 1
+        },
+        {
+          "rawcode": "h02L",
+          "count": 1
+        },
+        {
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H0B5",
+      "fusionAbilities": [
+        "TR11"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h031",
+          "count": 1
+        },
+        {
+          "rawcode": "h03A",
+          "count": 1
+        },
+        {
+          "rawcode": "h01R",
+          "count": 1
+        },
+        {
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H0BD",
+      "fusionAbilities": [
+        "TR19"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03S",
+          "count": 1
+        },
+        {
+          "rawcode": "h087",
+          "count": 1
+        },
+        {
+          "rawcode": "h01M",
+          "count": 1
+        },
+        {
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H0BK",
+      "fusionAbilities": [
+        "ET02"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "H08T",
+          "count": 1
+        },
+        {
+          "rawcode": "h03C",
+          "count": 1
+        },
+        {
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "rawcode": "h00K",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H0BL",
+      "fusionAbilities": [
+        "TR17"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03N",
+          "count": 1
+        },
+        {
+          "rawcode": "h031",
+          "count": 1
+        },
+        {
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H0BX",
+      "fusionAbilities": [
+        "TR21"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h055",
+          "count": 1
+        },
+        {
+          "rawcode": "h030",
+          "count": 1
+        },
+        {
+          "rawcode": "h00W",
+          "count": 1
+        },
+        {
+          "rawcode": "h01C",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "H0CO",
+      "fusionAbilities": [
+        "TR29"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03E",
+          "count": 1
+        },
+        {
+          "rawcode": "h0CM",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Q",
+          "count": 1
+        },
+        {
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h00A",
+      "fusionAbilities": [
+        "A0N7"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h006",
+          "count": 2
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h00B",
+      "fusionAbilities": [
+        "A00K"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00D",
+          "count": 2
+        },
+        {
+          "rawcode": "h004",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00C",
+      "fusionAbilities": [
+        "A00E"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h008",
+          "count": 1
+        },
+        {
+          "rawcode": "h003",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00D",
+      "fusionAbilities": [
+        "A00W"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h002",
+          "count": 1
+        },
+        {
+          "rawcode": "h008",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h00E",
+      "fusionAbilities": [
+        "A01R"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h006",
+          "count": 1
+        },
+        {
+          "rawcode": "h009",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00F",
+      "fusionAbilities": [
+        "A01L"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h009",
+          "count": 1
+        },
+        {
+          "rawcode": "h001",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h00G",
+      "fusionAbilities": [
+        "A02I"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h008",
+          "count": 2
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h00I",
+      "fusionAbilities": [
+        "A00P"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h004",
+          "count": 1
+        },
+        {
+          "rawcode": "h002",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h00J",
+      "fusionAbilities": [
+        "A00L"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h005",
+          "count": 1
+        },
+        {
+          "rawcode": "h001",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h00K",
+      "fusionAbilities": [
+        "A00D"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h003",
+          "count": 1
+        },
+        {
+          "rawcode": "h009",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h00L",
+      "fusionAbilities": [
+        "A01H"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h007",
+          "count": 1
+        },
+        {
+          "rawcode": "h003",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00M",
+      "fusionAbilities": [
+        "A0N5"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h009",
+          "count": 2
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h00N",
+      "fusionAbilities": [
+        "A00V"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h007",
+          "count": 2
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h00O",
+      "fusionAbilities": [
+        "A006"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h001",
+          "count": 1
+        },
+        {
+          "rawcode": "h004",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00P",
+      "fusionAbilities": [
+        "A015"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h001",
+          "count": 3
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00Q",
+      "fusionAbilities": [
+        "A01D"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00N",
+          "count": 1
+        },
+        {
+          "rawcode": "h00C",
+          "count": 1
+        },
+        {
+          "rawcode": "h004",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00R",
+      "fusionAbilities": [
+        "A01O"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00A",
+          "count": 1
+        },
+        {
+          "rawcode": "h00O",
+          "count": 1
+        },
+        {
+          "rawcode": "h003",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00S",
+      "fusionAbilities": [
+        "A03E"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00O",
+          "count": 2
+        },
+        {
+          "rawcode": "h008",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h00T",
+      "fusionAbilities": [
+        "A024"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00M",
+          "count": 1
+        },
+        {
+          "rawcode": "h00K",
+          "count": 1
+        },
+        {
+          "rawcode": "h004",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h00U",
+      "fusionAbilities": [
+        "A012"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h003",
+          "count": 3
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h00V",
+      "fusionAbilities": [
+        "A0N8"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00F",
+          "count": 1
+        },
+        {
+          "rawcode": "h002",
+          "count": 1
+        },
+        {
+          "rawcode": "h006",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00W",
+      "fusionAbilities": [
+        "A032"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h002",
+          "count": 3
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00X",
+      "fusionAbilities": [
+        "A00Z"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00I",
+          "count": 2
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h00Y",
+      "fusionAbilities": [
+        "A030"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "rawcode": "h00C",
+          "count": 1
+        },
+        {
+          "rawcode": "h005",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h00Z",
+      "fusionAbilities": [
+        "A01K"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00N",
+          "count": 2
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h010",
+      "fusionAbilities": [
+        "A029"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00H",
+          "count": 3
+        },
+        {
+          "rawcode": "h001",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h011",
+      "fusionAbilities": [
+        "A01P"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00F",
+          "count": 2
+        },
+        {
+          "rawcode": "h003",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h012",
+      "fusionAbilities": [
+        "A1A1"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00G",
+          "count": 1
+        },
+        {
+          "rawcode": "h00L",
+          "count": 1
+        },
+        {
+          "rawcode": "h001",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h013",
+      "fusionAbilities": [
+        "A01B"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h004",
+          "count": 3
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h014",
+      "fusionAbilities": [
+        "A01I"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00I",
+          "count": 1
+        },
+        {
+          "rawcode": "h00O",
+          "count": 1
+        },
+        {
+          "rawcode": "h001",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h015",
+      "fusionAbilities": [
+        "A018"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h005",
+          "count": 3
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h016",
+      "fusionAbilities": [
+        "A01N"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "rawcode": "h00M",
+          "count": 1
+        },
+        {
+          "rawcode": "h007",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h017",
+      "fusionAbilities": [
+        "A017"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00C",
+          "count": 1
+        },
+        {
+          "rawcode": "h00L",
+          "count": 1
+        },
+        {
+          "rawcode": "h002",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h018",
+      "fusionAbilities": [
+        "A01E"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00K",
+          "count": 1
+        },
+        {
+          "rawcode": "h00A",
+          "count": 1
+        },
+        {
+          "rawcode": "h005",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h019",
+      "fusionAbilities": [
+        "A01A"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00M",
+          "count": 1
+        },
+        {
+          "rawcode": "h00A",
+          "count": 1
+        },
+        {
+          "rawcode": "h008",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h01A",
+      "fusionAbilities": [
+        "A01Q"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00L",
+          "count": 1
+        },
+        {
+          "rawcode": "h00N",
+          "count": 1
+        },
+        {
+          "rawcode": "h005",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01B",
+      "fusionAbilities": [
+        "A01C"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00E",
+          "count": 1
+        },
+        {
+          "rawcode": "h00D",
+          "count": 1
+        },
+        {
+          "rawcode": "h005",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h01C",
+      "fusionAbilities": [
+        "A0NA"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00A",
+          "count": 1
+        },
+        {
+          "rawcode": "h009",
+          "count": 1
+        },
+        {
+          "rawcode": "h005",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01D",
+      "fusionAbilities": [
+        "A00B"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00G",
+          "count": 1
+        },
+        {
+          "rawcode": "h00I",
+          "count": 1
+        },
+        {
+          "rawcode": "h006",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01E",
+      "fusionAbilities": [
+        "A014"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00G",
+          "count": 1
+        },
+        {
+          "rawcode": "h00O",
+          "count": 1
+        },
+        {
+          "rawcode": "h005",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01F",
+      "fusionAbilities": [
+        "A19Z"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h009",
+          "count": 1
+        },
+        {
+          "rawcode": "h00E",
+          "count": 1
+        },
+        {
+          "rawcode": "h006",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01G",
+      "fusionAbilities": [
+        "A02Y"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00L",
+          "count": 2
+        },
+        {
+          "rawcode": "h002",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h01H",
+      "fusionAbilities": [
+        "A01X"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00C",
+          "count": 1
+        },
+        {
+          "rawcode": "h00E",
+          "count": 1
+        },
+        {
+          "rawcode": "h005",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01I",
+      "fusionAbilities": [
+        "A019"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00D",
+          "count": 1
+        },
+        {
+          "rawcode": "h002",
+          "count": 1
+        },
+        {
+          "rawcode": "h004",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01J",
+      "fusionAbilities": [
+        "A00S"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00K",
+          "count": 2
+        },
+        {
+          "rawcode": "h007",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01K",
+      "fusionAbilities": [
+        "A02B"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00E",
+          "count": 1
+        },
+        {
+          "rawcode": "h00A",
+          "count": 1
+        },
+        {
+          "rawcode": "h008",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h01L",
+      "fusionAbilities": [
+        "A02M"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01D",
+          "count": 1
+        },
+        {
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "rawcode": "h00R",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01M",
+      "fusionAbilities": [
+        "A0ND"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "rawcode": "h00U",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01N",
+      "fusionAbilities": [
+        "A1A0"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00D",
+          "count": 1
+        },
+        {
+          "rawcode": "h00B",
+          "count": 1
+        },
+        {
+          "rawcode": "h00R",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01O",
+      "fusionAbilities": [
+        "A02J"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h019",
+          "count": 1
+        },
+        {
+          "rawcode": "h01A",
+          "count": 1
+        },
+        {
+          "rawcode": "h00P",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01P",
+      "fusionAbilities": [
+        "A00R"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "rawcode": "h01A",
+          "count": 1
+        },
+        {
+          "rawcode": "h00X",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01Q",
+      "fusionAbilities": [
+        "A02W"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01F",
+          "count": 1
+        },
+        {
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "rawcode": "h01K",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h01R",
+      "fusionAbilities": [
+        "A0N6"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "rawcode": "h01H",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Y",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h01S",
+      "fusionAbilities": [
+        "A00Q"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h01F",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Q",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h01T",
+      "fusionAbilities": [
+        "A03G"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "rawcode": "h018",
+          "count": 1
+        },
+        {
+          "rawcode": "h01I",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h01U",
+      "fusionAbilities": [
+        "A0IO"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "rawcode": "h01B",
+          "count": 1
+        },
+        {
+          "rawcode": "h01H",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h01V",
+      "fusionAbilities": [
+        "A013"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "rawcode": "h00T",
+          "count": 1
+        },
+        {
+          "rawcode": "h015",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01W",
+      "fusionAbilities": [
+        "A02F"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00V",
+          "count": 1
+        },
+        {
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "rawcode": "h01G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h01X",
+      "fusionAbilities": [
+        "A00F"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Q",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h01Y",
+      "fusionAbilities": [
+        "A02K"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h018",
+          "count": 1
+        },
+        {
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "rawcode": "h01F",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h01Z",
+      "fusionAbilities": [
+        "A01M"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h018",
+          "count": 1
+        },
+        {
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "rawcode": "h01J",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h020",
+      "fusionAbilities": [
+        "A028"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00B",
+          "count": 2
+        },
+        {
+          "rawcode": "h00U",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h021",
+      "fusionAbilities": [
+        "A01F"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "rawcode": "h012",
+          "count": 1
+        },
+        {
+          "rawcode": "h01K",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h022",
+      "fusionAbilities": [
+        "A00I"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00T",
+          "count": 1
+        },
+        {
+          "rawcode": "h019",
+          "count": 1
+        },
+        {
+          "rawcode": "h01D",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h023",
+      "fusionAbilities": [
+        "A00C"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00R",
+          "count": 1
+        },
+        {
+          "rawcode": "h019",
+          "count": 1
+        },
+        {
+          "rawcode": "h00S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 6
+    },
+    {
+      "targetRawcode": "h024",
+      "fusionAbilities": [
+        "A0NB"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00Q",
+          "count": 1
+        },
+        {
+          "rawcode": "h013",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Z",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h025",
+      "fusionAbilities": [
+        "A016"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00B",
+          "count": 1
+        },
+        {
+          "rawcode": "h00W",
+          "count": 1
+        },
+        {
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "rawcode": "h00N",
+          "count": 1
+        },
+        {
+          "rawcode": "h006",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h026",
+      "fusionAbilities": [
+        "A039"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01C",
+          "count": 1
+        },
+        {
+          "rawcode": "h01K",
+          "count": 1
+        },
+        {
+          "rawcode": "h013",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h027",
+      "fusionAbilities": [
+        "A02L"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01E",
+          "count": 1
+        },
+        {
+          "rawcode": "h00W",
+          "count": 1
+        },
+        {
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "rawcode": "h007",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h028",
+      "fusionAbilities": [
+        "A02V"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h017",
+          "count": 1
+        },
+        {
+          "rawcode": "h01E",
+          "count": 1
+        },
+        {
+          "rawcode": "h01C",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h029",
+      "fusionAbilities": [
+        "A03B"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Z",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h02A",
+      "fusionAbilities": [
+        "A01J"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00X",
+          "count": 1
+        },
+        {
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "rawcode": "h01A",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02B",
+      "fusionAbilities": [
+        "A0NC"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "rawcode": "h012",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Q",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02C",
+      "fusionAbilities": [
+        "A01W"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h01C",
+          "count": 1
+        },
+        {
+          "rawcode": "h00P",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h02D",
+      "fusionAbilities": [
+        "A00U"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "rawcode": "h01B",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02E",
+      "fusionAbilities": [
+        "A02A"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h012",
+          "count": 1
+        },
+        {
+          "rawcode": "h00V",
+          "count": 1
+        },
+        {
+          "rawcode": "h01C",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02F",
+      "fusionAbilities": [
+        "A02R"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00W",
+          "count": 1
+        },
+        {
+          "rawcode": "h00B",
+          "count": 1
+        },
+        {
+          "rawcode": "h01F",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02G",
+      "fusionAbilities": [
+        "A008"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "rawcode": "h00X",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h02H",
+      "fusionAbilities": [
+        "A02N"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01A",
+          "count": 1
+        },
+        {
+          "rawcode": "h018",
+          "count": 1
+        },
+        {
+          "rawcode": "h014",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02I",
+      "fusionAbilities": [
+        "A0NF"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h013",
+          "count": 1
+        },
+        {
+          "rawcode": "h01D",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Y",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02J",
+      "fusionAbilities": [
+        "A02S"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01B",
+          "count": 1
+        },
+        {
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "rawcode": "h00V",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h02K",
+      "fusionAbilities": [
+        "A010"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01D",
+          "count": 1
+        },
+        {
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "rawcode": "h01H",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02L",
+      "fusionAbilities": [
+        "A02Z"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01H",
+          "count": 1
+        },
+        {
+          "rawcode": "h01G",
+          "count": 1
+        },
+        {
+          "rawcode": "h01E",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02M",
+      "fusionAbilities": [
+        "A00A"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01G",
+          "count": 1
+        },
+        {
+          "rawcode": "h017",
+          "count": 1
+        },
+        {
+          "rawcode": "h00R",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h02N",
+      "fusionAbilities": [
+        "A01G"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h020",
+          "count": 1
+        },
+        {
+          "rawcode": "h025",
+          "count": 1
+        },
+        {
+          "rawcode": "h05K",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02O",
+      "fusionAbilities": [
+        "A00N"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h022",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h021",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h02P",
+      "fusionAbilities": [
+        "A00O"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01O",
+          "count": 1
+        },
+        {
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "rawcode": "h05K",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h02Q",
+      "fusionAbilities": [
+        "A03C"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "rawcode": "h026",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h02R",
+      "fusionAbilities": [
+        "A02P"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Q",
+          "count": 1
+        },
+        {
+          "rawcode": "h02L",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02S",
+      "fusionAbilities": [
+        "A0NH"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02F",
+          "count": 1
+        },
+        {
+          "rawcode": "h05K",
+          "count": 1
+        },
+        {
+          "rawcode": "h04H",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02T",
+      "fusionAbilities": [
+        "A02D"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h022",
+          "count": 1
+        },
+        {
+          "rawcode": "h01M",
+          "count": 1
+        },
+        {
+          "rawcode": "h02M",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h02U",
+      "fusionAbilities": [
+        "A036"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h021",
+          "count": 1
+        },
+        {
+          "rawcode": "h026",
+          "count": 1
+        },
+        {
+          "rawcode": "h01V",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02V",
+      "fusionAbilities": [
+        "A03H"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01Q",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Y",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02W",
+      "fusionAbilities": [
+        "A00Y"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02A",
+          "count": 1
+        },
+        {
+          "rawcode": "h05L",
+          "count": 1
+        },
+        {
+          "rawcode": "h01O",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02X",
+      "fusionAbilities": [
+        "A03D"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01X",
+          "count": 1
+        },
+        {
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "rawcode": "h09X",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h02Y",
+      "fusionAbilities": [
+        "A00T"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h020",
+          "count": 1
+        },
+        {
+          "rawcode": "h025",
+          "count": 1
+        },
+        {
+          "rawcode": "h010",
+          "count": 1
+        },
+        {
+          "rawcode": "h01X",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h02Z",
+      "fusionAbilities": [
+        "A00J"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "rawcode": "h01X",
+          "count": 1
+        },
+        {
+          "rawcode": "h02C",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h030",
+      "fusionAbilities": [
+        "A027"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h028",
+          "count": 1
+        },
+        {
+          "rawcode": "h02M",
+          "count": 1
+        },
+        {
+          "rawcode": "h02K",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h031",
+      "fusionAbilities": [
+        "A00H"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02J",
+          "count": 1
+        },
+        {
+          "rawcode": "h01L",
+          "count": 1
+        },
+        {
+          "rawcode": "h02H",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h032",
+      "fusionAbilities": [
+        "A0N9"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01M",
+          "count": 1
+        },
+        {
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "rawcode": "h04H",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h033",
+      "fusionAbilities": [
+        "A00G"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h02M",
+          "count": 1
+        },
+        {
+          "rawcode": "h02H",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h034",
+      "fusionAbilities": [
+        "A01U"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "rawcode": "h02A",
+          "count": 1
+        },
+        {
+          "rawcode": "h01U",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h035",
+      "fusionAbilities": [
+        "A025"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h029",
+          "count": 1
+        },
+        {
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "rawcode": "h02I",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h036",
+      "fusionAbilities": [
+        "A00M"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01P",
+          "count": 1
+        },
+        {
+          "rawcode": "h02B",
+          "count": 1
+        },
+        {
+          "rawcode": "h01R",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h037",
+      "fusionAbilities": [
+        "A0NI"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h027",
+          "count": 1
+        },
+        {
+          "rawcode": "h02C",
+          "count": 1
+        },
+        {
+          "rawcode": "h01U",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h038",
+      "fusionAbilities": [
+        "A009"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01L",
+          "count": 1
+        },
+        {
+          "rawcode": "h01R",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Q",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h039",
+      "fusionAbilities": [
+        "A02X"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h024",
+          "count": 1
+        },
+        {
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Z",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h03A",
+      "fusionAbilities": [
+        "A01S"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h05X",
+          "count": 1
+        },
+        {
+          "rawcode": "h028",
+          "count": 1
+        },
+        {
+          "rawcode": "h018",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h03B",
+      "fusionAbilities": [
+        "A02G"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02E",
+          "count": 1
+        },
+        {
+          "rawcode": "h022",
+          "count": 1
+        },
+        {
+          "rawcode": "h02J",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h03C",
+      "fusionAbilities": [
+        "A02H"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02L",
+          "count": 1
+        },
+        {
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "rawcode": "h028",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h03E",
+      "fusionAbilities": [
+        "A01T"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h026",
+          "count": 1
+        },
+        {
+          "rawcode": "h029",
+          "count": 1
+        },
+        {
+          "rawcode": "h02G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h03F",
+      "fusionAbilities": [
+        "A026"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02C",
+          "count": 1
+        },
+        {
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "rawcode": "h024",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h03G",
+      "fusionAbilities": [
+        "A0NE"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01T",
+          "count": 1
+        },
+        {
+          "rawcode": "h02L",
+          "count": 1
+        },
+        {
+          "rawcode": "h01P",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h03H",
+      "fusionAbilities": [
+        "A02C"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02G",
+          "count": 1
+        },
+        {
+          "rawcode": "h02J",
+          "count": 1
+        },
+        {
+          "rawcode": "h027",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h03I",
+      "fusionAbilities": [
+        "A0NG"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01V",
+          "count": 1
+        },
+        {
+          "rawcode": "h02B",
+          "count": 1
+        },
+        {
+          "rawcode": "h05L",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h03J",
+      "fusionAbilities": [
+        "YY14"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h026",
+          "count": 1
+        },
+        {
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Z",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h03K",
+      "fusionAbilities": [
+        "A037"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02K",
+          "count": 1
+        },
+        {
+          "rawcode": "h01T",
+          "count": 1
+        },
+        {
+          "rawcode": "h01V",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h03L",
+      "fusionAbilities": [
+        "YY12"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 0
+    },
+    {
+      "targetRawcode": "h03M",
+      "fusionAbilities": [
+        "YY11"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h020",
+          "count": 1
+        },
+        {
+          "rawcode": "h02L",
+          "count": 1
+        },
+        {
+          "rawcode": "h05L",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h03N",
+      "fusionAbilities": [
+        "YY06"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h025",
+          "count": 1
+        },
+        {
+          "rawcode": "h02A",
+          "count": 1
+        },
+        {
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "rawcode": "h017",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h03O",
+      "fusionAbilities": [
+        "YY10"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01M",
+          "count": 1
+        },
+        {
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "rawcode": "h00X",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h03P",
+      "fusionAbilities": [
+        "YY09"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02G",
+          "count": 1
+        },
+        {
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 0
+    },
+    {
+      "targetRawcode": "h03Q",
+      "fusionAbilities": [
+        "YY07"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02E",
+          "count": 1
+        },
+        {
+          "rawcode": "h00T",
+          "count": 1
+        },
+        {
+          "rawcode": "h00K",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 0
+    },
+    {
+      "targetRawcode": "h03R",
+      "fusionAbilities": [
+        "YY08"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01T",
+          "count": 1
+        },
+        {
+          "rawcode": "h021",
+          "count": 1
+        },
+        {
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h03S",
+      "fusionAbilities": [
+        "A005"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02K",
+          "count": 1
+        },
+        {
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "rawcode": "h028",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h03T",
+      "fusionAbilities": [
+        "YY05"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01V",
+          "count": 1
+        },
+        {
+          "rawcode": "h027",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h03U",
+      "fusionAbilities": [
+        "YY04"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h03V",
+      "fusionAbilities": [
+        "IF01"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03G",
+          "count": 1
+        },
+        {
+          "rawcode": "h01O",
+          "count": 1
+        },
+        {
+          "rawcode": "h00O",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h03W",
+      "fusionAbilities": [
+        "YY03"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Z",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h03X",
+      "fusionAbilities": [
+        "YY01"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h024",
+          "count": 1
+        },
+        {
+          "rawcode": "h02C",
+          "count": 1
+        },
+        {
+          "rawcode": "h01C",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h03Y",
+      "fusionAbilities": [
+        "YY16"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02A",
+          "count": 1
+        },
+        {
+          "rawcode": "h02H",
+          "count": 1
+        },
+        {
+          "rawcode": "h015",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h03Z",
+      "fusionAbilities": [
+        "YY15"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01P",
+          "count": 1
+        },
+        {
+          "rawcode": "h01T",
+          "count": 1
+        },
+        {
+          "rawcode": "h01B",
+          "count": 1
+        },
+        {
+          "rawcode": "h012",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h040",
+      "fusionAbilities": [
+        "A0RP"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02B",
+          "count": 1
+        },
+        {
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "rawcode": "h03W",
+          "count": 1
+        },
+        {
+          "rawcode": "h010",
+          "count": 3
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h041",
+      "fusionAbilities": [
+        "YY20"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02B",
+          "count": 1
+        },
+        {
+          "rawcode": "h02E",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Y",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h042",
+      "fusionAbilities": [
+        "A0UG"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h025",
+          "count": 1
+        },
+        {
+          "rawcode": "h021",
+          "count": 1
+        },
+        {
+          "rawcode": "h02J",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h043",
+      "fusionAbilities": [
+        "YY17"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h04H",
+          "count": 1
+        },
+        {
+          "rawcode": "h029",
+          "count": 1
+        },
+        {
+          "rawcode": "h02E",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h044",
+      "fusionAbilities": [
+        "YY02"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02F",
+          "count": 1
+        },
+        {
+          "rawcode": "h025",
+          "count": 1
+        },
+        {
+          "rawcode": "h00D",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h045",
+      "fusionAbilities": [
+        "YY23"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "rawcode": "h01B",
+          "count": 1
+        },
+        {
+          "rawcode": "h016",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h046",
+      "fusionAbilities": [
+        "YY22"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02J",
+          "count": 1
+        },
+        {
+          "rawcode": "h02F",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Y",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h047",
+      "fusionAbilities": [
+        "YY25"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01T",
+          "count": 1
+        },
+        {
+          "rawcode": "h01M",
+          "count": 1
+        },
+        {
+          "rawcode": "h01G",
+          "count": 1
+        },
+        {
+          "rawcode": "h05X",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h048",
+      "fusionAbilities": [
+        "IF02"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02N",
+          "count": 1
+        },
+        {
+          "rawcode": "h04H",
+          "count": 1
+        },
+        {
+          "rawcode": "h010",
+          "count": 1
+        },
+        {
+          "rawcode": "h00N",
+          "count": 1
+        },
+        {
+          "rawcode": "h00J",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h049",
+      "fusionAbilities": [
+        "IM08"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03A",
+          "count": 1
+        },
+        {
+          "rawcode": "h02Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h032",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04A",
+      "fusionAbilities": [
+        "IM09"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03B",
+          "count": 1
+        },
+        {
+          "rawcode": "h02Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h02T",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04B",
+      "fusionAbilities": [
+        "IM02"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h039",
+          "count": 1
+        },
+        {
+          "rawcode": "h034",
+          "count": 1
+        },
+        {
+          "rawcode": "h03F",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04C",
+      "fusionAbilities": [
+        "IM03"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02W",
+          "count": 1
+        },
+        {
+          "rawcode": "h03E",
+          "count": 1
+        },
+        {
+          "rawcode": "h02V",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04D",
+      "fusionAbilities": [
+        "IM04"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02W",
+          "count": 1
+        },
+        {
+          "rawcode": "h030",
+          "count": 1
+        },
+        {
+          "rawcode": "h09Z",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04E",
+      "fusionAbilities": [
+        "IM06"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h036",
+          "count": 1
+        },
+        {
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "rawcode": "h02R",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04F",
+      "fusionAbilities": [
+        "IM07"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "rawcode": "h02S",
+          "count": 1
+        },
+        {
+          "rawcode": "h033",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04G",
+      "fusionAbilities": [
+        "IM10"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03I",
+          "count": 1
+        },
+        {
+          "rawcode": "h02X",
+          "count": 1
+        },
+        {
+          "rawcode": "h037",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04H",
+      "fusionAbilities": [
+        "A02T"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00W",
+          "count": 1
+        },
+        {
+          "rawcode": "h00V",
+          "count": 1
+        },
+        {
+          "rawcode": "h01K",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04J",
+      "fusionAbilities": [
+        "IM01"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02O",
+          "count": 1
+        },
+        {
+          "rawcode": "h036",
+          "count": 1
+        },
+        {
+          "rawcode": "h02V",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04Q",
+      "fusionAbilities": [
+        "IM05"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "rawcode": "h03H",
+          "count": 1
+        },
+        {
+          "rawcode": "h03S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h04U",
+      "fusionAbilities": [
+        "IF04"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02X",
+          "count": 1
+        },
+        {
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "rawcode": "h00S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h055",
+      "fusionAbilities": [
+        "YY13"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "rawcode": "h028",
+          "count": 1
+        },
+        {
+          "rawcode": "h027",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h057",
+      "fusionAbilities": [
+        "ET01"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h05F",
+          "count": 1
+        },
+        {
+          "rawcode": "h05W",
+          "count": 1
+        },
+        {
+          "rawcode": "h01X",
+          "count": 1
+        },
+        {
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "rawcode": "h01G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h058",
+      "fusionAbilities": [
+        "ET08"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h048",
+          "count": 1
+        },
+        {
+          "rawcode": "h043",
+          "count": 1
+        },
+        {
+          "rawcode": "h026",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "count": 2
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h059",
+      "fusionAbilities": [
+        "ET11"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h05V",
+          "count": 1
+        },
+        {
+          "rawcode": "h02T",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h05A",
+      "fusionAbilities": [
+        "ET05"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02P",
+          "count": 1
+        },
+        {
+          "rawcode": "h03Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h029",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "rawcode": "h010",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h05B",
+      "fusionAbilities": [
+        "ET09"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03C",
+          "count": 1
+        },
+        {
+          "rawcode": "h045",
+          "count": 1
+        },
+        {
+          "rawcode": "h03T",
+          "count": 1
+        },
+        {
+          "rawcode": "h00V",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h05C",
+      "fusionAbilities": [
+        "ET06"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h032",
+          "count": 1
+        },
+        {
+          "rawcode": "h047",
+          "count": 1
+        },
+        {
+          "rawcode": "h01X",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h018",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h05E",
+      "fusionAbilities": [
+        "A1A5"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03X",
+          "count": 1
+        },
+        {
+          "rawcode": "h038",
+          "count": 1
+        },
+        {
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h05F",
+      "fusionAbilities": [
+        "A02O"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02H",
+          "count": 1
+        },
+        {
+          "rawcode": "h05W",
+          "count": 1
+        },
+        {
+          "rawcode": "h03Z",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h05G",
+      "fusionAbilities": [
+        "A1A6"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03K",
+          "count": 1
+        },
+        {
+          "rawcode": "h02Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h03O",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h05H",
+      "fusionAbilities": [
+        "SP01"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h05I",
+      "fusionAbilities": [
+        "A007"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03T",
+          "count": 1
+        },
+        {
+          "rawcode": "h037",
+          "count": 1
+        },
+        {
+          "rawcode": "h05S",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h05K",
+      "fusionAbilities": [
+        "A01V"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h010",
+          "count": 1
+        },
+        {
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "rawcode": "h013",
+          "count": 1
+        },
+        {
+          "rawcode": "h01E",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h05L",
+      "fusionAbilities": [
+        "A00X"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h00X",
+          "count": 1
+        },
+        {
+          "rawcode": "h017",
+          "count": 1
+        },
+        {
+          "rawcode": "h00T",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h05O",
+      "fusionAbilities": [
+        "SP04"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h05P",
+      "fusionAbilities": [
+        "SP05"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h05Q",
+      "fusionAbilities": [
+        "SP03"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h05R",
+      "fusionAbilities": [
+        "SP06"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h05S",
+      "fusionAbilities": [
+        "A0K2"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01L",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h05V",
+      "fusionAbilities": [
+        "IF06"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02O",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h012",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h05W",
+      "fusionAbilities": [
+        "A0K4"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01O",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h05X",
+      "fusionAbilities": [
+        "UU01"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h060",
+      "fusionAbilities": [
+        "YY26"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 6
+    },
+    {
+      "targetRawcode": "h065",
+      "fusionAbilities": [
+        "IS03"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h067",
+      "fusionAbilities": [
+        "ET07"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "rawcode": "h02N",
+          "count": 1
+        },
+        {
+          "rawcode": "h03O",
+          "count": 1
+        },
+        {
+          "rawcode": "h05X",
+          "count": 1
+        },
+        {
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "rawcode": "h003",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h06A",
+      "fusionAbilities": [
+        "ET12"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03F",
+          "count": 1
+        },
+        {
+          "rawcode": "h055",
+          "count": 1
+        },
+        {
+          "rawcode": "h03N",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h06T",
+      "fusionAbilities": [
+        "IS13"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h06U",
+      "fusionAbilities": [
+        "IS01"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h06V",
+      "fusionAbilities": [
+        "IS02"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h06W",
+      "fusionAbilities": [
+        "IS08"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h06X",
+      "fusionAbilities": [
+        "IS04"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h06Y",
+      "fusionAbilities": [
+        "IS11"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h06Z",
+      "fusionAbilities": [
+        "IS06"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h070",
+      "fusionAbilities": [
+        "IS09"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h071",
+      "fusionAbilities": [
+        "IS12"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h072",
+      "fusionAbilities": [
+        "IS14"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h073",
+      "fusionAbilities": [
+        "IS05"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h07I",
+      "fusionAbilities": [
+        "A0S0"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03H",
+          "count": 1
+        },
+        {
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "rawcode": "h01X",
+          "count": 1
+        },
+        {
+          "rawcode": "h01C",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h07J",
+      "fusionAbilities": [
+        "A0K7"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h07L",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h07L",
+      "fusionAbilities": [
+        "YY18"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02K",
+          "count": 1
+        },
+        {
+          "rawcode": "h00Q",
+          "count": 1
+        },
+        {
+          "rawcode": "h05X",
+          "count": 1
+        },
+        {
+          "rawcode": "h010",
+          "count": 2
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h07M",
+      "fusionAbilities": [
+        "IM11"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02N",
+          "count": 1
+        },
+        {
+          "rawcode": "h02W",
+          "count": 1
+        },
+        {
+          "rawcode": "h0AH",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h07N",
+      "fusionAbilities": [
+        "A0K3"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02M",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h081",
+      "fusionAbilities": [
+        "IM12"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h039",
+          "count": 1
+        },
+        {
+          "rawcode": "h02V",
+          "count": 1
+        },
+        {
+          "rawcode": "h02U",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h083",
+      "fusionAbilities": [
+        "A10V"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h065",
+          "count": 1
+        },
+        {
+          "rawcode": "h03W",
+          "count": 1
+        },
+        {
+          "rawcode": "h041",
+          "count": 1
+        },
+        {
+          "rawcode": "h0CK",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h084",
+      "fusionAbilities": [
+        "A0UH"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h042",
+          "count": 1
+        },
+        {
+          "rawcode": "h032",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h087",
+      "fusionAbilities": [
+        "A02Q"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01R",
+          "count": 1
+        },
+        {
+          "rawcode": "h05Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h02F",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h08I",
+      "fusionAbilities": [
+        "A19T"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h071",
+          "count": 1
+        },
+        {
+          "rawcode": "h05V",
+          "count": 1
+        },
+        {
+          "rawcode": "h04H",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h08M",
+      "fusionAbilities": [
+        "A1AD"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h06Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h037",
+          "count": 1
+        },
+        {
+          "rawcode": "h055",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h08N",
+      "fusionAbilities": [
+        "SP02"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h08O",
+      "fusionAbilities": [
+        "A011"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02T",
+          "count": 1
+        },
+        {
+          "rawcode": "h03K",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h08Q",
+      "fusionAbilities": [
+        "A18P"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02X",
+          "count": 1
+        },
+        {
+          "rawcode": "h02H",
+          "count": 1
+        },
+        {
+          "rawcode": "h04H",
+          "count": 1
+        },
+        {
+          "rawcode": "h015",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 5
+    },
+    {
+      "targetRawcode": "h08R",
+      "fusionAbilities": [
+        "ET10"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h087",
+          "count": 1
+        },
+        {
+          "rawcode": "h042",
+          "count": 1
+        },
+        {
+          "rawcode": "h046",
+          "count": 1
+        },
+        {
+          "rawcode": "h022",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h08S",
+      "fusionAbilities": [
+        "A113"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02C",
+          "count": 1
+        },
+        {
+          "rawcode": "h01O",
+          "count": 1
+        },
+        {
+          "rawcode": "h05X",
+          "count": 1
+        },
+        {
+          "rawcode": "h010",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h09K",
+      "fusionAbilities": [
+        "IS07"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h09L",
+      "fusionAbilities": [
+        "IS10"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h09M",
+      "fusionAbilities": [
+        "A19W"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h06U",
+          "count": 1
+        },
+        {
+          "rawcode": "h03V",
+          "count": 1
+        },
+        {
+          "rawcode": "h03Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h027",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h09N",
+      "fusionAbilities": [
+        "A0XT"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h09L",
+          "count": 1
+        },
+        {
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "rawcode": "h07N",
+          "count": 1
+        },
+        {
+          "rawcode": "h03L",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h09R",
+      "fusionAbilities": [
+        "A0Y6"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h06Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h087",
+          "count": 1
+        },
+        {
+          "rawcode": "h036",
+          "count": 1
+        },
+        {
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h09T",
+      "fusionAbilities": [
+        "SP07"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h09V",
+      "fusionAbilities": [
+        "IF05"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03M",
+          "count": 1
+        },
+        {
+          "rawcode": "h01V",
+          "count": 1
+        },
+        {
+          "rawcode": "h00A",
+          "count": 1
+        },
+        {
+          "rawcode": "h00F",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h09W",
+      "fusionAbilities": [
+        "A0Y3"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h06V",
+          "count": 1
+        },
+        {
+          "rawcode": "h042",
+          "count": 1
+        },
+        {
+          "rawcode": "h07J",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h09X",
+      "fusionAbilities": [
+        "A0XP"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h01K",
+          "count": 1
+        },
+        {
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "rawcode": "h011",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h09Y",
+      "fusionAbilities": [
+        "SPH1"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h032",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h09Z",
+      "fusionAbilities": [
+        "A0XS"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "rawcode": "h024",
+          "count": 1
+        },
+        {
+          "rawcode": "h09X",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h0A0",
+      "fusionAbilities": [
+        "SPH3"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h0A1",
+      "fusionAbilities": [
+        "SPH4"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h030",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h0A2",
+      "fusionAbilities": [
+        "A0Y9"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h070",
+          "count": 1
+        },
+        {
+          "rawcode": "h03J",
+          "count": 1
+        },
+        {
+          "rawcode": "h044",
+          "count": 1
+        },
+        {
+          "rawcode": "h02P",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h0A3",
+      "fusionAbilities": [
+        "SPH2"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h043",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h0A6",
+      "fusionAbilities": [
+        "A19S"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h073",
+          "count": 1
+        },
+        {
+          "rawcode": "h048",
+          "count": 1
+        },
+        {
+          "rawcode": "h017",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h0AC",
+      "fusionAbilities": [
+        "A19U"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h06X",
+          "count": 1
+        },
+        {
+          "rawcode": "h09Z",
+          "count": 1
+        },
+        {
+          "rawcode": "h029",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h0AH",
+      "fusionAbilities": [
+        "A108"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h09X",
+          "count": 1
+        },
+        {
+          "rawcode": "h01U",
+          "count": 1
+        },
+        {
+          "rawcode": "h01L",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h0AI",
+      "fusionAbilities": [
+        "A10A"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h0AH",
+          "count": 1
+        },
+        {
+          "rawcode": "h02U",
+          "count": 1
+        },
+        {
+          "rawcode": "h05Y",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h0BC",
+      "fusionAbilities": [
+        "A12C"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h06W",
+          "count": 1
+        },
+        {
+          "rawcode": "h0AH",
+          "count": 1
+        },
+        {
+          "rawcode": "h030",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h0BF",
+      "fusionAbilities": [
+        "A0YK"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h072",
+          "count": 1
+        },
+        {
+          "rawcode": "h02R",
+          "count": 1
+        },
+        {
+          "rawcode": "h03T",
+          "count": 1
+        },
+        {
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h0BG",
+      "fusionAbilities": [
+        "SP08"
+      ],
+      "refundUnits": [],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h0C2",
+      "fusionAbilities": [
+        "A0QG"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h06T",
+          "count": 1
+        },
+        {
+          "rawcode": "h02Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h03Y",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h0CC",
+      "fusionAbilities": [
+        "A19V"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h09K",
+          "count": 1
+        },
+        {
+          "rawcode": "h03I",
+          "count": 1
+        },
+        {
+          "rawcode": "h05W",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 4
+    },
+    {
+      "targetRawcode": "h0CI",
+      "fusionAbilities": [
+        "IF03"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h0AH",
+          "count": 1
+        },
+        {
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "rawcode": "h00L",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 1
+    },
+    {
+      "targetRawcode": "h0CJ",
+      "fusionAbilities": [
+        "ET04"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h03C",
+          "count": 1
+        },
+        {
+          "rawcode": "h03J",
+          "count": 1
+        },
+        {
+          "rawcode": "h044",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    },
+    {
+      "targetRawcode": "h0CK",
+      "fusionAbilities": [
+        "A0K6"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h023",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 2
+    },
+    {
+      "targetRawcode": "h0CM",
+      "fusionAbilities": [
+        "A1CC"
+      ],
+      "refundUnits": [
+        {
+          "rawcode": "h02M",
+          "count": 1
+        },
+        {
+          "rawcode": "h01P",
+          "count": 1
+        },
+        {
+          "rawcode": "h01N",
+          "count": 1
+        }
+      ],
+      "ignoredNonUnitConditions": 3
+    }
+  ],
+  "semantics": {
+    "targetMustPassCJZOwnershipAndAbilityCheck": true,
+    "onlyBgiUnitConditionsAreRefunded": true,
+    "preserveR3AndBgiRegistrationOrder": true,
+    "creationPosition": "player start location",
+    "createdUnitOrder": "holdposition",
+    "undeadCreatedUnitAbility": "A07Y",
+    "missingR3RecipeConsumesTargetWithoutRefund": true,
+    "includesTargetConsumptionAndManaTransaction": false
+  }
+}

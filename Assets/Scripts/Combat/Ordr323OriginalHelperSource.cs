@@ -20,6 +20,7 @@ namespace Ordr.Mobile.Combat
         // already resolved the ability's inherited mana cost and readiness.
         public const double ManaPotionGain = 300.0;
         public const int ManaPotionCharges = 3;
+        public const string HighestHelpResearchRawcode = "R037";
         public const string CastSourceSha256 =
             "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda";
 
@@ -88,6 +89,10 @@ namespace Ordr.Mobile.Combat
         public double CurrentMana { get; private set; }
         public double MaximumMana => Ordr323OriginalHelperSource.MaximumMana;
         public bool MaximumOutputNavigationChosen { get; private set; }
+        public bool AlchemyNavigationChosen { get; private set; }
+        // CKS(1) researches R037 for the owning PLAYER, in addition to
+        // leveling helper skills. Keep this visible to later tech checks.
+        public int HighestHelpResearchLevel { get; private set; }
         public int ManaPotionChargesRemaining =>
             GetAbilityLevel("A0UY") == 0 ? 0 :
             Ordr323OriginalHelperSource.ManaPotionCharges - GetAbilityLevel("A0UY") + 1;
@@ -115,7 +120,7 @@ namespace Ordr.Mobile.Combat
         // Round/unselected checks belong to the session navigation service.
         internal void ApplyVerifiedMaximumOutputNavigation()
         {
-            if (!IsAlive || MaximumOutputNavigationChosen)
+            if (!IsAlive || MaximumOutputNavigationChosen || AlchemyNavigationChosen)
                 throw new InvalidOperationException("도움소 최대출력 항법 중복 또는 대상 부재");
             foreach (string rawcode in new[] { "A0BZ", "A0BY", "A07T", "A07X", "A07W" })
             {
@@ -127,7 +132,20 @@ namespace Ordr.Mobile.Combat
             foreach (string rawcode in new[] { "A0BZ", "A0BY", "A07T", "A07X", "A07W" })
                 levels[rawcode] = 2;
             levels["A0UY"] = 1;
+            HighestHelpResearchLevel = 1;
             MaximumOutputNavigationChosen = true;
+        }
+
+        // CKS(2, player) grants A0J2 and researches R037. Unlike CKS(1),
+        // none of the five attack/area skills are upgraded and A0UY is absent.
+        internal void ApplyVerifiedAlchemyNavigation()
+        {
+            if (!IsAlive || MaximumOutputNavigationChosen || AlchemyNavigationChosen ||
+                GetAbilityLevel(Ordr323OriginalHelperAlchemy.AbilityRawcode) != 0)
+                throw new InvalidOperationException("연금술 항법을 중복 또는 다른 항법과 함께 선택할 수 없습니다.");
+            levels[Ordr323OriginalHelperAlchemy.AbilityRawcode] = 1;
+            HighestHelpResearchLevel = 1;
+            AlchemyNavigationChosen = true;
         }
 
         // Called ONLY after the host has committed an authentic A0UY cast,

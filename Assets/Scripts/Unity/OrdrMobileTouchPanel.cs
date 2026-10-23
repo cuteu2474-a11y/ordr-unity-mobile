@@ -38,6 +38,7 @@ namespace Ordr.Mobile.Unity
         private string pendingChoiceRawcode;
         private bool pendingHelperRecharge;
         private bool pendingMaximumOutput;
+        private bool pendingAlchemy;
         private bool showOriginalJassRecipes;
         private IReadOnlyList<JassFusionReadiness> originalJassPreview =
             new List<JassFusionReadiness>().AsReadOnly();
@@ -81,6 +82,7 @@ namespace Ordr.Mobile.Unity
             pendingChoiceRawcode = null;
             pendingHelperRecharge = false;
             pendingMaximumOutput = false;
+            pendingAlchemy = false;
             pendingCommonSaleId = null;
             notice = "";
             RefreshCurrent();
@@ -94,6 +96,7 @@ namespace Ordr.Mobile.Unity
             pendingChoiceRawcode = null;
             pendingHelperRecharge = false;
             pendingMaximumOutput = false;
+            pendingAlchemy = false;
             pendingCommonSaleId = null;
         }
 
@@ -630,12 +633,12 @@ namespace Ordr.Mobile.Unity
                     GUILayout.Label("항법은 21라운드부터 단 한 번 선택합니다.");
                     bool wasEnabled = GUI.enabled;
                     GUI.enabled = wasEnabled && navigation.CanChooseMaximumOutput;
-                    if (!pendingMaximumOutput)
+                    if (!pendingMaximumOutput && !pendingAlchemy)
                     {
                         if (GUILayout.Button("최고의도움: 최대출력 선택", GUILayout.MinHeight(48)))
                             pendingMaximumOutput = true;
                     }
-                    else
+                    else if (pendingMaximumOutput)
                     {
                         GUILayout.Label("이 항법을 선택하면 다른 항법을 선택할 수 없습니다.");
                         if (GUILayout.Button("최대출력 항법 확정", GUILayout.MinHeight(48)))
@@ -648,6 +651,35 @@ namespace Ordr.Mobile.Unity
                     GUI.enabled = wasEnabled;
                     if (pendingMaximumOutput && GUILayout.Button("항법 선택 취소", GUILayout.MinHeight(40)))
                         pendingMaximumOutput = false;
+                    GUI.enabled = wasEnabled && navigation.CanChooseAlchemy;
+                    if (!pendingMaximumOutput && !pendingAlchemy)
+                    {
+                        if (GUILayout.Button("최고의도움: 연금술 선택", GUILayout.MinHeight(48)))
+                            pendingAlchemy = true;
+                    }
+                    else if (pendingAlchemy)
+                    {
+                        GUILayout.Label("연금술 항법을 선택하면 최대출력을 선택할 수 없습니다.");
+                        if (GUILayout.Button("연금술 항법 확정", GUILayout.MinHeight(48)))
+                        {
+                            notice = controller.ChooseOriginal323Alchemy()
+                                ? "연금술 항법 선택 완료 (시전 대상 연동은 검증 대기 중)"
+                                : "항법 선택 조건을 확인해 주세요.";
+                            pendingAlchemy = false;
+                        }
+                    }
+                    GUI.enabled = wasEnabled;
+                    if (pendingAlchemy && GUILayout.Button("항법 선택 취소", GUILayout.MinHeight(40)))
+                        pendingAlchemy = false;
+                }
+                if (helper.AlchemyNavigationChosen)
+                {
+                    GUILayout.Label("연금술 A0J2 · 마나 100 · 쿨타임 5초 · 사거리 99999");
+                    GUILayout.Label(controller.OriginalAlchemyRefunds != null
+                        ? "원본 CJY 유닛별 환급표 " +
+                          controller.OriginalAlchemyRefunds.Count + "종 검증됨"
+                        : "원본 연금술 환급표 불러오기 대기");
+                    GUILayout.Label("유닛 선택·소비·마나 차감의 원자적 연결 전까지 시전 불가");
                 }
                 if (helper.ManaPotionChargesRemaining > 0)
                 {

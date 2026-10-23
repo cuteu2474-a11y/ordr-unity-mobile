@@ -19,6 +19,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset verifiedFusionRecipesJson;
         [SerializeField] private TextAsset otherworldMysticFusionRecipesJson;
         [SerializeField] private TextAsset originalJassFusionRegistryJson;
+        [SerializeField] private TextAsset originalHelperAlchemyRecipesJson;
         [SerializeField] private TextAsset originalUnitRawcodeLabelsJson;
         [SerializeField] private TextAsset verifiedMonsterWavesJson;
         [SerializeField] private TextAsset originalWispPoolsJson;
@@ -33,6 +34,7 @@ namespace Ordr.Mobile.Unity
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
         public OtherworldMysticFusionCatalog OtherworldMysticFusions { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
+        public Ordr323OriginalAlchemyRefundCatalog OriginalAlchemyRefunds { get; private set; }
         public OriginalUnitRawcodeLabelCatalog OriginalUnitRawcodes { get; private set; }
         public Original323VerifiedMonsterWaveCatalog VerifiedMonsterWaves { get; private set; }
         public CombatWaveDirector VerifiedWaveDirector { get; } = new CombatWaveDirector();
@@ -77,6 +79,12 @@ namespace Ordr.Mobile.Unity
         {
             return Original323HelperNavigation != null &&
                 Original323HelperNavigation.TryChooseMaximumOutput();
+        }
+
+        public bool ChooseOriginal323Alchemy()
+        {
+            return Original323HelperNavigation != null &&
+                Original323HelperNavigation.TryChooseAlchemy();
         }
 
         // This is intentionally not supplied by default: A0UY's SLK does
@@ -501,6 +509,12 @@ namespace Ordr.Mobile.Unity
                     Resources.Load<TextAsset>("OrdrData/original-jass-fusion-registry");
                 if (originalJassData != null)
                     OriginalJassFusions = OriginalJassFusionCatalog.FromJson(originalJassData.text);
+                var alchemyData = originalHelperAlchemyRecipesJson != null ?
+                    originalHelperAlchemyRecipesJson :
+                    Resources.Load<TextAsset>("OrdrData/original-2323C-helper-alchemy-recipes");
+                if (alchemyData != null)
+                    OriginalAlchemyRefunds = Ordr323OriginalAlchemyRefundCatalog.FromJson(
+                        alchemyData.text);
                 var labelsData = originalUnitRawcodeLabelsJson != null ?
                     originalUnitRawcodeLabelsJson :
                     Resources.Load<TextAsset>("OrdrData/original-unit-rawcode-label-links");

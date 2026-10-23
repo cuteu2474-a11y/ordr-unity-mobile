@@ -82,7 +82,36 @@
       "A07X",
       "A07W"
     ],
-    "newAbility": "A0UY"
+    "newAbility": "A0UY",
+    "playerTechResearched": "R037"
+  },
+  "alchemyNavigation": {
+    "choiceJass": "CKX -> CKS(2, player)",
+    "newAbility": "A0J2",
+    "playerTechResearched": "R037",
+    "abilityBase": "ANcl",
+    "manaCost": 100,
+    "cooldownSeconds": 5,
+    "castRange": 99999,
+    "targetPreflightJass": "CJZ",
+    "targetOwnerMustEqualCaster": true,
+    "targetAbilityAnyPositive": [
+      "A0BA",
+      "A0B9"
+    ],
+    "targetRawcodeExceptions": [
+      "h01C",
+      "h015"
+    ],
+    "targetConsumptionJass": "BdD",
+    "ingredientRefundJass": "CJY",
+    "dynamicRefundTables": [
+      "R3",
+      "Wb",
+      "Wq",
+      "Wr",
+      "Ws"
+    ]
   },
   "manaPotion": {
     "rawcode": "A0UY",
@@ -146,6 +175,7 @@
     "originalTargetImmunity": true,
     "originalDamageAfterDefense": true,
     "a04rEngineFormula": true,
-    "manaPotionInheritedManaCosts": true
+    "manaPotionInheritedManaCosts": true,
+    "alchemyUnitConsumptionTransaction": true
   }
 }
