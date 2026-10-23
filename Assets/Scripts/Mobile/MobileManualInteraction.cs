@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Combat;
+using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Mobile
 {
@@ -140,7 +141,15 @@ namespace Ordr.Mobile.Mobile
         private IOriginalStoryDispatchPort story;
         private IOriginalFusionPort fusion;
         private IOriginalEconomyPort economy;
+        private OriginalRandomWispResourceExchange resourceWispExchange;
         private IOriginalCommonSalePort commonSale;
+
+        public void ConfigureRandomWispResourceExchange(
+            OriginalRandomWispResourceExchange verifiedExchange)
+        {
+            resourceWispExchange = verifiedExchange ??
+                throw new ArgumentNullException(nameof(verifiedExchange));
+        }
 
         public bool HasOriginalCommonSaleService { get { return commonSale != null; } }
         public void ConfigureOriginalCommonSale(IOriginalCommonSalePort verifiedSale)
@@ -191,7 +200,7 @@ namespace Ordr.Mobile.Mobile
                 return true;
             }
         }
-        public bool HasEconomyService { get { return economy != null; } }
+        public bool HasEconomyService { get { return economy != null || resourceWispExchange != null; } }
 
         public void Configure(IOriginalStoryDispatchPort originalStory,
             IOriginalFusionPort originalFusion, IOriginalEconomyPort originalEconomy)
@@ -256,9 +265,24 @@ namespace Ordr.Mobile.Mobile
         {
             if (!Enum.IsDefined(typeof(ManualEconomyCategory), category))
                 throw new ArgumentOutOfRangeException(nameof(category));
-            if (economy == null) return new List<MobileManualOffer>().AsReadOnly();
-            var options = economy.AvailableOffers(category);
-            return options ?? new List<MobileManualOffer>().AsReadOnly();
+
+            var combined = new List<MobileManualOffer>();
+            // Existing original shop/gambling and other Wisp offers stay intact.
+            var others = economy == null ? null : economy.AvailableOffers(category);
+            if (others != null)
+                foreach (var offer in others)
+                {
+                    if (offer == null) continue;
+                    // Reserved ID must always route to the source-backed action.
+                    if (category == ManualEconomyCategory.Wisp &&
+                        offer.Id == OriginalRandomWispResourceExchange.OfferId) continue;
+                    combined.Add(offer);
+                }
+            if (category == ManualEconomyCategory.Wisp && resourceWispExchange != null)
+                combined.Insert(0, new MobileManualOffer(
+                    OriginalRandomWispResourceExchange.OfferId, "랜덤위습: 골드·목재 추첨",
+                    "랜덤위습 1개 | 목재 1개 67% / 현재 라운드 × 75골드 33%"));
+            return combined.AsReadOnly();
         }
 
         public ManualActionResult RequestEconomyAction(ManualEconomyCategory category, string offerId)
@@ -267,6 +291,30 @@ namespace Ordr.Mobile.Mobile
                 throw new ArgumentOutOfRangeException(nameof(category));
             if (string.IsNullOrWhiteSpace(offerId))
                 return new ManualActionResult(ManualActionState.Rejected, "실행할 항목을 선택해 주세요.");
+
+            if (category == ManualEconomyCategory.Wisp &&
+                offerId == OriginalRandomWispResourceExchange.OfferId)
+            {
+                if (resourceWispExchange == null)
+                    return ManualActionResult.Unavailable("랜덤위습 자원 추첨");
+                try
+                {
+                    OriginalRandomWispExchangeOutcome reward = resourceWispExchange.SpendOne();
+                    if (reward == null)
+                        return new ManualActionResult(ManualActionState.Rejected,
+                            "진행 라운드가 시작되지 않았거나 랜덤위습이 부족합니다.");
+                    return new ManualActionResult(ManualActionState.Succeeded,
+                        reward.RewardResourceId == "wood"
+                            ? "목재 " + reward.RewardAmount + "개 획득"
+                            : "골드 " + reward.RewardAmount + " 획득");
+                }
+                catch (Exception)
+                {
+                    // Wallet.TryExchange is atomic: no partial Wisp spend.
+                    return new ManualActionResult(ManualActionState.Rejected,
+                        "자원 추첨을 완료할 수 없습니다. 원본 거래나 난수 상태를 확인하세요.");
+                }
+            }
             if (economy == null) return ManualActionResult.Unavailable(category.ToString());
             return economy.Confirm(category, offerId) ??
                 new ManualActionResult(ManualActionState.Rejected, "실행 결과를 확인하지 못했습니다.");

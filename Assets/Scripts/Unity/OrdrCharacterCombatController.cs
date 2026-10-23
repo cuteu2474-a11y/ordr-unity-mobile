@@ -50,6 +50,19 @@ namespace Ordr.Mobile.Unity
             DedicatedSkills.Configure(originalWorld);
         }
         public SharedEconomySession SharedEconomy { get; private set; }
+        public OriginalRandomWispResourceExchange RandomWispExchange { get; private set; }
+
+        // Optional source-compatible RNG. Default mobile RNG preserves the
+        // original probabilities, not the exact Warcraft random sequence.
+        private IOriginalWispRandom randomWispResourceRng;
+
+        public void ConfigureRandomWispResourceRng(IOriginalWispRandom verifiedRandom)
+        {
+            if (Combat != null)
+                throw new InvalidOperationException("위습 난수는 경제 월드 생성 전에 연결하세요.");
+            randomWispResourceRng = verifiedRandom ??
+                throw new ArgumentNullException(nameof(verifiedRandom));
+        }
         public MobileWispService Wisps { get; private set; }
         private IVerifiedChoiceWispMergeWorld choiceWispWorld;
         private VerifiedEconomyStartProfile verifiedStartingProfile;
@@ -449,6 +462,10 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            RandomWispExchange = new OriginalRandomWispResourceExchange(
+                SharedEconomy.Wallet, world.Game,
+                randomWispResourceRng ?? new MobileUniformWispRandom());
+            ManualActions.ConfigureRandomWispResourceExchange(RandomWispExchange);
             Combat.ConfigureOtamaWoodWallet(SharedEconomy.Wallet);
             Combat.ConfigureVerifiedUnitAttackProvider(verifiedUnitAttackSource);
             if (MapBaseStats != null)

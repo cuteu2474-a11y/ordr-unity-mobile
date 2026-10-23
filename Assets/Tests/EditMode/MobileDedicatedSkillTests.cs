@@ -69,6 +69,10 @@ namespace Ordr.Mobile.Tests
             Assert.Less(layout.Battle.height + layout.SkillMargin.height +
                 layout.Story.height, safe.height * 0.78f);
             Assert.Greater(layout.RightDrawer.width, layout.Battle.width * 0.80f);
+            Assert.Greater(layout.StatusMargin.height, 18f);
+            Assert.GreaterOrEqual(layout.StatusMargin.yMin, layout.Story.yMax);
+            Assert.LessOrEqual(layout.StatusMargin.yMax, screenHeight + 0.01f);
+            Assert.Less(layout.StatusMargin.xMax, layout.RightDrawer.xMin);
             Assert.LessOrEqual(layout.RightDrawer.yMax, screenHeight + 0.01f);
             var viewport = layout.MainCameraViewport(safe.xMax + (screenHeight - safe.yMax), screenHeight);
             Assert.Greater(viewport.height, 0f);

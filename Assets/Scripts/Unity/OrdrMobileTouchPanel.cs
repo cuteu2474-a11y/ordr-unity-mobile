@@ -112,7 +112,34 @@ namespace Ordr.Mobile.Unity
             // The horizontal dedicated-skill ribbon stays accessible between
             // the main and small story battlefields while a menu is open.
             DrawDedicatedSkillMargin(safe, scale);
+            DrawEconomyStatus(layout, scale);
             GUI.matrix = previous;
+        }
+
+        private void DrawEconomyStatus(MobileMapSkillLayout layout, float scale)
+        {
+            Rect area = MobileMapSkillLayout.Scaled(layout.StatusMargin, scale);
+            if (area.height < 22f) return;
+            GUILayout.BeginArea(area, GUI.skin.box);
+            var economy = controller.SharedEconomy;
+            if (economy == null)
+                GUILayout.Label("골드·목재·위습: 게임 경제 연결 대기");
+            else
+            {
+                GUILayout.Label("골드 " + economy.Wallet.Balance("gold") +
+                    "   목재 " + economy.Wallet.Balance("wood") +
+                    "   랜덤위습 " + economy.Wallet.Balance(WispResourceIds.Random));
+                if (area.height >= 45f)
+                {
+                    var game = Combat == null ? null : Combat.Game;
+                    GUILayout.Label(game == null
+                        ? "진행 라운드: 대기"
+                        : "라운드 " + game.CurrentWave +
+                          "   진행 상태 " + game.Phase +
+                          "   필드 적 " + game.AliveEnemies);
+                }
+            }
+            GUILayout.EndArea();
         }
 
         private void DrawLeftTabs(MobileMapSkillLayout layout, float scale)

@@ -11,6 +11,7 @@ namespace Ordr.Mobile.Unity
         public Rect Battle { get; private set; }
         public Rect SkillMargin { get; private set; }
         public Rect Story { get; private set; }
+        public Rect StatusMargin { get; private set; }
         public Rect LeftTabs { get; private set; }
         public Rect RightDrawer { get; private set; }
         public float HeaderHeight { get; private set; }
@@ -74,6 +75,8 @@ namespace Ordr.Mobile.Unity
                 Battle = new Rect(mapLeft, mapTop, mapWidth, battleHeight),
                 SkillMargin = new Rect(mapLeft, ribbonTop, mapWidth, ribbonHeight),
                 Story = new Rect(mapLeft, storyTop, mapWidth, storyHeight),
+                StatusMargin = new Rect(mapLeft, storyTop + storyHeight + gap,
+                    mapWidth, available - playableHeight - gap),
                 // Right-side content retains the full available height even
                 // though the battlefields themselves have become smaller.
                 RightDrawer = new Rect(mapLeft + mapWidth + gap,
