@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Ordr.Mobile.Core;
 using Ordr.Mobile.Combat;
 using Ordr.Mobile.Data;
 using Ordr.Mobile.Mobile;
@@ -38,6 +39,17 @@ namespace Ordr.Mobile.Unity
         public CharacterCombatRuntime Combat { get; private set; }
 
         public MobileManualInteraction ManualActions { get; } = new MobileManualInteraction();
+        public SharedEconomySession SharedEconomy { get; private set; }
+        private VerifiedEconomyStartProfile verifiedStartingProfile;
+
+        public void ConfigureVerifiedStartingEconomy(VerifiedEconomyStartProfile profile)
+        {
+            if (profile == null || !profile.IsSourceVerified)
+                throw new ArgumentException("원본 검증된 시작 경제 프로필이 필요합니다.");
+            if (Combat != null && Combat.Game.Phase != SessionPhase.NotStarted)
+                throw new InvalidOperationException("게임 시작 후 시작 재화 설정을 바꿀 수 없습니다.");
+            verifiedStartingProfile = profile;
+        }
 
         private IOriginalPlacementRules placementRules;
         private IOriginalBossFocusRules bossFocusRules;
@@ -351,7 +363,11 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("전투 데이터와 원본 계산기가 필요합니다.");
             if (Combat != null)
                 throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
+            if (SharedEconomy != null)
+                throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
+            SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            Combat.ConfigureOtamaWoodWallet(SharedEconomy.Wallet);
             Combat.ConfigureVerifiedUnitAttackProvider(verifiedUnitAttackSource);
             if (MapBaseStats != null)
                 Combat.ConfigureOriginalMapCommonAttackPreview(MapBaseStats);
@@ -392,6 +408,12 @@ namespace Ordr.Mobile.Unity
         {
             if (Combat == null)
                 throw new InvalidOperationException("원작 피해 공식 구현체 연결이 필요합니다.");
+            if (SharedEconomy == null || verifiedStartingProfile == null ||
+                !verifiedStartingProfile.IsSourceVerified)
+                throw new InvalidOperationException(
+                    "원본 악몽 이세계 시작 재화·유닛 프로필 검증 전에는 세션을 시작하지 않습니다.");
+            SharedEconomy.ApplyVerifiedStart(verifiedStartingProfile,
+                Combat.SpawnCharacter, Combat.RemoveCharacter);
             Combat.Start();
         }
 
@@ -409,9 +431,11 @@ namespace Ordr.Mobile.Unity
 
         public void ConfigureOtamaWoodRewards(Ordr.Mobile.Core.EconomyWallet sharedWallet)
         {
-            if (Combat == null)
-                throw new InvalidOperationException("전투 런타임이 없습니다.");
-            Combat.ConfigureOtamaWoodWallet(sharedWallet);
+            if (Combat == null || SharedEconomy == null ||
+                !ReferenceEquals(sharedWallet, SharedEconomy.Wallet))
+                throw new InvalidOperationException(
+                    "오타마 목재 보상은 공유 세션 지갑만 사용할 수 있습니다.");
+            Combat.ConfigureOtamaWoodWallet(SharedEconomy.Wallet);
         }
 
         public void ConfigureSpecialGradeMobileServices(ISpecialGradeLawCastService law,

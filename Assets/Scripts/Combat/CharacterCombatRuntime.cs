@@ -48,7 +48,7 @@ namespace Ordr.Mobile.Combat
 
         private readonly CharacterUnitCatalog units;
         private readonly CharacterSkillCatalog profiles;
-        private readonly UnitRoster roster = new UnitRoster();
+        private readonly UnitRoster roster;
         private readonly GameSession game = new GameSession();
         private readonly CombatScheduler scheduler = new CombatScheduler();
         private readonly CombatSkillTriggerEngine triggers;
@@ -513,7 +513,15 @@ namespace Ordr.Mobile.Combat
             IOriginalDamageResolver verifiedBasicDamage,
             IVerifiedCharacterSkillDamageResolver verifiedSkillDamage,
             ICombatProcRandom random)
+            : this(units, profiles, verifiedBasicDamage, verifiedSkillDamage, random,
+                new UnitRoster()) { }
+
+        public CharacterCombatRuntime(CharacterUnitCatalog units, CharacterSkillCatalog profiles,
+            IOriginalDamageResolver verifiedBasicDamage,
+            IVerifiedCharacterSkillDamageResolver verifiedSkillDamage,
+            ICombatProcRandom random, UnitRoster sharedRoster)
         {
+            roster = sharedRoster ?? throw new ArgumentNullException(nameof(sharedRoster));
             this.units = units ?? throw new ArgumentNullException(nameof(units));
             this.profiles = profiles ?? throw new ArgumentNullException(nameof(profiles));
             if (random == null) throw new ArgumentNullException(nameof(random));
