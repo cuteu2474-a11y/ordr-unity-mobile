@@ -1,0 +1,119 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "A0BZ": {
+    "function": "CJb",
+    "native": "UnitDamagePointLoc",
+    "radius": 450,
+    "explicitEnemyFilter": false,
+    "allNativeVictimsModeled": false,
+    "mustVerifyNativeVictimCoverage": true
+  },
+  "A07T": {
+    "function": "CJi",
+    "targetPredicate": "CJf: IsUnitEnemy(GetFilterUnit(),GetOwningPlayer(GetTriggerUnit()))",
+    "radius": 625,
+    "callbacks": [
+      "CJg",
+      "CJh"
+    ],
+    "A04RLevelIncrease": [
+      5,
+      8
+    ]
+  },
+  "sharedA04R": {
+    "function": "Bd8",
+    "numberOfCallSites": 17,
+    "outsideHelperCallSites": 15,
+    "callSites": [
+      {
+        "function": "Bqv",
+        "line": 16714,
+        "levelIncrease": 1
+      },
+      {
+        "function": "BsT",
+        "line": 17870,
+        "levelIncrease": 1
+      },
+      {
+        "function": "Bss",
+        "line": 18230,
+        "levelIncrease": 8
+      },
+      {
+        "function": "Bxr",
+        "line": 23364,
+        "levelIncrease": 2
+      },
+      {
+        "function": "BzO",
+        "line": 24993,
+        "levelIncrease": 10
+      },
+      {
+        "function": "Bzq",
+        "line": 25522,
+        "levelIncrease": 10
+      },
+      {
+        "function": "B6c",
+        "line": 34680,
+        "levelIncrease": 1
+      },
+      {
+        "function": "B6g",
+        "line": 34737,
+        "levelIncrease": 1
+      },
+      {
+        "function": "B6i",
+        "line": 34807,
+        "levelIncrease": 1
+      },
+      {
+        "function": "B9o",
+        "line": 38289,
+        "levelIncrease": 15
+      },
+      {
+        "function": "B9r",
+        "line": 38420,
+        "levelIncrease": 1
+      },
+      {
+        "function": "CCg",
+        "line": 41827,
+        "levelIncrease": 15
+      },
+      {
+        "function": "CCy",
+        "line": 42055,
+        "levelIncrease": 10
+      },
+      {
+        "function": "CEX",
+        "line": 43436,
+        "levelIncrease": 3
+      },
+      {
+        "function": "CGr",
+        "line": 47069,
+        "levelIncrease": 1
+      },
+      {
+        "function": "CJg",
+        "line": 49731,
+        "levelIncrease": 5
+      },
+      {
+        "function": "CJh",
+        "line": 49735,
+        "levelIncrease": 8
+      }
+    ],
+    "warcraftIsr2EffectFormulaVerified": false
+  }
+}

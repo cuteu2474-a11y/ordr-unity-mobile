@@ -70,6 +70,19 @@ namespace Ordr.Mobile.Combat
             long originalDamage, out long verifiedDamage);
     }
 
+    // CJb uses native UnitDamagePointLoc without CJf's enemy-only filter.
+    // The combat runtime models enemy HP but does NOT yet model damage to
+    // allied/neutral/structure units. A source-verified world must establish
+    // that every unit the native could actually damage is represented in
+    // the prepared hit list, or prove the omitted unit is unaffected.
+    // A07T instead uses CJf/IsUnitEnemy and does not call this native.
+    public interface IOriginalHelperCowPointDamageCoverage
+    {
+        bool CoversEveryOriginalPointDamageVictim(double centerX,
+            double centerY, double radius,
+            IReadOnlyList<string> modeledVictimIds);
+    }
+
     // Immutable, preflighted hit command that the SAME combat world will
     // resolve through CombatResolution so wave kills and events stay coherent.
     public sealed class OriginalHelperCowResolvedHit
@@ -184,12 +197,11 @@ namespace Ordr.Mobile.Combat
 
         private bool CanHit(string ability, MobileEnemySnapshot snapshot)
         {
-            if (snapshot == null ||
-                (snapshot.Kind != CharacterEnemyKind.Line &&
-                 snapshot.Kind != CharacterEnemyKind.Boss &&
-                 snapshot.Kind != CharacterEnemyKind.Enraged))
-                return false;
+            if (snapshot == null) return false;
             CombatEnemy live = combat.EnemyOf(snapshot.Id);
+            // CJf (A07T) checks actual owning-player allegiance, not our
+            // mobile lane enum. The verified adapter must inspect ownership,
+            // invulnerability and other native damage eligibility.
             return live != null && live.IsAlive &&
                 damage.CanHit(ability, snapshot, live);
         }
@@ -208,9 +220,28 @@ namespace Ordr.Mobile.Combat
             if (!Finite(x) || !Finite(y) ||
                 !TryReady(ability, cow, out verified)) return false;
             double dx = x - cow.X, dy = y - cow.Y;
-            return dx * dx + dy * dy <=
-                verified.CastRange * verified.CastRange + 0.00001 &&
-                damage.CanCastPoint(ability, x, y);
+            if (dx * dx + dy * dy >
+                verified.CastRange * verified.CastRange + 0.00001 ||
+                !damage.CanCastPoint(ability, x, y)) return false;
+            if (ability == OriginalHelperCowAreaEvidence.PointDamageAbility)
+            {
+                // Do not silently turn the original all-unit point-damage
+                // native into an enemy-only spell.
+                var coverage = damage as IOriginalHelperCowPointDamageCoverage;
+                if (coverage == null) return false;
+                double radius = OriginalHelperCowAreaEvidence.PointDamageRadius;
+                var included = new List<string>();
+                foreach (var enemy in combat.MobileEnemySnapshot())
+                {
+                    double vx = enemy.X - x, vy = enemy.Y - y;
+                    if (vx * vx + vy * vy <= radius * radius + 0.00001 &&
+                        CanHit(ability, enemy))
+                        included.Add(enemy.Id);
+                }
+                if (!coverage.CoversEveryOriginalPointDamageVictim(
+                    x, y, radius, included.AsReadOnly())) return false;
+            }
+            return true;
         }
 
         public bool TryCommitCast(string ability, double x, double y)

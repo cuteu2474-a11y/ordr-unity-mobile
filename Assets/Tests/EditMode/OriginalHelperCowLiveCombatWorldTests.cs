@@ -58,9 +58,11 @@ namespace Ordr.Mobile.Tests
             }
         }
 
-        private sealed class TestResolver : IOriginalHelperCowVerifiedAreaDamage
+        private sealed class TestResolver : IOriginalHelperCowVerifiedAreaDamage,
+            IOriginalHelperCowPointDamageCoverage
         {
             public bool Permit = true;
+            public bool CompletePointVictimRoster = true;
             public bool SupportsFinalDamage = true;
             public string RejectedId;
             public bool CanHit(string ability, MobileEnemySnapshot s, CombatEnemy enemy)
@@ -68,6 +70,14 @@ namespace Ordr.Mobile.Tests
                 return Permit && s.Id != RejectedId;
             }
             public bool CanCastPoint(string id, double x, double y) { return Permit; }
+            public bool CoversEveryOriginalPointDamageVictim(
+                double x, double y, double radius, IReadOnlyList<string> included)
+            {
+                // TEST_ONLY: all victims in this synthetic world are modeled
+                // as enemies unless the fixture explicitly marks a gap.
+                return CompletePointVictimRoster && included != null &&
+                    included.Count > 0;
+            }
             public bool TryFinalDamage(string id, int level, CombatEnemy enemy,
                 IReadOnlyList<CombatEffect> effects, long raw, out long damage)
             {
@@ -76,6 +86,16 @@ namespace Ordr.Mobile.Tests
                 damage = raw; // TEST_ONLY; never use raw as production final damage
                 return true;
             }
+        }
+
+        private sealed class NoPointCoverageResolver : IOriginalHelperCowVerifiedAreaDamage
+        {
+            public bool CanHit(string ability, MobileEnemySnapshot enemy,
+                CombatEnemy original) { return true; }
+            public bool CanCastPoint(string ability, double x, double y) { return true; }
+            public bool TryFinalDamage(string ability, int level, CombatEnemy enemy,
+                IReadOnlyList<CombatEffect> effects, long raw, out long result)
+            { result = raw; return true; } // TEST_ONLY
         }
 
         // TEST_ONLY: verifies that the runtime invokes a real A04R ability
@@ -120,7 +140,7 @@ namespace Ordr.Mobile.Tests
             var runtime = World();
             runtime.SpawnEnemy("a", 20000000, CharacterEnemyKind.Line, 50, 0, 0);
             runtime.SpawnEnemy("b", 20000000, CharacterEnemyKind.Boss, 90, 0, 0);
-            runtime.SpawnEnemy("story", 20000000, CharacterEnemyKind.Story, 55, 0, 0);
+            runtime.SpawnEnemy("story", 20000000, CharacterEnemyKind.Story, 550, 0, 0);
             var cow = new TestCow();
             var data = new TestData();
             var resolver = new TestResolver();
@@ -257,6 +277,44 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void PointDamageWithoutCompleteNativeVictimCoverageCannotCast()
+        {
+            var runtime = World();
+            runtime.SpawnEnemy("line", 20000000, CharacterEnemyKind.Line, 30, 0, 0);
+            var cow = new TestCow(200, 200);
+            var withoutCoverage = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), new NoPointCoverageResolver());
+            Assert.AreEqual(1, withoutCoverage.AvailableReadyAbilities().Count);
+            // Readiness alone does not prove point-damage target coverage.
+            Assert.IsFalse(withoutCoverage.IsVerifiedCastPointAllowed("A0BZ", 30, 0));
+            Assert.IsFalse(withoutCoverage.TryCommitCast("A0BZ", 30, 0));
+            Assert.AreEqual(200, cow.CurrentMana);
+            Assert.AreEqual(20000000L, runtime.EnemyOf("line").Health);
+
+            var incomplete = new TestResolver { CompletePointVictimRoster = false };
+            var live = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), incomplete);
+            Assert.IsFalse(live.TryCommitCast("A0BZ", 30, 0));
+            Assert.AreEqual(200, cow.CurrentMana);
+        }
+
+        [Test]
+        public void PointDamageCanHitStoryLaneOnlyWhenNativeVictimCoverageIsAttested()
+        {
+            // Original CJb calls UnitDamagePointLoc, with no explicit
+            // CharacterEnemyKind/IsUnitEnemy predicate. Lane labels cannot
+            // silently make an otherwise eligible unit immune.
+            var runtime = World();
+            runtime.SpawnEnemy("story", 20000000, CharacterEnemyKind.Story, 50, 0, 0);
+            var cow = new TestCow();
+            var live = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), new TestResolver());
+            Assert.IsTrue(live.TryCommitCast("A0BZ", 50, 0));
+            Assert.AreEqual(13000000L, runtime.EnemyOf("story").Health);
+            Assert.AreEqual(180, cow.CurrentMana);
+        }
+
+        [Test]
         public void OriginalSourceCowWispRechargeAndAutoCastUseOneManaStore()
         {
             var runtime = World();
@@ -303,7 +361,9 @@ namespace Ordr.Mobile.Tests
             runtime.SpawnEnemy("story", 20000000, CharacterEnemyKind.Story, 30, 0, 0);
             runtime.SpawnEnemy("line", 20000000, CharacterEnemyKind.Line, 50, 0, 0);
             var cow = new TestCow();
-            var resolver = new TestResolver { RejectedId = "line" };
+            var resolver = new TestResolver {
+                RejectedId = "line", CompletePointVictimRoster = false
+            };
             var live = new OriginalHelperCowLiveCombatWorld(
                 runtime, () => cow, new TestData(), resolver);
             Assert.IsFalse(live.TryCommitCast("A0BZ", 30, 0));
@@ -340,6 +400,45 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(Ordr323OriginalA04R.TryReadIsr2(
                 runtime.EnemyOf("line").OriginalA04RLevel.Value, out isr2));
             Assert.AreEqual(-0.10, isr2, 0.0000001);
+        }
+
+        [Test]
+        public void QuakeUsesVerifiedOwnerEnmityNotMobileStoryLaneLabel()
+        {
+            // CJf only calls IsUnitEnemy. A source-verified world may attest
+            // that a story unit belongs to an enemy player and is targetable
+            // when physically within the 625 radius.
+            var runtime = World();
+            runtime.SpawnEnemy("story", 20000000, CharacterEnemyKind.Story, 50, 0, 0);
+            runtime.ConfigureVerifiedEnemyOriginalA04R("story", 0, "TEST_ONLY owner");
+            var cow = new TestCow { BurstLevel = 0, QuakeLevel = 1 };
+            var blocked = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(),
+                new TestResolver { RejectedId = "story" },
+                originalA04RMechanics: new TestA04REffects());
+            Assert.IsFalse(blocked.TryCommitCast("A07T", 50, 0));
+            Assert.AreEqual(200, cow.CurrentMana);
+            var verified = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), new TestResolver(),
+                originalA04RMechanics: new TestA04REffects());
+            Assert.IsTrue(verified.TryCommitCast("A07T", 50, 0));
+            Assert.AreEqual(19000000L, runtime.EnemyOf("story").Health);
+            Assert.AreEqual(6, runtime.EnemyOf("story").OriginalA04RLevel);
+        }
+
+        [Test]
+        public void QuakeDoesNotRequirePointNativeCoverageAttestation()
+        {
+            var runtime = World();
+            runtime.SpawnEnemy("line", 20000000, CharacterEnemyKind.Line, 50, 0, 0);
+            runtime.ConfigureVerifiedEnemyOriginalA04R("line", 0, "TEST_ONLY baseline");
+            var cow = new TestCow { BurstLevel = 0, QuakeLevel = 1 };
+            var live = new OriginalHelperCowLiveCombatWorld(runtime,
+                () => cow, new TestData(), new NoPointCoverageResolver(),
+                originalA04RMechanics: new TestA04REffects());
+            Assert.IsTrue(live.TryCommitCast("A07T", 50, 0));
+            Assert.AreEqual(19000000L, runtime.EnemyOf("line").Health);
+            Assert.AreEqual(6, runtime.EnemyOf("line").OriginalA04RLevel);
         }
 
         [Test]

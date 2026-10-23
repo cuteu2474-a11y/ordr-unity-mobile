@@ -802,9 +802,7 @@ namespace Ordr.Mobile.Combat
                 SpatialCombatEnemy enemy;
                 if (!enemies.TryGetValue(hit.EnemyId, out enemy) ||
                     !enemy.Enemy.IsAlive || resolution.GetEnemy(hit.EnemyId) == null ||
-                    (enemy.Kind != CharacterEnemyKind.Line &&
-                     enemy.Kind != CharacterEnemyKind.Boss &&
-                     enemy.Kind != CharacterEnemyKind.Enraged))
+                    !Enum.IsDefined(typeof(CharacterEnemyKind), enemy.Kind))
                     return false;
                 if (a04rIncrement > 0 && hit.FinalDamage < enemy.Enemy.Health)
                 {
