@@ -172,7 +172,9 @@ namespace Ordr.Mobile.Unity
             if (detail == null) return;
             GUILayout.BeginVertical(GUI.skin.box);
             GUILayout.Label(detail.DisplayName + " · " + detail.Grade);
-            if (detail.Profile == null)
+            if (detail.Profile == null && detail.Unit.Id == "C-01")
+                GUILayout.Label("흔함 루피: 추가 공격 스킬 없음 (원본 JASS 등록 능력 기준)");
+            else if (detail.Profile == null)
                 GUILayout.Label("상세 기술: 원본 도감 정보 미수집");
             else
             {
