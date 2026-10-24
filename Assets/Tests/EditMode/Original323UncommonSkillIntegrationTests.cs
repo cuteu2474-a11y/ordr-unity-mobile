@@ -95,6 +95,26 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        private sealed class SourceCheckedBashTargets :
+            IOriginal323UncommonBashTargetRules
+        {
+            public bool Hero;
+            public bool Immune;
+            public bool HasEvidence = true;
+            public int Calls;
+            public bool TryInspect(CombatEnemy target, out bool hero,
+                out bool immune, out string originalEvidence)
+            {
+                Calls++;
+                hero = Hero;
+                immune = Immune;
+                originalEvidence = HasEvidence
+                    ? "TEST_ONLY: verified rawcode + native hero/immunity flags"
+                    : null;
+                return HasEvidence;
+            }
+        }
+
         private static string Data(string name)
         {
             return File.ReadAllText(Path.Combine(Application.dataPath, "..",
@@ -109,7 +129,7 @@ namespace Ordr.Mobile.Tests
         }
 
         private static CharacterCombatRuntime World(string id, CountingRandom rng,
-            TestOnlyEffects effects)
+            IOriginalUncommonVerifiedProcWorld effects)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(
@@ -249,6 +269,80 @@ namespace Ordr.Mobile.Tests
             world.Step(.25);
             Assert.AreEqual(2, rng.Calls, "A029 is CWR crafting, not a combat proc.");
             Assert.AreEqual(0, effects.Executed);
+        }
+
+        [Test]
+        public void OriginalBashNormalTargetActuallyStopsMovementForPointThreeSeconds()
+        {
+            var rng = new CountingRandom();
+            var targets = new SourceCheckedBashTargets();
+            var bash = new Original323UncommonBashWorld(targets);
+            var world = World("U-03", rng, bash);
+            long unit = world.SpawnCharacter("U-03", 0, 0);
+            Enemy(world);
+            Assert.IsTrue(world.IsOriginalUncommonSkillConnected(unit, "A07P:bash"));
+            var effects = world.Step(.28);
+            Assert.AreEqual(3, rng.Calls, "2 original damage dice + 1 native Bash proc.");
+            Assert.GreaterOrEqual(targets.Calls, 2,
+                "Target proof is checked both before RNG and before applying stun.");
+            Assert.IsTrue(world.StatusOf("target").IsStunned());
+            Assert.IsFalse(world.TryMoveEnemy("target", 11, 0, 0));
+            world.Step(.29);
+            Assert.IsTrue(world.StatusOf("target").IsStunned());
+            world.Step(.02);
+            Assert.IsFalse(world.StatusOf("target").IsStunned());
+            Assert.IsTrue(world.TryMoveEnemy("target", 11, 0, 0));
+        }
+
+        [Test]
+        public void OriginalBashUsesWarcraftHeroFlagNotMobileEnemyKind()
+        {
+            var targets = new SourceCheckedBashTargets { Hero = true };
+            var world = World("U-03", new CountingRandom(),
+                new Original323UncommonBashWorld(targets));
+            world.SpawnCharacter("U-03", 0, 0);
+            Enemy(world); // Even a mobile Line target can be proven Warcraft hero.
+            world.Step(.28);
+            Assert.IsTrue(world.StatusOf("target").IsStunned());
+            world.Step(.14);
+            Assert.IsTrue(world.StatusOf("target").IsStunned());
+            world.Step(.02);
+            Assert.IsFalse(world.StatusOf("target").IsStunned());
+        }
+
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public void NativeBashImmunityOrMissingProofPreventsRngAndStun(
+            bool immune, bool noProof)
+        {
+            var rng = new CountingRandom();
+            var targets = new SourceCheckedBashTargets {
+                Immune = immune, HasEvidence = !noProof
+            };
+            var world = World("U-03", rng,
+                new Original323UncommonBashWorld(targets));
+            long unit = world.SpawnCharacter("U-03", 0, 0);
+            Enemy(world);
+            Assert.IsTrue(world.IsOriginalUncommonSkillConnected(unit, "A07P:bash"));
+            world.Step(.28);
+            Assert.AreEqual(2, rng.Calls, "Failed eligibility must not roll bash chance.");
+            Assert.IsFalse(world.StatusOf("target").IsStunned());
+            Assert.IsTrue(world.TryMoveEnemy("target", 11, 0, 0));
+        }
+
+        [Test]
+        public void BrookOnlyBashAdapterCannotApproveOtherUncommonBonusDamage()
+        {
+            var targetRules = new SourceCheckedBashTargets();
+            var world = new Original323UncommonBashWorld(targetRules);
+            var catalog = new Original323UncommonAbilityCatalog(Map());
+            foreach (string otherId in new[] { "U-01", "U-04", "U-05",
+                "U-09", "U-12", "U-13" })
+                foreach (var proc in catalog.ForUnit(otherId))
+                    Assert.IsFalse(world.SupportsCompleteEffect(proc),
+                        "Unverified physical, critical and line-AoE components remain blocked.");
+            Assert.IsTrue(world.SupportsCompleteEffect(
+                catalog.FindProc("U-03", "A07P:bash")));
         }
 
         [Test]

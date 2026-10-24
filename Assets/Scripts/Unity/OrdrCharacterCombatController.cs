@@ -46,6 +46,16 @@ namespace Ordr.Mobile.Unity
             originalUncommonEffectWorld = originalEffects ??
                 throw new ArgumentNullException(nameof(originalEffects));
         }
+        // Brook A07P is a complete original-native stun once the enemy's
+        // Warcraft hero and immunity flags are independently established.
+        // This deliberately does NOT approve Ace, Tashigi, Hachi or rankyaku.
+        public void ConfigureVerifiedOriginalBrookBash(
+            IOriginal323UncommonBashTargetRules verifiedTargets)
+        {
+            ConfigureVerifiedUncommonNativeSkills(
+                new Original323UncommonBashWorld(verifiedTargets));
+        }
+
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
         public OtherworldMysticFusionCatalog OtherworldMysticFusions { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
