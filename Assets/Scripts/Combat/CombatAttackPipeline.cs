@@ -129,6 +129,17 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentNullException(nameof(callback));
         }
 
+        private Func<string, string, string, bool> verifiedProcPreflight;
+
+        // Checked before a native hit; the result gates RNG only if the hit commits.
+        // A target-specific missing formula must not consume a proc roll.
+        public void ConfigureVerifiedProcPreflight(
+            Func<string, string, string, bool> preflight)
+        {
+            verifiedProcPreflight = preflight ??
+                throw new ArgumentNullException(nameof(preflight));
+        }
+
         private IOriginalUnitAttackModifiers originalModifierRules;
         private Func<string, IReadOnlyList<CombatEffect>> getAttackerEffects;
         private readonly Dictionary<string, RegisteredUnit> units =
@@ -305,6 +316,20 @@ namespace Ordr.Mobile.Combat
             var enemy = resolution.GetEnemy(targetId);
             if (enemy == null || !enemy.IsAlive) return false;
 
+            // Read-only target preflight while the enemy is still alive,
+            // before a potentially lethal committed basic attack. Rolls occur
+            // only AFTER the native hit has succeeded.
+            HashSet<string> eligibleProcs = null;
+            if (verifiedProcPreflight != null)
+            {
+                eligibleProcs = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var proc in unit.Spec.Skills)
+                    if ((proc.Trigger == SkillTriggerKind.OnHit ||
+                         proc.Trigger == SkillTriggerKind.OnAttack) &&
+                        verifiedProcPreflight(attackerInstanceId, targetId, proc.RawCode))
+                        eligibleProcs.Add(proc.RawCode);
+            }
+
             // Declared-attack effects precede damage. As in JASS ATTACKED,
             // they may still occur if the later hit/formula cannot complete.
             if (verifiedAttackDeclared != null)
@@ -327,6 +352,8 @@ namespace Ordr.Mobile.Combat
                 if (trigger != SkillTriggerKind.OnAttack && trigger != SkillTriggerKind.OnHit)
                     continue;
                 if (trigger == SkillTriggerKind.OnHit && actual <= 0)
+                    continue;
+                if (eligibleProcs != null && !eligibleProcs.Contains(skill.RawCode))
                     continue;
                 if (skillTriggers.TryActivate(attackerInstanceId, skill.RawCode,
                     trigger, eventSequence))

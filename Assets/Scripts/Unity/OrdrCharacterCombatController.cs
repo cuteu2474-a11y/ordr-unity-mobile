@@ -31,6 +31,21 @@ namespace Ordr.Mobile.Unity
         public UnitImplementationRegistry UnitDefinitions { get; private set; }
         public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
         public OriginalMapBaseStatCatalog MapBaseStats { get; private set; }
+        public Original323UncommonAbilityCatalog OriginalUncommonAbilities { get; private set; }
+        private IOriginalUncommonVerifiedProcWorld originalUncommonEffectWorld;
+
+        // Register a native skill effect executor only after every effect,
+        // target rule, armor behavior and hit timing has source evidence.
+        // This must be called before creating the combat runtime.
+        public void ConfigureVerifiedUncommonNativeSkills(
+            IOriginalUncommonVerifiedProcWorld originalEffects)
+        {
+            if (Combat != null || originalUncommonEffectWorld != null)
+                throw new InvalidOperationException(
+                    "안흔함 네이티브 스킬 처리는 전투 월드 생성 전에 1회만 지정하세요.");
+            originalUncommonEffectWorld = originalEffects ??
+                throw new ArgumentNullException(nameof(originalEffects));
+        }
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
         public OtherworldMysticFusionCatalog OtherworldMysticFusions { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
@@ -514,7 +529,11 @@ namespace Ordr.Mobile.Unity
                 var mapBaseData = originalMapBaseStatsJson != null ? originalMapBaseStatsJson :
                     Resources.Load<TextAsset>("OrdrData/original-2323C-map-base-stats");
                 if (mapBaseData != null)
+                {
                     MapBaseStats = OriginalMapBaseStatCatalog.FromJson(mapBaseData.text, Units);
+                    OriginalUncommonAbilities =
+                        new Original323UncommonAbilityCatalog(MapBaseStats);
+                }
                 var fusionData = verifiedFusionRecipesJson != null ? verifiedFusionRecipesJson :
                     Resources.Load<TextAsset>("OrdrData/verified-mobile-fusion-recipes");
                 if (fusionData != null)
@@ -559,8 +578,8 @@ namespace Ordr.Mobile.Unity
                         .FromJson(monsterData.text);
                 UnitDefinitions = UnitImplementationRegistry.Combine(Units, Skills,
                     OriginalUnitRawcodes);
-                if (Units.Count != 271 || Skills.CharacterCount != 200 ||
-                    UnitDefinitions.Count != 271)
+                if (Units.Count != 272 || Skills.CharacterCount != 200 ||
+                    UnitDefinitions.Count != 272)
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
                 Debug.Log("ORDR 전체 유닛 정의 " + UnitDefinitions.Count +
                     "종 / 상세 스킬 프로필 " + UnitDefinitions.DetailedProfiles +
@@ -642,6 +661,9 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            if (OriginalUncommonAbilities != null)
+                Combat.ConfigureOriginalUncommonAbilities(
+                    OriginalUncommonAbilities, originalUncommonEffectWorld);
             RandomWispExchange = new OriginalRandomWispResourceExchange(
                 SharedEconomy.Wallet, world.Game,
                 randomWispResourceRng ?? new MobileUniformWispRandom());

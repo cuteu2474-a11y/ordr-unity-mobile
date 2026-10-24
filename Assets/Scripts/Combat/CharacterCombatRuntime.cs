@@ -7,7 +7,7 @@ using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
-    // 271종 카탈로그를 소환하고, 200종 상세 정보가 존재하면 공격·발동 스킬과 연결.
+    // 272종 카탈로그를 소환하고, 200종 상세 정보가 존재하면 공격·발동 스킬과 연결.
     // 원작 평타 수치/피해 공식 미확인 유닛은 의도적으로 공격을 시작하지 않는다.
     public enum BasicAttackReadinessKind
     {
@@ -81,6 +81,93 @@ namespace Ordr.Mobile.Combat
         private IOriginalStoryDispatchPort storyDispatch;
         private IOriginalVerifiedUnitAttackProvider verifiedAttackProvider;
         private OriginalMapCommonAttackPreview commonAttackPreview;
+        private Original323UncommonAbilityCatalog uncommonAbilities;
+        private IOriginalUncommonVerifiedProcWorld uncommonProcWorld;
+
+        // All 14 uncommon units have W3X object/ability metadata, even when
+        // only 7 have an individually named native attack ability.
+        // Neither source loading nor a native ability name authorizes damage.
+        public void ConfigureOriginalUncommonAbilities(
+            Original323UncommonAbilityCatalog originalAbilities,
+            IOriginalUncommonVerifiedProcWorld verifiedEffectWorld = null)
+        {
+            if (characters.Count != 0 || uncommonAbilities != null)
+                throw new InvalidOperationException(
+                    "안흔함 능력은 첫 유닛 소환 전에 한 번만 연결해야 합니다.");
+            uncommonAbilities = originalAbilities ??
+                throw new ArgumentNullException(nameof(originalAbilities));
+            uncommonProcWorld = verifiedEffectWorld;
+        }
+
+        public IReadOnlyList<OriginalUncommonProc> OriginalUncommonSkillsOf(long instanceId)
+        {
+            CharacterInstance unit;
+            if (!characters.TryGetValue(instanceId, out unit))
+                throw new KeyNotFoundException("존재하지 않는 유닛 인스턴스.");
+            return uncommonAbilities == null
+                ? Array.Empty<OriginalUncommonProc>()
+                : uncommonAbilities.ForUnit(unit.Catalog.Id);
+        }
+
+        public bool IsOriginalUncommonSkillConnected(long instanceId, string procId)
+        {
+            CharacterInstance unit;
+            if (!characters.TryGetValue(instanceId, out unit) || unit.Mapping == null ||
+                uncommonAbilities == null ||
+                uncommonAbilities.FindProc(unit.Catalog.Id, procId) == null)
+                return false;
+            foreach (var spec in unit.Mapping.AttackSpec.Skills)
+                if (spec.RawCode == procId) return true;
+            return false;
+        }
+
+        private bool CanTriggerOriginalUncommonProc(string attacker,
+            string targetId, string skillId)
+        {
+            long unitId;
+            CharacterInstance caster;
+            if (!long.TryParse(attacker, NumberStyles.Integer,
+                CultureInfo.InvariantCulture, out unitId) ||
+                !characters.TryGetValue(unitId, out caster)) return false;
+            var skill = uncommonAbilities == null ? null :
+                uncommonAbilities.FindProc(caster.Catalog.Id, skillId);
+            if (skill == null) return true; // Other independently verified skills.
+            CombatEnemy target = resolution.GetEnemy(targetId);
+            return uncommonProcWorld != null && target != null && target.IsAlive &&
+                uncommonProcWorld.CanAffectTarget(skill, attacker, target);
+        }
+
+        private void ExecuteOriginalUncommonProcs(CharacterInstance caster,
+            BasicAttackResult hit)
+        {
+            if (uncommonAbilities == null || uncommonProcWorld == null) return;
+            foreach (var procId in hit.ActivatedSkillRawCodes)
+            {
+                var skill = uncommonAbilities.FindProc(caster.Catalog.Id, procId);
+                if (skill == null) continue;
+                string proof;
+                bool executed;
+                try
+                {
+                    executed = uncommonProcWorld.TryApplyCompleteEffect(skill, this,
+                        InstanceKey(caster.Id), hit.TargetId, out proof);
+                }
+                catch (NotSupportedException ex)
+                {
+                    executed = false;
+                    proof = ex.Message;
+                }
+                events.Add(new CharacterCombatEvent(executed &&
+                    !string.IsNullOrWhiteSpace(proof)
+                    ? CharacterCombatEventType.SkillActivated :
+                    CharacterCombatEventType.EffectDeferred,
+                    InstanceKey(caster.Id), hit.TargetId, skill.Name,
+                    executed && !string.IsNullOrWhiteSpace(proof) ? proof :
+                    "원본 스킬 전체 효과 적용 보류: " + (proof ?? skill.ProcId), 0));
+            }
+        }
+
+
         private IOriginalSpecialSkillTriggerMapping specialTriggerMapping;
         private IOriginalSpecialSkillEventRules specialEventRules;
         private IOriginalCombatTargetSelectionRules targetSelectionRules;
@@ -530,6 +617,7 @@ namespace Ordr.Mobile.Combat
             resolution.DamageApplied += OnActualDamage;
             attackPipeline = new CombatAttackPipeline(scheduler, resolution, triggers,
                 verifiedBasicDamage ?? throw new ArgumentNullException(nameof(verifiedBasicDamage)));
+            attackPipeline.ConfigureVerifiedProcPreflight(CanTriggerOriginalUncommonProc);
             // 유닛 재배치가 어려운 모바일 플레이 기준: 같은 전장 안의 평타 사거리 무제한.
             attackPipeline.ConfigureReachMode(
                 CombatAttackReachMode.UnlimitedWithinAssignedBattlefield);
@@ -702,7 +790,7 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("공격 스펙이 이미 등록되어 있습니다.");
             var mapping = CharacterCombatMapping.Build(instance.Catalog.Id,
                 instance.Profile, verifiedStats, originalUnitRawcode,
-                specialTriggerMapping);
+                specialTriggerMapping, uncommonAbilities, uncommonProcWorld);
             attackPipeline.RegisterUnit(InstanceKey(instanceId), mapping.AttackSpec,
                 firstAttackDelay);
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
@@ -1356,6 +1444,9 @@ namespace Ordr.Mobile.Combat
                     events.Add(new CharacterCombatEvent(
                         CharacterCombatEventType.EnemyDefeated,
                         InstanceKey(id), primary.Id, null, "basic", 0));
+                // Native uncommon procs were rolled only after a verified hit
+                // and only for fully approved effects. No web tooltip required.
+                ExecuteOriginalUncommonProcs(unit, hit);
                 if (unit.Profile == null || unit.Mapping == null) continue;
                 var position = roster.Get(id);
                 foreach (string skillId in hit.ActivatedSkillRawCodes)

@@ -348,6 +348,18 @@ namespace Ordr.Mobile.Unity
                 if (detail.Profile.Skills.Count > skillLimit)
                     GUILayout.Label("외 " + (detail.Profile.Skills.Count - skillLimit) + "개");
             }
+            if (detail.Grade == "안흔함" &&
+                controller.OriginalUncommonAbilities != null)
+            {
+                var abilities = controller.OriginalUncommonAbilities.ForUnit(detail.Unit.Id);
+                GUILayout.Label("원본 맵 고유 능력 " + abilities.Count +
+                    "개 (전투 실행은 독립 검증 필요)");
+                foreach (var native in abilities)
+                    GUILayout.Label("· " + native.Name + " [" +
+                        native.AbilityRawcode + "]");
+                if (abilities.Count == 0)
+                    GUILayout.Label("원본에서 확인된 추가 공격 능력 없음. 조합·판매 능력은 별도.");
+            }
             // Original W3X base values are display-only until hit damage,
             // modifiers and JASS timing have their independent verification.
             var originalMap = controller.MapBaseStats == null ? null :

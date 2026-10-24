@@ -32,7 +32,9 @@ namespace Ordr.Mobile.Combat
         public static CharacterCombatMapping Build(string catalogUnitId,
             CharacterSkillProfile profile, BasicAttackSpec verifiedBasic,
             string originalRawcode = null,
-            IOriginalSpecialSkillTriggerMapping specialTriggers = null)
+            IOriginalSpecialSkillTriggerMapping specialTriggers = null,
+            Original323UncommonAbilityCatalog uncommonCatalog = null,
+            IOriginalUncommonVerifiedProcWorld verifiedUncommonWorld = null)
         {
             if (string.IsNullOrWhiteSpace(catalogUnitId))
                 throw new ArgumentException("캐릭터 ID가 필요합니다.");
@@ -91,6 +93,37 @@ namespace Ordr.Mobile.Combat
                     lookup.Add(skill.Id, skill);
                 }
             }
+
+            // W3X native uncommon passives have no web tooltip profile.
+            // Register RNG only if an external world proves the COMPLETE
+            // effect. A missing proof never converts a passive into 0 damage.
+            if (uncommonCatalog != null)
+                foreach (var native in uncommonCatalog.ForUnit(catalogUnitId))
+                {
+                    if (native.OriginalUnitRawcode != originalRawcode)
+                    {
+                        if (string.IsNullOrWhiteSpace(originalRawcode))
+                        {
+                            deferred.Add(native.ProcId + ": 원본 유닛 ID 미연결");
+                            continue;
+                        }
+                        throw new FormatException(
+                            "원본 유닛 rawcode와 안흔함 스킬 rawcode가 다릅니다.");
+                    }
+                    if (verifiedUncommonWorld == null ||
+                        !verifiedUncommonWorld.SupportsCompleteEffect(native))
+                    {
+                        deferred.Add(native.ProcId + " (" + native.Name +
+                            "): 원본 네이티브 부가효과/대상·방어·실행 처리기 검증 대기");
+                        continue;
+                    }
+                    var marker = new SkillEffectSpec(SkillEffectKind.Damage, 0, 0,
+                        DamageSchool.ScriptDefined, DamageTraits.None);
+                    converted.Add(new CombatSkillSpec(native.ProcId,
+                        SkillTriggerKind.OnHit, native.ChancePerMillion,
+                        0, 0, SkillTargetArea.Single, 0,
+                        new[] { marker }, native.Evidence));
+                }
 
             // 원본 rawcode 미확보 시 catalog: 접두어로 가상 ID임을 명시한다.
             // 이 ID를 원작 Warcraft III 오브젝트 ID로 사용하면 안 된다.

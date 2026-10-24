@@ -177,6 +177,7 @@ namespace Ordr.Mobile.Data
         private readonly Dictionary<string, OriginalMapCharacterBasics> entries =
             new Dictionary<string, OriginalMapCharacterBasics>(StringComparer.Ordinal);
 
+        public string SourceW3xSha256 { get; private set; }
         public int Count { get { return entries.Count; } }
         public int LinkedCount { get; private set; }
         public IEnumerable<OriginalMapCharacterBasics> All { get { return entries.Values; } }
@@ -196,6 +197,7 @@ namespace Ordr.Mobile.Data
                 OrdrJson.RequiredString(root, "sourceW3xSha256").Length != 64)
                 throw new FormatException("원본 맵 능력치 데이터 출처가 다릅니다.");
             var result = new OriginalMapBaseStatCatalog();
+            result.SourceW3xSha256 = OrdrJson.RequiredString(root, "sourceW3xSha256");
             foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "catalogEntries"), "catalogEntries"))
             {
                 var basic = new OriginalMapCharacterBasics(OrdrJson.Object(raw, "map basic"), units);
