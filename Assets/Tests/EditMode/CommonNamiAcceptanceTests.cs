@@ -87,7 +87,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void C02ObjectIdentityAndAllFiveRawAbilitiesAreNotInventedCombatSkills()
+        public void C03ObjectIdentityAndAllFiveRawAbilitiesAreNotInventedCombatSkills()
         {
             var catalog = CharacterUnitCatalog.FromJson(Data("units.json"));
             var map = OriginalMapBaseStatCatalog.FromJson(
