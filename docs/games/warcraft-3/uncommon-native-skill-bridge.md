@@ -50,3 +50,24 @@
 - 기절 상태에서는 `TryMoveEnemy`가 이동을 거부하고, 공통 타임라인이 `Dur1` 또는 `HeroDur1`만큼 흐르면 해제된다.
 - 타시기·하찌의 추가 물리 피해+기절, 에이스의 추가 물리 피해, 블루노·후쿠로의 람각/크리티컬 및 로빈의 3명 동시 공격은 **별도** 효과 실행기를 요구한다. 브룩용 실행기를 이들 능력에 재사용하지 않는다.
 - 현재 검증은 합성 원본 평타와 테스트용 적 분류 공급자를 통한 EditMode 경로 테스트다. 완전한 원본 워크래프트 엔진의 타격/면역/모션 판정과 실기 비교를 뜻하지 않는다.
+
+
+## 에이스·타시기·하찌: 네이티브 AHbh 추가 피해/기절 결합
+
+원본 W3X의 Units/AbilityData.slk에서 직접 확인한 값이다.
+
+| 소유자 | 능력 rawcode | 부모 능력 | 확률 | 원본 추가 피해 필드 | 일반 기절 | 영웅 기절 | SLK 허용 대상 |
+|---|---|---|---:|---:|---:|---:|---|
+| 에이스 h00K | A07R | AHbh | 10% | 200 | 0 | 0 | air,enemies,ground |
+| 타시기 h00E | A07Q | AHbh | 20% | 200 | 0.7초 | 0.35초 | air,enemies,neutral,ground |
+| 하찌 h00F | A07S | AHbh | 20% | 150 | 0.1초 | 0.05초 | air,enemies,neutral,ground |
+
+- 해당 3개 rawcode는 원본 war3map.j에서 직접 호출하는 JASS 코드가 검색되지 않았으며, 오브젝트의 AHbh 기반 능력이다. 객체 필드 200/150을 **최종 HP 감소량과 동일시하지 않는다**.
+- Original323UncommonBonusBashWorld는 위 세 능력에만 적용되며, 실제 적 영웅/면역 증거(IOriginal323UncommonBashTargetRules)와 추가 물리 피해의 **최종 HP 계산 증거**(IOriginal323UncommonBonusDamageRules)를 모두 요구한다. 하나라도 없으면 해당 스킬은 발동 난수를 소비하지 않는다.
+- 대상 정책은 에이스의 neutral 제외를 직접 검증해야 한다. 이름·전장·보스 여부만으로 원본 enemies 대상 여부를 임의 추정하면 안 된다.
+- 계산 정책 TryResolveFinalBonus(...)은 공격 전 사전검사와 스킬 발동 직전 재검사에서 사용되므로 무상태·무난수·무부작용이어야 한다. 테스트의 47 HP 가상 완료 계산은 **실게임 값이 아니다**.
+- TryCommitOriginalUncommonBonus는 원본 평타로 발생한 스킬 발동 처리 도중에만 CombatResolution.TryApplySkillDamage를 호출할 수 있다. 카운터·처치 참여·스킬 피해 이벤트를 공통 시스템과 공유한다. 타시기·하찌의 기절은 **실제 피해 적용 후에도 살아있는 적**에만 부여한다.
+- OrdrCharacterCombatController.ConfigureVerifiedOriginalUncommonBashBundle(targetRules, bonusRules)로 브룩+에이스+타시기+하찌를 함께 활성화한다. Unity 전투 런타임 **초기화 전에** 승인해야 한다.
+- 크리티컬(원본 공격 1.5배)과 람각(직선 마법), 로빈 다중 타격은 별도 실행 설계가 필요하다. 이 포트가 해당 스킬을 임의 승인하지 않는다.
+
+**현 시점 제한:** 가상 방어 계산을 실기로 오인하게 만드는 코드가 없다. 3개 AHbh 능력의 기본 확률·피해 필드·기절·전장 공격 시퀀스는 연결했으나, 원본 몬스터의 대상 유형 및 검증된 최종 HP 계산기 주입이 끝나기 전에는 라이브 전투 효과가 차단된다. 현재 OnHit 스킬 루프는 기본 공격 피해 이후 실행되므로, 한 방에 죽는 적에 대한 네이티브 Bash 타이밍과의 완전 동일성은 아직 검증되지 않았다. **실기 파리티는 미완료**.

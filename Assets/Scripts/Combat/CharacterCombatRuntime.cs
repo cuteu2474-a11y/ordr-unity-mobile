@@ -83,6 +83,9 @@ namespace Ordr.Mobile.Combat
         private OriginalMapCommonAttackPreview commonAttackPreview;
         private Original323UncommonAbilityCatalog uncommonAbilities;
         private IOriginalUncommonVerifiedProcWorld uncommonProcWorld;
+        private string executingUncommonProcId;
+        private string executingUncommonActor;
+        private string executingUncommonTarget;
 
         // All 14 uncommon units have W3X object/ability metadata, even when
         // only 7 have an individually named native attack ability.
@@ -147,15 +150,29 @@ namespace Ordr.Mobile.Combat
                 if (skill == null) continue;
                 string proof;
                 bool executed;
+                if (executingUncommonProcId != null)
+                    throw new InvalidOperationException("중첩 안흔함 스킬 실행은 허용되지 않습니다.");
+                executingUncommonProcId = skill.ProcId;
+                executingUncommonActor = InstanceKey(caster.Id);
+                executingUncommonTarget = hit.TargetId;
                 try
                 {
-                    executed = uncommonProcWorld.TryApplyCompleteEffect(skill, this,
-                        InstanceKey(caster.Id), hit.TargetId, out proof);
+                    try
+                    {
+                        executed = uncommonProcWorld.TryApplyCompleteEffect(skill, this,
+                            InstanceKey(caster.Id), hit.TargetId, out proof);
+                    }
+                    catch (NotSupportedException ex)
+                    {
+                        executed = false;
+                        proof = ex.Message;
+                    }
                 }
-                catch (NotSupportedException ex)
+                finally
                 {
-                    executed = false;
-                    proof = ex.Message;
+                    executingUncommonProcId = null;
+                    executingUncommonActor = null;
+                    executingUncommonTarget = null;
                 }
                 events.Add(new CharacterCombatEvent(executed &&
                     !string.IsNullOrWhiteSpace(proof)
@@ -167,6 +184,46 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+
+        // Final native bonus HP can enter this runtime ONLY while its
+        // registered chance proc is executing. This prevents a UI or another
+        // script from manufacturing free damage with an arbitrary rawcode.
+        internal bool TryCommitOriginalUncommonBonus(string attackerId,
+            string targetId, string procId, long verifiedFinalHpDamage,
+            out long actualDamage)
+        {
+            actualDamage = 0;
+            if (verifiedFinalHpDamage < 0)
+                throw new ArgumentOutOfRangeException(nameof(verifiedFinalHpDamage));
+            if (game.Phase != SessionPhase.Running ||
+                procId == null || procId != executingUncommonProcId ||
+                attackerId != executingUncommonActor ||
+                targetId != executingUncommonTarget ||
+                !processingStep)
+                return false;
+            long casterId;
+            CharacterInstance caster;
+            SpatialCombatEnemy target;
+            if (!long.TryParse(attackerId, NumberStyles.Integer,
+                    CultureInfo.InvariantCulture, out casterId) ||
+                !characters.TryGetValue(casterId, out caster) ||
+                !enemies.TryGetValue(targetId, out target) ||
+                !target.Enemy.IsAlive || !CanAttackInThisLane(caster, target) ||
+                uncommonAbilities == null ||
+                uncommonAbilities.FindProc(caster.Catalog.Id, procId) == null)
+                return false;
+            if (!resolution.TryApplySkillDamage(attackerId,
+                targetId, verifiedFinalHpDamage, out actualDamage))
+                return false;
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillDamage, attackerId, targetId,
+                procId, "W3X 검증된 AHbh 추가 피해", actualDamage));
+            if (!target.Enemy.IsAlive)
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.EnemyDefeated, attackerId,
+                    targetId, procId, "AHbh 추가 피해로 처치", actualDamage));
+            return true;
+        }
 
         private IOriginalSpecialSkillTriggerMapping specialTriggerMapping;
         private IOriginalSpecialSkillEventRules specialEventRules;

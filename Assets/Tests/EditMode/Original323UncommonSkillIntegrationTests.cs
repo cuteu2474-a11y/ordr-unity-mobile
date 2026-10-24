@@ -115,6 +115,29 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        private sealed class SyntheticVerifiedBonusRules :
+            IOriginal323UncommonBonusDamageRules
+        {
+            public long Damage = 47;
+            public bool Available = true;
+            public bool Evidence = true;
+            public int FailAfterCalls = int.MaxValue;
+            public int Calls;
+            public bool TryResolveFinalBonus(OriginalUncommonProc proc,
+                string attackerId, CombatEnemy enemy,
+                out long finalHpDamage, out string originalEvidence)
+            {
+                Calls++;
+                finalHpDamage = Damage;
+                originalEvidence = Evidence
+                    ? "TEST_ONLY full original physical/armor/HP fixture"
+                    : null;
+                return Available && Calls <= FailAfterCalls &&
+                    !string.IsNullOrWhiteSpace(attackerId) &&
+                    enemy != null && enemy.IsAlive;
+            }
+        }
+
         private static string Data(string name)
         {
             return File.ReadAllText(Path.Combine(Application.dataPath, "..",
@@ -343,6 +366,171 @@ namespace Ordr.Mobile.Tests
                         "Unverified physical, critical and line-AoE components remain blocked.");
             Assert.IsTrue(world.SupportsCompleteEffect(
                 catalog.FindProc("U-03", "A07P:bash")));
+        }
+
+        [TestCase("U-05", "A07R:flame", 100000)]
+        [TestCase("U-09", "A07Q:shigure", 200000)]
+        [TestCase("U-12", "A07S:fishman", 200000)]
+        public void OriginalAhbhBonusAutoCommitsThroughCombatResolution(
+            string unitId, string procId, int nativeChance)
+        {
+            var source = new Original323UncommonAbilityCatalog(Map());
+            var proc = source.FindProc(unitId, procId);
+            Assert.AreEqual(nativeChance, proc.ChancePerMillion);
+            var baseline = World(unitId, new CountingRandom(), null);
+            baseline.SpawnCharacter(unitId, 0, 0);
+            Enemy(baseline);
+            baseline.Step(.25);
+            long beforeBonus = baseline.EnemyOf("target").Health;
+
+            var rng = new CountingRandom();
+            var proof = new SyntheticVerifiedBonusRules { Damage = 47 };
+            var effects = new Original323UncommonBonusBashWorld(
+                new SourceCheckedBashTargets(), proof);
+            var world = World(unitId, rng, effects);
+            long attacker = world.SpawnCharacter(unitId, 0, 0);
+            Enemy(world);
+            Assert.IsTrue(world.IsOriginalUncommonSkillConnected(attacker, procId));
+            var events = world.Step(.25);
+            Assert.AreEqual(beforeBonus - 47, world.EnemyOf("target").Health,
+                "Final HP must enter normal CombatResolution exactly once.");
+            Assert.AreEqual(3, rng.Calls, "2 source d4 rolls + 1 proc RNG roll.");
+            Assert.AreEqual(2, proof.Calls, "Read-only preflight + on-proc confirmation.");
+            int bonusDamageEvents = 0;
+            foreach (var evt in events)
+                if (evt.Type == CharacterCombatEventType.SkillDamage &&
+                    evt.SkillName == procId && evt.Amount == 47)
+                    bonusDamageEvents++;
+            Assert.AreEqual(1, bonusDamageEvents);
+        }
+
+        [TestCase("U-09", "A07Q:shigure", 0.7, 0.35)]
+        [TestCase("U-12", "A07S:fishman", 0.1, 0.05)]
+        public void NativeAhbhPlusStunUsesSourceDurationAndHeroEvidence(
+            string unitId, string procId, double normal, double hero)
+        {
+            foreach (bool heroFlag in new[] { false, true })
+            {
+                var targets = new SourceCheckedBashTargets { Hero = heroFlag };
+                var effects = new Original323UncommonBonusBashWorld(
+                    targets, new SyntheticVerifiedBonusRules { Damage = 47 });
+                var world = World(unitId, new CountingRandom(), effects);
+                long actor = world.SpawnCharacter(unitId, 0, 0);
+                Enemy(world);
+                world.Step(.25);
+                Assert.IsTrue(world.StatusOf("target").IsStunned());
+                Assert.IsFalse(world.TryMoveEnemy("target", 12, 0, 0));
+                world.RemoveCharacter(actor);
+                double duration = heroFlag ? hero : normal;
+                world.Step(duration - 0.01);
+                Assert.IsTrue(world.StatusOf("target").IsStunned());
+                world.Step(0.02);
+                Assert.IsFalse(world.StatusOf("target").IsStunned());
+                Assert.IsTrue(world.TryMoveEnemy("target", 12, 0, 0));
+            }
+        }
+
+        [Test]
+        public void AceNativeAhbhDoesNotInventAnyStun()
+        {
+            var world = World("U-05", new CountingRandom(),
+                new Original323UncommonBonusBashWorld(
+                    new SourceCheckedBashTargets(),
+                    new SyntheticVerifiedBonusRules { Damage = 47 }));
+            world.SpawnCharacter("U-05", 0, 0);
+            Enemy(world);
+            world.Step(.25);
+            Assert.IsFalse(world.StatusOf("target").IsStunned());
+        }
+
+        [TestCase(true, false, false)]
+        [TestCase(false, true, false)]
+        [TestCase(false, false, true)]
+        public void ImmuneOrUnprovenPhysicalBonusSkipsRngAndAllNativeEffects(
+            bool immune, bool missingTargetEvidence, bool missingDamageEvidence)
+        {
+            var rng = new CountingRandom();
+            var targets = new SourceCheckedBashTargets {
+                Immune = immune, HasEvidence = !missingTargetEvidence
+            };
+            var bonus = new SyntheticVerifiedBonusRules {
+                Evidence = !missingDamageEvidence
+            };
+            var world = World("U-09", rng,
+                new Original323UncommonBonusBashWorld(targets, bonus));
+            world.SpawnCharacter("U-09", 0, 0);
+            Enemy(world);
+            world.Step(.25);
+            Assert.AreEqual(2, rng.Calls,
+                "Source-verification failures must not consume proc RNG.");
+            Assert.IsFalse(world.StatusOf("target").IsStunned());
+            Assert.AreEqual(901, world.EnemyOf("target").Health,
+                "Tashigi may still make her verified Pierce basic hit.");
+        }
+
+        [Test]
+        public void EvidenceLostBetweenPreflightAndProcLeavesNoPartialStunOrDamage()
+        {
+            var baseline = World("U-09", new CountingRandom(), null);
+            baseline.SpawnCharacter("U-09", 0, 0);
+            Enemy(baseline);
+            baseline.Step(.25);
+            var lost = new SyntheticVerifiedBonusRules {
+                Damage = 47, FailAfterCalls = 1
+            };
+            var world = World("U-09", new CountingRandom(),
+                new Original323UncommonBonusBashWorld(
+                    new SourceCheckedBashTargets(), lost));
+            world.SpawnCharacter("U-09", 0, 0);
+            Enemy(world);
+            var events = world.Step(.25);
+            Assert.AreEqual(baseline.EnemyOf("target").Health,
+                world.EnemyOf("target").Health);
+            Assert.IsFalse(world.StatusOf("target").IsStunned());
+            bool deferred = false;
+            foreach (var evt in events)
+                if (evt.Type == CharacterCombatEventType.EffectDeferred &&
+                    evt.SkillName == "시구레: 20% 물리 200 + 기절") deferred = true;
+            Assert.IsTrue(deferred);
+        }
+
+        [Test]
+        public void NativeBonusKillUsesMainCombatCountersAndCannotDoubleCommit()
+        {
+            var targetProof = new SourceCheckedBashTargets();
+            var bonus = new SyntheticVerifiedBonusRules { Damage = 500 };
+            var world = World("U-05", new CountingRandom(),
+                new Original323UncommonBonusBashWorld(targetProof, bonus));
+            world.SpawnCharacter("U-05", 0, 0);
+            world.SpawnEnemyWithDefenses("target", 175,
+                CharacterEnemyKind.Line, 10, 0, 0,
+                new EnemyDefenseProfile(CharacterEnemyKind.Line,
+                    0, null, "normal", "TEST_ONLY verified armor"));
+            var events = world.Step(.25);
+            Assert.IsNull(world.EnemyOf("target"));
+            Assert.AreEqual(1, world.Game.DefeatedEnemies);
+            int deaths = 0;
+            foreach (var evt in events)
+                if (evt.Type == CharacterCombatEventType.EnemyDefeated &&
+                    evt.SkillName == "A07R:flame") deaths++;
+            Assert.AreEqual(1, deaths);
+            world.Step(1.5);
+            Assert.AreEqual(1, world.Game.DefeatedEnemies);
+        }
+
+        [Test]
+        public void CompositeRoutesBrookAndThreeBonusAbilitiesWithoutCriticalOrLineMagic()
+        {
+            var cat = new Original323UncommonAbilityCatalog(Map());
+            var effects = new Original323UncommonBashBundleWorld(
+                new SourceCheckedBashTargets(),
+                new SyntheticVerifiedBonusRules());
+            foreach (var id in new[] { "U-03", "U-05", "U-09", "U-12" })
+                foreach (var proc in cat.ForUnit(id))
+                    Assert.IsTrue(effects.SupportsCompleteEffect(proc));
+            foreach (var id in new[] { "U-01", "U-04", "U-13" })
+                foreach (var proc in cat.ForUnit(id))
+                    Assert.IsFalse(effects.SupportsCompleteEffect(proc));
         }
 
         [Test]

@@ -56,6 +56,18 @@ namespace Ordr.Mobile.Unity
                 new Original323UncommonBashWorld(verifiedTargets));
         }
 
+        // Brook + Ace + Tashigi + Hachi. Uses the same native hero/immunity
+        // proof, but bonus damage requires a separate verified HP policy.
+        // This does not authorize Lucci/Fukuro critical or rankyaku.
+        public void ConfigureVerifiedOriginalUncommonBashBundle(
+            IOriginal323UncommonBashTargetRules verifiedTargets,
+            IOriginal323UncommonBonusDamageRules verifiedBonusDamage)
+        {
+            ConfigureVerifiedUncommonNativeSkills(
+                new Original323UncommonBashBundleWorld(
+                    verifiedTargets, verifiedBonusDamage));
+        }
+
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
         public OtherworldMysticFusionCatalog OtherworldMysticFusions { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
