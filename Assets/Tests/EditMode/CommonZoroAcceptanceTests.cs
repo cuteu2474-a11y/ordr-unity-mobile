@@ -94,6 +94,8 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(33, unit.Attack1.MaximumBaseDamage.Value);
             Assert.AreEqual(1.03, unit.Attack1.AttackCooldownSeconds.Value, 1e-9);
             Assert.AreEqual(0.25, unit.Attack1.AttackPointSeconds.Value, 1e-9);
+            Assert.AreEqual(0.75, Ordr323MapDamageMath.AttackVersusArmor(
+                Ordr323AttackType.Pierce, Ordr323ArmorType.Normal), 1e-9);
             CollectionAssert.AreEqual(new[] { "A0JE", "A09G", "A00W", "A032", "Avul" },
                 unit.OriginalAbilityRawcodes);
             var world = World(false, new CountingRoll());
@@ -118,7 +120,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void SyntheticApprovedZoroHitsAtDeclaredFixturePointThenEvery103Seconds()
+        public void SyntheticApprovedZoroHitsAtDeclaredFixturePointThenEvery103Hundredths()
         {
             var dice = new CountingRoll();
             var world = World(true, dice);
@@ -128,11 +130,11 @@ namespace Ordr.Mobile.Tests
             world.Step(0.24);
             Assert.AreEqual(1000L, world.EnemyOf("target").Health);
             world.Step(0.01);
-            Assert.AreEqual(969L, world.EnemyOf("target").Health);
+            Assert.AreEqual(977L, world.EnemyOf("target").Health);
             world.Step(1.02);
-            Assert.AreEqual(969L, world.EnemyOf("target").Health);
+            Assert.AreEqual(977L, world.EnemyOf("target").Health);
             world.Step(0.01);
-            Assert.AreEqual(938L, world.EnemyOf("target").Health);
+            Assert.AreEqual(954L, world.EnemyOf("target").Health);
             Assert.AreEqual(2, dice.Calls);
             Assert.AreEqual(0, world.Game.DefeatedEnemies);
         }
@@ -148,7 +150,7 @@ namespace Ordr.Mobile.Tests
             partitioned.SpawnCharacter("C-02", 0, 0);
             SpawnKnown(partitioned, "target");
             for (int i = 0; i < 8; i++) partitioned.Step(0.5);
-            Assert.AreEqual(876L, once.EnemyOf("target").Health);
+            Assert.AreEqual(908L, once.EnemyOf("target").Health);
             Assert.AreEqual(once.EnemyOf("target").Health,
                 partitioned.EnemyOf("target").Health);
         }
@@ -158,7 +160,7 @@ namespace Ordr.Mobile.Tests
         {
             var world = World(true, new CountingRoll());
             world.SpawnCharacter("C-02", 0, 0);
-            SpawnKnown(world, "target", 31);
+            SpawnKnown(world, "target", 23);
             var output = world.Step(0.25);
             int attacks = 0, deaths = 0;
             foreach (var evt in output)
@@ -188,7 +190,7 @@ namespace Ordr.Mobile.Tests
                 world.InspectBasicAttack(zoro).Kind);
             SpawnKnown(world, "known");
             world.Step(0);
-            Assert.AreEqual(969L, world.EnemyOf("known").Health);
+            Assert.AreEqual(977L, world.EnemyOf("known").Health);
             Assert.AreEqual(1000L, world.EnemyOf("unknown").Health);
             Assert.AreEqual(1, dice.Calls);
         }
@@ -204,8 +206,8 @@ namespace Ordr.Mobile.Tests
             world.Step(5.0);
             Assert.AreEqual(0, dice.Calls);
             SpawnKnown(world, "main", 1000, CharacterEnemyKind.Line, 0, 2000);
-            world.Step(0); // player-approved unlimited reach within main lane
-            Assert.AreEqual(969L, world.EnemyOf("main").Health);
+            world.Step(0); // TEST_ONLY synthetic reach; actual Warcraft attack range still unverified
+            Assert.AreEqual(977L, world.EnemyOf("main").Health);
             Assert.AreEqual(1000L, world.EnemyOf("story").Health);
             Assert.AreEqual(1000L, world.EnemyOf("creep").Health);
         }
@@ -227,7 +229,7 @@ namespace Ordr.Mobile.Tests
             quantizer.Fail = false;
             world.ResumeAfterVerifiedFormulaUpdate(id);
             world.Step(0);
-            Assert.AreEqual(969L, world.EnemyOf("target").Health);
+            Assert.AreEqual(977L, world.EnemyOf("target").Health);
             Assert.AreEqual(BasicAttackReadinessKind.Cooldown,
                 world.InspectBasicAttack(id).Kind);
             Assert.AreEqual(0, world.Game.DefeatedEnemies);
@@ -273,7 +275,7 @@ namespace Ordr.Mobile.Tests
             world.Step(0.24);
             Assert.AreEqual(1000L, world.EnemyOf("target").Health);
             world.Step(0.01);
-            Assert.AreEqual(969L, world.EnemyOf("target").Health);
+            Assert.AreEqual(977L, world.EnemyOf("target").Health);
         }
     }
 }
