@@ -51,8 +51,11 @@ namespace Ordr.Mobile.Data
                 issues.Add(unit.AttackPowerMin.HasValue
                     ? "평타 공격력 범위 근거는 있으나 공격 주기·피해 계열 및 버전 확인이 필요"
                     : "도감 평타 공격력·공격 주기·피해 계열 추가 수집 필요");
-            if (profile == null && !unit.HasNoPublishedSkills)
-                issues.Add("도감 상세 스킬 설명 아직 수집되지 않음");
+            if (profile == null)
+            {
+                if (!unit.HasNoPublishedSkills)
+                    issues.Add("도감 상세 스킬 설명 아직 수집되지 않음");
+            }
             else
             {
                 if (profile.Completeness != "complete")
@@ -153,12 +156,12 @@ namespace Ordr.Mobile.Data
 
             foreach (var profile in skills.All)
                 if (!result.byId.ContainsKey(profile.UnitId))
-                    throw new FormatException("271종 카탈로그에 없는 상세 스킬 데이터: " +
+                    throw new FormatException("현재 카탈로그에 없는 상세 스킬 데이터: " +
                         profile.UnitId);
             if (originalLinks != null)
                 foreach (var original in originalLinks.All)
                     if (!result.byId.ContainsKey(original.CatalogUnitId))
-                        throw new FormatException("271종 카탈로그에 없는 JASS 매핑: " +
+                        throw new FormatException("현재 카탈로그에 없는 JASS 매핑: " +
                             original.CatalogUnitId);
             return result;
         }

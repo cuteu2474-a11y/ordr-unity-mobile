@@ -4,9 +4,9 @@
   "sourceMaster": "data/character-master-database.json",
   "dataVersion": "S2 2.323[C]",
   "summary": {
-    "catalogCharacters": 271,
+    "catalogCharacters": 272,
     "withTooltipProfiles": 200,
-    "withoutTooltipProfiles": 71,
+    "withoutTooltipProfiles": 72,
     "totalSkillEntries": 554,
     "totalPassiveEntries": 295,
     "jassLabelCandidateLinks": 81,
@@ -32,7 +32,7 @@
       "combatReady": 0
     },
     "안흔함": {
-      "catalog": 13,
+      "catalog": 14,
       "profile": 0,
       "skills": 0,
       "passives": 0,
@@ -516,6 +516,22 @@
     {
       "id": "U-13",
       "name": "후쿠로",
+      "grade": "안흔함",
+      "hasTooltipProfile": false,
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "rawcodeCandidateCount": 0,
+      "originalRawcodeVerified": false,
+      "originalBasicAttackVerified": false,
+      "patchStatObservations": 0,
+      "defenseSkillJassLinks": 0,
+      "webRecipeEntries": 0,
+      "priority": "collect-missing-unit-skills-and-original-objects",
+      "state": "not-combat-ready"
+    },
+    {
+      "id": "U-14",
+      "name": "좀비",
       "grade": "안흔함",
       "hasTooltipProfile": false,
       "skillEntries": 0,

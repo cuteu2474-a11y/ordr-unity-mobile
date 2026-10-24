@@ -58,16 +58,16 @@ class GeneratedDataTests(unittest.TestCase):
     def test_full_source_index_and_partial_verified_join(self):
         report = self.source["summary"]
         self.assertEqual(report["originalNamedObjects"], 1493)
-        self.assertEqual(report["catalogCharacters"], 271)
-        self.assertEqual(report["linkedCatalogCharacters"], 270)
+        self.assertEqual(report["catalogCharacters"], 272)
+        self.assertEqual(report["linkedCatalogCharacters"], 271)
         self.assertEqual(report["unresolvedCatalogCharacters"], 1)
-        self.assertEqual(report["linkedWithAttack1"], 269)
+        self.assertEqual(report["linkedWithAttack1"], 270)
         self.assertEqual(report["mappingStatusCounts"]["reviewed-map-name-alias-and-grade"], 54)
         self.assertEqual(report["mappingStatusCounts"]["verified-jass-fusion-result"], 6)
         self.assertEqual(report["mappingStatusCounts"]["verified-jass-label-and-fusion-result"], 49)
         self.assertEqual(report["gameplayParityVerified"], 0)
         rows = self.source["catalogEntries"]
-        self.assertEqual(len({r["catalogId"] for r in rows}), 271)
+        self.assertEqual(len({r["catalogId"] for r in rows}), 272)
         linked = [r for r in rows if r["originalRawcode"]]
         self.assertEqual(len({r["originalRawcode"] for r in linked}), len(linked))
         self.assertTrue(all(r["combatParityVerified"] is False for r in rows))

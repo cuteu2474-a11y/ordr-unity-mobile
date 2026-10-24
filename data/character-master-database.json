@@ -6,7 +6,7 @@
   "contentScope": "Complete 271-character WEB catalog snapshot joined to 200 tooltip profiles; NOT verified complete original W3X object database.",
   "integrity": {
     "sourceBlobShas": {
-      "data/units.json": "092ab3c4bf92f331b5f175d4ad5cf35cd7a2ed86",
+      "data/units.json": "d6af1dfa997a4ad35333c806f69dbf2913912444",
       "data/character-skill-profiles.json": "8a2ceee1fbf283166445803a59e8d7bc54adc86e",
       "data/original-unit-rawcode-label-links.json": "67a2f8417ab9bf948d370f50dc66fff25d88c65e",
       "data/original-stat-evidence.json": "e462b0c37d6a6825fbdeb518908da3a8ed9f8ed4",
@@ -20,9 +20,9 @@
     "note": "Candidate rawcodes and patch observations are provenance only. Null combat values are intentional; never infer zeros or upgrade to verified."
   },
   "summary": {
-    "catalogCharacters": 271,
+    "catalogCharacters": 272,
     "withTooltipProfiles": 200,
-    "withoutTooltipProfiles": 71,
+    "withoutTooltipProfiles": 72,
     "totalSkillEntries": 554,
     "totalPassiveEntries": 295,
     "jassLabelCandidateLinks": 81,
@@ -37,7 +37,7 @@
     "unmatchedOriginalRawcodes": 199,
     "allowedForOriginalParityCombat": 0
   },
-  "storage": "Manifest with all 271 character references. Full original catalog, tooltip skills, JASS evidence, unknown combat fields and blockers are stored in per-grade character record files listed in gradeFiles.",
+  "storage": "Manifest with all 272 character references. Full original catalog, tooltip skills, JASS evidence, unknown combat fields and blockers are stored in per-grade character record files listed in gradeFiles.",
   "gradeFiles": [
     {
       "path": "data/characters/by-grade/C.json",
@@ -49,7 +49,7 @@
     {
       "path": "data/characters/by-grade/U.json",
       "grade": "안흔함",
-      "catalogCount": 13,
+      "catalogCount": 14,
       "profiles": 0,
       "skills": 0
     },
@@ -368,6 +368,16 @@
       "name": "후쿠로",
       "grade": "안흔함",
       "gradeOrder": 13,
+      "recordFile": "data/characters/by-grade/U.json",
+      "hasProfile": false,
+      "hasJassLabelCandidate": false,
+      "combatVerified": false
+    },
+    {
+      "id": "U-14",
+      "name": "좀비",
+      "grade": "안흔함",
+      "gradeOrder": 14,
       "recordFile": "data/characters/by-grade/U.json",
       "hasProfile": false,
       "hasJassLabelCandidate": false,

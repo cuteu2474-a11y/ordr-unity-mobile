@@ -15,18 +15,18 @@
     "data/original-2323C-map-base-stats.json"
   ],
   "summary": {
-    "catalogCharacters": 271,
+    "catalogCharacters": 272,
     "charactersWithTooltipProfiles": 200,
-    "charactersWithoutTooltipProfiles": 71,
+    "charactersWithoutTooltipProfiles": 72,
     "unprofiledByGrade": {
-      "안흔함": 13,
+      "안흔함": 14,
       "특별함": 25,
       "흔함": 9,
       "희귀함": 24
     },
-    "unprofiledWithMapRawcode": 71,
-    "unprofiledWithAbilityCodes": 71,
-    "distinctAbilityRawcodesForResearch": 181,
+    "unprofiledWithMapRawcode": 72,
+    "unprofiledWithAbilityCodes": 72,
+    "distinctAbilityRawcodesForResearch": 182,
     "verifiedSkillFormulasInThisDataset": 0,
     "authorizedOriginalParityImplementations": 0
   },
@@ -93,6 +93,7 @@
     "A026": 1,
     "A027": 1,
     "A028": 1,
+    "A029": 1,
     "A02A": 1,
     "A02B": 1,
     "A02C": 1,
@@ -212,7 +213,7 @@
     "A1A0": 1,
     "A1A1": 1,
     "A1CC": 1,
-    "Avul": 270
+    "Avul": 271
   },
   "warning": "Rawcode lists are original unit-object evidence, not verified skill triggers. Shared rawcode frequency is a research hint, not an effect classification. Missing web tooltip is NOT proof a character has no skills.",
   "characters": [
@@ -1935,6 +1936,28 @@
         "A07I",
         "A0NA",
         "A01O"
+      ],
+      "originalAbilityEffectsResolved": false,
+      "originalSkillJassTriggersResolved": false,
+      "tooltipProfilePresent": false,
+      "originalParitySkillExecutionAuthorized": false,
+      "researchState": "map-ability-ids-only-needs-object-and-jass-skill-review"
+    },
+    {
+      "catalogUnitId": "U-14",
+      "catalogName": "좀비",
+      "grade": "안흔함",
+      "webDexUrl": null,
+      "mapUnitRawcode": "h00H",
+      "mapObjectIdentityStatus": "unique-map-name-and-grade",
+      "mapObjectName": "좀비 - 안흔함",
+      "hasOriginalAttack1ObjectEvidence": true,
+      "originalAbilityRawcodesInMapOrder": [
+        "A029",
+        "Avul"
+      ],
+      "lessFrequentlyObservedRawcodesForResearchOnly": [
+        "A029"
       ],
       "originalAbilityEffectsResolved": false,
       "originalSkillJassTriggersResolved": false,

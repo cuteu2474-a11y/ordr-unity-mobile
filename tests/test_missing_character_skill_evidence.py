@@ -1,4 +1,4 @@
-"""The 71 missing tooltip profiles keep map evidence without invented skills."""
+"""The 72 missing tooltip profiles keep map evidence without invented skills."""
 
 import copy
 import importlib.util
@@ -26,17 +26,17 @@ class MissingCharacterSkillEvidenceTests(unittest.TestCase):
         cls.base = read("original-2323C-map-base-stats.json")
         cls.report = MODULE.build(cls.units, cls.profiles, cls.base)
 
-    def test_all_seventy_one_gaps_and_rawcodes_are_sourced(self):
+    def test_all_seventy_two_gaps_and_rawcodes_are_sourced(self):
         summary = self.report["summary"]
-        self.assertEqual(summary["catalogCharacters"], 271)
+        self.assertEqual(summary["catalogCharacters"], 272)
         self.assertEqual(summary["charactersWithTooltipProfiles"], 200)
-        self.assertEqual(summary["charactersWithoutTooltipProfiles"], 71)
+        self.assertEqual(summary["charactersWithoutTooltipProfiles"], 72)
         self.assertEqual(summary["unprofiledByGrade"], {
-            "흔함": 9, "안흔함": 13, "특별함": 25, "희귀함": 24})
-        self.assertEqual(summary["unprofiledWithMapRawcode"], 71)
-        self.assertEqual(summary["unprofiledWithAbilityCodes"], 71)
-        self.assertEqual(summary["distinctAbilityRawcodesForResearch"], 181)
-        self.assertEqual(len(self.report["characters"]), 71)
+            "흔함": 9, "안흔함": 14, "특별함": 25, "희귀함": 24})
+        self.assertEqual(summary["unprofiledWithMapRawcode"], 72)
+        self.assertEqual(summary["unprofiledWithAbilityCodes"], 72)
+        self.assertEqual(summary["distinctAbilityRawcodesForResearch"], 182)
+        self.assertEqual(len(self.report["characters"]), 72)
 
     def test_map_order_and_identity_are_not_inferred_from_skill_tooltips(self):
         from_original = {x["catalogId"]: x for x in self.base["catalogEntries"]}
@@ -48,7 +48,10 @@ class MissingCharacterSkillEvidenceTests(unittest.TestCase):
                 self.assertEqual(row["mapUnitRawcode"], original["originalRawcode"])
                 self.assertEqual(row["originalAbilityRawcodesInMapOrder"],
                                  MODULE.original_abilities(original))
-                self.assertTrue(row["webDexUrl"].startswith("https://ordr.kr/character/"))
+                if row["catalogUnitId"] == "U-14":
+                    self.assertIsNone(row["webDexUrl"], "웹 도감 URL을 만들어내지 않는다")
+                else:
+                    self.assertTrue(row["webDexUrl"].startswith("https://ordr.kr/character/"))
                 self.assertFalse(row["originalAbilityEffectsResolved"])
                 self.assertFalse(row["originalSkillJassTriggersResolved"])
                 self.assertFalse(row["originalParitySkillExecutionAuthorized"])
@@ -62,7 +65,7 @@ class MissingCharacterSkillEvidenceTests(unittest.TestCase):
         self.assertIn("A0K2", r04["lessFrequentlyObservedRawcodesForResearchOnly"])
         self.assertNotIn("Avul", r04["lessFrequentlyObservedRawcodesForResearchOnly"])
         frequency = self.report["linkedCharacterAbilityRawcodeOccurrenceCounts"]
-        self.assertEqual(frequency["Avul"], 270)
+        self.assertEqual(frequency["Avul"], 271)
         self.assertEqual(self.report["summary"]["verifiedSkillFormulasInThisDataset"], 0)
         self.assertEqual(self.report["summary"]["authorizedOriginalParityImplementations"], 0)
 
@@ -75,7 +78,7 @@ class MissingCharacterSkillEvidenceTests(unittest.TestCase):
         newer = copy.deepcopy(self.profiles)
         newer["profiles"].append({"unitId": "R-04", "skills": [], "passives": []})
         reduced = MODULE.build(self.units, newer, self.base)
-        self.assertEqual(reduced["summary"]["charactersWithoutTooltipProfiles"], 70)
+        self.assertEqual(reduced["summary"]["charactersWithoutTooltipProfiles"], 71)
         self.assertNotIn("R-04", {r["catalogUnitId"] for r in reduced["characters"]})
 
     def test_wrong_version_duplicate_and_name_disagreement_fail_closed(self):

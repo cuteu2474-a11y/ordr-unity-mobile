@@ -3,12 +3,12 @@
   "mode": "nightmare-otherworld",
   "generatedOn": "2026-10-21",
   "purpose": "All-unit runtime registration and remaining original-combat implementation worklist; no invented stats.",
-  "scopeWarning": "271/271 are catalog-addressable roster units, not 271 fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
+  "scopeWarning": "272/272 are catalog-addressable roster units, not 271 fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
   "summary": {
-    "units": 271,
-    "catalogRosterEligible": 271,
+    "units": 272,
+    "catalogRosterEligible": 272,
     "partialSkillProfiles": 200,
-    "uncollectedProfiles": 71,
+    "uncollectedProfiles": 72,
     "skillEntries": 554,
     "passiveEntries": 295,
     "linkedJassRawcodes": 81,
@@ -21,7 +21,7 @@
       "rawcodeLinks": 0
     },
     "안흔함": {
-      "units": 13,
+      "units": 14,
       "profiles": 0,
       "rawcodeLinks": 0
     },
@@ -482,6 +482,24 @@
     {
       "id": "U-13",
       "name": "후쿠로",
+      "grade": "안흔함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "U-14",
+      "name": "좀비",
       "grade": "안흔함",
       "rosterDefinition": "implemented",
       "skillProfile": "not-collected",

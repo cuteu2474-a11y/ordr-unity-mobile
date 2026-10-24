@@ -7,12 +7,12 @@
   "warning": "Object rawcode links and material/cost matches do NOT prove UPUN and other side conditions, transactional consumption, world effects or gameplay parity.",
   "summary": {
     "uniqueCwrUnitRawcodes": 280,
-    "originalCatalogObjectMatchedRawcodes": 270,
+    "originalCatalogObjectMatchedRawcodes": 271,
     "previouslyUnresolvedIngredientRawcodes": 163,
-    "newlyCrossReferencedIngredients": 155,
-    "stillWithoutCatalogIdentity": 8,
+    "newlyCrossReferencedIngredients": 156,
+    "stillWithoutCatalogIdentity": 7,
     "ingredientConditionOccurrences": 775,
-    "catalogMatchedIngredientConditionOccurrences": 711,
+    "catalogMatchedIngredientConditionOccurrences": 712,
     "webRecipeCount": 10,
     "matchingWebRecipes": 10,
     "catalogVsJassLabelConflicts": 0
@@ -2359,8 +2359,8 @@
       "rawcode": "h00H",
       "ingredientUseCount": 1,
       "resultOfAbilities": [],
-      "catalogUnitId": null,
-      "objectCatalogMappingStatus": null,
+      "catalogUnitId": "U-14",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
       "originalW3xObjectName": "좀비 - 안흔함",
       "jassLabelCatalogUnitId": null,
       "approvedForMaterialConsumption": false

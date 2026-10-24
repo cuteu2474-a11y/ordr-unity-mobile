@@ -33,12 +33,12 @@ class OriginalFusionObjectReconciliationTests(unittest.TestCase):
     def test_all_source_identities_are_not_approvals(self):
         s = self.result["summary"]
         self.assertEqual(s["uniqueCwrUnitRawcodes"], 280)
-        self.assertEqual(s["originalCatalogObjectMatchedRawcodes"], 270)
+        self.assertEqual(s["originalCatalogObjectMatchedRawcodes"], 271)
         self.assertEqual(s["previouslyUnresolvedIngredientRawcodes"], 163)
-        self.assertEqual(s["newlyCrossReferencedIngredients"], 155)
-        self.assertEqual(s["stillWithoutCatalogIdentity"], 8)
+        self.assertEqual(s["newlyCrossReferencedIngredients"], 156)
+        self.assertEqual(s["stillWithoutCatalogIdentity"], 7)
         self.assertEqual(s["ingredientConditionOccurrences"], 775)
-        self.assertEqual(s["catalogMatchedIngredientConditionOccurrences"], 711)
+        self.assertEqual(s["catalogMatchedIngredientConditionOccurrences"], 712)
         self.assertTrue(all(not r["approvedForMaterialConsumption"]
                             for r in self.result["entries"]))
 
@@ -53,12 +53,15 @@ class OriginalFusionObjectReconciliationTests(unittest.TestCase):
                 self.assertTrue(row["originalNonUnitConditionsInOrder"])
                 self.assertFalse(row["approvedForFusionExecution"])
 
-    def test_unmapped_zombie_and_other_special_objects_stay_unknown(self):
+    def test_original_map_zombie_is_mapped_but_unverified_material_consumption(self):
         unknown = {r["rawcode"]: r for r in self.result["entries"]
                    if r["ingredientUseCount"] and r["catalogUnitId"] is None}
         self.assertEqual(set(unknown),
-            {"h04S","h06G","h060","h05X","h05Y","H08T","h00H","h0AN"})
-        self.assertEqual(unknown["h00H"]["originalW3xObjectName"], "좀비 - 안흔함")
+            {"h04S","h06G","h060","h05X","h05Y","H08T","h0AN"})
+        zombie = next(r for r in self.result["entries"] if r["rawcode"] == "h00H")
+        self.assertEqual(zombie["catalogUnitId"], "U-14")
+        self.assertEqual(zombie["originalW3xObjectName"], "좀비 - 안흔함")
+        self.assertFalse(zombie["approvedForMaterialConsumption"])
 
     def test_et04_ryuma_object_and_jass_result_agree(self):
         self.assertEqual(self.result["summary"]["catalogVsJassLabelConflicts"], 0)

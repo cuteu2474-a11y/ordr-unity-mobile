@@ -99,7 +99,10 @@ def build(unit_doc, profile_doc, links_doc, patch_doc):
         "mode": "nightmare-otherworld",
         "generatedOn": "2026-10-21",
         "purpose": "All-unit runtime registration and remaining original-combat implementation worklist; no invented stats.",
-        "scopeWarning": "271/271 are catalog-addressable roster units, not 271 fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
+        "scopeWarning": (str(len(rows)) + "/" + str(len(rows)) +
+                " are catalog-addressable roster units, not fully implemented fighting units. "
+                "200 profiles are partially transcribed. Stats/formulas and full native "
+                "behaviors remain unverified."),
         "summary": {
             "units": len(rows),
             "catalogRosterEligible": len(rows),

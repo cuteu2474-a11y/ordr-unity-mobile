@@ -2,7 +2,7 @@
   "gameVersion": "S2 2.323[C]",
   "collectionDate": "2026-10-21",
   "summary": {
-    "catalogCharacters": 271,
+    "catalogCharacters": 272,
     "detailedEligible": 200,
     "detailedProfilesCollected": 200,
     "remainingDetailed": 0,
@@ -18,7 +18,7 @@
     },
     {
       "grade": "안흔함",
-      "allCharacters": 13,
+      "allCharacters": 14,
       "detailEligible": 0,
       "detailProfilesCollected": 0,
       "remaining": 0
@@ -142,7 +142,7 @@
       "RN-08",
       "RN-10"
     ],
-    "missingOriginalUnitRawcodes": 271,
+    "missingOriginalUnitRawcodes": 272,
     "partialProfiles": 200,
     "noGameplayTestsUntilFeatureComplete": true
   }

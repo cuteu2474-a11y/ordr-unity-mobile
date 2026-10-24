@@ -31,7 +31,7 @@ def validate():
     catalog = {r["id"]:r for r in load("data/units.json")["entries"]}
     profiles = {r["unitId"]:r for r in
                 load("data/character-skill-profiles.json")["profiles"]}
-    require(len(catalog) == 271 and len(profiles) == 200, "source duplicate/drift")
+    require(len(catalog) == 272 and len(profiles) == 200, "source duplicate/drift")
     links = {}
     for row in load("data/original-unit-rawcode-label-links.json")["mappings"]:
         links.setdefault(row["catalogUnitId"], []).append(row)
@@ -60,9 +60,9 @@ def validate():
         allrows.extend(rows)
 
     ids = [x["id"] for x in allrows]
-    require(len(ids)==271 and len(set(ids))==271, "missing/duplicate unit")
+    require(len(ids)==272 and len(set(ids))==272, "missing/duplicate unit")
     require(set(ids)==set(catalog), "catalog names/IDs not matched")
-    require(len(m["characters"])==271, "manifest missing units")
+    require(len(m["characters"])==272, "manifest missing units")
     indexed = set()
     for item in m["characters"]:
         uid=item["id"]
@@ -125,7 +125,7 @@ def validate():
     }
     require(m["summary"]==derived and audit["summary"]==derived,
             "master/audit mismatch")
-    require(len(audit["researchQueue"])==271, "missing backlog rows")
+    require(len(audit["researchQueue"])==272, "missing backlog rows")
     for grade, n in Counter(x["grade"] for x in allrows).items():
         require(audit["byGrade"][grade]["catalog"]==n, grade+" grade drift")
     require(len(rawindex["entries"])==280, "JASS rawcode index mismatch")

@@ -17,18 +17,18 @@
   ],
   "summary": {
     "originalNamedObjects": 1493,
-    "catalogCharacters": 271,
-    "linkedCatalogCharacters": 270,
+    "catalogCharacters": 272,
+    "linkedCatalogCharacters": 271,
     "unresolvedCatalogCharacters": 1,
     "mappingStatusCounts": {
       "reviewed-map-name-alias-and-grade": 54,
-      "unique-map-name-and-grade": 152,
+      "unique-map-name-and-grade": 153,
       "unmatched": 1,
       "verified-common-map-identity": 9,
       "verified-jass-fusion-result": 6,
       "verified-jass-label-and-fusion-result": 49
     },
-    "linkedWithAttack1": 269,
+    "linkedWithAttack1": 270,
     "gameplayParityVerified": 0
   },
   "catalogEntries": [
@@ -756,6 +756,39 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A07I,A0NA,A01O,Avul",
+      "combatParityVerified": false
+    },
+    {
+      "catalogId": "U-14",
+      "catalogName": "좀비",
+      "grade": "안흔함",
+      "mappingStatus": "unique-map-name-and-grade",
+      "originalRawcode": "h00H",
+      "candidateRawcodes": [],
+      "sourceMapName": "좀비 - 안흔함",
+      "attack1": {
+        "attackCooldownSeconds": 0.61,
+        "baseDamagePlus": 120,
+        "diceCount": 2,
+        "diceSides": 4,
+        "originalRange": 1050,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "normal",
+        "attackPointSeconds": 0.25,
+        "minimumBaseDamage": 122,
+        "maximumBaseDamage": 128
+      },
+      "attack2": null,
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A029,Avul",
       "combatParityVerified": false
     },
     {
