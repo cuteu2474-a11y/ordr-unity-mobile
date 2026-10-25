@@ -19,6 +19,7 @@ namespace Ordr.Mobile.Editor
             "original-stat-evidence.json",
             "original-2323C-map-base-stats.json",
             "original-2323C-all-unit-aura-audit.json",
+            "original-2323C-monster-wave-script-evidence.json",
             "original-2323C-missing-skill-profile-evidence.json",
             "verified-mobile-fusion-recipes.json",
             "otherworld-2323C-mystic-web-recipes.json",
@@ -54,7 +55,7 @@ namespace Ordr.Mobile.Editor
             }
         }
 
-        [MenuItem("ORDR/캐릭터 데이터 271종 · 스킬 200종 동기화")]
+        [MenuItem("ORDR/캐릭터 데이터 272종 · 스킬 200종 동기화")]
         public static void Sync()
         {
             CopySourceData(logIfUnchanged: true);

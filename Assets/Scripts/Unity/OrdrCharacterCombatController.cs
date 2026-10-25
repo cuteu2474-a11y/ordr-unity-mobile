@@ -23,6 +23,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset originalHelperAlchemyRecipesJson;
         [SerializeField] private TextAsset originalUnitRawcodeLabelsJson;
         [SerializeField] private TextAsset verifiedMonsterWavesJson;
+        [SerializeField] private TextAsset originalMonsterWaveScriptJson;
         [SerializeField] private TextAsset originalWispPoolsJson;
         [SerializeField] private bool enableMobileTouchPanel = true;
         [SerializeField] private bool enableUnitWorldMarkers = true;
@@ -138,6 +139,7 @@ namespace Ordr.Mobile.Unity
         public Ordr323OriginalAlchemyRefundCatalog OriginalAlchemyRefunds { get; private set; }
         public OriginalUnitRawcodeLabelCatalog OriginalUnitRawcodes { get; private set; }
         public Original323VerifiedMonsterWaveCatalog VerifiedMonsterWaves { get; private set; }
+        public Original323MonsterWaveIdentityCatalog OriginalMonsterSpawnIdentities { get; private set; }
         private IOriginal323LiveMonsterWaveEvidence liveMonsterWaveEvidence;
         public CombatWaveDirector VerifiedWaveDirector { get; } = new CombatWaveDirector();
 
@@ -680,6 +682,14 @@ namespace Ordr.Mobile.Unity
                 if (monsterData != null)
                     VerifiedMonsterWaves = Original323VerifiedMonsterWaveCatalog
                         .FromJson(monsterData.text);
+                // Original JASS rawcodes/counts are identity evidence only.
+                // Do not use its object-base HP/armor as verified live stats.
+                var originalSpawnData = originalMonsterWaveScriptJson != null ?
+                    originalMonsterWaveScriptJson :
+                    Resources.Load<TextAsset>("OrdrData/original-2323C-monster-wave-script-evidence");
+                if (originalSpawnData != null)
+                    OriginalMonsterSpawnIdentities =
+                        Original323MonsterWaveIdentityCatalog.FromJson(originalSpawnData.text);
                 UnitDefinitions = UnitImplementationRegistry.Combine(Units, Skills,
                     OriginalUnitRawcodes);
                 if (Units.Count != 272 || Skills.CharacterCount != 200 ||
@@ -900,6 +910,10 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException(
                     "요청한 라운드에는 검증된 2.323[C] 몬스터 데이터가 없습니다.");
             string approvalEvidence;
+            if (OriginalMonsterSpawnIdentities == null ||
+                !OriginalMonsterSpawnIdentities.MatchesSinglePlayerWave(plan))
+                throw new InvalidOperationException(
+                    "요청한 라운드의 몬스터 ID·역할·수량이 원본 JASS와 일치하지 않습니다.");
             if (!Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
                 plan, liveMonsterWaveEvidence, out approvalEvidence))
                 throw new InvalidOperationException(
