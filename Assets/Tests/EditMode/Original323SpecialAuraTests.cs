@@ -276,6 +276,22 @@ namespace Ordr.Mobile.Tests
             Assert.Less(world.EnemyOf("enemy").Health, control.EnemyOf("enemy").Health);
         }
 
+        [TestCase("S-10")]
+        [TestCase("S-26")]
+        public void DuplicateIdenticalArmorAurasUseOneReductionAndDoNotBlockCombat(string id)
+        {
+            var single = World(new Targets(), allowNative: true);
+            single.SpawnCharacter(id, 0, 0); single.SpawnCharacter("C-01", 0, 0); Enemy(single);
+            single.Step(0);
+            var duplicate = World(new Targets(), allowNative: true);
+            duplicate.SpawnCharacter(id, 0, 0); duplicate.SpawnCharacter(id, 0, 0);
+            duplicate.SpawnCharacter("C-01", 0, 0); Enemy(duplicate);
+            Assert.AreEqual(2, duplicate.StatusOf("enemy").ActiveCount, "Keep both source lifecycles.");
+            duplicate.Step(0);
+            Assert.AreEqual(single.EnemyOf("enemy").Health, duplicate.EnemyOf("enemy").Health);
+            Assert.Less(duplicate.EnemyOf("enemy").Health, 10000);
+        }
+
         [TestCase(false)]
         [TestCase(true)]
         public void GuardBuffCannotBeSilentlyIgnoredAndLeavingRangeRestoresVanillaAttack(bool rejectedPolicy)

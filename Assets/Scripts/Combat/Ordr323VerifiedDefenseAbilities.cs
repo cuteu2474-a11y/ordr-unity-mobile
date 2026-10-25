@@ -130,26 +130,30 @@ namespace Ordr.Mobile.Combat
             if (target == null || effects == null ||
                 !target.Defenses.HasVerifiedArmor)
                 return false;
-            CombatEffect singleAura = null;
+            var auraContributions = new List<Original323AuraContribution>();
             foreach (var effect in effects)
             {
                 if (effect.Type == CombatEffectType.ArmorBreakStack) return false;
                 if (effect.Type != CombatEffectType.ArmorReduction) continue;
-                if (singleAura != null || effect.Amount != 3 ||
-                    effect.Origin != CombatEffectOrigin.Aura || effect.DurationSeconds != 0 ||
+                Original323AuraContribution contribution;
+                if (effect.Amount <= 0 ||
+                    !Original323AuraCommonRules.TryReadEffectIdentity(effect, out contribution) ||
                     originalSpecialAuraProvenance == null ||
                     !originalSpecialAuraProvenance(target.Id, effect)) return false;
-                singleAura = effect;
+                auraContributions.Add(contribution);
             }
-            if (singleAura != null)
+            if (auraContributions.Count != 0)
             {
                 if (armorBreakStacks != 0) return false;
                 foreach (var effect in effects)
                     if (effect.Type == CombatEffectType.OriginalA04PLevelIncrease) return false;
-                // Exactly one proven AHad -3 aura. Multiple buff IDs, duplicate
-                // casters and A04M/A04P combinations still require native
-                // stacking proof; never sum them by tooltip resemblance.
-                effectiveArmor = target.Defenses.BaseArmor.Value - singleAura.Amount;
+                double reduction;
+                if (!Original323AuraCommonRules.TryResolveIdenticalAura(auraContributions,
+                    out reduction)) return false;
+                // Identical source-proven auras contribute once, regardless
+                // of how many units emit them. Different native identities
+                // and A04M/A04P combinations still require stacking proof.
+                effectiveArmor = target.Defenses.BaseArmor.Value - reduction;
                 return !double.IsNaN(effectiveArmor) && !double.IsInfinity(effectiveArmor);
             }
 

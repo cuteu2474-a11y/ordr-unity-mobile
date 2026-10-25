@@ -38,7 +38,7 @@ namespace Ordr.Mobile.Combat
 
         public string SourceKey(long caster) =>
             "original-aura:" + caster.ToString(System.Globalization.CultureInfo.InvariantCulture) +
-            ":" + AbilityRawcode + ":" + BuffRawcode;
+            ":" + AbilityRawcode + ":" + BuffRawcode + ":1";
     }
 
     public sealed class Original323SpecialAuraCatalog
