@@ -263,20 +263,22 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void TwoIndependentBluenoProcsRouteToCompleteEffectPortsOnly()
+        public void BluenoCriticalIsPrehitOnlyWhileRankyakuCanRemainPosthit()
         {
             var rng = new CountingRandom();
+            // A synthetic world claiming to support critical MUST NOT turn
+            // it into a 0-damage OnHit event. The new pre-armor hit decorator
+            // owns the separate 15% roll (tested in CriticalRankyakuTests).
             var effects = new TestOnlyEffects("A07I:critical", "A07I:rankyaku");
             var world = World("U-04", rng, effects);
             long blueno = world.SpawnCharacter("U-04", 0, 0);
             Enemy(world);
             Assert.AreEqual(2, world.OriginalUncommonSkillsOf(blueno).Count);
-            Assert.IsTrue(world.IsOriginalUncommonSkillConnected(blueno, "A07I:critical"));
+            Assert.IsFalse(world.IsOriginalUncommonSkillConnected(blueno, "A07I:critical"));
             Assert.IsTrue(world.IsOriginalUncommonSkillConnected(blueno, "A07I:rankyaku"));
             world.Step(.2);
-            Assert.AreEqual(4, rng.Calls, "2d4 object dice + two independent chance rolls");
-            CollectionAssert.AreEquivalent(
-                new[] { "A07I:critical", "A07I:rankyaku" }, effects.Fired);
+            Assert.AreEqual(3, rng.Calls, "2d4 dice plus Rankyaku only; no fake crit RNG");
+            CollectionAssert.AreEquivalent(new[] { "A07I:rankyaku" }, effects.Fired);
         }
 
         [Test]
