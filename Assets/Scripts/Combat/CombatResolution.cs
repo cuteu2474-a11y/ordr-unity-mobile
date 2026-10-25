@@ -4,6 +4,14 @@ using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Combat
 {
+    // A witness must observe the actual existing-unit A04Q operation (for example Bd5).
+    // Global LK/NJ next-spawn events alone must never update an already spawned enemy.
+    public interface IOriginal323LiveMonsterA04QWitness
+    {
+        bool TryConfirm(string enemyId, int expectedPreviousLevel,
+            int observedCurrentLevel, out string observedJassEvidence);
+    }
+
     // 피해량은 원작 공식 검증 후 외부 계산기에서 전달한다.
     public sealed class CombatEnemy
     {
@@ -66,6 +74,42 @@ namespace Ordr.Mobile.Combat
             Defenses = defenses ?? throw new ArgumentNullException(nameof(defenses));
             Status = new CombatStatusEngine();
         }
+        // Atomically replace only the magic-defense level after a distinct, source-
+        // verified operation on this live monster. Health and base armor are preserved.
+        // An unknown baseline, a stale previous level or an unsupported level fails closed.
+        public bool TryApplyObservedOriginalA04QLevel(int expectedPreviousLevel,
+            int observedCurrentLevel, IOriginal323LiveMonsterA04QWitness witness)
+        {
+            var previous = Defenses;
+            if (!IsAlive || witness == null || previous == null ||
+                !previous.Kind.HasValue || !previous.MagicAbilityLevel.HasValue ||
+                previous.MagicAbilityLevel.Value != expectedPreviousLevel ||
+                expectedPreviousLevel == observedCurrentLevel ||
+                string.IsNullOrWhiteSpace(previous.Source))
+                return false;
+            double verifiedResistance;
+            if (!Ordr323VerifiedDefenseAbilities.TryGetMagicResistancePercent(
+                observedCurrentLevel, out verifiedResistance))
+                return false;
+            string evidence;
+            if (!witness.TryConfirm(Id, expectedPreviousLevel,
+                observedCurrentLevel, out evidence) ||
+                string.IsNullOrWhiteSpace(evidence) ||
+                evidence.IndexOf("TEST_ONLY", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                evidence.IndexOf("SYNTHETIC", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                evidence.IndexOf("MOCK_ONLY", StringComparison.OrdinalIgnoreCase) >= 0)
+                return false;
+
+            // Keep the original verified base armor, armor type and enemy kind.
+            // Unknown armor stays unknown; the A04Q update does not approve HP or armor.
+            var updated = Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                previous.Kind.Value, previous.BaseArmor, previous.WarcraftArmorType,
+                observedCurrentLevel, previous.Source + " / observed live A04Q " +
+                expectedPreviousLevel + "->" + observedCurrentLevel + ": " + evidence);
+            Defenses = updated;
+            return true;
+        }
+
         public long ReceiveDamage(long damage)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException(nameof(damage));

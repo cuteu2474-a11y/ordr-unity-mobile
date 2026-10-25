@@ -145,6 +145,7 @@ namespace Ordr.Mobile.Unity
         public Original323NightmareA04QSpawnState NightmareMonsterA04QSpawns { get; private set; }
         private IOriginal323LiveMonsterWaveEvidence liveMonsterWaveEvidence;
         private IOriginal323NightmareA04QEventWitness nightmareA04QEventWitness;
+        private IOriginal323LiveMonsterA04QWitness liveMonsterA04QWitness;
         public CombatWaveDirector VerifiedWaveDirector { get; } = new CombatWaveDirector();
 
         // Keep independent final-stat/target/spawn approval separate from the
@@ -177,6 +178,29 @@ namespace Ordr.Mobile.Unity
                 NightmareMonsterA04QSpawns != null &&
                 NightmareMonsterA04QSpawns.TryApplyObservedEvent(
                     sourceEvent, playerSlot, nightmareA04QEventWitness);
+        }
+
+        // Explicit live-unit event adapter. The next-spawn LK/NJ state is NOT
+        // evidence for changing a previously spawned unit's current A04Q.
+        public void ConfigureObservedLiveMonsterA04Q(
+            IOriginal323LiveMonsterA04QWitness verifiedEvents)
+        {
+            if (liveMonsterA04QWitness != null)
+                throw new InvalidOperationException(
+                    "개별 몬스터 A04Q 관측기를 이미 연결했습니다.");
+            liveMonsterA04QWitness = verifiedEvents ??
+                throw new ArgumentNullException(nameof(verifiedEvents));
+        }
+
+        public bool TryApplyObservedLiveMonsterA04Q(string enemyId,
+            int expectedPreviousLevel, int observedCurrentLevel)
+        {
+            return Combat != null &&
+                Combat.Game.Phase == Ordr.Mobile.Core.SessionPhase.Running &&
+                liveMonsterA04QWitness != null &&
+                Combat.TryApplyObservedEnemyA04QLevel(enemyId,
+                    expectedPreviousLevel, observedCurrentLevel,
+                    liveMonsterA04QWitness);
         }
 
         // A source-backed next-spawn estimate; NOT an independent live

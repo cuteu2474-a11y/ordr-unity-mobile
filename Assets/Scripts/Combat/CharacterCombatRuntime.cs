@@ -1058,6 +1058,17 @@ namespace Ordr.Mobile.Combat
             return string.IsNullOrWhiteSpace(enemyId) ? null : resolution.GetEnemy(enemyId);
         }
 
+        // Existing-unit A04Q changes must be observed independently of LK/NJ
+        // next-spawn state; the damage adapter reads this same CombatEnemy.
+        public bool TryApplyObservedEnemyA04QLevel(string enemyId,
+            int expectedPreviousLevel, int observedCurrentLevel,
+            IOriginal323LiveMonsterA04QWitness verifiedEvent)
+        {
+            CombatEnemy live = EnemyOf(enemyId);
+            return live != null && live.TryApplyObservedOriginalA04QLevel(
+                expectedPreviousLevel, observedCurrentLevel, verifiedEvent);
+        }
+
         // Called only after the source-verified monster spawner resolves
         // each unit's existing A04R level. Unknown level is never zero.
         public void ConfigureVerifiedEnemyOriginalA04R(
