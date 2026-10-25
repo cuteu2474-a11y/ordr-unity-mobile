@@ -5,6 +5,13 @@ using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Data
 {
+    // Production approval is an independent source/target review. JSON evidence
+    // strings and a map checksum alone are never a permit to start real combat.
+    public interface IOriginal323LiveMonsterWaveEvidence
+    {
+        bool TryApprove(VerifiedWavePlan plan, out string approvalEvidence);
+    }
+
     // The playable-character UnitBalance.slk rows are NOT monster stats.
     // Only independently reviewed final spawn values may enter this catalog.
     // A matching map checksum does not, by itself, prove a JASS-modified HP
@@ -22,6 +29,45 @@ namespace Ordr.Mobile.Data
         public bool TryGetPlan(int waveNumber, out VerifiedWavePlan plan)
         {
             return waves.TryGetValue(waveNumber, out plan);
+        }
+
+        // A synthetic test world may use FromJson, but must never enter the
+        // shipped MainGame wave path. Even apparently valid strings require an
+        // independent runtime proof of final HP, armor, target flags and spawn.
+        public static bool TryAuthorizeForLive(VerifiedWavePlan plan,
+            IOriginal323LiveMonsterWaveEvidence verifiedSource,
+            out string approvalEvidence)
+        {
+            approvalEvidence = null;
+            if (plan == null || verifiedSource == null || plan.WaveNumber < 1 ||
+                plan.WaveNumber > 65 || plan.Spawns == null || plan.Spawns.Count == 0 ||
+                IsTestEvidence(plan.Evidence))
+                return false;
+
+            foreach (var spawn in plan.Spawns)
+            {
+                if (spawn == null || string.IsNullOrWhiteSpace(spawn.OriginalRawcode) ||
+                    spawn.OriginalRawcode.Length != 4 || spawn.Health <= 0 ||
+                    spawn.Defenses == null || !spawn.Defenses.HasVerifiedArmor ||
+                    IsTestEvidence(spawn.Defenses.Source))
+                    return false;
+            }
+
+            string proof;
+            if (!verifiedSource.TryApprove(plan, out proof) ||
+                IsTestEvidence(proof))
+                return false;
+            approvalEvidence = proof;
+            return true;
+        }
+
+        private static bool IsTestEvidence(string source)
+        {
+            return string.IsNullOrWhiteSpace(source) ||
+                source.IndexOf("TEST_ONLY", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                source.IndexOf("SYNTHETIC", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                source.IndexOf("MOCK_ONLY", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                source.IndexOf("MODEL_ONLY", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private static double RequiredFinite(Dictionary<string, object> data,

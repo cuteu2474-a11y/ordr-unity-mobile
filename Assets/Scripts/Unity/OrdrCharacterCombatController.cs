@@ -138,7 +138,19 @@ namespace Ordr.Mobile.Unity
         public Ordr323OriginalAlchemyRefundCatalog OriginalAlchemyRefunds { get; private set; }
         public OriginalUnitRawcodeLabelCatalog OriginalUnitRawcodes { get; private set; }
         public Original323VerifiedMonsterWaveCatalog VerifiedMonsterWaves { get; private set; }
+        private IOriginal323LiveMonsterWaveEvidence liveMonsterWaveEvidence;
         public CombatWaveDirector VerifiedWaveDirector { get; } = new CombatWaveDirector();
+
+        // Keep independent final-stat/target/spawn approval separate from the
+        // imported model or test fixture. Configure before the combat world.
+        public void ConfigureVerifiedLiveMonsterWaves(
+            IOriginal323LiveMonsterWaveEvidence verifiedSource)
+        {
+            if (Combat != null || liveMonsterWaveEvidence != null)
+                throw new InvalidOperationException("몬스터 실전 승인 근거는 전투 생성 전에 한 번만 연결하세요.");
+            liveMonsterWaveEvidence = verifiedSource ??
+                throw new ArgumentNullException(nameof(verifiedSource));
+        }
         public OriginalJassFusionPlanner OriginalFusionPlanner { get; private set; }
         public AssistedFusionService FusionAssistance { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
@@ -887,6 +899,11 @@ namespace Ordr.Mobile.Unity
             if (!VerifiedMonsterWaves.TryGetPlan(waveNumber, out plan))
                 throw new InvalidOperationException(
                     "요청한 라운드에는 검증된 2.323[C] 몬스터 데이터가 없습니다.");
+            string approvalEvidence;
+            if (!Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
+                plan, liveMonsterWaveEvidence, out approvalEvidence))
+                throw new InvalidOperationException(
+                    "최종 몬스터 체력·방어·대상 면역·출현의 독립 실전 근거가 없습니다.");
             VerifiedWaveDirector.Begin(Combat, plan);
         }
 

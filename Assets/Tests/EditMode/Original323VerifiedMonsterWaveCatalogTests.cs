@@ -138,6 +138,77 @@ namespace Ordr.Mobile.Tests
             Assert.Throws<FormatException>(() => Read(duplicateWave));
         }
 
+        private sealed class TestLiveApproval : IOriginal323LiveMonsterWaveEvidence
+        {
+            public bool Allow;
+            public string Evidence;
+            public int Calls;
+
+            public bool TryApprove(VerifiedWavePlan plan, out string approvalEvidence)
+            {
+                Calls++;
+                approvalEvidence = Evidence;
+                return Allow;
+            }
+        }
+
+        [Test]
+        public void SyntheticWaveDataCannotBecomeLiveEvenWithAnApprovalProvider()
+        {
+            VerifiedWavePlan wave;
+            Assert.IsTrue(Read().TryGetPlan(1, out wave));
+            var approval = new TestLiveApproval {
+                Allow = true, Evidence = "original live inspection"
+            };
+            string reason;
+            Assert.IsFalse(Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
+                wave, approval, out reason));
+            Assert.AreEqual(0, approval.Calls);
+            Assert.IsNull(reason);
+        }
+
+        [Test]
+        public void LiveWaveNeedsIndependentProofBeyondJsonEvidenceStrings()
+        {
+            // The substituted labels are test data, not genuine retail proof.
+            // They establish that text alone cannot grant runtime permission.
+            var catalog = Read(Fixture.Replace("TEST_ONLY:", "SOURCE_REVIEW:"));
+            VerifiedWavePlan wave;
+            Assert.IsTrue(catalog.TryGetPlan(1, out wave));
+            string proof;
+            Assert.IsFalse(Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
+                wave, null, out proof));
+
+            var approval = new TestLiveApproval {
+                Allow = false, Evidence = "independent audit rejected"
+            };
+            Assert.IsFalse(Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
+                wave, approval, out proof));
+            approval.Allow = true;
+            approval.Evidence = "TEST_ONLY: accepted";
+            Assert.IsFalse(Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
+                wave, approval, out proof));
+            approval.Evidence = "independent live target and final-stat audit";
+            Assert.IsTrue(Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
+                wave, approval, out proof));
+            Assert.AreEqual(approval.Evidence, proof);
+        }
+
+        [Test]
+        public void WaveNumberOutsideOriginalSixtyFiveCannotReceiveLiveApproval()
+        {
+            VerifiedWavePlan wave;
+            Assert.IsTrue(Read(Fixture.Replace(
+                "\"waveNumber\":1", "\"waveNumber\":66")).TryGetPlan(66, out wave));
+            var approval = new TestLiveApproval {
+                Allow = true, Evidence = "independent live audit"
+            };
+            string proof;
+            Assert.IsFalse(Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
+                wave, approval, out proof));
+            Assert.AreEqual(0, approval.Calls);
+        }
+
         [Test]
         public void VerifiedSpawnTimesActuallyControlWorldEnemyHealthAndArmor()
         {
