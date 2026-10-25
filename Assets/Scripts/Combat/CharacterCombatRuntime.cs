@@ -287,6 +287,80 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
+        // Native A07M is one committed primary basic attack plus at most two
+        // independently resolved additional shots. The primary target is
+        // excluded: it already took a full native hit in the attack pipeline.
+        // This method may only run inside Robin's approved skill event.
+        // Preflight ALL extra hits before mutating HP; no partial volley when
+        // any target's identity, defense, lane or damage evidence is unknown.
+        internal bool TryCommitOriginalRobinMultiTarget(string attackerId,
+            string primaryTargetId, string procId,
+            IReadOnlyList<Original323RobinSecondaryHit> additionalHits,
+            out long totalActualDamage)
+        {
+            totalActualDamage = 0;
+            if (!processingStep || game.Phase != SessionPhase.Running ||
+                procId != "A07M:multi3" ||
+                procId != executingUncommonProcId ||
+                attackerId != executingUncommonActor ||
+                primaryTargetId != executingUncommonTarget ||
+                additionalHits == null || additionalHits.Count > 2)
+                return false;
+            long actorId;
+            CharacterInstance actor;
+            if (!long.TryParse(attackerId, NumberStyles.Integer,
+                    CultureInfo.InvariantCulture, out actorId) ||
+                !characters.TryGetValue(actorId, out actor) ||
+                actor.Catalog.Id != "U-01" ||
+                uncommonAbilities == null ||
+                uncommonAbilities.FindProc("U-01", procId) == null)
+                return false;
+            var touched = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var shot in additionalHits)
+            {
+                SpatialCombatEnemy target;
+                Ordr323ArmorType armorType;
+                if (shot == null || shot.TargetId == primaryTargetId ||
+                    shot.FinalHpDamage < 0 ||
+                    string.IsNullOrWhiteSpace(shot.Evidence) ||
+                    !touched.Add(shot.TargetId) ||
+                    !enemies.TryGetValue(shot.TargetId, out target) ||
+                    !target.Enemy.IsAlive ||
+                    !CanAttackInThisLane(actor, target) ||
+                    !target.Enemy.Defenses.HasVerifiedArmor ||
+                    !Ordr323OriginalDamageRules.TryReadArmorType(
+                        target.Enemy.Defenses.WarcraftArmorType, out armorType) ||
+                    (actor.BasicTargetFilter != null &&
+                     !actor.BasicTargetFilter.CanAttemptBasicAttack(
+                         actor.Catalog, target.Enemy)) ||
+                    resolution.GetEnemy(shot.TargetId) == null)
+                    return false;
+            }
+            // Resolution is shared with regular attacks so defeat accounting,
+            // participation, damage listeners, and wave transitions stay
+            // consistent. A zero-secondary volley is valid when the source
+            // confirms no other Warcraft-eligible enemies.
+            foreach (var shot in additionalHits)
+            {
+                SpatialCombatEnemy enemy = enemies[shot.TargetId];
+                long actual;
+                if (!resolution.TryApplySkillDamage(attackerId,
+                        shot.TargetId, shot.FinalHpDamage, out actual))
+                    throw new InvalidOperationException(
+                        "A07M 추가 타격 사전검증 이후 전장/적 상태가 변경되었습니다.");
+                totalActualDamage = checked(totalActualDamage + actual);
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillDamage, attackerId,
+                    shot.TargetId, procId, shot.Evidence, actual));
+                if (!enemy.Enemy.IsAlive)
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EnemyDefeated,
+                        attackerId, shot.TargetId, procId,
+                        "원본 A07M 추가 타격으로 적 처치", actual));
+            }
+            return true;
+        }
+
         private IOriginalSpecialSkillTriggerMapping specialTriggerMapping;
         private IOriginalSpecialSkillEventRules specialEventRules;
         private IOriginalCombatTargetSelectionRules targetSelectionRules;

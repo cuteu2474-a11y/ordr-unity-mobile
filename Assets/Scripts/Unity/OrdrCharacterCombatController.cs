@@ -95,6 +95,31 @@ namespace Ordr.Mobile.Unity
                     new Original323UncommonRankyakuWorld(verifiedRankyaku)));
         }
 
+        // Robin A07M is one primary native shot plus at most two additional
+        // source-resolved distinct targets. No mobile-radius approximation.
+        public void ConfigureVerifiedOriginalRobinMultiTarget(
+            IOriginal323RobinVerifiedVolleyRules originalVolley)
+        {
+            ConfigureVerifiedUncommonNativeSkills(
+                new Original323RobinMultiTargetWorld(originalVolley));
+        }
+
+        // Complete combined uncommon handler, deliberately separate from
+        // the A07I pre-armor critical-hit source.
+        public void ConfigureVerifiedOriginalUncommonAllEffectBundle(
+            IOriginal323UncommonBashTargetRules verifiedTargets,
+            IOriginal323UncommonBonusDamageRules verifiedBonusDamage,
+            IOriginal323RankyakuVerifiedRules verifiedRankyaku,
+            IOriginal323RobinVerifiedVolleyRules verifiedRobin)
+        {
+            ConfigureVerifiedUncommonNativeSkills(
+                new Original323UncommonEffectRouter(
+                    new Original323UncommonBashBundleWorld(
+                        verifiedTargets, verifiedBonusDamage),
+                    new Original323UncommonRankyakuWorld(verifiedRankyaku),
+                    new Original323RobinMultiTargetWorld(verifiedRobin)));
+        }
+
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
         public OtherworldMysticFusionCatalog OtherworldMysticFusions { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }

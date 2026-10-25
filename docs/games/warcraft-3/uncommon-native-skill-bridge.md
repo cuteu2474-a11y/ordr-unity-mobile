@@ -82,3 +82,17 @@
 - 다중 대상에 대해서는 전투 엔진 `TryCommitOriginalUncommonLine`이 대상 중복, 다른 전장, 사망, 근거 누락을 **일괄 사전 검증**하고, 성공할 때만 각 대상의 HP 감소와 처치/기여 이벤트를 동일 `CombatResolution`에 기록한다. 대상 하나라도 미검증이면 전부 적용 보류한다.
 - 독립적인 다른 안흔함 효과를 함께 쓰려면 `Original323UncommonEffectRouter`로 명시적으로 묶을 수 있다. 타시기·하찌·에이스와 람각을 동시에 연결하는 `ConfigureVerifiedOriginalUncommonEffectBundle`도 추가되었다. 이 설정은 육식 크리티컬을 자동 승인하지 않는다.
 - Unit-test의 가상 영웅/갑옷/경로/최종 HP 계산기와 항상 0을 반환하는 난수는 **실게임의 근거가 아니다**. 현재 기본 런타임에는 실제 몬스터 원본 경로·마법 저항·명중/최종 HP 반올림의 전수 검증이 여전히 부족하므로 스킬 완성 판정은 보류한다.
+
+
+## 로빈 A07M — 원본 꽃꽃 열매 다중 대상 평타 연결
+
+- 원본 W3X의 로빈 `h00O`은 `A07M` 능력을 보유한다. 능력 목록에 붙은 3명 동시 타격 근거를 `Original323UncommonAbilityCatalog`에서 `U-01 / A07M:multi3 / NativeTargetCount=3 / 100%`로 고정한다.
+- `Original323RobinMultiTargetWorld`는 **주 평타 1회 + 별도로 확인된 추가 적 최대 2명**의 형태로 연결된다. 주 평타는 기존 `CombatAttackPipeline`만이 처리하므로 동일 표적 중복 가산·중복 쿨타임은 금지한다.
+- `IOriginal323RobinVerifiedVolleyRules.CanAttempt`는 주 공격 전에 원본 공격 자격을 읽기 전용으로 증명해야 한다. `TryResolveAdditionalHits`도 대상 순서, 투사체 시점, 개별 주사위·방어력·피해 변환 및 마스크를 **각 타격별 최종 HP와 근거**로 공급해야 한다.
+- 룰 공급자가 확인한 추가 후보는 0~2명이며, 없음도 유효하다. 추가 적이 존재하지 않을 때 원본 주 타격을 복제해 피해를 뻥튀기하지 않는다.
+- `CharacterCombatRuntime.TryCommitOriginalRobinMultiTarget`는 **모든 추가 대상**의 ID 중복·주 표적과 중복·현재 생존·전장 구분·방어 타입·원본 기본 대상 필터를 먼저 검사한다. 어느 한 항목이라도 실패하면 추가 피해 전체를 보류한다.
+- 각 추가 타격은 `CombatResolution.TryApplySkillDamage`를 거쳐 처치 수, 공격 기여·이벤트를 공유한다. 주 표적이 원본 기본 타격에서 죽어도 검증된 다른 적의 두 추가 타격은 살아있는 경우 각각 적용 가능하다.
+- 모바일의 무제한 **평타 거리** 설정은 그대로 두되 다른 전장으로 A07M 타격을 확장하지 않는다. 람각(직선 범위), Bash(기절), 크리티컬(타격 전 배율)을 로빈의 별도 대상 타격과 합치지 않는다.
+- 선택형 활성화: `OrdrCharacterCombatController.ConfigureVerifiedOriginalRobinMultiTarget(rules)` 또는 기존 브룩/Bash/람각까지 함께 사용할 때 `ConfigureVerifiedOriginalUncommonAllEffectBundle(...,verifiedRobin)`. 검증 룰이 없으면 원본 객체 수치를 그대로 보존하면서 추가 타격은 미승인 상태를 유지한다.
+
+**현재 미검증:** 모바일에선 기본 타격 후 동기적으로 추가 타격을 적용한다. 실제 Warcraft 다중 투사체의 출발·적중 시간차, 두 번째 타격의 별도 공격 주사위 및 한 타격에 죽은 적의 후속 선택 등은 검증된 제공자가 필요하다. Unity EditMode에서 사용하는 각 추가 타격 45·61 HP 등은 테스트용 가상 수치이며 원본 피해량이 아니다. 별도 실기 대조 없이 3인 타격의 완전 동일성을 선언하지 않는다.
