@@ -32,6 +32,9 @@ namespace Ordr.Mobile.Combat
     //
     // Both functions must be read-only: no damage, RNG, mana or roster
     // mutations, and no synthetic damage when source verification is absent.
+    // SupportsCompleteEffect is handler registration; CanAttempt is the
+    // independent per-attack approval. A registered handler can reject every
+    // target without removing the native skill from the unit's metadata.
     public interface IOriginal323RobinVerifiedVolleyRules
     {
         bool CanAttempt(OriginalUncommonProc proc, string attackerId,

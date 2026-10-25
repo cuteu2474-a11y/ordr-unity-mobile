@@ -1,0 +1,90 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceFiles": [
+    {
+      "path": "Units\\AbilityData.slk",
+      "sha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda"
+    },
+    {
+      "path": "Units\\UnitWeapons.slk",
+      "sha256": "b5be254f57b34f56dd991043e8c2a4936d7bd1f54fce213b201316971ac65ca5"
+    },
+    {
+      "path": "Units\\UnitAbilities.slk",
+      "sha256": "fbd47be22d1482d63df15d70d7a8fa38f7f26b288443a5d74aa056104aef139d"
+    },
+    {
+      "path": "Units\\CampaignAbilityStrings.txt",
+      "sha256": "1e6d9f5ccd22f67ad0edf5264bce77aa6b944032881b81ab7051f6bebf97b979"
+    },
+    {
+      "path": "war3map.j",
+      "sha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d"
+    },
+    {
+      "path": "war3map.w3a",
+      "sha256": "aa938f02c22884f38c5e31bcd6229a35e917a8fab0128331fdab88980cfd50e0"
+    }
+  ],
+  "catalogUnitId": "U-01",
+  "unitRawcode": "h00O",
+  "abilityRawcode": "A07M",
+  "sourceRows": {
+    "ability": {
+      "code": "Aroc",
+      "levels": "1",
+      "targs1": "air,enemies,ground",
+      "Cast1": "0.0",
+      "Dur1": "0.01",
+      "HeroDur1": "0.01",
+      "Cool1": "0.",
+      "Area1": "600.",
+      "Rng1": "0.0",
+      "DataA1": "0.",
+      "DataB1": "99999.",
+      "DataC1": "1"
+    },
+    "weapon": {
+      "weapsOn": "1",
+      "targs1": "structure,air,item,ward,debris,neutral,ground",
+      "rangeN1": "600",
+      "atkType1": "normal",
+      "weapTp1": "missile",
+      "cool1": "1.2",
+      "dice1": "2",
+      "sides1": "3",
+      "dmgplus1": "60",
+      "dmgpt1": "0.25",
+      "targCount1": "3",
+      "damageLoss1": "0.0"
+    },
+    "unitAbilities": {
+      "abilList": "A07Y,A0JE,A0B8,A07M,A03E,Avul"
+    },
+    "strings": {
+      "Missileart": "Abilities\\Spells\\Items\\AIso\\BIsvTarget.mdl",
+      "MissileHoming": "1",
+      "Missilespeed": "1600",
+      "Name": "!0012_꽃꽃열매",
+      "Tip": "|cff1e90ff꽃꽃 열매 :: Lv.1|r",
+      "Ubertip": "|cffFAED7D꽃꽃 열매의 능력으로 여러명의 적에게 공격합니다.|r|n|n|cffffdead◎기본효과|r : 3명의 적을 동시에 공격|r"
+    }
+  },
+  "targetCountSource": "Units\\UnitWeapons.slk:h00O:targCount1",
+  "totalNativeTargetCount": 3,
+  "maximumAdditionalTargets": 2,
+  "directJassReferenceCount": 0,
+  "w3aOverrideCount": 0,
+  "nativeAbilityChanceFieldPresent": false,
+  "safeForUnconditionalLiveCombat": false,
+  "unverified": [
+    "native-target-enumeration-and-mask-semantics",
+    "damage-dice-sharing-or-independent-rolls",
+    "missile-launch-and-impact-timing",
+    "DataA1-DataB1-DataC1-engine-application",
+    "primary-zero-damage-and-secondary-shot-behavior",
+    "target-immunity-and-final-hp-quantization",
+    "indirect-jass-damage-hooks-and-runtime-upgrades"
+  ]
+}

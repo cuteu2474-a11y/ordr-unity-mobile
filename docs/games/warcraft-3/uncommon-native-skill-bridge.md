@@ -96,3 +96,30 @@
 - 선택형 활성화: `OrdrCharacterCombatController.ConfigureVerifiedOriginalRobinMultiTarget(rules)` 또는 기존 브룩/Bash/람각까지 함께 사용할 때 `ConfigureVerifiedOriginalUncommonAllEffectBundle(...,verifiedRobin)`. 검증 룰이 없으면 원본 객체 수치를 그대로 보존하면서 추가 타격은 미승인 상태를 유지한다.
 
 **현재 미검증:** 모바일에선 기본 타격 후 동기적으로 추가 타격을 적용한다. 실제 Warcraft 다중 투사체의 출발·적중 시간차, 두 번째 타격의 별도 공격 주사위 및 한 타격에 죽은 적의 후속 선택 등은 검증된 제공자가 필요하다. Unity EditMode에서 사용하는 각 추가 타격 45·61 HP 등은 테스트용 가상 수치이며 원본 피해량이 아니다. 별도 실기 대조 없이 3인 타격의 완전 동일성을 선언하지 않는다.
+
+### 2026-10-25 원본 재추출·로빈 안전성 보강
+
+최신 main `a2b624b`를 확인한 결과, 기존 로빈 연결의 Unity 실행은 **529/530 통과, 안전성 테스트 1건 실패**였다. 실패 지점은 대상별 승인 거부를 스킬 등록 해제로 잘못 기대한 테스트다. 등록(`SupportsCompleteEffect`)과 개별 공격 승인(`CanAttempt`)은 서로 다르다. 테스트를 분리하여 미승인 평타에서는 모든 HP와 난수가 불변인지, 스킬 대상 승인이 없을 때는 승인된 평타만 적용되고 추가 타격 호출이 없는지를 검증한다. 실제 실행 승인 조건을 낮추지 않았다.
+
+원본 W3X SHA-256 및 내부 파일 6개의 지문을 확인한 뒤 직접 재추출한 자료는 [`original-2323C-robin-A07M-evidence.json`](../../../data/original-2323C-robin-A07M-evidence.json)이다.
+
+| 원본 위치 | 직접 확인한 필드 |
+| --- | --- |
+| UnitWeapons `h00O` | `dmgplus1=60`, `dice1=2`, `sides1=3`, `cool1=1.2`, `dmgpt1=0.25`, `targCount1=3`, `rangeN1=600`, `atkType1=normal`, `weapTp1=missile` |
+| AbilityData `A07M` | 부모 `Aroc`, `targs1=air,enemies,ground`, `Area1=600`, `DataA1=0`, `DataB1=99999`, **`DataC1=1`** |
+| CampaignAbilityStrings `A07M` | 툴팁 3인 동시 공격, `Missilespeed=1600`, `MissileHoming=1` |
+
+**3이라는 대상 수는 무기 `targCount1`에서 온다.** `DataC1`을 3으로 읽거나 99999를 최종 피해로 사용하지 않는다. A07M 원본 확률 필드가 발견된 것은 아니며, 카탈로그의 100%는 추가 확률 난수를 쓰지 않는 패시브 연결용 표식이다. `dmgpt1=0.25` 또는 투사체 속도만으로 실제 적중 시점을 확정하지 않는다. 직접 A07M JASS 참조 및 A07M/Aroc W3A 덮어쓰기는 발견되지 않았지만, 간접 피해 훅·버프·연구의 부재를 의미하지 않는다.
+
+실행 코드는 추가 타격 목록을 복사한 뒤 대상·방어·전장·중복과 **실제 HP로 제한한 합계의 정수 범위**까지 모두 검사하고 HP를 변경한다. 합계 범위 초과로 두 번째 적까지 피해를 입힌 뒤 예외가 나던 경로를 차단했다. 이는 장부의 정수 안전성 검사이며 새로운 원본 피해식이 아니다. 극단값 테스트는 합성 입력이고 실제 게임 피해값이 아니다.
+
+검증 범위: 기존 1/2/3인, 주 대상 사망, 서로 다른 전장·대상 중복 차단에 더해 평타/스킬 승인 분리, 첫 타격 전 대기·1.2초 주기, 로빈 복수 인스턴스, 누락/빈 추가 타격, 합계 범위 초과·과잉 피해 정산을 검사한다. 비 Unity 회귀 **104건 통과** 및 원본 W3X 재추출 일치를 로컬에서 확인했다. Unity 전체 결과는 이번 커밋의 기존 EditMode Actions 실행으로 확인한다.
+
+재검증:
+
+```bash
+python3 tools/extract_original_robin_multishot.py --w3x '/path/to/ORDR_S2_2.323[C].w3x'
+python3 -m unittest discover -s tests -q
+```
+
+**다음 연결의 전제:** 실제 몬스터 최종 방어·면역·대상 마스크, 네이티브 추가 탄도/주사위 공유 여부, 주 타격 0피해일 때의 동작 및 최종 HP 변환은 아직 미확인이다. 현재 JSON은 `safeForUnconditionalLiveCombat: false`이며 승인 공급자가 없는 실제 전투를 열지 않는다. 기존 악몽 초기 몬스터 모델을 실제 Warcraft 검증값으로 승격하지 않는다. 공격력·쿨타임·조합 수치 변경 및 APK 제작은 없다.

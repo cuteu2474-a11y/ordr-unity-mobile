@@ -44,6 +44,7 @@ namespace Ordr.Mobile.Tests
         {
             public bool Approved = true;
             public bool ResolveApproved = true;
+            public bool HasPrimaryEvidence = true;
             public int Preflights;
             public int Resolves;
             public readonly List<Original323RobinSecondaryHit> Additional =
@@ -53,7 +54,8 @@ namespace Ordr.Mobile.Tests
                 CombatEnemy primary, out string evidence)
             {
                 Preflights++;
-                evidence = Approved ? "TEST_ONLY: original A07M complete eligibility" : null;
+                evidence = Approved && HasPrimaryEvidence
+                    ? "TEST_ONLY: original A07M complete eligibility" : null;
                 return Approved && proc.ProcId == "A07M:multi3" &&
                     primary != null && primary.IsAlive &&
                     primary.Defenses.HasVerifiedArmor;
@@ -294,31 +296,145 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void UnverifiedNativePathOrTargetPolicyNeverCausesBonusVolley()
+        public void UnverifiedNativePathNeverStartsAnyVolley()
         {
-            foreach (bool nativeUnapproved in new[] { false, true })
-            {
-                var rng = new CountingRoll();
-                // Either the native basic path or the independent volley
-                // approval is missing, never both approved at once.
-                var volley = new TestVolley { Approved = nativeUnapproved };
-                var world = World(rng, volley, !nativeUnapproved);
-                long robin = world.SpawnCharacter("U-01", 0, 0);
-                Enemy(world, "primary");
-                Enemy(world, "extra", 1000, CharacterEnemyKind.Line, 20);
-                volley.Additional.Add(Shot("extra", 55));
-                world.Step(2.0);
-                Assert.AreEqual(1000L, world.EnemyOf("extra").Health);
-                Assert.AreEqual(0, volley.Resolves);
-                Assert.AreEqual(0, world.Game.DefeatedEnemies);
-                if (nativeUnapproved)
-                    Assert.IsFalse(world.HasVerifiedAttack(robin),
-                        "Original-native approval is required to deal any damage.");
-                else
-                    Assert.IsFalse(world.IsOriginalUncommonSkillConnected(robin,
-                        "A07M:multi3"),
-                        "Unapproved volley must not enter the proc trigger engine.");
-            }
+            var rng = new CountingRoll();
+            var volley = new TestVolley();
+            var world = World(rng, volley, false);
+            long robin = world.SpawnCharacter("U-01", 0, 0);
+            Enemy(world, "primary");
+            Enemy(world, "extra", 1000, CharacterEnemyKind.Line, 20);
+            volley.Additional.Add(Shot("extra", 55));
+            world.Step(2.0);
+            Assert.IsFalse(world.HasVerifiedAttack(robin));
+            Assert.AreEqual(1000L, world.EnemyOf("primary").Health);
+            Assert.AreEqual(1000L, world.EnemyOf("extra").Health);
+            Assert.AreEqual(0, volley.Preflights);
+            Assert.AreEqual(0, volley.Resolves);
+            Assert.AreEqual(0, rng.Calls);
+            Assert.AreEqual(0, world.Game.DefeatedEnemies);
+        }
+
+        [TestCase(false, true)]
+        [TestCase(true, false)]
+        public void RejectedPrimaryPolicyOrMissingProofBlocksOnlyTheVolley(
+            bool approved, bool hasEvidence)
+        {
+            var rng = new CountingRoll();
+            var volley = new TestVolley {
+                Approved = approved, HasPrimaryEvidence = hasEvidence
+            };
+            var world = World(rng, volley);
+            long robin = world.SpawnCharacter("U-01", 0, 0);
+            Enemy(world, "primary");
+            Enemy(world, "extra", 1000, CharacterEnemyKind.Line, 20);
+            volley.Additional.Add(Shot("extra", 55));
+            Assert.IsTrue(world.IsOriginalUncommonSkillConnected(robin,
+                "A07M:multi3"), "Handler support is independent of target approval.");
+            var events = world.Step(2.0);
+            Assert.IsTrue(world.HasVerifiedAttack(robin));
+            Assert.AreEqual(846L, world.EnemyOf("primary").Health);
+            Assert.AreEqual(1000L, world.EnemyOf("extra").Health);
+            Assert.AreEqual(2, volley.Preflights);
+            Assert.AreEqual(0, volley.Resolves);
+            Assert.AreEqual(4, rng.Calls, "Only two native 2d3 attacks roll.");
+            foreach (var evt in events)
+                Assert.AreNotEqual(CharacterCombatEventType.SkillActivated, evt.Type);
+        }
+
+        [Test]
+        public void AdditionalShotsFollowPrimaryCooldownWithoutExtraAttacks()
+        {
+            var rng = new CountingRoll();
+            var volley = new TestVolley();
+            volley.Additional.Add(Shot("extra", 45));
+            var world = World(rng, volley);
+            world.SpawnCharacter("U-01", 0, 0);
+            Enemy(world, "primary");
+            Enemy(world, "extra", 1000, CharacterEnemyKind.Line, 20);
+            world.Step(.24);
+            Assert.AreEqual(0, volley.Resolves);
+            Assert.AreEqual(1000L, world.EnemyOf("primary").Health);
+            world.Step(.01);
+            Assert.AreEqual(955L, world.EnemyOf("extra").Health);
+            world.Step(1.19);
+            Assert.AreEqual(1, volley.Resolves);
+            world.Step(.01);
+            Assert.AreEqual(846L, world.EnemyOf("primary").Health);
+            Assert.AreEqual(910L, world.EnemyOf("extra").Health);
+            Assert.AreEqual(2, volley.Resolves);
+            Assert.AreEqual(4, rng.Calls);
+        }
+
+        [Test]
+        public void TwoRobinsKeepSeparateCooldownsAndDoNotMultiplyProcRolls()
+        {
+            var rng = new CountingRoll();
+            var volley = new TestVolley();
+            volley.Additional.Add(Shot("extra", 45));
+            var world = World(rng, volley);
+            world.SpawnCharacter("U-01", 0, 0);
+            world.SpawnCharacter("U-01", 0, 0);
+            Enemy(world, "primary");
+            Enemy(world, "extra", 1000, CharacterEnemyKind.Line, 20);
+            world.Step(.25);
+            Assert.AreEqual(846L, world.EnemyOf("primary").Health);
+            Assert.AreEqual(910L, world.EnemyOf("extra").Health);
+            Assert.AreEqual(2, volley.Resolves);
+            Assert.AreEqual(4, rng.Calls);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void MissingOrNullSecondaryRejectsWholeBatch(bool nullShot)
+        {
+            var volley = new TestVolley();
+            volley.Additional.Add(Shot("good", 31));
+            volley.Additional.Add(nullShot ? null : Shot("missing", 42));
+            var world = World(new CountingRoll(), volley);
+            world.SpawnCharacter("U-01", 0, 0);
+            Enemy(world, "primary");
+            Enemy(world, "good", 1000, CharacterEnemyKind.Line, 20);
+            world.Step(.25);
+            Assert.AreEqual(923L, world.EnemyOf("primary").Health);
+            Assert.AreEqual(1000L, world.EnemyOf("good").Health);
+        }
+
+        [Test]
+        public void AggregateOverflowRejectsAllExtraDamageBeforeChangingHealth()
+        {
+            var volley = new TestVolley();
+            volley.Additional.Add(Shot("extra-a", long.MaxValue));
+            volley.Additional.Add(Shot("extra-b", long.MaxValue));
+            var world = World(new CountingRoll(), volley);
+            world.SpawnCharacter("U-01", 0, 0);
+            Enemy(world, "primary");
+            Enemy(world, "extra-a", long.MaxValue, CharacterEnemyKind.Line, 20);
+            Enemy(world, "extra-b", long.MaxValue, CharacterEnemyKind.Line, 30);
+            var events = world.Step(.25);
+            Assert.AreEqual(long.MaxValue, world.EnemyOf("extra-a").Health);
+            Assert.AreEqual(long.MaxValue, world.EnemyOf("extra-b").Health);
+            Assert.AreEqual(923L, world.EnemyOf("primary").Health);
+            Assert.AreEqual(0, world.Game.DefeatedEnemies);
+            foreach (var evt in events)
+                Assert.AreNotEqual(CharacterCombatEventType.SkillDamage, evt.Type);
+        }
+
+        [Test]
+        public void OverkillUsesActualHealthForAggregateAccounting()
+        {
+            var volley = new TestVolley();
+            volley.Additional.Add(Shot("extra-a", long.MaxValue));
+            volley.Additional.Add(Shot("extra-b", long.MaxValue));
+            var world = World(new CountingRoll(), volley);
+            world.SpawnCharacter("U-01", 0, 0);
+            Enemy(world, "primary");
+            Enemy(world, "extra-a", 1, CharacterEnemyKind.Line, 20);
+            Enemy(world, "extra-b", 1, CharacterEnemyKind.Line, 30);
+            world.Step(.25);
+            Assert.IsNull(world.EnemyOf("extra-a"));
+            Assert.IsNull(world.EnemyOf("extra-b"));
+            Assert.AreEqual(2, world.Game.DefeatedEnemies);
         }
 
         [Test]

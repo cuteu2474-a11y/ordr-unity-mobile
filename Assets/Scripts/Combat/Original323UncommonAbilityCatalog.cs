@@ -111,6 +111,10 @@ namespace Ordr.Mobile.Combat
         // Original WC3 tooltips and *native* SLK rows, not guessed web-DEX skills.
         private static IEnumerable<OriginalUncommonProc> Evidence()
         {
+            // A07M inherits Aroc; the THREE-target limit is the owner's
+            // UnitWeapons.slk:targCount1, not AbilityData.slk:DataC1 (=1).
+            // 100% is the trigger marker for a native passive, not an
+            // extracted chance field or permission to infer impact timing.
             yield return new OriginalUncommonProc("U-01", "h00O", "A07M", "multi3",
                 "꽃꽃 열매: 3명 동시 공격", OriginalUncommonProcKind.MultiTarget,
                 1000000, 0, 0, 0, 0, 3);

@@ -315,8 +315,15 @@ namespace Ordr.Mobile.Combat
                 uncommonAbilities == null ||
                 uncommonAbilities.FindProc("U-01", procId) == null)
                 return false;
+            // Keep the validated volley stable throughout commit, even when
+            // the provider returned a mutable list. Check the aggregate BEFORE
+            // changing HP: checked addition during commit could otherwise
+            // throw after one or both enemies have already taken damage.
+            var prepared = new List<Original323RobinSecondaryHit>(additionalHits);
+            if (prepared.Count > 2) return false;
+            long plannedActualDamage = 0;
             var touched = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var shot in additionalHits)
+            foreach (var shot in prepared)
             {
                 SpatialCombatEnemy target;
                 Ordr323ArmorType armorType;
@@ -335,12 +342,16 @@ namespace Ordr.Mobile.Combat
                          actor.Catalog, target.Enemy)) ||
                     resolution.GetEnemy(shot.TargetId) == null)
                     return false;
+                long actual = Math.Min(target.Enemy.Health, shot.FinalHpDamage);
+                if (actual > long.MaxValue - plannedActualDamage)
+                    return false;
+                plannedActualDamage += actual;
             }
             // Resolution is shared with regular attacks so defeat accounting,
             // participation, damage listeners, and wave transitions stay
             // consistent. A zero-secondary volley is valid when the source
             // confirms no other Warcraft-eligible enemies.
-            foreach (var shot in additionalHits)
+            foreach (var shot in prepared)
             {
                 SpatialCombatEnemy enemy = enemies[shot.TargetId];
                 long actual;
