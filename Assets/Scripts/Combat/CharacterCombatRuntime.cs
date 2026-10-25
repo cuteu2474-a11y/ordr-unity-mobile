@@ -754,6 +754,9 @@ namespace Ordr.Mobile.Combat
             return storyDispatch != null && storyDispatch.IsDeployed(instanceId);
         }
 
+        // Independent observer for per-enemy defeat or escape. Driven by
+        // CombatResolution after the original session counters are updated.
+        public event Action<string, CombatEnemyExitReason> EnemyExited;
         public GameSession Game { get { return game; } }
         public UnitRoster Roster { get { return roster; } }
         public int CharacterCount { get { return characters.Count; } }
@@ -820,6 +823,11 @@ namespace Ordr.Mobile.Combat
             triggers = new CombatSkillTriggerEngine(random);
             resolution = new CombatResolution(game, scheduler);
             resolution.DamageApplied += OnActualDamage;
+            resolution.EnemyExited += (enemyId, reason) =>
+            {
+                var handler = EnemyExited;
+                if (handler != null) handler(enemyId, reason);
+            };
             attackPipeline = new CombatAttackPipeline(scheduler, resolution, triggers,
                 verifiedBasicDamage ?? throw new ArgumentNullException(nameof(verifiedBasicDamage)));
             attackPipeline.ConfigureAttackerEffectLookup(id => unitStatuses[id].Snapshot());

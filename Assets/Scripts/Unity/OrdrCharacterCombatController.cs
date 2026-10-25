@@ -1040,6 +1040,14 @@ namespace Ordr.Mobile.Unity
             VerifiedWaveDirector.Begin(Combat, plan);
         }
 
+        // Observation-only. A fully defeated wave does not automatically
+        // grant resources, finish the game, or change the original round clock.
+        public bool TryGetVerifiedMonsterWaveProgress(int waveNumber,
+            out VerifiedWaveProgress progress)
+        {
+            return VerifiedWaveDirector.TryGetWaveProgress(waveNumber, out progress);
+        }
+
         private void Update()
         {
             if (Combat == null || Combat.Game.Phase != Ordr.Mobile.Core.SessionPhase.Running)

@@ -211,6 +211,10 @@ namespace Ordr.Mobile.Combat
         }
     }
 
+    // Combat outcomes must be recorded from the same canonical damage/leak
+    // path that updates GameSession, never inferred from missing spatial markers.
+    public enum CombatEnemyExitReason { Defeated, Escaped }
+
     public sealed class CombatResolution
     {
         private readonly GameSession session;
@@ -220,6 +224,7 @@ namespace Ordr.Mobile.Combat
 
         // 실제 적용된 피해만 전달. 평타/즉발/지속 스킬의 처치 참여를 공통 집계한다.
         public event Action<string, string, long, bool> DamageApplied;
+        public event Action<string, CombatEnemyExitReason> EnemyExited;
 
         public CombatResolution(GameSession session, CombatScheduler scheduler)
         {
@@ -251,6 +256,8 @@ namespace Ordr.Mobile.Combat
                 enemies.Remove(enemyId);
             }
             DamageApplied?.Invoke(attackerId, enemyId, actualDamage, !enemy.IsAlive);
+            if (!enemy.IsAlive)
+                EnemyExited?.Invoke(enemyId, CombatEnemyExitReason.Defeated);
             return true;
         }
 
@@ -277,6 +284,8 @@ namespace Ordr.Mobile.Combat
                 enemies.Remove(enemyId);
             }
             DamageApplied?.Invoke(attackerId, enemyId, actualDamage, !enemy.IsAlive);
+            if (!enemy.IsAlive)
+                EnemyExited?.Invoke(enemyId, CombatEnemyExitReason.Defeated);
             return true;
         }
 
@@ -286,6 +295,7 @@ namespace Ordr.Mobile.Combat
             if (!enemies.TryGetValue(enemyId, out enemy)) return false;
             session.LeakEnemy();
             enemies.Remove(enemyId);
+            EnemyExited?.Invoke(enemyId, CombatEnemyExitReason.Escaped);
             return true;
         }
 

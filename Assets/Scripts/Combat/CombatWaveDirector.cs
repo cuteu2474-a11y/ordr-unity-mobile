@@ -87,9 +87,66 @@ namespace Ordr.Mobile.Combat
 
     // 웨이브의 정확한 출현 시각 사이에서 기존 전투 시간을 진행한다.
     // 실제 HP/개체 수/웨이브 간격은 원작 계획 데이터를 주입한다.
+    // Read-only accounting for one VERIFIED spawn plan. "All defeated" is an
+    // observation only, not proof of an original reward, timer or victory rule.
+    public sealed class VerifiedWaveProgress
+    {
+        public int WaveNumber { get; private set; }
+        public int Planned { get; private set; }
+        public int Spawned { get; private set; }
+        public int Defeated { get; private set; }
+        public int Escaped { get; private set; }
+        public int PendingSpawns { get { return Planned - Spawned; } }
+        public int LivingFromWave { get { return Spawned - Defeated - Escaped; } }
+        public bool AllSpawnsIssued { get { return PendingSpawns == 0; } }
+        public bool AllWaveEnemiesResolved
+        {
+            get { return AllSpawnsIssued && LivingFromWave == 0; }
+        }
+        public bool AllWaveEnemiesDefeated
+        {
+            get { return AllWaveEnemiesResolved && Escaped == 0; }
+        }
+
+        internal VerifiedWaveProgress(int waveNumber, int planned,
+            int spawned, int defeated, int escaped)
+        {
+            if (planned < 1 || spawned < 0 || spawned > planned ||
+                defeated < 0 || escaped < 0 || defeated + escaped > spawned)
+                throw new ArgumentException("라운드 몬스터 집계에 모순이 있습니다.");
+            WaveNumber = waveNumber; Planned = planned; Spawned = spawned;
+            Defeated = defeated; Escaped = escaped;
+        }
+    }
+
+    // Every wave owns its enemy instances independently. Existing monsters
+    // may remain alive after a subsequent verified wave is allowed to start:
+    // the source map, not this bookkeeping layer, must decide round timing.
     public sealed class CombatWaveDirector
     {
+        private sealed class WaveLedger
+        {
+            public readonly VerifiedWavePlan Plan;
+            public int Spawned;
+            public int Defeated;
+            public int Escaped;
+
+            public WaveLedger(VerifiedWavePlan plan) { Plan = plan; }
+
+            public VerifiedWaveProgress Snapshot()
+            {
+                return new VerifiedWaveProgress(Plan.WaveNumber,
+                    Plan.Spawns.Count, Spawned, Defeated, Escaped);
+            }
+        }
+
+        private readonly Dictionary<int, WaveLedger> waves =
+            new Dictionary<int, WaveLedger>();
+        private readonly Dictionary<string, int> spawnedOwners =
+            new Dictionary<string, int>(StringComparer.Ordinal);
+        private CharacterCombatRuntime boundCombat;
         private VerifiedWavePlan active;
+        private WaveLedger activeLedger;
         private int nextSpawn;
         private double elapsed;
 
@@ -99,6 +156,34 @@ namespace Ordr.Mobile.Combat
             get { return active == null ? 0 : active.Spawns.Count - nextSpawn; }
         }
         public double ElapsedSeconds { get { return elapsed; } }
+        public VerifiedWaveProgress CurrentProgress
+        {
+            get { return activeLedger == null ? null : activeLedger.Snapshot(); }
+        }
+
+        public bool TryGetWaveProgress(int waveNumber, out VerifiedWaveProgress progress)
+        {
+            WaveLedger ledger;
+            if (waves.TryGetValue(waveNumber, out ledger))
+            {
+                progress = ledger.Snapshot();
+                return true;
+            }
+            progress = null;
+            return false;
+        }
+
+        private void OnEnemyExited(string enemyId, CombatEnemyExitReason reason)
+        {
+            int waveNumber;
+            if (!spawnedOwners.TryGetValue(enemyId, out waveNumber))
+                return; // Spawned outside the verified schedule, not this wave.
+            spawnedOwners.Remove(enemyId);
+            WaveLedger ledger = waves[waveNumber];
+            if (reason == CombatEnemyExitReason.Defeated) ledger.Defeated++;
+            else if (reason == CombatEnemyExitReason.Escaped) ledger.Escaped++;
+            else throw new InvalidOperationException("지원하지 않는 몬스터 종료 종류입니다.");
+        }
 
         public void Begin(CharacterCombatRuntime combat, VerifiedWavePlan plan)
         {
@@ -106,8 +191,23 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentNullException("전투와 원본 웨이브 계획이 필요합니다.");
             if (active != null && RemainingSpawns != 0)
                 throw new InvalidOperationException("이전 웨이브의 출현이 끝나지 않았습니다.");
+            if (boundCombat != null && !ReferenceEquals(boundCombat, combat))
+                throw new InvalidOperationException("진행 기록은 하나의 전투 세션에만 연결됩니다.");
+            if (waves.ContainsKey(plan.WaveNumber))
+                throw new InvalidOperationException("같은 라운드를 두 번 시작할 수 없습니다.");
+
+            // Do not attach an observer or start a plan if the sequential
+            // GameSession wave validation fails.
             combat.BeginWave(plan.WaveNumber);
-            active = plan; elapsed = 0; nextSpawn = 0;
+            if (boundCombat == null)
+            {
+                boundCombat = combat;
+                boundCombat.EnemyExited += OnEnemyExited;
+            }
+            var ledger = new WaveLedger(plan);
+            waves.Add(plan.WaveNumber, ledger);
+            active = plan; activeLedger = ledger;
+            elapsed = 0; nextSpawn = 0;
         }
 
         public IReadOnlyList<CharacterCombatEvent> Step(
@@ -115,6 +215,8 @@ namespace Ordr.Mobile.Combat
         {
             if (combat == null) throw new ArgumentNullException(nameof(combat));
             if (active == null) throw new InvalidOperationException("진행 중인 웨이브가 없습니다.");
+            if (!ReferenceEquals(boundCombat, combat))
+                throw new InvalidOperationException("라운드 시작 때 사용한 전투 세션이 아닙니다.");
             if (double.IsNaN(seconds) || double.IsInfinity(seconds) || seconds < 0 ||
                 double.IsInfinity(elapsed + seconds))
                 throw new ArgumentOutOfRangeException(nameof(seconds));
@@ -131,15 +233,20 @@ namespace Ordr.Mobile.Combat
                     throw new InvalidOperationException(
                         "전투 계산 지연 중입니다. 출현 시점을 건너뛰지 않습니다.");
 
-                // 같은 시각의 적은 모두 생성한 다음 공격을 처리해야 한다.
-                // 매 적 사이에 Step(0)을 끼워 넣으면 첫 적만 먼저 맞는 오류가 생김.
+                // Spawn same-time monsters before attacking any of them.
                 while (nextSpawn < active.Spawns.Count &&
                        active.Spawns[nextSpawn].AtSeconds == spawnTime)
                 {
                     var spawn = active.Spawns[nextSpawn];
+                    if (spawnedOwners.ContainsKey(spawn.EnemyId))
+                        throw new InvalidOperationException(
+                            "이전 라운드에서 생존 중인 몬스터 ID와 중복됩니다.");
                     combat.SpawnEnemyWithDefenses(spawn.EnemyId, spawn.Health,
                         spawn.Kind, spawn.X, spawn.Y, spawn.PathProgress,
                         spawn.Defenses);
+                    // Register only after a successful actual spawn.
+                    spawnedOwners.Add(spawn.EnemyId, active.WaveNumber);
+                    activeLedger.Spawned++;
                     nextSpawn++;
                 }
             }
@@ -148,4 +255,5 @@ namespace Ordr.Mobile.Combat
             return events.AsReadOnly();
         }
     }
+}
 }
