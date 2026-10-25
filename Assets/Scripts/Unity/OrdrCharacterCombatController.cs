@@ -146,6 +146,7 @@ namespace Ordr.Mobile.Unity
         private IOriginal323LiveMonsterWaveEvidence liveMonsterWaveEvidence;
         private IOriginal323NightmareA04QEventWitness nightmareA04QEventWitness;
         private IOriginal323LiveMonsterA04QWitness liveMonsterA04QWitness;
+        private IOriginal323LiveMonsterStatWitness liveMonsterStatWitness;
         public CombatWaveDirector VerifiedWaveDirector { get; } = new CombatWaveDirector();
 
         // Keep independent final-stat/target/spawn approval separate from the
@@ -201,6 +202,44 @@ namespace Ordr.Mobile.Unity
                 Combat.TryApplyObservedEnemyA04QLevel(enemyId,
                     expectedPreviousLevel, observedCurrentLevel,
                     liveMonsterA04QWitness);
+        }
+
+        // Explicit observations of changes to a living monster. These are
+        // not generated from the unverified initial HP/armor research model.
+        public void ConfigureObservedLiveMonsterStats(
+            IOriginal323LiveMonsterStatWitness verifiedEvents)
+        {
+            if (liveMonsterStatWitness != null)
+                throw new InvalidOperationException(
+                    "개별 몬스터 체력/물리 방어 관측기를 이미 연결했습니다.");
+            liveMonsterStatWitness = verifiedEvents ??
+                throw new ArgumentNullException(nameof(verifiedEvents));
+        }
+
+        public bool TryApplyObservedLiveMonsterMaximumHealth(
+            string enemyId, long expectedCurrentHealth, long expectedMaxHealth,
+            long observedCurrentHealth, long observedMaxHealth)
+        {
+            return Combat != null &&
+                Combat.Game.Phase == Ordr.Mobile.Core.SessionPhase.Running &&
+                liveMonsterStatWitness != null &&
+                Combat.TryApplyObservedEnemyMaximumHealthChange(enemyId,
+                    expectedCurrentHealth, expectedMaxHealth,
+                    observedCurrentHealth, observedMaxHealth,
+                    liveMonsterStatWitness);
+        }
+
+        public bool TryApplyObservedLiveMonsterPhysicalArmor(
+            string enemyId, double expectedArmor, string expectedArmorType,
+            double observedArmor, string observedArmorType)
+        {
+            return Combat != null &&
+                Combat.Game.Phase == Ordr.Mobile.Core.SessionPhase.Running &&
+                liveMonsterStatWitness != null &&
+                Combat.TryApplyObservedEnemyPhysicalArmorChange(enemyId,
+                    expectedArmor, expectedArmorType,
+                    observedArmor, observedArmorType,
+                    liveMonsterStatWitness);
         }
 
         // A source-backed next-spawn estimate; NOT an independent live

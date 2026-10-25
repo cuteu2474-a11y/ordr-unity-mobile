@@ -1069,6 +1069,31 @@ namespace Ordr.Mobile.Combat
                 expectedPreviousLevel, observedCurrentLevel, verifiedEvent);
         }
 
+        // Same CombatEnemy instance feeds HUD, hit resolution and verified
+        // wave tracking. An external native event must independently witness
+        // maximum/current HP and physical armor changes.
+        public bool TryApplyObservedEnemyMaximumHealthChange(
+            string enemyId, long expectedCurrentHealth, long expectedMaxHealth,
+            long observedCurrentHealth, long observedMaxHealth,
+            IOriginal323LiveMonsterStatWitness verifiedEvent)
+        {
+            var live = EnemyOf(enemyId);
+            return live != null && live.TryApplyObservedMaximumHealthChange(
+                expectedCurrentHealth, expectedMaxHealth,
+                observedCurrentHealth, observedMaxHealth, verifiedEvent);
+        }
+
+        public bool TryApplyObservedEnemyPhysicalArmorChange(
+            string enemyId, double expectedArmor, string expectedArmorType,
+            double observedArmor, string observedArmorType,
+            IOriginal323LiveMonsterStatWitness verifiedEvent)
+        {
+            var live = EnemyOf(enemyId);
+            return live != null && live.TryApplyObservedPhysicalArmorChange(
+                expectedArmor, expectedArmorType,
+                observedArmor, observedArmorType, verifiedEvent);
+        }
+
         // Called only after the source-verified monster spawner resolves
         // each unit's existing A04R level. Unknown level is never zero.
         public void ConfigureVerifiedEnemyOriginalA04R(

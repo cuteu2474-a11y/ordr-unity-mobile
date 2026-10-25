@@ -12,11 +12,28 @@ namespace Ordr.Mobile.Combat
             int observedCurrentLevel, out string observedJassEvidence);
     }
 
+    // Only observed per-instance Warcraft changes may alter the live monster.
+    // Neither SLK defaults nor a modeled research multiplier are live witnesses.
+    public interface IOriginal323LiveMonsterStatWitness
+    {
+        bool TryConfirmMaxHealthChange(string monsterId,
+            long expectedCurrentHealth, long expectedMaxHealth,
+            long observedCurrentHealth, long observedMaxHealth,
+            out string observedSource);
+
+        bool TryConfirmPhysicalArmorChange(string monsterId,
+            double expectedArmor, string expectedArmorType,
+            double observedArmor, string observedArmorType,
+            out string observedSource);
+    }
+
     // 피해량은 원작 공식 검증 후 외부 계산기에서 전달한다.
     public sealed class CombatEnemy
     {
         public string Id { get; }
-        public long MaxHealth { get; }
+        public long MaxHealth { get; private set; }
+        // Evidence for an observed non-damage max-health event, not a damage source.
+        public string ObservedHealthSource { get; private set; }
         public long Health { get; private set; }
         public bool IsAlive => Health > 0;
         public EnemyDefenseProfile Defenses { get; private set; }
@@ -107,6 +124,80 @@ namespace Ordr.Mobile.Combat
                 observedCurrentLevel, previous.Source + " / observed live A04Q " +
                 expectedPreviousLevel + "->" + observedCurrentLevel + ": " + evidence);
             Defenses = updated;
+            return true;
+        }
+
+        private static bool ValidLiveWitnessEvidence(string evidence)
+        {
+            return !string.IsNullOrWhiteSpace(evidence) &&
+                evidence.IndexOf("TEST_ONLY", StringComparison.OrdinalIgnoreCase) < 0 &&
+                evidence.IndexOf("TEST_FIXTURE", StringComparison.OrdinalIgnoreCase) < 0 &&
+                evidence.IndexOf("SYNTHETIC", StringComparison.OrdinalIgnoreCase) < 0 &&
+                evidence.IndexOf("MOCK_ONLY", StringComparison.OrdinalIgnoreCase) < 0 &&
+                evidence.IndexOf("MODEL_ONLY", StringComparison.OrdinalIgnoreCase) < 0;
+        }
+
+        // Max-HP upgrades can also change current HP in Warcraft. Do NOT infer
+        // that change by full heal, proportional heal, or truncation. The witness
+        // supplies both observed values. Damage and kills must instead use
+        // CombatResolution so the session and participation counters stay valid.
+        public bool TryApplyObservedMaximumHealthChange(
+            long expectedCurrentHealth, long expectedMaxHealth,
+            long observedCurrentHealth, long observedMaxHealth,
+            IOriginal323LiveMonsterStatWitness witness)
+        {
+            if (!IsAlive || witness == null ||
+                Health != expectedCurrentHealth || MaxHealth != expectedMaxHealth ||
+                observedMaxHealth <= 0 || observedMaxHealth == expectedMaxHealth ||
+                observedCurrentHealth <= 0 ||
+                observedCurrentHealth > observedMaxHealth)
+                return false;
+            string evidence;
+            if (!witness.TryConfirmMaxHealthChange(Id,
+                expectedCurrentHealth, expectedMaxHealth,
+                observedCurrentHealth, observedMaxHealth, out evidence) ||
+                !ValidLiveWitnessEvidence(evidence) ||
+                Health != expectedCurrentHealth || MaxHealth != expectedMaxHealth)
+                return false;
+            MaxHealth = observedMaxHealth;
+            Health = observedCurrentHealth;
+            ObservedHealthSource = evidence;
+            return true;
+        }
+
+        // Physical armor from a source-confirmed live base-stat change.
+        // This does not apply an aura twice, or silently alter A04Q magic defense.
+        public bool TryApplyObservedPhysicalArmorChange(
+            double expectedArmor, string expectedArmorType,
+            double observedArmor, string observedArmorType,
+            IOriginal323LiveMonsterStatWitness witness)
+        {
+            var prior = Defenses;
+            if (!IsAlive || witness == null || prior == null ||
+                !prior.Kind.HasValue || !prior.HasVerifiedArmor ||
+                prior.BaseArmor.Value != expectedArmor ||
+                !string.Equals(prior.WarcraftArmorType, expectedArmorType,
+                    StringComparison.Ordinal) ||
+                double.IsNaN(observedArmor) || double.IsInfinity(observedArmor) ||
+                string.IsNullOrWhiteSpace(observedArmorType) ||
+                (observedArmor == expectedArmor &&
+                 string.Equals(observedArmorType, expectedArmorType,
+                     StringComparison.Ordinal)))
+                return false;
+            Ordr323ArmorType parsed;
+            if (!Ordr323OriginalDamageRules.TryReadArmorType(
+                observedArmorType, out parsed)) return false;
+            string evidence;
+            if (!witness.TryConfirmPhysicalArmorChange(Id,
+                expectedArmor, expectedArmorType,
+                observedArmor, observedArmorType, out evidence) ||
+                !ValidLiveWitnessEvidence(evidence) ||
+                !ReferenceEquals(Defenses, prior))
+                return false;
+            Defenses = new EnemyDefenseProfile(prior.Kind, observedArmor,
+                prior.MagicResistancePercent, observedArmorType,
+                prior.Source + " / observed live physical armor: " + evidence,
+                prior.MagicAbilityLevel);
             return true;
         }
 
