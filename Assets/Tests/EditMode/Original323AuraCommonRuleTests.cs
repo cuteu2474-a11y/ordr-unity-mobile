@@ -37,6 +37,16 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void SeparateComponentsOfOneAuraNeverCollapseIntoEachOther()
+        {
+            double result;
+            Assert.IsFalse(Original323AuraCommonRules.TryResolveIdenticalAura(new[] {
+                new Original323AuraContribution("A08H", "B004", 1, 5, CombatEffectType.MovementSlowPercent),
+                new Original323AuraContribution("A08H", "B004", 1, 5, CombatEffectType.AttackSpeedBuff)
+            }, out result));
+        }
+
+        [Test]
         public void MissingContributionsOrIdentityNeverAcquireImplicitDefaults()
         {
             double result;

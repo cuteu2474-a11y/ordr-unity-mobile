@@ -13,13 +13,16 @@ namespace Ordr.Mobile.Combat
         public string BuffRawcode { get; }
         public int Level { get; }
         public double Amount { get; }
+        public CombatEffectType Type { get; }
 
-        public Original323AuraContribution(string ability, string buff, int level, double amount)
+        public Original323AuraContribution(string ability, string buff, int level, double amount,
+            CombatEffectType type = CombatEffectType.ArmorReduction)
         {
             if (ability == null || ability.Length != 4 || buff == null || buff.Length != 4 ||
-                level < 1 || double.IsNaN(amount) || double.IsInfinity(amount) || amount < 0)
+                level < 1 || double.IsNaN(amount) || double.IsInfinity(amount) || amount < 0 ||
+                !Enum.IsDefined(typeof(CombatEffectType), type))
                 throw new ArgumentException("원본 오라 ID/레벨/값이 유효하지 않습니다.");
-            AbilityRawcode = ability; BuffRawcode = buff; Level = level; Amount = amount;
+            AbilityRawcode = ability; BuffRawcode = buff; Level = level; Amount = amount; Type = type;
         }
     }
 
@@ -76,7 +79,8 @@ namespace Ordr.Mobile.Combat
                 if (first == null) first = contribution;
                 else if (first.AbilityRawcode != contribution.AbilityRawcode ||
                     first.BuffRawcode != contribution.BuffRawcode ||
-                    first.Level != contribution.Level || first.Amount != contribution.Amount)
+                    first.Level != contribution.Level || first.Amount != contribution.Amount ||
+                    first.Type != contribution.Type)
                     return false;
             }
             amount = first == null ? 0 : first.Amount;
@@ -100,7 +104,7 @@ namespace Ordr.Mobile.Combat
                 fields[2].Length != 4 || fields[3].Length != 4 ||
                 !int.TryParse(fields[4], NumberStyles.None, CultureInfo.InvariantCulture, out level) || level < 1)
                 return false;
-            contribution = new Original323AuraContribution(fields[2], fields[3], level, effect.Amount);
+            contribution = new Original323AuraContribution(fields[2], fields[3], level, effect.Amount, effect.Type);
             return true;
         }
     }
