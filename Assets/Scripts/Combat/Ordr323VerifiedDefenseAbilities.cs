@@ -108,15 +108,18 @@ namespace Ordr.Mobile.Combat
     {
         private readonly Func<string, int, bool> originalA04MStackProvenance;
         private readonly Func<string, int, bool> originalA04PTotalProvenance;
+        private readonly Func<string, CombatEffect, bool> originalSpecialAuraProvenance;
 
         // 전투 런타임의 'armorBreak' 도감 태그만으로는 A04M 사용이
         // 증명되지 않는다. 실제 JASS Bdq(A04M) 매핑된 이벤트만 승인한다.
         public Ordr323VerifiedPartialModifierRules(
             Func<string, int, bool> verifiedA04MStackProvenance = null,
-            Func<string, int, bool> verifiedA04PTotalProvenance = null)
+            Func<string, int, bool> verifiedA04PTotalProvenance = null,
+            Func<string, CombatEffect, bool> verifiedSpecialAuraProvenance = null)
         {
             originalA04MStackProvenance = verifiedA04MStackProvenance;
             originalA04PTotalProvenance = verifiedA04PTotalProvenance;
+            originalSpecialAuraProvenance = verifiedSpecialAuraProvenance;
         }
 
         public bool TryResolveArmor(CombatEnemy target,
@@ -127,10 +130,28 @@ namespace Ordr.Mobile.Combat
             if (target == null || effects == null ||
                 !target.Defenses.HasVerifiedArmor)
                 return false;
+            CombatEffect singleAura = null;
             foreach (var effect in effects)
-                if (effect.Type == CombatEffectType.ArmorReduction ||
-                    effect.Type == CombatEffectType.ArmorBreakStack)
-                    return false;
+            {
+                if (effect.Type == CombatEffectType.ArmorBreakStack) return false;
+                if (effect.Type != CombatEffectType.ArmorReduction) continue;
+                if (singleAura != null || effect.Amount != 3 ||
+                    effect.Origin != CombatEffectOrigin.Aura || effect.DurationSeconds != 0 ||
+                    originalSpecialAuraProvenance == null ||
+                    !originalSpecialAuraProvenance(target.Id, effect)) return false;
+                singleAura = effect;
+            }
+            if (singleAura != null)
+            {
+                if (armorBreakStacks != 0) return false;
+                foreach (var effect in effects)
+                    if (effect.Type == CombatEffectType.OriginalA04PLevelIncrease) return false;
+                // Exactly one proven AHad -3 aura. Multiple buff IDs, duplicate
+                // casters and A04M/A04P combinations still require native
+                // stacking proof; never sum them by tooltip resemblance.
+                effectiveArmor = target.Defenses.BaseArmor.Value - singleAura.Amount;
+                return !double.IsNaN(effectiveArmor) && !double.IsInfinity(effectiveArmor);
+            }
 
             // W3A confirms each item's individual Idef table, but does NOT
             // establish whether simultaneous A04M+A04P or aura effects stack.

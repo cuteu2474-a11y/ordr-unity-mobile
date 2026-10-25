@@ -32,6 +32,16 @@ namespace Ordr.Mobile.Unity
         public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
         public OriginalMapBaseStatCatalog MapBaseStats { get; private set; }
         public Original323UncommonAbilityCatalog OriginalUncommonAbilities { get; private set; }
+        public Original323SpecialAuraCatalog OriginalSpecialAuras { get; private set; }
+        private IOriginal323SpecialAuraTargetRules specialAuraTargets;
+
+        public void ConfigureVerifiedOriginalSpecialAuraTargets(
+            IOriginal323SpecialAuraTargetRules verifiedTargets)
+        {
+            if (Combat != null || specialAuraTargets != null)
+                throw new InvalidOperationException("특별함 오라 대상 근거는 전투 생성 전에 연결하세요.");
+            specialAuraTargets = verifiedTargets ?? throw new ArgumentNullException(nameof(verifiedTargets));
+        }
         private IOriginalUncommonVerifiedProcWorld originalUncommonEffectWorld;
         private IOriginal323UncommonCriticalPrehitRules verifiedUncommonCritRules;
 
@@ -607,6 +617,7 @@ namespace Ordr.Mobile.Unity
                     MapBaseStats = OriginalMapBaseStatCatalog.FromJson(mapBaseData.text, Units);
                     OriginalUncommonAbilities =
                         new Original323UncommonAbilityCatalog(MapBaseStats);
+                    OriginalSpecialAuras = new Original323SpecialAuraCatalog(MapBaseStats);
                 }
                 var fusionData = verifiedFusionRecipesJson != null ? verifiedFusionRecipesJson :
                     Resources.Load<TextAsset>("OrdrData/verified-mobile-fusion-recipes");
@@ -704,7 +715,8 @@ namespace Ordr.Mobile.Unity
             IOriginalCommonNativeAttackVerification verifiedNativePath,
             IOrdr323VerifiedModifierRules verifiedModifiers,
             IOrdr323VerifiedDamageQuantization verifiedQuantization,
-            ICombatProcRandom diceRandom)
+            ICombatProcRandom diceRandom,
+            IOriginal323NativeAttackBuffRules verifiedAttackBuffRules = null)
         {
             if (Combat != null)
                 throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
@@ -715,7 +727,7 @@ namespace Ordr.Mobile.Unity
                 throw new ArgumentNullException(nameof(verifiedNativePath),
                     "원본 평타 경로·HP 정수화·난수 근거가 모두 필요합니다.");
             var native = new OriginalMapCommonNativeAttackBinding(
-                MapBaseStats, verifiedNativePath, diceRandom);
+                MapBaseStats, verifiedNativePath, diceRandom, verifiedAttackBuffRules);
             ConfigureVerifiedAllUnitAttacks(native);
             ConfigureOriginal323DamageRuntime(native, verifiedModifiers,
                 verifiedQuantization, diceRandom);
@@ -744,6 +756,8 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            if (OriginalSpecialAuras != null)
+                Combat.ConfigureOriginalSpecialAuras(OriginalSpecialAuras, specialAuraTargets);
             if (OriginalUncommonAbilities != null)
                 Combat.ConfigureOriginalUncommonAbilities(
                     OriginalUncommonAbilities, originalUncommonEffectWorld);

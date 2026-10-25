@@ -11,6 +11,9 @@ namespace Ordr.Mobile.Combat
         public long NominalAttackPower { get; }
         public DamageSchool School { get; }
         public DamageTraits Traits { get; }
+        // Snapshot of the actual attacker statuses at this hit. Native
+        // object dice must not silently ignore an active attack-power aura.
+        public IReadOnlyList<CombatEffect> AttackerEffects { get; }
 
         public BasicDamageRequest(string unitInstanceId, UnitCombatSpec unit,
             string targetInstanceId)
@@ -19,6 +22,11 @@ namespace Ordr.Mobile.Combat
 
         public BasicDamageRequest(string unitInstanceId, string unitRawCode,
             BasicAttackSpec effectiveAttack, string targetInstanceId)
+            : this(unitInstanceId, unitRawCode, effectiveAttack, targetInstanceId, null) { }
+
+        public BasicDamageRequest(string unitInstanceId, string unitRawCode,
+            BasicAttackSpec effectiveAttack, string targetInstanceId,
+            IReadOnlyList<CombatEffect> attackerEffects)
         {
             if (string.IsNullOrWhiteSpace(unitInstanceId) ||
                 string.IsNullOrWhiteSpace(targetInstanceId))
@@ -31,6 +39,8 @@ namespace Ordr.Mobile.Combat
             NominalAttackPower = effectiveAttack.NominalAttackPower;
             School = effectiveAttack.School;
             Traits = effectiveAttack.Traits;
+            AttackerEffects = new List<CombatEffect>(
+                attackerEffects ?? Array.Empty<CombatEffect>()).AsReadOnly();
         }
     }
 
@@ -162,6 +172,12 @@ namespace Ordr.Mobile.Combat
             originalModifierRules = rules ?? throw new ArgumentNullException(nameof(rules));
             getAttackerEffects = effectLookup ??
                 throw new ArgumentNullException(nameof(effectLookup));
+        }
+
+        public void ConfigureAttackerEffectLookup(
+            Func<string, IReadOnlyList<CombatEffect>> effectLookup)
+        {
+            getAttackerEffects = effectLookup ?? throw new ArgumentNullException(nameof(effectLookup));
         }
 
         public BasicAttackSpec EffectiveAttack(string instanceId)
@@ -337,7 +353,8 @@ namespace Ordr.Mobile.Combat
             // 피해 계산 오류가 발생하면 공격 쿨타임은 소비하지 않는다.
             long resolved = damageResolver.ResolveBasicDamage(
                 new BasicDamageRequest(attackerInstanceId, unit.Spec.UnitRawCode,
-                    effective, targetId), enemy);
+                    effective, targetId, getAttackerEffects == null ? null :
+                        getAttackerEffects(attackerInstanceId)), enemy);
             if (resolved < 0) throw new InvalidOperationException("최종 피해량이 음수입니다.");
             if (unit.NextEventSequence == long.MaxValue)
                 throw new OverflowException("전투 이벤트 순번을 더 늘릴 수 없습니다.");

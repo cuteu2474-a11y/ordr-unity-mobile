@@ -22,7 +22,9 @@ namespace Ordr.Mobile.Combat
                     (enemyId, stacks) => world != null &&
                         world.IsVerified323ArmorBreakStack(enemyId, stacks),
                     (enemyId, total) => world != null &&
-                        world.IsVerified323BonneyArmorTotal(enemyId, total));
+                        world.IsVerified323BonneyArmorTotal(enemyId, total),
+                    (enemyId, effect) => world != null &&
+                        world.IsVerifiedOriginalSpecialAuraEffect(enemyId, effect));
             var rules = new Ordr323OriginalDamageRules(hits,
                 originalModifier, quantizer);
             var adapter = new CombatDamageRulesAdapter(rules,

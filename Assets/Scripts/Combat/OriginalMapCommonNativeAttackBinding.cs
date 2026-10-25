@@ -4,6 +4,16 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
+    // Independent proof of native buff basis/stacking/rounding is required.
+    // Preflight is read-only and precedes dice; Apply changes only raw damage.
+    // No default 7%-of-tooltip or final-HP multiplication is supplied.
+    public interface IOriginal323NativeAttackBuffRules
+    {
+        bool CanResolve(BasicDamageRequest request, CombatEnemy target, out string evidence);
+        bool TryApply(BasicDamageRequest request, CombatEnemy target,
+            Ordr323VerifiedDamageHit original, out Ordr323VerifiedDamageHit modified);
+    }
+
     // Native object stats alone do not prove the first swing delay, JASS damage
     // replacement, splash behavior or whether attacks stay in the native path.
     // This gate must be implemented with external evidence before real HP can
@@ -38,19 +48,22 @@ namespace Ordr.Mobile.Combat
         private readonly OriginalMapMappedNativeAttackEvidenceCatalog evidence;
         private readonly IOriginalCommonNativeAttackVerification verification;
         private readonly ICombatProcRandom diceRandom;
+        private readonly IOriginal323NativeAttackBuffRules attackBuffRules;
         private readonly Dictionary<string, OriginalMapCommonNativeAttackEvidence> byRawcode =
             new Dictionary<string, OriginalMapCommonNativeAttackEvidence>(StringComparer.Ordinal);
 
         public OriginalMapCommonNativeAttackBinding(
             OriginalMapBaseStatCatalog map,
             IOriginalCommonNativeAttackVerification verifiedNativePath,
-            ICombatProcRandom nativeDiceRandom)
+            ICombatProcRandom nativeDiceRandom,
+            IOriginal323NativeAttackBuffRules verifiedAttackBuffRules = null)
         {
             evidence = new OriginalMapMappedNativeAttackEvidenceCatalog(map);
             verification = verifiedNativePath ??
                 throw new ArgumentNullException(nameof(verifiedNativePath));
             diceRandom = nativeDiceRandom ??
                 throw new ArgumentNullException(nameof(nativeDiceRandom));
+            attackBuffRules = verifiedAttackBuffRules;
             foreach (var mapped in evidence.All)
                 byRawcode.Add(mapped.Rawcode, mapped);
         }
@@ -106,12 +119,35 @@ namespace Ordr.Mobile.Combat
             // the independent verification attests the native path. Target
             // armor/type and final HP rounding are still validated by
             // Ordr323OriginalDamageRules and its supplied quantizer.
+            bool powerBuff = false;
+            foreach (var effect in request.AttackerEffects)
+                if (effect.Type == CombatEffectType.AttackPowerBuff) powerBuff = true;
+            if (powerBuff)
+            {
+                string proof;
+                if (attackBuffRules == null ||
+                    !attackBuffRules.CanResolve(request, enemy, out proof) ||
+                    string.IsNullOrWhiteSpace(proof)) return false;
+            }
             long rawDamage = native.RollObjectBaseDamage(diceRandom);
             hit = new Ordr323VerifiedDamageHit(rawDamage,
                 native.NativeAttackType, true, true, false,
                 DamageTraits.None,
                 approvalEvidence + " / original UnitWeapons.slk:" + native.Rawcode,
                 school);
+            if (powerBuff)
+            {
+                Ordr323VerifiedDamageHit modified;
+                if (!attackBuffRules.TryApply(request, enemy, hit, out modified) ||
+                    modified == null) { hit = null; return false; }
+                if (modified.AttackType != hit.AttackType ||
+                    modified.School != hit.School || modified.Traits != hit.Traits ||
+                    modified.UseAttackTable != hit.UseAttackTable ||
+                    modified.UseArmorRating != hit.UseArmorRating ||
+                    modified.UseMagicResistance != hit.UseMagicResistance)
+                    throw new InvalidOperationException("공격력 버프가 원본 피해 유형을 변경했습니다.");
+                hit = modified;
+            }
             return true;
         }
 

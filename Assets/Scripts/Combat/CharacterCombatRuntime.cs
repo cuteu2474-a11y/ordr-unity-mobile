@@ -30,7 +30,7 @@ namespace Ordr.Mobile.Combat
         }
     }
 
-    public sealed class CharacterCombatRuntime
+    public sealed partial class CharacterCombatRuntime
     {
         private sealed class CharacterInstance
         {
@@ -688,6 +688,7 @@ namespace Ordr.Mobile.Combat
             auras.Refresh(statuses, enemies.Values,
                 id => characters.ContainsKey(id)
                     ? (UnitState?)roster.Get(id) : null);
+            RefreshOriginalSpecialAuras();
         }
 
         // 다중 타격/지속 피해 실행 시각은 원작 출처를 가진 공급자만 연결한다.
@@ -821,6 +822,7 @@ namespace Ordr.Mobile.Combat
             resolution.DamageApplied += OnActualDamage;
             attackPipeline = new CombatAttackPipeline(scheduler, resolution, triggers,
                 verifiedBasicDamage ?? throw new ArgumentNullException(nameof(verifiedBasicDamage)));
+            attackPipeline.ConfigureAttackerEffectLookup(id => unitStatuses[id].Snapshot());
             attackPipeline.ConfigureVerifiedProcPreflight(CanTriggerOriginalUncommonProc);
             // 유닛 재배치가 어려운 모바일 플레이 기준: 같은 전장 안의 평타 사거리 무제한.
             attackPipeline.ConfigureReachMode(
@@ -868,6 +870,7 @@ namespace Ordr.Mobile.Combat
                 }
                 if (!characters[id].AttackReady && commonAttackPreview != null)
                     commonAttackPreview.TryTrack(id, catalogUnitId, scheduler.Time);
+                RefreshEnemyAuras();
             }
             catch
             {
@@ -878,6 +881,7 @@ namespace Ordr.Mobile.Combat
                 characters.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
+                RefreshEnemyAuras();
                 throw;
             }
             pendingCommandEvents.Add(new CharacterCombatEvent(CharacterCombatEventType.UnitSpawned,
@@ -1326,6 +1330,7 @@ namespace Ordr.Mobile.Combat
             if (!characters.ContainsKey(instanceId))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
             roster.Move(instanceId, x, y);
+            RefreshEnemyAuras();
         }
 
         public void SpawnEnemy(string enemyId, long health, CharacterEnemyKind kind,
@@ -1439,6 +1444,7 @@ namespace Ordr.Mobile.Combat
                     status.Advance(elapsed);
                 foreach (var status in unitStatuses.Values)
                     status.Advance(elapsed);
+                RefreshEnemyAuras();
             });
         }
 
