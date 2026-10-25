@@ -45,6 +45,8 @@ namespace Ordr.Mobile.Core
                 case ElderCurse.Nusjuro:
                     return new ElderCurseModifiers(1.15, 0.85, 1, 1, 0, 0, 15000000, 0, 0);
                 case ElderCurse.Warcury:
+                    // Descriptive original effect. Do NOT add +15% on top of
+                    // an A04Q magic resistance already using NJ/LK -15.
                     return new ElderCurseModifiers(1, 1, 1, 1, 15, 15, 0, 15000000, 0);
                 case ElderCurse.Saturn:
                     return new ElderCurseModifiers(1, 1, 0.70, 0.90, 0, 0, 0, 0, 350000);

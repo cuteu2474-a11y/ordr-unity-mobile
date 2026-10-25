@@ -1,0 +1,173 @@
+{
+  "format": "ordr-2323C-nightmare-a04q-event-evidence-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceAbilityDataSlkSha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda",
+  "sourceAbilityObjectOverridesSha256": "aa938f02c22884f38c5e31bcd6229a35e917a8fab0128331fdab88980cfd50e0",
+  "scope": "nightmare-next-spawn-a04q-level-only-not-current-unit-bd5-or-runtime-proof",
+  "safeForLiveWaveSpawn": false,
+  "containsVerifiedFinalArmorOrHp": false,
+  "abilityRawcode": "A04Q",
+  "abilityNativeCode": "AIdd",
+  "warcraftDataField": "Def5",
+  "abilityLowLevels": [
+    {
+      "level": 1,
+      "magicDamageTakenFactor": 0.75
+    },
+    {
+      "level": 2,
+      "magicDamageTakenFactor": 0.76
+    },
+    {
+      "level": 3,
+      "magicDamageTakenFactor": 0.77
+    },
+    {
+      "level": 4,
+      "magicDamageTakenFactor": 0.78
+    }
+  ],
+  "higherLevelRange": {
+    "from": 5,
+    "to": 41,
+    "magicDamageTakenFactorAtFrom": 0.79,
+    "magicDamageTakenFactorAtTo": 1.15
+  },
+  "nightmareInitial": {
+    "linePlayerSlots": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "lineLevel": 16,
+    "bossLevel": 16,
+    "jassLines": [
+      57949,
+      58035,
+      58036,
+      58037,
+      58038,
+      58039
+    ]
+  },
+  "spawnAssignments": [
+    {
+      "scope": "line",
+      "jassCall": "Bd4(Cm,LK[JG])",
+      "jassLines": [
+        20698,
+        50860,
+        59504,
+        59518,
+        59552,
+        59681,
+        59694
+      ]
+    },
+    {
+      "scope": "boss",
+      "jassCall": "SetUnitAbilityLevel(Cm,$41303451,NJ)",
+      "jassLines": [
+        52719,
+        52928,
+        53132,
+        53337,
+        53543,
+        53757,
+        53966,
+        54167,
+        54377,
+        54581,
+        54791,
+        54998,
+        55208,
+        55450
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "warcury-activated",
+      "triggerJass": "BeR",
+      "playerScope": "all-line-plus-global-boss",
+      "nightmareLineLevelDelta": -15,
+      "bossLevelDelta": -15,
+      "evidenceLines": [
+        8858,
+        8859,
+        8862,
+        8863,
+        8864,
+        8865,
+        8866,
+        8874,
+        8877,
+        8878,
+        8879,
+        8880,
+        8881
+      ]
+    },
+    {
+      "id": "nika-cancels-warcury",
+      "triggerJass": "BeQ",
+      "playerScope": "all-line-plus-global-boss",
+      "nightmareLineLevelDelta": 15,
+      "bossLevelDelta": 15,
+      "evidenceLines": [
+        8748,
+        8750,
+        8751,
+        8754,
+        8757,
+        8758,
+        8762,
+        8788,
+        35923
+      ]
+    },
+    {
+      "id": "line-item-AI19",
+      "triggerJass": "BhL",
+      "playerScope": "one-line",
+      "lineLevelDelta": 5,
+      "evidenceLines": [
+        10550,
+        10551,
+        10552
+      ]
+    },
+    {
+      "id": "brook-trait-TR12",
+      "triggerJass": "BzL",
+      "playerScope": "one-line",
+      "lineLevelDelta": 3,
+      "evidenceLines": [
+        24945,
+        24958,
+        24959
+      ]
+    },
+    {
+      "id": "one-piece-treasure-finished",
+      "triggerJass": "CRW",
+      "playerScope": "one-line",
+      "lineLevelDelta": 10,
+      "evidenceLines": [
+        55668,
+        55669,
+        55670,
+        55679,
+        55680
+      ]
+    }
+  ],
+  "excludedSources": [
+    "Bd5(unit,delta) changes a specific existing unit after spawn",
+    "Otherworld effects and unrelated damage/armor/target-immunity rules",
+    "Current live Warcraft unit levels are not independently observed"
+  ]
+}

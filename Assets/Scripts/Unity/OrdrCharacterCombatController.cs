@@ -142,7 +142,9 @@ namespace Ordr.Mobile.Unity
         public Original323VerifiedMonsterWaveCatalog VerifiedMonsterWaves { get; private set; }
         public Original323MonsterWaveIdentityCatalog OriginalMonsterSpawnIdentities { get; private set; }
         public Original323MonsterObjectAbilityCatalog OriginalMonsterObjectAbilities { get; private set; }
+        public Original323NightmareA04QSpawnState NightmareMonsterA04QSpawns { get; private set; }
         private IOriginal323LiveMonsterWaveEvidence liveMonsterWaveEvidence;
+        private IOriginal323NightmareA04QEventWitness nightmareA04QEventWitness;
         public CombatWaveDirector VerifiedWaveDirector { get; } = new CombatWaveDirector();
 
         // Keep independent final-stat/target/spawn approval separate from the
@@ -155,6 +157,40 @@ namespace Ordr.Mobile.Unity
             liveMonsterWaveEvidence = verifiedSource ??
                 throw new ArgumentNullException(nameof(verifiedSource));
         }
+
+        // A verified original event adapter must observe the real JASS-equivalent
+        // action; the source-only snapshot never fabricates game events.
+        public void ConfigureObservedNightmareA04QEvents(
+            IOriginal323NightmareA04QEventWitness verifiedEvents)
+        {
+            if (nightmareA04QEventWitness != null)
+                throw new InvalidOperationException("악몽 마법 방어 이벤트 관측기를 이미 연결했습니다.");
+            nightmareA04QEventWitness = verifiedEvents ??
+                throw new ArgumentNullException(nameof(verifiedEvents));
+        }
+
+        public bool TryApplyObservedNightmareA04QEvent(
+            Original323NightmareA04QEvent sourceEvent, int playerSlot)
+        {
+            return Combat != null &&
+                Combat.Game.Phase == Ordr.Mobile.Core.SessionPhase.Running &&
+                NightmareMonsterA04QSpawns != null &&
+                NightmareMonsterA04QSpawns.TryApplyObservedEvent(
+                    sourceEvent, playerSlot, nightmareA04QEventWitness);
+        }
+
+        // A source-backed next-spawn estimate; NOT an independent live
+        // monster defense/ability/target-immune approval.
+        public bool TryGetNextOriginalMonsterMagicResistance(
+            CharacterEnemyKind kind, int playerSlot, out double percent)
+        {
+            percent = 0;
+            return OriginalMonsterObjectAbilities != null &&
+                NightmareMonsterA04QSpawns != null &&
+                NightmareMonsterA04QSpawns.TryGetNextSpawnMagicResistance(
+                    kind, playerSlot, out percent);
+        }
+
         public OriginalJassFusionPlanner OriginalFusionPlanner { get; private set; }
         public AssistedFusionService FusionAssistance { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
@@ -699,9 +735,13 @@ namespace Ordr.Mobile.Unity
                     Resources.Load<TextAsset>(
                         "OrdrData/original-2323C-monster-object-abilities");
                 if (monsterAbilitiesData != null)
+                {
                     OriginalMonsterObjectAbilities =
                         Original323MonsterObjectAbilityCatalog.FromJson(
                             monsterAbilitiesData.text);
+                    NightmareMonsterA04QSpawns =
+                        new Original323NightmareA04QSpawnState();
+                }
                 UnitDefinitions = UnitImplementationRegistry.Combine(Units, Skills,
                     OriginalUnitRawcodes);
                 if (Units.Count != 272 || Skills.CharacterCount != 200 ||

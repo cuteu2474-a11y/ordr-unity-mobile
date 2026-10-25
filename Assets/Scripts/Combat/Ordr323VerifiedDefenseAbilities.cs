@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Ordr.Mobile.Combat
 {
-    // 직접 추출한 2.323[C] war3map.w3a 원본 오브젝트 덮어쓰기만 반영한다.
-    // 원본 w3a에는 레벨 1~4의 값이 없다: 표를 외삽해 '확정'으로 표시하지 않는다.
+    // 2.323[C] 원본 AbilityData.slk(1~4레벨)과 war3map.w3a
+    // 덮어쓰기(5~41레벨)를 함께 대조한다. 나머지는 외삽하지 않는다.
     // Idef: 아이템 방어력 증감 / Def5: Defend의 마법 피해 수령 배율.
     public static class Ordr323VerifiedDefenseAbilities
     {
@@ -45,9 +45,19 @@ namespace Ordr.Mobile.Combat
             out double damageTakenFactor)
         {
             damageTakenFactor = 0;
-            // w3a A04Q Def5[5..41] : 0.79, 0.80, ..., 1.15
+            // UnitAbilities.slk declares the A04Q object; AbilityData.slk
+            // explicitly contains Def5[1..4] = 0.75, 0.76, 0.77, 0.78.
+            // The exact object override in war3map.w3a continues [5..41]
+            // with 0.79 .. 1.15. Do not extrapolate outside 1..41.
+            switch (abilityLevel)
+            {
+                case 1: damageTakenFactor = (double)0.75f; return true;
+                case 2: damageTakenFactor = (double)0.76f; return true;
+                case 3: damageTakenFactor = (double)0.77f; return true;
+                case 4: damageTakenFactor = (double)0.78f; return true;
+            }
             if (abilityLevel < 5 || abilityLevel > 41) return false;
-            // w3a 필드는 float32이므로 같은 자료형으로 반올림한 값을 반환.
+            // Warcraft object values are float32; retain that rounding.
             damageTakenFactor = (double)(float)(0.74 + 0.01 * abilityLevel);
             return true;
         }
@@ -63,7 +73,7 @@ namespace Ordr.Mobile.Combat
         }
 
         // 레벨은 war3map.j CUM 난이도 분기에서 가져온 것만 허용한다.
-        // Nightmare/Otherworld: LK[JG]=16, NJ=16 (2026-09-24 원본).
+        // Nightmare start: LK[JG]=16, NJ=16. Later JASS events can change both.
         public static bool TryGetNightmareBaselineResistance(out double resistance)
         {
             return TryGetMagicResistancePercent(16, out resistance);
