@@ -16,6 +16,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset characterSkillsJson;
         [SerializeField] private TextAsset originalStatEvidenceJson;
         [SerializeField] private TextAsset originalMapBaseStatsJson;
+        [SerializeField] private TextAsset originalAuraAuditJson;
         [SerializeField] private TextAsset verifiedFusionRecipesJson;
         [SerializeField] private TextAsset otherworldMysticFusionRecipesJson;
         [SerializeField] private TextAsset originalJassFusionRegistryJson;
@@ -33,13 +34,14 @@ namespace Ordr.Mobile.Unity
         public OriginalMapBaseStatCatalog MapBaseStats { get; private set; }
         public Original323UncommonAbilityCatalog OriginalUncommonAbilities { get; private set; }
         public Original323SpecialAuraCatalog OriginalSpecialAuras { get; private set; }
+        public Original323ArmorAuraCatalog OriginalArmorAuras { get; private set; }
         private IOriginal323SpecialAuraTargetRules specialAuraTargets;
 
         public void ConfigureVerifiedOriginalSpecialAuraTargets(
             IOriginal323SpecialAuraTargetRules verifiedTargets)
         {
             if (Combat != null || specialAuraTargets != null)
-                throw new InvalidOperationException("특별함 오라 대상 근거는 전투 생성 전에 연결하세요.");
+                throw new InvalidOperationException("원본 오라 대상 근거는 전투 생성 전에 연결하세요.");
             specialAuraTargets = verifiedTargets ?? throw new ArgumentNullException(nameof(verifiedTargets));
         }
         private IOriginalUncommonVerifiedProcWorld originalUncommonEffectWorld;
@@ -618,6 +620,11 @@ namespace Ordr.Mobile.Unity
                     OriginalUncommonAbilities =
                         new Original323UncommonAbilityCatalog(MapBaseStats);
                     OriginalSpecialAuras = new Original323SpecialAuraCatalog(MapBaseStats);
+                    var auraData = originalAuraAuditJson != null ? originalAuraAuditJson :
+                        Resources.Load<TextAsset>("OrdrData/original-2323C-all-unit-aura-audit");
+                    if (auraData != null)
+                        OriginalArmorAuras = Original323ArmorAuraCatalog.FromJson(
+                            auraData.text, MapBaseStats, OriginalSpecialAuras);
                 }
                 var fusionData = verifiedFusionRecipesJson != null ? verifiedFusionRecipesJson :
                     Resources.Load<TextAsset>("OrdrData/verified-mobile-fusion-recipes");
@@ -756,7 +763,9 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
-            if (OriginalSpecialAuras != null)
+            if (OriginalArmorAuras != null)
+                Combat.ConfigureOriginalAuras(OriginalArmorAuras, specialAuraTargets);
+            else if (OriginalSpecialAuras != null)
                 Combat.ConfigureOriginalSpecialAuras(OriginalSpecialAuras, specialAuraTargets);
             if (OriginalUncommonAbilities != null)
                 Combat.ConfigureOriginalUncommonAbilities(

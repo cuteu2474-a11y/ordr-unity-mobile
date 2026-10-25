@@ -20,28 +20,39 @@ namespace Ordr.Mobile.Combat
         public double Amount { get; }
         public double SignedRawObjectValue { get; }
         public double Radius { get; }
+        public int Level { get; }
+        // null means inherited/unknown, never an implicit flat-mode zero.
+        public double? RawArmorPercentageMode { get; }
         public bool TargetsAllies => Type == CombatEffectType.AttackPowerBuff;
         public string Evidence => "W3X:" + Original323UncommonAbilityCatalog.SourceW3xSha256 +
             "/" + UnitRawcode + "/" + AbilityRawcode + "/" + BuffRawcode;
 
         internal Original323SpecialAura(string id, string unit, string ability,
             string buff, string parent, CombatEffectType type, double amount,
-            double rawValue, double radius)
+            double rawValue, double radius, string targetMask = null, int level = 1,
+            double? rawArmorPercentageMode = null)
         {
             UnitId = id; UnitRawcode = unit; AbilityRawcode = ability;
             BuffRawcode = buff; ParentAbility = parent; Type = type;
             Amount = amount; SignedRawObjectValue = rawValue; Radius = radius;
-            TargetMask = TargetsAllies
+            Level = level; RawArmorPercentageMode = rawArmorPercentageMode;
+            TargetMask = targetMask ?? (TargetsAllies
                 ? "air,invulnerable,organic,self,ground,vulnerable,friend"
-                : "air,enemies,ground";
+                : "air,enemies,ground");
         }
 
         public string SourceKey(long caster) =>
             "original-aura:" + caster.ToString(System.Globalization.CultureInfo.InvariantCulture) +
-            ":" + AbilityRawcode + ":" + BuffRawcode + ":1";
+            ":" + AbilityRawcode + ":" + BuffRawcode + ":" +
+            Level.ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 
-    public sealed class Original323SpecialAuraCatalog
+    public interface IOriginal323AuraCatalog
+    {
+        IReadOnlyList<Original323SpecialAura> FindAll(string unitId);
+    }
+
+    public sealed class Original323SpecialAuraCatalog : IOriginal323AuraCatalog
     {
         private readonly Dictionary<string, Original323SpecialAura> entries =
             new Dictionary<string, Original323SpecialAura>(StringComparer.Ordinal);
@@ -85,13 +96,22 @@ namespace Ordr.Mobile.Combat
             Original323SpecialAura value;
             return unitId != null && entries.TryGetValue(unitId, out value) ? value : null;
         }
+
+        public IReadOnlyList<Original323SpecialAura> FindAll(string unitId)
+        {
+            var aura = Find(unitId);
+            return Array.AsReadOnly(aura == null ? new Original323SpecialAura[0] : new[] { aura });
+        }
     }
 
     // Read-only original target AND buff-presence-at-this-tick approval.
-    // Proves source ability present at level 1, native mask/ownership/immunity,
+    // Proves source ability present at aura.Level, native mask/ownership/immunity,
     // strict radius at this tick and aura update/linger semantics. If native
     // linger requires an out-of-range buff, this strict-radius path must NOT
     // be approved until that timeline has its own implementation.
+    // ArmorReduction additionally requires IOriginal323FlatArmorAuraRules.
+    // A missing RawArmorPercentageMode is not evidence of flat mode. Raw object
+    // values alone, or a nonempty source checksum, cannot approve a target.
     // Rejected/unknown is never interpreted as an eligible default target.
     public interface IOriginal323SpecialAuraTargetRules
     {
@@ -99,5 +119,13 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy target, double time, out string evidence);
         bool CanAffectAlly(Original323SpecialAura aura, UnitState caster,
             UnitState target, double time, out string evidence);
+    }
+
+    public interface IOriginal323FlatArmorAuraRules
+    {
+        // Read-only native flat/percentage-mode proof, independent of target
+        // eligibility. Unknown inherited Had2 cannot be assumed to be zero.
+        bool IsVerifiedFlatArmor(Original323SpecialAura aura, UnitState caster,
+            double time, out string evidence);
     }
 }

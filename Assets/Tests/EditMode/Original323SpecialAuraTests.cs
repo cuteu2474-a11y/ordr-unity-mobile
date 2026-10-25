@@ -36,18 +36,24 @@ namespace Ordr.Mobile.Tests
             public long Quantize(double value, Ordr323VerifiedDamageHit hit) => (long)value;
         }
 
-        private sealed class Targets : IOriginal323SpecialAuraTargetRules
+        private sealed class Targets : IOriginal323SpecialAuraTargetRules, IOriginal323FlatArmorAuraRules
         {
             public bool Approved = true;
             public bool Evidence = true;
             public string ExcludedEnemy;
             public long ExcludedAlly;
             public double UntilTime = double.PositiveInfinity;
+            public bool IsVerifiedFlatArmor(Original323SpecialAura aura, UnitState caster,
+                double time, out string evidence)
+            {
+                evidence = Evidence ? "TEST_ONLY: synthetic native flat armor mode" : null;
+                return Approved;
+            }
             public bool CanAffectEnemy(Original323SpecialAura aura, UnitState caster,
                 SpatialCombatEnemy target, double time, out string evidence)
             {
                 evidence = Evidence ? "TEST_ONLY: native mask/immunity/current buff tick" : null;
-                return Approved && time <= UntilTime && target.Id != ExcludedEnemy;
+                return Approved && aura.Level == 1 && time <= UntilTime && target.Id != ExcludedEnemy;
             }
             public bool CanAffectAlly(Original323SpecialAura aura, UnitState caster,
                 UnitState target, double time, out string evidence)
@@ -105,7 +111,7 @@ namespace Ordr.Mobile.Tests
             Data("original-2323C-map-base-stats.json"), Units());
 
         private static CharacterCombatRuntime World(Targets targets = null,
-            Random rng = null, Buff buff = null, bool allowNative = false)
+            Random rng = null, Buff buff = null, bool allowNative = false, bool allArmor = false)
         {
             var map = Map();
             var native = new OriginalMapCommonNativeAttackBinding(map, new Native(),
@@ -113,7 +119,11 @@ namespace Ordr.Mobile.Tests
             var world = Ordr323DamageWorldBinding.Create(Units(),
                 CharacterSkillCatalog.FromJson("{\"gameVersion\":\"S2 2.323[C]\",\"profiles\":[]}"),
                 native, null, new Quantizer(), rng ?? new Random());
-            world.ConfigureOriginalSpecialAuras(new Original323SpecialAuraCatalog(map), targets);
+            var six = new Original323SpecialAuraCatalog(map);
+            if (allArmor)
+                world.ConfigureOriginalAuras(Original323ArmorAuraCatalog.FromJson(
+                    Data("original-2323C-all-unit-aura-audit.json"), map, six), targets);
+            else world.ConfigureOriginalSpecialAuras(six, targets);
             if (allowNative) world.ConfigureVerifiedUnitAttackProvider(native);
             world.Start(); world.BeginWave(1);
             return world;
@@ -253,11 +263,18 @@ namespace Ordr.Mobile.Tests
             Assert.IsFalse(rules.TryResolveArmor(world.EnemyOf("enemy"), effects, 0, out armor));
         }
 
-        [TestCase("S-10")]
-        [TestCase("S-26")]
-        public void SingleProvenArmorAuraChangesActualCombatDamage(string id)
+        [TestCase("S-10", 7)]
+        [TestCase("S-26", 7)]
+        [TestCase("R-01", 5)]
+        [TestCase("L-07", -10)]
+        [TestCase("TR-20", -20)]
+        [TestCase("E-12", -25)]
+        [TestCase("I-04", -50)]
+        public void SingleProvenArmorAuraChangesActualCombatDamage(string id, double expectedArmor)
         {
-            var world = World(new Targets(), allowNative: true);
+            // The fixture approves exactly rank 1. Higher candidate ranks
+            // are metadata, not automatically simultaneous live effects.
+            var world = World(new Targets(), allowNative: true, allArmor: true);
             world.SpawnCharacter(id, 0, 0);
             world.SpawnCharacter("C-01", 0, 0);
             Enemy(world);
@@ -266,7 +283,7 @@ namespace Ordr.Mobile.Tests
             double armor;
             var effects = world.StatusOf("enemy").Snapshot();
             Assert.IsTrue(rules.TryResolveArmor(world.EnemyOf("enemy"), effects, 0, out armor));
-            Assert.AreEqual(7, armor);
+            Assert.AreEqual(expectedArmor, armor);
             var forged = new CombatEffect(effects[0].SourceId, CombatEffectType.ArmorReduction,
                 CombatEffectOrigin.Aura, 3, 0);
             Assert.IsFalse(rules.TryResolveArmor(world.EnemyOf("enemy"), new[] { forged }, 0, out armor));

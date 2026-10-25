@@ -5,7 +5,7 @@ namespace Ordr.Mobile.Combat
 {
     public sealed partial class CharacterCombatRuntime
     {
-        private Original323SpecialAuraCatalog originalSpecialAuras;
+        private IOriginal323AuraCatalog originalSpecialAuras;
         private IOriginal323SpecialAuraTargetRules originalSpecialAuraTargets;
         private readonly HashSet<string> specialAuraKeys = new HashSet<string>(StringComparer.Ordinal);
         private readonly Dictionary<long, string> previousAllyAuraSignatures = new Dictionary<long, string>();
@@ -23,18 +23,31 @@ namespace Ordr.Mobile.Combat
         public void ConfigureOriginalSpecialAuras(Original323SpecialAuraCatalog catalog,
             IOriginal323SpecialAuraTargetRules verifiedTargets = null)
         {
+            ConfigureOriginalAuras(catalog, verifiedTargets);
+        }
+
+        public void ConfigureOriginalAuras(IOriginal323AuraCatalog catalog,
+            IOriginal323SpecialAuraTargetRules verifiedTargets = null)
+        {
             if (characters.Count != 0 || originalSpecialAuras != null)
-                throw new InvalidOperationException("특별함 오라는 첫 소환 전에 한 번만 연결하세요.");
+                throw new InvalidOperationException("원본 오라는 첫 소환 전에 한 번만 연결하세요.");
             originalSpecialAuras = catalog ?? throw new ArgumentNullException(nameof(catalog));
             originalSpecialAuraTargets = verifiedTargets;
         }
 
         public Original323SpecialAura OriginalSpecialAuraOf(long instanceId)
         {
+            var auras = OriginalAurasOf(instanceId);
+            return auras.Count == 0 ? null : auras[0];
+        }
+
+        public IReadOnlyList<Original323SpecialAura> OriginalAurasOf(long instanceId)
+        {
             CharacterInstance unit;
             if (!characters.TryGetValue(instanceId, out unit))
                 throw new KeyNotFoundException("존재하지 않는 유닛");
-            return originalSpecialAuras?.Find(unit.Catalog.Id);
+            return originalSpecialAuras?.FindAll(unit.Catalog.Id) ??
+                Array.AsReadOnly(new Original323SpecialAura[0]);
         }
 
         private void RefreshOriginalSpecialAuras()
@@ -53,10 +66,16 @@ namespace Ordr.Mobile.Combat
             var allySignatures = new Dictionary<long, string>();
             var enemySignature = new System.Text.StringBuilder();
             foreach (long id in ids)
+            foreach (var aura in originalSpecialAuras.FindAll(characters[id].Catalog.Id))
             {
-                var aura = originalSpecialAuras.Find(characters[id].Catalog.Id);
-                if (aura == null) continue;
                 var caster = roster.Get(id);
+                if (aura.Type == CombatEffectType.ArmorReduction)
+                {
+                    var flatRules = originalSpecialAuraTargets as IOriginal323FlatArmorAuraRules;
+                    string flatEvidence;
+                    if (flatRules == null || !flatRules.IsVerifiedFlatArmor(aura, caster,
+                        Time, out flatEvidence) || string.IsNullOrWhiteSpace(flatEvidence)) continue;
+                }
                 string key = aura.SourceKey(id);
                 specialAuraKeys.Add(key);
                 if (aura.TargetsAllies)
