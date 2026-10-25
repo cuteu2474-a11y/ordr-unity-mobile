@@ -20,6 +20,7 @@ namespace Ordr.Mobile.Editor
             "original-2323C-map-base-stats.json",
             "original-2323C-all-unit-aura-audit.json",
             "original-2323C-monster-wave-script-evidence.json",
+            "original-2323C-monster-object-abilities.json",
             "original-2323C-missing-skill-profile-evidence.json",
             "verified-mobile-fusion-recipes.json",
             "otherworld-2323C-mystic-web-recipes.json",

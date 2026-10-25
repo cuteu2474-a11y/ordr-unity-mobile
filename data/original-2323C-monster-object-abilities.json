@@ -1,0 +1,2111 @@
+{
+  "format": "ordr-original-monster-object-abilities-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceFiles": [
+    {
+      "path": "Units\\UnitAbilities.slk",
+      "sha256": "fbd47be22d1482d63df15d70d7a8fa38f7f26b288443a5d74aa056104aef139d"
+    },
+    {
+      "path": "Units\\AbilityData.slk",
+      "sha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda"
+    },
+    {
+      "path": "Units\\CampaignAbilityStrings.txt",
+      "sha256": "1e6d9f5ccd22f67ad0edf5264bce77aa6b944032881b81ab7051f6bebf97b979"
+    }
+  ],
+  "scope": "object-starting-ability-identities-and-source-native-codes-not-current-target-immunity-or-live-ability-levels",
+  "safeForVerifiedMonsterWaveRuntime": false,
+  "liveImmunityFlagsVerified": false,
+  "summary": {
+    "candidateObjectCount": 100,
+    "scriptWaveObjectCount": 68,
+    "lineWaveObjectCount": 60,
+    "bossWaveObjectCount": 8,
+    "storyBaseStunResistanceCount": 14,
+    "creepBaseMagicImmuneCount": 3,
+    "initialObjectAbilitiesOnly": true
+  },
+  "abilityDefinitions": [
+    {
+      "rawcode": "A04M",
+      "nativeCode": "AIde",
+      "originalAbilityName": "아머브레이크",
+      "objectDataLevels": 76
+    },
+    {
+      "rawcode": "A04N",
+      "nativeCode": "AIde",
+      "originalAbilityName": "방어력감소",
+      "objectDataLevels": 11
+    },
+    {
+      "rawcode": "A04O",
+      "nativeCode": "AIde",
+      "originalAbilityName": "방어력감소",
+      "objectDataLevels": 11
+    },
+    {
+      "rawcode": "A04P",
+      "nativeCode": "AIde",
+      "originalAbilityName": "방어력감소",
+      "objectDataLevels": 41
+    },
+    {
+      "rawcode": "A04Q",
+      "nativeCode": "AIdd",
+      "originalAbilityName": "마법방어력",
+      "objectDataLevels": 41
+    },
+    {
+      "rawcode": "A04R",
+      "nativeCode": "AIsr",
+      "originalAbilityName": "마법데미지 증폭",
+      "objectDataLevels": 26
+    },
+    {
+      "rawcode": "A08Q",
+      "nativeCode": "Arsk",
+      "originalAbilityName": "보스 스턴저항",
+      "objectDataLevels": 1
+    },
+    {
+      "rawcode": "A0IQ",
+      "nativeCode": "AIde",
+      "originalAbilityName": "@0903_가반불멸",
+      "objectDataLevels": 1
+    },
+    {
+      "rawcode": "A0K0",
+      "nativeCode": "AIml",
+      "originalAbilityName": "[퀘스트] 체력증가",
+      "objectDataLevels": 5
+    },
+    {
+      "rawcode": "A0K1",
+      "nativeCode": "AIml",
+      "originalAbilityName": "[퀘스트] 체력증가",
+      "objectDataLevels": 5
+    },
+    {
+      "rawcode": "A10R",
+      "nativeCode": "AIde",
+      "originalAbilityName": "#변화유닛",
+      "objectDataLevels": 1
+    },
+    {
+      "rawcode": "A11P",
+      "nativeCode": "AIde",
+      "originalAbilityName": "방어력감소",
+      "objectDataLevels": 2
+    },
+    {
+      "rawcode": "A11S",
+      "nativeCode": "AIde",
+      "originalAbilityName": "폭발형데미지 증폭",
+      "objectDataLevels": 46
+    },
+    {
+      "rawcode": "A13H",
+      "nativeCode": "Aimp",
+      "originalAbilityName": "오로성",
+      "objectDataLevels": 2
+    },
+    {
+      "rawcode": "A911",
+      "nativeCode": "AIde",
+      "originalAbilityName": "#미션유닛",
+      "objectDataLevels": 4
+    },
+    {
+      "rawcode": "Aeth",
+      "nativeCode": "Aeth",
+      "originalAbilityName": "幽灵",
+      "objectDataLevels": 1
+    },
+    {
+      "rawcode": "Amim",
+      "nativeCode": "Amim",
+      "originalAbilityName": "魔法免疫",
+      "objectDataLevels": 1
+    },
+    {
+      "rawcode": "Avul",
+      "nativeCode": "Avul",
+      "originalAbilityName": "无敌的",
+      "objectDataLevels": 1
+    }
+  ],
+  "entries": [
+    {
+      "rawcode": "n000",
+      "originalMapName": "1. 로그타운",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n001",
+      "originalMapName": "10. 펑크해저드",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n002",
+      "originalMapName": "2. 알라바스타",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n003",
+      "originalMapName": "3. 하늘섬",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n004",
+      "originalMapName": "4. 워터세븐",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n005",
+      "originalMapName": "5. 스릴러바크",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n006",
+      "originalMapName": "6. 샤봉디제도",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n007",
+      "originalMapName": "7. 임펠다운",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n008",
+      "originalMapName": "8. 마린포드",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n009",
+      "originalMapName": "14. 에그헤드",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n00A",
+      "originalMapName": "9. 어인섬",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n00B",
+      "originalMapName": "13. 와노쿠니",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n00C",
+      "originalMapName": "11. 드레스로자",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n00D",
+      "originalMapName": "12. 홀케이크섬",
+      "nameBasedCategory": "story-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A08Q",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n00E",
+      "originalMapName": "1단계 크립 듀공",
+      "nameBasedCategory": "creep-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "Amim",
+        "A911",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A04Q",
+        "A04R",
+        "A10R"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n00F",
+      "originalMapName": "2단계 크립 파파구",
+      "nameBasedCategory": "creep-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "Amim",
+        "A911",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A04Q",
+        "A04R",
+        "A10R"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "n00G",
+      "originalMapName": "3단계 크립 슈슈",
+      "nameBasedCategory": "creep-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "Amim",
+        "A911",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A04Q",
+        "A04R",
+        "A10R"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "ground"
+    },
+    {
+      "rawcode": "o001",
+      "originalMapName": "레벨 55 [보스]도플라밍고",
+      "nameBasedCategory": "boss-labeled",
+      "scriptWaveRole": "boss",
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o002",
+      "originalMapName": "고런트-체력2000만",
+      "nameBasedCategory": "other-o-object-unconfirmed",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A04Q",
+        "A04R"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o003",
+      "originalMapName": "레벨 11 타시기",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o004",
+      "originalMapName": "레벨 02 찌질한 해왕류",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o005",
+      "originalMapName": "레벨 08 클리크",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o006",
+      "originalMapName": "레벨 07 깅",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o007",
+      "originalMapName": "레벨 26 사토리",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o008",
+      "originalMapName": "레벨 05 캡틴 버기",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o009",
+      "originalMapName": "레벨 04 모건",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00A",
+      "originalMapName": "레벨 03 해적사냥꾼조로",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00B",
+      "originalMapName": "레벨 09 하찌",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00C",
+      "originalMapName": "레벨 12 스모커",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00D",
+      "originalMapName": "레벨 06 캡틴 크로",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00E",
+      "originalMapName": "레벨 18 Mr.2",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00F",
+      "originalMapName": "레벨 13 Mr.9",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00G",
+      "originalMapName": "레벨 16 Mr.4",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00H",
+      "originalMapName": "레벨 15 Mr.5",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00I",
+      "originalMapName": "레벨 01 알비다",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00J",
+      "originalMapName": "[퀘스트]바제스",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00K",
+      "originalMapName": "레벨 64 킹",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00M",
+      "originalMapName": "레벨 14 Mr.6",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00N",
+      "originalMapName": "레벨 17 Mr.3",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00O",
+      "originalMapName": "레벨 19 Mr.1",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00P",
+      "originalMapName": "레벨 21 체스",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00Q",
+      "originalMapName": "레벨 22 마리모",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00R",
+      "originalMapName": "레벨 23 도르돈",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00S",
+      "originalMapName": "레벨 24 와포루",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00T",
+      "originalMapName": "레벨 25 베라미",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00U",
+      "originalMapName": "레벨 27 게다츠",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00V",
+      "originalMapName": "레벨 28 오움",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00X",
+      "originalMapName": "레벨 29 슈라",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o00Z",
+      "originalMapName": "레벨 57 샬롯 크래커",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o010",
+      "originalMapName": "레벨 32 칼리파",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o011",
+      "originalMapName": "레벨 33 후쿠로",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o012",
+      "originalMapName": "레벨 34 쿠마도리",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o015",
+      "originalMapName": "레벨 39 찌질이 스팬담",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o017",
+      "originalMapName": "레벨 35 블루노",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o018",
+      "originalMapName": "레벨 36 재브라",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o019",
+      "originalMapName": "레벨 37 카쿠",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01A",
+      "originalMapName": "레벨 38 루치",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01B",
+      "originalMapName": "레벨 41 압살롬",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01D",
+      "originalMapName": "레벨 44 쿠마",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01E",
+      "originalMapName": "레벨 43 모리아",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01F",
+      "originalMapName": "레벨 42 오즈",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01G",
+      "originalMapName": "레벨 31 폭시",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01H",
+      "originalMapName": "레벨 46 마리골드",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01L",
+      "originalMapName": "레벨 47 마젤란",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01M",
+      "originalMapName": "레벨 48 미호크",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01N",
+      "originalMapName": "레벨 52 베르고",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01O",
+      "originalMapName": "레벨 45 키자루",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01Q",
+      "originalMapName": "레벨 53 시저",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01R",
+      "originalMapName": "레벨 54 피카",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01S",
+      "originalMapName": "레벨 55 트레볼",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01T",
+      "originalMapName": "레벨 49 아카이누",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01U",
+      "originalMapName": "레벨 51 호디존스",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01V",
+      "originalMapName": "레벨 10 [보스]아론",
+      "nameBasedCategory": "boss-labeled",
+      "scriptWaveRole": "boss",
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01W",
+      "originalMapName": "레벨 20 [보스]크로커다일",
+      "nameBasedCategory": "boss-labeled",
+      "scriptWaveRole": "boss",
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01X",
+      "originalMapName": "레벨 30 [보스]에넬",
+      "nameBasedCategory": "boss-labeled",
+      "scriptWaveRole": "boss",
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01Y",
+      "originalMapName": "레벨 40 [보스]루치",
+      "nameBasedCategory": "boss-labeled",
+      "scriptWaveRole": "boss",
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o01Z",
+      "originalMapName": "레벨 50 [보스]센고쿠",
+      "nameBasedCategory": "boss-labeled",
+      "scriptWaveRole": "boss",
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o020",
+      "originalMapName": "레벨 58 샬롯 스무디",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o021",
+      "originalMapName": "레벨 59 샬롯 카타쿠리",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o025",
+      "originalMapName": "레벨 62 잭",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o026",
+      "originalMapName": "레벨 61 바질 호킨스",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o027",
+      "originalMapName": "레벨 63 퀸",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o028",
+      "originalMapName": "레벨 56 호미즈",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02B",
+      "originalMapName": "레벨 65 [보스]카이도",
+      "nameBasedCategory": "boss-labeled",
+      "scriptWaveRole": "boss",
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02C",
+      "originalMapName": "레벨 60 [보스]빅 맘",
+      "nameBasedCategory": "boss-labeled",
+      "scriptWaveRole": "boss",
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02D",
+      "originalMapName": "[퀘스트]깅",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A0K0",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02E",
+      "originalMapName": "토프먼 워큐리 - 오로성",
+      "nameBasedCategory": "other-o-object-unconfirmed",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A13H",
+        "A0IQ",
+        "Avul"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02F",
+      "originalMapName": "[퀘스트]피카",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02G",
+      "originalMapName": "레벨 60 제우스",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02H",
+      "originalMapName": "레벨 65 오로치",
+      "nameBasedCategory": "level-labeled",
+      "scriptWaveRole": "line",
+      "objectBaseAbilities": [
+        "Aeth",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": null,
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02J",
+      "originalMapName": "[퀘스트]와포루",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02K",
+      "originalMapName": "[퀘스트]클리크",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A0K1",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02L",
+      "originalMapName": "[퀘스트]모리아",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02M",
+      "originalMapName": "[퀘스트]붉은개",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02N",
+      "originalMapName": "[퀘스트]후샤.D.뉴에이지",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A911",
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02Q",
+      "originalMapName": "[퀘스트]노란원숭이",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02R",
+      "originalMapName": "[퀘스트]푸른꿩",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o02S",
+      "originalMapName": "[퀘스트]거프",
+      "nameBasedCategory": "quest-labeled",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A11S",
+        "A04M",
+        "A04O",
+        "A04N",
+        "A04P",
+        "A11P",
+        "A04R",
+        "A04Q"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o031",
+      "originalMapName": "제이가르시아 새턴 - 오로성",
+      "nameBasedCategory": "other-o-object-unconfirmed",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A13H",
+        "A0IQ",
+        "Avul"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    },
+    {
+      "rawcode": "o032",
+      "originalMapName": "에단바론 V. 나스쥬로 - 오로성",
+      "nameBasedCategory": "other-o-object-unconfirmed",
+      "scriptWaveRole": null,
+      "objectBaseAbilities": [
+        "A13H",
+        "A0IQ",
+        "Avul"
+      ],
+      "heroSkillList": [],
+      "objectUnitType": "ancient,sapper",
+      "objectTargetType": "air"
+    }
+  ]
+}

@@ -24,6 +24,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset originalUnitRawcodeLabelsJson;
         [SerializeField] private TextAsset verifiedMonsterWavesJson;
         [SerializeField] private TextAsset originalMonsterWaveScriptJson;
+        [SerializeField] private TextAsset originalMonsterObjectAbilitiesJson;
         [SerializeField] private TextAsset originalWispPoolsJson;
         [SerializeField] private bool enableMobileTouchPanel = true;
         [SerializeField] private bool enableUnitWorldMarkers = true;
@@ -140,6 +141,7 @@ namespace Ordr.Mobile.Unity
         public OriginalUnitRawcodeLabelCatalog OriginalUnitRawcodes { get; private set; }
         public Original323VerifiedMonsterWaveCatalog VerifiedMonsterWaves { get; private set; }
         public Original323MonsterWaveIdentityCatalog OriginalMonsterSpawnIdentities { get; private set; }
+        public Original323MonsterObjectAbilityCatalog OriginalMonsterObjectAbilities { get; private set; }
         private IOriginal323LiveMonsterWaveEvidence liveMonsterWaveEvidence;
         public CombatWaveDirector VerifiedWaveDirector { get; } = new CombatWaveDirector();
 
@@ -690,6 +692,16 @@ namespace Ordr.Mobile.Unity
                 if (originalSpawnData != null)
                     OriginalMonsterSpawnIdentities =
                         Original323MonsterWaveIdentityCatalog.FromJson(originalSpawnData.text);
+                // Base object ability IDs come from UnitAbilities.slk, never
+                // directly from final live immunity or the current A04Q level.
+                var monsterAbilitiesData = originalMonsterObjectAbilitiesJson != null ?
+                    originalMonsterObjectAbilitiesJson :
+                    Resources.Load<TextAsset>(
+                        "OrdrData/original-2323C-monster-object-abilities");
+                if (monsterAbilitiesData != null)
+                    OriginalMonsterObjectAbilities =
+                        Original323MonsterObjectAbilityCatalog.FromJson(
+                            monsterAbilitiesData.text);
                 UnitDefinitions = UnitImplementationRegistry.Combine(Units, Skills,
                     OriginalUnitRawcodes);
                 if (Units.Count != 272 || Skills.CharacterCount != 200 ||
@@ -914,6 +926,10 @@ namespace Ordr.Mobile.Unity
                 !OriginalMonsterSpawnIdentities.MatchesSinglePlayerWave(plan))
                 throw new InvalidOperationException(
                     "요청한 라운드의 몬스터 ID·역할·수량이 원본 JASS와 일치하지 않습니다.");
+            if (OriginalMonsterObjectAbilities == null ||
+                !OriginalMonsterObjectAbilities.MatchesWaveObjectRoles(plan))
+                throw new InvalidOperationException(
+                    "몬스터 원본 객체의 기본 능력/역할 자료가 누락되었거나 불일치합니다.");
             if (!Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
                 plan, liveMonsterWaveEvidence, out approvalEvidence))
                 throw new InvalidOperationException(
