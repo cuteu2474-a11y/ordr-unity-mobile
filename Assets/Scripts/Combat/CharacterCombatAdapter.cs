@@ -110,6 +110,15 @@ namespace Ordr.Mobile.Combat
                         throw new FormatException(
                             "원본 유닛 rawcode와 안흔함 스킬 rawcode가 다릅니다.");
                     }
+                    // A07I critical changes the *unquantized hit* before
+                    // Warcraft defense. Converting it to an OnHit zero-effect
+                    // marker would roll too late and silently lose its damage.
+                    if (native.Kind == OriginalUncommonProcKind.Critical)
+                    {
+                        deferred.Add(native.ProcId +
+                            ": 사전 피해 단계에서만 처리 (원본 크리티컬 계산기 별도 연결)");
+                        continue;
+                    }
                     if (verifiedUncommonWorld == null ||
                         !verifiedUncommonWorld.SupportsCompleteEffect(native))
                     {

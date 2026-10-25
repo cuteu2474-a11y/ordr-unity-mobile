@@ -71,3 +71,14 @@
 - 크리티컬(원본 공격 1.5배)과 람각(직선 마법), 로빈 다중 타격은 별도 실행 설계가 필요하다. 이 포트가 해당 스킬을 임의 승인하지 않는다.
 
 **현 시점 제한:** 가상 방어 계산을 실기로 오인하게 만드는 코드가 없다. 3개 AHbh 능력의 기본 확률·피해 필드·기절·전장 공격 시퀀스는 연결했으나, 원본 몬스터의 대상 유형 및 검증된 최종 HP 계산기 주입이 끝나기 전에는 라이브 전투 효과가 차단된다. 현재 OnHit 스킬 루프는 기본 공격 피해 이후 실행되므로, 한 방에 죽는 적에 대한 네이티브 Bash 타이밍과의 완전 동일성은 아직 검증되지 않았다. **실기 파리티는 미완료**.
+
+
+## 블루노·후쿠로 A07I: 육식과 람각의 서로 다른 타격 파이프라인
+
+- 원본 유닛 rawcode는 블루노 `h00M`, 후쿠로 `h00A`이며 모두 `A07I`를 보유한다. 기존 추출 자료에 기록된 육식 크리티컬은 확률 **15%**, 원시 평타 **1.5배**다. 람각은 독립 확률 **10%**, 직선 마법 원본 표시값 **150**이다.
+- **육식 크리티컬**: `Original323UncommonCriticalHitSource`는 원본 공격 주사위가 구해진 뒤, 방어 타입/방어력/HP 변환이 일어나기 *전에* 크리티컬을 적용한다. 기존의 공격 적중 이후 `OnHit` 표식에 크리티컬을 넣는 경로는 차단한다. 결과 `Ordr323VerifiedDamageHit.RawDamage`에 1.5배가 반영되고, 원래 공격 타입·저항 적용 범위·증거가 그대로 전달된다.
+- 크리티컬 대상/계산 순서를 입증하는 `IOriginal323UncommonCriticalPrehitRules` 없이는 크리티컬 난수를 소모하지 않는다. `OrdrCharacterCombatController.ConfigureVerifiedOriginalUncommonCritical(verifiedRules)`를 **원본 피해 런타임 생성 전** 연결해야 한다. 별도의 `A07I:rankyaku` 주사위를 크리티컬 주사위로 대체해서는 안 된다.
+- **람각**: `Original323UncommonRankyakuWorld`는 `IOriginal323RankyakuVerifiedRules`가 인정한 원본 직선 교차 판정, 대상 구분, 마법 저항/방어력, 최종 HP 변환을 통과한 결과 `Original323RankyakuLineHit`만 소비한다. 150을 사거리·반경·확정 HP 피해량으로 임의 적용하지 않는다.
+- 다중 대상에 대해서는 전투 엔진 `TryCommitOriginalUncommonLine`이 대상 중복, 다른 전장, 사망, 근거 누락을 **일괄 사전 검증**하고, 성공할 때만 각 대상의 HP 감소와 처치/기여 이벤트를 동일 `CombatResolution`에 기록한다. 대상 하나라도 미검증이면 전부 적용 보류한다.
+- 독립적인 다른 안흔함 효과를 함께 쓰려면 `Original323UncommonEffectRouter`로 명시적으로 묶을 수 있다. 타시기·하찌·에이스와 람각을 동시에 연결하는 `ConfigureVerifiedOriginalUncommonEffectBundle`도 추가되었다. 이 설정은 육식 크리티컬을 자동 승인하지 않는다.
+- Unit-test의 가상 영웅/갑옷/경로/최종 HP 계산기와 항상 0을 반환하는 난수는 **실게임의 근거가 아니다**. 현재 기본 런타임에는 실제 몬스터 원본 경로·마법 저항·명중/최종 HP 반올림의 전수 검증이 여전히 부족하므로 스킬 완성 판정은 보류한다.

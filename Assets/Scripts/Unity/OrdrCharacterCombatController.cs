@@ -33,6 +33,19 @@ namespace Ordr.Mobile.Unity
         public OriginalMapBaseStatCatalog MapBaseStats { get; private set; }
         public Original323UncommonAbilityCatalog OriginalUncommonAbilities { get; private set; }
         private IOriginalUncommonVerifiedProcWorld originalUncommonEffectWorld;
+        private IOriginal323UncommonCriticalPrehitRules verifiedUncommonCritRules;
+
+        // This must be set BEFORE creating the damage runtime. A07I crit
+        // changes the native attack's raw damage before armor conversion.
+        public void ConfigureVerifiedOriginalUncommonCritical(
+            IOriginal323UncommonCriticalPrehitRules verifiedRules)
+        {
+            if (Combat != null || verifiedUncommonCritRules != null)
+                throw new InvalidOperationException(
+                    "원본 육식 크리티컬 근거는 전투 월드 생성 전에 한 번만 연결하세요.");
+            verifiedUncommonCritRules = verifiedRules ??
+                throw new ArgumentNullException(nameof(verifiedRules));
+        }
 
         // Register a native skill effect executor only after every effect,
         // target rule, armor behavior and hit timing has source evidence.
@@ -66,6 +79,20 @@ namespace Ordr.Mobile.Unity
             ConfigureVerifiedUncommonNativeSkills(
                 new Original323UncommonBashBundleWorld(
                     verifiedTargets, verifiedBonusDamage));
+        }
+
+        // Routes only abilities whose COMPLETE native effects have been
+        // separately verified: Brook+Bash and rankyaku are independent ports.
+        public void ConfigureVerifiedOriginalUncommonEffectBundle(
+            IOriginal323UncommonBashTargetRules verifiedTargets,
+            IOriginal323UncommonBonusDamageRules verifiedBonusDamage,
+            IOriginal323RankyakuVerifiedRules verifiedRankyaku)
+        {
+            ConfigureVerifiedUncommonNativeSkills(
+                new Original323UncommonEffectRouter(
+                    new Original323UncommonBashBundleWorld(
+                        verifiedTargets, verifiedBonusDamage),
+                    new Original323UncommonRankyakuWorld(verifiedRankyaku)));
         }
 
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
@@ -632,8 +659,17 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("도감 JSON 로딩이 완료되지 않았습니다.");
             if (Combat != null)
                 throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
+            IOrdr323VerifiedHitSource appliedHits = verifiedHits;
+            if (verifiedUncommonCritRules != null)
+            {
+                if (OriginalUncommonAbilities == null)
+                    throw new InvalidOperationException("원본 육식 크리티컬 카탈로그가 없습니다.");
+                appliedHits = new Original323UncommonCriticalHitSource(
+                    verifiedHits, OriginalUncommonAbilities,
+                    verifiedUncommonCritRules, random);
+            }
             ConfigureRuntimeWithWorld(Ordr323DamageWorldBinding.Create(
-                Units, Skills, verifiedHits, verifiedModifiers, quantization, random));
+                Units, Skills, appliedHits, verifiedModifiers, quantization, random));
         }
 
         // Opt-in only: a map object row is not itself evidence that JASS leaves

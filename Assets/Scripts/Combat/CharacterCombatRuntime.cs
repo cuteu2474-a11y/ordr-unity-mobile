@@ -225,6 +225,68 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
+        // Source-supplied line geometry and *final HP* damage only. The
+        // whole batch is checked before touching a single enemy: no partial
+        // AoE is allowed when any target crosses a lane or lacks provenance.
+        // This is callable only from an active, source-approved A07I proc.
+        internal bool TryCommitOriginalUncommonLine(string attackerId,
+            string primaryTargetId, string procId,
+            IReadOnlyList<Original323RankyakuLineHit> hits,
+            out long totalActualDamage)
+        {
+            totalActualDamage = 0;
+            if (!processingStep || game.Phase != SessionPhase.Running ||
+                attackerId != executingUncommonActor ||
+                primaryTargetId != executingUncommonTarget ||
+                procId != executingUncommonProcId ||
+                procId != "A07I:rankyaku" ||
+                hits == null || hits.Count == 0 || hits.Count > 512)
+                return false;
+            long actorId;
+            CharacterInstance actor;
+            if (!long.TryParse(attackerId, NumberStyles.Integer,
+                    CultureInfo.InvariantCulture, out actorId) ||
+                !characters.TryGetValue(actorId, out actor) ||
+                uncommonAbilities == null ||
+                uncommonAbilities.FindProc(actor.Catalog.Id, procId) == null)
+                return false;
+            var touched = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var line in hits)
+            {
+                SpatialCombatEnemy target;
+                if (line == null || line.FinalHpDamage < 0 ||
+                    string.IsNullOrWhiteSpace(line.SourceEvidence) ||
+                    !touched.Add(line.TargetId) ||
+                    !enemies.TryGetValue(line.TargetId, out target) ||
+                    !target.Enemy.IsAlive ||
+                    !CanAttackInThisLane(actor, target) ||
+                    resolution.GetEnemy(line.TargetId) == null)
+                    return false;
+            }
+            // Preflight guarantees that no expected miss/duplicate can occur
+            // inside the commit. External combat hooks must not mutate the
+            // roster during this loop (same rule as existing AoE effect path).
+            foreach (var line in hits)
+            {
+                SpatialCombatEnemy target = enemies[line.TargetId];
+                long actual;
+                if (!resolution.TryApplySkillDamage(attackerId,
+                        line.TargetId, line.FinalHpDamage, out actual))
+                    throw new InvalidOperationException(
+                        "원본 람각의 사전검증과 실제 피해 반영이 불일치합니다.");
+                totalActualDamage = checked(totalActualDamage + actual);
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillDamage, attackerId,
+                    line.TargetId, procId, line.SourceEvidence, actual));
+                if (!target.Enemy.IsAlive)
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EnemyDefeated,
+                        attackerId, line.TargetId, procId,
+                        "원본 람각으로 적 처치", actual));
+            }
+            return true;
+        }
+
         private IOriginalSpecialSkillTriggerMapping specialTriggerMapping;
         private IOriginalSpecialSkillEventRules specialEventRules;
         private IOriginalCombatTargetSelectionRules targetSelectionRules;
