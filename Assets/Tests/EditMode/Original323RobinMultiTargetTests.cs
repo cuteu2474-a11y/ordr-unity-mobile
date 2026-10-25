@@ -311,8 +311,13 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(1000L, world.EnemyOf("extra").Health);
                 Assert.AreEqual(0, volley.Resolves);
                 Assert.AreEqual(0, world.Game.DefeatedEnemies);
-                Assert.IsFalse(world.IsOriginalUncommonSkillConnected(robin,
-                    "A07M:multi3"));
+                if (nativeUnapproved)
+                    Assert.IsFalse(world.HasVerifiedAttack(robin),
+                        "Original-native approval is required to deal any damage.");
+                else
+                    Assert.IsFalse(world.IsOriginalUncommonSkillConnected(robin,
+                        "A07M:multi3"),
+                        "Unapproved volley must not enter the proc trigger engine.");
             }
         }
 
