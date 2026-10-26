@@ -15,10 +15,12 @@ namespace Ordr.Mobile.Tests
     {
         private sealed class Dice : IOriginal323ScriptRandomDrawWitness
         {
+            public int Calls;
             public bool TryConfirmOriginalDraw(long ordinal,
                 Original323ScriptRandomPurpose purpose, int previous,
                 int next, int min, int max, int result, out string proof)
             {
+                Calls++;
                 proof = "source observed original shared dice stream";
                 return true;
             }
@@ -66,6 +68,35 @@ namespace Ordr.Mobile.Tests
                 Calls++;
                 impact = Current;
                 return Approved && original.CastId == "original-native-cast-1";
+            }
+        }
+
+        private sealed class NativeEndWitness :
+            IOriginal323DummySpellTerminationWitness
+        {
+            public bool Approved = true;
+            public int Calls;
+            public string DummyRawcode = "e0KD";
+            public string AbilityOverride;
+            public string MapShaOverride;
+            public double TimeOffset;
+            public Original323DummyNativeCastEndReason Reason =
+                Original323DummyNativeCastEndReason.OriginalDummyDespawned;
+            public string Evidence =
+                "source observed original Warcraft e0KD native lifecycle ended";
+
+            public bool TryConfirmOriginalNativeTermination(
+                Original323ObservedDummyCast cast, CharacterCombatRuntime combat,
+                out Original323ObservedDummyCastEnd completed)
+            {
+                Calls++;
+                completed = Approved ? new Original323ObservedDummyCastEnd(
+                    cast.CastId, DummyRawcode,
+                    AbilityOverride ?? cast.OriginalOrder.OriginalAbilityRawcode,
+                    MapShaOverride ??
+                        Original323VerifiedMonsterWaveCatalog.SourceW3xSha256,
+                    combat.Time + TimeOffset, Reason, Evidence) : null;
+                return Approved;
             }
         }
 
@@ -216,6 +247,8 @@ namespace Ordr.Mobile.Tests
             public CharacterCombatRuntime Combat;
             public CastWitness Cast;
             public ImpactWitness Impact;
+            public NativeEndWitness Terminal;
+            public Dice NativeDice;
             public Original323DeferredNativeDummySpellWorld Bridge;
             public long Actor;
 
@@ -246,7 +279,8 @@ namespace Ordr.Mobile.Tests
 
         private static Fixture Create(string catalogId = "U-04",
             string rawcode = "h00M",
-            IOriginal323DummySpellImpactWitness observedImpactWorld = null)
+            IOriginal323DummySpellImpactWitness observedImpactWorld = null,
+            bool verifyNativeEnd = false)
         {
             var unitJson = File.ReadAllText(Path.Combine(
                 Application.dataPath, "..", "data", "units.json"));
@@ -259,12 +293,15 @@ namespace Ordr.Mobile.Tests
             var fixture = new Fixture {
                 Combat = game,
                 Cast = new CastWitness(),
-                Impact = new ImpactWitness()
+                Impact = new ImpactWitness(),
+                Terminal = new NativeEndWitness(),
+                NativeDice = new Dice()
             };
             var originalRng = new Original323SharedBfiRandom(3,
-                "source observed Warcraft native seed", new Dice());
+                "source observed Warcraft native seed", fixture.NativeDice);
             fixture.Bridge = new Original323DeferredNativeDummySpellWorld(
-                fixture.Cast, observedImpactWorld ?? fixture.Impact);
+                fixture.Cast, observedImpactWorld ?? fixture.Impact,
+                verifyNativeEnd ? fixture.Terminal : null);
             game.ConfigureOriginal323ScriptAttackEffectWorld(
                 new Original323ScriptAttackProcRolls(
                     originalRng, new Attacked()), fixture.Bridge);
@@ -281,6 +318,157 @@ namespace Ordr.Mobile.Tests
         {
             return new Original323NativeDummySpellHit(id, damage,
                 "actual original Warcraft final HP loss on " + id);
+        }
+
+        [Test]
+        public void EnelVerifiedNativeDummyExpirationClosesNoHitLightningCast()
+        {
+            // Enel S-18 / h00Q, JASS Bnr 10%, original e0KD/A086.
+            var game = Create("S-18", "h00Q", null, true);
+            game.Enemy("primary");
+            game.Combat.Step(0);
+            Assert.AreEqual(1, game.Combat.PendingOriginalDummySpellCount);
+            Assert.AreEqual(999, game.Combat.EnemyOf("primary").Health);
+
+            game.Combat.Step(.125);
+            Assert.AreEqual(1, game.Combat.PendingOriginalDummySpellCount,
+                "No user-made timeout may expire the native original cast.");
+            Assert.IsTrue(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            Assert.AreEqual(0, game.Combat.PendingOriginalDummySpellCount);
+            Assert.AreEqual(999, game.Combat.EnemyOf("primary").Health);
+            Assert.IsFalse(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            long damage;
+            Assert.IsFalse(game.Deliver("late-enel-impact", game.Combat.Time,
+                true, out damage, Hit("primary", 77)));
+            Assert.AreEqual(999, game.Combat.EnemyOf("primary").Health);
+        }
+
+        [Test]
+        public void EnelNativeImmuneSelectionCanExpireWithoutHpOrExtraProcRng()
+        {
+            // Warcraft selected the target but current source native magic
+            // immunity prevented any HP loss. Selection still counts under
+            // the original Forked Lightning four-native-target cap.
+            var game = Create("S-18", "h00Q", null, true);
+            game.Enemy("primary");
+            game.Combat.Step(0);
+            int sourceRngDraws = game.NativeDice.Calls;
+            Assert.Greater(sourceRngDraws, 0);
+
+            game.Impact.Current = new Original323NativeDummyImpact(
+                "native-enel-immune", game.Combat.Time, false,
+                new Original323NativeDummySpellHit[0],
+                new [] { new Original323NativeSelectedSpellTarget(
+                    "primary", true,
+                    "source observed primary Warcraft native magic immunity") },
+                "source observed original forked lightning immune selection");
+            long hp;
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat, game.Cast.CastId, out hp));
+            Assert.AreEqual(0, hp);
+            Assert.AreEqual(999, game.Combat.EnemyOf("primary").Health);
+            int selected, immune;
+            Assert.IsTrue(game.Combat.TryGetOriginalDummyTargetSelectionProgress(
+                game.Cast.CastId, out selected, out immune));
+            Assert.AreEqual(1, selected);
+            Assert.AreEqual(1, immune);
+            Assert.AreEqual(sourceRngDraws, game.NativeDice.Calls);
+
+            game.Terminal.Reason =
+                Original323DummyNativeCastEndReason.OriginalCompletedWithoutDamage;
+            Assert.IsTrue(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            Assert.AreEqual(0, game.Combat.PendingOriginalDummySpellCount);
+            Assert.AreEqual(sourceRngDraws, game.NativeDice.Calls,
+                "Native expiration must not roll BFi a second time.");
+            Assert.AreEqual(999, game.Combat.EnemyOf("primary").Health);
+        }
+
+        [Test]
+        public void UnverifiedOrForgedNativeEndingCannotDiscardEnelSpell()
+        {
+            var game = Create("S-18", "h00Q", null, true);
+            game.Enemy("primary");
+            game.Combat.Step(0);
+            Assert.AreEqual(1, game.Combat.PendingOriginalDummySpellCount);
+
+            game.Terminal.AbilityOverride = "A0VS";
+            Assert.IsFalse(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            game.Terminal.AbilityOverride = null;
+            game.Terminal.DummyRawcode = "h00Q";
+            Assert.IsFalse(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            game.Terminal.DummyRawcode = "e0KD";
+            game.Terminal.MapShaOverride = new string('0', 64);
+            Assert.IsFalse(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            game.Terminal.MapShaOverride = null;
+            game.Terminal.TimeOffset = 10;
+            Assert.IsFalse(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            game.Terminal.TimeOffset = 0;
+            game.Terminal.Evidence = "TEST_ONLY invented native completion";
+            Assert.IsFalse(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            game.Terminal.Evidence =
+                "source observed original Warcraft e0KD native lifecycle ended";
+            game.Terminal.Approved = false;
+            Assert.IsFalse(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            Assert.AreEqual(1, game.Combat.PendingOriginalDummySpellCount);
+            Assert.AreEqual(999, game.Combat.EnemyOf("primary").Health);
+
+            game.Terminal.Approved = true;
+            Assert.IsTrue(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            Assert.AreEqual(0, game.Combat.PendingOriginalDummySpellCount);
+        }
+
+        [Test]
+        public void DelayedEnelLightningCanRetainEarlierHitsAndCloseOnDespawn()
+        {
+            var game = Create("S-18", "h00Q", null, true);
+            game.Enemy("primary");
+            game.Combat.Step(0);
+            game.Impact.Current = new Original323NativeDummyImpact(
+                "first-enel-native-hit", game.Combat.Time, false,
+                new [] { Hit("primary", 40) },
+                new [] { new Original323NativeSelectedSpellTarget(
+                    "primary", false, "source native selected primary target") },
+                "source observed forked lightning resolved one native target");
+            long committed;
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat, game.Cast.CastId, out committed));
+            Assert.AreEqual(40, committed);
+            Assert.AreEqual(959, game.Combat.EnemyOf("primary").Health);
+
+            game.Terminal.Reason =
+                Original323DummyNativeCastEndReason.OriginalCompletedWithoutDamage;
+            Assert.IsFalse(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId),
+                "A previously damaging cast cannot claim ZERO-hit completion.");
+            game.Terminal.Reason =
+                Original323DummyNativeCastEndReason.OriginalDummyDespawned;
+            Assert.IsTrue(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            Assert.AreEqual(0, game.Combat.PendingOriginalDummySpellCount);
+            Assert.AreEqual(959, game.Combat.EnemyOf("primary").Health);
+        }
+
+        [Test]
+        public void WithoutNativeTerminationWitnessPendingCastCannotAutoDisappear()
+        {
+            var game = Create("S-18", "h00Q");
+            game.Enemy("primary");
+            game.Combat.Step(0);
+            Assert.AreEqual(1, game.Combat.PendingOriginalDummySpellCount);
+            game.Combat.Step(1);
+            Assert.IsFalse(game.Bridge.TryConfirmObservedNativeCastEnd(
+                game.Combat, game.Cast.CastId));
+            Assert.AreEqual(1, game.Combat.PendingOriginalDummySpellCount);
         }
 
         [Test]

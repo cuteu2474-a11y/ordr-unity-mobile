@@ -783,21 +783,45 @@ namespace Ordr.Mobile.Unity
             IOriginal323NativeMagicHpConversion verifiedNativeHp,
             IOriginal323NativeMagicModifierWitness verifiedNativeModifiers)
         {
+            ConfigureOriginal323VerifiedNativeMagicDummyWorld(
+                verifiedCasts, verifiedMagicImpacts, verifiedNativeHp,
+                verifiedNativeModifiers, null);
+        }
+
+        public void ConfigureOriginal323VerifiedNativeMagicDummyWorld(
+            IOriginal323DummySpellCastWitness verifiedCasts,
+            IOriginal323NativeMagicImpactWitness verifiedMagicImpacts,
+            IOriginal323NativeMagicHpConversion verifiedNativeHp,
+            IOriginal323NativeMagicModifierWitness verifiedNativeModifiers,
+            IOriginal323DummySpellTerminationWitness verifiedNativeEnding)
+        {
             ConfigureOriginal323DeferredDummySpellWorld(verifiedCasts,
                 new Original323VerifiedNativeMagicImpactAdapter(
                     verifiedMagicImpacts, verifiedNativeHp,
-                    verifiedNativeModifiers));
+                    verifiedNativeModifiers), verifiedNativeEnding);
         }
 
         public void ConfigureOriginal323DeferredDummySpellWorld(
             IOriginal323DummySpellCastWitness verifiedCasts,
             IOriginal323DummySpellImpactWitness verifiedImpacts)
         {
+            ConfigureOriginal323DeferredDummySpellWorld(
+                verifiedCasts, verifiedImpacts, null);
+        }
+
+        // The source's e0KD native lifetime witness must certify an actual
+        // completion, despawn or rejected Warcraft order. This does not
+        // invent a timeout or treat the victim's death as cast expiration.
+        public void ConfigureOriginal323DeferredDummySpellWorld(
+            IOriginal323DummySpellCastWitness verifiedCasts,
+            IOriginal323DummySpellImpactWitness verifiedImpacts,
+            IOriginal323DummySpellTerminationWitness nativeTermination)
+        {
             if (Combat != null || verifiedOriginalAttackDummySpells != null)
                 throw new InvalidOperationException(
                     "원본 주문 시전/타격 공급자는 전투 시작 전에 한 번만 연결하세요.");
             var bridge = new Original323DeferredNativeDummySpellWorld(
-                verifiedCasts, verifiedImpacts);
+                verifiedCasts, verifiedImpacts, nativeTermination);
             ConfigureOriginal323AttackedDummySpellWorld(bridge);
             observedDummyImpactWorld = bridge;
         }
@@ -813,6 +837,19 @@ namespace Ordr.Mobile.Unity
                 Combat.Game.Phase == SessionPhase.Running &&
                 observedDummyImpactWorld.TryApplyObservedImpact(
                     Combat, sourceCastId, out observedHpDamage);
+        }
+
+        // Enel's original forked lightning (A086) can resolve with no
+        // final HP when the native dummy despawns, the native order fails,
+        // or the completed spell had no eligible damage targets. The
+        // verified native terminal event is required to free the cast slot.
+        public bool TryConfirmObservedOriginalDummyCastEnd(string sourceCastId)
+        {
+            return Combat != null &&
+                observedDummyImpactWorld != null &&
+                Combat.Game.Phase == SessionPhase.Running &&
+                observedDummyImpactWorld.TryConfirmObservedNativeCastEnd(
+                    Combat, sourceCastId);
         }
 
         public void ConfigureOriginal323AttackedDummyHitWorld(

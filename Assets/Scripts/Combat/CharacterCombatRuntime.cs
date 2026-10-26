@@ -480,6 +480,56 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
+        // An independently observed native dummy despawn/order rejection
+        // can end a cast with ZERO additional damage. Without this explicit
+        // terminal receipt, failed/immune e0KD casts remain pending forever
+        // and eventually block later Enel Forked Lightning activations.
+        // Never infer expiration from an arbitrary timeout or a dead target:
+        // delayed projectiles can still reach different Warcraft enemies.
+        internal bool TryFinalizeObservedOriginalDummyCastWithoutHit(
+            Original323ObservedDummyCast witnessedCast,
+            Original323ObservedDummyCastEnd sourceEnd)
+        {
+            BlockExternalMutationDuringOriginalFusion();
+            PendingOriginalDummyCast current;
+            if (game.Phase != SessionPhase.Running ||
+                committingOriginalDummyImpact ||
+                witnessedCast == null || sourceEnd == null ||
+                !pendingOriginalDummyCasts.TryGetValue(
+                    witnessedCast.CastId, out current) ||
+                !Object.ReferenceEquals(current.Snapshot, witnessedCast) ||
+                sourceEnd.CastId != witnessedCast.CastId ||
+                sourceEnd.DummyRawcode != "e0KD" ||
+                sourceEnd.AbilityRawcode !=
+                    witnessedCast.OriginalOrder.OriginalAbilityRawcode ||
+                sourceEnd.OriginalW3xSha256 !=
+                    Original323VerifiedMonsterWaveCatalog.SourceW3xSha256 ||
+                sourceEnd.NativeEndTimeSeconds < witnessedCast.StartTimeSeconds ||
+                sourceEnd.NativeEndTimeSeconds < current.LastImpactAt ||
+                Math.Abs(sourceEnd.NativeEndTimeSeconds - scheduler.Time) > 1e-6 ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(
+                    sourceEnd.OriginalLifecycleEvidence) ||
+                ((sourceEnd.Reason ==
+                    Original323DummyNativeCastEndReason.OriginalOrderRejected ||
+                  sourceEnd.Reason ==
+                    Original323DummyNativeCastEndReason.OriginalCompletedWithoutDamage) &&
+                    current.AlreadyHit.Count > 0) ||
+                finishedOriginalDummyCastIds.Contains(witnessedCast.CastId))
+                return false;
+            // Canceled cast is irrevocably finished, but any damage from
+            // legitimately committed earlier impact receipts stays intact.
+            pendingOriginalDummyCasts.Remove(witnessedCast.CastId);
+            finishedOriginalDummyCastIds.Add(witnessedCast.CastId);
+            var eventSink = processingStep ? events : pendingCommandEvents;
+            eventSink.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.EffectDeferred,
+                witnessedCast.AttackerInstanceId, witnessedCast.OriginalTargetId,
+                witnessedCast.OriginalOrder.HumanSkillName,
+                "원본 e0KD 주문 종료 (" + sourceEnd.Reason + ")" +
+                " / " + sourceEnd.OriginalLifecycleEvidence, 0));
+            return true;
+        }
+
         // Only a witnessed native IMPACT at this combat clock time can
         // change HP. No fixed projectile speed, guessed path intersection,
         // arbitrary splash radius or automatic "cast equals damage".
