@@ -48,7 +48,24 @@ namespace Ordr.Mobile.Unity
             specialAuraTargets = verifiedTargets ?? throw new ArgumentNullException(nameof(verifiedTargets));
         }
         private IOriginalUncommonVerifiedProcWorld originalUncommonEffectWorld;
+        private IOriginal323SpecialRareImpactWitness specialRareNativeImpactWitness;
         private IOriginal323UncommonCriticalPrehitRules verifiedUncommonCritRules;
+
+        // Opt-in real native impact bridge for Special / Rare units, including
+        // characters with NO web tooltip skill profile. A source-observed
+        // full cast + hit and exact original UNIT ability are required.
+        public void ConfigureVerifiedOriginalSpecialRareNativeImpacts(
+            IOriginal323SpecialRareImpactWitness verifiedNativeSource)
+        {
+            if (Combat != null || specialRareNativeImpactWitness != null)
+                throw new InvalidOperationException(
+                    "특별함·희귀함 원본 주문 타격은 전투 생성 전에 한 번만 연결하세요.");
+            if (MapBaseStats == null)
+                throw new InvalidOperationException(
+                    "원본 272종 유닛/객체 능력 데이터를 먼저 로드하세요.");
+            specialRareNativeImpactWitness = verifiedNativeSource ??
+                throw new ArgumentNullException(nameof(verifiedNativeSource));
+        }
 
         // This must be set BEFORE creating the damage runtime. A07I crit
         // changes the native attack's raw damage before armor conversion.
@@ -1371,6 +1388,9 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            if (specialRareNativeImpactWitness != null)
+                Combat.ConfigureOriginal323SpecialRareSkillImpacts(
+                    MapBaseStats, specialRareNativeImpactWitness);
             if (originalScriptAttackSkillRolls != null &&
                 verifiedOriginalAttackDummySpells != null)
                 Combat.ConfigureOriginal323ScriptAttackEffectWorld(
