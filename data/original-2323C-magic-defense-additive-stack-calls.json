@@ -1,0 +1,77 @@
+{
+  "format": "ordr-original-2323C-bd5-magic-defense-additive-callbacks-v1",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceFunction": "Bd5",
+  "sourceFunctionLine": 8560,
+  "sourceFunctionSha256": "f3f7fcb6e3261416fb9b936e5c4f70e9c82232baf811d31bd3cc6c4e51db703d",
+  "sourceFormula": "SetUnitAbilityLevel(target, JV, GetUnitAbilityLevel(target, JV) + Hk)",
+  "sourceAbility": "A04Q",
+  "nativeBehaviorBeyondSourceVerifiedLevel41": false,
+  "sourceScope": "nine direct pinned Bd5 call sites, not percentage magic-resistance-reduction tooltip stacks",
+  "sourceCalls": [
+    {
+      "callback": "BoM",
+      "increase": 10,
+      "sourceLine": 15139,
+      "callbackStartLine": 15135,
+      "callbackBodySha256": "ea6ca9032ffa8511a52c054c2481493b478379a0b885999128cc045fc1cb2012"
+    },
+    {
+      "callback": "Br6",
+      "increase": 10,
+      "sourceLine": 17604,
+      "callbackStartLine": 17603,
+      "callbackBodySha256": "076a4fd1559f2e425a2ebfb8f37f6ba4ab970a514311bebde5ad68527c985461"
+    },
+    {
+      "callback": "Bur",
+      "increase": 1,
+      "sourceLine": 19761,
+      "callbackStartLine": 19759,
+      "callbackBodySha256": "fd0ececb5679bd6067a07d9eb1890c041a3a638ecaf092e07bb5365636472a22"
+    },
+    {
+      "callback": "BvG",
+      "increase": 18,
+      "sourceLine": 20134,
+      "callbackStartLine": 20133,
+      "callbackBodySha256": "2369c59c903926fe6cc4bb2f9a7e63573d8afeb7bb260cbd896a5585e8142bd5"
+    },
+    {
+      "callback": "B46",
+      "increase": 5,
+      "sourceLine": 32897,
+      "callbackStartLine": 32885,
+      "callbackBodySha256": "83a47f9d7d93e50db625b1c0fe28650910a2aec89252bf270c1cc5e5d56744da"
+    },
+    {
+      "callback": "B7I",
+      "increase": 10,
+      "sourceLine": 35379,
+      "callbackStartLine": 35378,
+      "callbackBodySha256": "627b1f1f6dd4549cc8f40136c3ed2d5af14fab4d7b884e9e00ee7a685a44f568"
+    },
+    {
+      "callback": "CEa",
+      "increase": 1,
+      "sourceLine": 43508,
+      "callbackStartLine": 43505,
+      "callbackBodySha256": "a163e5d64cd9803580d518639f72c9479183f036c8ee01974e669dab36e1f75a"
+    },
+    {
+      "callback": "CFI",
+      "increase": 3,
+      "sourceLine": 44588,
+      "callbackStartLine": 44587,
+      "callbackBodySha256": "7adb3c80d24ab52dc1582bf5cdfcf71134e77bee3be8bf3033c48c6b7188b31f"
+    },
+    {
+      "callback": "CGm",
+      "increase": 10,
+      "sourceLine": 46939,
+      "callbackStartLine": 46933,
+      "callbackBodySha256": "797ca7da0bf051df5af48ddde9ce3e87b06a7193f0dc7d044fb753b9d276d28b"
+    }
+  ]
+}

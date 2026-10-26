@@ -304,6 +304,34 @@ namespace Ordr.Mobile.Unity
                     liveMonsterA04QWitness);
         }
 
+        private IOriginal323MagicDefenseStackSequenceWitness
+            liveMagicDefenseStackWitness;
+
+        public void ConfigureObservedLiveMonsterMagicDefenseStacks(
+            IOriginal323MagicDefenseStackSequenceWitness verifiedOrderedEvents)
+        {
+            if (liveMagicDefenseStackWitness != null)
+                throw new InvalidOperationException(
+                    "원본 몬스터 마법 저항 누적 관측기를 이미 연결했습니다.");
+            liveMagicDefenseStackWitness = verifiedOrderedEvents ??
+                throw new ArgumentNullException(nameof(verifiedOrderedEvents));
+        }
+
+        public bool TryApplyObservedLiveMonsterMagicDefenseStacks(
+            string enemyId, int expectedPreviousLevel, int observedFinalLevel,
+            IReadOnlyList<Original323ObservedMagicDefenseStackCall>
+                originalOrderedEvents)
+        {
+            return Combat != null &&
+                Combat.Game.Phase == Ordr.Mobile.Core.SessionPhase.Running &&
+                liveMonsterA04QWitness != null &&
+                liveMagicDefenseStackWitness != null &&
+                Combat.TryApplyObservedEnemyMagicDefenseStack(
+                    enemyId, expectedPreviousLevel, observedFinalLevel,
+                    originalOrderedEvents, liveMagicDefenseStackWitness,
+                    liveMonsterA04QWitness);
+        }
+
         // Explicit observations of changes to a living monster. These are
         // not generated from the unverified initial HP/armor research model.
         public void ConfigureObservedLiveMonsterStats(

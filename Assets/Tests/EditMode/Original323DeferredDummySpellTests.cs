@@ -1027,6 +1027,267 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1000, result.FinalHpDamage);
         }
 
+        private sealed class OrderedMagicReductionWitness :
+            IOriginal323MagicDefenseStackSequenceWitness
+        {
+            public int Calls;
+            public bool Approved = true;
+            public string Evidence =
+                "original native ordered Bd5 callbacks for this living enemy";
+            public string ExpectedEnemy = "primary";
+
+            public bool TryConfirmOriginalOrderedStackCalls(string enemy,
+                int original, int finalLevel,
+                IReadOnlyList<Original323ObservedMagicDefenseStackCall> calls,
+                out string proof)
+            {
+                Calls++;
+                proof = Evidence;
+                return Approved && enemy == ExpectedEnemy &&
+                    calls != null && calls.Count >= 1;
+            }
+        }
+
+        private static Original323ObservedMagicDefenseStackCall Bd5Call(
+            string name, string eventId)
+        {
+            int line, delta;
+            Assert.IsTrue(Original323MagicDefenseStackRules.TryGetSourceIncrease(
+                name, out line, out delta));
+            return new Original323ObservedMagicDefenseStackCall(
+                name, line, delta, eventId,
+                "observed original JASS callback and native target");
+        }
+
+        [Test]
+        public void OriginalNineJassMagicDefenseCallbacksHaveExactPinnedIncrements()
+        {
+            var fixedNames = new[] { "BoM", "Br6", "Bur", "BvG", "B46",
+                "B7I", "CEa", "CFI", "CGm" };
+            var fixedLines = new[] {15139,17604,19761,20134,32897,
+                35379,43508,44588,46939};
+            var fixedDeltas = new[] {10,10,1,18,5,10,1,3,10};
+            for (int i=0;i<fixedNames.Length;i++)
+            {
+                int line,delta;
+                Assert.IsTrue(Original323MagicDefenseStackRules.TryGetSourceIncrease(
+                    fixedNames[i],out line,out delta));
+                Assert.AreEqual(fixedLines[i],line);
+                Assert.AreEqual(fixedDeltas[i],delta);
+            }
+            int unknownLine,unknownDelta;
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryGetSourceIncrease(
+                "unverified-skill",out unknownLine,out unknownDelta));
+        }
+
+        [Test]
+        public void DifferentOriginalMagicReductionHitsAccumulateAbilityLevels()
+        {
+            var monster = new CombatEnemy("primary",2000,
+                Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                    CharacterEnemyKind.Line, 50, "normal", 16,
+                    "original monster magic defense"));
+            var events = new[] {
+                Bd5Call("Bur","original-hit-1"),
+                Bd5Call("CFI","original-hit-2"),
+                Bd5Call("B46","original-hit-3")
+            };
+            int planned;
+            Assert.IsTrue(Original323MagicDefenseStackRules.TryPlanObservedStack(
+                16,events,out planned));
+            Assert.AreEqual(25,planned);
+            var callbacks = new OrderedMagicReductionWitness();
+            var native = new LiveMagicLevel { VerifiedEnemyId="primary" };
+            // Native observer for this test confirms 16 -> 25, while the
+            // earlier LiveMagicLevel fixture confirms 16 -> 1 only.
+            var finalLevel = new GenericNativeA04QLevel { OldLevel=16,NewLevel=25 };
+            Assert.IsTrue(Original323MagicDefenseStackRules.TryApplyObservedStack(
+                monster,16,25,events,callbacks,finalLevel));
+            Assert.AreEqual(25,monster.Defenses.MagicAbilityLevel.Value);
+            Assert.AreEqual(1.0,monster.Defenses.MagicResistancePercent.Value,0.0001);
+            Assert.AreEqual(50,monster.Defenses.BaseArmor.Value);
+            Assert.AreEqual(2000,monster.Health);
+            Assert.AreEqual(1,callbacks.Calls);
+            Assert.AreEqual(1,finalLevel.Calls);
+        }
+
+        private sealed class GenericNativeA04QLevel :
+            IOriginal323LiveMonsterA04QWitness
+        {
+            public int OldLevel = 16;
+            public int NewLevel = 25;
+            public string EnemyId = "primary";
+            public bool Approved = true;
+            public int Calls;
+            public string Evidence = "original native observed A04Q level";
+
+            public bool TryConfirm(string enemyId,int oldLevel,int newLevel,
+                out string source)
+            {
+                Calls++;
+                source = Evidence;
+                return Approved && enemyId == EnemyId &&
+                    oldLevel == OldLevel && newLevel == NewLevel;
+            }
+        }
+
+        [Test]
+        public void RepeatedSourceCanStackOnlyWithDistinctOriginalNativeEvents()
+        {
+            var two = new[] {
+                Bd5Call("Bur","source-hit-a"),
+                Bd5Call("Bur","source-hit-b")
+            };
+            int next;
+            Assert.IsTrue(Original323MagicDefenseStackRules.TryPlanObservedStack(
+                16,two,out next));
+            Assert.AreEqual(18,next);
+            var duplicate = new[] {
+                Bd5Call("Bur","source-hit-a"),
+                Bd5Call("Bur","source-hit-a")
+            };
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryPlanObservedStack(
+                16,duplicate,out next));
+            Assert.AreEqual(0,next);
+        }
+
+        [Test]
+        public void UnsupportedLevelsAndWrongCallbackPayloadCannotMutateEnemy()
+        {
+            var monster = new CombatEnemy("primary",2000,
+                Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                    CharacterEnemyKind.Line, 0, "normal", 16,
+                    "original observed monster magic defense"));
+            var native = new GenericNativeA04QLevel();
+            var observer = new OrderedMagicReductionWitness();
+            int planned;
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryPlanObservedStack(
+                16,new[]{Bd5Call("Br6","first"),
+                    Bd5Call("BvG","second")},out planned));
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryPlanObservedStack(
+                16,new[]{new Original323ObservedMagicDefenseStackCall(
+                    "Bur",19761,10,"incorrect-increment",
+                    "source observed JASS damage callback")},out planned));
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryPlanObservedStack(
+                16,new[]{new Original323ObservedMagicDefenseStackCall(
+                    "Bur",19762,1,"wrong-source-line",
+                    "source observed JASS damage callback")},out planned));
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryPlanObservedStack(
+                16,new[]{Bd5Call("Bur","TEST_ONLY: duplicate-like-ID")},
+                out planned));
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryApplyObservedStack(
+                monster,16,25,new[]{Bd5Call("Bur","good-hit")},
+                observer,native));
+            Assert.AreEqual(16,monster.Defenses.MagicAbilityLevel.Value);
+            Assert.AreEqual(0,native.Calls);
+        }
+
+        [Test]
+        public void MissingSourceOrNativeApprovalKeepsLevelAndHpUntouched()
+        {
+            var monster = new CombatEnemy("primary",2000,
+                Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                    CharacterEnemyKind.Line,0,"normal",16,
+                    "original monster defense"));
+            var calls = new[]{Bd5Call("Bur","event-one")};
+            var callbacks = new OrderedMagicReductionWitness();
+            var native = new GenericNativeA04QLevel { NewLevel=17 };
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryApplyObservedStack(
+                monster,16,17,calls,null,native));
+            callbacks.Evidence = "MODEL_ONLY invented callback";
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryApplyObservedStack(
+                monster,16,17,calls,callbacks,native));
+            callbacks.Evidence = "observed actual callback sequence";
+            native.Approved=false;
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryApplyObservedStack(
+                monster,16,17,calls,callbacks,native));
+            Assert.AreEqual(16,monster.Defenses.MagicAbilityLevel.Value);
+            Assert.AreEqual(2000,monster.Health);
+            native.Approved=true;
+            Assert.IsTrue(Original323MagicDefenseStackRules.TryApplyObservedStack(
+                monster,16,17,calls,callbacks,native));
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryApplyObservedStack(
+                monster,16,17,calls,callbacks,native));
+            Assert.AreEqual(17,monster.Defenses.MagicAbilityLevel.Value);
+        }
+
+        [Test]
+        public void DuplicateImportedNativeLevelStatusCannotBeCountedAgain()
+        {
+            var monster = new CombatEnemy("primary",2000,
+                Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                    CharacterEnemyKind.Line,0,"normal",16,
+                    "original monster defense"));
+            monster.Status.Apply(new CombatEffect("jass:A04Q:original-hit",
+                CombatEffectType.OriginalA04QLevelIncrease,
+                CombatEffectOrigin.Aura,1,0));
+            var native = new GenericNativeA04QLevel {NewLevel=17};
+            Assert.IsFalse(Original323MagicDefenseStackRules.TryApplyObservedStack(
+                monster,16,17,new[]{Bd5Call("Bur","event-one")},
+                new OrderedMagicReductionWitness(),native));
+            Assert.AreEqual(0,native.Calls);
+            Assert.AreEqual(16,monster.Defenses.MagicAbilityLevel.Value);
+        }
+
+        [Test]
+        public void StackedMagicDefenseImmediatelyFeedsPendingLightningImpact()
+        {
+            var impactSource = new NativeMagic();
+            var magic = new Original323VerifiedNativeMagicImpactAdapter(
+                impactSource,new TestHpConversion());
+            var world = Create("S-18","h00Q",magic);
+            world.Enemy("primary",2000,CharacterEnemyKind.Line,16);
+            world.Combat.Step(0);
+            Assert.AreEqual(1,world.Combat.PendingOriginalDummySpellCount);
+            var events=new[]{Bd5Call("Bur","impact-pre-1"),
+                Bd5Call("CFI","impact-pre-2")};
+            var callback = new OrderedMagicReductionWitness();
+            var native = new GenericNativeA04QLevel {NewLevel=20};
+            Assert.IsTrue(world.Combat.TryApplyObservedEnemyMagicDefenseStack(
+                "primary",16,20,events,callback,native));
+            world.Combat.Step(0.25);
+            impactSource.Next=MagicImpact(world.Cast.CastId,
+                "native-stacked-lightning",0.25,true,
+                new[]{Selected("primary")},
+                MagicHit("primary",1000f,20,940));
+            long actual;
+            Assert.IsTrue(world.Bridge.TryApplyObservedImpact(
+                world.Combat,world.Cast.CastId,out actual));
+            Assert.AreEqual(940,actual);
+            Assert.AreEqual(1059,world.Combat.EnemyOf("primary").Health);
+            Assert.AreEqual(0,world.Combat.PendingOriginalDummySpellCount);
+        }
+
+        [Test]
+        public void StaleStackAmountDuringPendingSpellRejectsWholeImpact()
+        {
+            var impactSource=new NativeMagic();
+            var world=Create("S-18","h00Q",
+                new Original323VerifiedNativeMagicImpactAdapter(
+                    impactSource,new TestHpConversion()));
+            world.Enemy("primary",2000,CharacterEnemyKind.Line,16);
+            world.Combat.Step(0);
+            Assert.IsTrue(world.Combat.TryApplyObservedEnemyMagicDefenseStack(
+                "primary",16,17,new[]{Bd5Call("Bur","pre-impact-event")},
+                new OrderedMagicReductionWitness(),
+                new GenericNativeA04QLevel {NewLevel=17}));
+            world.Combat.Step(0.25);
+            impactSource.Next=MagicImpact(world.Cast.CastId,
+                "stale-stacked",0.25,true,new[]{Selected("primary")},
+                MagicHit("primary",1000f,16,900));
+            long actual;
+            Assert.IsFalse(world.Bridge.TryApplyObservedImpact(
+                world.Combat,world.Cast.CastId,out actual));
+            Assert.AreEqual(1999,world.Combat.EnemyOf("primary").Health);
+            impactSource.Next=MagicImpact(world.Cast.CastId,
+                "correct-stacked",0.25,true,new[]{Selected("primary")},
+                MagicHit("primary",1000f,17,910));
+            Assert.IsTrue(world.Bridge.TryApplyObservedImpact(
+                world.Combat,world.Cast.CastId,out actual));
+            Assert.AreEqual(910,actual);
+            Assert.AreEqual(1089,world.Combat.EnemyOf("primary").Health);
+        }
+
         private static bool ContainsEvent(
             IReadOnlyList<CharacterCombatEvent> events,
             CharacterCombatEventType type, string skill)

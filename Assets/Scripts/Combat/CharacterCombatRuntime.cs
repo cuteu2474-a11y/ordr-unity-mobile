@@ -1447,6 +1447,23 @@ namespace Ordr.Mobile.Combat
                 expectedPreviousLevel, observedCurrentLevel, verifiedEvent);
         }
 
+        // Several original scripted hits can additively increase the
+        // SAME A04Q ability level. Source callback order and final native
+        // level must both be witnessed. Existing pending spells resolve
+        // against that level at IMPACT time.
+        public bool TryApplyObservedEnemyMagicDefenseStack(string enemyId,
+            int expectedPreviousLevel, int independentlyObservedFinalLevel,
+            IReadOnlyList<Original323ObservedMagicDefenseStackCall> sourceCalls,
+            IOriginal323MagicDefenseStackSequenceWitness orderedEvents,
+            IOriginal323LiveMonsterA04QWitness finalNativeLevel)
+        {
+            return game.Phase == SessionPhase.Running &&
+                Original323MagicDefenseStackRules.TryApplyObservedStack(
+                    EnemyOf(enemyId), expectedPreviousLevel,
+                    independentlyObservedFinalLevel, sourceCalls,
+                    orderedEvents, finalNativeLevel);
+        }
+
         // Same CombatEnemy instance feeds HUD, hit resolution and verified
         // wave tracking. An external native event must independently witness
         // maximum/current HP and physical armor changes.
