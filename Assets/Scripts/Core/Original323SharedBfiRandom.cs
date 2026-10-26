@@ -126,25 +126,40 @@ namespace Ordr.Mobile.Core
         public bool TryPreviewNext(int minimum, int maximum,
             out int originalResult, out int newState)
         {
-            originalResult = 0;
-            newState = state;
-            if (state == 0 || minimum > maximum ||
-                (long)maximum - minimum >= int.MaxValue ||
-                draws == long.MaxValue)
+            if (draws == long.MaxValue)
+            {
+                originalResult = 0;
+                newState = state;
                 return false;
+            }
+            return TryPreviewFromState(state, minimum, maximum,
+                out originalResult, out newState);
+        }
 
-            // Warcraft's integer operations are 32-bit. Keep signed wrap
-            // and signed remainder; never use arbitrary modulus-normalization
-            // or clamp an out-of-range BFh result to a convenient range.
-            int multiplied = unchecked(state * Multiplier + Increment);
+        // Read-only chained preview for original script branches that always
+        // draw a second, conditional range. No witness or RNG state is
+        // consumed; a mismatched two-draw receipt fails BEFORE either draw.
+        public static bool TryPreviewFromState(int originalState,
+            int minimum, int maximum, out int originalResult, out int newState)
+        {
+            originalResult = 0;
+            newState = originalState;
+            if (originalState == 0 || minimum > maximum ||
+                (long)maximum - minimum >= int.MaxValue)
+                return false;
+            int multiplied = unchecked(originalState * Multiplier + Increment);
             newState = multiplied % Divisor;
             float nextReal = (float)newState / (float)Divisor;
             float scaled = nextReal * ((float)((long)maximum - minimum + 1L));
             if (float.IsNaN(scaled) || float.IsInfinity(scaled) ||
                 scaled <= int.MinValue || scaled >= int.MaxValue)
                 return false;
-            originalResult = checked((int)scaled + minimum);
-            return true;
+            try
+            {
+                originalResult = checked((int)scaled + minimum);
+                return true;
+            }
+            catch (OverflowException) { return false; }
         }
 
         public int NextForPurpose(Original323ScriptRandomPurpose purpose,

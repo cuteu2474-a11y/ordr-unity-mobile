@@ -1,0 +1,61 @@
+{
+  "format": "ordr-original-2323C-combat-gambling-script-call-evidence-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "fullCombatSkillAndGamblingParityVerified": false,
+  "productionCostAndPurchaseWorldVerified": false,
+  "nativeCritRngIsCustomScriptBfi": false,
+  "moneyGambling": [
+    {
+      "name": "일반 돈 도박",
+      "sourceFunction": "CJB",
+      "sourceFunctionLine": 49152,
+      "bodySha256": "552882a67d268544d05e79bed0d0c9ac4eeae3a3a8864131ef4f8efb2d7f7c7d",
+      "branchRoll": "BFi(1,100)",
+      "highPayoutCondition": "roll > 25",
+      "highRewardRoll": "BFi(10,50)",
+      "lowRewardRoll": "BFi(3,5)",
+      "guaranteedCustomScriptDraws": 2,
+      "originalShopCostVerified": false
+    },
+    {
+      "name": "고급 돈 도박",
+      "sourceFunction": "CJC",
+      "sourceFunctionLine": 49166,
+      "bodySha256": "4d3b0717fe350f15001d582f8d8c93d07c96a46ded0cf8543053758023adf095",
+      "branchRoll": "BFi(1,100)",
+      "highPayoutCondition": "roll > 30",
+      "highRewardRoll": "BFi(500,4500)",
+      "lowRewardRoll": "BFi(300,400)",
+      "guaranteedCustomScriptDraws": 2,
+      "originalShopCostVerified": false
+    }
+  ],
+  "combatAttackScriptCalls": [
+    {
+      "name": "공격 시 10% 기술 발동 (방사 공격 1)",
+      "sourceFunction": "Bnm",
+      "sourceFunctionLine": 14818,
+      "bodySha256": "0c570b2a030b5cb2dc2b5224ab1a85f157f956b342781194b594b7d5d94afb5e",
+      "roll": "BFi(1,100)<=10",
+      "unitOwnerAndEffectParityVerified": false
+    },
+    {
+      "name": "공격 시 10% 기술 발동 (방사 공격 2)",
+      "sourceFunction": "Bnp",
+      "sourceFunctionLine": 14833,
+      "bodySha256": "3aaa896d54e263cbf1593f1944dc10e40a9f2716d5b5c1c8d9241b0af8708880",
+      "roll": "BFi(1,100)<=10",
+      "unitOwnerAndEffectParityVerified": false
+    },
+    {
+      "name": "공격 시 10% 기술 발동 (대상 지정 번개)",
+      "sourceFunction": "Bnr",
+      "sourceFunctionLine": 14848,
+      "bodySha256": "873c3fdf71d070add8788a22399d103354551a74f593a445330e0eabc5a1cf15",
+      "roll": "BFi(1,100)<=10",
+      "unitOwnerAndEffectParityVerified": false
+    }
+  ]
+}

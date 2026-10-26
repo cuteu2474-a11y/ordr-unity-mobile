@@ -544,6 +544,8 @@ namespace Ordr.Mobile.Unity
         // original probabilities, not the exact Warcraft random sequence.
         private IOriginalWispRandom randomWispResourceRng;
         private Original323SharedBfiRandom originalSharedScriptRandom;
+        private Original323MoneyGamblingService originalMoneyGambling;
+        private Original323ScriptAttackProcRolls originalScriptAttackSkillRolls;
 
         // Strict map-owned custom random stream: gold / rare Wisp branch /
         // random Wisp resources / observed gambling events all share H6.
@@ -564,6 +566,58 @@ namespace Ordr.Mobile.Unity
         public bool HasOriginal323SharedScriptRandom
         {
             get { return originalSharedScriptRandom != null; }
+        }
+
+        // These are source-backed adapters, NOT a generic gambling unlock.
+        // Native shop inventory, currency cost and sold-unit cleanup remain
+        // obligations of the verified atomic settlement port.
+        public void ConfigureOriginal323MoneyGambling(
+            IOriginal323MoneyGamblingPurchaseWitness originalPurchases,
+            IOriginal323MoneyGamblingSettlement verifiedNativeSettlement)
+        {
+            if (Combat != null || originalMoneyGambling != null ||
+                originalSharedScriptRandom == null)
+                throw new InvalidOperationException(
+                    "원본 공통 난수/구매 트랜잭션을 전투 시작 전에 연결하세요.");
+            originalMoneyGambling = new Original323MoneyGamblingService(
+                originalSharedScriptRandom, originalPurchases,
+                verifiedNativeSettlement);
+        }
+
+        public bool TrySettleObservedMoneyGambling(string purchaseId,
+            Original323MoneyGamblingTier tier,
+            out Original323MoneyGamblingOutcome outcome)
+        {
+            outcome = null;
+            return Combat != null &&
+                Combat.Game.Phase == SessionPhase.Running &&
+                originalMoneyGambling != null &&
+                originalMoneyGambling.TrySettle(purchaseId, tier, out outcome);
+        }
+
+        // These three attacks explicitly use the map's own BFi(1,100)
+        // sequence. Warcraft native crits MUST keep their native RNG.
+        public void ConfigureOriginal323ScriptAttackProcRolls(
+            IOriginal323ScriptAttackProcWitness verifiedAttackEvents)
+        {
+            if (Combat != null || originalScriptAttackSkillRolls != null ||
+                originalSharedScriptRandom == null)
+                throw new InvalidOperationException(
+                    "원본 공통 난수와 전투 이벤트를 전투 시작 전 연결하세요.");
+            originalScriptAttackSkillRolls = new Original323ScriptAttackProcRolls(
+                originalSharedScriptRandom, verifiedAttackEvents);
+        }
+
+        public bool TryRollObservedOriginalScriptAttack(string functionId,
+            string attackerId, string targetId, long eventSequence,
+            out bool triggered)
+        {
+            triggered = false;
+            return Combat != null && Combat.Game.Phase == SessionPhase.Running &&
+                originalScriptAttackSkillRolls != null &&
+                originalScriptAttackSkillRolls.TryObserveAndRoll(
+                    functionId, attackerId, targetId, eventSequence,
+                    out triggered);
         }
 
         public void ConfigureRandomWispResourceRng(IOriginalWispRandom verifiedRandom)
