@@ -51,7 +51,26 @@ namespace Ordr.Mobile.Unity
         }
         private IOriginalUncommonVerifiedProcWorld originalUncommonEffectWorld;
         private IOriginal323SpecialRareImpactWitness specialRareNativeImpactWitness;
+        private IOriginal323VerifiedNativeAttackCadence verifiedNativeCadence;
+        private IOriginal323VerifiedNativeEnemyMovementStep verifiedNativeMovement;
         private IOriginal323UncommonCriticalPrehitRules verifiedUncommonCritRules;
+
+        // Native AOae attack speed and enemy movement need separate live
+        // source timing/stacking/cap proofs. Object DataA/DataB alone does
+        // not authorize setting game attack intervals or enemy trajectories.
+        public void ConfigureVerifiedOriginal323NativeSpeedExecution(
+            IOriginal323VerifiedNativeAttackCadence attackTiming = null,
+            IOriginal323VerifiedNativeEnemyMovementStep enemyMovement = null)
+        {
+            if (Combat != null || verifiedNativeCadence != null ||
+                verifiedNativeMovement != null)
+                throw new InvalidOperationException(
+                    "원본 전투 공속/이속 적용은 월드 생성 전에 설정하세요.");
+            if (attackTiming == null && enemyMovement == null)
+                throw new ArgumentException("원본 공속 또는 이동 규칙이 필요합니다.");
+            verifiedNativeCadence = attackTiming;
+            verifiedNativeMovement = enemyMovement;
+        }
 
         // Opt-in real native impact bridge for Special / Rare units, including
         // characters with NO web tooltip skill profile. A source-observed
@@ -1401,6 +1420,12 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            if (verifiedNativeCadence != null)
+                Combat.ConfigureVerifiedOriginal323NativeAttackCadence(
+                    verifiedNativeCadence);
+            if (verifiedNativeMovement != null)
+                Combat.ConfigureVerifiedOriginal323NativeEnemyMovement(
+                    verifiedNativeMovement);
             if (specialRareNativeImpactWitness != null)
                 Combat.ConfigureOriginal323SpecialRareSkillImpacts(
                     MapBaseStats, specialRareNativeImpactWitness);

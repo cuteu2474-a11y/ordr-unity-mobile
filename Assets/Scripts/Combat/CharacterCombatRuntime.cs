@@ -1183,6 +1183,19 @@ namespace Ordr.Mobile.Combat
             effectExecutor.ConfigureVerifiedSpecialEffects(handler);
         }
 
+        // Source-verified native AOae attack-speed timing is configured
+        // independently of AttackPowerBuff. No guessed IAS stacking,
+        // cap, phase reset or cooldown change is applied by default.
+        public void ConfigureVerifiedOriginal323NativeAttackCadence(
+            IOriginal323VerifiedNativeAttackCadence originalTiming)
+        {
+            if (characters.Count != 0)
+                throw new InvalidOperationException(
+                    "원본 공속 공식은 전투 유닛을 생성하기 전에 설정해야 합니다.");
+            attackPipeline.ConfigureVerifiedNativeAttackCadence(
+                originalTiming);
+        }
+
         public void ConfigureVerifiedUnitAttackModifiers(IOriginalUnitAttackModifiers rules)
         {
             if (rules == null) throw new ArgumentNullException(nameof(rules));
@@ -1542,6 +1555,12 @@ namespace Ordr.Mobile.Combat
                 return new BasicAttackReadiness(instanceId, id,
                     BasicAttackReadinessKind.UnverifiedSource, detail, null);
             }
+            if (attackPipeline.HasUnresolvedNativeAttackSpeed(
+                    InstanceKey(instanceId)))
+                return new BasicAttackReadiness(instanceId, id,
+                    BasicAttackReadinessKind.FormulaDeferred,
+                    "현재 공속 오라의 원본 네이티브 공격 간격 계산/중첩 근거 미확인",
+                    attackPipeline.NextAttackAt(InstanceKey(instanceId)));
             if (unit.AttackBlockedByMissingFormula)
                 return new BasicAttackReadiness(instanceId, id,
                     BasicAttackReadinessKind.FormulaDeferred,
@@ -2203,8 +2222,10 @@ namespace Ordr.Mobile.Combat
                     unit.Mapping == null) continue;
                 double? at = attackPipeline.NextAttackAt(InstanceKey(unit.Id));
                 var candidates = BuildBasicAttackCandidates(unit);
-                if (attackPipeline.SelectDefaultTarget(InstanceKey(unit.Id),
-                    candidates, TargetPriority.Nearest) != null &&
+                if (!attackPipeline.HasUnresolvedNativeAttackSpeed(
+                        InstanceKey(unit.Id)) &&
+                    attackPipeline.SelectDefaultTarget(InstanceKey(unit.Id),
+                        candidates, TargetPriority.Nearest) != null &&
                     at.HasValue && (!next.HasValue || at.Value < next.Value))
                     next = at;
                 // A separately verified periodic skill may target an enemy

@@ -44,6 +44,19 @@ namespace Ordr.Mobile.Combat
         }
     }
 
+    // Attack speed must be resolved before consuming a native hit or any
+    // original proc dice. AOae DataB is NOT itself a complete Warcraft
+    // cadence formula: stacking, caps, current attack phase and rounding
+    // remain responsibilities of a separately verified original policy.
+    public interface IOriginal323VerifiedNativeAttackCadence
+    {
+        bool TryResolveNextInterval(string attackerInstanceId,
+            BasicAttackSpec verifiedBaseAttack,
+            IReadOnlyList<CombatEffect> activeAttackerEffects,
+            double currentCombatTime, out double intervalSeconds,
+            out string sourceEvidence);
+    }
+
     // 원작 버프/변신이 평타 공격력·속도·사거리를 바꾸면 외부 검증 정책이 계산한다.
     // 스마트폰 조작 정책: 같은 전장의 적을 유닛 사거리 없이 공격한다.
     // 다른 전장이나 도전 적을 향한 공격 자격은 월드에서 먼저 확인한다.
@@ -164,7 +177,36 @@ namespace Ordr.Mobile.Combat
         }
 
         private IOriginalUnitAttackModifiers originalModifierRules;
+        private IOriginal323VerifiedNativeAttackCadence verifiedNativeCadence;
         private Func<string, IReadOnlyList<CombatEffect>> getAttackerEffects;
+
+        public void ConfigureVerifiedNativeAttackCadence(
+            IOriginal323VerifiedNativeAttackCadence originalRules)
+        {
+            if (verifiedNativeCadence != null)
+                throw new InvalidOperationException(
+                    "원본 공속 타이밍 공식은 두 번 연결할 수 없습니다.");
+            verifiedNativeCadence = originalRules ??
+                throw new ArgumentNullException(nameof(originalRules));
+        }
+
+        // Read-only battle HUD + scheduling diagnosis. Never rolls dice or
+        // changes the current attack clock.
+        public bool HasUnresolvedNativeAttackSpeed(string attackerId)
+        {
+            if (string.IsNullOrWhiteSpace(attackerId))
+                throw new ArgumentException("공격자 인스턴스 ID가 필요합니다.");
+            if (verifiedNativeCadence != null || !units.ContainsKey(attackerId) ||
+                getAttackerEffects == null)
+                return false;
+            var active = getAttackerEffects(attackerId);
+            if (active == null)
+                throw new InvalidOperationException("현재 공격 속도 버프 데이터 없음");
+            foreach (var effect in active)
+                if (effect.Type == CombatEffectType.AttackSpeedBuff)
+                    return true;
+            return false;
+        }
         private readonly Dictionary<string, RegisteredUnit> units =
             new Dictionary<string, RegisteredUnit>(StringComparer.Ordinal);
 
@@ -345,6 +387,41 @@ namespace Ordr.Mobile.Combat
             var enemy = resolution.GetEnemy(targetId);
             if (enemy == null || !enemy.IsAlive) return false;
 
+            // Resolve next attack time using the ORIGINAL current native
+            // buffs, before declared attacks, damage dice or skill proc RNG.
+            // With no AttackSpeedBuff, preserve the exact verified base
+            // attack interval. An unresolved buff cannot silently inherit
+            // vanilla cadence or apply a made-up 1/(1+percent) shortcut.
+            IReadOnlyList<CombatEffect> attackerEffects =
+                getAttackerEffects == null
+                    ? (IReadOnlyList<CombatEffect>)Array.Empty<CombatEffect>()
+                    : getAttackerEffects(attackerInstanceId);
+            if (attackerEffects == null)
+                throw new InvalidOperationException(
+                    "공격자 활성 상태효과를 읽을 수 없습니다.");
+            double nextAttackInterval = effective.IntervalSeconds;
+            bool hasNativeSpeedBuff = false;
+            foreach (var effect in attackerEffects)
+                if (effect.Type == CombatEffectType.AttackSpeedBuff)
+                    hasNativeSpeedBuff = true;
+            if (hasNativeSpeedBuff)
+            {
+                string timingEvidence;
+                double verifiedNext;
+                if (verifiedNativeCadence == null ||
+                    !verifiedNativeCadence.TryResolveNextInterval(
+                        attackerInstanceId, effective, attackerEffects,
+                        scheduler.Time, out verifiedNext, out timingEvidence) ||
+                    string.IsNullOrWhiteSpace(timingEvidence))
+                    return false;
+                if (double.IsNaN(verifiedNext) ||
+                    double.IsInfinity(verifiedNext) || verifiedNext <= 0 ||
+                    double.IsInfinity(scheduler.Time + verifiedNext))
+                    throw new InvalidOperationException(
+                        "검증된 워크래프트 공격 간격이 유효하지 않습니다.");
+                nextAttackInterval = verifiedNext;
+            }
+
             // Read-only target preflight while the enemy is still alive,
             // before a potentially lethal committed basic attack. Rolls occur
             // only AFTER the native hit has succeeded.
@@ -369,14 +446,13 @@ namespace Ordr.Mobile.Combat
             // 피해 계산 오류가 발생하면 공격 쿨타임은 소비하지 않는다.
             long resolved = damageResolver.ResolveBasicDamage(
                 new BasicDamageRequest(attackerInstanceId, unit.Spec.UnitRawCode,
-                    effective, targetId, getAttackerEffects == null ? null :
-                        getAttackerEffects(attackerInstanceId)), enemy);
+                    effective, targetId, attackerEffects), enemy);
             if (resolved < 0) throw new InvalidOperationException("최종 피해량이 음수입니다.");
             if (unit.NextEventSequence == long.MaxValue)
                 throw new OverflowException("전투 이벤트 순번을 더 늘릴 수 없습니다.");
             long actual;
             if (!resolution.TryAttack(attackerInstanceId, targetId,
-                effective.IntervalSeconds, resolved, out actual)) return false;
+                nextAttackInterval, resolved, out actual)) return false;
             long eventSequence = ++unit.NextEventSequence;
             var activated = new List<string>();
             foreach (var skill in unit.Spec.Skills)
