@@ -27,6 +27,22 @@ namespace Ordr.Mobile.Combat
         // Native rank/mask/buff witnesses still decide each live recipient.
         public bool TargetsAllies => Type == CombatEffectType.AttackPowerBuff ||
             Type == CombatEffectType.AttackSpeedBuff;
+        // WC3's 'self' and 'notself' target flags are different. Even a
+        // native target witness cannot turn a friend-only aura into a
+        // self buff, or apply a notself buff to its source caster.
+        public bool AllowsAllyRole(bool sameInstance)
+        {
+            if (!TargetsAllies) return false;
+            bool hasSelf = false, hasNotSelf = false, hasFriend = false;
+            foreach (string token in TargetMask.Split(','))
+            {
+                if (token == "self") hasSelf = true;
+                else if (token == "notself") hasNotSelf = true;
+                else if (token == "friend") hasFriend = true;
+            }
+            return sameInstance ? hasSelf && !hasNotSelf : hasFriend;
+        }
+
         public string Evidence => "W3X:" + Original323UncommonAbilityCatalog.SourceW3xSha256 +
             "/" + UnitRawcode + "/" + AbilityRawcode + "/" + BuffRawcode;
 
@@ -122,6 +138,17 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy target, double time, out string evidence);
         bool CanAffectAlly(Original323SpecialAura aura, UnitState caster,
             UnitState target, double time, out string evidence);
+    }
+
+    // Multi-level AHad/AOae/ACac data list ALL original ranks, but the
+    // actual Warcraft unit can have only its CURRENT native ability rank
+    // at a particular tick. Without independent live-rank proof never
+    // apply two incompatible ranks of the same aura simultaneously.
+    public interface IOriginal323NativeAuraRankWitness
+    {
+        bool TryObserveCurrentRank(long casterInstanceId,
+            string originalAbilityRawcode, double worldTime,
+            out int nativeRank, out string originalRankEvidence);
     }
 
     public interface IOriginal323FlatArmorAuraRules

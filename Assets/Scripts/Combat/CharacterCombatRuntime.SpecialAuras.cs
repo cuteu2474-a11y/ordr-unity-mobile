@@ -50,6 +50,31 @@ namespace Ordr.Mobile.Combat
                 Array.AsReadOnly(new Original323SpecialAura[0]);
         }
 
+        private bool IsVerifiedCurrentNativeAuraRank(long casterId,
+            Original323SpecialAura aura)
+        {
+            var definitions = originalSpecialAuras.FindAll(
+                characters[casterId].Catalog.Id);
+            bool multiRank = false;
+            foreach (var other in definitions)
+                if (other.AbilityRawcode == aura.AbilityRawcode &&
+                    other.Level != aura.Level)
+                {
+                    multiRank = true;
+                    break;
+                }
+            if (!multiRank) return true;
+            var observer = originalSpecialAuraTargets as
+                IOriginal323NativeAuraRankWitness;
+            if (observer == null) return false;
+            int current;
+            string proof;
+            return observer.TryObserveCurrentRank(casterId,
+                       aura.AbilityRawcode, Time, out current, out proof) &&
+                   !string.IsNullOrWhiteSpace(proof) &&
+                   current == aura.Level;
+        }
+
         private void RefreshOriginalSpecialAuras()
         {
             foreach (var status in statuses.Values)
@@ -68,6 +93,9 @@ namespace Ordr.Mobile.Combat
             foreach (long id in ids)
             foreach (var aura in originalSpecialAuras.FindAll(characters[id].Catalog.Id))
             {
+                // Multi-level source rows are candidates, not simultaneous
+                // active buffs. Require the CURRENT Warcraft rank.
+                if (!IsVerifiedCurrentNativeAuraRank(id, aura)) continue;
                 var caster = roster.Get(id);
                 if (aura.Type == CombatEffectType.ArmorReduction)
                 {
@@ -82,7 +110,8 @@ namespace Ordr.Mobile.Combat
                 {
                     foreach (long targetId in ids)
                     {
-                        if (IsStoryDeployed(id) != IsStoryDeployed(targetId)) continue;
+                        if (IsStoryDeployed(id) != IsStoryDeployed(targetId) ||
+                            !aura.AllowsAllyRole(id == targetId)) continue;
                         var target = roster.Get(targetId);
                         double dx = target.X - caster.X, dy = target.Y - caster.Y;
                         string proof;

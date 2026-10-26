@@ -190,16 +190,21 @@ namespace Ordr.Mobile.Combat
 
         public Original323CompositeAuraCatalog(OriginalMapBaseStatCatalog map,
             IOriginal323AuraCatalog originalArmor,
-            IOriginal323AuraCatalog nativeSpeed)
+            IOriginal323AuraCatalog nativeSpeed,
+            IOriginal323AuraCatalog nativeCommandAttack = null)
         {
             if (map == null || originalArmor == null || nativeSpeed == null)
                 throw new ArgumentNullException(nameof(map));
+            var catalogs = new List<IOriginal323AuraCatalog> {
+                originalArmor, nativeSpeed
+            };
+            if (nativeCommandAttack != null)
+                catalogs.Add(nativeCommandAttack);
             foreach (var unit in map.All)
             {
                 var collected = new List<Original323SpecialAura>();
                 var seen = new Dictionary<string, Original323SpecialAura>(StringComparer.Ordinal);
-                foreach (IOriginal323AuraCatalog catalog in
-                    new[] { originalArmor, nativeSpeed })
+                foreach (IOriginal323AuraCatalog catalog in catalogs)
                 {
                     foreach (var aura in catalog.FindAll(unit.UnitId))
                     {

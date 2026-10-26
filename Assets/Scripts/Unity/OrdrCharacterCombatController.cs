@@ -39,6 +39,7 @@ namespace Ordr.Mobile.Unity
         public Original323SpecialAuraCatalog OriginalSpecialAuras { get; private set; }
         public Original323ArmorAuraCatalog OriginalArmorAuras { get; private set; }
         public Original323NativeSpeedAuraCatalog OriginalNativeSpeedAuras { get; private set; }
+        public Original323NativeCommandAuraCatalog OriginalNativeCommandAuras { get; private set; }
         public Original323CompositeAuraCatalog OriginalCombinedAuras { get; private set; }
         private IOriginal323SpecialAuraTargetRules specialAuraTargets;
 
@@ -1251,8 +1252,16 @@ namespace Ordr.Mobile.Unity
                         OriginalNativeSpeedAuras =
                             Original323NativeSpeedAuraCatalog.FromJson(
                                 auraData.text, MapBaseStats);
+                        // Native ACac includes Chopper Guard 7% and Horn
+                        // 25% as distinct source-owned command auras.
+                        // The existing S-25 pinned command aura is deduped
+                        // by rawcode + buff + original level.
+                        OriginalNativeCommandAuras =
+                            Original323NativeCommandAuraCatalog.FromJson(
+                                auraData.text, MapBaseStats);
                         OriginalCombinedAuras = new Original323CompositeAuraCatalog(
-                            MapBaseStats, OriginalArmorAuras, OriginalNativeSpeedAuras);
+                            MapBaseStats, OriginalArmorAuras, OriginalNativeSpeedAuras,
+                            OriginalNativeCommandAuras);
                     }
                 }
                 var fusionData = verifiedFusionRecipesJson != null ? verifiedFusionRecipesJson :

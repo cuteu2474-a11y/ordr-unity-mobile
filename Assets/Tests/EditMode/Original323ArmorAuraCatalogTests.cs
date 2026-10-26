@@ -13,12 +13,26 @@ namespace Ordr.Mobile.Tests
     {
         // Deliberately synthetic source-rank/target/buff/mode proofs. The
         // object catalog cannot establish real Warcraft target state.
-        private class Targets : IOriginal323SpecialAuraTargetRules
+        private class Targets : IOriginal323SpecialAuraTargetRules,
+            IOriginal323NativeAuraRankWitness
         {
             public readonly Dictionary<string, int> Levels = new Dictionary<string, int>();
             public string OnlyAbility;
             public string ExcludedEnemy;
             public bool Evidence = true;
+            public bool TryObserveCurrentRank(long casterId,
+                string ability, double time, out int observed, out string originalProof)
+            {
+                // TEST_ONLY independent synthetic native ability-level
+                // inspection; the old tests already supplied Levels as their
+                // external Warcraft rank witness.
+                if (!Levels.TryGetValue(ability, out observed))
+                    observed = 1;
+                originalProof = Evidence ?
+                    "TEST_ONLY current WC3 original ability-level receipt" : null;
+                return Evidence;
+            }
+
             public bool CanAffectEnemy(Original323SpecialAura aura, UnitState source,
                 SpatialCombatEnemy target, double time, out string evidence)
             {
