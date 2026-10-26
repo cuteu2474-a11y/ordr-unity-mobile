@@ -283,6 +283,41 @@ namespace Ordr.Mobile.Combat
         private readonly IOriginal323NativeMagicHpConversion quantization;
         private readonly IOriginal323NativeMagicModifierWitness modifiers;
 
+        // One observed forked-lightning impact can contain multiple native
+        // hits. Keep EVERY selected monster stable until the WHOLE impact is
+        // verified. A later converter must not invalidate an earlier target.
+        private sealed class SelectedTargetState
+        {
+            private readonly CombatEnemy monster;
+            private readonly EnemyDefenseProfile defenses;
+            private readonly CombatStatusEngine status;
+            private readonly long health;
+            private readonly bool alive;
+            private readonly double statusTime;
+            private readonly long statusRevision;
+
+            public SelectedTargetState(CombatEnemy selected)
+            {
+                monster = selected;
+                defenses = selected.Defenses;
+                status = selected.Status;
+                health = selected.Health;
+                alive = selected.IsAlive;
+                statusTime = status.CurrentTime;
+                statusRevision = status.Revision;
+            }
+
+            public bool Matches(CombatEnemy current)
+            {
+                return Object.ReferenceEquals(current, monster) &&
+                    current.Health == health && current.IsAlive == alive &&
+                    Object.ReferenceEquals(current.Defenses, defenses) &&
+                    Object.ReferenceEquals(current.Status, status) &&
+                    status.CurrentTime == statusTime &&
+                    status.Revision == statusRevision;
+            }
+        }
+
         public Original323VerifiedNativeMagicImpactAdapter(
             IOriginal323NativeMagicImpactWitness source,
             IOriginal323NativeMagicHpConversion nativeHp)
@@ -321,13 +356,20 @@ namespace Ordr.Mobile.Combat
 
             var selected = new HashSet<string>(StringComparer.Ordinal);
             var immune = new HashSet<string>(StringComparer.Ordinal);
+            var selectedStates =
+                new Dictionary<string, SelectedTargetState>(StringComparer.Ordinal);
             foreach (var target in observed.SelectedTargets)
             {
+                var current = combat.EnemyOf(target.TargetId);
                 if (!Original323BossRoundRules.TrustedRuntimeEvidence(
                         target.OriginalSelectionEvidence) ||
-                    !selected.Add(target.TargetId) ||
-                    combat.EnemyOf(target.TargetId) == null)
+                    !selected.Add(target.TargetId) || current == null)
                     return false;
+                // Capture even immune / selected-but-not-hit monsters:
+                // their observed state must not silently change during
+                // verification of another target in this same impact.
+                selectedStates.Add(target.TargetId,
+                    new SelectedTargetState(current));
                 if (target.OriginalMagicImmune)
                     immune.Add(target.TargetId);
             }
@@ -351,6 +393,13 @@ namespace Ordr.Mobile.Combat
                     return false;
                 confirmed.Add(checkedHit);
             }
+
+            // Previously confirmed hits are NOT yet committed; a later
+            // external witness could have refreshed or changed another
+            // selected monster in the meantime. Reject the whole impact.
+            foreach (var entry in selectedStates)
+                if (!entry.Value.Matches(combat.EnemyOf(entry.Key)))
+                    return false;
 
             verifiedImpact = new Original323NativeDummyImpact(
                 observed.OriginalImpactId, observed.OriginalTimeSeconds,

@@ -920,6 +920,94 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1100, world.Combat.EnemyOf("second").Health);
         }
 
+        private sealed class CrossTargetMutationDuringConversion :
+            IOriginal323NativeMagicHpConversion
+        {
+            public CombatEnemy OtherMonster;
+            public int ChangeOnCall = 2;
+            public int Calls;
+
+            public bool TryConvertNativeSpellDamage(float postDefend,
+                string originalAbility, out long amount)
+            {
+                Calls++;
+                amount = (long)Math.Round(postDefend,
+                    MidpointRounding.AwayFromZero);
+                if (Calls == ChangeOnCall)
+                    OtherMonster.Status.Apply(new CombatEffect(
+                        "cross-target-current-magic-amplification",
+                        CombatEffectType.MagicDamageAmplification,
+                        CombatEffectOrigin.TriggeredSkill, 0.2, 1));
+                return true;
+            }
+        }
+
+        [Test]
+        public void LaterLightningTargetCannotInvalidateEarlierConfirmedTarget()
+        {
+            var native = new NativeMagic();
+            var conversion = new CrossTargetMutationDuringConversion();
+            var adapter = new Original323VerifiedNativeMagicImpactAdapter(
+                native, conversion);
+            var game = Create("S-18", "h00Q", adapter);
+            game.Enemy("primary", 2000, CharacterEnemyKind.Line, 16);
+            game.Enemy("second", 2000, CharacterEnemyKind.Line, 16);
+            game.Combat.Step(0);
+            game.Combat.Step(0.25);
+            conversion.OtherMonster = game.Combat.EnemyOf("primary");
+            native.Next = MagicImpact(game.Cast.CastId,
+                "source-multi-target-modified-during-verification", 0.25,
+                true, new[] { Selected("primary"), Selected("second") },
+                MagicHit("primary", 1000f, 16, 900),
+                MagicHit("second", 1000f, 16, 900));
+
+            long actual;
+            Assert.IsFalse(game.Bridge.TryApplyObservedImpact(
+                game.Combat, game.Cast.CastId, out actual));
+            Assert.AreEqual(0, actual);
+            Assert.AreEqual(2, conversion.Calls);
+            // Only the preceding ordinary 1-damage basic attack occurred;
+            // neither of the two native magical hits was partially committed.
+            Assert.AreEqual(1999,
+                game.Combat.EnemyOf("primary").Health);
+            Assert.AreEqual(2000,
+                game.Combat.EnemyOf("second").Health);
+            Assert.AreEqual(1, game.Combat.PendingOriginalDummySpellCount);
+        }
+
+        [Test]
+        public void SelectedButUnhitLightningTargetMustAlsoStayUnchanged()
+        {
+            var native = new NativeMagic();
+            var conversion = new CrossTargetMutationDuringConversion
+            {
+                ChangeOnCall = 1
+            };
+            var adapter = new Original323VerifiedNativeMagicImpactAdapter(
+                native, conversion);
+            var game = Create("S-18", "h00Q", adapter);
+            game.Enemy("primary", 2000, CharacterEnemyKind.Line, 16);
+            game.Enemy("second", 2000, CharacterEnemyKind.Line, 16);
+            game.Combat.Step(0);
+            game.Combat.Step(0.25);
+            conversion.OtherMonster = game.Combat.EnemyOf("second");
+            native.Next = MagicImpact(game.Cast.CastId,
+                "source-selected-not-hit-modified-during-verification",
+                0.25, true, new[] { Selected("primary"), Selected("second") },
+                MagicHit("primary", 1000f, 16, 900));
+
+            long actual;
+            Assert.IsFalse(game.Bridge.TryApplyObservedImpact(
+                game.Combat, game.Cast.CastId, out actual));
+            Assert.AreEqual(0, actual);
+            Assert.AreEqual(1, conversion.Calls);
+            Assert.AreEqual(1999,
+                game.Combat.EnemyOf("primary").Health);
+            Assert.AreEqual(2000,
+                game.Combat.EnemyOf("second").Health);
+            Assert.AreEqual(1, game.Combat.PendingOriginalDummySpellCount);
+        }
+
         [Test]
         public void SimultaneousResistanceDebuffAndMagicAmplificationNeedWitness()
         {
