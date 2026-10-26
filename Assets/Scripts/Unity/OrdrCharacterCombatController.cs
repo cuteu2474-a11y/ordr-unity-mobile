@@ -620,6 +620,19 @@ namespace Ordr.Mobile.Unity
         // A separate adapter for actual projectiles and lightning impact
         // moments. Register BEFORE game runtime creation; confirmed impacts
         // may arrive after the original attacked target is already dead.
+        // Live per-monster A04Q (magic damage-taken factor) reconciliation
+        // for two original native dummy spells. The external source must
+        // separately prove pre-A04Q damage, applicability and HP conversion.
+        public void ConfigureOriginal323VerifiedNativeMagicDummyWorld(
+            IOriginal323DummySpellCastWitness verifiedCasts,
+            IOriginal323NativeMagicImpactWitness verifiedMagicImpacts,
+            IOriginal323NativeMagicHpConversion verifiedNativeHp)
+        {
+            ConfigureOriginal323DeferredDummySpellWorld(verifiedCasts,
+                new Original323VerifiedNativeMagicImpactAdapter(
+                    verifiedMagicImpacts, verifiedNativeHp));
+        }
+
         public void ConfigureOriginal323DeferredDummySpellWorld(
             IOriginal323DummySpellCastWitness verifiedCasts,
             IOriginal323DummySpellImpactWitness verifiedImpacts)
