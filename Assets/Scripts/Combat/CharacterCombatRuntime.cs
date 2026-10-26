@@ -96,10 +96,11 @@ namespace Ordr.Mobile.Combat
                 world.internalOriginalFusionMutation = true;
                 try
                 {
-                    resultInstanceId = world.SpawnCharacter(resultCatalogId, x, y);
-                    // Mobile auto-placement may move the freshly created
-                    // actor; apply ONLY source-verified final placement.
-                    world.MoveCharacter(resultInstanceId, x, y);
+                    // Preserve exact original witnessed placement; the
+                    // regular mobile auto-placement policy is NOT an
+                    // authority to reposition a native fusion result.
+                    resultInstanceId = world.SpawnStagedOriginalFusionResult(
+                        resultCatalogId, x, y);
                 }
                 finally
                 {
@@ -139,10 +140,28 @@ namespace Ordr.Mobile.Combat
                 world.internalOriginalFusionMutation = true;
                 try
                 {
+                    // Reserve the sole visible source-backed spawn cue BEFORE
+                    // touching the original source actors.
+                    var result = world.characters[resultInstanceId];
+                    var publishedSpawn = new CharacterCombatEvent(
+                        CharacterCombatEventType.UnitSpawned,
+                        InstanceKey(resultInstanceId), null, null,
+                        result.Catalog.Name, 0);
+                    var publishedPlacement = new CharacterCombatEvent(
+                        CharacterCombatEventType.UnitPlaced,
+                        InstanceKey(resultInstanceId), null, null,
+                        "verified-original-fusion-position", 0);
+                    world.pendingCommandEvents.Capacity = Math.Max(
+                        world.pendingCommandEvents.Capacity,
+                        world.pendingCommandEvents.Count + 2);
                     foreach (long id in materialIds)
                         world.RemoveCharacter(id);
+                    world.pendingCommandEvents.Add(publishedSpawn);
+                    world.pendingCommandEvents.Add(publishedPlacement);
                     committed = true;
                     world.activeOriginalFusionSwap = null;
+                    // Step() reconciles auras at the next actual combat
+                    // frame. No external callback runs midway through commit.
                 }
                 finally
                 {
@@ -1186,6 +1205,7 @@ namespace Ordr.Mobile.Combat
 
         public void ApplyVerifiedUnitEffect(long id, CombatEffect effect)
         {
+            BlockExternalMutationDuringOriginalFusion();
             if (effect == null) throw new ArgumentNullException(nameof(effect));
             UnitStatusOf(id).Apply(effect);
         }
@@ -1215,6 +1235,7 @@ namespace Ordr.Mobile.Combat
         // 검증된 오라의 원작 반경/효과만 등록한다. 대상별 효과는 매번 재계산된다.
         public void AddVerifiedEnemyAura(CombatAuraEmitter source)
         {
+            BlockExternalMutationDuringOriginalFusion();
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (!characters.ContainsKey(source.UnitInstanceId))
                 throw new KeyNotFoundException("오라를 사용하는 캐릭터가 없습니다.");
@@ -1224,6 +1245,7 @@ namespace Ordr.Mobile.Combat
 
         public void RemoveVerifiedEnemyAura(long unitInstanceId, string auraId)
         {
+            BlockExternalMutationDuringOriginalFusion();
             auras.Remove(unitInstanceId, auraId);
             RefreshEnemyAuras();
         }
@@ -1391,7 +1413,11 @@ namespace Ordr.Mobile.Combat
                     throw new FormatException("스킬 프로필에 존재하지 않는 유닛 ID: " + profile.UnitId);
         }
 
-        public void Start() { game.Start(); }
+        public void Start()
+        {
+            BlockExternalMutationDuringOriginalFusion();
+            game.Start();
+        }
 
         public void BeginWave(int waveNumber)
         {
@@ -1402,6 +1428,22 @@ namespace Ordr.Mobile.Combat
         public long SpawnCharacter(string catalogUnitId, double x, double y)
         {
             BlockExternalMutationDuringOriginalFusion();
+            return SpawnCharacterCore(catalogUnitId, x, y, false);
+        }
+
+        private long SpawnStagedOriginalFusionResult(string catalogUnitId,
+            double x, double y)
+        {
+            if (!internalOriginalFusionMutation ||
+                activeOriginalFusionSwap == null)
+                throw new InvalidOperationException(
+                    "원본 조합 결과 소환은 검증된 원자 거래에서만 허용합니다.");
+            return SpawnCharacterCore(catalogUnitId, x, y, true);
+        }
+
+        private long SpawnCharacterCore(string catalogUnitId, double x,
+            double y, bool stagedOriginalFusionResult)
+        {
             CatalogUnit catalogUnit = units.Require(catalogUnitId);
             long id = roster.Add(catalogUnitId, x, y);
             var profile = profiles.Find(catalogUnitId);
@@ -1413,7 +1455,8 @@ namespace Ordr.Mobile.Combat
             bool placed;
             try
             {
-                placed = MobileAutomation.TryPlace(catalogUnit, roster, id);
+                placed = !stagedOriginalFusionResult &&
+                    MobileAutomation.TryPlace(catalogUnit, roster, id);
                 if (verifiedAttackProvider != null)
                 {
                     OriginalVerifiedAttackBinding original;
@@ -1431,7 +1474,10 @@ namespace Ordr.Mobile.Combat
                 }
                 if (!characters[id].AttackReady && commonAttackPreview != null)
                     commonAttackPreview.TryTrack(id, catalogUnitId, scheduler.Time);
-                RefreshEnemyAuras();
+                // Stage is not a combat tick. Recomputing enemy auras here
+                // can change status revision and native spell evidence even
+                // if the fusion is subsequently rolled back.
+                if (!stagedOriginalFusionResult) RefreshEnemyAuras();
             }
             catch
             {
@@ -1442,15 +1488,19 @@ namespace Ordr.Mobile.Combat
                 characters.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
-                RefreshEnemyAuras();
+                if (!stagedOriginalFusionResult) RefreshEnemyAuras();
                 throw;
             }
-            pendingCommandEvents.Add(new CharacterCombatEvent(CharacterCombatEventType.UnitSpawned,
-                InstanceKey(id), null, null, catalogUnit.Name, 0));
-            if (placed)
+            if (!stagedOriginalFusionResult)
+            {
                 pendingCommandEvents.Add(new CharacterCombatEvent(
-                    CharacterCombatEventType.UnitPlaced, InstanceKey(id), null,
-                    null, "automatic-verified-position", 0));
+                    CharacterCombatEventType.UnitSpawned,
+                    InstanceKey(id), null, null, catalogUnit.Name, 0));
+                if (placed)
+                    pendingCommandEvents.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.UnitPlaced, InstanceKey(id), null,
+                        null, "automatic-verified-position", 0));
+            }
             return id;
         }
 
@@ -1941,7 +1991,10 @@ namespace Ordr.Mobile.Combat
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
-            RefreshEnemyAuras();
+            // Native fusion removes every input as ONE logical batch. Do
+            // not run external aura reconciliation with an intermediate,
+            // half-consumed roster (or during rollback of the staged result).
+            if (!internalOriginalFusionMutation) RefreshEnemyAuras();
             roster.Remove(instanceId);
         }
 
@@ -1994,6 +2047,7 @@ namespace Ordr.Mobile.Combat
             CharacterEnemyKind kind, double x, double y, double pathProgress,
             EnemyDefenseProfile verifiedDefenses)
         {
+            BlockExternalMutationDuringOriginalFusion();
             if (string.IsNullOrWhiteSpace(enemyId)) throw new ArgumentException("적 ID가 필요합니다.");
             if (enemies.ContainsKey(enemyId)) throw new InvalidOperationException("이미 존재하는 적 ID입니다.");
             if (verifiedDefenses == null) throw new ArgumentNullException(nameof(verifiedDefenses));
@@ -2017,6 +2071,7 @@ namespace Ordr.Mobile.Combat
         // 이감 수치는 아직 원작 이동속도 공식이 없어 외부 경로 이동기가 확인해야 한다.
         public bool TryMoveEnemy(string enemyId, double x, double y, double progress)
         {
+            BlockExternalMutationDuringOriginalFusion();
             SpatialCombatEnemy enemy;
             if (!enemies.TryGetValue(enemyId, out enemy))
                 throw new KeyNotFoundException("존재하지 않는 적 ID.");
@@ -2029,6 +2084,7 @@ namespace Ordr.Mobile.Combat
         // 스턴 무시 강제 이동(원본 맵에 확인된 넉백/이동만 호출해야 한다).
         public void ForceMoveEnemy(string enemyId, double x, double y, double progress)
         {
+            BlockExternalMutationDuringOriginalFusion();
             SpatialCombatEnemy enemy;
             if (!enemies.TryGetValue(enemyId, out enemy))
                 throw new KeyNotFoundException("존재하지 않는 적 ID.");
@@ -2362,6 +2418,9 @@ namespace Ordr.Mobile.Combat
         // 과도한 프레임 지연 시 전투 시뮬레이션을 조용히 건너뛰지 않는다.
         public IReadOnlyList<CharacterCombatEvent> Step(double deltaSeconds)
         {
+            // Must fail BEFORE pendingStepSeconds, event buffers or any
+            // aura/mana/attack clock can be mutated during native fusion.
+            BlockExternalMutationDuringOriginalFusion();
             if (game.Phase != SessionPhase.Running)
                 throw new InvalidOperationException("게임이 진행 중이 아닙니다.");
             if (double.IsNaN(deltaSeconds) || double.IsInfinity(deltaSeconds) ||

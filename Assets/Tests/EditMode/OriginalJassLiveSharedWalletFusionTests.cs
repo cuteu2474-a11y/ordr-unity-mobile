@@ -373,6 +373,95 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void StagedFusionDoesNotRunCombatOrLeakAnAbortedSpawnCue()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            fixture.Combat.Start();
+            fixture.Combat.BeginWave(1);
+            fixture.Combat.Step(0); // drain the six existing spawn cues
+
+            long sourceId = fixture.OriginalIds[0];
+            long originalRevision = fixture.Combat.UnitStatusOf(sourceId).Revision;
+            using (var pending = fixture.Combat.BeginOriginalFusionUnitSwap(
+                fixture.OriginalIds, "E-06", 1000, 2000))
+            {
+                Assert.Throws<InvalidOperationException>(() =>
+                    fixture.Combat.Step(0.25));
+                Assert.AreEqual(0, fixture.Combat.PendingSimulationSeconds);
+                Assert.Throws<InvalidOperationException>(() =>
+                    fixture.Combat.ApplyVerifiedUnitEffect(sourceId,
+                        new CombatEffect("blocked-fusion-effect",
+                            CombatEffectType.MagicDamageAmplification,
+                            CombatEffectOrigin.TriggeredSkill, 0.3, 1)));
+                Assert.Throws<InvalidOperationException>(() =>
+                    fixture.Combat.SpawnEnemy("forbidden", 100,
+                        CharacterEnemyKind.Line, 0, 0, 0));
+                Assert.AreEqual(originalRevision,
+                    fixture.Combat.UnitStatusOf(sourceId).Revision);
+                Assert.AreEqual(0, fixture.Combat.EnemyCount);
+            }
+
+            Assert.AreEqual(6, fixture.Combat.CharacterCount);
+            foreach (var evt in fixture.Combat.Step(0))
+                Assert.IsFalse(evt.Type == CharacterCombatEventType.UnitSpawned ||
+                    evt.Type == CharacterCombatEventType.UnitPlaced,
+                    "Uncommitted native fusion must never publish a spawn.");
+        }
+
+        [Test]
+        public void AbortedFusionDoesNotReapplyOrRemoveExistingEnemyAuras()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            fixture.Combat.SpawnEnemy("aura-target", 1000,
+                CharacterEnemyKind.Line, 0, 0, 0);
+            fixture.Combat.AddVerifiedEnemyAura(new CombatAuraEmitter(
+                fixture.OriginalIds[0], "original-aura-witness",
+                CombatEffectType.ArmorReduction, 3, 500,
+                new[] { CharacterEnemyKind.Line }, "source-observed test aura"));
+            long before = fixture.Combat.StatusOf("aura-target").Revision;
+
+            using (fixture.Combat.BeginOriginalFusionUnitSwap(
+                fixture.OriginalIds, "E-06", 1000, 2000))
+            {
+                Assert.AreEqual(before,
+                    fixture.Combat.StatusOf("aura-target").Revision);
+            }
+            Assert.AreEqual(before,
+                fixture.Combat.StatusOf("aura-target").Revision);
+            Assert.AreEqual(6, fixture.Combat.CharacterCount);
+            Assert.AreEqual(5, fixture.Wallet.Balance("wood"));
+        }
+
+        [Test]
+        public void CommittedOriginalFusionPublishesExactlyOneSpawnAndPlacement()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            fixture.Combat.Start();
+            fixture.Combat.BeginWave(1);
+            fixture.Combat.Step(0); // drain the six initial spawn cues
+            var offer = FindEt01(fixture);
+
+            Assert.AreEqual(ManualActionState.Succeeded,
+                fixture.Port.ConfirmFusion(
+                    "ET01", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, fixture.Combat.CharacterCount);
+            var produced = fixture.Combat.MobileUnitSnapshot()[0];
+            Assert.AreEqual(1000, fixture.Combat.Roster.Get(produced.InstanceId).X);
+            Assert.AreEqual(2000, fixture.Combat.Roster.Get(produced.InstanceId).Y);
+            int spawned = 0, placed = 0;
+            foreach (var evt in fixture.Combat.Step(0))
+            {
+                if (evt.Type == CharacterCombatEventType.UnitSpawned)
+                    spawned++;
+                if (evt.Type == CharacterCombatEventType.UnitPlaced)
+                    placed++;
+            }
+            Assert.AreEqual(1, spawned);
+            Assert.AreEqual(1, placed);
+            Assert.AreEqual(0, fixture.Wallet.Balance("wood"));
+        }
+
+        [Test]
         public void NativeFusionFailureRestoresRealSharedWoodAndAllCombatUnits()
         {
             var fixture = Create();
