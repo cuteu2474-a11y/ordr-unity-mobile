@@ -1031,6 +1031,42 @@ namespace Ordr.Mobile.Unity
                 castPolicy);
         }
 
+        // Binds the REAL in-game combat roster and shared wallet to the
+        // simple CWR transaction. Native source-object reads, original spell
+        // targeting and an EXCLUSIVE reversible CHu/CHx mutation factory remain
+        // mandatory; no preview-only object names are accepted as authorization.
+        public void ConfigureOriginalJassLiveCombatCraftingWorld(
+            IVerifiedUnitRawcodeMap verifiedObjectMap,
+            IOriginalJassLiveObjectReader actualOriginalObjects,
+            IOriginalJassFusionCastPolicy originalCastPolicy,
+            IOriginalJassLiveEffectsFactory reversibleNativeEffects)
+        {
+            if (Combat == null || SharedEconomy == null)
+                throw new InvalidOperationException(
+                    "전투 월드와 공유 재화 세션 구성이 먼저 필요합니다.");
+            var live = new OriginalJassLiveCombatFusionWorld(
+                Combat, SharedEconomy, actualOriginalObjects,
+                originalCastPolicy, reversibleNativeEffects);
+            ConfigureOriginalJassSimpleCraftingWorld(
+                verifiedObjectMap, live, live, live);
+        }
+
+        // The shared Wallet now executes and reverses the ACTUAL gold/wood
+        // debit. A rollback-capable source-verified native unit world remains
+        // mandatory for original CHu/CHx, unit instance identities and timers.
+        public void ConfigureOriginalJassSharedWalletCraftingWorld(
+            IVerifiedUnitRawcodeMap verifiedObjectMap,
+            IOriginalJassLiveObjectReader actualOriginalObjects,
+            IOriginalJassFusionCastPolicy originalCastPolicy,
+            IOriginalJassReversibleUnitFusionWorld verifiedNativeUnits)
+        {
+            if (verifiedNativeUnits == null)
+                throw new ArgumentNullException(nameof(verifiedNativeUnits));
+            ConfigureOriginalJassLiveCombatCraftingWorld(
+                verifiedObjectMap, actualOriginalObjects, originalCastPolicy,
+                new OriginalJassSharedWalletFusionEffects(verifiedNativeUnits));
+        }
+
         // 이세계 신비 도감 UI 연결. 공개 도감만으로는 실제 소모를 절대 실행하지 않는다.
         public void ConfigureOtherworldMysticFusionPreview(
             OtherworldMysticFusionCatalog mysticCatalog)
