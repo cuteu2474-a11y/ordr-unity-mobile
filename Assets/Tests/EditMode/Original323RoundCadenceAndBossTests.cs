@@ -39,7 +39,7 @@ namespace Ordr.Mobile.Tests
                 spawns.Add(Spawn(enragedTime, "enraged",
                     CharacterEnemyKind.Enraged, line));
             if (boss != null)
-                spawns.Add(Spawn(bossTime < 0 ? (line == null ? 0.5 : 18) :
+                spawns.Add(Spawn(bossTime < 0 ? 0.5 :
                     bossTime, "boss", CharacterEnemyKind.Boss, boss));
             return new VerifiedWavePlan(number, spawns,
                 "TEST_ONLY: timing source fixture");
@@ -60,15 +60,17 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void LaterBossArrivesAfterThirtyFiveNormalSpawns()
+        public void LateBossAndFirstNormalMonsterShareTheFirstTimerTick()
         {
             var source = Source();
             Assert.IsTrue(source.MatchesSinglePlayerSpawnCadence(
                 Plan(55, "o01S", "o001")));
             Assert.IsTrue(source.MatchesSinglePlayerSpawnCadence(
                 Plan(65, "o02H", "o02B")));
-            Assert.IsFalse(source.MatchesSinglePlayerSpawnCadence(
+            Assert.IsTrue(source.MatchesSinglePlayerSpawnCadence(
                 Plan(55, "o01S", "o001", false, 0.5)));
+            Assert.IsFalse(source.MatchesSinglePlayerSpawnCadence(
+                Plan(55, "o01S", "o001", false, 18)));
             Assert.IsFalse(source.MatchesSinglePlayerSpawnCadence(
                 Plan(55, "o01S", "o001", false, 17.5)));
         }

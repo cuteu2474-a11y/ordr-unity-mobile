@@ -1,0 +1,141 @@
+{
+  "format": "ordr-original-2323C-round-boss-script-rules-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "scope": "script-confirmed-relative-spawn-timers-boss-score-and-timeout-only",
+  "safeForVerifiedMonsterWaveRuntime": false,
+  "liveGameplayParityVerified": false,
+  "roundTimersSeconds": {
+    "firstRoundWait": 21,
+    "beforeNewWorldNormal": 35,
+    "beforeNewWorldBoss": 60,
+    "newWorld": 32,
+    "transitionAfterRound50": 70
+  },
+  "bossSpawnSecondsRelativeToSpawnTimer": {
+    "earlyBossOnly": 0.5,
+    "lateBossWithNormal": 0.5
+  },
+  "lateBossScore": {
+    "roundNumbers": [
+      55,
+      60,
+      65
+    ],
+    "fastKillElapsedStrictlyLessThanSeconds": 16,
+    "fastKillScore": 1000,
+    "otherKillScore": 500,
+    "scoreKind": "original-score-points-not-gold"
+  },
+  "bossDeadline": {
+    "evaluationTrigger": "l0",
+    "condition": "un[EK]!=0",
+    "outcome": "Bdm(EK) player defeat",
+    "automaticObservationAvailableInUnity": false
+  },
+  "ordinaryKillGold": {
+    "chanceCondition": "BFi(1,4)==3",
+    "firstRoundedFormula": "R2I(1.+2.*(YJ/5.)+3.*(YJ/6.)-YJ/10.)",
+    "bonusRoundedFormula": "R2I(eC*2.*(1.+dL[JG]))",
+    "appliesToDeathMarker": "A901",
+    "randomStateAndBuffRuntimeVerified": false
+  },
+  "sourceFunctions": [
+    {
+      "name": "BGo",
+      "sourceLine": 3864,
+      "normalizedBodySha256": "a06a7bc2d74a40d712f506d63c1e61367ce814ef5e61b710a5c1248b2168caf3"
+    },
+    {
+      "name": "BGr",
+      "sourceLine": 3877,
+      "normalizedBodySha256": "a6ab235a952029fe232e83cdf1f4f2e659d0a46a8c1509e5a6725e94c0aa9b9e"
+    },
+    {
+      "name": "CVG",
+      "sourceLine": 59334,
+      "normalizedBodySha256": "6a9a6e5c1a2976efbc5f3faedbe83cd8f35d94f8334d41dbbfe785e696cb25d8"
+    },
+    {
+      "name": "CVT",
+      "sourceLine": 59474,
+      "normalizedBodySha256": "9dabd6d3787cca2b30f21ddf8c18a9d939d72b52ccacf90976c7245f9620b2c8"
+    },
+    {
+      "name": "CVc",
+      "sourceLine": 59583,
+      "normalizedBodySha256": "bc00ff59f2b3d286502e3eb9b75e0ce7fb10571380580b615687661bb91401d3"
+    },
+    {
+      "name": "CVb",
+      "sourceLine": 59572,
+      "normalizedBodySha256": "a09b9b3f4bf62ab84ce262dd317c326f70b9ddfe655a9bfce4f6fa067e1da1a9"
+    },
+    {
+      "name": "CVY",
+      "sourceLine": 59511,
+      "normalizedBodySha256": "bc9bc01271443a759e205a8fc525e4f2421db4bc45a57401acf34b2bb8d4c886"
+    },
+    {
+      "name": "CVs",
+      "sourceLine": 59722,
+      "normalizedBodySha256": "a496c95054e758ff9084ebb28bf4ce36e152bd5a14fea01c3e7954b39d7819eb"
+    },
+    {
+      "name": "CVr",
+      "sourceLine": 59711,
+      "normalizedBodySha256": "8aba4cc7834125791072ae6a124ea0e488b355aac2448554595c8773880d1210"
+    },
+    {
+      "name": "CVp",
+      "sourceLine": 59686,
+      "normalizedBodySha256": "120904233fe1397dc1d93932dacc6a36d99fd2120762afed91ef1e3b23d9aa15"
+    },
+    {
+      "name": "CVf",
+      "sourceLine": 59618,
+      "normalizedBodySha256": "89a452d72eb64c09f968edcdc65dc724747c394b9da0303a65c8ed11e26cb6fb"
+    },
+    {
+      "name": "CVw",
+      "sourceLine": 59755,
+      "normalizedBodySha256": "dede867ef657c965e4eb2204154b7443981732ff59f4ca2f56f3687e9b26ec4c"
+    },
+    {
+      "name": "CVz",
+      "sourceLine": 59774,
+      "normalizedBodySha256": "a9c59b247905ffbdf827015d899550cfe959b34df9ca69f0d08dbd932ce72f49"
+    },
+    {
+      "name": "CVi",
+      "sourceLine": 59631,
+      "normalizedBodySha256": "db6b04c16d06826da5e0627b14328aca4f287dd44f8dd0b6de92730a7b4eb945"
+    },
+    {
+      "name": "Bdf",
+      "sourceLine": 8484,
+      "normalizedBodySha256": "b0b30105206cb3ea98c62fac84e4c16b6d5e1a1a6a2cac00ff00edc6a7b73370"
+    },
+    {
+      "name": "CU7",
+      "sourceLine": 59094,
+      "normalizedBodySha256": "57c49f1061ad4e4411ede06cd4936fc5fb62c81d220e6ab8f3b308ed259ae496"
+    },
+    {
+      "name": "CU8",
+      "sourceLine": 59105,
+      "normalizedBodySha256": "c57639d400cca1da003f93055d9a4522319f740c8b30469b31504a00fba94773"
+    },
+    {
+      "name": "CU9",
+      "sourceLine": 59110,
+      "normalizedBodySha256": "038fcbf684ef61ff9f2c06278da49d10b6ab9b2fcf40c527cd922922800fd4d2"
+    },
+    {
+      "name": "CVM",
+      "sourceLine": 59398,
+      "normalizedBodySha256": "5c46393c44660f84707e800ab89326c46810add711ce6e4ca0b9bb92e067c8d3"
+    }
+  ]
+}

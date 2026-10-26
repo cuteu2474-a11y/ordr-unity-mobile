@@ -153,6 +153,9 @@ namespace Ordr.Mobile.Combat
             public int BossSpawned;
             public int BossDefeated;
             public int BossEscaped;
+            // Records only an actual kill event from CombatResolution.
+            public readonly Dictionary<string, string> DefeatedBossRawcodes =
+                new Dictionary<string, string>(StringComparer.Ordinal);
 
             public WaveLedger(VerifiedWavePlan plan)
             {
@@ -204,6 +207,19 @@ namespace Ordr.Mobile.Combat
             return false;
         }
 
+        // A separate original-timer witness must still confirm kill timing
+        // before any score may be awarded. A boss escape is not a kill.
+        public bool TryGetDefeatedBossRawcode(int waveNumber, string instanceId,
+            out string originalRawcode)
+        {
+            originalRawcode = null;
+            WaveLedger ledger;
+            return !string.IsNullOrWhiteSpace(instanceId) &&
+                waves.TryGetValue(waveNumber, out ledger) &&
+                ledger.DefeatedBossRawcodes.TryGetValue(instanceId,
+                    out originalRawcode);
+        }
+
         private void OnEnemyExited(string enemyId, CombatEnemyExitReason reason)
         {
             int waveNumber;
@@ -215,7 +231,20 @@ namespace Ordr.Mobile.Combat
             if (reason == CombatEnemyExitReason.Defeated)
             {
                 ledger.Defeated++;
-                if (boss) ledger.BossDefeated++;
+                if (boss)
+                {
+                    ledger.BossDefeated++;
+                    // Preserve the original wave-specific boss rawcode as
+                    // proof of what died; IDs can be reused in later waves.
+                    foreach (var spawn in ledger.Plan.Spawns)
+                        if (spawn.Kind == CharacterEnemyKind.Boss &&
+                            spawn.EnemyId == enemyId)
+                        {
+                            ledger.DefeatedBossRawcodes.Add(enemyId,
+                                spawn.OriginalRawcode);
+                            break;
+                        }
+                }
             }
             else if (reason == CombatEnemyExitReason.Escaped)
             {

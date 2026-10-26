@@ -149,6 +149,69 @@ namespace Ordr.Mobile.Unity
         private IOriginal323LiveMonsterStatWitness liveMonsterStatWitness;
         public CombatWaveDirector VerifiedWaveDirector { get; } = new CombatWaveDirector();
         private IOriginal323ObservedRoundStartWitness observedRoundStartWitness;
+        private IOriginal323BossDeadlineWitness originalBossDeadlineWitness;
+        private Original323BossScoreService originalBossScores;
+        private readonly HashSet<int> checkedOriginalBossDeadlines =
+            new HashSet<int>();
+
+        // External adapters must reflect native Warcraft timer/death events.
+        // The original scores are SCORE POINTS, never Gold resource rewards.
+        public void ConfigureOriginalBossScoreEvents(
+            IOriginal323BossKillTimeWitness verifiedOriginalDeaths,
+            IOriginal323BossScorePort originalScoreLedger)
+        {
+            if (Combat != null || originalBossScores != null)
+                throw new InvalidOperationException(
+                    "보스 점수 이벤트는 전투 생성 전에 한 번만 등록해야 합니다.");
+            originalBossScores = new Original323BossScoreService(
+                VerifiedWaveDirector, verifiedOriginalDeaths, originalScoreLedger);
+        }
+
+        public bool TryCreditObservedOriginalBossScore(int waveNumber, string bossId)
+        {
+            return Combat != null &&
+                Combat.Game.Phase == Ordr.Mobile.Core.SessionPhase.Running &&
+                originalBossScores != null &&
+                originalBossScores.TryCreditDefeatedBoss(waveNumber, bossId);
+        }
+
+        public void ConfigureObservedOriginalBossDeadline(
+            IOriginal323BossDeadlineWitness observedOriginalEvents)
+        {
+            if (Combat != null || originalBossDeadlineWitness != null)
+                throw new InvalidOperationException(
+                    "보스 제한시간 이벤트는 전투 생성 전에 한 번만 연결해야 합니다.");
+            originalBossDeadlineWitness = observedOriginalEvents ??
+                throw new ArgumentNullException(nameof(observedOriginalEvents));
+        }
+
+        // Original CU8/CU7: only after the observed l0 check may a still-
+        // outstanding boss trigger defeat. Never infer timer expiry from FPS.
+        public bool TryApplyObservedOriginalBossDeadline(int waveNumber)
+        {
+            if (Combat == null ||
+                Combat.Game.Phase != Ordr.Mobile.Core.SessionPhase.Running ||
+                Combat.Game.CurrentWave != waveNumber ||
+                originalBossDeadlineWitness == null ||
+                checkedOriginalBossDeadlines.Contains(waveNumber))
+                return false;
+            VerifiedWaveProgress progress;
+            bool missedBoss;
+            if (!VerifiedWaveDirector.TryGetWaveProgress(waveNumber, out progress) ||
+                !Original323BossRoundRules.TryEvaluateObservedBossDeadline(
+                    progress, out missedBoss))
+                return false;
+            string proof;
+            if (!originalBossDeadlineWitness.TryConfirmInterRoundBossCheck(
+                waveNumber, out proof) ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(proof))
+                return false;
+            checkedOriginalBossDeadlines.Add(waveNumber);
+            if (missedBoss) Combat.Game.Finish(false);
+            return true;
+        }
+
+
 
         // Original round-transition signals are not inferred from a cleared
         // combat board. Attach a live observed source before the next wave.
@@ -1059,6 +1122,32 @@ namespace Ordr.Mobile.Unity
                 out roundStartEvidence))
                 throw new InvalidOperationException(
                     "다음 라운드의 원본 시작 이벤트가 확인되지 않았습니다.");
+            // BGo dispatches l0 before the next round is entered. CU8/CU7
+            // defeats a player whose previous boss remains outstanding.
+            // Only a trusted observed round-start signal can reach this path.
+            if (waveNumber > 1)
+            {
+                VerifiedWaveProgress previous;
+                if (!VerifiedWaveDirector.TryGetWaveProgress(
+                    waveNumber - 1, out previous))
+                    throw new InvalidOperationException(
+                        "이전 라운드의 실제 몬스터 출현·처치 기록이 없습니다.");
+                if (previous.BossPlanned > 0)
+                {
+                    bool failed;
+                    if (!Original323BossRoundRules.TryEvaluateObservedBossDeadline(
+                        previous, out failed))
+                        throw new InvalidOperationException(
+                            "이전 보스 라운드 출현이 완료되지 않았습니다.");
+                    checkedOriginalBossDeadlines.Add(previous.WaveNumber);
+                    if (failed)
+                    {
+                        Combat.Game.Finish(false);
+                        throw new InvalidOperationException(
+                            "원본 보스 제한시간 경과: 보스를 처치하지 못해 패배했습니다.");
+                    }
+                }
+            }
             VerifiedWaveDirector.Begin(Combat, plan);
         }
 

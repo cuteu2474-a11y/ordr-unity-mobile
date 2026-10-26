@@ -159,12 +159,12 @@ namespace Ordr.Mobile.Data
                     if (!rule.Roles.TryGetValue("boss", out source))
                         return false;
                     bosses++;
-                    // CVs/CVu: early boss-only waves start on tick 1.
-                    // CVc/CVb: late bosses start after the 35 normal ticks.
-                    int bossTick = lateBoss ? 36 : 1;
+                    // Both CVs/CVp (early) and CVc/CVb (late) summon
+                    // the boss on the FIRST 0.5-second spawn timer tick.
+                    // CVc then also summons the first normal monster.
+                    const int bossTick = 1;
                     if ((!earlyBossOnly && !lateBoss) ||
                         bosses > source.Count ||
-                        (lateBoss && lines != 35) ||
                         !Near(spawn.AtSeconds, source.CadenceSeconds * bossTick))
                         return false;
                 }
