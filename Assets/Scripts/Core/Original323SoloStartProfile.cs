@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Ordr.Mobile.Core
 {
@@ -42,5 +43,56 @@ namespace Ordr.Mobile.Core
     {
         long SpawnAndTrack(SharedEconomySession shared, string rawcode, double x, double y);
         void RemoveAndUntrack(SharedEconomySession shared, long instanceId);
+    }
+
+    // e0HP belongs to the shared session roster, but is not a combat unit.
+    // Keeping its identity in that roster makes start grants and rollback
+    // atomic with the shared wallet. Evolution interactions are a separate
+    // system and are not simulated by this registration adapter.
+    public sealed class Original323RosterStartEvolutionWorld : IOriginalStartEvolutionWorld
+    {
+        private readonly UnitRoster roster;
+        private readonly HashSet<long> ownedActors = new HashSet<long>();
+
+        public Original323RosterStartEvolutionWorld(UnitRoster sessionRoster)
+        {
+            roster = sessionRoster ?? throw new ArgumentNullException(nameof(sessionRoster));
+        }
+
+        public long SpawnAndTrack(SharedEconomySession shared, string rawcode,
+            double x, double y)
+        {
+            RequireSession(shared);
+            if (rawcode != Original323SoloStartProfile.EvolutionRawcode ||
+                x != Original323SoloStartProfile.EvolutionX ||
+                y != Original323SoloStartProfile.EvolutionY ||
+                ownedActors.Count != 0)
+                throw new InvalidOperationException("원본 시작 진화체 ID·위치 또는 중복 생성 오류");
+
+            long id = roster.Add(rawcode, x, y);
+            if (!ownedActors.Add(id))
+            {
+                roster.Remove(id);
+                throw new InvalidOperationException("시작 진화체 추적 ID 중복");
+            }
+            return id;
+        }
+
+        public void RemoveAndUntrack(SharedEconomySession shared, long instanceId)
+        {
+            RequireSession(shared);
+            if (!ownedActors.Contains(instanceId) ||
+                roster.Get(instanceId).UnitId != Original323SoloStartProfile.EvolutionRawcode)
+                throw new InvalidOperationException("시작 진화체 롤백 대상이 일치하지 않습니다.");
+            if (!roster.Remove(instanceId))
+                throw new InvalidOperationException("시작 진화체 롤백에 실패했습니다.");
+            ownedActors.Remove(instanceId);
+        }
+
+        private void RequireSession(SharedEconomySession shared)
+        {
+            if (shared == null || !ReferenceEquals(shared.Units, roster))
+                throw new InvalidOperationException("다른 게임 세션의 진화체를 변경할 수 없습니다.");
+        }
     }
 }

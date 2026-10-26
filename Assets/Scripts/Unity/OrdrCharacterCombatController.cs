@@ -502,6 +502,7 @@ namespace Ordr.Mobile.Unity
         public OriginalJassFusionPlanner OriginalFusionPlanner { get; private set; }
         public AssistedFusionService FusionAssistance { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
+        public bool HasSourceVerifiedDamageRuntime { get; private set; }
 
         public MobileManualInteraction ManualActions { get; } = new MobileManualInteraction();
         public MobileDedicatedSkillActions DedicatedSkills { get; } =
@@ -1487,6 +1488,7 @@ namespace Ordr.Mobile.Unity
                 Units, Skills, appliedHits, verifiedModifiers, quantization, random,
                 nativePassives ? OriginalNativePassives : null, externallyHandled));
             UsesOriginalNativePassives = nativePassives;
+            HasSourceVerifiedDamageRuntime = true;
         }
 
         // Opt-in only: a map object row is not itself evidence that JASS leaves
@@ -1537,6 +1539,12 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            // The source-pinned e0HP is a non-combat session actor. A caller
+            // can provide a richer original evolution port before creating
+            // the combat runtime; otherwise use the authoritative roster.
+            if (startEvolutionWorld == null)
+                ConfigureOriginal323SoloStart(
+                    new Original323RosterStartEvolutionWorld(world.Roster));
             ManualActions.CommonSaleSucceeded += OnCommittedCommonSale;
             ManualActions.PostCommitObserverFailed += Debug.LogException;
             if (verifiedNativeCadence != null)
@@ -1707,29 +1715,7 @@ namespace Ordr.Mobile.Unity
         // individually reviewed source evidence. Unknown waves stay disabled.
         public void BeginVerifiedMonsterWave(int waveNumber)
         {
-            if (Combat == null || VerifiedMonsterWaves == null)
-                throw new InvalidOperationException(
-                    "원본 몬스터/라운드 검증 데이터가 아직 연결되지 않았습니다.");
-            VerifiedWavePlan plan;
-            if (!VerifiedMonsterWaves.TryGetPlan(waveNumber, out plan))
-                throw new InvalidOperationException(
-                    "요청한 라운드에는 검증된 2.323[C] 몬스터 데이터가 없습니다.");
-            string approvalEvidence;
-            if (OriginalMonsterSpawnIdentities == null ||
-                !OriginalMonsterSpawnIdentities.MatchesSinglePlayerWave(plan))
-                throw new InvalidOperationException(
-                    "요청한 라운드의 몬스터 ID·역할·수량이 원본 JASS와 일치하지 않습니다.");
-            if (OriginalMonsterObjectAbilities == null ||
-                !OriginalMonsterObjectAbilities.MatchesWaveObjectRoles(plan))
-                throw new InvalidOperationException(
-                    "몬스터 원본 객체의 기본 능력/역할 자료가 누락되었거나 불일치합니다.");
-            if (!OriginalMonsterSpawnIdentities.MatchesSinglePlayerSpawnCadence(plan))
-                throw new InvalidOperationException(
-                    "원본 타이머 기준 일반 몬스터·보스·광폭화 출현 시각과 다릅니다.");
-            if (!Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
-                plan, liveMonsterWaveEvidence, out approvalEvidence))
-                throw new InvalidOperationException(
-                    "최종 몬스터 체력·방어·대상 면역·출현의 독립 실전 근거가 없습니다.");
+            VerifiedWavePlan plan = RequireVerifiedMonsterWavePlan(waveNumber);
             string roundStartEvidence;
             if (!Original323ObservedRoundStartGate.TryAuthorize(
                 Combat.Game, waveNumber, observedRoundStartWitness,
@@ -1764,6 +1750,75 @@ namespace Ordr.Mobile.Unity
             }
             VerifiedWaveDirector.Begin(Combat, plan);
             PersonalMissions?.OnRoundStarted();
+        }
+
+        // Readiness is deliberately non-consuming. In particular, the live
+        // monster witness is consulted only when the user starts the game,
+        // never by the repeated GUI repaint cycle.
+        public bool CanBeginVerifiedFirstWave(out string reason)
+        {
+            reason = null;
+            if (Units == null || Skills == null)
+                reason = "원본 캐릭터 데이터 로딩 대기";
+            else if (Combat == null || !HasSourceVerifiedDamageRuntime)
+                reason = "원본 검증된 피해 계산기 연결 대기";
+            else if (Combat.Game.Phase != SessionPhase.NotStarted ||
+                SharedEconomy == null || SharedEconomy.HasStarted || PersonalMissions != null)
+                reason = "게임이 이미 시작되었거나 시작 상태가 일치하지 않습니다.";
+            else if (verifiedStartingProfile == null || startEvolutionWorld == null ||
+                !Original323SoloStartProfile.MatchesPinnedSource(verifiedStartingProfile))
+                reason = "시작 재화·진화체 등록 확인 대기";
+            else if (VerifiedMonsterWaves == null ||
+                !VerifiedMonsterWaves.TryGetPlan(1, out _))
+                reason = "1라운드의 검증된 최종 몬스터 체력·방어·위치 자료 대기";
+            else if (OriginalMonsterSpawnIdentities == null ||
+                OriginalMonsterObjectAbilities == null)
+                reason = "원본 몬스터 ID·출현 규칙 자료 대기";
+            else if (liveMonsterWaveEvidence == null)
+                reason = "1라운드 몬스터 실전 승인 공급자 연결 대기";
+            return reason == null;
+        }
+
+        // A single first-play action connects the verified start wallet,
+        // non-combat evolution actor, missions and first wave. All source
+        // preflight checks precede the irreversible session start.
+        public void BeginVerifiedFirstWave()
+        {
+            string reason;
+            if (!CanBeginVerifiedFirstWave(out reason))
+                throw new InvalidOperationException(reason);
+            VerifiedWavePlan first = RequireVerifiedMonsterWavePlan(1);
+            BeginSession();
+            VerifiedWaveDirector.Begin(Combat, first);
+            PersonalMissions?.OnRoundStarted();
+        }
+
+        private VerifiedWavePlan RequireVerifiedMonsterWavePlan(int waveNumber)
+        {
+            if (Combat == null || VerifiedMonsterWaves == null)
+                throw new InvalidOperationException(
+                    "원본 몬스터/라운드 검증 데이터가 아직 연결되지 않았습니다.");
+            VerifiedWavePlan plan;
+            if (!VerifiedMonsterWaves.TryGetPlan(waveNumber, out plan))
+                throw new InvalidOperationException(
+                    "요청한 라운드에는 검증된 2.323[C] 몬스터 데이터가 없습니다.");
+            string approvalEvidence;
+            if (OriginalMonsterSpawnIdentities == null ||
+                !OriginalMonsterSpawnIdentities.MatchesSinglePlayerWave(plan))
+                throw new InvalidOperationException(
+                    "요청한 라운드의 몬스터 ID·역할·수량이 원본 JASS와 일치하지 않습니다.");
+            if (OriginalMonsterObjectAbilities == null ||
+                !OriginalMonsterObjectAbilities.MatchesWaveObjectRoles(plan))
+                throw new InvalidOperationException(
+                    "몬스터 원본 객체의 기본 능력/역할 자료가 누락되었거나 불일치합니다.");
+            if (!OriginalMonsterSpawnIdentities.MatchesSinglePlayerSpawnCadence(plan))
+                throw new InvalidOperationException(
+                    "원본 타이머 기준 일반 몬스터·보스·광폭화 출현 시각과 다릅니다.");
+            if (!Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
+                plan, liveMonsterWaveEvidence, out approvalEvidence))
+                throw new InvalidOperationException(
+                    "최종 몬스터 체력·방어·대상 면역·출현의 독립 실전 근거가 없습니다.");
+            return plan;
         }
 
         // Observation-only. A fully defeated wave does not automatically

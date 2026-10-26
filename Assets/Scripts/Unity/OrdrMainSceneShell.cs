@@ -1,13 +1,16 @@
+using System;
 using UnityEngine;
+using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Unity
 {
-    // Visual map-zone placeholders. Real combat and story cameras must follow
-    // these rectangles when the gameplay world is fully connected.
+    // Game-start UI only enters a source-verified playable session. Rendering
+    // placeholders never fabricate a wave, damage or starting resources.
     [DisallowMultipleComponent]
     public sealed class OrdrMainSceneShell : MonoBehaviour
     {
         private OrdrCharacterCombatController controller;
+        private string startFailure;
 
         private void Awake()
         {
@@ -48,10 +51,17 @@ namespace Ordr.Mobile.Unity
             GUI.Label(new Rect(left, top + 2f, width, layout.HeaderHeight * 0.56f),
                 "ORDR MOBILE  /  NIGHTMARE - OTHERWORLD", title);
 
-            string status = controller == null || controller.Units == null
-                ? "캐릭터 데이터 불러오기 대기 중"
-                : "캐릭터 도감 " + controller.Units.Count +
-                  "종 연결  |  실제 전장 및 스토리 렌더링은 개발 중";
+            string status;
+            if (controller == null || controller.Units == null)
+                status = "캐릭터 데이터 불러오기 대기 중";
+            else if (controller.Combat == null ||
+                controller.Combat.Game.Phase == SessionPhase.NotStarted)
+                status = "캐릭터 도감 " + controller.Units.Count +
+                    "종  |  검증된 첫 라운드 시작 대기";
+            else
+                status = "라운드 " + controller.Combat.Game.CurrentWave +
+                    "  |  남은 몬스터 " + controller.Combat.Game.AliveEnemies +
+                    "  |  상태 " + controller.Combat.Game.Phase;
             GUI.Label(new Rect(left, top + layout.HeaderHeight * 0.56f,
                 width, layout.HeaderHeight * 0.44f), status, detail);
 
@@ -63,6 +73,41 @@ namespace Ordr.Mobile.Unity
             area.normal.textColor = new Color(0.80f, 0.88f, 0.98f);
             GUI.Box(layout.Battle, "메인 전장", area);
             GUI.Box(layout.Story, "스토리 전장", area);
+            if (controller != null &&
+                (controller.Combat == null ||
+                 controller.Combat.Game.Phase == SessionPhase.NotStarted))
+            {
+                string reason;
+                bool ready = controller.CanBeginVerifiedFirstWave(out reason);
+                float panelWidth = Mathf.Max(180f, layout.Battle.width * 0.65f);
+                panelWidth = Mathf.Min(layout.Battle.width - 18f, panelWidth);
+                float center = layout.Battle.x + layout.Battle.width * 0.5f;
+                float y = layout.Battle.y + layout.Battle.height * 0.32f;
+                var button = new Rect(center - panelWidth * 0.5f, y,
+                    panelWidth, Mathf.Clamp(layout.Battle.height * 0.17f, 36f, 64f));
+                bool previous = GUI.enabled;
+                GUI.enabled = ready;
+                bool clicked = GUI.Button(button, "악몽 · 이세계모드 시작");
+                GUI.enabled = previous;
+                if (clicked)
+                {
+                    try
+                    {
+                        controller.BeginVerifiedFirstWave();
+                        startFailure = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        startFailure = ex.Message;
+                        Debug.LogException(ex);
+                    }
+                }
+                string message = string.IsNullOrEmpty(startFailure)
+                    ? (ready ? "게임 시작 준비 완료" : reason) : startFailure;
+                var hint = new GUIStyle(detail) { alignment = TextAnchor.UpperCenter };
+                GUI.Label(new Rect(button.x, button.yMax + 9f,
+                    button.width, layout.Battle.height * 0.3f), message, hint);
+            }
             // Right-hand area stays free for the selected left-hand tab.
             // The panel draws itself only when a tab has been opened.
         }
