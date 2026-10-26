@@ -131,12 +131,25 @@ namespace Ordr.Mobile.Combat
         }
 
         private Action<string, string> verifiedAttackDeclared;
+        private Action<string, string, string> verifiedScriptAttackDeclared;
         // JASS w5 uses EVENT_PLAYER_UNIT_ATTACKED, before the normal attack hit.
         // The callback only routes registered, source-checked original effects.
         public void ConfigureVerifiedAttackDeclared(Action<string, string> callback)
         {
             verifiedAttackDeclared = callback ??
                 throw new ArgumentNullException(nameof(callback));
+        }
+
+        // ORDR original w5 / w7 attack event is raised BEFORE damage and
+        // separately from native WC3 crit/attack hit proc mechanics.
+        public void ConfigureOriginalScriptAttackDeclared(
+            Action<string, string, string> sourceObservedEvent)
+        {
+            if (verifiedScriptAttackDeclared != null)
+                throw new InvalidOperationException(
+                    "원본 공격 선언 확률 이벤트가 이미 연결되어 있습니다.");
+            verifiedScriptAttackDeclared = sourceObservedEvent ??
+                throw new ArgumentNullException(nameof(sourceObservedEvent));
         }
 
         private Func<string, string, string, bool> verifiedProcPreflight;
@@ -350,6 +363,9 @@ namespace Ordr.Mobile.Combat
             // they may still occur if the later hit/formula cannot complete.
             if (verifiedAttackDeclared != null)
                 verifiedAttackDeclared(attackerInstanceId, targetId);
+            if (verifiedScriptAttackDeclared != null)
+                verifiedScriptAttackDeclared(attackerInstanceId,
+                    unit.Spec.UnitRawCode, targetId);
             // 피해 계산 오류가 발생하면 공격 쿨타임은 소비하지 않는다.
             long resolved = damageResolver.ResolveBasicDamage(
                 new BasicDamageRequest(attackerInstanceId, unit.Spec.UnitRawCode,

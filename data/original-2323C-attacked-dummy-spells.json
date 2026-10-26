@@ -1,0 +1,74 @@
+{
+  "format": "ordr-original-2323C-attacked-dummy-spells-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "ruleSource": "war3map.j -> w7/w6/w5 -> Bnm/Bnp/Bnr",
+  "sourceContext": {
+    "trigger": "EVENT_PLAYER_UNIT_ATTACKED",
+    "victimOwnerPlayers": [
+      5,
+      6
+    ],
+    "dispatchKey": "GetUnitTypeId(GetAttacker())",
+    "callbackPhase": "on attack declared before hit"
+  },
+  "dummyUnit": {
+    "rawcode": "e0KD",
+    "sourceDisplayName": "A0VS(스웜),A086(포크) 포함 더미",
+    "worldPlayerToken": "HY",
+    "ownerMetadata": "SetUnitUserData(dummy, GetPlayerId(GetOwningPlayer(attacker)))"
+  },
+  "skills": [
+    {
+      "ownerUnitRawcode": "h00M",
+      "ownerKoreanName": "블루노",
+      "ownerGrade": "안흔함",
+      "jassFunction": "Bnm",
+      "startLine": 14818,
+      "bodySha256": "0c570b2a030b5cb2dc2b5224ab1a85f157f956b342781194b594b7d5d94afb5e",
+      "chance": "BFi(1,100)<=10",
+      "spellOrder": "carrionswarm",
+      "originalAbility": "A0VS",
+      "target": "attacker position",
+      "dummyFacing": "attacker facing"
+    },
+    {
+      "ownerUnitRawcode": "h00A",
+      "ownerKoreanName": "후쿠로",
+      "ownerGrade": "안흔함",
+      "jassFunction": "Bnp",
+      "startLine": 14833,
+      "bodySha256": "3aaa896d54e263cbf1593f1944dc10e40a9f2716d5b5c1c8d9241b0af8708880",
+      "chance": "BFi(1,100)<=10",
+      "spellOrder": "carrionswarm",
+      "originalAbility": "A0VS",
+      "target": "attacker position",
+      "dummyFacing": "attacker facing"
+    },
+    {
+      "ownerUnitRawcode": "h00Q",
+      "ownerKoreanName": "에넬",
+      "ownerGrade": "특별함",
+      "jassFunction": "Bnr",
+      "startLine": 14848,
+      "bodySha256": "873c3fdf71d070add8788a22399d103354551a74f593a445330e0eabc5a1cf15",
+      "chance": "BFi(1,100)<=10",
+      "spellOrder": "forkedlightning",
+      "originalAbility": "A086",
+      "target": "attacked enemy unit",
+      "dummyFacing": "bj_UNIT_FACING"
+    }
+  ],
+  "registration": {
+    "startLine": 62641,
+    "calls": [
+      "call w5($6830304D,function Bnm)",
+      "call w5($68303041,function Bnp)",
+      "call w5($68303051,function Bnr)"
+    ]
+  },
+  "runtimeSpellDamageAndCollisionParityVerified": false,
+  "actualNativeSpellExecutorConnected": false,
+  "note": "Only source script trigger, owner, dummy spawn/order and RNG are established. Actual Warcraft native spell collision, damage, target immunity, dummy lifetime need independent runtime validation."
+}

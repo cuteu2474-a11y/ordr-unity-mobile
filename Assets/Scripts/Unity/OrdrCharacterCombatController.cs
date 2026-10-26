@@ -546,6 +546,7 @@ namespace Ordr.Mobile.Unity
         private Original323SharedBfiRandom originalSharedScriptRandom;
         private Original323MoneyGamblingService originalMoneyGambling;
         private Original323ScriptAttackProcRolls originalScriptAttackSkillRolls;
+        private IOriginal323VerifiedAttackDummySpellWorld verifiedOriginalAttackDummySpells;
 
         // Strict map-owned custom random stream: gold / rare Wisp branch /
         // random Wisp resources / observed gambling events all share H6.
@@ -606,6 +607,19 @@ namespace Ordr.Mobile.Unity
                     "원본 공통 난수와 전투 이벤트를 전투 시작 전 연결하세요.");
             originalScriptAttackSkillRolls = new Original323ScriptAttackProcRolls(
                 originalSharedScriptRandom, verifiedAttackEvents);
+        }
+
+        // This execution port must recreate the original dummy spell and
+        // resolve its validated Warcraft collision/damage/immunity in Unity.
+        // Original orders are bound automatically on each eligible attack.
+        public void ConfigureOriginal323AttackedDummySpellWorld(
+            IOriginal323VerifiedAttackDummySpellWorld verifiedNativeSpellWorld)
+        {
+            if (Combat != null || verifiedOriginalAttackDummySpells != null)
+                throw new InvalidOperationException(
+                    "원본 공격 주문 월드는 전투 생성 전에 한 번만 연결하세요.");
+            verifiedOriginalAttackDummySpells = verifiedNativeSpellWorld ??
+                throw new ArgumentNullException(nameof(verifiedNativeSpellWorld));
         }
 
         public bool TryRollObservedOriginalScriptAttack(string functionId,
@@ -1106,6 +1120,11 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            if (originalScriptAttackSkillRolls != null &&
+                verifiedOriginalAttackDummySpells != null)
+                Combat.ConfigureOriginal323ScriptAttackEffectWorld(
+                    originalScriptAttackSkillRolls,
+                    verifiedOriginalAttackDummySpells);
             if (originalMonsterGoldWitness != null)
                 originalMonsterGold = new Original323MonsterGoldService(
                     VerifiedWaveDirector, world.Game, SharedEconomy.Wallet, 0,

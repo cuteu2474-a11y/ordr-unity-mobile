@@ -86,6 +86,53 @@ namespace Ordr.Mobile.Combat
         private string executingUncommonProcId;
         private string executingUncommonActor;
         private string executingUncommonTarget;
+        private Original323ScriptAttackEffectCoordinator originalScriptAttackEffects;
+        private readonly Dictionary<string, long> originalScriptAttackSequences =
+            new Dictionary<string, long>(StringComparer.Ordinal);
+
+        // Registers only original-attacked-event spell dispatch for the three
+        // exact original rawcodes. Cannot replace the original basic attack,
+        // native Critical Strike RNG, or actual WC3 spell damage formulas.
+        public void ConfigureOriginal323ScriptAttackEffectWorld(
+            Original323ScriptAttackProcRolls verifiedOriginalRolls,
+            IOriginal323VerifiedAttackDummySpellWorld originalSpellWorld)
+        {
+            if (characters.Count != 0 || originalScriptAttackEffects != null)
+                throw new InvalidOperationException(
+                    "원본 공격 순간 기술은 첫 유닛 생성 전 한 번만 연결해야 합니다.");
+            var coordinator = new Original323ScriptAttackEffectCoordinator(
+                verifiedOriginalRolls, originalSpellWorld);
+            attackPipeline.ConfigureOriginalScriptAttackDeclared(
+                OnOriginal323AttackedScriptSpell);
+            originalScriptAttackEffects = coordinator;
+        }
+
+        private void OnOriginal323AttackedScriptSpell(
+            string attackerId, string originalRawcode, string targetId)
+        {
+            if (originalScriptAttackEffects == null ||
+                !Original323ScriptAttackEffectCoordinator.Supports(originalRawcode))
+                return;
+            long sequence;
+            originalScriptAttackSequences.TryGetValue(attackerId, out sequence);
+            if (sequence == long.MaxValue)
+                throw new OverflowException("원본 공격 선언 이벤트 순번 초과");
+            sequence++;
+            originalScriptAttackSequences[attackerId] = sequence;
+            Original323AttackDummySpellResult result;
+            if (!originalScriptAttackEffects.TryDispatch(
+                originalRawcode, attackerId, targetId,
+                sequence, this, out result) ||
+                result == null || !result.Triggered)
+                return;
+            events.Add(new CharacterCombatEvent(
+                result.Applied ? CharacterCombatEventType.SkillActivated :
+                    CharacterCombatEventType.EffectDeferred,
+                attackerId, targetId, result.HumanSkillName,
+                result.Applied ? result.Evidence :
+                    "원본 주문 전체 효과 검증/적용 보류: " +
+                    (result.Evidence ?? result.HumanSkillName), 0));
+        }
 
         // All 14 uncommon units have W3X object/ability metadata, even when
         // only 7 have an individually named native attack ability.
