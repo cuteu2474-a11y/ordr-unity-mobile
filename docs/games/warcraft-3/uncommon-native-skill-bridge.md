@@ -123,3 +123,17 @@ python3 -m unittest discover -s tests -q
 ```
 
 **다음 연결의 전제:** 실제 몬스터 최종 방어·면역·대상 마스크, 네이티브 추가 탄도/주사위 공유 여부, 주 타격 0피해일 때의 동작 및 최종 HP 변환은 아직 미확인이다. 현재 JSON은 `safeForUnconditionalLiveCombat: false`이며 승인 공급자가 없는 실제 전투를 열지 않는다. 기존 악몽 초기 몬스터 모델을 실제 Warcraft 검증값으로 승격하지 않는다. 공격력·쿨타임·조합 수치 변경 및 APK 제작은 없다.
+
+
+## 2026-10-26 — 안흔함 원본 스킬의 실제 몬스터 증거 연결·부분 활성화
+
+새 코드 `Original323LiveUncommonSkillWorld.cs`를 사용하면 **서로 검증이 끝난 스킬만 골라서** 전투 엔진에 연결할 수 있다.
+
+- `Original323ObservedBashTarget` 및 `IOriginal323LiveBashTargetWitness`: 현재 살아있는 몬스터 **인스턴스**를 원본 유닛 `rawcode`·2.323[C] 원본 지문·현재 워크래프트 영웅 판정·현재 Bash 면역 판정과 함께 읽는다. 설명 텍스트/모바일 Boss 종류로 영웅 또는 면역을 추정하지 않는다.
+- `Original323LiveBashTargetRules`: 원본 몬스터 객체 100종 자료와 실제 라이브 몬스터 rawcode를 대조한다. 객체에 `A08Q/Amim/Avul`가 초기 등록됐는지만으로 현재 스턴 면역을 판정하지 않는다. 실제 증거가 없거나 대상/원본 버전이 다르면 스킬 발동 난수부터 보류한다.
+- `Original323VerifiedUncommonSkillAssembly.Create`: 브룩의 기절, 에이스·타시기·하찌의 원본 추가 물리 피해+기절, 블루노·후쿠로의 람각, 로빈의 꽃꽃 열매를 **선택적 검증 공급자 조합**으로 활성화한다. 기존에는 별도 전체 묶음 설정을 사용해야 했으나 이제 이미 검증된 일부 기술만 연결할 수 있다.
+- 블루노·후쿠로 육식 크리티컬(15%/1.5배)은 원시 공격 주사위 이후 **방어 계산 전 별도 포트**를 계속 사용한다. 이를 OnHit 일반 효과로 승격하지 않는다.
+- 게임 연결: `OrdrCharacterCombatController.ConfigureVerifiedOriginalUncommonSkillModules(...)`. 데이터 로드 후 전투 월드 생성 전에 등록해야 하며, 현재 적 객체 증거가 필요한 스킬은 `original-2323C-monster-object-abilities.json`를 로드해야 한다.
+- `Original323LiveUncommonSkillTests.cs`: 실제 `CharacterCombatRuntime`에 TEST_ONLY 원본 평타·현재 플래그/최종 피해 증거를 주입해 브룩 기절→이동 금지, 영웅 기절 시간 차이, 에이스/타시기/하찌 추가 피해, 원본 기술 7건 효과 분배 및 미검증 기술 차단을 확인한다. 새 코드의 테스트 데이터는 **실제 2.323[C] 몬스터 전투 증거가 아니다**.
+
+기본 플레이에서는 실제 몬스터의 워크래프트 영웅/면역 및 피해·네이티브 타깃 최종 판정을 공급하는 원본 증거가 아직 부족하다. 따라서 모듈이 있다는 사실만으로 모든 안흔함 스킬이 실전에서 완료됐다고 주장하지 않는다. 원본 스킬의 피해량·쿨타임·확률·사거리·대상 규칙은 변경하지 않는다.

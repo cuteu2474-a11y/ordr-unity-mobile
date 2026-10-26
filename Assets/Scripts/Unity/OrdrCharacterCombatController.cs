@@ -74,6 +74,32 @@ namespace Ordr.Mobile.Unity
             originalUncommonEffectWorld = originalEffects ??
                 throw new ArgumentNullException(nameof(originalEffects));
         }
+        // Enable only the individually verified uncommon native skills.
+        // Robin, Rankyaku and the shared AHbh handlers can be connected in
+        // any subset without needing every source world to be ready.
+        // A live Bash witness is mandatory for Brook/Tashigi/Hachi, and
+        // separate final-HP conversion evidence is mandatory for A07R/Q/S.
+        public void ConfigureVerifiedOriginalUncommonSkillModules(
+            IOriginal323LiveBashTargetWitness liveBashWitness = null,
+            IOriginal323UncommonBonusDamageRules verifiedBonusDamage = null,
+            IOriginal323RankyakuVerifiedRules verifiedRankyaku = null,
+            IOriginal323RobinVerifiedVolleyRules verifiedRobin = null)
+        {
+            IOriginal323UncommonBashTargetRules nativeTargets = null;
+            if (liveBashWitness != null)
+            {
+                if (OriginalMonsterObjectAbilities == null)
+                    throw new InvalidOperationException(
+                        "원본 몬스터 100종 객체 목록을 먼저 로드하세요.");
+                nativeTargets = new Original323LiveBashTargetRules(
+                    OriginalMonsterObjectAbilities, liveBashWitness);
+            }
+            ConfigureVerifiedUncommonNativeSkills(
+                Original323VerifiedUncommonSkillAssembly.Create(
+                    nativeTargets, verifiedBonusDamage, verifiedRankyaku,
+                    verifiedRobin));
+        }
+
         // Brook A07P is a complete original-native stun once the enemy's
         // Warcraft hero and immunity flags are independently established.
         // This deliberately does NOT approve Ace, Tashigi, Hachi or rankyaku.
