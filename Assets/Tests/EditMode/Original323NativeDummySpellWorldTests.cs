@@ -95,7 +95,10 @@ namespace Ordr.Mobile.Tests
         private static void Enemy(CharacterCombatRuntime combat, string name,
             CharacterEnemyKind kind = CharacterEnemyKind.Line, long hp = 1000)
         {
-            combat.SpawnEnemyWithDefenses(name, hp, kind, 1, 0, 0,
+            // The attacked-event witness expects "primary"; put all
+            // other monsters farther away to avoid ID tie-break targeting.
+            double x = name == "primary" ? 1 : 50;
+            combat.SpawnEnemyWithDefenses(name, hp, kind, x, 0, 0,
                 new EnemyDefenseProfile(kind, 0, 0,
                     "normal", "synthetic test enemy stat fixture"));
         }
