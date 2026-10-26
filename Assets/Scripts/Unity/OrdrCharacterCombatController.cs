@@ -20,6 +20,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset verifiedFusionRecipesJson;
         [SerializeField] private TextAsset otherworldMysticFusionRecipesJson;
         [SerializeField] private TextAsset originalJassFusionRegistryJson;
+        [SerializeField] private TextAsset originalFusionObjectReconciliationJson;
         [SerializeField] private TextAsset originalHelperAlchemyRecipesJson;
         [SerializeField] private TextAsset originalUnitRawcodeLabelsJson;
         [SerializeField] private TextAsset verifiedMonsterWavesJson;
@@ -137,6 +138,7 @@ namespace Ordr.Mobile.Unity
         public VerifiedFusionCatalog VerifiedFusionRecipes { get; private set; }
         public OtherworldMysticFusionCatalog OtherworldMysticFusions { get; private set; }
         public OriginalJassFusionCatalog OriginalJassFusions { get; private set; }
+        public OriginalFusionObjectPreviewCatalog OriginalFusionObjectPreview { get; private set; }
         public Ordr323OriginalAlchemyRefundCatalog OriginalAlchemyRefunds { get; private set; }
         public OriginalUnitRawcodeLabelCatalog OriginalUnitRawcodes { get; private set; }
         public Original323VerifiedMonsterWaveCatalog VerifiedMonsterWaves { get; private set; }
@@ -885,6 +887,7 @@ namespace Ordr.Mobile.Unity
         private IOriginalVerifiedUnitAttackProvider verifiedUnitAttackSource;
         private IOriginalFusionPort originalFusionPort;
         private OriginalJassFusionPort originalJassFusionPort;
+        private OriginalJassReadOnlyFusionPort originalJassReadOnlyFusionPort;
         private OtherworldMysticFusionPreviewPort mysticFusionPort;
         private IOriginalEconomyPort originalEconomyPort;
 
@@ -1025,7 +1028,13 @@ namespace Ordr.Mobile.Unity
             // recipe page or the previously loaded regular recipes.
             var sources = new List<IOriginalFusionPort>();
             if (FusionAssistance != null) sources.Add(FusionAssistance);
-            if (originalJassFusionPort != null) sources.Add(originalJassFusionPort);
+            // Preview evidence is never promoted to a consumption source.
+            // A separately verified original transaction explicitly REPLACES
+            // the read-only JASS port without duplicating recipe IDs.
+            if (originalJassFusionPort != null)
+                sources.Add(originalJassFusionPort);
+            else if (originalJassReadOnlyFusionPort != null)
+                sources.Add(originalJassReadOnlyFusionPort);
             if (mysticFusionPort != null) sources.Add(mysticFusionPort);
             originalFusionPort = sources.Count == 0 ? null :
                 sources.Count == 1 ? sources[0] :
@@ -1120,6 +1129,12 @@ namespace Ordr.Mobile.Unity
                     Resources.Load<TextAsset>("OrdrData/original-jass-fusion-registry");
                 if (originalJassData != null)
                     OriginalJassFusions = OriginalJassFusionCatalog.FromJson(originalJassData.text);
+                var previewObjectsData = originalFusionObjectReconciliationJson != null ?
+                    originalFusionObjectReconciliationJson :
+                    Resources.Load<TextAsset>("OrdrData/original-fusion-object-reconciliation");
+                if (OriginalJassFusions != null && previewObjectsData != null)
+                    OriginalFusionObjectPreview = OriginalFusionObjectPreviewCatalog.FromJson(
+                        previewObjectsData.text, OriginalJassFusions, Units);
                 var alchemyData = originalHelperAlchemyRecipesJson != null ?
                     originalHelperAlchemyRecipesJson :
                     Resources.Load<TextAsset>("OrdrData/original-2323C-helper-alchemy-recipes");
@@ -1291,18 +1306,21 @@ namespace Ordr.Mobile.Unity
                 FusionAssistance = new AssistedFusionService(VerifiedFusionRecipes,
                     () => Combat.MobileUnitSnapshot(),
                     id => Combat.IsStoryDeployed(id));
-            // 악몽 + 이세계모드는 항상 기본 모드다. 원본 트랜잭션이 없는
-            // 상태에서는 신비 도감 13종의 재료 미리보기만 노출한다.
-            if (originalFusionPort == null && OtherworldMysticFusions != null)
-            {
+            // Display the full 265 source-registered recipes and their unit
+            // deficits even when an irreversible original transaction is NOT
+            // connected. The preview adapter is always non-executable.
+            if (OriginalJassFusions != null && OriginalFusionObjectPreview != null)
+                originalJassReadOnlyFusionPort = new OriginalJassReadOnlyFusionPort(
+                    OriginalJassFusions, OriginalFusionObjectPreview,
+                    id => Combat.IsStoryDeployed(id));
+            if (mysticFusionPort == null && OtherworldMysticFusions != null)
                 mysticFusionPort = new OtherworldMysticFusionPreviewPort(
                     OtherworldMysticFusions, id => Combat.IsStoryDeployed(id));
-                originalFusionPort = FusionAssistance == null ?
-                    (IOriginalFusionPort)mysticFusionPort :
-                    new CombinedOriginalFusionPort(FusionAssistance, mysticFusionPort);
-            }
-            ManualActions.Configure(storyDispatchRules,
-                originalFusionPort ?? FusionAssistance, originalEconomyPort);
+            if (originalFusionPort == null)
+                RebuildVerifiedFusionCatalog();
+            else
+                ManualActions.Configure(storyDispatchRules,
+                    originalFusionPort, originalEconomyPort);
             if (originalHelperCowWorld != null)
                 AttachOriginalHelperCow();
             if (originalHelperCowAreaWorld != null)

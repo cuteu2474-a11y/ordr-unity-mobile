@@ -26,6 +26,9 @@ namespace Ordr.Mobile.Editor
             "verified-mobile-fusion-recipes.json",
             "otherworld-2323C-mystic-web-recipes.json",
             "original-jass-fusion-registry.json",
+            // Source-object reconciliation for read-only JASS fusion browsing.
+            // This is not an approved map for unit consumption.
+            "original-fusion-object-reconciliation.json",
             "original-2323C-helper-alchemy-recipes.json",
             "original-unit-rawcode-label-links.json",
             "original-jass-mystic-candidate-reconciliation.json",
