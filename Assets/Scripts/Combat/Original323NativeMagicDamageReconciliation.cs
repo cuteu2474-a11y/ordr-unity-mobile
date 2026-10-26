@@ -129,6 +129,33 @@ namespace Ordr.Mobile.Combat
     // AbilityData.slk's DataA1 or rewrites a native impact report.
     public static class Original323NativeMagicDamageReconciler
     {
+        // A witness or native HP converter is an external callback. Reject
+        // damage if either callback advances time, refreshes modifiers or
+        // changes the live monster while the impact is being certified.
+        // CombatEffect is immutable: identity catches same-value refreshes.
+        private static bool ImpactStateUnchanged(CombatEnemy monster,
+            EnemyDefenseProfile defenses, int magicLevel,
+            double resistancePercent, long hpAtImpact, double impactTime,
+            IReadOnlyList<CombatEffect> effectsAtImpact)
+        {
+            if (monster == null || !monster.IsAlive ||
+                monster.Health != hpAtImpact ||
+                !Object.ReferenceEquals(monster.Defenses, defenses) ||
+                defenses == null || !defenses.MagicAbilityLevel.HasValue ||
+                !defenses.HasVerifiedMagicResistance ||
+                defenses.MagicAbilityLevel.Value != magicLevel ||
+                !defenses.MagicResistancePercent.HasValue ||
+                defenses.MagicResistancePercent.Value != resistancePercent ||
+                monster.Status.CurrentTime != impactTime)
+                return false;
+            var now = monster.Status.Snapshot();
+            if (now.Count != effectsAtImpact.Count) return false;
+            for (int i = 0; i < now.Count; i++)
+                if (!Object.ReferenceEquals(now[i], effectsAtImpact[i]))
+                    return false;
+            return true;
+        }
+
         public static bool TryReconcile(
             CombatEnemy liveMonster, string originalAbilityRawcode,
             Original323ObservedNativeMagicHit observed,
@@ -172,11 +199,17 @@ namespace Ordr.Mobile.Combat
                     (1.0 - originalFactor) * 100.0) > 0.0001)
                 return false;
 
-            // Snapshot impact-time effects, not cast-time ones. Any source
-            // bonus that can influence magical HP damage requires a fully
-            // witnessed native stage; never assume generic effect stacking.
+            // Capture the complete impact-time state BEFORE any external
+            // observer runs. In particular, a removed-and-reapplied identical
+            // stack is not the same native impact state.
+            var effectsAtImpact = liveMonster.Status.Snapshot();
+            var hpAtImpact = liveMonster.Health;
+            var impactTime = liveMonster.Status.CurrentTime;
+            var magicLevelAtImpact = defense.MagicAbilityLevel.Value;
+            var resistanceAtImpact = defense.MagicResistancePercent.Value;
+            // Do not invent or compound unverified modifiers.
             var relevant = new List<CombatEffect>();
-            foreach (var effect in liveMonster.Status.Snapshot())
+            foreach (var effect in effectsAtImpact)
                 if (effect.Type == CombatEffectType.MagicResistanceReduction ||
                     effect.Type == CombatEffectType.OriginalA04QLevelIncrease ||
                     effect.Type == CombatEffectType.MagicDamageAmplification ||
@@ -198,6 +231,11 @@ namespace Ordr.Mobile.Combat
                 // includes the confirmed effects and engine stacking.
             }
 
+            if (!ImpactStateUnchanged(liveMonster, defense,
+                    magicLevelAtImpact, resistanceAtImpact, hpAtImpact,
+                    impactTime, effectsAtImpact))
+                return false;
+
             float damageAfterDefend = observed.NativeDamageBeforeA04Q;
             if (observed.OriginalNativeDefendApplied)
                 damageAfterDefend *= (float)originalFactor;
@@ -208,12 +246,15 @@ namespace Ordr.Mobile.Combat
             long converted;
             if (!verifiedNativeHp.TryConvertNativeSpellDamage(
                     damageAfterDefend, originalAbilityRawcode,
-                    out converted) || converted < 0)
+                    out converted) || converted < 0 ||
+                !ImpactStateUnchanged(liveMonster, defense,
+                    magicLevelAtImpact, resistanceAtImpact, hpAtImpact,
+                    impactTime, effectsAtImpact))
                 return false;
 
             // The independent original HP observation is decisive. If
             // even one target disagrees, the whole native impact fails.
-            if (Math.Min(converted, liveMonster.Health) !=
+            if (Math.Min(converted, hpAtImpact) !=
                 observed.ObservedFinalHpLoss)
                 return false;
             verifiedHit = new Original323NativeDummySpellHit(
