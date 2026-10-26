@@ -90,6 +90,7 @@ namespace Ordr.Mobile.Core
         public int Index { get; private set; }
         public OriginalMissionRule Mission { get; private set; }
         public bool Completed { get; private set; }
+        public bool RewardPending { get; private set; }
 
         internal OriginalPersonalMissionSlot(int index, OriginalMissionRule mission)
         {
@@ -98,9 +99,10 @@ namespace Ordr.Mobile.Core
         }
         internal void Replace(OriginalMissionRule replacement)
         {
-            Mission = replacement; Completed = false;
+            Mission = replacement; Completed = false; RewardPending = false;
         }
-        internal void MarkCompleted() { Completed = true; }
+        internal void MarkRewardPending() { RewardPending = true; }
+        internal void MarkCompleted() { Completed = true; RewardPending = false; }
     }
 
     public enum OriginalGambleTier { Low, Middle, High }
@@ -120,6 +122,7 @@ namespace Ordr.Mobile.Core
         private bool rerolled;
 
         public int CurrentRound { get; private set; }
+        public string SessionId { get { return sessionId; } }
         public bool HasRerolled { get { return rerolled; } }
         public bool AllThreeCompleted
         {
@@ -182,7 +185,8 @@ namespace Ordr.Mobile.Core
         {
             EnsureStarted();
             ValidateSlot(slotIndex);
-            if (CurrentRound >= 10 || rerolled || slots[slotIndex].Completed) return false;
+            if (CurrentRound >= 10 || rerolled || slots[slotIndex].Completed ||
+                slots[slotIndex].RewardPending) return false;
             // 원본 CT7: 뽑힌 새 미션은 기존 슬롯의 미션과 달라야 하고
             // 다른 두 슬롯과도 겹치지 않는다.
             var candidates = OriginalPersonalMissionCatalog.Available(otherworld);
@@ -223,6 +227,8 @@ namespace Ordr.Mobile.Core
         public void Record(OriginalMissionSignal signal, int quantity = 1)
         {
             EnsureStarted();
+            if (!Enum.IsDefined(typeof(OriginalMissionSignal), signal))
+                throw new ArgumentOutOfRangeException(nameof(signal));
             if (signal == OriginalMissionSignal.RoundEnded)
                 throw new ArgumentException("라운드 종료는 EndRound를 사용하세요.");
             if (quantity <= 0) throw new ArgumentOutOfRangeException(nameof(quantity));
@@ -233,22 +239,36 @@ namespace Ordr.Mobile.Core
 
         public void RecordGamble(OriginalGambleTier tier, bool success)
         {
+            var signals = new List<OriginalMissionSignal>();
             switch (tier)
             {
                 case OriginalGambleTier.Low:
-                    Record(OriginalMissionSignal.LowGambleAttempted);
-                    if (!success) Record(OriginalMissionSignal.LowGambleFailed);
+                    signals.Add(OriginalMissionSignal.LowGambleAttempted);
+                    if (!success) signals.Add(OriginalMissionSignal.LowGambleFailed);
                     break;
                 case OriginalGambleTier.Middle:
-                    Record(OriginalMissionSignal.MidGambleAttempted);
-                    if (!success) Record(OriginalMissionSignal.MidGambleFailed);
+                    signals.Add(OriginalMissionSignal.MidGambleAttempted);
+                    if (!success) signals.Add(OriginalMissionSignal.MidGambleFailed);
                     break;
                 case OriginalGambleTier.High:
-                    Record(OriginalMissionSignal.HighGambleAttempted);
-                    if (!success) Record(OriginalMissionSignal.HighGambleFailed);
+                    signals.Add(OriginalMissionSignal.HighGambleAttempted);
+                    if (!success) signals.Add(OriginalMissionSignal.HighGambleFailed);
                     break;
                 default: throw new ArgumentOutOfRangeException(nameof(tier));
             }
+            RecordBatch(signals);
+        }
+
+        private void RecordBatch(List<OriginalMissionSignal> signals)
+        {
+            EnsureStarted();
+            foreach (var signal in signals)
+            {
+                long old = EventCount(signal);
+                counts[signal] = old == long.MaxValue ? old : old + 1;
+            }
+            foreach (var signal in signals) Evaluate(signal, false);
+            RetryPendingRewards();
         }
 
         // 원본 Q4의 생성유닛 어빌리티와 유닛 rawcode 조건(51312~51522, 51702)을 그대로 사용.
@@ -257,23 +277,25 @@ namespace Ordr.Mobile.Core
             IEnumerable<string> abilityRawIds, bool isHighestTier)
         {
             if (abilityRawIds == null) throw new ArgumentNullException(nameof(abilityRawIds));
+            var signals = new List<OriginalMissionSignal>();
             var abilities = new HashSet<string>(abilityRawIds, StringComparer.Ordinal);
-            if (isHero && abilities.Contains("A07O")) Record(OriginalMissionSignal.TranscendentFusion);
-            if (abilities.Contains("A905")) Record(OriginalMissionSignal.ImmortalFusion);
-            if (abilities.Contains("A906")) Record(OriginalMissionSignal.EternalFusion);
-            if (abilities.Contains("A907")) Record(OriginalMissionSignal.LimitedFusion);
-            if (abilities.Contains("A0QH")) Record(OriginalMissionSignal.DistortedFusion);
+            if (isHero && abilities.Contains("A07O")) signals.Add(OriginalMissionSignal.TranscendentFusion);
+            if (abilities.Contains("A905")) signals.Add(OriginalMissionSignal.ImmortalFusion);
+            if (abilities.Contains("A906")) signals.Add(OriginalMissionSignal.EternalFusion);
+            if (abilities.Contains("A907")) signals.Add(OriginalMissionSignal.LimitedFusion);
+            if (abilities.Contains("A0QH")) signals.Add(OriginalMissionSignal.DistortedFusion);
             if (unitRawId == "h067" || unitRawId == "h08O" || unitRawId == "H0BK")
-                Record(OriginalMissionSignal.ItemRequiredFusion);
-            if (abilities.Contains("A909")) Record(OriginalMissionSignal.MysticFusion);
-            if (isHighestTier) Record(OriginalMissionSignal.HighestTierFusion);
+                signals.Add(OriginalMissionSignal.ItemRequiredFusion);
+            if (abilities.Contains("A909")) signals.Add(OriginalMissionSignal.MysticFusion);
+            if (isHighestTier) signals.Add(OriginalMissionSignal.HighestTierFusion);
+            RecordBatch(signals);
         }
 
-        private void Evaluate(OriginalMissionSignal raisedSignal)
+        private void Evaluate(OriginalMissionSignal raisedSignal, bool flush = true)
         {
             foreach (var slot in slots)
             {
-                if (slot.Completed) continue;
+                if (slot.Completed || slot.RewardPending) continue;
                 var rule = slot.Mission;
                 if (rule.CheckAtRoundEnd != (raisedSignal == OriginalMissionSignal.RoundEnded))
                     continue;
@@ -286,9 +308,86 @@ namespace Ordr.Mobile.Core
                 if (rule.MustFinishBeforeRound > 0 && CurrentRound >= rule.MustFinishBeforeRound)
                     continue;
                 if (ProgressAt(slot.Index) < rule.RequiredCount) continue;
-                rewardSink.Grant(sessionId + ":slot" + slot.Index + ":" + rule.Id, rule.Rewards);
+                slot.MarkRewardPending();
+            }
+            if (flush) RetryPendingRewards();
+        }
+
+        // An already committed sale/merge is never replayed to retry a reward.
+        // Eligibility is retained even if a round/deadline changes meanwhile.
+        public void RetryPendingRewards()
+        {
+            EnsureStarted();
+            foreach (var slot in slots)
+            {
+                if (!slot.RewardPending) continue;
+                rewardSink.Grant(sessionId + ":slot" + slot.Index + ":" +
+                    slot.Mission.Id, slot.Mission.Rewards);
                 slot.MarkCompleted();
             }
+        }
+
+        public OriginalMissionSessionState CaptureState()
+        {
+            EnsureStarted();
+            var state = new OriginalMissionSessionState {
+                SessionId = sessionId, Otherworld = otherworld,
+                CurrentRound = CurrentRound, HasRerolled = rerolled
+            };
+            foreach (var slot in slots)
+                state.Slots.Add(new OriginalMissionSlotState {
+                    MissionId = slot.Mission.Id, Completed = slot.Completed,
+                    RewardPending = slot.RewardPending
+                });
+            foreach (var count in counts)
+                state.Counts.Add(new OriginalMissionCountState {
+                    Signal = count.Key, Count = count.Value
+                });
+            state.Counts.Sort((a, b) => a.Signal.CompareTo(b.Signal));
+            return state;
+        }
+
+        // Validate into a fresh session; a bad save cannot mutate the live one.
+        public static OriginalPersonalMissionSession Restore(
+            OriginalMissionSessionState state, IOriginalMissionRandom random,
+            IOriginalMissionRewardSink rewards)
+        {
+            if (state == null || state.Version != 1 || state.Slots == null ||
+                state.Slots.Count != 3 || state.Counts == null ||
+                state.CurrentRound < 0 || state.CurrentRound > 65)
+                throw new FormatException("개인 미션 저장 상태가 불완전합니다.");
+            var result = new OriginalPersonalMissionSession(state.Otherworld,
+                random, rewards, state.SessionId);
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            for (int i = 0; i < 3; i++)
+            {
+                var saved = state.Slots[i];
+                var rule = saved == null ? null : OriginalPersonalMissionCatalog.Find(saved.MissionId);
+                if (rule == null || !ids.Add(rule.Id) ||
+                    (!state.Otherworld && rule.OtherworldOnly) ||
+                    (saved.Completed && saved.RewardPending))
+                    throw new FormatException("미션 슬롯이 중복되었거나 유효하지 않습니다.");
+                result.slots[i] = new OriginalPersonalMissionSlot(i, rule);
+                if (saved.Completed) result.slots[i].MarkCompleted();
+                if (saved.RewardPending) result.slots[i].MarkRewardPending();
+            }
+            foreach (var count in state.Counts)
+            {
+                if (count == null || count.Count < 0 ||
+                    !Enum.IsDefined(typeof(OriginalMissionSignal), count.Signal) ||
+                    count.Signal == OriginalMissionSignal.RoundEnded ||
+                    result.counts.ContainsKey(count.Signal))
+                    throw new FormatException("개인 미션 진행 횟수가 잘못됐습니다.");
+                result.counts.Add(count.Signal, count.Count);
+            }
+            result.CurrentRound = state.CurrentRound;
+            result.rerolled = state.HasRerolled;
+            result.started = true;
+            foreach (var slot in result.slots)
+                if ((slot.Completed || slot.RewardPending) &&
+                    result.ProgressAt(slot.Index) < slot.Mission.RequiredCount)
+                    throw new FormatException("목표 미달 미션이 완료 상태로 저장됐습니다.");
+            return result;
         }
 
         private static void ValidateSlot(int slotIndex)

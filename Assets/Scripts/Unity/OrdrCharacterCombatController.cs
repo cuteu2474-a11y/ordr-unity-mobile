@@ -510,6 +510,32 @@ namespace Ordr.Mobile.Unity
             DedicatedSkills.Configure(originalWorld);
         }
         public SharedEconomySession SharedEconomy { get; private set; }
+        public PersonalMissionGameplay PersonalMissions { get; private set; }
+        private IOriginalMissionRandom missionRandom;
+
+        // A native/replay provider may replace only the mission draw lane.
+        // It must not borrow the combat BFh stream without source proof.
+        public void ConfigurePersonalMissionRandom(IOriginalMissionRandom source)
+        {
+            if (PersonalMissions != null)
+                throw new InvalidOperationException("개인 미션 배정 후 난수를 변경할 수 없습니다.");
+            missionRandom = source ?? throw new ArgumentNullException(nameof(source));
+        }
+
+        public PersonalMissionGameplayState CapturePersonalMissionProgress()
+        {
+            if (PersonalMissions == null) throw new InvalidOperationException("게임 시작 후 저장하세요.");
+            return PersonalMissions.CaptureState();
+        }
+
+        // The caller restores the SAME combat/roster/round snapshot first.
+        public void RestorePersonalMissionProgress(PersonalMissionGameplayState state)
+        {
+            if (Combat == null || SharedEconomy == null)
+                throw new InvalidOperationException("실제 전투 저장 상태를 먼저 복원하세요.");
+            PersonalMissions = PersonalMissionGameplay.Restore(Combat.Game,
+                SharedEconomy.Wallet, state, missionRandom);
+        }
         public OriginalRandomWispResourceExchange RandomWispExchange { get; private set; }
         public OriginalHelperCowManaRecharge HelperCowRecharge { get; private set; }
         public OriginalHelperCowAutoAreaCasting HelperCowAutoArea { get; private set; }
@@ -979,9 +1005,8 @@ namespace Ordr.Mobile.Unity
                 return ManualActionResult.Unavailable("선택위습 Merge");
             try
             {
-                return Wisps.MergeChoice(originalUnitRawcode, choiceWispWorld) ?
-                    new ManualActionResult(ManualActionState.Succeeded, "선택위습 Merge 완료") :
-                    new ManualActionResult(ManualActionState.Rejected,
+                if (!Wisps.MergeChoice(originalUnitRawcode, choiceWispWorld))
+                    return new ManualActionResult(ManualActionState.Rejected,
                         "위습이 부족하거나 원본 Merge 조건을 충족하지 못했습니다.");
             }
             catch (Exception error)
@@ -990,6 +1015,10 @@ namespace Ordr.Mobile.Unity
                 return new ManualActionResult(ManualActionState.Rejected,
                     "Merge 거래 실패: 원본 유닛/재화 변경을 롤백했습니다.");
             }
+            // A committed Merge stays successful if its mission observer fails.
+            try { PersonalMissions?.RecordChoiceWispUse(); }
+            catch (Exception error) { Debug.LogException(error); }
+            return new ManualActionResult(ManualActionState.Succeeded, "선택위습 Merge 완료");
         }
 
         public void ConfigureVerifiedStartingEconomy(VerifiedEconomyStartProfile profile)
@@ -1168,6 +1197,8 @@ namespace Ordr.Mobile.Unity
             var live = new OriginalJassLiveCombatFusionWorld(
                 Combat, SharedEconomy, actualOriginalObjects,
                 originalCastPolicy, reversibleNativeEffects);
+            live.FusionCommitted += OnCommittedOriginalFusion;
+            live.PostCommitObserverFailed += Debug.LogException;
             ConfigureOriginalJassSimpleCraftingWorld(
                 verifiedObjectMap, live, live, live);
         }
@@ -1485,6 +1516,8 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            ManualActions.CommonSaleSucceeded += OnCommittedCommonSale;
+            ManualActions.PostCommitObserverFailed += Debug.LogException;
             if (verifiedNativeCadence != null)
                 Combat.ConfigureVerifiedOriginal323NativeAttackCadence(
                     verifiedNativeCadence);
@@ -1569,6 +1602,8 @@ namespace Ordr.Mobile.Unity
         {
             if (Combat == null)
                 throw new InvalidOperationException("원작 피해 공식 구현체 연결이 필요합니다.");
+            if (Combat.Game.Phase != SessionPhase.NotStarted || PersonalMissions != null)
+                throw new InvalidOperationException("이미 시작한 게임입니다.");
             if (SharedEconomy == null || verifiedStartingProfile == null ||
                 !verifiedStartingProfile.IsSourceVerified)
                 throw new InvalidOperationException(
@@ -1576,6 +1611,10 @@ namespace Ordr.Mobile.Unity
             if (!Original323SoloStartProfile.MatchesPinnedSource(verifiedStartingProfile) ||
                 startEvolutionWorld == null)
                 throw new InvalidOperationException("원본 시작 e0HP 진화체 월드가 미연결입니다.");
+            var preparedMissions = PersonalMissionGameplay.Prepare(Combat.Game,
+                SharedEconomy.Wallet, missionRandom ??
+                    new MobileMissionRandom(unchecked((uint)Environment.TickCount)),
+                Guid.NewGuid().ToString("N"));
             var external = new HashSet<long>();
             SharedEconomy.ApplyVerifiedStart(verifiedStartingProfile,
                 (catalogId, x, y) =>
@@ -1593,7 +1632,24 @@ namespace Ordr.Mobile.Unity
                     else Combat.RemoveCharacter(id);
                 });
             Combat.Start();
+            PersonalMissions = preparedMissions;
             AttachVerifiedSoloHelperCow();
+        }
+
+        private void OnCommittedCommonSale(long instanceId)
+        {
+            PersonalMissions?.RecordCommonSale(instanceId);
+        }
+
+        private void OnCommittedOriginalFusion(long resultId, string catalogId, string rawcode)
+        {
+            if (PersonalMissions == null || MapBaseStats == null) return;
+            var result = MapBaseStats.Find(catalogId);
+            if (result == null || result.OriginalRawcode != rawcode) return;
+            // Native result identity is authoritative; hero type and Q7's
+            // separate highest-tier condition still need their actual source.
+            PersonalMissions.RecordFusion("fusion-result:" + resultId, rawcode,
+                false, result.OriginalAbilityRawcodes, false);
         }
 
         // 지갑 저장 이력까지 복원한 뒤 전투 자동 시전을 시작해야 한다.
@@ -1686,6 +1742,7 @@ namespace Ordr.Mobile.Unity
                 }
             }
             VerifiedWaveDirector.Begin(Combat, plan);
+            PersonalMissions?.OnRoundStarted();
         }
 
         // Observation-only. A fully defeated wave does not automatically
@@ -1698,8 +1755,12 @@ namespace Ordr.Mobile.Unity
 
         private void Update()
         {
-            if (Combat == null || Combat.Game.Phase != Ordr.Mobile.Core.SessionPhase.Running)
+            if (Combat == null) return;
+            if (Combat.Game.Phase != Ordr.Mobile.Core.SessionPhase.Running)
+            {
+                PersonalMissions?.OnGameFinished();
                 return;
+            }
             double timeBeforeStep = Combat.Time;
             var results = VerifiedWaveDirector.IsActive
                 ? VerifiedWaveDirector.Step(Combat, Time.deltaTime)

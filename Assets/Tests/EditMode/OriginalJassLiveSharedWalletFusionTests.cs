@@ -165,6 +165,7 @@ namespace Ordr.Mobile.Tests
             public Et01ObjectMap Map;
             public FailingNativeUnits Native;
             public long[] OriginalIds;
+            public OriginalJassLiveCombatFusionWorld LiveWorld;
         }
 
         private static Fixture Create()
@@ -239,6 +240,7 @@ namespace Ordr.Mobile.Tests
                 fixture.Combat, economy, fixture.Map, new TestOriginalCast(),
                 new OriginalJassSharedWalletFusionEffects(
                     new OriginalJassCombatUnitFusionWorld(fixture.Map)));
+            fixture.LiveWorld = real;
             var planner = new OriginalJassFusionPlanner(source, labels,
                 id => fixture.Combat.IsStoryDeployed(id),
                 new OriginalJassNoSpecialConditions(), units);
@@ -250,6 +252,67 @@ namespace Ordr.Mobile.Tests
                 planner, () => fixture.Combat.MobileUnitSnapshot(),
                 real, originalCoordinator, real);
             return fixture;
+        }
+
+        [Test]
+        public void MissionFusionNotificationFollowsCommitAndReleasedWorldLock()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            int observed = 0;
+            Exception notificationFailure = null;
+            fixture.LiveWorld.PostCommitObserverFailed += error => notificationFailure = error;
+            fixture.LiveWorld.FusionCommitted += (id, catalog, rawcode) => {
+                observed++;
+                Assert.AreEqual("E-06", catalog);
+                Assert.AreEqual("h057", rawcode);
+                Assert.AreEqual(catalog, fixture.Combat.Roster.Get(id).UnitId);
+                Assert.AreEqual(0, fixture.Wallet.Balance("wood"));
+                using (var read = fixture.LiveWorld.BeginExclusiveFusion())
+                    Assert.IsNotNull(read, "notification must follow lock release");
+            };
+            var offer = FindEt01(fixture);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                fixture.Port.ConfirmFusion("ET01", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, observed);
+            Assert.IsNull(notificationFailure);
+            Assert.AreEqual(ManualActionState.Rejected,
+                fixture.Port.ConfirmFusion("ET01", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, observed);
+        }
+
+        [Test]
+        public void RejectedNativeFusionNeverRaisesMissionNotification()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            fixture.Map.RejectBinding = true;
+            int observed = 0;
+            fixture.LiveWorld.FusionCommitted += (_, __, ___) => observed++;
+            var offer = FindEt01(fixture);
+            Assert.AreEqual(ManualActionState.Rejected,
+                fixture.Port.ConfirmFusion("ET01", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(0, observed);
+            Assert.AreEqual(5, fixture.Wallet.Balance("wood"));
+            Assert.AreEqual(6, fixture.Combat.CharacterCount);
+        }
+
+        [Test]
+        public void MissionObserverFailureCannotRejectCommittedFusion()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            int laterObserver = 0;
+            fixture.LiveWorld.FusionCommitted += (_, __, ___) => {
+                throw new InvalidOperationException("TEST_ONLY mission observer failure");
+            };
+            fixture.LiveWorld.FusionCommitted += (_, __, ___) => laterObserver++;
+            fixture.LiveWorld.PostCommitObserverFailed += _ => {
+                throw new InvalidOperationException("TEST_ONLY diagnostic failure");
+            };
+            var offer = FindEt01(fixture);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                fixture.Port.ConfirmFusion("ET01", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, laterObserver);
+            Assert.AreEqual(1, fixture.Combat.CharacterCount);
+            Assert.AreEqual(0, fixture.Wallet.Balance("wood"));
         }
 
         [Test]

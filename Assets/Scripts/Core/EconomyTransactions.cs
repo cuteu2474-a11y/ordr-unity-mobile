@@ -47,11 +47,27 @@ namespace Ordr.Mobile.Core
         // 중복 시 false. 오버플로 등 예외 발생 시 잔액/사용 기록 모두 보존.
         public bool TryGrantOnce(string rewardId, ResourceBundle reward)
         {
+            return TryGrantOnce(rewardId, reward, new Dictionary<string, long>());
+        }
+
+        // Mission rewards can SET an ability level as well as add resources.
+        // Stage the entire bundle before committing its durable receipt.
+        public bool TryGrantOnce(string rewardId, ResourceBundle reward,
+            IReadOnlyDictionary<string, long> absoluteBalances)
+        {
             if (string.IsNullOrWhiteSpace(rewardId)) throw new ArgumentException(nameof(rewardId));
             if (reward == null) throw new ArgumentNullException(nameof(reward));
+            if (absoluteBalances == null) throw new ArgumentNullException(nameof(absoluteBalances));
             if (completedRewards.Contains(rewardId)) return false;
             var next = Snapshot();
             Apply(next, reward, 1);
+            foreach (var entry in absoluteBalances)
+            {
+                if (string.IsNullOrWhiteSpace(entry.Key) || entry.Value < 0 ||
+                    reward.Get(entry.Key) != 0)
+                    throw new ArgumentException("동일 자원의 추가·설정 보상을 함께 지정할 수 없습니다.");
+                next[entry.Key] = entry.Value;
+            }
             Replace(next);
             completedRewards.Add(rewardId);
             NotifyGranted(reward);

@@ -12,7 +12,7 @@ namespace Ordr.Mobile.Unity
     // 스토리·조합확인·상점·도박·위습 버튼은 실제 사용자 탭에서만 호출된다.
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
-        private enum Tab { Units, Story, Fusion, Shop, Gambling, Wisp, Helper, Alchemy }
+        private enum Tab { Units, Story, Fusion, Shop, Gambling, Wisp, Helper, Alchemy, Missions }
 
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private bool openByDefault;
@@ -24,6 +24,7 @@ namespace Ordr.Mobile.Unity
         private int ownedPage;
         private long? pendingCommonSaleId;
         private string pendingCommonSaleName;
+        private int pendingMissionReroll = -1;
         private string selectedCatalogUnitId;
         private Vector2 scroll;
         private Vector2 tabsScroll;
@@ -106,6 +107,7 @@ namespace Ordr.Mobile.Unity
             pendingCommonSaleId = null;
             pendingCommonSaleName = null;
             notice = "";
+            pendingMissionReroll = -1;
             RefreshCurrent();
         }
 
@@ -123,6 +125,7 @@ namespace Ordr.Mobile.Unity
             pendingAlchemyCastId = null;
             pendingCommonSaleId = null;
             pendingCommonSaleName = null;
+            pendingMissionReroll = -1;
         }
 
         private void OnGUI()
@@ -194,6 +197,7 @@ namespace Ordr.Mobile.Unity
             DrawLeftTab(Tab.Story, "스토리");
             DrawLeftTab(Tab.Shop, "상점");
             DrawLeftTab(Tab.Gambling, "도박");
+            DrawLeftTab(Tab.Missions, "개인 미션");
 
             GUILayout.EndScrollView();
             GUILayout.EndArea();
@@ -235,6 +239,7 @@ namespace Ordr.Mobile.Unity
                     case Tab.Wisp: DrawWisp(); break;
                     case Tab.Helper: DrawHelperCow(); break;
                     case Tab.Alchemy: DrawAlchemyPanel(); break;
+                    case Tab.Missions: DrawPersonalMissions(); break;
                 }
             }
             GUILayout.EndScrollView();
@@ -257,8 +262,106 @@ namespace Ordr.Mobile.Unity
                 case Tab.Story: return "스토리";
                 case Tab.Shop: return "상점";
                 case Tab.Gambling: return "도박";
+                case Tab.Missions: return "개인 미션";
                 default: throw new ArgumentOutOfRangeException(nameof(tab));
             }
+        }
+
+        private void DrawPersonalMissions()
+        {
+            var gameplay = controller.PersonalMissions;
+            if (gameplay == null)
+            {
+                GUILayout.Label("게임 시작 시 개인 미션 3개가 배정됩니다.");
+                return;
+            }
+            var missions = gameplay.Missions;
+            GUILayout.Label("목표 달성 시 보상이 자동으로 지급됩니다.");
+            GUILayout.Label(missions.HasRerolled ? "미션 교체 사용 완료" :
+                missions.CurrentRound >= 10 ? "미션 교체 기간 종료" :
+                "10라운드 전까지 미완료 미션 1개를 한 번 교체할 수 있습니다.");
+            bool hasPendingReward = false;
+            foreach (var slot in missions.Slots)
+            {
+                hasPendingReward |= slot.RewardPending;
+                var rule = slot.Mission;
+                bool expired = !slot.Completed && !slot.RewardPending &&
+                    rule.MustFinishBeforeRound > 0 && missions.CurrentRound >= rule.MustFinishBeforeRound;
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.Label((slot.Index + 1) + ". " + rule.Name +
+                    (slot.Completed ? "  · 완료" : slot.RewardPending ? "  · 보상 지급 대기" :
+                     expired ? "  · 기한 종료" : ""));
+                GUILayout.Label(rule.Objective);
+                GUILayout.Label("진행 " + missions.ProgressAt(slot.Index) + " / " + rule.RequiredCount);
+                if (rule.AllGambleTiersRequired)
+                    GUILayout.Label("하급 " + missions.EventCount(OriginalMissionSignal.LowGambleAttempted) +
+                        "  /  중급 " + missions.EventCount(OriginalMissionSignal.MidGambleAttempted) +
+                        "  /  고급 " + missions.EventCount(OriginalMissionSignal.HighGambleAttempted));
+                GUILayout.Label("보상: " + MissionRewardText(rule.Rewards));
+                if (rule.CheckAtRoundEnd && !slot.Completed && !slot.RewardPending &&
+                    missions.ProgressAt(slot.Index) >= rule.RequiredCount)
+                    GUILayout.Label("목표 달성 · 라운드 종료 시 지급");
+                if (pendingMissionReroll == slot.Index)
+                {
+                    GUILayout.Label("이 미션을 다른 미션으로 교체하시겠습니까?");
+                    bool oldEnabled = GUI.enabled;
+                    GUI.enabled = oldEnabled && gameplay.CanReroll(slot.Index);
+                    bool confirm = GUILayout.Button("미션 교체 확정", GUILayout.MinHeight(44f));
+                    GUI.enabled = oldEnabled;
+                    if (confirm)
+                    {
+                        notice = gameplay.TryReroll(slot.Index) ? "미션을 교체했습니다." :
+                            "현재 미션 교체 조건을 충족하지 않습니다.";
+                        pendingMissionReroll = -1;
+                    }
+                    if (GUILayout.Button("취소", GUILayout.MinHeight(40f))) pendingMissionReroll = -1;
+                }
+                else if (gameplay.CanReroll(slot.Index) &&
+                    GUILayout.Button("이 미션 교체", GUILayout.MinHeight(44f)))
+                    pendingMissionReroll = slot.Index;
+                GUILayout.EndVertical();
+            }
+            GUILayout.Label("보유 특성포인트 " + controller.SharedEconomy.Wallet.Balance(
+                OriginalMissionWalletRewards.TraitPointsId));
+            if (missions.AllThreeCompleted)
+                GUILayout.Label("개인 미션 3개 완료 · 승리 시 추가 베리 1개 대상");
+            if (hasPendingReward)
+            {
+                GUILayout.Label("달성한 보상의 지급을 다시 시도할 수 있습니다.");
+                if (GUILayout.Button("미지급 보상 다시 처리", GUILayout.MinHeight(44f)))
+                    gameplay.RetryRewards();
+            }
+        }
+
+        private static string MissionRewardText(IReadOnlyList<OriginalMissionReward> rewards)
+        {
+            var labels = new List<string>();
+            foreach (var reward in rewards)
+            {
+                string name;
+                switch (reward.Kind)
+                {
+                    case OriginalMissionRewardKind.Lumber: name = "목재"; break;
+                    case OriginalMissionRewardKind.TraitPoint: name = "특성포인트"; break;
+                    case OriginalMissionRewardKind.AddAbilityLevel:
+                        labels.Add("기록지침 와일드카드 +" + reward.Count + "단계"); continue;
+                    case OriginalMissionRewardKind.SetAbilityLevel:
+                        labels.Add("기록지침 로얄로더 " + reward.Count + "단계"); continue;
+                    case OriginalMissionRewardKind.Item:
+                        switch (reward.RawId)
+                        {
+                            case "e018": name = "선택위습"; break;
+                            case "e0IX": name = "랜덤위습"; break;
+                            case "e017": name = "안흔함위습"; break;
+                            case "e019": name = "희귀함위습"; break;
+                            default: name = "아이템"; break;
+                        }
+                        break;
+                    default: throw new ArgumentOutOfRangeException();
+                }
+                labels.Add(name + " " + reward.Count + "개");
+            }
+            return string.Join(" · ", labels.ToArray());
         }
 
         // These are facility/unit-specific manual actions (e.g. record

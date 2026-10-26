@@ -46,6 +46,23 @@ namespace Ordr.Mobile.Mobile
         private readonly IOriginalJassFusionCastPolicy castPolicy;
         private readonly IOriginalJassLiveEffectsFactory effects;
         private bool busy;
+        public event Action<long, string, string> FusionCommitted;
+        public event Action<Exception> PostCommitObserverFailed;
+
+        private void NotifyCommitted(long instanceId, string unitId, string rawcode)
+        {
+            if (FusionCommitted == null) return;
+            foreach (Action<long, string, string> observer in FusionCommitted.GetInvocationList())
+            {
+                try { observer(instanceId, unitId, rawcode); }
+                catch (Exception error)
+                {
+                    // An observation failure cannot turn an already committed
+                    // fusion into a rejection and induce another material spend.
+                    try { PostCommitObserverFailed?.Invoke(error); } catch { }
+                }
+            }
+        }
 
         public OriginalJassLiveCombatFusionWorld(CharacterCombatRuntime liveCombat,
             SharedEconomySession sharedEconomy,
@@ -162,6 +179,9 @@ namespace Ordr.Mobile.Mobile
             private bool stageAttempted;
             private bool committed;
             private bool disposed;
+            private long resultInstance;
+            private string resultUnitId;
+            private string resultRawcode;
 
             public Locked(OriginalJassLiveCombatFusionWorld owner,
                 IOriginalJassLiveEffectsTransaction native)
@@ -295,7 +315,14 @@ namespace Ordr.Mobile.Mobile
                     }
                 }
                 stageAttempted = true;
-                return native.TryStageOriginalFusion(command, out created, out reason);
+                bool staged = native.TryStageOriginalFusion(command, out created, out reason);
+                if (staged)
+                {
+                    resultInstance = created;
+                    resultUnitId = command.ResultUnitId;
+                    resultRawcode = command.ResultRawcode;
+                }
+                return staged;
             }
 
             public void Commit()
@@ -317,6 +344,8 @@ namespace Ordr.Mobile.Mobile
                 disposed = true;
                 try { native.Dispose(); }
                 finally { owner.busy = false; }
+                if (committed && resultInstance > 0)
+                    owner.NotifyCommitted(resultInstance, resultUnitId, resultRawcode);
             }
         }
     }

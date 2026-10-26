@@ -159,6 +159,9 @@ namespace Ordr.Mobile.Mobile
         private OriginalRandomWispResourceExchange resourceWispExchange;
         private OriginalHelperCowManaRecharge helperCowRecharge;
         private IOriginalCommonSalePort commonSale;
+        // Observers run after the sale is committed, never for a rejected tap.
+        public event Action<long> CommonSaleSucceeded;
+        public event Action<Exception> PostCommitObserverFailed;
 
         public void ConfigureHelperCowRecharge(OriginalHelperCowManaRecharge originalRecharge)
         {
@@ -189,10 +192,18 @@ namespace Ordr.Mobile.Mobile
             if (instanceId <= 0)
                 return new ManualActionResult(ManualActionState.Rejected,
                     "판매할 실제 유닛을 선택해 주세요.");
-            return commonSale == null ? ManualActionResult.Unavailable("원본 흔함 판매 거래") :
+            var result = commonSale == null ? ManualActionResult.Unavailable("원본 흔함 판매 거래") :
                 commonSale.ConfirmSale(instanceId) ??
                 new ManualActionResult(ManualActionState.Rejected,
                     "판매 원본 거래 결과가 확인되지 않았습니다.");
+            if (result.State == ManualActionState.Succeeded && CommonSaleSucceeded != null)
+                foreach (Action<long> observer in CommonSaleSucceeded.GetInvocationList())
+                {
+                    try { observer(instanceId); }
+                    catch (Exception error)
+                    { try { PostCommitObserverFailed?.Invoke(error); } catch { } }
+                }
+            return result;
         }
         private IManualUnitDecompositionPort decomposition;
 
