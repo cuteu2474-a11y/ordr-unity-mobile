@@ -28,6 +28,8 @@ class AttackedDummySourceFacts(unittest.TestCase):
         self.assertEqual([x["ownerUnitRawcode"] for x in rows],
             ["h00M","h00A","h00Q"])
         self.assertEqual([x["jassFunction"] for x in rows],["Bnm","Bnp","Bnr"])
+        self.assertEqual([x["humanSkillName"] for x in rows],
+            ["람각","람각","갈래 번개"])
         self.assertEqual([x["spellOrder"] for x in rows],
             ["carrionswarm","carrionswarm","forkedlightning"])
         self.assertEqual([x["chance"] for x in rows],["BFi(1,100)<=10"]*3)

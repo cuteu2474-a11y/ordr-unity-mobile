@@ -121,7 +121,7 @@ namespace Ordr.Mobile.Tests
                 Combat(),out result));
             Assert.IsTrue(result.Triggered);
             Assert.IsTrue(result.Applied);
-            Assert.AreEqual("범위 충격파",result.HumanSkillName);
+            Assert.AreEqual("람각",result.HumanSkillName);
             Assert.AreEqual("Bnm",world.Last.OriginalScriptFunction);
             Assert.AreEqual("enemy",world.Target);
             Assert.AreEqual(1,world.Calls);

@@ -105,7 +105,7 @@ namespace Ordr.Mobile.Combat
                 command = new Original323AttackDummySpellCommand(ownerRawcode,
                     ownerRawcode == "h00M" ? "Bnm" : "Bnp",
                     ownerRawcode == "h00M" ? "블루노" : "후쿠로",
-                    "범위 충격파", "A0VS", "carrionswarm",
+                    "람각", "A0VS", "carrionswarm",
                     Original323DummySpellOrderKind.PointAtAttackerLocation,
                     true);
                 return true;

@@ -31,7 +31,9 @@
       "spellOrder": "carrionswarm",
       "originalAbility": "A0VS",
       "target": "attacker position",
-      "dummyFacing": "attacker facing"
+      "dummyFacing": "attacker facing",
+      "humanSkillName": "람각",
+      "skillNameEvidence": "Units/CampaignAbilityStrings.txt [A0VS] Name=S_010,011_람각"
     },
     {
       "ownerUnitRawcode": "h00A",
@@ -44,7 +46,9 @@
       "spellOrder": "carrionswarm",
       "originalAbility": "A0VS",
       "target": "attacker position",
-      "dummyFacing": "attacker facing"
+      "dummyFacing": "attacker facing",
+      "humanSkillName": "람각",
+      "skillNameEvidence": "Units/CampaignAbilityStrings.txt [A0VS] Name=S_010,011_람각"
     },
     {
       "ownerUnitRawcode": "h00Q",
@@ -57,7 +61,8 @@
       "spellOrder": "forkedlightning",
       "originalAbility": "A086",
       "target": "attacked enemy unit",
-      "dummyFacing": "bj_UNIT_FACING"
+      "dummyFacing": "bj_UNIT_FACING",
+      "humanSkillName": "갈래 번개"
     }
   ],
   "registration": {
@@ -70,5 +75,17 @@
   },
   "runtimeSpellDamageAndCollisionParityVerified": false,
   "actualNativeSpellExecutorConnected": false,
-  "note": "Only source script trigger, owner, dummy spawn/order and RNG are established. Actual Warcraft native spell collision, damage, target immunity, dummy lifetime need independent runtime validation."
+  "note": "Only source script trigger, owner, dummy spawn/order and RNG are established. Actual Warcraft native spell collision, damage, target immunity, dummy lifetime need independent runtime validation.",
+  "abilityNameEvidence": {
+    "A0VS": {
+      "name": "S_010,011_람각",
+      "warcraftOrder": "carrionswarm",
+      "source": "Units/CampaignAbilityStrings.txt [A0VS]"
+    },
+    "A086": {
+      "name": "U_0102_에넬특별더미",
+      "warcraftOrder": "forkedlightning",
+      "source": "Units/CampaignAbilityStrings.txt [A086]"
+    }
+  }
 }
