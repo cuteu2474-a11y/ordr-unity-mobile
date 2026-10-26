@@ -32,11 +32,16 @@ namespace Ordr.Mobile.Core
 
         private readonly Dictionary<string, List<Branch>> byWisp =
             new Dictionary<string, List<Branch>>(StringComparer.Ordinal);
-        private readonly IOriginalWispRandom random;
+        // BFi(1,100) rare-pool choice and Warcraft PlaceRandomUnit()
+        // use DISTINCT random mechanisms in the original map.
+        private readonly IOriginalWispRandom scriptBranchRandom;
+        private readonly IOriginalWispRandom nativeUnitPoolRandom;
 
-        private OriginalWispRewardCatalog(IOriginalWispRandom source)
+        private OriginalWispRewardCatalog(IOriginalWispRandom scriptSource,
+            IOriginalWispRandom nativePoolSource)
         {
-            random = source;
+            scriptBranchRandom = scriptSource;
+            nativeUnitPoolRandom = nativePoolSource;
         }
 
         public bool IsVerified(string id) => id != null && byWisp.ContainsKey(id);
@@ -51,7 +56,7 @@ namespace Ordr.Mobile.Core
             {
                 // Only CSI (rare Wisp) calls BFi(1,100) before selecting
                 // its pool. CSF/CSC/CR6 call PlaceRandomUnit directly.
-                int roll = CheckedRandom(1, 100);
+                int roll = CheckedRandom(scriptBranchRandom, 1, 100);
                 foreach (var branch in branches)
                 {
                     if (roll <= branch.ChancePercent) { chosen = branch; break; }
@@ -59,11 +64,15 @@ namespace Ordr.Mobile.Core
                 }
             }
             if (chosen == null) throw new InvalidOperationException("위습 확률표 오류");
-            int index = CheckedRandom(0, chosen.Units.Count - 1);
+            // PlaceRandomUnit draws from Warcraft native unit-pool RNG,
+            // NOT the custom JASS BFh/BFi stream.
+            int index = CheckedRandom(nativeUnitPoolRandom, 0,
+                chosen.Units.Count - 1);
             return new WispReward(id, chosen.Units[index], chosen.BonusAbility);
         }
 
-        private int CheckedRandom(int minimum, int maximum)
+        private static int CheckedRandom(IOriginalWispRandom random,
+            int minimum, int maximum)
         {
             int result = random.NextInclusive(minimum, maximum);
             if (result < minimum || result > maximum)
@@ -71,10 +80,35 @@ namespace Ordr.Mobile.Core
             return result;
         }
 
+        // Compatibility for older isolated tests and manual integrations.
+        // Production source-parity should use the TWO-source overload.
         public static OriginalWispRewardCatalog FromOriginalJassJson(string json,
             IOriginalWispRandom originalRandom)
         {
-            if (originalRandom == null) throw new ArgumentNullException(nameof(originalRandom));
+            return FromOriginalJassJson(json, originalRandom, originalRandom, false);
+        }
+
+        // Strict source-parity path keeps JASS branch RNG apart from
+        // Warcraft's native PlaceRandomUnit / weighted unit-pool selector.
+        public static OriginalWispRewardCatalog FromOriginalJassJson(string json,
+            IOriginalWispRandom scriptBranchRng,
+            IOriginal323NativeUnitPoolRandom nativeUnitPoolRng)
+        {
+            return FromOriginalJassJson(json, scriptBranchRng,
+                nativeUnitPoolRng, true);
+        }
+
+        private static OriginalWispRewardCatalog FromOriginalJassJson(string json,
+            IOriginalWispRandom scriptBranchRng,
+            IOriginalWispRandom nativeUnitPoolRng, bool requireDistinct)
+        {
+            if (scriptBranchRng == null ||
+                nativeUnitPoolRng == null)
+                throw new ArgumentNullException(nameof(scriptBranchRng));
+            if (requireDistinct && ReferenceEquals(
+                scriptBranchRng, nativeUnitPoolRng))
+                throw new ArgumentException(
+                    "원본 위습의 스크립트 확률과 유닛 풀 난수를 같은 난수기로 처리할 수 없습니다.");
             if (json == null) throw new ArgumentNullException(nameof(json));
             using (var sha = SHA256.Create())
             {
@@ -91,7 +125,8 @@ namespace Ordr.Mobile.Core
                 OrdrJson.RequiredString(doc, "rollSelection") != "unit-pool-weights")
                 throw new FormatException("위습 보상표가 검증된 원본 2.323[C]와 다릅니다.");
 
-            var result = new OriginalWispRewardCatalog(originalRandom);
+            var result = new OriginalWispRewardCatalog(scriptBranchRng,
+                nativeUnitPoolRng);
             foreach (object element in OrdrJson.Array(OrdrJson.Value(doc, "wisps"), "wisps"))
             {
                 var row = OrdrJson.Object(element, "wisp");

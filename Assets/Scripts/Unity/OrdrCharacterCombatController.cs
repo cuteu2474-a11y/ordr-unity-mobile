@@ -543,6 +543,28 @@ namespace Ordr.Mobile.Unity
         // Optional source-compatible RNG. Default mobile RNG preserves the
         // original probabilities, not the exact Warcraft random sequence.
         private IOriginalWispRandom randomWispResourceRng;
+        private Original323SharedBfiRandom originalSharedScriptRandom;
+
+        // Strict map-owned custom random stream: gold / rare Wisp branch /
+        // random Wisp resources / observed gambling events all share H6.
+        // A native GetRandomInt seed and observed draw witness are REQUIRED.
+        public void ConfigureOriginal323SharedScriptRandom(
+            Original323SharedBfiRandom originalVerifiedStream)
+        {
+            if (Combat != null || randomWispResourceRng != null ||
+                originalSharedScriptRandom != null)
+                throw new InvalidOperationException(
+                    "원본 공통 난수는 세션/위습 난수 설정 전에 한 번만 연결하세요.");
+            originalSharedScriptRandom = originalVerifiedStream ??
+                throw new ArgumentNullException(nameof(originalVerifiedStream));
+            randomWispResourceRng = originalSharedScriptRandom.ForPurpose(
+                Original323ScriptRandomPurpose.RandomWispResource);
+        }
+
+        public bool HasOriginal323SharedScriptRandom
+        {
+            get { return originalSharedScriptRandom != null; }
+        }
 
         public void ConfigureRandomWispResourceRng(IOriginalWispRandom verifiedRandom)
         {
@@ -569,6 +591,32 @@ namespace Ordr.Mobile.Unity
         public void ConfigureVerifiedWispWorld(IOriginalWispRandom originalRng,
             IWispRewardWorld world, IVerifiedChoiceWispMergeWorld choiceMerge)
         {
+            if (originalSharedScriptRandom != null)
+                throw new InvalidOperationException(
+                    "원본 공통 난수가 연결되면 반드시 별도 워크래프트 유닛 풀 난수를 지정하세요.");
+            ConfigureWispWorldInternal(originalRng, null, world, choiceMerge);
+        }
+
+        // Explicit two-lane source-parity route. Native selection is supplied
+        // by its own original Warcraft-side adapter; no guessed native PRNG.
+        public void ConfigureOriginal323SharedWispWorld(
+            IOriginal323NativeUnitPoolRandom originalNativePool,
+            IWispRewardWorld world, IVerifiedChoiceWispMergeWorld choiceMerge)
+        {
+            if (originalSharedScriptRandom == null)
+                throw new InvalidOperationException(
+                    "원본 공통 난수열을 먼저 연결하세요.");
+            if (originalNativePool == null)
+                throw new ArgumentNullException(nameof(originalNativePool));
+            ConfigureWispWorldInternal(originalSharedScriptRandom.ForPurpose(
+                Original323ScriptRandomPurpose.RareWispBranch),
+                originalNativePool, world, choiceMerge);
+        }
+
+        private void ConfigureWispWorldInternal(IOriginalWispRandom scriptRng,
+            IOriginal323NativeUnitPoolRandom nativePool,
+            IWispRewardWorld world, IVerifiedChoiceWispMergeWorld choiceMerge)
+        {
             if (SharedEconomy == null || Combat == null)
                 throw new InvalidOperationException("공유 경제/전투 월드를 먼저 구성해야 합니다.");
             if (Wisps != null)
@@ -579,7 +627,11 @@ namespace Ordr.Mobile.Unity
                 Resources.Load<TextAsset>("OrdrData/original-2323C-wisp-pools");
             if (source == null)
                 throw new InvalidOperationException("원본 JASS 위습 풀 JSON을 찾을 수 없습니다.");
-            var roller = OriginalWispRewardCatalog.FromOriginalJassJson(source.text, originalRng);
+            var roller = nativePool == null
+                ? OriginalWispRewardCatalog.FromOriginalJassJson(
+                    source.text, scriptRng)
+                : OriginalWispRewardCatalog.FromOriginalJassJson(
+                    source.text, scriptRng, nativePool);
             Wisps = new MobileWispService(SharedEconomy.Wallet, roller, world);
             choiceWispWorld = choiceMerge;
             Wisps.FlushAutomatic();

@@ -1,0 +1,118 @@
+{
+  "format": "ordr-original-2323C-shared-script-random-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "scope": "source-identified-shared-BFh-state-and-BFi-calls-with-independent-native-pool",
+  "fullNativeRandomStateParityVerified": false,
+  "allScriptCallOrderingVerified": false,
+  "supportedSeparateLanes": [
+    {
+      "name": "original custom script BFi",
+      "roles": [
+        "monster-death-gold",
+        "rare-wisp-branch",
+        "random-wisp-resource",
+        "gambling",
+        "other-game-script"
+      ],
+      "sharedState": true
+    },
+    {
+      "name": "Warcraft native unit pool / GetRandomInt",
+      "roles": [
+        "PlaceRandomUnit reward selection",
+        "initial BFh H6 seed"
+      ],
+      "sharedStateWithBFi": false
+    }
+  ],
+  "BFh": {
+    "initialH6": 0,
+    "seedIfZero": "GetRandomInt(1,1000000)",
+    "multiplier": 69069,
+    "increment": 1,
+    "divisor": 2147483647,
+    "statement": "H6=ModuloInteger(H7*H6+H8,H9)",
+    "output": "I2R(H6)/I2R(H9)"
+  },
+  "BFi": {
+    "sortedMin": "BFd(H2,H3)",
+    "range": "BFa(H3-H2)+1",
+    "output": "R2I(BFh()*(H5+1))+Hy"
+  },
+  "noteworthyCalls": [
+    {
+      "source": "CVM",
+      "description": "monster death",
+      "call": "BFi(1,4)==3",
+      "conditionalPrecedingRoll": "BFi(1,10000)<=1+vE[JG] if RC[JG]==k3"
+    },
+    {
+      "source": "CSK",
+      "description": "random wisp resource exchange",
+      "call": "BFi(1,100)>33"
+    },
+    {
+      "source": "CSI",
+      "description": "rare wisp pool split",
+      "call": "BFi(1,100)<=99",
+      "nativeFollowUp": "PlaceRandomUnit(sv or sw)"
+    },
+    {
+      "source": "CSF",
+      "description": "uncommon wisp",
+      "nativeFollowUp": "PlaceRandomUnit(su)",
+      "customBfiCalls": 0
+    },
+    {
+      "source": "CSC",
+      "description": "special wisp",
+      "nativeFollowUp": "PlaceRandomUnit(st)",
+      "customBfiCalls": 0
+    },
+    {
+      "source": "CR6",
+      "description": "legendary wisp",
+      "nativeFollowUp": "PlaceRandomUnit(ss)",
+      "customBfiCalls": 0
+    }
+  ],
+  "functions": [
+    {
+      "name": "BFa",
+      "sourceLine": 3562,
+      "bodySha256": "c24dfbdd35fa857ffa0bf2940e3da0cfcc213626fa127008df0c9f677d347319"
+    },
+    {
+      "name": "BFd",
+      "sourceLine": 3576,
+      "bodySha256": "ae29fa8ec071af7c2cfc5932cf7556df4ade6be886289a690a42886a79058b5a"
+    },
+    {
+      "name": "BFh",
+      "sourceLine": 3589,
+      "bodySha256": "c91b3be7e4d6db6e57942ebb1a271504753c9429a14183af7f96377d076ed915"
+    },
+    {
+      "name": "BFi",
+      "sourceLine": 3596,
+      "bodySha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e"
+    },
+    {
+      "name": "CVM",
+      "sourceLine": 59398,
+      "bodySha256": "5c46393c44660f84707e800ab89326c46810add711ce6e4ca0b9bb92e067c8d3"
+    },
+    {
+      "name": "CSK",
+      "sourceLine": 56477,
+      "bodySha256": "bf21ce2cda8108deca36e725dd0a3387bccfcf6afe8d7d5fa8e37d4fab9cc0e2"
+    },
+    {
+      "name": "CSI",
+      "sourceLine": 56456,
+      "bodySha256": "69717c8a5e0db3b005ddd210aa240da71ffbf760337a8f4867ee630006304b51"
+    }
+  ]
+}
