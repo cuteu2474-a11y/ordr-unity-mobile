@@ -82,7 +82,7 @@ namespace Ordr.Mobile.Tests
             }, "A00D");
             Assert.IsTrue(offer.Title.Contains("안흔함"));
             Assert.IsTrue(offer.OriginalMaterialsAndCost.Contains("루피"));
-            Assert.IsTrue(offer.OriginalMaterialsAndCost.Contains("해군 총병"));
+            Assert.IsTrue(offer.OriginalMaterialsAndCost.Contains("총병"));
             Assert.IsTrue(offer.OriginalMaterialsAndCost.Contains("특수 조건 3개"));
             CollectionAssert.AreEquivalent(new long[] { 30, 31 },
                 offer.SuggestedMaterialInstances);

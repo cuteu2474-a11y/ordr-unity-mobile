@@ -72,7 +72,8 @@ namespace Ordr.Mobile.Mobile
 
                 string display = originalName;
                 if (unitId != null)
-                    display = units.Require(unitId).Name;
+                    display = units.Require(unitId).Name + " · " +
+                        units.Require(unitId).Grade;
                 result.entries.Add(rawcode,
                     new Entry(rawcode, unitId, display));
             }
