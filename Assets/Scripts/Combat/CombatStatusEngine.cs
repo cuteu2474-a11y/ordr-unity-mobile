@@ -75,6 +75,10 @@ namespace Ordr.Mobile.Combat
         private readonly List<ActiveEffect> effects = new List<ActiveEffect>();
         public double CurrentTime { get; private set; }
         public int ActiveCount => effects.Count;
+        // A native impact witness must not certify a state that was removed
+        // and re-applied with the SAME effect object and identical numbers.
+        // Increments only when the status state actually changes.
+        public long Revision { get; private set; }
 
         public void Apply(CombatEffect effect)
         {
@@ -84,6 +88,7 @@ namespace Ordr.Mobile.Combat
             if (effect.Origin != CombatEffectOrigin.Aura && double.IsInfinity(expires))
                 throw new OverflowException("상태효과 만료 시각이 초과되었습니다.");
             effects.Add(new ActiveEffect { Effect = effect, ExpiresAt = expires });
+            Revision = checked(Revision + 1);
         }
 
         public void Advance(double seconds)
@@ -94,13 +99,16 @@ namespace Ordr.Mobile.Combat
             if (double.IsInfinity(next))
                 throw new OverflowException("전투 시간이 허용 범위를 초과했습니다.");
             CurrentTime = next;
-            effects.RemoveAll(item => item.ExpiresAt <= CurrentTime);
+            int expired = effects.RemoveAll(item => item.ExpiresAt <= CurrentTime);
+            if (seconds > 0 || expired > 0)
+                Revision = checked(Revision + 1);
         }
 
         public void RemoveSource(string sourceId)
         {
             if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException(nameof(sourceId));
-            effects.RemoveAll(item => item.Effect.SourceId == sourceId);
+            if (effects.RemoveAll(item => item.Effect.SourceId == sourceId) > 0)
+                Revision = checked(Revision + 1);
         }
 
         public bool HasActiveEffect(CombatEffectType type, CombatEffectOrigin origin)

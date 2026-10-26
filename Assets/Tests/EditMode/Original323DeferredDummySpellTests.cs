@@ -1073,6 +1073,70 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void ReusingTheExactSameEffectObjectCannotReuseStaleImpactEvidence()
+        {
+            var monster = new CombatEnemy("primary", 2000,
+                Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                    CharacterEnemyKind.Line, 0, "normal", 16,
+                    "original observed magic resistance"));
+            monster.Status.Apply(new CombatEffect("source-resist-down",
+                CombatEffectType.MagicResistanceReduction,
+                CombatEffectOrigin.TriggeredSkill, 5, 1));
+            monster.Status.Apply(new CombatEffect("source-magic-amp",
+                CombatEffectType.MagicDamageAmplification,
+                CombatEffectOrigin.TriggeredSkill, 0.2, 1));
+            var original = monster.Status.Snapshot()[1];
+            long before = monster.Status.Revision;
+            var witness = new MutatingMagicModifiers
+            {
+                Change = target =>
+                {
+                    // Same reference, same order and same amounts after
+                    // re-application: value/reference snapshots cannot tell.
+                    target.Status.RemoveSource(original.SourceId);
+                    target.Status.Apply(original);
+                }
+            };
+            Original323NativeDummySpellHit hit;
+            Assert.IsFalse(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A086", MagicHit("primary", 1000f, 16, 900),
+                new TestHpConversion(), witness, out hit));
+            Assert.IsNull(hit);
+            Assert.AreEqual(2000, monster.Health);
+            Assert.AreEqual(2, monster.Status.ActiveCount);
+            Assert.AreSame(original, monster.Status.Snapshot()[1]);
+            Assert.Greater(monster.Status.Revision, before);
+        }
+
+        [Test]
+        public void StatusRevisionTracksRealChangesButNotNoOpUpdates()
+        {
+            var state = new CombatStatusEngine();
+            Assert.AreEqual(0, state.Revision);
+            var effect = new CombatEffect("source",
+                CombatEffectType.MagicDamageAmplification,
+                CombatEffectOrigin.TriggeredSkill, 0.2, 1);
+            state.Apply(effect);
+            long added = state.Revision;
+            Assert.Greater(added, 0);
+            state.RemoveSource("missing-source");
+            state.Advance(0);
+            Assert.AreEqual(added, state.Revision);
+            state.RemoveSource("source");
+            Assert.Greater(state.Revision, added);
+            long removed = state.Revision;
+            state.Apply(effect);
+            Assert.Greater(state.Revision, removed);
+            long addedAgain = state.Revision;
+            state.Advance(0.5);
+            Assert.Greater(state.Revision, addedAgain);
+            long advanced = state.Revision;
+            state.Advance(0.5);
+            Assert.AreEqual(0, state.ActiveCount);
+            Assert.Greater(state.Revision, advanced);
+        }
+
+        [Test]
         public void ExpiredMagicModifierNoLongerRequiresCurrentStackWitness()
         {
             var monster = new CombatEnemy("primary", 2000,

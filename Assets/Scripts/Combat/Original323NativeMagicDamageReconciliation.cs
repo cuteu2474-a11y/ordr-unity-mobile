@@ -136,7 +136,7 @@ namespace Ordr.Mobile.Combat
         private static bool ImpactStateUnchanged(CombatEnemy monster,
             EnemyDefenseProfile defenses, int magicLevel,
             double resistancePercent, long hpAtImpact, double impactTime,
-            IReadOnlyList<CombatEffect> effectsAtImpact)
+            long impactRevision, IReadOnlyList<CombatEffect> effectsAtImpact)
         {
             if (monster == null || !monster.IsAlive ||
                 monster.Health != hpAtImpact ||
@@ -146,7 +146,8 @@ namespace Ordr.Mobile.Combat
                 defenses.MagicAbilityLevel.Value != magicLevel ||
                 !defenses.MagicResistancePercent.HasValue ||
                 defenses.MagicResistancePercent.Value != resistancePercent ||
-                monster.Status.CurrentTime != impactTime)
+                monster.Status.CurrentTime != impactTime ||
+                monster.Status.Revision != impactRevision)
                 return false;
             var now = monster.Status.Snapshot();
             if (now.Count != effectsAtImpact.Count) return false;
@@ -205,6 +206,7 @@ namespace Ordr.Mobile.Combat
             var effectsAtImpact = liveMonster.Status.Snapshot();
             var hpAtImpact = liveMonster.Health;
             var impactTime = liveMonster.Status.CurrentTime;
+            var impactRevision = liveMonster.Status.Revision;
             var magicLevelAtImpact = defense.MagicAbilityLevel.Value;
             var resistanceAtImpact = defense.MagicResistancePercent.Value;
             // Do not invent or compound unverified modifiers.
@@ -233,7 +235,7 @@ namespace Ordr.Mobile.Combat
 
             if (!ImpactStateUnchanged(liveMonster, defense,
                     magicLevelAtImpact, resistanceAtImpact, hpAtImpact,
-                    impactTime, effectsAtImpact))
+                    impactTime, impactRevision, effectsAtImpact))
                 return false;
 
             float damageAfterDefend = observed.NativeDamageBeforeA04Q;
@@ -249,7 +251,7 @@ namespace Ordr.Mobile.Combat
                     out converted) || converted < 0 ||
                 !ImpactStateUnchanged(liveMonster, defense,
                     magicLevelAtImpact, resistanceAtImpact, hpAtImpact,
-                    impactTime, effectsAtImpact))
+                    impactTime, impactRevision, effectsAtImpact))
                 return false;
 
             // The independent original HP observation is decisive. If
