@@ -5,6 +5,17 @@ namespace Ordr.Mobile.Combat
 {
     public sealed class BasicDamageRequest
     {
+        private readonly List<Original323NativePassiveActivation> nativePassives =
+            new List<Original323NativePassiveActivation>();
+        internal IReadOnlyList<Original323NativePassiveActivation> NativePassives
+        { get { return nativePassives.AsReadOnly(); } }
+        internal void RecordNativePassive(Original323NativePassiveActivation activation)
+        {
+            foreach (var old in nativePassives)
+                if (old.Skill.AbilityRawcode == activation.Skill.AbilityRawcode)
+                    throw new InvalidOperationException("동일 타격의 네이티브 스킬 중복 실행");
+            nativePassives.Add(activation);
+        }
         public string UnitInstanceId { get; }
         public string UnitRawCode { get; }
         public string TargetInstanceId { get; }
@@ -85,14 +96,23 @@ namespace Ordr.Mobile.Combat
         public string TargetId { get; }
         public long ActualDamage { get; }
         public IReadOnlyList<string> ActivatedSkillRawCodes { get; }
+        public IReadOnlyList<Original323NativePassiveActivation> NativePassiveActivations { get; }
 
         internal BasicAttackResult(string attackerId, string targetId, long damage,
             List<string> activatedSkills)
+            : this(attackerId, targetId, damage, activatedSkills,
+                Array.Empty<Original323NativePassiveActivation>()) { }
+
+        internal BasicAttackResult(string attackerId, string targetId, long damage,
+            List<string> activatedSkills,
+            IReadOnlyList<Original323NativePassiveActivation> nativePassives)
         {
             AttackerId = attackerId;
             TargetId = targetId;
             ActualDamage = damage;
             ActivatedSkillRawCodes = activatedSkills.AsReadOnly();
+            NativePassiveActivations = new List<Original323NativePassiveActivation>(
+                nativePassives).AsReadOnly();
         }
     }
 
@@ -444,9 +464,9 @@ namespace Ordr.Mobile.Combat
                 verifiedScriptAttackDeclared(attackerInstanceId,
                     unit.Spec.UnitRawCode, targetId);
             // 피해 계산 오류가 발생하면 공격 쿨타임은 소비하지 않는다.
-            long resolved = damageResolver.ResolveBasicDamage(
-                new BasicDamageRequest(attackerInstanceId, unit.Spec.UnitRawCode,
-                    effective, targetId, attackerEffects), enemy);
+            var damageRequest = new BasicDamageRequest(attackerInstanceId,
+                unit.Spec.UnitRawCode, effective, targetId, attackerEffects);
+            long resolved = damageResolver.ResolveBasicDamage(damageRequest, enemy);
             if (resolved < 0) throw new InvalidOperationException("최종 피해량이 음수입니다.");
             if (unit.NextEventSequence == long.MaxValue)
                 throw new OverflowException("전투 이벤트 순번을 더 늘릴 수 없습니다.");
@@ -468,7 +488,8 @@ namespace Ordr.Mobile.Combat
                     trigger, eventSequence))
                     activated.Add(skill.RawCode);
             }
-            result = new BasicAttackResult(attackerInstanceId, targetId, actual, activated);
+            result = new BasicAttackResult(attackerInstanceId, targetId, actual, activated,
+                damageRequest.NativePassives);
             return true;
         }
     }

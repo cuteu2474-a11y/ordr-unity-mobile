@@ -13,9 +13,14 @@ namespace Ordr.Mobile.Combat
             IOrdr323VerifiedHitSource hits,
             IOrdr323VerifiedModifierRules modifiers,
             IOrdr323VerifiedDamageQuantization quantizer,
-            ICombatProcRandom random)
+            ICombatProcRandom random,
+            Original323NativePassiveCatalog nativePassives = null,
+            System.Collections.Generic.IEnumerable<string> externallyHandledAbilities = null)
         {
             CharacterCombatRuntime world = null;
+            if (nativePassives != null)
+                hits = new Original323NativePassiveHitSource(hits, nativePassives,
+                    random, externallyHandledAbilities);
             // 원본 스킬에서 확인된 Bdq(A04M)만 실제 스택 출처로 승인.
             var originalModifier = modifiers ??
                 new Ordr323VerifiedPartialModifierRules(
@@ -31,6 +36,8 @@ namespace Ordr.Mobile.Combat
                 enemyId => world == null ? null : world.StatusOf(enemyId),
                 enemyId => world == null ? 0 : world.ArmorBreakStacksOf(enemyId));
             world = new CharacterCombatRuntime(units, skills, adapter, adapter, random);
+            if (nativePassives != null)
+                world.ConfigureSourceNativePassives(nativePassives, externallyHandledAbilities);
             world.ConfigureOriginal323DefenseSkillLinks();
             return world;
         }

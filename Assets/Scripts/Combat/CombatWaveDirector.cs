@@ -18,6 +18,7 @@ namespace Ordr.Mobile.Combat
         // Identifies the original monster object, not the runtime instance ID.
         // Older manually verified wave callers can leave it unknown.
         public string OriginalRawcode { get; private set; }
+        public Original323NativePassiveTargetProfile NativePassiveTargetProfile { get; private set; }
 
         public VerifiedWaveEnemy(double atSeconds, string enemyId, long health,
             CharacterEnemyKind kind, double x, double y, double pathProgress,
@@ -27,7 +28,8 @@ namespace Ordr.Mobile.Combat
 
         public VerifiedWaveEnemy(double atSeconds, string enemyId, long health,
             CharacterEnemyKind kind, double x, double y, double pathProgress,
-            EnemyDefenseProfile defenses, string originalRawcode)
+            EnemyDefenseProfile defenses, string originalRawcode,
+            Original323NativePassiveTargetProfile nativePassiveTargetProfile = null)
         {
             if (double.IsNaN(atSeconds) || double.IsInfinity(atSeconds) || atSeconds < 0)
                 throw new ArgumentOutOfRangeException(nameof(atSeconds));
@@ -40,10 +42,14 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentException("웨이브 적 위치가 유효하지 않습니다.");
             if (originalRawcode != null && originalRawcode.Length != 4)
                 throw new ArgumentException("몬스터 원본 rawcode는 4글자여야 합니다.");
+            if (nativePassiveTargetProfile != null &&
+                nativePassiveTargetProfile.OriginalUnitRawcode != originalRawcode)
+                throw new ArgumentException("원본 몬스터와 네이티브 대상 분류 객체가 다릅니다.");
             AtSeconds = atSeconds; EnemyId = enemyId; Health = health;
             Kind = kind; X = x; Y = y; PathProgress = pathProgress;
             Defenses = defenses ?? throw new ArgumentNullException(nameof(defenses));
             OriginalRawcode = originalRawcode;
+            NativePassiveTargetProfile = nativePassiveTargetProfile;
         }
     }
 
@@ -335,6 +341,10 @@ namespace Ordr.Mobile.Combat
                     combat.SpawnEnemyWithDefenses(spawn.EnemyId, spawn.Health,
                         spawn.Kind, spawn.X, spawn.Y, spawn.PathProgress,
                         spawn.Defenses);
+                    if (spawn.NativePassiveTargetProfile != null &&
+                        !combat.EnemyOf(spawn.EnemyId).TrySetNativePassiveTargetProfile(
+                            0, spawn.NativePassiveTargetProfile))
+                        throw new InvalidOperationException("실제 몬스터의 네이티브 스킬 대상 상태 연결 실패");
                     // Register only after a successful actual spawn.
                     spawnedOwners.Add(spawn.EnemyId, active.WaveNumber);
                     if (spawn.Kind == CharacterEnemyKind.Boss)

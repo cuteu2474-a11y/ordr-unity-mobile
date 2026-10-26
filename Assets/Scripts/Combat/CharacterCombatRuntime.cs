@@ -733,6 +733,14 @@ namespace Ordr.Mobile.Combat
                 uncommonAbilities == null ||
                 uncommonAbilities.FindProc(unit.Catalog.Id, procId) == null)
                 return false;
+            var native = ConnectedNativePassiveOf(instanceId);
+            if (native != null && uncommonAbilities.FindProc(unit.Catalog.Id, procId).AbilityRawcode ==
+                native.AbilityRawcode &&
+                ((native.Kind == OriginalNativePassiveKind.Critical &&
+                  uncommonAbilities.FindProc(unit.Catalog.Id, procId).Kind == OriginalUncommonProcKind.Critical) ||
+                 (native.Kind == OriginalNativePassiveKind.Stun &&
+                  uncommonAbilities.FindProc(unit.Catalog.Id, procId).Kind == OriginalUncommonProcKind.BashStun)))
+                return true;
             foreach (var spec in unit.Mapping.AttackSpec.Skills)
                 if (spec.RawCode == procId) return true;
             return false;
@@ -2419,6 +2427,7 @@ namespace Ordr.Mobile.Combat
                         InstanceKey(id), primary.Id, null, "basic", 0));
                 // Native uncommon procs were rolled only after a verified hit
                 // and only for fully approved effects. No web tooltip required.
+                CompleteOriginalNativePassives(unit, hit, primary.Enemy);
                 ExecuteOriginalUncommonProcs(unit, hit);
                 if (unit.Profile == null || unit.Mapping == null) continue;
                 var position = roster.Get(id);

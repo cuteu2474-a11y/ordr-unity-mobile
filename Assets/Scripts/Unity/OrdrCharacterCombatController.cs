@@ -16,6 +16,7 @@ namespace Ordr.Mobile.Unity
         [SerializeField] private TextAsset characterSkillsJson;
         [SerializeField] private TextAsset originalStatEvidenceJson;
         [SerializeField] private TextAsset originalMapBaseStatsJson;
+        [SerializeField] private TextAsset originalNativePassivesJson;
         [SerializeField] private TextAsset originalAuraAuditJson;
         [SerializeField] private TextAsset verifiedFusionRecipesJson;
         [SerializeField] private TextAsset otherworldMysticFusionRecipesJson;
@@ -36,6 +37,8 @@ namespace Ordr.Mobile.Unity
         public OriginalUnitStatEvidenceCatalog StatEvidence { get; private set; }
         public OriginalMapBaseStatCatalog MapBaseStats { get; private set; }
         public Original323UncommonAbilityCatalog OriginalUncommonAbilities { get; private set; }
+        public Original323NativePassiveCatalog OriginalNativePassives { get; private set; }
+        public bool UsesOriginalNativePassives { get; private set; }
         public Original323SpecialAuraCatalog OriginalSpecialAuras { get; private set; }
         public Original323ArmorAuraCatalog OriginalArmorAuras { get; private set; }
         public Original323NativeSpeedAuraCatalog OriginalNativeSpeedAuras { get; private set; }
@@ -1325,6 +1328,11 @@ namespace Ordr.Mobile.Unity
                     MapBaseStats = OriginalMapBaseStatCatalog.FromJson(mapBaseData.text, Units);
                     OriginalUncommonAbilities =
                         new Original323UncommonAbilityCatalog(MapBaseStats);
+                    var nativePassives = originalNativePassivesJson != null ? originalNativePassivesJson :
+                        Resources.Load<TextAsset>("OrdrData/original-2323C-native-pure-passives");
+                    if (nativePassives != null)
+                        OriginalNativePassives = Original323NativePassiveCatalog.FromJson(
+                            nativePassives.text, MapBaseStats);
                     OriginalSpecialAuras = new Original323SpecialAuraCatalog(MapBaseStats);
                     var auraData = originalAuraAuditJson != null ? originalAuraAuditJson :
                         Resources.Load<TextAsset>("OrdrData/original-2323C-all-unit-aura-audit");
@@ -1456,6 +1464,16 @@ namespace Ordr.Mobile.Unity
             if (Combat != null)
                 throw new InvalidOperationException("이미 전투 런타임이 구성됐습니다.");
             IOrdr323VerifiedHitSource appliedHits = verifiedHits;
+            // This source is known to return UNMODIFIED native object dice.
+            // A custom hit provider may already include criticals, so it is
+            // never silently wrapped and multiplied a second time.
+            bool nativePassives = verifiedHits is OriginalMapCommonNativeAttackBinding &&
+                OriginalNativePassives != null;
+            var externallyHandled = new List<string>();
+            if (originalUncommonEffectWorld != null && OriginalUncommonAbilities != null &&
+                originalUncommonEffectWorld.SupportsCompleteEffect(
+                    OriginalUncommonAbilities.FindProc("U-03", "A07P:bash")))
+                externallyHandled.Add("A07P"); // existing complete Brook handler wins
             if (verifiedUncommonCritRules != null)
             {
                 if (OriginalUncommonAbilities == null)
@@ -1463,9 +1481,12 @@ namespace Ordr.Mobile.Unity
                 appliedHits = new Original323UncommonCriticalHitSource(
                     verifiedHits, OriginalUncommonAbilities,
                     verifiedUncommonCritRules, random);
+                externallyHandled.Add("A07I"); // existing pre-hit crit handler wins
             }
             ConfigureRuntimeWithWorld(Ordr323DamageWorldBinding.Create(
-                Units, Skills, appliedHits, verifiedModifiers, quantization, random));
+                Units, Skills, appliedHits, verifiedModifiers, quantization, random,
+                nativePassives ? OriginalNativePassives : null, externallyHandled));
+            UsesOriginalNativePassives = nativePassives;
         }
 
         // Opt-in only: a map object row is not itself evidence that JASS leaves

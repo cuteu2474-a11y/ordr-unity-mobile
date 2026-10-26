@@ -38,6 +38,23 @@ namespace Ordr.Mobile.Combat
         public bool IsAlive => Health > 0;
         public EnemyDefenseProfile Defenses { get; private set; }
         public CombatStatusEngine Status { get; private set; }
+        public Original323NativePassiveTargetProfile NativePassiveTargetProfile { get; private set; }
+        public long NativePassiveTargetRevision { get; private set; }
+
+        // Only the native target/classification owner supplies this state.
+        // Boss/Story labels and zero armor never imply hero or immunity flags.
+        public bool TrySetNativePassiveTargetProfile(long expectedRevision,
+            Original323NativePassiveTargetProfile current)
+        {
+            if (current == null) throw new ArgumentNullException(nameof(current));
+            if (!IsAlive || NativePassiveTargetRevision != expectedRevision ||
+                (NativePassiveTargetProfile != null &&
+                 NativePassiveTargetProfile.OriginalUnitRawcode != current.OriginalUnitRawcode)) return false;
+            long next = checked(NativePassiveTargetRevision + 1);
+            NativePassiveTargetProfile = current;
+            NativePassiveTargetRevision = next;
+            return true;
+        }
 
         // Only source-proven levels may be loaded. Unknown is nullable,
         // not level 0; an absent original value must not be guessed.

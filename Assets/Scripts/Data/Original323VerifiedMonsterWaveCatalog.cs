@@ -51,6 +51,8 @@ namespace Ordr.Mobile.Data
                     spawn.Defenses == null || !spawn.Defenses.HasVerifiedArmor ||
                     IsTestEvidence(spawn.Defenses.Source))
                     return false;
+                if (spawn.NativePassiveTargetProfile != null &&
+                    IsTestEvidence(spawn.NativePassiveTargetProfile.Evidence)) return false;
             }
 
             string proof;
@@ -147,11 +149,29 @@ namespace Ordr.Mobile.Data
                     "/position:" + positionEvidence +
                     (magicResistance.HasValue ? "/magic:" + magicEvidence : ""),
                 a04qLevel);
+            Original323NativePassiveTargetProfile nativeProfile = null;
+            var nativeData = OrdrJson.Value(data, "nativePassiveTarget");
+            if (nativeData != null)
+            {
+                var native = OrdrJson.Object(nativeData, "native passive target");
+                var hero = OrdrJson.Value(native, "warcraftHero");
+                if (!(hero is bool)) throw new FormatException("실제 영웅 분류가 필요합니다: " + id);
+                var allowed = new List<string>();
+                foreach (var ability in OrdrJson.Array(OrdrJson.Value(native,
+                    "eligibleAbilityRawcodes"), "eligibleAbilityRawcodes"))
+                {
+                    string code = ability as string;
+                    if (code == null) throw new FormatException("대상 자격 능력 ID 오류: " + id);
+                    allowed.Add(code);
+                }
+                nativeProfile = new Original323NativePassiveTargetProfile(rawcode,
+                    (bool)hero, allowed, SourceW3xSha256, OrdrJson.RequiredString(native, "evidence"));
+            }
             return new VerifiedWaveEnemy(
                 RequiredFinite(data, "atSeconds", true), id, health, kind,
                 RequiredFinite(data, "x"), RequiredFinite(data, "y"),
                 RequiredFinite(data, "pathProgress", true), defenses,
-                rawcode);
+                rawcode, nativeProfile);
         }
 
         public static Original323VerifiedMonsterWaveCatalog FromJson(string json)

@@ -469,8 +469,7 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("원본 맵 고유 능력 " + abilities.Count +
                     "개 (전투 실행은 독립 검증 필요)");
                 foreach (var native in abilities)
-                    GUILayout.Label("· " + native.Name + " [" +
-                        native.AbilityRawcode + "]");
+                    GUILayout.Label("· " + native.Name);
                 if (abilities.Count == 0)
                     GUILayout.Label("원본에서 확인된 추가 공격 능력 없음. 조합·판매 능력은 별도.");
             }
@@ -478,6 +477,16 @@ namespace Ordr.Mobile.Unity
             // modifiers and JASS timing have their independent verification.
             var originalMap = controller.MapBaseStats == null ? null :
                 controller.MapBaseStats.Find(detail.Unit.Id);
+            var nativePassive = originalMap == null || controller.OriginalNativePassives == null ? null :
+                controller.OriginalNativePassives.ForRawcode(originalMap.OriginalRawcode);
+            if (nativePassive != null)
+            {
+                string chance = (nativePassive.ChancePerMillion / 10000.0).ToString("0.##") + "%";
+                GUILayout.Label(nativePassive.Kind == OriginalNativePassiveKind.Critical
+                    ? "원본 크리티컬: " + chance + " 확률 · " + nativePassive.CriticalMultiplier.ToString("0.##") + "배"
+                    : "원본 기절: " + chance + " 확률 · 일반 " + nativePassive.NormalStunSeconds.ToString("0.##") +
+                      "초 / 영웅 " + nativePassive.HeroStunSeconds.ToString("0.##") + "초");
+            }
             var attack = originalMap == null ? null : originalMap.Attack1;
             if (attack != null && attack.MinimumBaseDamage.HasValue &&
                 attack.MaximumBaseDamage.HasValue &&
