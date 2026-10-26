@@ -141,6 +141,9 @@ namespace Ordr.Mobile.Combat
     {
         private readonly IOriginal323DummySpellCastWitness castWitness;
         private readonly IOriginal323DummySpellImpactWitness impactWitness;
+        // A source callback must not recursively resolve the same (or
+        // another) native cast before the outer observation has finished.
+        private bool observingNativeImpact;
 
         public Original323DeferredNativeDummySpellWorld(
             IOriginal323DummySpellCastWitness verifiedCasts,
@@ -183,17 +186,35 @@ namespace Ordr.Mobile.Combat
         {
             actualTotalHpDamage = 0;
             Original323ObservedDummyCast cast;
-            if (liveCombat == null ||
+            if (liveCombat == null || observingNativeImpact ||
                 !liveCombat.TryGetPendingOriginalDummyCast(
                     originalCastId, out cast))
                 return false;
-            Original323NativeDummyImpact impact;
-            if (!impactWitness.TryConfirmOriginalDummyImpact(
-                    cast, liveCombat, out impact) ||
-                impact == null)
-                return false;
-            return liveCombat.TryCommitObservedOriginalDummyImpact(
-                originalCastId, impact, out actualTotalHpDamage);
+            // Verification callbacks may be supplied by external adapters.
+            // They must not step the simulation or consume the pending cast
+            // while its original native impact is being certified.
+            double timeBeforeWitness = liveCombat.Time;
+            observingNativeImpact = true;
+            try
+            {
+                Original323NativeDummyImpact impact;
+                if (!impactWitness.TryConfirmOriginalDummyImpact(
+                        cast, liveCombat, out impact) ||
+                    impact == null ||
+                    liveCombat.Time != timeBeforeWitness)
+                    return false;
+                Original323ObservedDummyCast stillPending;
+                if (!liveCombat.TryGetPendingOriginalDummyCast(
+                        originalCastId, out stillPending) ||
+                    !Object.ReferenceEquals(stillPending, cast))
+                    return false;
+                return liveCombat.TryCommitObservedOriginalDummyImpact(
+                    originalCastId, impact, out actualTotalHpDamage);
+            }
+            finally
+            {
+                observingNativeImpact = false;
+            }
         }
     }
 }

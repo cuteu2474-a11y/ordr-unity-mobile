@@ -69,6 +69,46 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        private sealed class ReentrantImpactWitness :
+            IOriginal323DummySpellImpactWitness
+        {
+            public Original323DeferredNativeDummySpellWorld Bridge;
+            public Original323NativeDummyImpact Current;
+            public int Calls;
+            public bool InnerAccepted;
+            public long InnerDamage;
+
+            public bool TryConfirmOriginalDummyImpact(
+                Original323ObservedDummyCast original,
+                CharacterCombatRuntime combat,
+                out Original323NativeDummyImpact impact)
+            {
+                Calls++;
+                InnerAccepted = Bridge.TryApplyObservedImpact(
+                    combat, original.CastId, out InnerDamage);
+                impact = Current;
+                return true;
+            }
+        }
+
+        private sealed class TimeAdvancingImpactWitness :
+            IOriginal323DummySpellImpactWitness
+        {
+            public Original323NativeDummyImpact Current;
+            public int Calls;
+
+            public bool TryConfirmOriginalDummyImpact(
+                Original323ObservedDummyCast original,
+                CharacterCombatRuntime combat,
+                out Original323NativeDummyImpact impact)
+            {
+                Calls++;
+                combat.Step(0.25);
+                impact = Current;
+                return true;
+            }
+        }
+
         private sealed class NativeMagic : IOriginal323NativeMagicImpactWitness
         {
             public Original323ObservedNativeMagicImpact Next;
@@ -284,6 +324,55 @@ namespace Ordr.Mobile.Tests
             var pendingEvents = game.Combat.Step(0);
             Assert.IsTrue(ContainsEvent(pendingEvents,
                 CharacterCombatEventType.SkillDamage, "람각"));
+        }
+
+        [Test]
+        public void ImpactWitnessCannotRecursivelyApplySameCastTwice()
+        {
+            var observer = new ReentrantImpactWitness();
+            var game = Create(observedImpactWorld: observer);
+            observer.Bridge = game.Bridge;
+            game.Enemy("primary");
+            game.Combat.Step(0);
+            game.Combat.Step(0.25);
+            observer.Current = new Original323NativeDummyImpact(
+                "source-reentrant-original-impact", 0.25, true,
+                new[] { Hit("primary", 22) },
+                "original observed native impact without double settlement");
+
+            long dealt;
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat, game.Cast.CastId, out dealt));
+            Assert.AreEqual(22, dealt);
+            Assert.IsFalse(observer.InnerAccepted);
+            Assert.AreEqual(0, observer.InnerDamage);
+            Assert.AreEqual(1, observer.Calls);
+            Assert.AreEqual(977, game.Combat.EnemyOf("primary").Health);
+            Assert.AreEqual(0, game.Combat.PendingOriginalDummySpellCount);
+            Assert.IsFalse(game.Bridge.TryApplyObservedImpact(
+                game.Combat, game.Cast.CastId, out dealt));
+        }
+
+        [Test]
+        public void ImpactWitnessMayNotAdvanceBattleClockBeforeCommit()
+        {
+            var observer = new TimeAdvancingImpactWitness();
+            var game = Create(observedImpactWorld: observer);
+            game.Enemy("primary");
+            game.Combat.Step(0);
+            game.Combat.Step(0.25);
+            observer.Current = new Original323NativeDummyImpact(
+                "source-invalid-time-shifted-impact", 0.50, true,
+                new[] { Hit("primary", 22) },
+                "source observed native impact at later time");
+
+            long dealt;
+            Assert.IsFalse(game.Bridge.TryApplyObservedImpact(
+                game.Combat, game.Cast.CastId, out dealt));
+            Assert.AreEqual(0, dealt);
+            Assert.AreEqual(1, observer.Calls);
+            Assert.AreEqual(999, game.Combat.EnemyOf("primary").Health);
+            Assert.AreEqual(1, game.Combat.PendingOriginalDummySpellCount);
         }
 
         [Test]
