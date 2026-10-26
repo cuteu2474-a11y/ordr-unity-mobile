@@ -426,7 +426,7 @@ namespace Ordr.Mobile.Tests
                 game.Cast.CastId,out selectedCount,out immuneCount));
             Assert.AreEqual(3,selectedCount);
             Assert.AreEqual(2,immuneCount);
-            Assert.AreEqual(999,game.Combat.EnemyOf("a").Health);
+            Assert.AreEqual(1000,game.Combat.EnemyOf("a").Health);
             Assert.AreEqual(1000,game.Combat.EnemyOf("b").Health);
             game.Combat.Step(0.25);
             game.Impact.Current = new Original323NativeDummyImpact(
