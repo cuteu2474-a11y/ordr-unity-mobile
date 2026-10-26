@@ -41,6 +41,9 @@ namespace Ordr.Mobile.Unity
         private bool fusionMaterialsReadyOnly;
         private int fusionPage;
         private int originalJassPage;
+        private string routeId;
+        private IReadOnlyList<OriginalJassFusionDependencyStep> routeSteps =
+            new OriginalJassFusionDependencyStep[0];
         private const int FusionPageSize = 8;
         private const int OriginalJassPageSize = 10;
         private MobileManualOffer pendingEconomy;
@@ -615,6 +618,38 @@ namespace Ordr.Mobile.Unity
                     notice = "재료는 아직 소비되지 않았습니다. 확정 전에 조건을 재검증합니다.";
                 }
                 GUI.enabled = previousEnabled;
+                if (controller.OriginalJassFusions != null &&
+                    controller.OriginalFusionObjectPreview != null &&
+                    controller.OriginalJassFusions.FindByAbility(offer.RecipeId) != null &&
+                    GUILayout.Button(routeId == offer.RecipeId ? "경로 닫기" :
+                        "하위 조합 경로", GUILayout.MinHeight(44)))
+                {
+                    if (routeId == offer.RecipeId)
+                    {
+                        routeId = null;
+                        routeSteps = new OriginalJassFusionDependencyStep[0];
+                    }
+                    else
+                    {
+                        routeSteps = new OriginalJassFusionDependencyPlanner(
+                            controller.OriginalJassFusions,
+                            controller.OriginalFusionObjectPreview)
+                            .Build(offer.RecipeId, 4);
+                        routeId = offer.RecipeId;
+                    }
+                }
+                GUILayout.EndVertical();
+            }
+            if (routeId != null)
+            {
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.Label("원본 재료 계보 (실제 제작 승인이 아님)");
+                foreach (var step in routeSteps)
+                    GUILayout.Label(new string('　', Math.Min(step.Depth, 5)) +
+                        "· " + step.Name + " ×" + step.Count +
+                        (step.Source == null ? " · 하위 조합 없음" :
+                        " · 하위 조합 / 추가 조건 " + step.SpecialCount + "개") +
+                        (step.DepthLimited ? " · 더 깊은 경로 있음" : ""));
                 GUILayout.EndVertical();
             }
             if (pages > 1)
