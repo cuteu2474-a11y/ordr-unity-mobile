@@ -153,6 +153,16 @@ namespace Ordr.Mobile.Combat
         public bool TryApplyObservedOriginal323SpecialRareImpact(
             string sourceEventId)
         {
+            return TryCommitOriginal323SpecialRareImpact(
+                sourceEventId, null);
+        }
+
+        // Used by the verified cast lifecycle to stop the independent
+        // native impact observer from swapping its receipt between
+        // ordered preflight and canonical HP settlement.
+        internal bool TryCommitOriginal323SpecialRareImpact(
+            string sourceEventId, Original323SpecialRareObservedImpact expectedReceipt)
+        {
             BlockExternalMutationDuringOriginalFusion();
             if (game.Phase != SessionPhase.Running ||
                 specialRareOriginalMap == null || specialRareImpactWitness == null ||
@@ -168,7 +178,9 @@ namespace Ordr.Mobile.Combat
             Original323SpecialRareObservedImpact impact;
             if (!specialRareImpactWitness.TryObserveNativeImpact(
                     sourceEventId, this, out impact) ||
-                impact == null || impact.SourceEventId != sourceEventId)
+                impact == null || impact.SourceEventId != sourceEventId ||
+                (expectedReceipt != null &&
+                 !Object.ReferenceEquals(expectedReceipt, impact)))
                 return false;
             // A pure witness must not change the battle clock or roster.
             if (scheduler.Time != observedClock ||

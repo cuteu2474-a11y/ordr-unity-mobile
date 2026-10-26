@@ -52,6 +52,9 @@ namespace Ordr.Mobile.Unity
         }
         private IOriginalUncommonVerifiedProcWorld originalUncommonEffectWorld;
         private IOriginal323SpecialRareImpactWitness specialRareNativeImpactWitness;
+        private IOriginal323SpecialRareNativeSequenceWitness specialRareNativeSequenceWitness;
+        public Original323SpecialRareNativeSequenceWorld SpecialRareNativeSequence
+        { get; private set; }
         private IOriginal323VerifiedNativeAttackCadence verifiedNativeCadence;
         private IOriginal323VerifiedNativeEnemyMovementStep verifiedNativeMovement;
         private IOriginal323UncommonCriticalPrehitRules verifiedUncommonCritRules;
@@ -87,6 +90,22 @@ namespace Ordr.Mobile.Unity
                     "원본 272종 유닛/객체 능력 데이터를 먼저 로드하세요.");
             specialRareNativeImpactWitness = verifiedNativeSource ??
                 throw new ArgumentNullException(nameof(verifiedNativeSource));
+        }
+
+        // Source-observed direct attack lifecycles: a cast can resolve
+        // multiple original hits at different native game times. This is
+        // opt-in and never simulates an unverified proc or tick interval.
+        public void ConfigureVerifiedOriginalSpecialRareSequences(
+            IOriginal323SpecialRareNativeSequenceWitness sourceSequence)
+        {
+            if (Combat != null || specialRareNativeSequenceWitness != null)
+                throw new InvalidOperationException(
+                    "원본 연속 공격은 전투 월드 생성 전 한 번만 설정하세요.");
+            if (MapBaseStats == null || specialRareNativeImpactWitness == null)
+                throw new InvalidOperationException(
+                    "원본 데이터와 개별 네이티브 타격 증거를 먼저 등록하세요.");
+            specialRareNativeSequenceWitness = sourceSequence ??
+                throw new ArgumentNullException(nameof(sourceSequence));
         }
 
         // This must be set BEFORE creating the damage runtime. A07I crit
@@ -1438,6 +1457,11 @@ namespace Ordr.Mobile.Unity
             if (specialRareNativeImpactWitness != null)
                 Combat.ConfigureOriginal323SpecialRareSkillImpacts(
                     MapBaseStats, specialRareNativeImpactWitness);
+            if (specialRareNativeSequenceWitness != null)
+                SpecialRareNativeSequence =
+                    new Original323SpecialRareNativeSequenceWorld(
+                        Combat, MapBaseStats, specialRareNativeSequenceWitness,
+                        specialRareNativeImpactWitness);
             if (originalScriptAttackSkillRolls != null &&
                 verifiedOriginalAttackDummySpells != null)
                 Combat.ConfigureOriginal323ScriptAttackEffectWorld(
