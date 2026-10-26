@@ -38,6 +38,8 @@ namespace Ordr.Mobile.Unity
         public Original323UncommonAbilityCatalog OriginalUncommonAbilities { get; private set; }
         public Original323SpecialAuraCatalog OriginalSpecialAuras { get; private set; }
         public Original323ArmorAuraCatalog OriginalArmorAuras { get; private set; }
+        public Original323NativeSpeedAuraCatalog OriginalNativeSpeedAuras { get; private set; }
+        public Original323CompositeAuraCatalog OriginalCombinedAuras { get; private set; }
         private IOriginal323SpecialAuraTargetRules specialAuraTargets;
 
         public void ConfigureVerifiedOriginalSpecialAuraTargets(
@@ -1220,8 +1222,19 @@ namespace Ordr.Mobile.Unity
                     var auraData = originalAuraAuditJson != null ? originalAuraAuditJson :
                         Resources.Load<TextAsset>("OrdrData/original-2323C-all-unit-aura-audit");
                     if (auraData != null)
+                    {
+                        // One source-audited original file now supplies BOTH
+                        // enemy armor and AOae speed/slow passive definitions.
+                        // The composite removes the three older pinned six-
+                        // skill duplicates rather than applying them twice.
                         OriginalArmorAuras = Original323ArmorAuraCatalog.FromJson(
                             auraData.text, MapBaseStats, OriginalSpecialAuras);
+                        OriginalNativeSpeedAuras =
+                            Original323NativeSpeedAuraCatalog.FromJson(
+                                auraData.text, MapBaseStats);
+                        OriginalCombinedAuras = new Original323CompositeAuraCatalog(
+                            MapBaseStats, OriginalArmorAuras, OriginalNativeSpeedAuras);
+                    }
                 }
                 var fusionData = verifiedFusionRecipesJson != null ? verifiedFusionRecipesJson :
                     Resources.Load<TextAsset>("OrdrData/verified-mobile-fusion-recipes");
@@ -1400,7 +1413,9 @@ namespace Ordr.Mobile.Unity
                 originalMonsterGold = new Original323MonsterGoldService(
                     VerifiedWaveDirector, world.Game, SharedEconomy.Wallet, 0,
                     originalMonsterGoldWitness);
-            if (OriginalArmorAuras != null)
+            if (OriginalCombinedAuras != null)
+                Combat.ConfigureOriginalAuras(OriginalCombinedAuras, specialAuraTargets);
+            else if (OriginalArmorAuras != null)
                 Combat.ConfigureOriginalAuras(OriginalArmorAuras, specialAuraTargets);
             else if (OriginalSpecialAuras != null)
                 Combat.ConfigureOriginalSpecialAuras(OriginalSpecialAuras, specialAuraTargets);

@@ -23,7 +23,10 @@ namespace Ordr.Mobile.Combat
         public int Level { get; }
         // null means inherited/unknown, never an implicit flat-mode zero.
         public double? RawArmorPercentageMode { get; }
-        public bool TargetsAllies => Type == CombatEffectType.AttackPowerBuff;
+        // AOae DataB is an ally ATTACK-SPEED aura, not a debuff on enemies.
+        // Native rank/mask/buff witnesses still decide each live recipient.
+        public bool TargetsAllies => Type == CombatEffectType.AttackPowerBuff ||
+            Type == CombatEffectType.AttackSpeedBuff;
         public string Evidence => "W3X:" + Original323UncommonAbilityCatalog.SourceW3xSha256 +
             "/" + UnitRawcode + "/" + AbilityRawcode + "/" + BuffRawcode;
 
