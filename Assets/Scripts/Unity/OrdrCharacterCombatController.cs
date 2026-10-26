@@ -151,8 +151,32 @@ namespace Ordr.Mobile.Unity
         private IOriginal323ObservedRoundStartWitness observedRoundStartWitness;
         private IOriginal323BossDeadlineWitness originalBossDeadlineWitness;
         private Original323BossScoreService originalBossScores;
+        private IOriginal323MonsterGoldDeathWitness originalMonsterGoldWitness;
+        private Original323MonsterGoldService originalMonsterGold;
         private readonly HashSet<int> checkedOriginalBossDeadlines =
             new HashSet<int>();
+
+        // Gold is separate from boss score: process only actual monster
+        // deaths witnessed in original shared BFi random order.
+        public void ConfigureOriginalMonsterGoldEvents(
+            IOriginal323MonsterGoldDeathWitness nativeGoldEvents)
+        {
+            if (Combat != null || originalMonsterGoldWitness != null)
+                throw new InvalidOperationException(
+                    "몬스터 골드 원본 이벤트는 전투 생성 전에 한 번만 연결해야 합니다.");
+            originalMonsterGoldWitness = nativeGoldEvents ??
+                throw new ArgumentNullException(nameof(nativeGoldEvents));
+        }
+
+        public bool TryProcessObservedMonsterGold(int sourceSpawnWave,
+            string originalMonsterInstanceId, out int awardedGold)
+        {
+            awardedGold = 0;
+            return Combat != null &&
+                originalMonsterGold != null &&
+                originalMonsterGold.TryProcessObservedDeath(
+                    sourceSpawnWave, originalMonsterInstanceId, out awardedGold);
+        }
 
         // External adapters must reflect native Warcraft timer/death events.
         // The original scores are SCORE POINTS, never Gold resource rewards.
@@ -976,6 +1000,10 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            if (originalMonsterGoldWitness != null)
+                originalMonsterGold = new Original323MonsterGoldService(
+                    VerifiedWaveDirector, world.Game, SharedEconomy.Wallet, 0,
+                    originalMonsterGoldWitness);
             if (OriginalArmorAuras != null)
                 Combat.ConfigureOriginalAuras(OriginalArmorAuras, specialAuraTargets);
             else if (OriginalSpecialAuras != null)

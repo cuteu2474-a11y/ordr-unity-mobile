@@ -156,6 +156,8 @@ namespace Ordr.Mobile.Combat
             // Records only an actual kill event from CombatResolution.
             public readonly Dictionary<string, string> DefeatedBossRawcodes =
                 new Dictionary<string, string>(StringComparer.Ordinal);
+            public readonly Dictionary<string, string> DefeatedMonsterRawcodes =
+                new Dictionary<string, string>(StringComparer.Ordinal);
 
             public WaveLedger(VerifiedWavePlan plan)
             {
@@ -207,6 +209,19 @@ namespace Ordr.Mobile.Combat
             return false;
         }
 
+        // Includes normal, boss and enraged deaths. Escape is NOT a death.
+        // The death-time global round can differ from the spawn-wave number.
+        public bool TryGetDefeatedMonsterRawcode(int spawnWaveNumber,
+            string instanceId, out string originalRawcode)
+        {
+            originalRawcode = null;
+            WaveLedger ledger;
+            return !string.IsNullOrWhiteSpace(instanceId) &&
+                waves.TryGetValue(spawnWaveNumber, out ledger) &&
+                ledger.DefeatedMonsterRawcodes.TryGetValue(instanceId,
+                    out originalRawcode);
+        }
+
         // A separate original-timer witness must still confirm kill timing
         // before any score may be awarded. A boss escape is not a kill.
         public bool TryGetDefeatedBossRawcode(int waveNumber, string instanceId,
@@ -231,6 +246,13 @@ namespace Ordr.Mobile.Combat
             if (reason == CombatEnemyExitReason.Defeated)
             {
                 ledger.Defeated++;
+                foreach (var spawn in ledger.Plan.Spawns)
+                    if (spawn.EnemyId == enemyId)
+                    {
+                        ledger.DefeatedMonsterRawcodes.Add(enemyId,
+                            spawn.OriginalRawcode);
+                        break;
+                    }
                 if (boss)
                 {
                     ledger.BossDefeated++;

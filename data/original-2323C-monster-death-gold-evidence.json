@@ -1,0 +1,78 @@
+{
+  "format": "ordr-original-2323C-monster-death-gold-evidence-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "safeForLiveOriginalRandomParity": false,
+  "scope": "source-gold-rule-only-external-shared-rng-observer-required",
+  "eligibility": "unit death with A901 player marker and Ji[playerSlot] active",
+  "eligibleSpawns": [
+    "normal",
+    "boss",
+    "enraged"
+  ],
+  "roundBasis": "X3 at death (not monster birth)",
+  "rollCondition": "BFi(1,4)==3",
+  "randomSource": "BFh globally shared state H6; seed GetRandomInt(1,1000000), LCG H7=69069 H8=1 H9=2147483647",
+  "nativeRealToInteger": "R2I truncate toward zero",
+  "baseGold": "R2I(1.+2.*(X3/5.)+3.*(X3/6.)-X3/10.)",
+  "finalGold": "R2I(baseGold*2.*(1.+dL[playerSlot]))",
+  "grant": "Bcf(Player(playerSlot),goldAmount) -> PLAYER_STATE_RESOURCE_GOLD",
+  "knownBonusSources": [
+    "dL += 1.0",
+    "dL += 0.6",
+    "dL += 0.3"
+  ],
+  "requiresObservedPlayerSlot": true,
+  "requiresObservedGlobalRandomRoll": true,
+  "requiresObservedDeathTimeRound": true,
+  "requiresObservedGoldBonus": true,
+  "requiresObservedClientGold": true,
+  "sourceFunctions": [
+    {
+      "name": "CVM",
+      "sourceLine": 59398,
+      "normalizedBodySha256": "5c46393c44660f84707e800ab89326c46810add711ce6e4ca0b9bb92e067c8d3"
+    },
+    {
+      "name": "BFi",
+      "sourceLine": 3596,
+      "normalizedBodySha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e"
+    },
+    {
+      "name": "BFh",
+      "sourceLine": 3589,
+      "normalizedBodySha256": "c91b3be7e4d6db6e57942ebb1a271504753c9429a14183af7f96377d076ed915"
+    },
+    {
+      "name": "Bcf",
+      "sourceLine": 8236,
+      "normalizedBodySha256": "9ff12e2de9ec677a042c207d90fb5db3d29aaffca7856cf0f52d0d8c38ad62c4"
+    },
+    {
+      "name": "CVo",
+      "sourceLine": 59672,
+      "normalizedBodySha256": "02f372d6a1bf9b7fe0be4a6145a0c2eeec22ab0dbcbc456f53250feda0759607"
+    },
+    {
+      "name": "CVp",
+      "sourceLine": 59686,
+      "normalizedBodySha256": "120904233fe1397dc1d93932dacc6a36d99fd2120762afed91ef1e3b23d9aa15"
+    },
+    {
+      "name": "CVX",
+      "sourceLine": 59497,
+      "normalizedBodySha256": "9e557a1bb3894fa99b491ae411dc45d07c8458ac9cc8f2cc3c1ff5e6eae33ece"
+    },
+    {
+      "name": "CVY",
+      "sourceLine": 59511,
+      "normalizedBodySha256": "bc9bc01271443a759e205a8fc525e4f2421db4bc45a57401acf34b2bb8d4c886"
+    },
+    {
+      "name": "CVZ",
+      "sourceLine": 59530,
+      "normalizedBodySha256": "98a8f9d3ee38456f7956fb1aba90f1564f2d435862db2d78334fafddb62d935e"
+    }
+  ]
+}
