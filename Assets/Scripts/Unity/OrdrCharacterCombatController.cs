@@ -612,6 +612,16 @@ namespace Ordr.Mobile.Unity
         // This execution port must recreate the original dummy spell and
         // resolve its validated Warcraft collision/damage/immunity in Unity.
         // Original orders are bound automatically on each eligible attack.
+        // Source-backed object entries from AbilityData.slk and
+        // UnitAbilities.slk; the external witness must still supply verified
+        // Warcraft target/immunity/final-HP and native impact evidence.
+        public void ConfigureOriginal323AttackedDummyHitWorld(
+            IOriginal323NativeDummySpellHitWitness nativeSpellHits)
+        {
+            ConfigureOriginal323AttackedDummySpellWorld(
+                new Original323ObservedAttackDummySpellWorld(nativeSpellHits));
+        }
+
         public void ConfigureOriginal323AttackedDummySpellWorld(
             IOriginal323VerifiedAttackDummySpellWorld verifiedNativeSpellWorld)
         {

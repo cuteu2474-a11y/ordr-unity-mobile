@@ -87,6 +87,9 @@ namespace Ordr.Mobile.Combat
         private string executingUncommonActor;
         private string executingUncommonTarget;
         private Original323ScriptAttackEffectCoordinator originalScriptAttackEffects;
+        private string executingOriginalDummyActor;
+        private string executingOriginalDummyTarget;
+        private string executingOriginalDummyRawcode;
         private readonly Dictionary<string, long> originalScriptAttackSequences =
             new Dictionary<string, long>(StringComparer.Ordinal);
 
@@ -119,19 +122,112 @@ namespace Ordr.Mobile.Combat
                 throw new OverflowException("원본 공격 선언 이벤트 순번 초과");
             sequence++;
             originalScriptAttackSequences[attackerId] = sequence;
-            Original323AttackDummySpellResult result;
-            if (!originalScriptAttackEffects.TryDispatch(
-                originalRawcode, attackerId, targetId,
-                sequence, this, out result) ||
-                result == null || !result.Triggered)
-                return;
-            events.Add(new CharacterCombatEvent(
-                result.Applied ? CharacterCombatEventType.SkillActivated :
-                    CharacterCombatEventType.EffectDeferred,
-                attackerId, targetId, result.HumanSkillName,
-                result.Applied ? result.Evidence :
-                    "원본 주문 전체 효과 검증/적용 보류: " +
-                    (result.Evidence ?? result.HumanSkillName), 0));
+            if (!processingStep || executingOriginalDummyActor != null)
+                throw new InvalidOperationException(
+                    "공격 선언 밖에서 원본 보조 주문을 중복 실행할 수 없습니다.");
+            executingOriginalDummyActor = attackerId;
+            executingOriginalDummyTarget = targetId;
+            executingOriginalDummyRawcode = originalRawcode;
+            try
+            {
+                Original323AttackDummySpellResult result;
+                if (!originalScriptAttackEffects.TryDispatch(
+                    originalRawcode, attackerId, targetId,
+                    sequence, this, out result) ||
+                    result == null || !result.Triggered)
+                    return;
+                events.Add(new CharacterCombatEvent(
+                    result.Applied ? CharacterCombatEventType.SkillActivated :
+                        CharacterCombatEventType.EffectDeferred,
+                    attackerId, targetId, result.HumanSkillName,
+                    result.Applied ? result.Evidence :
+                        "원본 주문 전체 효과 검증/적용 보류: " +
+                        (result.Evidence ?? result.HumanSkillName), 0));
+            }
+            finally
+            {
+                executingOriginalDummyActor = null;
+                executingOriginalDummyTarget = null;
+                executingOriginalDummyRawcode = null;
+            }
+        }
+
+        // Only an original attack-declared callback may apply verified native
+        // e0KD damage. Never accept a free-standing/UI hit or a fabricated
+        // spell geometry/HP conversion. Check the ENTIRE hit batch first.
+        internal bool TryCommitOriginalDummySpellHits(
+            Original323AttackDummySpellCommand command,
+            string attackerId, string attackedEnemyId,
+            IReadOnlyList<Original323NativeDummySpellHit> nativeHits,
+            out long totalActualDamage)
+        {
+            totalActualDamage = 0;
+            Original323NativeDummyAbilityFacts facts;
+            if (command == null ||
+                !Original323NativeDummyAbilityCatalog.TryGet(command, out facts) ||
+                !processingStep || game.Phase != SessionPhase.Running ||
+                attackerId != executingOriginalDummyActor ||
+                attackedEnemyId != executingOriginalDummyTarget ||
+                command.AttackerRawcode != executingOriginalDummyRawcode ||
+                nativeHits == null || nativeHits.Count > 512 ||
+                (facts.MaxNativeTargets.HasValue &&
+                 nativeHits.Count > facts.MaxNativeTargets.Value))
+                return false;
+
+            long actorNumber;
+            CharacterInstance actor;
+            SpatialCombatEnemy originalTarget;
+            if (!long.TryParse(attackerId, NumberStyles.Integer,
+                    CultureInfo.InvariantCulture, out actorNumber) ||
+                !characters.TryGetValue(actorNumber, out actor) ||
+                !actor.AttackReady || actor.Mapping == null ||
+                actor.Mapping.AttackSpec.UnitRawCode != command.AttackerRawcode ||
+                !enemies.TryGetValue(attackedEnemyId, out originalTarget) ||
+                !originalTarget.Enemy.IsAlive ||
+                !CanAttackInThisLane(actor, originalTarget))
+                return false;
+
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var hit in nativeHits)
+            {
+                SpatialCombatEnemy target;
+                if (hit == null ||
+                    !Original323BossRoundRules.TrustedRuntimeEvidence(
+                        hit.OriginalNativeHitEvidence) ||
+                    hit.FinalHpDamage < 0 ||
+                    !seen.Add(hit.TargetId) ||
+                    !enemies.TryGetValue(hit.TargetId, out target) ||
+                    !target.Enemy.IsAlive ||
+                    !CanAttackInThisLane(actor, target) ||
+                    !ReferenceEquals(resolution.GetEnemy(hit.TargetId),
+                        target.Enemy))
+                    return false;
+            }
+
+            // Empty batch: native Warcraft confirmed that the spell was
+            // issued but no target actually lost HP (immunity/miss/no targets).
+            // It must not turn into a synthetic zero-damage attack.
+            foreach (var hit in nativeHits)
+            {
+                var target = enemies[hit.TargetId];
+                long actual;
+                if (!resolution.TryApplySkillDamage(attackerId,
+                        hit.TargetId, hit.FinalHpDamage, out actual))
+                    throw new InvalidOperationException(
+                        "검증된 원본 보조 주문 대상이 피해 처리 도중 변경됐습니다.");
+                totalActualDamage = checked(totalActualDamage + actual);
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillDamage, attackerId,
+                    hit.TargetId, command.HumanSkillName,
+                    "원본 주문 최종 체력 피해: " +
+                        hit.OriginalNativeHitEvidence, actual));
+                if (!target.Enemy.IsAlive)
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EnemyDefeated,
+                        attackerId, hit.TargetId, command.HumanSkillName,
+                        "원본 보조 주문으로 처치", actual));
+            }
+            return true;
         }
 
         // All 14 uncommon units have W3X object/ability metadata, even when

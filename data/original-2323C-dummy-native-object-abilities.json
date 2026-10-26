@@ -1,0 +1,60 @@
+{
+  "format": "ordr-original-2323C-dummy-native-object-abilities-v1",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "unitAbilitySlkSha256": "fbd47be22d1482d63df15d70d7a8fa38f7f26b288443a5d74aa056104aef139d",
+  "abilityDataSlkSha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda",
+  "source": "ORDR_S2_2.323[C](3).w3x: Units/AbilityData.slk, Units/UnitAbilities.slk; war3map.j Bnm,Bnp,Bnr",
+  "objectRole": "e0KD dummy - not a registered combat character",
+  "nativeCastHitGeometryAndImmunityVerifiedInUnity": false,
+  "rawStatsAreNotFinalHpDamage": true,
+  "dummyAbilities": [
+    "A15O",
+    "A0VS",
+    "A086",
+    "A08I",
+    "A08L",
+    "A0HX",
+    "Aloc",
+    "Avul"
+  ],
+  "abilities": [
+    {
+      "ability": "A0VS",
+      "parentAbility": "AUcs",
+      "nativeOrder": "carrionswarm",
+      "name": "람각",
+      "owners": [
+        "h00M",
+        "h00A"
+      ],
+      "castMode": "point-at-attacker-location",
+      "targetMask": "ground,air",
+      "area1": 200,
+      "range1": 1700,
+      "dataA1": 150,
+      "dataB1": 70000000,
+      "dataC1": 800,
+      "dataD1": 250,
+      "maxNativeTargets": null
+    },
+    {
+      "ability": "A086",
+      "parentAbility": "ANfl",
+      "nativeOrder": "forkedlightning",
+      "name": "갈래 번개",
+      "owners": [
+        "h00Q"
+      ],
+      "castMode": "attacked-enemy-unit",
+      "targetMask": "air,ground,enemy,neutral,organic",
+      "area1": 125,
+      "range1": 1750,
+      "dataA1": 1500,
+      "dataB1": 4,
+      "dataC1": 1700,
+      "dataD1": 500,
+      "maxNativeTargets": 4
+    }
+  ]
+}
