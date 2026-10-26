@@ -1067,6 +1067,22 @@ namespace Ordr.Mobile.Unity
                 new OriginalJassSharedWalletFusionEffects(verifiedNativeUnits));
         }
 
+        // Complete live mobile composition path. This DOES replace actual
+        // combat instances after an independently verified source CHu/CHx
+        // placement and post-effect witness authorizes the specific recipe.
+        // It never treats the read-only W3X name reconciliation as permission.
+        public void ConfigureOriginalJassCombatUnitCrafting(
+            IVerifiedUnitRawcodeMap verifiedObjectMap,
+            IOriginalJassVerifiedFusionSwapRules verifiedOriginalNativeRules,
+            IOriginalJassFusionCastPolicy verifiedCastTarget)
+        {
+            if (verifiedOriginalNativeRules == null)
+                throw new ArgumentNullException(nameof(verifiedOriginalNativeRules));
+            ConfigureOriginalJassSharedWalletCraftingWorld(
+                verifiedObjectMap, verifiedOriginalNativeRules, verifiedCastTarget,
+                new OriginalJassCombatUnitFusionWorld(verifiedOriginalNativeRules));
+        }
+
         // 이세계 신비 도감 UI 연결. 공개 도감만으로는 실제 소모를 절대 실행하지 않는다.
         public void ConfigureOtherworldMysticFusionPreview(
             OtherworldMysticFusionCatalog mysticCatalog)

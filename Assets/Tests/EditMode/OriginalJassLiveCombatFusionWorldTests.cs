@@ -20,6 +20,16 @@ namespace Ordr.Mobile.Tests
             { return Rawcodes.TryGetValue(id, out rawcode); }
         }
 
+        private sealed class NoBasicDamage : IOriginalDamageResolver
+        {
+            public long ResolveBasicDamage(BasicDamageRequest request,
+                CombatEnemy target)
+            {
+                throw new NotSupportedException(
+                    "TEST_ONLY: original basic damage formula was not observed");
+            }
+        }
+
         private sealed class Cast : IOriginalJassFusionCastPolicy
         {
             public bool TryChooseCastTarget(string ability,
@@ -99,7 +109,7 @@ namespace Ordr.Mobile.Tests
                 "{\"gameVersion\":\"S2 2.323[C]\",\"profiles\":[]}");
             var formulaUnavailable = new RejectUnverifiedDamageFormula();
             var combat = new CharacterCombatRuntime(units, skills,
-                formulaUnavailable, formulaUnavailable,
+                new NoBasicDamage(), formulaUnavailable,
                 new SeededNonOriginalProcRandom(13));
             long id = combat.SpawnCharacter("C-01", 12.0, 24.0);
             var wallet = new EconomyWallet();

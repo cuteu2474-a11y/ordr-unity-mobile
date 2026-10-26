@@ -12,7 +12,7 @@ namespace Ordr.Mobile.Tests
     public sealed class OriginalJassLiveSharedWalletFusionTests
     {
         private sealed class Et01ObjectMap : IVerifiedUnitRawcodeMap,
-            IOriginalJassLiveObjectReader
+            IOriginalJassVerifiedFusionSwapRules
         {
             public static readonly string[] Rawcodes = {
                 "h05F", "h05W", "h01X", "h01S", "h00S", "h01G"
@@ -36,6 +36,56 @@ namespace Ordr.Mobile.Tests
 
             public bool TryReadOriginalRawcode(long instanceId, out string rawcode)
             { return Actual.TryGetValue(instanceId, out rawcode); }
+
+            public bool ApproveOriginalFollowUps;
+            public bool RejectBinding;
+
+            // TEST ONLY: the production implementation MUST be independently
+            // checked against the actual original CHu/CHx event/placement.
+            public bool TryResolveCompleteOriginalFusion(
+                OriginalJassSimpleFusionCommand order,
+                IReadOnlyList<MobileUnitSnapshot> inputs, out double x,
+                out double y, out string reason)
+            {
+                x = 1000; y = 2000;
+                bool valid = ApproveOriginalFollowUps &&
+                    order.AbilityRawcode == "ET01" &&
+                    order.ResultRawcode == "h057" &&
+                    order.ResultUnitId == "E-06" &&
+                    order.Lumber == 5 && order.Gold == 0 &&
+                    inputs.Count == 6;
+                reason = valid ? null :
+                    "TEST_ONLY: native CHu/CHx placement/follow-ups not approved";
+                return valid;
+            }
+
+            public bool TryBindStagedResult(long id,
+                OriginalJassSimpleFusionCommand order, out string reason)
+            {
+                if (RejectBinding)
+                {
+                    reason = "TEST_ONLY: result identity rejected";
+                    return false;
+                }
+                if (Actual.ContainsKey(id))
+                {
+                    reason = "이미 사용 중인 원본 객체 인스턴스 ID";
+                    return false;
+                }
+                Actual.Add(id, order.ResultRawcode);
+                reason = null;
+                return true;
+            }
+
+            public void DiscardStagedResult(long id)
+            { Actual.Remove(id); }
+        }
+
+        private sealed class NoBasicDamage : IOriginalDamageResolver
+        {
+            public long ResolveBasicDamage(BasicDamageRequest request,
+                CombatEnemy target)
+            { throw new NotSupportedException("TEST_ONLY basic damage unavailable"); }
         }
 
         private sealed class TestOriginalCast : IOriginalJassFusionCastPolicy
@@ -135,7 +185,7 @@ namespace Ordr.Mobile.Tests
                 "{\"gameVersion\":\"S2 2.323[C]\",\"profiles\":[]}");
             var formula = new RejectUnverifiedDamageFormula();
             var combat = new CharacterCombatRuntime(units, skills,
-                formula, formula, new SeededNonOriginalProcRandom(19));
+                new NoBasicDamage(), formula, new SeededNonOriginalProcRandom(19));
             var map = new Et01ObjectMap();
             var ids = new long[6];
             for (int i = 0; i < 6; ++i)
@@ -169,6 +219,105 @@ namespace Ordr.Mobile.Tests
             };
         }
 
+        private static Fixture CreateWithRealCombatUnitSwap()
+        {
+            var fixture = Create();
+            var sourceAsset = Resources.Load<TextAsset>(
+                "OrdrData/original-jass-fusion-registry");
+            var labelsAsset = Resources.Load<TextAsset>(
+                "OrdrData/original-unit-rawcode-label-links");
+            var unitAsset = Resources.Load<TextAsset>("OrdrData/units");
+            var source = OriginalJassFusionCatalog.FromJson(sourceAsset.text);
+            var units = CharacterUnitCatalog.FromJson(unitAsset.text);
+            var labels = OriginalUnitRawcodeLabelCatalog.FromJson(
+                labelsAsset.text, units, source);
+            fixture.Map.ApproveOriginalFollowUps = true;
+
+            var economy = new SharedEconomySession(
+                fixture.Wallet, fixture.Combat.Roster);
+            var real = new OriginalJassLiveCombatFusionWorld(
+                fixture.Combat, economy, fixture.Map, new TestOriginalCast(),
+                new OriginalJassSharedWalletFusionEffects(
+                    new OriginalJassCombatUnitFusionWorld(fixture.Map)));
+            var planner = new OriginalJassFusionPlanner(source, labels,
+                id => fixture.Combat.IsStoryDeployed(id),
+                new OriginalJassNoSpecialConditions(), units);
+            planner.SetVerifiedObjectMap(fixture.Map);
+            var originalCoordinator = new OriginalJassFusionAtomicCoordinator(
+                planner, new OriginalJassFusionOrderedWorldAdapter(
+                    new OriginalJassSimpleOrderedSessionFactory(source, real)));
+            fixture.Port = new OriginalJassFusionPort(
+                planner, () => fixture.Combat.MobileUnitSnapshot(),
+                real, originalCoordinator, real);
+            return fixture;
+        }
+
+        [Test]
+        public void Et01ProducesRealCombatVivianAndRemovesSixActualUnitsAtomically()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            var offer = FindEt01(fixture);
+            Assert.IsTrue(offer.IsReady);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                fixture.Port.ConfirmFusion(
+                    "ET01", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, fixture.Combat.CharacterCount);
+            Assert.AreEqual(1, fixture.Combat.Roster.Count);
+            Assert.AreEqual(1, fixture.Combat.MobileUnitSnapshot().Count);
+            var produced = fixture.Combat.MobileUnitSnapshot()[0];
+            Assert.AreEqual("E-06", produced.Unit.Id);
+            Assert.AreEqual("h057", fixture.Map.Actual[produced.InstanceId]);
+            Assert.AreEqual(1000, fixture.Combat.Roster.Get(produced.InstanceId).X);
+            Assert.AreEqual(2000, fixture.Combat.Roster.Get(produced.InstanceId).Y);
+            Assert.AreEqual(0, fixture.Wallet.Balance("wood"));
+            Assert.AreEqual(60, fixture.Wallet.Balance("gold"));
+            foreach (long id in fixture.OriginalIds)
+            {
+                Assert.Throws<KeyNotFoundException>(() => fixture.Combat.Roster.Get(id));
+            }
+            // Old 6-instance confirmation cannot create a second result.
+            Assert.AreEqual(ManualActionState.Rejected,
+                fixture.Port.ConfirmFusion(
+                    "ET01", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, fixture.Combat.CharacterCount);
+        }
+
+        [Test]
+        public void ResultIdentityRejectedAfterSpawnRollsBackActualCombatActorsAndWallet()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            var offer = FindEt01(fixture);
+            fixture.Map.RejectBinding = true;
+            double originalTime = fixture.Combat.Time;
+            Assert.AreEqual(ManualActionState.Rejected,
+                fixture.Port.ConfirmFusion(
+                    "ET01", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(6, fixture.Combat.CharacterCount);
+            Assert.AreEqual(6, fixture.Combat.Roster.Count);
+            Assert.AreEqual(6, fixture.Combat.MobileUnitSnapshot().Count);
+            Assert.AreEqual(originalTime, fixture.Combat.Time);
+            Assert.AreEqual(5, fixture.Wallet.Balance("wood"));
+            Assert.AreEqual(60, fixture.Wallet.Balance("gold"));
+            foreach (long id in fixture.OriginalIds)
+                Assert.IsTrue(fixture.Map.Actual.ContainsKey(id));
+            Assert.AreEqual(6, fixture.Map.Actual.Count);
+        }
+
+        [Test]
+        public void MissingCompleteOriginalNativeWitnessFailsWithoutUnitSwap()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            var offer = FindEt01(fixture);
+            fixture.Map.ApproveOriginalFollowUps = false;
+            Assert.AreEqual(ManualActionState.Rejected,
+                fixture.Port.ConfirmFusion(
+                    "ET01", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(6, fixture.Combat.CharacterCount);
+            Assert.AreEqual(6, fixture.Combat.MobileUnitSnapshot().Count);
+            Assert.AreEqual(5, fixture.Wallet.Balance("wood"));
+            Assert.AreEqual(6, fixture.Map.Actual.Count);
+        }
+
         private static MobileFusionPreview FindEt01(Fixture fixture)
         {
             foreach (var item in fixture.Port.AvailableRecipes(
@@ -176,6 +325,51 @@ namespace Ordr.Mobile.Tests
                 if (item.RecipeId == "ET01") return item;
             Assert.Fail("비비 영원의 원본 등록식 ET01이 검색되지 않았습니다.");
             return null;
+        }
+
+        [Test]
+        public void StagedSwapKeepsInputsAliveUntilCommitAndRestoresOnAbort()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            using (var pending = fixture.Combat.BeginOriginalFusionUnitSwap(
+                fixture.OriginalIds, "E-06", 1000, 2000))
+            {
+                Assert.AreEqual(7, fixture.Combat.CharacterCount);
+                Assert.AreEqual(1, fixture.Combat.MobileUnitSnapshot().Count);
+                Assert.AreEqual("E-06",
+                    fixture.Combat.MobileUnitSnapshot()[0].Unit.Id);
+                // Source instances are still real, with their preexisting
+                // skill cooldowns and runtime effects not torn down.
+                foreach (long id in fixture.OriginalIds)
+                    Assert.AreEqual(200, fixture.Combat.Roster.Get(id).Y);
+                Assert.Throws<InvalidOperationException>(() =>
+                    fixture.Combat.MoveCharacter(fixture.OriginalIds[0], 600, 700));
+                Assert.Throws<InvalidOperationException>(() =>
+                    fixture.Combat.RemoveCharacter(fixture.OriginalIds[0]));
+                Assert.Throws<InvalidOperationException>(() =>
+                    fixture.Combat.SpawnCharacter("C-01", 2, 2));
+            }
+            Assert.AreEqual(6, fixture.Combat.CharacterCount);
+            Assert.AreEqual(6, fixture.Combat.Roster.Count);
+            Assert.AreEqual(6, fixture.Combat.MobileUnitSnapshot().Count);
+        }
+
+        [Test]
+        public void StagedFusionCannotCommitAfterSourceRosterMovedUnexpectedly()
+        {
+            var fixture = CreateWithRealCombatUnitSwap();
+            using (var pending = fixture.Combat.BeginOriginalFusionUnitSwap(
+                fixture.OriginalIds, "E-06", 1000, 2000))
+            {
+                // This low-level roster modification intentionally bypasses
+                // normal live-combat mutation guards. The final ticket still
+                // detects it and refuses to destroy source instances.
+                fixture.Combat.Roster.Move(fixture.OriginalIds[0], 400, 500);
+                Assert.Throws<InvalidOperationException>(() => pending.Commit());
+            }
+            Assert.AreEqual(6, fixture.Combat.CharacterCount);
+            Assert.AreEqual(6, fixture.Combat.MobileUnitSnapshot().Count);
+            Assert.AreEqual(5, fixture.Wallet.Balance("wood"));
         }
 
         [Test]

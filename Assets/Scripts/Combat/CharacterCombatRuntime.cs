@@ -46,6 +46,181 @@ namespace Ordr.Mobile.Combat
             public IOriginalVerifiedBasicAttackTargetFilter BasicTargetFilter;
         }
 
+        // Native source-verified fusion: material actors keep their REAL
+        // cooldowns, statuses and scheduled effects until final commit.
+        // A rollback only removes the staged output, never recreates inputs.
+        private OriginalFusionUnitSwap activeOriginalFusionSwap;
+        private bool internalOriginalFusionMutation;
+
+        public sealed class OriginalFusionUnitSwap : IDisposable
+        {
+            private readonly CharacterCombatRuntime world;
+            private readonly List<long> materialIds;
+            private readonly HashSet<long> hiddenIds;
+            private readonly Dictionary<long, UnitState> sourcePositions =
+                new Dictionary<long, UnitState>();
+            private readonly Dictionary<long, long> sourceStatusRevisions =
+                new Dictionary<long, long>();
+            private readonly double atTime;
+            private readonly int atWave;
+            private readonly SessionPhase atPhase;
+            private long resultInstanceId;
+            private bool committed;
+            private bool disposed;
+
+            internal OriginalFusionUnitSwap(CharacterCombatRuntime owner,
+                List<long> inputs)
+            {
+                world = owner;
+                materialIds = inputs;
+                hiddenIds = new HashSet<long>(inputs);
+                atTime = owner.Time;
+                atWave = owner.Game.CurrentWave;
+                atPhase = owner.Game.Phase;
+                foreach (long id in inputs)
+                {
+                    sourcePositions.Add(id, owner.roster.Get(id));
+                    sourceStatusRevisions.Add(id,
+                        owner.unitStatuses[InstanceKey(id)].Revision);
+                }
+            }
+
+            public long ResultInstanceId { get { return resultInstanceId; } }
+            internal bool Hides(long instanceId)
+            {
+                return hiddenIds.Contains(instanceId);
+            }
+
+            internal void StageResult(string resultCatalogId, double x, double y)
+            {
+                world.internalOriginalFusionMutation = true;
+                try
+                {
+                    resultInstanceId = world.SpawnCharacter(resultCatalogId, x, y);
+                    // Mobile auto-placement may move the freshly created
+                    // actor; apply ONLY source-verified final placement.
+                    world.MoveCharacter(resultInstanceId, x, y);
+                }
+                finally
+                {
+                    world.internalOriginalFusionMutation = false;
+                }
+            }
+
+            public void Commit()
+            {
+                if (disposed || committed || resultInstanceId <= 0 ||
+                    !Object.ReferenceEquals(world.activeOriginalFusionSwap, this) ||
+                    world.Time != atTime ||
+                    world.Game.Phase != atPhase ||
+                    world.Game.CurrentWave != atWave)
+                    throw new InvalidOperationException(
+                        "원본 조합 유닛 교체의 실행 시점이 변경됐습니다.");
+                if (!world.characters.ContainsKey(resultInstanceId))
+                    throw new InvalidOperationException("검증한 결과 캐릭터가 사라졌습니다.");
+                foreach (long id in materialIds)
+                {
+                    if (!world.characters.ContainsKey(id) ||
+                        world.IsStoryDeployed(id))
+                        throw new InvalidOperationException(
+                            "원본 조합 재료가 사라지거나 파견됐습니다.");
+                    UnitState oldLocation = sourcePositions[id];
+                    UnitState now = world.roster.Get(id);
+                    if (now.X != oldLocation.X || now.Y != oldLocation.Y ||
+                        world.unitStatuses[InstanceKey(id)].Revision !=
+                            sourceStatusRevisions[id])
+                        throw new InvalidOperationException(
+                            "원본 조합 검증 중 재료 위치·상태효과가 변경됐습니다.");
+                }
+                // The verified native effect world MUST hold an exclusive
+                // rollback-capable lock across this final material teardown.
+                // Nothing is deleted before the actual result has passed the
+                // higher-level original BGH/rawcode and wallet audit.
+                world.internalOriginalFusionMutation = true;
+                try
+                {
+                    foreach (long id in materialIds)
+                        world.RemoveCharacter(id);
+                    committed = true;
+                    world.activeOriginalFusionSwap = null;
+                }
+                finally
+                {
+                    world.internalOriginalFusionMutation = false;
+                }
+            }
+
+            public void Dispose()
+            {
+                if (disposed) return;
+                disposed = true;
+                try
+                {
+                    if (!committed && resultInstanceId > 0 &&
+                        world.characters.ContainsKey(resultInstanceId))
+                    {
+                        world.internalOriginalFusionMutation = true;
+                        try { world.RollbackUncommittedSpawn(resultInstanceId); }
+                        finally { world.internalOriginalFusionMutation = false; }
+                    }
+                }
+                finally
+                {
+                    if (Object.ReferenceEquals(world.activeOriginalFusionSwap, this))
+                        world.activeOriginalFusionSwap = null;
+                }
+            }
+        }
+
+        // No unit is deleted in Stage; final destruction occurs only after
+        // original CHu/CHx witness, generated rawcode and wallet are audited.
+        public OriginalFusionUnitSwap BeginOriginalFusionUnitSwap(
+            IReadOnlyList<long> exactMaterials, string resultCatalogId,
+            double verifiedSpawnX, double verifiedSpawnY)
+        {
+            if (activeOriginalFusionSwap != null || processingStep ||
+                pendingStepSeconds != 0)
+                throw new InvalidOperationException(
+                    "전투 업데이트 또는 다른 원본 조합 중에는 유닛 교체 불가");
+            if (exactMaterials == null || exactMaterials.Count == 0 ||
+                string.IsNullOrWhiteSpace(resultCatalogId))
+                throw new ArgumentException("원본 조합 결과 및 재료가 누락됐습니다.");
+            if (double.IsNaN(verifiedSpawnX) || double.IsInfinity(verifiedSpawnX) ||
+                double.IsNaN(verifiedSpawnY) || double.IsInfinity(verifiedSpawnY))
+                throw new ArgumentOutOfRangeException(nameof(verifiedSpawnX));
+            units.Require(resultCatalogId);
+            var materials = new List<long>();
+            var unique = new HashSet<long>();
+            foreach (long id in exactMaterials)
+            {
+                if (id <= 0 || !unique.Add(id) ||
+                    !characters.ContainsKey(id) || IsStoryDeployed(id))
+                    throw new InvalidOperationException(
+                        "존재하지 않거나 파견 중인 원본 재료 인스턴스");
+                materials.Add(id);
+            }
+            var ticket = new OriginalFusionUnitSwap(this, materials);
+            activeOriginalFusionSwap = ticket;
+            try
+            {
+                ticket.StageResult(resultCatalogId, verifiedSpawnX, verifiedSpawnY);
+                return ticket;
+            }
+            catch
+            {
+                ticket.Dispose();
+                throw;
+            }
+        }
+
+        private void BlockExternalMutationDuringOriginalFusion()
+        {
+            if (activeOriginalFusionSwap != null &&
+                !internalOriginalFusionMutation)
+                throw new InvalidOperationException(
+                    "원본 조합 검증 중에는 전투 유닛·시간 변경 불가");
+        }
+
         private readonly CharacterUnitCatalog units;
         private readonly CharacterSkillCatalog profiles;
         private readonly UnitRoster roster;
@@ -1157,6 +1332,9 @@ namespace Ordr.Mobile.Combat
             ids.Sort();
             foreach (long id in ids)
             {
+                if (activeOriginalFusionSwap != null &&
+                    activeOriginalFusionSwap.Hides(id))
+                    continue;
                 CharacterInstance unit = characters[id];
                 result.Add(new MobileUnitSnapshot(id, unit.Catalog, unit.Profile, roster.Get(id)));
             }
@@ -1215,10 +1393,15 @@ namespace Ordr.Mobile.Combat
 
         public void Start() { game.Start(); }
 
-        public void BeginWave(int waveNumber) { game.BeginWave(waveNumber); }
+        public void BeginWave(int waveNumber)
+        {
+            BlockExternalMutationDuringOriginalFusion();
+            game.BeginWave(waveNumber);
+        }
 
         public long SpawnCharacter(string catalogUnitId, double x, double y)
         {
+            BlockExternalMutationDuringOriginalFusion();
             CatalogUnit catalogUnit = units.Require(catalogUnitId);
             long id = roster.Add(catalogUnitId, x, y);
             var profile = profiles.Find(catalogUnitId);
@@ -1747,6 +1930,7 @@ namespace Ordr.Mobile.Combat
 
         public void RemoveCharacter(long instanceId)
         {
+            BlockExternalMutationDuringOriginalFusion();
             CharacterInstance instance;
             if (!characters.TryGetValue(instanceId, out instance))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터 인스턴스.");
@@ -1777,6 +1961,7 @@ namespace Ordr.Mobile.Combat
 
         public void MoveCharacter(long instanceId, double x, double y)
         {
+            BlockExternalMutationDuringOriginalFusion();
             if (!characters.ContainsKey(instanceId))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
             roster.Move(instanceId, x, y);
@@ -1883,6 +2068,7 @@ namespace Ordr.Mobile.Combat
         // 큰 delta에서도 지나간 공격 시점을 순서대로 실행하고 누락하지 않는다.
         private void AdvanceCombatTime(double seconds)
         {
+            BlockExternalMutationDuringOriginalFusion();
             if (seconds < 0 || double.IsNaN(seconds) || double.IsInfinity(seconds))
                 throw new ArgumentOutOfRangeException(nameof(seconds));
             effectExecutor.Advance(seconds, elapsed =>
