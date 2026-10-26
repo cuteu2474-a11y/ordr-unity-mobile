@@ -983,6 +983,95 @@ namespace Ordr.Mobile.Tests
                 monster, "A0VS", hit, policy, modifiers, out confirmed));
         }
 
+        private sealed class MutatingMagicModifiers :
+            IOriginal323NativeMagicModifierWitness
+        {
+            public Action<CombatEnemy> Change;
+            public bool TryConfirmNativeModifiersAtImpact(
+                CombatEnemy monster, string ability,
+                Original323ObservedNativeMagicHit hit,
+                IReadOnlyList<CombatEffect> active,
+                out string evidence)
+            {
+                var original = new CurrentNativeModifiers();
+                bool approved = original.TryConfirmNativeModifiersAtImpact(
+                    monster, ability, hit, active, out evidence);
+                if (approved && Change != null) Change(monster);
+                return approved;
+            }
+        }
+
+        private sealed class MutatingHpConverter :
+            IOriginal323NativeMagicHpConversion
+        {
+            public CombatEnemy Monster;
+            public bool TryConvertNativeSpellDamage(float postDefend,
+                string originalAbility, out long amount)
+            {
+                amount = (long)Math.Round(postDefend,
+                    MidpointRounding.AwayFromZero);
+                Monster.Status.Apply(new CombatEffect("late-all-damage",
+                    CombatEffectType.AllDamageAmplification,
+                    CombatEffectOrigin.TriggeredSkill, 0.1, 1));
+                return true;
+            }
+        }
+
+        [Test]
+        public void SameValueRefreshNewStackAndElapsedTimeCannotReuseWitness()
+        {
+            var changes = new Action<CombatEnemy>[] {
+                // Same values and same source ID, but a different instance.
+                monster => {
+                    monster.Status.RemoveSource("source-magic-amp");
+                    monster.Status.Apply(new CombatEffect("source-magic-amp",
+                        CombatEffectType.MagicDamageAmplification,
+                        CombatEffectOrigin.TriggeredSkill, 0.2, 1));
+                },
+                monster => monster.Status.Apply(new CombatEffect(
+                    "new-source", CombatEffectType.AllDamageAmplification,
+                    CombatEffectOrigin.TriggeredSkill, 0.1, 1)),
+                // Both effects stay active, but the observed time is stale.
+                monster => monster.Status.Advance(0.1)
+            };
+            foreach (var change in changes)
+            {
+                var monster = new CombatEnemy("primary", 2000,
+                    Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                        CharacterEnemyKind.Line, 0, "normal", 16,
+                        "source observed original magic defense"));
+                monster.Status.Apply(new CombatEffect("source-resist-down",
+                    CombatEffectType.MagicResistanceReduction,
+                    CombatEffectOrigin.TriggeredSkill, 5, 1));
+                monster.Status.Apply(new CombatEffect("source-magic-amp",
+                    CombatEffectType.MagicDamageAmplification,
+                    CombatEffectOrigin.TriggeredSkill, 0.2, 1));
+                var observer = new MutatingMagicModifiers { Change = change };
+                Original323NativeDummySpellHit confirmed;
+                Assert.IsFalse(Original323NativeMagicDamageReconciler.TryReconcile(
+                    monster, "A086", MagicHit("primary", 1000f, 16, 900),
+                    new TestHpConversion(), observer, out confirmed));
+                Assert.IsNull(confirmed);
+                Assert.AreEqual(2000, monster.Health);
+            }
+        }
+
+        [Test]
+        public void HpConversionCannotCertifyAnImpactAfterModifiersChange()
+        {
+            var monster = new CombatEnemy("primary", 2000,
+                Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                    CharacterEnemyKind.Line, 0, "normal", 16,
+                    "source observed original magic defense"));
+            Original323NativeDummySpellHit confirmed;
+            Assert.IsFalse(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A086", MagicHit("primary", 1000f, 16, 900),
+                new MutatingHpConverter { Monster = monster }, out confirmed));
+            Assert.IsNull(confirmed);
+            Assert.AreEqual(2000, monster.Health);
+            Assert.AreEqual(1, monster.Status.ActiveCount);
+        }
+
         [Test]
         public void ExpiredMagicModifierNoLongerRequiresCurrentStackWitness()
         {
