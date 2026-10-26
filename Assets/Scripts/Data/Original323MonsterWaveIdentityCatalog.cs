@@ -12,6 +12,8 @@ namespace Ordr.Mobile.Data
         {
             public string Rawcode;
             public int Count;
+            public double CadenceSeconds;
+            public int FirstTick;
         }
 
         private sealed class Round
@@ -19,6 +21,7 @@ namespace Ordr.Mobile.Data
             public readonly Dictionary<string, Identity> Roles =
                 new Dictionary<string, Identity>(StringComparer.Ordinal);
             public bool HasConditionalEnraged;
+            public int EnragedTick;
         }
 
         public const string OriginalWar3mapJSha256 =
@@ -82,9 +85,16 @@ namespace Ordr.Mobile.Data
                         Integer(spawn, "sourceJassLine", 1) <= 0 ||
                         !assignment.StartsWith("set " + array + "=", StringComparison.Ordinal))
                         throw new FormatException("원본 출현 역할/rawcode/JASS 등록 근거 오류");
+                    double? cadence = OrdrJson.Number(spawn, "cadenceSeconds");
+                    int firstTick = Integer(spawn, "firstSpawnTick", 1);
+                    if (!cadence.HasValue || cadence.Value != 0.5 || firstTick != 1)
+                        throw new FormatException(
+                            "원본 몬스터 0.5초 생성 간격/첫 타이머 틱 근거가 다릅니다.");
                     rule.Roles.Add(role, new Identity {
                         Rawcode = rawcode,
-                        Count = Integer(spawn, "spawnsPerActivePlayer", 1)
+                        Count = Integer(spawn, "spawnsPerActivePlayer", 1),
+                        CadenceSeconds = cadence.Value,
+                        FirstTick = firstTick
                     });
                 }
                 if (rule.Roles.Count == 0)
@@ -99,6 +109,7 @@ namespace Ordr.Mobile.Data
                         Integer(extra, "spawnAtTick", 1) != 15)
                         throw new FormatException("광폭화 원본 역할/타이밍 근거 오류");
                     rule.HasConditionalEnraged = true;
+                    rule.EnragedTick = 15;
                 }
                 result.rounds.Add(wave, rule);
             }
@@ -111,6 +122,71 @@ namespace Ordr.Mobile.Data
         // one boss, plus at most one separately conditional enraged spawn.
         // This checks only original membership/count. It NEVER authorizes
         // final HP, defense, immunity, placement or timing.
+
+        // Checks only timer-relative source cadence: the original 0.5-second
+        // repeating spawn timer starts separately from any whole-round clock.
+        // This is NOT proof of the round's absolute start time, reward trigger,
+        // actual spawn coordinates or final combat stats.
+        public bool MatchesSinglePlayerSpawnCadence(VerifiedWavePlan plan)
+        {
+            Round rule;
+            if (plan == null || !rounds.TryGetValue(plan.WaveNumber, out rule) ||
+                !MatchesSinglePlayerWave(plan))
+                return false;
+
+            bool earlyBossOnly = plan.WaveNumber <= 50 &&
+                plan.WaveNumber % 10 == 0;
+            bool lateBoss = plan.WaveNumber > 50 &&
+                plan.WaveNumber % 5 == 0;
+            int lines = 0, bosses = 0, enraged = 0;
+            foreach (var spawn in plan.Spawns)
+            {
+                if (spawn == null) return false;
+                if (spawn.Kind == CharacterEnemyKind.Line)
+                {
+                    Identity source;
+                    if (!rule.Roles.TryGetValue("line", out source))
+                        return false;
+                    lines++;
+                    if (lines > source.Count ||
+                        !Near(spawn.AtSeconds,
+                            source.CadenceSeconds * (source.FirstTick + lines - 1)))
+                        return false;
+                }
+                else if (spawn.Kind == CharacterEnemyKind.Boss)
+                {
+                    Identity source;
+                    if (!rule.Roles.TryGetValue("boss", out source))
+                        return false;
+                    bosses++;
+                    // CVs/CVu: early boss-only waves start on tick 1.
+                    // CVc/CVb: late bosses start after the 35 normal ticks.
+                    int bossTick = lateBoss ? 36 : 1;
+                    if ((!earlyBossOnly && !lateBoss) ||
+                        bosses > source.Count ||
+                        (lateBoss && lines != 35) ||
+                        !Near(spawn.AtSeconds, source.CadenceSeconds * bossTick))
+                        return false;
+                }
+                else if (spawn.Kind == CharacterEnemyKind.Enraged)
+                {
+                    enraged++;
+                    if (!rule.HasConditionalEnraged || enraged > 1 ||
+                        lines != rule.EnragedTick ||
+                        !Near(spawn.AtSeconds, 0.5 * rule.EnragedTick))
+                        return false;
+                }
+                else return false;
+            }
+            return true;
+        }
+
+        private static bool Near(double observed, double expected)
+        {
+            return !double.IsNaN(observed) && !double.IsInfinity(observed) &&
+                Math.Abs(observed - expected) <= 1e-9;
+        }
+
         public bool MatchesSinglePlayerWave(VerifiedWavePlan plan)
         {
             Round rule;

@@ -148,6 +148,19 @@ namespace Ordr.Mobile.Unity
         private IOriginal323LiveMonsterA04QWitness liveMonsterA04QWitness;
         private IOriginal323LiveMonsterStatWitness liveMonsterStatWitness;
         public CombatWaveDirector VerifiedWaveDirector { get; } = new CombatWaveDirector();
+        private IOriginal323ObservedRoundStartWitness observedRoundStartWitness;
+
+        // Original round-transition signals are not inferred from a cleared
+        // combat board. Attach a live observed source before the next wave.
+        public void ConfigureObservedRoundStart(
+            IOriginal323ObservedRoundStartWitness originalEvents)
+        {
+            if (Combat != null || observedRoundStartWitness != null)
+                throw new InvalidOperationException(
+                    "원본 라운드 전환 이벤트는 전투 시작 전에 한 번만 연결하세요.");
+            observedRoundStartWitness = originalEvents ??
+                throw new ArgumentNullException(nameof(originalEvents));
+        }
 
         // Keep independent final-stat/target/spawn approval separate from the
         // imported model or test fixture. Configure before the combat world.
@@ -1033,10 +1046,19 @@ namespace Ordr.Mobile.Unity
                 !OriginalMonsterObjectAbilities.MatchesWaveObjectRoles(plan))
                 throw new InvalidOperationException(
                     "몬스터 원본 객체의 기본 능력/역할 자료가 누락되었거나 불일치합니다.");
+            if (!OriginalMonsterSpawnIdentities.MatchesSinglePlayerSpawnCadence(plan))
+                throw new InvalidOperationException(
+                    "원본 타이머 기준 일반 몬스터·보스·광폭화 출현 시각과 다릅니다.");
             if (!Original323VerifiedMonsterWaveCatalog.TryAuthorizeForLive(
                 plan, liveMonsterWaveEvidence, out approvalEvidence))
                 throw new InvalidOperationException(
                     "최종 몬스터 체력·방어·대상 면역·출현의 독립 실전 근거가 없습니다.");
+            string roundStartEvidence;
+            if (!Original323ObservedRoundStartGate.TryAuthorize(
+                Combat.Game, waveNumber, observedRoundStartWitness,
+                out roundStartEvidence))
+                throw new InvalidOperationException(
+                    "다음 라운드의 원본 시작 이벤트가 확인되지 않았습니다.");
             VerifiedWaveDirector.Begin(Combat, plan);
         }
 

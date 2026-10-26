@@ -96,6 +96,17 @@ namespace Ordr.Mobile.Combat
         public int Spawned { get; private set; }
         public int Defeated { get; private set; }
         public int Escaped { get; private set; }
+        public int BossPlanned { get; private set; }
+        public int BossSpawned { get; private set; }
+        public int BossDefeated { get; private set; }
+        public int BossEscaped { get; private set; }
+        public int LivingBosses { get { return BossSpawned - BossDefeated - BossEscaped; } }
+        // No boss on this round is NOT a boss-clear event.
+        public bool AllBossesDefeated
+        {
+            get { return BossPlanned > 0 && BossSpawned == BossPlanned &&
+                         BossDefeated == BossPlanned && BossEscaped == 0; }
+        }
         public int PendingSpawns { get { return Planned - Spawned; } }
         public int LivingFromWave { get { return Spawned - Defeated - Escaped; } }
         public bool AllSpawnsIssued { get { return PendingSpawns == 0; } }
@@ -109,13 +120,21 @@ namespace Ordr.Mobile.Combat
         }
 
         internal VerifiedWaveProgress(int waveNumber, int planned,
-            int spawned, int defeated, int escaped)
+            int spawned, int defeated, int escaped,
+            int bossPlanned, int bossSpawned, int bossDefeated, int bossEscaped)
         {
             if (planned < 1 || spawned < 0 || spawned > planned ||
-                defeated < 0 || escaped < 0 || defeated + escaped > spawned)
+                defeated < 0 || escaped < 0 || defeated + escaped > spawned ||
+                bossPlanned < 0 || bossPlanned > planned ||
+                bossSpawned < 0 || bossSpawned > bossPlanned ||
+                bossDefeated < 0 || bossEscaped < 0 ||
+                bossDefeated + bossEscaped > bossSpawned ||
+                bossDefeated > defeated || bossEscaped > escaped)
                 throw new ArgumentException("라운드 몬스터 집계에 모순이 있습니다.");
             WaveNumber = waveNumber; Planned = planned; Spawned = spawned;
             Defeated = defeated; Escaped = escaped;
+            BossPlanned = bossPlanned; BossSpawned = bossSpawned;
+            BossDefeated = bossDefeated; BossEscaped = bossEscaped;
         }
     }
 
@@ -130,13 +149,23 @@ namespace Ordr.Mobile.Combat
             public int Spawned;
             public int Defeated;
             public int Escaped;
+            public int BossPlanned;
+            public int BossSpawned;
+            public int BossDefeated;
+            public int BossEscaped;
 
-            public WaveLedger(VerifiedWavePlan plan) { Plan = plan; }
+            public WaveLedger(VerifiedWavePlan plan)
+            {
+                Plan = plan;
+                foreach (var spawn in plan.Spawns)
+                    if (spawn.Kind == CharacterEnemyKind.Boss) BossPlanned++;
+            }
 
             public VerifiedWaveProgress Snapshot()
             {
                 return new VerifiedWaveProgress(Plan.WaveNumber,
-                    Plan.Spawns.Count, Spawned, Defeated, Escaped);
+                    Plan.Spawns.Count, Spawned, Defeated, Escaped,
+                    BossPlanned, BossSpawned, BossDefeated, BossEscaped);
             }
         }
 
@@ -144,6 +173,8 @@ namespace Ordr.Mobile.Combat
             new Dictionary<int, WaveLedger>();
         private readonly Dictionary<string, int> spawnedOwners =
             new Dictionary<string, int>(StringComparer.Ordinal);
+        private readonly HashSet<string> liveBossInstances =
+            new HashSet<string>(StringComparer.Ordinal);
         private CharacterCombatRuntime boundCombat;
         private VerifiedWavePlan active;
         private WaveLedger activeLedger;
@@ -179,9 +210,18 @@ namespace Ordr.Mobile.Combat
             if (!spawnedOwners.TryGetValue(enemyId, out waveNumber))
                 return; // Spawned outside the verified schedule, not this wave.
             spawnedOwners.Remove(enemyId);
+            bool boss = liveBossInstances.Remove(enemyId);
             WaveLedger ledger = waves[waveNumber];
-            if (reason == CombatEnemyExitReason.Defeated) ledger.Defeated++;
-            else if (reason == CombatEnemyExitReason.Escaped) ledger.Escaped++;
+            if (reason == CombatEnemyExitReason.Defeated)
+            {
+                ledger.Defeated++;
+                if (boss) ledger.BossDefeated++;
+            }
+            else if (reason == CombatEnemyExitReason.Escaped)
+            {
+                ledger.Escaped++;
+                if (boss) ledger.BossEscaped++;
+            }
             else throw new InvalidOperationException("지원하지 않는 몬스터 종료 종류입니다.");
         }
 
@@ -246,6 +286,11 @@ namespace Ordr.Mobile.Combat
                         spawn.Defenses);
                     // Register only after a successful actual spawn.
                     spawnedOwners.Add(spawn.EnemyId, active.WaveNumber);
+                    if (spawn.Kind == CharacterEnemyKind.Boss)
+                    {
+                        liveBossInstances.Add(spawn.EnemyId);
+                        activeLedger.BossSpawned++;
+                    }
                     activeLedger.Spawned++;
                     nextSpawn++;
                 }
@@ -255,5 +300,4 @@ namespace Ordr.Mobile.Combat
             return events.AsReadOnly();
         }
     }
-}
 }
