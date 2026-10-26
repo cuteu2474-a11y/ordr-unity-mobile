@@ -192,7 +192,8 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             game.Enemy("primary", 1); game.Enemy("second");
             game.Combat.Step(0);
-            Assert.IsFalse(game.Combat.EnemyOf("primary").IsAlive);
+            Assert.IsNull(game.Combat.EnemyOf("primary"),
+                "처치된 원본 기본공격 대상은 전투 원장에서 제거됩니다.");
             game.Combat.Step(0.25);
             long dealt;
             Assert.IsTrue(game.Deliver("native-impact-after-death", 0.25, true,
