@@ -35,6 +35,14 @@ namespace Ordr.Mobile.Unity
         private IReadOnlyList<MobileManualOffer> economyOffers =
             new List<MobileManualOffer>().AsReadOnly();
         private MobileFusionPreview pendingFusion;
+        // The catalog has hundreds of recipes; only draw one phone-sized page.
+        // These controls never authorize the original fusion transaction.
+        private string fusionSearch = "";
+        private bool fusionMaterialsReadyOnly;
+        private int fusionPage;
+        private int originalJassPage;
+        private const int FusionPageSize = 8;
+        private const int OriginalJassPageSize = 10;
         private MobileManualOffer pendingEconomy;
         private string pendingChoiceRawcode;
         private bool pendingHelperRecharge;
@@ -533,28 +541,67 @@ namespace Ordr.Mobile.Unity
 
         private void DrawFusion()
         {
-            GUILayout.Label("보유 유닛을 바탕으로 조합식을 보여줍니다. 재료 소비는 확인 버튼에서만 실행합니다.");
+            GUILayout.Label("원본 조합식 검색 · 재료 보유 상태 확인 (제작은 직접 확정)");
             DrawChoiceWispMerge();
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label("캐릭터·재료 이름으로 검색");
+            string query = GUILayout.TextField(fusionSearch, GUILayout.MinHeight(44));
+            if (!string.Equals(query, fusionSearch, StringComparison.Ordinal))
+            {
+                fusionSearch = query;
+                fusionPage = 0;
+                originalJassPage = 0;
+                scroll = Vector2.zero;
+            }
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(fusionMaterialsReadyOnly ?
+                "재료 확보만 ✓" : "모든 조합", GUILayout.MinHeight(46)))
+            {
+                fusionMaterialsReadyOnly = !fusionMaterialsReadyOnly;
+                fusionPage = 0;
+                scroll = Vector2.zero;
+            }
+            if (GUILayout.Button("검색 초기화", GUILayout.MinHeight(46)))
+            {
+                fusionSearch = "";
+                fusionMaterialsReadyOnly = false;
+                fusionPage = 0;
+                originalJassPage = 0;
+                scroll = Vector2.zero;
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
             DrawOriginalJassAudit();
+
             if (!controller.ManualActions.HasFusionService)
                 GUILayout.Label("원작 조합식·재료·비용 시스템 미연결");
             else if (!controller.ManualActions.HasExecutableFusionService)
-                GUILayout.Label("검증된 조합식 미리보기만 가능: 원작 제작 트리거 미연결, 재료는 소비되지 않습니다.");
-            if (GUILayout.Button("조합식 새로고침", GUILayout.MinHeight(48)))
+                GUILayout.Label("원작 제작 트리거 미연결: 미리보기 전용, 재료 소비 불가");
+            if (GUILayout.Button("보유 재료 새로고침", GUILayout.MinHeight(48)))
+            {
                 RefreshCurrent();
-            foreach (var offer in fusionOffers)
+                pendingFusion = null;
+            }
+
+            int matches, pages, resolved;
+            var visibleOffers = MobileFusionBrowser.Select(fusionOffers,
+                fusionSearch, fusionMaterialsReadyOnly, fusionPage,
+                FusionPageSize, out matches, out pages, out resolved);
+            fusionPage = resolved;
+            GUILayout.Label("조합식 " + matches + " / " + fusionOffers.Count +
+                "건 · " + (resolved + 1) + "/" + pages + "쪽");
+            if (matches == 0)
+                GUILayout.Label("검색 결과가 없습니다. 이름이나 재료명을 바꿔 보세요.");
+            foreach (var offer in visibleOffers)
             {
                 GUILayout.BeginVertical(GUI.skin.box);
                 GUILayout.Label(offer.Title);
                 GUILayout.Label(offer.OriginalMaterialsAndCost);
                 if (offer.MissingMaterials.Count != 0)
-                {
                     GUILayout.Label("미확보: " + string.Join(", ",
                         ToStringArray(offer.MissingMaterials)));
-                }
-                else GUILayout.Label("재료 준비 완료");
-                GUILayout.Label("보유 재료 ID: " + string.Join(", ",
-                    ToStringArray(offer.SuggestedMaterialInstances)));
+                else
+                    GUILayout.Label("유닛 재료 확보 (추가 조건·제작 허가는 별도 확인)");
                 bool previousEnabled = GUI.enabled;
                 GUI.enabled = previousEnabled && offer.IsReady;
                 if (GUILayout.Button(offer.IsReady ? "조합 선택" : "재료 부족",
@@ -562,14 +609,36 @@ namespace Ordr.Mobile.Unity
                 {
                     pendingFusion = offer;
                     pendingEconomy = null;
-                    notice = "아직 재료를 소비하지 않았습니다. 아래에서 조합을 확정하세요.";
+                    notice = "재료는 아직 소비되지 않았습니다. 확정 전에 조건을 재검증합니다.";
                 }
                 GUI.enabled = previousEnabled;
                 GUILayout.EndVertical();
             }
+            if (pages > 1)
+            {
+                GUILayout.BeginHorizontal();
+                bool previous = GUI.enabled;
+                GUI.enabled = previous && resolved > 0;
+                if (GUILayout.Button("이전", GUILayout.MinHeight(46)))
+                {
+                    fusionPage--;
+                    scroll = Vector2.zero;
+                }
+                GUI.enabled = previous && resolved + 1 < pages;
+                if (GUILayout.Button("다음", GUILayout.MinHeight(46)))
+                {
+                    fusionPage++;
+                    scroll = Vector2.zero;
+                }
+                GUI.enabled = previous;
+                GUILayout.EndHorizontal();
+            }
+            // Keep confirmation accessible when a search/page changes;
+            // the domain port always revalidates live inventory on commit.
             if (pendingFusion != null)
             {
                 GUILayout.Label("선택됨: " + pendingFusion.Title);
+                GUILayout.Label(pendingFusion.OriginalMaterialsAndCost);
                 GUILayout.BeginHorizontal();
                 bool priorEnabled = GUI.enabled;
                 GUI.enabled = priorEnabled && controller.ManualActions.HasExecutableFusionService;
@@ -915,14 +984,34 @@ namespace Ordr.Mobile.Unity
             }
             if (showOriginalJassRecipes)
             {
-                int visible = Math.Min(18, originalJassPreview.Count);
-                GUILayout.Label("결과 이름이 확인된 " + originalJassPreview.Count +
-                    "건 중 " + visible + "건 표시. 제작할 수 있다는 뜻은 아닙니다.");
-                for (int i = 0; i < visible; i++)
+                // Source-audit list is READ ONLY and has its own pagination.
+                // Unlike the old 18-item cap, every named result is accessible.
+                var filtered = new List<JassFusionReadiness>();
+                foreach (var item in originalJassPreview)
                 {
-                    var result = originalJassPreview[i];
+                    if (string.IsNullOrWhiteSpace(fusionSearch) ||
+                        item.ResultName.IndexOf(fusionSearch.Trim(),
+                            StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        item.AbilityRawcode.IndexOf(fusionSearch.Trim(),
+                            StringComparison.OrdinalIgnoreCase) >= 0)
+                        filtered.Add(item);
+                }
+                int pages = Math.Max(1,
+                    1 + (Math.Max(1, filtered.Count) - 1) / OriginalJassPageSize);
+                originalJassPage = Math.Max(0,
+                    Math.Min(originalJassPage, pages - 1));
+                GUILayout.Label("원본 등록식 " + filtered.Count + " / " +
+                    originalJassPreview.Count + "건 · " +
+                    (originalJassPage + 1) + "/" + pages +
+                    "쪽 (원작 소비 승인과 무관)");
+                if (filtered.Count == 0) GUILayout.Label("일치하는 원본 등록식이 없습니다.");
+                int start = originalJassPage * OriginalJassPageSize;
+                for (int i = start;
+                    i < Math.Min(start + OriginalJassPageSize, filtered.Count); i++)
+                {
+                    var result = filtered[i];
                     GUILayout.BeginVertical(GUI.skin.box);
-                    GUILayout.Label(result.ResultName + " [" + result.AbilityRawcode + "]");
+                    GUILayout.Label(result.ResultName + " [원본 등록식]");
                     foreach (var material in result.Materials)
                         GUILayout.Label(material.Name + " " + material.OwnedCount +
                             " / " + material.RequiredCount);
@@ -931,6 +1020,25 @@ namespace Ordr.Mobile.Unity
                     if (result.BlockingReasons.Count > 0)
                         GUILayout.Label("미확인: " + result.BlockingReasons[0]);
                     GUILayout.EndVertical();
+                }
+                if (pages > 1)
+                {
+                    GUILayout.BeginHorizontal();
+                    bool previous = GUI.enabled;
+                    GUI.enabled = previous && originalJassPage > 0;
+                    if (GUILayout.Button("이전 등록식", GUILayout.MinHeight(44)))
+                    {
+                        originalJassPage--;
+                        scroll = Vector2.zero;
+                    }
+                    GUI.enabled = previous && originalJassPage + 1 < pages;
+                    if (GUILayout.Button("다음 등록식", GUILayout.MinHeight(44)))
+                    {
+                        originalJassPage++;
+                        scroll = Vector2.zero;
+                    }
+                    GUI.enabled = previous;
+                    GUILayout.EndHorizontal();
                 }
             }
             GUILayout.EndVertical();
