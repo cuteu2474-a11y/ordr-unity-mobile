@@ -100,6 +100,11 @@ namespace Ordr.Mobile.Combat
             public bool IsStoryLane;
             public readonly HashSet<string> AlreadyHit =
                 new HashSet<string>(StringComparer.Ordinal);
+            // Includes original native targets whose magic immunity resulted
+            // in zero HP loss. Forked lightning's 4-target cap uses THESE.
+            public readonly HashSet<string> AlreadySelected =
+                new HashSet<string>(StringComparer.Ordinal);
+            public int ImmuneSelections;
             public readonly HashSet<string> ImpactIds =
                 new HashSet<string>(StringComparer.Ordinal);
             public double LastImpactAt;
@@ -113,6 +118,19 @@ namespace Ordr.Mobile.Combat
         public int PendingOriginalDummySpellCount
         {
             get { return pendingOriginalDummyCasts.Count; }
+        }
+
+        public bool TryGetOriginalDummyTargetSelectionProgress(
+            string sourceCastId, out int selectedCount, out int immuneCount)
+        {
+            selectedCount = 0; immuneCount = 0;
+            PendingOriginalDummyCast cast;
+            if (string.IsNullOrWhiteSpace(sourceCastId) ||
+                !pendingOriginalDummyCasts.TryGetValue(sourceCastId, out cast))
+                return false;
+            selectedCount = cast.AlreadySelected.Count;
+            immuneCount = cast.ImmuneSelections;
+            return true;
         }
 
         // Registers only original-attacked-event spell dispatch for the three
@@ -290,6 +308,51 @@ namespace Ordr.Mobile.Combat
                 Math.Abs(impact.ObservedTimeSeconds - scheduler.Time) > 1e-6)
                 return false;
 
+            // Native FORK selection is not the same as a positive-damage
+            // hit. Verify all source-observed choices (including immune)
+            // before mutating a single HP value.
+            Original323NativeDummyAbilityFacts nativeFacts;
+            if (!Original323NativeDummyAbilityCatalog.TryGet(
+                    cast.Snapshot.OriginalOrder, out nativeFacts))
+                return false;
+            if (nativeFacts.MaxNativeTargets.HasValue &&
+                !impact.HasOriginalTargetSelection)
+                return false;
+            var selectedInThisImpact =
+                new HashSet<string>(StringComparer.Ordinal);
+            var immuneInThisImpact =
+                new HashSet<string>(StringComparer.Ordinal);
+            foreach (var selected in impact.SelectedTargets)
+            {
+                SpatialCombatEnemy enemy;
+                if (selected == null ||
+                    !Original323BossRoundRules.TrustedRuntimeEvidence(
+                        selected.OriginalSelectionEvidence) ||
+                    !selectedInThisImpact.Add(selected.TargetId) ||
+                    cast.AlreadySelected.Contains(selected.TargetId) ||
+                    !enemies.TryGetValue(selected.TargetId, out enemy) ||
+                    !enemy.Enemy.IsAlive ||
+                    (cast.IsStoryLane ?
+                        enemy.Kind != CharacterEnemyKind.Story :
+                        (enemy.Kind != CharacterEnemyKind.Line &&
+                         enemy.Kind != CharacterEnemyKind.Boss &&
+                         enemy.Kind != CharacterEnemyKind.Enraged)))
+                    return false;
+                if (selected.OriginalMagicImmune)
+                    immuneInThisImpact.Add(selected.TargetId);
+            }
+            if (nativeFacts.MaxNativeTargets.HasValue &&
+                (long)cast.AlreadySelected.Count +
+                    selectedInThisImpact.Count >
+                    nativeFacts.MaxNativeTargets.Value)
+                return false;
+            if (impact.HasOriginalTargetSelection)
+                foreach (var hit in impact.Hits)
+                    if (hit == null ||
+                        !selectedInThisImpact.Contains(hit.TargetId) ||
+                        immuneInThisImpact.Contains(hit.TargetId))
+                        return false;
+
             // Stage all checks before the first mutation. A native swarm can
             // report consecutive projectile contacts in different frames.
             committingOriginalDummyImpact = true;
@@ -304,6 +367,9 @@ namespace Ordr.Mobile.Combat
                     return false;
                 foreach (var hit in impact.Hits)
                     cast.AlreadyHit.Add(hit.TargetId);
+                foreach (var selected in selectedInThisImpact)
+                    cast.AlreadySelected.Add(selected);
+                cast.ImmuneSelections += immuneInThisImpact.Count;
                 cast.ImpactIds.Add(impact.ImpactId);
                 cast.LastImpactAt = impact.ObservedTimeSeconds;
                 if (impact.SpellCompleted)

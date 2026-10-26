@@ -24,6 +24,27 @@ namespace Ordr.Mobile.Combat
         }
     }
 
+    // Observed Warcraft native target choice is independent of HP damage.
+    // Immunity can prevent a selected enemy from receiving any HP change.
+    public sealed class Original323NativeSelectedSpellTarget
+    {
+        public string TargetId { get; private set; }
+        public bool OriginalMagicImmune { get; private set; }
+        public string OriginalSelectionEvidence { get; private set; }
+
+        public Original323NativeSelectedSpellTarget(string targetId,
+            bool originalMagicImmune, string originalSelectionEvidence)
+        {
+            if (string.IsNullOrWhiteSpace(targetId) ||
+                string.IsNullOrWhiteSpace(originalSelectionEvidence))
+                throw new ArgumentException(
+                    "원본 주문 선정 대상과 마법 면역 판정 증빙이 필요합니다.");
+            TargetId = targetId;
+            OriginalMagicImmune = originalMagicImmune;
+            OriginalSelectionEvidence = originalSelectionEvidence;
+        }
+    }
+
     // A single Warcraft native projectile impact / lightning resolution
     // observed at an exact simulation timestamp. Swarm can produce multiple
     // separate ordered impact receipts; forked lightning cannot exceed four
@@ -34,11 +55,25 @@ namespace Ordr.Mobile.Combat
         public double ObservedTimeSeconds { get; private set; }
         public bool SpellCompleted { get; private set; }
         public IReadOnlyList<Original323NativeDummySpellHit> Hits { get; private set; }
+        public IReadOnlyList<Original323NativeSelectedSpellTarget>
+            SelectedTargets { get; private set; }
+        // Legacy impact reports only final HP loss, so these must NOT be
+        // silently treated as exhaustive native target selections.
+        public bool HasOriginalTargetSelection { get; private set; }
         public string OriginalImpactEvidence { get; private set; }
 
         public Original323NativeDummyImpact(string impactId,
             double originalTimeSeconds, bool finished,
             IReadOnlyList<Original323NativeDummySpellHit> hits, string evidence)
+            : this(impactId, originalTimeSeconds, finished, hits,
+                null, evidence)
+        { }
+
+        public Original323NativeDummyImpact(string impactId,
+            double originalTimeSeconds, bool finished,
+            IReadOnlyList<Original323NativeDummySpellHit> hits,
+            IReadOnlyList<Original323NativeSelectedSpellTarget> selected,
+            string evidence)
         {
             if (string.IsNullOrWhiteSpace(impactId) ||
                 impactId.Length > 256 ||
@@ -54,9 +89,23 @@ namespace Ordr.Mobile.Combat
                 if (hit == null) throw new ArgumentException("주문 타격 항목 누락");
                 snapshot.Add(hit);
             }
+            var selectedSnapshot = new List<Original323NativeSelectedSpellTarget>();
+            if (selected != null)
+            {
+                if (selected.Count > 512)
+                    throw new ArgumentException("원본 주문 선정 인원 제한 초과");
+                foreach (var item in selected)
+                {
+                    if (item == null)
+                        throw new ArgumentException("원본 주문 선정 기록 누락");
+                    selectedSnapshot.Add(item);
+                }
+            }
             ImpactId = impactId; ObservedTimeSeconds = originalTimeSeconds;
             SpellCompleted = finished;
             Hits = snapshot.AsReadOnly();
+            HasOriginalTargetSelection = selected != null;
+            SelectedTargets = selectedSnapshot.AsReadOnly();
             OriginalImpactEvidence = evidence;
         }
     }

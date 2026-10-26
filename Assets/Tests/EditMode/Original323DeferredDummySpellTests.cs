@@ -274,17 +274,37 @@ namespace Ordr.Mobile.Tests
             game.Combat.Step(0);
             game.Combat.Step(0.25);
             long dealt;
-            Assert.IsTrue(game.Deliver("fork-one",0.25,false,
-                out dealt,Hit("primary",10),Hit("a",10)));
+            game.Impact.Current=new Original323NativeDummyImpact(
+                "fork-one",0.25,false,
+                new[]{Hit("primary",10),Hit("a",10)},
+                new[]{Selected("primary"),Selected("a")},
+                "observed first native fork selection");
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out dealt));
             game.Combat.Step(0.25);
-            Assert.IsTrue(game.Deliver("fork-two",0.5,false,
-                out dealt,Hit("b",10),Hit("c",10)));
+            game.Impact.Current=new Original323NativeDummyImpact(
+                "fork-two",0.5,false,
+                new[]{Hit("b",10),Hit("c",10)},
+                new[]{Selected("b"),Selected("c")},
+                "observed second native fork selection");
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out dealt));
             game.Combat.Step(0.25);
-            Assert.IsFalse(game.Deliver("fork-fifth",0.75,true,
-                out dealt,Hit("d",10)));
+            game.Impact.Current=new Original323NativeDummyImpact(
+                "fork-fifth",0.75,true,
+                new[]{Hit("d",10)},new[]{Selected("d")},
+                "observed fifth native fork target");
+            Assert.IsFalse(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out dealt));
             Assert.AreEqual(1000,game.Combat.EnemyOf("d").Health);
             Assert.AreEqual(1,game.Combat.PendingOriginalDummySpellCount);
-            Assert.IsTrue(game.Deliver("fork-end",0.75,true,out dealt));
+            game.Impact.Current=new Original323NativeDummyImpact(
+                "fork-end",0.75,true,
+                new Original323NativeDummySpellHit[0],
+                new Original323NativeSelectedSpellTarget[0],
+                "observed original native lightning completion");
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out dealt));
             Assert.AreEqual(0,dealt);
             Assert.AreEqual(0,game.Combat.PendingOriginalDummySpellCount);
             Assert.AreEqual(990,game.Combat.EnemyOf("a").Health);
@@ -326,7 +346,13 @@ namespace Ordr.Mobile.Tests
             game.Combat.Step(0);
             game.Combat.Step(0.25);
             long dealt;
-            Assert.IsTrue(game.Deliver("native-immune-end",0.25,true,out dealt));
+            game.Impact.Current=new Original323NativeDummyImpact(
+                "native-immune-end",0.25,true,
+                new Original323NativeDummySpellHit[0],
+                new[]{Selected("primary",true)},
+                "observed original native magic immunity");
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out dealt));
             Assert.AreEqual(0,dealt);
             Assert.AreEqual(999,game.Combat.EnemyOf("primary").Health);
             Assert.AreEqual(0,game.Combat.PendingOriginalDummySpellCount);
@@ -368,6 +394,145 @@ namespace Ordr.Mobile.Tests
                 "impact",0,true,mutable,"verified observed");
             mutable.Clear();
             Assert.AreEqual(1,snapshot.Hits.Count);
+        }
+
+        private static Original323NativeSelectedSpellTarget Selected(
+            string id, bool immune = false)
+        {
+            return new Original323NativeSelectedSpellTarget(id, immune,
+                "source confirmed native selection and immunity state");
+        }
+
+        [Test]
+        public void ForkSelectionCountsImmuneTargetsTowardFourTargetLimit()
+        {
+            var game = Create("S-18", "h00Q");
+            foreach (var id in new[] { "primary", "a", "b", "c", "d" })
+                game.Enemy(id);
+            game.Combat.Step(0);
+            game.Combat.Step(0.25);
+            long actual;
+            game.Impact.Current = new Original323NativeDummyImpact(
+                "fork-choice-first",0.25,false,
+                new[] { Hit("primary",20) },
+                new[] { Selected("primary"),Selected("a",true),
+                    Selected("b",true) },
+                "observed native forked lightning target choice");
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out actual));
+            Assert.AreEqual(20, actual);
+            int selectedCount, immuneCount;
+            Assert.IsTrue(game.Combat.TryGetOriginalDummyTargetSelectionProgress(
+                game.Cast.CastId,out selectedCount,out immuneCount));
+            Assert.AreEqual(3,selectedCount);
+            Assert.AreEqual(2,immuneCount);
+            Assert.AreEqual(999,game.Combat.EnemyOf("a").Health);
+            Assert.AreEqual(1000,game.Combat.EnemyOf("b").Health);
+            game.Combat.Step(0.25);
+            game.Impact.Current = new Original323NativeDummyImpact(
+                "fork-choice-overflow",0.5,true,
+                new[] { Hit("c",10),Hit("d",10) },
+                new[] { Selected("c"),Selected("d") },
+                "observed original native multi-target overflow");
+            Assert.IsFalse(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out actual));
+            Assert.AreEqual(1000,game.Combat.EnemyOf("c").Health);
+            Assert.AreEqual(1000,game.Combat.EnemyOf("d").Health);
+            game.Impact.Current = new Original323NativeDummyImpact(
+                "fork-choice-last",0.5,true,
+                new[] { Hit("c",10) },new[] { Selected("c") },
+                "observed original forked lightning final selection");
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out actual));
+            Assert.AreEqual(10,actual);
+            Assert.AreEqual(0,game.Combat.PendingOriginalDummySpellCount);
+        }
+
+        [Test]
+        public void ForkCannotAssumeHitListIsCompleteOriginalTargetSelection()
+        {
+            var game = Create("S-18","h00Q");
+            game.Enemy("primary");
+            game.Combat.Step(0);
+            game.Combat.Step(0.25);
+            long actual;
+            Assert.IsFalse(game.Deliver("fork-legacy",0.25,true,
+                out actual,Hit("primary",100)));
+            Assert.AreEqual(999,game.Combat.EnemyOf("primary").Health);
+            // No hits does NOT imply no selected targets: even that case
+            // requires an explicit original native selection receipt.
+            Assert.IsFalse(game.Deliver("fork-no-selection",0.25,true,
+                out actual));
+            game.Impact.Current = new Original323NativeDummyImpact(
+                "fork-explicit-zero",0.25,true,
+                new Original323NativeDummySpellHit[0],
+                new[]{Selected("primary",true)},
+                "original native immunity prevented final HP damage");
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out actual));
+            Assert.AreEqual(0,actual);
+            Assert.AreEqual(999,game.Combat.EnemyOf("primary").Health);
+        }
+
+        [Test]
+        public void UnselectedOrImmuneTargetCanNeverTakeConfirmedForkHpDamage()
+        {
+            foreach (bool immune in new[]{false,true})
+            {
+                var game=Create("S-18","h00Q");
+                game.Enemy("primary");
+                game.Enemy("a");
+                game.Combat.Step(0);
+                game.Combat.Step(0.25);
+                long actual;
+                game.Impact.Current=new Original323NativeDummyImpact(
+                    "fork-invalid-selection",0.25,true,
+                    new[]{Hit("primary",55)},
+                    new[]{Selected(immune?"primary":"a",immune)},
+                    "observed original native fork target discrepancy");
+                Assert.IsFalse(game.Bridge.TryApplyObservedImpact(
+                    game.Combat,game.Cast.CastId,out actual));
+                Assert.AreEqual(999,game.Combat.EnemyOf("primary").Health);
+                Assert.AreEqual(1,game.Combat.PendingOriginalDummySpellCount);
+            }
+        }
+
+        [Test]
+        public void RepeatedSelectionAndSyntheticEvidenceFailWithoutConsumption()
+        {
+            var game=Create("S-18","h00Q");
+            game.Enemy("primary");
+            game.Enemy("a");
+            game.Combat.Step(0);
+            game.Combat.Step(0.25);
+            game.Impact.Current=new Original323NativeDummyImpact(
+                "fork-1",0.25,false,
+                new[]{Hit("primary",3)},
+                new[]{Selected("primary")},
+                "observed native fork target");
+            long actual;
+            Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out actual));
+            Assert.AreEqual(3,actual);
+            game.Combat.Step(0.25);
+            game.Impact.Current=new Original323NativeDummyImpact(
+                "fork-2",0.5,true,
+                new Original323NativeDummySpellHit[0],
+                new[]{Selected("primary")},
+                "observed native duplicate target");
+            Assert.IsFalse(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out actual));
+            game.Impact.Current=new Original323NativeDummyImpact(
+                "fork-3",0.5,true,
+                new Original323NativeDummySpellHit[0],
+                new[]{new Original323NativeSelectedSpellTarget(
+                    "a",true,"TEST_ONLY guessed immunity")},
+                "observed native fake selection proof");
+            Assert.IsFalse(game.Bridge.TryApplyObservedImpact(
+                game.Combat,game.Cast.CastId,out actual));
+            Assert.AreEqual(0,actual);
+            Assert.AreEqual(1000,game.Combat.EnemyOf("a").Health);
+            Assert.AreEqual(1,game.Combat.PendingOriginalDummySpellCount);
         }
 
         private static bool ContainsEvent(
