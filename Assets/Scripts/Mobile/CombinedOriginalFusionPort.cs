@@ -7,7 +7,8 @@ namespace Ordr.Mobile.Mobile
     // player-facing catalog. ONLY the source that owns an audited recipe may
     // perform its irreversible original-world transaction.
     public sealed class CombinedOriginalFusionPort :
-        IOriginalFusionPort, IOriginalFusionCommitCapability
+        IOriginalFusionPort, IOriginalFusionCommitCapability,
+        IOriginalFusionRecipeCommitCapability
     {
         private readonly IReadOnlyList<IOriginalFusionPort> sources;
         private readonly Dictionary<string, IOriginalFusionPort> owners =
@@ -50,7 +51,15 @@ namespace Ordr.Mobile.Mobile
             IOriginalFusionPort source;
             return !string.IsNullOrWhiteSpace(recipeId) &&
                 owners.TryGetValue(recipeId, out source) &&
-                SourceCanCommit(source);
+                SourceCanCommit(source) &&
+                SourceCanCommitRecipe(source, recipeId);
+        }
+
+        private static bool SourceCanCommitRecipe(IOriginalFusionPort source,
+            string recipeId)
+        {
+            var scoped = source as IOriginalFusionRecipeCommitCapability;
+            return scoped == null || scoped.CanCommitRecipe(recipeId);
         }
 
         private static bool SourceCanCommit(IOriginalFusionPort source)
@@ -86,7 +95,8 @@ namespace Ordr.Mobile.Mobile
                 !owners.TryGetValue(recipeId, out owner))
                 return new ManualActionResult(ManualActionState.Rejected,
                     "조합식을 새로고침하여 원본 재료를 확인해 주세요.");
-            if (!SourceCanCommit(owner))
+            if (!SourceCanCommit(owner) ||
+                !SourceCanCommitRecipe(owner, recipeId))
                 return ManualActionResult.Unavailable(
                     "선택한 조합식의 원작 제작 거래");
             // Only an original-world atomic commit may debit the wallet,

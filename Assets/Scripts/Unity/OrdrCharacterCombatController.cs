@@ -1010,6 +1010,27 @@ namespace Ordr.Mobile.Unity
                 originalCastPolicy);
         }
 
+        // The minimal real-world bridge implements ordered UNIT/GOLD/WOOD
+        // mutations, verifies the staged resulting roster and shares one
+        // rollback-capable lock. It cannot execute unverified JASS special tags.
+        // Production worlds must still supply exact original rawcodes, native
+        // target rules and original CHu/CHx placement in the atomic session.
+        public void ConfigureOriginalJassSimpleCraftingWorld(
+            IVerifiedUnitRawcodeMap verifiedObjectMap,
+            IOriginalJassFusionResourceReader verifiedResourceReader,
+            IOriginalJassSimpleFusionTransactionalWorld world,
+            IOriginalJassFusionCastPolicy castPolicy)
+        {
+            if (world == null) throw new ArgumentNullException(nameof(world));
+            if (OriginalJassFusions == null)
+                throw new InvalidOperationException("원본 CWR 등록식을 먼저 로드하세요.");
+            ConfigureOriginalJassCraftingOrderedWorld(verifiedObjectMap,
+                new OriginalJassNoSpecialConditions(),
+                verifiedResourceReader,
+                new OriginalJassSimpleOrderedSessionFactory(OriginalJassFusions, world),
+                castPolicy);
+        }
+
         // 이세계 신비 도감 UI 연결. 공개 도감만으로는 실제 소모를 절대 실행하지 않는다.
         public void ConfigureOtherworldMysticFusionPreview(
             OtherworldMysticFusionCatalog mysticCatalog)

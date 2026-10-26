@@ -50,7 +50,7 @@ namespace Ordr.Mobile.Mobile
     // Concrete ordered transaction orchestration. Original game-specific
     // predicate/effect implementations remain mandatory in the world session.
     public sealed class OriginalJassFusionOrderedWorldAdapter
-        : IOriginalJassFusionTransactionalWorld
+        : IOriginalJassFusionTransactionalWorld, IOriginalJassRecipeCommitScope
     {
         private readonly IOriginalJassFusionOrderedSessionFactory factory;
 
@@ -58,6 +58,12 @@ namespace Ordr.Mobile.Mobile
             IOriginalJassFusionOrderedSessionFactory verifiedFactory)
         {
             factory = verifiedFactory ?? throw new ArgumentNullException(nameof(verifiedFactory));
+        }
+
+        public bool CanCommitRecipe(string abilityRawcode)
+        {
+            var scoped = factory as IOriginalJassRecipeCommitScope;
+            return scoped == null || scoped.CanCommitRecipe(abilityRawcode);
         }
 
         public IOriginalJassFusionWorldTransaction BeginFusionTransaction()

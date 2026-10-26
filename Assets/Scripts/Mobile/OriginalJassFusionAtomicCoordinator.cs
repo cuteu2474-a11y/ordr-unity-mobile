@@ -33,7 +33,8 @@ namespace Ordr.Mobile.Mobile
 
     // Rebuild the *entire* plan inside the exclusive world transaction. The
     // externally supplied preview/order is never authority to spend resources.
-    public sealed class OriginalJassFusionAtomicCoordinator : IOriginalJassFusionAtomicCommit
+    public sealed class OriginalJassFusionAtomicCoordinator :
+        IOriginalJassFusionAtomicCommit, IOriginalJassRecipeCommitScope
     {
         private readonly OriginalJassFusionPlanner planner;
         private readonly IOriginalJassFusionTransactionalWorld world;
@@ -45,8 +46,16 @@ namespace Ordr.Mobile.Mobile
             world = verifiedWorld ?? throw new ArgumentNullException(nameof(verifiedWorld));
         }
 
+        public bool CanCommitRecipe(string abilityRawcode)
+        {
+            var scoped = world as IOriginalJassRecipeCommitScope;
+            return scoped == null || scoped.CanCommitRecipe(abilityRawcode);
+        }
+
         public ManualActionResult TryCommit(OriginalJassFusionCommitOrder order)
         {
+            if (order != null && !CanCommitRecipe(order.AbilityRawcode))
+                return Rejected("이 원본 조합의 실행 규칙은 아직 구현되지 않았습니다.");
             if (order == null)
                 return Rejected("원본 조합 주문이 없습니다.");
             try

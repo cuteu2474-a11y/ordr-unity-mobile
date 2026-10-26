@@ -27,6 +27,13 @@ namespace Ordr.Mobile.Mobile
         ManualActionResult TryCommit(OriginalJassFusionCommitOrder order);
     }
 
+    // Source-registered ability-level execution scope. Full verified-world
+    // adapters can support every audited ability; simple adapters cannot.
+    public interface IOriginalJassRecipeCommitScope
+    {
+        bool CanCommitRecipe(string abilityRawcode);
+    }
+
     public sealed class OriginalJassFusionCommitOrder
     {
         public string AbilityRawcode { get; private set; }
@@ -68,7 +75,8 @@ namespace Ordr.Mobile.Mobile
     // Alternative to web-dex-only seven recipes. Expose only output units for which
     // Bi8/Bi9 provide a name; unknown inputs and JASS rules remain visibly blocked.
     public sealed class OriginalJassFusionPort :
-        IOriginalFusionPort, IOriginalFusionCommitCapability
+        IOriginalFusionPort, IOriginalFusionCommitCapability,
+        IOriginalFusionRecipeCommitCapability
     {
         private readonly OriginalJassFusionPlanner planner;
         private readonly Func<IReadOnlyList<MobileUnitSnapshot>> ownedUnits;
@@ -77,6 +85,14 @@ namespace Ordr.Mobile.Mobile
         private readonly IOriginalJassFusionCastPolicy castPolicy;
 
         public bool CanCommit { get { return transaction != null; } }
+
+        public bool CanCommitRecipe(string abilityRawcode)
+        {
+            if (!CanCommit || string.IsNullOrWhiteSpace(abilityRawcode))
+                return false;
+            var scope = transaction as IOriginalJassRecipeCommitScope;
+            return scope == null || scope.CanCommitRecipe(abilityRawcode);
+        }
 
         public OriginalJassFusionPort(OriginalJassFusionPlanner planner,
             Func<IReadOnlyList<MobileUnitSnapshot>> ownedUnits,
@@ -103,6 +119,8 @@ namespace Ordr.Mobile.Mobile
             foreach (var assessment in list)
             {
                 var missing = new List<string>(assessment.BlockingReasons);
+                if (!CanCommitRecipe(assessment.AbilityRawcode))
+                    missing.Add("이 원본 조합의 안전한 제작 거래는 아직 미연결입니다.");
                 previews.Add(new MobileFusionPreview(assessment.AbilityRawcode,
                     assessment.ResultName + " (원본 JASS)",
                     BuildMaterialSummary(assessment),
@@ -130,8 +148,9 @@ namespace Ordr.Mobile.Mobile
         private ManualActionResult ConfirmFusionCore(string abilityRawcode,
             IReadOnlyList<long> selectedMaterialIds)
         {
-            if (transaction == null)
-                return ManualActionResult.Unavailable("원본 조합 재료/자원 원자적 거래 서비스");
+            if (!CanCommitRecipe(abilityRawcode))
+                return ManualActionResult.Unavailable(
+                    "이 원본 조합의 재료·자원 원자적 거래 서비스");
             if (selectedMaterialIds == null)
                 return new ManualActionResult(ManualActionState.Rejected,
                     "선택한 조합 재료가 없습니다.");

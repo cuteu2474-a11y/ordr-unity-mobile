@@ -121,6 +121,14 @@ namespace Ordr.Mobile.Mobile
         bool CanCommit { get; }
     }
 
+    // A source may support ONLY specific original CWR recipes (e.g. UNIT,
+    // GOLD and WOOD without unknown special JASS conditions). A global
+    // CanCommit flag must never enable all 265 recipes in the mobile UI.
+    public interface IOriginalFusionRecipeCommitCapability
+    {
+        bool CanCommitRecipe(string recipeId);
+    }
+
     // Voluntary common sale is distinct from shop, gambling and Wisp usage.
     // Implement the atomic transaction in the live player world before exposing UI.
     public interface IOriginalCommonSalePort
@@ -220,10 +228,9 @@ namespace Ordr.Mobile.Mobile
         {
             if (fusion == null || string.IsNullOrWhiteSpace(recipeId))
                 return false;
-            var combined = fusion as CombinedOriginalFusionPort;
-            return combined != null
-                ? combined.CanCommitRecipe(recipeId)
-                : HasExecutableFusionService;
+            var scoped = fusion as IOriginalFusionRecipeCommitCapability;
+            return HasExecutableFusionService &&
+                (scoped == null || scoped.CanCommitRecipe(recipeId));
         }
         public bool HasEconomyService
         {
