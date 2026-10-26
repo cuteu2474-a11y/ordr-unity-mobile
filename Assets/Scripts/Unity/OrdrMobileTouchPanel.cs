@@ -603,8 +603,11 @@ namespace Ordr.Mobile.Unity
                 else
                     GUILayout.Label("유닛 재료 확보 (추가 조건·제작 허가는 별도 확인)");
                 bool previousEnabled = GUI.enabled;
-                GUI.enabled = previousEnabled && offer.IsReady;
-                if (GUILayout.Button(offer.IsReady ? "조합 선택" : "재료 부족",
+                bool executable = controller.ManualActions.CanExecuteFusionRecipe(
+                    offer.RecipeId);
+                GUI.enabled = previousEnabled && offer.IsReady && executable;
+                if (GUILayout.Button(!offer.IsReady ? "재료 부족" :
+                    executable ? "조합 선택" : "제작 미연결",
                     GUILayout.MinHeight(48)))
                 {
                     pendingFusion = offer;
@@ -641,7 +644,9 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label(pendingFusion.OriginalMaterialsAndCost);
                 GUILayout.BeginHorizontal();
                 bool priorEnabled = GUI.enabled;
-                GUI.enabled = priorEnabled && controller.ManualActions.HasExecutableFusionService;
+                GUI.enabled = priorEnabled &&
+                    controller.ManualActions.CanExecuteFusionRecipe(
+                        pendingFusion.RecipeId);
                 if (GUILayout.Button("조합 확정", GUILayout.MinHeight(52)))
                 {
                     ShowResult(controller.ManualActions.ConfirmFusion(pendingFusion));

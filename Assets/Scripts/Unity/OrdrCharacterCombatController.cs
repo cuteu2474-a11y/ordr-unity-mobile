@@ -884,6 +884,7 @@ namespace Ordr.Mobile.Unity
         private IOriginalStoryDispatchPort storyDispatchRules;
         private IOriginalVerifiedUnitAttackProvider verifiedUnitAttackSource;
         private IOriginalFusionPort originalFusionPort;
+        private OriginalJassFusionPort originalJassFusionPort;
         private OtherworldMysticFusionPreviewPort mysticFusionPort;
         private IOriginalEconomyPort originalEconomyPort;
 
@@ -962,10 +963,10 @@ namespace Ordr.Mobile.Unity
                     "원작 객체 매핑·추가조건·재화·원자적 조합 서비스가 모두 필요합니다.");
             OriginalFusionPlanner.SetVerifiedObjectMap(verifiedObjectMap);
             OriginalFusionPlanner.SetSpecialRules(conditionEvaluator);
-            originalFusionPort = new OriginalJassFusionPort(OriginalFusionPlanner,
+            originalJassFusionPort = new OriginalJassFusionPort(OriginalFusionPlanner,
                 () => Combat.MobileUnitSnapshot(), verifiedResourceReader,
                 originalTransaction, originalCastPolicy);
-            ManualActions.Configure(storyDispatchRules, originalFusionPort, originalEconomyPort);
+            RebuildVerifiedFusionCatalog();
         }
 
         // Authoritative world integration: after object data, all special
@@ -1015,10 +1016,22 @@ namespace Ordr.Mobile.Unity
             if (mysticCatalog == null) throw new ArgumentNullException(nameof(mysticCatalog));
             mysticFusionPort = new OtherworldMysticFusionPreviewPort(
                 mysticCatalog, id => Combat.IsStoryDeployed(id));
-            originalFusionPort = FusionAssistance == null ?
-                (IOriginalFusionPort)mysticFusionPort :
-                new CombinedOriginalFusionPort(FusionAssistance, mysticFusionPort);
-            ManualActions.Configure(storyDispatchRules, originalFusionPort, originalEconomyPort);
+            RebuildVerifiedFusionCatalog();
+        }
+
+        private void RebuildVerifiedFusionCatalog()
+        {
+            // Connecting original JASS execution must not hide the Mystic
+            // recipe page or the previously loaded regular recipes.
+            var sources = new List<IOriginalFusionPort>();
+            if (FusionAssistance != null) sources.Add(FusionAssistance);
+            if (originalJassFusionPort != null) sources.Add(originalJassFusionPort);
+            if (mysticFusionPort != null) sources.Add(mysticFusionPort);
+            originalFusionPort = sources.Count == 0 ? null :
+                sources.Count == 1 ? sources[0] :
+                (IOriginalFusionPort)new CombinedOriginalFusionPort(sources.ToArray());
+            ManualActions.Configure(storyDispatchRules,
+                originalFusionPort, originalEconomyPort);
         }
 
         // 원본 아이템·rawcode·시전·CHu/CHx 후속 처리까지 구현한 실제

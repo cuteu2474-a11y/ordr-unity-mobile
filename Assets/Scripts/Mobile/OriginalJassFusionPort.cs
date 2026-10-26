@@ -67,7 +67,8 @@ namespace Ordr.Mobile.Mobile
 
     // Alternative to web-dex-only seven recipes. Expose only output units for which
     // Bi8/Bi9 provide a name; unknown inputs and JASS rules remain visibly blocked.
-    public sealed class OriginalJassFusionPort : IOriginalFusionPort
+    public sealed class OriginalJassFusionPort :
+        IOriginalFusionPort, IOriginalFusionCommitCapability
     {
         private readonly OriginalJassFusionPlanner planner;
         private readonly Func<IReadOnlyList<MobileUnitSnapshot>> ownedUnits;

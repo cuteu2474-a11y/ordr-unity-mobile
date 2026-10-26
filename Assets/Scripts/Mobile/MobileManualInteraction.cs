@@ -114,6 +114,13 @@ namespace Ordr.Mobile.Mobile
             IReadOnlyList<long> selectedMaterialInstances);
     }
 
+    // UI capability only: this does not authorize recipe completion. The
+    // authoritative original transaction still rechecks every cost and unit.
+    public interface IOriginalFusionCommitCapability
+    {
+        bool CanCommit { get; }
+    }
+
     // Voluntary common sale is distinct from shop, gambling and Wisp usage.
     // Implement the atomic transaction in the live player world before exposing UI.
     public interface IOriginalCommonSalePort
@@ -202,16 +209,21 @@ namespace Ordr.Mobile.Mobile
             get
             {
                 if (fusion == null) return false;
-                var assist = fusion as AssistedFusionService;
-                if (assist != null) return assist.CanCommit;
-                var jass = fusion as OriginalJassFusionPort;
-                if (jass != null) return jass.CanCommit;
-                var mystic = fusion as OtherworldMysticFusionPreviewPort;
-                if (mystic != null) return mystic.CanCommit;
-                var combined = fusion as CombinedOriginalFusionPort;
-                if (combined != null) return combined.CanCommit;
-                return true;
+                var capability = fusion as IOriginalFusionCommitCapability;
+                return capability == null || capability.CanCommit;
             }
+        }
+
+        // A single original JASS route being connected must not make the
+        // unrelated preview-only Mystic/regular recipes look executable.
+        public bool CanExecuteFusionRecipe(string recipeId)
+        {
+            if (fusion == null || string.IsNullOrWhiteSpace(recipeId))
+                return false;
+            var combined = fusion as CombinedOriginalFusionPort;
+            return combined != null
+                ? combined.CanCommitRecipe(recipeId)
+                : HasExecutableFusionService;
         }
         public bool HasEconomyService
         {

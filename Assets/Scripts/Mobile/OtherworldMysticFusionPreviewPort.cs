@@ -12,7 +12,8 @@ namespace Ordr.Mobile.Mobile
     }
 
     // 실제 조합 실행이 아닌 모바일 재료 선택 보조. 미검증 JASS 조건으로 소비하지 않는다.
-    public sealed class OtherworldMysticFusionPreviewPort : IOriginalFusionPort
+    public sealed class OtherworldMysticFusionPreviewPort :
+        IOriginalFusionPort, IOriginalFusionCommitCapability
     {
         private readonly OtherworldMysticFusionCatalog catalog;
         private readonly Func<long, bool> storyDeployed;

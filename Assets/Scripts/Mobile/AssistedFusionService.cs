@@ -14,7 +14,8 @@ namespace Ordr.Mobile.Mobile
 
     // 실제 원작 조합식 일부가 제공되는 범위에서 '보유 재료 자동 선택'만 구현.
     // 재료 ID/등급/수량 검증은 조합 직전에도 다시 수행한다.
-    public sealed class AssistedFusionService : IOriginalFusionPort
+    public sealed class AssistedFusionService :
+        IOriginalFusionPort, IOriginalFusionCommitCapability
     {
         private readonly VerifiedFusionCatalog recipes;
         private readonly Func<IReadOnlyList<MobileUnitSnapshot>> ownedUnits;
