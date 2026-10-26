@@ -1464,6 +1464,25 @@ namespace Ordr.Mobile.Combat
                     orderedEvents, finalNativeLevel);
         }
 
+        // The pinned JASS also has Bd4 (set to LK/NJ) and Bd5
+        // (increase); these ordered operations must not be confused.
+        public bool TryApplyObservedEnemyMagicDefenseLevelMutations(
+            string enemyId, int expectedPreviousLevel,
+            int independentlyObservedFinalLevel,
+            IReadOnlyList<Original323ObservedMagicDefenseLevelMutation>
+                chronologicalSourceEvents,
+            IOriginal323MagicDefenseLevelMutationWitness verifiedSequence,
+            IOriginal323LiveMonsterA04QWitness nativeLevelWitness)
+        {
+            return game.Phase == SessionPhase.Running &&
+                Original323MagicDefenseLevelMutationRules
+                    .TryApplyObservedLevelMutations(
+                        EnemyOf(enemyId), expectedPreviousLevel,
+                        independentlyObservedFinalLevel,
+                        chronologicalSourceEvents, verifiedSequence,
+                        nativeLevelWitness);
+        }
+
         // Same CombatEnemy instance feeds HUD, hit resolution and verified
         // wave tracking. An external native event must independently witness
         // maximum/current HP and physical armor changes.

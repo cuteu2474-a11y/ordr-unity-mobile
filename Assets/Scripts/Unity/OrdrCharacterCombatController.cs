@@ -332,6 +332,34 @@ namespace Ordr.Mobile.Unity
                     liveMonsterA04QWitness);
         }
 
+        private IOriginal323MagicDefenseLevelMutationWitness
+            observedMagicLevelMutationWitness;
+
+        public void ConfigureObservedOriginalMagicLevelMutations(
+            IOriginal323MagicDefenseLevelMutationWitness sourceEvents)
+        {
+            if (observedMagicLevelMutationWitness != null)
+                throw new InvalidOperationException(
+                    "원본 마법 저항 설정/누적 이벤트 공급자가 이미 연결됐습니다.");
+            observedMagicLevelMutationWitness = sourceEvents ??
+                throw new ArgumentNullException(nameof(sourceEvents));
+        }
+
+        public bool TryApplyObservedOriginalMagicLevelMutations(
+            string enemyId, int expectedPreviousLevel, int observedFinalLevel,
+            IReadOnlyList<Original323ObservedMagicDefenseLevelMutation>
+                originalOrderedEvents)
+        {
+            return Combat != null &&
+                Combat.Game.Phase == Ordr.Mobile.Core.SessionPhase.Running &&
+                liveMonsterA04QWitness != null &&
+                observedMagicLevelMutationWitness != null &&
+                Combat.TryApplyObservedEnemyMagicDefenseLevelMutations(
+                    enemyId, expectedPreviousLevel, observedFinalLevel,
+                    originalOrderedEvents, observedMagicLevelMutationWitness,
+                    liveMonsterA04QWitness);
+        }
+
         // Explicit observations of changes to a living monster. These are
         // not generated from the unverified initial HP/armor research model.
         public void ConfigureObservedLiveMonsterStats(

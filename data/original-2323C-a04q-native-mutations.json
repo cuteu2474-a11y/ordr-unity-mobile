@@ -1,0 +1,57 @@
+{
+  "format": "ordr-original-2323C-a04q-native-set-and-stack-calls-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceFunctionSet": "Bd4",
+  "sourceFunctionSetDefinitionLine": 8554,
+  "sourceSetExpression": "SetUnitAbilityLevel(Cm,JV,Hk)",
+  "sourceSetCalls": [
+    {
+      "caller": "Bvi",
+      "line": 20698,
+      "operand": "LK[JG]"
+    },
+    {
+      "caller": "CKz",
+      "line": 50860,
+      "operand": "LK[JG]"
+    },
+    {
+      "caller": "CNI",
+      "line": 52131,
+      "operand": "NJ"
+    },
+    {
+      "caller": "CVX",
+      "line": 59504,
+      "operand": "LK[JG]"
+    },
+    {
+      "caller": "CVY",
+      "line": 59518,
+      "operand": "LK[JG]"
+    },
+    {
+      "caller": "CVZ",
+      "line": 59552,
+      "operand": "LK[JG]"
+    },
+    {
+      "caller": "CVo",
+      "line": 59681,
+      "operand": "LK[JG]"
+    },
+    {
+      "caller": "CVp",
+      "line": 59694,
+      "operand": "LK[JG]"
+    }
+  ],
+  "sourceFunctionIncrease": "Bd5",
+  "sourceFunctionIncreaseDefinitionLine": 8560,
+  "sourceIncreaseExpression": "SetUnitAbilityLevel(Cm,JV,GetUnitAbilityLevel(Cm,JV)+Hk)",
+  "independentActualUnitCallbackObservationRequired": true,
+  "nativeDamageAmplificationStackingFormulaFullyVerified": false,
+  "allowedVerifiedObjectLevelMin": 1,
+  "allowedVerifiedObjectLevelMax": 41
+}
