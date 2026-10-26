@@ -615,6 +615,37 @@ namespace Ordr.Mobile.Unity
         // Source-backed object entries from AbilityData.slk and
         // UnitAbilities.slk; the external witness must still supply verified
         // Warcraft target/immunity/final-HP and native impact evidence.
+        private Original323DeferredNativeDummySpellWorld observedDummyImpactWorld;
+
+        // A separate adapter for actual projectiles and lightning impact
+        // moments. Register BEFORE game runtime creation; confirmed impacts
+        // may arrive after the original attacked target is already dead.
+        public void ConfigureOriginal323DeferredDummySpellWorld(
+            IOriginal323DummySpellCastWitness verifiedCasts,
+            IOriginal323DummySpellImpactWitness verifiedImpacts)
+        {
+            if (Combat != null || verifiedOriginalAttackDummySpells != null)
+                throw new InvalidOperationException(
+                    "원본 주문 시전/타격 공급자는 전투 시작 전에 한 번만 연결하세요.");
+            var bridge = new Original323DeferredNativeDummySpellWorld(
+                verifiedCasts, verifiedImpacts);
+            ConfigureOriginal323AttackedDummySpellWorld(bridge);
+            observedDummyImpactWorld = bridge;
+        }
+
+        // Does NOT choose new target positions or approximate projectile
+        // travel. The native impact observer must report this instant.
+        public bool TryApplyObservedOriginalDummySpellImpact(
+            string sourceCastId, out long observedHpDamage)
+        {
+            observedHpDamage = 0;
+            return Combat != null &&
+                observedDummyImpactWorld != null &&
+                Combat.Game.Phase == SessionPhase.Running &&
+                observedDummyImpactWorld.TryApplyObservedImpact(
+                    Combat, sourceCastId, out observedHpDamage);
+        }
+
         public void ConfigureOriginal323AttackedDummyHitWorld(
             IOriginal323NativeDummySpellHitWitness nativeSpellHits)
         {

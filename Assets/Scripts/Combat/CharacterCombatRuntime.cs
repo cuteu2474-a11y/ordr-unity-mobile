@@ -92,6 +92,28 @@ namespace Ordr.Mobile.Combat
         private string executingOriginalDummyRawcode;
         private readonly Dictionary<string, long> originalScriptAttackSequences =
             new Dictionary<string, long>(StringComparer.Ordinal);
+        // Original carrion-swarm projectiles can strike AFTER their attack
+        // declaration. Keep cast ownership and lane immutable across frames.
+        private sealed class PendingOriginalDummyCast
+        {
+            public Original323ObservedDummyCast Snapshot;
+            public bool IsStoryLane;
+            public readonly HashSet<string> AlreadyHit =
+                new HashSet<string>(StringComparer.Ordinal);
+            public readonly HashSet<string> ImpactIds =
+                new HashSet<string>(StringComparer.Ordinal);
+            public double LastImpactAt;
+        }
+        private readonly Dictionary<string, PendingOriginalDummyCast>
+            pendingOriginalDummyCasts =
+                new Dictionary<string, PendingOriginalDummyCast>(StringComparer.Ordinal);
+        private readonly HashSet<string> finishedOriginalDummyCastIds =
+            new HashSet<string>(StringComparer.Ordinal);
+        private bool committingOriginalDummyImpact;
+        public int PendingOriginalDummySpellCount
+        {
+            get { return pendingOriginalDummyCasts.Count; }
+        }
 
         // Registers only original-attacked-event spell dispatch for the three
         // exact original rawcodes. Cannot replace the original basic attack,
@@ -152,9 +174,9 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        // Only an original attack-declared callback may apply verified native
-        // e0KD damage. Never accept a free-standing/UI hit or a fabricated
-        // spell geometry/HP conversion. Check the ENTIRE hit batch first.
+        // The original attack-declared world may commit an immediate native
+        // impact. New observed-impact flows register a cast at declaration
+        // and commit each separate projectile impact at its observed time.
         internal bool TryCommitOriginalDummySpellHits(
             Original323AttackDummySpellCommand command,
             string attackerId, string attackedEnemyId,
@@ -163,66 +185,205 @@ namespace Ordr.Mobile.Combat
         {
             totalActualDamage = 0;
             Original323NativeDummyAbilityFacts facts;
-            if (command == null ||
-                !Original323NativeDummyAbilityCatalog.TryGet(command, out facts) ||
-                !processingStep || game.Phase != SessionPhase.Running ||
+            if (!processingStep || game.Phase != SessionPhase.Running ||
                 attackerId != executingOriginalDummyActor ||
                 attackedEnemyId != executingOriginalDummyTarget ||
+                command == null ||
                 command.AttackerRawcode != executingOriginalDummyRawcode ||
-                nativeHits == null || nativeHits.Count > 512 ||
-                (facts.MaxNativeTargets.HasValue &&
-                 nativeHits.Count > facts.MaxNativeTargets.Value))
+                !Original323NativeDummyAbilityCatalog.TryGet(command, out facts))
                 return false;
-
-            long actorNumber;
+            long id;
             CharacterInstance actor;
-            SpatialCombatEnemy originalTarget;
+            SpatialCombatEnemy primary;
             if (!long.TryParse(attackerId, NumberStyles.Integer,
-                    CultureInfo.InvariantCulture, out actorNumber) ||
-                !characters.TryGetValue(actorNumber, out actor) ||
+                    CultureInfo.InvariantCulture, out id) ||
+                !characters.TryGetValue(id, out actor) ||
                 !actor.AttackReady || actor.Mapping == null ||
                 actor.Mapping.AttackSpec.UnitRawCode != command.AttackerRawcode ||
-                !enemies.TryGetValue(attackedEnemyId, out originalTarget) ||
-                !originalTarget.Enemy.IsAlive ||
-                !CanAttackInThisLane(actor, originalTarget))
+                !enemies.TryGetValue(attackedEnemyId, out primary) ||
+                !primary.Enemy.IsAlive ||
+                !CanAttackInThisLane(actor, primary))
+                return false;
+            return TryCommitOriginalDummyHitBatch(command, attackerId,
+                nativeHits, IsStoryDeployed(id), 0,
+                null, out totalActualDamage);
+        }
+
+        // Called ONLY during the actual attacked-event callback. A cast
+        // identifier is supplied by a verified Warcraft observer; it is not
+        // an arbitrary UI-generated "cast" or a made-up travel time.
+        internal bool TryRegisterObservedOriginalDummyCast(
+            Original323AttackDummySpellCommand command,
+            string attackerId, string originalTargetId,
+            string originalCastId, string originalCastEvidence)
+        {
+            Original323NativeDummyAbilityFacts facts;
+            if (game.Phase != SessionPhase.Running || !processingStep ||
+                command == null ||
+                !Original323NativeDummyAbilityCatalog.TryGet(command, out facts) ||
+                attackerId != executingOriginalDummyActor ||
+                originalTargetId != executingOriginalDummyTarget ||
+                command.AttackerRawcode != executingOriginalDummyRawcode ||
+                string.IsNullOrWhiteSpace(originalCastId) ||
+                originalCastId.Length > 256 ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(originalCastId) ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(originalCastEvidence) ||
+                pendingOriginalDummyCasts.ContainsKey(originalCastId) ||
+                finishedOriginalDummyCastIds.Contains(originalCastId) ||
+                pendingOriginalDummyCasts.Count >= 4096)
+                return false;
+            long id;
+            CharacterInstance actor;
+            SpatialCombatEnemy primary;
+            if (!long.TryParse(attackerId, NumberStyles.Integer,
+                    CultureInfo.InvariantCulture, out id) ||
+                !characters.TryGetValue(id, out actor) ||
+                !actor.AttackReady || actor.Mapping == null ||
+                actor.Mapping.AttackSpec.UnitRawCode != command.AttackerRawcode ||
+                !enemies.TryGetValue(originalTargetId, out primary) ||
+                !primary.Enemy.IsAlive ||
+                !CanAttackInThisLane(actor, primary))
+                return false;
+            var cast = new Original323ObservedDummyCast(
+                originalCastId, command, attackerId, originalTargetId,
+                scheduler.Time, originalCastEvidence);
+            pendingOriginalDummyCasts.Add(originalCastId,
+                new PendingOriginalDummyCast {
+                    Snapshot = cast,
+                    IsStoryLane = IsStoryDeployed(id),
+                    LastImpactAt = scheduler.Time
+                });
+            return true;
+        }
+
+        internal bool TryGetPendingOriginalDummyCast(string castId,
+            out Original323ObservedDummyCast source)
+        {
+            source = null;
+            PendingOriginalDummyCast state;
+            if (string.IsNullOrWhiteSpace(castId) ||
+                !pendingOriginalDummyCasts.TryGetValue(castId, out state))
+                return false;
+            source = state.Snapshot;
+            return true;
+        }
+
+        // Only a witnessed native IMPACT at this combat clock time can
+        // change HP. No fixed projectile speed, guessed path intersection,
+        // arbitrary splash radius or automatic "cast equals damage".
+        internal bool TryCommitObservedOriginalDummyImpact(
+            string originalCastId, Original323NativeDummyImpact impact,
+            out long totalActualDamage)
+        {
+            totalActualDamage = 0;
+            PendingOriginalDummyCast cast;
+            if (game.Phase != SessionPhase.Running ||
+                committingOriginalDummyImpact ||
+                impact == null ||
+                !pendingOriginalDummyCasts.TryGetValue(originalCastId,
+                    out cast) ||
+                cast.ImpactIds.Contains(impact.ImpactId) ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(
+                    impact.OriginalImpactEvidence) ||
+                impact.ObservedTimeSeconds < cast.Snapshot.StartTimeSeconds ||
+                impact.ObservedTimeSeconds < cast.LastImpactAt ||
+                Math.Abs(impact.ObservedTimeSeconds - scheduler.Time) > 1e-6)
                 return false;
 
-            var seen = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var hit in nativeHits)
+            // Stage all checks before the first mutation. A native swarm can
+            // report consecutive projectile contacts in different frames.
+            committingOriginalDummyImpact = true;
+            try
+            {
+                if (!TryCommitOriginalDummyHitBatch(
+                    cast.Snapshot.OriginalOrder,
+                    cast.Snapshot.AttackerInstanceId,
+                    impact.Hits, cast.IsStoryLane,
+                    cast.AlreadyHit.Count, cast.AlreadyHit,
+                    out totalActualDamage))
+                    return false;
+                foreach (var hit in impact.Hits)
+                    cast.AlreadyHit.Add(hit.TargetId);
+                cast.ImpactIds.Add(impact.ImpactId);
+                cast.LastImpactAt = impact.ObservedTimeSeconds;
+                if (impact.SpellCompleted)
+                {
+                    pendingOriginalDummyCasts.Remove(originalCastId);
+                    finishedOriginalDummyCastIds.Add(originalCastId);
+                }
+                return true;
+            }
+            finally { committingOriginalDummyImpact = false; }
+        }
+
+        // Shared atomic preflight for both immediate and delayed verified
+        // Warcraft impacts. For delayed projectiles, the original attacked
+        // enemy can already be dead; use captured CAST lane, not the
+        // caster's possibly changed/current dispatch assignment.
+        private bool TryCommitOriginalDummyHitBatch(
+            Original323AttackDummySpellCommand command,
+            string attackerId, IReadOnlyList<Original323NativeDummySpellHit> hits,
+            bool storyLaneAtCast, int previouslyHit,
+            HashSet<string> priorTargets,
+            out long totalActualDamage)
+        {
+            totalActualDamage = 0;
+            Original323NativeDummyAbilityFacts facts;
+            if (command == null ||
+                !Original323NativeDummyAbilityCatalog.TryGet(command, out facts) ||
+                hits == null || hits.Count > 512 ||
+                (facts.MaxNativeTargets.HasValue &&
+                    (long)previouslyHit + hits.Count >
+                        facts.MaxNativeTargets.Value))
+                return false;
+            var unique = new HashSet<string>(StringComparer.Ordinal);
+            long totalPreflight = 0;
+            foreach (var hit in hits)
             {
                 SpatialCombatEnemy target;
                 if (hit == null ||
                     !Original323BossRoundRules.TrustedRuntimeEvidence(
                         hit.OriginalNativeHitEvidence) ||
                     hit.FinalHpDamage < 0 ||
-                    !seen.Add(hit.TargetId) ||
+                    !unique.Add(hit.TargetId) ||
+                    (priorTargets != null &&
+                        priorTargets.Contains(hit.TargetId)) ||
                     !enemies.TryGetValue(hit.TargetId, out target) ||
                     !target.Enemy.IsAlive ||
-                    !CanAttackInThisLane(actor, target) ||
+                    (storyLaneAtCast ?
+                        target.Kind != CharacterEnemyKind.Story :
+                        (target.Kind != CharacterEnemyKind.Line &&
+                         target.Kind != CharacterEnemyKind.Boss &&
+                         target.Kind != CharacterEnemyKind.Enraged)) ||
                     !ReferenceEquals(resolution.GetEnemy(hit.TargetId),
                         target.Enemy))
                     return false;
+                try
+                {
+                    totalPreflight = checked(totalPreflight +
+                        Math.Min(hit.FinalHpDamage, target.Enemy.Health));
+                }
+                catch (OverflowException) { return false; }
             }
 
-            // Empty batch: native Warcraft confirmed that the spell was
-            // issued but no target actually lost HP (immunity/miss/no targets).
-            // It must not turn into a synthetic zero-damage attack.
-            foreach (var hit in nativeHits)
+            foreach (var hit in hits)
             {
                 var target = enemies[hit.TargetId];
                 long actual;
                 if (!resolution.TryApplySkillDamage(attackerId,
                         hit.TargetId, hit.FinalHpDamage, out actual))
                     throw new InvalidOperationException(
-                        "검증된 원본 보조 주문 대상이 피해 처리 도중 변경됐습니다.");
+                        "원본 주문 피해의 사전 검증 후 몬스터 상태가 변했습니다.");
                 totalActualDamage = checked(totalActualDamage + actual);
-                events.Add(new CharacterCombatEvent(
-                    CharacterCombatEventType.SkillDamage, attackerId,
-                    hit.TargetId, command.HumanSkillName,
-                    "원본 주문 최종 체력 피해: " +
-                        hit.OriginalNativeHitEvidence, actual));
+                var detail = "원본 보조 주문 실제 타격: " +
+                    hit.OriginalNativeHitEvidence;
+                var destination = processingStep ? events : pendingCommandEvents;
+                destination.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillDamage,
+                    attackerId, hit.TargetId, command.HumanSkillName,
+                    detail, actual));
                 if (!target.Enemy.IsAlive)
-                    events.Add(new CharacterCombatEvent(
+                    destination.Add(new CharacterCombatEvent(
                         CharacterCombatEventType.EnemyDefeated,
                         attackerId, hit.TargetId, command.HumanSkillName,
                         "원본 보조 주문으로 처치", actual));
