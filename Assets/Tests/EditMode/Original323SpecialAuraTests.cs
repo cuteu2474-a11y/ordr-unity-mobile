@@ -36,13 +36,25 @@ namespace Ordr.Mobile.Tests
             public long Quantize(double value, Ordr323VerifiedDamageHit hit) => (long)value;
         }
 
-        private sealed class Targets : IOriginal323SpecialAuraTargetRules, IOriginal323FlatArmorAuraRules
+        private sealed class Targets : IOriginal323SpecialAuraTargetRules,
+            IOriginal323FlatArmorAuraRules, IOriginal323NativeAuraRankWitness
         {
             public bool Approved = true;
             public bool Evidence = true;
             public string ExcludedEnemy;
             public long ExcludedAlly;
             public double UntilTime = double.PositiveInfinity;
+            public bool TryObserveCurrentRank(long casterId, string abilityCode,
+                double time, out int nativeRank, out string proof)
+            {
+                // TEST_ONLY: this fixture already confines observed armor
+                // effects to level 1. The runtime still requires an
+                // independent Warcraft current-rank witness in production.
+                nativeRank = 1;
+                proof = Approved && Evidence ?
+                    "TEST_ONLY witnessed source Warcraft rank 1" : null;
+                return Approved && Evidence;
+            }
             public bool IsVerifiedFlatArmor(Original323SpecialAura aura, UnitState caster,
                 double time, out string evidence)
             {

@@ -190,6 +190,23 @@ namespace Ordr.Mobile.Tests
             return n;
         }
 
+        // One unit can legitimately own an AHad defense aura and a
+        // distinct ACac command aura. Assert only on source ACac rather
+        // than pretending the entire union contains exactly one effect.
+        private static Original323SpecialAura ExactlyOneCommand(
+            IOriginal323AuraCatalog catalog, string unitId)
+        {
+            Original323SpecialAura found = null;
+            foreach (var aura in catalog.FindAll(unitId))
+            {
+                if (aura.ParentAbility != "ACac") continue;
+                Assert.IsNull(found, unitId + " has multiple ACac candidates");
+                found = aura;
+            }
+            Assert.IsNotNull(found, unitId + " has no ACac candidate");
+            return found;
+        }
+
         [Test]
         public void MapAcacDefinesChopperGuardSevenAndHornTwentyFivePercent()
         {
@@ -222,8 +239,10 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, guard.Count, "Existing A0EM is not applied twice.");
             Assert.AreEqual(25, ExactlyOne(all, "R-35").Amount);
             Assert.AreEqual(40, ExactlyOne(all, "X-06").Amount);
-            Assert.AreEqual(32, ExactlyOne(all, "L-03").Amount);
-            Assert.AreEqual(60, ExactlyOne(all, "I-04").Amount);
+            Assert.AreEqual(32, ExactlyOneCommand(all, "L-03").Amount);
+            Assert.AreEqual(60, ExactlyOneCommand(all, "I-04").Amount);
+            Assert.GreaterOrEqual(all.FindAll("L-03").Count, 2,
+                "Keep the legitimate separate original aura instead of discarding it.");
         }
 
         [Test]

@@ -412,6 +412,8 @@ namespace Ordr.Mobile.Tests
         public void AbortedFusionDoesNotReapplyOrRemoveExistingEnemyAuras()
         {
             var fixture = CreateWithRealCombatUnitSwap();
+            fixture.Combat.Start();
+            fixture.Combat.BeginWave(1);
             fixture.Combat.SpawnEnemy("aura-target", 1000,
                 CharacterEnemyKind.Line, 0, 0, 0);
             fixture.Combat.AddVerifiedEnemyAura(new CombatAuraEmitter(
