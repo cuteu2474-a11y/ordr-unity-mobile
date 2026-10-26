@@ -628,9 +628,23 @@ namespace Ordr.Mobile.Unity
             IOriginal323NativeMagicImpactWitness verifiedMagicImpacts,
             IOriginal323NativeMagicHpConversion verifiedNativeHp)
         {
+            ConfigureOriginal323VerifiedNativeMagicDummyWorld(verifiedCasts,
+                verifiedMagicImpacts, verifiedNativeHp, null);
+        }
+
+        // Source-backed concurrent buffs may be present. The external
+        // observer must establish their exact native impact-time effect
+        // before any damage is applied; no arithmetic guesses are allowed.
+        public void ConfigureOriginal323VerifiedNativeMagicDummyWorld(
+            IOriginal323DummySpellCastWitness verifiedCasts,
+            IOriginal323NativeMagicImpactWitness verifiedMagicImpacts,
+            IOriginal323NativeMagicHpConversion verifiedNativeHp,
+            IOriginal323NativeMagicModifierWitness verifiedNativeModifiers)
+        {
             ConfigureOriginal323DeferredDummySpellWorld(verifiedCasts,
                 new Original323VerifiedNativeMagicImpactAdapter(
-                    verifiedMagicImpacts, verifiedNativeHp));
+                    verifiedMagicImpacts, verifiedNativeHp,
+                    verifiedNativeModifiers));
         }
 
         public void ConfigureOriginal323DeferredDummySpellWorld(

@@ -102,6 +102,66 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        private sealed class LiveMagicLevel : IOriginal323LiveMonsterA04QWitness
+        {
+            public string VerifiedEnemyId = "primary";
+            public int Calls;
+            public bool Approved = true;
+            public bool TryConfirm(string id, int previousLevel, int newLevel,
+                out string evidence)
+            {
+                Calls++;
+                evidence = "source observed original per-monster Bd5 update";
+                return Approved && id == VerifiedEnemyId &&
+                    previousLevel == 16 && newLevel == 1;
+            }
+        }
+
+        private sealed class CurrentNativeModifiers :
+            IOriginal323NativeMagicModifierWitness
+        {
+            public int Calls;
+            public bool Approved = true;
+            public string Evidence = "observed complete native buff pipeline at hit time";
+            public int ExpectedCount = 2;
+            public int ExpectedMagicReductions = 1;
+            public int ExpectedMagicAmplifiers = 1;
+            public string ObservedTargetId = "primary";
+
+            public bool TryConfirmNativeModifiersAtImpact(
+                CombatEnemy target, string spell,
+                Original323ObservedNativeMagicHit hit,
+                IReadOnlyList<CombatEffect> effects, out string source)
+            {
+                Calls++;
+                source = Evidence;
+                if (target.Id != ObservedTargetId ||
+                    hit.TargetId != target.Id ||
+                    effects.Count != ExpectedCount ||
+                    (spell != "A086" && spell != "A0VS"))
+                    return false;
+                int reductions = 0, amplifiers = 0;
+                foreach (var effect in effects)
+                {
+                    if (effect.Type == CombatEffectType.MagicResistanceReduction)
+                    {
+                        if (effect.SourceId != "source-resist-down" ||
+                            effect.Amount != 5) return false;
+                        reductions++;
+                    }
+                    else if (effect.Type == CombatEffectType.MagicDamageAmplification)
+                    {
+                        if (effect.SourceId != "source-magic-amp" ||
+                            effect.Amount != 0.2) return false;
+                        amplifiers++;
+                    }
+                    else return false;
+                }
+                return Approved && reductions == ExpectedMagicReductions &&
+                    amplifiers == ExpectedMagicAmplifiers;
+            }
+        }
+
         private sealed class BasicDamage : IOriginalDamageResolver
         {
             public long ResolveBasicDamage(BasicDamageRequest request,
@@ -765,6 +825,206 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Bridge.TryApplyObservedImpact(
                 game.Combat,game.Cast.CastId,out amount));
             Assert.AreEqual(900,amount);
+        }
+
+        [Test]
+        public void DefenseUpdatedAfterCastUsesImpactTimeLevelNotCastLevel()
+        {
+            var source = new NativeMagic();
+            var adapter = new Original323VerifiedNativeMagicImpactAdapter(
+                source, new TestHpConversion());
+            var world = Create("S-18", "h00Q", adapter);
+            world.Enemy("primary", 2000, CharacterEnemyKind.Line, 16);
+            world.Combat.Step(0);
+            Assert.AreEqual(16,
+                world.Combat.EnemyOf("primary").Defenses.MagicAbilityLevel.Value);
+            Assert.AreEqual(1, world.Combat.PendingOriginalDummySpellCount);
+            var observedLevel = new LiveMagicLevel();
+            Assert.IsTrue(world.Combat.TryApplyObservedEnemyA04QLevel(
+                "primary", 16, 1, observedLevel));
+            Assert.AreEqual(1, observedLevel.Calls);
+            world.Combat.Step(0.25);
+            source.Next = MagicImpact(world.Cast.CastId, "native-after-change",
+                0.25, true, new[] { Selected("primary") },
+                MagicHit("primary", 1000f, 1, 750));
+            long actual;
+            Assert.IsTrue(world.Bridge.TryApplyObservedImpact(
+                world.Combat, world.Cast.CastId, out actual));
+            Assert.AreEqual(750, actual);
+            Assert.AreEqual(1249, world.Combat.EnemyOf("primary").Health);
+            Assert.AreEqual(0, world.Combat.PendingOriginalDummySpellCount);
+        }
+
+        [Test]
+        public void StaleCastTimeResistanceRejectedAndCorrectionCanRetry()
+        {
+            var source = new NativeMagic();
+            var adapter = new Original323VerifiedNativeMagicImpactAdapter(
+                source, new TestHpConversion());
+            var world = Create("U-04", "h00M", adapter);
+            world.Enemy("primary", 2000, CharacterEnemyKind.Line, 16);
+            world.Combat.Step(0);
+            Assert.IsTrue(world.Combat.TryApplyObservedEnemyA04QLevel(
+                "primary", 16, 1, new LiveMagicLevel()));
+            world.Combat.Step(0.25);
+            source.Next = MagicImpact(world.Cast.CastId, "stale-native-hit",
+                0.25, true, new[] { Selected("primary") },
+                MagicHit("primary", 1000f, 16, 900));
+            long actual;
+            Assert.IsFalse(world.Bridge.TryApplyObservedImpact(
+                world.Combat, world.Cast.CastId, out actual));
+            Assert.AreEqual(1999, world.Combat.EnemyOf("primary").Health);
+            Assert.AreEqual(1, world.Combat.PendingOriginalDummySpellCount);
+            source.Next = MagicImpact(world.Cast.CastId, "correct-native-hit",
+                0.25, true, new[] { Selected("primary") },
+                MagicHit("primary", 1000f, 1, 750));
+            Assert.IsTrue(world.Bridge.TryApplyObservedImpact(
+                world.Combat, world.Cast.CastId, out actual));
+            Assert.AreEqual(750, actual);
+            Assert.AreEqual(1249, world.Combat.EnemyOf("primary").Health);
+        }
+
+        [Test]
+        public void OneChangedMonsterDoesNotChangeOtherTargetsMagicDefense()
+        {
+            var source = new NativeMagic();
+            var bridge = new Original323VerifiedNativeMagicImpactAdapter(
+                source, new TestHpConversion());
+            var world = Create("S-18", "h00Q", bridge);
+            world.Enemy("primary", 2000, CharacterEnemyKind.Line, 16);
+            world.Enemy("second", 2000, CharacterEnemyKind.Line, 16);
+            world.Combat.Step(0);
+            Assert.IsTrue(world.Combat.TryApplyObservedEnemyA04QLevel(
+                "primary", 16, 1, new LiveMagicLevel()));
+            world.Combat.Step(0.25);
+            source.Next = MagicImpact(world.Cast.CastId, "mixed-stale",
+                0.25, true,
+                new[] { Selected("primary"), Selected("second") },
+                MagicHit("primary", 1000f, 1, 750),
+                MagicHit("second", 1000f, 1, 750));
+            long actual;
+            Assert.IsFalse(world.Bridge.TryApplyObservedImpact(
+                world.Combat, world.Cast.CastId, out actual));
+            Assert.AreEqual(1999, world.Combat.EnemyOf("primary").Health);
+            Assert.AreEqual(2000, world.Combat.EnemyOf("second").Health);
+            Assert.AreEqual(1, world.Combat.PendingOriginalDummySpellCount);
+            source.Next = MagicImpact(world.Cast.CastId, "mixed-correct",
+                0.25, true,
+                new[] { Selected("primary"), Selected("second") },
+                MagicHit("primary", 1000f, 1, 750),
+                MagicHit("second", 1000f, 16, 900));
+            Assert.IsTrue(world.Bridge.TryApplyObservedImpact(
+                world.Combat, world.Cast.CastId, out actual));
+            Assert.AreEqual(1650, actual);
+            Assert.AreEqual(1249, world.Combat.EnemyOf("primary").Health);
+            Assert.AreEqual(1100, world.Combat.EnemyOf("second").Health);
+        }
+
+        [Test]
+        public void SimultaneousResistanceDebuffAndMagicAmplificationNeedWitness()
+        {
+            var monster = new CombatEnemy("primary", 2000,
+                Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                    CharacterEnemyKind.Line, 0, "normal", 16,
+                    "source observed real A04Q baseline"));
+            monster.Status.Apply(new CombatEffect("source-resist-down",
+                CombatEffectType.MagicResistanceReduction,
+                CombatEffectOrigin.TriggeredSkill, 5, 1.0));
+            monster.Status.Apply(new CombatEffect("source-magic-amp",
+                CombatEffectType.MagicDamageAmplification,
+                CombatEffectOrigin.TriggeredSkill, 0.2, 1.0));
+            var hit = MagicHit("primary", 1000f, 16, 900);
+            var quantizer = new TestHpConversion();
+            Original323NativeDummySpellHit actual;
+            Assert.IsFalse(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A086", hit, quantizer, out actual));
+            var modifiers = new CurrentNativeModifiers();
+            Assert.IsTrue(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A086", hit, quantizer, modifiers, out actual));
+            Assert.AreEqual(900, actual.FinalHpDamage);
+            Assert.IsTrue(actual.OriginalNativeHitEvidence.Contains(
+                "original native modifier stage"));
+            Assert.AreEqual(1, modifiers.Calls);
+            // This does NOT assert any original stacking multiplier:
+            // native 1000 pre-Defend was an independently observed value.
+        }
+
+        [Test]
+        public void IncompleteBuffWitnessOrSyntheticEvidenceNeverAcceptsDamage()
+        {
+            var monster = new CombatEnemy("primary", 2000,
+                Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                    CharacterEnemyKind.Line, 0, "normal", 16,
+                    "observed original baseline"));
+            monster.Status.Apply(new CombatEffect("source-resist-down",
+                CombatEffectType.MagicResistanceReduction,
+                CombatEffectOrigin.TriggeredSkill, 5, 1));
+            monster.Status.Apply(new CombatEffect("source-magic-amp",
+                CombatEffectType.MagicDamageAmplification,
+                CombatEffectOrigin.TriggeredSkill, 0.2, 1));
+            var hit = MagicHit("primary", 1000f, 16, 900);
+            var policy = new TestHpConversion();
+            var modifiers = new CurrentNativeModifiers();
+            Original323NativeDummySpellHit confirmed;
+            modifiers.ExpectedCount = 1;
+            Assert.IsFalse(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A0VS", hit, policy, modifiers, out confirmed));
+            modifiers.ExpectedCount = 2;
+            modifiers.Evidence = "MODEL_ONLY guessed stacking policy";
+            Assert.IsFalse(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A0VS", hit, policy, modifiers, out confirmed));
+            modifiers.Evidence = "observed original complete native modifier state";
+            modifiers.Approved = false;
+            Assert.IsFalse(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A0VS", hit, policy, modifiers, out confirmed));
+            Assert.IsNull(confirmed);
+            modifiers.Approved = true;
+            Assert.IsTrue(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A0VS", hit, policy, modifiers, out confirmed));
+        }
+
+        [Test]
+        public void ExpiredMagicModifierNoLongerRequiresCurrentStackWitness()
+        {
+            var monster = new CombatEnemy("primary", 2000,
+                Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                    CharacterEnemyKind.Line, 0, "normal", 16,
+                    "observed original baseline"));
+            monster.Status.Apply(new CombatEffect("source-resist-down",
+                CombatEffectType.MagicResistanceReduction,
+                CombatEffectOrigin.TriggeredSkill, 5, 0.25));
+            monster.Status.Apply(new CombatEffect("source-magic-amp",
+                CombatEffectType.MagicDamageAmplification,
+                CombatEffectOrigin.TriggeredSkill, 0.2, 0.25));
+            var policy = new TestHpConversion();
+            Original323NativeDummySpellHit hit;
+            Assert.IsFalse(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A086", MagicHit("primary", 1000f, 16, 900),
+                policy, out hit));
+            monster.Status.Advance(0.25);
+            Assert.AreEqual(0, monster.Status.ActiveCount);
+            Assert.IsTrue(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A086", MagicHit("primary", 1000f, 16, 900),
+                policy, out hit));
+            Assert.AreEqual(900, hit.FinalHpDamage);
+        }
+
+        [Test]
+        public void WitnessMayConfirmNativeDefendDidNotApplyToThisSpell()
+        {
+            var monster = new CombatEnemy("primary", 2000,
+                Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                    CharacterEnemyKind.Line, 0, "normal", 1,
+                    "original observed magic defense level"));
+            var quantizer = new TestHpConversion();
+            Original323NativeDummySpellHit result;
+            Assert.IsFalse(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A086", MagicHit("primary", 1000f, 1, 750, false),
+                quantizer, out result));
+            Assert.IsTrue(Original323NativeMagicDamageReconciler.TryReconcile(
+                monster, "A086", MagicHit("primary", 1000f, 1, 1000, false),
+                quantizer, out result));
+            Assert.AreEqual(1000, result.FinalHpDamage);
         }
 
         private static bool ContainsEvent(

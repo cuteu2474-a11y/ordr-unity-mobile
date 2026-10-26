@@ -102,6 +102,20 @@ namespace Ordr.Mobile.Combat
             out Original323ObservedNativeMagicImpact observedImpact);
     }
 
+    // During the original Warcraft native impact, this observer must
+    // independently verify that the complete CURRENT set of relevant
+    // magic-reduction / amplification effects has already been resolved
+    // into NativeDamageBeforeA04Q. It is not a guessed stacking formula.
+    // An earlier cast-time observation cannot certify impact-time effects.
+    public interface IOriginal323NativeMagicModifierWitness
+    {
+        bool TryConfirmNativeModifiersAtImpact(
+            CombatEnemy target, string abilityRawcode,
+            Original323ObservedNativeMagicHit currentHit,
+            IReadOnlyList<CombatEffect> activeRelevantEffects,
+            out string observedNativeModifierEvidence);
+    }
+
     // Warcraft native real-to-HP rounding is not yet source-confirmed.
     // A real engine-backed policy must be supplied; the adapter cannot
     // silently choose floor, nearest or ceiling.
@@ -119,6 +133,19 @@ namespace Ordr.Mobile.Combat
             CombatEnemy liveMonster, string originalAbilityRawcode,
             Original323ObservedNativeMagicHit observed,
             IOriginal323NativeMagicHpConversion verifiedNativeHp,
+            out Original323NativeDummySpellHit verifiedHit)
+        {
+            return TryReconcile(liveMonster, originalAbilityRawcode,
+                observed, verifiedNativeHp, null, out verifiedHit);
+        }
+
+        // This overload permits source-witnessed stacks without inventing
+        // whether their contributions add, multiply, clamp, or override.
+        public static bool TryReconcile(
+            CombatEnemy liveMonster, string originalAbilityRawcode,
+            Original323ObservedNativeMagicHit observed,
+            IOriginal323NativeMagicHpConversion verifiedNativeHp,
+            IOriginal323NativeMagicModifierWitness nativeModifierWitness,
             out Original323NativeDummySpellHit verifiedHit)
         {
             verifiedHit = null;
@@ -145,13 +172,31 @@ namespace Ordr.Mobile.Combat
                     (1.0 - originalFactor) * 100.0) > 0.0001)
                 return false;
 
-            // Do not incorrectly apply the baseline A04Q factor when a
-            // pending status changes effective magic resistance. The exact
-            // active status-to-native calculation needs its own witness.
+            // Snapshot impact-time effects, not cast-time ones. Any source
+            // bonus that can influence magical HP damage requires a fully
+            // witnessed native stage; never assume generic effect stacking.
+            var relevant = new List<CombatEffect>();
             foreach (var effect in liveMonster.Status.Snapshot())
                 if (effect.Type == CombatEffectType.MagicResistanceReduction ||
-                    effect.Type == CombatEffectType.OriginalA04QLevelIncrease)
+                    effect.Type == CombatEffectType.OriginalA04QLevelIncrease ||
+                    effect.Type == CombatEffectType.MagicDamageAmplification ||
+                    effect.Type == CombatEffectType.AllDamageAmplification ||
+                    effect.Type == CombatEffectType.ExplosiveDamageAmplification)
+                    relevant.Add(effect);
+            string stackingEvidence = null;
+            if (relevant.Count > 0)
+            {
+                if (nativeModifierWitness == null ||
+                    !nativeModifierWitness.TryConfirmNativeModifiersAtImpact(
+                        liveMonster, originalAbilityRawcode, observed,
+                        relevant.AsReadOnly(), out stackingEvidence) ||
+                    !Original323BossRoundRules.TrustedRuntimeEvidence(
+                        stackingEvidence))
                     return false;
+                // Crucially, do not multiply raw damage AGAIN here.
+                // Its independently observed pre-A04Q native stage already
+                // includes the confirmed effects and engine stacking.
+            }
 
             float damageAfterDefend = observed.NativeDamageBeforeA04Q;
             if (observed.OriginalNativeDefendApplied)
@@ -177,7 +222,10 @@ namespace Ordr.Mobile.Combat
                 " / original A04Q Lv." +
                 observed.OriginalA04QLevelAtImpact +
                 (observed.OriginalNativeDefendApplied ?
-                    " applied" : " source-confirmed bypass"));
+                    " applied" : " source-confirmed bypass") +
+                (stackingEvidence == null ? "" :
+                    " / original native modifier stage: " +
+                    stackingEvidence));
             return true;
         }
     }
@@ -190,14 +238,23 @@ namespace Ordr.Mobile.Combat
     {
         private readonly IOriginal323NativeMagicImpactWitness original;
         private readonly IOriginal323NativeMagicHpConversion quantization;
+        private readonly IOriginal323NativeMagicModifierWitness modifiers;
 
         public Original323VerifiedNativeMagicImpactAdapter(
             IOriginal323NativeMagicImpactWitness source,
             IOriginal323NativeMagicHpConversion nativeHp)
+            : this(source, nativeHp, null)
+        { }
+
+        public Original323VerifiedNativeMagicImpactAdapter(
+            IOriginal323NativeMagicImpactWitness source,
+            IOriginal323NativeMagicHpConversion nativeHp,
+            IOriginal323NativeMagicModifierWitness nativeModifiers)
         {
             original = source ?? throw new ArgumentNullException(nameof(source));
             quantization = nativeHp ??
                 throw new ArgumentNullException(nameof(nativeHp));
+            modifiers = nativeModifiers;
         }
 
         public bool TryConfirmOriginalDummyImpact(
@@ -247,7 +304,7 @@ namespace Ordr.Mobile.Combat
                 if (!Original323NativeMagicDamageReconciler.TryReconcile(
                         combat.EnemyOf(nativeHit.TargetId),
                         ability.AbilityRawcode, nativeHit,
-                        quantization, out checkedHit))
+                        quantization, modifiers, out checkedHit))
                     return false;
                 confirmed.Add(checkedHit);
             }
