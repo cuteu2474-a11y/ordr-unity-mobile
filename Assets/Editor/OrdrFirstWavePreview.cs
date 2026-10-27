@@ -26,6 +26,11 @@ namespace Ordr.Mobile.Editor
         private static int previewWaveNumber;
         private static double previewWaveStartedAt;
         private static bool previewSessionActive;
+        private static CombatEnemyPathDriver previewMovement;
+        private static HashSet<string> previewMovedIds;
+        private static double previewMovementTime;
+        private static readonly IOriginalEnemyMovementRules PreviewSpeed =
+            new EditorPreviewMovementSpeed();
 
         static OrdrFirstWavePreview()
         {
@@ -133,11 +138,15 @@ namespace Ordr.Mobile.Editor
                 previewController = controller;
                 previewWaveNumber = 1;
                 previewWaveStartedAt = controller.Combat.Time;
+                previewMovementTime = controller.Combat.Time;
+                previewMovement = new CombatEnemyPathDriver();
+                previewMovedIds = new HashSet<string>(StringComparer.Ordinal);
                 EditorApplication.update += TickEditorPracticeRounds;
                 Debug.LogWarning(
                     "ORDR EDITOR 3라운드 즉시 체험 시작: 루피(C-01) 1개 자동 소환, " +
                     "남은 랜덤위습 4개를 왼쪽 위습 메뉴에서 직접 사용할 수 있습니다. " +
-                    "35초 간격의 가상 라운드 전환과 몬스터 HP/방어/골드는 연습 전용입니다.");
+                    "가상 경로 이동(이속 40/초)과 35초 간격의 라운드 전환, " +
+                    "몬스터 HP/방어/골드는 연습 전용입니다. 이동 완료는 이탈로 처리하지 않습니다.");
             }
             catch (Exception ex)
             {
@@ -189,6 +198,9 @@ namespace Ordr.Mobile.Editor
             previewController = null;
             previewWaveNumber = 0;
             previewWaveStartedAt = 0;
+            previewMovement = null;
+            previewMovedIds = null;
+            previewMovementTime = 0;
             // Keep the selected speed throughout wave 3; reset at Play exit.
             if (restoreEditorTimeScale && previewSessionActive)
             {
@@ -205,34 +217,67 @@ namespace Ordr.Mobile.Editor
                 StopPreviewClock();
                 return;
             }
-            // The Unity combat clock freezes with pause/background focus.
-            // This is not wall-clock catch-up and not a Warcraft observation.
+            // Practice routes are explicitly invented for Editor preview. The
+            // production original movement provider is NOT touched or forged.
             if (owner.Combat == null || owner.IsGameplayPaused ||
                 owner.Combat.Game.Phase != SessionPhase.Running ||
-                previewWaveNumber >= PracticeLastRound)
-            {
-                if (previewWaveNumber >= PracticeLastRound)
-                    StopPreviewClock();
-                return;
-            }
-            int seconds;
-            if (!Original323BossRoundRules.TryGetCountdownSeconds(
-                    previewWaveNumber, out seconds) ||
-                owner.Combat.Time - previewWaveStartedAt < seconds ||
-                owner.VerifiedWaveDirector.RemainingSpawns != 0)
+                owner.Combat.PendingSimulationSeconds != 0)
                 return;
 
             try
             {
+                // EditorApplication.update is not a simulation clock. Always
+                // advance from the SAME completed logical time as combat,
+                // avoiding catch-up after pause or editor frame delays.
+                double currentTime = owner.Combat.Time;
+                if (currentTime < previewMovementTime)
+                    throw new InvalidOperationException(
+                        "Editor 연습 중 전투 시간이 역행했습니다.");
+                var snapshots = owner.Combat.MobileEnemySnapshot();
+                foreach (var enemy in snapshots)
+                {
+                    int spawnedInWave;
+                    if (previewMovedIds.Contains(enemy.Id) ||
+                        !owner.VerifiedWaveDirector.TryGetLivingMonsterSpawnWave(
+                            enemy.Id, out spawnedInWave) ||
+                        spawnedInWave < 1 || spawnedInWave > PracticeLastRound)
+                        continue;
+
+                    // Deliberately SYNTHETIC route. The original JASS spawn
+                    // identity/cadence remains intact; no real route evidence
+                    // or native WC3 speed is claimed by this preview.
+                    previewMovement.Attach(enemy.Id, new VerifiedCombatPath(
+                        new[] {
+                            new CombatPathPoint(enemy.X, enemy.Y),
+                            new CombatPathPoint(enemy.X + 256, enemy.Y - 96),
+                            new CombatPathPoint(enemy.X + 512, enemy.Y - 192)
+                        }, "EDITOR_PREVIEW_NON_RETAIL: synthetic route"));
+                    previewMovedIds.Add(enemy.Id);
+                }
+                double elapsed = currentTime - previewMovementTime;
+                if (elapsed > 0)
+                {
+                    previewMovement.Advance(owner.Combat, PreviewSpeed, elapsed);
+                    previewMovementTime = currentTime;
+                }
+
+                // The 3rd wave continues moving/fighting after the practice
+                // clock stops opening waves. Only Play exit unhooks movement.
+                if (previewWaveNumber >= PracticeLastRound) return;
+
+                int seconds;
+                if (!Original323BossRoundRules.TryGetCountdownSeconds(
+                        previewWaveNumber, out seconds) ||
+                    currentTime - previewWaveStartedAt < seconds ||
+                    owner.VerifiedWaveDirector.RemainingSpawns != 0)
+                    return;
+
                 int next = previewWaveNumber + 1;
-                // Explicit Editor-only bypass of the ORIGINAL timer gate.
-                // The strict production witness remains completely unchanged.
                 owner.BeginEditorPreviewWave(next);
                 previewWaveNumber = next;
-                previewWaveStartedAt = owner.Combat.Time;
+                previewWaveStartedAt = currentTime;
                 Debug.LogWarning("ORDR Editor 가상 체험 " + next +
-                    "라운드 시작 (가상 능력치·가상 카운트다운)");
-                if (next >= PracticeLastRound) StopPreviewClock();
+                    "라운드 시작 (가상 능력치·이동 경로·카운트다운)");
             }
             catch (Exception ex)
             {
@@ -240,6 +285,18 @@ namespace Ordr.Mobile.Editor
                 Debug.LogException(ex);
                 try { owner.SetManualGameplayPause(true); }
                 catch (InvalidOperationException) { }
+            }
+        }
+
+        private sealed class EditorPreviewMovementSpeed : IOriginalEnemyMovementRules
+        {
+            public bool TryResolveSpeed(CombatEnemy enemy,
+                IReadOnlyList<CombatEffect> activeEffects,
+                out double worldUnitsPerSecond)
+            {
+                // Deliberately fake movement; not source-verified native speed.
+                worldUnitsPerSecond = 40.0;
+                return true;
             }
         }
 

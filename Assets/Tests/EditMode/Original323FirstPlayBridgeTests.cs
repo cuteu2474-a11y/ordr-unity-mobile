@@ -490,6 +490,44 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void EditorStyleSyntheticRoutesUseCombatElapsedTimeWithoutCreatingLeaks()
+        {
+            var live = Create();
+            live.Combat.SpawnEnemy("first", 300, CharacterEnemyKind.Line, 0, 0, 0);
+            var driver = new CombatEnemyPathDriver();
+            driver.Attach("first", new VerifiedCombatPath(new[] {
+                new CombatPathPoint(0, 0),
+                new CombatPathPoint(100, 0)
+            }, "TEST_ONLY: Editor-style synthetic first wave path"));
+            var speed = new PathSpeedFixture();
+
+            // An editor tick without an actual simulation step must not move.
+            Assert.AreEqual(0, driver.Advance(live.Combat, speed, 0).Count);
+            Assert.AreEqual(0, live.Combat.EnemyOf("first").X);
+            Assert.AreEqual(0, live.Combat.Game.LeakedEnemies);
+
+            driver.Advance(live.Combat, speed, 3);
+            Assert.AreEqual(30, live.Combat.EnemyOf("first").X);
+            Assert.AreEqual(.3, live.Combat.EnemyOf("first").PathProgress, 1e-9);
+
+            // A subsequent spawn joins its own route without resetting the
+            // first enemy's progression, even across a later practice wave.
+            live.Combat.SpawnEnemy("second", 300, CharacterEnemyKind.Line, 20, 10, 0);
+            driver.Attach("second", new VerifiedCombatPath(new[] {
+                new CombatPathPoint(20, 10),
+                new CombatPathPoint(120, 10)
+            }, "TEST_ONLY: Editor-style synthetic second wave path"));
+            var arrivals = driver.Advance(live.Combat, speed, 7);
+            CollectionAssert.AreEqual(new[] { "first" }, arrivals);
+            Assert.AreEqual(100, live.Combat.EnemyOf("first").X);
+            Assert.AreEqual(90, live.Combat.EnemyOf("second").X);
+            Assert.AreEqual(.7, live.Combat.EnemyOf("second").PathProgress, 1e-9);
+            Assert.AreEqual(0, live.Combat.Game.LeakedEnemies,
+                "The synthetic route endpoint is not an observed WC3 escape.");
+            Assert.AreEqual(0, driver.Advance(live.Combat, speed, 0).Count);
+        }
+
+        [Test]
         public void OpeningCameraFramesOriginalWorldCoordinatesWithoutChangingThem()
         {
             var points = new List<Vector2> {
