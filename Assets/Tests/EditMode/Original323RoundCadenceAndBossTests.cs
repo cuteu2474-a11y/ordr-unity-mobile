@@ -224,6 +224,13 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, director.CurrentProgress.BossDefeated);
             Assert.AreEqual(0, director.CurrentProgress.LivingBosses);
             Assert.IsTrue(director.CurrentProgress.AllBossesDefeated);
+            string bossRawcode, monsterRawcode;
+            Assert.IsTrue(director.TryGetDefeatedBossRawcode(
+                1, "boss", out bossRawcode));
+            Assert.IsTrue(director.TryGetDefeatedMonsterRawcode(
+                1, "boss", out monsterRawcode));
+            Assert.AreEqual("o01V", bossRawcode);
+            Assert.AreEqual(bossRawcode, monsterRawcode);
             Assert.AreEqual(SessionPhase.Running, world.Game.Phase);
         }
 

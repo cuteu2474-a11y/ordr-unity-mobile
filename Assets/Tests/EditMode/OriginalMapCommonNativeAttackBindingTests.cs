@@ -131,6 +131,8 @@ namespace Ordr.Mobile.Tests
                 ProjectFile("original-2323C-map-base-stats.json"), units);
             var commons = new OriginalMapCommonNativeAttackEvidenceCatalog(map);
             Assert.AreEqual(9, commons.Count);
+            Assert.IsNull(commons.Find("U-01"),
+                "The verified common pool must remain nine-only.");
             var luffy = commons.Find("C-01");
             Assert.AreEqual("h003", luffy.Rawcode);
             Assert.AreEqual(28, luffy.BaseDamagePlus);

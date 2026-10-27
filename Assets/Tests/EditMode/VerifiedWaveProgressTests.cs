@@ -77,6 +77,10 @@ namespace Ordr.Mobile.Tests
             director.Step(world, 0);
             Assert.AreEqual(2, director.CurrentProgress.Spawned);
             KillFromCanonicalDamage(world, "first");
+            string rawcode;
+            Assert.IsTrue(director.TryGetDefeatedMonsterRawcode(
+                1, "first", out rawcode));
+            Assert.AreEqual("n001", rawcode);
             var progress = director.CurrentProgress;
             Assert.AreEqual(1, progress.Defeated);
             Assert.AreEqual(1, progress.LivingFromWave);
@@ -150,6 +154,12 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, old.Escaped);
             Assert.AreEqual(0, old.Defeated);
             Assert.AreEqual(1, director.CurrentProgress.Defeated);
+            string oldRawcode, newRawcode;
+            Assert.IsFalse(director.TryGetDefeatedMonsterRawcode(
+                1, "reused", out oldRawcode));
+            Assert.IsTrue(director.TryGetDefeatedMonsterRawcode(
+                2, "reused", out newRawcode));
+            Assert.AreEqual("n001", newRawcode);
         }
 
         [Test]

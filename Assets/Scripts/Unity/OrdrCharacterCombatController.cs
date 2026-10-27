@@ -284,12 +284,6 @@ namespace Ordr.Mobile.Unity
             return Diagnostics.Export();
         }
 
-        private void OnVerifiedMonsterEscaped(int sourceWave, string instanceId)
-        {
-            RecordSessionIssue("몬스터 이탈",
-                "출현 라운드 " + sourceWave + " / 몬스터 " + instanceId);
-        }
-
         private void OnVerifiedMonsterDefeated(int sourceWave, string instanceId)
         {
             if (originalMonsterGold == null) return;
@@ -1777,7 +1771,8 @@ namespace Ordr.Mobile.Unity
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
             VerifiedWaveDirector.VerifiedMonsterDefeated += OnVerifiedMonsterDefeated;
-            VerifiedWaveDirector.VerifiedMonsterEscaped += OnVerifiedMonsterEscaped;
+            // Wave/HUD counters already record ordinary escapes. Avoid
+            // flooding the bounded diagnostic error log with every mob exit.
             // The source-pinned e0HP is a non-combat session actor. A caller
             // can provide a richer original evolution port before creating
             // the combat runtime; otherwise use the authoritative roster.

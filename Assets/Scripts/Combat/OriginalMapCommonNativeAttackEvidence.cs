@@ -77,17 +77,26 @@ namespace Ordr.Mobile.Combat
             get { return entries.Values; }
         }
 
+        // One map-object eligibility check is shared by all-grade and strict
+        // nine-common audits. This does not approve final combat damage.
+        internal static bool HasCompleteSourceAttack(OriginalMapCharacterBasics unit)
+        {
+            if (unit == null || string.IsNullOrWhiteSpace(unit.OriginalRawcode))
+                return false;
+            var attack = unit.Attack1;
+            return attack != null && attack.BaseDamagePlus.HasValue &&
+                attack.DiceCount.HasValue && attack.DiceSides.HasValue &&
+                attack.AttackCooldownSeconds.HasValue &&
+                !string.IsNullOrWhiteSpace(attack.OriginalAttackType);
+        }
+
         public OriginalMapMappedNativeAttackEvidenceCatalog(OriginalMapBaseStatCatalog map)
         {
             if (map == null) throw new ArgumentNullException(nameof(map));
             var rawcodes = new HashSet<string>(StringComparer.Ordinal);
             foreach (var entry in map.All)
             {
-                var attack = entry.Attack1;
-                if (entry.OriginalRawcode == null || attack == null ||
-                    !attack.BaseDamagePlus.HasValue || !attack.DiceCount.HasValue ||
-                    !attack.DiceSides.HasValue || !attack.AttackCooldownSeconds.HasValue ||
-                    string.IsNullOrEmpty(attack.OriginalAttackType))
+                if (!HasCompleteSourceAttack(entry))
                     continue;
                 if (!rawcodes.Add(entry.OriginalRawcode))
                     throw new FormatException("동일한 원본 공격 rawcode가 중복 연결됐습니다: " +
@@ -119,13 +128,9 @@ namespace Ordr.Mobile.Combat
             {
                 string id = "C-" + index.ToString("D2");
                 var entry = map.Find(id);
-                if (entry == null || entry.MappingStatus != "verified-common-map-identity" ||
-                    string.IsNullOrWhiteSpace(entry.OriginalRawcode) ||
-                    entry.Attack1 == null || !entry.Attack1.BaseDamagePlus.HasValue ||
-                    !entry.Attack1.DiceCount.HasValue ||
-                    !entry.Attack1.DiceSides.HasValue ||
-                    !entry.Attack1.AttackCooldownSeconds.HasValue ||
-                    string.IsNullOrWhiteSpace(entry.Attack1.OriginalAttackType))
+                if (entry == null ||
+                    entry.MappingStatus != "verified-common-map-identity" ||
+                    !OriginalMapMappedNativeAttackEvidenceCatalog.HasCompleteSourceAttack(entry))
                     throw new FormatException(id + ": 원본 흔함 공격 데이터가 불완전합니다.");
                 entries.Add(id, new OriginalMapCommonNativeAttackEvidence(entry));
             }

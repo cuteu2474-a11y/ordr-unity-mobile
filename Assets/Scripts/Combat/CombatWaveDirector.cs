@@ -159,6 +159,10 @@ namespace Ordr.Mobile.Combat
             public int BossSpawned;
             public int BossDefeated;
             public int BossEscaped;
+            // Immutable original ID -> rawcode index, created only once
+            // at each wave start instead of searching all spawns per kill.
+            public readonly Dictionary<string, string> OriginalRawcodes =
+                new Dictionary<string, string>(StringComparer.Ordinal);
             // Records only an actual kill event from CombatResolution.
             public readonly Dictionary<string, string> DefeatedBossRawcodes =
                 new Dictionary<string, string>(StringComparer.Ordinal);
@@ -169,7 +173,10 @@ namespace Ordr.Mobile.Combat
             {
                 Plan = plan;
                 foreach (var spawn in plan.Spawns)
+                {
+                    OriginalRawcodes.Add(spawn.EnemyId, spawn.OriginalRawcode);
                     if (spawn.Kind == CharacterEnemyKind.Boss) BossPlanned++;
+                }
             }
 
             public VerifiedWaveProgress Snapshot()
@@ -267,26 +274,12 @@ namespace Ordr.Mobile.Combat
             if (reason == CombatEnemyExitReason.Defeated)
             {
                 ledger.Defeated++;
-                foreach (var spawn in ledger.Plan.Spawns)
-                    if (spawn.EnemyId == enemyId)
-                    {
-                        ledger.DefeatedMonsterRawcodes.Add(enemyId,
-                            spawn.OriginalRawcode);
-                        break;
-                    }
+                string rawcode = ledger.OriginalRawcodes[enemyId];
+                ledger.DefeatedMonsterRawcodes.Add(enemyId, rawcode);
                 if (boss)
                 {
                     ledger.BossDefeated++;
-                    // Preserve the original wave-specific boss rawcode as
-                    // proof of what died; IDs can be reused in later waves.
-                    foreach (var spawn in ledger.Plan.Spawns)
-                        if (spawn.Kind == CharacterEnemyKind.Boss &&
-                            spawn.EnemyId == enemyId)
-                        {
-                            ledger.DefeatedBossRawcodes.Add(enemyId,
-                                spawn.OriginalRawcode);
-                            break;
-                        }
+                    ledger.DefeatedBossRawcodes.Add(enemyId, rawcode);
                 }
                 var defeated = VerifiedMonsterDefeated;
                 if (defeated != null) defeated(waveNumber, enemyId);
