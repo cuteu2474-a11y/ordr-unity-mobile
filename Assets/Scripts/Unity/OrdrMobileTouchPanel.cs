@@ -236,6 +236,12 @@ namespace Ordr.Mobile.Unity
                 GUIUtility.systemCopyBuffer = controller.ExportSessionDiagnostics();
                 notice = "진행 기록을 클립보드에 복사했습니다.";
             }
+            if (controller.Combat == null &&
+                GUILayout.Button("시작 진단 복사", GUILayout.Width(116f), GUILayout.MinHeight(40f)))
+            {
+                GUIUtility.systemCopyBuffer = controller.ExportFirstWaveReadiness();
+                notice = "실전 시작 차단 요인을 클립보드에 복사했습니다.";
+            }
             if (GUILayout.Button("닫기 ×", GUILayout.Width(82f), GUILayout.MinHeight(40f)))
                 CloseDrawer();
             GUILayout.EndHorizontal();

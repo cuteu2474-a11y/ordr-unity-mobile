@@ -95,6 +95,7 @@ namespace Ordr.Mobile.Unity
             {
                 string reason;
                 bool ready = controller.CanBeginVerifiedFirstWave(out reason);
+                int remaining = controller.GetFirstWaveBlockers().Count;
                 float panelWidth = Mathf.Max(180f, layout.Battle.width * 0.65f);
                 panelWidth = Mathf.Min(layout.Battle.width - 18f, panelWidth);
                 float center = layout.Battle.x + layout.Battle.width * 0.5f;
@@ -120,10 +121,19 @@ namespace Ordr.Mobile.Unity
                     }
                 }
                 string message = string.IsNullOrEmpty(startFailure)
-                    ? (ready ? "게임 시작 준비 완료" : reason) : startFailure;
+                    ? (ready ? "게임 시작 준비 완료" :
+                        "실전 시작 연결 " + remaining + "건 남음: " + reason)
+                    : startFailure;
                 var hint = new GUIStyle(detail) { alignment = TextAnchor.UpperCenter };
                 GUI.Label(new Rect(button.x, button.yMax + 9f,
-                    button.width, layout.Battle.height * 0.3f), message, hint);
+                    button.width, Mathf.Min(64f, layout.Battle.height * 0.3f)),
+                    message, hint);
+                // A plain-text readiness report lets an in-game tester share
+                // every missing dependency without screenshots or fake starts.
+                if (!ready && GUI.Button(
+                    new Rect(button.x, button.yMax + 73f, button.width, 34f),
+                    "미완료 연결 항목 복사"))
+                    GUIUtility.systemCopyBuffer = controller.ExportFirstWaveReadiness();
             }
             else if (controller != null && controller.Combat != null &&
                 (controller.Combat.Game.Phase == SessionPhase.Won ||

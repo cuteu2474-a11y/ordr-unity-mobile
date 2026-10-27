@@ -1666,6 +1666,13 @@ namespace Ordr.Mobile.Unity
                 if (Units.Count != 272 || Skills.CharacterCount != 200 ||
                     UnitDefinitions.Count != 272)
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
+                // This is already pinned to the actual CUo/CUn/CJ source.
+                // Do not require an external installer for verified start
+                // gold, random Wisps or the non-combat e0HP evolution actor.
+                // The e0HP actor itself is registered once when the real
+                // combat roster is supplied; loading never grants currency.
+                if (verifiedStartingProfile == null)
+                    ConfigureVerifiedStartingEconomy(Original323SoloStartProfile.Create());
                 Debug.Log("ORDR 전체 유닛 정의 " + UnitDefinitions.Count +
                     "종 / 상세 스킬 프로필 " + UnitDefinitions.DetailedProfiles +
                     "종 / 스킬 " + UnitDefinitions.CollectedSkills +
@@ -2043,32 +2050,58 @@ namespace Ordr.Mobile.Unity
             PersonalMissions?.OnRoundStarted();
         }
 
-        // Readiness is deliberately non-consuming. In particular, the live
-        // monster witness is consulted only when the user starts the game,
-        // never by the repeated GUI repaint cycle.
+        // This is a READ-ONLY list of distinct first-play blockers.
+        // Never manufacture damage, final monster stats or live approval
+        // just to make a green start button. Do not query an event witness
+        // during OnGUI: the original source may consume an event.
+        public IReadOnlyList<string> GetFirstWaveBlockers()
+        {
+            var blockers = new List<string>();
+            if (Units == null || Skills == null || UnitDefinitions == null)
+                blockers.Add("원본 캐릭터 도감·스킬 데이터 로딩");
+            if (Combat == null || !HasSourceVerifiedDamageRuntime)
+                blockers.Add("원본 검증된 피해 계산기 및 전투 월드 연결");
+            if (verifiedStartingProfile == null ||
+                !Original323SoloStartProfile.MatchesPinnedSource(verifiedStartingProfile))
+                blockers.Add("CUo/CUn 원본 시작 재화·진화체 자료 등록");
+            if (Combat != null)
+            {
+                if (startEvolutionWorld == null)
+                    blockers.Add("원본 e0HP 진화체를 실제 보유 명단에 연결");
+                if (Combat.Game.Phase != SessionPhase.NotStarted ||
+                    SharedEconomy == null || SharedEconomy.HasStarted ||
+                    PersonalMissions != null)
+                    blockers.Add("새 게임 세션·공유 지갑 초기 상태 복원");
+            }
+            VerifiedWavePlan first;
+            if ((VerifiedMonsterWaves == null ||
+                 !VerifiedMonsterWaves.TryGetPlan(1, out first)) &&
+                !registeredLiveWavePlans.ContainsKey(1))
+                blockers.Add("1라운드 몬스터 최종 체력·방어·면역·출현 위치 검증");
+            if (OriginalMonsterSpawnIdentities == null ||
+                OriginalMonsterObjectAbilities == null)
+                blockers.Add("원본 몬스터 출현 ID·타이밍·객체 자료 로드");
+            if (liveMonsterWaveEvidence == null)
+                blockers.Add("1라운드 몬스터 능력치의 독립 실전 승인 공급자 연결");
+            return blockers.AsReadOnly();
+        }
+
+        public string ExportFirstWaveReadiness()
+        {
+            var blockers = GetFirstWaveBlockers();
+            if (blockers.Count == 0)
+                return "원랜디 모바일: 원본 첫 라운드 시작 사전 조건 충족 (실기기 검증 전)";
+            return "원랜디 모바일 첫 라운드 차단 요인 " + blockers.Count +
+                "건:\n- " + string.Join("\n- ", blockers);
+        }
+
+        // This is deliberately non-consuming. Only actual session start
+        // consults the source-backed wave witness and final monster stats.
         public bool CanBeginVerifiedFirstWave(out string reason)
         {
-            reason = null;
-            if (Units == null || Skills == null)
-                reason = "원본 캐릭터 데이터 로딩 대기";
-            else if (Combat == null || !HasSourceVerifiedDamageRuntime)
-                reason = "원본 검증된 피해 계산기 연결 대기";
-            else if (Combat.Game.Phase != SessionPhase.NotStarted ||
-                SharedEconomy == null || SharedEconomy.HasStarted || PersonalMissions != null)
-                reason = "게임이 이미 시작되었거나 시작 상태가 일치하지 않습니다.";
-            else if (verifiedStartingProfile == null || startEvolutionWorld == null ||
-                !Original323SoloStartProfile.MatchesPinnedSource(verifiedStartingProfile))
-                reason = "시작 재화·진화체 등록 확인 대기";
-            else if ((VerifiedMonsterWaves == null ||
-                !VerifiedMonsterWaves.TryGetPlan(1, out _)) &&
-                !registeredLiveWavePlans.ContainsKey(1))
-                reason = "1라운드의 검증된 최종 몬스터 체력·방어·위치 자료 대기";
-            else if (OriginalMonsterSpawnIdentities == null ||
-                OriginalMonsterObjectAbilities == null)
-                reason = "원본 몬스터 ID·출현 규칙 자료 대기";
-            else if (liveMonsterWaveEvidence == null)
-                reason = "1라운드 몬스터 실전 승인 공급자 연결 대기";
-            return reason == null;
+            var blockers = GetFirstWaveBlockers();
+            reason = blockers.Count == 0 ? null : blockers[0];
+            return blockers.Count == 0;
         }
 
         // A single first-play action connects the verified start wallet,
