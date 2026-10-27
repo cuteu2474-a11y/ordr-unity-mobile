@@ -579,10 +579,15 @@ namespace Ordr.Mobile.Unity
         }
         public SharedEconomySession SharedEconomy { get; private set; }
         private Original323CommonWispRecruitmentService commonWispRecruitment;
+        private IOriginal323CommonWispRecruitmentAvailability commonWispAvailability;
+        private bool commonWispUsesBuiltInSource;
         public int? VerifiedCommonWispRecruitmentCost =>
             commonWispRecruitment == null ? (int?)null : commonWispRecruitment.Cost;
         public bool CanRecruitVerifiedCommonWisp =>
             commonWispRecruitment != null && commonWispRecruitment.CanRecruit;
+        public string VerifiedCommonWispUnavailableReason =>
+            commonWispAvailability == null ? null :
+            commonWispAvailability.UnavailableReason;
 
         // Source-backed randomness, price and live spawn must all come from
         // the same reviewed original map adapter; there is no placeholder roll.
@@ -590,12 +595,15 @@ namespace Ordr.Mobile.Unity
             IOriginal323CommonWispRecruitmentWorld originalWorld)
         {
             if (Combat == null || SharedEconomy == null || MapBaseStats == null ||
-                commonWispRecruitment != null ||
+                (commonWispRecruitment != null && !commonWispUsesBuiltInSource) ||
                 Combat.Game.Phase != SessionPhase.NotStarted)
                 throw new InvalidOperationException(
                     "원본 흔함 유닛 소환은 시작 전 공유 전투·경제 월드에 한 번만 연결하세요.");
             commonWispRecruitment = new Original323CommonWispRecruitmentService(
                 Combat, SharedEconomy, MapBaseStats, originalWorld);
+            commonWispUsesBuiltInSource = false;
+            commonWispAvailability =
+                originalWorld as IOriginal323CommonWispRecruitmentAvailability;
         }
 
         public ManualActionResult RequestVerifiedCommonWispRecruitment()
@@ -609,6 +617,7 @@ namespace Ordr.Mobile.Unity
                 {
                     RecordSessionIssue("위습 소환 거절", "원본 거래 미승인 또는 위습 부족");
                     return new ManualActionResult(ManualActionState.Rejected,
+                        VerifiedCommonWispUnavailableReason ??
                         "랜덤위습이 부족하거나 원본 소환을 완료하지 못했습니다.");
                 }
                 var recruited = Units == null ? null : Units.Find(result.CatalogId);
@@ -1696,10 +1705,25 @@ namespace Ordr.Mobile.Unity
             if (OriginalUncommonAbilities != null)
                 Combat.ConfigureOriginalUncommonAbilities(
                     OriginalUncommonAbilities, originalUncommonEffectWorld);
+            IOriginalWispRandom sharedMobileWispRandom =
+                randomWispResourceRng ?? new MobileUniformWispRandom();
             RandomWispExchange = new OriginalRandomWispResourceExchange(
-                SharedEconomy.Wallet, world.Game,
-                randomWispResourceRng ?? new MobileUniformWispRandom());
+                SharedEconomy.Wallet, world.Game, sharedMobileWispRandom);
             ManualActions.ConfigureRandomWispResourceExchange(RandomWispExchange);
+            // BIQ/BIR/BIS/BIU/BIY/CRy are fully specified in the original
+            // JASS. Use the same per-session random stream as resource Wisp
+            // actions; a different approved original world may override this
+            // before the game starts. A rare pirate ship is held pending and
+            // never silently converted into an ordinary common unit.
+            if (MapBaseStats != null && Units != null)
+            {
+                var originalDrawWorld = new Original323SourceCommonWispWorld(
+                    Combat, Units, MapBaseStats, sharedMobileWispRandom);
+                commonWispRecruitment = new Original323CommonWispRecruitmentService(
+                    Combat, SharedEconomy, MapBaseStats, originalDrawWorld);
+                commonWispAvailability = originalDrawWorld;
+                commonWispUsesBuiltInSource = true;
+            }
             Combat.ConfigureOtamaWoodWallet(SharedEconomy.Wallet);
             Combat.ConfigureVerifiedUnitAttackProvider(verifiedUnitAttackSource);
             if (MapBaseStats != null)

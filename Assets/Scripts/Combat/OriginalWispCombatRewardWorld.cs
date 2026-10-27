@@ -98,6 +98,15 @@ namespace Ordr.Mobile.Combat
         IOriginal323CommonWispRecruitmentTransaction Begin();
     }
 
+    // Optional availability guard for a source branch that cannot yet be
+    // represented by the Character catalog (e.g. the original pirate ship).
+    // The draw remains pending; it must never be silently redrawn as a common.
+    public interface IOriginal323CommonWispRecruitmentAvailability
+    {
+        bool CanDraw { get; }
+        string UnavailableReason { get; }
+    }
+
     public interface IOriginal323CommonWispRecruitmentTransaction : IDisposable
     {
         bool TryCreate(out long instanceId, out string originalUnitRawcode);
@@ -128,7 +137,9 @@ namespace Ordr.Mobile.Combat
         public int Cost => cost;
         public bool CanRecruit => !processing &&
             combat.Game.Phase == SessionPhase.Running &&
-            shared.Wallet.Balance(WispResourceIds.Random) >= Cost;
+            shared.Wallet.Balance(WispResourceIds.Random) >= Cost &&
+            (!(source is IOriginal323CommonWispRecruitmentAvailability) ||
+             ((IOriginal323CommonWispRecruitmentAvailability)source).CanDraw);
 
         public Original323CommonWispRecruitmentService(CharacterCombatRuntime liveCombat,
             SharedEconomySession sameSession, OriginalMapBaseStatCatalog originalMap,

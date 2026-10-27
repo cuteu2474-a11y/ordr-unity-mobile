@@ -907,6 +907,8 @@ namespace Ordr.Mobile.Unity
                     }
                 }
                 GUI.enabled = previouslyEnabled;
+                if (!string.IsNullOrEmpty(controller.VerifiedCommonWispUnavailableReason))
+                    GUILayout.Label(controller.VerifiedCommonWispUnavailableReason);
                 if (pendingCommonWispRecruitment &&
                     GUILayout.Button("소환 취소", GUILayout.MinHeight(42)))
                     pendingCommonWispRecruitment = false;

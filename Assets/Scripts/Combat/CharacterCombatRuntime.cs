@@ -1502,6 +1502,17 @@ namespace Ordr.Mobile.Combat
             return SpawnCharacterCore(catalogUnitId, x, y, false);
         }
 
+        // JASS BIY already determines the complete original spawn placement.
+        // The optional mobile auto-placement adapter must not replace those
+        // source coordinates while constructing an e0IX common draw.
+        internal long SpawnVerifiedOriginalPositionCharacter(string catalogUnitId,
+            double originalX, double originalY)
+        {
+            BlockExternalMutationDuringOriginalFusion();
+            return SpawnCharacterCore(catalogUnitId, originalX, originalY,
+                false, true);
+        }
+
         private long SpawnStagedOriginalFusionResult(string catalogUnitId,
             double x, double y)
         {
@@ -1513,7 +1524,8 @@ namespace Ordr.Mobile.Combat
         }
 
         private long SpawnCharacterCore(string catalogUnitId, double x,
-            double y, bool stagedOriginalFusionResult)
+            double y, bool stagedOriginalFusionResult,
+            bool preserveOriginalSourcePosition = false)
         {
             CatalogUnit catalogUnit = units.Require(catalogUnitId);
             long id = roster.Add(catalogUnitId, x, y);
@@ -1527,6 +1539,7 @@ namespace Ordr.Mobile.Combat
             try
             {
                 placed = !stagedOriginalFusionResult &&
+                    !preserveOriginalSourcePosition &&
                     MobileAutomation.TryPlace(catalogUnit, roster, id);
                 if (verifiedAttackProvider != null)
                 {
