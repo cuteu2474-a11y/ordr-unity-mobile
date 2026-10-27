@@ -1,0 +1,1823 @@
+{
+  "format": "ordr-legendary-growth-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceAbilitySlkSha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda",
+  "functions": {
+    "CH5": {
+      "line": 48360,
+      "sha256LF": "93995dfe8a9165f9317c6f76ce9c8911cad4933257cdd80a085206ed5a4bb16f"
+    },
+    "CHi": {
+      "line": 48123,
+      "sha256LF": "b19bd25599a95b6252b1be51b74b3e21e41dda0321cc06337030ea8cdcac48df"
+    },
+    "CHu": {
+      "line": 48222,
+      "sha256LF": "0a682ec26ec0c9fc0b333d5dc96c5c424849564b981532d7eba206583394e1e9"
+    },
+    "CHx": {
+      "line": 48263,
+      "sha256LF": "9e4794f1c4747d2ca1fff374186bb81159c3a2e15abc073b460f452fde64f842"
+    },
+    "CHy": {
+      "line": 48280,
+      "sha256LF": "1c4e59257453fc2c3120f1f93344e7bc261df1ecb0c61b1c67c955ed0835e4c4"
+    },
+    "CH8": {
+      "line": 48391,
+      "sha256LF": "1ec038ddd22e024c26ad7116f9eff4040bd18a2760074ed3ec802d914cebe96f"
+    },
+    "CIB": {
+      "line": 48500,
+      "sha256LF": "bffb9384a864b86d4f6e2498a9e72168bd5513e5e4e2120f085f4445d7099b09"
+    },
+    "CT1": {
+      "line": 57116,
+      "sha256LF": "136b0263127f29f0bde67b38c2c7f0c35a40755c087b2951761d769d1a6c9d3f"
+    },
+    "CT2": {
+      "line": 57132,
+      "sha256LF": "43e5ab0c3637eaac789ba497156e40635940e161b7d74c1e78d07304bbf0a6c3"
+    },
+    "CSB": {
+      "line": 56322,
+      "sha256LF": "fafb26a0b1e3ca26db1c61d84fa1edd7dc1119be44c2c0e3a3da769e3f0d5bf3"
+    },
+    "CSC": {
+      "line": 56357,
+      "sha256LF": "4d22b9ff548d1030682e9a18792ce2804ee60400141d683c662ce6fe76aba3be"
+    }
+  },
+  "recipes": [
+    {
+      "abilityRawcode": "A037",
+      "jassLine": 61056,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03K",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01V",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H091",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08O",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05G",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-29",
+      "resultName": "쵸파 유력강화",
+      "originalCasterCatalogIds": [
+        "R-35"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A01G",
+      "jassLine": 61065,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02N",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h020",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h025",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05K",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h048",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h07M",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h067",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-12",
+      "resultName": "모리아",
+      "originalCasterCatalogIds": [
+        "R-28"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00N",
+      "jassLine": 61074,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02O",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h022",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h021",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04J",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05V",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-24",
+      "resultName": "에이스",
+      "originalCasterCatalogIds": [
+        "R-08"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0XS",
+      "jassLine": 61090,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h09Z",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h024",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h09X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0B4",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04D",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-03",
+      "resultName": "네코마무시",
+      "originalCasterCatalogIds": [
+        "R-37"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A03C",
+      "jassLine": 61098,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Q",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H09A",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h026",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-05",
+      "resultName": "라분",
+      "originalCasterCatalogIds": [
+        "R-18"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02P",
+      "jassLine": 61106,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02R",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Q",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02L",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H098",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08W",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04E",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-09",
+      "resultName": "루치",
+      "originalCasterCatalogIds": [
+        "R-36"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0NH",
+      "jassLine": 61115,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02S",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02F",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H094",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09F",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04F",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-27",
+      "resultName": "조로",
+      "originalCasterCatalogIds": [
+        "R-33"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A036",
+      "jassLine": 61134,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02U",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h021",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h026",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01V",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H090",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0AI",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h081",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-01",
+      "resultName": "검은수염",
+      "originalCasterCatalogIds": [
+        "R-03"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00T",
+      "jassLine": 61143,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Y",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h020",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h025",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h010",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H099",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0B2",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h049",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-10",
+      "resultName": "루피 나이트메어",
+      "originalCasterCatalogIds": [
+        "R-28"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A03D",
+      "jassLine": 61153,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02X",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h09X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04U",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H098",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04G",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08Q",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-15",
+      "resultName": "블랙마리아",
+      "originalCasterCatalogIds": [
+        "R-06"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00Y",
+      "jassLine": 61163,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02W",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04C",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h07M",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04D",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-04",
+      "resultName": "드래곤",
+      "originalCasterCatalogIds": [
+        "R-31"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00J",
+      "jassLine": 61172,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Z",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H099",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04A",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02C",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-13",
+      "resultName": "바르톨로메오",
+      "originalCasterCatalogIds": [
+        "R-12"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A027",
+      "jassLine": 61181,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h030",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H0BX",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h028",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02M",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02K",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-32",
+      "resultName": "쿠마 폭군",
+      "originalCasterCatalogIds": [
+        "R-23"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0N9",
+      "jassLine": 61190,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h032",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h049",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05C",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h084",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01M",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-36",
+      "resultName": "핸콕",
+      "originalCasterCatalogIds": [
+        "R-42"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00G",
+      "jassLine": 61199,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h033",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02M",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04F",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04Q",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04E",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-06",
+      "resultName": "레이쥬",
+      "originalCasterCatalogIds": [
+        "R-09"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A01U",
+      "jassLine": 61208,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h034",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01U",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04B",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-16",
+      "resultName": "상디",
+      "originalCasterCatalogIds": [
+        "R-21"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02C",
+      "jassLine": 61216,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03H",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h027",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04Q",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h07I",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-33",
+      "resultName": "크래커",
+      "originalCasterCatalogIds": [
+        "R-32"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00M",
+      "jassLine": 61235,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h036",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01P",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01R",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04E",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04J",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-18",
+      "resultName": "센고쿠",
+      "originalCasterCatalogIds": [
+        "R-27"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0NI",
+      "jassLine": 61243,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h037",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h027",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01U",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09B",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04G",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05I",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-19",
+      "resultName": "슈가",
+      "originalCasterCatalogIds": [
+        "R-24"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A03H",
+      "jassLine": 61252,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02V",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Q",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04C",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04J",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h081",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-20",
+      "resultName": "스모커",
+      "originalCasterCatalogIds": [
+        "R-02"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A009",
+      "jassLine": 61269,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h038",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01R",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Q",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H096",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H05N",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05E",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-22",
+      "resultName": "시저",
+      "originalCasterCatalogIds": [
+        "R-04"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02X",
+      "jassLine": 61278,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h039",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h024",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08V",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04B",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h081",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-23",
+      "resultName": "시키",
+      "originalCasterCatalogIds": [
+        "R-29"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A005",
+      "jassLine": 61311,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03S",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h028",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0BD",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H091",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04Q",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-25",
+      "resultName": "울티",
+      "originalCasterCatalogIds": [
+        "R-35"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0NG",
+      "jassLine": 61320,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03I",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05L",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H097",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04G",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-26",
+      "resultName": "제파",
+      "originalCasterCatalogIds": [
+        "R-13"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0NE",
+      "jassLine": 61328,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03G",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01P",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03V",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09A",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08U",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-28",
+      "resultName": "징베",
+      "originalCasterCatalogIds": [
+        "R-15"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A026",
+      "jassLine": 61337,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03F",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h024",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09B",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04B",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h06A",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-30",
+      "resultName": "카르가라",
+      "originalCasterCatalogIds": [
+        "R-30"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A01T",
+      "jassLine": 61346,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03E",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H094",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H05N",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0CO",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h026",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h029",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02G",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-31",
+      "resultName": "코비",
+      "originalCasterCatalogIds": [
+        "R-25"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A108",
+      "jassLine": 61356,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AH",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h09X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01L",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0AI",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h07M",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0CI",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-34",
+      "resultName": "킹",
+      "originalCasterCatalogIds": [
+        "R-01"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02H",
+      "jassLine": 61365,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03C",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h028",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H096",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0BK",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05B",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0CJ",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-08",
+      "resultName": "트라팔가 로우",
+      "originalCasterCatalogIds": [
+        "R-05"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00H",
+      "jassLine": 61375,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h031",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0BL",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0B5",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-37",
+      "resultName": "후지토라",
+      "originalCasterCatalogIds": [
+        "R-40"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A1CC",
+      "jassLine": 61384,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0CM",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02M",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01P",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H095",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0CO",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-39",
+      "resultName": "히바리",
+      "originalCasterCatalogIds": [
+        "R-16"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    }
+  ],
+  "excludedAbilities": [
+    "A00O",
+    "A02D",
+    "A025",
+    "A0UG",
+    "A01S",
+    "A02Q",
+    "A02G",
+    "A113"
+  ],
+  "retailCombatParityVerified": false,
+  "limitations": [
+    "Only reviewed UNIT/WOOD/UPUN material transactions are enabled.",
+    "Extra CH8 creation effects and unmapped material variants remain locked.",
+    "Skills, auras, native splash and dynamic upgrades are unverified in practice.",
+    "Legendary automatic Wisp pool is still unconnected."
+  ]
+}

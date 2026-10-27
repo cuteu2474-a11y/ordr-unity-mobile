@@ -24,22 +24,25 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<int, Round> rounds = new Dictionary<int, Round>();
         private readonly VerifiedCombatPath route;
         public IReadOnlyList<CombatPathPoint> RouteCorners { get; private set; }
-        public int LastRound => 10;
+        private const int ModelLastRound = 20;
+        public int LastRound { get; private set; }
         public int EnemyLimit => 70;
         public int RoundWisps => 2;
         public CombatPathPoint Spawn => route.AtDistance(0);
         public Round GetRound(int number) => rounds[number];
         public CombatPathPoint Position(double travelled) => route.AtDistance(travelled % route.Length);
 
-        public SourceModelPracticeCatalog(string json)
+        public SourceModelPracticeCatalog(string json, int lastRound = 10)
         {
+            if (lastRound != 10 && lastRound != 20) throw new ArgumentOutOfRangeException(nameof(lastRound));
+            LastRound = lastRound;
             var root = OrdrJson.Object(OrdrJson.Parse(json), "practice model");
             if (OrdrJson.RequiredString(root, "format") != "ordr-mobile-practice-model-v1" ||
                 OrdrJson.RequiredString(root, "sourceW3xSha256") != OriginalCommonSaleRules.OriginalMapSha256 ||
                 OrdrJson.RequiredString(root, "sourceJassSha256") != Original323SourceCommonWispWorld.PinnedWar3mapJSha256 ||
                 !Equals(OrdrJson.Value(root, "retailParityVerified"), false) ||
                 !Equals(OrdrJson.Value(root, "safeForVerifiedMonsterWaveRuntime"), false) ||
-                Number(root, "lastRound") != LastRound || Number(root, "initialEnemyLimit") != EnemyLimit ||
+                Number(root, "lastRound") != ModelLastRound || Number(root, "initialEnemyLimit") != EnemyLimit ||
                 Number(root, "roundRandomWisps") != RoundWisps)
                 throw new FormatException("별도 연습 전투 모델의 출처·미검증 표시가 필요합니다.");
             var points = new List<CombatPathPoint>();
@@ -60,7 +63,7 @@ namespace Ordr.Mobile.Combat
                 string code = OrdrJson.RequiredString(row, "rawcode");
                 string armor = OrdrJson.RequiredString(row, "armorType");
                 Ordr323ArmorType parsed;
-                if (number < 1 || number > LastRound || number != Math.Floor(number) ||
+                if (number < 1 || number > ModelLastRound || number != Math.Floor(number) ||
                     hp < 1 || hp >= long.MaxValue || hp != Math.Floor(hp) || speed <= 0 ||
                     code.Length != 4 || rounds.ContainsKey((int)number) ||
                     !Ordr323OriginalDamageRules.TryReadArmorType(armor, out parsed))
@@ -70,7 +73,7 @@ namespace Ordr.Mobile.Combat
                     Role = OrdrJson.RequiredString(row, "role"), Health = (long)hp,
                     Armor = Number(row, "armor"), ArmorType = armor, MovementSpeed = speed });
             }
-            if (rounds.Count != LastRound) throw new FormatException("연습 라운드 자료 누락");
+            if (rounds.Count != ModelLastRound) throw new FormatException("연습 라운드 자료 누락");
         }
         private static double Number(Dictionary<string, object> row, string key)
         {
@@ -81,6 +84,7 @@ namespace Ordr.Mobile.Combat
         }
         public VerifiedWavePlan BuildPracticePlan(int number, Original323MonsterWaveIdentityCatalog original)
         {
+            if (number < 1 || number > LastRound) throw new ArgumentOutOfRangeException(nameof(number));
             var model = GetRound(number);
             var spawns = new List<VerifiedWaveEnemy>();
             var point = Spawn;
@@ -94,7 +98,7 @@ namespace Ordr.Mobile.Combat
                         model.Armor, null, model.ArmorType, "MODEL_ONLY: reference-engine initial defense"),
                     model.Rawcode));
             }
-            return new VerifiedWavePlan(number, spawns, "MODEL_ONLY: ten-round development practice; NOT retail live evidence");
+            return new VerifiedWavePlan(number, spawns, "MODEL_ONLY: development practice; NOT retail live evidence");
         }
     }
 
@@ -161,7 +165,7 @@ namespace Ordr.Mobile.Combat
             scriptRandom = sharedScriptRandom ?? throw new ArgumentNullException(nameof(sharedScriptRandom));
             roundStarted = onRoundStarted;
             if (!ReferenceEquals(world.Roster, shared.Units)) throw new ArgumentException("공유 세션 불일치");
-            // Validate ALL ten source identities before mutating the session.
+            // Validate every selected source identity before mutating the session.
             for (int wave = 1; wave <= catalog.LastRound; wave++)
                 plans.Add(catalog.BuildPracticePlan(wave, originalSpawns));
         }
@@ -220,7 +224,7 @@ namespace Ordr.Mobile.Combat
             int wave = combat.Game.CurrentWave;
             if (wave == catalog.LastRound && waves.RemainingSpawns == 0 && combat.Game.AliveEnemies == 0)
             {
-                Finish(true, "10라운드 연습 완료");
+                Finish(true, catalog.LastRound + "라운드 연습 완료");
                 return true;
             }
             if (SecondsRemaining > 0 || waves.RemainingSpawns != 0) return false;

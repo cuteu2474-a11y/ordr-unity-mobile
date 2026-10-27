@@ -20,6 +20,7 @@ namespace Ordr.Mobile.Unity
         private Tab currentTab = Tab.Play;
         private float nextFusionRefresh;
         private string fusionInventorySignature;
+        private int selectedPracticeRounds = 20;
         private bool browsingFullCatalog;
         private int catalogGradeIndex;
         private int catalogPage;
@@ -89,6 +90,7 @@ namespace Ordr.Mobile.Unity
             var owned = Combat.MobileUnitSnapshot();
             var signature = new System.Text.StringBuilder();
             signature.Append(Combat.Game.Phase);
+            signature.Append(':').Append(controller.SharedEconomy.Wallet.Balance("wood"));
             foreach (var unit in owned)
                 signature.Append('|').Append(unit.InstanceId).Append(':').Append(unit.Unit.Id)
                     .Append(':').Append(Combat.IsStoryDeployed(unit.InstanceId));
@@ -346,9 +348,13 @@ namespace Ordr.Mobile.Unity
             {
                 bool previous = GUI.enabled;
                 GUI.enabled = previous && Combat.CharacterCount > 0;
-                if (GUILayout.Button("준비 완료 · 10R 연습 시작", GUILayout.MinHeight(48)))
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button(selectedPracticeRounds == 10 ? "10R ✓" : "10R", GUILayout.MinHeight(42))) selectedPracticeRounds = 10;
+                if (GUILayout.Button(selectedPracticeRounds == 20 ? "20R ✓" : "20R", GUILayout.MinHeight(42))) selectedPracticeRounds = 20;
+                GUILayout.EndHorizontal();
+                if (GUILayout.Button("준비 완료 · " + selectedPracticeRounds + "R 연습 시작", GUILayout.MinHeight(48)))
                 {
-                    try { controller.BeginPracticeBattle(); notice = "전투 시작 · 소환과 조합은 계속할 수 있습니다."; }
+                    try { controller.BeginPracticeBattle(selectedPracticeRounds); notice = "전투 시작 · 소환과 조합은 계속할 수 있습니다."; }
                     catch (Exception error) { notice = error.Message; }
                 }
                 GUI.enabled = previous;
@@ -585,7 +591,7 @@ namespace Ordr.Mobile.Unity
             GUILayout.BeginVertical(GUI.skin.box);
             GUILayout.Label(detail.DisplayName + " · " + detail.Grade);
             if (controller.PracticeBattle != null)
-                GUILayout.Label(detail.Grade == "흔함" || detail.Grade == "안흔함" || detail.Grade == "특별함" || detail.Grade == "희귀함"
+                GUILayout.Label(detail.Grade == "흔함" || detail.Grade == "안흔함" || detail.Grade == "특별함" || detail.Grade == "희귀함" || detail.Grade == "전설"
                     ? "연습 전투: 원본 객체의 기본 공격 사용 · 스킬/오라 미연결"
                     : "연습 전투: 이 등급의 전투 연결 대기");
             if (detail.Profile == null && detail.Unit.Id == "C-01")
@@ -849,7 +855,8 @@ namespace Ordr.Mobile.Unity
             bool onlyExecutable = GUILayout.Toggle(fusionExecutableOnly,
                 "실제 제작만 (안흔함 " + controller.ExecutableCommonFusionCount +
                 " / 특별함 " + controller.ExecutableSpecialFusionCount +
-                " / 희귀함 " + controller.ExecutableRareFusionCount + "종)",
+                " / 희귀함 " + controller.ExecutableRareFusionCount +
+                " / 전설 " + controller.ExecutableLegendaryFusionCount + "종)",
                 GUILayout.MinHeight(44));
             if (onlyExecutable != fusionExecutableOnly)
             {

@@ -9,8 +9,9 @@ class MobilePracticeDataTests(unittest.TestCase):
     def test_every_practice_monster_matches_the_existing_reference_model(self):
         practice = json.loads((DATA / 'mobile-practice-battle-model.json').read_text())
         original = json.loads((DATA / 'original-2323C-nightmare-monster-initial-model.json').read_text())
-        lookup = {r['waveNumber']: r for r in original['waveMonsterInitialStatModels'] if r['waveNumber'] <= 10}
-        self.assertEqual(10, len(practice['rounds']))
+        lookup = {r['waveNumber']: r for r in original['waveMonsterInitialStatModels'] if r['waveNumber'] <= 20}
+        self.assertEqual(20, len(practice['rounds']))
+        self.assertEqual(20, practice['lastRound'])
         for row in practice['rounds']:
             expected = lookup[row['wave']]
             self.assertEqual(expected['monsterRawcode'], row['rawcode'])

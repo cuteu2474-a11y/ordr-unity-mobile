@@ -7,10 +7,10 @@ using Ordr.Mobile.Data;
 namespace Ordr.Mobile.Mobile
 {
     // Executable scope reviewed against CWR/CH5/CHu/CHx/CHy/CT1/CT2.
-    // These 13 Uncommon, 31 Special and 41 Rare results use UNIT costs and UPUN
+    // Reviewed lower grades and 31 Legendary recipes use UNIT costs, source WOOD and UPUN
     // presentation markers. CH5/CHi register no UPUN check/payment callback.
     // AOsf-based casts (two Special, one Rare) remain pending a native-cast audit.
-    // No upper-grade bans, research, mana, transforms or assumed prices.
+    // Legendary entries with additional creation handlers or unmapped materials stay locked.
     public sealed class Original323CommonFusionPort : IOriginalFusionPort,
         IOriginalFusionCommitCapability, IOriginalFusionRecipeCommitCapability,
         IVerifiedUnitRawcodeMap, IOriginalJassSpecialConditionEvaluator
@@ -105,6 +105,39 @@ namespace Ordr.Mobile.Mobile
             { "A02Z", "h02L", "R-05" },
             { "A01V", "h05K", "R-41" },
         };
+        private static readonly string[,] ReviewedLegendary = {
+            { "A037", "h03K", "L-29" },
+            { "A01G", "h02N", "L-12" },
+            { "A00N", "h02O", "L-24" },
+            { "A0XS", "h09Z", "L-03" },
+            { "A03C", "h02Q", "L-05" },
+            { "A02P", "h02R", "L-09" },
+            { "A0NH", "h02S", "L-27" },
+            { "A036", "h02U", "L-01" },
+            { "A00T", "h02Y", "L-10" },
+            { "A03D", "h02X", "L-15" },
+            { "A00Y", "h02W", "L-04" },
+            { "A00J", "h02Z", "L-13" },
+            { "A027", "h030", "L-32" },
+            { "A0N9", "h032", "L-36" },
+            { "A00G", "h033", "L-06" },
+            { "A01U", "h034", "L-16" },
+            { "A02C", "h03H", "L-33" },
+            { "A00M", "h036", "L-18" },
+            { "A0NI", "h037", "L-19" },
+            { "A03H", "h02V", "L-20" },
+            { "A009", "h038", "L-22" },
+            { "A02X", "h039", "L-23" },
+            { "A005", "h03S", "L-25" },
+            { "A0NG", "h03I", "L-26" },
+            { "A0NE", "h03G", "L-28" },
+            { "A026", "h03F", "L-30" },
+            { "A01T", "h03E", "L-31" },
+            { "A108", "h0AH", "L-34" },
+            { "A02H", "h03C", "L-08" },
+            { "A00H", "h031", "L-37" },
+            { "A1CC", "h0CM", "L-39" },
+        };
         private readonly CharacterCombatRuntime combat;
         private readonly SharedEconomySession economy;
         private readonly OriginalMapBaseStatCatalog objects;
@@ -121,6 +154,7 @@ namespace Ordr.Mobile.Mobile
         public int ExecutableCommonRecipeCount => Reviewed.GetLength(0);
         public int ExecutableSpecialRecipeCount => ReviewedSpecial.GetLength(0);
         public int ExecutableRareRecipeCount => ReviewedRare.GetLength(0);
+        public int ExecutableLegendaryRecipeCount => ReviewedLegendary.GetLength(0);
 
         public Original323CommonFusionPort(CharacterCombatRuntime world, SharedEconomySession shared,
             CharacterUnitCatalog units, OriginalMapBaseStatCatalog originalObjects,
@@ -145,6 +179,8 @@ namespace Ordr.Mobile.Mobile
             Bind(units, "S-14", "h01F", "특별함");
             Bind(units, "S-15", "h012", "특별함");
             RegisterReviewed(units, registrations, ReviewedRare, "희귀함");
+            Bind(units, "R-18", "h01N", "희귀함"); // material identity; A1A0 remains locked
+            RegisterReviewed(units, registrations, ReviewedLegendary, "전설");
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
             planner.SetVerifiedObjectMap(this);
@@ -163,24 +199,29 @@ namespace Ordr.Mobile.Mobile
                     recipe.Results[0].Kind != "UNIT" || recipe.Results[0].Count != 1 ||
                     recipe.Results[0].Rawcode != rawcode)
                     throw new FormatException("검수한 하위 등급 조합 결과가 변경됐습니다: " + ability);
-                bool hasMaterials = false, hasCaster = false;
+                bool hasMaterials = false, hasCaster = false, hasWood = false;
                 foreach (var instruction in recipe.OrderedConditions)
                 {
                     if (instruction.Kind == "UPUN") continue;
+                    if (instruction.Kind == "WOOD" && resultGrade == "전설" &&
+                        instruction.Rawcode == "WOOD" && instruction.Count == 3 && !hasWood)
+                    { hasWood = true; continue; }
                     string id;
                     if (instruction.Kind != "UNIT" || !mappings.TryGetValue(instruction.Rawcode, out id))
                         throw new FormatException("하위 조합의 원본 조건 범위가 변경됐습니다.");
                     string grade = units.Require(id).Grade;
                     bool permitted = grade == "흔함" ||
-                        ((resultGrade == "특별함" || resultGrade == "희귀함") && grade == "안흔함") ||
-                        (resultGrade == "희귀함" && grade == "특별함");
+                        ((resultGrade == "특별함" || resultGrade == "희귀함" || resultGrade == "전설") && grade == "안흔함") ||
+                        ((resultGrade == "희귀함" || resultGrade == "전설") && grade == "특별함") ||
+                        (resultGrade == "전설" && grade == "희귀함");
                     if (!permitted)
                         throw new FormatException("검수하지 않은 등급의 조합 재료입니다.");
                     hasMaterials = true;
                     foreach (var nativeAbility in objects.Find(id).OriginalAbilityRawcodes)
                         if (nativeAbility == ability) hasCaster = true;
                 }
-                if (!hasMaterials || !hasCaster) throw new FormatException("원본 조합 시전자 누락");
+                if (!hasMaterials || !hasCaster || (resultGrade == "전설" && !hasWood))
+                    throw new FormatException("원본 조합 시전자 또는 검수한 목재 비용 누락");
                 supported.Add(ability);
                 resultGrades.Add(ability, resultGrade);
             }
@@ -209,7 +250,7 @@ namespace Ordr.Mobile.Mobile
             foreach (var offer in fallback.AvailableRecipes(owned))
             {
                 if (!CanCommitRecipe(offer.RecipeId)) { result.Add(offer); continue; }
-                var ready = planner.Assess(offer.RecipeId, owned, 0, 0);
+                var ready = planner.Assess(offer.RecipeId, owned, SourceBalance("gold"), SourceBalance("wood"));
                 var missing = new List<string>(ready.BlockingReasons);
                 if (!economy.HasStarted || combat.Game.Phase != SessionPhase.Running)
                     missing.Add("먼저 유닛 준비 또는 게임을 시작해 주세요.");
@@ -218,7 +259,9 @@ namespace Ordr.Mobile.Mobile
                     parts.Add(material.Name + " ×" + material.RequiredCount +
                         " (보유 " + material.OwnedCount + ")");
                 result.Add(new MobileFusionPreview(offer.RecipeId, ready.ResultName + " · " + resultGrades[offer.RecipeId],
-                    string.Join(" + ", parts) + " · 추가 재화 없음",
+                    string.Join(" + ", parts) + (ready.LumberCost > 0
+                        ? " · 목재 " + ready.LumberCost + " (보유 " + economy.Wallet.Balance("wood") + ")"
+                        : " · 추가 재화 없음"),
                     ready.SuggestedMaterialIds, missing));
             }
             return result.AsReadOnly();
@@ -235,7 +278,7 @@ namespace Ordr.Mobile.Mobile
             try
             {
                 var owned = combat.MobileUnitSnapshot();
-                ready = planner.Assess(ability, owned, 0, 0);
+                ready = planner.Assess(ability, owned, SourceBalance("gold"), SourceBalance("wood"));
                 if (!ready.IsReadyForUserConfirmation || selected == null ||
                     selected.Count != ready.SuggestedMaterialIds.Count)
                     return Reject("재료가 변경됐습니다. 조합 목록을 새로고침해 주세요.");
@@ -259,7 +302,25 @@ namespace Ordr.Mobile.Mobile
                     ready.ResultUnitId, caster.Position.X, caster.Position.Y))
                 {
                     created = swap.ResultInstanceId;
-                    swap.Commit();
+                    if (ready.GoldCost == 0 && ready.LumberCost == 0) swap.Commit();
+                    else
+                    {
+                        var beforeWallet = economy.Wallet.CaptureState();
+                        try
+                        {
+                            var cost = new ResourceBundle();
+                            if (ready.GoldCost > 0) cost.Add("gold", ready.GoldCost);
+                            if (ready.LumberCost > 0) cost.Add("wood", ready.LumberCost);
+                            if (!economy.Wallet.TryExchange(cost, new ResourceBundle()))
+                                throw new InvalidOperationException("조합 비용이 변경됐습니다.");
+                            swap.Commit();
+                        }
+                        catch
+                        {
+                            economy.Wallet.RestoreState(beforeWallet);
+                            throw;
+                        }
+                    }
                 }
             }
             catch (Exception error) { return Reject("조합을 취소했습니다: " + error.Message); }
@@ -271,6 +332,7 @@ namespace Ordr.Mobile.Mobile
                     catch (Exception error) { try { ObserverFailed?.Invoke(error); } catch { } }
             return new ManualActionResult(ManualActionState.Succeeded, ready.ResultName + " 조합 완료");
         }
+        private int SourceBalance(string id) => (int)Math.Min(int.MaxValue, economy.Wallet.Balance(id));
         private static ManualActionResult Reject(string text)
         { return new ManualActionResult(ManualActionState.Rejected, text); }
     }

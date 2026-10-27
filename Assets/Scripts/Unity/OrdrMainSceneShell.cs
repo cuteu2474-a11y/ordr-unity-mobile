@@ -51,7 +51,7 @@ namespace Ordr.Mobile.Unity
             detail.wordWrap = true;
 
             string heading = controller != null && controller.PracticeBattle != null
-                ? "ORDR MOBILE / 10R 연습 · 원작 최종 전투 미검증"
+                ? "ORDR MOBILE / " + controller.PracticeBattle.LastRound + "R 연습 · 원작 최종 전투 미검증"
                 : "ORDR MOBILE  /  NIGHTMARE - OTHERWORLD";
 #if UNITY_EDITOR
             if (controller != null && controller.IsEditorPreview)
@@ -69,7 +69,7 @@ namespace Ordr.Mobile.Unity
                     "종  |  검증된 첫 라운드 시작 대기";
             else if (controller.PracticeBattle != null)
                 status = controller.Combat.Game.Phase == SessionPhase.Running
-                    ? "연습 " + controller.Combat.Game.CurrentWave + "/10 · " +
+                    ? "연습 " + controller.Combat.Game.CurrentWave + "/" + controller.PracticeBattle.LastRound + " · " +
                         Math.Ceiling(controller.PracticeBattle.SecondsRemaining) + "초 · 적 " +
                         controller.Combat.Game.AliveEnemies + "/" + controller.PracticeBattle.EnemyLimit
                     : controller.PracticeBattle.ResultMessage;
@@ -193,9 +193,9 @@ namespace Ordr.Mobile.Unity
                     var start = new Rect(center - 110f, layout.Battle.center.y - 46f, 220f, 44f);
                     bool couldStart = GUI.enabled;
                     GUI.enabled = couldStart && controller.Combat.CharacterCount > 0;
-                    if (GUI.Button(start, "10R 연습 전투 시작"))
+                    if (GUI.Button(start, "20R 연습 전투 시작"))
                     {
-                        try { controller.BeginPracticeBattle(); startFailure = null; }
+                        try { controller.BeginPracticeBattle(20); startFailure = null; }
                         catch (Exception ex) { startFailure = ex.Message; }
                     }
                     GUI.enabled = couldStart;

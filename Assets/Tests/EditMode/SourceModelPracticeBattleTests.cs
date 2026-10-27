@@ -25,7 +25,7 @@ namespace Ordr.Mobile.Tests
             public void Dispose() { Battle.Dispose(); }
         }
         private static string Data(string file) => File.ReadAllText(Path.Combine(Application.dataPath, "..", "data", file));
-        private static Live Create(int attackers = 0)
+        private static Live Create(int attackers = 0, int lastRound = 10, string attackerUnitId = "U-02")
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -39,10 +39,10 @@ namespace Ordr.Mobile.Tests
             combat.Start();
             rules.Enable();
             combat.ConfigureSourceModelBasicAttacks(rules);
-            for (int i = 0; i < attackers; i++) combat.SpawnCharacter("U-02", -4000 + 20 * i, 4000);
+            for (int i = 0; i < attackers; i++) combat.SpawnCharacter(attackerUnitId, -4000 + 20 * i, 4000);
             var identity = Original323MonsterWaveIdentityCatalog.FromJson(Data("original-2323C-monster-wave-script-evidence.json"));
             var battle = new SourceModelPracticeBattle(combat, new CombatWaveDirector(), shared,
-                new SourceModelPracticeCatalog(Data("mobile-practice-battle-model.json")), identity,
+                new SourceModelPracticeCatalog(Data("mobile-practice-battle-model.json"), lastRound), identity,
                 rules, new WinningGold(), null);
             battle.Start();
             return new Live { Combat = combat, Economy = shared, Battle = battle };
@@ -150,14 +150,15 @@ namespace Ordr.Mobile.Tests
             }
         }
 
-        [Test]
-        public void UnkilledRoundTenBossFailsAtItsSourceDeadline()
+        [TestCase(10, "U-02")]
+        [TestCase(20, "L-29")]
+        public void UnkilledFinalPracticeBossFailsAtItsSourceDeadline(int lastRound, string attackerUnitId)
         {
-            using (var game = Create(35))
+            using (var game = Create(35, lastRound, attackerUnitId))
             {
-                for (int i = 0; i < 700 && game.Combat.Game.CurrentWave < 10; i++)
+                for (int i = 0; i < 1800 && game.Combat.Game.CurrentWave < lastRound; i++)
                     game.Battle.Advance(.5);
-                Assert.AreEqual(10, game.Combat.Game.CurrentWave);
+                Assert.AreEqual(lastRound, game.Combat.Game.CurrentWave);
                 foreach (var unit in game.Combat.MobileUnitSnapshot()) game.Combat.RemoveCharacter(unit.InstanceId);
                 game.Battle.Advance(60);
                 Assert.AreEqual(SessionPhase.Lost, game.Combat.Game.Phase);
@@ -169,7 +170,8 @@ namespace Ordr.Mobile.Tests
         [TestCase("S-01")]
         [TestCase("S-09")]
         [TestCase("R-06")]
-        public void SpecialAndRareUnitsJoinTheSamePracticeAttackPipelineWithoutEnablingSkills(string unitId)
+        [TestCase("L-29")]
+        public void HigherGradeUnitsJoinTheSamePracticeAttackPipelineWithoutEnablingSkills(string unitId)
         {
             using (var game = Create())
             {
@@ -246,6 +248,58 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(wood + 1, owner.SharedEconomy.Wallet.Balance("wood"));
                 Assert.AreEqual(0, owner.Combat.CharacterCount);
                 Assert.AreEqual(0, owner.Combat.ReadyAttackers);
+                Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
+        }
+
+        [Test]
+        public void TwentyRoundPracticeCompletesWithTheSourceSpawnsAndOneTimeRoundRewards()
+        {
+            // Test-only formation. No free units are added to normal gameplay.
+            using (var game = Create(35, 20, "L-29"))
+            {
+                for (int i = 0; i < 2000 && game.Combat.Game.Phase == SessionPhase.Running; i++)
+                    game.Battle.Advance(.5);
+                Assert.AreEqual(SessionPhase.Won, game.Combat.Game.Phase, game.Battle.ResultMessage);
+                Assert.AreEqual(20, game.Combat.Game.CurrentWave);
+                Assert.AreEqual(632, game.Combat.Game.DefeatedEnemies);
+                Assert.AreEqual(38, game.Battle.RoundWispsAwarded);
+                Assert.AreEqual(43, game.Economy.Wallet.Balance(WispResourceIds.Random));
+                Assert.AreEqual(20, game.Battle.RoundHistory.Count);
+                Assert.AreEqual(632, game.Battle.RoundHistory.Sum(x => x.Defeated));
+                Assert.AreEqual(game.Battle.GoldAwarded, game.Battle.RoundHistory.Sum(x => x.GoldAwarded));
+                Assert.AreEqual("20라운드 연습 완료", game.Battle.ResultMessage);
+                long gold = game.Economy.Wallet.Balance("gold");
+                game.Battle.Advance(100);
+                Assert.AreEqual(gold, game.Economy.Wallet.Balance("gold"));
+                Assert.AreEqual(20, game.Battle.RoundHistory.Count);
+            }
+        }
+
+        [Test]
+        public void PracticeLengthIsExplicitAndUnsupportedLengthsFailBeforeCombatMutation()
+        {
+            string json = Data("mobile-practice-battle-model.json");
+            Assert.AreEqual(10, new SourceModelPracticeCatalog(json).LastRound);
+            Assert.AreEqual(20, new SourceModelPracticeCatalog(json, 20).LastRound);
+            Assert.Throws<ArgumentOutOfRangeException>(() => new SourceModelPracticeCatalog(json, 65));
+            var root = new GameObject("ORDR practice length");
+            root.SetActive(false);
+            try
+            {
+                var owner = root.AddComponent<OrdrCharacterCombatController>();
+                typeof(OrdrCharacterCombatController).GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Invoke(owner, null);
+                owner.BeginUnitPreparation();
+                owner.Combat.SpawnCharacter("C-01", -4000, 4000);
+                long wisps = owner.WispBalance(WispResourceIds.Random);
+                Assert.Throws<ArgumentOutOfRangeException>(() => owner.BeginPracticeBattle(65));
+                Assert.AreEqual(0, owner.Combat.Game.CurrentWave);
+                Assert.AreEqual(wisps, owner.WispBalance(WispResourceIds.Random));
+                owner.BeginPracticeBattle(20);
+                Assert.AreEqual(20, owner.PracticeBattle.LastRound);
+                Assert.AreEqual(1, owner.Combat.Game.CurrentWave);
                 Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
             }
             finally { UnityEngine.Object.DestroyImmediate(root); }

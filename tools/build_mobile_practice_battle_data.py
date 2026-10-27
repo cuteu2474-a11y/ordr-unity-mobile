@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build an explicitly NON-RETAIL 10-round practice model from original data.
+"""Build an explicitly NON-RETAIL 20-round practice model from original data.
 Never produces a verified-wave catalog or changes the original source files.
 """
 import argparse
@@ -26,7 +26,7 @@ def build(data, jass_path, balance_path):
     balance = parse_sylk_bytes(balance_path.read_bytes())
     entries = []
     for row in models['waveMonsterInitialStatModels']:
-        if row['waveNumber'] > 10:
+        if row['waveNumber'] > 20:
             continue
         rawcode = row['monsterRawcode']
         armor_type = by_id[rawcode]['warcraftArmorType']
@@ -37,8 +37,8 @@ def build(data, jass_path, balance_path):
                         'name': row['originalMapName'], 'health': row['modeledInitialHitPoints'],
                         'armor': row['modeledInitialArmor'], 'armorType': armor_type,
                         'objectMovementSpeed': speed})
-    if len(entries) != 10 or sorted(x['wave'] for x in entries) != list(range(1, 11)):
-        raise ValueError('Incomplete 10-round source model')
+    if len(entries) != 20 or sorted(x['wave'] for x in entries) != list(range(1, 21)):
+        raise ValueError('Incomplete 20-round source model')
     route = []
     for name in ['y', 'z', 'BB', 'BC']:
         match = re.search(r'^set ' + name + r'=Rect\(([^\n]+)\)$', source, re.M)
@@ -53,14 +53,14 @@ def build(data, jass_path, balance_path):
         raise ValueError('Round/Wisp source rules changed')
     return {'format': 'ordr-mobile-practice-model-v1', 'sourceW3xSha256': MAP_SHA,
             'sourceJassSha256': JASS_SHA, 'retailParityVerified': False,
-            'safeForVerifiedMonsterWaveRuntime': False, 'lastRound': 10,
+            'safeForVerifiedMonsterWaveRuntime': False, 'lastRound': 20,
             'initialEnemyLimit': 70, 'roundRandomWisps': 2, 'routeCenters': route,
             'rounds': entries,
             'limitations': ['Reference-engine HP/armor model, not observed retail final stats.',
                            'Basic object attacks only; skills/auras/upgrades are not a full game recreation.',
                            'Route centers/raw movement speed approximate native region turns/collision.',
                            'Damage retains fractional remainder per target; retail float rounding unverified.',
-                           'Practice completion at round 10 is not original round-65 clear.']}
+                           'Practice completion at round 10/20 is not original round-65 clear.']}
 
 
 def main():
@@ -72,7 +72,7 @@ def main():
     a = p.parse_args()
     result = build(a.data, a.jass, a.balance)
     a.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    print('10-round practice source model written; retail verification remains false')
+    print('20-round practice source model written; retail verification remains false')
 
 
 if __name__ == '__main__':

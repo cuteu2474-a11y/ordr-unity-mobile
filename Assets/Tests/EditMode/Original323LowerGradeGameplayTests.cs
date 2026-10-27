@@ -154,6 +154,37 @@ namespace Ordr.Mobile.Tests
         [TestCase("A010", "R-35")]
         [TestCase("A02Z", "R-05")]
         [TestCase("A01V", "R-41")]
+        [TestCase("A037", "L-29")]
+        [TestCase("A01G", "L-12")]
+        [TestCase("A00N", "L-24")]
+        [TestCase("A0XS", "L-03")]
+        [TestCase("A03C", "L-05")]
+        [TestCase("A02P", "L-09")]
+        [TestCase("A0NH", "L-27")]
+        [TestCase("A036", "L-01")]
+        [TestCase("A00T", "L-10")]
+        [TestCase("A03D", "L-15")]
+        [TestCase("A00Y", "L-04")]
+        [TestCase("A00J", "L-13")]
+        [TestCase("A027", "L-32")]
+        [TestCase("A0N9", "L-36")]
+        [TestCase("A00G", "L-06")]
+        [TestCase("A01U", "L-16")]
+        [TestCase("A02C", "L-33")]
+        [TestCase("A00M", "L-18")]
+        [TestCase("A0NI", "L-19")]
+        [TestCase("A03H", "L-20")]
+        [TestCase("A009", "L-22")]
+        [TestCase("A02X", "L-23")]
+        [TestCase("A005", "L-25")]
+        [TestCase("A0NG", "L-26")]
+        [TestCase("A0NE", "L-28")]
+        [TestCase("A026", "L-30")]
+        [TestCase("A01T", "L-31")]
+        [TestCase("A108", "L-34")]
+        [TestCase("A02H", "L-08")]
+        [TestCase("A00H", "L-37")]
+        [TestCase("A1CC", "L-39")]
         public void AllReviewedRecipesConsumeActualMaterialsAndCreateOneResult(string ability, string result)
         {
             var game = Create();
@@ -164,6 +195,8 @@ namespace Ordr.Mobile.Tests
                 for (int i = 0; i < requirement.Value; i++) game.Combat.SpawnCharacter(id, 125, 340);
             }
             long unrelated = game.Combat.SpawnCharacter("C-07", 888, 999);
+            bool legendary = result.StartsWith("L-", StringComparison.Ordinal);
+            if (legendary) game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", 3));
             var offer = Offer(game, ability);
             Assert.IsTrue(offer.IsReady, string.Join(",", offer.MissingMaterials));
             long[] consumed = offer.SuggestedMaterialInstances.ToArray();
@@ -180,6 +213,7 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(now.Any(row => row.InstanceId == unrelated));
             Assert.AreEqual(2, now.Count);
             Assert.AreEqual(gold, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
             Assert.AreEqual(1, notifications);
             Assert.AreEqual(ManualActionState.Rejected, game.Fusion.ConfirmFusion(ability, consumed).State);
             Assert.AreEqual(1, notifications);
@@ -201,12 +235,44 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(85, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(116, game.Fusion.ExecutableRecipeCount);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
             var fresh = Offer(game, "A012");
             Assert.AreEqual(ManualActionState.Succeeded,
                 game.Fusion.ConfirmFusion("A012", fresh.SuggestedMaterialInstances).State);
             Assert.AreEqual("S-07", game.Combat.MobileUnitSnapshot().Single().Unit.Id);
+        }
+
+        [Test]
+        public void LegendaryWoodIsRecheckedBeforeAnyMaterialIsConsumed()
+        {
+            var game = Create();
+            game.Combat.SpawnCharacter("R-06", 10, 20);
+            game.Combat.SpawnCharacter("R-36", 30, 40);
+            game.Combat.SpawnCharacter("R-01", 50, 60);
+            var insufficient = Offer(game, "A03D");
+            Assert.IsFalse(insufficient.IsReady);
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", 3));
+            var ready = Offer(game, "A03D");
+            Assert.IsTrue(ready.IsReady);
+            Assert.IsTrue(game.Economy.Wallet.TryExchange(new ResourceBundle().Add("wood", 1), new ResourceBundle()));
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("A03D", ready.SuggestedMaterialInstances).State);
+            Assert.AreEqual(3, game.Combat.CharacterCount);
+            Assert.AreEqual(2, game.Economy.Wallet.Balance("wood"));
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", 1));
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion("A03D", ready.SuggestedMaterialInstances).State);
+            var result = game.Combat.MobileUnitSnapshot().Single();
+            Assert.AreEqual("L-15", result.Unit.Id);
+            Assert.AreEqual(10, result.Position.X);
+            Assert.AreEqual(20, result.Position.Y);
+            Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("A03D", ready.SuggestedMaterialInstances).State);
+            Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("A00O"));
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("A01S"));
         }
 
         [Test]
@@ -429,6 +495,7 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(13, owner.ExecutableCommonFusionCount);
                 Assert.AreEqual(31, owner.ExecutableSpecialFusionCount);
                 Assert.AreEqual(41, owner.ExecutableRareFusionCount);
+                Assert.AreEqual(31, owner.ExecutableLegendaryFusionCount);
                 Assert.AreEqual(ManualActionState.Succeeded, owner.RequestCommonWispBatch(5).State);
                 Assert.AreEqual(5, owner.Combat.CharacterCount);
                 Assert.AreEqual(6, owner.SharedEconomy.Units.Count); // Plus non-combat evolution.
