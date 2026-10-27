@@ -82,7 +82,7 @@ namespace Ordr.Mobile.Core
         void Commit();
     }
 
-    public sealed class MobileWispService
+    public sealed class MobileWispService : IDisposable
     {
         private readonly EconomyWallet wallet;
         private readonly IVerifiedWispRoller roller;
@@ -97,6 +97,7 @@ namespace Ordr.Mobile.Core
             wallet.Granted += OnWalletGranted;
         }
         public long Balance(string id) => wallet.Balance(id);
+        public void Dispose() { wallet.Granted -= OnWalletGranted; }
 
         private void OnWalletGranted(ResourceBundle reward)
         {

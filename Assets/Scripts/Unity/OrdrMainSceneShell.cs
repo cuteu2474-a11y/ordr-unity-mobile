@@ -65,6 +65,8 @@ namespace Ordr.Mobile.Unity
                 controller.Combat.Game.Phase == SessionPhase.NotStarted)
                 status = "캐릭터 도감 " + controller.Units.Count +
                     "종  |  검증된 첫 라운드 시작 대기";
+            else if (controller.IsUnitPreparation)
+                status = "유닛 준비 · 소환 / 조합 / 판매 가능 · 전투 연결 대기";
             else
                 status = "라운드 " + controller.Combat.Game.CurrentWave +
                     "  |  남은 몬스터 " + controller.Combat.Game.AliveEnemies +
@@ -76,7 +78,8 @@ namespace Ordr.Mobile.Unity
             GUI.Label(new Rect(left, top + layout.HeaderHeight * 0.56f,
                 width, layout.HeaderHeight * 0.44f), status, detail);
             if (controller != null && controller.Combat != null &&
-                controller.Combat.Game.Phase == SessionPhase.Running)
+                controller.Combat.Game.Phase == SessionPhase.Running &&
+                !controller.IsUnitPreparation)
             {
                 var pauseRect = new Rect(left + width - 91f, top + 4f, 89f,
                     Mathf.Min(38f, layout.HeaderHeight * 0.52f));
@@ -136,8 +139,8 @@ namespace Ordr.Mobile.Unity
                 var button = new Rect(center - panelWidth * 0.5f, y,
                     panelWidth, Mathf.Clamp(layout.Battle.height * 0.17f, 36f, 64f));
                 bool previous = GUI.enabled;
-                GUI.enabled = ready;
-                string startTitle = "악몽 · 이세계모드 시작";
+                GUI.enabled = controller.Units != null;
+                string startTitle = ready ? "악몽 · 이세계모드 시작" : "유닛 준비 시작";
 #if UNITY_EDITOR
                 if (controller.IsEditorPreview)
                     startTitle = "체험 첫 라운드 시작 (가상 능력치)";
@@ -148,7 +151,8 @@ namespace Ordr.Mobile.Unity
                 {
                     try
                     {
-                        controller.BeginVerifiedFirstWave();
+                        if (ready) controller.BeginVerifiedFirstWave();
+                        else controller.BeginUnitPreparation();
                         startFailure = null;
                     }
                     catch (Exception ex)
@@ -160,7 +164,7 @@ namespace Ordr.Mobile.Unity
                 }
                 string message = string.IsNullOrEmpty(startFailure)
                     ? (ready ? "게임 시작 준비 완료" :
-                        "실전 시작 연결 " + remaining + "건 남음: " + reason)
+                        "전투 연결 대기 · 시작 자원으로 위습·조합·판매를 사용할 수 있습니다.")
                     : startFailure;
                 var hint = new GUIStyle(detail) { alignment = TextAnchor.UpperCenter };
                 GUI.Label(new Rect(button.x, button.yMax + 9f,
@@ -175,14 +179,15 @@ namespace Ordr.Mobile.Unity
             }
             else if (controller != null && controller.Combat != null &&
                 (controller.Combat.Game.Phase == SessionPhase.Won ||
-                 controller.Combat.Game.Phase == SessionPhase.Lost))
+                 controller.Combat.Game.Phase == SessionPhase.Lost || controller.IsUnitPreparation))
             {
                 float center = layout.Battle.center.x;
                 var restart = new Rect(center - 92f,
-                    layout.Battle.center.y - 22f, 184f, 44f);
+                    controller.IsUnitPreparation ? layout.Battle.yMax - 48f :
+                        layout.Battle.center.y - 22f, 184f, 44f);
                 if (!confirmNewGame)
                 {
-                    if (GUI.Button(restart, "새 게임")) confirmNewGame = true;
+                    if (GUI.Button(restart, controller.IsUnitPreparation ? "준비 초기화" : "새 게임")) confirmNewGame = true;
                 }
                 else
                 {

@@ -56,6 +56,7 @@ namespace Ordr.Mobile.Combat
         {
             private readonly CharacterCombatRuntime world;
             private readonly List<long> materialIds;
+            private readonly bool removalOnly;
             private readonly HashSet<long> hiddenIds;
             private readonly Dictionary<long, UnitState> sourcePositions =
                 new Dictionary<long, UnitState>();
@@ -69,8 +70,9 @@ namespace Ordr.Mobile.Combat
             private bool disposed;
 
             internal OriginalFusionUnitSwap(CharacterCombatRuntime owner,
-                List<long> inputs)
+                List<long> inputs, bool removalOnly = false)
             {
+                this.removalOnly = removalOnly;
                 world = owner;
                 materialIds = inputs;
                 hiddenIds = new HashSet<long>(inputs);
@@ -110,14 +112,14 @@ namespace Ordr.Mobile.Combat
 
             public void Commit()
             {
-                if (disposed || committed || resultInstanceId <= 0 ||
+                if (disposed || committed || (!removalOnly && resultInstanceId <= 0) ||
                     !Object.ReferenceEquals(world.activeOriginalFusionSwap, this) ||
                     world.Time != atTime ||
                     world.Game.Phase != atPhase ||
                     world.Game.CurrentWave != atWave)
                     throw new InvalidOperationException(
                         "원본 조합 유닛 교체의 실행 시점이 변경됐습니다.");
-                if (!world.characters.ContainsKey(resultInstanceId))
+                if (!removalOnly && !world.characters.ContainsKey(resultInstanceId))
                     throw new InvalidOperationException("검증한 결과 캐릭터가 사라졌습니다.");
                 foreach (long id in materialIds)
                 {
@@ -140,24 +142,28 @@ namespace Ordr.Mobile.Combat
                 world.internalOriginalFusionMutation = true;
                 try
                 {
-                    // Reserve the sole visible source-backed spawn cue BEFORE
-                    // touching the original source actors.
-                    var result = world.characters[resultInstanceId];
-                    var publishedSpawn = new CharacterCombatEvent(
-                        CharacterCombatEventType.UnitSpawned,
-                        InstanceKey(resultInstanceId), null, null,
-                        result.Catalog.Name, 0);
-                    var publishedPlacement = new CharacterCombatEvent(
-                        CharacterCombatEventType.UnitPlaced,
-                        InstanceKey(resultInstanceId), null, null,
-                        "verified-original-fusion-position", 0);
-                    world.pendingCommandEvents.Capacity = Math.Max(
-                        world.pendingCommandEvents.Capacity,
-                        world.pendingCommandEvents.Count + 2);
-                    foreach (long id in materialIds)
-                        world.RemoveCharacter(id);
-                    world.pendingCommandEvents.Add(publishedSpawn);
-                    world.pendingCommandEvents.Add(publishedPlacement);
+                    CharacterCombatEvent publishedSpawn = null;
+                    CharacterCombatEvent publishedPlacement = null;
+                    if (!removalOnly)
+                    {
+                        var result = world.characters[resultInstanceId];
+                        publishedSpawn = new CharacterCombatEvent(
+                            CharacterCombatEventType.UnitSpawned,
+                            InstanceKey(resultInstanceId), null, null, result.Catalog.Name, 0);
+                        publishedPlacement = new CharacterCombatEvent(
+                            CharacterCombatEventType.UnitPlaced,
+                            InstanceKey(resultInstanceId), null, null,
+                            "verified-original-fusion-position", 0);
+                        world.pendingCommandEvents.Capacity = Math.Max(
+                            world.pendingCommandEvents.Capacity,
+                            world.pendingCommandEvents.Count + 2);
+                    }
+                    foreach (long id in materialIds) world.RemoveCharacter(id);
+                    if (!removalOnly)
+                    {
+                        world.pendingCommandEvents.Add(publishedSpawn);
+                        world.pendingCommandEvents.Add(publishedPlacement);
+                    }
                     committed = true;
                     world.activeOriginalFusionSwap = null;
                     // Step() reconciles auras at the next actual combat
@@ -230,6 +236,20 @@ namespace Ordr.Mobile.Combat
                 ticket.Dispose();
                 throw;
             }
+        }
+
+        // Sales use the same exclusive staging as fusion. Until Commit the
+        // original actor, attack clock, statuses and selection remain intact.
+        public OriginalFusionUnitSwap BeginOriginalUnitRemoval(long instanceId)
+        {
+            if (activeOriginalFusionSwap != null || processingStep ||
+                pendingStepSeconds != 0 || game.Phase != SessionPhase.Running ||
+                !characters.ContainsKey(instanceId) || IsStoryDeployed(instanceId))
+                throw new InvalidOperationException("현재 유닛을 판매할 수 없습니다.");
+            var ticket = new OriginalFusionUnitSwap(this,
+                new List<long> { instanceId }, true);
+            activeOriginalFusionSwap = ticket;
+            return ticket;
         }
 
         private void BlockExternalMutationDuringOriginalFusion()

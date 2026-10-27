@@ -318,6 +318,48 @@ namespace Ordr.Mobile.Unity
                 : new Color(0.38f, 0.87f, 0.91f, 1f);
         }
 
+        // Explicit camera commands; never move actors or continuously chase
+        // newly summoned enemies. Useful after panning/zooming on a tablet.
+        public bool ShowOwnedUnit(long instanceId)
+        {
+            if (controller == null || controller.Combat == null) return false;
+            if (worldCamera == null) worldCamera = Camera.main;
+            if (worldCamera == null) return false;
+            foreach (var unit in controller.Combat.MobileUnitSnapshot())
+                if (unit.InstanceId == instanceId)
+                {
+                    Vector3 old = worldCamera.transform.position;
+                    worldCamera.transform.position = new Vector3(
+                        (float)unit.Position.X, (float)unit.Position.Y, old.z);
+                    return true;
+                }
+            return false;
+        }
+
+        public bool ShowAllOwnedUnits()
+        {
+            if (controller == null || controller.Combat == null) return false;
+            if (worldCamera == null) worldCamera = Camera.main;
+            if (worldCamera == null) return false;
+            var positions = new List<Vector2>();
+            foreach (var unit in controller.Combat.MobileUnitSnapshot())
+                positions.Add(new Vector2((float)unit.Position.X, (float)unit.Position.Y));
+            Rect safe = Screen.safeArea;
+            if (safe.width <= safe.height) return false;
+            var layout = MobileMapSkillLayout.Calculate(safe, Screen.height,
+                MobileMapSkillLayout.UiScale(safe, Screen.dpi));
+            Vector2 center;
+            float halfHeight;
+            if (!MobileBattlefieldCameraFraming.TryFrame(positions,
+                layout.Battle.width / layout.Battle.height, out center, out halfHeight)) return false;
+            Vector3 old = worldCamera.transform.position;
+            worldCamera.transform.position = new Vector3(center.x, center.y, old.z);
+            worldCamera.orthographicSize = halfHeight;
+            initialCameraHalfHeight = halfHeight;
+            cameraFramed = true;
+            return true;
+        }
+
         private void CollectMainBattlefieldPositions()
         {
             framePoints.Clear();

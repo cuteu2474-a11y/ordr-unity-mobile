@@ -651,6 +651,52 @@ namespace Ordr.Mobile.Unity
 
         public OriginalJassFusionPlanner OriginalFusionPlanner { get; private set; }
         public AssistedFusionService FusionAssistance { get; private set; }
+        public Original323LowerGradeSaleService LowerGradeSales { get; private set; }
+        private Original323CommonFusionPort commonSourceFusion;
+        private bool usesBuiltInAutomaticUncommonWisps;
+        public int ExecutableCommonFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableRecipeCount;
+        public bool IsUnitPreparation => Combat != null && SharedEconomy != null &&
+            SharedEconomy.HasStarted && Combat.Game.Phase == SessionPhase.Running &&
+            Combat.Game.CurrentWave == 0;
+
+        // A source-backed management stage, not a fake battle. Existing start
+        // resources/roster/missions are granted once; no enemies or damage.
+        public void BeginUnitPreparation()
+        {
+            if (Combat == null) ConfigureCatalogOnlyWorld(unchecked((uint)Environment.TickCount));
+            BeginSession();
+        }
+
+        public ManualActionResult RequestLowerGradeSale(long instanceId)
+        {
+            if (Combat == null || LowerGradeSales == null)
+                return ManualActionResult.Unavailable("하위 등급 판매");
+            foreach (var row in Combat.MobileUnitSnapshot())
+                if (row.InstanceId == instanceId && row.Unit.Grade == "흔함")
+                    return ManualActions.RequestCommonSale(instanceId);
+            return LowerGradeSales.Sell(instanceId);
+        }
+
+        // Explicit, bounded player request. Each individual source draw keeps
+        // its original alternating candidates, debit and rollback. Stop on
+        // shortage/failure/pending pirate ship; never retry or spend tomorrow.
+        public ManualActionResult RequestCommonWispBatch(int requested)
+        {
+            if (requested < 1 || requested > 100)
+                return new ManualActionResult(ManualActionState.Rejected, "한 번에 1~100개를 선택해 주세요.");
+            int done = 0;
+            string stopped = null;
+            while (done < requested)
+            {
+                if (!CanRecruitVerifiedCommonWisp) { stopped = VerifiedCommonWispUnavailableReason; break; }
+                var result = RequestVerifiedCommonWispRecruitment();
+                if (result.State != ManualActionState.Succeeded) { stopped = result.Message; break; }
+                done++;
+            }
+            return new ManualActionResult(done == 0 ? ManualActionState.Rejected : ManualActionState.Succeeded,
+                "흔함 소환 " + done + "/" + requested + "회" +
+                (done < requested ? " · 남은 위습 보존" + (string.IsNullOrEmpty(stopped) ? "" : " · " + stopped) : ""));
+        }
         public CharacterCombatRuntime Combat { get; private set; }
         public bool HasSourceVerifiedDamageRuntime { get; private set; }
 #if UNITY_EDITOR
@@ -692,6 +738,8 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("진행 중인 게임에서만 일시정지할 수 있습니다.");
             runGate.SetManualPause(paused);
         }
+
+        private void OnDestroy() { Wisps?.Dispose(); }
 
         private void OnApplicationPause(bool paused)
         {
@@ -1224,8 +1272,10 @@ namespace Ordr.Mobile.Unity
         {
             if (SharedEconomy == null || Combat == null)
                 throw new InvalidOperationException("공유 경제/전투 월드를 먼저 구성해야 합니다.");
-            if (Wisps != null)
+            if (Wisps != null && !usesBuiltInAutomaticUncommonWisps)
                 throw new InvalidOperationException("위습 거래 월드 중복 연결");
+            if (Wisps != null && Combat.Game.Phase != SessionPhase.NotStarted)
+                throw new InvalidOperationException("게임 시작 후 위습 월드를 교체할 수 없습니다.");
             if (world == null || choiceMerge == null)
                 throw new ArgumentNullException(nameof(world), "위습 보상과 Merge 원본 월드 모두 필요");
             var source = originalWispPoolsJson != null ? originalWispPoolsJson :
@@ -1237,7 +1287,9 @@ namespace Ordr.Mobile.Unity
                     source.text, scriptRng)
                 : OriginalWispRewardCatalog.FromOriginalJassJson(
                     source.text, scriptRng, nativePool);
+            Wisps?.Dispose();
             Wisps = new MobileWispService(SharedEconomy.Wallet, roller, world);
+            usesBuiltInAutomaticUncommonWisps = false;
             choiceWispWorld = choiceMerge;
             Wisps.FlushAutomatic();
         }
@@ -1523,6 +1575,8 @@ namespace Ordr.Mobile.Unity
             // the read-only JASS port without duplicating recipe IDs.
             if (originalJassFusionPort != null)
                 sources.Add(originalJassFusionPort);
+            else if (commonSourceFusion != null)
+                sources.Add(commonSourceFusion);
             else if (originalJassReadOnlyFusionPort != null)
                 sources.Add(originalJassReadOnlyFusionPort);
             if (mysticFusionPort != null) sources.Add(mysticFusionPort);
@@ -1869,6 +1923,15 @@ namespace Ordr.Mobile.Unity
                 commonWispAvailability = originalDrawWorld;
                 commonWispUsesBuiltInSource = true;
             }
+            if (MapBaseStats != null)
+            {
+                LowerGradeSales = new Original323LowerGradeSaleService(
+                    Combat, SharedEconomy, MapBaseStats,
+                    originalSharedScriptRandom == null ? sharedMobileWispRandom :
+                        originalSharedScriptRandom.ForPurpose(Original323ScriptRandomPurpose.OtherOriginalScriptCall));
+                if (!ManualActions.HasOriginalCommonSaleService)
+                    ManualActions.ConfigureOriginalCommonSale(LowerGradeSales);
+            }
             Combat.ConfigureOtamaWoodWallet(SharedEconomy.Wallet);
             Combat.ConfigureVerifiedUnitAttackProvider(verifiedUnitAttackSource);
             if (MapBaseStats != null)
@@ -1891,6 +1954,26 @@ namespace Ordr.Mobile.Unity
                 originalJassReadOnlyFusionPort = new OriginalJassReadOnlyFusionPort(
                     OriginalJassFusions, OriginalFusionObjectPreview,
                     id => Combat.IsStoryDeployed(id));
+            if (originalJassReadOnlyFusionPort != null && MapBaseStats != null &&
+                OriginalUnitRawcodes != null)
+            {
+                commonSourceFusion = new Original323CommonFusionPort(Combat, SharedEconomy,
+                    Units, MapBaseStats, OriginalJassFusions, OriginalUnitRawcodes,
+                    originalJassReadOnlyFusionPort);
+                commonSourceFusion.FusionCommitted += OnCommittedOriginalFusion;
+                commonSourceFusion.ObserverFailed += Debug.LogException;
+                var wispPool = originalWispPoolsJson != null ? originalWispPoolsJson :
+                    Resources.Load<TextAsset>("OrdrData/original-2323C-wisp-pools");
+                if (Wisps == null && wispPool != null)
+                {
+                    var automatic = new Original323AutomaticUncommonWisps(wispPool.text,
+                        new MobileUniformWispRandom());
+                    Wisps = new MobileWispService(SharedEconomy.Wallet, automatic,
+                        new OriginalWispCombatRewardWorld(Combat, commonSourceFusion,
+                            automatic, automatic));
+                    usesBuiltInAutomaticUncommonWisps = true;
+                }
+            }
             if (mysticFusionPort == null && OtherworldMysticFusions != null)
                 mysticFusionPort = new OtherworldMysticFusionPreviewPort(
                     OtherworldMysticFusions, id => Combat.IsStoryDeployed(id));
@@ -2135,9 +2218,9 @@ namespace Ordr.Mobile.Unity
             {
                 if (startEvolutionWorld == null)
                     blockers.Add("원본 e0HP 진화체를 실제 보유 명단에 연결");
-                if (Combat.Game.Phase != SessionPhase.NotStarted ||
+                if (!IsUnitPreparation && (Combat.Game.Phase != SessionPhase.NotStarted ||
                     SharedEconomy == null || SharedEconomy.HasStarted ||
-                    PersonalMissions != null)
+                    PersonalMissions != null))
                     blockers.Add("새 게임 세션·공유 지갑 초기 상태 복원");
             }
             VerifiedWavePlan first;
@@ -2180,7 +2263,7 @@ namespace Ordr.Mobile.Unity
             if (!CanBeginVerifiedFirstWave(out reason))
                 throw new InvalidOperationException(reason);
             VerifiedWavePlan first = RequireVerifiedMonsterWavePlan(1);
-            BeginSession();
+            if (!IsUnitPreparation) BeginSession();
             VerifiedWaveDirector.Begin(Combat, first);
             RecordSessionIssue("라운드 시작", "1라운드 / 원본 이벤트 승인");
             PersonalMissions?.OnRoundStarted();
@@ -2235,7 +2318,7 @@ namespace Ordr.Mobile.Unity
             // Never catch up elapsed wall-clock time after backgrounding.
             // Combat, round events, shared mana regeneration and source RNG
             // remain on one paused logical clock.
-            if (!runGate.CanAdvance) return;
+            if (!runGate.CanAdvance || IsUnitPreparation) return;
             double timeBeforeStep = Combat.Time;
             IReadOnlyList<CharacterCombatEvent> results;
             try
