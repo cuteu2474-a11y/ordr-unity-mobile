@@ -245,6 +245,10 @@ namespace Ordr.Mobile.Unity
         public Original323MonsterObjectAbilityCatalog OriginalMonsterObjectAbilities { get; private set; }
         public Original323NightmareA04QSpawnState NightmareMonsterA04QSpawns { get; private set; }
         private IOriginal323LiveMonsterWaveEvidence liveMonsterWaveEvidence;
+        // The shipped resources may lack final-HP monster plans.
+        // Only independently reviewed, identity-matched plans may be supplied.
+        private readonly Dictionary<int, VerifiedWavePlan> registeredLiveWavePlans =
+            new Dictionary<int, VerifiedWavePlan>();
         private IOriginal323NightmareA04QEventWitness nightmareA04QEventWitness;
         private IOriginal323LiveMonsterA04QWitness liveMonsterA04QWitness;
         private IOriginal323LiveMonsterStatWitness liveMonsterStatWitness;
@@ -396,6 +400,38 @@ namespace Ordr.Mobile.Unity
 
         // A verified original event adapter must observe the real JASS-equivalent
         // action; the source-only snapshot never fabricates game events.
+        // An approved adapter can supply reviewed wave data without inventing
+        // a static monster JSON. Original identity/cadence/role checks run
+        // here; independent final-stat approval is checked at wave start.
+        public void RegisterVerifiedLiveMonsterWavePlan(VerifiedWavePlan plan)
+        {
+            if (plan == null || plan.WaveNumber < 1 || plan.WaveNumber > 65)
+                throw new ArgumentException("1~65라운드의 검증된 출현 계획이 필요합니다.");
+            if (liveMonsterWaveEvidence == null ||
+                OriginalMonsterSpawnIdentities == null ||
+                OriginalMonsterObjectAbilities == null)
+                throw new InvalidOperationException(
+                    "원본 출현 스크립트/몬스터 객체/실전 승인 공급자가 필요합니다.");
+            if (Combat != null && (Combat.Game.CurrentWave >= plan.WaveNumber ||
+                Combat.Game.Phase == SessionPhase.Won ||
+                Combat.Game.Phase == SessionPhase.Lost))
+                throw new InvalidOperationException(
+                    "이미 시작했거나 종료된 라운드는 교체할 수 없습니다.");
+            if (registeredLiveWavePlans.ContainsKey(plan.WaveNumber))
+                throw new InvalidOperationException("라운드 계획 중복 등록");
+            VerifiedWavePlan imported;
+            if (VerifiedMonsterWaves != null &&
+                VerifiedMonsterWaves.TryGetPlan(plan.WaveNumber, out imported))
+                throw new InvalidOperationException(
+                    "이미 제공된 검증 JSON 라운드는 덮어쓸 수 없습니다.");
+            if (!OriginalMonsterSpawnIdentities.MatchesSinglePlayerWave(plan) ||
+                !OriginalMonsterSpawnIdentities.MatchesSinglePlayerSpawnCadence(plan) ||
+                !OriginalMonsterObjectAbilities.MatchesWaveObjectRoles(plan))
+                throw new InvalidOperationException(
+                    "원본 JASS 출현 수량/간격/몬스터 객체와 일치하지 않습니다.");
+            registeredLiveWavePlans.Add(plan.WaveNumber, plan);
+        }
+
         public void ConfigureObservedNightmareA04QEvents(
             IOriginal323NightmareA04QEventWitness verifiedEvents)
         {
@@ -1211,7 +1247,8 @@ namespace Ordr.Mobile.Unity
             // Only remember the policies here; world-linked services are built
             // once in ConfigureRuntime (or updated after it has been created).
             if (Combat != null)
-                Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
+                Combat.MobileAutomation.Configure(placementRules, bossFocusRules,
+                    autoSkillRules ?? new MobileUnlimitedAutoSkillTargetRules());
         }
 
         public void ConfigureManualMobileSystems(IOriginalStoryDispatchPort originalStory,
@@ -1728,7 +1765,8 @@ namespace Ordr.Mobile.Unity
             Combat.ConfigureVerifiedUnitAttackProvider(verifiedUnitAttackSource);
             if (MapBaseStats != null)
                 Combat.ConfigureOriginalMapCommonAttackPreview(MapBaseStats);
-            Combat.MobileAutomation.Configure(placementRules, bossFocusRules, autoSkillRules);
+            Combat.MobileAutomation.Configure(placementRules, bossFocusRules,
+                autoSkillRules ?? new MobileUnlimitedAutoSkillTargetRules());
             Combat.ConfigureStoryDeployment(storyDispatchRules);
             if (OriginalJassFusions != null && OriginalUnitRawcodes != null)
                 OriginalFusionPlanner = new OriginalJassFusionPlanner(
@@ -1915,8 +1953,9 @@ namespace Ordr.Mobile.Unity
             else if (verifiedStartingProfile == null || startEvolutionWorld == null ||
                 !Original323SoloStartProfile.MatchesPinnedSource(verifiedStartingProfile))
                 reason = "시작 재화·진화체 등록 확인 대기";
-            else if (VerifiedMonsterWaves == null ||
-                !VerifiedMonsterWaves.TryGetPlan(1, out _))
+            else if ((VerifiedMonsterWaves == null ||
+                !VerifiedMonsterWaves.TryGetPlan(1, out _)) &&
+                !registeredLiveWavePlans.ContainsKey(1))
                 reason = "1라운드의 검증된 최종 몬스터 체력·방어·위치 자료 대기";
             else if (OriginalMonsterSpawnIdentities == null ||
                 OriginalMonsterObjectAbilities == null)
@@ -1943,11 +1982,13 @@ namespace Ordr.Mobile.Unity
 
         private VerifiedWavePlan RequireVerifiedMonsterWavePlan(int waveNumber)
         {
-            if (Combat == null || VerifiedMonsterWaves == null)
+            if (Combat == null)
                 throw new InvalidOperationException(
-                    "원본 몬스터/라운드 검증 데이터가 아직 연결되지 않았습니다.");
+                    "원본 몬스터/전투 런타임이 아직 연결되지 않았습니다.");
             VerifiedWavePlan plan;
-            if (!VerifiedMonsterWaves.TryGetPlan(waveNumber, out plan))
+            if ((VerifiedMonsterWaves == null ||
+                !VerifiedMonsterWaves.TryGetPlan(waveNumber, out plan)) &&
+                !registeredLiveWavePlans.TryGetValue(waveNumber, out plan))
                 throw new InvalidOperationException(
                     "요청한 라운드에는 검증된 2.323[C] 몬스터 데이터가 없습니다.");
             string approvalEvidence;

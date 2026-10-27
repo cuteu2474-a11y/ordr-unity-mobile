@@ -105,6 +105,42 @@ namespace Ordr.Mobile.Mobile
             double gameSeconds, out string targetEnemyId);
     }
 
+    // Mobile-only automatic target choice, not a substitute for native
+    // mana/cooldown, immunity, spell conditions or damage verification.
+    // The caller supplies only living targets from the assigned battlefield.
+    public sealed class MobileUnlimitedAutoSkillTargetRules : IOriginalAutoSkillRules
+    {
+        public bool TryApproveCast(CatalogUnit unit, ImportedCombatSkill skill,
+            UnitState casterPosition, IReadOnlyList<MobileEnemySnapshot> enemies,
+            double gameSeconds, out string targetEnemyId)
+        {
+            targetEnemyId = null;
+            if (unit == null || skill == null || enemies == null ||
+                double.IsNaN(gameSeconds) || double.IsInfinity(gameSeconds) ||
+                (skill.Target != "single" && skill.Target != "area" &&
+                 skill.Target != "targetCircle" && skill.Target != "casterArea"))
+                return false;
+            double bestDistance = double.MaxValue;
+            foreach (var enemy in enemies)
+            {
+                if (enemy == null || enemy.Health <= 0) continue;
+                double dx = enemy.X - casterPosition.X;
+                double dy = enemy.Y - casterPosition.Y;
+                double distance = dx * dx + dy * dy;
+                if (double.IsNaN(distance) || double.IsInfinity(distance)) continue;
+                // Distance ranks targets only. No caster-to-target range limit.
+                if (targetEnemyId == null || distance < bestDistance ||
+                    (distance == bestDistance &&
+                     string.CompareOrdinal(enemy.Id, targetEnemyId) < 0))
+                {
+                    targetEnemyId = enemy.Id;
+                    bestDistance = distance;
+                }
+            }
+            return targetEnemyId != null;
+        }
+    }
+
     public sealed class MobileAutomationStatus
     {
         public bool PlacementConnected { get; private set; }
@@ -176,7 +212,6 @@ namespace Ordr.Mobile.Mobile
                     unit.Unit.Id == SpecialGradeMobilePolicy.Law ||
                     unit.Unit.Id == SpecialGradeMobilePolicy.Otama) continue;
                 bool useCurrent = SpecialGradeMobilePolicy.UsesCurrentAttackTarget(unit.Unit.Id);
-                if (runtime.IsStoryDeployed(unit.InstanceId) && !useCurrent) continue;
                 if (unit.Profile == null) continue;
                 if (runtime.ResourcesOf(unit.InstanceId) == null) continue;
                 foreach (var skill in unit.Profile.Skills)
@@ -195,24 +230,33 @@ namespace Ordr.Mobile.Mobile
                     if (skill.Get("requiresOriginalVerification") is bool &&
                         (bool)skill.Get("requiresOriginalVerification")) continue;
                     string targetId;
-                    IReadOnlyList<MobileEnemySnapshot> allowed = enemies;
-                    string current = null;
-                    if (useCurrent)
+                    // Pre-filter to this caster's live battlefield before
+                    // invoking ANY target selector (including external policies).
+                    bool storyLane = runtime.IsStoryDeployed(unit.InstanceId);
+                    string current = useCurrent
+                        ? runtime.CurrentAttackTargetOf(unit.InstanceId) : null;
+                    if (useCurrent && current == null) continue;
+                    var eligible = new List<MobileEnemySnapshot>();
+                    foreach (var enemy in enemies)
                     {
-                        current = runtime.CurrentAttackTargetOf(unit.InstanceId);
-                        if (current == null) continue;
-                        var exact = new List<MobileEnemySnapshot>();
-                        foreach (var enemy in enemies)
-                            if (enemy.Id == current) exact.Add(enemy);
-                        allowed = exact.AsReadOnly();
+                        if (enemy.Health <= 0 ||
+                            (storyLane ? enemy.Kind != CharacterEnemyKind.Story :
+                                enemy.Kind != CharacterEnemyKind.Line &&
+                                enemy.Kind != CharacterEnemyKind.Boss &&
+                                enemy.Kind != CharacterEnemyKind.Enraged))
+                            continue;
+                        if (useCurrent && enemy.Id != current) continue;
+                        eligible.Add(enemy);
                     }
+                    if (eligible.Count == 0) continue;
+                    IReadOnlyList<MobileEnemySnapshot> allowed = eligible.AsReadOnly();
                     if (!autoSkills.TryApproveCast(unit.Unit, skill, unit.Position, allowed,
                         runtime.Time, out targetId)) continue;
                     if (useCurrent && targetId != current) continue;
                     if (string.IsNullOrWhiteSpace(targetId)) continue;
                     bool liveTarget = false;
-                    foreach (var enemy in enemies)
-                        if (enemy.Id == targetId && enemy.Health > 0)
+                    foreach (var enemy in eligible)
+                        if (enemy.Id == targetId)
                         { liveTarget = true; break; }
                     if (!liveTarget) continue;
                     // 시전 성공 시 해당 유닛의 나머지 스킬은 같은 Tick에 연달아 쓰지 않는다.
