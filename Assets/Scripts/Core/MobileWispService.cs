@@ -88,6 +88,10 @@ namespace Ordr.Mobile.Core
         private readonly IVerifiedWispRoller roller;
         private readonly IWispRewardWorld world;
         private bool processing;
+        // A failed spawn/debit/commit retries the same source draw. Otherwise
+        // retrying an unavailable result would turn failure into a free reroll.
+        private readonly Dictionary<string, WispReward> pendingRewards =
+            new Dictionary<string, WispReward>();
         public MobileWispService(EconomyWallet sharedWallet, IVerifiedWispRoller verifiedRoller,
             IWispRewardWorld transactionalWorld)
         {
@@ -141,9 +145,14 @@ namespace Ordr.Mobile.Core
                         using (var transaction = world.Begin() ??
                             throw new InvalidOperationException("위습 월드 거래를 열지 못했습니다."))
                         {
-                            var reward = roller.Roll(id);
-                            if (reward == null || reward.SourceWispId != id)
-                                throw new InvalidOperationException("검증되지 않은 위습 보상");
+                            WispReward reward;
+                            if (!pendingRewards.TryGetValue(id, out reward))
+                            {
+                                reward = roller.Roll(id);
+                                if (reward == null || reward.SourceWispId != id)
+                                    throw new InvalidOperationException("검증되지 않은 위습 보상");
+                                pendingRewards.Add(id, reward);
+                            }
                             transaction.Apply(reward);
                             var before = wallet.CaptureState();
                             try
@@ -152,6 +161,7 @@ namespace Ordr.Mobile.Core
                                     new ResourceBundle()))
                                     throw new InvalidOperationException("위습 소모 실패");
                                 transaction.Commit();
+                                pendingRewards.Remove(id);
                             }
                             catch
                             {

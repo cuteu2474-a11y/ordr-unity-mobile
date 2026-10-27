@@ -585,7 +585,7 @@ namespace Ordr.Mobile.Unity
             GUILayout.BeginVertical(GUI.skin.box);
             GUILayout.Label(detail.DisplayName + " · " + detail.Grade);
             if (controller.PracticeBattle != null)
-                GUILayout.Label(detail.Grade == "흔함" || detail.Grade == "안흔함" || detail.Grade == "특별함"
+                GUILayout.Label(detail.Grade == "흔함" || detail.Grade == "안흔함" || detail.Grade == "특별함" || detail.Grade == "희귀함"
                     ? "연습 전투: 원본 객체의 기본 공격 사용 · 스킬/오라 미연결"
                     : "연습 전투: 이 등급의 전투 연결 대기");
             if (detail.Profile == null && detail.Unit.Id == "C-01")
@@ -848,7 +848,8 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
             bool onlyExecutable = GUILayout.Toggle(fusionExecutableOnly,
                 "실제 제작만 (안흔함 " + controller.ExecutableCommonFusionCount +
-                " / 특별함 " + controller.ExecutableSpecialFusionCount + "종)",
+                " / 특별함 " + controller.ExecutableSpecialFusionCount +
+                " / 희귀함 " + controller.ExecutableRareFusionCount + "종)",
                 GUILayout.MinHeight(44));
             if (onlyExecutable != fusionExecutableOnly)
             {
@@ -1048,9 +1049,10 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("자동 위습 보상 연결 대기: 보유분 유지");
             else
             {
-                GUILayout.Label("안흔함 위습은 원본 13종 중 하나로 자동 지급됩니다.");
-                if (controller.WispBalance(WispResourceIds.Uncommon) > 0 &&
-                    GUILayout.Button("대기 중인 안흔함 위습 처리", GUILayout.MinHeight(44)))
+                GUILayout.Label("안흔함 위습 13종 / 특별함 위습 33종 중 원본 확률로 자동 지급됩니다.");
+                if ((controller.WispBalance(WispResourceIds.Uncommon) > 0 ||
+                     controller.WispBalance(WispResourceIds.Special) > 0) &&
+                    GUILayout.Button("대기 중인 안흔함·특별함 위습 처리", GUILayout.MinHeight(44)))
                 {
                     try { notice = controller.Wisps.FlushAutomatic() + "개 지급 완료"; }
                     catch (Exception error) { notice = "보유분 유지: " + error.Message; }

@@ -29,6 +29,12 @@ namespace Ordr.Mobile.Tests
                 return value;
             }
         }
+        private sealed class DifferentPlacement : IOriginalPlacementRules
+        {
+            public bool TryChoosePosition(CatalogUnit unit, UnitState original, out double x, out double y)
+            { x = 999; y = 888; return true; }
+            public bool IsLegalPosition(CatalogUnit unit, UnitState original, double x, double y) => true;
+        }
         private sealed class Live
         {
             public CharacterCombatRuntime Combat;
@@ -107,6 +113,47 @@ namespace Ordr.Mobile.Tests
         [TestCase("A0N8", "S-27")]
         [TestCase("A01P", "S-16")]
         [TestCase("A029", "S-17")]
+        [TestCase("A0XP", "R-01")]
+        [TestCase("A02W", "R-02")]
+        [TestCase("A016", "R-07")]
+        [TestCase("A02M", "R-04")]
+        [TestCase("A02R", "R-33")]
+        [TestCase("A00I", "R-08")]
+        [TestCase("A01F", "R-03")]
+        [TestCase("A028", "R-28")]
+        [TestCase("A01M", "R-09")]
+        [TestCase("A02K", "R-10")]
+        [TestCase("A00F", "R-06")]
+        [TestCase("A02F", "R-12")]
+        [TestCase("A013", "R-13")]
+        [TestCase("A0IO", "R-14")]
+        [TestCase("A03G", "R-15")]
+        [TestCase("A00A", "R-16")]
+        [TestCase("A00Q", "R-17")]
+        [TestCase("A0N6", "R-39")]
+        [TestCase("A0ND", "R-42")]
+        [TestCase("A02J", "R-19")]
+        [TestCase("A00X", "R-20")]
+        [TestCase("A00R", "R-27")]
+        [TestCase("A0NF", "R-21")]
+        [TestCase("A03B", "R-22")]
+        [TestCase("A02V", "R-23")]
+        [TestCase("A02L", "R-24")]
+        [TestCase("A039", "R-25")]
+        [TestCase("A01J", "R-31")]
+        [TestCase("A0NB", "R-29")]
+        [TestCase("A01W", "R-30")]
+        [TestCase("A00U", "R-37")]
+        [TestCase("A008", "R-32")]
+        [TestCase("A02A", "R-34")]
+        [TestCase("A02T", "R-11")]
+        [TestCase("A00C", "R-36")]
+        [TestCase("A0NC", "R-26")]
+        [TestCase("A02N", "R-38")]
+        [TestCase("A02S", "R-40")]
+        [TestCase("A010", "R-35")]
+        [TestCase("A02Z", "R-05")]
+        [TestCase("A01V", "R-41")]
         public void AllReviewedRecipesConsumeActualMaterialsAndCreateOneResult(string ability, string result)
         {
             var game = Create();
@@ -154,7 +201,8 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(44, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(85, game.Fusion.ExecutableRecipeCount);
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
             var fresh = Offer(game, "A012");
             Assert.AreEqual(ManualActionState.Succeeded,
                 game.Fusion.ConfirmFusion("A012", fresh.SuggestedMaterialInstances).State);
@@ -290,6 +338,79 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(2, game.Combat.CharacterCount, "Disposed service must unsubscribe.");
         }
 
+        [TestCase(0, "S-01")]
+        [TestCase(1, "S-18")]
+        [TestCase(2, "S-09")]
+        [TestCase(3, "S-03")]
+        [TestCase(4, "S-04")]
+        [TestCase(5, "S-06")]
+        [TestCase(6, "S-22")]
+        [TestCase(7, "S-08")]
+        [TestCase(8, "S-07")]
+        [TestCase(9, "S-28")]
+        [TestCase(10, "S-10")]
+        [TestCase(11, "S-11")]
+        [TestCase(12, "S-12")]
+        [TestCase(13, "S-13")]
+        [TestCase(14, "S-14")]
+        [TestCase(15, "S-15")]
+        [TestCase(16, "S-16")]
+        [TestCase(17, "S-17")]
+        [TestCase(18, "S-20")]
+        [TestCase(19, "S-30")]
+        [TestCase(20, "S-21")]
+        [TestCase(21, "S-23")]
+        [TestCase(22, "S-24")]
+        [TestCase(23, "S-02")]
+        [TestCase(24, "S-27")]
+        [TestCase(25, "S-29")]
+        [TestCase(26, "S-31")]
+        [TestCase(27, "S-25")]
+        [TestCase(28, "S-26")]
+        [TestCase(29, "S-05")]
+        [TestCase(30, "S-32")]
+        [TestCase(31, "S-19")]
+        [TestCase(32, "S-33")]
+        public void EverySpecialWispOutcomeCreatesTheActualSourceUnitAtPlayerStart(int roll, string result)
+        {
+            var game = Create();
+            game.Combat.MobileAutomation.Configure(new DifferentPlacement(), null, null);
+            var rng = new Rolls(roll);
+            var source = new Original323AutomaticUncommonWisps(Data("original-2323C-wisp-pools.json"), rng);
+            using (var wisps = new MobileWispService(game.Economy.Wallet, source,
+                new OriginalWispCombatRewardWorld(game.Combat, game.Fusion, source, source)))
+            {
+                game.Economy.Wallet.Grant(new ResourceBundle().Add(WispResourceIds.Special, 1));
+                var unit = game.Combat.MobileUnitSnapshot().Single();
+                Assert.AreEqual(result, unit.Unit.Id);
+                Assert.AreEqual(-3776, unit.Position.X);
+                Assert.AreEqual(4480, unit.Position.Y);
+                Assert.AreEqual(0, wisps.Balance(WispResourceIds.Special));
+                Assert.AreEqual(1, rng.Calls);
+                Assert.AreEqual(0, game.Combat.Time);
+                Assert.AreEqual(5, wisps.Balance(WispResourceIds.Random));
+            }
+        }
+
+        [Test]
+        public void RareFusionUsesActualCasterPositionAndNeverAuthorizesLegendaryRecipes()
+        {
+            var game = Create();
+            game.Combat.SpawnCharacter("S-07", 11, 22);
+            game.Combat.SpawnCharacter("S-12", 33, 44);
+            game.Combat.SpawnCharacter("S-18", 55, 66);
+            var offer = Offer(game, "A00F"); // S-07 owns Gear Third fusion.
+            Assert.IsTrue(offer.IsReady);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion("A00F", offer.SuggestedMaterialInstances).State);
+            var result = game.Combat.MobileUnitSnapshot().Single();
+            Assert.AreEqual("R-06", result.Unit.Id);
+            Assert.AreEqual(11, result.Position.X);
+            Assert.AreEqual(22, result.Position.Y);
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("ET01"));
+        }
+
         [Test]
         public void DefaultControllerPreparationSupportsBatchSummonsWithoutStartingFakeBattle()
         {
@@ -307,6 +428,7 @@ namespace Ordr.Mobile.Tests
                 Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
                 Assert.AreEqual(13, owner.ExecutableCommonFusionCount);
                 Assert.AreEqual(31, owner.ExecutableSpecialFusionCount);
+                Assert.AreEqual(41, owner.ExecutableRareFusionCount);
                 Assert.AreEqual(ManualActionState.Succeeded, owner.RequestCommonWispBatch(5).State);
                 Assert.AreEqual(5, owner.Combat.CharacterCount);
                 Assert.AreEqual(6, owner.SharedEconomy.Units.Count); // Plus non-combat evolution.

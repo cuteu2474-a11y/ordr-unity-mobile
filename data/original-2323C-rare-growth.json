@@ -1,0 +1,2584 @@
+{
+  "format": "ordr-rare-growth-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceAbilitySlkSha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda",
+  "functions": {
+    "CH5": {
+      "line": 48360,
+      "sha256LF": "93995dfe8a9165f9317c6f76ce9c8911cad4933257cdd80a085206ed5a4bb16f"
+    },
+    "CHi": {
+      "line": 48123,
+      "sha256LF": "b19bd25599a95b6252b1be51b74b3e21e41dda0321cc06337030ea8cdcac48df"
+    },
+    "CHu": {
+      "line": 48222,
+      "sha256LF": "0a682ec26ec0c9fc0b333d5dc96c5c424849564b981532d7eba206583394e1e9"
+    },
+    "CHx": {
+      "line": 48263,
+      "sha256LF": "9e4794f1c4747d2ca1fff374186bb81159c3a2e15abc073b460f452fde64f842"
+    },
+    "CHy": {
+      "line": 48280,
+      "sha256LF": "1c4e59257453fc2c3120f1f93344e7bc261df1ecb0c61b1c67c955ed0835e4c4"
+    },
+    "CH8": {
+      "line": 48391,
+      "sha256LF": "1ec038ddd22e024c26ad7116f9eff4040bd18a2760074ed3ec802d914cebe96f"
+    },
+    "CIB": {
+      "line": 48500,
+      "sha256LF": "bffb9384a864b86d4f6e2498a9e72168bd5513e5e4e2120f085f4445d7099b09"
+    },
+    "CT1": {
+      "line": 57116,
+      "sha256LF": "136b0263127f29f0bde67b38c2c7f0c35a40755c087b2951761d769d1a6c9d3f"
+    },
+    "CT2": {
+      "line": 57132,
+      "sha256LF": "43e5ab0c3637eaac789ba497156e40635940e161b7d74c1e78d07304bbf0a6c3"
+    },
+    "CSB": {
+      "line": 56322,
+      "sha256LF": "fafb26a0b1e3ca26db1c61d84fa1edd7dc1119be44c2c0e3a3da769e3f0d5bf3"
+    },
+    "CSC": {
+      "line": 56357,
+      "sha256LF": "4d22b9ff548d1030682e9a18792ce2804ee60400141d683c662ce6fe76aba3be"
+    }
+  },
+  "recipes": [
+    {
+      "abilityRawcode": "A0XP",
+      "jassLine": 60675,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h09X",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h09Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0AH",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02X",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-01",
+      "resultName": "X-드레이크",
+      "originalCasterCatalogIds": [
+        "S-01"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02W",
+      "jassLine": 60683,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Q",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01F",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01K",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02V",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h038",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02R",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-02",
+      "resultName": "거프",
+      "originalCasterCatalogIds": [
+        "S-14"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A016",
+      "jassLine": 60691,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h025",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h006",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02N",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h042",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03N",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h044",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-07",
+      "resultName": "류마",
+      "originalCasterCatalogIds": [
+        "S-09"
+      ],
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02M",
+      "jassLine": 60703,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01L",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00R",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h038",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0AH",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h031",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05S",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-04",
+      "resultName": "도플라밍고",
+      "originalCasterCatalogIds": [
+        "S-25"
+      ],
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02R",
+      "jassLine": 60712,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02F",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01F",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h087",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02S",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h044",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h046",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-33",
+      "resultName": "조로 현상금 사냥꾼",
+      "originalCasterCatalogIds": [
+        "S-22"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00I",
+      "jassLine": 60721,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h022",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h019",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01D",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02T",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02O",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03B",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-08",
+      "resultName": "마르코 불사조",
+      "originalCasterCatalogIds": [
+        "S-08"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A01F",
+      "jassLine": 60729,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h021",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h012",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01K",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02O",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02U",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h042",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03R",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-03",
+      "resultName": "검은수염",
+      "originalCasterCatalogIds": [
+        "S-19"
+      ],
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A028",
+      "jassLine": 60738,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h020",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00B",
+          "count": 2
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02N",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03M",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-28",
+      "resultName": "오즈",
+      "originalCasterCatalogIds": [
+        "S-09"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A01M",
+      "jassLine": 60745,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Z",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h018",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02V",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h039",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03J",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-09",
+      "resultName": "마젤란",
+      "originalCasterCatalogIds": [
+        "S-23"
+      ],
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02K",
+      "jassLine": 60754,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Y",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h018",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01F",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02V",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02O",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h041",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-10",
+      "resultName": "모몬가",
+      "originalCasterCatalogIds": [
+        "S-23"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00F",
+      "jassLine": 60762,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01X",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Q",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02Z",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-06",
+      "resultName": "루피 기어써드",
+      "originalCasterCatalogIds": [
+        "S-07"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02F",
+      "jassLine": 60770,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01W",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01G",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02Q",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03N",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03W",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-12",
+      "resultName": "바르톨로메오",
+      "originalCasterCatalogIds": [
+        "S-27"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A013",
+      "jassLine": 60779,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01V",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03K",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02U",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03I",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03T",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-13",
+      "resultName": "바제스",
+      "originalCasterCatalogIds": [
+        "S-10"
+      ],
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0IO",
+      "jassLine": 60788,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01U",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0AH",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h034",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h037",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-14",
+      "resultName": "바질 호킨스 스트로맨",
+      "originalCasterCatalogIds": [
+        "S-10"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A03G",
+      "jassLine": 60796,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01T",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h018",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03K",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03G",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03R",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h047",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-15",
+      "resultName": "반더 데켄",
+      "originalCasterCatalogIds": [
+        "S-16"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00A",
+      "jassLine": 60806,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02M",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h017",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00R",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02T",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0CM",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h030",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h07N",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-16",
+      "resultName": "베이비 5",
+      "originalCasterCatalogIds": [
+        "S-32"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00Q",
+      "jassLine": 60816,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01S",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01F",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Q",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03S",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03J",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-17",
+      "resultName": "벤 베크만",
+      "originalCasterCatalogIds": [
+        "S-20"
+      ],
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0N6",
+      "jassLine": 60824,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01R",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h036",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h038",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h087",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-39",
+      "resultName": "키자루",
+      "originalCasterCatalogIds": [
+        "S-33"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0ND",
+      "jassLine": 60832,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01M",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02T",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h032",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03O",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h047",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-42",
+      "resultName": "핸콕",
+      "originalCasterCatalogIds": [
+        "S-03"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02J",
+      "jassLine": 60850,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h019",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02P",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02W",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08S",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05W",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-19",
+      "resultName": "비비",
+      "originalCasterCatalogIds": [
+        "S-24"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00X",
+      "jassLine": 60859,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h05L",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h017",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00T",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03I",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02W",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03M",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-20",
+      "resultName": "사보",
+      "originalCasterCatalogIds": [
+        "S-21"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00R",
+      "jassLine": 60867,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01P",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h036",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0CM",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03G",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03Z",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-27",
+      "resultName": "아카이누",
+      "originalCasterCatalogIds": [
+        "S-19"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0NF",
+      "jassLine": 60876,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h013",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h034",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h032",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03W",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-21",
+      "resultName": "상디 디아블잠브",
+      "originalCasterCatalogIds": [
+        "S-13"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A03B",
+      "jassLine": 60885,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h029",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03E",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h043",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-22",
+      "resultName": "샹크스",
+      "originalCasterCatalogIds": [
+        "S-11"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02V",
+      "jassLine": 60893,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h028",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h017",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01E",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01C",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03A",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03S",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03C",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h030",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h055",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-23",
+      "resultName": "센토마루",
+      "originalCasterCatalogIds": [
+        "S-28"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02L",
+      "jassLine": 60903,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h027",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01E",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h037",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03T",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h055",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h007",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-24",
+      "resultName": "슈가",
+      "originalCasterCatalogIds": [
+        "S-26"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A039",
+      "jassLine": 60913,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h026",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h013",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02U",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03E",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02Q",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03J",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-25",
+      "resultName": "시류",
+      "originalCasterCatalogIds": [
+        "S-02"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A01J",
+      "jassLine": 60922,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02A",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01A",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h034",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02W",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03N",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03Y",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-31",
+      "resultName": "이완코브",
+      "originalCasterCatalogIds": [
+        "S-21"
+      ],
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0NB",
+      "jassLine": 60931,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h024",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Q",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h013",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03F",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h09Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h039",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03X",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-29",
+      "resultName": "와이퍼",
+      "originalCasterCatalogIds": [
+        "S-18"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A01W",
+      "jassLine": 60940,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02C",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03F",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h037",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08S",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-30",
+      "resultName": "우솝 보잉열도",
+      "originalCasterCatalogIds": [
+        "S-20"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00U",
+      "jassLine": 60950,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02D",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01B",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h09Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03C",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03L",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h045",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-37",
+      "resultName": "캡틴 키드",
+      "originalCasterCatalogIds": [
+        "S-30"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A008",
+      "jassLine": 60959,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02G",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03E",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03P",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-32",
+      "resultName": "제프",
+      "originalCasterCatalogIds": [
+        "S-12"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02A",
+      "jassLine": 60967,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02E",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h012",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01C",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03B",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03Q",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h043",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h041",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-34",
+      "resultName": "죠즈",
+      "originalCasterCatalogIds": [
+        "S-15"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02T",
+      "jassLine": 60976,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01K",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02S",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h032",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h043",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-11",
+      "resultName": "미호크",
+      "originalCasterCatalogIds": [
+        "S-22"
+      ],
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A00C",
+      "jassLine": 60984,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h023",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00R",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h019",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02R",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h039",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03L",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h055",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0CK",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-36",
+      "resultName": "카쿠",
+      "originalCasterCatalogIds": [
+        "S-06"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A0NC",
+      "jassLine": 60995,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02B",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h012",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Q",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h036",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03I",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h041",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h040",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-26",
+      "resultName": "아오키지",
+      "originalCasterCatalogIds": [
+        "S-04"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02N",
+      "jassLine": 61004,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02H",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h018",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h031",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05F",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-38",
+      "resultName": "크로커다일 Mr.0",
+      "originalCasterCatalogIds": [
+        "S-29"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02S",
+      "jassLine": 61013,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02J",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00V",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03B",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h042",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h031",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h046",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-40",
+      "resultName": "킨에몬",
+      "originalCasterCatalogIds": [
+        "S-31"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A010",
+      "jassLine": 61023,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02K",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01H",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03S",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03K",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h030",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h07L",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-35",
+      "resultName": "쵸파 혼포인트",
+      "originalCasterCatalogIds": [
+        "S-25"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A02Z",
+      "jassLine": 61032,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02L",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01E",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02R",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03C",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03G",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03M",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-05",
+      "resultName": "트라팔가 로우 죽음의 외과의사",
+      "originalCasterCatalogIds": [
+        "S-05"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A01V",
+      "jassLine": 61041,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h05K",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h010",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h013",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01E",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02N",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02P",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02S",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "R-41",
+      "resultName": "페로나 홀로홀로",
+      "originalCasterCatalogIds": [
+        "S-17"
+      ],
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    }
+  ],
+  "excludedNativeCastAbilities": [
+    "A1A0"
+  ],
+  "specialWisp": {
+    "originalRawcode": "e016",
+    "positionPlayerZero": {
+      "x": -3776,
+      "y": 4480
+    },
+    "entries": [
+      {
+        "rawcode": "h01K",
+        "weight": 1,
+        "jassLine": 56323,
+        "catalogId": "S-01",
+        "name": "X-드레이크"
+      },
+      {
+        "rawcode": "h00Q",
+        "weight": 1,
+        "jassLine": 56324,
+        "catalogId": "S-18",
+        "name": "에넬"
+      },
+      {
+        "rawcode": "h00B",
+        "weight": 1,
+        "jassLine": 56325,
+        "catalogId": "S-09",
+        "name": "모리아"
+      },
+      {
+        "rawcode": "h00P",
+        "weight": 1,
+        "jassLine": 56326,
+        "catalogId": "S-03",
+        "name": "나미 크리마텍트"
+      },
+      {
+        "rawcode": "h00S",
+        "weight": 1,
+        "jassLine": 56327,
+        "catalogId": "S-04",
+        "name": "로빈 오하라"
+      },
+      {
+        "rawcode": "h00R",
+        "weight": 1,
+        "jassLine": 56328,
+        "catalogId": "S-06",
+        "name": "루치"
+      },
+      {
+        "rawcode": "h00W",
+        "weight": 1,
+        "jassLine": 56329,
+        "catalogId": "S-22",
+        "name": "조로 귀기"
+      },
+      {
+        "rawcode": "h00T",
+        "weight": 1,
+        "jassLine": 56330,
+        "catalogId": "S-08",
+        "name": "마르코"
+      },
+      {
+        "rawcode": "h00U",
+        "weight": 1,
+        "jassLine": 56331,
+        "catalogId": "S-07",
+        "name": "루피 기어세컨드"
+      },
+      {
+        "rawcode": "h017",
+        "weight": 1,
+        "jassLine": 56332,
+        "catalogId": "S-28",
+        "name": "쿠마"
+      },
+      {
+        "rawcode": "h016",
+        "weight": 1,
+        "jassLine": 56333,
+        "catalogId": "S-10",
+        "name": "바질호킨스"
+      },
+      {
+        "rawcode": "h015",
+        "weight": 1,
+        "jassLine": 56334,
+        "catalogId": "S-11",
+        "name": "버기 마기탄"
+      },
+      {
+        "rawcode": "h014",
+        "weight": 1,
+        "jassLine": 56335,
+        "catalogId": "S-12",
+        "name": "봉쿠레"
+      },
+      {
+        "rawcode": "h013",
+        "weight": 1,
+        "jassLine": 56336,
+        "catalogId": "S-13",
+        "name": "상디 검은다리"
+      },
+      {
+        "rawcode": "h01F",
+        "weight": 1,
+        "jassLine": 56337,
+        "catalogId": "S-14",
+        "name": "스모커"
+      },
+      {
+        "rawcode": "h012",
+        "weight": 1,
+        "jassLine": 56338,
+        "catalogId": "S-15",
+        "name": "스쿼드"
+      },
+      {
+        "rawcode": "h011",
+        "weight": 1,
+        "jassLine": 56339,
+        "catalogId": "S-16",
+        "name": "아론"
+      },
+      {
+        "rawcode": "h010",
+        "weight": 1,
+        "jassLine": 56340,
+        "catalogId": "S-17",
+        "name": "압살롬"
+      },
+      {
+        "rawcode": "h00Z",
+        "weight": 1,
+        "jassLine": 56341,
+        "catalogId": "S-20",
+        "name": "우솝 화염탄"
+      },
+      {
+        "rawcode": "h00Y",
+        "weight": 1,
+        "jassLine": 56342,
+        "catalogId": "S-30",
+        "name": "키드"
+      },
+      {
+        "rawcode": "h00X",
+        "weight": 1,
+        "jassLine": 56343,
+        "catalogId": "S-21",
+        "name": "이나즈마 혁명군"
+      },
+      {
+        "rawcode": "h018",
+        "weight": 1,
+        "jassLine": 56344,
+        "catalogId": "S-23",
+        "name": "징베"
+      },
+      {
+        "rawcode": "h019",
+        "weight": 1,
+        "jassLine": 56345,
+        "catalogId": "S-24",
+        "name": "챠카"
+      },
+      {
+        "rawcode": "h01C",
+        "weight": 1,
+        "jassLine": 56346,
+        "catalogId": "S-02",
+        "name": "갱 뱃지"
+      },
+      {
+        "rawcode": "h00V",
+        "weight": 1,
+        "jassLine": 56347,
+        "catalogId": "S-27",
+        "name": "캡틴 크로"
+      },
+      {
+        "rawcode": "h01A",
+        "weight": 1,
+        "jassLine": 56348,
+        "catalogId": "S-29",
+        "name": "크로커다일"
+      },
+      {
+        "rawcode": "h01B",
+        "weight": 1,
+        "jassLine": 56349,
+        "catalogId": "S-31",
+        "name": "킬러"
+      },
+      {
+        "rawcode": "h01D",
+        "weight": 1,
+        "jassLine": 56350,
+        "catalogId": "S-25",
+        "name": "쵸파 가드포인트"
+      },
+      {
+        "rawcode": "h01E",
+        "weight": 1,
+        "jassLine": 56351,
+        "catalogId": "S-26",
+        "name": "쵸파 두뇌강화"
+      },
+      {
+        "rawcode": "h01H",
+        "weight": 1,
+        "jassLine": 56352,
+        "catalogId": "S-05",
+        "name": "트라팔가 로우"
+      },
+      {
+        "rawcode": "h01G",
+        "weight": 1,
+        "jassLine": 56353,
+        "catalogId": "S-32",
+        "name": "파이러츠 도킹5"
+      },
+      {
+        "rawcode": "h01J",
+        "weight": 1,
+        "jassLine": 56354,
+        "catalogId": "S-19",
+        "name": "에이스 2번 대대장"
+      },
+      {
+        "rawcode": "h01I",
+        "weight": 1,
+        "jassLine": 56355,
+        "catalogId": "S-33",
+        "name": "헤르메포"
+      }
+    ]
+  },
+  "retailCombatParityVerified": false,
+  "limitations": [
+    "Material swaps and Special Wisp pool/placement only, not full skills/native cast parity.",
+    "Rare/Legendary automatic Wisps remain queued; no A0YE substitute is created.",
+    "Basic attacks are enabled only in the separate development practice model."
+  ]
+}

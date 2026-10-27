@@ -685,6 +685,7 @@ namespace Ordr.Mobile.Unity
         }
         public int ExecutableCommonFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableCommonRecipeCount;
         public int ExecutableSpecialFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableSpecialRecipeCount;
+        public int ExecutableRareFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableRareRecipeCount;
         public bool IsUnitPreparation => Combat != null && SharedEconomy != null &&
             SharedEconomy.HasStarted && Combat.Game.Phase == SessionPhase.Running &&
             Combat.Game.CurrentWave == 0;

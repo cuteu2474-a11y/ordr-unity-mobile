@@ -11,12 +11,18 @@ namespace Ordr.Mobile.Tests
         {
             public bool Verified = true;
             public bool IsVerified(string id) => Verified;
-            public WispReward Roll(string id) => new WispReward(id, "h000",
-                id == WispResourceIds.Rare ? "A0YE" : null);
+            public int Calls;
+            public WispReward Roll(string id)
+            {
+                Calls++;
+                return new WispReward(id, Calls == 1 ? "h000" : "h001",
+                    id == WispResourceIds.Rare ? "A0YE" : null);
+            }
         }
         private sealed class World : IWispRewardWorld
         {
             public int Count;
+            public WispReward LastReward;
             public bool Fail;
             public bool FailCommit;
             public IWispRewardTransaction Begin() => new Transaction(this);
@@ -28,6 +34,7 @@ namespace Ordr.Mobile.Tests
                 public Transaction(World parent) { world = parent; }
                 public void Apply(WispReward reward)
                 {
+                    world.LastReward = reward;
                     if (world.Fail) throw new InvalidOperationException();
                     world.Count++;
                     applied = true;
@@ -132,6 +139,35 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, svc.FlushAutomatic());
             Assert.AreEqual(1, world.Count);
         }
+        [TestCase(false)]
+        [TestCase(true)]
+        public void FailedAutomaticRewardRetainsTheSameDrawUntilCommit(bool failCommit)
+        {
+            var wallet = new EconomyWallet();
+            var roller = new Roller();
+            var world = new World { Fail = !failCommit, FailCommit = failCommit };
+            using (var service = new MobileWispService(wallet, roller, world))
+            {
+                Assert.Throws<InvalidOperationException>(() => service.Grant(WispResourceIds.Special));
+                WispReward first = world.LastReward;
+                Assert.AreEqual(1, roller.Calls);
+                Assert.AreEqual(0, world.Count);
+                Assert.AreEqual(1, service.Balance(WispResourceIds.Special));
+                Assert.Throws<InvalidOperationException>(() => service.FlushAutomatic());
+                Assert.AreSame(first, world.LastReward);
+                Assert.AreEqual(1, roller.Calls);
+                world.Fail = world.FailCommit = false;
+                Assert.AreEqual(1, service.FlushAutomatic());
+                Assert.AreSame(first, world.LastReward);
+                Assert.AreEqual(1, roller.Calls);
+                service.Grant(WispResourceIds.Special);
+                Assert.AreEqual(2, roller.Calls);
+                Assert.AreNotSame(first, world.LastReward);
+                Assert.AreEqual(2, world.Count);
+                Assert.AreEqual(0, service.Balance(WispResourceIds.Special));
+            }
+        }
+
         [Test]
         public void PendingBalancesCanResumeAfterSaveRestoreWithoutAQueue()
         {

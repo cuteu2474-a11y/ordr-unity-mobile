@@ -168,7 +168,8 @@ namespace Ordr.Mobile.Tests
 
         [TestCase("S-01")]
         [TestCase("S-09")]
-        public void SpecialUnitsJoinTheSamePracticeAttackPipelineWithoutEnablingSkills(string unitId)
+        [TestCase("R-06")]
+        public void SpecialAndRareUnitsJoinTheSamePracticeAttackPipelineWithoutEnablingSkills(string unitId)
         {
             using (var game = Create())
             {
@@ -208,6 +209,43 @@ namespace Ordr.Mobile.Tests
                 var events = owner.PracticeBattle.Advance(3);
                 Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack));
                 Assert.AreEqual(0, owner.Combat.Game.LeakedEnemies);
+                Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
+        }
+
+        [Test]
+        public void CraftingAndSellingRareDuringPracticeUsesOneRosterAndWallet()
+        {
+            var root = new GameObject("ORDR live Rare growth");
+            root.SetActive(false);
+            try
+            {
+                var owner = root.AddComponent<OrdrCharacterCombatController>();
+                typeof(OrdrCharacterCombatController).GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Invoke(owner, null);
+                owner.BeginUnitPreparation();
+                owner.Combat.SpawnCharacter("S-07", -4000, 4000);
+                owner.Combat.SpawnCharacter("S-12", -4000, 4000);
+                owner.Combat.SpawnCharacter("S-18", -4000, 4000);
+                owner.BeginPracticeBattle();
+                owner.PracticeBattle.Advance(.1);
+                var offer = owner.ManualActions.PreviewFusion(owner.Combat.MobileUnitSnapshot())
+                    .Single(x => x.RecipeId == "A00F");
+                Assert.AreEqual(Ordr.Mobile.Mobile.ManualActionState.Succeeded,
+                    owner.ManualActions.ConfirmFusion(offer).State);
+                var made = owner.Combat.MobileUnitSnapshot().Single();
+                Assert.AreEqual("R-06", made.Unit.Id);
+                Assert.AreEqual(1, owner.Combat.ReadyAttackers);
+                Assert.IsTrue(owner.PracticeBattle.Advance(3).Any(x => x.Type == CharacterCombatEventType.Attack));
+                long before = owner.WispBalance(WispResourceIds.Random);
+                long wood = owner.SharedEconomy.Wallet.Balance("wood");
+                Assert.AreEqual(Ordr.Mobile.Mobile.ManualActionState.Succeeded,
+                    owner.RequestLowerGradeSale(made.InstanceId).State);
+                Assert.AreEqual(before + 2, owner.WispBalance(WispResourceIds.Random));
+                Assert.AreEqual(wood + 1, owner.SharedEconomy.Wallet.Balance("wood"));
+                Assert.AreEqual(0, owner.Combat.CharacterCount);
+                Assert.AreEqual(0, owner.Combat.ReadyAttackers);
                 Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
             }
             finally { UnityEngine.Object.DestroyImmediate(root); }

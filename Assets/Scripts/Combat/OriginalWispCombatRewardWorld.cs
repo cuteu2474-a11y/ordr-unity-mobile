@@ -61,7 +61,7 @@ namespace Ordr.Mobile.Combat
                     double.IsNaN(x) || double.IsInfinity(x) ||
                     double.IsNaN(y) || double.IsInfinity(y))
                     throw new InvalidOperationException("원본 위습 보상 객체/소환 좌표 미검증");
-                created = owner.combat.SpawnCharacter(catalogId, x, y);
+                created = owner.combat.SpawnVerifiedOriginalPositionCharacter(catalogId, x, y);
                 if (created <= 0 || owner.combat.Roster.Get(created).UnitId != catalogId)
                     throw new InvalidOperationException("공유 유닛 목록 등록 실패");
                 if (reward.BonusAbilityRawcode != null &&

@@ -7,9 +7,9 @@ using Ordr.Mobile.Data;
 namespace Ordr.Mobile.Mobile
 {
     // Executable scope reviewed against CWR/CH5/CHu/CHx/CHy/CT1/CT2.
-    // These 13 Uncommon and 31 Special non-hero results use UNIT costs and UPUN
+    // These 13 Uncommon, 31 Special and 41 Rare results use UNIT costs and UPUN
     // presentation markers. CH5/CHi register no UPUN check/payment callback.
-    // Two AOsf-based Special recipes remain pending a separate native-cast audit.
+    // AOsf-based casts (two Special, one Rare) remain pending a native-cast audit.
     // No upper-grade bans, research, mana, transforms or assumed prices.
     public sealed class Original323CommonFusionPort : IOriginalFusionPort,
         IOriginalFusionCommitCapability, IOriginalFusionRecipeCommitCapability,
@@ -62,6 +62,49 @@ namespace Ordr.Mobile.Mobile
             { "A01P", "h011", "S-16" },
             { "A029", "h010", "S-17" },
         };
+        private static readonly string[,] ReviewedRare = {
+            { "A0XP", "h09X", "R-01" },
+            { "A02W", "h01Q", "R-02" },
+            { "A016", "h025", "R-07" },
+            { "A02M", "h01L", "R-04" },
+            { "A02R", "h02F", "R-33" },
+            { "A00I", "h022", "R-08" },
+            { "A01F", "h021", "R-03" },
+            { "A028", "h020", "R-28" },
+            { "A01M", "h01Z", "R-09" },
+            { "A02K", "h01Y", "R-10" },
+            { "A00F", "h01X", "R-06" },
+            { "A02F", "h01W", "R-12" },
+            { "A013", "h01V", "R-13" },
+            { "A0IO", "h01U", "R-14" },
+            { "A03G", "h01T", "R-15" },
+            { "A00A", "h02M", "R-16" },
+            { "A00Q", "h01S", "R-17" },
+            { "A0N6", "h01R", "R-39" },
+            { "A0ND", "h01M", "R-42" },
+            { "A02J", "h01O", "R-19" },
+            { "A00X", "h05L", "R-20" },
+            { "A00R", "h01P", "R-27" },
+            { "A0NF", "h02I", "R-21" },
+            { "A03B", "h029", "R-22" },
+            { "A02V", "h028", "R-23" },
+            { "A02L", "h027", "R-24" },
+            { "A039", "h026", "R-25" },
+            { "A01J", "h02A", "R-31" },
+            { "A0NB", "h024", "R-29" },
+            { "A01W", "h02C", "R-30" },
+            { "A00U", "h02D", "R-37" },
+            { "A008", "h02G", "R-32" },
+            { "A02A", "h02E", "R-34" },
+            { "A02T", "h04H", "R-11" },
+            { "A00C", "h023", "R-36" },
+            { "A0NC", "h02B", "R-26" },
+            { "A02N", "h02H", "R-38" },
+            { "A02S", "h02J", "R-40" },
+            { "A010", "h02K", "R-35" },
+            { "A02Z", "h02L", "R-05" },
+            { "A01V", "h05K", "R-41" },
+        };
         private readonly CharacterCombatRuntime combat;
         private readonly SharedEconomySession economy;
         private readonly OriginalMapBaseStatCatalog objects;
@@ -77,6 +120,7 @@ namespace Ordr.Mobile.Mobile
         public int ExecutableRecipeCount => supported.Count;
         public int ExecutableCommonRecipeCount => Reviewed.GetLength(0);
         public int ExecutableSpecialRecipeCount => ReviewedSpecial.GetLength(0);
+        public int ExecutableRareRecipeCount => ReviewedRare.GetLength(0);
 
         public Original323CommonFusionPort(CharacterCombatRuntime world, SharedEconomySession shared,
             CharacterUnitCatalog units, OriginalMapBaseStatCatalog originalObjects,
@@ -96,6 +140,11 @@ namespace Ordr.Mobile.Mobile
             Bind(units, "U-14", "h00H", "안흔함"); // original zombie material, not a free acquisition
             RegisterReviewed(units, registrations, Reviewed, "안흔함");
             RegisterReviewed(units, registrations, ReviewedSpecial, "특별함");
+            // These source objects can be acquired by CSC's 33-unit Special
+            // Wisp pool. Mapping them does not authorize their AOsf fusion.
+            Bind(units, "S-14", "h01F", "특별함");
+            Bind(units, "S-15", "h012", "특별함");
+            RegisterReviewed(units, registrations, ReviewedRare, "희귀함");
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
             planner.SetVerifiedObjectMap(this);
@@ -122,7 +171,10 @@ namespace Ordr.Mobile.Mobile
                     if (instruction.Kind != "UNIT" || !mappings.TryGetValue(instruction.Rawcode, out id))
                         throw new FormatException("하위 조합의 원본 조건 범위가 변경됐습니다.");
                     string grade = units.Require(id).Grade;
-                    if (grade != "흔함" && !(resultGrade == "특별함" && grade == "안흔함"))
+                    bool permitted = grade == "흔함" ||
+                        ((resultGrade == "특별함" || resultGrade == "희귀함") && grade == "안흔함") ||
+                        (resultGrade == "희귀함" && grade == "특별함");
+                    if (!permitted)
                         throw new FormatException("검수하지 않은 등급의 조합 재료입니다.");
                     hasMaterials = true;
                     foreach (var nativeAbility in objects.Find(id).OriginalAbilityRawcodes)
