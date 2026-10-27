@@ -76,16 +76,27 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void CastRangeIntersectionAllowsAoEOnBeyondCastRangeEnemy()
+        public void MobileAreaCastCanCenterDirectlyOnEnemyBeyondOriginalCastRange()
         {
-            // Enemy is outside the center's 50-unit cast range yet reachable
-            // via R=100 splash. A valid center is on the caster circle.
+            // In the mobile port the cast range is unlimited, but the
+            // 100-unit splash around the chosen point is unchanged.
             var one = new[]{Enemy("far", 140, 0)};
             var result = OriginalHelperCowAreaTargeting.Choose(
                 0, 0, 50, 100, one, e => true, (x,y) => true);
             Assert.IsNotNull(result);
-            Assert.LessOrEqual(Math.Sqrt(result.X*result.X + result.Y*result.Y), 50.001);
+            Assert.AreEqual(140, result.X, 0.00001);
             Assert.AreEqual(1, result.HitCount);
+        }
+
+        [Test]
+        public void UnlimitedCastRangeStillRespectsOriginalAreaRadius()
+        {
+            var enemies = new[] {Enemy("near", 100000, 0), Enemy("far", 101500, 0)};
+            var target = OriginalHelperCowAreaTargeting.Choose(
+                0, 0, 50, 450, enemies, e => true, (x,y) => true);
+            Assert.IsNotNull(target);
+            Assert.AreEqual(1, target.HitCount);
+            Assert.AreEqual(100000, target.X, 0.00001);
         }
 
         [Test]

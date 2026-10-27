@@ -113,10 +113,9 @@ namespace Ordr.Mobile.Combat
                         if (IsStoryDeployed(id) != IsStoryDeployed(targetId) ||
                             !aura.AllowsAllyRole(id == targetId)) continue;
                         var target = roster.Get(targetId);
-                        double dx = target.X - caster.X, dy = target.Y - caster.Y;
+                        // 모바일 오라는 원본 반경과 무관하게 같은 전장의 적격 아군에게 적용.
                         string proof;
-                        if (dx * dx + dy * dy > aura.Radius * aura.Radius ||
-                            !originalSpecialAuraTargets.CanAffectAlly(aura, caster,
+                        if (!originalSpecialAuraTargets.CanAffectAlly(aura, caster,
                                 target, Time, out proof) || string.IsNullOrWhiteSpace(proof)) continue;
                         unitStatuses[InstanceKey(targetId)].Apply(new CombatEffect(key,
                             aura.Type, CombatEffectOrigin.Aura, aura.Amount, 0));
@@ -131,10 +130,9 @@ namespace Ordr.Mobile.Combat
                     {
                         var target = enemies[targetId];
                         if (!target.Enemy.IsAlive || !CanAttackInThisLane(characters[id], target)) continue;
-                        double dx = target.X - caster.X, dy = target.Y - caster.Y;
+                        // 동일 전장/원본 소속·면역 증빙은 유지하고 거리 제한만 제거.
                         string proof;
-                        if (dx * dx + dy * dy > aura.Radius * aura.Radius ||
-                            !originalSpecialAuraTargets.CanAffectEnemy(aura, caster,
+                        if (!originalSpecialAuraTargets.CanAffectEnemy(aura, caster,
                                 target, Time, out proof) || string.IsNullOrWhiteSpace(proof)) continue;
                         var effect = new CombatEffect(key, aura.Type,
                             CombatEffectOrigin.Aura, aura.Amount, 0);

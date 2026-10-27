@@ -246,7 +246,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void ChopperHornAuraActuallyUpdatesLiveAlliesWithinOriginalRadius()
+        public void ChopperHornAuraAppliesAcrossWholeBattlefield()
         {
             var native = new VerifiedCurrentTargets();
             var world = World(native);
@@ -257,8 +257,8 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, Effects(world.UnitStatusOf(ally),
                 CombatEffectType.AttackPowerBuff, 25));
 
-            world.MoveCharacter(ally, 851, 0);
-            Assert.AreEqual(0, Effects(world.UnitStatusOf(ally),
+            world.MoveCharacter(ally, 100000, 0);
+            Assert.AreEqual(1, Effects(world.UnitStatusOf(ally),
                 CombatEffectType.AttackPowerBuff, 25));
             world.MoveCharacter(ally, 850, 0);
             Assert.AreEqual(1, Effects(world.UnitStatusOf(ally),

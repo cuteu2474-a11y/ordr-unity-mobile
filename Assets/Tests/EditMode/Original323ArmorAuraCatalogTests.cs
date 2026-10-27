@@ -194,7 +194,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void TwoAbilitiesOfOneCasterKeepIndependentRadiiAndUnverifiedStackingIsBlocked()
+        public void TwoAbilitiesOfOneCasterKeepIndependentProvenanceBeyondOriginalRadii()
         {
             var world = World(new FlatTargets());
             long caster = world.SpawnCharacter("TR-19", 0, 0); Enemy(world, x: 1085);
@@ -202,11 +202,11 @@ namespace Ordr.Mobile.Tests
             double armor;
             Assert.IsFalse(Modifiers(world).TryResolveArmor(world.EnemyOf("enemy"),
                 world.StatusOf("enemy").Snapshot(), 0, out armor), "Never guess 8 + 22 or strongest.");
-            world.ForceMoveEnemy("enemy", 1085.01, 0, 0);
-            Assert.AreEqual(1, world.StatusOf("enemy").ActiveCount);
-            Assert.IsTrue(Modifiers(world).TryResolveArmor(world.EnemyOf("enemy"),
-                world.StatusOf("enemy").Snapshot(), 0, out armor));
-            Assert.AreEqual(92, armor);
+            world.ForceMoveEnemy("enemy", 100000, 0, 0);
+            Assert.AreEqual(2, world.StatusOf("enemy").ActiveCount);
+            Assert.IsFalse(Modifiers(world).TryResolveArmor(world.EnemyOf("enemy"),
+                world.StatusOf("enemy").Snapshot(), 0, out armor),
+                "Unlimited reach cannot invent a native stacking rule.");
             world.RemoveCharacter(caster);
             Assert.AreEqual(0, world.StatusOf("enemy").ActiveCount);
         }

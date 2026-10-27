@@ -179,7 +179,7 @@ namespace Ordr.Mobile.Tests
         [TestCase("S-14", 800)]
         [TestCase("S-29", 850)]
         [TestCase("S-30", 800)]
-        public void EnemyAurasRefreshAtBoundaryMoveAndCasterRemoval(string id, double radius)
+        public void EnemyAurasApplyBeyondOriginalRadiusAndClearOnCasterRemoval(string id, double radius)
         {
             var world = World(new Targets());
             long caster = world.SpawnCharacter(id, 0, 0);
@@ -187,9 +187,9 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, world.StatusOf("enemy").ActiveCount);
             world.Step(0); world.Step(0);
             Assert.AreEqual(1, world.StatusOf("enemy").ActiveCount, "No refresh duplicates.");
-            world.ForceMoveEnemy("enemy", radius + .01, 0, 0);
-            Assert.AreEqual(0, world.StatusOf("enemy").ActiveCount);
-            world.MoveCharacter(caster, 1, 0);
+            world.ForceMoveEnemy("enemy", radius + 100000, 0, 0);
+            Assert.AreEqual(1, world.StatusOf("enemy").ActiveCount);
+            world.MoveCharacter(caster, -100000, 0);
             Assert.AreEqual(1, world.StatusOf("enemy").ActiveCount);
             world.RemoveCharacter(caster);
             Assert.AreEqual(0, world.StatusOf("enemy").ActiveCount);
@@ -206,6 +206,27 @@ namespace Ordr.Mobile.Tests
             Enemy(world);
             Assert.AreEqual(0, world.StatusOf("enemy").ActiveCount);
             Assert.AreEqual(0, world.UnitStatusOf(guard).ActiveCount);
+        }
+
+        [Test]
+        public void GeneralVerifiedEnemyAuraIgnoresDistanceButKeepsLaneAndKind()
+        {
+            var world = World();
+            long caster = world.SpawnCharacter("C-01", 0, 0);
+            Enemy(world, "distant", 100000, CharacterEnemyKind.Line);
+            Enemy(world, "story", 100000, CharacterEnemyKind.Story);
+            Enemy(world, "challenge", 100000, CharacterEnemyKind.Challenge);
+            world.AddVerifiedEnemyAura(new CombatAuraEmitter(caster, "test-slow",
+                CombatEffectType.MovementSlowPercent, 5, 1,
+                new[] { CharacterEnemyKind.Line, CharacterEnemyKind.Story,
+                    CharacterEnemyKind.Challenge }, "TEST_ONLY"));
+            Assert.AreEqual(1, world.StatusOf("distant").ActiveCount);
+            Assert.AreEqual(0, world.StatusOf("story").ActiveCount);
+            Assert.AreEqual(0, world.StatusOf("challenge").ActiveCount);
+            world.MoveCharacter(caster, -100000, 0);
+            Assert.AreEqual(1, world.StatusOf("distant").ActiveCount);
+            world.RemoveCharacter(caster);
+            Assert.AreEqual(0, world.StatusOf("distant").ActiveCount);
         }
 
         [Test]
@@ -249,8 +270,8 @@ namespace Ordr.Mobile.Tests
             long guard = world.SpawnCharacter("S-25", 0, 0);
             Assert.AreEqual(1, world.StatusOf("enemy").ActiveCount);
             Assert.AreEqual(1, world.UnitStatusOf(ally).ActiveCount);
-            world.MoveCharacter(ally, 850.01, 0);
-            Assert.AreEqual(0, world.UnitStatusOf(ally).ActiveCount);
+            world.MoveCharacter(ally, 100000, 0);
+            Assert.AreEqual(1, world.UnitStatusOf(ally).ActiveCount);
             world.RemoveCharacter(guard);
             Assert.AreEqual(1, world.StatusOf("enemy").ActiveCount);
             world.RemoveCharacter(hawkins);
@@ -323,7 +344,7 @@ namespace Ordr.Mobile.Tests
 
         [TestCase(false)]
         [TestCase(true)]
-        public void GuardBuffCannotBeSilentlyIgnoredAndLeavingRangeRestoresVanillaAttack(bool rejectedPolicy)
+        public void GuardBuffCannotBeSilentlyIgnoredAndRemovingSourceRestoresVanillaAttack(bool rejectedPolicy)
         {
             var rng = new Random();
             var world = World(new Targets(), rng,
@@ -333,7 +354,9 @@ namespace Ordr.Mobile.Tests
             world.Step(0);
             Assert.AreEqual(10000, world.EnemyOf("enemy").Health);
             Assert.AreEqual(0, rng.Calls, "Missing buff formula fails BEFORE dice.");
-            world.MoveCharacter(guard, 851, 0); world.Step(0);
+            world.MoveCharacter(guard, 100000, 0); world.Step(0);
+            Assert.AreEqual(10000, world.EnemyOf("enemy").Health);
+            world.RemoveCharacter(guard); world.Step(0);
             Assert.Less(world.EnemyOf("enemy").Health, 10000);
             Assert.AreEqual(1, rng.Calls);
         }

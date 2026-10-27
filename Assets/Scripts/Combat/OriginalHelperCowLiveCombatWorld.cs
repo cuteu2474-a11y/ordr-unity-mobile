@@ -255,10 +255,8 @@ namespace Ordr.Mobile.Combat
             OriginalHelperCowVerifiedCastData verified;
             if (!Finite(x) || !Finite(y) ||
                 !TryReady(ability, cow, out verified)) return false;
-            double dx = x - cow.X, dy = y - cow.Y;
-            if (dx * dx + dy * dy >
-                verified.CastRange * verified.CastRange + 0.00001 ||
-                !damage.CanCastPoint(ability, x, y)) return false;
+            // 모바일은 시전 거리 무제한. 원본 효과 반경/피해 대상/승인 조건은 별도 유지.
+            if (!damage.CanCastPoint(ability, x, y)) return false;
             if (ability == OriginalHelperCowAreaEvidence.PointDamageAbility)
             {
                 // Do not silently turn the original all-unit point-damage

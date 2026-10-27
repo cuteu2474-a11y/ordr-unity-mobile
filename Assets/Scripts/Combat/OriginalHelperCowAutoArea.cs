@@ -127,8 +127,8 @@ namespace Ordr.Mobile.Combat
         }
     }
 
-    // Maximizes hits in the ORIGINAL effect radius subject to the ORIGINAL
-    // cast range. Candidate centers include pairwise circle intersections,
+    // Maximizes hits in the ORIGINAL effect radius with UNLIMITED mobile
+    // cast reach. Candidate centers include pairwise effect-circle intersections,
     // so we can hit two enemies even if neither enemy's exact position is a
     // good cast center. Geometry does not change the original AoE or DPS.
     public static class OriginalHelperCowAreaTargeting
@@ -159,7 +159,7 @@ namespace Ordr.Mobile.Combat
             accepted.Sort((a, b) => string.CompareOrdinal(a.Id, b.Id));
             if (accepted.Count == 0) return null;
 
-            double castRange2 = originalCastRange * originalCastRange;
+            // originalCastRange remains verified evidence; it is not a mobile reach cap.
             double area2 = verifiedEffectRadius * verifiedEffectRadius;
             OriginalHelperCowAreaTarget best = null;
             double bestDistance2 = double.PositiveInfinity;
@@ -169,8 +169,7 @@ namespace Ordr.Mobile.Combat
                 if (!Finite(x) || !Finite(y)) return;
                 double dx = x - casterX, dy = y - casterY;
                 double distance2 = dx * dx + dy * dy;
-                if (distance2 > castRange2 + Epsilon ||
-                    !originalPointAllowed(x, y)) return;
+                if (!originalPointAllowed(x, y)) return;
 
                 var ids = new List<string>();
                 int bosses = 0;
@@ -204,9 +203,7 @@ namespace Ordr.Mobile.Combat
             {
                 var a = accepted[i];
                 consider(a.X, a.Y);
-                // The cast-range boundary also forms possible optimal centers.
-                Intersections(a.X, a.Y, verifiedEffectRadius,
-                    casterX, casterY, originalCastRange, consider);
+                // No cast-range boundary exists in the mobile targeting geometry.
                 for (int j = i + 1; j < accepted.Count; j++)
                 {
                     var b = accepted[j];

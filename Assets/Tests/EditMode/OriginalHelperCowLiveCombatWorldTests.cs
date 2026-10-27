@@ -273,7 +273,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void RestrictsCastPositionManaActorIdentityAndOwner()
+        public void UnlimitedCastDistanceStillRequiresManaActorIdentityAndOwner()
         {
             var runtime = World();
             runtime.SpawnEnemy("line", 20000000, CharacterEnemyKind.Line, 800, 0, 0);
@@ -281,16 +281,16 @@ namespace Ordr.Mobile.Tests
             var data = new TestData { CastRange = 50, ManaCost = 20 };
             var live = new OriginalHelperCowLiveCombatWorld(
                 runtime, () => cow, data, new TestResolver());
-            Assert.IsFalse(live.TryCommitCast("A0BZ", 800, 0)); // range
-            Assert.AreEqual(0, live.AvailableReadyAbilities().Count); // mana
+            Assert.IsFalse(live.TryCommitCast("A0BZ", 800, 0)); // no mana
+            Assert.AreEqual(0, live.AvailableReadyAbilities().Count);
             cow.SetMana(150);
-            Assert.IsFalse(live.TryCommitCast("A0BZ", 800, 0)); // range, despite enough mana
+            Assert.IsTrue(live.TryCommitCast("A0BZ", 800, 0)); // unlimited mobile reach
             cow.OwnerPlayerId = 1;
             Assert.AreEqual(0, live.AvailableReadyAbilities().Count);
             cow.OwnerPlayerId = 0;
             cow.OriginalRawcode = "h003";
             Assert.IsFalse(live.TryCommitCast("A0BZ", 0, 0));
-            Assert.AreEqual(150, cow.CurrentMana);
+            Assert.AreEqual(130, cow.CurrentMana);
         }
 
         [Test]

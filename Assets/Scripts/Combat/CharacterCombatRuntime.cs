@@ -1303,7 +1303,7 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentNullException(nameof(verifiedRules));
         }
 
-        // 검증된 오라의 원작 반경/효과만 등록한다. 대상별 효과는 매번 재계산된다.
+        // 검증된 오라의 원본 효과/대상 분류를 등록한다. 적용 거리는 모바일에서 무제한.
         public void AddVerifiedEnemyAura(CombatAuraEmitter source)
         {
             BlockExternalMutationDuringOriginalFusion();
@@ -1325,7 +1325,9 @@ namespace Ordr.Mobile.Combat
         {
             auras.Refresh(statuses, enemies.Values,
                 id => characters.ContainsKey(id)
-                    ? (UnitState?)roster.Get(id) : null);
+                    ? (UnitState?)roster.Get(id) : null,
+                (id, enemy) => characters.ContainsKey(id) &&
+                    CanAttackInThisLane(characters[id], enemy));
             RefreshOriginalSpecialAuras();
         }
 
