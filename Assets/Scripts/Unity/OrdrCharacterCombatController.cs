@@ -471,6 +471,42 @@ namespace Ordr.Mobile.Unity
                 registeredLiveWavePlans.Add(plan.WaveNumber, plan);
         }
 
+        // Turn pinned JASS role/cadence identities into actual waves only
+        // when a separate adapter supplies EACH effective final stat and
+        // position and another independent source approves the entire plan.
+        // No synthetic monster JSON or reference-engine model is accepted.
+        public void RegisterOriginalMonsterSpawnBatch(
+            IEnumerable<int> waves, IOriginal323VerifiedFinalMonsterSpawnSource originalLiveSpawns)
+        {
+            if (OriginalMonsterSpawnIdentities == null ||
+                OriginalMonsterObjectAbilities == null ||
+                liveMonsterWaveEvidence == null)
+                throw new InvalidOperationException(
+                    "원본 65라운드 ID·객체 자료와 실전 승인 공급자를 연결하세요.");
+            var assembler = new Original323VerifiedMonsterWaveAssembler(
+                OriginalMonsterSpawnIdentities, OriginalMonsterObjectAbilities,
+                liveMonsterWaveEvidence);
+            RegisterVerifiedLiveMonsterWavePlans(
+                assembler.BuildBatch(waves, originalLiveSpawns));
+        }
+
+        public void RegisterOriginalMonsterSpawn(
+            int wave, IOriginal323VerifiedFinalMonsterSpawnSource originalLiveSpawns,
+            bool observedEnraged = false,
+            IOriginal323ConditionalEnragedSpawnWitness enragedEvent = null)
+        {
+            if (OriginalMonsterSpawnIdentities == null ||
+                OriginalMonsterObjectAbilities == null ||
+                liveMonsterWaveEvidence == null)
+                throw new InvalidOperationException(
+                    "원본 65라운드 ID·객체 자료와 실전 승인 공급자를 연결하세요.");
+            var assembler = new Original323VerifiedMonsterWaveAssembler(
+                OriginalMonsterSpawnIdentities, OriginalMonsterObjectAbilities,
+                liveMonsterWaveEvidence);
+            RegisterVerifiedLiveMonsterWavePlan(assembler.Build(
+                wave, originalLiveSpawns, observedEnraged, enragedEvent));
+        }
+
         public void ConfigureObservedNightmareA04QEvents(
             IOriginal323NightmareA04QEventWitness verifiedEvents)
         {
