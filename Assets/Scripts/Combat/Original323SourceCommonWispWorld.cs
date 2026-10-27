@@ -71,8 +71,12 @@ namespace Ordr.Mobile.Combat
             {
                 if (disposed) return;
                 disposed = true;
-                if (!committed && createdId > 0)
-                    owner.combat.RollbackUncommittedSpawn(createdId);
+                try
+                {
+                    if (!committed && createdId > 0)
+                        owner.combat.RollbackUncommittedSpawn(createdId);
+                }
+                finally { owner.inFlight = false; }
                 // An unfinished draw is retained, not rerolled, across a
                 // failed wallet commit or external transaction exception.
             }
@@ -95,6 +99,7 @@ namespace Ordr.Mobile.Combat
         private readonly int[] counts = new int[9];
         private PendingDraw pending;
         private int normalDrawCount;
+        private bool inFlight;
 
         public int OriginalRandomWispCost { get { return 1; } }
         public string OriginalSourceEvidence
@@ -103,7 +108,7 @@ namespace Ordr.Mobile.Combat
                 "; BIQ/BIR/BIS/BIU/BIY/CRy; singleplayer Vw=false"; }
         }
         public bool HasPendingPirateShip { get { return pending != null && pending.PirateShip; } }
-        public bool CanDraw { get { return !HasPendingPirateShip; } }
+        public bool CanDraw { get { return !inFlight && !HasPendingPirateShip; } }
         public string UnavailableReason
         {
             get { return HasPendingPirateShip
@@ -151,6 +156,9 @@ namespace Ordr.Mobile.Combat
 
         public IOriginal323CommonWispRecruitmentTransaction Begin()
         {
+            if (inFlight)
+                throw new InvalidOperationException("원본 위습 소환 거래는 동시에 두 번 열 수 없습니다.");
+            inFlight = true;
             return new Transaction(this);
         }
 

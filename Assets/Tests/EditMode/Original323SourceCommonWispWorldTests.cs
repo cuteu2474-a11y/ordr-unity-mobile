@@ -276,6 +276,36 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OriginalRecruitmentTransactionIsExclusiveUntilDisposed()
+        {
+            var game = Create(2);
+            var random = new FixedSourceBfi(10000, 0);
+            var source = new Original323SourceCommonWispWorld(game.Combat,
+                game.Units, game.Objects, random);
+            var first = source.Begin();
+            Assert.IsFalse(source.CanDraw);
+            Assert.Throws<InvalidOperationException>(() => source.Begin());
+            first.Dispose();
+            Assert.IsTrue(source.CanDraw);
+
+            // A second transaction may re-open without consuming a fresh
+            // BFi call, creating or debiting any unit in the aborted first.
+            using (var second = source.Begin())
+            {
+                long id;
+                string rawcode;
+                Assert.IsTrue(second.TryCreate(out id, out rawcode));
+                Assert.AreEqual("h003", rawcode);
+                Assert.AreEqual(1, game.Combat.CharacterCount);
+                // Disposing without commit discards only the tentative unit.
+            }
+            Assert.AreEqual(0, game.Combat.CharacterCount);
+            Assert.AreEqual(2, game.Economy.Wallet.Balance(WispResourceIds.Random));
+            Assert.IsTrue(source.CanDraw);
+            random.AssertCalls("1..10000", "0..8");
+        }
+
+        [Test]
         public void InvalidPoolIndexAndUnknownCounterRawcodeFailClosed()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>

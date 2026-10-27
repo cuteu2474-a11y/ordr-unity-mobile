@@ -63,6 +63,12 @@ namespace Ordr.Mobile.Mobile
             var unit = Find(id);
             if (!CanSell(unit)) return Reject("판매 가능한 보유 유닛이 아니거나 파견 중입니다.");
             busy = true;
+            // Mobile fallback rolls can rewind when a sale is rejected. A
+            // witnessed original RNG has no rewind authority: keep the
+            // already-selected outcome in pending for that source instead.
+            var rewindable = random as IOriginal323RollbackWispRandom;
+            int checkpoint = rewindable == null ? -1 : rewindable.CaptureCheckpoint();
+            bool completed = false;
             try
             {
                 int nextCommon = unit.Unit.Grade == "흔함" ? checked(CommonSold + 1) : CommonSold;
@@ -87,6 +93,7 @@ namespace Ordr.Mobile.Mobile
                     }
                     CommonSold = nextCommon;
                     pending.Remove(id);
+                    completed = true;
                     return new ManualActionResult(ManualActionState.Succeeded,
                         unit.Unit.Name + " 판매 · 랜덤위습 " + reward.Get(WispResourceIds.Random) +
                         "개 · 목재 " + reward.Get("wood") + "개" +
@@ -94,7 +101,18 @@ namespace Ordr.Mobile.Mobile
                 }
             }
             catch (Exception error) { return Reject("판매를 취소했습니다: " + error.Message); }
-            finally { busy = false; }
+            finally
+            {
+                try
+                {
+                    if (!completed && rewindable != null)
+                    {
+                        rewindable.RestoreCheckpoint(checkpoint);
+                        pending.Remove(id);
+                    }
+                }
+                finally { busy = false; }
+            }
         }
 
         private ResourceBundle Plan(string grade)

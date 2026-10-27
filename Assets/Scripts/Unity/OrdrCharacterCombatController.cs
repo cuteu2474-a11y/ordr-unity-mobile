@@ -1935,7 +1935,7 @@ namespace Ordr.Mobile.Unity
                 Combat.ConfigureOriginalUncommonAbilities(
                     OriginalUncommonAbilities, originalUncommonEffectWorld);
             IOriginalWispRandom sharedMobileWispRandom =
-                randomWispResourceRng ?? new MobileUniformWispRandom();
+                randomWispResourceRng ?? new MobileRollbackWispRandom();
             sessionScriptRandom = sharedMobileWispRandom;
             RandomWispExchange = new OriginalRandomWispResourceExchange(
                 SharedEconomy.Wallet, world.Game, sharedMobileWispRandom);
