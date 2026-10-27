@@ -56,3 +56,44 @@ jobs:
           name: unity-editmode-results
           path: ${{ steps.tests.outputs.artifactsPath }}
           if-no-files-found: ignore
+
+  android-apk-preview:
+    name: Android 개발용 APK 제작
+    # APK는 명시적으로 요청된 커밋에서만 만든다. 이후 매 push마다 빌드하지 않는다.
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[apk-preview]') }}
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Android 빌드용 디스크 여유 확보
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Unity Android APK 생성
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          targetPlatform: Android
+          buildName: ORDR-Mobile-Development
+
+      - name: 개발용 APK 첨부
+        uses: actions/upload-artifact@v4
+        with:
+          name: ordr-mobile-android-development-apk
+          path: build/Android/**/*.apk
+          if-no-files-found: error
+          retention-days: 14
