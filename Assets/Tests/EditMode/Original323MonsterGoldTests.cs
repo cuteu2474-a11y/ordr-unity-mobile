@@ -140,6 +140,29 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OriginalGoldCanBeCreditedAutomaticallyAfterVerifiedDeathOnly()
+        {
+            var world = World();
+            var waves = SpawnWave(world, Spawn("mob"), Spawn("escape"));
+            var wallet = new EconomyWallet();
+            var witness = new Witness();
+            var service = new Original323MonsterGoldService(
+                waves, world.Game, wallet, 0, witness);
+            waves.VerifiedMonsterDefeated += (wave, id) =>
+            {
+                int awarded;
+                service.TryProcessObservedDeath(wave, id, out awarded);
+            };
+            Assert.IsTrue(world.LeakEnemy("escape"));
+            Assert.AreEqual(0, wallet.Balance("gold"));
+            Kill(world, "mob");
+            Assert.AreEqual(2, wallet.Balance("gold"));
+            Assert.AreEqual(1, witness.Calls);
+            int duplicate;
+            Assert.IsFalse(service.TryProcessObservedDeath(1, "mob", out duplicate));
+        }
+
+        [Test]
         public void NonWinningRollIsPersistedAsProcessedWithoutAnyGold()
         {
             var world = World();

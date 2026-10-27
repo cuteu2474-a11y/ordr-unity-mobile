@@ -188,5 +188,23 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(director.CurrentProgress.AllWaveEnemiesDefeated);
             Assert.AreEqual(SessionPhase.Running, world.Game.Phase);
         }
+
+        [Test]
+        public void DefeatCallbacksCarryOriginalSpawnWaveAndIgnoreEscapes()
+        {
+            var world = CreateWorld();
+            var director = new CombatWaveDirector();
+            var reported = new System.Collections.Generic.List<string>();
+            director.VerifiedMonsterDefeated += (wave, id) =>
+                reported.Add(wave + ":" + id);
+            director.Begin(world, Plan(1, Spawn(0, "old"), Spawn(0, "escape")));
+            director.Step(world, 0);
+            Assert.IsTrue(world.LeakEnemy("escape"));
+            director.Begin(world, Plan(2, Spawn(0, "new")));
+            director.Step(world, 0);
+            KillFromCanonicalDamage(world, "old");
+            KillFromCanonicalDamage(world, "new");
+            CollectionAssert.AreEqual(new[] { "1:old", "2:new" }, reported);
+        }
     }
 }

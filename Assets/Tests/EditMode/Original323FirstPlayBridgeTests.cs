@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using NUnit.Framework;
 using Ordr.Mobile.Combat;
 using Ordr.Mobile.Core;
@@ -223,6 +224,60 @@ namespace Ordr.Mobile.Tests
             Assert.IsFalse(gate.CanAdvance);
             gate.SetFocus(true);
             Assert.IsTrue(gate.CanAdvance);
+        }
+
+        [Test]
+        public void BattlefieldPanAndAnchorZoomOnlyChangePresentationCoordinates()
+        {
+            Vector2 result;
+            Assert.IsTrue(MobileBattlefieldCameraNavigation.TryPan(
+                new Vector2(100, 200), new Vector2(100, -50), 500f,
+                1000f, out result));
+            Assert.AreEqual(0f, result.x, .001f);
+            Assert.AreEqual(250f, result.y, .001f);
+
+            float size;
+            Assert.IsTrue(MobileBattlefieldCameraNavigation.TryZoom(
+                new Vector2(100, 200), 500f, new Vector2(100, 50),
+                1000f, .5f, 50f, 1200f, out result, out size));
+            Assert.AreEqual(250f, size, .001f);
+            Assert.AreEqual(150f, result.x, .001f);
+            Assert.AreEqual(225f, result.y, .001f);
+            Assert.IsFalse(MobileBattlefieldCameraNavigation.TryPan(
+                Vector2.zero, Vector2.zero, 500f, 0f, out result));
+            Assert.IsFalse(MobileBattlefieldCameraNavigation.TryZoom(
+                Vector2.zero, 500f, Vector2.zero, 1000f, float.NaN,
+                50f, 1200f, out result, out size));
+        }
+
+        [Test]
+        public void OfflineErrorLogIsBoundedAndExportRemovesEmbeddedNewlines()
+        {
+            var diagnostics = new OfflineSessionDiagnostics();
+            for (int index = 0; index < 70; index++)
+                diagnostics.Record(1, index, "전투 기록", "항목 " + index);
+            Assert.AreEqual(64, diagnostics.Count);
+            string export = diagnostics.Export();
+            StringAssert.Contains("nightmare-otherworld", export);
+            StringAssert.DoesNotContain("항목 0\n", export);
+            StringAssert.Contains("항목 69", export);
+            diagnostics.Record(2, 1.5, "예외", "첫 줄\n둘째 줄");
+            StringAssert.Contains("첫 줄 둘째 줄", diagnostics.Export());
+        }
+
+        [Test]
+        public void AllMobileUnitsUseUnlimitedBasicAttackReachWithinAssignedBattlefield()
+        {
+            var live = Create();
+            var field = typeof(CharacterCombatRuntime).GetField(
+                "attackPipeline", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(field);
+            var pipeline = (CombatAttackPipeline)field.GetValue(live.Combat);
+            Assert.AreEqual(CombatAttackReachMode.UnlimitedWithinAssignedBattlefield,
+                pipeline.ReachMode);
+            Assert.IsTrue(pipeline.CanReach("unregistered-fixture", 1000000000000d));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                pipeline.CanReach("unregistered-fixture", -1d));
         }
     }
 }

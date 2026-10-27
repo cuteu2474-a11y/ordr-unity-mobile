@@ -254,6 +254,39 @@ namespace Ordr.Mobile.Unity
         private Original323BossScoreService originalBossScores;
         private IOriginal323MonsterGoldDeathWitness originalMonsterGoldWitness;
         private Original323MonsterGoldService originalMonsterGold;
+        public OfflineSessionDiagnostics Diagnostics { get; } =
+            new OfflineSessionDiagnostics();
+
+        public void RecordSessionIssue(string kind, string message)
+        {
+            Diagnostics.Record(Combat == null ? 0 : Combat.Game.CurrentWave,
+                Combat == null ? 0 : Combat.Time, kind, message);
+        }
+
+        public string ExportSessionDiagnostics()
+        {
+            return Diagnostics.Export();
+        }
+
+        private void OnVerifiedMonsterDefeated(int sourceWave, string instanceId)
+        {
+            if (originalMonsterGold == null) return;
+            try
+            {
+                int awarded;
+                if (TryProcessObservedMonsterGold(sourceWave, instanceId, out awarded) &&
+                    awarded > 0)
+                    RecordSessionIssue("처치 보상", "몬스터 " + instanceId +
+                        " / 골드 +" + awarded);
+            }
+            catch (Exception ex)
+            {
+                // The source RNG witness is external. A faulty adapter must
+                // not corrupt the already-recorded original monster death.
+                RecordSessionIssue("처치 보상 실패", ex.Message);
+                Debug.LogException(ex);
+            }
+        }
         private readonly HashSet<int> checkedOriginalBossDeadlines =
             new HashSet<int>();
 
@@ -573,14 +606,22 @@ namespace Ordr.Mobile.Unity
             {
                 var result = commonWispRecruitment.RecruitOne();
                 if (result == null)
+                {
+                    RecordSessionIssue("위습 소환 거절", "원본 거래 미승인 또는 위습 부족");
                     return new ManualActionResult(ManualActionState.Rejected,
                         "랜덤위습이 부족하거나 원본 소환을 완료하지 못했습니다.");
+                }
+                var recruited = Units == null ? null : Units.Find(result.CatalogId);
+                RecordSessionIssue("위습 소환", recruited == null ? result.CatalogId :
+                    recruited.Name);
                 return new ManualActionResult(ManualActionState.Succeeded,
-                    "흔함 유닛 소환 완료: " + result.CatalogId +
+                    "흔함 유닛 소환 완료: " +
+                    (recruited == null ? result.CatalogId : recruited.Name) +
                     " (랜덤위습 " + result.SpentRandomWisps + "개 사용)");
             }
             catch (Exception error)
             {
+                RecordSessionIssue("위습 소환 실패", error.Message);
                 Debug.LogException(error);
                 return new ManualActionResult(ManualActionState.Rejected,
                     "원본 흔함 소환 실패: 거래를 취소하고 재화를 복구했습니다.");
@@ -1614,6 +1655,7 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            VerifiedWaveDirector.VerifiedMonsterDefeated += OnVerifiedMonsterDefeated;
             // The source-pinned e0HP is a non-combat session actor. A caller
             // can provide a richer original evolution port before creating
             // the combat runtime; otherwise use the authoritative roster.
@@ -1739,6 +1781,7 @@ namespace Ordr.Mobile.Unity
                 });
             Combat.Start();
             runGate.SetManualPause(false);
+            RecordSessionIssue("게임 시작", "악몽 · 이세계모드");
             StartingEvolutionActorId = evolutionId;
             PersonalMissions = preparedMissions;
             AttachVerifiedSoloHelperCow();
@@ -1828,6 +1871,7 @@ namespace Ordr.Mobile.Unity
                 }
             }
             VerifiedWaveDirector.Begin(Combat, plan);
+            RecordSessionIssue("라운드 시작", waveNumber + "라운드 / 원본 이벤트 승인");
             PersonalMissions?.OnRoundStarted();
         }
 
@@ -1869,6 +1913,7 @@ namespace Ordr.Mobile.Unity
             VerifiedWavePlan first = RequireVerifiedMonsterWavePlan(1);
             BeginSession();
             VerifiedWaveDirector.Begin(Combat, first);
+            RecordSessionIssue("라운드 시작", "1라운드 / 원본 이벤트 승인");
             PersonalMissions?.OnRoundStarted();
         }
 
@@ -1921,9 +1966,20 @@ namespace Ordr.Mobile.Unity
             // remain on one paused logical clock.
             if (!runGate.CanAdvance) return;
             double timeBeforeStep = Combat.Time;
-            var results = VerifiedWaveDirector.IsActive
-                ? VerifiedWaveDirector.Step(Combat, Time.deltaTime)
-                : Combat.Step(Time.deltaTime);
+            IReadOnlyList<CharacterCombatEvent> results;
+            try
+            {
+                results = VerifiedWaveDirector.IsActive
+                    ? VerifiedWaveDirector.Step(Combat, Time.deltaTime)
+                    : Combat.Step(Time.deltaTime);
+            }
+            catch (Exception ex)
+            {
+                runGate.SetManualPause(true);
+                RecordSessionIssue("전투 중단", ex.Message);
+                Debug.LogException(ex);
+                return;
+            }
             if (observedMonsterPositions != null && Combat.PendingSimulationSeconds == 0)
             {
                 try { observedMonsterPositions.ApplyAtCurrentCombatTime(Combat); }
@@ -1932,6 +1988,7 @@ namespace Ordr.Mobile.Unity
                     // A broken source adapter must not keep advancing enemies
                     // from guessed paths on subsequent Unity frames.
                     Debug.LogException(ex);
+                    RecordSessionIssue("몬스터 이동 관측 실패", ex.Message);
                     observedMonsterPositions = null;
                 }
             }

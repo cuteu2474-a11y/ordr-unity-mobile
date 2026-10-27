@@ -71,6 +71,13 @@ namespace Ordr.Mobile.Unity
         private GameObject evolutionMarker;
         private SpriteRenderer evolutionIcon;
         private bool cameraFramed;
+        private float initialCameraHalfHeight;
+        private bool pointerBeganOverMap;
+        private bool pointerDragged;
+        private bool multitouchGestureUsed;
+        private bool suppressSelectionThisFrame;
+        private Vector2 pointerStart;
+        private Vector2 previousMouse;
         private Sprite markerSprite;
         private Texture2D markerTexture;
         private Sprite healthBarSprite;
@@ -117,6 +124,7 @@ namespace Ordr.Mobile.Unity
             UpdateAttackFlashes();
             UpdateEnemyFlashes();
             UpdateAttackCues();
+            HandleCameraNavigation();
             ReadWorldSelection(combat);
         }
 
@@ -143,8 +151,131 @@ namespace Ordr.Mobile.Unity
                     worldCamera.transform.position.z);
                 worldCamera.transform.position = desired;
                 worldCamera.orthographicSize = halfHeight;
+                initialCameraHalfHeight = halfHeight;
                 cameraFramed = true;
             }
+        }
+
+        private bool TryBattleLayout(out MobileMapSkillLayout layout)
+        {
+            layout = null;
+            Rect safe = Screen.safeArea;
+            if (safe.width <= safe.height || worldCamera == null ||
+                !worldCamera.orthographic || !cameraFramed) return false;
+            layout = MobileMapSkillLayout.Calculate(safe, Screen.height,
+                MobileMapSkillLayout.UiScale(safe, Screen.dpi));
+            return true;
+        }
+
+        private static bool ContainsScreenPixel(MobileMapSkillLayout layout,
+            Vector2 pixel)
+        {
+            return layout.Battle.Contains(new Vector2(pixel.x, Screen.height - pixel.y));
+        }
+
+        private void ApplyPan(Vector2 deltaPixels, MobileMapSkillLayout layout)
+        {
+            Vector2 result;
+            Vector3 position = worldCamera.transform.position;
+            if (MobileBattlefieldCameraNavigation.TryPan(position, deltaPixels,
+                worldCamera.orthographicSize, layout.Battle.height, out result))
+                worldCamera.transform.position = new Vector3(result.x, result.y, position.z);
+        }
+
+        private void ApplyZoom(float factor, Vector2 screenAnchor,
+            MobileMapSkillLayout layout)
+        {
+            Vector2 center;
+            float size;
+            Vector3 position = worldCamera.transform.position;
+            Vector2 viewportCenter = new Vector2(layout.Battle.center.x,
+                Screen.height - layout.Battle.center.y);
+            float minimum = Mathf.Max(40f, initialCameraHalfHeight * 0.4f);
+            float maximum = Mathf.Max(minimum, initialCameraHalfHeight * 3f);
+            if (!MobileBattlefieldCameraNavigation.TryZoom(position,
+                worldCamera.orthographicSize, screenAnchor - viewportCenter,
+                layout.Battle.height, factor, minimum, maximum, out center, out size))
+                return;
+            worldCamera.transform.position = new Vector3(center.x, center.y, position.z);
+            worldCamera.orthographicSize = size;
+        }
+
+        private void HandleCameraNavigation()
+        {
+            suppressSelectionThisFrame = false;
+            MobileMapSkillLayout layout;
+            if (!TryBattleLayout(out layout)) return;
+            if (Input.touchCount >= 2)
+            {
+                Touch first = Input.GetTouch(0);
+                Touch second = Input.GetTouch(1);
+                Vector2 centroid = (first.position + second.position) * 0.5f;
+                Vector2 delta = (first.deltaPosition + second.deltaPosition) * 0.5f;
+                Vector2 previousFirst = first.position - first.deltaPosition;
+                Vector2 previousSecond = second.position - second.deltaPosition;
+                float oldDistance = Vector2.Distance(previousFirst, previousSecond);
+                float newDistance = Vector2.Distance(first.position, second.position);
+                if (ContainsScreenPixel(layout, centroid))
+                {
+                    ApplyPan(delta, layout);
+                    if (oldDistance > 2f && newDistance > 2f)
+                        ApplyZoom(oldDistance / newDistance, centroid, layout);
+                }
+                multitouchGestureUsed = true;
+                pointerDragged = true;
+                suppressSelectionThisFrame = true;
+                return;
+            }
+
+            if (Input.touchCount == 1)
+            {
+                Touch touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Began)
+                {
+                    pointerStart = touch.position;
+                    pointerBeganOverMap = ContainsScreenPixel(layout, touch.position);
+                    pointerDragged = false;
+                }
+                else if (touch.phase == TouchPhase.Moved && pointerBeganOverMap &&
+                    !multitouchGestureUsed)
+                {
+                    if ((touch.position - pointerStart).sqrMagnitude > 100f)
+                        pointerDragged = true;
+                    if (pointerDragged) ApplyPan(touch.deltaPosition, layout);
+                }
+                if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                {
+                    suppressSelectionThisFrame = pointerDragged || multitouchGestureUsed;
+                    pointerBeganOverMap = false;
+                }
+                else if (pointerDragged || multitouchGestureUsed)
+                    suppressSelectionThisFrame = true;
+                return;
+            }
+
+            multitouchGestureUsed = false;
+            Vector2 mouse = Input.mousePosition;
+            if (Input.GetMouseButtonDown(0))
+            {
+                pointerStart = mouse;
+                previousMouse = mouse;
+                pointerBeganOverMap = ContainsScreenPixel(layout, mouse);
+                pointerDragged = false;
+            }
+            if (Input.GetMouseButton(0) && pointerBeganOverMap)
+            {
+                if ((mouse - pointerStart).sqrMagnitude > 100f) pointerDragged = true;
+                if (pointerDragged) ApplyPan(mouse - previousMouse, layout);
+            }
+            previousMouse = mouse;
+            if (Input.GetMouseButtonUp(0))
+            {
+                suppressSelectionThisFrame = pointerDragged;
+                pointerBeganOverMap = false;
+            }
+            float scroll = Input.mouseScrollDelta.y;
+            if (scroll != 0f && ContainsScreenPixel(layout, mouse))
+                ApplyZoom(Mathf.Pow(0.85f, scroll), mouse, layout);
         }
 
         private void SyncEvolutionActor()
@@ -573,6 +704,7 @@ namespace Ordr.Mobile.Unity
 
         private void ReadWorldSelection(CharacterCombatRuntime combat)
         {
+            if (suppressSelectionThisFrame || multitouchGestureUsed) return;
             if (worldCamera == null) worldCamera = Camera.main;
             if (worldCamera == null || !worldCamera.orthographic) return;
 

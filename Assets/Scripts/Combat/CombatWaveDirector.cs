@@ -192,6 +192,10 @@ namespace Ordr.Mobile.Combat
         private int nextSpawn;
         private double elapsed;
 
+        // Raised after a verified actual death is recorded. Escapes and
+        // unscheduled enemies must never award death-only original resources.
+        public event Action<int, string> VerifiedMonsterDefeated;
+
         public bool IsActive { get { return active != null; } }
         public int RemainingSpawns
         {
@@ -273,6 +277,8 @@ namespace Ordr.Mobile.Combat
                             break;
                         }
                 }
+                var defeated = VerifiedMonsterDefeated;
+                if (defeated != null) defeated(waveNumber, enemyId);
             }
             else if (reason == CombatEnemyExitReason.Escaped)
             {

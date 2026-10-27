@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Unity
@@ -11,6 +12,7 @@ namespace Ordr.Mobile.Unity
     {
         private OrdrCharacterCombatController controller;
         private string startFailure;
+        private bool confirmNewGame;
 
         private void Awake()
         {
@@ -113,6 +115,7 @@ namespace Ordr.Mobile.Unity
                     catch (Exception ex)
                     {
                         startFailure = ex.Message;
+                        controller.RecordSessionIssue("첫 라운드 시작 실패", ex.Message);
                         Debug.LogException(ex);
                     }
                 }
@@ -121,6 +124,26 @@ namespace Ordr.Mobile.Unity
                 var hint = new GUIStyle(detail) { alignment = TextAnchor.UpperCenter };
                 GUI.Label(new Rect(button.x, button.yMax + 9f,
                     button.width, layout.Battle.height * 0.3f), message, hint);
+            }
+            else if (controller != null && controller.Combat != null &&
+                (controller.Combat.Game.Phase == SessionPhase.Won ||
+                 controller.Combat.Game.Phase == SessionPhase.Lost))
+            {
+                float center = layout.Battle.center.x;
+                var restart = new Rect(center - 92f,
+                    layout.Battle.center.y - 22f, 184f, 44f);
+                if (!confirmNewGame)
+                {
+                    if (GUI.Button(restart, "새 게임")) confirmNewGame = true;
+                }
+                else
+                {
+                    if (GUI.Button(new Rect(restart.x - 75f, restart.y, 155f, 44f),
+                        "처음부터 다시 시작"))
+                        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                    if (GUI.Button(new Rect(restart.x + 90f, restart.y, 90f, 44f), "취소"))
+                        confirmNewGame = false;
+                }
             }
             // Right-hand area stays free for the selected left-hand tab.
             // The panel draws itself only when a tab has been opened.

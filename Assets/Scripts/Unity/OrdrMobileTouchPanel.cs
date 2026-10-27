@@ -178,6 +178,13 @@ namespace Ordr.Mobile.Unity
                           "   진행 상태 " + game.Phase +
                           "   필드 적 " + game.AliveEnemies);
                 }
+                if (area.height >= 70f && controller.VerifiedWaveDirector != null)
+                {
+                    var wave = controller.VerifiedWaveDirector.CurrentProgress;
+                    if (wave != null)
+                        GUILayout.Label("현재 라운드 출현 " + wave.Spawned + "/" + wave.Planned +
+                            " · 처치 " + wave.Defeated + " · 이탈 " + wave.Escaped);
+                }
             }
             GUILayout.EndArea();
         }
@@ -223,6 +230,12 @@ namespace Ordr.Mobile.Unity
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(TabTitle(currentTab), GUILayout.ExpandWidth(true));
+            if (controller.Diagnostics.Count > 0 &&
+                GUILayout.Button("진행 기록 복사", GUILayout.Width(116f), GUILayout.MinHeight(40f)))
+            {
+                GUIUtility.systemCopyBuffer = controller.ExportSessionDiagnostics();
+                notice = "진행 기록을 클립보드에 복사했습니다.";
+            }
             if (GUILayout.Button("닫기 ×", GUILayout.Width(82f), GUILayout.MinHeight(40f)))
                 CloseDrawer();
             GUILayout.EndHorizontal();

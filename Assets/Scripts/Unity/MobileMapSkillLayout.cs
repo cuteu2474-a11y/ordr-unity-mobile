@@ -151,4 +151,59 @@ namespace Ordr.Mobile.Unity
             return true;
         }
     }
+
+    // Pure presentation-space camera math. Positions of monsters/characters,
+    // targeting, attack range and the deterministic game clock stay untouched.
+    public static class MobileBattlefieldCameraNavigation
+    {
+        public static bool TryPan(Vector2 center, Vector2 screenPixelsMoved,
+            float halfHeight, float viewportPixelHeight, out Vector2 movedCenter)
+        {
+            movedCenter = center;
+            if (!Finite(center.x) || !Finite(center.y) ||
+                !Finite(screenPixelsMoved.x) || !Finite(screenPixelsMoved.y) ||
+                !Finite(halfHeight) || !Finite(viewportPixelHeight) ||
+                halfHeight <= 0f || viewportPixelHeight <= 0f) return false;
+            float unitsPerPixel = 2f * halfHeight / viewportPixelHeight;
+            Vector2 candidate = center - screenPixelsMoved * unitsPerPixel;
+            if (!Finite(candidate.x) || !Finite(candidate.y)) return false;
+            movedCenter = candidate;
+            return true;
+        }
+
+        // anchorOffsetPixels is relative to the camera viewport CENTER,
+        // with Unity's bottom-up Y. Zooming retains the selected map point.
+        public static bool TryZoom(Vector2 center, float halfHeight,
+            Vector2 anchorOffsetPixels, float viewportPixelHeight, float sizeFactor,
+            float minimumHalfHeight, float maximumHalfHeight,
+            out Vector2 movedCenter, out float zoomedHalfHeight)
+        {
+            movedCenter = center;
+            zoomedHalfHeight = halfHeight;
+            if (!Finite(center.x) || !Finite(center.y) ||
+                !Finite(anchorOffsetPixels.x) || !Finite(anchorOffsetPixels.y) ||
+                !Finite(halfHeight) || !Finite(viewportPixelHeight) ||
+                !Finite(sizeFactor) || !Finite(minimumHalfHeight) ||
+                !Finite(maximumHalfHeight) || halfHeight <= 0f ||
+                viewportPixelHeight <= 0f || sizeFactor <= 0f ||
+                minimumHalfHeight <= 0f || maximumHalfHeight < minimumHalfHeight)
+                return false;
+            float candidateSize = Mathf.Clamp(halfHeight * sizeFactor,
+                minimumHalfHeight, maximumHalfHeight);
+            if (!Finite(candidateSize)) return false;
+            Vector2 anchoredWorld = center + anchorOffsetPixels *
+                (2f * halfHeight / viewportPixelHeight);
+            Vector2 candidateCenter = anchoredWorld - anchorOffsetPixels *
+                (2f * candidateSize / viewportPixelHeight);
+            if (!Finite(candidateCenter.x) || !Finite(candidateCenter.y)) return false;
+            movedCenter = candidateCenter;
+            zoomedHalfHeight = candidateSize;
+            return true;
+        }
+
+        private static bool Finite(float value)
+        {
+            return !float.IsNaN(value) && !float.IsInfinity(value);
+        }
+    }
 }
