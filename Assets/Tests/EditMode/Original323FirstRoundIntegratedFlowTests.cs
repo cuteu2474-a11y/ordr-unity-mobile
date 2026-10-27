@@ -117,7 +117,14 @@ namespace Ordr.Mobile.Tests
         private static VerifiedWavePlan MakeFixtureRoundOne(
             Original323MonsterWaveIdentityCatalog original, long fixtureHealth = 1000)
         {
-            var originalTimers = original.BuildSinglePlayerSpawnTemplates(1);
+            return MakeFixtureWave(original, 1, fixtureHealth);
+        }
+
+        private static VerifiedWavePlan MakeFixtureWave(
+            Original323MonsterWaveIdentityCatalog original, int wave,
+            long fixtureHealth = 1000)
+        {
+            var originalTimers = original.BuildSinglePlayerSpawnTemplates(wave);
             Assert.AreEqual(35, originalTimers.Count);
             var spawns = new List<VerifiedWaveEnemy>();
             foreach (var timer in originalTimers)
@@ -131,8 +138,8 @@ namespace Ordr.Mobile.Tests
                         "INTEGRATION_FIXTURE: not verified monster defense"),
                     timer.Rawcode));
             }
-            return new VerifiedWavePlan(1, spawns,
-                "INTEGRATION_FIXTURE: first-wave schedule verification only");
+            return new VerifiedWavePlan(wave, spawns,
+                "INTEGRATION_FIXTURE: source wave schedule verification only");
         }
 
         [Test]
@@ -262,6 +269,88 @@ namespace Ordr.Mobile.Tests
                 UnityEngine.Object.DestroyImmediate(root);
             }
         }
+
+#if UNITY_EDITOR
+        [Test]
+        public void EditorPracticeDoesNotBypassOriginalRoundObservationByDefault()
+        {
+            var root = new GameObject("ORDR original gate remains strict");
+            root.SetActive(false);
+            try
+            {
+                var controller = CreateController(root, new FixtureLiveApproval());
+                controller.RegisterVerifiedLiveMonsterWavePlans(new[]
+                {
+                    MakeFixtureWave(controller.OriginalMonsterSpawnIdentities, 1),
+                    MakeFixtureWave(controller.OriginalMonsterSpawnIdentities, 2)
+                });
+                controller.BeginVerifiedFirstWave();
+                controller.VerifiedWaveDirector.Step(controller.Combat, 17.5);
+
+                Assert.AreEqual(0, controller.VerifiedWaveDirector.RemainingSpawns);
+                Assert.IsFalse(controller.TryBeginNextObservedMonsterWave(),
+                    "A real round never advances without a source witness.");
+                Assert.Throws<InvalidOperationException>(() =>
+                    controller.BeginEditorPreviewWave(2),
+                    "An ordinary session cannot enter the preview bypass.");
+                Assert.Throws<InvalidOperationException>(() =>
+                    controller.MarkEditorPreview(),
+                    "Running games cannot be retroactively marked as practice.");
+                Assert.AreEqual(1, controller.Combat.Game.CurrentWave);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        [Test]
+        public void ExplicitEditorPracticeAdvancesOnlyTwoSequentialCompletedSpawnQueues()
+        {
+            var root = new GameObject("ORDR 3-round Editor-only practice");
+            root.SetActive(false);
+            try
+            {
+                var controller = CreateController(root, new FixtureLiveApproval());
+                controller.RegisterVerifiedLiveMonsterWavePlans(new[]
+                {
+                    MakeFixtureWave(controller.OriginalMonsterSpawnIdentities, 1),
+                    MakeFixtureWave(controller.OriginalMonsterSpawnIdentities, 2),
+                    MakeFixtureWave(controller.OriginalMonsterSpawnIdentities, 3)
+                });
+                controller.MarkEditorPreview();
+                controller.BeginVerifiedFirstWave();
+                Assert.Throws<InvalidOperationException>(() =>
+                    controller.BeginEditorPreviewWave(2),
+                    "Cannot start wave 2 while wave 1 is still spawning.");
+
+                controller.VerifiedWaveDirector.Step(controller.Combat, 17.5);
+                Assert.AreEqual(35, controller.VerifiedWaveDirector.CurrentProgress.Spawned);
+                controller.BeginEditorPreviewWave(2);
+                Assert.AreEqual(2, controller.Combat.Game.CurrentWave);
+                Assert.AreEqual(35, controller.VerifiedWaveDirector.RemainingSpawns);
+                Assert.AreEqual(35, controller.Combat.Game.AliveEnemies);
+                Assert.Throws<InvalidOperationException>(() =>
+                    controller.BeginEditorPreviewWave(3),
+                    "Cannot skip unfinished wave-2 spawns.");
+
+                controller.VerifiedWaveDirector.Step(controller.Combat, 17.5);
+                controller.BeginEditorPreviewWave(3);
+                Assert.AreEqual(3, controller.Combat.Game.CurrentWave);
+                Assert.AreEqual(35, controller.VerifiedWaveDirector.RemainingSpawns);
+                Assert.Throws<InvalidOperationException>(() =>
+                    controller.BeginEditorPreviewWave(4),
+                    "Editor preview must not fabricate a fourth round.");
+                Assert.AreEqual(5L, controller.SharedEconomy.Wallet.Balance(
+                    WispResourceIds.Random));
+                Assert.AreEqual(60L, controller.SharedEconomy.Wallet.Balance("gold"));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+#endif
 
         [Test]
         public void RejectedFinalStatSourceCannotSpendPinnedStartResources()

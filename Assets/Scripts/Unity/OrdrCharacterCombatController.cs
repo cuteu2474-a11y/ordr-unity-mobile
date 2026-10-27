@@ -2038,6 +2038,35 @@ namespace Ordr.Mobile.Unity
             return true;
         }
 
+#if UNITY_EDITOR
+        // Only the explicitly activated, non-retail Editor practice may
+        // advance without an independently observed Warcraft timer event.
+        // Production BeginVerifiedMonsterWave and the JASS-backed observer
+        // retain all of their original evidence requirements.
+        public void BeginEditorPreviewWave(int waveNumber)
+        {
+            if (!IsEditorPreview || Combat == null ||
+                Combat.Game.Phase != SessionPhase.Running ||
+                waveNumber < 2 || waveNumber > 3 ||
+                waveNumber != Combat.Game.CurrentWave + 1)
+                throw new InvalidOperationException(
+                    "Unity Editor 체험 모드에서는 순서대로 2~3라운드만 시작할 수 있습니다.");
+            var previous = VerifiedWaveDirector.CurrentProgress;
+            if (!VerifiedWaveDirector.IsActive ||
+                VerifiedWaveDirector.RemainingSpawns != 0 ||
+                previous == null ||
+                previous.WaveNumber != Combat.Game.CurrentWave ||
+                !previous.AllSpawnsIssued)
+                throw new InvalidOperationException(
+                    "이전 체험 라운드의 출현이 모두 완료되지 않았습니다.");
+            // The registered plan is still checked against source IDs,
+            // cadence, enemy roles, HP and the explicitly supplied observer.
+            // Do NOT call or counterfeit the original round event witness.
+            VerifiedWavePlan plan = RequireVerifiedMonsterWavePlan(waveNumber);
+            BeginAuthorizedVerifiedMonsterWave(waveNumber, plan);
+        }
+#endif
+
         private void BeginAuthorizedVerifiedMonsterWave(
             int waveNumber, VerifiedWavePlan plan)
         {

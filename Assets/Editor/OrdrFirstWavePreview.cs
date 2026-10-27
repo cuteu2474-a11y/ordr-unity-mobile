@@ -21,6 +21,10 @@ namespace Ordr.Mobile.Editor
     {
         private const string Armed = "ordr323.editor.firstwave.preview.armed";
         private const string ScenePath = "Assets/Scenes/MainGame.unity";
+        private const int PracticeLastRound = 3;
+        private static OrdrCharacterCombatController previewController;
+        private static int previewWaveNumber;
+        private static double previewWaveStartedAt;
 
         static OrdrFirstWavePreview()
         {
@@ -66,7 +70,10 @@ namespace Ordr.Mobile.Editor
         private static void OnPlayModeChanged(PlayModeStateChange change)
         {
             if (change == PlayModeStateChange.ExitingPlayMode)
+            {
                 SessionState.SetBool(Armed, false);
+                StopPreviewClock();
+            }
             if (change != PlayModeStateChange.EnteredPlayMode ||
                 !SessionState.GetBool(Armed, false)) return;
             SessionState.SetBool(Armed, false);
@@ -93,10 +100,11 @@ namespace Ordr.Mobile.Editor
                 controller.ConfigureRandomWispResourceRng(new EditorWispRandom());
                 controller.ConfigureVerifiedLiveMonsterWaves(
                     new EditorPreviewWaveApproval());
-                controller.ConfigureObservedRoundStart(
-                    new EditorPreviewRoundClock(controller));
+                // No forged original observed-round witness: Editor practice
+                // has its own explicit, opt-in transition method.
                 controller.ConfigureOriginalMonsterGoldEvents(
-                    new EditorPreviewGoldDeath());
+                    new EditorPreviewGoldDeath(controller,
+                        controller.OriginalMonsterSpawnIdentities));
                 controller.ConfigureOriginalCommonNativeDamageWhenVerified(
                     new EditorPreviewAttack(), null, new EditorPreviewQuantizer(),
                     new EditorPreviewDice());
@@ -118,6 +126,11 @@ namespace Ordr.Mobile.Editor
                         "체험 첫 위습 소환이 실패했습니다. Play를 종료해 주세요. " +
                         (summon.Message ?? string.Empty));
 
+                StopPreviewClock();
+                previewController = controller;
+                previewWaveNumber = 1;
+                previewWaveStartedAt = controller.Combat.Time;
+                EditorApplication.update += TickEditorPracticeRounds;
                 Debug.LogWarning(
                     "ORDR EDITOR 3라운드 즉시 체험 시작: 루피(C-01) 1개 자동 소환, " +
                     "남은 랜덤위습 4개를 왼쪽 위습 메뉴에서 직접 사용할 수 있습니다. " +
@@ -125,6 +138,7 @@ namespace Ordr.Mobile.Editor
             }
             catch (Exception ex)
             {
+                StopPreviewClock();
                 Debug.LogException(ex);
                 EditorUtility.DisplayDialog(
                     "ORDR 개발용 첫 라운드 구성 실패",
@@ -132,8 +146,6 @@ namespace Ordr.Mobile.Editor
                     "확인");
             }
         }
-
-        private const int PracticeLastRound = 3;
 
         private static IReadOnlyList<VerifiedWavePlan> BuildEditorOnlyPracticeWaves(
             Original323MonsterWaveIdentityCatalog source)
@@ -168,39 +180,57 @@ namespace Ordr.Mobile.Editor
             return plans.AsReadOnly();
         }
 
-        // The original game must receive a real trigger observation. This
-        // class only simulates a logical countdown INSIDE Unity Editor.
-        private sealed class EditorPreviewRoundClock :
-            IOriginal323ObservedRoundStartWitness
+        private static void StopPreviewClock()
         {
-            private readonly OrdrCharacterCombatController controller;
-            private double previousRoundStart;
-            private int lastObservedRound = 1;
+            EditorApplication.update -= TickEditorPracticeRounds;
+            previewController = null;
+            previewWaveNumber = 0;
+            previewWaveStartedAt = 0;
+        }
 
-            public EditorPreviewRoundClock(OrdrCharacterCombatController owner)
+        private static void TickEditorPracticeRounds()
+        {
+            var owner = previewController;
+            if (!EditorApplication.isPlaying || owner == null)
             {
-                controller = owner ?? throw new ArgumentNullException(nameof(owner));
+                StopPreviewClock();
+                return;
             }
-
-            public bool TryConfirmNextRoundStart(int previous, int requested,
-                out string proof)
+            // The Unity combat clock freezes with pause/background focus.
+            // This is not wall-clock catch-up and not a Warcraft observation.
+            if (owner.Combat == null || owner.IsGameplayPaused ||
+                owner.Combat.Game.Phase != SessionPhase.Running ||
+                previewWaveNumber >= PracticeLastRound)
             {
-                proof = null;
-                if (!EditorApplication.isPlaying ||
-                    controller.Combat == null ||
-                    requested != previous + 1 ||
-                    previous != lastObservedRound ||
-                    requested > PracticeLastRound)
-                    return false;
-                int countdown;
-                if (!Original323BossRoundRules.TryGetCountdownSeconds(
-                    previous, out countdown) ||
-                    controller.Combat.Time - previousRoundStart < countdown)
-                    return false;
-                previousRoundStart = controller.Combat.Time;
-                lastObservedRound = requested;
-                proof = "EDITOR_PREVIEW_NON_RETAIL: synthetic inter-round timer";
-                return true;
+                if (previewWaveNumber >= PracticeLastRound)
+                    StopPreviewClock();
+                return;
+            }
+            int seconds;
+            if (!Original323BossRoundRules.TryGetCountdownSeconds(
+                    previewWaveNumber, out seconds) ||
+                owner.Combat.Time - previewWaveStartedAt < seconds ||
+                owner.VerifiedWaveDirector.RemainingSpawns != 0)
+                return;
+
+            try
+            {
+                int next = previewWaveNumber + 1;
+                // Explicit Editor-only bypass of the ORIGINAL timer gate.
+                // The strict production witness remains completely unchanged.
+                owner.BeginEditorPreviewWave(next);
+                previewWaveNumber = next;
+                previewWaveStartedAt = owner.Combat.Time;
+                Debug.LogWarning("ORDR Editor 가상 체험 " + next +
+                    "라운드 시작 (가상 능력치·가상 카운트다운)");
+                if (next >= PracticeLastRound) StopPreviewClock();
+            }
+            catch (Exception ex)
+            {
+                StopPreviewClock();
+                Debug.LogException(ex);
+                try { owner.SetManualGameplayPause(true); }
+                catch (InvalidOperationException) { }
             }
         }
 
@@ -278,18 +308,42 @@ namespace Ordr.Mobile.Editor
         private sealed class EditorPreviewGoldDeath :
             IOriginal323MonsterGoldDeathWitness
         {
+            private readonly OrdrCharacterCombatController controller;
+            private readonly Dictionary<int, string> practiceRawcodes =
+                new Dictionary<int, string>();
+
+            public EditorPreviewGoldDeath(OrdrCharacterCombatController owner,
+                Original323MonsterWaveIdentityCatalog originals)
+            {
+                controller = owner ?? throw new ArgumentNullException(nameof(owner));
+                if (originals == null) throw new ArgumentNullException(nameof(originals));
+                for (int wave = 1; wave <= PracticeLastRound; wave++)
+                {
+                    var schedule = originals.BuildSinglePlayerSpawnTemplates(wave);
+                    if (schedule.Count != 35)
+                        throw new InvalidOperationException("Editor 연습 출현 목록 오류");
+                    practiceRawcodes.Add(wave, schedule[0].Rawcode);
+                }
+            }
+
             public bool TryConfirmOriginalGoldDeath(int spawnWave, string id,
                 string rawcode, out int player, out int deathRound, out int roll,
                 out float bonus, out int observedGold, out string evidence)
             {
                 player = 0;
-                deathRound = 1;
+                deathRound = controller.Combat == null ?
+                    0 : controller.Combat.Game.CurrentWave;
                 roll = 3;
-                bonus = 0;
-                observedGold = 2;
-                evidence = "EDITOR_PREVIEW_NON_RETAIL: every kill rewarded in sandbox";
-                return EditorApplication.isPlaying && spawnWave == 1 &&
-                    rawcode == "o00I" && !string.IsNullOrWhiteSpace(id);
+                bonus = 0f;
+                int calculated;
+                observedGold = Original323MonsterGoldRules.TryComputeAward(
+                    deathRound, bonus, out calculated) ? calculated : 0;
+                evidence = "EDITOR_PREVIEW_NON_RETAIL: deliberately guaranteed roll";
+                string expected;
+                return EditorApplication.isPlaying && deathRound >= spawnWave &&
+                    practiceRawcodes.TryGetValue(spawnWave, out expected) &&
+                    rawcode == expected && !string.IsNullOrWhiteSpace(id) &&
+                    observedGold > 0;
             }
         }
     }
