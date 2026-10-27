@@ -67,8 +67,34 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        // Synthetic source observer tests the *existing* post-kill wallet
+        // wiring. It is not a genuine Warcraft event, native BFh seed,
+        // player gold bonus or original RNG sequence.
+        private sealed class FixtureGoldDeathWitness :
+            IOriginal323MonsterGoldDeathWitness
+        {
+            public string ApprovedEnemyId;
+            public int Calls;
+
+            public bool TryConfirmOriginalGoldDeath(int wave, string enemyId,
+                string rawcode, out int playerSlot, out int deathRound,
+                out int roll, out float goldBonus, out int observedGold,
+                out string proof)
+            {
+                Calls++;
+                playerSlot = 0;
+                deathRound = 1;
+                roll = 3;
+                goldBonus = 0f;
+                observedGold = 2;
+                proof = "original CVM proof supplied by an isolated integration test";
+                return wave == 1 && enemyId == ApprovedEnemyId &&
+                    rawcode == "o00I";
+            }
+        }
+
         private static OrdrCharacterCombatController CreateController(GameObject root,
-            FixtureLiveApproval approval)
+            FixtureLiveApproval approval, FixtureGoldDeathWitness gold = null)
         {
             root.SetActive(false);
             var controller = root.AddComponent<OrdrCharacterCombatController>();
@@ -80,6 +106,7 @@ namespace Ordr.Mobile.Tests
             Assert.IsNotNull(controller.OriginalMonsterObjectAbilities);
             controller.ConfigureRandomWispResourceRng(new FixtureRandom());
             controller.ConfigureVerifiedLiveMonsterWaves(approval);
+            if (gold != null) controller.ConfigureOriginalMonsterGoldEvents(gold);
             controller.ConfigureOriginalCommonNativeDamageWhenVerified(
                 new FixtureNativePath(), null, new FixtureQuantizer(),
                 new FixtureDice());
@@ -88,7 +115,7 @@ namespace Ordr.Mobile.Tests
         }
 
         private static VerifiedWavePlan MakeFixtureRoundOne(
-            Original323MonsterWaveIdentityCatalog original)
+            Original323MonsterWaveIdentityCatalog original, long fixtureHealth = 1000)
         {
             var originalTimers = original.BuildSinglePlayerSpawnTemplates(1);
             Assert.AreEqual(35, originalTimers.Count);
@@ -98,7 +125,7 @@ namespace Ordr.Mobile.Tests
                 // Fixture 1,000 HP/10 armor/coordinates do NOT represent
                 // actual Nightmare + Otherworld final live stats.
                 spawns.Add(new VerifiedWaveEnemy(
-                    timer.AtSeconds, timer.InstanceId, 1000L, timer.Kind,
+                    timer.AtSeconds, timer.InstanceId, fixtureHealth, timer.Kind,
                     20, 0, 0, new EnemyDefenseProfile(
                         timer.Kind, 10, null, "normal",
                         "INTEGRATION_FIXTURE: not verified monster defense"),
@@ -158,6 +185,77 @@ namespace Ordr.Mobile.Tests
                     "The existing unbounded native attack should affect live enemy HP.");
                 Assert.AreEqual(1, controller.Combat.Game.CurrentWave);
                 Assert.AreEqual(34, controller.VerifiedWaveDirector.RemainingSpawns);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        [Test]
+        public void ExistingFirstRoundKillCreditsSameWalletOnlyWithObservedDeath()
+        {
+            var root = new GameObject("ORDR first-round death and economy fixture");
+            try
+            {
+                var approval = new FixtureLiveApproval();
+                var observedGold = new FixtureGoldDeathWitness();
+                var controller = CreateController(root, approval, observedGold);
+                // Intentionally LOW, synthetic monster HP ensures two native
+                // object attack events produce a real CombatResolution death.
+                // This does NOT constitute real Nightmare mode balance.
+                var plan = MakeFixtureRoundOne(
+                    controller.OriginalMonsterSpawnIdentities, 30L);
+                observedGold.ApprovedEnemyId = plan.Spawns[0].EnemyId;
+                controller.RegisterVerifiedLiveMonsterWavePlan(plan);
+                controller.BeginVerifiedFirstWave();
+                controller.VerifiedWaveDirector.Step(controller.Combat, .5);
+
+                Assert.AreEqual(60L,
+                    controller.SharedEconomy.Wallet.Balance("gold"));
+                Assert.AreEqual(0, observedGold.Calls,
+                    "Monster spawn itself must not trigger a death-only gold roll.");
+                var summoned = controller.RequestVerifiedCommonWispRecruitment();
+                Assert.AreEqual(ManualActionState.Succeeded, summoned.State);
+                Assert.AreEqual(4L, controller.SharedEconomy.Wallet.Balance(
+                    WispResourceIds.Random));
+                Assert.AreEqual(1, controller.Combat.ReadyAttackers);
+
+                string originalRawcode;
+                bool killed = false;
+                for (int frame = 0; frame < 20; frame++)
+                {
+                    controller.VerifiedWaveDirector.Step(controller.Combat, .5);
+                    if (controller.VerifiedWaveDirector.TryGetDefeatedMonsterRawcode(
+                        1, observedGold.ApprovedEnemyId, out originalRawcode))
+                    {
+                        killed = true;
+                        Assert.AreEqual("o00I", originalRawcode);
+                        break;
+                    }
+                }
+
+                Assert.IsTrue(killed,
+                    "The actual auto-attacker must kill a scheduled enemy.");
+                var progress = controller.VerifiedWaveDirector.CurrentProgress;
+                Assert.GreaterOrEqual(progress.Spawned, 1);
+                Assert.AreEqual(1, progress.Defeated);
+                Assert.AreEqual(0, progress.Escaped);
+                Assert.AreEqual(1, observedGold.Calls);
+                Assert.AreEqual(62L,
+                    controller.SharedEconomy.Wallet.Balance("gold"),
+                    "Verified death must credit the same economy wallet that held starting gold.");
+                Assert.AreEqual(4L, controller.SharedEconomy.Wallet.Balance(
+                    WispResourceIds.Random));
+                int duplicatePayout;
+                Assert.IsFalse(controller.TryProcessObservedMonsterGold(
+                    1, observedGold.ApprovedEnemyId, out duplicatePayout),
+                    "A processed corpse cannot pay twice.");
+                Assert.AreEqual(0, duplicatePayout);
+                Assert.AreEqual(62L,
+                    controller.SharedEconomy.Wallet.Balance("gold"));
+                Assert.AreEqual(1, controller.Combat.Game.CurrentWave,
+                    "A kill does not invent an original timer-driven next wave.");
             }
             finally
             {
