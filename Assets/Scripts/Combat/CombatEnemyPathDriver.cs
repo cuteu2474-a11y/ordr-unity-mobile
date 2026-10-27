@@ -101,6 +101,9 @@ namespace Ordr.Mobile.Combat
         public void Detach(string enemyId) { tracks.Remove(enemyId); }
 
         // 종료된 대상은 리스트에 반환만 한다. 원본 누수/완료 규칙을 임의 적용하지 않는다.
+        // Reconcile all candidate positions as one combat frame. A late bad
+        // original-speed result must never leave earlier enemies half-moved.
+        // Reaching the destination is only a path observation, not a leak.
         public IReadOnlyList<string> Advance(CharacterCombatRuntime runtime,
             IOriginalEnemyMovementRules originalRules, double seconds)
         {
@@ -108,16 +111,39 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentNullException("실제 전투와 이동 수치 정책이 필요합니다.");
             if (double.IsNaN(seconds) || double.IsInfinity(seconds) || seconds < 0)
                 throw new ArgumentOutOfRangeException(nameof(seconds));
+            if (runtime.Game.Phase != SessionPhase.Running ||
+                runtime.PendingSimulationSeconds > 0)
+                throw new InvalidOperationException(
+                    "완료된 전투 프레임에서만 몬스터 경로를 갱신할 수 있습니다.");
+
+            double originalTime = runtime.Time;
+            int originalWave = runtime.Game.CurrentWave;
+            int originalAlive = runtime.Game.AliveEnemies;
+            int originalDefeated = runtime.Game.DefeatedEnemies;
+            int originalLeaked = runtime.Game.LeakedEnemies;
+            int originalActors = runtime.CharacterCount;
+            var before = runtime.MobileEnemySnapshot();
+            var revisions = new Dictionary<string, long>(StringComparer.Ordinal);
+            foreach (var enemy in before)
+            {
+                var status = runtime.StatusOf(enemy.Id);
+                revisions.Add(enemy.Id, status == null ? -1 : status.Revision);
+            }
+
+            var pending = new List<Original323ObservedMonsterPosition>();
+            var distances = new Dictionary<string, double>(StringComparer.Ordinal);
             var reachedEnd = new List<string>();
+            var expired = new List<string>();
             var keys = new List<string>(tracks.Keys);
             keys.Sort(StringComparer.Ordinal);
+            // All policies run before the first movement/track mutation.
             foreach (string id in keys)
             {
                 Track track = tracks[id];
                 var enemy = runtime.EnemyOf(id);
                 if (enemy == null || !enemy.IsAlive)
                 {
-                    tracks.Remove(id);
+                    expired.Add(id);
                     continue;
                 }
                 var status = runtime.StatusOf(id);
@@ -133,16 +159,50 @@ namespace Ordr.Mobile.Combat
                 double moved = track.Distance + speed * seconds;
                 if (double.IsInfinity(moved))
                     throw new OverflowException("경로 이동 거리가 초과되었습니다.");
-                track.Distance = Math.Min(track.Path.Length, moved);
-                var point = track.Path.AtDistance(track.Distance);
-                runtime.TryMoveEnemy(id, point.X, point.Y,
-                    track.Distance / track.Path.Length);
-                if (track.Distance >= track.Path.Length)
-                {
-                    reachedEnd.Add(id);
-                    tracks.Remove(id);
-                }
+                double nextDistance = Math.Min(track.Path.Length, moved);
+                var point = track.Path.AtDistance(nextDistance);
+                pending.Add(new Original323ObservedMonsterPosition(
+                    id, point.X, point.Y, nextDistance / track.Path.Length));
+                distances.Add(id, nextDistance);
+                if (nextDistance >= track.Path.Length) reachedEnd.Add(id);
             }
+
+            // The speed provider must not mutate combat, statuses or tracks
+            // during the read-only preflight. Invalid later results are atomic.
+            var after = runtime.MobileEnemySnapshot();
+            if (originalTime != runtime.Time ||
+                originalWave != runtime.Game.CurrentWave ||
+                originalAlive != runtime.Game.AliveEnemies ||
+                originalDefeated != runtime.Game.DefeatedEnemies ||
+                originalLeaked != runtime.Game.LeakedEnemies ||
+                originalActors != runtime.CharacterCount ||
+                before.Count != after.Count ||
+                keys.Count != tracks.Count)
+                throw new InvalidOperationException(
+                    "몬스터 이동 공식 조회 중 전투 상태가 변경됐습니다.");
+            for (int i = 0; i < before.Count; i++)
+            {
+                var a = before[i]; var b = after[i];
+                var status = runtime.StatusOf(a.Id);
+                if (a.Id != b.Id || a.Kind != b.Kind ||
+                    a.Health != b.Health || a.MaxHealth != b.MaxHealth ||
+                    a.X != b.X || a.Y != b.Y ||
+                    a.PathProgress != b.PathProgress ||
+                    status == null || status.Revision != revisions[a.Id])
+                    throw new InvalidOperationException(
+                        "몬스터 이동 공식이 위치·체력·상태효과를 변경했습니다.");
+            }
+            foreach (string id in keys)
+                if (!tracks.ContainsKey(id))
+                    throw new InvalidOperationException(
+                        "몬스터 이동 공식이 등록된 경로를 변경했습니다.");
+
+            if (pending.Count > 0)
+                runtime.ApplyOriginalObservedMonsterPositions(pending);
+            foreach (var step in distances)
+                tracks[step.Key].Distance = step.Value;
+            foreach (string id in reachedEnd) tracks.Remove(id);
+            foreach (string id in expired) tracks.Remove(id);
             return reachedEnd.AsReadOnly();
         }
     }

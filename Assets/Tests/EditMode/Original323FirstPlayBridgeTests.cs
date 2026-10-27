@@ -376,6 +376,119 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(3, game.Game.AliveEnemies);
         }
 
+        // This is an isolated movement contract. Speeds and paths below are
+        // TEST_ONLY numbers; they must never be installed as 2.323[C] data.
+        private sealed class PathSpeedFixture : IOriginalEnemyMovementRules
+        {
+            public string InvalidFor;
+            public bool DirtyPreflight;
+            public CharacterCombatRuntime World;
+            public bool TryResolveSpeed(CombatEnemy enemy,
+                IReadOnlyList<CombatEffect> effects, out double speed)
+            {
+                if (DirtyPreflight) World.TryMoveEnemy(enemy.Id, 77, 0, .77);
+                speed = enemy.Id == InvalidFor ? double.NaN : 10;
+                return true;
+            }
+        }
+
+        private static VerifiedCombatPath FixtureStraightPath()
+        {
+            return new VerifiedCombatPath(new[] {
+                new CombatPathPoint(0, 0), new CombatPathPoint(100, 0)
+            }, "TEST_ONLY: synthetic straight route, not original WC3");
+        }
+
+        [Test]
+        public void PathAdvanceMovesMultipleEnemiesAtomicallyAndDoesNotInventLeaks()
+        {
+            var live = Create();
+            live.Combat.SpawnEnemy("a", 300, CharacterEnemyKind.Line, 0, 0, 0);
+            live.Combat.SpawnEnemy("b", 300, CharacterEnemyKind.Line, 0, 0, 0);
+            var route = FixtureStraightPath();
+            var driver = new CombatEnemyPathDriver();
+            driver.Attach("a", route);
+            driver.Attach("b", route);
+            var speed = new PathSpeedFixture();
+            Assert.AreEqual(0, driver.Advance(live.Combat, speed, 1).Count);
+            foreach (var enemy in live.Combat.MobileEnemySnapshot())
+            {
+                Assert.AreEqual(10, enemy.X, 1e-9);
+                Assert.AreEqual(.1, enemy.PathProgress, 1e-9);
+            }
+            var arrivals = driver.Advance(live.Combat, speed, 9);
+            CollectionAssert.AreEqual(new[] { "a", "b" }, arrivals);
+            Assert.AreEqual(2, live.Combat.Game.AliveEnemies);
+            Assert.AreEqual(0, live.Combat.Game.LeakedEnemies);
+            Assert.AreEqual(0, driver.Advance(live.Combat, speed, 1).Count,
+                "A finished path is detached and not reported twice.");
+            Assert.AreEqual(300, live.Combat.EnemyOf("a").Health);
+        }
+
+        [Test]
+        public void InvalidLateSpeedDoesNotPartiallyMoveAnEarlierEnemy()
+        {
+            var live = Create();
+            live.Combat.SpawnEnemy("a", 300, CharacterEnemyKind.Line, 0, 0, 0);
+            live.Combat.SpawnEnemy("b", 300, CharacterEnemyKind.Line, 0, 0, 0);
+            var route = FixtureStraightPath();
+            var driver = new CombatEnemyPathDriver();
+            driver.Attach("a", route);
+            driver.Attach("b", route);
+            var speed = new PathSpeedFixture { InvalidFor = "b" };
+            Assert.Throws<InvalidOperationException>(() =>
+                driver.Advance(live.Combat, speed, 1));
+            foreach (var enemy in live.Combat.MobileEnemySnapshot())
+            {
+                Assert.AreEqual(0, enemy.X);
+                Assert.AreEqual(0, enemy.PathProgress);
+            }
+            speed.InvalidFor = null;
+            driver.Advance(live.Combat, speed, 1);
+            Assert.AreEqual(10, live.Combat.MobileEnemySnapshot()[0].X);
+            Assert.AreEqual(10, live.Combat.MobileEnemySnapshot()[1].X);
+        }
+
+        [Test]
+        public void PathSpeedWitnessMustNotMutateCombatDuringPreflight()
+        {
+            var live = Create();
+            live.Combat.SpawnEnemy("a", 300, CharacterEnemyKind.Line, 0, 0, 0);
+            var driver = new CombatEnemyPathDriver();
+            driver.Attach("a", FixtureStraightPath());
+            var speed = new PathSpeedFixture {
+                World = live.Combat, DirtyPreflight = true
+            };
+            Assert.Throws<InvalidOperationException>(() =>
+                driver.Advance(live.Combat, speed, 1));
+            // The bad policy is rejected rather than adding another movement
+            // or incorrectly claiming to have rolled its mutation back.
+            Assert.AreEqual(77, live.Combat.MobileEnemySnapshot()[0].X);
+            speed.DirtyPreflight = false;
+            driver.Advance(live.Combat, speed, 1);
+            Assert.AreEqual(10, live.Combat.MobileEnemySnapshot()[0].X);
+        }
+
+        [Test]
+        public void StunnedPathEnemyRemainsStationaryWhileOtherEnemyMoves()
+        {
+            var live = Create();
+            live.Combat.SpawnEnemy("a", 300, CharacterEnemyKind.Line, 0, 0, 0);
+            live.Combat.SpawnEnemy("b", 300, CharacterEnemyKind.Line, 0, 0, 0);
+            var route = FixtureStraightPath();
+            var driver = new CombatEnemyPathDriver();
+            driver.Attach("a", route);
+            driver.Attach("b", route);
+            live.Combat.StatusOf("a").Apply(new CombatEffect(
+                "TEST_ONLY-path-stun", CombatEffectType.Stun,
+                CombatEffectOrigin.TriggeredSkill, 1, 3));
+            driver.Advance(live.Combat, new PathSpeedFixture(), 2);
+            Assert.AreEqual(0, live.Combat.MobileEnemySnapshot()[0].X);
+            Assert.AreEqual(0, live.Combat.MobileEnemySnapshot()[0].PathProgress);
+            Assert.AreEqual(20, live.Combat.MobileEnemySnapshot()[1].X);
+            Assert.AreEqual(.2, live.Combat.MobileEnemySnapshot()[1].PathProgress);
+        }
+
         [Test]
         public void OpeningCameraFramesOriginalWorldCoordinatesWithoutChangingThem()
         {
