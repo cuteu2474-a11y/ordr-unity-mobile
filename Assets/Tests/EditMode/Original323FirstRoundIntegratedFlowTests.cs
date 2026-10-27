@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Ordr.Mobile.Combat;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Mobile;
 using Ordr.Mobile.Unity;
 using UnityEngine;
 

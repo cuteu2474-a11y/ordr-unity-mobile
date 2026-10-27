@@ -101,6 +101,12 @@
 - **씬 수준 EditMode 스모크 추가:** 원본 `data` JSON과 Unity Resources 텍스트 정합성, MainGame의 컨트롤러/시작 UI 연결, Awake 이후 272종 도감·몬스터 자료 로드와 원본 피해 공급자가 없을 때의 정직한 시작 차단 메시지를 검사한다.
 - **완료 판정 제외:** 기본 씬의 실전 몬스터 최종 HP·방어·면역, 원본 피해 공급자는 아직 없으며, 외부 Warcraft 없이 첫 라운드를 완료하는 실기기 테스트는 미진행이다.
 
+### 첫 라운드 통합 테스트 컴파일 오류 교정 (2026-10-27)
+
+- GitHub Unity EditMode 로그 확인: `Original323FirstRoundIntegratedFlowTests.cs(146)`의 `ManualActionState` 네임스페이스 누락(`CS0103`)을 확인했다.
+- `Ordr.Mobile.Mobile` 사용 선언으로 기존 실제 `MobileManualInteraction`의 열거형을 재사용한다. 테스트 시나리오, 게임 규칙, 공격·스킬·몬스터 데이터는 변경하지 않는다.
+- 이 수정은 CI 재검증 전까지 성공 판정이 아니다.
+
 ### 첫 라운드 실제 호출 흐름 통합 검증 (2026-10-27)
 
 - **기존 시스템 연결 실험:** Unity `MainGame`에서 사용하는 실제 `OrdrCharacterCombatController`·`SharedEconomySession`·`CombatWaveDirector`·원본 흔함 위습 추첨·기본 공격 엔진을 하나의 NUnit 실행 경로로 연결한다.
