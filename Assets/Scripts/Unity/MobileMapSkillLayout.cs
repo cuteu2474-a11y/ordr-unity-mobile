@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Ordr.Mobile.Unity
@@ -108,6 +109,46 @@ namespace Ordr.Mobile.Unity
             if (factor <= 0f) throw new ArgumentOutOfRangeException(nameof(factor));
             return new Rect(rect.x / factor, rect.y / factor,
                 rect.width / factor, rect.height / factor);
+        }
+    }
+
+    // Presentation-only framing for the actual Warcraft map coordinates.
+    // No combat distance, targeting range or movement coordinates are changed.
+    public static class MobileBattlefieldCameraFraming
+    {
+        public static bool TryFrame(IReadOnlyList<Vector2> positions, float aspect,
+            out Vector2 center, out float orthographicHalfHeight,
+            float minimumHalfHeight = 420f)
+        {
+            center = Vector2.zero;
+            orthographicHalfHeight = minimumHalfHeight;
+            if (positions == null || positions.Count == 0 || aspect <= 0f ||
+                float.IsNaN(aspect) || float.IsInfinity(aspect) ||
+                minimumHalfHeight <= 0f || float.IsNaN(minimumHalfHeight) ||
+                float.IsInfinity(minimumHalfHeight)) return false;
+
+            double xMin = double.PositiveInfinity, yMin = double.PositiveInfinity;
+            double xMax = double.NegativeInfinity, yMax = double.NegativeInfinity;
+            foreach (var position in positions)
+            {
+                if (float.IsNaN(position.x) || float.IsInfinity(position.x) ||
+                    float.IsNaN(position.y) || float.IsInfinity(position.y))
+                    return false;
+                xMin = Math.Min(xMin, position.x);
+                xMax = Math.Max(xMax, position.x);
+                yMin = Math.Min(yMin, position.y);
+                yMax = Math.Max(yMax, position.y);
+            }
+            double cx = xMin + (xMax - xMin) * 0.5;
+            double cy = yMin + (yMax - yMin) * 0.5;
+            double halfHeight = Math.Max(minimumHalfHeight,
+                Math.Max((yMax - yMin) * 0.65,
+                    (xMax - xMin) * 0.65 / aspect));
+            if (Math.Abs(cx) > float.MaxValue || Math.Abs(cy) > float.MaxValue ||
+                halfHeight > float.MaxValue) return false;
+            center = new Vector2((float)cx, (float)cy);
+            orthographicHalfHeight = (float)halfHeight;
+            return true;
         }
     }
 }

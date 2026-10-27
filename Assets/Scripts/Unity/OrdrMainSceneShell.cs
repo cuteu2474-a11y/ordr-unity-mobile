@@ -64,6 +64,17 @@ namespace Ordr.Mobile.Unity
                     "  |  상태 " + controller.Combat.Game.Phase;
             GUI.Label(new Rect(left, top + layout.HeaderHeight * 0.56f,
                 width, layout.HeaderHeight * 0.44f), status, detail);
+            if (controller != null && controller.Combat != null &&
+                controller.Combat.Game.Phase == SessionPhase.Running)
+            {
+                var pauseRect = new Rect(left + width - 91f, top + 4f, 89f,
+                    Mathf.Min(38f, layout.HeaderHeight * 0.52f));
+                if (GUI.Button(pauseRect, controller.IsGameplayPaused ? "계속" : "일시정지"))
+                {
+                    try { controller.SetManualGameplayPause(!controller.IsGameplayPaused); }
+                    catch (InvalidOperationException ex) { Debug.LogWarning(ex.Message); }
+                }
+            }
 
             // Do not cover the skill ribbon: OrdrMobileTouchPanel owns its
             // horizontally scrolling buttons in this dedicated blank margin.
@@ -71,7 +82,10 @@ namespace Ordr.Mobile.Unity
             area.alignment = TextAnchor.UpperLeft;
             area.fontStyle = FontStyle.Bold;
             area.normal.textColor = new Color(0.80f, 0.88f, 0.98f);
-            GUI.Box(layout.Battle, "메인 전장", area);
+            // A full-size IMGUI box would paint over the camera's actual
+            // SpriteRenderers, making the verified units appear invisible.
+            GUI.Box(new Rect(layout.Battle.x, layout.Battle.y,
+                Mathf.Min(132f, layout.Battle.width), 27f), "메인 전장", area);
             GUI.Box(layout.Story, "스토리 전장", area);
             if (controller != null &&
                 (controller.Combat == null ||

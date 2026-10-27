@@ -5,6 +5,20 @@ namespace Ordr.Mobile.Core
 {
     public enum SessionPhase { NotStarted, Running, Won, Lost }
 
+    // Offline mobile lifecycle gate. It controls WHEN the existing combat
+    // clock advances, not the original Warcraft tick rate or RNG formulas.
+    public sealed class OfflineSessionRunGate
+    {
+        public bool IsManuallyPaused { get; private set; }
+        public bool IsApplicationPaused { get; private set; }
+        public bool HasFocus { get; private set; } = true;
+        public bool CanAdvance => !IsManuallyPaused && !IsApplicationPaused && HasFocus;
+
+        public void SetManualPause(bool paused) { IsManuallyPaused = paused; }
+        public void SetApplicationPause(bool paused) { IsApplicationPaused = paused; }
+        public void SetFocus(bool focused) { HasFocus = focused; }
+    }
+
     // 악몽 이세계모드 전용 세션. 라운드와 패배 수치는 외부 검증 데이터에서 주입한다.
     public sealed class GameSession
     {

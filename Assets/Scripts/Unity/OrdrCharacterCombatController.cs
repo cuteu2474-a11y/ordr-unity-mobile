@@ -60,6 +60,18 @@ namespace Ordr.Mobile.Unity
         { get; private set; }
         private IOriginal323VerifiedNativeAttackCadence verifiedNativeCadence;
         private IOriginal323VerifiedNativeEnemyMovementStep verifiedNativeMovement;
+        private Original323ObservedMonsterMovementWorld observedMonsterPositions;
+
+        public void ConfigureObservedMonsterPositions(
+            IOriginal323ObservedMonsterPositionSource originalPositionSource)
+        {
+            if (observedMonsterPositions != null ||
+                (Combat != null && Combat.Game.Phase != SessionPhase.NotStarted))
+                throw new InvalidOperationException(
+                    "몬스터 원본 위치 관측은 게임 시작 전에 한 번만 등록하세요.");
+            observedMonsterPositions = new Original323ObservedMonsterMovementWorld(
+                originalPositionSource);
+        }
         private IOriginal323UncommonCriticalPrehitRules verifiedUncommonCritRules;
 
         // Native AOae attack speed and enemy movement need separate live
@@ -503,6 +515,25 @@ namespace Ordr.Mobile.Unity
         public AssistedFusionService FusionAssistance { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
         public bool HasSourceVerifiedDamageRuntime { get; private set; }
+        private readonly OfflineSessionRunGate runGate = new OfflineSessionRunGate();
+        public bool IsGameplayPaused => !runGate.CanAdvance;
+
+        public void SetManualGameplayPause(bool paused)
+        {
+            if (Combat == null || Combat.Game.Phase != SessionPhase.Running)
+                throw new InvalidOperationException("진행 중인 게임에서만 일시정지할 수 있습니다.");
+            runGate.SetManualPause(paused);
+        }
+
+        private void OnApplicationPause(bool paused)
+        {
+            runGate.SetApplicationPause(paused);
+        }
+
+        private void OnApplicationFocus(bool focused)
+        {
+            runGate.SetFocus(focused);
+        }
 
         public MobileManualInteraction ManualActions { get; } = new MobileManualInteraction();
         public MobileDedicatedSkillActions DedicatedSkills { get; } =
@@ -514,6 +545,50 @@ namespace Ordr.Mobile.Unity
             DedicatedSkills.Configure(originalWorld);
         }
         public SharedEconomySession SharedEconomy { get; private set; }
+        private Original323CommonWispRecruitmentService commonWispRecruitment;
+        public int? VerifiedCommonWispRecruitmentCost =>
+            commonWispRecruitment == null ? (int?)null : commonWispRecruitment.Cost;
+        public bool CanRecruitVerifiedCommonWisp =>
+            commonWispRecruitment != null && commonWispRecruitment.CanRecruit;
+
+        // Source-backed randomness, price and live spawn must all come from
+        // the same reviewed original map adapter; there is no placeholder roll.
+        public void ConfigureVerifiedCommonWispRecruitment(
+            IOriginal323CommonWispRecruitmentWorld originalWorld)
+        {
+            if (Combat == null || SharedEconomy == null || MapBaseStats == null ||
+                commonWispRecruitment != null ||
+                Combat.Game.Phase != SessionPhase.NotStarted)
+                throw new InvalidOperationException(
+                    "원본 흔함 유닛 소환은 시작 전 공유 전투·경제 월드에 한 번만 연결하세요.");
+            commonWispRecruitment = new Original323CommonWispRecruitmentService(
+                Combat, SharedEconomy, MapBaseStats, originalWorld);
+        }
+
+        public ManualActionResult RequestVerifiedCommonWispRecruitment()
+        {
+            if (commonWispRecruitment == null)
+                return ManualActionResult.Unavailable("랜덤위습 흔함 유닛 소환");
+            try
+            {
+                var result = commonWispRecruitment.RecruitOne();
+                if (result == null)
+                    return new ManualActionResult(ManualActionState.Rejected,
+                        "랜덤위습이 부족하거나 원본 소환을 완료하지 못했습니다.");
+                return new ManualActionResult(ManualActionState.Succeeded,
+                    "흔함 유닛 소환 완료: " + result.CatalogId +
+                    " (랜덤위습 " + result.SpentRandomWisps + "개 사용)");
+            }
+            catch (Exception error)
+            {
+                Debug.LogException(error);
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "원본 흔함 소환 실패: 거래를 취소하고 재화를 복구했습니다.");
+            }
+        }
+        // Only the roster identity of the source-pinned non-combat e0HP.
+        // This is not an ordinary attacking character or a Wisp resource.
+        public long? StartingEvolutionActorId { get; private set; }
         public PersonalMissionGameplay PersonalMissions { get; private set; }
         private IOriginalMissionRandom missionRandom;
 
@@ -1645,6 +1720,7 @@ namespace Ordr.Mobile.Unity
                     new MobileMissionRandom(unchecked((uint)Environment.TickCount)),
                 Guid.NewGuid().ToString("N"));
             var external = new HashSet<long>();
+            long? evolutionId = null;
             SharedEconomy.ApplyVerifiedStart(verifiedStartingProfile,
                 (catalogId, x, y) =>
                 {
@@ -1652,6 +1728,7 @@ namespace Ordr.Mobile.Unity
                         return Combat.SpawnCharacter(catalogId, x, y);
                     long id = startEvolutionWorld.SpawnAndTrack(SharedEconomy, catalogId, x, y);
                     if (id > 0) external.Add(id);
+                    if (id > 0) evolutionId = id;
                     return id;
                 },
                 id =>
@@ -1661,6 +1738,8 @@ namespace Ordr.Mobile.Unity
                     else Combat.RemoveCharacter(id);
                 });
             Combat.Start();
+            runGate.SetManualPause(false);
+            StartingEvolutionActorId = evolutionId;
             PersonalMissions = preparedMissions;
             AttachVerifiedSoloHelperCow();
         }
@@ -1837,10 +1916,25 @@ namespace Ordr.Mobile.Unity
                 PersonalMissions?.OnGameFinished();
                 return;
             }
+            // Never catch up elapsed wall-clock time after backgrounding.
+            // Combat, round events, shared mana regeneration and source RNG
+            // remain on one paused logical clock.
+            if (!runGate.CanAdvance) return;
             double timeBeforeStep = Combat.Time;
             var results = VerifiedWaveDirector.IsActive
                 ? VerifiedWaveDirector.Step(Combat, Time.deltaTime)
                 : Combat.Step(Time.deltaTime);
+            if (observedMonsterPositions != null && Combat.PendingSimulationSeconds == 0)
+            {
+                try { observedMonsterPositions.ApplyAtCurrentCombatTime(Combat); }
+                catch (Exception ex)
+                {
+                    // A broken source adapter must not keep advancing enemies
+                    // from guessed paths on subsequent Unity frames.
+                    Debug.LogException(ex);
+                    observedMonsterPositions = null;
+                }
+            }
             // The same advancing combat clock drives helper mana regen.
             // UI redraws and wall time must not regenerate extra mana.
             if (Original323HelperCow != null)

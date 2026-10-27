@@ -1,6 +1,7 @@
 using System;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Mobile;
+using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
@@ -83,6 +84,170 @@ namespace Ordr.Mobile.Combat
                 if (!committed && created > 0)
                     owner.combat.RollbackUncommittedSpawn(created);
             }
+        }
+    }
+
+    // e0IX common recruitment uses a DIFFERENT original function and pool
+    // from the four source-extracted automatic Wisp pools. No fallback table
+    // or assumed one-Wisp price is supplied here. The source-backed port
+    // owns the roll, live spawn and rollback as ONE transaction.
+    public interface IOriginal323CommonWispRecruitmentWorld
+    {
+        int OriginalRandomWispCost { get; }
+        string OriginalSourceEvidence { get; }
+        IOriginal323CommonWispRecruitmentTransaction Begin();
+    }
+
+    public interface IOriginal323CommonWispRecruitmentTransaction : IDisposable
+    {
+        bool TryCreate(out long instanceId, out string originalUnitRawcode);
+        void Commit();
+    }
+
+    public sealed class Original323CommonWispRecruitmentResult
+    {
+        public long InstanceId { get; private set; }
+        public string CatalogId { get; private set; }
+        public int SpentRandomWisps { get; private set; }
+
+        internal Original323CommonWispRecruitmentResult(long id, string unitId, int spent)
+        {
+            InstanceId = id; CatalogId = unitId; SpentRandomWisps = spent;
+        }
+    }
+
+    public sealed class Original323CommonWispRecruitmentService
+    {
+        private readonly CharacterCombatRuntime combat;
+        private readonly SharedEconomySession shared;
+        private readonly OriginalMapBaseStatCatalog originalUnitObjects;
+        private readonly IOriginal323CommonWispRecruitmentWorld source;
+        private readonly int cost;
+        private bool processing;
+
+        public int Cost => cost;
+        public bool CanRecruit => !processing &&
+            combat.Game.Phase == SessionPhase.Running &&
+            shared.Wallet.Balance(WispResourceIds.Random) >= Cost;
+
+        public Original323CommonWispRecruitmentService(CharacterCombatRuntime liveCombat,
+            SharedEconomySession sameSession, OriginalMapBaseStatCatalog originalMap,
+            IOriginal323CommonWispRecruitmentWorld verifiedSource)
+        {
+            combat = liveCombat ?? throw new ArgumentNullException(nameof(liveCombat));
+            shared = sameSession ?? throw new ArgumentNullException(nameof(sameSession));
+            originalUnitObjects = originalMap ?? throw new ArgumentNullException(nameof(originalMap));
+            source = verifiedSource ?? throw new ArgumentNullException(nameof(verifiedSource));
+            cost = source.OriginalRandomWispCost;
+            if (!ReferenceEquals(combat.Roster, shared.Units) ||
+                cost <= 0 ||
+                !Trusted(source.OriginalSourceEvidence) ||
+                source.OriginalSourceEvidence.IndexOf(
+                    Original323MonsterWaveIdentityCatalog.OriginalWar3mapJSha256,
+                    StringComparison.OrdinalIgnoreCase) < 0)
+                throw new InvalidOperationException(
+                    "원본 흔함 소환의 비용·난수·월드 및 공유 목록 승인 근거가 없습니다.");
+        }
+
+        public Original323CommonWispRecruitmentResult RecruitOne()
+        {
+            if (!CanRecruit) return null;
+            processing = true;
+            try
+            {
+                var beforeWallet = shared.Wallet.CaptureState();
+                var beforeUnits = combat.MobileUnitSnapshot();
+                double beforeTime = combat.Time;
+                try
+                {
+                    using (var transaction = source.Begin() ??
+                        throw new InvalidOperationException("원본 흔함 소환 거래를 열 수 없습니다."))
+                    {
+                        long instanceId;
+                        string rawcode;
+                        if (!transaction.TryCreate(out instanceId, out rawcode))
+                        {
+                            if (combat.Time != beforeTime ||
+                                combat.MobileUnitSnapshot().Count != beforeUnits.Count ||
+                                !SameWallet(beforeWallet, shared.Wallet.CaptureState()))
+                                throw new InvalidOperationException(
+                                    "거절된 원본 소환이 공유 상태를 변경했습니다.");
+                            return null;
+                        }
+                        var afterUnits = combat.MobileUnitSnapshot();
+                        if (instanceId <= 0 || string.IsNullOrWhiteSpace(rawcode) ||
+                            rawcode.Length != 4 || beforeTime != combat.Time ||
+                            afterUnits.Count != beforeUnits.Count + 1 ||
+                            !SameWallet(beforeWallet, shared.Wallet.CaptureState()))
+                            throw new InvalidOperationException(
+                                "원본 흔함 유닛 생성 또는 난수 거래가 공유 상태를 변경했습니다.");
+                        foreach (var old in beforeUnits)
+                        {
+                            bool found = false;
+                            foreach (var current in afterUnits)
+                                if (current.InstanceId == old.InstanceId &&
+                                    current.Unit.Id == old.Unit.Id &&
+                                    current.Position.X == old.Position.X &&
+                                    current.Position.Y == old.Position.Y)
+                                { found = true; break; }
+                            if (!found) throw new InvalidOperationException(
+                                "흔함 소환 도중 기존 유닛이 변경되었습니다.");
+                        }
+                        string catalogId = null;
+                        foreach (var candidate in afterUnits)
+                            if (candidate.InstanceId == instanceId)
+                            {
+                                if (catalogId != null) throw new InvalidOperationException(
+                                    "동일 소환 인스턴스 중복");
+                                catalogId = candidate.Unit.Id;
+                                if (candidate.Unit.Grade != "흔함")
+                                    throw new InvalidOperationException("흔함이 아닌 원본 소환 결과");
+                            }
+                        if (string.IsNullOrWhiteSpace(catalogId))
+                            throw new InvalidOperationException("소환한 유닛의 실제 보유 정보가 없습니다.");
+                        var original = originalUnitObjects.Find(catalogId);
+                        if (original == null || original.OriginalRawcode != rawcode)
+                            throw new InvalidOperationException(
+                                "원본 소환 객체 ID가 캐릭터 카탈로그와 일치하지 않습니다.");
+
+                        if (!shared.Wallet.TryExchange(
+                            new ResourceBundle().Add(WispResourceIds.Random, Cost),
+                            new ResourceBundle()))
+                            throw new InvalidOperationException("랜덤위습 잔액 변경 충돌");
+                        transaction.Commit();
+                        return new Original323CommonWispRecruitmentResult(
+                            instanceId, catalogId, Cost);
+                    }
+                }
+                catch
+                {
+                    shared.Wallet.RestoreState(beforeWallet);
+                    throw;
+                }
+            }
+            finally { processing = false; }
+        }
+
+        private static bool SameWallet(EconomyWalletState a, EconomyWalletState b)
+        {
+            if (a.Balances.Count != b.Balances.Count ||
+                a.CompletedRewards.Count != b.CompletedRewards.Count) return false;
+            for (int i = 0; i < a.Balances.Count; i++)
+                if (a.Balances[i].Id != b.Balances[i].Id ||
+                    a.Balances[i].Amount != b.Balances[i].Amount) return false;
+            for (int i = 0; i < a.CompletedRewards.Count; i++)
+                if (a.CompletedRewards[i] != b.CompletedRewards[i]) return false;
+            return true;
+        }
+
+        private static bool Trusted(string sourceEvidence)
+        {
+            if (string.IsNullOrWhiteSpace(sourceEvidence)) return false;
+            foreach (var marker in new[] {
+                "TEST_ONLY", "TEST_FIXTURE", "SYNTHETIC", "MODEL_ONLY", "MOCK_ONLY" })
+                if (sourceEvidence.IndexOf(marker,
+                    StringComparison.OrdinalIgnoreCase) >= 0) return false;
+            return true;
         }
     }
 }

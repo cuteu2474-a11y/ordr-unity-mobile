@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Ordr.Mobile.Core;
+using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
@@ -142,6 +144,89 @@ namespace Ordr.Mobile.Combat
                 }
             }
             return reachedEnd.AsReadOnly();
+        }
+    }
+
+    // An independent live adapter supplies native monster positions already
+    // resolved by the original path, collision, slow, stun and immunity rules.
+    // The Unity scene must never infer a speed or path from spawn locations.
+    public interface IOriginal323ObservedMonsterPositionSource
+    {
+        bool TryObserve(string monsterInstanceId, double combatTime,
+            out double x, out double y, out double pathProgress,
+            out string sourceEvidence);
+    }
+
+    public sealed class Original323ObservedMonsterMovementWorld
+    {
+        private sealed class Position
+        {
+            public string Id;
+            public double X, Y, Progress;
+        }
+
+        private readonly IOriginal323ObservedMonsterPositionSource source;
+
+        public Original323ObservedMonsterMovementWorld(
+            IOriginal323ObservedMonsterPositionSource observedSource)
+        {
+            source = observedSource ?? throw new ArgumentNullException(nameof(observedSource));
+        }
+
+        public int ApplyAtCurrentCombatTime(CharacterCombatRuntime combat)
+        {
+            if (combat == null) throw new ArgumentNullException(nameof(combat));
+            if (combat.Game.Phase != SessionPhase.Running) return 0;
+            double time = combat.Time;
+            var before = combat.MobileEnemySnapshot();
+            var pending = new List<Position>();
+            foreach (var enemy in before)
+            {
+                double x, y, progress;
+                string evidence;
+                if (!source.TryObserve(enemy.Id, time, out x, out y,
+                    out progress, out evidence)) continue;
+                if (double.IsNaN(x) || double.IsInfinity(x) ||
+                    double.IsNaN(y) || double.IsInfinity(y) ||
+                    double.IsNaN(progress) || double.IsInfinity(progress) ||
+                    progress < 0 || progress > 1 || !Trusted(evidence) ||
+                    evidence.IndexOf(
+                        Original323MonsterWaveIdentityCatalog.OriginalWar3mapJSha256,
+                        StringComparison.OrdinalIgnoreCase) < 0)
+                    throw new InvalidOperationException(
+                        "몬스터 위치·경로·원본 관측 근거가 확인되지 않았습니다.");
+                pending.Add(new Position { Id = enemy.Id,
+                    X = x, Y = y, Progress = progress });
+            }
+
+            // Observing is read-only. Nothing moves if an earlier observed
+            // enemy or the combat clock was altered by the source adapter.
+            var after = combat.MobileEnemySnapshot();
+            if (combat.Time != time || before.Count != after.Count)
+                throw new InvalidOperationException("몬스터 이동 관측 중 전투 상태가 변경됐습니다.");
+            for (int i = 0; i < before.Count; i++)
+                if (before[i].Id != after[i].Id ||
+                    before[i].X != after[i].X || before[i].Y != after[i].Y ||
+                    before[i].Health != after[i].Health ||
+                    before[i].MaxHealth != after[i].MaxHealth)
+                    throw new InvalidOperationException(
+                        "몬스터 위치 관측기가 전투 상태를 변경했습니다.");
+
+            int moved = 0;
+            foreach (var target in pending)
+                if (combat.TryMoveEnemy(target.Id, target.X, target.Y,
+                    target.Progress)) moved++;
+            return moved;
+        }
+
+        private static bool Trusted(string evidence)
+        {
+            if (string.IsNullOrWhiteSpace(evidence)) return false;
+            foreach (var disallowed in new[] {
+                "TEST_ONLY", "TEST_FIXTURE", "SYNTHETIC", "MOCK_ONLY", "MODEL_ONLY" })
+                if (evidence.IndexOf(disallowed,
+                    StringComparison.OrdinalIgnoreCase) >= 0) return false;
+            return true;
         }
     }
 }

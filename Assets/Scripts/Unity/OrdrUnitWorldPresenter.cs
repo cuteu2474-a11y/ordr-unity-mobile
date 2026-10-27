@@ -67,6 +67,10 @@ namespace Ordr.Mobile.Unity
         private readonly Dictionary<string, LastEnemyPosition> recentEnemyPositions =
             new Dictionary<string, LastEnemyPosition>(StringComparer.Ordinal);
         private readonly List<AttackCueVisual> attackCues = new List<AttackCueVisual>();
+        private readonly List<Vector2> framePoints = new List<Vector2>();
+        private GameObject evolutionMarker;
+        private SpriteRenderer evolutionIcon;
+        private bool cameraFramed;
         private Sprite markerSprite;
         private Texture2D markerTexture;
         private Sprite healthBarSprite;
@@ -107,6 +111,8 @@ namespace Ordr.Mobile.Unity
                 nextRefresh = Time.unscaledTime + Mathf.Max(0.02f, refreshIntervalSeconds);
                 SyncOwnedUnits(combat);
                 SyncEnemies(combat);
+                SyncEvolutionActor();
+                CollectMainBattlefieldPositions();
             }
             UpdateAttackFlashes();
             UpdateEnemyFlashes();
@@ -126,6 +132,71 @@ namespace Ordr.Mobile.Unity
                 MobileMapSkillLayout.UiScale(safe, Screen.dpi));
             Rect target = layout.MainCameraViewport(Screen.width, Screen.height);
             if (worldCamera.rect != target) worldCamera.rect = target;
+            Vector2 center;
+            float halfHeight;
+            // Set the opening camera ONCE. A defense player's view must not
+            // chase moving monsters or zoom as units are summoned or sold.
+            if (!cameraFramed && MobileBattlefieldCameraFraming.TryFrame(framePoints,
+                layout.Battle.width / layout.Battle.height, out center, out halfHeight))
+            {
+                var desired = new Vector3(center.x, center.y,
+                    worldCamera.transform.position.z);
+                worldCamera.transform.position = desired;
+                worldCamera.orthographicSize = halfHeight;
+                cameraFramed = true;
+            }
+        }
+
+        private void SyncEvolutionActor()
+        {
+            if (controller == null || controller.SharedEconomy == null ||
+                !controller.StartingEvolutionActorId.HasValue)
+            {
+                if (evolutionMarker != null) evolutionMarker.SetActive(false);
+                return;
+            }
+            long id = controller.StartingEvolutionActorId.Value;
+            UnitState actor;
+            try { actor = controller.SharedEconomy.Units.Get(id); }
+            catch (KeyNotFoundException)
+            {
+                if (evolutionMarker != null) evolutionMarker.SetActive(false);
+                return;
+            }
+            if (actor.UnitId != Original323SoloStartProfile.EvolutionRawcode)
+            {
+                if (evolutionMarker != null) evolutionMarker.SetActive(false);
+                return;
+            }
+            if (evolutionMarker == null)
+            {
+                evolutionMarker = new GameObject("ORDR Starting Evolution Actor");
+                evolutionMarker.transform.SetParent(transform, false);
+                evolutionIcon = evolutionMarker.AddComponent<SpriteRenderer>();
+                evolutionIcon.sprite = markerSprite;
+                evolutionIcon.sortingOrder = 10;
+            }
+            evolutionMarker.SetActive(true);
+            evolutionMarker.transform.position = new Vector3((float)actor.X,
+                (float)actor.Y, 0f);
+            bool selected = controller.SharedEconomy.Units.SelectedId == id;
+            evolutionMarker.transform.localScale = Vector3.one *
+                Mathf.Max(1f, markerDiameterWorldUnits) * (selected ? 1.05f : 0.82f);
+            evolutionIcon.color = selected ? new Color(1f, 0.95f, 0.35f, 1f)
+                : new Color(0.38f, 0.87f, 0.91f, 1f);
+        }
+
+        private void CollectMainBattlefieldPositions()
+        {
+            framePoints.Clear();
+            foreach (var visual in visuals.Values)
+                if (visual.Root.activeSelf)
+                    framePoints.Add(visual.Root.transform.position);
+            foreach (var enemy in enemyVisuals.Values)
+                if (enemy.Root.activeSelf)
+                    framePoints.Add(enemy.Root.transform.position);
+            // e0HP is a menu-controlled non-combat resource actor, not a
+            // battlefield extent. It must not shrink the actual battle view.
         }
 
         // A short presentation-only pulse replaces character swing/movement
@@ -548,6 +619,20 @@ namespace Ordr.Mobile.Unity
                     nearestPixels2 = d2;
                 }
             }
+            if (evolutionMarker != null && evolutionMarker.activeSelf &&
+                controller != null && controller.StartingEvolutionActorId.HasValue)
+            {
+                Vector3 visible = worldCamera.WorldToScreenPoint(
+                    evolutionMarker.transform.position);
+                float dx = visible.x - screen.x;
+                float dy = visible.y - screen.y;
+                float d2 = dx * dx + dy * dy;
+                if (visible.z > 0f && d2 <= nearestPixels2)
+                {
+                    nearestId = controller.StartingEvolutionActorId.Value;
+                    nearestPixels2 = d2;
+                }
+            }
             if (nearestId != 0) combat.Roster.Select(nearestId);
         }
 
@@ -589,6 +674,7 @@ namespace Ordr.Mobile.Unity
             foreach (var cue in attackCues)
                 if (cue.Root != null) Destroy(cue.Root);
             attackCues.Clear();
+            if (evolutionMarker != null) Destroy(evolutionMarker);
             if (markerSprite != null) Destroy(markerSprite);
             if (markerTexture != null) Destroy(markerTexture);
             if (healthBarSprite != null) Destroy(healthBarSprite);

@@ -49,6 +49,7 @@ namespace Ordr.Mobile.Unity
         private const int OriginalJassPageSize = 10;
         private MobileManualOffer pendingEconomy;
         private string pendingChoiceRawcode;
+        private bool pendingCommonWispRecruitment;
         private bool pendingHelperRecharge;
         private bool pendingMaximumOutput;
         private bool pendingAlchemy;
@@ -97,6 +98,7 @@ namespace Ordr.Mobile.Unity
             pendingFusion = null;
             pendingEconomy = null;
             pendingChoiceRawcode = null;
+            pendingCommonWispRecruitment = false;
             pendingHelperRecharge = false;
             pendingMaximumOutput = false;
             pendingAlchemy = false;
@@ -117,6 +119,7 @@ namespace Ordr.Mobile.Unity
             pendingFusion = null;
             pendingEconomy = null;
             pendingChoiceRawcode = null;
+            pendingCommonWispRecruitment = false;
             pendingHelperRecharge = false;
             pendingMaximumOutput = false;
             pendingAlchemy = false;
@@ -844,6 +847,20 @@ namespace Ordr.Mobile.Unity
 
         private void DrawWisp()
         {
+            if (controller.StartingEvolutionActorId.HasValue &&
+                controller.SharedEconomy != null)
+            {
+                long id = controller.StartingEvolutionActorId.Value;
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("시작 진화체 (비전투) 1개", GUILayout.ExpandWidth(true));
+                if (GUILayout.Button("선택", GUILayout.Width(76),
+                    GUILayout.MinHeight(44)))
+                {
+                    controller.SharedEconomy.Units.Select(id);
+                    notice = "진화체를 선택했습니다. 진화 기능은 원본 연결 대기 중입니다.";
+                }
+                GUILayout.EndHorizontal();
+            }
             GUILayout.Label("랜덤위습 " + controller.WispBalance(WispResourceIds.Random) +
                 "개 · 선택위습 " + controller.WispBalance(WispResourceIds.Choice) + "개");
             GUILayout.Label("자동: 안흔함 " + controller.WispBalance(WispResourceIds.Uncommon) +
@@ -852,6 +869,35 @@ namespace Ordr.Mobile.Unity
                 " / 전설 " + controller.WispBalance(WispResourceIds.Legendary));
             if (controller.Wisps == null)
                 GUILayout.Label("자동 위습 보상 월드 미연결: 보유분 유지");
+            int? cost = controller.VerifiedCommonWispRecruitmentCost;
+            if (!cost.HasValue)
+                GUILayout.Label("흔함 소환: 원본 추첨·비용 검증 월드 연결 대기");
+            else
+            {
+                GUILayout.Label("흔함 유닛 소환 · 랜덤위습 " + cost.Value + "개");
+                bool previouslyEnabled = GUI.enabled;
+                GUI.enabled = previouslyEnabled &&
+                    controller.CanRecruitVerifiedCommonWisp;
+                if (!pendingCommonWispRecruitment)
+                {
+                    if (GUILayout.Button("흔함 소환", GUILayout.MinHeight(48)))
+                        pendingCommonWispRecruitment = true;
+                }
+                else
+                {
+                    GUILayout.Label("원본 추첨을 한 번 실행하고 위습을 사용합니다.");
+                    if (GUILayout.Button("소환 확정", GUILayout.MinHeight(48)))
+                    {
+                        ShowResult(controller.RequestVerifiedCommonWispRecruitment());
+                        pendingCommonWispRecruitment = false;
+                        RefreshCurrent();
+                    }
+                }
+                GUI.enabled = previouslyEnabled;
+                if (pendingCommonWispRecruitment &&
+                    GUILayout.Button("소환 취소", GUILayout.MinHeight(42)))
+                    pendingCommonWispRecruitment = false;
+            }
             DrawEconomy(ManualEconomyCategory.Wisp);
             GUILayout.Label("선택위습은 조합 탭의 Merge에서 사용합니다.");
         }
