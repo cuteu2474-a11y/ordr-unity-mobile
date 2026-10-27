@@ -61,6 +61,7 @@ namespace Ordr.Mobile.Unity
         private IOriginal323VerifiedNativeAttackCadence verifiedNativeCadence;
         private IOriginal323VerifiedNativeEnemyMovementStep verifiedNativeMovement;
         private Original323ObservedMonsterMovementWorld observedMonsterPositions;
+        private Original323ObservedMonsterEscapeWorld observedMonsterEscapes;
 
         public void ConfigureObservedMonsterPositions(
             IOriginal323ObservedMonsterPositionSource originalPositionSource)
@@ -72,6 +73,17 @@ namespace Ordr.Mobile.Unity
             observedMonsterPositions = new Original323ObservedMonsterMovementWorld(
                 originalPositionSource);
         }
+        public void ConfigureObservedMonsterEscapes(
+            IOriginal323ObservedMonsterEscapeSource originalNativeExits)
+        {
+            if (observedMonsterEscapes != null ||
+                (Combat != null && Combat.Game.Phase != SessionPhase.NotStarted))
+                throw new InvalidOperationException(
+                    "원본 몬스터 이탈 이벤트는 게임 시작 전에 연결하세요.");
+            observedMonsterEscapes =
+                new Original323ObservedMonsterEscapeWorld(originalNativeExits);
+        }
+
         private IOriginal323UncommonCriticalPrehitRules verifiedUncommonCritRules;
 
         // Native AOae attack speed and enemy movement need separate live
@@ -270,6 +282,12 @@ namespace Ordr.Mobile.Unity
         public string ExportSessionDiagnostics()
         {
             return Diagnostics.Export();
+        }
+
+        private void OnVerifiedMonsterEscaped(int sourceWave, string instanceId)
+        {
+            RecordSessionIssue("몬스터 이탈",
+                "출현 라운드 " + sourceWave + " / 몬스터 " + instanceId);
         }
 
         private void OnVerifiedMonsterDefeated(int sourceWave, string instanceId)
@@ -1723,6 +1741,7 @@ namespace Ordr.Mobile.Unity
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
             VerifiedWaveDirector.VerifiedMonsterDefeated += OnVerifiedMonsterDefeated;
+            VerifiedWaveDirector.VerifiedMonsterEscaped += OnVerifiedMonsterEscaped;
             // The source-pinned e0HP is a non-combat session actor. A caller
             // can provide a richer original evolution port before creating
             // the combat runtime; otherwise use the authoritative roster.
@@ -2106,11 +2125,27 @@ namespace Ordr.Mobile.Unity
                 try { observedMonsterPositions.ApplyAtCurrentCombatTime(Combat); }
                 catch (Exception ex)
                 {
-                    // A broken source adapter must not keep advancing enemies
-                    // from guessed paths on subsequent Unity frames.
+                    // Never keep advancing the battle with stale positions.
                     Debug.LogException(ex);
                     RecordSessionIssue("몬스터 이동 관측 실패", ex.Message);
-                    observedMonsterPositions = null;
+                    runGate.SetManualPause(true);
+                    return;
+                }
+            }
+            if (observedMonsterEscapes != null &&
+                Combat.PendingSimulationSeconds == 0)
+            {
+                try
+                {
+                    observedMonsterEscapes.ApplyAtCurrentCombatTime(
+                        Combat, VerifiedWaveDirector);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogException(ex);
+                    RecordSessionIssue("몬스터 이탈 관측 실패", ex.Message);
+                    runGate.SetManualPause(true);
+                    return;
                 }
             }
             // The same advancing combat clock drives helper mana regen.

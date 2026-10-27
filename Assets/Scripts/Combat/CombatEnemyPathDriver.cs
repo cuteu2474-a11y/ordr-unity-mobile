@@ -147,6 +147,119 @@ namespace Ordr.Mobile.Combat
         }
     }
 
+    // Original escape events must be observed independently. Progress=1 or
+    // a disappeared rendered marker is NOT a native escape event; monster
+    // death belongs exclusively to the authoritative damage resolver.
+    public interface IOriginal323ObservedMonsterEscapeSource
+    {
+        bool TryObserveEscape(int spawnWaveNumber, string instanceId,
+            double simulationSeconds, out string nativeEventEvidence);
+    }
+
+    public sealed class Original323ObservedMonsterEscapeWorld
+    {
+        private readonly IOriginal323ObservedMonsterEscapeSource source;
+
+        public Original323ObservedMonsterEscapeWorld(
+            IOriginal323ObservedMonsterEscapeSource originalEvents)
+        {
+            source = originalEvents ??
+                throw new ArgumentNullException(nameof(originalEvents));
+        }
+
+        public int ApplyAtCurrentCombatTime(CharacterCombatRuntime combat,
+            CombatWaveDirector director)
+        {
+            if (combat == null || director == null)
+                throw new ArgumentNullException(
+                    "몬스터 이탈은 실제 전투 및 원본 출현 기록에 연결해야 합니다.");
+            if (combat.Game.Phase != SessionPhase.Running ||
+                combat.PendingSimulationSeconds > 0) return 0;
+            double time = combat.Time;
+            int currentWave = combat.Game.CurrentWave;
+            int originalAlive = combat.Game.AliveEnemies;
+            int originalDefeated = combat.Game.DefeatedEnemies;
+            int originalLeaked = combat.Game.LeakedEnemies;
+            int originalUnitCount = combat.CharacterCount;
+            var before = combat.MobileEnemySnapshot();
+            var sourceWaves = new Dictionary<string, int>(StringComparer.Ordinal);
+            var statusRevisions = new Dictionary<string, long>(StringComparer.Ordinal);
+            var pending = new List<string>();
+            foreach (var enemy in before)
+            {
+                var status = combat.StatusOf(enemy.Id);
+                statusRevisions.Add(enemy.Id, status == null ? -1 : status.Revision);
+                int spawnWave;
+                if (!director.TryGetLivingMonsterSpawnWave(enemy.Id, out spawnWave))
+                    continue; // No real original wave owner.
+                sourceWaves.Add(enemy.Id, spawnWave);
+                string evidence;
+                if (!source.TryObserveEscape(spawnWave, enemy.Id, time, out evidence))
+                    continue;
+                if (!IsTrustedOriginalEvent(evidence) ||
+                    evidence.IndexOf(
+                        Original323MonsterWaveIdentityCatalog.OriginalWar3mapJSha256,
+                        StringComparison.OrdinalIgnoreCase) < 0)
+                    throw new InvalidOperationException(
+                        "원본 몬스터 이탈 시점/출현 라운드 증거가 없습니다.");
+                pending.Add(enemy.Id);
+            }
+
+            // Query every native event before leaking any unit. The source
+            // observer must be entirely read-only, including statuses and
+            // the shared combat clock.
+            var after = combat.MobileEnemySnapshot();
+            if (time != combat.Time ||
+                currentWave != combat.Game.CurrentWave ||
+                originalAlive != combat.Game.AliveEnemies ||
+                originalDefeated != combat.Game.DefeatedEnemies ||
+                originalLeaked != combat.Game.LeakedEnemies ||
+                originalUnitCount != combat.CharacterCount ||
+                before.Count != after.Count)
+                throw new InvalidOperationException(
+                    "원본 이탈 관측기가 전투 상태를 변경했습니다.");
+            for (int i = 0; i < before.Count; i++)
+            {
+                var a = before[i]; var b = after[i];
+                var status = combat.StatusOf(a.Id);
+                int originalOwner, currentOwner;
+                bool hadOwner = sourceWaves.TryGetValue(a.Id, out originalOwner);
+                bool hasOwner = director.TryGetLivingMonsterSpawnWave(
+                    a.Id, out currentOwner);
+                if (a.Id != b.Id || a.Kind != b.Kind ||
+                    a.Health != b.Health || a.MaxHealth != b.MaxHealth ||
+                    a.X != b.X || a.Y != b.Y || status == null ||
+                    status.Revision != statusRevisions[a.Id] ||
+                    hadOwner != hasOwner ||
+                    (hadOwner && originalOwner != currentOwner))
+                    throw new InvalidOperationException(
+                        "이탈 관측 중 몬스터 위치·상태·소유권이 변경됐습니다.");
+            }
+
+            int leaked = 0;
+            foreach (var id in pending)
+            {
+                if (!combat.LeakEnemy(id))
+                    throw new InvalidOperationException(
+                        "원본 이탈 승인 후 대상 상태가 변경됐습니다.");
+                leaked++;
+            }
+            return leaked;
+        }
+
+        private static bool IsTrustedOriginalEvent(string evidence)
+        {
+            if (string.IsNullOrWhiteSpace(evidence)) return false;
+            foreach (var disallowed in new[] {
+                "TEST_ONLY", "TEST_FIXTURE", "SYNTHETIC",
+                "MOCK_ONLY", "MODEL_ONLY"
+            })
+                if (evidence.IndexOf(disallowed,
+                    StringComparison.OrdinalIgnoreCase) >= 0) return false;
+            return true;
+        }
+    }
+
     // An independent live adapter supplies native monster positions already
     // resolved by the original path, collision, slow, stun and immunity rules.
     // The Unity scene must never infer a speed or path from spawn locations.

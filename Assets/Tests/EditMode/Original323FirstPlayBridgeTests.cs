@@ -192,6 +192,116 @@ namespace Ordr.Mobile.Tests
                 world.ApplyAtCurrentCombatTime(live.Combat));
         }
 
+        private sealed class ExitObserver : IOriginal323ObservedMonsterEscapeSource
+        {
+            public CharacterCombatRuntime Combat;
+            public string ExitId = "leaver";
+            public bool EvidenceApproved = true;
+            public bool DirtyPosition;
+            public int Calls;
+            public bool TryObserveEscape(int spawnWave, string instanceId,
+                double seconds, out string evidence)
+            {
+                Calls++;
+                if (DirtyPosition)
+                    Combat.TryMoveEnemy(instanceId, 999, 0, 0);
+                evidence = EvidenceApproved ?
+                    "original live exit for wave " + spawnWave + " " +
+                    Original323MonsterWaveIdentityCatalog.OriginalWar3mapJSha256 :
+                    "TEST_ONLY fake exit";
+                return instanceId == ExitId;
+            }
+        }
+
+        private static CharacterCombatRuntime ExitWorld()
+        {
+            var units = CharacterUnitCatalog.FromJson(
+                "{\\"gameVersion\\":\\"S2 2.323[C]\\",\\"entries\\":[]}");
+            var profiles = CharacterSkillCatalog.FromJson(
+                "{\\"gameVersion\\":\\"S2 2.323[C]\\",\\"profiles\\":[]}");
+            var deferred = new RejectUnverifiedDamageFormula();
+            var world = new CharacterCombatRuntime(
+                units, profiles, deferred, deferred,
+                new SeededNonOriginalProcRandom(12));
+            world.Start();
+            return world;
+        }
+
+        private static VerifiedWavePlan ExitPlan()
+        {
+            return new VerifiedWavePlan(1, new[] {
+                new VerifiedWaveEnemy(0, "leaver", 300,
+                    CharacterEnemyKind.Line, 20, 0, 0,
+                    EnemyDefenseProfile.UnverifiedKind(CharacterEnemyKind.Line),
+                    "o00I"),
+                new VerifiedWaveEnemy(0, "survivor", 300,
+                    CharacterEnemyKind.Line, 30, 0, 0,
+                    EnemyDefenseProfile.UnverifiedKind(CharacterEnemyKind.Line),
+                    "o00I")
+            }, "TEST_ONLY: authoritative exit contract fixture");
+        }
+
+        [Test]
+        public void ObservedNativeEscapeUpdatesOneWaveLedgerNotDeathOrGold()
+        {
+            var game = ExitWorld();
+            var director = new CombatWaveDirector();
+            director.Begin(game, ExitPlan());
+            director.Step(game, 0);
+            var source = new ExitObserver();
+            var bridge = new Original323ObservedMonsterEscapeWorld(source);
+            Assert.AreEqual(1, bridge.ApplyAtCurrentCombatTime(game, director));
+            Assert.IsNull(game.EnemyOf("leaver"));
+            Assert.AreEqual(300, game.EnemyOf("survivor").Health);
+            Assert.AreEqual(1, director.CurrentProgress.Escaped);
+            Assert.AreEqual(0, director.CurrentProgress.Defeated);
+            Assert.AreEqual(1, game.Game.LeakedEnemies);
+            Assert.AreEqual(0, bridge.ApplyAtCurrentCombatTime(game, director));
+            Assert.AreEqual(1, game.Game.LeakedEnemies);
+        }
+
+        [Test]
+        public void RejectedExitEvidenceDoesNotLeakAnything()
+        {
+            var game = ExitWorld();
+            var director = new CombatWaveDirector();
+            director.Begin(game, ExitPlan()); director.Step(game, 0);
+            var source = new ExitObserver { EvidenceApproved = false };
+            var bridge = new Original323ObservedMonsterEscapeWorld(source);
+            Assert.Throws<InvalidOperationException>(() =>
+                bridge.ApplyAtCurrentCombatTime(game, director));
+            Assert.AreEqual(2, game.Game.AliveEnemies);
+            Assert.AreEqual(0, director.CurrentProgress.Escaped);
+        }
+
+        [Test]
+        public void EscapeWitnessMustNotModifyEnemyDuringReadOnlyInspection()
+        {
+            var game = ExitWorld();
+            var director = new CombatWaveDirector();
+            director.Begin(game, ExitPlan()); director.Step(game, 0);
+            var source = new ExitObserver { Combat = game, DirtyPosition = true };
+            var bridge = new Original323ObservedMonsterEscapeWorld(source);
+            Assert.Throws<InvalidOperationException>(() =>
+                bridge.ApplyAtCurrentCombatTime(game, director));
+            Assert.AreEqual(2, game.Game.AliveEnemies);
+            Assert.AreEqual(0, director.CurrentProgress.Escaped);
+        }
+
+        [Test]
+        public void UnscheduledEnemyCannotReceiveVerifiedWaveExit()
+        {
+            var game = ExitWorld();
+            var director = new CombatWaveDirector();
+            director.Begin(game, ExitPlan()); director.Step(game, 0);
+            game.SpawnEnemy("extra", 300, CharacterEnemyKind.Line, 0, 0, 0);
+            var source = new ExitObserver { ExitId = "extra" };
+            var bridge = new Original323ObservedMonsterEscapeWorld(source);
+            Assert.AreEqual(0, bridge.ApplyAtCurrentCombatTime(game, director));
+            Assert.AreEqual(2, source.Calls);
+            Assert.AreEqual(3, game.Game.AliveEnemies);
+        }
+
         [Test]
         public void OpeningCameraFramesOriginalWorldCoordinatesWithoutChangingThem()
         {

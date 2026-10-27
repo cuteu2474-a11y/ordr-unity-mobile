@@ -195,6 +195,8 @@ namespace Ordr.Mobile.Combat
         // Raised after a verified actual death is recorded. Escapes and
         // unscheduled enemies must never award death-only original resources.
         public event Action<int, string> VerifiedMonsterDefeated;
+        // Real escape events never count as kills or provide kill-only rewards.
+        public event Action<int, string> VerifiedMonsterEscaped;
 
         public bool IsActive { get { return active != null; } }
         public int RemainingSpawns
@@ -217,6 +219,15 @@ namespace Ordr.Mobile.Combat
             }
             progress = null;
             return false;
+        }
+
+        // Only an actual, still-living verified spawn may receive a native
+        // wave-bound exit event. Unscheduled enemies are never approved.
+        public bool TryGetLivingMonsterSpawnWave(string instanceId, out int waveNumber)
+        {
+            waveNumber = 0;
+            return !string.IsNullOrWhiteSpace(instanceId) &&
+                spawnedOwners.TryGetValue(instanceId, out waveNumber);
         }
 
         // Includes normal, boss and enraged deaths. Escape is NOT a death.
@@ -284,6 +295,8 @@ namespace Ordr.Mobile.Combat
             {
                 ledger.Escaped++;
                 if (boss) ledger.BossEscaped++;
+                var callback = VerifiedMonsterEscaped;
+                if (callback != null) callback(waveNumber, enemyId);
             }
             else throw new InvalidOperationException("지원하지 않는 몬스터 종료 종류입니다.");
         }

@@ -190,6 +190,29 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void LivingMonsterOwnerAndNativeEscapeCallbackRemainSeparateFromKills()
+        {
+            var world = CreateWorld();
+            var director = new CombatWaveDirector();
+            var killed = new System.Collections.Generic.List<string>();
+            var escaped = new System.Collections.Generic.List<string>();
+            director.VerifiedMonsterDefeated += (w, id) => killed.Add(w + ":" + id);
+            director.VerifiedMonsterEscaped += (w, id) => escaped.Add(w + ":" + id);
+            int owner;
+            Assert.IsFalse(director.TryGetLivingMonsterSpawnWave("one", out owner));
+            director.Begin(world, Plan(1, Spawn(0, "one")));
+            director.Step(world, 0);
+            Assert.IsTrue(director.TryGetLivingMonsterSpawnWave("one", out owner));
+            Assert.AreEqual(1, owner);
+            Assert.IsTrue(world.LeakEnemy("one"));
+            Assert.IsFalse(director.TryGetLivingMonsterSpawnWave("one", out owner));
+            CollectionAssert.AreEqual(new[] { "1:one" }, escaped);
+            Assert.AreEqual(0, killed.Count);
+            Assert.AreEqual(0, director.CurrentProgress.Defeated);
+            Assert.AreEqual(1, director.CurrentProgress.Escaped);
+        }
+
+        [Test]
         public void DefeatCallbacksCarryOriginalSpawnWaveAndIgnoreEscapes()
         {
             var world = CreateWorld();
