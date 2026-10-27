@@ -290,9 +290,9 @@ namespace Ordr.Mobile.Tests
         private static CharacterCombatRuntime ExitWorld()
         {
             var units = CharacterUnitCatalog.FromJson(
-                "{\\"gameVersion\\":\\"S2 2.323[C]\\",\\"entries\\":[]}");
+                "{\"gameVersion\":\"S2 2.323[C]\",\"entries\":[]}");
             var profiles = CharacterSkillCatalog.FromJson(
-                "{\\"gameVersion\\":\\"S2 2.323[C]\\",\\"profiles\\":[]}");
+                "{\"gameVersion\":\"S2 2.323[C]\",\"profiles\":[]}");
             var deferred = new RejectUnverifiedDamageFormula();
             var world = new CharacterCombatRuntime(
                 units, profiles, deferred, deferred,

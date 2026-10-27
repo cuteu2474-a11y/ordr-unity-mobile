@@ -76,7 +76,10 @@ namespace Ordr.Mobile.Tests
             var shared = new SharedEconomySession(new EconomyWallet(), roster);
             combat.Start();
             combat.BeginWave(1);
-            shared.Wallet.Grant(new ResourceBundle().Add(WispResourceIds.Random, wisps));
+            // Empty Wisp state is an empty wallet: ResourceBundle.Add forbids 0.
+            if (wisps > 0)
+                shared.Wallet.Grant(new ResourceBundle().Add(
+                    WispResourceIds.Random, wisps));
             return new Live { Combat = combat, Economy = shared,
                 Units = units, Objects = originals };
         }

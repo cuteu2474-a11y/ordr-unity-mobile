@@ -171,7 +171,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void RareAokijiNativeSlowFollowsEnemyDistanceAndLiveTargetProof()
+        public void RareAokijiNativeSlowReachesDistantEnemyButRequiresLiveTargetProof()
         {
             var native = new ObservedNativeTargets { ApprovedAbility = "A023" };
             var world = World(native);
@@ -182,9 +182,9 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual("R-26", world.Roster.Get(caster).UnitId);
 
             Assert.IsTrue(world.TryMoveEnemy("line", 900, 0, 0));
-            Assert.IsFalse(HasEffect(world.StatusOf("line"),
+            Assert.IsTrue(HasEffect(world.StatusOf("line"),
                 CombatEffectType.MovementSlowPercent, 10),
-                "Native radius 800 must not affect enemies at distance 900.");
+                "Mobile aura radius is unlimited for an otherwise eligible enemy.");
 
             Assert.IsTrue(world.TryMoveEnemy("line", 200, 0, 0));
             Assert.IsTrue(HasEffect(world.StatusOf("line"),
@@ -196,7 +196,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void RareBrookNativeAttackSpeedAuraOnlyAffectsWitnessedAlliesInRange()
+        public void RareBrookNativeAttackSpeedAuraReachesDistantApprovedAllies()
         {
             var native = new ObservedNativeTargets { ApprovedAbility = "A0FT" };
             var world = World(native);
@@ -208,7 +208,7 @@ namespace Ordr.Mobile.Tests
                 CombatEffectType.AttackSpeedBuff, 10));
 
             world.MoveCharacter(ally, 950, 0);
-            Assert.IsFalse(HasEffect(world.UnitStatusOf(ally),
+            Assert.IsTrue(HasEffect(world.UnitStatusOf(ally),
                 CombatEffectType.AttackSpeedBuff, 10));
             Assert.IsTrue(HasEffect(world.UnitStatusOf(brook),
                 CombatEffectType.AttackSpeedBuff, 10));
