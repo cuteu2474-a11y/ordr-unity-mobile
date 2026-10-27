@@ -405,31 +405,52 @@ namespace Ordr.Mobile.Unity
         // here; independent final-stat approval is checked at wave start.
         public void RegisterVerifiedLiveMonsterWavePlan(VerifiedWavePlan plan)
         {
-            if (plan == null || plan.WaveNumber < 1 || plan.WaveNumber > 65)
-                throw new ArgumentException("1~65라운드의 검증된 출현 계획이 필요합니다.");
+            RegisterVerifiedLiveMonsterWavePlans(new[] { plan });
+        }
+
+        // Validate the ENTIRE source-reviewed batch before changing the
+        // registered 1..65 plan set. Failed batches leave all earlier entries
+        // untouched. Per-wave final HP/defense approval is repeated at start.
+        public void RegisterVerifiedLiveMonsterWavePlans(
+            IEnumerable<VerifiedWavePlan> sourcePlans)
+        {
+            if (sourcePlans == null)
+                throw new ArgumentNullException(nameof(sourcePlans));
             if (liveMonsterWaveEvidence == null ||
                 OriginalMonsterSpawnIdentities == null ||
                 OriginalMonsterObjectAbilities == null)
                 throw new InvalidOperationException(
                     "원본 출현 스크립트/몬스터 객체/실전 승인 공급자가 필요합니다.");
-            if (Combat != null && (Combat.Game.CurrentWave >= plan.WaveNumber ||
-                Combat.Game.Phase == SessionPhase.Won ||
-                Combat.Game.Phase == SessionPhase.Lost))
-                throw new InvalidOperationException(
-                    "이미 시작했거나 종료된 라운드는 교체할 수 없습니다.");
-            if (registeredLiveWavePlans.ContainsKey(plan.WaveNumber))
-                throw new InvalidOperationException("라운드 계획 중복 등록");
-            VerifiedWavePlan imported;
-            if (VerifiedMonsterWaves != null &&
-                VerifiedMonsterWaves.TryGetPlan(plan.WaveNumber, out imported))
-                throw new InvalidOperationException(
-                    "이미 제공된 검증 JSON 라운드는 덮어쓸 수 없습니다.");
-            if (!OriginalMonsterSpawnIdentities.MatchesSinglePlayerWave(plan) ||
-                !OriginalMonsterSpawnIdentities.MatchesSinglePlayerSpawnCadence(plan) ||
-                !OriginalMonsterObjectAbilities.MatchesWaveObjectRoles(plan))
-                throw new InvalidOperationException(
-                    "원본 JASS 출현 수량/간격/몬스터 객체와 일치하지 않습니다.");
-            registeredLiveWavePlans.Add(plan.WaveNumber, plan);
+            var pending = new List<VerifiedWavePlan>();
+            var seen = new HashSet<int>();
+            foreach (var plan in sourcePlans)
+            {
+                if (plan == null || plan.WaveNumber < 1 || plan.WaveNumber > 65)
+                    throw new ArgumentException("1~65라운드의 검증된 출현 계획이 필요합니다.");
+                if (Combat != null && (Combat.Game.CurrentWave >= plan.WaveNumber ||
+                    Combat.Game.Phase == SessionPhase.Won ||
+                    Combat.Game.Phase == SessionPhase.Lost))
+                    throw new InvalidOperationException(
+                        "이미 시작했거나 종료된 라운드는 교체할 수 없습니다.");
+                if (!seen.Add(plan.WaveNumber) ||
+                    registeredLiveWavePlans.ContainsKey(plan.WaveNumber))
+                    throw new InvalidOperationException("라운드 계획 중복 등록");
+                VerifiedWavePlan imported;
+                if (VerifiedMonsterWaves != null &&
+                    VerifiedMonsterWaves.TryGetPlan(plan.WaveNumber, out imported))
+                    throw new InvalidOperationException(
+                        "이미 제공된 검증 JSON 라운드는 덮어쓸 수 없습니다.");
+                if (!OriginalMonsterSpawnIdentities.MatchesSinglePlayerWave(plan) ||
+                    !OriginalMonsterSpawnIdentities.MatchesSinglePlayerSpawnCadence(plan) ||
+                    !OriginalMonsterObjectAbilities.MatchesWaveObjectRoles(plan))
+                    throw new InvalidOperationException(
+                        "원본 JASS 출현 수량/간격/몬스터 객체와 일치하지 않습니다.");
+                pending.Add(plan);
+            }
+            if (pending.Count == 0)
+                throw new ArgumentException("빈 라운드 계획은 등록하지 않습니다.");
+            foreach (var plan in pending)
+                registeredLiveWavePlans.Add(plan.WaveNumber, plan);
         }
 
         public void ConfigureObservedNightmareA04QEvents(
@@ -1906,6 +1927,41 @@ namespace Ordr.Mobile.Unity
                 out roundStartEvidence))
                 throw new InvalidOperationException(
                     "다음 라운드의 원본 시작 이벤트가 확인되지 않았습니다.");
+            BeginAuthorizedVerifiedMonsterWave(waveNumber, plan);
+        }
+
+        // Only the independent original event witness may authorize a
+        // transition. This does not infer timer events from enemy kills.
+        public bool TryBeginNextObservedMonsterWave()
+        {
+            if (Combat == null ||
+                !Original323ObservedRoundStartGate.MayObserveNext(
+                    Combat.Game, VerifiedWaveDirector, observedRoundStartWitness))
+                return false;
+            int next = Combat.Game.CurrentWave + 1;
+            VerifiedWavePlan plan;
+            try
+            {
+                // Check source identity/cadence/final stats before consulting
+                // the possibly consuming original event source.
+                plan = RequireVerifiedMonsterWavePlan(next);
+            }
+            catch (InvalidOperationException)
+            {
+                // The next wave's live evidence may be delivered later.
+                return false;
+            }
+            string sourceEvent;
+            if (!Original323ObservedRoundStartGate.TryAuthorize(
+                Combat.Game, next, observedRoundStartWitness, out sourceEvent))
+                return false;
+            BeginAuthorizedVerifiedMonsterWave(next, plan);
+            return true;
+        }
+
+        private void BeginAuthorizedVerifiedMonsterWave(
+            int waveNumber, VerifiedWavePlan plan)
+        {
             // BGo dispatches l0 before the next round is entered. CU8/CU7
             // defeats a player whose previous boss remains outstanding.
             // Only a trusted observed round-start signal can reach this path.
@@ -2071,6 +2127,18 @@ namespace Ordr.Mobile.Unity
             // real live-world port, after the current enemy positions update.
             if (HelperCowAutoArea != null)
                 HelperCowAutoArea.Tick();
+            // Never synthesize the next round from a kill count or assumed
+            // 5-second schedule: require an explicit original start witness.
+            try
+            {
+                TryBeginNextObservedMonsterWave();
+            }
+            catch (Exception ex)
+            {
+                runGate.SetManualPause(true);
+                RecordSessionIssue("라운드 전환 중단", ex.Message);
+                Debug.LogException(ex);
+            }
         }
     }
 }

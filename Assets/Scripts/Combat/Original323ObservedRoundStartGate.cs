@@ -14,6 +14,21 @@ namespace Ordr.Mobile.Combat
 
     public static class Original323ObservedRoundStartGate
     {
+        // Pure preflight: do not even consult a potentially consuming native
+        // event witness while the prior original spawn queue is unfinished.
+        // Living enemies can carry across waves when the original allows it.
+        public static bool MayObserveNext(
+            GameSession session, CombatWaveDirector director,
+            IOriginal323ObservedRoundStartWitness witness)
+        {
+            return session != null && director != null && witness != null &&
+                session.Phase == SessionPhase.Running &&
+                session.CurrentWave >= 1 && session.CurrentWave < 65 &&
+                director.IsActive && director.RemainingSpawns == 0 &&
+                director.CurrentProgress != null &&
+                director.CurrentProgress.WaveNumber == session.CurrentWave;
+        }
+
         public static bool TryAuthorize(GameSession session, int requestedRound,
             IOriginal323ObservedRoundStartWitness witness, out string evidence)
         {

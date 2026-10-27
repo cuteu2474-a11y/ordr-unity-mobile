@@ -129,6 +129,40 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OriginalNextWaveProbeWaitsForScheduledSpawnsNotKills()
+        {
+            var world = World();
+            var director = new CombatWaveDirector();
+            var witness = new Witness();
+            Assert.IsFalse(Original323ObservedRoundStartGate.MayObserveNext(
+                world.Game, director, witness));
+            director.Begin(world, new VerifiedWavePlan(1,
+                new[] { Spawn(1, "pending", CharacterEnemyKind.Line, "o00I") },
+                "TEST_ONLY: future native spawn"));
+            Assert.IsFalse(Original323ObservedRoundStartGate.MayObserveNext(
+                world.Game, director, witness));
+            director.Step(world, 1);
+            // Existing living monsters do not prevent a source-observed
+            // round start after all scheduled spawns were issued.
+            Assert.AreEqual(1, world.Game.AliveEnemies);
+            Assert.IsTrue(Original323ObservedRoundStartGate.MayObserveNext(
+                world.Game, director, witness));
+            Assert.IsFalse(Original323ObservedRoundStartGate.MayObserveNext(
+                world.Game, director, null));
+            string evidence;
+            Assert.IsTrue(Original323ObservedRoundStartGate.TryAuthorize(
+                world.Game, 2, witness, out evidence));
+            director.Begin(world, new VerifiedWavePlan(2,
+                new[] { Spawn(0, "next", CharacterEnemyKind.Line, "o00I") },
+                "TEST_ONLY: next native spawn"));
+            Assert.IsFalse(Original323ObservedRoundStartGate.MayObserveNext(
+                world.Game, director, witness));
+            director.Step(world, 0);
+            Assert.IsTrue(Original323ObservedRoundStartGate.MayObserveNext(
+                world.Game, director, witness));
+        }
+
+        [Test]
         public void RejectedSyntheticOrUnconfirmedTransitionLeavesRoundUnchanged()
         {
             var session = new GameSession();

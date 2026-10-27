@@ -29,6 +29,7 @@ namespace Ordr.Mobile.Unity
             public SpriteRenderer AttackFlash;
             public float AttackFlashStartedAt = -1f;
             public bool IsPreviewFlash;
+            public bool IsSkillFlash;
             public string Grade;
             public string OriginalWeaponType;
         }
@@ -343,8 +344,20 @@ namespace Ordr.Mobile.Unity
                     recentEnemyPositions.Remove(combatEvent.EnemyId);
                 return;
             }
+            if (combatEvent.Type == CharacterCombatEventType.SkillDamage ||
+                combatEvent.Type == CharacterCombatEventType.StatusApplied ||
+                combatEvent.Type == CharacterCombatEventType.ArmorBreakApplied)
+            {
+                // Only ACTUAL resolved impact/status events flash a victim.
+                EnemyVisual hit;
+                if (!string.IsNullOrEmpty(combatEvent.EnemyId) &&
+                    enemyVisuals.TryGetValue(combatEvent.EnemyId, out hit))
+                    hit.HitAt = Time.unscaledTime;
+                return;
+            }
             if (combatEvent.Type != CharacterCombatEventType.Attack &&
-                combatEvent.Type != CharacterCombatEventType.AttackPreview)
+                combatEvent.Type != CharacterCombatEventType.AttackPreview &&
+                combatEvent.Type != CharacterCombatEventType.SkillActivated)
                 return;
             long instanceId;
             if (!long.TryParse(combatEvent.ActorId, NumberStyles.None,
@@ -362,10 +375,16 @@ namespace Ordr.Mobile.Unity
             if (!visual.Root.activeSelf) return;
             visual.AttackFlashStartedAt = Time.unscaledTime;
             visual.IsPreviewFlash = combatEvent.Type == CharacterCombatEventType.AttackPreview;
+            visual.IsSkillFlash = combatEvent.Type == CharacterCombatEventType.SkillActivated;
             visual.AttackFlash.enabled = true;
-            visual.AttackFlash.color = visual.IsPreviewFlash
-                ? new Color(0.62f, 0.85f, 1f, 0.8f)
-                : new Color(1f, 0.88f, 0.3f, 0.8f);
+            visual.AttackFlash.color = visual.IsSkillFlash
+                ? new Color(0.70f, 0.51f, 1f, 0.8f)
+                : visual.IsPreviewFlash
+                    ? new Color(0.62f, 0.85f, 1f, 0.8f)
+                    : new Color(1f, 0.88f, 0.3f, 0.8f);
+            // A confirmed cast is not proof of HP damage. The actual impact
+            // arrives as SkillDamage/StatusApplied/ArmorBreakApplied.
+            if (visual.IsSkillFlash) return;
 
             Vector3 target;
             if (!string.IsNullOrEmpty(combatEvent.EnemyId) &&
@@ -400,9 +419,11 @@ namespace Ordr.Mobile.Unity
                 float remaining = 1f - Mathf.Clamp01(progress);
                 visual.AttackFlash.transform.localScale = Vector3.one *
                     Mathf.Lerp(1.10f, 1.70f, progress);
-                visual.AttackFlash.color = visual.IsPreviewFlash
-                    ? new Color(0.62f, 0.85f, 1f, 0.8f * remaining)
-                    : new Color(1f, 0.88f, 0.3f, 0.8f * remaining);
+                visual.AttackFlash.color = visual.IsSkillFlash
+                    ? new Color(0.70f, 0.51f, 1f, 0.8f * remaining)
+                    : visual.IsPreviewFlash
+                        ? new Color(0.62f, 0.85f, 1f, 0.8f * remaining)
+                        : new Color(1f, 0.88f, 0.3f, 0.8f * remaining);
             }
         }
 
