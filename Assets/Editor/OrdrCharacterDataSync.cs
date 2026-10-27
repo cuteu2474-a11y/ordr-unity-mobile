@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 namespace Ordr.Mobile.Editor
@@ -36,9 +38,37 @@ namespace Ordr.Mobile.Editor
             "original-2323C-wisp-pools.json"
         };
 
+        // The scene's Awake() requires these actual imported TextAssets.
+        // Neither the first-play button nor a build may invent missing data.
+        private static readonly string[] RequiredRuntimeData =
+        {
+            "units.json",
+            "character-skill-profiles.json",
+            "original-2323C-map-base-stats.json",
+            "original-2323C-monster-wave-script-evidence.json",
+            "original-2323C-monster-object-abilities.json",
+            "original-2323C-wisp-pools.json"
+        };
+
         static OrdrCharacterDataSync()
         {
             EditorApplication.delayCall += SyncOnProjectOpen;
+        }
+
+        // Build-preflight uses the SAME importer as EditMode and the manual
+        // menu; do not add a second copy of /data or bake guessed defaults.
+        internal static void EnsureRequiredRuntimeResources()
+        {
+            CopySourceData(logIfUnchanged: false);
+            var missing = RequiredRuntimeData.Where(file =>
+                Resources.Load<TextAsset>(
+                    "OrdrData/" + Path.GetFileNameWithoutExtension(file)) == null)
+                .ToArray();
+            if (missing.Length > 0)
+                throw new BuildFailedException(
+                    "ORDR 빌드 중단: Unity Resources에 필수 원본 JSON이 없습니다: " +
+                    string.Join(", ", missing) +
+                    " / 전체 GitHub 저장소의 data 폴더와 Editor 동기화를 확인하세요.");
         }
 
         private static void SyncOnProjectOpen()
@@ -94,11 +124,25 @@ namespace Ordr.Mobile.Editor
             }
 
             if (changed > 0)
-                AssetDatabase.Refresh();
+                // A build may follow immediately. In that case the newly
+                // copied JSON must be fully imported before scene packaging.
+                AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
 
             if (changed > 0 || logIfUnchanged)
                 Debug.Log("ORDR 원본 도감 데이터 " + changed +
                     "개 파일 동기화. 게임 기능·공식의 검증 또는 실행 결과는 아닙니다.");
+        }
+    }
+
+    // This does NOT build APKs. It protects any future approved Unity build
+    // from silently shipping an empty menu due to untracked Resources caches.
+    public sealed class OrdrRuntimeDataBuildPreflight : IPreprocessBuildWithReport
+    {
+        public int callbackOrder { get { return -10000; } }
+
+        public void OnPreprocessBuild(BuildReport report)
+        {
+            OrdrCharacterDataSync.EnsureRequiredRuntimeResources();
         }
     }
 }
