@@ -25,6 +25,7 @@ namespace Ordr.Mobile.Editor
         private static OrdrCharacterCombatController previewController;
         private static int previewWaveNumber;
         private static double previewWaveStartedAt;
+        private static bool previewSessionActive;
 
         static OrdrFirstWavePreview()
         {
@@ -72,7 +73,7 @@ namespace Ordr.Mobile.Editor
             if (change == PlayModeStateChange.ExitingPlayMode)
             {
                 SessionState.SetBool(Armed, false);
-                StopPreviewClock();
+                StopPreviewClock(restoreEditorTimeScale: true);
             }
             if (change != PlayModeStateChange.EnteredPlayMode ||
                 !SessionState.GetBool(Armed, false)) return;
@@ -127,6 +128,8 @@ namespace Ordr.Mobile.Editor
                         (summon.Message ?? string.Empty));
 
                 StopPreviewClock();
+                previewSessionActive = true;
+                controller.SetEditorPreviewSpeed(1);
                 previewController = controller;
                 previewWaveNumber = 1;
                 previewWaveStartedAt = controller.Combat.Time;
@@ -138,7 +141,7 @@ namespace Ordr.Mobile.Editor
             }
             catch (Exception ex)
             {
-                StopPreviewClock();
+                StopPreviewClock(restoreEditorTimeScale: true);
                 Debug.LogException(ex);
                 EditorUtility.DisplayDialog(
                     "ORDR 개발용 첫 라운드 구성 실패",
@@ -180,12 +183,18 @@ namespace Ordr.Mobile.Editor
             return plans.AsReadOnly();
         }
 
-        private static void StopPreviewClock()
+        private static void StopPreviewClock(bool restoreEditorTimeScale = false)
         {
             EditorApplication.update -= TickEditorPracticeRounds;
             previewController = null;
             previewWaveNumber = 0;
             previewWaveStartedAt = 0;
+            // Keep the selected speed throughout wave 3; reset at Play exit.
+            if (restoreEditorTimeScale && previewSessionActive)
+            {
+                Time.timeScale = 1f;
+                previewSessionActive = false;
+            }
         }
 
         private static void TickEditorPracticeRounds()

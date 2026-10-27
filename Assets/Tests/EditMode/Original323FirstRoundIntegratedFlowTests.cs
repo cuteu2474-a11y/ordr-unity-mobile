@@ -305,6 +305,48 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void PracticeSpeedIsAvailableOnlyAfterExplicitEditorSessionStart()
+        {
+            var root = new GameObject("Editor-only speed control fixture");
+            root.SetActive(false);
+            float originalScale = Time.timeScale;
+            try
+            {
+                var controller = CreateController(root, new FixtureLiveApproval());
+                Assert.Throws<InvalidOperationException>(() =>
+                    controller.SetEditorPreviewSpeed(2),
+                    "Ordinary sessions cannot enable fast-forward.");
+                controller.RegisterVerifiedLiveMonsterWavePlan(
+                    MakeFixtureRoundOne(controller.OriginalMonsterSpawnIdentities));
+                controller.MarkEditorPreview();
+                Assert.Throws<InvalidOperationException>(() =>
+                    controller.SetEditorPreviewSpeed(2),
+                    "Practice must enter a running session first.");
+                controller.BeginVerifiedFirstWave();
+                Assert.AreEqual(1, controller.EditorPreviewSpeed);
+                Assert.Throws<ArgumentOutOfRangeException>(() =>
+                    controller.SetEditorPreviewSpeed(3));
+                Assert.AreEqual(1, controller.EditorPreviewSpeed);
+                controller.SetEditorPreviewSpeed(4);
+                Assert.AreEqual(4, controller.EditorPreviewSpeed);
+                Assert.AreEqual(4f, Time.timeScale);
+                controller.SetEditorPreviewSpeed(2);
+                Assert.AreEqual(2f, Time.timeScale);
+                controller.SetManualGameplayPause(true);
+                Assert.IsTrue(controller.IsGameplayPaused);
+                controller.SetEditorPreviewSpeed(1);
+                Assert.AreEqual(1f, Time.timeScale);
+                Assert.IsTrue(controller.IsGameplayPaused,
+                    "Fast forward must not bypass the manual pause.");
+            }
+            finally
+            {
+                Time.timeScale = originalScale;
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        [Test]
         public void ExplicitEditorPracticeAdvancesOnlyTwoSequentialCompletedSpawnQueues()
         {
             var root = new GameObject("ORDR 3-round Editor-only practice");

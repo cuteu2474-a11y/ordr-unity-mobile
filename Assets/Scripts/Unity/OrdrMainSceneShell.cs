@@ -85,6 +85,30 @@ namespace Ordr.Mobile.Unity
                     try { controller.SetManualGameplayPause(!controller.IsGameplayPaused); }
                     catch (InvalidOperationException ex) { Debug.LogWarning(ex.Message); }
                 }
+#if UNITY_EDITOR
+                // Only explicitly started, synthetic Editor playtests get speed controls.
+                if (controller.IsEditorPreview && width >= 440f)
+                {
+                    int[] speeds = { 1, 2, 4 };
+                    const float buttonWidth = 43f;
+                    const float gap = 3f;
+                    float firstX = pauseRect.x -
+                        speeds.Length * (buttonWidth + gap) - 5f;
+                    for (int i = 0; i < speeds.Length; i++)
+                    {
+                        int speed = speeds[i];
+                        Rect button = new Rect(firstX + i * (buttonWidth + gap),
+                            pauseRect.y, buttonWidth, pauseRect.height);
+                        string label = controller.EditorPreviewSpeed == speed
+                            ? "[" + speed + "x]" : speed + "x";
+                        if (GUI.Button(button, label))
+                        {
+                            try { controller.SetEditorPreviewSpeed(speed); }
+                            catch (Exception ex) { Debug.LogWarning(ex.Message); }
+                        }
+                    }
+                }
+#endif
             }
 
             // Do not cover the skill ribbon: OrdrMobileTouchPanel owns its

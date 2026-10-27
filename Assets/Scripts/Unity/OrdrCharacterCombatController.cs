@@ -658,6 +658,7 @@ namespace Ordr.Mobile.Unity
         // Only the explicitly launched Editor sandbox may mark itself as
         // using non-retail monster stats, native timings and RNG outcomes.
         public bool IsEditorPreview { get; private set; }
+        public int EditorPreviewSpeed { get; private set; } = 1;
 
         public void MarkEditorPreview()
         {
@@ -665,6 +666,21 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException(
                     "에디터 체험 표시는 게임 시작 전의 테스트 월드에만 설정할 수 있습니다.");
             IsEditorPreview = true;
+            EditorPreviewSpeed = 1;
+        }
+
+        // Editor sandbox only; original JASS timing and production build are untouched.
+        public void SetEditorPreviewSpeed(int speed)
+        {
+            if (!IsEditorPreview || Combat == null ||
+                Combat.Game.Phase != SessionPhase.Running)
+                throw new InvalidOperationException(
+                    "명시적으로 시작한 Unity Editor 체험에서만 속도를 변경할 수 있습니다.");
+            if (speed != 1 && speed != 2 && speed != 4)
+                throw new ArgumentOutOfRangeException(nameof(speed),
+                    "Unity Editor 연습 속도는 1배·2배·4배만 가능합니다.");
+            Time.timeScale = speed;
+            EditorPreviewSpeed = speed;
         }
 #endif
         private readonly OfflineSessionRunGate runGate = new OfflineSessionRunGate();
