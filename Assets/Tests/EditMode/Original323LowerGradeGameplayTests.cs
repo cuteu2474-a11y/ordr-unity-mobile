@@ -76,7 +76,38 @@ namespace Ordr.Mobile.Tests
         [TestCase("A01H", "U-11")]
         [TestCase("A01L", "U-12")]
         [TestCase("A0N7", "U-13")]
-        public void AllThirteenRecipesConsumeActualMaterialsAndCreateOneResult(string ability, string result)
+        [TestCase("A012", "S-07")]
+        [TestCase("A015", "S-03")]
+        [TestCase("A032", "S-22")]
+        [TestCase("A018", "S-11")]
+        [TestCase("A01B", "S-13")]
+        [TestCase("A024", "S-08")]
+        [TestCase("A01A", "S-24")]
+        [TestCase("A0NA", "S-02")]
+        [TestCase("A01O", "S-06")]
+        [TestCase("A03E", "S-04")]
+        [TestCase("A01X", "S-05")]
+        [TestCase("A017", "S-28")]
+        [TestCase("A00K", "S-09")]
+        [TestCase("A019", "S-33")]
+        [TestCase("A00Z", "S-21")]
+        [TestCase("A01I", "S-12")]
+        [TestCase("A01D", "S-18")]
+        [TestCase("A01K", "S-20")]
+        [TestCase("A02B", "S-01")]
+        [TestCase("A01C", "S-31")]
+        [TestCase("A00B", "S-25")]
+        [TestCase("A014", "S-26")]
+        [TestCase("A030", "S-30")]
+        [TestCase("A01N", "S-10")]
+        [TestCase("A00S", "S-19")]
+        [TestCase("A01E", "S-23")]
+        [TestCase("A02Y", "S-32")]
+        [TestCase("A01Q", "S-29")]
+        [TestCase("A0N8", "S-27")]
+        [TestCase("A01P", "S-16")]
+        [TestCase("A029", "S-17")]
+        public void AllReviewedRecipesConsumeActualMaterialsAndCreateOneResult(string ability, string result)
         {
             var game = Create();
             foreach (var requirement in game.Registry.FindByAbility(ability).RequiredUnitRawcodes())
@@ -105,6 +136,29 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, notifications);
             Assert.AreEqual(ManualActionState.Rejected, game.Fusion.ConfirmFusion(ability, consumed).State);
             Assert.AreEqual(1, notifications);
+        }
+
+        [Test]
+        public void SpecialFusionRechecksExactMaterialsAndDoesNotAuthorizeUnreviewedCasts()
+        {
+            var game = Create();
+            for (int i = 0; i < 3; i++) game.Combat.SpawnCharacter("C-01", 10 + i, 20);
+            var offer = Offer(game, "A012"); // Three Luffy -> Gear Second.
+            Assert.IsTrue(offer.IsReady);
+            long removed = offer.SuggestedMaterialInstances[0];
+            game.Combat.RemoveCharacter(removed);
+            long replacement = game.Combat.SpawnCharacter("C-01", 99, 100);
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("A012", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(3, game.Combat.CharacterCount);
+            Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
+            Assert.AreEqual(44, game.Fusion.ExecutableRecipeCount);
+            var fresh = Offer(game, "A012");
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion("A012", fresh.SuggestedMaterialInstances).State);
+            Assert.AreEqual("S-07", game.Combat.MobileUnitSnapshot().Single().Unit.Id);
         }
 
         [Test]
@@ -252,6 +306,7 @@ namespace Ordr.Mobile.Tests
                 Assert.IsTrue(owner.IsUnitPreparation);
                 Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
                 Assert.AreEqual(13, owner.ExecutableCommonFusionCount);
+                Assert.AreEqual(31, owner.ExecutableSpecialFusionCount);
                 Assert.AreEqual(ManualActionState.Succeeded, owner.RequestCommonWispBatch(5).State);
                 Assert.AreEqual(5, owner.Combat.CharacterCount);
                 Assert.AreEqual(6, owner.SharedEconomy.Units.Count); // Plus non-combat evolution.

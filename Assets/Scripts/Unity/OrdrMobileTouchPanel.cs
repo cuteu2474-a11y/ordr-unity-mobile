@@ -12,12 +12,14 @@ namespace Ordr.Mobile.Unity
     // 스토리·조합확인·상점·도박·위습 버튼은 실제 사용자 탭에서만 호출된다.
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
-        private enum Tab { Units, Story, Fusion, Shop, Gambling, Wisp, Helper, Alchemy, Missions }
+        private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, Helper, Alchemy, Missions }
 
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private bool openByDefault;
         private bool visible;
-        private Tab currentTab = Tab.Units;
+        private Tab currentTab = Tab.Play;
+        private float nextFusionRefresh;
+        private string fusionInventorySignature;
         private bool browsingFullCatalog;
         private int catalogGradeIndex;
         private int catalogPage;
@@ -69,6 +71,31 @@ namespace Ordr.Mobile.Unity
                 controller = GetComponent<OrdrCharacterCombatController>();
             visible = openByDefault;
             if (visible) RefreshCurrent();
+        }
+
+        // Navigation only. Opening a drawer never spends or summons anything.
+        public void OpenRecruitment()
+        {
+            if (visible && currentTab == Tab.Wisp) return;
+            SelectTab(Tab.Wisp);
+        }
+
+        private void Update()
+        {
+            if (!visible || Combat == null ||
+                (currentTab != Tab.Play && currentTab != Tab.Fusion) ||
+                Time.unscaledTime < nextFusionRefresh) return;
+            nextFusionRefresh = Time.unscaledTime + 0.5f;
+            var owned = Combat.MobileUnitSnapshot();
+            var signature = new System.Text.StringBuilder();
+            signature.Append(Combat.Game.Phase);
+            foreach (var unit in owned)
+                signature.Append('|').Append(unit.InstanceId).Append(':').Append(unit.Unit.Id)
+                    .Append(':').Append(Combat.IsStoryDeployed(unit.InstanceId));
+            string value = signature.ToString();
+            if (value == fusionInventorySignature) return;
+            fusionInventorySignature = value;
+            RefreshCurrent();
         }
 
         public bool BlocksWorldTap(Vector2 onGui)
@@ -199,6 +226,7 @@ namespace Ordr.Mobile.Unity
                 false, true, GUILayout.ExpandHeight(true));
 
             // Order matches the most common manual activities.
+            DrawLeftTab(Tab.Play, "플레이");
             DrawLeftTab(Tab.Wisp, "위습");
             DrawLeftTab(Tab.Helper, "도움소");
             if (controller.Original323HelperCow != null &&
@@ -255,6 +283,7 @@ namespace Ordr.Mobile.Unity
             {
                 switch (currentTab)
                 {
+                    case Tab.Play: DrawPlay(); break;
                     case Tab.Units: DrawUnits(); break;
                     case Tab.Story: DrawStory(); break;
                     case Tab.Fusion: DrawFusion(); break;
@@ -278,6 +307,7 @@ namespace Ordr.Mobile.Unity
         {
             switch (tab)
             {
+                case Tab.Play: return "플레이";
                 case Tab.Wisp: return "위습";
                 case Tab.Helper: return "도움소";
                 case Tab.Alchemy: return "연금술";
@@ -288,6 +318,91 @@ namespace Ordr.Mobile.Unity
                 case Tab.Gambling: return "도박";
                 case Tab.Missions: return "개인 미션";
                 default: throw new ArgumentOutOfRangeException(nameof(tab));
+            }
+        }
+
+        private void DrawPlay()
+        {
+            if (Combat == null || controller.SharedEconomy == null)
+            {
+                GUILayout.Label("유닛을 준비한 뒤 연습 전투를 시작하세요.");
+                return;
+            }
+            var game = Combat.Game;
+            var practice = controller.PracticeBattle;
+            bool playing = game.Phase == SessionPhase.Running;
+            GUILayout.Label(controller.IsUnitPreparation ? "1. 위습 소환 → 2. 조합 → 3. 전투 시작" :
+                practice == null ? "게임을 시작하면 진행 현황을 확인할 수 있습니다." :
+                playing ? "전투 중에도 직접 소환·조합·판매할 수 있습니다." : practice.ResultMessage);
+            GUILayout.Label("보유 전투 유닛 " + Combat.CharacterCount + " · 자동 공격 " + Combat.ReadyAttackers);
+            if (playing)
+            {
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("위습 소환으로", GUILayout.MinHeight(46))) OpenRecruitment();
+                if (GUILayout.Button("보유 유닛 / 판매", GUILayout.MinHeight(46))) SelectTab(Tab.Units);
+                GUILayout.EndHorizontal();
+            }
+            if (controller.IsUnitPreparation)
+            {
+                bool previous = GUI.enabled;
+                GUI.enabled = previous && Combat.CharacterCount > 0;
+                if (GUILayout.Button("준비 완료 · 10R 연습 시작", GUILayout.MinHeight(48)))
+                {
+                    try { controller.BeginPracticeBattle(); notice = "전투 시작 · 소환과 조합은 계속할 수 있습니다."; }
+                    catch (Exception error) { notice = error.Message; }
+                }
+                GUI.enabled = previous;
+                if (Combat.CharacterCount == 0) GUILayout.Label("먼저 위습 메뉴에서 유닛을 소환하세요.");
+            }
+            if (practice != null)
+            {
+                GUILayout.Label("처치 " + game.DefeatedEnemies + " · 남은 적 " + game.AliveEnemies +
+                    "/" + practice.EnemyLimit + " · 전투 시간 " + Math.Floor(Combat.Time) + "초");
+                GUILayout.Label("처치 골드 +" + practice.GoldAwarded +
+                    " · 라운드 위습 +" + practice.RoundWispsAwarded);
+                foreach (var enemy in Combat.MobileEnemySnapshot())
+                    if (enemy.Kind == CharacterEnemyKind.Boss)
+                        GUILayout.Label("보스 HP " + enemy.Health + " / " + enemy.MaxHealth);
+                if (playing && game.AliveEnemies >= practice.EnemyLimit * 0.8)
+                    GUILayout.Label("적이 누적되고 있습니다. 소환과 조합으로 전력을 보강하세요.");
+            }
+            if (playing)
+            {
+                GUILayout.Label("지금 만들 수 있는 조합 (직접 선택 후 확정)");
+                int ready = 0;
+                foreach (var offer in fusionOffers)
+                {
+                    if (!offer.IsReady || !controller.ManualActions.CanExecuteFusionRecipe(offer.RecipeId)) continue;
+                    ready++;
+                    if (ready > 8) continue;
+                    GUILayout.BeginVertical(GUI.skin.box);
+                    GUILayout.Label(offer.Title);
+                    GUILayout.Label(offer.OriginalMaterialsAndCost);
+                    if (GUILayout.Button("이 조합 선택", GUILayout.MinHeight(44)))
+                    {
+                        SelectTab(Tab.Fusion);
+                        fusionExecutableOnly = true;
+                        fusionSearch = offer.RecipeId;
+                        fusionPage = 0;
+                        pendingFusion = offer;
+                        notice = "선택한 재료를 확인하고 조합 확정을 눌러 주세요.";
+                    }
+                    GUILayout.EndVertical();
+                }
+                if (ready == 0) GUILayout.Label("현재 제작 가능한 조합이 없습니다. 조합 메뉴에서 부족한 재료를 확인하세요.");
+                if (ready > 8) GUILayout.Label("추가로 가능한 조합 " + (ready - 8) + "개");
+                if (GUILayout.Button("전체 제작 조합 보기", GUILayout.MinHeight(44)))
+                {
+                    SelectTab(Tab.Fusion);
+                    fusionExecutableOnly = true;
+                }
+            }
+            if (practice != null && practice.RoundHistory.Count > 0)
+            {
+                GUILayout.Label("라운드 기록 · 해당 구간에 실제 발생한 처치/보상");
+                foreach (var round in practice.RoundHistory)
+                    GUILayout.Label(round.Wave + "R · " + Math.Round(round.ElapsedSeconds, 1) + "초 · 처치 " +
+                        round.Defeated + " · 골드 +" + round.GoldAwarded + " · 남은 적 " + round.AliveEnemies);
             }
         }
 
@@ -470,7 +585,7 @@ namespace Ordr.Mobile.Unity
             GUILayout.BeginVertical(GUI.skin.box);
             GUILayout.Label(detail.DisplayName + " · " + detail.Grade);
             if (controller.PracticeBattle != null)
-                GUILayout.Label(detail.Grade == "흔함" || detail.Grade == "안흔함"
+                GUILayout.Label(detail.Grade == "흔함" || detail.Grade == "안흔함" || detail.Grade == "특별함"
                     ? "연습 전투: 원본 객체의 기본 공격 사용 · 스킬/오라 미연결"
                     : "연습 전투: 이 등급의 전투 연결 대기");
             if (detail.Profile == null && detail.Unit.Id == "C-01")
@@ -732,7 +847,8 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
             bool onlyExecutable = GUILayout.Toggle(fusionExecutableOnly,
-                "실제 제작이 연결된 조합만 보기 (안흔함 " + controller.ExecutableCommonFusionCount + "종)",
+                "실제 제작만 (안흔함 " + controller.ExecutableCommonFusionCount +
+                " / 특별함 " + controller.ExecutableSpecialFusionCount + "종)",
                 GUILayout.MinHeight(44));
             if (onlyExecutable != fusionExecutableOnly)
             {
@@ -1365,7 +1481,7 @@ namespace Ordr.Mobile.Unity
         private void RefreshCurrent()
         {
             if (Combat == null) return;
-            if (currentTab == Tab.Fusion)
+            if (currentTab == Tab.Fusion || currentTab == Tab.Play)
             {
                 fusionOffers = controller.ManualActions.PreviewFusion(Combat.MobileUnitSnapshot());
                 if (showOriginalJassRecipes && controller.OriginalFusionPlanner != null)

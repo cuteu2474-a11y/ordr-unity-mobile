@@ -76,6 +76,10 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(35, game.Combat.Game.AliveEnemies);
                 Assert.AreEqual(7, game.Economy.Wallet.Balance(WispResourceIds.Random));
                 Assert.AreEqual(2, game.Battle.RoundWispsAwarded);
+                Assert.AreEqual(1, game.Battle.RoundHistory.Count);
+                Assert.AreEqual(1, game.Battle.RoundHistory[0].Wave);
+                Assert.AreEqual(35, game.Battle.RoundHistory[0].ElapsedSeconds, 1e-6);
+                Assert.AreEqual(35, game.Battle.RoundHistory[0].AliveEnemies);
                 game.Battle.Advance(0);
                 game.Battle.Advance(.1);
                 Assert.AreEqual(7, game.Economy.Wallet.Balance(WispResourceIds.Random));
@@ -135,9 +139,14 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(18, game.Battle.RoundWispsAwarded);
                 Assert.AreEqual(23, game.Economy.Wallet.Balance(WispResourceIds.Random));
                 Assert.AreEqual("10라운드 연습 완료", game.Battle.ResultMessage);
+                Assert.AreEqual(10, game.Battle.RoundHistory.Count);
+                Assert.AreEqual(316, game.Battle.RoundHistory.Sum(x => x.Defeated));
+                Assert.AreEqual(game.Battle.GoldAwarded, game.Battle.RoundHistory.Sum(x => x.GoldAwarded));
+                CollectionAssert.AreEqual(Enumerable.Range(1, 10), game.Battle.RoundHistory.Select(x => x.Wave));
                 long paid = game.Economy.Wallet.Balance("gold");
                 game.Battle.Advance(60);
                 Assert.AreEqual(paid, game.Economy.Wallet.Balance("gold"));
+                Assert.AreEqual(10, game.Battle.RoundHistory.Count);
             }
         }
 
@@ -155,6 +164,53 @@ namespace Ordr.Mobile.Tests
                 StringAssert.Contains("보스 제한시간", game.Battle.ResultMessage);
                 Assert.AreEqual(0, game.Combat.Game.LeakedEnemies);
             }
+        }
+
+        [TestCase("S-01")]
+        [TestCase("S-09")]
+        public void SpecialUnitsJoinTheSamePracticeAttackPipelineWithoutEnablingSkills(string unitId)
+        {
+            using (var game = Create())
+            {
+                long id = game.Combat.SpawnCharacter(unitId, -3760, 3904);
+                Assert.AreEqual(1, game.Combat.ReadyAttackers);
+                Assert.IsFalse(game.Combat.HasVerifiedAttack(id));
+                var events = game.Battle.Advance(3);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.EnemyDefeated));
+                Assert.IsFalse(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated ||
+                    x.Type == CharacterCombatEventType.SkillDamage || x.Type == CharacterCombatEventType.ZombieMaterialEarned));
+                Assert.AreEqual(0, game.Combat.MoriaZombieMaterials);
+            }
+        }
+
+        [Test]
+        public void FusionDuringPracticeReplacesActiveAttackersAndContinuesCombat()
+        {
+            var root = new GameObject("ORDR live Special fusion");
+            root.SetActive(false);
+            try
+            {
+                var owner = root.AddComponent<OrdrCharacterCombatController>();
+                typeof(OrdrCharacterCombatController).GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Invoke(owner, null);
+                owner.BeginUnitPreparation();
+                for (int i = 0; i < 3; i++) owner.Combat.SpawnCharacter("C-01", -4000, 4000);
+                owner.BeginPracticeBattle();
+                owner.PracticeBattle.Advance(.1);
+                var offer = owner.ManualActions.PreviewFusion(owner.Combat.MobileUnitSnapshot())
+                    .Single(x => x.RecipeId == "A012");
+                Assert.AreEqual(Ordr.Mobile.Mobile.ManualActionState.Succeeded,
+                    owner.ManualActions.ConfirmFusion(offer).State);
+                Assert.AreEqual(1, owner.Combat.CharacterCount);
+                Assert.AreEqual(1, owner.Combat.ReadyAttackers);
+                Assert.AreEqual("S-07", owner.Combat.MobileUnitSnapshot().Single().Unit.Id);
+                var events = owner.PracticeBattle.Advance(3);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack));
+                Assert.AreEqual(0, owner.Combat.Game.LeakedEnemies);
+                Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
         }
 
         [Test]

@@ -36,7 +36,7 @@ namespace Ordr.Mobile.Combat
             out OriginalVerifiedAttackBinding binding)
         {
             binding = null;
-            if (!Enabled || unit == null || (unit.Grade != "흔함" && unit.Grade != "안흔함")) return false;
+            if (!Enabled || unit == null || (unit.Grade != "흔함" && unit.Grade != "안흔함" && unit.Grade != "특별함")) return false;
             var raw = objects.Find(unit.Id);
             var source = attacks.Find(unit.Id);
             if (raw == null || source == null || raw.Attack1 == null ||

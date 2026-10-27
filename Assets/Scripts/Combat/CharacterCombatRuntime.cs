@@ -1117,6 +1117,8 @@ namespace Ordr.Mobile.Combat
 
         private void OnActualDamage(string actor, string enemyId, long actualDamage, bool killed)
         {
+            // The basic-only practice must not award Moria's passive materials.
+            if (UsesSourceModelBasicAttacks) return;
             SpatialCombatEnemy enemy;
             if (!enemies.TryGetValue(enemyId, out enemy)) return;
             long actorId;
@@ -2523,8 +2525,11 @@ namespace Ordr.Mobile.Combat
                         InstanceKey(id), primary.Id, null, "basic", 0));
                 // Native uncommon procs were rolled only after a verified hit
                 // and only for fully approved effects. No web tooltip required.
-                CompleteOriginalNativePassives(unit, hit, primary.Enemy);
-                ExecuteOriginalUncommonProcs(unit, hit);
+                if (!UsesSourceModelBasicAttacks)
+                {
+                    CompleteOriginalNativePassives(unit, hit, primary.Enemy);
+                    ExecuteOriginalUncommonProcs(unit, hit);
+                }
                 if (unit.Profile == null || unit.Mapping == null) continue;
                 var position = roster.Get(id);
                 foreach (string skillId in hit.ActivatedSkillRawCodes)

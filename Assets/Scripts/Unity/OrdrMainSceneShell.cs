@@ -74,7 +74,7 @@ namespace Ordr.Mobile.Unity
                         controller.Combat.Game.AliveEnemies + "/" + controller.PracticeBattle.EnemyLimit
                     : controller.PracticeBattle.ResultMessage;
             else if (controller.IsUnitPreparation)
-                status = "유닛 준비 · 소환 / 조합 / 판매 가능 · 전투 연결 대기";
+                status = "유닛 준비 · 소환 / 조합 / 판매 후 연습 시작";
             else
                 status = "라운드 " + controller.Combat.Game.CurrentWave +
                     "  |  남은 몬스터 " + controller.Combat.Game.AliveEnemies +
@@ -147,7 +147,7 @@ namespace Ordr.Mobile.Unity
                     panelWidth, Mathf.Clamp(layout.Battle.height * 0.17f, 36f, 64f));
                 bool previous = GUI.enabled;
                 GUI.enabled = controller.Units != null;
-                string startTitle = ready ? "악몽 · 이세계모드 시작" : "10R 연습 게임 시작";
+                string startTitle = ready ? "악몽 · 이세계모드 시작" : "유닛 준비하고 시작";
 #if UNITY_EDITOR
                 if (controller.IsEditorPreview)
                     startTitle = "체험 첫 라운드 시작 (가상 능력치)";
@@ -159,7 +159,11 @@ namespace Ordr.Mobile.Unity
                     try
                     {
                         if (ready) controller.BeginVerifiedFirstWave();
-                        else controller.BeginPracticeBattle();
+                        else
+                        {
+                            controller.BeginUnitPreparation();
+                            GetComponent<OrdrMobileTouchPanel>()?.OpenRecruitment();
+                        }
                         startFailure = null;
                     }
                     catch (Exception ex)
@@ -171,18 +175,13 @@ namespace Ordr.Mobile.Unity
                 }
                 string message = string.IsNullOrEmpty(startFailure)
                     ? (ready ? "게임 시작 준비 완료" :
-                        "평타 중심 개발용 연습입니다. 몬스터 최종 수치와 스킬은 원작 대조 중입니다. 위습에서 유닛을 소환해 주세요.")
+                        "평타 중심 개발용 연습입니다. 몬스터 최종 수치와 스킬은 원작 대조 중입니다. 위습을 소환하고 조합한 뒤 전투를 시작하세요.")
                     : startFailure;
                 var hint = new GUIStyle(detail) { alignment = TextAnchor.UpperCenter };
                 GUI.Label(new Rect(button.x, button.yMax + 9f,
                     button.width, Mathf.Min(64f, layout.Battle.height * 0.3f)),
                     message, hint);
-                if (!ready && GUI.Button(
-                    new Rect(button.x, button.yMax + 73f, button.width, 34f), "유닛 준비만 하기"))
-                {
-                    try { controller.BeginUnitPreparation(); startFailure = null; }
-                    catch (Exception ex) { startFailure = ex.Message; }
-                }
+
             }
             else if (controller != null && controller.Combat != null &&
                 (controller.Combat.Game.Phase == SessionPhase.Won ||
@@ -192,14 +191,18 @@ namespace Ordr.Mobile.Unity
                 if (controller.IsUnitPreparation)
                 {
                     var start = new Rect(center - 110f, layout.Battle.center.y - 46f, 220f, 44f);
+                    bool couldStart = GUI.enabled;
+                    GUI.enabled = couldStart && controller.Combat.CharacterCount > 0;
                     if (GUI.Button(start, "10R 연습 전투 시작"))
                     {
                         try { controller.BeginPracticeBattle(); startFailure = null; }
                         catch (Exception ex) { startFailure = ex.Message; }
                     }
+                    GUI.enabled = couldStart;
                     GUI.Label(new Rect(start.x - 20f, start.yMax + 6f, start.width + 40f, 58f),
                         string.IsNullOrEmpty(startFailure) ?
-                        "위습 소환·조합 후 시작할 수 있습니다. 평타 중심 / 원작 최종 전투 미검증" : startFailure, detail);
+                        controller.Combat.CharacterCount == 0 ? "위습 메뉴에서 유닛을 먼저 소환하세요." :
+                        "소환·조합 준비 완료 · 평타 중심 / 원작 최종 전투 미검증" : startFailure, detail);
                 }
                 else if (controller.PracticeBattle != null)
                     GUI.Label(new Rect(layout.Battle.x + 8f, layout.Battle.center.y - 70f,

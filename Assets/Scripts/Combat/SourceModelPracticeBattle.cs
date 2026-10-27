@@ -98,6 +98,17 @@ namespace Ordr.Mobile.Combat
         }
     }
 
+    // Read-only session history. Values describe this practice interval,
+    // including kills of enemies carried over from earlier rounds.
+    public sealed class SourceModelPracticeRoundResult
+    {
+        public int Wave { get; internal set; }
+        public double ElapsedSeconds { get; internal set; }
+        public int Defeated { get; internal set; }
+        public int AliveEnemies { get; internal set; }
+        public long GoldAwarded { get; internal set; }
+    }
+
     // Drives the existing combat runtime/director/wallet. No parallel damage
     // engine, forged native observer, fake live approval or free unit spawns.
     public sealed class SourceModelPracticeBattle : IDisposable
@@ -113,6 +124,10 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, double> bornAt = new Dictionary<string, double>();
         private readonly HashSet<string> rewarded = new HashSet<string>();
         private double roundStart;
+        private int roundStartingDefeated;
+        private long roundStartingGold;
+        private readonly List<SourceModelPracticeRoundResult> history = new List<SourceModelPracticeRoundResult>();
+        public IReadOnlyList<SourceModelPracticeRoundResult> RoundHistory => history.AsReadOnly();
         public bool Started { get; private set; }
         public string ResultMessage { get; private set; }
         public long GoldAwarded { get; private set; }
@@ -161,7 +176,10 @@ namespace Ordr.Mobile.Combat
         }
         private void BeginRound(int wave)
         {
+            if (Started && combat.Game.CurrentWave > 0) RecordRound();
             roundStart = combat.Time;
+            roundStartingDefeated = combat.Game.DefeatedEnemies;
+            roundStartingGold = GoldAwarded;
             var plan = plans[wave - 1];
             foreach (var spawn in plan.Spawns) bornAt.Add(spawn.EnemyId, roundStart + spawn.AtSeconds);
             waves.Begin(combat, plan);
@@ -244,8 +262,18 @@ namespace Ordr.Mobile.Combat
                 GoldAwarded = checked(GoldAwarded + amount);
             damage.ForgetEnemy(id);
         }
+        private void RecordRound()
+        {
+            int wave = combat.Game.CurrentWave;
+            if (wave <= 0 || (history.Count > 0 && history[history.Count - 1].Wave == wave)) return;
+            history.Add(new SourceModelPracticeRoundResult { Wave = wave,
+                ElapsedSeconds = combat.Time - roundStart,
+                Defeated = combat.Game.DefeatedEnemies - roundStartingDefeated,
+                AliveEnemies = combat.Game.AliveEnemies, GoldAwarded = GoldAwarded - roundStartingGold });
+        }
         private void Finish(bool won, string message)
         {
+            RecordRound();
             ResultMessage = message;
             combat.Game.Finish(won);
         }

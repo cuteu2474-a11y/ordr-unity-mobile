@@ -7,8 +7,9 @@ using Ordr.Mobile.Data;
 namespace Ordr.Mobile.Mobile
 {
     // Executable scope reviewed against CWR/CH5/CHu/CHx/CHy/CT1/CT2.
-    // These 13 non-hero results have only Common UNIT costs and UPUN
+    // These 13 Uncommon and 31 Special non-hero results use UNIT costs and UPUN
     // presentation markers. CH5/CHi register no UPUN check/payment callback.
+    // Two AOsf-based Special recipes remain pending a separate native-cast audit.
     // No upper-grade bans, research, mana, transforms or assumed prices.
     public sealed class Original323CommonFusionPort : IOriginalFusionPort,
         IOriginalFusionCommitCapability, IOriginalFusionRecipeCommitCapability,
@@ -28,6 +29,39 @@ namespace Ordr.Mobile.Mobile
             { "A01H", "h00L", "U-11" }, { "A01L", "h00F", "U-12" },
             { "A0N7", "h00A", "U-13" }
         };
+        private static readonly string[,] ReviewedSpecial = {
+            { "A012", "h00U", "S-07" },
+            { "A015", "h00P", "S-03" },
+            { "A032", "h00W", "S-22" },
+            { "A018", "h015", "S-11" },
+            { "A01B", "h013", "S-13" },
+            { "A024", "h00T", "S-08" },
+            { "A01A", "h019", "S-24" },
+            { "A0NA", "h01C", "S-02" },
+            { "A01O", "h00R", "S-06" },
+            { "A03E", "h00S", "S-04" },
+            { "A01X", "h01H", "S-05" },
+            { "A017", "h017", "S-28" },
+            { "A00K", "h00B", "S-09" },
+            { "A019", "h01I", "S-33" },
+            { "A00Z", "h00X", "S-21" },
+            { "A01I", "h014", "S-12" },
+            { "A01D", "h00Q", "S-18" },
+            { "A01K", "h00Z", "S-20" },
+            { "A02B", "h01K", "S-01" },
+            { "A01C", "h01B", "S-31" },
+            { "A00B", "h01D", "S-25" },
+            { "A014", "h01E", "S-26" },
+            { "A030", "h00Y", "S-30" },
+            { "A01N", "h016", "S-10" },
+            { "A00S", "h01J", "S-19" },
+            { "A01E", "h018", "S-23" },
+            { "A02Y", "h01G", "S-32" },
+            { "A01Q", "h01A", "S-29" },
+            { "A0N8", "h00V", "S-27" },
+            { "A01P", "h011", "S-16" },
+            { "A029", "h010", "S-17" },
+        };
         private readonly CharacterCombatRuntime combat;
         private readonly SharedEconomySession economy;
         private readonly OriginalMapBaseStatCatalog objects;
@@ -35,11 +69,14 @@ namespace Ordr.Mobile.Mobile
         private readonly IOriginalFusionPort fallback;
         private readonly Dictionary<string, string> mappings = new Dictionary<string, string>();
         private readonly HashSet<string> supported = new HashSet<string>();
+        private readonly Dictionary<string, string> resultGrades = new Dictionary<string, string>();
         private bool busy;
         public event Action<long, string, string> FusionCommitted;
         public event Action<Exception> ObserverFailed;
         public bool CanCommit => true;
         public int ExecutableRecipeCount => supported.Count;
+        public int ExecutableCommonRecipeCount => Reviewed.GetLength(0);
+        public int ExecutableSpecialRecipeCount => ReviewedSpecial.GetLength(0);
 
         public Original323CommonFusionPort(CharacterCombatRuntime world, SharedEconomySession shared,
             CharacterUnitCatalog units, OriginalMapBaseStatCatalog originalObjects,
@@ -56,34 +93,45 @@ namespace Ordr.Mobile.Mobile
                 throw new ArgumentException("원본 조합과 실제 보유 세션이 일치하지 않습니다.");
             for (int i = 0; i < CommonRawcodes.Length; i++)
                 Bind(units, "C-" + (i + 1).ToString("D2"), CommonRawcodes[i], "흔함");
-            for (int i = 0; i < Reviewed.GetLength(0); i++)
+            Bind(units, "U-14", "h00H", "안흔함"); // original zombie material, not a free acquisition
+            RegisterReviewed(units, registrations, Reviewed, "안흔함");
+            RegisterReviewed(units, registrations, ReviewedSpecial, "특별함");
+            planner = new OriginalJassFusionPlanner(registrations, labels,
+                id => combat.IsStoryDeployed(id), this, units);
+            planner.SetVerifiedObjectMap(this);
+        }
+
+        private void RegisterReviewed(CharacterUnitCatalog units, OriginalJassFusionCatalog registrations,
+            string[,] reviewed, string resultGrade)
+        {
+            for (int i = 0; i < reviewed.GetLength(0); i++)
+                Bind(units, reviewed[i, 2], reviewed[i, 1], resultGrade);
+            for (int i = 0; i < reviewed.GetLength(0); i++)
             {
-                string ability = Reviewed[i, 0], rawcode = Reviewed[i, 1];
-                Bind(units, Reviewed[i, 2], rawcode, "안흔함");
+                string ability = reviewed[i, 0], rawcode = reviewed[i, 1];
                 var recipe = registrations.FindByAbility(ability);
                 if (recipe == null || recipe.Results.Count != 1 ||
                     recipe.Results[0].Kind != "UNIT" || recipe.Results[0].Count != 1 ||
                     recipe.Results[0].Rawcode != rawcode)
-                    throw new FormatException("검수한 안흔함 조합 결과가 변경됐습니다: " + ability);
+                    throw new FormatException("검수한 하위 등급 조합 결과가 변경됐습니다: " + ability);
                 bool hasMaterials = false, hasCaster = false;
                 foreach (var instruction in recipe.OrderedConditions)
                 {
                     if (instruction.Kind == "UPUN") continue;
                     string id;
-                    if (instruction.Kind != "UNIT" ||
-                        !mappings.TryGetValue(instruction.Rawcode, out id) ||
-                        !id.StartsWith("C-", StringComparison.Ordinal))
+                    if (instruction.Kind != "UNIT" || !mappings.TryGetValue(instruction.Rawcode, out id))
                         throw new FormatException("하위 조합의 원본 조건 범위가 변경됐습니다.");
+                    string grade = units.Require(id).Grade;
+                    if (grade != "흔함" && !(resultGrade == "특별함" && grade == "안흔함"))
+                        throw new FormatException("검수하지 않은 등급의 조합 재료입니다.");
                     hasMaterials = true;
                     foreach (var nativeAbility in objects.Find(id).OriginalAbilityRawcodes)
                         if (nativeAbility == ability) hasCaster = true;
                 }
                 if (!hasMaterials || !hasCaster) throw new FormatException("원본 조합 시전자 누락");
                 supported.Add(ability);
+                resultGrades.Add(ability, resultGrade);
             }
-            planner = new OriginalJassFusionPlanner(registrations, labels,
-                id => combat.IsStoryDeployed(id), this, units);
-            planner.SetVerifiedObjectMap(this);
         }
 
         private void Bind(CharacterUnitCatalog units, string id, string rawcode, string grade)
@@ -117,7 +165,7 @@ namespace Ordr.Mobile.Mobile
                 foreach (var material in ready.Materials)
                     parts.Add(material.Name + " ×" + material.RequiredCount +
                         " (보유 " + material.OwnedCount + ")");
-                result.Add(new MobileFusionPreview(offer.RecipeId, ready.ResultName + " · 안흔함",
+                result.Add(new MobileFusionPreview(offer.RecipeId, ready.ResultName + " · " + resultGrades[offer.RecipeId],
                     string.Join(" + ", parts) + " · 추가 재화 없음",
                     ready.SuggestedMaterialIds, missing));
             }

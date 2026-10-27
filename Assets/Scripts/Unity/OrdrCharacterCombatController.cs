@@ -683,7 +683,8 @@ namespace Ordr.Mobile.Unity
             if (presenter != null) presenter.ShowAllOwnedUnits();
             RecordSessionIssue("개발용 연습 시작", "10R · 평타 중심 · 몬스터 HP/피해 최종 원작 대조 전");
         }
-        public int ExecutableCommonFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableRecipeCount;
+        public int ExecutableCommonFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableCommonRecipeCount;
+        public int ExecutableSpecialFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableSpecialRecipeCount;
         public bool IsUnitPreparation => Combat != null && SharedEconomy != null &&
             SharedEconomy.HasStarted && Combat.Game.Phase == SessionPhase.Running &&
             Combat.Game.CurrentWave == 0;
