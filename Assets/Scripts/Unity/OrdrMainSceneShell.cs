@@ -50,8 +50,13 @@ namespace Ordr.Mobile.Unity
             detail.normal.textColor = new Color(0.81f, 0.89f, 0.96f, 1f);
             detail.wordWrap = true;
 
+            string heading = "ORDR MOBILE  /  NIGHTMARE - OTHERWORLD";
+#if UNITY_EDITOR
+            if (controller != null && controller.IsEditorPreview)
+                heading = "EDITOR 체험 · 가상 능력치 / 정식 게임 아님";
+#endif
             GUI.Label(new Rect(left, top + 2f, width, layout.HeaderHeight * 0.56f),
-                "ORDR MOBILE  /  NIGHTMARE - OTHERWORLD", title);
+                heading, title);
 
             string status;
             if (controller == null || controller.Units == null)
@@ -64,6 +69,10 @@ namespace Ordr.Mobile.Unity
                 status = "라운드 " + controller.Combat.Game.CurrentWave +
                     "  |  남은 몬스터 " + controller.Combat.Game.AliveEnemies +
                     "  |  상태 " + controller.Combat.Game.Phase;
+#if UNITY_EDITOR
+            if (controller != null && controller.IsEditorPreview)
+                status = "[개발용 체험] " + status;
+#endif
             GUI.Label(new Rect(left, top + layout.HeaderHeight * 0.56f,
                 width, layout.HeaderHeight * 0.44f), status, detail);
             if (controller != null && controller.Combat != null &&
@@ -104,7 +113,12 @@ namespace Ordr.Mobile.Unity
                     panelWidth, Mathf.Clamp(layout.Battle.height * 0.17f, 36f, 64f));
                 bool previous = GUI.enabled;
                 GUI.enabled = ready;
-                bool clicked = GUI.Button(button, "악몽 · 이세계모드 시작");
+                string startTitle = "악몽 · 이세계모드 시작";
+#if UNITY_EDITOR
+                if (controller.IsEditorPreview)
+                    startTitle = "체험 첫 라운드 시작 (가상 능력치)";
+#endif
+                bool clicked = GUI.Button(button, startTitle);
                 GUI.enabled = previous;
                 if (clicked)
                 {

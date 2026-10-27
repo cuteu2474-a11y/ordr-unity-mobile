@@ -653,6 +653,20 @@ namespace Ordr.Mobile.Unity
         public AssistedFusionService FusionAssistance { get; private set; }
         public CharacterCombatRuntime Combat { get; private set; }
         public bool HasSourceVerifiedDamageRuntime { get; private set; }
+#if UNITY_EDITOR
+        // Never serialized or exposed in Android/iOS player assemblies.
+        // Only the explicitly launched Editor sandbox may mark itself as
+        // using non-retail monster stats, native timings and RNG outcomes.
+        public bool IsEditorPreview { get; private set; }
+
+        public void MarkEditorPreview()
+        {
+            if (Combat == null || Combat.Game.Phase != SessionPhase.NotStarted)
+                throw new InvalidOperationException(
+                    "에디터 체험 표시는 게임 시작 전의 테스트 월드에만 설정할 수 있습니다.");
+            IsEditorPreview = true;
+        }
+#endif
         private readonly OfflineSessionRunGate runGate = new OfflineSessionRunGate();
         public bool IsGameplayPaused => !runGate.CanAdvance;
 
