@@ -2011,6 +2011,14 @@ namespace Ordr.Mobile.Unity
                 return false;
             int next = Combat.Game.CurrentWave + 1;
             VerifiedWavePlan plan;
+            // The original observer may supply later wave plans on demand.
+            // When none is installed yet, do not allocate and catch an
+            // exception on EVERY Unity frame (notably the last preview wave).
+            VerifiedWavePlan available;
+            if (!registeredLiveWavePlans.TryGetValue(next, out available) &&
+                (VerifiedMonsterWaves == null ||
+                 !VerifiedMonsterWaves.TryGetPlan(next, out available)))
+                return false;
             try
             {
                 // Check source identity/cadence/final stats before consulting
