@@ -654,6 +654,35 @@ namespace Ordr.Mobile.Unity
         public Original323LowerGradeSaleService LowerGradeSales { get; private set; }
         private Original323CommonFusionPort commonSourceFusion;
         private bool usesBuiltInAutomaticUncommonWisps;
+        private SourceModelBasicCombatRules sourceModelDamage;
+        private IOriginalWispRandom sessionScriptRandom;
+        public SourceModelPracticeBattle PracticeBattle { get; private set; }
+
+        public void BeginPracticeBattle()
+        {
+            if (Combat == null) ConfigureCatalogOnlyWorld(unchecked((uint)Environment.TickCount));
+            if (sourceModelDamage == null || PracticeBattle != null || Combat.Game.CurrentWave != 0 ||
+                (Combat.Game.Phase != SessionPhase.NotStarted && !IsUnitPreparation))
+                throw new InvalidOperationException("새 게임 또는 유닛 준비 상태에서 연습을 시작하세요.");
+            var data = Resources.Load<TextAsset>("OrdrData/mobile-practice-battle-model");
+            if (data == null) throw new InvalidOperationException("연습 전투 자료가 APK에 없습니다.");
+            var prepared = new SourceModelPracticeBattle(Combat, VerifiedWaveDirector, SharedEconomy,
+                new SourceModelPracticeCatalog(data.text), OriginalMonsterSpawnIdentities,
+                sourceModelDamage, sessionScriptRandom, () =>
+                {
+                    PersonalMissions?.OnRoundStarted();
+                    RecordSessionIssue("연습 라운드", Combat.Game.CurrentWave + "라운드 / 원본 최종 전투 미검증");
+                });
+            if (Combat.Game.Phase == SessionPhase.NotStarted) BeginSession();
+            sourceModelDamage.Enable();
+            Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
+            Combat.BindExistingVerifiedAttacks();
+            PracticeBattle = prepared;
+            PracticeBattle.Start();
+            var presenter = GetComponent<OrdrUnitWorldPresenter>();
+            if (presenter != null) presenter.ShowAllOwnedUnits();
+            RecordSessionIssue("개발용 연습 시작", "10R · 평타 중심 · 몬스터 HP/피해 최종 원작 대조 전");
+        }
         public int ExecutableCommonFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableRecipeCount;
         public bool IsUnitPreparation => Combat != null && SharedEconomy != null &&
             SharedEconomy.HasStarted && Combat.Game.Phase == SessionPhase.Running &&
@@ -739,7 +768,7 @@ namespace Ordr.Mobile.Unity
             runGate.SetManualPause(paused);
         }
 
-        private void OnDestroy() { Wisps?.Dispose(); }
+        private void OnDestroy() { Wisps?.Dispose(); PracticeBattle?.Dispose(); }
 
         private void OnApplicationPause(bool paused)
         {
@@ -1895,17 +1924,18 @@ namespace Ordr.Mobile.Unity
                 originalMonsterGold = new Original323MonsterGoldService(
                     VerifiedWaveDirector, world.Game, SharedEconomy.Wallet, 0,
                     originalMonsterGoldWitness);
-            if (OriginalCombinedAuras != null)
+            if (sourceModelDamage == null && OriginalCombinedAuras != null)
                 Combat.ConfigureOriginalAuras(OriginalCombinedAuras, specialAuraTargets);
-            else if (OriginalArmorAuras != null)
+            else if (sourceModelDamage == null && OriginalArmorAuras != null)
                 Combat.ConfigureOriginalAuras(OriginalArmorAuras, specialAuraTargets);
-            else if (OriginalSpecialAuras != null)
+            else if (sourceModelDamage == null && OriginalSpecialAuras != null)
                 Combat.ConfigureOriginalSpecialAuras(OriginalSpecialAuras, specialAuraTargets);
-            if (OriginalUncommonAbilities != null)
+            if (sourceModelDamage == null && OriginalUncommonAbilities != null)
                 Combat.ConfigureOriginalUncommonAbilities(
                     OriginalUncommonAbilities, originalUncommonEffectWorld);
             IOriginalWispRandom sharedMobileWispRandom =
                 randomWispResourceRng ?? new MobileUniformWispRandom();
+            sessionScriptRandom = sharedMobileWispRandom;
             RandomWispExchange = new OriginalRandomWispResourceExchange(
                 SharedEconomy.Wallet, world.Game, sharedMobileWispRandom);
             ManualActions.ConfigureRandomWispResourceExchange(RandomWispExchange);
@@ -1992,9 +2022,12 @@ namespace Ordr.Mobile.Unity
         // 피해 공식은 반드시 미구현 예외로 보류된다. 실제 난이도/전투 검증에 사용하지 않는다.
         public void ConfigureCatalogOnlyWorld(uint seed)
         {
-            var unavailable = new RejectUnverifiedDamageFormula();
-            ConfigureRuntime(unavailable, unavailable, new SeededNonOriginalProcRandom(seed));
-            Debug.LogWarning("ORDR 도감/월드 전용 모드: 평타·스킬 피해 공식은 미구현으로 보류됩니다.");
+            if (Combat != null || MapBaseStats == null)
+                throw new InvalidOperationException("원본 객체가 로드된 새 월드에서만 구성하세요.");
+            var random = new SeededNonOriginalProcRandom(seed);
+            sourceModelDamage = new SourceModelBasicCombatRules(MapBaseStats, random);
+            ConfigureRuntime(sourceModelDamage, sourceModelDamage, random);
+            Debug.LogWarning("ORDR 유닛 준비: 전투는 명시적인 개발용 연습 시작 전까지 비활성입니다.");
         }
 
         public void BeginSession()
@@ -2323,9 +2356,9 @@ namespace Ordr.Mobile.Unity
             IReadOnlyList<CharacterCombatEvent> results;
             try
             {
-                results = VerifiedWaveDirector.IsActive
-                    ? VerifiedWaveDirector.Step(Combat, Time.deltaTime)
-                    : Combat.Step(Time.deltaTime);
+                results = PracticeBattle != null ? PracticeBattle.Advance(Time.deltaTime) :
+                    VerifiedWaveDirector.IsActive ? VerifiedWaveDirector.Step(Combat, Time.deltaTime) :
+                    Combat.Step(Time.deltaTime);
             }
             catch (Exception ex)
             {
@@ -2380,7 +2413,7 @@ namespace Ordr.Mobile.Unity
             // 5-second schedule: require an explicit original start witness.
             try
             {
-                TryBeginNextObservedMonsterWave();
+                if (PracticeBattle == null) TryBeginNextObservedMonsterWave();
             }
             catch (Exception ex)
             {

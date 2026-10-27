@@ -469,6 +469,10 @@ namespace Ordr.Mobile.Unity
             if (detail == null) return;
             GUILayout.BeginVertical(GUI.skin.box);
             GUILayout.Label(detail.DisplayName + " · " + detail.Grade);
+            if (controller.PracticeBattle != null)
+                GUILayout.Label(detail.Grade == "흔함" || detail.Grade == "안흔함"
+                    ? "연습 전투: 원본 객체의 기본 공격 사용 · 스킬/오라 미연결"
+                    : "연습 전투: 이 등급의 전투 연결 대기");
             if (detail.Profile == null && detail.Unit.Id == "C-01")
                 GUILayout.Label("흔함 루피: 추가 공격 스킬 없음 (원본 JASS 등록 능력 기준)");
             else if (detail.Profile == null)
@@ -543,7 +547,7 @@ namespace Ordr.Mobile.Unity
             if (controller.LowerGradeSales != null)
                 GUILayout.Label("흔함 판매 포인트 " + controller.LowerGradeSales.CommonPoints +
                     "/3 · 3기마다 랜덤위습 1개");
-            if (owned.Count > 0 && GUILayout.Button("보유 유닛 전체 보기", GUILayout.MinHeight(44)))
+            if (owned.Count > 0 && GUILayout.Button(controller.PracticeBattle == null ? "보유 유닛 전체 보기" : "전장 전체 보기", GUILayout.MinHeight(44)))
             {
                 var presenter = controller.GetComponent<OrdrUnitWorldPresenter>();
                 if (presenter != null) presenter.ShowAllOwnedUnits();
@@ -916,6 +920,8 @@ namespace Ordr.Mobile.Unity
                 }
                 GUILayout.EndHorizontal();
             }
+            if (controller.PracticeBattle != null)
+                GUILayout.Label("라운드마다 랜덤위습 2개 · 직접 소환 / 조합 / 판매");
             GUILayout.Label("랜덤위습 " + controller.WispBalance(WispResourceIds.Random) +
                 "개 · 선택위습 " + controller.WispBalance(WispResourceIds.Choice) + "개");
             GUILayout.Label("자동: 안흔함 " + controller.WispBalance(WispResourceIds.Uncommon) +

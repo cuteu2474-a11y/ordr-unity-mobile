@@ -1,0 +1,137 @@
+{
+  "format": "ordr-mobile-practice-model-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "retailParityVerified": false,
+  "safeForVerifiedMonsterWaveRuntime": false,
+  "lastRound": 10,
+  "initialEnemyLimit": 70,
+  "roundRandomWisps": 2,
+  "routeCenters": [
+    {
+      "x": -4960.0,
+      "y": 5632.0
+    },
+    {
+      "x": -4992.0,
+      "y": 3456.0
+    },
+    {
+      "x": -2560.0,
+      "y": 3456.0
+    },
+    {
+      "x": -2560.0,
+      "y": 5632.0
+    }
+  ],
+  "rounds": [
+    {
+      "wave": 1,
+      "role": "line",
+      "rawcode": "o00I",
+      "name": "레벨 01 알비다",
+      "health": 338,
+      "armor": 0.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 2,
+      "role": "line",
+      "rawcode": "o004",
+      "name": "레벨 02 찌질한 해왕류",
+      "health": 425,
+      "armor": 1.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 3,
+      "role": "line",
+      "rawcode": "o00A",
+      "name": "레벨 03 해적사냥꾼조로",
+      "health": 575,
+      "armor": 1.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 4,
+      "role": "line",
+      "rawcode": "o009",
+      "name": "레벨 04 모건",
+      "health": 750,
+      "armor": 2.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 5,
+      "role": "line",
+      "rawcode": "o008",
+      "name": "레벨 05 캡틴 버기",
+      "health": 950,
+      "armor": 3.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 6,
+      "role": "line",
+      "rawcode": "o00D",
+      "name": "레벨 06 캡틴 크로",
+      "health": 1275,
+      "armor": 3.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 7,
+      "role": "line",
+      "rawcode": "o006",
+      "name": "레벨 07 깅",
+      "health": 1625,
+      "armor": 4.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 8,
+      "role": "line",
+      "rawcode": "o005",
+      "name": "레벨 08 클리크",
+      "health": 2150,
+      "armor": 5.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 9,
+      "role": "line",
+      "rawcode": "o00B",
+      "name": "레벨 09 하찌",
+      "health": 2550,
+      "armor": 6.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 10,
+      "role": "boss",
+      "rawcode": "o01V",
+      "name": "레벨 10 [보스]아론",
+      "health": 137750,
+      "armor": 13.0,
+      "armorType": "large",
+      "objectMovementSpeed": 275.0
+    }
+  ],
+  "limitations": [
+    "Reference-engine HP/armor model, not observed retail final stats.",
+    "Basic object attacks only; skills/auras/upgrades are not a full game recreation.",
+    "Route centers/raw movement speed approximate native region turns/collision.",
+    "Damage retains fractional remainder per target; retail float rounding unverified.",
+    "Practice completion at round 10 is not original round-65 clear."
+  ]
+}

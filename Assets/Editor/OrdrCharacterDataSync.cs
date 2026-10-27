@@ -16,6 +16,7 @@ namespace Ordr.Mobile.Editor
     {
         private static readonly string[] DataFiles =
         {
+            "mobile-practice-battle-model.json",
             "units.json",
             "character-skill-profiles.json",
             "original-stat-evidence.json",
@@ -42,6 +43,7 @@ namespace Ordr.Mobile.Editor
         // Neither the first-play button nor a build may invent missing data.
         private static readonly string[] RequiredRuntimeData =
         {
+            "mobile-practice-battle-model.json",
             "units.json",
             "character-skill-profiles.json",
             "original-2323C-map-base-stats.json",

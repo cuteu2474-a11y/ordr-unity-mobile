@@ -51,6 +51,16 @@ namespace Ordr.Mobile.Combat
         // A rollback only removes the staged output, never recreates inputs.
         private OriginalFusionUnitSwap activeOriginalFusionSwap;
         private bool internalOriginalFusionMutation;
+        public bool UsesSourceModelBasicAttacks { get; private set; }
+
+        public void ConfigureSourceModelBasicAttacks(SourceModelBasicCombatRules practice)
+        {
+            if (practice == null || !practice.Enabled || game.CurrentWave != 0 ||
+                processingStep || pendingStepSeconds != 0 || ReadyAttackers != 0)
+                throw new InvalidOperationException("연습 전투는 첫 라운드 전에만 연결할 수 있습니다.");
+            UsesSourceModelBasicAttacks = true;
+            verifiedAttackProvider = practice;
+        }
 
         public sealed class OriginalFusionUnitSwap : IDisposable
         {
@@ -1614,7 +1624,8 @@ namespace Ordr.Mobile.Combat
         public bool HasVerifiedAttack(long instanceId)
         {
             CharacterInstance instance;
-            return characters.TryGetValue(instanceId, out instance) && instance.AttackReady;
+            return !UsesSourceModelBasicAttacks &&
+                characters.TryGetValue(instanceId, out instance) && instance.AttackReady;
         }
 
         // Read-only visual hint for the Unity presenter. Map weapon types alone
@@ -1622,7 +1633,7 @@ namespace Ordr.Mobile.Combat
         public bool TryGetVerifiedAttackSchool(long instanceId, out DamageSchool school)
         {
             CharacterInstance instance;
-            if (characters.TryGetValue(instanceId, out instance) &&
+            if (!UsesSourceModelBasicAttacks && characters.TryGetValue(instanceId, out instance) &&
                 instance.AttackReady && instance.Mapping != null)
             {
                 school = instance.Mapping.AttackSpec.BasicAttack.School;
@@ -1721,8 +1732,10 @@ namespace Ordr.Mobile.Combat
             if (instance.AttackReady)
                 throw new InvalidOperationException("공격 스펙이 이미 등록되어 있습니다.");
             var mapping = CharacterCombatMapping.Build(instance.Catalog.Id,
-                instance.Profile, verifiedStats, originalUnitRawcode,
-                specialTriggerMapping, uncommonAbilities, uncommonProcWorld);
+                UsesSourceModelBasicAttacks ? null : instance.Profile, verifiedStats, originalUnitRawcode,
+                UsesSourceModelBasicAttacks ? null : specialTriggerMapping,
+                UsesSourceModelBasicAttacks ? null : uncommonAbilities,
+                UsesSourceModelBasicAttacks ? null : uncommonProcWorld);
             attackPipeline.RegisterUnit(InstanceKey(instanceId), mapping.AttackSpec,
                 firstAttackDelay);
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
@@ -2613,7 +2626,7 @@ namespace Ordr.Mobile.Combat
                     {
                         AdvanceCombatTime(pendingStepSeconds);
                         pendingStepSeconds = 0;
-                        MobileAutomation.RunAutomaticAbilities(this);
+                        if (!UsesSourceModelBasicAttacks) MobileAutomation.RunAutomaticAbilities(this);
                         break;
                     }
                     // Never deduct a rounding residual larger than pending time.
@@ -2624,7 +2637,7 @@ namespace Ordr.Mobile.Combat
                         AdvanceCombatTime(wait);
                         pendingStepSeconds -= wait;
                     }
-                    MobileAutomation.RunAutomaticAbilities(this);
+                    if (!UsesSourceModelBasicAttacks) MobileAutomation.RunAutomaticAbilities(this);
                     int fired = ExecuteReadyAttacks(maxAttacksPerStep - completed);
                     completed += fired;
                     int previews = ExecuteReadyCommonAttackPreviews(

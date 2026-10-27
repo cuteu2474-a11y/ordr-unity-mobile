@@ -1,0 +1,254 @@
+using System;
+using System.Collections.Generic;
+using Ordr.Mobile.Core;
+using Ordr.Mobile.Data;
+
+namespace Ordr.Mobile.Combat
+{
+    // Explicit model input, separate from the verified-wave JSON schema.
+    // Immutable original spawn identity/timing is combined with the existing
+    // reference-engine Nightmare HP model. It never becomes retail evidence.
+    public sealed class SourceModelPracticeCatalog
+    {
+        public sealed class Round
+        {
+            public int Number { get; internal set; }
+            public string Rawcode { get; internal set; }
+            public string Name { get; internal set; }
+            public string Role { get; internal set; }
+            public long Health { get; internal set; }
+            public double Armor { get; internal set; }
+            public string ArmorType { get; internal set; }
+            public double MovementSpeed { get; internal set; }
+        }
+        private readonly Dictionary<int, Round> rounds = new Dictionary<int, Round>();
+        private readonly VerifiedCombatPath route;
+        public IReadOnlyList<CombatPathPoint> RouteCorners { get; private set; }
+        public int LastRound => 10;
+        public int EnemyLimit => 70;
+        public int RoundWisps => 2;
+        public CombatPathPoint Spawn => route.AtDistance(0);
+        public Round GetRound(int number) => rounds[number];
+        public CombatPathPoint Position(double travelled) => route.AtDistance(travelled % route.Length);
+
+        public SourceModelPracticeCatalog(string json)
+        {
+            var root = OrdrJson.Object(OrdrJson.Parse(json), "practice model");
+            if (OrdrJson.RequiredString(root, "format") != "ordr-mobile-practice-model-v1" ||
+                OrdrJson.RequiredString(root, "sourceW3xSha256") != OriginalCommonSaleRules.OriginalMapSha256 ||
+                OrdrJson.RequiredString(root, "sourceJassSha256") != Original323SourceCommonWispWorld.PinnedWar3mapJSha256 ||
+                !Equals(OrdrJson.Value(root, "retailParityVerified"), false) ||
+                !Equals(OrdrJson.Value(root, "safeForVerifiedMonsterWaveRuntime"), false) ||
+                Number(root, "lastRound") != LastRound || Number(root, "initialEnemyLimit") != EnemyLimit ||
+                Number(root, "roundRandomWisps") != RoundWisps)
+                throw new FormatException("별도 연습 전투 모델의 출처·미검증 표시가 필요합니다.");
+            var points = new List<CombatPathPoint>();
+            foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "routeCenters"), "route"))
+            {
+                var row = OrdrJson.Object(raw, "point");
+                points.Add(new CombatPathPoint(Number(row, "x"), Number(row, "y")));
+            }
+            if (points.Count != 4) throw new FormatException("원본 라인 경로 중심 4개가 필요합니다.");
+            RouteCorners = new List<CombatPathPoint>(points).AsReadOnly();
+            points.Add(new CombatPathPoint(points[0].X, points[0].Y));
+            route = new VerifiedCombatPath(points, "MODEL_ONLY: CSR/CSU/CSX/CSa rectangle centers; native turning unverified");
+            foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "rounds"), "rounds"))
+            {
+                var row = OrdrJson.Object(raw, "round");
+                double number = Number(row, "wave"), hp = Number(row, "health");
+                double speed = Number(row, "objectMovementSpeed");
+                string code = OrdrJson.RequiredString(row, "rawcode");
+                string armor = OrdrJson.RequiredString(row, "armorType");
+                Ordr323ArmorType parsed;
+                if (number < 1 || number > LastRound || number != Math.Floor(number) ||
+                    hp < 1 || hp >= long.MaxValue || hp != Math.Floor(hp) || speed <= 0 ||
+                    code.Length != 4 || rounds.ContainsKey((int)number) ||
+                    !Ordr323OriginalDamageRules.TryReadArmorType(armor, out parsed))
+                    throw new FormatException("연습 몬스터의 출처 수치가 올바르지 않습니다.");
+                rounds.Add((int)number, new Round { Number = (int)number,
+                    Rawcode = code, Name = OrdrJson.RequiredString(row, "name"),
+                    Role = OrdrJson.RequiredString(row, "role"), Health = (long)hp,
+                    Armor = Number(row, "armor"), ArmorType = armor, MovementSpeed = speed });
+            }
+            if (rounds.Count != LastRound) throw new FormatException("연습 라운드 자료 누락");
+        }
+        private static double Number(Dictionary<string, object> row, string key)
+        {
+            double value;
+            if (!OrdrJson.TryNumber(row, key, out value) || double.IsNaN(value) || double.IsInfinity(value))
+                throw new FormatException("연습 자료 숫자 누락: " + key);
+            return value;
+        }
+        public VerifiedWavePlan BuildPracticePlan(int number, Original323MonsterWaveIdentityCatalog original)
+        {
+            var model = GetRound(number);
+            var spawns = new List<VerifiedWaveEnemy>();
+            var point = Spawn;
+            foreach (var entry in original.BuildSinglePlayerSpawnTemplates(number))
+            {
+                if (entry.Rawcode != model.Rawcode ||
+                    (entry.Kind == CharacterEnemyKind.Boss ? "boss" : "line") != model.Role)
+                    throw new FormatException("연습 모델과 원본 출현 객체가 다릅니다.");
+                spawns.Add(new VerifiedWaveEnemy(entry.AtSeconds, entry.InstanceId, model.Health,
+                    entry.Kind, point.X, point.Y, 0, new EnemyDefenseProfile(entry.Kind,
+                        model.Armor, null, model.ArmorType, "MODEL_ONLY: reference-engine initial defense"),
+                    model.Rawcode));
+            }
+            return new VerifiedWavePlan(number, spawns, "MODEL_ONLY: ten-round development practice; NOT retail live evidence");
+        }
+    }
+
+    // Drives the existing combat runtime/director/wallet. No parallel damage
+    // engine, forged native observer, fake live approval or free unit spawns.
+    public sealed class SourceModelPracticeBattle : IDisposable
+    {
+        private readonly CharacterCombatRuntime combat;
+        private readonly CombatWaveDirector waves;
+        private readonly SharedEconomySession economy;
+        private readonly SourceModelPracticeCatalog catalog;
+        private readonly SourceModelBasicCombatRules damage;
+        private readonly IOriginalWispRandom scriptRandom;
+        private readonly Action roundStarted;
+        private readonly List<VerifiedWavePlan> plans = new List<VerifiedWavePlan>();
+        private readonly Dictionary<string, double> bornAt = new Dictionary<string, double>();
+        private readonly HashSet<string> rewarded = new HashSet<string>();
+        private double roundStart;
+        public bool Started { get; private set; }
+        public string ResultMessage { get; private set; }
+        public long GoldAwarded { get; private set; }
+        public int RoundWispsAwarded { get; private set; }
+        public double SecondsRemaining
+        {
+            get
+            {
+                int seconds;
+                if (!Started || !Original323BossRoundRules.TryGetCountdownSeconds(
+                    combat.Game.CurrentWave, out seconds)) return 0;
+                double remaining = seconds - (combat.Time - roundStart);
+                return remaining <= 1e-8 ? 0 : remaining;
+            }
+        }
+        public IReadOnlyList<CombatPathPoint> RouteCorners => catalog.RouteCorners;
+        public int LastRound => catalog.LastRound;
+        public int EnemyLimit => catalog.EnemyLimit;
+
+        public SourceModelPracticeBattle(CharacterCombatRuntime world, CombatWaveDirector director,
+            SharedEconomySession shared, SourceModelPracticeCatalog model,
+            Original323MonsterWaveIdentityCatalog originalSpawns,
+            SourceModelBasicCombatRules rules, IOriginalWispRandom sharedScriptRandom,
+            Action onRoundStarted)
+        {
+            combat = world ?? throw new ArgumentNullException(nameof(world));
+            waves = director ?? throw new ArgumentNullException(nameof(director));
+            economy = shared ?? throw new ArgumentNullException(nameof(shared));
+            catalog = model ?? throw new ArgumentNullException(nameof(model));
+            damage = rules ?? throw new ArgumentNullException(nameof(rules));
+            scriptRandom = sharedScriptRandom ?? throw new ArgumentNullException(nameof(sharedScriptRandom));
+            roundStarted = onRoundStarted;
+            if (!ReferenceEquals(world.Roster, shared.Units)) throw new ArgumentException("공유 세션 불일치");
+            // Validate ALL ten source identities before mutating the session.
+            for (int wave = 1; wave <= catalog.LastRound; wave++)
+                plans.Add(catalog.BuildPracticePlan(wave, originalSpawns));
+        }
+        public void Start()
+        {
+            if (Started || !economy.HasStarted || combat.Game.Phase != SessionPhase.Running ||
+                combat.Game.CurrentWave != 0 || !combat.UsesSourceModelBasicAttacks)
+                throw new InvalidOperationException("유닛 준비 상태에서 연습 전투를 시작하세요.");
+            waves.VerifiedMonsterDefeated += RewardActualDeath;
+            Started = true;
+            BeginRound(1);
+        }
+        private void BeginRound(int wave)
+        {
+            roundStart = combat.Time;
+            var plan = plans[wave - 1];
+            foreach (var spawn in plan.Spawns) bornAt.Add(spawn.EnemyId, roundStart + spawn.AtSeconds);
+            waves.Begin(combat, plan);
+            if (wave > 1)
+            {
+                economy.Wallet.Grant(new ResourceBundle().Add(WispResourceIds.Random, catalog.RoundWisps));
+                RoundWispsAwarded += catalog.RoundWisps;
+            }
+            roundStarted?.Invoke();
+        }
+        public IReadOnlyList<CharacterCombatEvent> Advance(double deltaSeconds)
+        {
+            if (!Started || double.IsNaN(deltaSeconds) || double.IsInfinity(deltaSeconds) || deltaSeconds < 0)
+                throw new ArgumentOutOfRangeException(nameof(deltaSeconds));
+            var events = new List<CharacterCombatEvent>();
+            double left = deltaSeconds;
+            while (left > 0 && combat.Game.Phase == SessionPhase.Running)
+            {
+                if (TryEndOrAdvance()) break;
+                double step = Math.Min(left, SecondsRemaining > 0 ? Math.Min(0.1, SecondsRemaining) : 0.1);
+                if (step <= 0) throw new InvalidOperationException("연습 라운드 시간이 진행되지 않습니다.");
+                events.AddRange(waves.Step(combat, step));
+                MoveLivingMonsters();
+                left = Math.Max(0, left - step);
+                if (combat.Game.AliveEnemies >= catalog.EnemyLimit)
+                {
+                    Finish(false, "몬스터가 " + catalog.EnemyLimit + "마리에 도달했습니다.");
+                    break;
+                }
+                if (TryEndOrAdvance()) break;
+            }
+            return events.AsReadOnly();
+        }
+        // Returns true only if the practice finished, false after a transition.
+        private bool TryEndOrAdvance()
+        {
+            if (combat.Game.Phase != SessionPhase.Running) return true;
+            int wave = combat.Game.CurrentWave;
+            if (wave == catalog.LastRound && waves.RemainingSpawns == 0 && combat.Game.AliveEnemies == 0)
+            {
+                Finish(true, "10라운드 연습 완료");
+                return true;
+            }
+            if (SecondsRemaining > 0 || waves.RemainingSpawns != 0) return false;
+            var progress = waves.CurrentProgress;
+            if (progress.BossPlanned > 0 && !progress.AllBossesDefeated)
+            {
+                Finish(false, "보스 제한시간 안에 처치하지 못했습니다.");
+                return true;
+            }
+            if (wave >= catalog.LastRound) return false; // Boss cleared: finish the remaining line enemies.
+            BeginRound(wave + 1);
+            return false;
+        }
+        private void MoveLivingMonsters()
+        {
+            foreach (var enemy in combat.MobileEnemySnapshot())
+            {
+                int wave;
+                double birth;
+                if (!waves.TryGetLivingMonsterSpawnWave(enemy.Id, out wave) || !bornAt.TryGetValue(enemy.Id, out birth))
+                    throw new InvalidOperationException("연습 몬스터 출현 이력이 없습니다.");
+                double age = Math.Max(0, combat.Time - birth);
+                var point = catalog.Position(age * catalog.GetRound(wave).MovementSpeed);
+                // A completed lap remains a living enemy. No invented leak,
+                // kill, reward, or player-life reduction at the route end.
+                combat.TryMoveEnemy(enemy.Id, point.X, point.Y, 0);
+            }
+        }
+        private void RewardActualDeath(int spawnWave, string id)
+        {
+            if (!rewarded.Add(id)) return;
+            int roll = scriptRandom.NextInclusive(1, 4), amount;
+            if (!Original323MonsterGoldRules.TryEvaluateObservedRoll(
+                combat.Game.CurrentWave, roll, 0, out amount))
+                throw new InvalidOperationException("연습 골드 난수 범위가 올바르지 않습니다.");
+            var reward = new ResourceBundle();
+            if (amount > 0) reward.Add("gold", amount);
+            if (economy.Wallet.TryGrantOnce("practice-death:" + spawnWave + ":" + id, reward))
+                GoldAwarded = checked(GoldAwarded + amount);
+            damage.ForgetEnemy(id);
+        }
+        private void Finish(bool won, string message)
+        {
+            ResultMessage = message;
+            combat.Game.Finish(won);
+        }
+        public void Dispose() { waves.VerifiedMonsterDefeated -= RewardActualDeath; }
+    }
+}

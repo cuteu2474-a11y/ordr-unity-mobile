@@ -50,7 +50,9 @@ namespace Ordr.Mobile.Unity
             detail.normal.textColor = new Color(0.81f, 0.89f, 0.96f, 1f);
             detail.wordWrap = true;
 
-            string heading = "ORDR MOBILE  /  NIGHTMARE - OTHERWORLD";
+            string heading = controller != null && controller.PracticeBattle != null
+                ? "ORDR MOBILE / 10R 연습 · 원작 최종 전투 미검증"
+                : "ORDR MOBILE  /  NIGHTMARE - OTHERWORLD";
 #if UNITY_EDITOR
             if (controller != null && controller.IsEditorPreview)
                 heading = "EDITOR 체험 · 가상 능력치 / 정식 게임 아님";
@@ -65,6 +67,12 @@ namespace Ordr.Mobile.Unity
                 controller.Combat.Game.Phase == SessionPhase.NotStarted)
                 status = "캐릭터 도감 " + controller.Units.Count +
                     "종  |  검증된 첫 라운드 시작 대기";
+            else if (controller.PracticeBattle != null)
+                status = controller.Combat.Game.Phase == SessionPhase.Running
+                    ? "연습 " + controller.Combat.Game.CurrentWave + "/10 · " +
+                        Math.Ceiling(controller.PracticeBattle.SecondsRemaining) + "초 · 적 " +
+                        controller.Combat.Game.AliveEnemies + "/" + controller.PracticeBattle.EnemyLimit
+                    : controller.PracticeBattle.ResultMessage;
             else if (controller.IsUnitPreparation)
                 status = "유닛 준비 · 소환 / 조합 / 판매 가능 · 전투 연결 대기";
             else
@@ -131,7 +139,6 @@ namespace Ordr.Mobile.Unity
             {
                 string reason;
                 bool ready = controller.CanBeginVerifiedFirstWave(out reason);
-                int remaining = controller.GetFirstWaveBlockers().Count;
                 float panelWidth = Mathf.Max(180f, layout.Battle.width * 0.65f);
                 panelWidth = Mathf.Min(layout.Battle.width - 18f, panelWidth);
                 float center = layout.Battle.x + layout.Battle.width * 0.5f;
@@ -140,7 +147,7 @@ namespace Ordr.Mobile.Unity
                     panelWidth, Mathf.Clamp(layout.Battle.height * 0.17f, 36f, 64f));
                 bool previous = GUI.enabled;
                 GUI.enabled = controller.Units != null;
-                string startTitle = ready ? "악몽 · 이세계모드 시작" : "유닛 준비 시작";
+                string startTitle = ready ? "악몽 · 이세계모드 시작" : "10R 연습 게임 시작";
 #if UNITY_EDITOR
                 if (controller.IsEditorPreview)
                     startTitle = "체험 첫 라운드 시작 (가상 능력치)";
@@ -152,7 +159,7 @@ namespace Ordr.Mobile.Unity
                     try
                     {
                         if (ready) controller.BeginVerifiedFirstWave();
-                        else controller.BeginUnitPreparation();
+                        else controller.BeginPracticeBattle();
                         startFailure = null;
                     }
                     catch (Exception ex)
@@ -164,24 +171,39 @@ namespace Ordr.Mobile.Unity
                 }
                 string message = string.IsNullOrEmpty(startFailure)
                     ? (ready ? "게임 시작 준비 완료" :
-                        "전투 연결 대기 · 시작 자원으로 위습·조합·판매를 사용할 수 있습니다.")
+                        "평타 중심 개발용 연습입니다. 몬스터 최종 수치와 스킬은 원작 대조 중입니다. 위습에서 유닛을 소환해 주세요.")
                     : startFailure;
                 var hint = new GUIStyle(detail) { alignment = TextAnchor.UpperCenter };
                 GUI.Label(new Rect(button.x, button.yMax + 9f,
                     button.width, Mathf.Min(64f, layout.Battle.height * 0.3f)),
                     message, hint);
-                // A plain-text readiness report lets an in-game tester share
-                // every missing dependency without screenshots or fake starts.
                 if (!ready && GUI.Button(
-                    new Rect(button.x, button.yMax + 73f, button.width, 34f),
-                    "미완료 연결 항목 복사"))
-                    GUIUtility.systemCopyBuffer = controller.ExportFirstWaveReadiness();
+                    new Rect(button.x, button.yMax + 73f, button.width, 34f), "유닛 준비만 하기"))
+                {
+                    try { controller.BeginUnitPreparation(); startFailure = null; }
+                    catch (Exception ex) { startFailure = ex.Message; }
+                }
             }
             else if (controller != null && controller.Combat != null &&
                 (controller.Combat.Game.Phase == SessionPhase.Won ||
                  controller.Combat.Game.Phase == SessionPhase.Lost || controller.IsUnitPreparation))
             {
                 float center = layout.Battle.center.x;
+                if (controller.IsUnitPreparation)
+                {
+                    var start = new Rect(center - 110f, layout.Battle.center.y - 46f, 220f, 44f);
+                    if (GUI.Button(start, "10R 연습 전투 시작"))
+                    {
+                        try { controller.BeginPracticeBattle(); startFailure = null; }
+                        catch (Exception ex) { startFailure = ex.Message; }
+                    }
+                    GUI.Label(new Rect(start.x - 20f, start.yMax + 6f, start.width + 40f, 58f),
+                        string.IsNullOrEmpty(startFailure) ?
+                        "위습 소환·조합 후 시작할 수 있습니다. 평타 중심 / 원작 최종 전투 미검증" : startFailure, detail);
+                }
+                else if (controller.PracticeBattle != null)
+                    GUI.Label(new Rect(layout.Battle.x + 8f, layout.Battle.center.y - 70f,
+                        layout.Battle.width - 16f, 42f), controller.PracticeBattle.ResultMessage, title);
                 var restart = new Rect(center - 92f,
                     controller.IsUnitPreparation ? layout.Battle.yMax - 48f :
                         layout.Battle.center.y - 22f, 184f, 44f);

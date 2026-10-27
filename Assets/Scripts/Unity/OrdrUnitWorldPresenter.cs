@@ -342,6 +342,16 @@ namespace Ordr.Mobile.Unity
             if (worldCamera == null) worldCamera = Camera.main;
             if (worldCamera == null) return false;
             var positions = new List<Vector2>();
+            if (controller.PracticeBattle != null)
+            {
+                foreach (var point in controller.PracticeBattle.RouteCorners)
+                    positions.Add(new Vector2((float)point.X, (float)point.Y));
+                // Include every source Common spawn slot before the player
+                // summons. This is a ONE-TIME/manual view, not camera chasing.
+                for (int i = 0; i < 9; i++)
+                    positions.Add(new Vector2((float)Original323SourceCommonWispWorld.OriginalCommonSpawnX(i),
+                        (float)Original323SourceCommonWispWorld.OriginalCommonSpawnY));
+            }
             foreach (var unit in controller.Combat.MobileUnitSnapshot())
                 positions.Add(new Vector2((float)unit.Position.X, (float)unit.Position.Y));
             Rect safe = Screen.safeArea;
