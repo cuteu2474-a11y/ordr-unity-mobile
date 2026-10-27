@@ -81,18 +81,22 @@ namespace Ordr.Mobile.Mobile
         public long MaxHealth { get; private set; }
         public double X { get; private set; }
         public double Y { get; private set; }
+        // Read-only observed native route progress, never computed from X/Y.
+        public double PathProgress { get; private set; }
 
         public MobileEnemySnapshot(string id, CharacterEnemyKind kind, long health, double x, double y)
             : this(id, kind, health, health, x, y) { }
 
         public MobileEnemySnapshot(string id, CharacterEnemyKind kind, long health,
-            long maxHealth, double x, double y)
+            long maxHealth, double x, double y, double pathProgress = 0)
         {
             if (string.IsNullOrWhiteSpace(id) || maxHealth <= 0 ||
-                health < 0 || health > maxHealth)
-                throw new ArgumentException("적 체력/최대 체력이 유효하지 않습니다.");
+                health < 0 || health > maxHealth ||
+                double.IsNaN(pathProgress) || double.IsInfinity(pathProgress) ||
+                pathProgress < 0 || pathProgress > 1)
+                throw new ArgumentException("적 체력/최대 체력/이동 진행률이 유효하지 않습니다.");
             Id = id; Kind = kind; Health = health; MaxHealth = maxHealth;
-            X = x; Y = y;
+            X = x; Y = y; PathProgress = pathProgress;
         }
     }
 

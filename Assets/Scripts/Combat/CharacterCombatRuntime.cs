@@ -1442,7 +1442,8 @@ namespace Ordr.Mobile.Combat
             foreach (var enemy in enemies.Values)
                 if (enemy.Enemy.IsAlive)
                     result.Add(new MobileEnemySnapshot(enemy.Id, enemy.Kind,
-                        enemy.Enemy.Health, enemy.Enemy.MaxHealth, enemy.X, enemy.Y));
+                        enemy.Enemy.Health, enemy.Enemy.MaxHealth, enemy.X, enemy.Y,
+                        enemy.PathProgress));
             result.Sort((a,b) => string.CompareOrdinal(a.Id, b.Id));
             return result.AsReadOnly();
         }
@@ -2171,6 +2172,53 @@ namespace Ordr.Mobile.Combat
             enemy.Move(x, y, progress);
             RefreshEnemyAuras();
             return true;
+        }
+
+        // Apply an already source-observed FRAME as one logical movement
+        // batch. Ordinary TryMoveEnemy remains the single-target API. The
+        // 0..1 progress is observed, not a proxy for an escape event.
+        // Validate ALL targets before changing any; then reconcile active
+        // auras ONCE instead of once per monster on every Unity frame.
+        internal int ApplyOriginalObservedMonsterPositions(
+            IReadOnlyList<Original323ObservedMonsterPosition> observed)
+        {
+            BlockExternalMutationDuringOriginalFusion();
+            if (observed == null) throw new ArgumentNullException(nameof(observed));
+            if (game.Phase != SessionPhase.Running || pendingStepSeconds > 0)
+                throw new InvalidOperationException(
+                    "전투 중이 아니거나 미처리 계산이 남은 몬스터 이동은 거절합니다.");
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            var allowed = new List<KeyValuePair<SpatialCombatEnemy,
+                Original323ObservedMonsterPosition>>();
+            foreach (var item in observed)
+            {
+                if (item == null || string.IsNullOrWhiteSpace(item.Id) ||
+                    !ids.Add(item.Id) ||
+                    double.IsNaN(item.X) || double.IsInfinity(item.X) ||
+                    double.IsNaN(item.Y) || double.IsInfinity(item.Y) ||
+                    double.IsNaN(item.Progress) || double.IsInfinity(item.Progress) ||
+                    item.Progress < 0 || item.Progress > 1)
+                    throw new InvalidOperationException(
+                        "원본 몬스터 배치 관측값이 중복되거나 잘못됐습니다.");
+                SpatialCombatEnemy live;
+                if (!enemies.TryGetValue(item.Id, out live) || !live.Enemy.IsAlive)
+                    throw new InvalidOperationException(
+                        "원본 이동 관측 대상이 실제 생존 적과 다릅니다.");
+                if (!statuses[item.Id].IsStunned())
+                    allowed.Add(new KeyValuePair<SpatialCombatEnemy,
+                        Original323ObservedMonsterPosition>(live, item));
+            }
+            bool changedPosition = false;
+            foreach (var pair in allowed)
+            {
+                var live = pair.Key; var next = pair.Value;
+                if (live.X == next.X && live.Y == next.Y &&
+                    live.PathProgress == next.Progress) continue;
+                live.Move(next.X, next.Y, next.Progress);
+                changedPosition = true;
+            }
+            if (changedPosition) RefreshEnemyAuras();
+            return allowed.Count;
         }
 
         // 스턴 무시 강제 이동(원본 맵에 확인된 넉백/이동만 호출해야 한다).

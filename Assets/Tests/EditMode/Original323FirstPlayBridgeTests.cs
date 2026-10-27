@@ -142,12 +142,21 @@ namespace Ordr.Mobile.Tests
             public bool Approved = true;
             public bool ValidPosition = true;
             public bool DirtyPreflight;
+            public bool DirtyProgress;
+            public bool DirtyStatus;
+            public string InvalidForEnemyId;
             public CharacterCombatRuntime Combat;
             public bool TryObserve(string id, double time, out double x,
                 out double y, out double progress, out string evidence)
             {
                 if (DirtyPreflight) Combat.TryMoveEnemy(id, 999, 0, 0);
-                x = ValidPosition ? 210 : double.NaN;
+                if (DirtyProgress) Combat.TryMoveEnemy(id, 20, 0, .6);
+                if (DirtyStatus) Combat.StatusOf(id).Apply(
+                    new CombatEffect("TEST_ONLY-observer-side-effect",
+                        CombatEffectType.ArmorReduction,
+                        CombatEffectOrigin.Aura, 5, 0));
+                x = ValidPosition && id != InvalidForEnemyId
+                    ? 210 : double.NaN;
                 y = 15;
                 progress = .3;
                 evidence = Approved ? "observed native frame " +
@@ -167,6 +176,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, world.ApplyAtCurrentCombatTime(live.Combat));
             Assert.AreEqual(210, live.Combat.MobileEnemySnapshot()[0].X);
             Assert.AreEqual(15, live.Combat.MobileEnemySnapshot()[0].Y);
+            Assert.AreEqual(.3, live.Combat.MobileEnemySnapshot()[0].PathProgress, 1e-9);
             Assert.AreEqual(300, live.Combat.MobileEnemySnapshot()[0].Health);
         }
 
@@ -190,6 +200,70 @@ namespace Ordr.Mobile.Tests
             observed.DirtyPreflight = true;
             Assert.Throws<InvalidOperationException>(() =>
                 world.ApplyAtCurrentCombatTime(live.Combat));
+        }
+
+        [Test]
+        public void ObservedMonsterMovementRejectsPathProgressAndStatusTampering()
+        {
+            var live = Create();
+            live.Combat.SpawnEnemy("mob", 300, CharacterEnemyKind.Line, 20, 0, 0);
+            var observer = new ObservedPositions {
+                Combat = live.Combat, DirtyProgress = true
+            };
+            var world = new Original323ObservedMonsterMovementWorld(observer);
+            Assert.Throws<InvalidOperationException>(() =>
+                world.ApplyAtCurrentCombatTime(live.Combat));
+            Assert.AreEqual(20, live.Combat.MobileEnemySnapshot()[0].X);
+            Assert.AreEqual(.6, live.Combat.MobileEnemySnapshot()[0].PathProgress,
+                "An invalid observer is detected, not silently overwritten.");
+            observer.DirtyProgress = false;
+            observer.DirtyStatus = true;
+            Assert.Throws<InvalidOperationException>(() =>
+                world.ApplyAtCurrentCombatTime(live.Combat));
+            Assert.AreEqual(20, live.Combat.MobileEnemySnapshot()[0].X);
+        }
+
+        [Test]
+        public void ObservedMonsterBatchRejectsInvalidLaterEnemyWithoutPartialCommit()
+        {
+            var live = Create();
+            live.Combat.SpawnEnemy("a", 300, CharacterEnemyKind.Line, 20, 0, 0);
+            live.Combat.SpawnEnemy("b", 300, CharacterEnemyKind.Line, 30, 0, 0);
+            var observer = new ObservedPositions { InvalidForEnemyId = "b" };
+            var world = new Original323ObservedMonsterMovementWorld(observer);
+            Assert.Throws<InvalidOperationException>(() =>
+                world.ApplyAtCurrentCombatTime(live.Combat));
+            Assert.AreEqual(20, live.Combat.MobileEnemySnapshot()[0].X);
+            Assert.AreEqual(30, live.Combat.MobileEnemySnapshot()[1].X);
+            observer.InvalidForEnemyId = null;
+            Assert.AreEqual(2, world.ApplyAtCurrentCombatTime(live.Combat));
+            Assert.AreEqual(210, live.Combat.MobileEnemySnapshot()[0].X);
+            Assert.AreEqual(210, live.Combat.MobileEnemySnapshot()[1].X);
+        }
+
+        [Test]
+        public void ObservedMonsterFrameRefreshesUnlimitedAuraOnceNotPerEnemy()
+        {
+            var live = Create();
+            long caster = live.Combat.SpawnCharacter("C-01", 0, 0);
+            live.Combat.SpawnEnemy("a", 300, CharacterEnemyKind.Line, 20, 0, 0);
+            live.Combat.SpawnEnemy("b", 300, CharacterEnemyKind.Line, 30, 0, 0);
+            live.Combat.AddVerifiedEnemyAura(new CombatAuraEmitter(
+                caster, "TEST_ONLY-aura", CombatEffectType.ArmorReduction,
+                5, 1, new[] { CharacterEnemyKind.Line },
+                "TEST_ONLY verified target fixture"));
+            long before = live.Combat.StatusOf("a").Revision;
+            Assert.AreEqual(2, new Original323ObservedMonsterMovementWorld(
+                new ObservedPositions()).ApplyAtCurrentCombatTime(live.Combat));
+            // One refresh removes and reapplies one existing source.
+            Assert.AreEqual(before + 2, live.Combat.StatusOf("a").Revision);
+            Assert.AreEqual(1, live.Combat.StatusOf("a").ActiveCount);
+            Assert.AreEqual(1, live.Combat.StatusOf("b").ActiveCount);
+            before = live.Combat.StatusOf("a").Revision;
+            Assert.AreEqual(2, new Original323ObservedMonsterMovementWorld(
+                new ObservedPositions()).ApplyAtCurrentCombatTime(live.Combat));
+            Assert.AreEqual(before, live.Combat.StatusOf("a").Revision,
+                "Reobserving unchanged positions must not recompute auras.");
         }
 
         private sealed class ExitObserver : IOriginal323ObservedMonsterEscapeSource

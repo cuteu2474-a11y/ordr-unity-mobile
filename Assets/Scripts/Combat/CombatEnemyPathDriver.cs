@@ -270,14 +270,24 @@ namespace Ordr.Mobile.Combat
             out string sourceEvidence);
     }
 
+    // Owned frame snapshot. Only the already approved observer can create
+    // these records; the runtime rejects duplicates or invalid references.
+    internal sealed class Original323ObservedMonsterPosition
+    {
+        public string Id { get; private set; }
+        public double X { get; private set; }
+        public double Y { get; private set; }
+        public double Progress { get; private set; }
+
+        public Original323ObservedMonsterPosition(string id, double x,
+            double y, double progress)
+        {
+            Id = id; X = x; Y = y; Progress = progress;
+        }
+    }
+
     public sealed class Original323ObservedMonsterMovementWorld
     {
-        private sealed class Position
-        {
-            public string Id;
-            public double X, Y, Progress;
-        }
-
         private readonly IOriginal323ObservedMonsterPositionSource source;
 
         public Original323ObservedMonsterMovementWorld(
@@ -289,12 +299,21 @@ namespace Ordr.Mobile.Combat
         public int ApplyAtCurrentCombatTime(CharacterCombatRuntime combat)
         {
             if (combat == null) throw new ArgumentNullException(nameof(combat));
-            if (combat.Game.Phase != SessionPhase.Running) return 0;
+            if (combat.Game.Phase != SessionPhase.Running ||
+                combat.PendingSimulationSeconds > 0) return 0;
             double time = combat.Time;
+            int wave = combat.Game.CurrentWave;
+            int alive = combat.Game.AliveEnemies;
+            int defeated = combat.Game.DefeatedEnemies;
+            int leaked = combat.Game.LeakedEnemies;
+            int actors = combat.CharacterCount;
             var before = combat.MobileEnemySnapshot();
-            var pending = new List<Position>();
+            var statusRevisions = new Dictionary<string, long>(StringComparer.Ordinal);
+            var pending = new List<Original323ObservedMonsterPosition>();
             foreach (var enemy in before)
             {
+                var status = combat.StatusOf(enemy.Id);
+                statusRevisions.Add(enemy.Id, status == null ? -1 : status.Revision);
                 double x, y, progress;
                 string evidence;
                 if (!source.TryObserve(enemy.Id, time, out x, out y,
@@ -308,28 +327,36 @@ namespace Ordr.Mobile.Combat
                         StringComparison.OrdinalIgnoreCase) < 0)
                     throw new InvalidOperationException(
                         "몬스터 위치·경로·원본 관측 근거가 확인되지 않았습니다.");
-                pending.Add(new Position { Id = enemy.Id,
-                    X = x, Y = y, Progress = progress });
+                pending.Add(new Original323ObservedMonsterPosition(
+                    enemy.Id, x, y, progress));
             }
 
             // Observing is read-only. Nothing moves if an earlier observed
             // enemy or the combat clock was altered by the source adapter.
             var after = combat.MobileEnemySnapshot();
-            if (combat.Time != time || before.Count != after.Count)
-                throw new InvalidOperationException("몬스터 이동 관측 중 전투 상태가 변경됐습니다.");
+            if (combat.Time != time || wave != combat.Game.CurrentWave ||
+                alive != combat.Game.AliveEnemies ||
+                defeated != combat.Game.DefeatedEnemies ||
+                leaked != combat.Game.LeakedEnemies ||
+                actors != combat.CharacterCount || before.Count != after.Count)
+                throw new InvalidOperationException(
+                    "몬스터 이동 관측 중 전투 세션 상태가 변경됐습니다.");
             for (int i = 0; i < before.Count; i++)
-                if (before[i].Id != after[i].Id ||
-                    before[i].X != after[i].X || before[i].Y != after[i].Y ||
-                    before[i].Health != after[i].Health ||
-                    before[i].MaxHealth != after[i].MaxHealth)
+            {
+                var previous = before[i];
+                var now = after[i];
+                var status = combat.StatusOf(previous.Id);
+                if (previous.Id != now.Id || previous.Kind != now.Kind ||
+                    previous.X != now.X || previous.Y != now.Y ||
+                    previous.PathProgress != now.PathProgress ||
+                    previous.Health != now.Health ||
+                    previous.MaxHealth != now.MaxHealth ||
+                    status == null ||
+                    status.Revision != statusRevisions[previous.Id])
                     throw new InvalidOperationException(
-                        "몬스터 위치 관측기가 전투 상태를 변경했습니다.");
-
-            int moved = 0;
-            foreach (var target in pending)
-                if (combat.TryMoveEnemy(target.Id, target.X, target.Y,
-                    target.Progress)) moved++;
-            return moved;
+                        "원본 위치 관측기가 적 경로·체력·상태효과를 변경했습니다.");
+            }
+            return combat.ApplyOriginalObservedMonsterPositions(pending);
         }
 
         private static bool Trusted(string evidence)
