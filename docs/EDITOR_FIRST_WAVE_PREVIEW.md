@@ -1,5 +1,7 @@
 # Unity Editor에서 3라운드 바로 체험하기
 
+> **자료의 위치:** 본문은 해당 기능의 원본 근거와 작성 당시 구현 기록입니다. 현재 실행 범위는 [START_HERE](START_HERE.md), 다음 작업은 [PLAYABLE_ROADMAP](PLAYABLE_ROADMAP.md), 운영 정책은 [AGENTS](../AGENTS.md)를 우선합니다. 본문의 과거 APK/테스트 보류·사거리·다음 작업을 현재 지시로 복사하지 않습니다.
+
 > **개발용 가상 전투입니다. 정식 원랜디 S2 2.323[C] 악몽·이세계가 아니며 APK/IPA도 아닙니다.**
 
 ## 빠른 실행

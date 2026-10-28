@@ -1,89 +1,64 @@
-# ORDR S2 2.323[C] 캐릭터 스펙 데이터
+# 데이터 출처와 재생성
 
-> 현재 객체 연결 수치와 테스트 정책을 2026-10-23 기준으로 정리했습니다. 과거 자료의 수치·미완료 범위는 작성 당시 기준이며 [최신 인수인계](../docs/새채팅-인수인계.md)와 함께 확인합니다.
+현재 구현 범위는 [START_HERE](../docs/START_HERE.md), 유닛별 실행 범위는 [unit-runtime-status.json](unit-runtime-status.json)에서 확인합니다. 이 폴더는 Unity Resources 생성의 입력입니다. 과거 데이터 안내는 [보존본](../docs/archive/data-README-20261028.md)에 있습니다.
 
-대상: **악몽 난이도 · 이세계모드 · 오프라인 싱글플레이**
+## 파일의 역할
 
-## 스킬 도감 설명 수집 현황 (2026-10-21)
+| 파일 | 용도·권한 |
+|---|---|
+| `units.json` | 272개 프로젝트 카탈로그 항목. 모두 별개의 원본 유닛이라는 뜻은 아님 |
+| `character-skill-profiles.json` | 200개 도감 프로필, 스킬 554·패시브 295항목. 툴팁과 최종 실행 명세는 다름 |
+| `original-2323C-map-base-stats.json` | 원본 객체 271개 연결·평타 객체 270개. E-02 미매칭, X-05 지원 기능 별도 |
+| `unit-runtime-status.json` | 실제 C# 지원 내보내기 + 원본 매핑 + 툴팁을 합친 전체 실행 범위. 유닛 전체 원작 검증과 구분 |
+| `mobile-practice-battle-model.json` | 1~20R 개발용 몬스터/경로 모델. 원작 최종 웨이브 승인 자료 아님 |
+| `original-2323C-native-pure-passives.json` | 순수 치명타/기절 26개 객체 근거. 타깃 면역·원작 전체 검증은 별도 |
+| `original-2323C-all-unit-aura-audit.json` | 원본 오라 소유·레벨·필드·미확인 사항. 전부 자동 실행되는 목록이 아님 |
+| `practice-native-inherited-defaults.json` | 좁게 확인한 연습용 AHAd 모드 근거. 정식 자료의 미확인 필드를 일괄 덮지 않음 |
+| `original-2323C-unit-decomposition.json` | 갱 뱃지/버기 마기탄 분해 시전·결과·원본 등록 근거. C-08은 총병 |
+| `original-2323C-legendary-growth.json` 등 성장 감사 자료 | 실제 검수한 제작식과 보류 사유. 기본 제작 포트의 명시적 목록과 함께 확인 |
+| `original-jass-fusion-registry.json` | CWR 원본 등록식 266건(TEST 1 포함). 일반 265개 미리보기를 전부 실행 허가하지 않음 |
+| `original-fusion-object-reconciliation.json` 등 후보 자료 | 이름·재료·결과를 대조하는 검토 자료. 실제 소비 권한으로 자동 승격하지 않음 |
+| `original-2323C-monster-*.json`, `original-2323C-wisp-pools.json` | 출현 객체·원본 일정·풀/분포 등 개별 근거. 실제 최종 적 상태/추가 생성 동작과 구분 |
+| `original-2323C-missing-skill-profile-evidence.json` | 프로필 없는 72항목의 능력 코드 조사. 스킬 없음이나 구현 완료를 뜻하지 않음 |
 
-| 데이터 | 등록 상태 | 주의 |
-|---|---:|---|
-| 전체 캐릭터 카탈로그 (`units.json`) | 271 / 271종 | 이름·등급·내부 ID 중심 |
-| 도감에서 상세 설명이 있는 캐릭터 (`character-skill-profiles.json`) | **200 / 200종** | **전종 프로필 등록**, 정확한 스킬 재현 완료가 아님 |
-| 스킬 발동 항목 (`profiles[].skills`) | **554개 항목** | 오라·상시 버프는 주로 `passives`에 별도 보관 |
-| 역할군 요약 태그 | 186종 | 물리·마법 계열은 스킬별 분류가 아니라 역할 힌트 |
-| 원본 맵 객체 연결 (별도 기본 능력치 데이터) | 270 / 271종 | 공격1 필드 269종. `units.json.gameRawCode`와 별도 관리 |
-| 원작 평타 공격력·공격 주기·사거리 전체 대조 | 미완료 | 확인되지 않은 값은 `null` |
+프로필의 `gameRawCode=null`을 프로젝트 전체 rawcode 미확보로 해석하지 않습니다. 객체 매핑은 별도 자료를 사용합니다. 등급·이름·roleTags·damageSchoolHints만으로 공격 계열·피해 공식·조합 재료를 추정하지 않습니다. 니카의 두 재료 경로는 [동일성 근거](../docs/니카-초월별-영원동일성-20261023.md)를 확인합니다.
 
-### 상세 프로필 등급별 커버리지
+## 데이터 변경 순서
 
-`skill-collection-progress.json`에 200종 상세 대상의 등급별 현황을 보관한다. 전설 39, 초월 30, 불멸 12, 영원 12, 히든 22, 세라핌 4종을 포함해 **등급별 상세 대상 전부**를 등록했다. 상세 프로필이 없는 71종은 원본 능력 코드 연결 자료도 확보했다(고유 능력 코드 181종). 상세 프로필 부재는 실제 스킬 부재를 뜻하지 않으며, 이 조사에서 확정된 스킬 공식은 0개다.
+1. 원본 입력/출처와 버전을 확인합니다. 툴팁, 맵 SLK, 기본 게임 SLK, W3A 수정 기록을 구분합니다.
+2. 해당 추출·감사 도구를 사용하고 변경된 필드와 보류 항목을 대조합니다. 원본 W3X는 읽기만 합니다.
+3. `data/`를 갱신한 뒤 관련 Python 회귀와 C# 로더/실행 검사를 합니다. 단순 JSON 등록을 실제 게임 연결로 표시하지 않습니다.
+4. 유닛 실행 범위가 바뀌면 실제 C# 내보내기를 다시 생성하고 현황 JSON·문서를 갱신합니다. Editor는 같은 `data/`에서 Resources를 동기화합니다.
 
-### 원본 도감과 출처
+## 대표 재생성 경로
 
-- 기본 목록 및 등급: https://ordr.kr/character
-- 개별 캐릭터: 각 `profiles[].sourceUrl` 참고
-- 패치 기록: https://ordr.kr/patch-notes
-- **보조 자료 확인이 필요한 캐릭터 4종**: `X-04`(아이스버그), `X-05`(오타마), `RN-08`, `RN-10`. ORDR 2.323 원문 개별 페이지가 외부 조회에서 불안정하여 일부 2024~2026년 보조 자료를 입력했으며 `sourceStatus: secondary-needs-2.323-check`로 표시했다. 원작 2.323에서 최종 확인 전 확정 데이터로 취급하지 않는다.
-- 툴팁과 과거 패치 기록 수치가 충돌하는 캐릭터는 `uncertaintyNotes`로 보존하고, 추정값을 실제 전투 공식에 사용하지 않는다.
+각 도구는 `--help`로 현재 인수를 확인합니다. 입력의 고정 SHA는 [START_HERE](../docs/START_HERE.md)와 도구 내부에 있습니다. 외부 원본이 없는 환경에서는 기존 JSON 검사·코드 연결을 먼저 진행하며 파일을 만들어 원본인 것처럼 사용하지 않습니다.
 
-## 데이터 파일별 의미
+| 대상 | 도구 | 필요한 입력 |
+|---|---|---|
+| 원본 객체 기본값 | [build_original_map_base_stats.py](../tools/build_original_map_base_stats.py) | 원본 W3X, 카탈로그. MPQ 추출용 `mpyq`가 필요한 경로 |
+| 네이티브 순수 패시브 | [extract_original_native_passives.py](../tools/extract_original_native_passives.py) | 맵 AbilityData.slk·UnitAbilities.slk·객체 기본값 JSON |
+| 로빈 3인 제한 | [extract_original_robin_multishot.py](../tools/extract_original_robin_multishot.py) | 원본 W3X의 UnitWeapons/능력·W3A 근거 |
+| 20R 연습 자료 | [build_mobile_practice_battle_data.py](../tools/build_mobile_practice_battle_data.py) | 원본 war3map.j·UnitBalance.slk·기존 초기 몬스터 모델 |
+| 전설 제작 감사 | [audit_original_legendary_growth.py](../tools/audit_original_legendary_growth.py) | 원본 JASS·AbilityData.slk·기존 포트/자료 |
+| 유닛 분해 감사 | [extract_original_unit_decomposition.py](../tools/extract_original_unit_decomposition.py) | 원본 JASS·AbilityData.slk·war3map.w3a |
+| 실제 모델 지원 TSV | [export_source_model_unit_support.cs](../tools/export_source_model_unit_support.cs) | 현재 C# 실행 어셈블리와 data 디렉터리. 인수: `data-directory output-tsv` |
+| 전체 실행 범위 JSON | [build_unit_runtime_status.py](../tools/build_unit_runtime_status.py) | 위 C# 실행기가 만든 TSV + 현재 원본/도감/분해 자료 |
+| 사람이 읽는 유닛 표 | [render_unit_status_docs.py](../tools/render_unit_status_docs.py) | 실행 범위 JSON. 모델 지원·원본 승인 판정을 새로 만들지 않음 |
 
-- `units.json`: 모든 271종의 등급, 이름, 프로젝트 내부 ID, 역할 태그, 상세 데이터 링크
-- `schema.json`: 271종 기본 카탈로그 구조
-- `character-skill-profiles.json`: 상세 설명이 있는 200종의 스킬·상시 효과, 특성강화·소환수·조건부 피해 데이터
-- `character-skill-profiles.schema.json`: 상세 스킬 프로필 구조
-- `skill-collection-progress.json`: 등급별 수집 현황과 불확실성 목록
-- `sources.json`: 데이터 참조 원칙과 링크
-- `original-stat-evidence.json`: 원본 패치의 변경 후 공격 수치를 출처·패치 번호별로 저장(전투 사용 금지 상태)
+예를 들어 현재 C# 어셈블리에 지원 내보내기 도구를 연결해 TSV를 만든 뒤 저장소 루트에서 실행합니다. 아래 TSV 경로는 실제 생성한 경로로 바꿉니다.
 
-## 반드시 구별할 점
+```sh
+python3 tools/build_unit_runtime_status.py --runtime-tsv /path/to/unit-support.tsv
+python3 tools/render_unit_status_docs.py
+python3 tools/render_unit_status_docs.py --verify
+python3 -m unittest discover -s tests -q
+```
 
-1. **200/200은 상세 페이지 프로필을 하나도 빠뜨리지 않았다는 뜻**이다. 캐릭터 스킬 전체가 실제 게임과 동일하게 작동한다는 뜻이 아니다.
-2. 도감에 오라/버프만 기재된 유닛은 `passives`에만 기록하며, `skills: []`라고 해서 원본에 모든 발동 스킬이 없다는 뜻은 아니다.
-3. `id`와 `unitId`는 프로젝트 전용 식별자다. 기본 카탈로그의 `gameRawCode`와 별도 `original-2323C-map-base-stats.json`의 객체 연결을 구분한다. 기본 카탈로그의 null을 프로젝트 전체 rawcode 미확보로 해석하지 않는다.
-4. `roleTags`와 `damageSchoolHints`는 도감 요약. 평타나 모든 스킬의 피해 타입·방어력 적용 방식을 결정하지 않는다.
-5. `skillSpecCompleteness: partial`이므로 스킬 발동 배제 조건, 숨은 절대 쿨타임, 반올림, 중첩, 소환수 상세·강화 후 분기는 추가 원작 검증 대상이다.
-6. 데이터 등록은 유닛 생성·공격·특성강화·조합·스토리와 **런타임으로 연결하는 작업과 별개**이다.
+유닛 표 생성기는 JSON을 읽기만 하며 원본 수치·실행 지원·완료 플래그를 수정하지 않습니다. 실행 범위 JSON 자체를 코드를 확인하지 않고 수동으로 완료 처리하지 않습니다.
 
-### 웹 도감과 원작 패치의 커버리지 불일치
+## 외부 자료와 검증 한계
 
-ORDR 2.310 패치에 신규 특수 유닛 **가이몬**이 기록되지만 목록에서 보이지 않으며, 2.322 패치에는 신규 **유지로(신비)**가 기록되어 있으나, 271종 도감 신비함 13종 목록에는 이름이 표시되지 않는다. 따라서 `200/200`은 **웹 도감의 상세 페이지 기준**이며 **원본 2.323[C] 맵의 전체 유닛 수가 271종이라고 확정한 것이 아니다.** 가이몬은 이후 W3X 객체 `h0BG`와 JASS 탐색·보상 경로를 확인했다([원본 조사](original-2323C-treasure-research.json)). 기존271종 JSON에는 아직 정식 등록되지 않았으며, 유지로의 추가/대체 및 전체 목록 완전성은 별도 확인 대상이다.
+원본 맵/MPQ, 임시 추출 파일, 로컬 컴파일 도구, APK·서명 키는 저장소에 포함하지 않습니다. 원본 입력이 필요한 작업에만 해당 파일 접근을 요청하고, 계정·서명 정보는 기록하지 않습니다. JSON에 남은 `null`, 보조 출처와 불확실성 메모는 임의 값으로 메우지 않습니다.
 
-2.310/2.320/2.322/2.323 패치·모리아 상세 페이지에서 얻은 **모리아(전설) 56,000 기본 공격력, 1.25초 공격쿨타임, 850 사거리, 베포·이나즈마 각 500 사거리, 모건 525 사거리, 초월 루치 650 사거리**는 `original-stat-evidence.json`에 입력했다. 패치 기록의 변경 후 수치일 뿐 원본 W3X의 최종 수치·공격 타입·피해 계열을 모두 검증한 것은 아니므로 `usableForCombat: false`를 유지한다.
-
-### 스킬 툴팁과 원작 패치 수치 충돌
-
-고죠 사토루의 무량공처·술식 반전 혁·술식 순전 창은 2.323 웹 도감 툴팁과 2.320 패치노트가 서로 다른 피해/반경/발동확률/시간 간격을 기술한다. 해당 스킬은 `requiresOriginalVerification: true`를 추가하여 원본 W3X 대조 전 발동을 차단한다.
-
-## 원본 조합·원시 ID 대조 (2026-10-21 당시 기록)
-
-> 아래 81종·163종 등의 수치는 조합 전용 자료의 당시 범위다. 이후 기본 능력치용 객체 연결은 270종으로 확대되었으나 조합 소비 승인으로 자동 승격되지 않는다.
-
-- `original-unit-rawcode-label-links.json`: W3X의 `BjB/Bi8/Bi9` 이름+조합 능력 기록을 참고해 프로젝트 유닛 81종과 Warcraft rawcode를 교차 연결. 전투 스탯이나 제작 커밋 허가의 근거로 단독 사용 불가.
-- `original-jass-fusion-ordered.xz.b64`: 사용자 원본 W3X의 `CWR`에 등록된 조합 **266건(TEST 1건 포함)**을 BGI 원본 호출 순서 그대로 보존한 압축 아카이브.
-- `otherworld-2323C-mystic-web-recipes.json`: 2.323 공개 도감의 신비 13종 조합식(고정 재료, 랜덤 등급 추가 슬롯, 공통 비용, 해적선·행운의토큰 표기). 모바일 미리보기용이며 원본 소비 트리거 미확인 상태로 실행 금지.
-- `tools/unpack_ordered_jass_fusions.py`: 위 압축본을 `original-jass-fusion-registry.json`으로 복원. 게임 재화나 유닛을 소비하지 않는 데이터 변환.
-- `tools/extract_jass_unit_labels.py`: 원본 `war3map.j`가 있을 때 유닛/조합 능력/원문 이름을 전수 추출하고 81종 레이블 연결을 소스와 대조.
-- 현재 결과 유닛을 이름·등급으로 연결한 원본 조합 81건 중 **재료 유닛 rawcode 전체를 매핑한 것은 0건**이므로 실제 합성은 아직 비활성. 나머지 재료 매핑과 원본 특수 조건 및 원자적 소비가 필요하다.
-
-## 2026-10-23 CWR ↔ 객체 재대조
-
-[상세 보고서](../docs/원본-조합-객체-재대조-20261023.md) · [검토용 스냅샷](original-fusion-object-reconciliation.json)
-
-기존 JASS 라벨 기준 미해결 재료 163종 가운데 원본 객체 기본능력치 매핑과 교차해 155종의 원시 ID↔카탈로그 ID를 추가 확인했습니다. 현재 도감의 10종 조합은 CWR UNIT 재료/수량 및 게시된 GOLD/WOOD와 일치하지만 비-UNIT 조건·실제 소비/생성은 미검증입니다. E-03 객체 교정(기존 비전투 h0C7 → 원본 ET04 생성 h0CJ), 좀비 안흔함 h00H 누락을 별도 표시했습니다. **실제 제작 활성화 0건**. 아래 2026-10-21 당시 수집 기록과 혼동하지 마세요.
-
-## 원본 자료와 모바일 확정 동작
-
-베티의 전장별 최고 예상 DPS 선택, 오타마의 1회 목재16개, 가이몬의 탐색 가챠는 [사용자 확정 정책](../docs/특별함-모바일-확정정책-20261023.md)을 적용한다. 기존 X 등급 JSON의 유닛 양도·과거 배 제작 설명은 원본/도감 수집 자료이며 최신 모바일 실행 사양으로 복사하지 않는다. 정책 반영과 JSON 원본 설명 보존, 실제 런타임 연결을 구분한다.
-
-니카 영원 E-01/E-02는 두 초월 재료 경로를 별도 도감 항목으로 수록한 것이다. [동일성 조사](../docs/니카-초월별-영원동일성-20261023.md)의 공통 조합 결과·스킬·계승 근거를 우선하고, 웹271항목을 서로 다른 원본 유닛271개로 해석하지 않는다. 기존 객체 매핑 JSON과 프로필의 스키마 차이는 별도 데이터 정합화 작업으로 남긴다.
-
-## 다음 단계
-
-- 도감/패치 수치 충돌과 보조자료 사용 캐릭터 4종의 원본 규칙 확인
-- 기초 공격력, 공속, 사거리 및 rawcode를 실제 맵 데이터와 대조
-- 스킬 데이터 타입을 C# 전투·스킬 엔진에 연결
-- 구현 범위별 테스트 결과를 확인하고, 핵심 기능 완성 및 검증 후 Android APK 제작
-
-**현재 검증 정책:** main push 시 기존 Python 회귀 검사와 Unity EditMode가 자동 실행되며 수동 실행도 가능하다. 실제 통과 여부는 실행 결과로 확인한다. APK는 핵심 기능 완성 및 검증 후 제작한다.
+원본 규칙 검증은 [PARITY](../docs/PARITY.md), 검사/빌드 운영은 [실행 안내](../docs/unity-editmode-test.md)를 따릅니다. APK 제작 요청은 기존 워크플로의 `[apk-preview]` 조건을 사용하며 과거 ‘모든 기능 완성 전 APK 금지’를 현재 지시로 적용하지 않습니다.
