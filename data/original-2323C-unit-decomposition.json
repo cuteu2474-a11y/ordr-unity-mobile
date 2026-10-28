@@ -1,0 +1,87 @@
+{
+  "format": "ordr-source-unit-decomposition-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceAbilityDataSha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda",
+  "sourceW3aSha256": "aa938f02c22884f38c5e31bcd6229a35e917a8fab0128331fdab88980cfd50e0",
+  "functions": {
+    "Bn2": "f8ff2cd193ad1dfe593379389899b4790b74f2304839b8170b9555e940311f8d",
+    "BoK": "38910fbbf2c6544a42ef20a976c1e847fae60b57855b9a8bc2ae4c8c20bc21bf",
+    "BDL": "a23b7a43c64c882a313a8a88bc10bb4c7839afe6040353b9d2f2acf2737f5137",
+    "BDK": "cded8b8f5ed79742454b6fed0212c8afa35c9c2c6cf897f8084fb419a5ffce3c",
+    "BdD": "b5d2a7285ddf783edee4ed1685edcd34b6b8e7b9a66e22ca222b33dfb926d1b7",
+    "BIV": "8e80f493c0772d7e96c2d9abe646c1ef642ee1f29582f62773b3293b8f8926c5",
+    "BIY": "49ef16d9eb0de80174f6dd0b5f53ac2e91d837a94fceb78f434aab2487203c00"
+  },
+  "entries": [
+    {
+      "catalogId": "S-02",
+      "name": "갱 뱃지",
+      "unitRawcode": "h01C",
+      "abilityRawcode": "A0EJ",
+      "jassFunction": "BoK",
+      "castSeconds": 5,
+      "resultCountRoll": null,
+      "results": [
+        {
+          "catalogId": "U-13",
+          "rawcode": "h00A",
+          "count": 1,
+          "x": -3760,
+          "y": 3904
+        },
+        {
+          "catalogId": "C-07",
+          "rawcode": "h005",
+          "count": 1,
+          "x": -3232,
+          "y": 3232
+        },
+        {
+          "catalogId": "C-08",
+          "rawcode": "h009",
+          "count": 1,
+          "x": -2976,
+          "y": 3232
+        }
+      ],
+      "goldCost": 0,
+      "woodCost": 0,
+      "nativeManaCost": 0,
+      "salePointsAwarded": 0
+    },
+    {
+      "catalogId": "S-11",
+      "name": "버기 마기탄",
+      "unitRawcode": "h015",
+      "abilityRawcode": "A0EB",
+      "jassFunction": "Bn2",
+      "castSeconds": 2,
+      "resultCountRoll": {
+        "min": 2,
+        "max": 3
+      },
+      "results": [
+        {
+          "catalogId": "C-07",
+          "rawcode": "h005",
+          "count": null,
+          "x": -3232,
+          "y": 3232
+        }
+      ],
+      "goldCost": 0,
+      "woodCost": 0,
+      "nativeManaCost": 0,
+      "salePointsAwarded": 0
+    }
+  ],
+  "slkIntegerZeroPolicy": {
+    "scope": "Standalone map SLK alias numeric Cost1 without a W3A overlay; not template inheritance",
+    "sourceCommit": "82916514a12b7edb15252d42225cd8cc8ce61cfd",
+    "reader": "https://github.com/sumneko/w3x2lni/blob/82916514a12b7edb15252d42225cd8cc8ce61cfd/script/core/slk/frontend_slk.lua",
+    "writer": "https://github.com/sumneko/w3x2lni/blob/82916514a12b7edb15252d42225cd8cc8ce61cfd/script/core/slk/backend_slk.lua"
+  },
+  "placementScope": "player zero; existing fixed mobile layout, Vw=false",
+  "retailCombatParityVerified": false
+}

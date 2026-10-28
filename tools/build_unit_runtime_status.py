@@ -23,6 +23,7 @@ def build(data, runtime_tsv):
                           'connectedModelEffects': row[2].split('|') if row[2] else []}
     if set(actual) != set(source):
         raise ValueError('Runtime export does not match the full current catalog')
+    manual = {r['catalogId']: r for r in json.loads((data / 'original-2323C-unit-decomposition.json').read_text())['entries']}
     entries = []
     for unit_id, row in source.items():
         profile = profiles.get(unit_id, {})
@@ -38,6 +39,8 @@ def build(data, runtime_tsv):
         tasks.append('원작 최종 피해·타깃·시점 동등성 미검증')
         entries.append({'catalogId': unit_id, 'name': row['catalogName'], 'grade': row['grade'],
                         'originalRawcode': row.get('originalRawcode'), **actual[unit_id],
+                        'connectedManualFunctions': ([{'name': '유닛 분해', 'castSeconds': manual[unit_id]['castSeconds'],
+                            'sourceFunction': manual[unit_id]['jassFunction']}] if unit_id in manual else []),
                         'documentedSkills': len(profile.get('skills', [])),
                         'documentedPassives': len(profile.get('passives', [])),
                         'fullUnitImplementationVerified': False, 'remainingWork': tasks})
@@ -49,7 +52,8 @@ def build(data, runtime_tsv):
                         'connectedModelEffectDefinitions': sum(len(r['connectedModelEffects']) for r in entries),
                         'documentedSkillEntries': sum(r['documentedSkills'] for r in entries),
                         'documentedPassiveEntries': sum(r['documentedPassives'] for r in entries),
-                        'fullyVerifiedUnits': 0},
+                        'fullyVerifiedUnits': 0,
+                        'connectedManualUnitFunctions': len(manual)},
             'limits': ['The C# runtime export describes development model capability, not retail parity.',
                        'Object basic attack models omit unverified hero attributes/dynamic upgrades.',
                        'Identical aura duplicates collapse; unresolved mixed aura identities are deferred.',

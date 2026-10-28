@@ -78,7 +78,7 @@ namespace Ordr.Mobile.Combat
             private readonly double atTime;
             private readonly int atWave;
             private readonly SessionPhase atPhase;
-            private long resultInstanceId;
+            private readonly List<long> resultInstanceIds = new List<long>();
             private bool committed;
             private bool disposed;
 
@@ -100,7 +100,8 @@ namespace Ordr.Mobile.Combat
                 }
             }
 
-            public long ResultInstanceId { get { return resultInstanceId; } }
+            public long ResultInstanceId { get { return resultInstanceIds.Count == 0 ? 0 : resultInstanceIds[0]; } }
+            public IReadOnlyList<long> ResultInstanceIds => resultInstanceIds.AsReadOnly();
             internal bool Hides(long instanceId)
             {
                 return hiddenIds.Contains(instanceId);
@@ -108,14 +109,16 @@ namespace Ordr.Mobile.Combat
 
             internal void StageResult(string resultCatalogId, double x, double y)
             {
+                if (disposed || committed || !Object.ReferenceEquals(world.activeOriginalFusionSwap, this))
+                    throw new InvalidOperationException("종료된 유닛 교체 거래입니다.");
                 world.internalOriginalFusionMutation = true;
                 try
                 {
                     // Preserve exact original witnessed placement; the
                     // regular mobile auto-placement policy is NOT an
                     // authority to reposition a native fusion result.
-                    resultInstanceId = world.SpawnStagedOriginalFusionResult(
-                        resultCatalogId, x, y);
+                    resultInstanceIds.Add(world.SpawnStagedOriginalFusionResult(
+                        resultCatalogId, x, y));
                 }
                 finally
                 {
@@ -125,15 +128,16 @@ namespace Ordr.Mobile.Combat
 
             public void Commit()
             {
-                if (disposed || committed || (!removalOnly && resultInstanceId <= 0) ||
+                if (disposed || committed || (!removalOnly && resultInstanceIds.Count == 0) ||
                     !Object.ReferenceEquals(world.activeOriginalFusionSwap, this) ||
                     world.Time != atTime ||
                     world.Game.Phase != atPhase ||
                     world.Game.CurrentWave != atWave)
                     throw new InvalidOperationException(
                         "원본 조합 유닛 교체의 실행 시점이 변경됐습니다.");
-                if (!removalOnly && !world.characters.ContainsKey(resultInstanceId))
-                    throw new InvalidOperationException("검증한 결과 캐릭터가 사라졌습니다.");
+                foreach (long resultId in resultInstanceIds)
+                    if (!world.characters.ContainsKey(resultId))
+                        throw new InvalidOperationException("검증한 결과 캐릭터가 사라졌습니다.");
                 foreach (long id in materialIds)
                 {
                     if (!world.characters.ContainsKey(id) ||
@@ -155,28 +159,22 @@ namespace Ordr.Mobile.Combat
                 world.internalOriginalFusionMutation = true;
                 try
                 {
-                    CharacterCombatEvent publishedSpawn = null;
-                    CharacterCombatEvent publishedPlacement = null;
-                    if (!removalOnly)
+                    // Allocate all notifications before deleting any material.
+                    // A multi-result conversion publishes every output only on commit.
+                    var published = new List<CharacterCombatEvent>();
+                    foreach (long resultId in resultInstanceIds)
                     {
-                        var result = world.characters[resultInstanceId];
-                        publishedSpawn = new CharacterCombatEvent(
-                            CharacterCombatEventType.UnitSpawned,
-                            InstanceKey(resultInstanceId), null, null, result.Catalog.Name, 0);
-                        publishedPlacement = new CharacterCombatEvent(
-                            CharacterCombatEventType.UnitPlaced,
-                            InstanceKey(resultInstanceId), null, null,
-                            "verified-original-fusion-position", 0);
-                        world.pendingCommandEvents.Capacity = Math.Max(
-                            world.pendingCommandEvents.Capacity,
-                            world.pendingCommandEvents.Count + 2);
+                        var result = world.characters[resultId];
+                        published.Add(new CharacterCombatEvent(CharacterCombatEventType.UnitSpawned,
+                            InstanceKey(resultId), null, null, result.Catalog.Name, 0));
+                        published.Add(new CharacterCombatEvent(CharacterCombatEventType.UnitPlaced,
+                            InstanceKey(resultId), null, null, "verified-original-fusion-position", 0));
                     }
+                    world.pendingCommandEvents.Capacity = Math.Max(
+                        world.pendingCommandEvents.Capacity,
+                        world.pendingCommandEvents.Count + published.Count);
                     foreach (long id in materialIds) world.RemoveCharacter(id);
-                    if (!removalOnly)
-                    {
-                        world.pendingCommandEvents.Add(publishedSpawn);
-                        world.pendingCommandEvents.Add(publishedPlacement);
-                    }
+                    world.pendingCommandEvents.AddRange(published);
                     committed = true;
                     world.activeOriginalFusionSwap = null;
                     // Step() reconciles auras at the next actual combat
@@ -194,11 +192,15 @@ namespace Ordr.Mobile.Combat
                 disposed = true;
                 try
                 {
-                    if (!committed && resultInstanceId > 0 &&
-                        world.characters.ContainsKey(resultInstanceId))
+                    if (!committed)
                     {
                         world.internalOriginalFusionMutation = true;
-                        try { world.RollbackUncommittedSpawn(resultInstanceId); }
+                        try
+                        {
+                            for (int i = resultInstanceIds.Count - 1; i >= 0; i--)
+                                if (world.characters.ContainsKey(resultInstanceIds[i]))
+                                    world.RollbackUncommittedSpawn(resultInstanceIds[i]);
+                        }
                         finally { world.internalOriginalFusionMutation = false; }
                     }
                 }
@@ -2116,6 +2118,7 @@ namespace Ordr.Mobile.Combat
             CharacterInstance instance;
             if (!characters.TryGetValue(instanceId, out instance))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터 인스턴스.");
+            CancelOriginalUnitCast(instanceId);
             if (instance.AttackReady) attackPipeline.RemoveUnit(InstanceKey(instanceId));
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
             effectExecutor.CancelCaster(InstanceKey(instanceId));
@@ -2150,6 +2153,7 @@ namespace Ordr.Mobile.Combat
             if (!characters.ContainsKey(instanceId))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
             roster.Move(instanceId, x, y);
+            CancelOriginalUnitCast(instanceId);
             RefreshEnemyAuras();
         }
 
@@ -2348,6 +2352,7 @@ namespace Ordr.Mobile.Combat
 
         private List<TargetCandidate> BuildTargetCandidates(CharacterInstance unit)
         {
+            if (IsOriginalUnitCasting(unit.Id)) return new List<TargetCandidate>();
             var position = roster.Get(unit.Id);
             var candidates = new List<TargetCandidate>();
             foreach (var enemy in enemies.Values)

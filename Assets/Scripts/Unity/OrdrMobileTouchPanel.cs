@@ -53,6 +53,8 @@ namespace Ordr.Mobile.Unity
         private const int OriginalJassPageSize = 10;
         private MobileManualOffer pendingEconomy;
         private string pendingChoiceRawcode;
+        private long? pendingDecompositionId;
+        private string pendingDecompositionName;
         private bool pendingCommonWispRecruitment;
         private int commonWispBatchCount = 1;
         private bool pendingHelperRecharge;
@@ -729,9 +731,25 @@ namespace Ordr.Mobile.Unity
                     else if (!controller.ManualActions.HasOriginalCommonSaleService)
                         GUILayout.Label("판매 연결 대기");
                 }
-                if (SpecialGradeMobilePolicy.IsManualOnly(entry.Unit.Id) &&
-                    GUILayout.Button("갱 뱃지 분해", GUILayout.MinHeight(48)))
-                    notice = controller.ManualActions.RequestUnitDecomposition(entry).Message;
+                if (Original323UnitDecompositionService.Supports(entry.Unit.Id))
+                {
+                    var service = controller.UnitDecompositions;
+                    if (service != null && service.IsCasting(entry.InstanceId))
+                    {
+                        GUILayout.Label("분해 시전 중 · " + service.Remaining(entry.InstanceId).ToString("0.0") + "초 남음");
+                        if (GUILayout.Button("분해 시전 취소", GUILayout.MinHeight(48)))
+                            notice = service.Cancel(entry.InstanceId).Message;
+                    }
+                    else
+                    {
+                        GUILayout.Label(Original323UnitDecompositionService.Description(entry.Unit.Id));
+                        if (GUILayout.Button(entry.Unit.Name + " 분해", GUILayout.MinHeight(48)))
+                        {
+                            pendingDecompositionId = entry.InstanceId;
+                            pendingDecompositionName = entry.Unit.Name;
+                        }
+                    }
+                }
             }
             if (pendingCommonSaleId.HasValue)
             {
@@ -751,6 +769,23 @@ namespace Ordr.Mobile.Unity
                 }
                 GUILayout.EndHorizontal();
             }
+            if (pendingDecompositionId.HasValue)
+            {
+                GUILayout.Label(pendingDecompositionName + " 분해를 시작할까요? 완료하면 원래 유닛이 사라집니다.");
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("분해 시작", GUILayout.MinHeight(48)))
+                {
+                    MobileUnitSnapshot selected = null;
+                    foreach (var row in Combat.MobileUnitSnapshot())
+                        if (row.InstanceId == pendingDecompositionId.Value) selected = row;
+                    notice = controller.ManualActions.RequestUnitDecomposition(selected).Message;
+                    pendingDecompositionId = null;
+                }
+                if (GUILayout.Button("취소", GUILayout.MinHeight(48))) pendingDecompositionId = null;
+                GUILayout.EndHorizontal();
+            }
+            if (!string.IsNullOrEmpty(controller.UnitDecompositions?.LastMessage))
+                GUILayout.Label(controller.UnitDecompositions.LastMessage);
             DrawPager(ownedPage, pages, next => ownedPage = next);
         }
 

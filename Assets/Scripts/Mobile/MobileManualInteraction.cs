@@ -214,9 +214,9 @@ namespace Ordr.Mobile.Mobile
 
         public ManualActionResult RequestUnitDecomposition(MobileUnitSnapshot selected)
         {
-            if (selected == null || !SpecialGradeMobilePolicy.IsManualOnly(selected.Unit.Id))
-                return new ManualActionResult(ManualActionState.Rejected, "분해할 갱 뱃지를 선택해 주세요.");
-            return decomposition == null ? ManualActionResult.Unavailable("갱 뱃지 분해") :
+            if (selected == null || !Original323UnitDecompositionService.Supports(selected.Unit.Id))
+                return new ManualActionResult(ManualActionState.Rejected, "분해할 갱 뱃지 또는 버기 마기탄을 선택해 주세요.");
+            return decomposition == null ? ManualActionResult.Unavailable("유닛 분해") :
                 decomposition.Request(selected.InstanceId) ??
                 new ManualActionResult(ManualActionState.Rejected, "분해 결과를 확인하지 못했습니다.");
         }

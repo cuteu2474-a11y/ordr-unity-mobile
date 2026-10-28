@@ -9,7 +9,8 @@
     "connectedModelEffectDefinitions": 144,
     "documentedSkillEntries": 554,
     "documentedPassiveEntries": 295,
-    "fullyVerifiedUnits": 0
+    "fullyVerifiedUnits": 0,
+    "connectedManualUnitFunctions": 2
   },
   "limits": [
     "The C# runtime export describes development model capability, not retail parity.",
@@ -26,6 +27,7 @@
       "originalRawcode": "h003",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -40,6 +42,7 @@
       "originalRawcode": "h002",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -54,6 +57,7 @@
       "originalRawcode": "h001",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -68,6 +72,7 @@
       "originalRawcode": "h007",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -82,6 +87,7 @@
       "originalRawcode": "h004",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -96,6 +102,7 @@
       "originalRawcode": "h008",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -110,6 +117,7 @@
       "originalRawcode": "h005",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -124,6 +132,7 @@
       "originalRawcode": "h009",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -138,6 +147,7 @@
       "originalRawcode": "h006",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -154,6 +164,7 @@
       "connectedModelEffects": [
         "꽃꽃 열매 · 같은 전장 최대 3명 타격 (연습 대상 선택/동시 타격 모델)"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -168,6 +179,7 @@
       "originalRawcode": "h00C",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -184,6 +196,7 @@
       "connectedModelEffects": [
         "브룩 · 기절 · 객체 확률 10% · 일반 몬스터 / 보스 저항 검증 대기"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -200,6 +213,7 @@
       "connectedModelEffects": [
         "블루노 · 크리티컬 · 객체 확률 15%"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -214,6 +228,7 @@
       "originalRawcode": "h00K",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -228,6 +243,7 @@
       "originalRawcode": "h00I",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -242,6 +258,7 @@
       "originalRawcode": "h00N",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -256,6 +273,7 @@
       "originalRawcode": "h00G",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -270,6 +288,7 @@
       "originalRawcode": "h00E",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -284,6 +303,7 @@
       "originalRawcode": "h00J",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -298,6 +318,7 @@
       "originalRawcode": "h00L",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -312,6 +333,7 @@
       "originalRawcode": "h00F",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -328,6 +350,7 @@
       "connectedModelEffects": [
         "후쿠로 · 크리티컬 · 객체 확률 15%"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -342,6 +365,7 @@
       "originalRawcode": "h00H",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -356,6 +380,7 @@
       "originalRawcode": "h01K",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -370,6 +395,13 @@
       "originalRawcode": "h01C",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [
+        {
+          "name": "유닛 분해",
+          "castSeconds": 5,
+          "sourceFunction": "BoK"
+        }
+      ],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -384,6 +416,7 @@
       "originalRawcode": "h00P",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -398,6 +431,7 @@
       "originalRawcode": "h00S",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -412,6 +446,7 @@
       "originalRawcode": "h01H",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -429,6 +464,7 @@
       "connectedModelEffects": [
         "루치 · 크리티컬 · 객체 확률 15%"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -443,6 +479,7 @@
       "originalRawcode": "h00U",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -457,6 +494,7 @@
       "originalRawcode": "h00T",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -471,6 +509,7 @@
       "originalRawcode": "h00B",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -487,6 +526,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 3 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -502,6 +542,13 @@
       "originalRawcode": "h015",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [
+        {
+          "name": "유닛 분해",
+          "castSeconds": 2,
+          "sourceFunction": "Bn2"
+        }
+      ],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -516,6 +563,7 @@
       "originalRawcode": "h014",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -530,6 +578,7 @@
       "originalRawcode": "h013",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -546,6 +595,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 5 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -561,6 +611,7 @@
       "originalRawcode": "h012",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -575,6 +626,7 @@
       "originalRawcode": "h011",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -589,6 +641,7 @@
       "originalRawcode": "h010",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -603,6 +656,7 @@
       "originalRawcode": "h00Q",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -617,6 +671,7 @@
       "originalRawcode": "h01J",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -631,6 +686,7 @@
       "originalRawcode": "h00Z",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -647,6 +703,7 @@
       "connectedModelEffects": [
         "이나즈마 혁명군 · 크리티컬 · 객체 확률 70%"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -661,6 +718,7 @@
       "originalRawcode": "h00W",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -675,6 +733,7 @@
       "originalRawcode": "h018",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -689,6 +748,7 @@
       "originalRawcode": "h019",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -705,6 +765,7 @@
       "connectedModelEffects": [
         "아군 기본 공격력 증가(%) 7 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -722,6 +783,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 3 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -737,6 +799,7 @@
       "originalRawcode": "h00V",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -751,6 +814,7 @@
       "originalRawcode": "h017",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -767,6 +831,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 5 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -784,6 +849,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 5 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -799,6 +865,7 @@
       "originalRawcode": "h01B",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -813,6 +880,7 @@
       "originalRawcode": "h01G",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -828,6 +896,7 @@
       "originalRawcode": "h01I",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -842,6 +911,7 @@
       "originalRawcode": "h05H",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -857,6 +927,7 @@
       "originalRawcode": "h08N",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -875,6 +946,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -890,6 +962,7 @@
       "originalRawcode": "h05O",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -906,6 +979,7 @@
       "originalRawcode": "h05P",
       "objectBasicAttackModel": false,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -924,6 +998,7 @@
       "connectedModelEffects": [
         "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -942,6 +1017,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -960,6 +1036,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 5 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -975,6 +1052,7 @@
       "originalRawcode": "h01Q",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -990,6 +1068,7 @@
       "originalRawcode": "h021",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1005,6 +1084,7 @@
       "originalRawcode": "h01L",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1019,6 +1099,7 @@
       "originalRawcode": "h02L",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1034,6 +1115,7 @@
       "originalRawcode": "h01X",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1048,6 +1130,7 @@
       "originalRawcode": "h025",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1064,6 +1147,7 @@
       "originalRawcode": "h022",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1078,6 +1162,7 @@
       "originalRawcode": "h01Z",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1092,6 +1177,7 @@
       "originalRawcode": "h01Y",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1106,6 +1192,7 @@
       "originalRawcode": "h04H",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1120,6 +1207,7 @@
       "originalRawcode": "h01W",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1134,6 +1222,7 @@
       "originalRawcode": "h01V",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1150,6 +1239,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 10 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1165,6 +1255,7 @@
       "originalRawcode": "h01T",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1179,6 +1270,7 @@
       "originalRawcode": "h02M",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1193,6 +1285,7 @@
       "originalRawcode": "h01S",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1209,6 +1302,7 @@
       "originalRawcode": "h01N",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1224,6 +1318,7 @@
       "originalRawcode": "h01O",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1240,6 +1335,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 10 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1255,6 +1351,7 @@
       "originalRawcode": "h02I",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1269,6 +1366,7 @@
       "originalRawcode": "h029",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1283,6 +1381,7 @@
       "originalRawcode": "h028",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1297,6 +1396,7 @@
       "originalRawcode": "h027",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1312,6 +1412,7 @@
       "originalRawcode": "h026",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1329,6 +1430,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 10 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1345,6 +1447,7 @@
       "originalRawcode": "h01P",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1359,6 +1462,7 @@
       "originalRawcode": "h020",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1373,6 +1477,7 @@
       "originalRawcode": "h024",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1387,6 +1492,7 @@
       "originalRawcode": "h02C",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1401,6 +1507,7 @@
       "originalRawcode": "h02A",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1416,6 +1523,7 @@
       "originalRawcode": "h02G",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1430,6 +1538,7 @@
       "originalRawcode": "h02F",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1444,6 +1553,7 @@
       "originalRawcode": "h02E",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1460,6 +1570,7 @@
       "connectedModelEffects": [
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1475,6 +1586,7 @@
       "originalRawcode": "h023",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1491,6 +1603,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 15 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1508,6 +1621,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 15 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1524,6 +1638,7 @@
       "originalRawcode": "h01R",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1538,6 +1653,7 @@
       "originalRawcode": "h02J",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1554,6 +1670,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1569,6 +1686,7 @@
       "originalRawcode": "h01M",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1584,6 +1702,7 @@
       "originalRawcode": "h02U",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1599,6 +1718,7 @@
       "originalRawcode": "h02P",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -1618,6 +1738,7 @@
         "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 32 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -1637,6 +1758,7 @@
         "적 방어력 감소 10 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 6,
       "fullUnitImplementationVerified": false,
@@ -1653,6 +1775,7 @@
       "originalRawcode": "h02Q",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -1671,6 +1794,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -1690,6 +1814,7 @@
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -1706,6 +1831,7 @@
       "originalRawcode": "h03C",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1722,6 +1848,7 @@
       "originalRawcode": "h02R",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1737,6 +1864,7 @@
       "originalRawcode": "h02Y",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1755,6 +1883,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -1773,6 +1902,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -1791,6 +1921,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 12 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1807,6 +1938,7 @@
       "originalRawcode": "h08S",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1824,6 +1956,7 @@
       "connectedModelEffects": [
         "블랙마리아 · 기절 · 객체 확률 15% · 일반 몬스터 / 보스 저항 검증 대기"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1840,6 +1973,7 @@
       "originalRawcode": "h034",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1855,6 +1989,7 @@
       "originalRawcode": "h035",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1873,6 +2008,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -1889,6 +2025,7 @@
       "originalRawcode": "h037",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1907,6 +2044,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 50 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1923,6 +2061,7 @@
       "originalRawcode": "h042",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -1940,6 +2079,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 30 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -1956,6 +2096,7 @@
       "originalRawcode": "h039",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1974,6 +2115,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 33 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -1993,6 +2135,7 @@
         "울티 · 크리티컬 · 객체 확률 33%",
         "적 방어력 감소 27 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2009,6 +2152,7 @@
       "originalRawcode": "h03I",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2024,6 +2168,7 @@
       "originalRawcode": "h02S",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2039,6 +2184,7 @@
       "originalRawcode": "h03G",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2057,6 +2203,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 18 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -2075,6 +2222,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2091,6 +2239,7 @@
       "originalRawcode": "h03E",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2106,6 +2255,7 @@
       "originalRawcode": "h030",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2124,6 +2274,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2142,6 +2293,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 5 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -2160,6 +2312,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -2176,6 +2329,7 @@
       "originalRawcode": "h032",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2193,6 +2347,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2209,6 +2364,7 @@
       "originalRawcode": "h03B",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -2227,6 +2383,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 22 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2245,6 +2402,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2263,6 +2421,7 @@
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2281,6 +2440,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 18 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2298,6 +2458,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -2314,6 +2475,7 @@
       "originalRawcode": "h044",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2332,6 +2494,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2347,6 +2510,7 @@
       "originalRawcode": "h03R",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2363,6 +2527,7 @@
       "originalRawcode": "h03P",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2379,6 +2544,7 @@
       "originalRawcode": "h03X",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2396,6 +2562,7 @@
       "connectedModelEffects": [
         "베르고 · 기절 · 객체 확률 20% · 일반 몬스터 / 보스 저항 검증 대기"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2413,6 +2580,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 11 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2432,6 +2600,7 @@
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2448,6 +2617,7 @@
       "originalRawcode": "h055",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2463,6 +2633,7 @@
       "originalRawcode": "h03J",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2478,6 +2649,7 @@
       "originalRawcode": "h03L",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2495,6 +2667,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2511,6 +2684,7 @@
       "originalRawcode": "h03Z",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2528,6 +2702,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 11 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2544,6 +2719,7 @@
       "originalRawcode": "h07L",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2559,6 +2735,7 @@
       "originalRawcode": "h046",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2576,6 +2753,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 12 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2595,6 +2773,7 @@
         "피셔타이거 · 기절 · 객체 확률 22% · 일반 몬스터 / 보스 저항 검증 대기",
         "아군 기본 공격력 증가(%) 35 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2611,6 +2790,7 @@
       "originalRawcode": "h05S",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2630,6 +2810,7 @@
         "적 방어력 감소 11 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2646,6 +2827,7 @@
       "originalRawcode": "h07N",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2662,6 +2844,7 @@
       "originalRawcode": "h0CK",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2678,6 +2861,7 @@
       "originalRawcode": "h07J",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2693,6 +2877,7 @@
       "originalRawcode": "h05G",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2710,6 +2895,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 38 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -2729,6 +2915,7 @@
         "마르코 · 크리티컬 · 객체 확률 15%",
         "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -2747,6 +2934,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2765,6 +2953,7 @@
       "connectedModelEffects": [
         "아인 · 기절 · 객체 확률 25% · 일반 몬스터 / 보스 저항 검증 대기"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2783,6 +2972,7 @@
         "알비다 · 기절 · 객체 확률 100% · 일반 몬스터 / 보스 저항 검증 대기",
         "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2799,6 +2989,7 @@
       "originalRawcode": "h05E",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2816,6 +3007,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 30 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2835,6 +3027,7 @@
         "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2851,6 +3044,7 @@
       "originalRawcode": "h0AI",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2870,6 +3064,7 @@
         "블랙마리아 · 기절 · 객체 확률 15% · 일반 몬스터 / 보스 저항 검증 대기",
         "적 방어력 감소 15 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 6,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2888,6 +3083,7 @@
       "connectedModelEffects": [
         "코알라 · 기절 · 객체 확률 50% · 일반 몬스터 / 보스 저항 검증 대기"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2904,6 +3100,7 @@
       "originalRawcode": "h0CI",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2921,6 +3118,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -2941,6 +3139,7 @@
         "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -2957,6 +3156,7 @@
       "originalRawcode": "h09V",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -2973,6 +3173,7 @@
       "originalRawcode": "H090",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -2988,6 +3189,7 @@
       "originalRawcode": "H08V",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -3004,6 +3206,7 @@
       "originalRawcode": "H09E",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3022,6 +3225,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 45 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -3038,6 +3242,7 @@
       "originalRawcode": "H096",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3056,6 +3261,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3072,6 +3278,7 @@
       "originalRawcode": "H08W",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3090,6 +3297,7 @@
       "connectedModelEffects": [
         "루피 · 크리티컬 · 객체 확률 18%"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -3108,6 +3316,7 @@
         "바질호킨스 · 기절 · 객체 확률 25% · 일반 몬스터 / 보스 저항 검증 대기",
         "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 7,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3128,6 +3337,7 @@
         "적 이동속도 감소(%) 5 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 15 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3148,6 +3358,7 @@
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -3164,6 +3375,7 @@
       "originalRawcode": "H09H",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3180,6 +3392,7 @@
       "originalRawcode": "H08Z",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3196,6 +3409,7 @@
       "originalRawcode": "H0B2",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -3212,6 +3426,7 @@
       "originalRawcode": "H08U",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3230,6 +3445,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 70 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -3246,6 +3462,7 @@
       "originalRawcode": "H095",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -3263,6 +3480,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 6,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -3281,6 +3499,7 @@
         "적 방어력 감소 8 · 1단계 / 중첩 충돌 시 보류",
         "적 방어력 감소 22 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -3300,6 +3519,7 @@
         "적 방어력 감소 30 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3316,6 +3536,7 @@
       "originalRawcode": "H0BX",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 7,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3334,6 +3555,7 @@
       "connectedModelEffects": [
         "징베 · 기절 · 객체 확률 40% · 일반 몬스터 / 보스 저항 검증 대기"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -3354,6 +3576,7 @@
         "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -3372,6 +3595,7 @@
       "connectedModelEffects": [
         "코비 · 기절 · 객체 확률 100% · 일반 몬스터 / 보스 저항 검증 대기"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 5,
       "fullUnitImplementationVerified": false,
@@ -3390,6 +3614,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -3406,6 +3631,7 @@
       "originalRawcode": "H0B5",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3422,6 +3648,7 @@
       "originalRawcode": "H05N",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3438,6 +3665,7 @@
       "originalRawcode": "H08Y",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 6,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3456,6 +3684,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 55 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3475,6 +3704,7 @@
         "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 7,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -3494,6 +3724,7 @@
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 6,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -3510,6 +3741,7 @@
       "originalRawcode": null,
       "objectBasicAttackModel": false,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 6,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -3527,6 +3759,7 @@
       "originalRawcode": "h0CJ",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 7,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3545,6 +3778,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 7,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -3563,6 +3797,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 30 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -3579,6 +3814,7 @@
       "originalRawcode": "h057",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 7,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -3596,6 +3832,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3615,6 +3852,7 @@
         "오뎅 · 기절 · 객체 확률 35% · 일반 몬스터 / 보스 저항 검증 대기",
         "아군 기본 공격력 증가(%) 50 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 7,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3631,6 +3869,7 @@
       "originalRawcode": "h067",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3649,6 +3888,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3665,6 +3905,7 @@
       "originalRawcode": "h06A",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3683,6 +3924,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 6,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3699,6 +3941,7 @@
       "originalRawcode": "h04C",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3715,6 +3958,7 @@
       "originalRawcode": "h04D",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3733,6 +3977,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 6,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3752,6 +3997,7 @@
         "적 방어력 감소 60 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 60 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -3768,6 +4014,7 @@
       "originalRawcode": "h081",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -3786,6 +4033,7 @@
         "빅맘 · 기절 · 객체 확률 20% · 일반 몬스터 / 보스 저항 검증 대기",
         "적 이동속도 감소(%) 70 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3804,6 +4052,7 @@
       "connectedModelEffects": [
         "아군 기본 공격력 증가(%) 22 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -3822,6 +4071,7 @@
       "connectedModelEffects": [
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 6,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -3837,6 +4087,7 @@
       "originalRawcode": "h04B",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 6,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -3854,6 +4105,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3872,6 +4124,7 @@
       "connectedModelEffects": [
         "카이도 · 기절 · 객체 확률 100% · 일반 몬스터 / 보스 저항 검증 대기"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 6,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -3890,6 +4143,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 45 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3906,6 +4160,7 @@
       "originalRawcode": "h09Y",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -3924,6 +4179,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3942,6 +4198,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -3958,6 +4215,7 @@
       "originalRawcode": "h0A1",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -3974,6 +4232,7 @@
       "originalRawcode": "h06U",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -3989,6 +4248,7 @@
       "originalRawcode": "h06V",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -4004,6 +4264,7 @@
       "originalRawcode": "h065",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -4019,6 +4280,7 @@
       "originalRawcode": "h06X",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -4034,6 +4296,7 @@
       "originalRawcode": "h073",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -4051,6 +4314,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -4067,6 +4331,7 @@
       "originalRawcode": "h09K",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -4082,6 +4347,7 @@
       "originalRawcode": "h06W",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -4101,6 +4367,7 @@
         "이사야마 요미 · 크리티컬 · 객체 확률 14%",
         "적 방어력 감소 15 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -4117,6 +4384,7 @@
       "originalRawcode": "h09L",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -4132,6 +4400,7 @@
       "originalRawcode": "h06Y",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -4147,6 +4416,7 @@
       "originalRawcode": "h071",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -4163,6 +4433,7 @@
       "originalRawcode": "h06T",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -4179,6 +4450,7 @@
       "originalRawcode": "h072",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -4197,6 +4469,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -4215,6 +4488,7 @@
       "connectedModelEffects": [
         "네즈코 · 기절 · 객체 확률 100% · 일반 몬스터 / 보스 저항 검증 대기"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -4233,6 +4507,7 @@
       "connectedModelEffects": [
         "적 방어력 감소 44 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,
@@ -4249,6 +4524,7 @@
       "originalRawcode": "h09W",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -4267,6 +4543,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -4283,6 +4560,7 @@
       "originalRawcode": "h09N",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -4302,6 +4580,7 @@
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -4320,6 +4599,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 7,
       "documentedPassives": 4,
       "fullUnitImplementationVerified": false,
@@ -4338,6 +4618,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 3,
       "fullUnitImplementationVerified": false,
@@ -4354,6 +4635,7 @@
       "originalRawcode": "h0CC",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
@@ -4373,6 +4655,7 @@
         "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -4391,6 +4674,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 50 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
       "fullUnitImplementationVerified": false,
@@ -4409,6 +4693,7 @@
       "connectedModelEffects": [
         "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
+      "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
       "fullUnitImplementationVerified": false,

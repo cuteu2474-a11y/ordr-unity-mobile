@@ -652,6 +652,7 @@ namespace Ordr.Mobile.Unity
         public OriginalJassFusionPlanner OriginalFusionPlanner { get; private set; }
         public AssistedFusionService FusionAssistance { get; private set; }
         public Original323LowerGradeSaleService LowerGradeSales { get; private set; }
+        public Original323UnitDecompositionService UnitDecompositions { get; private set; }
         private Original323CommonFusionPort commonSourceFusion;
         private bool usesBuiltInAutomaticUncommonWisps;
         private SourceModelBasicCombatRules sourceModelDamage;
@@ -771,7 +772,7 @@ namespace Ordr.Mobile.Unity
             runGate.SetManualPause(paused);
         }
 
-        private void OnDestroy() { Wisps?.Dispose(); PracticeBattle?.Dispose(); }
+        private void OnDestroy() { Wisps?.Dispose(); PracticeBattle?.Dispose(); UnitDecompositions?.Dispose(); }
 
         private void OnApplicationPause(bool paused)
         {
@@ -1958,6 +1959,11 @@ namespace Ordr.Mobile.Unity
             }
             if (MapBaseStats != null)
             {
+                UnitDecompositions = new Original323UnitDecompositionService(
+                    Combat, SharedEconomy, MapBaseStats,
+                    originalSharedScriptRandom == null ? sharedMobileWispRandom :
+                        originalSharedScriptRandom.ForPurpose(Original323ScriptRandomPurpose.OtherOriginalScriptCall));
+                ManualActions.ConfigureUnitDecomposition(UnitDecompositions);
                 LowerGradeSales = new Original323LowerGradeSaleService(
                     Combat, SharedEconomy, MapBaseStats,
                     originalSharedScriptRandom == null ? sharedMobileWispRandom :
@@ -2123,7 +2129,12 @@ namespace Ordr.Mobile.Unity
             if (Combat == null)
                 throw new InvalidOperationException("특별함 서비스를 연결할 전투 월드가 없습니다.");
             if (law != null) Combat.ConfigureSpecialGradeLawCasting(law);
-            if (decomposition != null) ManualActions.ConfigureUnitDecomposition(decomposition);
+            if (decomposition != null)
+            {
+                UnitDecompositions?.Dispose();
+                UnitDecompositions = null;
+                ManualActions.ConfigureUnitDecomposition(decomposition);
+            }
         }
 
         // Begins only a wave whose spawn positions, final HP and armor have
@@ -2353,12 +2364,18 @@ namespace Ordr.Mobile.Unity
             if (Combat.Game.Phase != Ordr.Mobile.Core.SessionPhase.Running)
             {
                 PersonalMissions?.OnGameFinished();
+                UnitDecompositions?.Advance(0); // Cancel source casts after game end.
                 return;
             }
             // Never catch up elapsed wall-clock time after backgrounding.
             // Combat, round events, shared mana regeneration and source RNG
             // remain on one paused logical clock.
-            if (!runGate.CanAdvance || IsUnitPreparation) return;
+            if (!runGate.CanAdvance) return;
+            if (IsUnitPreparation)
+            {
+                UnitDecompositions?.Advance(Time.deltaTime);
+                return;
+            }
             double timeBeforeStep = Combat.Time;
             IReadOnlyList<CharacterCombatEvent> results;
             try
@@ -2402,6 +2419,7 @@ namespace Ordr.Mobile.Unity
                     return;
                 }
             }
+            UnitDecompositions?.Advance(Math.Max(0.0, Combat.Time - timeBeforeStep));
             // The same advancing combat clock drives helper mana regen.
             // UI redraws and wall time must not regenerate extra mana.
             if (Original323HelperCow != null)
