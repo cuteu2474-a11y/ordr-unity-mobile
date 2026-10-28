@@ -41,6 +41,8 @@ namespace Ordr.Mobile.Unity
             float top = Screen.height - safe.yMax;
             float left = layout.Battle.x;
             float width = layout.Battle.width;
+            float headerWidth = layout.RightDrawer.xMax - left;
+            OrdrMobileUiTheme.DrawHeader(new Rect(left,top,headerWidth,layout.HeaderHeight));
 
             var title = new GUIStyle(GUI.skin.label);
             title.alignment = TextAnchor.MiddleLeft;
@@ -62,11 +64,11 @@ namespace Ordr.Mobile.Unity
             if (controller != null && controller.IsEditorPreview)
                 heading = "EDITOR 체험 · 가상 능력치 / 정식 게임 아님";
 #endif
-            float headerTextWidth = width;
+            float headerTextWidth = Mathf.Max(100f, headerWidth - 125f);
             if (controller != null && controller.Combat != null &&
                 controller.Combat.Game.Phase == SessionPhase.Running &&
                 !controller.IsUnitPreparation)
-                headerTextWidth = Mathf.Max(100f, width - 108f);
+                headerTextWidth = Mathf.Max(100f, headerWidth - 125f);
             GUI.Label(new Rect(left, top + 2f,
                 headerTextWidth, layout.HeaderHeight * 0.56f), heading, title);
 
@@ -99,9 +101,9 @@ namespace Ordr.Mobile.Unity
                 controller.Combat.Game.Phase == SessionPhase.Running &&
                 !controller.IsUnitPreparation)
             {
-                var pauseRect = new Rect(left + width - 91f, top + 4f, 89f,
+                var pauseRect = new Rect(left + headerWidth - 103f, top + 5f, 94f,
                     Mathf.Min(38f, layout.HeaderHeight * 0.52f));
-                if (GUI.Button(pauseRect, controller.IsGameplayPaused ? "계속" : "일시정지"))
+                if (GUI.Button(pauseRect, controller.IsGameplayPaused ? "계속" : "일시정지", OrdrMobileUiTheme.NavButton))
                 {
                     try { controller.SetManualGameplayPause(!controller.IsGameplayPaused); }
                     catch (InvalidOperationException ex) { Debug.LogWarning(ex.Message); }
@@ -140,13 +142,17 @@ namespace Ordr.Mobile.Unity
             area.normal.textColor = new Color(0.80f, 0.88f, 0.98f);
             // A full-size IMGUI box would paint over the camera's actual
             // SpriteRenderers, making the verified units appear invisible.
-            GUI.Box(new Rect(layout.Battle.x, layout.Battle.y,
-                Mathf.Min(132f, layout.Battle.width), 27f), "메인 전장", area);
+            OrdrMobileUiTheme.DrawMapCorners(layout.Battle,OrdrMobileUiTheme.Gold);
+            GUI.Label(new Rect(layout.Battle.x+8f,layout.Battle.y+5f,
+                Mathf.Min(148f,layout.Battle.width-16f),27f),
+                "MAIN FIELD  /  전장",OrdrMobileUiTheme.Overline);
             // The story viewport is not populated by the main world camera.
             // Paint its placeholder instead of exposing a black blank region.
             GUI.Box(layout.Story, GUIContent.none, GUI.skin.box);
-            GUI.Label(new Rect(layout.Story.x + 12f, layout.Story.y + 4f,
-                Mathf.Max(0f, layout.Story.width - 24f), 27f), "스토리 전장", area);
+            OrdrMobileUiTheme.DrawMapCorners(layout.Story,OrdrMobileUiTheme.Aqua);
+            GUI.Label(new Rect(layout.Story.x+12f,layout.Story.y+5f,
+                Mathf.Max(0f,layout.Story.width-24f),27f),
+                "STORY  /  스토리 전장",OrdrMobileUiTheme.Overline);
             if (controller != null &&
                 (controller.Combat == null ||
                  controller.Combat.Game.Phase == SessionPhase.NotStarted))

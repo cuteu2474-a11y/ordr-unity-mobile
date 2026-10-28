@@ -14,11 +14,22 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle primaryButton;
         private static GUIStyle sectionTitle;
         private static GUIStyle currencyText;
+        private static GUIStyle panel;
+        private static GUIStyle navButton;
+        private static GUIStyle overline;
+        private static GUIStyle subheading;
+        private static GUIStyle skillButton;
 
         internal static GUIStyle SelectedTab { get { return selectedTab; } }
         internal static GUIStyle PrimaryButton { get { return primaryButton; } }
         internal static GUIStyle SectionTitle { get { return sectionTitle; } }
         internal static GUIStyle CurrencyText { get { return currencyText; } }
+        internal static GUIStyle Panel { get { return panel; } }
+        internal static GUIStyle NavButton { get { return navButton; } }
+        internal static GUIStyle Overline { get { return overline; } }
+        internal static GUIStyle Subheading { get { return subheading; } }
+        internal static GUIStyle SkillButton { get { return skillButton; } }
+        internal static readonly Color Aqua = new Color(0.31f, 0.87f, 0.78f, 1f);
 
         // Called only inside OnGUI. Return the previous skin so owners restore
         // it in finally, avoiding style leakage into other game components.
@@ -37,32 +48,32 @@ namespace Ordr.Mobile.Unity
             themedSkin.name = "ORDR Nightfall Touch Theme";
             themedSkin.hideFlags = HideFlags.HideAndDontSave;
 
-            Texture2D card = Rounded(new Color(0.095f, 0.15f, 0.23f, 0.96f));
-            Texture2D button = Rounded(new Color(0.15f, 0.23f, 0.34f, 0.98f));
-            Texture2D hover = Rounded(new Color(0.22f, 0.32f, 0.44f, 0.99f));
-            Texture2D gold = Rounded(new Color(0.43f, 0.32f, 0.17f, 0.99f));
-            Texture2D teal = Rounded(new Color(0.07f, 0.54f, 0.49f, 1f));
-            Texture2D tealHover = Rounded(new Color(0.10f, 0.65f, 0.57f, 1f));
+            Texture2D card = Plate(new Color(.09f,.15f,.24f),new Color(.035f,.065f,.13f),new Color(.38f,.46f,.52f));
+            Texture2D button = Plate(new Color(.17f,.27f,.38f),new Color(.10f,.16f,.25f),new Color(.43f,.54f,.64f));
+            Texture2D hover = Plate(new Color(.24f,.37f,.49f),new Color(.13f,.24f,.35f),new Color(.49f,.76f,.79f));
+            Texture2D gold = Plate(new Color(.55f,.38f,.20f),new Color(.32f,.20f,.10f),new Color(.99f,.75f,.36f));
+            Texture2D teal = Plate(new Color(.13f,.63f,.54f),new Color(.06f,.35f,.31f),new Color(.45f,.96f,.84f));
+            Texture2D tealHover = Plate(new Color(.19f,.72f,.62f),new Color(.09f,.44f,.39f),new Color(.64f,1f,.88f));
 
             themedSkin.box = new GUIStyle(source.box);
             Background(themedSkin.box, card, card, Text);
-            themedSkin.box.border = new RectOffset(8, 8, 8, 8);
+            themedSkin.box.border = new RectOffset(9, 9, 9, 9);
             themedSkin.box.padding = new RectOffset(12, 12, 10, 10);
             themedSkin.box.fontSize = 14;
 
             themedSkin.button = new GUIStyle(source.button);
             Background(themedSkin.button, button, hover, Text);
-            themedSkin.button.border = new RectOffset(8, 8, 8, 8);
+            themedSkin.button.border = new RectOffset(9, 9, 9, 9);
             themedSkin.button.padding = new RectOffset(8, 8, 9, 9);
             themedSkin.button.fontStyle = FontStyle.Bold;
-            themedSkin.button.fontSize = 17;
+            themedSkin.button.fontSize = 16;
             themedSkin.button.alignment = TextAnchor.MiddleCenter;
             themedSkin.button.wordWrap = false;
             themedSkin.button.clipping = TextClipping.Clip;
 
             themedSkin.label = new GUIStyle(source.label);
             themedSkin.label.normal.textColor = Text;
-            themedSkin.label.fontSize = 16;
+            themedSkin.label.fontSize = 15;
             themedSkin.label.wordWrap = true;
             themedSkin.label.richText = true;
 
@@ -83,7 +94,7 @@ namespace Ordr.Mobile.Unity
 
             sectionTitle = new GUIStyle(themedSkin.label);
             sectionTitle.normal.textColor = Gold;
-            sectionTitle.fontSize = 21;
+            sectionTitle.fontSize = 19;
             sectionTitle.fontStyle = FontStyle.Bold;
             sectionTitle.alignment = TextAnchor.MiddleLeft;
             sectionTitle.wordWrap = false;
@@ -91,7 +102,28 @@ namespace Ordr.Mobile.Unity
             currencyText = new GUIStyle(themedSkin.label);
             currencyText.normal.textColor = Muted;
             currencyText.fontStyle = FontStyle.Bold;
-            currencyText.fontSize = 16;
+            currencyText.fontSize = 15;
+            panel = new GUIStyle(themedSkin.box);
+            panel.padding = new RectOffset(12,12,11,11);
+            navButton = new GUIStyle(themedSkin.button);
+            navButton.alignment = TextAnchor.MiddleLeft;
+            navButton.padding = new RectOffset(13,8,7,7);
+            overline = new GUIStyle(themedSkin.label);
+            overline.fontSize = 11;
+            overline.fontStyle = FontStyle.Bold;
+            overline.wordWrap = false;
+            overline.clipping = TextClipping.Clip;
+            overline.normal.textColor = new Color(.61f,.78f,.87f,1f);
+            subheading = new GUIStyle(themedSkin.label);
+            subheading.fontSize = 18;
+            subheading.fontStyle = FontStyle.Bold;
+            subheading.normal.textColor = Gold;
+            skillButton = new GUIStyle(themedSkin.button);
+            skillButton.fontSize = 14;
+            skillButton.wordWrap = true;
+            skillButton.normal.textColor = Aqua;
+            themedSkin.scrollView = new GUIStyle(source.scrollView);
+            themedSkin.scrollView.normal.background = null;
         }
 
         private static void Background(GUIStyle style, Texture2D normal,
@@ -113,6 +145,91 @@ namespace Ordr.Mobile.Unity
             style.onHover.textColor = textColor;
             style.onActive.textColor = textColor;
             style.onFocused.textColor = textColor;
+        }
+
+        // Visual-only drawing: overlays contain no input, targeting or hitbox.
+        internal static void DrawMapCorners(Rect b, Color tint)
+        {
+            if (b.width < 40f || b.height < 40f) return;
+            float n = Mathf.Min(20f, b.width * .09f, b.height * .16f);
+            Stroke(new Rect(b.xMin,b.yMin,n,2f),tint);
+            Stroke(new Rect(b.xMin,b.yMin,2f,n),tint);
+            Stroke(new Rect(b.xMax-n,b.yMin,n,2f),tint);
+            Stroke(new Rect(b.xMax-2f,b.yMin,2f,n),tint);
+            Stroke(new Rect(b.xMin,b.yMax-2f,n,2f),tint);
+            Stroke(new Rect(b.xMin,b.yMax-n,2f,n),tint);
+            Stroke(new Rect(b.xMax-n,b.yMax-2f,n,2f),tint);
+            Stroke(new Rect(b.xMax-2f,b.yMax-n,2f,n),tint);
+        }
+
+        internal static void DrawHeader(Rect area)
+        {
+            GUI.Box(area, GUIContent.none, Panel);
+            Stroke(new Rect(area.x+3f,area.y+7f,3f,Mathf.Max(0f,area.height-14f)),Gold);
+            Stroke(new Rect(area.x+12f,area.yMax-3f,
+                Mathf.Max(0f,area.width-24f),1f),new Color(.52f,.75f,.79f,.62f));
+        }
+
+        internal static void DrawPanelAccent(Rect area, Color accent)
+        {
+            Stroke(new Rect(area.x+12f,area.y+4f,
+                Mathf.Max(0f,area.width-24f),2f),accent);
+        }
+
+        internal static void ResourceChip(Rect slot, string type, string amount, Color tint)
+        {
+            GUI.Box(slot, GUIContent.none, Panel);
+            Stroke(new Rect(slot.x+2f,slot.y+5f,3f,Mathf.Max(0f,slot.height-10f)),tint);
+            float pad = Mathf.Min(10f,slot.width*.07f);
+            float leftWidth = Mathf.Min(52f,slot.width*.43f);
+            var key = new GUIStyle(GUI.skin.label);
+            key.wordWrap = false;
+            key.clipping = TextClipping.Clip;
+            key.fontSize = Mathf.RoundToInt(Mathf.Clamp(slot.height*.24f,11f,14f));
+            key.normal.textColor = tint;
+            key.alignment = TextAnchor.MiddleLeft;
+            var value = new GUIStyle(key);
+            value.fontStyle = FontStyle.Bold;
+            value.fontSize = Mathf.RoundToInt(Mathf.Clamp(slot.height*.31f,12f,21f));
+            value.normal.textColor = Color.white;
+            value.alignment = TextAnchor.MiddleRight;
+            GUI.Label(new Rect(slot.x+pad,slot.y,Mathf.Max(0f,leftWidth),slot.height),type,key);
+            GUI.Label(new Rect(slot.x+pad+leftWidth,slot.y,
+                Mathf.Max(0f,slot.width-leftWidth-pad*2f),slot.height),amount,value);
+        }
+
+        private static void Stroke(Rect area, Color tint)
+        {
+            if (area.width<=0f||area.height<=0f)return;
+            Color before=GUI.color;
+            GUI.color=tint;
+            GUI.DrawTexture(area,Texture2D.whiteTexture);
+            GUI.color=before;
+        }
+
+        // Tiny CPU-generated textured plates, drawn once and 9-sliced.
+        private static Texture2D Plate(Color bright, Color dark, Color border)
+        {
+            const int size=32, radius=7;
+            var tex=new Texture2D(size,size,TextureFormat.RGBA32,false);
+            tex.filterMode=FilterMode.Bilinear;
+            tex.wrapMode=TextureWrapMode.Clamp;
+            tex.hideFlags=HideFlags.HideAndDontSave;
+            for(int y=0;y<size;y++)
+            for(int x=0;x<size;x++)
+            {
+                float px=x+.5f,py=y+.5f;
+                float dx=Mathf.Max(0f,Mathf.Max(radius-px,px-(size-radius)));
+                float dy=Mathf.Max(0f,Mathf.Max(radius-py,py-(size-radius)));
+                float alpha=Mathf.Clamp01(radius+.5f-Mathf.Sqrt(dx*dx+dy*dy));
+                float edge=Mathf.Min(Mathf.Min(px,size-px),Mathf.Min(py,size-py));
+                Color color=Color.Lerp(bright,dark,y/(float)(size-1));
+                color=Color.Lerp(color,border,edge<1.7f?.86f:0f);
+                color.a=alpha;
+                tex.SetPixel(x,y,color);
+            }
+            tex.Apply(false,true);
+            return tex;
         }
 
         // 9-slice rounded corner pixel mask, no external assets or fonts.

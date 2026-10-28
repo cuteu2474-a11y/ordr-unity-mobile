@@ -85,6 +85,20 @@ namespace Ordr.Mobile.Unity
             };
         }
 
+        public static Rect[] StatusChipRects(Rect area)
+        {
+            if (area.width <= 0f || area.height <= 0f)
+                throw new ArgumentOutOfRangeException(nameof(area));
+            float gap=Mathf.Clamp(area.width*.015f,3f,9f);
+            float width=(area.width-gap*2f)/3f;
+            if(width<=0f)throw new ArgumentOutOfRangeException(nameof(area));
+            return new [] {
+                new Rect(area.x,area.y,width,area.height),
+                new Rect(area.x+width+gap,area.y,width,area.height),
+                new Rect(area.x+(width+gap)*2f,area.y,width,area.height)
+            };
+        }
+
         // Used by the world presenter to reject UI taps even when
         // underlying unit markers occupy the same world-space point.
         public bool BlocksWorldTap(Vector2 onGui, bool drawerOpen)

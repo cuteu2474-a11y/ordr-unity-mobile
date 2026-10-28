@@ -186,6 +186,8 @@ namespace Ordr.Mobile.Unity
                 DrawLeftTabs(layout, scale);
                 if (visible)
                     DrawRightDrawer(layout, scale);
+                else
+                    DrawStandbyDashboard(layout, scale);
 
                 // Leave the central map render and world taps untouched.
                 DrawDedicatedSkillMargin(safe, scale);
@@ -200,62 +202,48 @@ namespace Ordr.Mobile.Unity
 
         private void DrawEconomyStatus(MobileMapSkillLayout layout, float scale)
         {
-            Rect area = MobileMapSkillLayout.Scaled(layout.StatusMargin, scale);
-            if (area.height < 22f) return;
-            GUILayout.BeginArea(area, GUI.skin.box);
-            var economy = controller.SharedEconomy;
-            if (economy == null)
-                GUILayout.Label("골드·목재·위습: 게임 경제 연결 대기");
-            else
-            {
-                GUILayout.Label("골드 " + economy.Wallet.Balance("gold") +
-                    "    ·    목재 " + economy.Wallet.Balance("wood") +
-                    "    ·    위습 " + economy.Wallet.Balance(WispResourceIds.Random),
-                    OrdrMobileUiTheme.CurrencyText);
-                if (area.height >= 45f)
-                {
-                    var game = Combat == null ? null : Combat.Game;
-                    GUILayout.Label(game == null
-                        ? "진행 라운드: 대기"
-                        : (controller.IsUnitPreparation ? "유닛 준비" : "라운드 " + game.CurrentWave) +
-                          "   진행 상태 " + game.Phase +
-                          "   필드 적 " + game.AliveEnemies);
-                }
-                if (area.height >= 70f && controller.VerifiedWaveDirector != null)
-                {
-                    var wave = controller.VerifiedWaveDirector.CurrentProgress;
-                    if (wave != null)
-                        GUILayout.Label("현재 라운드 출현 " + wave.Spawned + "/" + wave.Planned +
-                            " · 처치 " + wave.Defeated + " · 이탈 " + wave.Escaped);
-                }
-            }
-            GUILayout.EndArea();
+            Rect area=MobileMapSkillLayout.Scaled(layout.StatusMargin,scale);
+            if(area.width<100f||area.height<22f)return;
+            var economy=controller.SharedEconomy;
+            var chips=MobileMapSkillLayout.StatusChipRects(area);
+            OrdrMobileUiTheme.ResourceChip(chips[0],"GOLD",
+                economy==null?"--":economy.Wallet.Balance("gold").ToString(),OrdrMobileUiTheme.Gold);
+            OrdrMobileUiTheme.ResourceChip(chips[1],"WOOD",
+                economy==null?"--":economy.Wallet.Balance("wood").ToString(),OrdrMobileUiTheme.Aqua);
+            OrdrMobileUiTheme.ResourceChip(chips[2],"WISP",
+                economy==null?"--":economy.Wallet.Balance(WispResourceIds.Random).ToString(),
+                new Color(.77f,.63f,1f,1f));
         }
 
         private void DrawLeftTabs(MobileMapSkillLayout layout, float scale)
         {
             Rect area = MobileMapSkillLayout.Scaled(layout.LeftTabs, scale);
-            GUILayout.BeginArea(area, GUI.skin.box);
-            GUILayout.Label("ORDR", OrdrMobileUiTheme.SectionTitle,
-                GUILayout.Height(30f));
+            GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
+            GUILayout.Label("ORDR", OrdrMobileUiTheme.SectionTitle,GUILayout.Height(29f));
+            GUILayout.Label("NIGHTMARE  /  S2",OrdrMobileUiTheme.Overline,
+                GUILayout.Height(20f));
             // Use touch/trackpad scrolling without the large default Unity
             // scrollbar stealing width from Korean navigation labels.
             tabsScroll = GUILayout.BeginScrollView(tabsScroll, false, false,
                 GUIStyle.none, GUIStyle.none, GUILayout.ExpandHeight(true));
 
-            // Order matches the most common manual activities.
-            DrawLeftTab(Tab.Play, "플레이");
-            DrawLeftTab(Tab.Wisp, "위습");
-            DrawLeftTab(Tab.Helper, "도움소");
+            GUILayout.Label("BATTLE  전투",OrdrMobileUiTheme.Overline);
+            DrawLeftTab(Tab.Play, "01   전황");
+            DrawLeftTab(Tab.Wisp, "02   위습");
+            DrawLeftTab(Tab.Helper, "03   도움소");
             if (controller.Original323HelperCow != null &&
                 controller.Original323HelperCow.AlchemyNavigationChosen)
-                DrawLeftTab(Tab.Alchemy, "연금술");
-            DrawLeftTab(Tab.Units, "유닛");
-            DrawLeftTab(Tab.Fusion, "조합");
-            DrawLeftTab(Tab.Story, "스토리");
-            DrawLeftTab(Tab.Shop, "상점");
-            DrawLeftTab(Tab.Gambling, "도박");
-            DrawLeftTab(Tab.Missions, "개인 미션");
+                DrawLeftTab(Tab.Alchemy, "04   연금술");
+            GUILayout.Space(5f);
+            GUILayout.Label("CREW  편성",OrdrMobileUiTheme.Overline);
+            DrawLeftTab(Tab.Units, "05   유닛");
+            DrawLeftTab(Tab.Fusion, "06   조합");
+            DrawLeftTab(Tab.Story, "07   스토리");
+            GUILayout.Space(5f);
+            GUILayout.Label("SYSTEM  운영",OrdrMobileUiTheme.Overline);
+            DrawLeftTab(Tab.Shop, "08   상점");
+            DrawLeftTab(Tab.Gambling, "09   도박");
+            DrawLeftTab(Tab.Missions, "10   미션");
 
             GUILayout.EndScrollView();
             GUILayout.EndArea();
@@ -264,7 +252,8 @@ namespace Ordr.Mobile.Unity
         private void DrawLeftTab(Tab tab, string title)
         {
             bool chosen = visible && currentTab == tab;
-            GUIStyle style = chosen ? OrdrMobileUiTheme.SelectedTab : GUI.skin.button;
+            GUIStyle style = chosen ? OrdrMobileUiTheme.SelectedTab :
+                OrdrMobileUiTheme.NavButton;
             if (GUILayout.Button(title, style, GUILayout.MinHeight(46f),
                 GUILayout.ExpandWidth(true)))
                 SelectTab(tab);
@@ -273,9 +262,12 @@ namespace Ordr.Mobile.Unity
         private void DrawRightDrawer(MobileMapSkillLayout layout, float scale)
         {
             Rect area = MobileMapSkillLayout.Scaled(layout.RightDrawer, scale);
-            GUILayout.BeginArea(area, GUI.skin.box);
+            GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
+            OrdrMobileUiTheme.DrawPanelAccent(new Rect(0,0,area.width,area.height),
+                OrdrMobileUiTheme.Gold);
             GUILayout.BeginVertical();
-
+            GUILayout.Label("COMMAND DECK  /  NIGHTMARE",
+                OrdrMobileUiTheme.Overline,GUILayout.Height(20f));
             GUILayout.BeginHorizontal();
             GUILayout.Label(TabTitle(currentTab), OrdrMobileUiTheme.SectionTitle,
                 GUILayout.ExpandWidth(true));
@@ -316,9 +308,73 @@ namespace Ordr.Mobile.Unity
             }
             GUILayout.EndScrollView();
             if (!string.IsNullOrWhiteSpace(notice))
-                GUILayout.Label(notice, GUILayout.MinHeight(24f));
+            {
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.Label("SYSTEM MESSAGE",OrdrMobileUiTheme.Overline);
+                GUILayout.Label(notice,GUILayout.MinHeight(24f));
+                GUILayout.EndVertical();
+            }
 
             GUILayout.EndVertical();
+            GUILayout.EndArea();
+        }
+
+        // Read-only tactics dashboard shown when the detail pane is closed.
+        // Menu actions only navigate: no automatic transaction or combat tick.
+        private void DrawStandbyDashboard(MobileMapSkillLayout layout,float scale)
+        {
+            Rect area=MobileMapSkillLayout.Scaled(layout.RightDrawer,scale);
+            GUILayout.BeginArea(area,OrdrMobileUiTheme.Panel);
+            GUILayout.Label("TACTICAL OVERVIEW  /  S2.323[C]",
+                OrdrMobileUiTheme.Overline,GUILayout.Height(25f));
+            GUILayout.Label("그랜드라인 작전실",OrdrMobileUiTheme.SectionTitle);
+            GUILayout.Space(5f);
+            if(Combat==null)
+                GUILayout.Label("전투 대기 · 위습 소환으로 전력을 편성하세요.");
+            else
+            {
+                var game=Combat.Game;
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.Label(controller.IsUnitPreparation?"READY  /  출격 준비":
+                    "BATTLE  /  전황",OrdrMobileUiTheme.Subheading);
+                GUILayout.Label("라운드 "+game.CurrentWave+
+                    "   전투 유닛 "+Combat.CharacterCount+
+                    "   남은 적 "+game.AliveEnemies);
+                if(controller.PracticeBattle!=null)
+                    GUILayout.Label("처치 "+game.DefeatedEnemies+"   제한 "+
+                        controller.PracticeBattle.EnemyLimit+"마리");
+                GUILayout.EndVertical();
+            }
+            if(controller.SharedEconomy!=null)
+            {
+                GUILayout.Space(5f);
+                GUILayout.Label("보유 자원",OrdrMobileUiTheme.Subheading);
+                GUILayout.Label("골드 "+controller.SharedEconomy.Wallet.Balance("gold")+
+                    "   목재 "+controller.SharedEconomy.Wallet.Balance("wood")+
+                    "   위습 "+controller.WispBalance(WispResourceIds.Random));
+            }
+            if(controller.PersonalMissions!=null)
+            {
+                GUILayout.Space(5f);
+                GUILayout.Label("MISSION TRACKER",OrdrMobileUiTheme.Overline);
+                var missions=controller.PersonalMissions.Missions;
+                foreach(var slot in missions.Slots)
+                    GUILayout.Label(slot.Mission.Name+"  "+
+                        missions.ProgressAt(slot.Index)+"/"+
+                        slot.Mission.RequiredCount+(slot.Completed?"  완료":""));
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("QUICK ACTIONS  /  직접 조작",OrdrMobileUiTheme.Overline);
+            GUILayout.BeginHorizontal();
+            if(GUILayout.Button("위습",OrdrMobileUiTheme.PrimaryButton,
+                GUILayout.MinHeight(48)))SelectTab(Tab.Wisp);
+            if(GUILayout.Button("조합",GUILayout.MinHeight(48)))
+            {
+                SelectTab(Tab.Fusion);
+                fusionExecutableOnly=true;
+            }
+            GUILayout.EndHorizontal();
+            if(GUILayout.Button("보유 유닛",GUILayout.MinHeight(46)))SelectTab(Tab.Units);
             GUILayout.EndArea();
         }
 
@@ -590,9 +646,9 @@ namespace Ordr.Mobile.Unity
         {
             var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
             Rect area = MobileMapSkillLayout.Scaled(layout.SkillMargin, scale);
-            GUILayout.BeginArea(area, GUI.skin.box);
+            GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
             GUILayout.BeginHorizontal();
-            GUILayout.Label("전용 스킬", GUILayout.Width(76f),
+            GUILayout.Label("SKILLS",OrdrMobileUiTheme.Overline,GUILayout.Width(68f),
                 GUILayout.MinHeight(Mathf.Max(40f, area.height - 9f)));
 
             var actions = controller.DedicatedSkills;
@@ -616,7 +672,7 @@ namespace Ordr.Mobile.Unity
                         GUI.enabled = previous && skill.IsUnlocked && skill.CanExecute;
                         bool pressed = GUILayout.Button(
                             skill.Title + "\n" + skill.OriginalCostAndRules,
-                            GUILayout.Width(140f),
+                            OrdrMobileUiTheme.SkillButton,GUILayout.Width(140f),
                             GUILayout.Height(Mathf.Max(34f, area.height - 27f)));
                         GUI.enabled = previous;
                         if (pressed)
