@@ -220,6 +220,53 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void RepeatFusionConsumesFreshSourceApprovedMaterialsForEachCopy()
+        {
+            var game = Create();
+            for (int i = 0; i < 6; i++)
+                game.Combat.SpawnCharacter("C-01", 100 + i, 200);
+            int commits = 0;
+            var result = MobileFusionProductionAssistant.CraftRepeated("A012", 2,
+                game.Fusion.CanCommitRecipe,
+                () => game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot()),
+                offer =>
+                {
+                    commits++;
+                    return game.Fusion.ConfirmFusion(offer.RecipeId,
+                        offer.SuggestedMaterialInstances);
+                });
+            Assert.AreEqual(ManualActionState.Succeeded, result.State);
+            Assert.AreEqual(2, commits);
+            Assert.AreEqual(2, game.Combat.MobileUnitSnapshot().Count);
+            Assert.IsTrue(game.Combat.MobileUnitSnapshot().All(
+                u => u.Unit.Id == "S-07"));
+            Assert.AreEqual(0, game.Combat.MobileUnitSnapshot().Count(
+                u => u.Unit.Id == "C-01"));
+        }
+
+        [Test]
+        public void RepeatFusionStopsAfterRealMaterialsAreExhausted()
+        {
+            var game = Create();
+            for (int i = 0; i < 3; i++)
+                game.Combat.SpawnCharacter("C-01", 100 + i, 200);
+            int commits = 0;
+            var result = MobileFusionProductionAssistant.CraftRepeated("A012", 5,
+                game.Fusion.CanCommitRecipe,
+                () => game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot()),
+                offer =>
+                {
+                    commits++;
+                    return game.Fusion.ConfirmFusion(offer.RecipeId,
+                        offer.SuggestedMaterialInstances);
+                });
+            Assert.AreEqual(ManualActionState.Succeeded, result.State);
+            StringAssert.Contains("1/5", result.Message);
+            Assert.AreEqual(1, commits);
+            Assert.AreEqual("S-07", game.Combat.MobileUnitSnapshot().Single().Unit.Id);
+        }
+
+        [Test]
         public void SpecialFusionRechecksExactMaterialsAndDoesNotAuthorizeUnreviewedCasts()
         {
             var game = Create();
