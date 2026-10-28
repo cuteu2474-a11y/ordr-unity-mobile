@@ -30,6 +30,9 @@ namespace Ordr.Mobile.Unity
         private bool showRoundHistory;
         private bool showMissionSummary;
         private bool showReadyRecipes = true;
+        private readonly List<long> pendingBatchSales = new List<long>();
+        private bool confirmBatchSale;
+        private int resourceExchangeDrawCount = 1;
         private long? pendingCommonSaleId;
         private string pendingCommonSaleName;
         private int pendingMissionReroll = -1;
@@ -720,6 +723,50 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
         }
 
+        private bool CanBatchSellNow(long instanceId)
+        {
+            if (Combat == null || controller.LowerGradeSales == null) return false;
+            foreach (var row in Combat.MobileUnitSnapshot())
+                if (row.InstanceId == instanceId)
+                    return controller.LowerGradeSales.CanSell(row);
+            return false;
+        }
+
+        private void DrawBatchSaleConfirm()
+        {
+            if (pendingBatchSales.Count == 0) return;
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label("선택 판매 " + pendingBatchSales.Count +
+                "기 · 각 유닛은 원본 판매 규칙으로 순차 처리됩니다.");
+            if (!confirmBatchSale)
+            {
+                if (GUILayout.Button("선택 유닛 일괄 판매", GUILayout.MinHeight(46)))
+                    confirmBatchSale = true;
+            }
+            else
+            {
+                GUILayout.Label("확정 시 취소할 수 없습니다. 도중 실패하면 이후 유닛은 판매되지 않습니다.");
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("판매 확정", OrdrMobileUiTheme.PrimaryButton,
+                    GUILayout.MinHeight(46)))
+                {
+                    var result = MobileManualBatchActions.SellSelected(
+                        pendingBatchSales.ToArray(), CanBatchSellNow,
+                        controller.RequestLowerGradeSale);
+                    ShowResult(result);
+                    pendingBatchSales.Clear();
+                    confirmBatchSale = false;
+                    RefreshCurrent();
+                }
+                if (GUILayout.Button("취소", GUILayout.MinHeight(46)))
+                    confirmBatchSale = false;
+                GUILayout.EndHorizontal();
+            }
+            if (GUILayout.Button("일괄선택 해제", GUILayout.MinHeight(40)))
+            { pendingBatchSales.Clear(); confirmBatchSale = false; }
+            GUILayout.EndVertical();
+        }
+
         private void DrawOwnedUnitIndex()
         {
             if (Combat == null)
@@ -750,6 +797,7 @@ namespace Ordr.Mobile.Unity
             ownedPage = resolved;
             GUILayout.Label("검색 " + matches + "기 · " + (resolved + 1) + "/" + pages + "쪽");
             if (matches == 0) GUILayout.Label("조건에 맞는 유닛이 없습니다.");
+            DrawBatchSaleConfirm();
             if (controller.LowerGradeSales != null)
                 GUILayout.Label("흔함 판매 포인트 " + controller.LowerGradeSales.CommonPoints +
                     "/3 · 3기마다 랜덤위습 1개");
@@ -790,6 +838,19 @@ namespace Ordr.Mobile.Unity
                 // exact original rawcode and ownership under its world lock.
                 bool hasSale = controller.LowerGradeSales != null &&
                     controller.LowerGradeSales.CanSell(entry);
+                if (hasSale)
+                {
+                    bool marked = pendingBatchSales.Contains(entry.InstanceId);
+                    if (GUILayout.Button(marked ? "선택 판매에서 제외 ✓" :
+                        "선택 판매에 추가", GUILayout.MinHeight(38)))
+                    {
+                        confirmBatchSale = false;
+                        if (marked) pendingBatchSales.Remove(entry.InstanceId);
+                        else if (pendingBatchSales.Count < MobileManualBatchActions.MaximumUnitSales)
+                            pendingBatchSales.Add(entry.InstanceId);
+                        else notice = "일괄 판매는 한 번에 10기까지 선택할 수 있습니다.";
+                    }
+                }
                 if (hasSale || entry.Unit.Grade == "흔함")
                 {
                     bool oldEnabled = GUI.enabled;
@@ -1597,11 +1658,28 @@ namespace Ordr.Mobile.Unity
             {
                 GUILayout.Label("확인: " + pendingEconomy.Title);
                 GUILayout.Label(pendingEconomy.OriginalPriceAndRules);
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("직접 실행", GUILayout.MinHeight(52)))
+                bool isResourceExchange = category == ManualEconomyCategory.Wisp &&
+                    pendingEconomy.Id == OriginalRandomWispResourceExchange.OfferId;
+                if (isResourceExchange)
                 {
-                    ShowResult(controller.ManualActions.RequestEconomyAction(
-                        category, pendingEconomy.Id));
+                    GUILayout.Label("자원 추첨 횟수 · 매회 위습 1개 소비 / 원본 확률 유지");
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button("1회", GUILayout.MinHeight(40))) resourceExchangeDrawCount = 1;
+                    if (GUILayout.Button("5회", GUILayout.MinHeight(40))) resourceExchangeDrawCount = 5;
+                    if (GUILayout.Button("10회", GUILayout.MinHeight(40))) resourceExchangeDrawCount = 10;
+                    GUILayout.EndHorizontal();
+                }
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button(isResourceExchange ?
+                    "자원 추첨 " + resourceExchangeDrawCount + "회 확정" :
+                    "직접 실행", GUILayout.MinHeight(52)))
+                {
+                    var offerId = pendingEconomy.Id;
+                    ShowResult(isResourceExchange
+                        ? MobileManualBatchActions.RepeatExplicitResourceUse(
+                            resourceExchangeDrawCount, () =>
+                                controller.ManualActions.RequestEconomyAction(category, offerId))
+                        : controller.ManualActions.RequestEconomyAction(category, offerId));
                     pendingEconomy = null;
                     RefreshCurrent();
                 }
