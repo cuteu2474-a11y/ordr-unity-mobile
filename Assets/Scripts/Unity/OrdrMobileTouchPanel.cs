@@ -176,17 +176,23 @@ namespace Ordr.Mobile.Unity
             if (safe.width / scale < 120f || safe.height / scale < 100f) return;
 
             Matrix4x4 previous = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
+            GUISkin previousSkin = OrdrMobileUiTheme.Activate();
+            try
+            {
+                GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
+                DrawLeftTabs(layout, scale);
+                if (visible)
+                    DrawRightDrawer(layout, scale);
 
-            DrawLeftTabs(layout, scale);
-            if (visible)
-                DrawRightDrawer(layout, scale);
-
-            // The horizontal dedicated-skill ribbon stays accessible between
-            // the main and small story battlefields while a menu is open.
-            DrawDedicatedSkillMargin(safe, scale);
-            DrawEconomyStatus(layout, scale);
-            GUI.matrix = previous;
+                // Leave the central map render and world taps untouched.
+                DrawDedicatedSkillMargin(safe, scale);
+                DrawEconomyStatus(layout, scale);
+            }
+            finally
+            {
+                GUI.matrix = previous;
+                GUI.skin = previousSkin;
+            }
         }
 
         private void DrawEconomyStatus(MobileMapSkillLayout layout, float scale)
@@ -200,8 +206,9 @@ namespace Ordr.Mobile.Unity
             else
             {
                 GUILayout.Label("골드 " + economy.Wallet.Balance("gold") +
-                    "   목재 " + economy.Wallet.Balance("wood") +
-                    "   랜덤위습 " + economy.Wallet.Balance(WispResourceIds.Random));
+                    "    ·    목재 " + economy.Wallet.Balance("wood") +
+                    "    ·    위습 " + economy.Wallet.Balance(WispResourceIds.Random),
+                    OrdrMobileUiTheme.CurrencyText);
                 if (area.height >= 45f)
                 {
                     var game = Combat == null ? null : Combat.Game;
@@ -226,6 +233,8 @@ namespace Ordr.Mobile.Unity
         {
             Rect area = MobileMapSkillLayout.Scaled(layout.LeftTabs, scale);
             GUILayout.BeginArea(area, GUI.skin.box);
+            GUILayout.Label("ORDR  /  메뉴", OrdrMobileUiTheme.SectionTitle,
+                GUILayout.Height(32f));
             tabsScroll = GUILayout.BeginScrollView(tabsScroll,
                 false, true, GUILayout.ExpandHeight(true));
 
@@ -250,8 +259,8 @@ namespace Ordr.Mobile.Unity
         private void DrawLeftTab(Tab tab, string title)
         {
             bool chosen = visible && currentTab == tab;
-            string label = chosen ? "●\n" + title : title;
-            if (GUILayout.Button(label, GUILayout.MinHeight(46f),
+            GUIStyle style = chosen ? OrdrMobileUiTheme.SelectedTab : GUI.skin.button;
+            if (GUILayout.Button(title, style, GUILayout.MinHeight(46f),
                 GUILayout.ExpandWidth(true)))
                 SelectTab(tab);
         }
@@ -263,15 +272,16 @@ namespace Ordr.Mobile.Unity
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(TabTitle(currentTab), GUILayout.ExpandWidth(true));
+            GUILayout.Label(TabTitle(currentTab), OrdrMobileUiTheme.SectionTitle,
+                GUILayout.ExpandWidth(true));
             if (controller.Diagnostics.Count > 0 &&
-                GUILayout.Button("진행 기록 복사", GUILayout.Width(116f), GUILayout.MinHeight(40f)))
+                GUILayout.Button("기록 복사", GUILayout.Width(96f), GUILayout.MinHeight(40f)))
             {
                 GUIUtility.systemCopyBuffer = controller.ExportSessionDiagnostics();
                 notice = "진행 기록을 클립보드에 복사했습니다.";
             }
             if (controller.Combat == null &&
-                GUILayout.Button("시작 진단 복사", GUILayout.Width(116f), GUILayout.MinHeight(40f)))
+                GUILayout.Button("진단 복사", GUILayout.Width(96f), GUILayout.MinHeight(40f)))
             {
                 GUIUtility.systemCopyBuffer = controller.ExportFirstWaveReadiness();
                 notice = "실전 시작 차단 요인을 클립보드에 복사했습니다.";
@@ -354,7 +364,8 @@ namespace Ordr.Mobile.Unity
                 if (GUILayout.Button(selectedPracticeRounds == 10 ? "10R ✓" : "10R", GUILayout.MinHeight(42))) selectedPracticeRounds = 10;
                 if (GUILayout.Button(selectedPracticeRounds == 20 ? "20R ✓" : "20R", GUILayout.MinHeight(42))) selectedPracticeRounds = 20;
                 GUILayout.EndHorizontal();
-                if (GUILayout.Button("준비 완료 · " + selectedPracticeRounds + "R 연습 시작", GUILayout.MinHeight(48)))
+                if (GUILayout.Button("준비 완료 · " + selectedPracticeRounds + "R 연습 시작",
+                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(48)))
                 {
                     try { controller.BeginPracticeBattle(selectedPracticeRounds); notice = "전투 시작 · 소환과 조합은 계속할 수 있습니다."; }
                     catch (Exception error) { notice = error.Message; }

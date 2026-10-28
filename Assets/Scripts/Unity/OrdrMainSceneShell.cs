@@ -35,6 +35,9 @@ namespace Ordr.Mobile.Unity
             float dpi = Screen.dpi > 0f ? Screen.dpi : 160f;
             float scale = MobileMapSkillLayout.UiScale(safe, dpi);
             var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
+            GUISkin previousSkin = OrdrMobileUiTheme.Activate();
+            try
+            {
             float top = Screen.height - safe.yMax;
             float left = layout.Battle.x;
             float width = layout.Battle.width;
@@ -43,7 +46,7 @@ namespace Ordr.Mobile.Unity
             title.alignment = TextAnchor.MiddleLeft;
             title.fontSize = Mathf.RoundToInt(Mathf.Clamp(safe.height * 0.034f, 17f, 28f));
             title.fontStyle = FontStyle.Bold;
-            title.normal.textColor = Color.white;
+            title.normal.textColor = OrdrMobileUiTheme.Gold;
 
             var detail = new GUIStyle(GUI.skin.label);
             detail.fontSize = Mathf.RoundToInt(Mathf.Clamp(safe.height * 0.020f, 11f, 17f));
@@ -51,8 +54,8 @@ namespace Ordr.Mobile.Unity
             detail.wordWrap = true;
 
             string heading = controller != null && controller.PracticeBattle != null
-                ? "ORDR MOBILE / " + controller.PracticeBattle.LastRound + "R 연습 · 원작 최종 전투 미검증"
-                : "ORDR MOBILE  /  NIGHTMARE - OTHERWORLD";
+                ? "ORDR / NIGHTMARE  ·  " + controller.PracticeBattle.LastRound + "R 연습"
+                : "ORDR / NIGHTMARE  ·  S2 2.323[C]  ·  OTHERWORLD";
 #if UNITY_EDITOR
             if (controller != null && controller.IsEditorPreview)
                 heading = "EDITOR 체험 · 가상 능력치 / 정식 게임 아님";
@@ -152,7 +155,7 @@ namespace Ordr.Mobile.Unity
                 if (controller.IsEditorPreview)
                     startTitle = "체험 첫 라운드 시작 (가상 능력치)";
 #endif
-                bool clicked = GUI.Button(button, startTitle);
+                bool clicked = GUI.Button(button, startTitle, OrdrMobileUiTheme.PrimaryButton);
                 GUI.enabled = previous;
                 if (clicked)
                 {
@@ -193,7 +196,7 @@ namespace Ordr.Mobile.Unity
                     var start = new Rect(center - 110f, layout.Battle.center.y - 46f, 220f, 44f);
                     bool couldStart = GUI.enabled;
                     GUI.enabled = couldStart && controller.Combat.CharacterCount > 0;
-                    if (GUI.Button(start, "20R 연습 전투 시작"))
+                    if (GUI.Button(start, "20R 연습 전투 시작", OrdrMobileUiTheme.PrimaryButton))
                     {
                         try { controller.BeginPracticeBattle(20); startFailure = null; }
                         catch (Exception ex) { startFailure = ex.Message; }
@@ -225,6 +228,11 @@ namespace Ordr.Mobile.Unity
             }
             // Right-hand area stays free for the selected left-hand tab.
             // The panel draws itself only when a tab has been opened.
+            }
+            finally
+            {
+                GUI.skin = previousSkin;
+            }
         }
     }
 }
