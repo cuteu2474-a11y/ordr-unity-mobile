@@ -15,10 +15,13 @@ class AllUnitAuraAuditTests(unittest.TestCase):
         cls.map = json.loads((ROOT / "data/original-2323C-map-base-stats.json").read_text(encoding="utf-8"))
 
     def test_every_catalog_unit_has_explicit_scope_and_unknown_is_not_empty(self):
-        self.assertEqual(272, self.audit["summary"]["catalogUnitsScanned"])
+        self.assertEqual(273, self.audit["summary"]["catalogUnitsScanned"])
         self.assertEqual([r["catalogId"] for r in self.map["catalogEntries"]],
                          [r["catalogUnitId"] for r in self.audit["catalogUnits"]])
         self.assertEqual(116, sum(bool(r["objectAuraCodes"]) for r in self.audit["catalogUnits"]))
+        gaimon = next(r for r in self.audit["catalogUnits"] if r["catalogUnitId"] == "X-08")
+        self.assertEqual(gaimon["unitRawcode"], "h0BG")
+        self.assertEqual(gaimon["objectAuraCodes"], [])
         unknown = [r["catalogUnitId"] for r in self.audit["catalogUnits"] if r["objectAuraCodes"] is None]
         self.assertEqual(["E-02"], unknown)
         self.assertFalse(self.audit["safeForUnconditionalLiveCombat"])

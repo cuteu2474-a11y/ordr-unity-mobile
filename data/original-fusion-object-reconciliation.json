@@ -7,7 +7,7 @@
   "warning": "Object rawcode links and material/cost matches do NOT prove UPUN and other side conditions, transactional consumption, world effects or gameplay parity.",
   "summary": {
     "uniqueCwrUnitRawcodes": 280,
-    "originalCatalogObjectMatchedRawcodes": 271,
+    "originalCatalogObjectMatchedRawcodes": 272,
     "previouslyUnresolvedIngredientRawcodes": 163,
     "newlyCrossReferencedIngredients": 156,
     "stillWithoutCatalogIdentity": 7,
@@ -3737,8 +3737,8 @@
       "resultOfAbilities": [
         "SP08"
       ],
-      "catalogUnitId": null,
-      "objectCatalogMappingStatus": null,
+      "catalogUnitId": "X-08",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
       "originalW3xObjectName": "가이몬 - 특수",
       "jassLabelCatalogUnitId": null,
       "approvedForMaterialConsumption": false

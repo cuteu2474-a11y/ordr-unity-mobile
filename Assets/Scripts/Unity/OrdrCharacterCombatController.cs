@@ -1327,6 +1327,40 @@ namespace Ordr.Mobile.Unity
             Wisps.FlushAutomatic();
         }
 
+        // A verified rare-Wisp path is enabled only when ALL original
+        // dependencies exist. The default game keeps Rare pending.
+        public void ConfigureOriginal323VerifiedRareWispRoster(
+            IOriginal323NativeUnitPoolRandom nativePool,
+            IOriginalWispSpawnPositionPort originalRarePosition,
+            IOriginalWispBonusAbilityPort verifiedA0ye,
+            IVerifiedChoiceWispMergeWorld choiceMerge)
+        {
+            if (Combat == null || SharedEconomy == null || commonSourceFusion == null ||
+                originalSharedScriptRandom == null ||
+                Combat.Game.Phase != SessionPhase.NotStarted ||
+                (Wisps != null && !usesBuiltInAutomaticUncommonWisps))
+                throw new InvalidOperationException(
+                    "희귀위습은 게임 시작 전 원본 공통 BFi·유닛 추첨 월드를 연결해야 합니다.");
+            if (nativePool==null || originalRarePosition==null ||
+                verifiedA0ye==null || choiceMerge==null)
+                throw new ArgumentNullException(nameof(nativePool));
+            var source=originalWispPoolsJson!=null ? originalWispPoolsJson :
+                Resources.Load<TextAsset>("OrdrData/original-2323C-wisp-pools");
+            if (source==null)
+                throw new InvalidOperationException("원본 위습 풀 데이터 없음");
+            var automatic=new Original323AutomaticUncommonWisps(source.text,
+                originalSharedScriptRandom.ForPurpose(
+                    Original323ScriptRandomPurpose.RareWispBranch),
+                nativePool,originalRarePosition,verifiedA0ye);
+            var destination=new OriginalWispCombatRewardWorld(Combat,
+                commonSourceFusion,automatic,automatic);
+            Wisps?.Dispose();
+            Wisps=new MobileWispService(SharedEconomy.Wallet,automatic,destination);
+            usesBuiltInAutomaticUncommonWisps=false;
+            choiceWispWorld=choiceMerge;
+            Wisps.FlushAutomatic();
+        }
+
         // Uses the exact same roster as CharacterCombatRuntime; unreviewed
         // rawcode mappings, spawn positions and missing A0YE block the grant.
         public void ConfigureVerifiedWispCombatRoster(IOriginalWispRandom originalRng,

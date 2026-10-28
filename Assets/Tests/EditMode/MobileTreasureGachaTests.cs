@@ -108,6 +108,21 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1,native.Casts);
         }
         [Test]
+        public void OriginalDreamAndNamiTicketMismatchNeverPaysOrRolls()
+        {
+            var native=new Native();var rng=new Rolls();
+            var p=new Policy {Attempt=Ticket("dream")};
+            var gacha=new MobileTreasureGacha(Hunt(native,rng),p);
+            Assert.AreEqual(MobileTreasureOutcome.Unavailable,
+                gacha.TrySearch(10,true,true).Outcome);
+            Assert.AreEqual(0,native.Casts);
+            Assert.AreEqual(0,native.Payments);
+            Assert.AreEqual(0,rng.Count);
+            Assert.AreEqual(MobileTreasureOutcome.Unavailable,
+                gacha.TrySearch(10,true,false).Outcome); // used ticket
+        }
+
+        [Test]
         public void WrongRoundAndInvalidInputNeverAdvanceRewards()
         {
             var native=new Native();var rng=new Rolls();

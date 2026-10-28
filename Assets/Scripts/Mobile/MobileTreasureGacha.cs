@@ -101,7 +101,8 @@ namespace Ordr.Mobile.Mobile
                 throw new ArgumentNullException(nameof(calibratedPolicy));
         }
 
-        public MobileTreasureGachaResult TrySearch(int round)
+        public MobileTreasureGachaResult TrySearch(int round,
+            bool? verifiedDreamApplied=null,bool? verifiedNamiAtApply=null)
         {
             if(!CanAttempt || round<1 || round>65)
                 return Reject("원본 가챠 당첨률·탐색 기회 검증 대기");
@@ -117,6 +118,11 @@ namespace Ordr.Mobile.Mobile
                     return Reject("원본에 대응하는 탐색 기회가 없습니다.");
                 if(!consumedIds.Add(ticket.Id))
                     return Reject("이미 사용한 탐색 기회 · 중복 추첨 차단");
+                if((verifiedDreamApplied.HasValue &&
+                        ticket.Gaimon!=verifiedDreamApplied.Value) ||
+                    (verifiedNamiAtApply.HasValue &&
+                        ticket.Nami!=verifiedNamiAtApply.Value))
+                    return Reject("원본 CCP 꿈 효과·나미 YL 상태와 탐색 기회가 일치하지 않습니다.");
                 if(ticket.Round!=round ||
                     ticket.OriginalW3xSha256 !=
                         Original323VerifiedMonsterWaveCatalog.SourceW3xSha256)

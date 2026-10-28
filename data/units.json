@@ -1071,7 +1071,8 @@
       "attackRange": null,
       "skillSpecsStatus": "not-collected",
       "damageSchoolHints": [],
-      "damageSchoolHintsStatus": "unknown"
+      "damageSchoolHintsStatus": "unknown",
+      "catalogEvidenceOrigin": "original-W3X-only"
     },
     {
       "id": "R-01",

@@ -184,6 +184,15 @@ namespace Ordr.Mobile.Mobile
             // VERIFIED identity is for resolving an actual Wisp result only:
             // it does not grant SP08 fusion execution or approve A0YE
             // on the unrelated 99% rare-Wisp branch.
+            // CSI 1% native pool includes these eight original Special
+            // identities. Mapping does not authorize SP08 or any new recipe.
+            Bind(units, "X-01", "h05H", "특수함");
+            Bind(units, "X-02", "h08N", "특수함");
+            Bind(units, "X-03", "h05Q", "특수함");
+            Bind(units, "X-04", "h05O", "특수함");
+            Bind(units, "X-05", "h05P", "특수함");
+            Bind(units, "X-06", "h05R", "특수함");
+            Bind(units, "X-07", "h09T", "특수함");
             Bind(units, SpecialGradeMobilePolicy.Gaimon, "h0BG", "특수함");
             RegisterReviewed(units, registrations, ReviewedLegendary, "전설");
             planner = new OriginalJassFusionPlanner(registrations, labels,

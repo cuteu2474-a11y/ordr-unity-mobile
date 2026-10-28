@@ -33,7 +33,7 @@ class OriginalFusionObjectReconciliationTests(unittest.TestCase):
     def test_all_source_identities_are_not_approvals(self):
         s = self.result["summary"]
         self.assertEqual(s["uniqueCwrUnitRawcodes"], 280)
-        self.assertEqual(s["originalCatalogObjectMatchedRawcodes"], 271)
+        self.assertEqual(s["originalCatalogObjectMatchedRawcodes"], 272)
         self.assertEqual(s["previouslyUnresolvedIngredientRawcodes"], 163)
         self.assertEqual(s["newlyCrossReferencedIngredients"], 156)
         self.assertEqual(s["stillWithoutCatalogIdentity"], 7)
