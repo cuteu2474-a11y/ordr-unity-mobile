@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using UnityEngine;
+using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
 using Ordr.Mobile.Mobile;
 
@@ -14,10 +15,14 @@ namespace Ordr.Mobile.Tests
             var units = CharacterUnitCatalog.FromJson(File.ReadAllText(
                 Path.Combine(Application.dataPath, "..", "data", "units.json")));
             return new[] {
-                new MobileUnitSnapshot(12, units.Require("C-01"), null, null),
-                new MobileUnitSnapshot(13, units.Require("S-02"), null, null),
-                new MobileUnitSnapshot(14, units.Require("C-08"), null, null),
-                new MobileUnitSnapshot(15, units.Require("S-11"), null, null)
+                new MobileUnitSnapshot(12, units.Require("C-01"), null,
+                    new UnitState(12, "C-01", 0, 0)),
+                new MobileUnitSnapshot(13, units.Require("S-02"), null,
+                    new UnitState(13, "S-02", 0, 0)),
+                new MobileUnitSnapshot(14, units.Require("C-08"), null,
+                    new UnitState(14, "C-08", 0, 0)),
+                new MobileUnitSnapshot(15, units.Require("S-11"), null,
+                    new UnitState(15, "S-11", 0, 0))
             };
         }
         private static System.Collections.Generic.IReadOnlyList<MobileUnitSnapshot> Browse(
