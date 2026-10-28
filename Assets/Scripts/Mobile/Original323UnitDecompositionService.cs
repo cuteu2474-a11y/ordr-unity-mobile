@@ -30,7 +30,7 @@ namespace Ordr.Mobile.Mobile
         public int PendingCount => pending.Count;
         public static bool Supports(string id) => id == "S-02" || id == "S-11";
         public static string Description(string id) => id == "S-02"
-            ? "5초 시전 · 후쿠로 1기 + 버기 1기 + 우솝 1기"
+            ? "5초 시전 · 후쿠로 1기 + 버기 1기 + 총병 1기"
             : id == "S-11" ? "2초 시전 · 버기 2~3기 (각 50%)" : null;
         public Original323UnitDecompositionService(CharacterCombatRuntime world, SharedEconomySession shared,
             OriginalMapBaseStatCatalog map, IOriginalWispRandom sharedScriptRandom)
@@ -134,7 +134,7 @@ namespace Ordr.Mobile.Mobile
                     if (item.UnitId == "S-02") swap.StageResult("C-08", -2976, 3232);
                     swap.Commit();
                     rolledCounts.Remove(item.Id);
-                    Finish(item, item.UnitId == "S-02" ? "갱 뱃지 분해 완료 · 후쿠로 + 버기 + 우솝"
+                    Finish(item, item.UnitId == "S-02" ? "갱 뱃지 분해 완료 · 후쿠로 + 버기 + 총병"
                         : "버기 마기탄 분해 완료 · 버기 " + buggyCount + "기");
                 }
             }

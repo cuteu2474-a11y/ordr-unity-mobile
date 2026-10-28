@@ -25,6 +25,11 @@ namespace Ordr.Mobile.Unity
         private int catalogGradeIndex;
         private int catalogPage;
         private int ownedPage;
+        private string ownedSearch = "";
+        private OwnedRosterFilter ownedFilter = OwnedRosterFilter.All;
+        private bool showRoundHistory;
+        private bool showMissionSummary;
+        private bool showReadyRecipes = true;
         private long? pendingCommonSaleId;
         private string pendingCommonSaleName;
         private int pendingMissionReroll = -1;
@@ -351,13 +356,17 @@ namespace Ordr.Mobile.Unity
                 practice == null ? "게임을 시작하면 진행 현황을 확인할 수 있습니다." :
                 playing ? "전투 중에도 직접 소환·조합·판매할 수 있습니다." : practice.ResultMessage);
             GUILayout.Label("보유 전투 유닛 " + Combat.CharacterCount + " · 자동 공격 " + Combat.ReadyAttackers);
-            if (playing)
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("위습 소환", GUILayout.MinHeight(46))) OpenRecruitment();
+            if (GUILayout.Button("보유 유닛", GUILayout.MinHeight(46))) SelectTab(Tab.Units);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("조합 관리", GUILayout.MinHeight(46)))
             {
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("위습 소환으로", GUILayout.MinHeight(46))) OpenRecruitment();
-                if (GUILayout.Button("보유 유닛 / 판매", GUILayout.MinHeight(46))) SelectTab(Tab.Units);
-                GUILayout.EndHorizontal();
+                SelectTab(Tab.Fusion); fusionExecutableOnly = true;
             }
+            if (GUILayout.Button("개인 미션", GUILayout.MinHeight(46))) SelectTab(Tab.Missions);
+            GUILayout.EndHorizontal();
             if (controller.IsUnitPreparation)
             {
                 bool previous = GUI.enabled;
@@ -389,15 +398,37 @@ namespace Ordr.Mobile.Unity
                 if (playing && game.AliveEnemies >= practice.EnemyLimit * 0.8)
                     GUILayout.Label("적이 누적되고 있습니다. 소환과 조합으로 전력을 보강하세요.");
             }
+            if (controller.PersonalMissions != null)
+            {
+                var missions = controller.PersonalMissions.Missions;
+                if (GUILayout.Button(showMissionSummary ?
+                    "미션 요약 닫기 ▲" : "미션 진행 보기 ▼", GUILayout.MinHeight(42)))
+                    showMissionSummary = !showMissionSummary;
+                if (showMissionSummary)
+                    foreach (var slot in missions.Slots)
+                        GUILayout.Label(slot.Mission.Name + " · " +
+                            missions.ProgressAt(slot.Index) + "/" +
+                            slot.Mission.RequiredCount + (slot.Completed ? " · 완료" :
+                            slot.RewardPending ? " · 보상 대기" : ""));
+            }
             if (playing)
             {
-                GUILayout.Label("지금 만들 수 있는 조합 (직접 선택 후 확정)");
                 int ready = 0;
+                foreach (var offer in fusionOffers)
+                    if (offer.IsReady && controller.ManualActions.CanExecuteFusionRecipe(offer.RecipeId))
+                        ready++;
+                if (GUILayout.Button(showReadyRecipes ?
+                    "제작 가능 " + ready + "건 닫기 ▲" : "제작 가능 " + ready + "건 보기 ▼",
+                    GUILayout.MinHeight(44)))
+                    showReadyRecipes = !showReadyRecipes;
+                if (showReadyRecipes)
+                {
+                int shown = 0;
                 foreach (var offer in fusionOffers)
                 {
                     if (!offer.IsReady || !controller.ManualActions.CanExecuteFusionRecipe(offer.RecipeId)) continue;
-                    ready++;
-                    if (ready > 8) continue;
+                    shown++;
+                    if (shown > 8) continue;
                     GUILayout.BeginVertical(GUI.skin.box);
                     GUILayout.Label(offer.Title);
                     GUILayout.Label(offer.OriginalMaterialsAndCost);
@@ -412,8 +443,9 @@ namespace Ordr.Mobile.Unity
                     }
                     GUILayout.EndVertical();
                 }
-                if (ready == 0) GUILayout.Label("현재 제작 가능한 조합이 없습니다. 조합 메뉴에서 부족한 재료를 확인하세요.");
-                if (ready > 8) GUILayout.Label("추가로 가능한 조합 " + (ready - 8) + "개");
+                if (ready == 0) GUILayout.Label("현재 제작 가능한 조합이 없습니다.");
+                if (ready > 8) GUILayout.Label("추가 제작 가능 " + (ready - 8) + "건");
+                }
                 if (GUILayout.Button("전체 제작 조합 보기", GUILayout.MinHeight(44)))
                 {
                     SelectTab(Tab.Fusion);
@@ -422,10 +454,15 @@ namespace Ordr.Mobile.Unity
             }
             if (practice != null && practice.RoundHistory.Count > 0)
             {
-                GUILayout.Label("라운드 기록 · 해당 구간에 실제 발생한 처치/보상");
-                foreach (var round in practice.RoundHistory)
-                    GUILayout.Label(round.Wave + "R · " + Math.Round(round.ElapsedSeconds, 1) + "초 · 처치 " +
-                        round.Defeated + " · 골드 +" + round.GoldAwarded + " · 남은 적 " + round.AliveEnemies);
+                if (GUILayout.Button(showRoundHistory ? "라운드 기록 닫기 ▲" :
+                    "라운드 기록 " + practice.RoundHistory.Count + "건 보기 ▼", GUILayout.MinHeight(42)))
+                    showRoundHistory = !showRoundHistory;
+                if (showRoundHistory)
+                    foreach (var round in practice.RoundHistory)
+                        GUILayout.Label(round.Wave + "R · " +
+                            Math.Round(round.ElapsedSeconds, 1) + "초 · 처치 " +
+                            round.Defeated + " · 골드 +" + round.GoldAwarded +
+                            " · 남은 적 " + round.AliveEnemies);
             }
         }
 
@@ -691,7 +728,28 @@ namespace Ordr.Mobile.Unity
                 return;
             }
             var owned = Combat.MobileUnitSnapshot();
-            GUILayout.Label("보유 " + owned.Count + "기 · 선택 시 상세 보기");
+            GUILayout.Label("보유 " + owned.Count + "기 · 이름/등급/번호 검색");
+            string query = GUILayout.TextField(ownedSearch, GUILayout.MinHeight(44f));
+            if (query != ownedSearch) { ownedSearch = query; ownedPage = 0; }
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("전체" + (ownedFilter == OwnedRosterFilter.All ? " ✓" : ""),
+                GUILayout.MinHeight(42)))
+            { ownedFilter = OwnedRosterFilter.All; ownedPage = 0; }
+            if (GUILayout.Button("판매 가능" + (ownedFilter == OwnedRosterFilter.Saleable ? " ✓" : ""),
+                GUILayout.MinHeight(42)))
+            { ownedFilter = OwnedRosterFilter.Saleable; ownedPage = 0; }
+            if (GUILayout.Button("분해 가능" + (ownedFilter == OwnedRosterFilter.Decomposable ? " ✓" : ""),
+                GUILayout.MinHeight(42)))
+            { ownedFilter = OwnedRosterFilter.Decomposable; ownedPage = 0; }
+            GUILayout.EndHorizontal();
+            int matches, pages, resolved;
+            var displayed = MobileOwnedRosterBrowser.Select(owned, ownedSearch,
+                ownedFilter, u => controller.LowerGradeSales != null &&
+                    controller.LowerGradeSales.CanSell(u), ownedPage, 12,
+                out matches, out pages, out resolved);
+            ownedPage = resolved;
+            GUILayout.Label("검색 " + matches + "기 · " + (resolved + 1) + "/" + pages + "쪽");
+            if (matches == 0) GUILayout.Label("조건에 맞는 유닛이 없습니다.");
             if (controller.LowerGradeSales != null)
                 GUILayout.Label("흔함 판매 포인트 " + controller.LowerGradeSales.CommonPoints +
                     "/3 · 3기마다 랜덤위습 1개");
@@ -700,13 +758,8 @@ namespace Ordr.Mobile.Unity
                 var presenter = controller.GetComponent<OrdrUnitWorldPresenter>();
                 if (presenter != null) presenter.ShowAllOwnedUnits();
             }
-            const int pageSize = 12;
-            int pages = Math.Max(1, (owned.Count + pageSize - 1) / pageSize);
-            ownedPage = Math.Min(ownedPage, pages - 1);
-            for (int i = ownedPage * pageSize;
-                 i < Math.Min(owned.Count, (ownedPage + 1) * pageSize); i++)
+            foreach (var entry in displayed)
             {
-                var entry = owned[i];
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(entry.Unit.Name + " (" + entry.Unit.Grade + ")",
                     GUILayout.ExpandWidth(true));
@@ -722,6 +775,16 @@ namespace Ordr.Mobile.Unity
                     if (presenter != null) presenter.ShowOwnedUnit(entry.InstanceId);
                 }
                 GUILayout.EndHorizontal();
+                if (GUILayout.Button("재료로 쓰는 조합 찾기 · " + entry.Unit.Name,
+                    GUILayout.MinHeight(42)))
+                {
+                    SelectTab(Tab.Fusion);
+                    fusionSearch = entry.Unit.Name;
+                    fusionPage = 0;
+                    fusionMaterialsReadyOnly = false;
+                    fusionExecutableOnly = true;
+                    notice = "실제 제작식 검색만 열었습니다. 재료는 소비되지 않았습니다.";
+                }
                 // All nine original common objects have A09G. Never display
                 // A0JE/Avul as manual abilities; the transaction rechecks
                 // exact original rawcode and ownership under its world lock.

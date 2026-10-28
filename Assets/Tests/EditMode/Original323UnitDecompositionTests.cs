@@ -60,6 +60,19 @@ namespace Ordr.Mobile.Tests
                 Service = new Original323UnitDecompositionService(combat, shared, map, random ?? new Rolls()) };
         }
         [Test]
+        public void CaponeBothMessagesAgreeWithActualC08Rifleman()
+        {
+            StringAssert.Contains("총병", Original323UnitDecompositionService.Description("S-02"));
+            using (var game = Create())
+            {
+                long id = game.Combat.SpawnCharacter("S-02", 0, 0);
+                game.Service.Request(id); game.Service.Advance(5);
+                StringAssert.Contains("총병", game.Service.LastMessage);
+                Assert.IsFalse(game.Service.LastMessage.Contains("우솝"));
+                Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(u => u.Unit.Id == "C-08"));
+            }
+        }
+        [Test]
         public void CaponeWaitsFiveSecondsThenAtomicallyCreatesThreeExactSourceResults()
         {
             var rng = new Rolls();
