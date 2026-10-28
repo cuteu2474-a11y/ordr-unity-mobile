@@ -19,6 +19,7 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle overline;
         private static GUIStyle subheading;
         private static GUIStyle skillButton;
+        private static GUIStyle explanation;
 
         internal static GUIStyle SelectedTab { get { return selectedTab; } }
         internal static GUIStyle PrimaryButton { get { return primaryButton; } }
@@ -29,6 +30,9 @@ namespace Ordr.Mobile.Unity
         internal static GUIStyle Overline { get { return overline; } }
         internal static GUIStyle Subheading { get { return subheading; } }
         internal static GUIStyle SkillButton { get { return skillButton; } }
+        internal static GUIStyle Explanation { get { return explanation; } }
+        internal const float ComfortableTapHeight = 56f;
+        internal const float PrimaryTapHeight = 64f;
         internal static readonly Color Aqua = new Color(0.31f, 0.87f, 0.78f, 1f);
 
         // Called only inside OnGUI. Return the previous skin so owners restore
@@ -59,21 +63,21 @@ namespace Ordr.Mobile.Unity
             Background(themedSkin.box, card, card, Text);
             themedSkin.box.border = new RectOffset(9, 9, 9, 9);
             themedSkin.box.padding = new RectOffset(12, 12, 10, 10);
-            themedSkin.box.fontSize = 14;
+            themedSkin.box.fontSize = 17;
 
             themedSkin.button = new GUIStyle(source.button);
             Background(themedSkin.button, button, hover, Text);
             themedSkin.button.border = new RectOffset(9, 9, 9, 9);
             themedSkin.button.padding = new RectOffset(8, 8, 9, 9);
             themedSkin.button.fontStyle = FontStyle.Bold;
-            themedSkin.button.fontSize = 16;
+            themedSkin.button.fontSize = 19;
             themedSkin.button.alignment = TextAnchor.MiddleCenter;
             themedSkin.button.wordWrap = false;
             themedSkin.button.clipping = TextClipping.Clip;
 
             themedSkin.label = new GUIStyle(source.label);
             themedSkin.label.normal.textColor = Text;
-            themedSkin.label.fontSize = 15;
+            themedSkin.label.fontSize = 18;
             themedSkin.label.wordWrap = true;
             themedSkin.label.richText = true;
 
@@ -81,7 +85,7 @@ namespace Ordr.Mobile.Unity
             Background(themedSkin.textField, button, hover, Text);
             themedSkin.textField.border = new RectOffset(8, 8, 8, 8);
             themedSkin.textField.padding = new RectOffset(8, 8, 6, 6);
-            themedSkin.textField.fontSize = 16;
+            themedSkin.textField.fontSize = 19;
             themedSkin.textArea = new GUIStyle(themedSkin.textField);
 
             selectedTab = new GUIStyle(themedSkin.button);
@@ -90,11 +94,11 @@ namespace Ordr.Mobile.Unity
 
             primaryButton = new GUIStyle(themedSkin.button);
             Background(primaryButton, teal, tealHover, Color.white);
-            primaryButton.fontSize = 17;
+            primaryButton.fontSize = 20;
 
             sectionTitle = new GUIStyle(themedSkin.label);
             sectionTitle.normal.textColor = Gold;
-            sectionTitle.fontSize = 19;
+            sectionTitle.fontSize = 23;
             sectionTitle.fontStyle = FontStyle.Bold;
             sectionTitle.alignment = TextAnchor.MiddleLeft;
             sectionTitle.wordWrap = false;
@@ -102,26 +106,35 @@ namespace Ordr.Mobile.Unity
             currencyText = new GUIStyle(themedSkin.label);
             currencyText.normal.textColor = Muted;
             currencyText.fontStyle = FontStyle.Bold;
-            currencyText.fontSize = 15;
+            currencyText.fontSize = 18;
             panel = new GUIStyle(themedSkin.box);
             panel.padding = new RectOffset(12,12,11,11);
             navButton = new GUIStyle(themedSkin.button);
             navButton.alignment = TextAnchor.MiddleLeft;
             navButton.padding = new RectOffset(13,8,7,7);
             overline = new GUIStyle(themedSkin.label);
-            overline.fontSize = 11;
+            overline.fontSize = 13;
             overline.fontStyle = FontStyle.Bold;
             overline.wordWrap = false;
             overline.clipping = TextClipping.Clip;
             overline.normal.textColor = new Color(.61f,.78f,.87f,1f);
             subheading = new GUIStyle(themedSkin.label);
-            subheading.fontSize = 18;
+            subheading.fontSize = 21;
             subheading.fontStyle = FontStyle.Bold;
             subheading.normal.textColor = Gold;
             skillButton = new GUIStyle(themedSkin.button);
-            skillButton.fontSize = 14;
+            skillButton.fontSize = 17;
             skillButton.wordWrap = true;
             skillButton.normal.textColor = Aqua;
+            explanation = new GUIStyle(themedSkin.label);
+            explanation.fontSize = 19;
+            explanation.fontStyle = FontStyle.Normal;
+            explanation.wordWrap = true;
+            explanation.normal.textColor = new Color(0.92f,0.97f,1f,1f);
+            themedSkin.toggle = new GUIStyle(source.toggle);
+            themedSkin.toggle.fontSize = 18;
+            themedSkin.toggle.normal.textColor = Text;
+            themedSkin.toggle.onNormal.textColor = Text;
             themedSkin.scrollView = new GUIStyle(source.scrollView);
             themedSkin.scrollView.normal.background = null;
         }
