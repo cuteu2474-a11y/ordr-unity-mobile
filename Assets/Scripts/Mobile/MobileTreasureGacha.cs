@@ -193,7 +193,7 @@ namespace Ordr.Mobile.Mobile
                 // A source ticket may be irreversibly consumed here.
                 // Never call twice on a rejected/throwing transaction.
                 if(!policy.TryConsumeApprovedAttempt(
-                    round,hunt.UncollectedCount,out ticket) || ticket==null)
+                    round,hunt.UncollectedCountAtOriginalRound(round),out ticket) || ticket==null)
                     return Reject("원본에 대응하는 탐색 기회가 없습니다.");
                 if(!consumedIds.Add(ticket.Id))
                     return Reject("이미 사용한 탐색 기회 · 중복 추첨 차단");

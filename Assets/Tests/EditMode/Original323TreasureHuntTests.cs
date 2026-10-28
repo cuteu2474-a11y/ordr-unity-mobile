@@ -83,6 +83,84 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void FutureObservedChestCannotBeFoundOrRevealedEarly()
+        {
+            var world=new World();
+            var rng=new Rolls(1,999);
+            var hunt=new Original323TreasureHunt(world,rng);
+            hunt.RegisterObservedSpawn("wave20",20,100,200,
+                "observed original BFj wave 20");
+            Assert.AreEqual(0,hunt.PreviewAtOriginalRound(10,100,200,850).Count);
+            Assert.AreEqual(1,hunt.PreviewAtOriginalRound(20,100,200,850).Count);
+            var early=hunt.SearchObserved(10,100,200,
+                false,false,false,false,false);
+            Assert.IsTrue(early.WasAuthorized);
+            Assert.AreEqual(0,early.Collected);
+            Assert.AreEqual(0,world.Payments);
+            Assert.AreEqual(0,rng.Asked.Count);
+            var reveal=hunt.SearchObserved(10,100,200,
+                false,false,false,false,true);
+            Assert.AreEqual(0,reveal.Matched);
+            var real=hunt.SearchObserved(20,100,200,
+                false,false,false,false,false);
+            Assert.AreEqual(1,real.Collected);
+            Assert.AreEqual(2,rng.Asked.Count);
+        }
+
+        [Test]
+        public void AtomicSpawnPacketCannotApplyDuplicatesOrBadPositions()
+        {
+            var h=new Original323TreasureHunt(new World(),new Rolls());
+            var packet=new [] {
+                new Original323ObservedTreasureSpawn("first",100,200,
+                    "observed source BFj coordinates"),
+                new Original323ObservedTreasureSpawn("second",130,230,
+                    "observed source BFj coordinates") };
+            Assert.Throws<InvalidOperationException>(()=>
+                h.RegisterObservedSpawnBatch(10,9,packet));
+            Assert.AreEqual(0,h.SpawnCount);
+            Assert.AreEqual(2,h.RegisterObservedSpawnBatch(10,10,packet));
+            Assert.Throws<InvalidOperationException>(()=>
+                h.RegisterObservedSpawnBatch(10,10,new [] {
+                    new Original323ObservedTreasureSpawn("new",200,300,
+                        "observed source BFj coordinates"),
+                    new Original323ObservedTreasureSpawn("new",300,400,
+                        "observed source BFj coordinates")}));
+            Assert.Throws<InvalidOperationException>(()=>
+                h.RegisterObservedSpawnBatch(10,10,new [] {
+                    new Original323ObservedTreasureSpawn("valid",200,300,
+                        "observed source BFj coordinates"),
+                    new Original323ObservedTreasureSpawn("invalid",99999,400,
+                        "observed source BFj coordinates")}));
+            Assert.AreEqual(2,h.SpawnCount);
+            Assert.AreEqual(2,h.RegisterObservedSpawnBatch(10,10,new [] {
+                new Original323ObservedTreasureSpawn("third",200,300,
+                    "observed source BFj coordinates"),
+                new Original323ObservedTreasureSpawn("fourth",300,400,
+                    "observed source BFj coordinates")}));
+            Assert.Throws<InvalidOperationException>(()=>
+                h.RegisterObservedSpawnBatch(10,10,new [] {
+                    new Original323ObservedTreasureSpawn("fifth",400,500,
+                        "observed source BFj coordinates")}));
+            Assert.AreEqual(4,h.SpawnCount);
+        }
+
+        [Test]
+        public void MapBonusNeedsActualObservedEventInsteadOfFreeStart()
+        {
+            var h=new Original323TreasureHunt(new World(),new Rolls());
+            Assert.AreEqual(0,h.SpawnCount);
+            Assert.AreEqual(1,h.RegisterObservedSpawnBatch(0,13,new [] {
+                new Original323ObservedTreasureSpawn("map-one",100,200,
+                    "original treasure map BeM event observed")
+            }));
+            Assert.Throws<InvalidOperationException>(()=>
+                h.RegisterObservedSpawnBatch(11,11,new [] {
+                    new Original323ObservedTreasureSpawn("invalid-wave",100,200,
+                        "original BeM event observed")}));
+        }
+
+        [Test]
         public void BeforeRound50BranchDrawPrecedesQuantityAndBerry()
         {
             var rng=new Rolls(2,1,25);

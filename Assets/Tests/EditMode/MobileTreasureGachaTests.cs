@@ -39,9 +39,10 @@ namespace Ordr.Mobile.Tests
                 "Warcraft original source comparison observed probability";
             public MobileTreasureAttempt Attempt;
             public int Calls;
+            public int LastRemainingChests=-1;
             public bool TryConsumeApprovedAttempt(int round,int remaining,
                 out MobileTreasureAttempt ticket)
-            {Calls++;ticket=Attempt;return ticket!=null;}
+            {Calls++;LastRemainingChests=remaining;ticket=Attempt;return ticket!=null;}
         }
         private static MobileTreasureAttempt Ticket(string id,double x=100,double y=100)
             =>new MobileTreasureAttempt(id,
@@ -107,6 +108,24 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0,rng.Count);
             Assert.AreEqual(1,native.Casts);
         }
+        [Test]
+        public void PolicyNeverSeesPreloadedFutureWaveChests()
+        {
+            var native=new Native();var rng=new Rolls();
+            var hunt=new Original323TreasureHunt(native,rng);
+            hunt.RegisterObservedSpawn("wave-20",20,100,100,
+                "observed original BFj round20 chest");
+            var policy=new Policy {Attempt=Ticket("future-check")};
+            var gacha=new MobileTreasureGacha(hunt,policy);
+            var result=gacha.TrySearch(10);
+            Assert.AreEqual(MobileTreasureOutcome.Miss,result.Outcome);
+            Assert.AreEqual(0,policy.LastRemainingChests);
+            Assert.AreEqual(0,result.Collected);
+            Assert.AreEqual(0,native.Payments);
+            Assert.AreEqual(0,rng.Count);
+            Assert.AreEqual(1,hunt.UncollectedCountAtOriginalRound(20));
+        }
+
         [Test]
         public void OriginalDreamAndNamiTicketMismatchNeverPaysOrRolls()
         {

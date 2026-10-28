@@ -114,7 +114,7 @@ namespace Ordr.Mobile.Unity
                     "특별함·희귀함 원본 주문 타격은 전투 생성 전에 한 번만 연결하세요.");
             if (MapBaseStats == null)
                 throw new InvalidOperationException(
-                    "원본 272종 유닛/객체 능력 데이터를 먼저 로드하세요.");
+                    "원본 273종 유닛/객체 능력 데이터를 먼저 로드하세요.");
             specialRareNativeImpactWitness = verifiedNativeSource ??
                 throw new ArgumentNullException(nameof(verifiedNativeSource));
         }
@@ -1472,6 +1472,20 @@ namespace Ordr.Mobile.Unity
                 chestId,round,x,y,originalBfjProof);
         }
 
+        // Atomic source-observed BeM/BFj packet at the live wave; never
+        // generate a synthetic chest or pretend a client tap is an event.
+        public int ObserveOriginalTreasureSpawnBatch(int spawnRound,
+            IReadOnlyList<Original323ObservedTreasureSpawn> packet)
+        {
+            if (Combat == null || OriginalTreasureHunt == null ||
+                Combat.Game.Phase != SessionPhase.Running ||
+                Combat.Game.CurrentWave < 1)
+                throw new InvalidOperationException(
+                    "실제 전투 라운드 및 원본 보물 출현 증빙 필요");
+            return OriginalTreasureHunt.RegisterObservedSpawnBatch(
+                spawnRound,Combat.Game.CurrentWave,packet);
+        }
+
         // A source-confirmed CJm / CCQ call, never a free UI treasure draw.
         public Original323TreasureSearchResult RequestObservedTreasureSearch(
             double castX,double castY,bool gaimon,bool gaimonAndNami,
@@ -1942,8 +1956,8 @@ namespace Ordr.Mobile.Unity
                 }
                 UnitDefinitions = UnitImplementationRegistry.Combine(Units, Skills,
                     OriginalUnitRawcodes);
-                if (Units.Count != 272 || Skills.CharacterCount != 200 ||
-                    UnitDefinitions.Count != 272)
+                if (Units.Count != 273 || Skills.CharacterCount != 200 ||
+                    UnitDefinitions.Count != 273)
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
                 // This is already pinned to the actual CUo/CUn/CJ source.
                 // Do not require an external installer for verified start

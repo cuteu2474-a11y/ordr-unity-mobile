@@ -148,6 +148,21 @@ namespace Ordr.Mobile.Combat
         }
     }
 
+    // Immutable source-observed BeM/BFj registration input. No roll or
+    // guessed coordinate is produced by the mobile interface.
+    public sealed class Original323ObservedTreasureSpawn
+    {
+        public string ChestId { get; private set; }
+        public double X { get; private set; }
+        public double Y { get; private set; }
+        public string OriginalBfjEvidence { get; private set; }
+        public Original323ObservedTreasureSpawn(string id,double x,double y,
+            string proof)
+        {
+            ChestId=id;X=x;Y=y;OriginalBfjEvidence=proof;
+        }
+    }
+
     // One original round-spawn ledger and one original BFi stream per game.
     // Registration requires confirmed BFj positions; this does not invent
     // the 3 initial coordinates or four positions at each scheduled round.
@@ -164,6 +179,19 @@ namespace Ordr.Mobile.Combat
         public int SpawnCount => ordered.Count;
         public int CollectedCount { get; private set; }
         public int UncollectedCount => SpawnCount-CollectedCount;
+
+        // A mobile gacha policy must count only source-visible remaining
+        // chests, otherwise preloaded future rounds inflate its success rate.
+        public int UncollectedCountAtOriginalRound(int round)
+        {
+            if(round<1 || round>65)
+                throw new ArgumentOutOfRangeException(nameof(round));
+            int available=0;
+            foreach(var chest in ordered)
+                if(chest.SpawnRound<=round && !chest.Collected)
+                    available++;
+            return available;
+        }
         public IReadOnlyList<Original323TreasureLocation> Chests => ordered.AsReadOnly();
 
         public Original323TreasureHunt(IOriginal323TreasureNativeWorld source,
@@ -202,13 +230,61 @@ namespace Ordr.Mobile.Combat
             countByWave[originalRound]=before+1;
         }
 
-        public IReadOnlyList<Original323TreasureLocation> Preview(
-            double x,double y,double halfExtent)
+        // Validate the WHOLE source-observed packet before mutating the
+        // live chest ledger. A failed packet must never add partial rewards.
+        public int RegisterObservedSpawnBatch(int originalRound,
+            int observedCurrentRound,
+            IReadOnlyList<Original323ObservedTreasureSpawn> packet)
         {
+            if(inSearch || packet==null || packet.Count==0 ||
+                observedCurrentRound<1 || observedCurrentRound>65 ||
+                (originalRound!=0 && observedCurrentRound!=originalRound) ||
+                (originalRound!=0 &&
+                    !Original323TreasureRules.IsScheduledSpawnRound(originalRound)))
+                throw new InvalidOperationException("원본 보물 출현 관측 라운드 불일치");
+            int before;
+            countByWave.TryGetValue(originalRound,out before);
+            int maximum=originalRound==0 ?
+                Original323TreasureRules.TreasureMapBonusSpawnCount :
+                Original323TreasureRules.ScheduledSpawnCount;
+            if(packet.Count>maximum-before)
+                throw new InvalidOperationException("원본 출현 보물 상한 초과");
+            var newIds=new HashSet<string>(StringComparer.Ordinal);
+            foreach(var chest in packet)
+                if(chest==null || string.IsNullOrWhiteSpace(chest.ChestId) ||
+                    chest.ChestId.Length>128 ||
+                    !newIds.Add(chest.ChestId) ||
+                    byId.ContainsKey(chest.ChestId) ||
+                    !Original323TreasureRules.IsInOriginalSpawnRect(
+                        chest.X,chest.Y) ||
+                    (chest.X==0 && chest.Y==0) ||
+                    !Original323BossRoundRules.TrustedRuntimeEvidence(
+                        chest.OriginalBfjEvidence))
+                    throw new InvalidOperationException(
+                        "원본 BFj 패킷 중복 또는 미검증");
+            foreach(var chest in packet)
+                RegisterObservedSpawn(chest.ChestId,originalRound,
+                    chest.X,chest.Y,chest.OriginalBfjEvidence);
+            return packet.Count;
+        }
+
+        public IReadOnlyList<Original323TreasureLocation> Preview(
+            double x,double y,double halfExtent) =>
+            PreviewAtOriginalRound(65,x,y,halfExtent);
+
+        // The future wave chest data may be preloaded for simulation, but
+        // it is NOT live yet and must not be revealed or paid early.
+        public IReadOnlyList<Original323TreasureLocation> PreviewAtOriginalRound(
+            int currentRound,double x,double y,double halfExtent)
+        {
+            if(currentRound<1 || currentRound>65)
+                throw new ArgumentOutOfRangeException(nameof(currentRound));
             var result=new List<Original323TreasureLocation>();
             foreach(var chest in ordered)
-                if(!chest.Collected && Original323TreasureRules.Contains(
-                    chest.X,chest.Y,x,y,halfExtent))result.Add(chest);
+                if(chest.SpawnRound<=currentRound && !chest.Collected &&
+                    Original323TreasureRules.Contains(
+                        chest.X,chest.Y,x,y,halfExtent))
+                    result.Add(chest);
             return result.AsReadOnly();
         }
 
@@ -235,7 +311,8 @@ namespace Ordr.Mobile.Combat
                     !Original323BossRoundRules.TrustedRuntimeEvidence(cast))
                     return new Original323TreasureSearchResult(0,0,false,
                         "원본 보물 탐색 시전/대상 검증 실패");
-                var matched=Preview(centerX,centerY,range);
+                var matched=PreviewAtOriginalRound(
+                    originalRound,centerX,centerY,range);
                 if(revealOnly)
                     return new Original323TreasureSearchResult(
                         matched.Count,0,true,"원본 보물 탐색 위치 표시 · 미수집");
