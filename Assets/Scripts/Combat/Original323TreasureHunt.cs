@@ -18,7 +18,9 @@ namespace Ordr.Mobile.Combat
         public const double GaimonHalfExtent = 978;
         public const double GaimonAndNamiHalfExtent = 1125;
         public const double RevealHalfExtent = 2000;
-        public const int InitialExtraTreasureCount = 3;
+        // BeM(3) is a treasure-map effect, NOT a free game-start spawn.
+        public const int TreasureMapBonusSpawnCount = 3;
+        public const int InitialExtraTreasureCount = TreasureMapBonusSpawnCount;
         public const int ScheduledSpawnCount = 4;
 
         public static bool IsScheduledSpawnRound(int round) =>
@@ -175,7 +177,8 @@ namespace Ordr.Mobile.Combat
         public void RegisterObservedSpawn(string uniqueId,int originalRound,
             double observedX,double observedY,string originalBfjEvidence)
         {
-            // Round 0 is reserved for the original 3 extra map treasures.
+            // The round-zero slot tracks TREASURE MAP BONUS chests only.
+            // It does not imply three free chests appear at game start.
             if (string.IsNullOrWhiteSpace(uniqueId) || uniqueId.Length>128 ||
                 !Original323TreasureRules.IsInOriginalSpawnRect(observedX,observedY) ||
                 (observedX==0 && observedY==0) ||

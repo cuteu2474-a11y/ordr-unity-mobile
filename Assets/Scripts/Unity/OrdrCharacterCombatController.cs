@@ -1341,6 +1341,23 @@ namespace Ordr.Mobile.Unity
                     originalPositions, originalAbilities), choiceMerge);
         }
 
+        // The pinned original Gaimon is h0BG; never substitute another unit.
+        public bool HasOwnedOriginalGaimon
+        {
+            get
+            {
+                if (Combat == null || MapBaseStats == null) return false;
+                foreach (var unit in Combat.MobileUnitSnapshot())
+                {
+                    var original = MapBaseStats.Find(unit.Unit.Id);
+                    if (original != null && original.OriginalRawcode == "h0BG" &&
+                        !Combat.IsStoryDeployed(unit.InstanceId))
+                        return true;
+                }
+                return false;
+            }
+        }
+
         public Original323TreasureHunt OriginalTreasureHunt { get; private set; }
         public MobileTreasureGacha MobileTreasureGacha { get; private set; }
 
@@ -1367,6 +1384,7 @@ namespace Ordr.Mobile.Unity
             if (Combat == null || IsUnitPreparation ||
                 Combat.Game.Phase != SessionPhase.Running ||
                 Combat.Game.CurrentWave < 1 ||
+                !HasOwnedOriginalGaimon ||
                 MobileTreasureGacha == null)
                 return new MobileTreasureGachaResult(
                     MobileTreasureOutcome.Unavailable,0,0,

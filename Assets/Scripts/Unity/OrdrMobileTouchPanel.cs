@@ -1419,6 +1419,7 @@ namespace Ordr.Mobile.Unity
             }
             bool valid=treasure!=null && controller.MobileTreasureGacha!=null &&
                 controller.MobileTreasureGacha.CanAttempt &&
+                controller.HasOwnedOriginalGaimon &&
                 Combat!=null && Combat.Game.Phase==SessionPhase.Running &&
                 !controller.IsUnitPreparation && Combat.Game.CurrentWave>0;
             bool before=GUI.enabled;
@@ -1430,9 +1431,15 @@ namespace Ordr.Mobile.Unity
                 lastTreasureRound=Combat.Game.CurrentWave;
             }
             GUI.enabled=before;
-            if(!valid)
-                GUILayout.Label("원작 대비 발견 확률·탐색 기회가 미검증이라 추첨이 비활성화되어 있습니다. "+
-                    "임의 확률이나 무료 보상은 지급하지 않습니다.",
+            if(!controller.HasOwnedOriginalGaimon)
+                GUILayout.Label("원본 가이몬(h0BG)을 보유해야 탐색할 수 있습니다. 현재 모바일 도감에는 가이몬이 미등록되어 있습니다.",
+                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(86f));
+            if(treasure==null)
+                GUILayout.Label("원본 보물 배치·실제 시전·보상 월드 연결 대기",
+                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(64f));
+            if(controller.MobileTreasureGacha==null ||
+                !controller.MobileTreasureGacha.CanAttempt)
+                GUILayout.Label("원작 대비 발견 확률과 탐색 횟수 검증이 미완료입니다. 임의 확률과 무료 보상을 지급하지 않습니다.",
                     OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(86f));
             GUILayout.EndVertical();
             if(lastTreasureResult!=null)
