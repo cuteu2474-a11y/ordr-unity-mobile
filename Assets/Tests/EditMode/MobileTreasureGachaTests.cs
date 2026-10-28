@@ -122,6 +122,90 @@ namespace Ordr.Mobile.Tests
                 gacha.TrySearch(10,true,false).Outcome); // used ticket
         }
 
+        private sealed class RestoreWitness : IOriginal323TreasureResumeWitness
+        {
+            public bool Approved=true;
+            public string Evidence="original W3X treasure session wallet and policy receipt ledger verified";
+            public int Calls;
+            public bool TryConfirmSameOriginalTreasureSession(
+                string hash,string calibration,int spawned,int collected,
+                IReadOnlyList<string> ids,out string proof)
+            {
+                Calls++;
+                proof=Evidence;
+                return Approved && spawned==2 && collected==0 && ids.Count==1;
+            }
+        }
+
+        [Test]
+        public void SaveAndVerifiedRestoreNeverReplaysConsumedAttempt()
+        {
+            var originalNative=new Native();var rng=new Rolls();
+            var policy=new Policy {Attempt=Ticket("used-once",-4000,-2000)};
+            var original=new MobileTreasureGacha(Hunt(originalNative,rng),policy);
+            Assert.AreEqual(MobileTreasureOutcome.Miss,original.TrySearch(10).Outcome);
+            var saved=original.CaptureCheckpoint();
+            Assert.AreEqual(1,saved.ConsumedAttemptIds.Count);
+            Assert.AreEqual(2,saved.SpawnedChests);
+            Assert.AreEqual(0,saved.CollectedChests);
+
+            var newNative=new Native();
+            var restored=new MobileTreasureGacha(Hunt(newNative,new Rolls()),policy);
+            var source=new RestoreWitness();
+            Assert.IsTrue(restored.TryRestoreCheckpoint(saved,source));
+            Assert.AreEqual(1,source.Calls);
+            Assert.AreEqual(1,restored.AttemptsUsed);
+            Assert.AreEqual(MobileTreasureOutcome.Unavailable,restored.TrySearch(10).Outcome);
+            Assert.AreEqual(0,newNative.Casts);
+            Assert.AreEqual(0,newNative.Payments);
+            Assert.AreEqual(1,originalNative.Casts);
+        }
+
+        [Test]
+        public void RestoreNeverTrustsUnverifiedOrMismatchedLedgers()
+        {
+            var policy=new Policy {Attempt=Ticket("once",-4000,-2000)};
+            var first=new MobileTreasureGacha(Hunt(new Native(),new Rolls()),policy);
+            first.TrySearch(10);
+            var saved=first.CaptureCheckpoint();
+            var restored=new MobileTreasureGacha(Hunt(new Native(),new Rolls()),policy);
+            var denial=new RestoreWitness {Approved=false};
+            Assert.IsFalse(restored.TryRestoreCheckpoint(saved,denial));
+            Assert.AreEqual(0,restored.AttemptsUsed);
+            var untrusted=new RestoreWitness {Evidence="TEST_ONLY fabricated checkpoint"};
+            Assert.IsFalse(restored.TryRestoreCheckpoint(saved,untrusted));
+            Assert.AreEqual(0,restored.AttemptsUsed);
+            Assert.IsFalse(restored.TryRestoreCheckpoint(saved,null));
+
+            var wrongCalibration=new Policy {
+                Attempt=Ticket("once",-4000,-2000),
+                CalibrationEvidence="different verified Warcraft calibration"
+            };
+            var changed=new MobileTreasureGacha(Hunt(new Native(),new Rolls()),
+                wrongCalibration);
+            var approved=new RestoreWitness();
+            Assert.IsFalse(changed.TryRestoreCheckpoint(saved,approved));
+            Assert.AreEqual(0,approved.Calls);
+        }
+
+        [Test]
+        public void CannotResetAnAlreadyActiveAttemptJournal()
+        {
+            var policy=new Policy {Attempt=Ticket("once",-4000,-2000)};
+            var current=new MobileTreasureGacha(Hunt(new Native(),new Rolls()),policy);
+            var old=new MobileTreasureGacha(Hunt(new Native(),new Rolls()),policy);
+            old.TrySearch(10);
+            var saved=old.CaptureCheckpoint();
+            current.TrySearch(10);
+            Assert.IsFalse(current.TryRestoreCheckpoint(saved,new RestoreWitness()));
+            Assert.AreEqual(1,current.AttemptsUsed);
+            var changedChests=new Original323TreasureHunt(new Native(),new Rolls());
+            changedChests.RegisterObservedSpawn("single",0,100,100,
+                "original observed Warcraft BFj treasure spawn");
+            var mismatched=new MobileTreasureGacha(changedChests,policy);
+            Assert.IsFalse(mismatched.TryRestoreCheckpoint(saved,new RestoreWitness()));
+        }
+
         [Test]
         public void WrongRoundAndInvalidInputNeverAdvanceRewards()
         {

@@ -80,6 +80,39 @@ namespace Ordr.Mobile.Mobile
         }
     }
 
+    // A gacha journal is meaningful only when restored WITH the same
+    // source attempt ledger, collected-chest ledger and wallet receipts.
+    // Caller must prove that consistency; a stale standalone local file is
+    // never authority to replay or refund a draw.
+    public interface IOriginal323TreasureResumeWitness
+    {
+        bool TryConfirmSameOriginalTreasureSession(
+            string sourceMapSha256, string calibrationEvidence,
+            int spawnedChests, int collectedChests,
+            IReadOnlyList<string> consumedAttemptIds,
+            out string originalSessionEvidence);
+    }
+
+    public sealed class MobileTreasureGachaCheckpoint
+    {
+        public string SourceMapSha256 { get; private set; }
+        public string CalibrationEvidence { get; private set; }
+        public int SpawnedChests { get; private set; }
+        public int CollectedChests { get; private set; }
+        private readonly IReadOnlyList<string> attemptIds;
+        public IReadOnlyList<string> ConsumedAttemptIds => attemptIds;
+
+        internal MobileTreasureGachaCheckpoint(string mapHash,string evidence,
+            int spawned,int collected,IEnumerable<string> consumed)
+        {
+            SourceMapSha256=mapHash;
+            CalibrationEvidence=evidence;
+            SpawnedChests=spawned;
+            CollectedChests=collected;
+            attemptIds=Array.AsReadOnly(new List<string>(consumed).ToArray());
+        }
+    }
+
     // Never executes automatically: one button tap consumes at most one
     // source-approved attempt. Both original cast and wallet must also approve.
     public sealed class MobileTreasureGacha
@@ -92,6 +125,52 @@ namespace Ordr.Mobile.Mobile
         public int AttemptsUsed => consumedIds.Count;
         public bool CanAttempt => policy.IsCalibrationApproved &&
             Original323BossRoundRules.TrustedRuntimeEvidence(policy.CalibrationEvidence);
+
+        public MobileTreasureGachaCheckpoint CaptureCheckpoint()
+        {
+            if(inProgress)
+                throw new InvalidOperationException("진행 중인 보물 거래는 저장할 수 없습니다.");
+            if(!CanAttempt)
+                throw new InvalidOperationException("검증되지 않은 보물 가챠 세션");
+            var ids=new List<string>(consumedIds);
+            ids.Sort(StringComparer.Ordinal);
+            return new MobileTreasureGachaCheckpoint(
+                Original323VerifiedMonsterWaveCatalog.SourceW3xSha256,
+                policy.CalibrationEvidence,hunt.SpawnCount,
+                hunt.CollectedCount,ids);
+        }
+
+        // Only permitted on a fresh in-memory gacha AFTER original chest
+        // state, RNG state, source policy attempt ledger and wallet receipts
+        // were restored from the same checkpoint by the caller.
+        public bool TryRestoreCheckpoint(MobileTreasureGachaCheckpoint saved,
+            IOriginal323TreasureResumeWitness sourceWitness)
+        {
+            if(saved==null || sourceWitness==null || inProgress ||
+                consumedIds.Count!=0 || !CanAttempt ||
+                saved.SourceMapSha256!=Original323VerifiedMonsterWaveCatalog.SourceW3xSha256 ||
+                saved.CalibrationEvidence!=policy.CalibrationEvidence ||
+                saved.SpawnedChests!=hunt.SpawnCount ||
+                saved.CollectedChests!=hunt.CollectedCount ||
+                saved.CollectedChests<0 ||
+                saved.CollectedChests>saved.SpawnedChests)
+                return false;
+            var seen=new HashSet<string>(StringComparer.Ordinal);
+            foreach(var id in saved.ConsumedAttemptIds)
+            {
+                if(string.IsNullOrWhiteSpace(id) || id.Length>128 ||
+                    !seen.Add(id))return false;
+            }
+            string evidence;
+            if(!sourceWitness.TryConfirmSameOriginalTreasureSession(
+                    saved.SourceMapSha256,saved.CalibrationEvidence,
+                    saved.SpawnedChests,saved.CollectedChests,
+                    saved.ConsumedAttemptIds,out evidence) ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(evidence))
+                return false;
+            foreach(var id in seen) consumedIds.Add(id);
+            return true;
+        }
 
         public MobileTreasureGacha(Original323TreasureHunt source,
             IOriginal323MobileTreasureGachaPolicy calibratedPolicy)

@@ -1375,6 +1375,25 @@ namespace Ordr.Mobile.Unity
                     originalPositions, originalAbilities), choiceMerge);
         }
 
+        private readonly Original323GaimonDreamState originalGaimonDream =
+            new Original323GaimonDreamState();
+        private IOriginal323GaimonNamiBonusWitness originalGaimonYlSource;
+
+        // Source CCP sets the per-player dream once when h0BG is committed.
+        // It is never inferred from a Nami unit or a UI tap.
+        public Original323GaimonDreamState GaimonDream => originalGaimonDream;
+
+        public void ConfigureOriginalGaimonDreamNamiState(
+            IOriginal323GaimonNamiBonusWitness originalYlWitness)
+        {
+            if (Combat == null || originalGaimonYlSource != null ||
+                Combat.Game.Phase != SessionPhase.NotStarted)
+                throw new InvalidOperationException(
+                    "가이몬 꿈 원본 YL 상태는 게임 시작 전 한 번만 연결할 수 있습니다.");
+            originalGaimonYlSource = originalYlWitness ??
+                throw new ArgumentNullException(nameof(originalYlWitness));
+        }
+
         // The pinned original Gaimon is h0BG; never substitute another unit.
         public bool HasOwnedOriginalGaimon
         {
@@ -1418,12 +1437,13 @@ namespace Ordr.Mobile.Unity
             if (Combat == null || IsUnitPreparation ||
                 Combat.Game.Phase != SessionPhase.Running ||
                 Combat.Game.CurrentWave < 1 ||
-                !HasOwnedOriginalGaimon ||
+                !HasOwnedOriginalGaimon || !GaimonDream.Applied ||
                 MobileTreasureGacha == null)
                 return new MobileTreasureGachaResult(
                     MobileTreasureOutcome.Unavailable,0,0,
                     "원작 보물 가챠 확률·탐색 기회 검증 대기");
-            return MobileTreasureGacha.TrySearch(Combat.Game.CurrentWave);
+            return MobileTreasureGacha.TrySearch(Combat.Game.CurrentWave,
+                true, GaimonDream.NamiBonusWhenApplied);
         }
 
         // Source-verified BFj coordinates, actual BeN spell cast and atomic
@@ -2509,6 +2529,12 @@ namespace Ordr.Mobile.Unity
                 UnitDecompositions?.Advance(0); // Cancel source casts after game end.
                 return;
             }
+            // CCP applies only after a committed Gaimon is visible in the
+            // live roster. The YL witness is mandatory and read once.
+            // A failed / unverified rare-Wisp transaction cannot trigger it.
+            if (!GaimonDream.Applied && originalGaimonYlSource != null)
+                GaimonDream.TryApplyAfterOwnedGaimon(
+                    HasOwnedOriginalGaimon, originalGaimonYlSource);
             // Never catch up elapsed wall-clock time after backgrounding.
             // Combat, round events, shared mana regeneration and source RNG
             // remain on one paused logical clock.
