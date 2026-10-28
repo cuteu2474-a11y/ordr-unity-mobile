@@ -1382,6 +1382,24 @@ namespace Ordr.Mobile.Unity
                 gaimonAndNami,extraQuantityRoll,berryDisabled,revealOnly);
         }
 
+        public void ConfigureOriginal323TreasureWalletWorld(
+            IOriginal323TreasureLiveCastWitness sourceCastWitness,
+            string verifiedBerryResourceId = null,
+            string berryResourceEvidence = null)
+        {
+            if (originalSharedScriptRandom == null)
+                throw new InvalidOperationException(
+                    "원본 BeI 보물 보상의 공통 BFi 난수 시드·순서 검증이 필요합니다.");
+            if (SharedEconomy == null || Combat == null)
+                throw new InvalidOperationException("실제 전투·공유 경제 상태가 필요합니다.");
+            var walletWorld = new Original323TreasureWalletWorld(
+                SharedEconomy.Wallet, sourceCastWitness,
+                verifiedBerryResourceId, berryResourceEvidence);
+            ConfigureOriginal323TreasureHunt(walletWorld,
+                originalSharedScriptRandom.ForPurpose(
+                    Original323ScriptRandomPurpose.OtherOriginalScriptCall));
+        }
+
         public long WispBalance(string id) => SharedEconomy == null ? 0 :
             SharedEconomy.Wallet.Balance(id);
 
