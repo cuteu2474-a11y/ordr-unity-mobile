@@ -37,8 +37,9 @@ namespace Ordr.Mobile.Unity
             float usableWidth = safe.width - 2f * margin;
             float headerHeight = Mathf.Clamp(safe.height * 0.09f, 44f, 68f);
             float gap = Mathf.Clamp(safe.height * 0.009f, 5f, 9f);
-            float railWidth = Mathf.Min(usableWidth * 0.17f,
-                Mathf.Clamp(76f * uiScale, 64f, 116f));
+            // Korean labels need room after IMGUI padding and scrollbar gutter.
+            // The old 116px cap wrapped navigation to one character per line.
+            float railWidth = Mathf.Clamp(usableWidth * 0.115f, 150f, 270f);
             float mapLeft = left + railWidth + gap;
 
             // Two modest battlefields in the center, with a permanently
@@ -56,11 +57,10 @@ namespace Ordr.Mobile.Unity
             if (available < 120f || mapWidth < 120f)
                 throw new ArgumentOutOfRangeException(nameof(safe), "가로 전장 표시 공간이 부족합니다.");
 
-            // The main/story map stack is 78% of the usable height,
-            // leaving space below for future resource/status controls.
+            // Reserve a compact lower status region, not a large empty block.
             // Keep the swipeable ribbon comfortably touch-sized even as the
             // battlefields shrink.
-            float playableHeight = available * 0.78f;
+            float playableHeight = available * 0.86f;
             float ribbonHeight = Mathf.Min(
                 Mathf.Max(52f * uiScale, safe.height * 0.083f), playableHeight * 0.27f);
             float fieldSpace = playableHeight - ribbonHeight - gap * 2f;

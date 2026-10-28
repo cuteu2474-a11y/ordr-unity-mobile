@@ -55,13 +55,14 @@ namespace Ordr.Mobile.Unity
             themedSkin.button.border = new RectOffset(8, 8, 8, 8);
             themedSkin.button.padding = new RectOffset(8, 8, 9, 9);
             themedSkin.button.fontStyle = FontStyle.Bold;
-            themedSkin.button.fontSize = 15;
+            themedSkin.button.fontSize = 17;
             themedSkin.button.alignment = TextAnchor.MiddleCenter;
-            themedSkin.button.wordWrap = true;
+            themedSkin.button.wordWrap = false;
+            themedSkin.button.clipping = TextClipping.Clip;
 
             themedSkin.label = new GUIStyle(source.label);
             themedSkin.label.normal.textColor = Text;
-            themedSkin.label.fontSize = 14;
+            themedSkin.label.fontSize = 16;
             themedSkin.label.wordWrap = true;
             themedSkin.label.richText = true;
 
@@ -69,7 +70,7 @@ namespace Ordr.Mobile.Unity
             Background(themedSkin.textField, button, hover, Text);
             themedSkin.textField.border = new RectOffset(8, 8, 8, 8);
             themedSkin.textField.padding = new RectOffset(8, 8, 6, 6);
-            themedSkin.textField.fontSize = 14;
+            themedSkin.textField.fontSize = 16;
             themedSkin.textArea = new GUIStyle(themedSkin.textField);
 
             selectedTab = new GUIStyle(themedSkin.button);
@@ -78,11 +79,11 @@ namespace Ordr.Mobile.Unity
 
             primaryButton = new GUIStyle(themedSkin.button);
             Background(primaryButton, teal, tealHover, Color.white);
-            primaryButton.fontSize = 16;
+            primaryButton.fontSize = 17;
 
             sectionTitle = new GUIStyle(themedSkin.label);
             sectionTitle.normal.textColor = Gold;
-            sectionTitle.fontSize = 19;
+            sectionTitle.fontSize = 21;
             sectionTitle.fontStyle = FontStyle.Bold;
             sectionTitle.alignment = TextAnchor.MiddleLeft;
             sectionTitle.wordWrap = false;
@@ -90,7 +91,7 @@ namespace Ordr.Mobile.Unity
             currencyText = new GUIStyle(themedSkin.label);
             currencyText.normal.textColor = Muted;
             currencyText.fontStyle = FontStyle.Bold;
-            currencyText.fontSize = 15;
+            currencyText.fontSize = 16;
         }
 
         private static void Background(GUIStyle style, Texture2D normal,

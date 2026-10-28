@@ -46,22 +46,29 @@ namespace Ordr.Mobile.Unity
             title.alignment = TextAnchor.MiddleLeft;
             title.fontSize = Mathf.RoundToInt(Mathf.Clamp(safe.height * 0.034f, 17f, 28f));
             title.fontStyle = FontStyle.Bold;
+            title.wordWrap = false;
+            title.clipping = TextClipping.Clip;
             title.normal.textColor = OrdrMobileUiTheme.Gold;
 
             var detail = new GUIStyle(GUI.skin.label);
             detail.fontSize = Mathf.RoundToInt(Mathf.Clamp(safe.height * 0.020f, 11f, 17f));
             detail.normal.textColor = new Color(0.81f, 0.89f, 0.96f, 1f);
-            detail.wordWrap = true;
+            detail.wordWrap = false;
+            detail.clipping = TextClipping.Clip;
 
-            string heading = controller != null && controller.PracticeBattle != null
-                ? "ORDR / NIGHTMARE  ·  " + controller.PracticeBattle.LastRound + "R 연습"
-                : "ORDR / NIGHTMARE  ·  S2 2.323[C]  ·  OTHERWORLD";
+            // Fixed header rows must not wrap into each other on Android.
+            string heading = "ORDR / NIGHTMARE  ·  OTHERWORLD";
 #if UNITY_EDITOR
             if (controller != null && controller.IsEditorPreview)
                 heading = "EDITOR 체험 · 가상 능력치 / 정식 게임 아님";
 #endif
-            GUI.Label(new Rect(left, top + 2f, width, layout.HeaderHeight * 0.56f),
-                heading, title);
+            float headerTextWidth = width;
+            if (controller != null && controller.Combat != null &&
+                controller.Combat.Game.Phase == SessionPhase.Running &&
+                !controller.IsUnitPreparation)
+                headerTextWidth = Mathf.Max(100f, width - 108f);
+            GUI.Label(new Rect(left, top + 2f,
+                headerTextWidth, layout.HeaderHeight * 0.56f), heading, title);
 
             string status;
             if (controller == null || controller.Units == null)
@@ -87,7 +94,7 @@ namespace Ordr.Mobile.Unity
                 status = "[개발용 체험] " + status;
 #endif
             GUI.Label(new Rect(left, top + layout.HeaderHeight * 0.56f,
-                width, layout.HeaderHeight * 0.44f), status, detail);
+                headerTextWidth, layout.HeaderHeight * 0.44f), status, detail);
             if (controller != null && controller.Combat != null &&
                 controller.Combat.Game.Phase == SessionPhase.Running &&
                 !controller.IsUnitPreparation)
@@ -135,7 +142,11 @@ namespace Ordr.Mobile.Unity
             // SpriteRenderers, making the verified units appear invisible.
             GUI.Box(new Rect(layout.Battle.x, layout.Battle.y,
                 Mathf.Min(132f, layout.Battle.width), 27f), "메인 전장", area);
-            GUI.Box(layout.Story, "스토리 전장", area);
+            // The story viewport is not populated by the main world camera.
+            // Paint its placeholder instead of exposing a black blank region.
+            GUI.Box(layout.Story, GUIContent.none, GUI.skin.box);
+            GUI.Label(new Rect(layout.Story.x + 12f, layout.Story.y + 4f,
+                Mathf.Max(0f, layout.Story.width - 24f), 27f), "스토리 전장", area);
             if (controller != null &&
                 (controller.Combat == null ||
                  controller.Combat.Game.Phase == SessionPhase.NotStarted))

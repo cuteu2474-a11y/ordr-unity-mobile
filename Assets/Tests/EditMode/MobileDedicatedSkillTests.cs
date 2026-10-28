@@ -67,9 +67,13 @@ namespace Ordr.Mobile.Tests
             Assert.Less(layout.Battle.width, safe.width * 0.60f);
             Assert.Less(layout.Story.width, safe.width * 0.60f);
             Assert.Less(layout.Battle.height + layout.SkillMargin.height +
-                layout.Story.height, safe.height * 0.78f);
+                layout.Story.height, safe.height * 0.88f);
             Assert.Greater(layout.RightDrawer.width, layout.Battle.width * 0.80f);
             Assert.Greater(layout.StatusMargin.height, 18f);
+            Assert.Less(layout.StatusMargin.height, safe.height * 0.17f);
+            Assert.GreaterOrEqual(layout.LeftTabs.width, 150f);
+            Assert.GreaterOrEqual(layout.LeftTabs.width /
+                MobileMapSkillLayout.UiScale(safe, dpi), 90f);
             Assert.GreaterOrEqual(layout.StatusMargin.yMin, layout.Story.yMax);
             Assert.LessOrEqual(layout.StatusMargin.yMax, screenHeight + 0.01f);
             Assert.Less(layout.StatusMargin.xMax, layout.RightDrawer.xMin);
@@ -86,6 +90,9 @@ namespace Ordr.Mobile.Tests
             AssertStackedLandscape(new Rect(0f, 0f, 1920f, 1080f), 1080f, 240f);
             AssertStackedLandscape(new Rect(24f, 12f, 1152f, 700f), 724f, 300f);
             AssertStackedLandscape(new Rect(44f, 0f, 756f, 390f), 390f, 460f);
+            // Insets and high DPI similar to the reported Android screenshot.
+            AssertStackedLandscape(new Rect(112f, 0f, 2288f, 1080f),
+                1080f, 440f);
         }
 
 

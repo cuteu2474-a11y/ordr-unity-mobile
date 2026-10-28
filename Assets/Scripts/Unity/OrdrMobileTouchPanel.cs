@@ -233,10 +233,12 @@ namespace Ordr.Mobile.Unity
         {
             Rect area = MobileMapSkillLayout.Scaled(layout.LeftTabs, scale);
             GUILayout.BeginArea(area, GUI.skin.box);
-            GUILayout.Label("ORDR  /  메뉴", OrdrMobileUiTheme.SectionTitle,
-                GUILayout.Height(32f));
-            tabsScroll = GUILayout.BeginScrollView(tabsScroll,
-                false, true, GUILayout.ExpandHeight(true));
+            GUILayout.Label("ORDR", OrdrMobileUiTheme.SectionTitle,
+                GUILayout.Height(30f));
+            // Use touch/trackpad scrolling without the large default Unity
+            // scrollbar stealing width from Korean navigation labels.
+            tabsScroll = GUILayout.BeginScrollView(tabsScroll, false, false,
+                GUIStyle.none, GUIStyle.none, GUILayout.ExpandHeight(true));
 
             // Order matches the most common manual activities.
             DrawLeftTab(Tab.Play, "플레이");
