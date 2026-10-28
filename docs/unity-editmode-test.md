@@ -32,11 +32,27 @@ Unity 없이 실행한 공통 C# 컴파일/NUnit은 검사한 코드 범위만 �
 | push 커밋 메시지에 `[apk-preview]` 포함 | `check`에 의존하는 `android-apk-preview` 실행 |
 | 동시 실행 | 그룹 `ordr-unity-editmode`, `cancel-in-progress: false` |
 | 검사 아티팩트 | `unity-editmode-results` |
-| APK 아티팩트 | `ordr-mobile-android-development-apk`, `build/Android/**/*.apk`, 보존 14일 |
+| APK 아티팩트 | `ordr-mobile-android-development-apk`, `build/Android/ORDR-Mobile-Development.apk` 및 검증 JSON·SHA-256, 보존 14일 |
 
 CI에 `UNITY_LICENSE`, `UNITY_EMAIL`, `UNITY_PASSWORD` 설정이 필요합니다. 값이나 키 파일을 코드·문서·로그에 노출하지 않습니다. 라이선스 단계 실패를 게임 테스트 실패로 혼동하지 않습니다.
 
 사용자가 요청한 APK는 이 기존 작업을 사용합니다. 새 워크플로·같은 실행의 중복 재시도·진행 중 작업 취소를 하지 않습니다. 문서만 바뀐 커밋에서 같은 게임 코드의 APK를 다시 만들 필요는 없습니다.
+
+## Android 전용 제작과 다운로드
+
+기존 APK job은 `Ordr.Mobile.Editor.OrdrAndroidDevelopmentBuild.Build`를 실행합니다. 앱 ID `com.ordr.mobile.development`, IL2CPP ARM64+ARMv7 단일 APK, 가로 화면, OBB 없음, 개발용 디버그 서명으로 고정합니다. CI의 `run_number`를 버전 코드로 사용합니다. 정식 서명 키는 필요하지 않으며 저장소에 추가하지 않습니다. 서로 다른 CI 머신의 디버그 서명은 다를 수 있으므로 이전 개발용 APK에 덮어 설치가 실패할 수 있습니다. 기존 앱 삭제는 데이터 삭제이므로 임의 자동화하지 않습니다.
+
+Unity Android Build Support가 설치된 로컬 환경에서는 플랫폼을 Android로 바꾼 뒤 **ORDR → Android 개발용 APK 제작**을 사용하거나 다음 명령을 실행합니다.
+
+```sh
+Unity -batchmode -nographics -quit -projectPath "$PWD" -buildTarget Android \
+  -executeMethod Ordr.Mobile.Editor.OrdrAndroidDevelopmentBuild.Build \
+  -ordrBuildVersion 0.1.0 -ordrVersionCode 1 -logFile /tmp/ordr-android-build.log
+```
+
+빌드 전 20개 `data/` 파일을 동기화·검사합니다. 기본 씬을 빌드하고 실패 시 예외로 CI를 실패시키며 이전 APK를 새 성공 결과로 재사용하지 않습니다. 생성 뒤 `tools/verify_android_apk.py`가 필수 네이티브 라이브러리·게임 리소스·ZIP CRC와 실제 Android `apksigner verify`를 검사합니다. 서명 확인은 실제 설치·게임 플레이 검사와 별개입니다.
+
+성공한 Actions 실행의 **Artifacts → ordr-mobile-android-development-apk**에서 ZIP을 내려받아 풀면 APK, `.apk.sha256`, `.verification.json`이 있습니다. 생성 APK의 실제 SHA-256과 소스 커밋을 확인할 수 있습니다. 빌드가 실패하거나 진행 중이면 이 결과물이 있다고 안내하지 않습니다. 현재 게임은 10R/20R 개발용 연습이며 전체 저장·65R·전체 스킬은 미완성입니다.
 
 ## 결과 해석과 조회
 

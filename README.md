@@ -22,9 +22,11 @@ Unity 기본 씬 `Assets/Scenes/MainGame.unity`에서 **유닛 준비 → 위습
 
 파일·코드 연결, 로컬 검사, Unity 실행, APK 생성, 실기 플레이 검증은 각각 구분합니다. 상세 범위와 알려진 문제는 [현재 상태](docs/START_HERE.md)에 있습니다.
 
+요청 APK는 기존 Actions에서 Unity 검사 후 ARM64·ARMv7 단일 개발용 APK로 제작합니다. 서명·필수 데이터 검사 후 APK와 체크섬을 함께 첨부합니다. 제작 경로가 연결됐다는 사실은 APK 생성·설치·정식 게임 완성을 뜻하지 않습니다. [제작·다운로드 방법](docs/unity-editmode-test.md)을 참고하세요.
+
 ## 유닛 현황과 자료
 
-전체 272개 카탈로그 항목의 실행 범위는 [유닛별 현황](docs/캐릭터별-구현목록.md)과 [생성 JSON](data/unit-runtime-status.json)에 기록합니다. 도감 등록 수를 유닛 구현 완료 수로 세지 않습니다.
+전체 273개 카탈로그 항목의 실행 범위는 [유닛별 현황](docs/캐릭터별-구현목록.md)과 [생성 JSON](data/unit-runtime-status.json)에 기록합니다. 도감 등록 수를 유닛 구현 완료 수로 세지 않습니다.
 
 - [데이터 출처·재생성](data/README.md)
 - [원작 동등성 검증 기준](docs/PARITY.md)

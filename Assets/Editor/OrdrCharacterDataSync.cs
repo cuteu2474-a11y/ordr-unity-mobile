@@ -42,17 +42,10 @@ namespace Ordr.Mobile.Editor
 
         // The scene's Awake() requires these actual imported TextAssets.
         // Neither the first-play button nor a build may invent missing data.
-        private static readonly string[] RequiredRuntimeData =
-        {
-            "mobile-practice-battle-model.json",
-            "practice-native-inherited-defaults.json",
-            "units.json",
-            "character-skill-profiles.json",
-            "original-2323C-map-base-stats.json",
-            "original-2323C-monster-wave-script-evidence.json",
-            "original-2323C-monster-object-abilities.json",
-            "original-2323C-wisp-pools.json"
-        };
+        // Every listed file ships with this repository and participates in
+        // gameplay/catalog setup. Requiring them prevents a successful APK with partially
+        // disabled menus or unit effects when an input is missing.
+        private static readonly string[] RequiredRuntimeData = DataFiles;
 
         static OrdrCharacterDataSync()
         {
@@ -138,7 +131,7 @@ namespace Ordr.Mobile.Editor
         }
     }
 
-    // This does NOT build APKs. It protects any future approved Unity build
+    // Shared by APK production and other Unity builds. Protects each build
     // from silently shipping an empty menu due to untracked Resources caches.
     public sealed class OrdrRuntimeDataBuildPreflight : IPreprocessBuildWithReport
     {

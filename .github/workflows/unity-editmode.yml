@@ -72,7 +72,8 @@ jobs:
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
-          android: true
+          # Keep the host SDK for apksigner verification after Unity builds.
+          android: false
           dotnet: true
           haskell: true
           large-packages: true
@@ -89,11 +90,31 @@ jobs:
           projectPath: .
           targetPlatform: Android
           buildName: ORDR-Mobile-Development
+          buildMethod: Ordr.Mobile.Editor.OrdrAndroidDevelopmentBuild.Build
+          versioning: Custom
+          version: 0.1.${{ github.run_number }}
+          androidVersionCode: ${{ github.run_number }}
+          customParameters: >-
+            -ordrBuildVersion 0.1.${{ github.run_number }}
+            -ordrVersionCode ${{ github.run_number }}
+
+      - name: APK 필수 데이터·CPU·서명·체크섬 검증
+        env:
+          ORDR_SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          signer=$(find "${ANDROID_HOME:?}/build-tools" -name apksigner -type f | sort -V | tail -n 1)
+          test -n "$signer"
+          python3 tools/verify_android_apk.py build/Android/ORDR-Mobile-Development.apk \
+            --apksigner "$signer" --commit "$ORDR_SOURCE_COMMIT"
 
       - name: 개발용 APK 첨부
         uses: actions/upload-artifact@v4
         with:
           name: ordr-mobile-android-development-apk
-          path: build/Android/**/*.apk
+          path: |
+            build/Android/ORDR-Mobile-Development.apk
+            build/Android/ORDR-Mobile-Development.apk.sha256
+            build/Android/ORDR-Mobile-Development.verification.json
           if-no-files-found: error
           retention-days: 14
