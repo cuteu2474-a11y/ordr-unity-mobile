@@ -4,8 +4,8 @@
   "scope": "nightmare-otherworld",
   "collectedOn": "2026-10-21",
   "sourceIndex": "https://ordr.kr/character",
-  "disclaimer": "도감 등급별 나열 순서를 내부 식별자로 변환했다. gameRawCode와 평타 스펙은 아직 검증되지 않았으므로 null이다. roleTags는 도감의 요약 분류이며 전투 스킬 전체를 나타내지 않는다. damageSchoolHints는 역할 태그에서만 도출한 분류로, 개별 스킬 피해 유형이나 워크래프트 공격 타입을 확정하지 않는다. 예외: 원본 W3X에만 존재하고 웹 도감에서 누락된 안흔함 좀비(h00H)는 U-14로 별도 추가했다. 웹 상세 페이지를 추정하지 않는다.",
-  "expectedTotal": 272,
+  "disclaimer": "도감 등급별 나열 순서를 내부 식별자로 변환했다. gameRawCode와 평타 스펙은 아직 검증되지 않았으므로 null이다. roleTags는 도감의 요약 분류이며 전투 스킬 전체를 나타내지 않는다. damageSchoolHints는 역할 태그에서만 도출한 분류로, 개별 스킬 피해 유형이나 워크래프트 공격 타입을 확정하지 않는다. 예외: 원본 W3X에만 존재하고 웹 도감에서 누락된 안흔함 좀비(h00H)는 U-14로 별도 추가했다. 웹 상세 페이지를 추정하지 않는다. 특수함 가이몬(h0BG)은 원본 W3X CampaignUnitStrings, UnitWeapons, 원본 JASS 특수위습 pool(SP08)로 확인되어 X-08로 추가했다. 웹 도감 상세와 실전 스킬 효과는 미검증이다.",
+  "expectedTotal": 273,
   "entries": [
     {
       "id": "C-01",
@@ -1053,6 +1053,23 @@
       "attackIntervalSeconds": null,
       "attackRange": null,
       "skillSpecsStatus": "partial",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown"
+    },
+    {
+      "id": "X-08",
+      "grade": "특수함",
+      "gradeOrder": 8,
+      "name": "가이몬",
+      "roleTags": [],
+      "roleTagsStatus": "original-map-only-not-collected",
+      "detailUrl": null,
+      "gameRawCode": "h0BG",
+      "gameRawCodeEvidence": "source-W3X-Units/CampaignUnitStrings.txt + original-2323C-wisp-pools.json CSB/CSC + SP08",
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected",
       "damageSchoolHints": [],
       "damageSchoolHintsStatus": "unknown"
     },

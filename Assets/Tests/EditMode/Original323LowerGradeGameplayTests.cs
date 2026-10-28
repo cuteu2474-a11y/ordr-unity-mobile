@@ -267,6 +267,27 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void GaimonRawcodeMapsToLiveRosterButDoesNotUnlockUnreviewedFusion()
+        {
+            var game = Create();
+            Assert.AreEqual(273, game.Map.Count);
+            Assert.AreEqual("h0BG", game.Map.Find(SpecialGradeMobilePolicy.Gaimon).OriginalRawcode);
+            Assert.AreEqual("가이몬 - 특수", game.Map.Find(SpecialGradeMobilePolicy.Gaimon).MapName);
+            string id;
+            Assert.IsTrue(game.Fusion.TryResolveUnit("h0BG", out id));
+            Assert.AreEqual(SpecialGradeMobilePolicy.Gaimon, id);
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("SP08"));
+            // Spawning is for runtime identity testing. A test spawn is
+            // never an original verified player reward.
+            long actor = game.Combat.SpawnCharacter(id, -3776, 4480);
+            Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(
+                u => u.InstanceId == actor && u.Unit.Id == "X-08"));
+            game.Combat.RemoveCharacter(actor);
+            Assert.IsFalse(game.Combat.MobileUnitSnapshot().Any(
+                u => u.Unit.Id == "X-08"));
+        }
+
+        [Test]
         public void SpecialFusionRechecksExactMaterialsAndDoesNotAuthorizeUnreviewedCasts()
         {
             var game = Create();

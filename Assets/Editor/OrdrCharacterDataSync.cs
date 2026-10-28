@@ -95,7 +95,7 @@ namespace Ordr.Mobile.Editor
             }
         }
 
-        [MenuItem("ORDR/캐릭터 데이터 272종 · 스킬 200종 동기화")]
+        [MenuItem("ORDR/캐릭터 데이터 273종 · 스킬 200종 동기화")]
         public static void Sync()
         {
             CopySourceData(logIfUnchanged: true);

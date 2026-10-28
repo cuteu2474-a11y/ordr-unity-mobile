@@ -1432,7 +1432,7 @@ namespace Ordr.Mobile.Unity
             }
             GUI.enabled=before;
             if(!controller.HasOwnedOriginalGaimon)
-                GUILayout.Label("원본 가이몬(h0BG)을 보유해야 탐색할 수 있습니다. 현재 모바일 도감에는 가이몬이 미등록되어 있습니다.",
+                GUILayout.Label("원본 가이몬(X-08/h0BG)을 실제 보유해야 탐색할 수 있습니다. 가이몬이 포함된 희귀위습 1% 분기는 확인됐지만 희귀위습 자동 지급은 아직 미완성입니다.",
                     OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(86f));
             if(treasure==null)
                 GUILayout.Label("원본 보물 배치·실제 시전·보상 월드 연결 대기",

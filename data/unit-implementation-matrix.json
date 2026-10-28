@@ -3,12 +3,12 @@
   "mode": "nightmare-otherworld",
   "generatedOn": "2026-10-21",
   "purpose": "All-unit runtime registration and remaining original-combat implementation worklist; no invented stats.",
-  "scopeWarning": "272/272 are catalog-addressable roster units, not 271 fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
+  "scopeWarning": "273/273 are catalog-addressable roster units, not 271 fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
   "summary": {
-    "units": 272,
-    "catalogRosterEligible": 272,
+    "units": 273,
+    "catalogRosterEligible": 273,
     "partialSkillProfiles": 200,
-    "uncollectedProfiles": 72,
+    "uncollectedProfiles": 73,
     "skillEntries": 554,
     "passiveEntries": 295,
     "linkedJassRawcodes": 81,
@@ -31,7 +31,7 @@
       "rawcodeLinks": 0
     },
     "특수함": {
-      "units": 7,
+      "units": 8,
       "profiles": 7,
       "rawcodeLinks": 0
     },
@@ -1293,6 +1293,24 @@
       "passiveKinds": [
         "movementSlowAura"
       ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "X-08",
+      "name": "가이몬",
+      "grade": "특수함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
       "jassLabelRawcode": null,
       "jassAbilityRawcode": null,
       "rawcodeEvidence": "unresolved",

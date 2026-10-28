@@ -17,18 +17,18 @@
   ],
   "summary": {
     "originalNamedObjects": 1493,
-    "catalogCharacters": 272,
-    "linkedCatalogCharacters": 271,
+    "catalogCharacters": 273,
+    "linkedCatalogCharacters": 272,
     "unresolvedCatalogCharacters": 1,
     "mappingStatusCounts": {
       "reviewed-map-name-alias-and-grade": 54,
-      "unique-map-name-and-grade": 153,
+      "unique-map-name-and-grade": 154,
       "unmatched": 1,
       "verified-common-map-identity": 9,
       "verified-jass-fusion-result": 6,
       "verified-jass-label-and-fusion-result": 49
     },
-    "linkedWithAttack1": 270,
+    "linkedWithAttack1": 271,
     "gameplayParityVerified": 0
   },
   "catalogEntries": [
@@ -2098,6 +2098,39 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A12T,A12U,A801,Avul",
+      "combatParityVerified": false
+    },
+    {
+      "catalogId": "X-08",
+      "catalogName": "가이몬",
+      "grade": "특수함",
+      "mappingStatus": "unique-map-name-and-grade",
+      "originalRawcode": "h0BG",
+      "candidateRawcodes": [],
+      "sourceMapName": "가이몬 - 특수",
+      "attack1": {
+        "attackCooldownSeconds": 1.5,
+        "baseDamagePlus": 170000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.1,
+        "minimumBaseDamage": 170001,
+        "maximumBaseDamage": 170002
+      },
+      "attack2": null,
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0DD,A0DH,A801,Avul",
       "combatParityVerified": false
     },
     {

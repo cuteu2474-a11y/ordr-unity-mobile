@@ -14,6 +14,9 @@ namespace Ordr.Mobile.Mobile
         public const string Absalom = "S-17";
         public const string DockingFive = "S-32";
         public const string Otama = "X-05";
+        // W3X CampaignUnitStrings and CSI rare-Wisp 1% special branch.
+        // Do not invent a separate direct shop or free-summon path.
+        public const string Gaimon = "X-08";
         public const long OtamaWoodReward = 16;
         public static string OtamaRewardId(long instanceId)
         {

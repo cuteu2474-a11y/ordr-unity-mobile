@@ -56,6 +56,17 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OriginalRareWispOnePercentBranchContainsGaimonAsEighthUnit()
+        {
+            // CSI: BFi(1,100)==100 selects sw pool, whose 8th entry is h0BG.
+            // The separate native PlaceRandomUnit chooses index 7.
+            var rare = OriginalWispRewardCatalog.FromOriginalJassJson(Source(),
+                new FixedRandom(100, 7)).Roll(WispResourceIds.Rare);
+            Assert.AreEqual("h0BG", rare.UnitRawcode);
+            Assert.IsNull(rare.BonusAbilityRawcode);
+        }
+
+        [Test]
         public void NonRareWispDoesNotDrawAnExtraPercentageRoll()
         {
             var random = new FixedRandom(0);

@@ -3,8 +3,8 @@
   "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
   "allUnitsComplete": false,
   "summary": {
-    "catalogEntries": 272,
-    "objectBasicAttackModels": 270,
+    "catalogEntries": 273,
+    "objectBasicAttackModels": 271,
     "modelEffectOwners": 112,
     "connectedModelEffectDefinitions": 144,
     "documentedSkillEntries": 554,
@@ -1024,6 +1024,23 @@
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
         "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "X-08",
+      "name": "가이몬",
+      "grade": "특수함",
+      "originalRawcode": "h0BG",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "connectedManualFunctions": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "가이몬의 꿈 CCP 원본 1회 적용 및 나미 보정 연결 필요",
+        "가이몬 보물 탐색 수동 가챠의 원본 횟수·분포 보정과 실제 수급 검증 필요",
         "원작 최종 피해·타깃·시점 동등성 미검증"
       ]
     },

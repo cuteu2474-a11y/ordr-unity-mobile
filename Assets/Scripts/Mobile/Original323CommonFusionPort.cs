@@ -180,6 +180,11 @@ namespace Ordr.Mobile.Mobile
             Bind(units, "S-15", "h012", "특별함");
             RegisterReviewed(units, registrations, ReviewedRare, "희귀함");
             Bind(units, "R-18", "h01N", "희귀함"); // material identity; A1A0 remains locked
+            // Original CSI 1% Rare-Wisp special pool includes h0BG. This
+            // VERIFIED identity is for resolving an actual Wisp result only:
+            // it does not grant SP08 fusion execution or approve A0YE
+            // on the unrelated 99% rare-Wisp branch.
+            Bind(units, SpecialGradeMobilePolicy.Gaimon, "h0BG", "특수함");
             RegisterReviewed(units, registrations, ReviewedLegendary, "전설");
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
