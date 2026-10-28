@@ -1341,6 +1341,47 @@ namespace Ordr.Mobile.Unity
                     originalPositions, originalAbilities), choiceMerge);
         }
 
+        public Original323TreasureHunt OriginalTreasureHunt { get; private set; }
+
+        // Source-verified BFj coordinates, actual BeN spell cast and atomic
+        // native reward settlement are required. Nothing is enabled by default.
+        public void ConfigureOriginal323TreasureHunt(
+            IOriginal323TreasureNativeWorld liveNativeWorld,
+            IOriginalWispRandom verifiedSharedScriptRandom)
+        {
+            if (liveNativeWorld == null || verifiedSharedScriptRandom == null)
+                throw new ArgumentNullException(nameof(liveNativeWorld));
+            if (Combat == null || OriginalTreasureHunt != null ||
+                Combat.Game.Phase != SessionPhase.NotStarted)
+                throw new InvalidOperationException(
+                    "원본 보물 탐색은 전투 시작 전 한 번만 연결할 수 있습니다.");
+            OriginalTreasureHunt = new Original323TreasureHunt(
+                liveNativeWorld, verifiedSharedScriptRandom);
+        }
+
+        // A source witness invokes this ONLY for a real native BeM spawn.
+        public void ObserveOriginalTreasureSpawn(string chestId,int round,
+            double x,double y,string originalBfjProof)
+        {
+            if (OriginalTreasureHunt == null)
+                throw new InvalidOperationException("원본 보물 월드 미연결");
+            OriginalTreasureHunt.RegisterObservedSpawn(
+                chestId,round,x,y,originalBfjProof);
+        }
+
+        // A source-confirmed CJm / CCQ call, never a free UI treasure draw.
+        public Original323TreasureSearchResult RequestObservedTreasureSearch(
+            double castX,double castY,bool gaimon,bool gaimonAndNami,
+            bool extraQuantityRoll,bool berryDisabled,bool revealOnly)
+        {
+            if (OriginalTreasureHunt == null || Combat == null)
+                return new Original323TreasureSearchResult(0,0,false,
+                    "원본 보물 탐색 월드가 연결되지 않았습니다.");
+            return OriginalTreasureHunt.SearchObserved(
+                Combat.Game.CurrentWave,castX,castY,gaimon,
+                gaimonAndNami,extraQuantityRoll,berryDisabled,revealOnly);
+        }
+
         public long WispBalance(string id) => SharedEconomy == null ? 0 :
             SharedEconomy.Wallet.Balance(id);
 

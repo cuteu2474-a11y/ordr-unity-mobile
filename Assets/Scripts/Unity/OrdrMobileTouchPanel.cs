@@ -348,6 +348,9 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("라운드 "+game.CurrentWave+
                     "   전투 유닛 "+Combat.CharacterCount+
                     "   남은 적 "+game.AliveEnemies);
+                if (controller.OriginalTreasureHunt != null)
+                    GUILayout.Label("보물상자 미수집 " +
+                        controller.OriginalTreasureHunt.UncollectedCount + "개");
                 if(controller.PracticeBattle!=null)
                     GUILayout.Label("처치 "+game.DefeatedEnemies+"   제한 "+
                         controller.PracticeBattle.EnemyLimit+"마리");
@@ -1406,6 +1409,14 @@ namespace Ordr.Mobile.Unity
             }
             if (controller.PracticeBattle != null)
                 GUILayout.Label("라운드마다 랜덤위습 2개 · 소환 / 조합 / 판매");
+            if (controller.OriginalTreasureHunt != null)
+                GUILayout.Label("원본 보물상자 · 발견 " +
+                    controller.OriginalTreasureHunt.SpawnCount +
+                    "개 / 미수집 " +
+                    controller.OriginalTreasureHunt.UncollectedCount +
+                    "개 · 원본 탐색 스킬 시전 시에만 수집");
+            else
+                GUILayout.Label("원본 보물 찾기: 실제 좌표·시전 및 보상 월드 연결 대기");
             GUILayout.Label("랜덤위습 " + controller.WispBalance(WispResourceIds.Random) +
                 "개 · 선택위습 " + controller.WispBalance(WispResourceIds.Choice) + "개");
             GUILayout.Label("자동: 안흔함 " + controller.WispBalance(WispResourceIds.Uncommon) +
