@@ -35,6 +35,9 @@ namespace Ordr.Mobile.Combat
                 verifiedA0yeAbility == null)
                 throw new ArgumentNullException(nameof(verifiedRarePosition),
                     "원본 희귀위습의 이중 RNG·좌표·A0YE 적용 공급자 모두 필요");
+            if (ReferenceEquals(verifiedScriptBranchRandom,verifiedNativePool))
+                throw new ArgumentException(
+                    "BFi 스크립트 난수와 Warcraft 네이티브 유닛 풀 난수를 공유할 수 없습니다.");
             source = OriginalWispRewardCatalog.FromOriginalJassJson(
                 originalPoolJson,verifiedScriptBranchRandom,verifiedNativePool);
             rareSourcePosition = verifiedRarePosition;

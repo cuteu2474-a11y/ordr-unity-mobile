@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inventory original unit ability rawcodes for the 72 tooltip-profile gaps.
+"""Inventory original unit ability rawcodes for missing tooltip profiles.
 
 This preserves original ability ID evidence without guessing a skill effect,
 trigger, chance, damage number, or unit rawcode whose identity is unresolved.
@@ -30,8 +30,8 @@ def build(units, profiles, map_stats):
     if {data.get("gameVersion") for data in (units, profiles, map_stats)} != {VERSION}:
         raise ValueError("Skill evidence must use identical ORDR 2.323[C] sources")
     roster = units["entries"]
-    if len(roster) != 272 or len({u["id"] for u in roster}) != len(roster):
-        raise ValueError("Expected 272 distinct catalog characters")
+    if len(roster) != 273 or len({u["id"] for u in roster}) != len(roster):
+        raise ValueError("Expected 273 distinct catalog characters")
     recorded = profiles["profiles"]
     profiled = {p["unitId"] for p in recorded}
     if len(profiled) != len(recorded):
@@ -41,7 +41,7 @@ def build(units, profiles, map_stats):
         raise ValueError("Skill profiles include unknown characters")
     map_entries = map_stats["catalogEntries"]
     maps = {row["catalogId"]: row for row in map_entries}
-    if len(maps) != 272 or set(maps) != ids:
+    if len(maps) != 273 or set(maps) != ids:
         raise ValueError("Original map ability evidence does not cover the catalog")
 
     shared_counts = Counter()

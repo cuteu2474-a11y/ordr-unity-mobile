@@ -85,7 +85,7 @@ class MapOnlyUncommonRosterTests(unittest.TestCase):
     def test_unknown_original_combat_and_nonexistent_web_page_stay_unknown(self):
         zombie = next(x for x in self.missing["characters"]
                       if x["catalogUnitId"] == "U-14")
-        self.assertEqual(self.missing["summary"]["charactersWithoutTooltipProfiles"], 72)
+        self.assertEqual(self.missing["summary"]["charactersWithoutTooltipProfiles"], 73)
         self.assertEqual(zombie["mapUnitRawcode"], "h00H")
         self.assertIsNone(zombie["webDexUrl"])
         self.assertEqual(zombie["originalAbilityRawcodesInMapOrder"],

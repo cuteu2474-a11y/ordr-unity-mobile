@@ -526,6 +526,92 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+
+        private sealed class RareNativePool : IOriginal323NativeUnitPoolRandom
+        {
+            private readonly int index;
+            public int Calls;
+            public RareNativePool(int selectedIndex) { index=selectedIndex; }
+            public int NextInclusive(int min,int max)
+            {
+                Calls++;
+                Assert.That(index,Is.InRange(min,max));
+                return index;
+            }
+        }
+        private sealed class RareEffectWorld : IOriginalWispSpawnPositionPort,
+            IOriginalWispBonusAbilityPort
+        {
+            public bool ApproveBonus;
+            public int AbilityCalls;
+            public bool TryGetPosition(string source,out double x,out double y)
+            {
+                x=-3776;y=4480;
+                return source==WispResourceIds.Rare;
+            }
+            public bool TryApplyOriginalAbility(long instanceId,string ability)
+            {
+                AbilityCalls++;
+                return ApproveBonus && instanceId>0 && ability=="A0YE";
+            }
+        }
+
+        [Test]
+        public void RareWispSpecialGaimonGrantsOneRealUnitWithoutA0ye()
+        {
+            var game=Create();
+            var branch=new Rolls(100);
+            var native=new RareNativePool(7);
+            var effect=new RareEffectWorld();
+            var source=new Original323AutomaticUncommonWisps(
+                Data("original-2323C-wisp-pools.json"),branch,native,effect,effect);
+            game.Economy.Wallet.Grant(new ResourceBundle().Add(WispResourceIds.Rare,1));
+            using(var wisps=new MobileWispService(game.Economy.Wallet,source,
+                new OriginalWispCombatRewardWorld(game.Combat,game.Fusion,source,source)))
+            {
+                Assert.AreEqual(1,wisps.FlushAutomatic());
+                Assert.AreEqual(1,game.Combat.CharacterCount);
+                var unit=game.Combat.MobileUnitSnapshot().Single();
+                Assert.AreEqual(SpecialGradeMobilePolicy.Gaimon,unit.Unit.Id);
+                Assert.AreEqual(-3776,unit.Position.X);
+                Assert.AreEqual(4480,unit.Position.Y);
+                Assert.AreEqual(0,wisps.Balance(WispResourceIds.Rare));
+                Assert.AreEqual(0,effect.AbilityCalls);
+                Assert.AreEqual(1,branch.Calls);
+                Assert.AreEqual(1,native.Calls);
+            }
+        }
+
+        [Test]
+        public void RareWispFailedA0yePreservesOriginalRollAndWalletForRetry()
+        {
+            var game=Create();
+            var branch=new Rolls(99);
+            var native=new RareNativePool(0);
+            var effect=new RareEffectWorld {ApproveBonus=false};
+            var source=new Original323AutomaticUncommonWisps(
+                Data("original-2323C-wisp-pools.json"),branch,native,effect,effect);
+            game.Economy.Wallet.Grant(new ResourceBundle().Add(WispResourceIds.Rare,1));
+            using(var wisps=new MobileWispService(game.Economy.Wallet,source,
+                new OriginalWispCombatRewardWorld(game.Combat,game.Fusion,source,source)))
+            {
+                Assert.Throws<InvalidOperationException>(()=>wisps.FlushAutomatic());
+                Assert.AreEqual(0,game.Combat.CharacterCount);
+                Assert.AreEqual(1,wisps.Balance(WispResourceIds.Rare));
+                Assert.AreEqual(1,branch.Calls);
+                Assert.AreEqual(1,native.Calls);
+                effect.ApproveBonus=true;
+                Assert.AreEqual(1,wisps.FlushAutomatic());
+                Assert.AreEqual(1,game.Combat.CharacterCount);
+                Assert.AreEqual("R-01",game.Combat.MobileUnitSnapshot().Single().Unit.Id);
+                Assert.AreEqual(0,wisps.Balance(WispResourceIds.Rare));
+                Assert.AreEqual(1,branch.Calls,
+                    "실패 후 원본 희귀위습 보상을 다시 뽑으면 안 됩니다.");
+                Assert.AreEqual(1,native.Calls);
+                Assert.AreEqual(2,effect.AbilityCalls);
+            }
+        }
+
         [Test]
         public void RareFusionUsesActualCasterPositionAndNeverAuthorizesLegendaryRecipes()
         {
