@@ -1,0 +1,8 @@
+{
+  "format": "ordr-practice-native-inheritance-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceBaseAbilityDataSha256": "ddc360800784f808219bbc2518b16b0f12413082aada2755cc00944adcc31cec",
+  "AHadFlatArmorMode": 0,
+  "safeForRetailVerifiedRuntime": false,
+  "scope": "Only inherited native armor-percentage mode. Does not approve target eligibility or stacking."
+}

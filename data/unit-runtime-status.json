@@ -1,0 +1,4422 @@
+{
+  "format": "ordr-unit-runtime-status-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "allUnitsComplete": false,
+  "summary": {
+    "catalogEntries": 272,
+    "objectBasicAttackModels": 270,
+    "modelEffectOwners": 112,
+    "connectedModelEffectDefinitions": 144,
+    "documentedSkillEntries": 554,
+    "documentedPassiveEntries": 295,
+    "fullyVerifiedUnits": 0
+  },
+  "limits": [
+    "The C# runtime export describes development model capability, not retail parity.",
+    "Object basic attack models omit unverified hero attributes/dynamic upgrades.",
+    "Identical aura duplicates collapse; unresolved mixed aura identities are deferred.",
+    "Movement uses the explicit practice reference model; native collisions/Arsk are unverified.",
+    "Skills in the tooltip inventory are not automatically executed."
+  ],
+  "entries": [
+    {
+      "catalogId": "C-01",
+      "name": "루피",
+      "grade": "흔함",
+      "originalRawcode": "h003",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "C-02",
+      "name": "조로",
+      "grade": "흔함",
+      "originalRawcode": "h002",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "C-03",
+      "name": "나미",
+      "grade": "흔함",
+      "originalRawcode": "h001",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "C-04",
+      "name": "우솝",
+      "grade": "흔함",
+      "originalRawcode": "h007",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "C-05",
+      "name": "상디",
+      "grade": "흔함",
+      "originalRawcode": "h004",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "C-06",
+      "name": "쵸파",
+      "grade": "흔함",
+      "originalRawcode": "h008",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "C-07",
+      "name": "버기",
+      "grade": "흔함",
+      "originalRawcode": "h005",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "C-08",
+      "name": "총병",
+      "grade": "흔함",
+      "originalRawcode": "h009",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "C-09",
+      "name": "칼병",
+      "grade": "흔함",
+      "originalRawcode": "h006",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-01",
+      "name": "로빈",
+      "grade": "안흔함",
+      "originalRawcode": "h00O",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "꽃꽃 열매 · 같은 전장 최대 3명 타격 (연습 대상 선택/동시 타격 모델)"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-02",
+      "name": "베포",
+      "grade": "안흔함",
+      "originalRawcode": "h00C",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-03",
+      "name": "브룩",
+      "grade": "안흔함",
+      "originalRawcode": "h00D",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "브룩 · 기절 · 객체 확률 10% · 일반 몬스터 / 보스 저항 검증 대기"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-04",
+      "name": "블루노",
+      "grade": "안흔함",
+      "originalRawcode": "h00M",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "블루노 · 크리티컬 · 객체 확률 15%"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-05",
+      "name": "에이스",
+      "grade": "안흔함",
+      "originalRawcode": "h00K",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-06",
+      "name": "이나즈마",
+      "grade": "안흔함",
+      "originalRawcode": "h00I",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-07",
+      "name": "저격왕",
+      "grade": "안흔함",
+      "originalRawcode": "h00N",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-08",
+      "name": "쵸파 럼블볼",
+      "grade": "안흔함",
+      "originalRawcode": "h00G",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-09",
+      "name": "타시기",
+      "grade": "안흔함",
+      "originalRawcode": "h00E",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-10",
+      "name": "페로나",
+      "grade": "안흔함",
+      "originalRawcode": "h00J",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-11",
+      "name": "프랑키",
+      "grade": "안흔함",
+      "originalRawcode": "h00L",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-12",
+      "name": "하찌",
+      "grade": "안흔함",
+      "originalRawcode": "h00F",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-13",
+      "name": "후쿠로",
+      "grade": "안흔함",
+      "originalRawcode": "h00A",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "후쿠로 · 크리티컬 · 객체 확률 15%"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "U-14",
+      "name": "좀비",
+      "grade": "안흔함",
+      "originalRawcode": "h00H",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-01",
+      "name": "X-드레이크",
+      "grade": "특별함",
+      "originalRawcode": "h01K",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-02",
+      "name": "갱 뱃지",
+      "grade": "특별함",
+      "originalRawcode": "h01C",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-03",
+      "name": "나미 크리마텍트",
+      "grade": "특별함",
+      "originalRawcode": "h00P",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-04",
+      "name": "로빈 오하라",
+      "grade": "특별함",
+      "originalRawcode": "h00S",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-05",
+      "name": "트라팔가 로우",
+      "grade": "특별함",
+      "originalRawcode": "h01H",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-06",
+      "name": "루치",
+      "grade": "특별함",
+      "originalRawcode": "h00R",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "루치 · 크리티컬 · 객체 확률 15%"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-07",
+      "name": "루피 기어세컨드",
+      "grade": "특별함",
+      "originalRawcode": "h00U",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-08",
+      "name": "마르코",
+      "grade": "특별함",
+      "originalRawcode": "h00T",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-09",
+      "name": "모리아",
+      "grade": "특별함",
+      "originalRawcode": "h00B",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-10",
+      "name": "바질호킨스",
+      "grade": "특별함",
+      "originalRawcode": "h016",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 3 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-11",
+      "name": "버기 마기탄",
+      "grade": "특별함",
+      "originalRawcode": "h015",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-12",
+      "name": "봉쿠레",
+      "grade": "특별함",
+      "originalRawcode": "h014",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-13",
+      "name": "상디 검은다리",
+      "grade": "특별함",
+      "originalRawcode": "h013",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-14",
+      "name": "스모커",
+      "grade": "특별함",
+      "originalRawcode": "h01F",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 5 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-15",
+      "name": "스쿼드",
+      "grade": "특별함",
+      "originalRawcode": "h012",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-16",
+      "name": "아론",
+      "grade": "특별함",
+      "originalRawcode": "h011",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-17",
+      "name": "압살롬",
+      "grade": "특별함",
+      "originalRawcode": "h010",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-18",
+      "name": "에넬",
+      "grade": "특별함",
+      "originalRawcode": "h00Q",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-19",
+      "name": "에이스 2번 대대장",
+      "grade": "특별함",
+      "originalRawcode": "h01J",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-20",
+      "name": "우솝 화염탄",
+      "grade": "특별함",
+      "originalRawcode": "h00Z",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-21",
+      "name": "이나즈마 혁명군",
+      "grade": "특별함",
+      "originalRawcode": "h00X",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "이나즈마 혁명군 · 크리티컬 · 객체 확률 70%"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-22",
+      "name": "조로 귀기",
+      "grade": "특별함",
+      "originalRawcode": "h00W",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-23",
+      "name": "징베",
+      "grade": "특별함",
+      "originalRawcode": "h018",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-24",
+      "name": "챠카",
+      "grade": "특별함",
+      "originalRawcode": "h019",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-25",
+      "name": "쵸파 가드포인트",
+      "grade": "특별함",
+      "originalRawcode": "h01D",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "아군 기본 공격력 증가(%) 7 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-26",
+      "name": "쵸파 두뇌강화",
+      "grade": "특별함",
+      "originalRawcode": "h01E",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 3 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-27",
+      "name": "캡틴 크로",
+      "grade": "특별함",
+      "originalRawcode": "h00V",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-28",
+      "name": "쿠마",
+      "grade": "특별함",
+      "originalRawcode": "h017",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-29",
+      "name": "크로커다일",
+      "grade": "특별함",
+      "originalRawcode": "h01A",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 5 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-30",
+      "name": "키드",
+      "grade": "특별함",
+      "originalRawcode": "h00Y",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 5 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-31",
+      "name": "킬러",
+      "grade": "특별함",
+      "originalRawcode": "h01B",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-32",
+      "name": "파이러츠 도킹5",
+      "grade": "특별함",
+      "originalRawcode": "h01G",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "S-33",
+      "name": "헤르메포",
+      "grade": "특별함",
+      "originalRawcode": "h01I",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "X-01",
+      "name": "모건",
+      "grade": "특수함",
+      "originalRawcode": "h05H",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "X-02",
+      "name": "베티",
+      "grade": "특수함",
+      "originalRawcode": "h08N",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "X-03",
+      "name": "블고리",
+      "grade": "특수함",
+      "originalRawcode": "h05Q",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "X-04",
+      "name": "아이스버그",
+      "grade": "특수함",
+      "originalRawcode": "h05O",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "X-05",
+      "name": "오타마",
+      "grade": "특수함",
+      "originalRawcode": "h05P",
+      "objectBasicAttackModel": false,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "평타 없는 지원 유닛: 전용 기능 연결 필요",
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "X-06",
+      "name": "페루",
+      "grade": "특수함",
+      "originalRawcode": "h05R",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "X-07",
+      "name": "폭시",
+      "grade": "특수함",
+      "originalRawcode": "h09T",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-01",
+      "name": "X-드레이크",
+      "grade": "희귀함",
+      "originalRawcode": "h09X",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 5 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-02",
+      "name": "거프",
+      "grade": "희귀함",
+      "originalRawcode": "h01Q",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-03",
+      "name": "검은수염",
+      "grade": "희귀함",
+      "originalRawcode": "h021",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-04",
+      "name": "도플라밍고",
+      "grade": "희귀함",
+      "originalRawcode": "h01L",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-05",
+      "name": "트라팔가 로우 죽음의 외과의사",
+      "grade": "희귀함",
+      "originalRawcode": "h02L",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-06",
+      "name": "루피 기어써드",
+      "grade": "희귀함",
+      "originalRawcode": "h01X",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-07",
+      "name": "류마",
+      "grade": "희귀함",
+      "originalRawcode": "h025",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-08",
+      "name": "마르코 불사조",
+      "grade": "희귀함",
+      "originalRawcode": "h022",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-09",
+      "name": "마젤란",
+      "grade": "희귀함",
+      "originalRawcode": "h01Z",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-10",
+      "name": "모몬가",
+      "grade": "희귀함",
+      "originalRawcode": "h01Y",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-11",
+      "name": "미호크",
+      "grade": "희귀함",
+      "originalRawcode": "h04H",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-12",
+      "name": "바르톨로메오",
+      "grade": "희귀함",
+      "originalRawcode": "h01W",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-13",
+      "name": "바제스",
+      "grade": "희귀함",
+      "originalRawcode": "h01V",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-14",
+      "name": "바질 호킨스 스트로맨",
+      "grade": "희귀함",
+      "originalRawcode": "h01U",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 10 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-15",
+      "name": "반더 데켄",
+      "grade": "희귀함",
+      "originalRawcode": "h01T",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-16",
+      "name": "베이비 5",
+      "grade": "희귀함",
+      "originalRawcode": "h02M",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-17",
+      "name": "벤 베크만",
+      "grade": "희귀함",
+      "originalRawcode": "h01S",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-18",
+      "name": "브룩 음악가",
+      "grade": "희귀함",
+      "originalRawcode": "h01N",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-19",
+      "name": "비비",
+      "grade": "희귀함",
+      "originalRawcode": "h01O",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-20",
+      "name": "사보",
+      "grade": "희귀함",
+      "originalRawcode": "h05L",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 10 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-21",
+      "name": "상디 디아블잠브",
+      "grade": "희귀함",
+      "originalRawcode": "h02I",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-22",
+      "name": "샹크스",
+      "grade": "희귀함",
+      "originalRawcode": "h029",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-23",
+      "name": "센토마루",
+      "grade": "희귀함",
+      "originalRawcode": "h028",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-24",
+      "name": "슈가",
+      "grade": "희귀함",
+      "originalRawcode": "h027",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-25",
+      "name": "시류",
+      "grade": "희귀함",
+      "originalRawcode": "h026",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-26",
+      "name": "아오키지",
+      "grade": "희귀함",
+      "originalRawcode": "h02B",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 10 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-27",
+      "name": "아카이누",
+      "grade": "희귀함",
+      "originalRawcode": "h01P",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-28",
+      "name": "오즈",
+      "grade": "희귀함",
+      "originalRawcode": "h020",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-29",
+      "name": "와이퍼",
+      "grade": "희귀함",
+      "originalRawcode": "h024",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-30",
+      "name": "우솝 보잉열도",
+      "grade": "희귀함",
+      "originalRawcode": "h02C",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-31",
+      "name": "이완코브",
+      "grade": "희귀함",
+      "originalRawcode": "h02A",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-32",
+      "name": "제프",
+      "grade": "희귀함",
+      "originalRawcode": "h02G",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-33",
+      "name": "조로 현상금 사냥꾼",
+      "grade": "희귀함",
+      "originalRawcode": "h02F",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-34",
+      "name": "죠즈",
+      "grade": "희귀함",
+      "originalRawcode": "h02E",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-35",
+      "name": "쵸파 혼포인트",
+      "grade": "희귀함",
+      "originalRawcode": "h02K",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-36",
+      "name": "카쿠",
+      "grade": "희귀함",
+      "originalRawcode": "h023",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-37",
+      "name": "캡틴 키드",
+      "grade": "희귀함",
+      "originalRawcode": "h02D",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 15 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-38",
+      "name": "크로커다일 Mr.0",
+      "grade": "희귀함",
+      "originalRawcode": "h02H",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 15 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-39",
+      "name": "키자루",
+      "grade": "희귀함",
+      "originalRawcode": "h01R",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-40",
+      "name": "킨에몬",
+      "grade": "희귀함",
+      "originalRawcode": "h02J",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-41",
+      "name": "페로나 홀로홀로",
+      "grade": "희귀함",
+      "originalRawcode": "h05K",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-42",
+      "name": "핸콕",
+      "grade": "희귀함",
+      "originalRawcode": "h01M",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-01",
+      "name": "검은수염",
+      "grade": "전설",
+      "originalRawcode": "h02U",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-02",
+      "name": "나미",
+      "grade": "전설",
+      "originalRawcode": "h02P",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-03",
+      "name": "네코마무시",
+      "grade": "전설",
+      "originalRawcode": "h09Z",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 32 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-04",
+      "name": "드래곤",
+      "grade": "전설",
+      "originalRawcode": "h02W",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 10 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 6,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-05",
+      "name": "라분",
+      "grade": "전설",
+      "originalRawcode": "h02Q",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-06",
+      "name": "레이쥬",
+      "grade": "전설",
+      "originalRawcode": "h033",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-07",
+      "name": "레일리",
+      "grade": "전설",
+      "originalRawcode": "h03A",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-08",
+      "name": "트라팔가 로우",
+      "grade": "전설",
+      "originalRawcode": "h03C",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-09",
+      "name": "루치",
+      "grade": "전설",
+      "originalRawcode": "h02R",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-10",
+      "name": "루피 나이트메어",
+      "grade": "전설",
+      "originalRawcode": "h02Y",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-11",
+      "name": "마르코 환수종",
+      "grade": "전설",
+      "originalRawcode": "h02T",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-12",
+      "name": "모리아",
+      "grade": "전설",
+      "originalRawcode": "h02N",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-13",
+      "name": "바르톨로메오",
+      "grade": "전설",
+      "originalRawcode": "h02Z",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 12 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-14",
+      "name": "브륄레",
+      "grade": "전설",
+      "originalRawcode": "h08S",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-15",
+      "name": "블랙마리아",
+      "grade": "전설",
+      "originalRawcode": "h02X",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "블랙마리아 · 기절 · 객체 확률 15% · 일반 몬스터 / 보스 저항 검증 대기"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-16",
+      "name": "상디",
+      "grade": "전설",
+      "originalRawcode": "h034",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-17",
+      "name": "샹크스",
+      "grade": "전설",
+      "originalRawcode": "h035",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-18",
+      "name": "센고쿠",
+      "grade": "전설",
+      "originalRawcode": "h036",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-19",
+      "name": "슈가",
+      "grade": "전설",
+      "originalRawcode": "h037",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-20",
+      "name": "스모커",
+      "grade": "전설",
+      "originalRawcode": "h02V",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 50 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-21",
+      "name": "시노부",
+      "grade": "전설",
+      "originalRawcode": "h042",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-22",
+      "name": "시저",
+      "grade": "전설",
+      "originalRawcode": "h038",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 30 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-23",
+      "name": "시키",
+      "grade": "전설",
+      "originalRawcode": "h039",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-24",
+      "name": "에이스",
+      "grade": "전설",
+      "originalRawcode": "h02O",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 33 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-25",
+      "name": "울티",
+      "grade": "전설",
+      "originalRawcode": "h03S",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "울티 · 크리티컬 · 객체 확률 33%",
+        "적 방어력 감소 27 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-26",
+      "name": "제파",
+      "grade": "전설",
+      "originalRawcode": "h03I",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-27",
+      "name": "조로",
+      "grade": "전설",
+      "originalRawcode": "h02S",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-28",
+      "name": "징베",
+      "grade": "전설",
+      "originalRawcode": "h03G",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-29",
+      "name": "쵸파 유력강화",
+      "grade": "전설",
+      "originalRawcode": "h03K",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 18 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-30",
+      "name": "카르가라",
+      "grade": "전설",
+      "originalRawcode": "h03F",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-31",
+      "name": "코비",
+      "grade": "전설",
+      "originalRawcode": "h03E",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-32",
+      "name": "쿠마 폭군",
+      "grade": "전설",
+      "originalRawcode": "h030",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-33",
+      "name": "크래커",
+      "grade": "전설",
+      "originalRawcode": "h03H",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-34",
+      "name": "킹",
+      "grade": "전설",
+      "originalRawcode": "h0AH",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 5 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-35",
+      "name": "토키",
+      "grade": "전설",
+      "originalRawcode": "h087",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-36",
+      "name": "핸콕",
+      "grade": "전설",
+      "originalRawcode": "h032",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-37",
+      "name": "후지토라",
+      "grade": "전설",
+      "originalRawcode": "h031",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-38",
+      "name": "흰수염",
+      "grade": "전설",
+      "originalRawcode": "h03B",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "L-39",
+      "name": "히바리",
+      "grade": "전설",
+      "originalRawcode": "h0CM",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 22 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-01",
+      "name": "검호",
+      "grade": "히든",
+      "originalRawcode": "h043",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-02",
+      "name": "레드포스호",
+      "grade": "히든",
+      "originalRawcode": "h03U",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 30 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-03",
+      "name": "레베카",
+      "grade": "히든",
+      "originalRawcode": "h03T",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 18 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-04",
+      "name": "료쿠규",
+      "grade": "히든",
+      "originalRawcode": "h03N",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-05",
+      "name": "류마",
+      "grade": "히든",
+      "originalRawcode": "h044",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-06",
+      "name": "모비딕호",
+      "grade": "히든",
+      "originalRawcode": "h03Q",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 0,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-07",
+      "name": "반더데켄",
+      "grade": "히든",
+      "originalRawcode": "h03R",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-08",
+      "name": "발라티에",
+      "grade": "히든",
+      "originalRawcode": "h03P",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-09",
+      "name": "방주맥심",
+      "grade": "히든",
+      "originalRawcode": "h03X",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-10",
+      "name": "베르고",
+      "grade": "히든",
+      "originalRawcode": "h03W",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "베르고 · 기절 · 객체 확률 20% · 일반 몬스터 / 보스 저항 검증 대기"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-11",
+      "name": "봉쿠레",
+      "grade": "히든",
+      "originalRawcode": "h03O",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 11 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-12",
+      "name": "사보",
+      "grade": "히든",
+      "originalRawcode": "h03M",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
+        "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-13",
+      "name": "스튜시",
+      "grade": "히든",
+      "originalRawcode": "h055",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-14",
+      "name": "시류",
+      "grade": "히든",
+      "originalRawcode": "h03J",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-15",
+      "name": "써니호",
+      "grade": "히든",
+      "originalRawcode": "h03L",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-16",
+      "name": "아오키지",
+      "grade": "히든",
+      "originalRawcode": "h041",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-17",
+      "name": "아카이누",
+      "grade": "히든",
+      "originalRawcode": "h03Z",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-18",
+      "name": "이완코브",
+      "grade": "히든",
+      "originalRawcode": "h03Y",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 11 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-19",
+      "name": "캐럿",
+      "grade": "히든",
+      "originalRawcode": "h07L",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-20",
+      "name": "키쿠노죠",
+      "grade": "히든",
+      "originalRawcode": "h046",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-21",
+      "name": "킬러",
+      "grade": "히든",
+      "originalRawcode": "h045",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 12 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "H-22",
+      "name": "피셔타이거",
+      "grade": "히든",
+      "originalRawcode": "h047",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "피셔타이거 · 기절 · 객체 확률 22% · 일반 몬스터 / 보스 저항 검증 대기",
+        "아군 기본 공격력 증가(%) 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "T-01",
+      "name": "도플라밍고",
+      "grade": "변화",
+      "originalRawcode": "h05S",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "T-02",
+      "name": "비비",
+      "grade": "변화",
+      "originalRawcode": "h05W",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 11 · 1단계 / 중첩 충돌 시 보류",
+        "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "T-03",
+      "name": "베이비 5",
+      "grade": "변화",
+      "originalRawcode": "h07N",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "T-04",
+      "name": "카쿠",
+      "grade": "변화",
+      "originalRawcode": "h0CK",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "T-05",
+      "name": "캐럿",
+      "grade": "변화",
+      "originalRawcode": "h07J",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LI-01",
+      "name": "레드필드",
+      "grade": "제한됨",
+      "originalRawcode": "h05G",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LI-02",
+      "name": "레베카",
+      "grade": "제한됨",
+      "originalRawcode": "h05I",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 38 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LI-03",
+      "name": "마르코",
+      "grade": "제한됨",
+      "originalRawcode": "h08O",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "마르코 · 크리티컬 · 객체 확률 15%",
+        "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LI-04",
+      "name": "시노부",
+      "grade": "제한됨",
+      "originalRawcode": "h084",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LI-05",
+      "name": "아인",
+      "grade": "제한됨",
+      "originalRawcode": "h040",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "아인 · 기절 · 객체 확률 25% · 일반 몬스터 / 보스 저항 검증 대기"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LI-06",
+      "name": "알비다",
+      "grade": "제한됨",
+      "originalRawcode": "h08Q",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "알비다 · 기절 · 객체 확률 100% · 일반 몬스터 / 보스 저항 검증 대기",
+        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LI-07",
+      "name": "에넬",
+      "grade": "제한됨",
+      "originalRawcode": "h05E",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LI-08",
+      "name": "카타쿠리",
+      "grade": "제한됨",
+      "originalRawcode": "h07I",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 30 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LI-09",
+      "name": "크로커다일",
+      "grade": "제한됨",
+      "originalRawcode": "h05F",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류",
+        "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LI-10",
+      "name": "킹",
+      "grade": "제한됨",
+      "originalRawcode": "h0AI",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "D-01",
+      "name": "블랙마리아",
+      "grade": "왜곡됨",
+      "originalRawcode": "h04U",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "블랙마리아 · 기절 · 객체 확률 15% · 일반 몬스터 / 보스 저항 검증 대기",
+        "적 방어력 감소 15 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 6,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "D-02",
+      "name": "코알라",
+      "grade": "왜곡됨",
+      "originalRawcode": "h03V",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "코알라 · 기절 · 객체 확률 50% · 일반 몬스터 / 보스 저항 검증 대기"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "D-03",
+      "name": "퀸",
+      "grade": "왜곡됨",
+      "originalRawcode": "h0CI",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "D-04",
+      "name": "페로나",
+      "grade": "왜곡됨",
+      "originalRawcode": "h048",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "D-05",
+      "name": "포트거스.D.에이스",
+      "grade": "왜곡됨",
+      "originalRawcode": "h05V",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 40 · 1단계 / 중첩 충돌 시 보류",
+        "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "D-06",
+      "name": "바제스",
+      "grade": "왜곡됨",
+      "originalRawcode": "h09V",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-01",
+      "name": "검은수염",
+      "grade": "초월함",
+      "originalRawcode": "H090",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-02",
+      "name": "나미",
+      "grade": "초월함",
+      "originalRawcode": "H08V",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-03",
+      "name": "도플라밍고",
+      "grade": "초월함",
+      "originalRawcode": "H09E",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-04",
+      "name": "로빈",
+      "grade": "초월함",
+      "originalRawcode": "H098",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 45 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-05",
+      "name": "트라팔가 로우",
+      "grade": "초월함",
+      "originalRawcode": "H096",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-06",
+      "name": "료쿠규",
+      "grade": "초월함",
+      "originalRawcode": "H0BL",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-07",
+      "name": "루치",
+      "grade": "초월함",
+      "originalRawcode": "H08W",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-08",
+      "name": "루피",
+      "grade": "초월함",
+      "originalRawcode": "H099",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "루피 · 크리티컬 · 객체 확률 18%"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-09",
+      "name": "바질호킨스",
+      "grade": "초월함",
+      "originalRawcode": "H094",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "바질호킨스 · 기절 · 객체 확률 25% · 일반 몬스터 / 보스 저항 검증 대기",
+        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 7,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-10",
+      "name": "브룩",
+      "grade": "초월함",
+      "originalRawcode": "H09I",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "브룩 · 기절 · 객체 확률 17.5% · 일반 몬스터 / 보스 저항 검증 대기",
+        "적 이동속도 감소(%) 5 · 1단계 / 중첩 충돌 시 보류",
+        "적 이동속도 감소(%) 15 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-11",
+      "name": "사보",
+      "grade": "초월함",
+      "originalRawcode": "H092",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "사보 · 크리티컬 · 객체 확률 15%",
+        "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류",
+        "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 5,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-12",
+      "name": "상디",
+      "grade": "초월함",
+      "originalRawcode": "H09H",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-13",
+      "name": "샹크스",
+      "grade": "초월함",
+      "originalRawcode": "H08Z",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-14",
+      "name": "스네이크맨",
+      "grade": "초월함",
+      "originalRawcode": "H0B2",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-15",
+      "name": "시라호시",
+      "grade": "초월함",
+      "originalRawcode": "H08U",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-16",
+      "name": "아오키지",
+      "grade": "초월함",
+      "originalRawcode": "H097",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 70 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-17",
+      "name": "아카이누",
+      "grade": "초월함",
+      "originalRawcode": "H095",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-18",
+      "name": "야마토",
+      "grade": "초월함",
+      "originalRawcode": "H0BD",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 6,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-19",
+      "name": "우솝",
+      "grade": "초월함",
+      "originalRawcode": "H09B",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 8 · 1단계 / 중첩 충돌 시 보류",
+        "적 방어력 감소 22 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-20",
+      "name": "조로",
+      "grade": "초월함",
+      "originalRawcode": "H09F",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 30 · 1단계 / 중첩 충돌 시 보류",
+        "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 5,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-21",
+      "name": "보니",
+      "grade": "초월함",
+      "originalRawcode": "H0BX",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 7,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-22",
+      "name": "징베",
+      "grade": "초월함",
+      "originalRawcode": "H09A",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "징베 · 기절 · 객체 확률 40% · 일반 몬스터 / 보스 저항 검증 대기"
+      ],
+      "documentedSkills": 5,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-23",
+      "name": "쵸파",
+      "grade": "초월함",
+      "originalRawcode": "H091",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 50 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-24",
+      "name": "코비",
+      "grade": "초월함",
+      "originalRawcode": "H0CO",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "코비 · 기절 · 객체 확률 100% · 일반 몬스터 / 보스 저항 검증 대기"
+      ],
+      "documentedSkills": 5,
+      "documentedPassives": 5,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-25",
+      "name": "키드",
+      "grade": "초월함",
+      "originalRawcode": "H0B4",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-26",
+      "name": "키자루",
+      "grade": "초월함",
+      "originalRawcode": "H0B5",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-27",
+      "name": "타시기",
+      "grade": "초월함",
+      "originalRawcode": "H05N",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-28",
+      "name": "프랑키",
+      "grade": "초월함",
+      "originalRawcode": "H08Y",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 6,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-29",
+      "name": "후지토라",
+      "grade": "초월함",
+      "originalRawcode": "H08X",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 55 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "TR-30",
+      "name": "베가펑크",
+      "grade": "초월함",
+      "originalRawcode": "H0AA",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 7,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-01",
+      "name": "니카(루피)",
+      "grade": "영원한",
+      "originalRawcode": "H0BK",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 6,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-02",
+      "name": "니카(스네이크)",
+      "grade": "영원한",
+      "originalRawcode": null,
+      "objectBasicAttackModel": false,
+      "connectedModelEffects": [],
+      "documentedSkills": 6,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원본 객체 미매칭",
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-03",
+      "name": "류마",
+      "grade": "영원한",
+      "originalRawcode": "h0CJ",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 7,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-04",
+      "name": "미호크",
+      "grade": "영원한",
+      "originalRawcode": "h058",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 7,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-05",
+      "name": "버기",
+      "grade": "영원한",
+      "originalRawcode": "h05A",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 30 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-06",
+      "name": "비비",
+      "grade": "영원한",
+      "originalRawcode": "h057",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 7,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-07",
+      "name": "에이스",
+      "grade": "영원한",
+      "originalRawcode": "h059",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 5,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-08",
+      "name": "오뎅",
+      "grade": "영원한",
+      "originalRawcode": "h08R",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "오뎅 · 기절 · 객체 확률 35% · 일반 몬스터 / 보스 저항 검증 대기",
+        "아군 기본 공격력 증가(%) 50 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 7,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-09",
+      "name": "우타",
+      "grade": "영원한",
+      "originalRawcode": "h067",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-10",
+      "name": "카번딧슈",
+      "grade": "영원한",
+      "originalRawcode": "h05B",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 5,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-11",
+      "name": "테조로",
+      "grade": "영원한",
+      "originalRawcode": "h06A",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "E-12",
+      "name": "핸콕",
+      "grade": "영원한",
+      "originalRawcode": "h05C",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 6,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-01",
+      "name": "거프",
+      "grade": "불멸의",
+      "originalRawcode": "h04C",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-02",
+      "name": "드래곤",
+      "grade": "불멸의",
+      "originalRawcode": "h04D",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-03",
+      "name": "레일리",
+      "grade": "불멸의",
+      "originalRawcode": "h049",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 6,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-04",
+      "name": "로져",
+      "grade": "불멸의",
+      "originalRawcode": "h04J",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 60 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 60 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 5,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-05",
+      "name": "불릿",
+      "grade": "불멸의",
+      "originalRawcode": "h081",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-06",
+      "name": "빅맘",
+      "grade": "불멸의",
+      "originalRawcode": "h04Q",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "빅맘 · 기절 · 객체 확률 20% · 일반 몬스터 / 보스 저항 검증 대기",
+        "적 이동속도 감소(%) 70 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 5,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-07",
+      "name": "센고쿠",
+      "grade": "불멸의",
+      "originalRawcode": "h04E",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "아군 기본 공격력 증가(%) 22 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-08",
+      "name": "스코퍼가반",
+      "grade": "불멸의",
+      "originalRawcode": "h04F",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 6,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-09",
+      "name": "시키",
+      "grade": "불멸의",
+      "originalRawcode": "h04B",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 6,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-10",
+      "name": "제트",
+      "grade": "불멸의",
+      "originalRawcode": "h04G",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-11",
+      "name": "카이도",
+      "grade": "불멸의",
+      "originalRawcode": "h07M",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "카이도 · 기절 · 객체 확률 100% · 일반 몬스터 / 보스 저항 검증 대기"
+      ],
+      "documentedSkills": 6,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "I-12",
+      "name": "흰수염",
+      "grade": "불멸의",
+      "originalRawcode": "h04A",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 45 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "SR-01",
+      "name": "S-스네이크",
+      "grade": "세라핌",
+      "originalRawcode": "h09Y",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "SR-02",
+      "name": "S-호크",
+      "grade": "세라핌",
+      "originalRawcode": "h0A3",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "SR-03",
+      "name": "S-샤크",
+      "grade": "세라핌",
+      "originalRawcode": "h0A0",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 2,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "SR-04",
+      "name": "S-베어",
+      "grade": "세라핌",
+      "originalRawcode": "h0A1",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-01",
+      "name": "K",
+      "grade": "랜덤",
+      "originalRawcode": "h06U",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-02",
+      "name": "나루토",
+      "grade": "랜덤",
+      "originalRawcode": "h06V",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-03",
+      "name": "메구밍",
+      "grade": "랜덤",
+      "originalRawcode": "h065",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-04",
+      "name": "센토 이스즈",
+      "grade": "랜덤",
+      "originalRawcode": "h06X",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-05",
+      "name": "야가미 라이토",
+      "grade": "랜덤",
+      "originalRawcode": "h073",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-06",
+      "name": "엘리자베스",
+      "grade": "랜덤",
+      "originalRawcode": "h06Z",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-07",
+      "name": "옌",
+      "grade": "랜덤",
+      "originalRawcode": "h09K",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-08",
+      "name": "요츠바",
+      "grade": "랜덤",
+      "originalRawcode": "h06W",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-09",
+      "name": "이사야마 요미",
+      "grade": "랜덤",
+      "originalRawcode": "h070",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "이사야마 요미 · 크리티컬 · 객체 확률 14%",
+        "적 방어력 감소 15 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 1,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-10",
+      "name": "이치의 율자",
+      "grade": "랜덤",
+      "originalRawcode": "h09L",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-11",
+      "name": "토우마",
+      "grade": "랜덤",
+      "originalRawcode": "h06Y",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-12",
+      "name": "이치고",
+      "grade": "랜덤",
+      "originalRawcode": "h071",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-13",
+      "name": "페이몬",
+      "grade": "랜덤",
+      "originalRawcode": "h06T",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 2,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "RN-14",
+      "name": "하네카와 츠바사",
+      "grade": "랜덤",
+      "originalRawcode": "h072",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 1,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-01",
+      "name": "고죠 사토루",
+      "grade": "신비함",
+      "originalRawcode": "h09M",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-02",
+      "name": "네즈코",
+      "grade": "신비함",
+      "originalRawcode": "h0BF",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "네즈코 · 기절 · 객체 확률 100% · 일반 몬스터 / 보스 저항 검증 대기"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-03",
+      "name": "료우기 시키",
+      "grade": "신비함",
+      "originalRawcode": "h0A2",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 44 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 5,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-04",
+      "name": "미나토",
+      "grade": "신비함",
+      "originalRawcode": "h09W",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 3,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-05",
+      "name": "바쿠야",
+      "grade": "신비함",
+      "originalRawcode": "h08I",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-06",
+      "name": "부릉냐",
+      "grade": "신비함",
+      "originalRawcode": "h09N",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-07",
+      "name": "샌즈",
+      "grade": "신비함",
+      "originalRawcode": "h083",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
+        "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-08",
+      "name": "아냐 포저",
+      "grade": "신비함",
+      "originalRawcode": "h08M",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 7,
+      "documentedPassives": 4,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-09",
+      "name": "야쿠모 유카리",
+      "grade": "신비함",
+      "originalRawcode": "h0A6",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 45 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 3,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-10",
+      "name": "콘파쿠 요우무",
+      "grade": "신비함",
+      "originalRawcode": "h0CC",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "documentedSkills": 5,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-11",
+      "name": "쿠죠 죠타로",
+      "grade": "신비함",
+      "originalRawcode": "h09R",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "쿠죠 죠타로 · 기절 · 객체 확률 30% · 일반 몬스터 / 보스 저항 검증 대기",
+        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류",
+        "아군 기본 공격력 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 5,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-12",
+      "name": "타츠마키",
+      "grade": "신비함",
+      "originalRawcode": "h0BC",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 50 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 4,
+      "documentedPassives": 2,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "MY-13",
+      "name": "히그마",
+      "grade": "신비함",
+      "originalRawcode": "h0AC",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [
+        "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
+      ],
+      "documentedSkills": 3,
+      "documentedPassives": 1,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    }
+  ]
+}

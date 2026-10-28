@@ -2029,6 +2029,10 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("원본 객체가 로드된 새 월드에서만 구성하세요.");
             var random = new SeededNonOriginalProcRandom(seed);
             sourceModelDamage = new SourceModelBasicCombatRules(MapBaseStats, random);
+            if (OriginalNativePassives != null && OriginalCombinedAuras != null)
+                sourceModelDamage.ConfigureUnitEffects(new SourceModelUnitEffects(
+                    OriginalNativePassives, OriginalCombinedAuras, random,
+                    Resources.Load<TextAsset>("OrdrData/practice-native-inherited-defaults")?.text));
             ConfigureRuntime(sourceModelDamage, sourceModelDamage, random);
             Debug.LogWarning("ORDR 유닛 준비: 전투는 명시적인 개발용 연습 시작 전까지 비활성입니다.");
         }

@@ -17,6 +17,7 @@ namespace Ordr.Mobile.Editor
         private static readonly string[] DataFiles =
         {
             "mobile-practice-battle-model.json",
+            "practice-native-inherited-defaults.json",
             "units.json",
             "character-skill-profiles.json",
             "original-stat-evidence.json",
@@ -44,6 +45,7 @@ namespace Ordr.Mobile.Editor
         private static readonly string[] RequiredRuntimeData =
         {
             "mobile-practice-battle-model.json",
+            "practice-native-inherited-defaults.json",
             "units.json",
             "character-skill-profiles.json",
             "original-2323C-map-base-stats.json",

@@ -1,0 +1,125 @@
+using System;
+using System.Collections.Generic;
+using Ordr.Mobile.Data;
+
+namespace Ordr.Mobile.Combat
+{
+    // Development model only. Never supplies a retail hit/target/rank witness.
+    // All values come from the existing source-audited object catalogs.
+    public sealed class SourceModelUnitEffects
+    {
+        private readonly Original323NativePassiveCatalog passives;
+        private readonly IOriginal323AuraCatalog auras;
+        private readonly ICombatProcRandom random;
+        private readonly Dictionary<string, OriginalNativePassive> pending =
+            new Dictionary<string, OriginalNativePassive>(StringComparer.Ordinal);
+        private readonly HashSet<string> practiceTargets = new HashSet<string>(StringComparer.Ordinal);
+        internal void RegisterPracticeTarget(string id) { practiceTargets.Add(id); }
+        internal void ForgetPracticeTarget(string id) { practiceTargets.Remove(id); }
+        internal bool IsPracticeTarget(string id) => practiceTargets.Contains(id);
+        private readonly bool sourceFlatArmorMode;
+        public int DeferredAuraGroups { get; internal set; }
+        public SourceModelUnitEffects(Original323NativePassiveCatalog nativePassives,
+            IOriginal323AuraCatalog sourceAuras, ICombatProcRandom procRandom, string inheritedDefaultsJson = null)
+        {
+            passives = nativePassives ?? throw new ArgumentNullException(nameof(nativePassives));
+            auras = sourceAuras ?? throw new ArgumentNullException(nameof(sourceAuras));
+            random = procRandom ?? throw new ArgumentNullException(nameof(procRandom));
+            if (inheritedDefaultsJson != null)
+            {
+                var root = OrdrJson.Object(OrdrJson.Parse(inheritedDefaultsJson), "native inheritance");
+                if (OrdrJson.RequiredString(root, "format") != "ordr-practice-native-inheritance-v1" ||
+                    OrdrJson.RequiredString(root, "sourceW3xSha256") != Original323UncommonAbilityCatalog.SourceW3xSha256 ||
+                    OrdrJson.RequiredString(root, "sourceBaseAbilityDataSha256") !=
+                        "ddc360800784f808219bbc2518b16b0f12413082aada2755cc00944adcc31cec" ||
+                    OrdrJson.Number(root, "AHadFlatArmorMode") != 0 ||
+                    !Equals(OrdrJson.Value(root, "safeForRetailVerifiedRuntime"), false))
+                    throw new FormatException("네이티브 상속 필드 출처 불일치");
+                sourceFlatArmorMode = true;
+            }
+        }
+        public OriginalNativePassive PassiveFor(string rawcode) => passives.ForRawcode(rawcode);
+        public IReadOnlyList<Original323SpecialAura> AurasFor(string id) => auras.FindAll(id);
+        public IReadOnlyList<string> Describe(string id, string rawcode)
+        {
+            var result = new List<string>();
+            var passive = PassiveFor(rawcode);
+            if (passive != null) result.Add(passive.Name + " · 객체 확률 " +
+                (passive.ChancePerMillion / 10000.0).ToString("0.####") + "%" +
+                (passive.Kind == OriginalNativePassiveKind.Stun ? " · 일반 몬스터 / 보스 저항 검증 대기" : ""));
+            if (id == "U-01") result.Add("꽃꽃 열매 · 같은 전장 최대 3명 타격 (연습 대상 선택/동시 타격 모델)");
+            foreach (var aura in AurasFor(id))
+                if (IsSupportedAura(aura)) result.Add(AuraName(aura.Type) + " " +
+                    aura.Amount.ToString("0.####") + " · 1단계 / 중첩 충돌 시 보류");
+            return result.AsReadOnly();
+        }
+        public static string AuraName(CombatEffectType type)
+        {
+            switch (type)
+            {
+                case CombatEffectType.ArmorReduction: return "적 방어력 감소";
+                case CombatEffectType.MovementSlowPercent: return "적 이동속도 감소(%)";
+                case CombatEffectType.AttackPowerBuff: return "아군 기본 공격력 증가(%)";
+                default: return type.ToString();
+            }
+        }
+        internal bool IsSupportedAura(Original323SpecialAura aura)
+        {
+            if (aura.Level != 1) return false;
+            if (!aura.TargetsAllies)
+            {
+                bool air = false, enemy = false;
+                foreach (string token in aura.TargetMask.Split(','))
+                {
+                    if (token == "air") air = true;
+                    if (token == "enemies") enemy = true;
+                    if (token != "air" && token != "ground" && token != "enemies" && token != "neutral") return false;
+                }
+                if (!air || !enemy) return false;
+            } // Dynamic rank upgrades are NOT assumed.
+            if (aura.Type == CombatEffectType.ArmorReduction)
+                return aura.RawArmorPercentageMode.HasValue ? aura.RawArmorPercentageMode.Value == 0 : sourceFlatArmorMode;
+            return aura.Type == CombatEffectType.MovementSlowPercent || aura.Type == CombatEffectType.AttackPowerBuff;
+        }
+        internal double BeforeBasicHit(BasicDamageRequest request, CombatEnemy target, double raw)
+        {
+            string key = request.UnitInstanceId + ":" + target.Id;
+            pending.Remove(key);
+            var passive = PassiveFor(request.UnitRawCode);
+            if (!practiceTargets.Contains(target.Id) || passive == null || (target.Defenses.Kind != CharacterEnemyKind.Line &&
+                target.Defenses.Kind != CharacterEnemyKind.Boss)) return raw;
+            // First-twenty-round practice targets are the source air objects.
+            // Boss Arsk/JASS resistance has no approved reduction equation;
+            // model stuns therefore only affect ordinary line monsters.
+            if (passive.Kind == OriginalNativePassiveKind.Stun &&
+                target.Defenses.Kind != CharacterEnemyKind.Line) return raw;
+            bool air = false;
+            foreach (string token in passive.OriginalTargetMask.Split(',')) if (token == "air") air = true;
+            if (!air) return raw;
+            int roll = random.Next(1000000);
+            if (roll < 0 || roll >= 1000000) throw new InvalidOperationException("패시브 난수 범위 오류");
+            if (roll >= passive.ChancePerMillion) return raw;
+            pending[key] = passive;
+            return passive.Kind == OriginalNativePassiveKind.Critical ? raw * passive.CriticalMultiplier : raw;
+        }
+        internal OriginalNativePassive Take(string actor, string target)
+        {
+            string key = actor + ":" + target;
+            OriginalNativePassive skill;
+            pending.TryGetValue(key, out skill);
+            pending.Remove(key);
+            return skill;
+        }
+        internal static double ResolveSingleAura(IReadOnlyList<CombatEffect> effects, CombatEffectType type)
+        {
+            // Only one distinct source aura identity is admitted per type.
+            // Duplicate identical casters do not stack. Mixed identities were
+            // filtered out before emission, rather than guessing sum/max.
+            double value = 0;
+            foreach (var effect in effects)
+                if (effect.Type == type && effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal))
+                    value = effect.Amount;
+            return value;
+        }
+    }
+}

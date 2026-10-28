@@ -126,6 +126,7 @@ namespace Ordr.Mobile.Combat
         private readonly Action roundStarted;
         private readonly List<VerifiedWavePlan> plans = new List<VerifiedWavePlan>();
         private readonly Dictionary<string, double> bornAt = new Dictionary<string, double>();
+        private readonly Dictionary<string, double> distanceTravelled = new Dictionary<string, double>();
         private readonly HashSet<string> rewarded = new HashSet<string>();
         private double roundStart;
         private int roundStartingDefeated;
@@ -175,6 +176,7 @@ namespace Ordr.Mobile.Combat
                 combat.Game.CurrentWave != 0 || !combat.UsesSourceModelBasicAttacks)
                 throw new InvalidOperationException("유닛 준비 상태에서 연습 전투를 시작하세요.");
             waves.VerifiedMonsterDefeated += RewardActualDeath;
+            combat.SourceModelTimeAdvancing += MoveLivingMonsters;
             Started = true;
             BeginRound(1);
         }
@@ -185,7 +187,11 @@ namespace Ordr.Mobile.Combat
             roundStartingDefeated = combat.Game.DefeatedEnemies;
             roundStartingGold = GoldAwarded;
             var plan = plans[wave - 1];
-            foreach (var spawn in plan.Spawns) bornAt.Add(spawn.EnemyId, roundStart + spawn.AtSeconds);
+            foreach (var spawn in plan.Spawns)
+            {
+                bornAt.Add(spawn.EnemyId, roundStart + spawn.AtSeconds);
+                damage.UnitEffects?.RegisterPracticeTarget(spawn.EnemyId);
+            }
             waves.Begin(combat, plan);
             if (wave > 1)
             {
@@ -206,7 +212,6 @@ namespace Ordr.Mobile.Combat
                 double step = Math.Min(left, SecondsRemaining > 0 ? Math.Min(0.1, SecondsRemaining) : 0.1);
                 if (step <= 0) throw new InvalidOperationException("연습 라운드 시간이 진행되지 않습니다.");
                 events.AddRange(waves.Step(combat, step));
-                MoveLivingMonsters();
                 left = Math.Max(0, left - step);
                 if (combat.Game.AliveEnemies >= catalog.EnemyLimit)
                 {
@@ -238,7 +243,7 @@ namespace Ordr.Mobile.Combat
             BeginRound(wave + 1);
             return false;
         }
-        private void MoveLivingMonsters()
+        private void MoveLivingMonsters(double elapsed)
         {
             foreach (var enemy in combat.MobileEnemySnapshot())
             {
@@ -246,11 +251,22 @@ namespace Ordr.Mobile.Combat
                 double birth;
                 if (!waves.TryGetLivingMonsterSpawnWave(enemy.Id, out wave) || !bornAt.TryGetValue(enemy.Id, out birth))
                     throw new InvalidOperationException("연습 몬스터 출현 이력이 없습니다.");
-                double age = Math.Max(0, combat.Time - birth);
-                var point = catalog.Position(age * catalog.GetRound(wave).MovementSpeed);
+                var status = combat.StatusOf(enemy.Id);
+                double active = Math.Max(0, elapsed - Math.Min(elapsed, status.RemainingStunSeconds));
+                double slow = SourceModelUnitEffects.ResolveSingleAura(status.Snapshot(), CombatEffectType.MovementSlowPercent);
+                double speed = catalog.GetRound(wave).MovementSpeed;
+                // Explicit reference movement model. Native acceleration and
+                // collision/Arsk remain outside the retail approval boundary.
+                speed = Math.Max(Original323AuraCommonRules.MapMinimumUnitSpeed,
+                    Math.Min(Original323AuraCommonRules.MapMaximumUnitSpeed, speed * (1 - slow / 100.0)));
+                double travelled;
+                distanceTravelled.TryGetValue(enemy.Id, out travelled);
+                travelled += active * speed;
+                distanceTravelled[enemy.Id] = travelled;
+                var point = catalog.Position(travelled);
                 // A completed lap remains a living enemy. No invented leak,
                 // kill, reward, or player-life reduction at the route end.
-                combat.TryMoveEnemy(enemy.Id, point.X, point.Y, 0);
+                combat.MoveSourceModelEnemy(enemy.Id, point.X, point.Y);
             }
         }
         private void RewardActualDeath(int spawnWave, string id)
@@ -265,6 +281,8 @@ namespace Ordr.Mobile.Combat
             if (economy.Wallet.TryGrantOnce("practice-death:" + spawnWave + ":" + id, reward))
                 GoldAwarded = checked(GoldAwarded + amount);
             damage.ForgetEnemy(id);
+            distanceTravelled.Remove(id);
+            damage.UnitEffects?.ForgetPracticeTarget(id);
         }
         private void RecordRound()
         {
@@ -281,6 +299,10 @@ namespace Ordr.Mobile.Combat
             ResultMessage = message;
             combat.Game.Finish(won);
         }
-        public void Dispose() { waves.VerifiedMonsterDefeated -= RewardActualDeath; }
+        public void Dispose()
+        {
+            waves.VerifiedMonsterDefeated -= RewardActualDeath;
+            combat.SourceModelTimeAdvancing -= MoveLivingMonsters;
+        }
     }
 }

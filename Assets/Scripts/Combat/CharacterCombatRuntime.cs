@@ -51,6 +51,8 @@ namespace Ordr.Mobile.Combat
         // A rollback only removes the staged output, never recreates inputs.
         private OriginalFusionUnitSwap activeOriginalFusionSwap;
         private bool internalOriginalFusionMutation;
+        // Legacy name: also guards the explicitly modeled native-unit effects.
+        // It never grants original/retail verification to this runtime.
         public bool UsesSourceModelBasicAttacks { get; private set; }
 
         public void ConfigureSourceModelBasicAttacks(SourceModelBasicCombatRules practice)
@@ -60,6 +62,7 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("연습 전투는 첫 라운드 전에만 연결할 수 있습니다.");
             UsesSourceModelBasicAttacks = true;
             verifiedAttackProvider = practice;
+            ConfigureSourceModelUnitEffects(practice);
         }
 
         public sealed class OriginalFusionUnitSwap : IDisposable
@@ -1361,6 +1364,7 @@ namespace Ordr.Mobile.Combat
                 (id, enemy) => characters.ContainsKey(id) &&
                     CanAttackInThisLane(characters[id], enemy));
             RefreshOriginalSpecialAuras();
+            RefreshSourceModelAuras();
         }
 
         // 다중 타격/지속 피해 실행 시각은 원작 출처를 가진 공급자만 연결한다.
@@ -2304,6 +2308,7 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentOutOfRangeException(nameof(seconds));
             effectExecutor.Advance(seconds, elapsed =>
             {
+                if (UsesSourceModelBasicAttacks) SourceModelTimeAdvancing?.Invoke(elapsed);
                 attackPipeline.Advance(elapsed);
                 foreach (var unit in characters.Values)
                     unit.Abilities.Advance(elapsed);
@@ -2523,6 +2528,7 @@ namespace Ordr.Mobile.Combat
                     events.Add(new CharacterCombatEvent(
                         CharacterCombatEventType.EnemyDefeated,
                         InstanceKey(id), primary.Id, null, "basic", 0));
+                if (UsesSourceModelBasicAttacks) CompleteSourceModelHit(unit, hit, primary);
                 // Native uncommon procs were rolled only after a verified hit
                 // and only for fully approved effects. No web tooltip required.
                 if (!UsesSourceModelBasicAttacks)

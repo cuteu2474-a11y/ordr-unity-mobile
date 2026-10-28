@@ -7,7 +7,7 @@ namespace Ordr.Mobile.Combat
     // Explicit development model. Does NOT implement a native-hit witness,
     // live monster approval, retail quantizer, or verified skill resolver.
     // The runtime's legacy damage interface is reused without granting retail
-    // verification to this world. Only source object basic attacks are enabled.
+    // verification to this world. Source-object effects use a separate model catalog.
     public sealed class SourceModelBasicCombatRules : IOriginalDamageResolver,
         IVerifiedCharacterSkillDamageResolver, IOriginalVerifiedUnitAttackProvider
     {
@@ -19,6 +19,12 @@ namespace Ordr.Mobile.Combat
             new Dictionary<string, OriginalMapCommonNativeAttackEvidence>();
         private readonly Dictionary<string, double> fractions = new Dictionary<string, double>();
         public bool Enabled { get; private set; }
+        public SourceModelUnitEffects UnitEffects { get; private set; }
+        public void ConfigureUnitEffects(SourceModelUnitEffects effects)
+        {
+            if (Enabled || UnitEffects != null) throw new InvalidOperationException("연습 효과는 시작 전에 연결하세요.");
+            UnitEffects = effects ?? throw new ArgumentNullException(nameof(effects));
+        }
 
         public SourceModelBasicCombatRules(OriginalMapBaseStatCatalog source, ICombatProcRandom dice)
         {
@@ -36,7 +42,7 @@ namespace Ordr.Mobile.Combat
             out OriginalVerifiedAttackBinding binding)
         {
             binding = null;
-            if (!Enabled || unit == null || (unit.Grade != "흔함" && unit.Grade != "안흔함" && unit.Grade != "특별함" && unit.Grade != "희귀함" && unit.Grade != "전설")) return false;
+            if (!Enabled || unit == null) return false;
             var raw = objects.Find(unit.Id);
             var source = attacks.Find(unit.Id);
             if (raw == null || source == null || raw.Attack1 == null ||
@@ -58,11 +64,18 @@ namespace Ordr.Mobile.Combat
                 !target.Defenses.BaseArmor.HasValue ||
                 !Ordr323OriginalDamageRules.TryReadArmorType(target.Defenses.WarcraftArmorType, out armor))
                 throw new NotSupportedException("출처가 있는 공격·적 방어 자료가 필요합니다.");
-            if (request.AttackerEffects.Count != 0)
-                throw new NotSupportedException("연습 전투는 기본 공격만 지원합니다.");
+            foreach (var effect in request.AttackerEffects)
+                if (effect.Type != CombatEffectType.AttackPowerBuff ||
+                    !effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal))
+                    throw new NotSupportedException("연습의 출처가 확인되지 않은 공격 효과입니다.");
+            double rawDamage = attack.RollObjectBaseDamage(random);
+            double power = SourceModelUnitEffects.ResolveSingleAura(request.AttackerEffects, CombatEffectType.AttackPowerBuff);
+            rawDamage *= 1 + power / 100.0;
+            if (UnitEffects != null) rawDamage = UnitEffects.BeforeBasicHit(request, target, rawDamage);
+            double reduction = SourceModelUnitEffects.ResolveSingleAura(target.Status.Snapshot(), CombatEffectType.ArmorReduction);
             double damage = Ordr323MapDamageMath.ApplyVerifiedFactors(
-                attack.RollObjectBaseDamage(random), attack.NativeAttackType, armor,
-                true, true, target.Defenses.BaseArmor.Value, false, 0, 1);
+                rawDamage, attack.NativeAttackType, armor,
+                true, true, target.Defenses.BaseArmor.Value - reduction, false, 0, 1);
             // Preserve fractional damage across all attackers hitting the same
             // target. This is an explicit practice representation policy, NOT
             // a claim of Warcraft's floating-point HP rounding equivalence.

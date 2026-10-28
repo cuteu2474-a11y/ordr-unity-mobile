@@ -369,6 +369,8 @@ namespace Ordr.Mobile.Unity
                 foreach (var enemy in Combat.MobileEnemySnapshot())
                     if (enemy.Kind == CharacterEnemyKind.Boss)
                         GUILayout.Label("보스 HP " + enemy.Health + " / " + enemy.MaxHealth);
+                if (Combat.PracticeUnitEffects != null && Combat.PracticeUnitEffects.DeferredAuraGroups > 0)
+                    GUILayout.Label("오라 중첩 확인 대기 " + Combat.PracticeUnitEffects.DeferredAuraGroups + "건");
                 if (playing && game.AliveEnemies >= practice.EnemyLimit * 0.8)
                     GUILayout.Label("적이 누적되고 있습니다. 소환과 조합으로 전력을 보강하세요.");
             }
@@ -591,9 +593,19 @@ namespace Ordr.Mobile.Unity
             GUILayout.BeginVertical(GUI.skin.box);
             GUILayout.Label(detail.DisplayName + " · " + detail.Grade);
             if (controller.PracticeBattle != null)
-                GUILayout.Label(detail.Grade == "흔함" || detail.Grade == "안흔함" || detail.Grade == "특별함" || detail.Grade == "희귀함" || detail.Grade == "전설"
-                    ? "연습 전투: 원본 객체의 기본 공격 사용 · 스킬/오라 미연결"
-                    : "연습 전투: 이 등급의 전투 연결 대기");
+            {
+                var native = controller.MapBaseStats.Find(detail.Unit.Id);
+                GUILayout.Label(native?.Attack1 != null
+                    ? "연습: 객체 기본 공격 · 아래 연결 효과 사용 / 전체 스킬 미완성"
+                    : "기본 공격 없음 또는 원본 객체 연결 대기");
+                var effects = Combat.PracticeUnitEffects;
+                if (effects != null)
+                {
+                    var connected = effects.Describe(detail.Unit.Id, native?.OriginalRawcode);
+                    foreach (string text in connected) GUILayout.Label("연습 연결 · " + text);
+                    if (connected.Count == 0) GUILayout.Label("추가 효과 연결 없음 · 도감 설명은 실행 완료를 의미하지 않습니다.");
+                }
+            }
             if (detail.Profile == null && detail.Unit.Id == "C-01")
                 GUILayout.Label("흔함 루피: 추가 공격 스킬 없음 (원본 JASS 등록 능력 기준)");
             else if (detail.Profile == null)

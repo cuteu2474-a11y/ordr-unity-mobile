@@ -118,6 +118,20 @@ namespace Ordr.Mobile.Combat
             return false;
         }
 
+        // For the development route integrator: account for a stun that
+        // expires partway through one scheduler interval.
+        public double RemainingStunSeconds
+        {
+            get
+            {
+                double remaining = 0;
+                foreach (var item in effects)
+                    if (item.Effect.Type == CombatEffectType.Stun)
+                        remaining = Math.Max(remaining, item.ExpiresAt - CurrentTime);
+                return remaining;
+            }
+        }
+
         public bool IsStunned()
         {
             foreach (var item in effects)
