@@ -137,10 +137,12 @@ namespace Ordr.Mobile.Combat
         public int Collected { get; private set; }
         public bool WasAuthorized { get; private set; }
         public string Message { get; private set; }
+        public IReadOnlyList<Original323TreasureReward> Rewards { get; private set; }
         internal Original323TreasureSearchResult(int n,int done,bool approved,
-            string message)
+            string message,IReadOnlyList<Original323TreasureReward> paid=null)
         {
             Matched=n;Collected=done;WasAuthorized=approved;Message=message;
+            Rewards=paid ?? new Original323TreasureReward[0];
         }
     }
 
@@ -235,6 +237,7 @@ namespace Ordr.Mobile.Combat
                     return new Original323TreasureSearchResult(
                         matched.Count,0,true,"원본 보물 탐색 위치 표시 · 미수집");
                 int done=0;
+                var paid=new List<Original323TreasureReward>();
                 foreach(var chest in matched)
                 {
                     // An aborted native settlement cannot roll this chest
@@ -246,6 +249,7 @@ namespace Ordr.Mobile.Combat
                     if(!native.TrySettleTreasureOnce(chest.OriginalChestId,
                         chest.Pending,cast,chest.SpawnEvidence))
                         break;
+                    paid.Add(chest.Pending);
                     chest.Collected=true;
                     chest.Pending=null;
                     CollectedCount++;
@@ -253,7 +257,8 @@ namespace Ordr.Mobile.Combat
                 }
                 return new Original323TreasureSearchResult(matched.Count,
                     done,true,"원본 보물 "+done+"/"+matched.Count+
-                    "개 수집"+(done<matched.Count?" · 남은 항목 미정산":""));
+                    "개 수집"+(done<matched.Count?" · 남은 항목 미정산":""),
+                    paid.AsReadOnly());
             }
             finally {inSearch=false;}
         }

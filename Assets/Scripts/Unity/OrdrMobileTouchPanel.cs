@@ -12,7 +12,7 @@ namespace Ordr.Mobile.Unity
     // 스토리·조합확인·상점·도박·위습 버튼은 실제 사용자 탭에서만 호출된다.
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
-        private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, Helper, Alchemy, Missions }
+        private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, Treasure, Helper, Alchemy, Missions }
 
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private bool openByDefault;
@@ -34,6 +34,8 @@ namespace Ordr.Mobile.Unity
         private bool confirmBatchSale;
         private readonly MobileWispActionJournal wispActions = new MobileWispActionJournal();
         private bool showWispHistory;
+        private MobileTreasureGachaResult lastTreasureResult;
+        private int lastTreasureRound;
         private long? pendingCommonSaleId;
         private string pendingCommonSaleName;
         private int pendingMissionReroll = -1;
@@ -232,7 +234,8 @@ namespace Ordr.Mobile.Unity
             GUILayout.Label("BATTLE  전투",OrdrMobileUiTheme.Overline);
             DrawLeftTab(Tab.Play, "01   전황");
             DrawLeftTab(Tab.Wisp, "02   위습");
-            DrawLeftTab(Tab.Helper, "03   도움소");
+            DrawLeftTab(Tab.Treasure, "03   보물 탐색");
+            DrawLeftTab(Tab.Helper, "04   도움소");
             if (controller.Original323HelperCow != null &&
                 controller.Original323HelperCow.AlchemyNavigationChosen)
                 DrawLeftTab(Tab.Alchemy, "04   연금술");
@@ -309,6 +312,7 @@ namespace Ordr.Mobile.Unity
                     case Tab.Shop: DrawEconomy(ManualEconomyCategory.Shop); break;
                     case Tab.Gambling: DrawEconomy(ManualEconomyCategory.Gambling); break;
                     case Tab.Wisp: DrawWisp(); break;
+                    case Tab.Treasure: DrawTreasureGacha(); break;
                     case Tab.Helper: DrawHelperCow(); break;
                     case Tab.Alchemy: DrawAlchemyPanel(); break;
                     case Tab.Missions: DrawPersonalMissions(); break;
@@ -391,6 +395,8 @@ namespace Ordr.Mobile.Unity
             }
             GUILayout.EndHorizontal();
             if(GUILayout.Button("보유 유닛",GUILayout.MinHeight(60)))SelectTab(Tab.Units);
+            if(GUILayout.Button("보물 탐색 가챠",GUILayout.MinHeight(64)))
+                SelectTab(Tab.Treasure);
             GUILayout.EndArea();
         }
 
@@ -400,6 +406,7 @@ namespace Ordr.Mobile.Unity
             {
                 case Tab.Play: return "현재 전황을 확인하고 위습·유닛·조합으로 이동합니다. 출전 준비가 끝났다면 전투를 시작하세요.";
                 case Tab.Wisp: return "횟수를 선택한 뒤 큰 실행 버튼을 누르세요. 추가 확인 없이 실제 위습이 사용됩니다.";
+                case Tab.Treasure: return "보물 탐색 버튼 → 꽝 또는 획득 결과 공개. 원작에 가까운 확률·탐색 횟수가 검증되기 전에는 실행할 수 없습니다.";
                 case Tab.Helper: return "도움소 마나와 원본 항법 기능을 관리합니다. 연결된 행동만 실행할 수 있습니다.";
                 case Tab.Alchemy: return "대상을 먼저 선택하세요. 유닛을 소비하는 시전은 별도로 확정합니다.";
                 case Tab.Units: return "보유 캐릭터를 검색·선택합니다. 판매와 분해는 원본 조건을 확인한 뒤 실행합니다.";
@@ -488,6 +495,8 @@ namespace Ordr.Mobile.Unity
             }
             if (GUILayout.Button("개인 미션", GUILayout.MinHeight(60))) SelectTab(Tab.Missions);
             GUILayout.EndHorizontal();
+            if (GUILayout.Button("보물 탐색 가챠",GUILayout.MinHeight(64)))
+                SelectTab(Tab.Treasure);
             if (controller.IsUnitPreparation)
             {
                 bool previous = GUI.enabled;
@@ -1392,6 +1401,54 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
         }
 
+        private void DrawTreasureGacha()
+        {
+            GUILayout.Label("가이몬 보물 탐색",OrdrMobileUiTheme.SectionTitle);
+            GUILayout.Label("모바일 방식: 버튼을 눌러 결과를 확인합니다. 좌표 선택은 없습니다.",
+                OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(64f));
+            var treasure=controller.OriginalTreasureHunt;
+            GUILayout.BeginVertical(GUI.skin.box);
+            if(treasure==null)
+                GUILayout.Label("원본 보물 좌표·보상 월드 연결 대기",
+                    OrdrMobileUiTheme.Explanation);
+            else
+            {
+                GUILayout.Label("등장 보물 "+treasure.SpawnCount+
+                    "개 · 남은 보물 "+treasure.UncollectedCount+"개",
+                    OrdrMobileUiTheme.Subheading);
+            }
+            bool valid=treasure!=null && controller.MobileTreasureGacha!=null &&
+                controller.MobileTreasureGacha.CanAttempt &&
+                Combat!=null && Combat.Game.Phase==SessionPhase.Running &&
+                !controller.IsUnitPreparation && Combat.Game.CurrentWave>0;
+            bool before=GUI.enabled;
+            GUI.enabled=before && valid;
+            if (GUILayout.Button("보물 탐색",OrdrMobileUiTheme.PrimaryButton,
+                GUILayout.MinHeight(78f)))
+            {
+                lastTreasureResult=controller.RequestMobileTreasureGacha();
+                lastTreasureRound=Combat.Game.CurrentWave;
+            }
+            GUI.enabled=before;
+            if(!valid)
+                GUILayout.Label("원작 대비 발견 확률·탐색 기회가 미검증이라 추첨이 비활성화되어 있습니다. "+
+                    "임의 확률이나 무료 보상은 지급하지 않습니다.",
+                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(86f));
+            GUILayout.EndVertical();
+            if(lastTreasureResult!=null)
+            {
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.Label(lastTreasureRound+"라운드 탐색 결과",
+                    OrdrMobileUiTheme.Subheading);
+                GUILayout.Label(lastTreasureResult.Message,
+                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(60f));
+                if(lastTreasureResult.Collected>0)
+                    GUILayout.Label("획득 "+lastTreasureResult.RewardText(),
+                        OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(60f));
+                GUILayout.EndVertical();
+            }
+        }
+
         private void DrawWisp()
         {
             if (controller.StartingEvolutionActorId.HasValue &&
@@ -1409,6 +1466,8 @@ namespace Ordr.Mobile.Unity
             }
             if (controller.PracticeBattle != null)
                 GUILayout.Label("라운드마다 랜덤위습 2개 · 소환 / 조합 / 판매");
+            if (GUILayout.Button("보물 탐색 가챠",OrdrMobileUiTheme.PrimaryButton,
+                GUILayout.MinHeight(64))) SelectTab(Tab.Treasure);
             if (controller.OriginalTreasureHunt != null)
                 GUILayout.Label("원본 보물상자 · 발견 " +
                     controller.OriginalTreasureHunt.SpawnCount +

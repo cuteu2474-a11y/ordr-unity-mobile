@@ -1342,6 +1342,37 @@ namespace Ordr.Mobile.Unity
         }
 
         public Original323TreasureHunt OriginalTreasureHunt { get; private set; }
+        public MobileTreasureGacha MobileTreasureGacha { get; private set; }
+
+        // Only register a source-calibrated gacha before gameplay begins.
+        // The default APK has no invented selection/cost/probability provider.
+        public void ConfigureMobileTreasureGacha(
+            IOriginal323MobileTreasureGachaPolicy policy)
+        {
+            if (Combat == null || OriginalTreasureHunt == null ||
+                MobileTreasureGacha != null ||
+                Combat.Game.Phase != SessionPhase.NotStarted)
+                throw new InvalidOperationException(
+                    "원본 보물 월드를 먼저 연결하고 전투 시작 전에 가챠를 설정하세요.");
+            if (policy == null || !policy.IsCalibrationApproved ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(
+                    policy.CalibrationEvidence))
+                throw new InvalidOperationException(
+                    "원작 보물 수급·탐색 기회를 검증한 공급자가 필요합니다.");
+            MobileTreasureGacha=new MobileTreasureGacha(OriginalTreasureHunt,policy);
+        }
+
+        public MobileTreasureGachaResult RequestMobileTreasureGacha()
+        {
+            if (Combat == null || IsUnitPreparation ||
+                Combat.Game.Phase != SessionPhase.Running ||
+                Combat.Game.CurrentWave < 1 ||
+                MobileTreasureGacha == null)
+                return new MobileTreasureGachaResult(
+                    MobileTreasureOutcome.Unavailable,0,0,
+                    "원작 보물 가챠 확률·탐색 기회 검증 대기");
+            return MobileTreasureGacha.TrySearch(Combat.Game.CurrentWave);
+        }
 
         // Source-verified BFj coordinates, actual BeN spell cast and atomic
         // native reward settlement are required. Nothing is enabled by default.
