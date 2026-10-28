@@ -658,6 +658,7 @@ namespace Ordr.Mobile.Unity
         private SourceModelBasicCombatRules sourceModelDamage;
         private IOriginalWispRandom sessionScriptRandom;
         public SourceModelPracticeBattle PracticeBattle { get; private set; }
+        public SourceModelRegularMoneyGambling PracticeMoneyGambling { get; private set; }
 
         public void BeginPracticeBattle(int lastRound = 10)
         {
@@ -2148,6 +2149,14 @@ namespace Ordr.Mobile.Unity
             IOriginalWispRandom sharedMobileWispRandom =
                 randomWispResourceRng ?? new MobileRollbackWispRandom();
             sessionScriptRandom = sharedMobileWispRandom;
+            if (sourceModelDamage != null && originalEconomyPort == null)
+            {
+                PracticeMoneyGambling = new SourceModelRegularMoneyGambling(
+                    SharedEconomy.Wallet, Combat.Game, sharedMobileWispRandom,
+                    () => Combat.Time, () => runGate.CanAdvance);
+                PracticeMoneyGambling.PostCommitObserverFailed += Debug.LogException;
+                originalEconomyPort = PracticeMoneyGambling;
+            }
             RandomWispExchange = new OriginalRandomWispResourceExchange(
                 SharedEconomy.Wallet, world.Game, sharedMobileWispRandom);
             ManualActions.ConfigureRandomWispResourceExchange(RandomWispExchange);

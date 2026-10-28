@@ -62,3 +62,13 @@ python3 -m unittest discover -s tests -q
 원본 맵/MPQ, 임시 추출 파일, 로컬 컴파일 도구, APK·서명 키는 저장소에 포함하지 않습니다. 원본 입력이 필요한 작업에만 해당 파일 접근을 요청하고, 계정·서명 정보는 기록하지 않습니다. JSON에 남은 `null`, 보조 출처와 불확실성 메모는 임의 값으로 메우지 않습니다.
 
 원본 규칙 검증은 [PARITY](../docs/PARITY.md), 검사/빌드 운영은 [실행 안내](../docs/unity-editmode-test.md)를 따릅니다. APK 제작 요청은 기존 워크플로의 `[apk-preview]` 조건을 사용하며 과거 ‘모든 기능 완성 전 APK 금지’를 현재 지시로 적용하지 않습니다.
+
+## 일반/고급 돈 도박 상점 객체 재추출
+
+`original-2323C-money-gambling-shop.json`은 고정 SHA의 원본 W3X에서 `h062` 판매 목록, `h06F`/`H0AZ`의 금액·재고·해금, `CJB`/`CJC` 보상 분기와 고급 누적 반환 졸업선을 추출합니다. 상속된 누락 필드는 `null`로 보존하며 0으로 검증됐다고 하지 않습니다. 기본 연습의 일반 돈 도박은 원본 지급 규칙과 실제 공유 지갑을 사용하지만 초기/충전 재고·전체 원본 난수 순서의 동등성은 미검증입니다.
+
+```sh
+python3 tools/extract_original_money_gambling_shop.py --w3x '/path/to/original.w3x'
+```
+
+원본 맵은 읽기만 하며 커밋하지 않습니다. 해당 자료를 고급 돈 도박의 R009 해금이나 유닛 도박 승인으로 사용하지 않습니다.

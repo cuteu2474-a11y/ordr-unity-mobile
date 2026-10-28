@@ -1969,6 +1969,17 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("원작 경제 서비스 미연결");
             if (GUILayout.Button("목록 새로고침", GUILayout.MinHeight(56)))
                 RefreshCurrent();
+            if (category == ManualEconomyCategory.Gambling && controller.PracticeMoneyGambling != null)
+            {
+                var shop = controller.PracticeMoneyGambling;
+                GUILayout.Label("일반 돈 도박 재고 " + shop.Stock + "/3" +
+                    (shop.Stock < SourceModelRegularMoneyGambling.MaximumStock ?
+                        " · 다음 충전 " + Math.Ceiling(shop.SecondsUntilRestock) + "초" : "") +
+                    " · 사용 " + shop.PurchaseCount + "회 / 반환 " + shop.GoldReturned + "골드");
+                GUILayout.Label("현재 연습에서는 일반 돈 도박만 실행할 수 있습니다.");
+            }
+            if (economyOffers.Count == 0)
+                GUILayout.Label("현재 이 메뉴에서 실행할 수 있는 상품이 없습니다.");
             foreach (var offer in economyOffers)
             {
                 // Already available as immediate 1/5/10-use shortcuts.

@@ -44,6 +44,29 @@ namespace Ordr.Mobile.Core
             new HashSet<string>(StringComparer.Ordinal);
         public long Balance(string id) { long value; return balances.TryGetValue(id, out value) ? value : 0; }
 
+        public bool HasCompletedTransaction(string transactionId)
+        {
+            return transactionId != null && completedRewards.Contains(transactionId);
+        }
+
+        // A durable debit+credit receipt lets the caller distinguish a failed
+        // transaction from an exception in a post-commit Granted observer.
+        // Existing exchanges and their rollback contracts remain unchanged.
+        public bool TryExchangeOnce(string transactionId, ResourceBundle costs, ResourceBundle rewards)
+        {
+            if (string.IsNullOrWhiteSpace(transactionId)) throw new ArgumentException(nameof(transactionId));
+            if (costs == null || rewards == null) throw new ArgumentNullException();
+            if (completedRewards.Contains(transactionId)) return false;
+            var next = Snapshot();
+            if (!CanAfford(next, costs)) return false;
+            Apply(next, costs, -1);
+            Apply(next, rewards, 1);
+            Replace(next);
+            completedRewards.Add(transactionId);
+            NotifyGranted(rewards);
+            return true;
+        }
+
         // 중복 시 false. 오버플로 등 예외 발생 시 잔액/사용 기록 모두 보존.
         public bool TryGrantOnce(string rewardId, ResourceBundle reward)
         {

@@ -1,0 +1,73 @@
+{
+  "format": "ordr-original-2323C-money-shop-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceUnitBalanceSha256": "f7f26217d8097b9791723feb02d9181277d9afb1947dc0a3bf553ce590ab3af5",
+  "sourceUnitStringsSha256": "3e16625f147113e5e4c58a4ad1a58a8b259eeccba57e638db6f9e21cd0cf1a10",
+  "initialShopRawcode": "h062",
+  "entries": [
+    {
+      "rawcode": "h06F",
+      "name": "돈도박 하급",
+      "callback": "CJB",
+      "callbackSha256": "552882a67d268544d05e79bed0d0c9ac4eeae3a3a8864131ef4f8efb2d7f7c7d",
+      "goldCost": 10,
+      "lumberCostOverride": null,
+      "stockMaximum": 3,
+      "stockRegenSeconds": 11,
+      "stockStartOverride": null,
+      "requiredResearch": null,
+      "branchRange": [
+        1,
+        100
+      ],
+      "lowPayoutAtMost": 25,
+      "lowReturnRange": [
+        3,
+        5
+      ],
+      "highReturnRange": [
+        10,
+        50
+      ],
+      "drawsPerPurchase": 2
+    },
+    {
+      "rawcode": "H0AZ",
+      "name": "돈도박 고급",
+      "callback": "CJC",
+      "callbackSha256": "4d3b0717fe350f15001d582f8d8c93d07c96a46ded0cf8543053758023adf095",
+      "goldCost": 500,
+      "lumberCostOverride": null,
+      "stockMaximum": 7,
+      "stockRegenSeconds": 9,
+      "stockStartOverride": null,
+      "requiredResearch": "R009",
+      "branchRange": [
+        1,
+        100
+      ],
+      "lowPayoutAtMost": 30,
+      "lowReturnRange": [
+        300,
+        400
+      ],
+      "highReturnRange": [
+        500,
+        4500
+      ],
+      "drawsPerPurchase": 2
+    }
+  ],
+  "highTierGrossReturnGraduation": 35000,
+  "retailParityVerified": false,
+  "nativeStockInitializationVerified": false,
+  "limits": [
+    "Costs/stock object overrides and payout callbacks verified from the original map.",
+    "Missing base fields are not reported as observed zero overrides.",
+    "Practice regular-money shop uses logical-time stock with an initially full shelf.",
+    "Native stock initial amount/refill timing and the shared Warcraft RNG remain unverified.",
+    "High-grade purchase requires R009 and graduation effects; it is not enabled.",
+    "Money gambling is not unit gambling and must not increment unit-gambling missions."
+  ]
+}
