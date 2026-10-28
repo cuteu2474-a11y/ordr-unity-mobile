@@ -47,6 +47,17 @@ namespace Ordr.Mobile.Mobile
         }
     }
 
+    // CCQ reveal changes available information, not the original
+    // source BeN or BeI math. A policy that was calibrated without
+    // reveal information cannot authorize a search after CCQ evidence.
+    public interface IOriginal323MobileTreasureRevealedPolicy :
+        IOriginal323MobileTreasureGachaPolicy
+    {
+        bool TryConsumeRevealedAttempt(int round,int remainingChests,
+            IReadOnlyList<Original323TreasureLocation> sourceRevealedChests,
+            out MobileTreasureAttempt consumed);
+    }
+
     public enum MobileTreasureOutcome { Unavailable, Miss, Found, Partial, Uncertain }
 
     public sealed class MobileTreasureGachaResult
@@ -181,7 +192,8 @@ namespace Ordr.Mobile.Mobile
         }
 
         public MobileTreasureGachaResult TrySearch(int round,
-            bool? verifiedDreamApplied=null,bool? verifiedNamiAtApply=null)
+            bool? verifiedDreamApplied=null,bool? verifiedNamiAtApply=null,
+            IReadOnlyList<Original323TreasureLocation> sourceRevealedChests=null)
         {
             if(!CanAttempt || round<1 || round>65)
                 return Reject("원본 가챠 당첨률·탐색 기회 검증 대기");
@@ -192,8 +204,37 @@ namespace Ordr.Mobile.Mobile
                 MobileTreasureAttempt ticket;
                 // A source ticket may be irreversibly consumed here.
                 // Never call twice on a rejected/throwing transaction.
-                if(!policy.TryConsumeApprovedAttempt(
-                    round,hunt.UncollectedCountAtOriginalRound(round),out ticket) || ticket==null)
+                int remaining=hunt.UncollectedCountAtOriginalRound(round);
+                bool withReveals=sourceRevealedChests!=null &&
+                    sourceRevealedChests.Count>0;
+                bool approved;
+                if(withReveals)
+                {
+                    var informed=policy as IOriginal323MobileTreasureRevealedPolicy;
+                    if(informed==null)
+                        return Reject("CCQ 보물 공개 정보를 반영한 원본 탐색 확률 검증 필요");
+                    // Validate every supplied hit against THIS actual
+                    // treasure ledger. Never accept arbitrary fake coordinates
+                    // or a preloaded future/collected chest as a reveal.
+                    var seen=new HashSet<string>(StringComparer.Ordinal);
+                    foreach(var chest in sourceRevealedChests)
+                    {
+                        if(chest==null || chest.SpawnRound>round ||
+                            chest.Collected || !seen.Add(chest.OriginalChestId))
+                            return Reject("원본 CCQ 공개 상자 상태가 잘못됐습니다.");
+                        bool inLedger=false;
+                        foreach(var original in hunt.Chests)
+                            if(ReferenceEquals(original,chest))
+                            {inLedger=true;break;}
+                        if(!inLedger)
+                            return Reject("원본 CCQ 공개 상자가 실제 보물 월드에 없습니다.");
+                    }
+                    approved=informed.TryConsumeRevealedAttempt(round,remaining,
+                        sourceRevealedChests,out ticket);
+                }
+                else
+                    approved=policy.TryConsumeApprovedAttempt(round,remaining,out ticket);
+                if(!approved || ticket==null)
                     return Reject("원본에 대응하는 탐색 기회가 없습니다.");
                 if(!consumedIds.Add(ticket.Id))
                     return Reject("이미 사용한 탐색 기회 · 중복 추첨 차단");

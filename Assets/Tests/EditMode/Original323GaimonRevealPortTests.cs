@@ -102,6 +102,24 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OnlyAuthorizedCcqHitsBecomeReusableInternalSearchInformation()
+        {
+            var world=new World();var rng=new Rng();
+            var hunt=Hunt(world,rng);
+            var port=new Original323GaimonRevealPort(hunt,new Ccq());
+            Assert.AreEqual(0,port.ActiveRevealedChests(10).Count);
+            port.ObserveOriginalCcq("ccq-1",10,true,true);
+            var visible=port.ActiveRevealedChests(10);
+            Assert.AreEqual(2,visible.Count);
+            CollectionAssert.AreEquivalent(new[]{"first","second"},
+                new[]{visible[0].OriginalChestId,visible[1].OriginalChestId});
+            Assert.AreEqual(2,port.ActiveRevealedChests(20).Count,
+                "A preloaded future chest is not made visible by an old CCQ.");
+            Assert.AreEqual(0,world.Payments);
+            Assert.AreEqual(0,rng.Calls);
+        }
+
+        [Test]
         public void NoOwnershipDreamOrSourceWitnessRejectsWithoutCasting()
         {
             var w=new World();var source=new Ccq();

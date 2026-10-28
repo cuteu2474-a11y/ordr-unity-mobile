@@ -1473,7 +1473,9 @@ namespace Ordr.Mobile.Unity
                     MobileTreasureOutcome.Unavailable,0,0,
                     "원작 보물 가챠 확률·탐색 기회 검증 대기");
             return MobileTreasureGacha.TrySearch(Combat.Game.CurrentWave,
-                true, GaimonDream.NamiBonusWhenApplied);
+                true, GaimonDream.NamiBonusWhenApplied,
+                GaimonReveal == null ? null :
+                GaimonReveal.ActiveRevealedChests(Combat.Game.CurrentWave));
         }
 
         // Source-verified BFj coordinates, actual BeN spell cast and atomic

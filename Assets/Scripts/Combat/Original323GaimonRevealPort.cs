@@ -37,6 +37,25 @@ namespace Ordr.Mobile.Combat
         private readonly IOriginal323GaimonCcqEventWitness source;
         private readonly HashSet<string> consumedEvents =
             new HashSet<string>(StringComparer.Ordinal);
+        // These IDs came from authenticated CCQ reveals, never from
+        // unobserved future treasure or a player's manual selection.
+        private readonly HashSet<string> revealedChestIds =
+            new HashSet<string>(StringComparer.Ordinal);
+
+        // Source information is passed only to the approved mobile
+        // exploration policy, never turned into a fixed success rate.
+        public IReadOnlyList<Original323TreasureLocation> ActiveRevealedChests(
+            int round)
+        {
+            if (round < 1 || round > 65)
+                throw new ArgumentOutOfRangeException(nameof(round));
+            var found = new List<Original323TreasureLocation>();
+            foreach (var chest in hunt.Chests)
+                if (revealedChestIds.Contains(chest.OriginalChestId) &&
+                    chest.SpawnRound <= round && !chest.Collected)
+                    found.Add(chest);
+            return found.AsReadOnly();
+        }
         private bool processing;
         public int ObservedEventCount => consumedEvents.Count;
         public Original323GaimonRevealResult LastAuthorizedReveal
@@ -84,6 +103,15 @@ namespace Ordr.Mobile.Combat
                     true,false,false,false,true);
                 if(!found.WasAuthorized)
                     return Reject(round,"원본 CCQ 공개 시전 승인 실패");
+
+                // The publicly observed CCQ hit is now available for
+                // future internal searches. Never register a future chest.
+                var observed=hunt.PreviewAtOriginalRound(round,x,y,
+                    Original323TreasureRules.RevealHalfExtent);
+                if (observed.Count != found.Matched)
+                    return Reject(round,"원본 CCQ 공개 결과가 상자 위치와 불일치");
+                foreach (var chest in observed)
+                    revealedChestIds.Add(chest.OriginalChestId);
 
                 var report=new Original323GaimonRevealResult(true,round,
                     found.Matched,

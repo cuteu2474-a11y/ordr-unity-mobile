@@ -126,6 +126,68 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1,hunt.UncollectedCountAtOriginalRound(20));
         }
 
+        private sealed class InformedPolicy : IOriginal323MobileTreasureRevealedPolicy
+        {
+            public bool IsCalibrationApproved => true;
+            public string CalibrationEvidence =>
+                "independently verified source CCQ exploration distribution";
+            public MobileTreasureAttempt Attempt;
+            public int PlainCalls,RevealedCalls,SeenCount;
+            public bool TryConsumeApprovedAttempt(int round,int remaining,
+                out MobileTreasureAttempt ticket)
+            { PlainCalls++;ticket=Attempt;return ticket!=null; }
+            public bool TryConsumeRevealedAttempt(int round,int remaining,
+                IReadOnlyList<Original323TreasureLocation> revealed,
+                out MobileTreasureAttempt ticket)
+            { RevealedCalls++;SeenCount=revealed.Count;ticket=Attempt;return ticket!=null; }
+        }
+
+        [Test]
+        public void CalibratedPolicyMustExplicitlyHandleRealCcqRevealedInformation()
+        {
+            var native=new Native();var rng=new Rolls(1,999,2,999);
+            var hunt=Hunt(native,rng);
+            var policy=new Policy {Attempt=Ticket("without-ccq")};
+            var gacha=new MobileTreasureGacha(hunt,policy);
+            var revealed=hunt.PreviewAtOriginalRound(10,100,100,2000);
+            Assert.AreEqual(2,revealed.Count);
+            Assert.AreEqual(MobileTreasureOutcome.Unavailable,
+                gacha.TrySearch(10,true,false,revealed).Outcome);
+            Assert.AreEqual(0,policy.Calls);
+            Assert.AreEqual(0,native.Casts);
+            Assert.AreEqual(0,rng.Count);
+
+            var informed=new InformedPolicy {Attempt=Ticket("informed")};
+            var supported=new MobileTreasureGacha(hunt,informed);
+            var value=supported.TrySearch(10,true,false,revealed);
+            Assert.AreEqual(MobileTreasureOutcome.Found,value.Outcome);
+            Assert.AreEqual(2,value.Collected);
+            Assert.AreEqual(1,informed.RevealedCalls);
+            Assert.AreEqual(0,informed.PlainCalls);
+            Assert.AreEqual(2,informed.SeenCount);
+        }
+
+        [Test]
+        public void RejectForgedOrPreloadedCcqHitsBeforePolicyConsumesAttempt()
+        {
+            var hunt=Hunt(new Native(),new Rolls());
+            var outsider=new Original323TreasureHunt(new Native(),new Rolls());
+            outsider.RegisterObservedSpawn("forged",0,100,100,"original BFj event");
+            var informed=new InformedPolicy {Attempt=Ticket("fake")};
+            var gacha=new MobileTreasureGacha(hunt,informed);
+            Assert.AreEqual(MobileTreasureOutcome.Unavailable,
+                gacha.TrySearch(10,true,false,
+                    outsider.PreviewAtOriginalRound(10,100,100,2000)).Outcome);
+            Assert.AreEqual(0,informed.RevealedCalls);
+            Assert.AreEqual(0,gacha.AttemptsUsed);
+            hunt.RegisterObservedSpawn("wave-20",20,100,100,
+                "source observed original BFj wave20");
+            Assert.AreEqual(MobileTreasureOutcome.Unavailable,
+                gacha.TrySearch(10,true,false,
+                    hunt.PreviewAtOriginalRound(20,100,100,2000)).Outcome);
+            Assert.AreEqual(0,informed.RevealedCalls);
+        }
+
         [Test]
         public void OriginalDreamAndNamiTicketMismatchNeverPaysOrRolls()
         {
