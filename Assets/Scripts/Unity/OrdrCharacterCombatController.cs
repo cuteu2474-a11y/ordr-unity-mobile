@@ -1413,6 +1413,36 @@ namespace Ordr.Mobile.Unity
 
         public Original323TreasureHunt OriginalTreasureHunt { get; private set; }
         public MobileTreasureGacha MobileTreasureGacha { get; private set; }
+        public Original323GaimonRevealPort GaimonReveal { get; private set; }
+
+        // A verified original CCQ/R event is observed by the native
+        // adapter, NOT by a new mobile manual button. Never pay from reveal.
+        public void ConfigureOriginal323GaimonReveal(
+            IOriginal323GaimonCcqEventWitness sourceEvent)
+        {
+            if (Combat == null || OriginalTreasureHunt == null ||
+                GaimonReveal != null ||
+                Combat.Game.Phase != SessionPhase.NotStarted)
+                throw new InvalidOperationException(
+                    "CCQ 위치 공개는 원본 보물 월드를 게임 시작 전 연결해야 합니다.");
+            GaimonReveal = new Original323GaimonRevealPort(
+                OriginalTreasureHunt,sourceEvent);
+        }
+
+        public Original323GaimonRevealResult ObserveOriginal323GaimonCcq(
+            string originalNativeEventId)
+        {
+            if (Combat == null || OriginalTreasureHunt == null ||
+                GaimonReveal == null ||
+                Combat.Game.Phase != SessionPhase.Running ||
+                Combat.Game.CurrentWave < 1 ||
+                IsUnitPreparation)
+                return new Original323GaimonRevealResult(false,0,0,
+                    "원본 CCQ 시전/전투 라운드 관측 대기");
+            return GaimonReveal.ObserveOriginalCcq(
+                originalNativeEventId,Combat.Game.CurrentWave,
+                HasOwnedOriginalGaimon,GaimonDream.Applied);
+        }
 
         // Only register a source-calibrated gacha before gameplay begins.
         // The default APK has no invented selection/cost/probability provider.

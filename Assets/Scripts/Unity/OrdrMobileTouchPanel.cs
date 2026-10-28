@@ -1447,6 +1447,17 @@ namespace Ordr.Mobile.Unity
                 !controller.MobileTreasureGacha.CanAttempt)
                 GUILayout.Label("원작 대비 발견 확률과 탐색 횟수 검증이 미완료입니다. 임의 확률과 무료 보상을 지급하지 않습니다.",
                     OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(86f));
+            // CCQ/R is automatic by policy. Only a witnessed original
+            // event produces information, never a second payout button.
+            if(controller.GaimonReveal != null &&
+                controller.GaimonReveal.LastAuthorizedReveal != null)
+            {
+                var report=controller.GaimonReveal.LastAuthorizedReveal;
+                GUILayout.Label("가이몬 R 보물 공개 · "+report.OriginalRound+
+                    "라운드에 "+report.RevealedCount+
+                    "개 표시 (미수집 · 미지급)",
+                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(64f));
+            }
             GUILayout.EndVertical();
             if(lastTreasureResult!=null)
             {
