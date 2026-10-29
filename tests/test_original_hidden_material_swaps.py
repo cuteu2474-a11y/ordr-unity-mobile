@@ -20,7 +20,7 @@ class OriginalHiddenMaterialSwapTests(unittest.TestCase):
             (ROOT / 'data/original-2323C-map-base-stats.json').read_text())['catalogEntries'] if r.get('originalRawcode')}
 
     def test_hidden_transactions_preserve_material_order_identity_and_zero_extra_cost(self):
-        self.assertEqual(11, len(self.audit['recipes']))
+        self.assertEqual(13, len(self.audit['recipes']))
         for row in self.audit['recipes']:
             source = self.registry[row['abilityRawcode']]
             self.assertCountEqual(source['conditions'], row['conditions'])

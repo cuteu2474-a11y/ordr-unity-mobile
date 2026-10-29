@@ -1,0 +1,2911 @@
+{
+  "format": "ordr-fusion-blockers-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "executionSource": "Assets/Scripts/Mobile/Original323CommonFusionPort.cs",
+  "limits": [
+    "Reason codes are independently accumulated and their counts overlap.",
+    "Only C# explicitly reviewed recipes are executable; registry entries are not authorization.",
+    "Verified object identities do not prove the missing unit can be obtained in gameplay.",
+    "GOLD/WOOD are source costs, while UPUN is presentation-only, never a consumed unit.",
+    "Unknown callbacks or native effects stay locked even when material IDs are mapped."
+  ],
+  "summary": {
+    "sourceRecipesExcludingTest": 265,
+    "liveExecutableRecipes": 132,
+    "blockedRecipes": 133,
+    "liveExecutableByGrade": {
+      "Reviewed": 13,
+      "ReviewedSpecial": 31,
+      "ReviewedRare": 41,
+      "ReviewedLegendary": 33,
+      "ReviewedHidden": 13,
+      "ReviewedEternal": 1
+    },
+    "blockedByReason": {
+      "chat-player-state-effect": 1,
+      "creation-followup-CH8": 13,
+      "item-payment": 3,
+      "native-cast-AOsf": 3,
+      "navigation-ban-state": 75,
+      "no-unit-payment-in-registration": 24,
+      "round-state": 15,
+      "special-native-result": 8,
+      "special-target-or-pick": 6,
+      "trait-counter": 12,
+      "transformation-effect": 4,
+      "unmapped-original-unit": 57
+    }
+  },
+  "blocked": [
+    {
+      "abilityRawcode": "A19Z",
+      "resultRawcodes": [
+        "h01F"
+      ],
+      "resultNames": [
+        "스모커 - 특별"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "native-cast-AOsf"
+      ]
+    },
+    {
+      "abilityRawcode": "A1A1",
+      "resultRawcodes": [
+        "h012"
+      ],
+      "resultNames": [
+        "스쿼드 - 특별"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "native-cast-AOsf"
+      ]
+    },
+    {
+      "abilityRawcode": "A1A0",
+      "resultRawcodes": [
+        "h01N"
+      ],
+      "resultNames": [
+        "브룩 음악가 - 희귀"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "native-cast-AOsf"
+      ]
+    },
+    {
+      "abilityRawcode": "UU01",
+      "resultRawcodes": [
+        "h05X"
+      ],
+      "resultNames": [
+        "실버즈 레일리 - 희귀"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration"
+      ]
+    },
+    {
+      "abilityRawcode": "A00O",
+      "resultRawcodes": [
+        "h02P"
+      ],
+      "resultNames": [
+        "나미 도둑고양이 - 전설"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 3,
+      "reasonCodes": [
+        "creation-followup-CH8"
+      ]
+    },
+    {
+      "abilityRawcode": "A02D",
+      "resultRawcodes": [
+        "h02T"
+      ],
+      "resultNames": [
+        "마르코 환수종 - 전설"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 3,
+      "reasonCodes": [
+        "creation-followup-CH8"
+      ]
+    },
+    {
+      "abilityRawcode": "A025",
+      "resultRawcodes": [
+        "h035"
+      ],
+      "resultNames": [
+        "샹크스 - 전설"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 3,
+      "reasonCodes": [
+        "creation-followup-CH8"
+      ]
+    },
+    {
+      "abilityRawcode": "A0UG",
+      "resultRawcodes": [
+        "h042"
+      ],
+      "resultNames": [
+        "시노부 - 전설"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 3,
+      "reasonCodes": [
+        "creation-followup-CH8"
+      ]
+    },
+    {
+      "abilityRawcode": "A02Q",
+      "resultRawcodes": [
+        "h087"
+      ],
+      "resultNames": [
+        "아마츠키 토키 - 전설"
+      ],
+      "unmappedUnitRawcodes": [
+        "h05Y"
+      ],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "creation-followup-CH8",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A02G",
+      "resultRawcodes": [
+        "h03B"
+      ],
+      "resultNames": [
+        "흰수염 - 전설"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 3,
+      "reasonCodes": [
+        "creation-followup-CH8"
+      ]
+    },
+    {
+      "abilityRawcode": "YY01",
+      "resultRawcodes": [
+        "h03X"
+      ],
+      "resultNames": [
+        "방주맥심 - 히든"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060"
+      ],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "creation-followup-CH8",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "YY04",
+      "resultRawcodes": [
+        "h03U"
+      ],
+      "resultNames": [
+        "레드포스호 - 히든"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060"
+      ],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "YY07",
+      "resultRawcodes": [
+        "h03Q"
+      ],
+      "resultNames": [
+        "모비딕호 - 히든"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060"
+      ],
+      "originalConditionKinds": [
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "YY08",
+      "resultRawcodes": [
+        "h03R"
+      ],
+      "resultNames": [
+        "반 더 데켄 - 히든"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060"
+      ],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "YY09",
+      "resultRawcodes": [
+        "h03P"
+      ],
+      "resultNames": [
+        "발라티에 - 히든"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060"
+      ],
+      "originalConditionKinds": [
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "YY12",
+      "resultRawcodes": [
+        "h03L"
+      ],
+      "resultNames": [
+        "사우전드 써니호 - 히든"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060"
+      ],
+      "originalConditionKinds": [
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "YY13",
+      "resultRawcodes": [
+        "h055"
+      ],
+      "resultNames": [
+        "스튜시 - 히든"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "creation-followup-CH8"
+      ]
+    },
+    {
+      "abilityRawcode": "YY15",
+      "resultRawcodes": [
+        "h03Z"
+      ],
+      "resultNames": [
+        "아카이누 - 히든"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "chat-player-state-effect"
+      ]
+    },
+    {
+      "abilityRawcode": "YY20",
+      "resultRawcodes": [
+        "h041"
+      ],
+      "resultNames": [
+        "아오키지 - 히든"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "creation-followup-CH8"
+      ]
+    },
+    {
+      "abilityRawcode": "YY26",
+      "resultRawcodes": [
+        "h060"
+      ],
+      "resultNames": [
+        "해적선"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060"
+      ],
+      "originalConditionKinds": [
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A0K2",
+      "resultRawcodes": [
+        "h05S"
+      ],
+      "resultNames": [
+        "돈키호테 도플라밍고 - 변화"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "CHCT",
+        "UNIT",
+        "UPUN",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "A0K3",
+      "resultRawcodes": [
+        "h07N"
+      ],
+      "resultNames": [
+        "베이비5 - 변화"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "CHCT",
+        "UNIT",
+        "UPUN",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "A0K4",
+      "resultRawcodes": [
+        "h05W"
+      ],
+      "resultNames": [
+        "네펠타리 비비 - 변화"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "CHCT",
+        "UNIT",
+        "UPUN",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "A0K6",
+      "resultRawcodes": [
+        "h0CK"
+      ],
+      "resultNames": [
+        "카쿠 - 변화"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "CHCT",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "A0K7",
+      "resultRawcodes": [
+        "h07J"
+      ],
+      "resultNames": [
+        "캐럿 스론 - 변화"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "CHCT",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "SP01",
+      "resultRawcodes": [
+        "h05H"
+      ],
+      "resultNames": [
+        "모건 - 특수"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "SPEC"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "special-native-result"
+      ]
+    },
+    {
+      "abilityRawcode": "SP02",
+      "resultRawcodes": [
+        "h08N"
+      ],
+      "resultNames": [
+        "베티 - 특수"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "SPEC"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "special-native-result"
+      ]
+    },
+    {
+      "abilityRawcode": "SP03",
+      "resultRawcodes": [
+        "h05Q"
+      ],
+      "resultNames": [
+        "블고리 - 특수"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "SPEC"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "special-native-result"
+      ]
+    },
+    {
+      "abilityRawcode": "SP04",
+      "resultRawcodes": [
+        "h05O"
+      ],
+      "resultNames": [
+        "아이스버그 - 특수"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "SPEC"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "special-native-result"
+      ]
+    },
+    {
+      "abilityRawcode": "SP05",
+      "resultRawcodes": [
+        "h05P"
+      ],
+      "resultNames": [
+        "오타마 - 특수"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "SPEC"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "creation-followup-CH8",
+        "no-unit-payment-in-registration",
+        "special-native-result"
+      ]
+    },
+    {
+      "abilityRawcode": "SP06",
+      "resultRawcodes": [
+        "h05R"
+      ],
+      "resultNames": [
+        "페루 - 특수"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "SPEC"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "special-native-result"
+      ]
+    },
+    {
+      "abilityRawcode": "SP07",
+      "resultRawcodes": [
+        "h09T"
+      ],
+      "resultNames": [
+        "폭시 - 특수"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "SPEC"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "special-native-result"
+      ]
+    },
+    {
+      "abilityRawcode": "SP08",
+      "resultRawcodes": [
+        "h0BG"
+      ],
+      "resultNames": [
+        "가이몬 - 특수"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "SPEC"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "creation-followup-CH8",
+        "no-unit-payment-in-registration",
+        "special-native-result"
+      ]
+    },
+    {
+      "abilityRawcode": "IF01",
+      "resultRawcodes": [
+        "h03V"
+      ],
+      "resultNames": [
+        "코알라 - 왜곡"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "IFCT",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "IF02",
+      "resultRawcodes": [
+        "h048"
+      ],
+      "resultNames": [
+        "페로나 - 왜곡"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "IFCT",
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "creation-followup-CH8",
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "IF03",
+      "resultRawcodes": [
+        "h0CI"
+      ],
+      "resultNames": [
+        "퀸 - 왜곡"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "IFCT",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "IF04",
+      "resultRawcodes": [
+        "h04U"
+      ],
+      "resultNames": [
+        "블랙마리아 - 왜곡"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "IFCT",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "IF05",
+      "resultRawcodes": [
+        "h09V"
+      ],
+      "resultNames": [
+        "바제스 - 왜곡"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "IFCT",
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "IF06",
+      "resultRawcodes": [
+        "h05V"
+      ],
+      "resultNames": [
+        "포트거스.D.에이스 - 왜곡"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "IFCT",
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "SPH1",
+      "resultRawcodes": [
+        "h09Y"
+      ],
+      "resultNames": [
+        "S-스네이크 - 세라핌"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GREN",
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "transformation-effect"
+      ]
+    },
+    {
+      "abilityRawcode": "SPH2",
+      "resultRawcodes": [
+        "h0A3"
+      ],
+      "resultNames": [
+        "S-호크 - 세라핌"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GREN",
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "transformation-effect"
+      ]
+    },
+    {
+      "abilityRawcode": "SPH3",
+      "resultRawcodes": [
+        "h0A0"
+      ],
+      "resultNames": [
+        "S-샤크 - 세라핌"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GREN",
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "transformation-effect"
+      ]
+    },
+    {
+      "abilityRawcode": "SPH4",
+      "resultRawcodes": [
+        "h0A1"
+      ],
+      "resultNames": [
+        "S-베어 - 세라핌"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GREN",
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "transformation-effect"
+      ]
+    },
+    {
+      "abilityRawcode": "A007",
+      "resultRawcodes": [
+        "h05I"
+      ],
+      "resultNames": [
+        "레베카 - 제한"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 5000,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "A011",
+      "resultRawcodes": [
+        "h08O"
+      ],
+      "resultNames": [
+        "마르코 - 제한"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GOLD",
+        "ITEM",
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 5000,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "item-payment",
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "A0S0",
+      "resultRawcodes": [
+        "h07I"
+      ],
+      "resultNames": [
+        "샬롯 카타쿠리 - 제한"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 30000,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "A0UH",
+      "resultRawcodes": [
+        "h084"
+      ],
+      "resultNames": [
+        "시노부 - 제한"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 5000,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A0RP",
+      "resultRawcodes": [
+        "h040"
+      ],
+      "resultNames": [
+        "아인 - 제한"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 5000,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "A18P",
+      "resultRawcodes": [
+        "h08Q"
+      ],
+      "resultNames": [
+        "알비다 - 제한"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "SKPT",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 5000,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "trait-counter"
+      ]
+    },
+    {
+      "abilityRawcode": "A1A5",
+      "resultRawcodes": [
+        "h05E"
+      ],
+      "resultNames": [
+        "갓 에넬 - 제한"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 5000,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A02O",
+      "resultRawcodes": [
+        "h05F"
+      ],
+      "resultNames": [
+        "크로커다일 - 제한"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UBAN",
+        "UNIT",
+        "UPUN",
+        "WOOD"
+      ],
+      "sourceGoldCost": 5000,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "A10A",
+      "resultRawcodes": [
+        "h0AI"
+      ],
+      "resultNames": [
+        "킹 - 제한"
+      ],
+      "unmappedUnitRawcodes": [
+        "h05Y"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 5000,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A1A6",
+      "resultRawcodes": [
+        "h05G"
+      ],
+      "resultNames": [
+        "패트릭 레드필드 - 제한"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "RMAX",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 5000,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "TR01",
+      "resultRawcodes": [
+        "H08V"
+      ],
+      "resultNames": [
+        "날씨는 맑음"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR02",
+      "resultRawcodes": [
+        "H098"
+      ],
+      "resultNames": [
+        "악마의 자식"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR03",
+      "resultRawcodes": [
+        "H05N"
+      ],
+      "resultNames": [
+        "해군의 홍일점"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR04",
+      "resultRawcodes": [
+        "H09E"
+      ],
+      "resultNames": [
+        "어둠의 조커"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR05",
+      "resultRawcodes": [
+        "H08W"
+      ],
+      "resultNames": [
+        "검은 정의를 좇는 하얀 새"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR06",
+      "resultRawcodes": [
+        "H09F"
+      ],
+      "resultNames": [
+        "최강의 검사"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR07",
+      "resultRawcodes": [
+        "H0B2"
+      ],
+      "resultNames": [
+        "다섯번째 황제"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR08",
+      "resultRawcodes": [
+        "H090"
+      ],
+      "resultNames": [
+        "치밀하고 비열한 어둠"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR09",
+      "resultRawcodes": [
+        "H099"
+      ],
+      "resultNames": [
+        "해적왕이 될 사나이"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "UPUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR10",
+      "resultRawcodes": [
+        "H094"
+      ],
+      "resultNames": [
+        "운명의 마술사"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR11",
+      "resultRawcodes": [
+        "H0B5"
+      ],
+      "resultNames": [
+        "해군대장 노란 원숭이"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR12",
+      "resultRawcodes": [
+        "H09I"
+      ],
+      "resultNames": [
+        "소울 킹"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR13",
+      "resultRawcodes": [
+        "H092"
+      ],
+      "resultNames": [
+        "혁명군 참모총장"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR14",
+      "resultRawcodes": [
+        "H09H"
+      ],
+      "resultNames": [
+        "지옥에서 돌아온 자"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR15",
+      "resultRawcodes": [
+        "H08Z"
+      ],
+      "resultNames": [
+        "정상해전 종결자"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR16",
+      "resultRawcodes": [
+        "H08U"
+      ],
+      "resultNames": [
+        "해왕류를 다스리는 인어공주"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR17",
+      "resultRawcodes": [
+        "H0BL"
+      ],
+      "resultNames": [
+        "신 해군대장 초록 소"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR18",
+      "resultRawcodes": [
+        "H095"
+      ],
+      "resultNames": [
+        "해군원수 붉은 개"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR19",
+      "resultRawcodes": [
+        "H0BD"
+      ],
+      "resultNames": [
+        "오니히메"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR20",
+      "resultRawcodes": [
+        "H09B"
+      ],
+      "resultNames": [
+        "바다의 전사"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR21",
+      "resultRawcodes": [
+        "H0BX"
+      ],
+      "resultNames": [
+        "일그러진 미래"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR22",
+      "resultRawcodes": [
+        "H09A"
+      ],
+      "resultNames": [
+        "바다의 협객"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR23",
+      "resultRawcodes": [
+        "H091"
+      ],
+      "resultNames": [
+        "순록 의사"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR24",
+      "resultRawcodes": [
+        "H097"
+      ],
+      "resultNames": [
+        "전 해군대장 푸른 꿩"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR25",
+      "resultRawcodes": [
+        "H0B4"
+      ],
+      "resultNames": [
+        "신세대의 이단아"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR26",
+      "resultRawcodes": [
+        "H096"
+      ],
+      "resultNames": [
+        "백개의 심장을 바친 자"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR27",
+      "resultRawcodes": [
+        "H08Y"
+      ],
+      "resultNames": [
+        "무적의 아이언 파이러츠"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR28",
+      "resultRawcodes": [
+        "H08X"
+      ],
+      "resultNames": [
+        "분노하는 맹호"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR29",
+      "resultRawcodes": [
+        "H0CO"
+      ],
+      "resultNames": [
+        "해군의 미래"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "TR30",
+      "resultRawcodes": [
+        "H0AA"
+      ],
+      "resultNames": [
+        "세계 최고의 과학자"
+      ],
+      "unmappedUnitRawcodes": [
+        "h04S",
+        "h0AN"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "IM01",
+      "resultRawcodes": [
+        "h04J"
+      ],
+      "resultNames": [
+        "골.D.로져 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM02",
+      "resultRawcodes": [
+        "h04B"
+      ],
+      "resultNames": [
+        "금사자 시키 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM03",
+      "resultRawcodes": [
+        "h04C"
+      ],
+      "resultNames": [
+        "몽키.D.거프 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM04",
+      "resultRawcodes": [
+        "h04D"
+      ],
+      "resultNames": [
+        "몽키.D.드래곤 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM05",
+      "resultRawcodes": [
+        "h04Q"
+      ],
+      "resultNames": [
+        "빅 맘 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM06",
+      "resultRawcodes": [
+        "h04E"
+      ],
+      "resultNames": [
+        "센고쿠 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM07",
+      "resultRawcodes": [
+        "h04F"
+      ],
+      "resultNames": [
+        "스코퍼 가반 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM08",
+      "resultRawcodes": [
+        "h049"
+      ],
+      "resultNames": [
+        "실버즈 레일리 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM09",
+      "resultRawcodes": [
+        "h04A"
+      ],
+      "resultNames": [
+        "흰수염 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM10",
+      "resultRawcodes": [
+        "h04G"
+      ],
+      "resultNames": [
+        "제트 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM11",
+      "resultRawcodes": [
+        "h07M"
+      ],
+      "resultNames": [
+        "카이도 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IM12",
+      "resultRawcodes": [
+        "h081"
+      ],
+      "resultNames": [
+        "더글라스 불릿 - 불멸"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 10,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "ET02",
+      "resultRawcodes": [
+        "H0BK"
+      ],
+      "resultNames": [
+        "태양의 신"
+      ],
+      "unmappedUnitRawcodes": [
+        "H08T"
+      ],
+      "originalConditionKinds": [
+        "ITEM",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "item-payment",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "ET04",
+      "resultRawcodes": [
+        "h0CJ"
+      ],
+      "resultNames": [
+        "시모츠키 류마 - 영원"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "ET05",
+      "resultRawcodes": [
+        "h05A"
+      ],
+      "resultNames": [
+        "버기 - 영원"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "ET06",
+      "resultRawcodes": [
+        "h05C"
+      ],
+      "resultNames": [
+        "보아 핸콕 - 영원"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "ET07",
+      "resultRawcodes": [
+        "h067"
+      ],
+      "resultNames": [
+        "우타 - 영원"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "ITEM",
+        "KING",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "item-payment",
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "ET08",
+      "resultRawcodes": [
+        "h058"
+      ],
+      "resultNames": [
+        "쥬라클 미호크 - 영원"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060"
+      ],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "ET09",
+      "resultRawcodes": [
+        "h05B"
+      ],
+      "resultNames": [
+        "카벤딧슈 - 영원"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "ET10",
+      "resultRawcodes": [
+        "h08R"
+      ],
+      "resultNames": [
+        "코즈키 오뎅 - 영원"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "ET11",
+      "resultRawcodes": [
+        "h059"
+      ],
+      "resultNames": [
+        "포트거스.D.에이스 - 영원"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "ET12",
+      "resultRawcodes": [
+        "h06A"
+      ],
+      "resultNames": [
+        "길드 테조로 - 영원"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "KING",
+        "UBAN",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 5,
+      "reasonCodes": [
+        "navigation-ban-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS01",
+      "resultRawcodes": [
+        "h06U"
+      ],
+      "resultNames": [
+        "K - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS02",
+      "resultRawcodes": [
+        "h06V"
+      ],
+      "resultNames": [
+        "우즈마키 나루토 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS03",
+      "resultRawcodes": [
+        "h065"
+      ],
+      "resultNames": [
+        "메구밍 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS04",
+      "resultRawcodes": [
+        "h06X"
+      ],
+      "resultNames": [
+        "센토 이스즈 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS05",
+      "resultRawcodes": [
+        "h073"
+      ],
+      "resultNames": [
+        "야가미 라이토 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS06",
+      "resultRawcodes": [
+        "h06Z"
+      ],
+      "resultNames": [
+        "엘리자베스 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS07",
+      "resultRawcodes": [
+        "h09K"
+      ],
+      "resultNames": [
+        "옌 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS08",
+      "resultRawcodes": [
+        "h06W"
+      ],
+      "resultNames": [
+        "요츠바! - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS09",
+      "resultRawcodes": [
+        "h070"
+      ],
+      "resultNames": [
+        "이사야마 요미 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS10",
+      "resultRawcodes": [
+        "h09L"
+      ],
+      "resultNames": [
+        "이치의 율자 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS11",
+      "resultRawcodes": [
+        "h06Y"
+      ],
+      "resultNames": [
+        "카미조 토우마 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS12",
+      "resultRawcodes": [
+        "h071"
+      ],
+      "resultNames": [
+        "쿠로사키 이치고 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS13",
+      "resultRawcodes": [
+        "h06T"
+      ],
+      "resultNames": [
+        "페이몬 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "IS14",
+      "resultRawcodes": [
+        "h072"
+      ],
+      "resultNames": [
+        "하네카와 츠바사 - 랜덤전용"
+      ],
+      "unmappedUnitRawcodes": [],
+      "originalConditionKinds": [
+        "RDUN"
+      ],
+      "sourceGoldCost": 0,
+      "sourceWoodCost": 0,
+      "reasonCodes": [
+        "creation-followup-CH8",
+        "no-unit-payment-in-registration",
+        "round-state"
+      ]
+    },
+    {
+      "abilityRawcode": "A19W",
+      "resultRawcodes": [
+        "h09M"
+      ],
+      "resultNames": [
+        "고죠 사토루 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h060",
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "PICK",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "special-target-or-pick",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A0Y3",
+      "resultRawcodes": [
+        "h09W"
+      ],
+      "resultNames": [
+        "나미카제 미나토 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A0Y9",
+      "resultRawcodes": [
+        "h0A2"
+      ],
+      "resultNames": [
+        "료우기 시키 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A19U",
+      "resultRawcodes": [
+        "h0AC"
+      ],
+      "resultNames": [
+        "히그마 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "PICK",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "special-target-or-pick",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A0XT",
+      "resultRawcodes": [
+        "h09N"
+      ],
+      "resultNames": [
+        "부릉냐 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A19S",
+      "resultRawcodes": [
+        "h0A6"
+      ],
+      "resultNames": [
+        "야쿠모 유카리 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "PICK",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "special-target-or-pick",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A19V",
+      "resultRawcodes": [
+        "h0CC"
+      ],
+      "resultNames": [
+        "콘파쿠 요우무 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "PICK",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "special-target-or-pick",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A1AD",
+      "resultRawcodes": [
+        "h08M"
+      ],
+      "resultNames": [
+        "아냐 포저 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A0Y6",
+      "resultRawcodes": [
+        "h09R"
+      ],
+      "resultNames": [
+        "쿠죠 죠타로 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A19T",
+      "resultRawcodes": [
+        "h08I"
+      ],
+      "resultNames": [
+        "쿠치키 뱌쿠야 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "PICK",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "special-target-or-pick",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A0YK",
+      "resultRawcodes": [
+        "h0BF"
+      ],
+      "resultNames": [
+        "카마도 네즈코 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A10V",
+      "resultRawcodes": [
+        "h083"
+      ],
+      "resultNames": [
+        "샌즈 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A12C",
+      "resultRawcodes": [
+        "h0BC"
+      ],
+      "resultNames": [
+        "타츠마키 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "unmapped-original-unit"
+      ]
+    },
+    {
+      "abilityRawcode": "A0QG",
+      "resultRawcodes": [
+        "h0C2"
+      ],
+      "resultNames": [
+        "한마 유지로 - 신비"
+      ],
+      "unmappedUnitRawcodes": [
+        "h06G",
+        "h0C2"
+      ],
+      "originalConditionKinds": [
+        "GOLD",
+        "KING",
+        "PICK",
+        "UNIT",
+        "WOOD"
+      ],
+      "sourceGoldCost": 10000,
+      "sourceWoodCost": 7,
+      "reasonCodes": [
+        "navigation-ban-state",
+        "special-target-or-pick",
+        "unmapped-original-unit"
+      ]
+    }
+  ]
+}

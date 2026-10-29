@@ -689,6 +689,8 @@ namespace Ordr.Mobile.Unity
         public int ExecutableSpecialFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableSpecialRecipeCount;
         public int ExecutableRareFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableRareRecipeCount;
         public int ExecutableLegendaryFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableLegendaryRecipeCount;
+        public int ExecutableHiddenFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableHiddenRecipeCount;
+        public int ExecutableEternalFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableEternalRecipeCount;
         public bool IsUnitPreparation => Combat != null && SharedEconomy != null &&
             SharedEconomy.HasStarted && Combat.Game.Phase == SessionPhase.Running &&
             Combat.Game.CurrentWave == 0;
@@ -1989,8 +1991,8 @@ namespace Ordr.Mobile.Unity
                 }
                 UnitDefinitions = UnitImplementationRegistry.Combine(Units, Skills,
                     OriginalUnitRawcodes);
-                if (Units.Count != 273 || Skills.CharacterCount != 200 ||
-                    UnitDefinitions.Count != 273)
+                if (Units.Count != 274 || Skills.CharacterCount != 200 ||
+                    UnitDefinitions.Count != 274)
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
                 // This is already pinned to the actual CUo/CUn/CJ source.
                 // Do not require an external installer for verified start

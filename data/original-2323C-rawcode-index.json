@@ -2,7 +2,7 @@
   "format": "ordr-jass-rawcode-index-v1",
   "version": "S2 2.323[C]",
   "source": "data/original-fusion-rawcode-backlog.json and data/original-unit-rawcode-label-links.json",
-  "warning": "JASS-listed units are not one-to-one with 271 web catalog entries; some are ingredients or helpers. Candidate catalog IDs are not original object-verified.",
+  "warning": "JASS rawcodes do not map one-to-one to the web character catalog. Entries marked unique-map-name-and-grade are W3X object identities; other candidate IDs remain unverified. A verified material identity does not grant free acquisition or fusion execution.",
   "summary": {
     "totalOriginalRawcodes": 280,
     "fusionResultRawcodes": 265,
@@ -808,10 +808,10 @@
         "UU01"
       ],
       "originalIngredientUseCount": 5,
-      "candidateCatalogIds": [],
-      "catalogMappingEvidence": "unresolved",
-      "originalObjectVerified": false,
-      "source": "data/original-fusion-rawcode-backlog.json"
+      "candidateCatalogIds": ["R-43"],
+      "catalogMappingEvidence": "unique-map-name-and-grade",
+      "originalObjectVerified": true,
+      "source": "data/original-2323C-map-base-stats.json"
     },
     {
       "rawcode": "h00R",

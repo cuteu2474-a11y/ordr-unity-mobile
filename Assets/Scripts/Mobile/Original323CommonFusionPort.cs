@@ -7,11 +7,11 @@ using Ordr.Mobile.Data;
 namespace Ordr.Mobile.Mobile
 {
     // Executable scope reviewed against CWR/CH5/CHu/CHx/CHy/CT1/CT2.
-    // Reviewed lower grades and 31 Legendary recipes use UNIT costs, source WOOD and UPUN
+    // Reviewed material-only recipes use original UNIT/WOOD costs and UPUN
     // presentation markers. CH5/CHi register no UPUN check/payment callback.
     // AOsf-based casts (two Special, one Rare) remain pending a native-cast audit.
     // Legendary entries with additional creation handlers or unmapped materials stay locked.
-    // Eleven reviewed Hidden chat recipes use the player-zero start position, not a caster.
+    // Reviewed Hidden/ET01 chat recipes use the player-zero start position, not a caster.
     public sealed class Original323CommonFusionPort : IOriginalFusionPort,
         IOriginalFusionCommitCapability, IOriginalFusionRecipeCommitCapability,
         IVerifiedUnitRawcodeMap, IOriginalJassSpecialConditionEvaluator
@@ -138,6 +138,8 @@ namespace Ordr.Mobile.Mobile
             { "A02H", "h03C", "L-08" },
             { "A00H", "h031", "L-37" },
             { "A1CC", "h0CM", "L-39" },
+            { "A113", "h08S", "L-14" },
+            { "A01S", "h03A", "L-07" },
         };
         private static readonly string[,] ReviewedHidden = {
             { "YY02", "h044", "H-05" }, { "YY03", "h03W", "H-10" },
@@ -145,7 +147,13 @@ namespace Ordr.Mobile.Mobile
             { "YY10", "h03O", "H-11" }, { "YY11", "h03M", "H-12" },
             { "YY14", "h03J", "H-14" }, { "YY16", "h03Y", "H-18" },
             { "YY17", "h043", "H-01" }, { "YY22", "h046", "H-20" },
-            { "YY23", "h045", "H-21" }
+            { "YY23", "h045", "H-21" },
+            { "YY18", "h07L", "H-19" }, { "YY25", "h047", "H-22" }
+        };
+        // Source ET01 is a chat-driven BI2 swap; its callback adds only
+        // text/audio setup, not an additional gameplay resource or result.
+        private static readonly string[,] ReviewedEternal = {
+            { "ET01", "h057", "E-06" }
         };
         // Original chat wrappers call BI1(GetPlayerStartLocationX/Y).
         // config: SetPlayerStartLocation(Player(0),0); DefineStartLocation(0,-3776.,4480.).
@@ -169,6 +177,7 @@ namespace Ordr.Mobile.Mobile
         public int ExecutableRareRecipeCount => ReviewedRare.GetLength(0);
         public int ExecutableLegendaryRecipeCount => ReviewedLegendary.GetLength(0);
         public int ExecutableHiddenRecipeCount => ReviewedHidden.GetLength(0);
+        public int ExecutableEternalRecipeCount => ReviewedEternal.GetLength(0);
 
         public Original323CommonFusionPort(CharacterCombatRuntime world, SharedEconomySession shared,
             CharacterUnitCatalog units, OriginalMapBaseStatCatalog originalObjects,
@@ -194,6 +203,9 @@ namespace Ordr.Mobile.Mobile
             Bind(units, "S-15", "h012", "특별함");
             RegisterReviewed(units, registrations, ReviewedRare, "희귀함");
             Bind(units, "R-18", "h01N", "희귀함"); // material identity; A1A0 remains locked
+            // Unique W3X name+grade identity. UU01 is a presentation tag,
+            // NOT an authorized free Rare Rayleigh acquisition.
+            Bind(units, "R-43", "h05X", "희귀함");
             // Original CSI 1% Rare-Wisp special pool includes h0BG. This
             // VERIFIED identity is for resolving an actual Wisp result only:
             // it does not grant SP08 fusion execution or approve A0YE
@@ -210,6 +222,11 @@ namespace Ordr.Mobile.Mobile
             Bind(units, SpecialGradeMobilePolicy.Gaimon, "h0BG", "특수함");
             RegisterReviewed(units, registrations, ReviewedLegendary, "전설");
             RegisterReviewed(units, registrations, ReviewedHidden, "히든");
+            // These higher-grade ingredients are already present in the
+            // catalog; binding is verified by original object rawcode.
+            Bind(units, "LI-09", "h05F", "제한됨");
+            Bind(units, "T-02", "h05W", "변화");
+            RegisterReviewed(units, registrations, ReviewedEternal, "영원한");
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
             planner.SetVerifiedObjectMap(this);
@@ -232,8 +249,9 @@ namespace Ordr.Mobile.Mobile
                 foreach (var instruction in recipe.OrderedConditions)
                 {
                     if (instruction.Kind == "UPUN") continue;
-                    if (instruction.Kind == "WOOD" && resultGrade == "전설" &&
-                        instruction.Rawcode == "WOOD" && instruction.Count == 3 && !hasWood)
+                    if (instruction.Kind == "WOOD" &&
+                        (resultGrade == "전설" || resultGrade == "영원한") &&
+                        instruction.Rawcode == "WOOD" && instruction.Count > 0 && !hasWood)
                     { hasWood = true; continue; }
                     string id;
                     if (instruction.Kind != "UNIT" || !mappings.TryGetValue(instruction.Rawcode, out id))
@@ -242,14 +260,19 @@ namespace Ordr.Mobile.Mobile
                     bool permitted = grade == "흔함" ||
                         ((resultGrade == "특별함" || resultGrade == "희귀함" || resultGrade == "전설" || resultGrade == "히든") && grade == "안흔함") ||
                         ((resultGrade == "희귀함" || resultGrade == "전설" || resultGrade == "히든") && grade == "특별함") ||
-                        ((resultGrade == "전설" || resultGrade == "히든") && grade == "희귀함");
+                        ((resultGrade == "전설" || resultGrade == "히든") && grade == "희귀함") ||
+                        (resultGrade == "영원한" && (grade == "흔함" || grade == "안흔함" ||
+                            grade == "특별함" || grade == "희귀함" || grade == "전설" ||
+                            grade == "히든" || grade == "변화" || grade == "제한됨"));
                     if (!permitted)
                         throw new FormatException("검수하지 않은 등급의 조합 재료입니다.");
                     hasMaterials = true;
                     foreach (var nativeAbility in objects.Find(id).OriginalAbilityRawcodes)
                         if (nativeAbility == ability) hasCaster = true;
                 }
-                if (!hasMaterials || (resultGrade != "히든" && !hasCaster) || (resultGrade == "전설" && !hasWood))
+                bool chatRecipe = resultGrade == "히든" || resultGrade == "영원한";
+                bool requiresWood = resultGrade == "전설" || resultGrade == "영원한";
+                if (!hasMaterials || (!chatRecipe && !hasCaster) || (requiresWood && !hasWood))
                     throw new FormatException("원본 조합 시전자 또는 검수한 목재 비용 누락");
                 supported.Add(ability);
                 resultGrades.Add(ability, resultGrade);
@@ -316,7 +339,7 @@ namespace Ordr.Mobile.Mobile
                 foreach (long id in ready.SuggestedMaterialIds)
                     if (!exact.Remove(id)) return Reject("확인한 재료와 현재 재료가 다릅니다.");
                 double resultX = HiddenResultX, resultY = HiddenResultY;
-                if (resultGrades[ability] != "히든")
+                if (resultGrades[ability] != "히든" && resultGrades[ability] != "영원한")
                 {
                     // CT1 uses the exact material actor owning the cast ability.
                     MobileUnitSnapshot caster = null;

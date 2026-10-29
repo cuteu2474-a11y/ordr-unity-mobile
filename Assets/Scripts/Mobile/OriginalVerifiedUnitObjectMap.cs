@@ -56,7 +56,7 @@ namespace Ordr.Mobile.Mobile
                     !IsSha256(sourceSha256) || !(reviewed is bool) || !(bool)reviewed ||
                     string.IsNullOrWhiteSpace(originalName))
                     throw new FormatException("원본 객체 검수·증빙이 누락됐습니다: " + rawcode);
-                // Ensure the target is a real 271-catalog entry, and do not allow
+                // Ensure the target is a real character-catalog entry, and do not allow
                 // two unrelated original objects to consume the same catalog unit.
                 catalog.Require(unitId);
                 var jassNameLink = labels.FindRawcode(rawcode);

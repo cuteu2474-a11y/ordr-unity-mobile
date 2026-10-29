@@ -69,7 +69,7 @@ namespace Ordr.Mobile.Tests
                     OriginalVerifiedAttackBinding binding;
                     if (game.Rules.TryResolve(game.Units.Require(row.UnitId), null, out binding)) count++;
                 }
-                Assert.AreEqual(271, count);
+                Assert.AreEqual(272, count);
                 Assert.AreEqual(0, game.Combat.CharacterCount);
                 Assert.IsTrue(game.Combat.UsesSourceModelBasicAttacks);
             }

@@ -4,7 +4,7 @@
   "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
   "scope": "all catalog units plus all original object owners; native armor/speed/attack aura families only",
   "summary": {
-    "catalogUnitsScanned": 273,
+    "catalogUnitsScanned": 274,
     "catalogUnitsWithObjectAuras": 116,
     "unknownCatalogObjectLists": 1,
     "mapObjectAuraOwners": 168,
@@ -500,7 +500,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B08C",
             "Cac1": 0.4000000059604645,
@@ -512,8 +512,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff마더 플레임 :: 베가펑크|r",
             "aub1": "|cffFAED7D무한한 동력원 '마더 플레임'의 에너지를 해방하여 적들을 섬멸합니다.|r\r\n\r\n|cffffdead◎발동조건|r : 마나 200\r\n|cffffdead◎범위|r : 575\r\n|cffffdead◎데미지|r : |cffF15F5F425만 물리데미지|r + |cffA566FF425만 고정데미지|r\r\n|cffffdead◎기본효과|r : 해당 범위 2.75초간 스턴\r\n|cffffdead◎재생|r : 3초간 자신의 '새틀라이트'들의 마나 90 회복\r\n|cffffdead　▶|r 다른 재생 스킬과 중복 불가능"
           }
@@ -1054,7 +1054,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B047",
             "Cac1": 0.25,
@@ -1066,8 +1066,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff혁명가|r",
             "aub1": "|cffFAED7D혁명가 드래곤입니다.|r\r\n\r\n|cffffdead◎기본효과|r : 800범위 아군 공격속도 5%, 공격력 25% 증가\r\n|cffffdead◎추가효과|r : 800범위 적 방어력 10, 이동속도 10% 감소 "
           }
@@ -1166,7 +1166,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B01J",
             "Cac1": 0.3199999928474426,
@@ -1178,8 +1178,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff수호자 나리|r",
             "aub1": "|cffFAED7D네코마무시의 이명입니다.|r\r\n\r\n|cffffdead◎기본효과|r : 825범위 아군 공격력 32% 증가\r\n|cffffdead◎추가효과|r : 800범위 적 이동속도 30% 감소"
           }
@@ -1278,10 +1278,10 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B01P",
-            "Cac1": 20000,
+            "Cac1": 20000.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -1290,8 +1290,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff전투 보조|r",
             "aub1": "|cffFAED7D로빈이 자신의 능력으로 아군의 공격을 보조합니다.|r\r\n\r\n|cffffdead◎기본효과|r : 850범위 아군 공격력 20000 증가"
           }
@@ -1338,10 +1338,10 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "none",
             "abuf": "B01R",
-            "Cac1": 0,
+            "Cac1": 0.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -1350,8 +1350,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff밀 플루르|r",
             "aub1": "|cffFAED7D로빈이 수많은 손을 만들어 적을 움직이지 못하게 만듭니다.|r\r\n\r\n|cffc68a12시엔플루르 도스 마노|r\r\n|cffffdead◎발동조건|r : 공격시 10% 확률|r\r\n|cffffdead◎범위|r : 525\r\n|cffffdead◎데미지|r : |cff4374D940만 마법데미지|r\r\n|cffffdead◎추가효과|r : 해당 범위 2.85초 스턴\r\n\r\n|cffc68a12클러치|r\r\n|cffffdead◎발동조건|r : 공격시 5% 확률|r\r\n|cffffdead◎범위|r : 400\r\n|cffffdead◎데미지|r : |cffF15F5F60만 물리데미지|r + |cff4374D912만 마법데미지|r\r\n|cffffdead◎추가효과|r : 단일 적 3초 스턴"
           }
@@ -1372,7 +1372,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B01T",
             "Cac1": 0.30000001192092896,
@@ -1384,8 +1384,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff중재자의 배|r",
             "aub1": "|cffFAED7D마린포드 정상해전을 중재한 배입니다.|r\r\n\r\n|cffffdead◎기본효과|r : 850범위 아군 공격력 35% 증가"
           }
@@ -1822,7 +1822,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 915,
+            "aare": 915.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B02E",
             "Cac1": 0.3499999940395355,
@@ -1834,8 +1834,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff증오|r",
             "aub1": "|cffFAED7D피셔 타이거의 증오하는 마음이 형상화되어 아군을 더욱 강하게 만듭니다.|r\r\n\r\n|cffffdead◎기본효과|r : 915범위 아군 유닛 공격력 35% 증가"
           }
@@ -1856,7 +1856,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B00V",
             "Cac1": 0.07000000029802322,
@@ -1868,8 +1868,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff애교 Lv.1|r",
             "aub1": "|cffFAED7D주변 유닛들에게 애교를 떨어 사기를 증진시킵니다.|r\r\n\r\n|cffffdead◎기본효과|r : 850범위 아군 공격력 7% 증가"
           }
@@ -1890,7 +1890,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B00V",
             "Cac1": 0.25,
@@ -1902,8 +1902,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff애교 Lv.2|r",
             "aub1": "|cffFAED7D쵸파의 귀여움이 아군의 사기를 증진시킵니다.|r\r\n\r\n|cffffdead◎기본효과|r : 900범위 아군 유닛 공격력 25% 증가"
           }
@@ -2515,7 +2515,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 200,
+            "aare": 200.0,
             "atar": "invulnerable,self",
             "abuf": "B033",
             "Cac1": 0.25,
@@ -2527,8 +2527,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff견문색 패기 :: 미래 예지|r",
             "aub1": "|cffFAED7D극도로 단련된 가반의 견문색 패기는 가까운 미래마저 예측하여 상대방의 급소를 공략합니다.|r\r\n\r\n|cffffdead◎기본효과|r : 자신의 공격력 25% 증가\r\n|cffffdead◎방어구 관통|r : 기본 공격에 당한 적 방어력 60 감소 \r\n|cffffdead　▶|r 보스는 방어력 70 감소\r\n|cffffdead　▶|r 다른 방어구 관통 스킬과 중복 불가능"
           }
@@ -2536,7 +2536,7 @@
         {
           "level": 2,
           "fields": {
-            "aare": 200,
+            "aare": 200.0,
             "atar": "invulnerable,self",
             "abuf": "B033",
             "Cac1": 0.5,
@@ -2548,8 +2548,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff견문색 패기 :: 미래 예지 Lv.2|r",
             "aub1": "|cffFAED7D극도로 단련된 가반의 견문색 패기는 가까운 미래마저 예측하여 상대방의 급소를 공략합니다.|r\r\n\r\n|cffffdead◎기본효과|r : 자신의 공격력 50% 증가\r\n|cffffdead◎방어구 관통|r : 기본 공격에 당한 적 방어력 60 감소 \r\n|cffffdead　▶|r 보스는 방어력 180 감소\r\n|cffffdead　▶|r 다른 방어구 관통 스킬과 중복 불가능"
           }
@@ -2674,7 +2674,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B039",
             "Cac1": 0.6000000238418579,
@@ -2686,8 +2686,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff만물을 듣는 힘|r",
             "aub1": "|cffFAED7D로져는 만물과 소통할 수 있는 신비한 힘을 지녔습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 850범위 아군 유닛 공격력 60% 증가"
           }
@@ -2786,7 +2786,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 1250,
+            "aare": 1250.0,
             "atar": "air,invulnerable,organic,ground,vulnerable,friend",
             "abuf": "B037",
             "Cac1": 0.30000001192092896,
@@ -2798,8 +2798,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff우타월드|r",
             "aub1": "|cffFAED7D해당 범위의 모두를 자신도 모르는 수면에 빠트리고 우타월드에 초대합니다.|r\r\n\r\n|cffffdead◎발동조건|r : 매 12초마다 발동 갱신\r\n|cffffdead◎기본효과|r : 우타월드 범위 안에서는 적 이동속도 45% 감소 및 아군의 공격력 30% 증가\r\n|cffffdead◎데미지|r : 발동시마다 주변 800범위 |cff4374D9150만 마법데미지|r\r\n|cffffdead◎페널티|r : |cffff69b4우타의 체력이 10 이하로 감소|r하면 강제 종료 및 3초간 수면 상태에 빠집니다.\r\n|cffffdead◎음표병사|r : 우타월드 갱신시 7초간 음표 병사 1기 소환|r"
           }
@@ -2846,7 +2846,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 99999,
+            "aare": 99999.0,
             "atar": "air,invulnerable,organic,ground,player",
             "abuf": "B03G",
             "Cac1": 0.30000001192092896,
@@ -2858,8 +2858,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff우타월드|r",
             "aub1": "|cffFAED7D해당 범위의 모두를 자신도 모르는 수면에 빠트리고 우타월드에 초대합니다.|r\r\n\r\n|cffffdead◎발동조건|r : 매 12초마다 발동 갱신\r\n|cffffdead◎기본효과|r : 우타월드 범위안에서는 적군의 이동속도 45% 감소 및 아군의 공격력이 30% 증가\r\n|cffffdead◎데미지|r : 발동시마다 주변 800범위 |cff4374D9150만 마법데미지|r\r\n|cffffdead◎페널티|r : |cffff69b4우타의 체력이 10이하로 감소|r하면 강제종료 및 3초간 수면상태에 빠집니다.\r\n|cffffdead◎음표병사|r : 우타월드 갱신시 7초간 음표 병사 1기 소환|r"
           }
@@ -2958,7 +2958,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 99999,
+            "aare": 99999.0,
             "atar": "air,invulnerable,organic,ground,player",
             "abuf": "B03K",
             "Cac1": 0.05000000074505806,
@@ -2970,8 +2970,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff강렬함|r",
             "aub1": "|cffFAED7D해군대장 아카이누를 저지했습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 자신의 라인존에 추가 능력치 제공\r\n|cffffdead　▶|r 공격력 5% 증가"
           }
@@ -3096,7 +3096,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 650,
+            "aare": 650.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B03U",
             "Cac1": 0.4000000059604645,
@@ -3108,8 +3108,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff알라바스타의 수호신|r",
             "aub1": "|cffFAED7D페루는 챠카와 함께 알라바스타의 수호신입니다. 그의 존재만으로 사기가 상승합니다.|r\r\n\r\n|cffffdead◎기본효과|r : 650범위 아군 유닛 공격력 40% 증가|r "
           }
@@ -3130,10 +3130,10 @@
         {
           "level": 1,
           "fields": {
-            "aare": 0,
+            "aare": 0.0,
             "atar": "air,invulnerable,organic,ground,vulnerable,friend",
             "abuf": "B03Y",
-            "Cac1": 0,
+            "Cac1": 0.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -3142,8 +3142,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff해군 통솔|r",
             "aub1": "|cffFAED7D전 해군을 통솔하고 있습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 아군 유닛 공격력 11% 증가 (자신 제외)\r\n|cffffdead◎범위|r : 맵 전체"
           }
@@ -3151,7 +3151,7 @@
         {
           "level": 2,
           "fields": {
-            "aare": 99999,
+            "aare": 99999.0,
             "atar": "air,invulnerable,organic,ground,vulnerable,friend",
             "abuf": "B03Y",
             "Cac1": 0.10999999940395355,
@@ -3163,8 +3163,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff해군 통솔|r",
             "aub1": "|cffFAED7D전 해군을 통솔하고 있습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 아군 유닛 공격력 11% 증가 (자신 제외)\r\n|cffffdead◎범위|r : 맵 전체"
           }
@@ -3458,10 +3458,10 @@
         {
           "level": 1,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B04G",
-            "Cac1": 10000,
+            "Cac1": 10000.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -3470,8 +3470,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff언변|r",
             "aub1": "|cffFAED7D교묘한 말솜씨로 아군의 기합을 불어넣습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 825범위 아군 유닛 공격력 1만 증가\r\n|cffffdead◎추가효과|r : 825범위 아군 유닛 공격속도 60% 증가"
           }
@@ -3479,10 +3479,10 @@
         {
           "level": 2,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B04G",
-            "Cac1": 11000,
+            "Cac1": 11000.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -3491,8 +3491,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff언변|r",
             "aub1": "|cffFAED7D교묘한 말솜씨로 아군의 기합을 불어넣습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 825범위 아군 유닛 공격력 1만 1000 증가\r\n|cffffdead◎추가효과|r : 825범위 아군 유닛 공격속도 61% 증가"
           }
@@ -3500,10 +3500,10 @@
         {
           "level": 3,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B04G",
-            "Cac1": 12000,
+            "Cac1": 12000.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -3512,8 +3512,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff언변|r",
             "aub1": "|cffFAED7D교묘한 말솜씨로 아군의 기합을 불어넣습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 825범위 아군 유닛 공격력 1만 2000 증가\r\n|cffffdead◎추가효과|r : 825범위 아군 유닛 공격속도 62% 증가"
           }
@@ -3521,10 +3521,10 @@
         {
           "level": 4,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B04G",
-            "Cac1": 13000,
+            "Cac1": 13000.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -3533,8 +3533,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff언변|r",
             "aub1": "|cffFAED7D교묘한 말솜씨로 아군의 기합을 불어넣습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 825범위 아군 유닛 공격력 1만 3000 증가\r\n|cffffdead◎추가효과|r : 825범위 아군 유닛 공격속도 63% 증가"
           }
@@ -3542,10 +3542,10 @@
         {
           "level": 5,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B04G",
-            "Cac1": 14000,
+            "Cac1": 14000.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -3554,8 +3554,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff언변|r",
             "aub1": "|cffFAED7D교묘한 말솜씨로 아군의 기합을 불어넣습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 825범위 아군 유닛 공격력 1만 4000 증가\r\n|cffffdead◎추가효과|r : 825범위 아군 유닛 공격속도 64% 증가"
           }
@@ -3563,10 +3563,10 @@
         {
           "level": 6,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B04G",
-            "Cac1": 15000,
+            "Cac1": 15000.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -3575,8 +3575,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff언변|r",
             "aub1": "|cffFAED7D교묘한 말솜씨로 아군의 기합을 불어넣습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 825범위 아군 유닛 공격력 1만 5000 증가\r\n|cffffdead◎추가효과|r : 825범위 아군 유닛 공격속도 65% 증가"
           }
@@ -3638,7 +3638,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 99999,
+            "aare": 99999.0,
             "atar": "air,invulnerable,organic,ground,player",
             "abuf": "B04K",
             "Cac1": 0.14000000059604645,
@@ -3650,8 +3650,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "",
             "aub1": ""
           }
@@ -3724,7 +3724,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 99999,
+            "aare": 99999.0,
             "atar": "air,invulnerable,organic,ground,player",
             "abuf": "B04L",
             "Cac1": 0.07000000029802322,
@@ -3736,8 +3736,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "",
             "aub1": ""
           }
@@ -3784,10 +3784,10 @@
         {
           "level": 1,
           "fields": {
-            "aare": 99999,
+            "aare": 99999.0,
             "atar": "air,invulnerable,organic,ground,player",
             "abuf": "B04N",
-            "Cac1": 5000,
+            "Cac1": 5000.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -3796,8 +3796,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "",
             "aub1": ""
           }
@@ -3922,7 +3922,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B04Y",
             "Cac1": 0.4000000059604645,
@@ -3934,8 +3934,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff밀짚모자 해적단 선의|r",
             "aub1": "|cffFAED7D밀짚모자 해적단의 선의로 주변유닛을 돌봅니다.|r\r\n|cffa0a0a0- \"...닥터, 나 의사가 되고싶어! 의사가 되는 거 가르쳐줘!\"|r\r\n\r\n|cffffdead◎기본효과|r : 825범위 아군 공격력 40% 증가"
           }
@@ -3956,7 +3956,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,notself,ground,vulnerable,friend",
             "abuf": "B04Z",
             "Cac1": 0.4000000059604645,
@@ -3968,8 +3968,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff의료품|r",
             "aub1": "|cffFAED7D쵸파의 의술실력으로 치료품을 만들어 아군에게 제공합니다.|r\r\n\r\n|cffffdead◎기본효과|r : 825범위 자신 제외 아군 유닛 공격력 40%증가|r"
           }
@@ -4068,7 +4068,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 99999,
+            "aare": 99999.0,
             "atar": "air,invulnerable,organic,ground,player",
             "abuf": "B00O",
             "Cac1": 0.11999999731779099,
@@ -4080,8 +4080,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "",
             "aub1": ""
           }
@@ -4232,7 +4232,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 2000,
+            "aare": 2000.0,
             "atar": "air,invulnerable,ground,vulnerable,player",
             "abuf": "B05J",
             "Cac1": -0.30000001192092896,
@@ -4244,8 +4244,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff꺼지지 않는 공포|r",
             "aub1": "|cffFAED7D거대한 육체에서 나오는 흉포함이 적을 공포에 질리게 만듭니다.|r\r\n\r\n|cffffdead◎기본효과|r : 1025범위 적 이동속도 60% 감소\r\n|cffffdead◎패널티|r : 2000범위 자신의 유닛 공격력 30% 감소\r\n\r\n|cffc68a12약육강식|r\r\n|cffffdead◎기본효과|r : 매 공격 및 스킬 발동시 적 방어력 감소\r\n|cffffdead　▶|r 단일 적 : 방어력 70 감소 이후 1스택 마다 5 감소 (최대 10스택)\r\n|cffffdead　▶|r 범위 : 방어력 3 감소 추가 (최대 10스택)\r\n|cffffdead◎추가효과|r : 현재 폼에 따라 스택 추가량 다름\r\n|cffffdead　▶|r 인간폼 : 단일 적 스택 + 2 / 범위 스택 + 1\r\n|cffffdead　▶|r 드래곤폼 : 단일 적 스택 + 1 / 범위 스택 + 2\r\n|cffffdead　▶|r 열식(공통) : 단일 적 스택 + 3 / 범위 스택 + 3"
           }
@@ -4253,7 +4253,7 @@
         {
           "level": 2,
           "fields": {
-            "aare": 2000,
+            "aare": 2000.0,
             "atar": "air,invulnerable,ground,vulnerable,player",
             "abuf": "B05J",
             "Cac1": -0.6000000238418579,
@@ -4265,8 +4265,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff꺼지지 않는 공포|r",
             "aub1": "|cffFAED7D거대한 육체에서 나오는 흉포함이 적을 공포에 질리게 만듭니다.|r\r\n\r\n|cffffdead◎기본효과|r : 1025범위 적 이동속도 30% 감소\r\n|cffffdead◎패널티|r : 2000범위 자신의 유닛 공격력 60% 감소\r\n\r\n|cffc68a12약육강식|r\r\n|cffffdead◎기본효과|r : 매 공격 및 스킬 발동시 적 방어력 감소\r\n|cffffdead　▶|r 단일 적 : 방어력 70 감소 이후 1스택 마다 5 감소 (최대 10스택)\r\n|cffffdead　▶|r 범위 : 방어력 3 감소 추가 (최대 10스택)\r\n|cffffdead◎추가효과|r : 현재 폼에 따라 스택 추가량 다름\r\n|cffffdead　▶|r 인간폼 : 단일 적 스택 + 2 / 범위 스택 + 1\r\n|cffffdead　▶|r 드래곤폼 : 단일 적 스택 + 1 / 범위 스택 + 2\r\n|cffffdead　▶|r 반인반수폼 : 단일 적 스택 + 2 / 범위 스택 + 2\r\n|cffffdead　▶|r 열식(공통) : 단일 적 스택 + 3 / 범위 스택 + 3"
           }
@@ -4369,7 +4369,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 825,
+            "aare": 825.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B036",
             "Cac1": 0.20000000298023224,
@@ -4381,8 +4381,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff증오|r",
             "aub1": "|cffFAED7D피셔 타이거의 증오하는 마음이 형상화 되어 아군을 더욱 강하게합니다.|r\r\n\r\n|cffffdead◎기본효과|r : 주변 유닛의 공격력 27% 증가"
           }
@@ -4627,49 +4627,49 @@
           2,
           5,
           1,
-          -20
+          -20.0
         ],
         [
           "Had1",
           2,
           6,
           1,
-          -25
+          -25.0
         ],
         [
           "Had1",
           2,
           7,
           1,
-          -30
+          -30.0
         ],
         [
           "Had1",
           2,
           8,
           1,
-          -35
+          -35.0
         ],
         [
           "Had1",
           2,
           9,
           1,
-          -40
+          -40.0
         ],
         [
           "Had1",
           2,
           10,
           1,
-          -45
+          -45.0
         ],
         [
           "Had1",
           2,
           11,
           1,
-          -50
+          -50.0
         ]
       ],
       "nativeParentChain": [
@@ -5266,7 +5266,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 800,
+            "aare": 800.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B00T",
             "Cac1": 0.25,
@@ -5278,8 +5278,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff패기수련|r",
             "aub1": "|cffFAED7D레일리가 아군 유닛들에게 패기수련을 통해 효율성을 증대시킵니다.|r\r\n\r\n|cffffdead◎기본효과|r : 800범위 아군 유닛 공격력 25% 증가"
           }
@@ -5352,7 +5352,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "invulnerable,self",
             "abuf": "B06D",
             "Cac1": 0.25,
@@ -5364,8 +5364,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff태양의 고동소리|r",
             "aub1": "|cffFAED7D심장박동이 마치 고동소리를 냅니다.|r\r\n\r\n|cffffdead◎기본효과|r : 자신의 공격력 25% 증가\r\n|cffffdead◎추가효과|r : 900범위 아군 유닛의 공격속도 25% 증가"
           }
@@ -5762,7 +5762,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 50,
+            "aare": 50.0,
             "atar": "invulnerable,self",
             "abuf": "B06T",
             "Cac1": 0.05000000074505806,
@@ -5774,8 +5774,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff유니언 아르마다 :: 공격력 Lv.1|r",
             "aub1": "|cffFAED7D자신의 공격력이 증가합니다.|r\r\n\r\n|cffffdead◎기본효과|r : 자신의 공격력 5% 증가"
           }
@@ -5783,7 +5783,7 @@
         {
           "level": 2,
           "fields": {
-            "aare": 50,
+            "aare": 50.0,
             "atar": "invulnerable,self",
             "abuf": "B06T",
             "Cac1": 0.20000000298023224,
@@ -5795,8 +5795,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff유니언 아르마다 :: 공격력 Lv.2|r",
             "aub1": "|cffFAED7D자신의 공격력이 증가합니다.|r\r\n\r\n|cffffdead◎기본효과|r : 자신의 공격력 20% 증가"
           }
@@ -5804,7 +5804,7 @@
         {
           "level": 3,
           "fields": {
-            "aare": 50,
+            "aare": 50.0,
             "atar": "invulnerable,self",
             "abuf": "B06T",
             "Cac1": 0.4000000059604645,
@@ -5816,8 +5816,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff유니언 아르마다 :: 공격력 Lv.3|r",
             "aub1": "|cffFAED7D자신의 공격력이 증가합니다.|r\r\n\r\n|cffffdead◎기본효과|r : 자신의 공격력 40% 증가"
           }
@@ -5825,7 +5825,7 @@
         {
           "level": 4,
           "fields": {
-            "aare": 50,
+            "aare": 50.0,
             "atar": "invulnerable,self",
             "abuf": "B06T",
             "Cac1": 0.5,
@@ -5837,8 +5837,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff유니언 아르마다 :: 공격력 [한계돌파]|r",
             "aub1": "|cffFAED7D자신의 공격력이 증가합니다.|r\r\n\r\n|cffffdead◎기본효과|r : 자신의 공격력 50% 증가"
           }
@@ -5963,7 +5963,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B00Z",
             "Cac1": 0.20000000298023224,
@@ -5975,8 +5975,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff황금의 정신|r",
             "aub1": "|cffFAED7D정의라는 목표를 추구해나가는 강인한 정신을 지녔습니다.|r\r\n\r\n|cffffdead◎기본효과|r : 850범위 아군 공격력 20% 증가"
           }
@@ -6049,7 +6049,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "air,invulnerable,organic,ground,vulnerable,friend,notself",
             "abuf": "B05H",
             "Cac1": 0.5,
@@ -6061,8 +6061,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff와노쿠니의 혼|r",
             "aub1": "|cffFAED7D와노쿠니의 전설로 남은 사내입니다.|r\r\n\r\n|cffffdead◎기본효과|r : 자신 제외 주변 아군 공격력 50% 증가\r\n|cffffdead◎추가효과|r : 자신의 공격 스킬 발동시 범위 내 적 |cff87cefa마법데미지 1% 증폭|r"
           }
@@ -6213,10 +6213,10 @@
         {
           "level": 1,
           "fields": {
-            "aare": 0,
+            "aare": 0.0,
             "atar": "_",
             "abuf": "",
-            "Cac1": 0,
+            "Cac1": 0.0,
             "Ear1": null,
             "Ear2": 1,
             "Ear3": 1,
@@ -6225,8 +6225,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff인술 :: 암행 《분신강화》|r",
             "aub1": "|cffFAED7D은밀하게 행동하여 적을 침묵시킵니다.|r\r\n\r\n|cffffdead◎발동조건|r : 공격시 10% 확률\r\n|cffffdead◎데미지|r : 단일 적에게 |cff4374D936만 마법데미지|r\r\n|cffffdead　▶|r 라인 몬스터에게는 |cff66cdaa전체체력 4.8% 추가 폭발형 데미지|r\r\n|cffffdead　▶|r 보스에게는 |cff4374D9전체체력 1.2% 추가 마법데미지|r"
           }
@@ -6801,7 +6801,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 99999,
+            "aare": 99999.0,
             "atar": "air,invulnerable,enemies,ground",
             "abuf": "B07X",
             "Cac1": -0.20000000298023224,
@@ -6813,8 +6813,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff꺼지지 않는 공포|r",
             "aub1": "|cffFAED7D생채기도 나지 않는 거대한 육체에서 나오는 패기와 흉포함이 적을 공포에 질리게 만듭니다.|r\r\n\r\n|cffffdead◎기본효과|r : 1025범위 적 이동속도 60% 감소\r\n|cffffdead◎디버프|r : 2000범위 자신의 유닛 공격력 75% 감소\r\n\r\n|cffc68a12약육강식|r\r\n|cffffdead◎기본효과|r : 매 공격 및 스킬 발동시 적 방어력 감소\r\n|cffffdead　▶|r 단일 적 : 방어력 70 감소 이후 1스택 마다 5 감소 (최대 10스택)\r\n|cffffdead　▶|r 범위 : 방어력 3 감소 추가 (최대 10스택)\r\n|cffffdead◎추가효과|r : 현재 폼에 따라 스택 추가량 다름\r\n|cffffdead　▶|r 인간폼 : 단일 적 스택 + 2 / 범위 스택 + 1\r\n|cffffdead　▶|r 드래곤폼 : 단일 적 스택 + 1 / 범위 스택 + 2\r\n|cffffdead　▶|r 열식(공통) : 단일 적 스택 + 3 / 범위 스택 + 3\r\n|cffffdead◎추가설명|r : 단일적 최대 방어력 145 감소 / 범위 적 최대 방어력 30 감소"
           }
@@ -6822,7 +6822,7 @@
         {
           "level": 2,
           "fields": {
-            "aare": 99999,
+            "aare": 99999.0,
             "atar": "air,invulnerable,enemies,ground",
             "abuf": "B07X",
             "Cac1": -0.30000001192092896,
@@ -6834,8 +6834,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff꺼지지 않는 공포|r",
             "aub1": "|cffFAED7D생채기도 나지 않는 거대한 육체에서 나오는 패기와 흉포함이 적을 공포에 질리게 만듭니다.|r\r\n\r\n|cffffdead◎기본효과|r : 1025범위 적 이동속도 60% 감소\r\n|cffffdead◎디버프|r : 2000범위 자신의 유닛 공격력 75% 감소\r\n\r\n|cffc68a12약육강식|r\r\n|cffffdead◎기본효과|r : 매 공격 및 스킬 발동시 적 방어력 감소\r\n|cffffdead　▶|r 단일 적 : 방어력 70 감소 이후 1스택 마다 5 감소 (최대 10스택)\r\n|cffffdead　▶|r 범위 : 방어력 3 감소 추가 (최대 10스택)\r\n|cffffdead◎추가효과|r : 현재 폼에 따라 스택 추가량 다름\r\n|cffffdead　▶|r 인간폼 : 단일 적 스택 + 2 / 범위 스택 + 1\r\n|cffffdead　▶|r 드래곤폼 : 단일 적 스택 + 1 / 범위 스택 + 2\r\n|cffffdead　▶|r 열식(공통) : 단일 적 스택 + 3 / 범위 스택 + 3\r\n|cffffdead◎추가설명|r : 단일적 최대 방어력 145 감소 / 범위 적 최대 방어력 30 감소"
           }
@@ -6856,7 +6856,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 900,
+            "aare": 900.0,
             "atar": "air,invulnerable,organic,self,ground,vulnerable,friend",
             "abuf": "B086",
             "Cac1": 0.25,
@@ -6868,8 +6868,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff이글이글 열매 :: 불주먹 Lv.4|r",
             "aub1": "|cffFAED7D이글이글 열매의 능력으로 공격시 적에게 화염을 쏟아냅니다.|r\r\n\r\n|cffffdead◎발동조건|r : 공격시 10% 확률\r\n|cffffdead◎범위|r : 직선 320범위\r\n|cffffdead◎데미지|r : |cff4374D935만 마법데미지|r\r\n|cffffdead　▶|r 단일 적 |cff4374D950만 추가 마법데미지 |r"
           }
@@ -6942,7 +6942,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "air,invulnerable,organic,ground,vulnerable,friend",
             "abuf": "B06W",
             "Cac1": 0.2199999988079071,
@@ -6954,8 +6954,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff해군원수|r",
             "aub1": "|cffFAED7D전 해군의 수장입니다.|r\r\n\r\n|cffffdead◎기본효과|r : 기본 공격력 높음\r\n|cffffdead◎추가효과|r : 850범위 아군 공격력 22% 증가 (자신 제외)"
           }
@@ -7173,7 +7173,7 @@
         {
           "level": 1,
           "fields": {
-            "aare": 850,
+            "aare": 850.0,
             "atar": "invulnerable,self",
             "abuf": "B09E",
             "Cac1": 0.5,
@@ -7185,8 +7185,8 @@
             "Had2": null,
             "Oae1": null,
             "Oae2": null,
-            "adur": 0,
-            "ahdu": 0,
+            "adur": 0.0,
+            "ahdu": 0.0,
             "atp1": "|cff1e90ff와노쿠니의 혼 :: 오뎅|r",
             "aub1": "|cffc68a12능력치 증가|r\r\n|cffffdead◈|r '사무라이의 혼 스택' 200 증가\r\n|cffffdead◈|r 자신의 공격력 50% 증가"
           }
@@ -8304,6 +8304,14 @@
       "name": "핸콕",
       "grade": "희귀함",
       "unitRawcode": "h01M",
+      "objectAuraCodes": [],
+      "doesNotProveAbsenceOfJassOrRuntimeAddedEffects": true
+    },
+    {
+      "catalogUnitId": "R-43",
+      "name": "실버즈 레일리",
+      "grade": "희귀함",
+      "unitRawcode": "h05X",
       "objectAuraCodes": [],
       "doesNotProveAbsenceOfJassOrRuntimeAddedEffects": true
     },
@@ -11166,7 +11174,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 1,
-        "signedValue": 0,
+        "signedValue": 0.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11175,7 +11183,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 2,
-        "signedValue": -5,
+        "signedValue": -5.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11184,7 +11192,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 3,
-        "signedValue": -10,
+        "signedValue": -10.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11193,7 +11201,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 4,
-        "signedValue": -15,
+        "signedValue": -15.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11202,7 +11210,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 5,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11211,7 +11219,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 6,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11220,7 +11228,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 7,
-        "signedValue": -30,
+        "signedValue": -30.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11229,7 +11237,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 8,
-        "signedValue": -35,
+        "signedValue": -35.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11238,7 +11246,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 9,
-        "signedValue": -40,
+        "signedValue": -40.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11247,7 +11255,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 10,
-        "signedValue": -45,
+        "signedValue": -45.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11256,7 +11264,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 11,
-        "signedValue": -50,
+        "signedValue": -50.0,
         "ownerRestriction": null,
         "function": "Bb7"
       },
@@ -11265,7 +11273,7 @@
         "buffRawcode": "B02M",
         "category": 1,
         "level": 1,
-        "signedValue": -35,
+        "signedValue": -35.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11274,7 +11282,7 @@
         "buffRawcode": "B01L",
         "category": 1,
         "level": 1,
-        "signedValue": -40,
+        "signedValue": -40.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11283,7 +11291,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11292,7 +11300,7 @@
         "buffRawcode": "B084",
         "category": 1,
         "level": 1,
-        "signedValue": -35,
+        "signedValue": -35.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11301,7 +11309,7 @@
         "buffRawcode": "B00C",
         "category": 1,
         "level": 1,
-        "signedValue": -5,
+        "signedValue": -5.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11310,7 +11318,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11319,7 +11327,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 2,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11328,7 +11336,7 @@
         "buffRawcode": "B06Y",
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11337,7 +11345,7 @@
         "buffRawcode": "B00A",
         "category": 1,
         "level": 1,
-        "signedValue": -35,
+        "signedValue": -35.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11346,7 +11354,7 @@
         "buffRawcode": "B07J",
         "category": 1,
         "level": 1,
-        "signedValue": -15,
+        "signedValue": -15.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11355,7 +11363,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 1,
-        "signedValue": -50,
+        "signedValue": -50.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11364,7 +11372,7 @@
         "buffRawcode": "B072",
         "category": 1,
         "level": 1,
-        "signedValue": -15,
+        "signedValue": -15.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11373,7 +11381,7 @@
         "buffRawcode": "B00Y",
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11382,7 +11390,7 @@
         "buffRawcode": "B00A",
         "category": 1,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11391,7 +11399,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 1,
-        "signedValue": -5,
+        "signedValue": -5.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11400,7 +11408,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 2,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11409,7 +11417,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 3,
-        "signedValue": -40,
+        "signedValue": -40.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11418,7 +11426,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 4,
-        "signedValue": -50,
+        "signedValue": -50.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11427,7 +11435,7 @@
         "buffRawcode": "B06K",
         "category": 1,
         "level": 1,
-        "signedValue": -44,
+        "signedValue": -44.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11436,7 +11444,7 @@
         "buffRawcode": "B05T",
         "category": 1,
         "level": 1,
-        "signedValue": -30,
+        "signedValue": -30.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11445,7 +11453,7 @@
         "buffRawcode": "B06F",
         "category": 1,
         "level": 1,
-        "signedValue": -35,
+        "signedValue": -35.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11454,7 +11462,7 @@
         "buffRawcode": "B06B",
         "category": 1,
         "level": 1,
-        "signedValue": -35,
+        "signedValue": -35.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11463,7 +11471,7 @@
         "buffRawcode": "B02I",
         "category": 1,
         "level": 1,
-        "signedValue": -38,
+        "signedValue": -38.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11472,7 +11480,7 @@
         "buffRawcode": "B069",
         "category": 1,
         "level": 1,
-        "signedValue": -15,
+        "signedValue": -15.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11481,7 +11489,7 @@
         "buffRawcode": "B02O",
         "category": 1,
         "level": 1,
-        "signedValue": -15,
+        "signedValue": -15.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11490,7 +11498,7 @@
         "buffRawcode": "B061",
         "category": 1,
         "level": 1,
-        "signedValue": -45,
+        "signedValue": -45.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11499,7 +11507,7 @@
         "buffRawcode": "B06Y",
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11508,7 +11516,7 @@
         "buffRawcode": "B05Q",
         "category": 1,
         "level": 1,
-        "signedValue": -11,
+        "signedValue": -11.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11517,7 +11525,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 1,
-        "signedValue": -30,
+        "signedValue": -30.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11526,7 +11534,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 2,
-        "signedValue": -35,
+        "signedValue": -35.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11535,7 +11543,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 3,
-        "signedValue": -42,
+        "signedValue": -42.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11544,7 +11552,7 @@
         "buffRawcode": "B05B",
         "category": 1,
         "level": 1,
-        "signedValue": -7,
+        "signedValue": -7.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11553,7 +11561,7 @@
         "buffRawcode": "B011",
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11562,7 +11570,7 @@
         "buffRawcode": "B051",
         "category": 1,
         "level": 1,
-        "signedValue": -22,
+        "signedValue": -22.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11571,7 +11579,7 @@
         "buffRawcode": "B025",
         "category": 1,
         "level": 1,
-        "signedValue": -50,
+        "signedValue": -50.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11580,7 +11588,7 @@
         "buffRawcode": "B04S",
         "category": 1,
         "level": 1,
-        "signedValue": -3,
+        "signedValue": -3.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11589,7 +11597,7 @@
         "buffRawcode": "B04R",
         "category": 1,
         "level": 1,
-        "signedValue": -6,
+        "signedValue": -6.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11598,7 +11606,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 1,
-        "signedValue": -35,
+        "signedValue": -35.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11607,7 +11615,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 2,
-        "signedValue": -40,
+        "signedValue": -40.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11616,7 +11624,7 @@
         "buffRawcode": "B04E",
         "category": 1,
         "level": 1,
-        "signedValue": -30,
+        "signedValue": -30.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11625,7 +11633,7 @@
         "buffRawcode": "B04B",
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11634,7 +11642,7 @@
         "buffRawcode": "B02B",
         "category": 1,
         "level": 1,
-        "signedValue": -35,
+        "signedValue": -35.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11643,7 +11651,7 @@
         "buffRawcode": "B03T",
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11652,7 +11660,7 @@
         "buffRawcode": "B03J",
         "category": 1,
         "level": 1,
-        "signedValue": -30,
+        "signedValue": -30.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11661,7 +11669,7 @@
         "buffRawcode": "B03A",
         "category": 1,
         "level": 1,
-        "signedValue": -60,
+        "signedValue": -60.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11670,7 +11678,7 @@
         "buffRawcode": "B00U",
         "category": 1,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11679,7 +11687,7 @@
         "buffRawcode": "B02W",
         "category": 1,
         "level": 1,
-        "signedValue": -22,
+        "signedValue": -22.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11688,7 +11696,7 @@
         "buffRawcode": "B02U",
         "category": 1,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11697,7 +11705,7 @@
         "buffRawcode": "B02R",
         "category": 1,
         "level": 1,
-        "signedValue": -12,
+        "signedValue": -12.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11706,7 +11714,7 @@
         "buffRawcode": "B02Q",
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11715,7 +11723,7 @@
         "buffRawcode": "B02P",
         "category": 1,
         "level": 1,
-        "signedValue": -18,
+        "signedValue": -18.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11724,7 +11732,7 @@
         "buffRawcode": "B02O",
         "category": 1,
         "level": 1,
-        "signedValue": -15,
+        "signedValue": -15.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11733,7 +11741,7 @@
         "buffRawcode": "B02M",
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11742,7 +11750,7 @@
         "buffRawcode": "B02I",
         "category": 1,
         "level": 1,
-        "signedValue": -18,
+        "signedValue": -18.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11751,7 +11759,7 @@
         "buffRawcode": "B01H",
         "category": 1,
         "level": 1,
-        "signedValue": -10,
+        "signedValue": -10.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11760,7 +11768,7 @@
         "buffRawcode": "B011",
         "category": 1,
         "level": 1,
-        "signedValue": -10,
+        "signedValue": -10.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11769,7 +11777,7 @@
         "buffRawcode": "B02G",
         "category": 1,
         "level": 1,
-        "signedValue": -3,
+        "signedValue": -3.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11778,7 +11786,7 @@
         "buffRawcode": "B02B",
         "category": 1,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11787,7 +11795,7 @@
         "buffRawcode": "B029",
         "category": 1,
         "level": 1,
-        "signedValue": -11,
+        "signedValue": -11.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11796,7 +11804,7 @@
         "buffRawcode": "B025",
         "category": 1,
         "level": 1,
-        "signedValue": -18,
+        "signedValue": -18.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11805,7 +11813,7 @@
         "buffRawcode": "B021",
         "category": 1,
         "level": 1,
-        "signedValue": -60,
+        "signedValue": -60.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11814,7 +11822,7 @@
         "buffRawcode": "B01U",
         "category": 1,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11823,7 +11831,7 @@
         "buffRawcode": "B01Q",
         "category": 1,
         "level": 1,
-        "signedValue": -45,
+        "signedValue": -45.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11832,7 +11840,7 @@
         "buffRawcode": "B01L",
         "category": 1,
         "level": 1,
-        "signedValue": -33,
+        "signedValue": -33.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11841,7 +11849,7 @@
         "buffRawcode": "B061",
         "category": 1,
         "level": 1,
-        "signedValue": -45,
+        "signedValue": -45.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11850,7 +11858,7 @@
         "buffRawcode": "B01D",
         "category": 1,
         "level": 1,
-        "signedValue": -10,
+        "signedValue": -10.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11859,7 +11867,7 @@
         "buffRawcode": "B01B",
         "category": 1,
         "level": 1,
-        "signedValue": -12,
+        "signedValue": -12.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11868,7 +11876,7 @@
         "buffRawcode": "B017",
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11877,7 +11885,7 @@
         "buffRawcode": "B016",
         "category": 1,
         "level": 1,
-        "signedValue": -30,
+        "signedValue": -30.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11886,7 +11894,7 @@
         "buffRawcode": "B011",
         "category": 1,
         "level": 1,
-        "signedValue": -3,
+        "signedValue": -3.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11895,7 +11903,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11904,7 +11912,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 2,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11913,7 +11921,7 @@
         "buffRawcode": "B00U",
         "category": 1,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11922,7 +11930,7 @@
         "buffRawcode": "B00P",
         "category": 1,
         "level": 1,
-        "signedValue": -15,
+        "signedValue": -15.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11931,7 +11939,7 @@
         "buffRawcode": "B00N",
         "category": 1,
         "level": 1,
-        "signedValue": -27,
+        "signedValue": -27.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11940,7 +11948,7 @@
         "buffRawcode": "B00K",
         "category": 1,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11949,7 +11957,7 @@
         "buffRawcode": "B06Y",
         "category": 1,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11958,7 +11966,7 @@
         "buffRawcode": "B088",
         "category": 1,
         "level": 1,
-        "signedValue": -40,
+        "signedValue": -40.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11967,7 +11975,7 @@
         "buffRawcode": "B000",
         "category": 1,
         "level": 1,
-        "signedValue": -25,
+        "signedValue": -25.0,
         "function": "Bb7",
         "ownerRestriction": null
       },
@@ -11976,7 +11984,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 0,
+        "signedValue": 0.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -11985,7 +11993,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 2,
-        "signedValue": 5,
+        "signedValue": 5.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -11994,7 +12002,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 3,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -12003,7 +12011,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 4,
-        "signedValue": 15,
+        "signedValue": 15.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -12012,7 +12020,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 5,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -12021,7 +12029,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 6,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -12030,7 +12038,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 7,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -12039,7 +12047,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 8,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -12048,7 +12056,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 9,
-        "signedValue": 40,
+        "signedValue": 40.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -12057,7 +12065,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 10,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -12066,7 +12074,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 11,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "ownerRestriction": null,
         "function": "Bb8"
       },
@@ -12075,7 +12083,7 @@
         "buffRawcode": "B028",
         "category": 2,
         "level": 1,
-        "signedValue": 99,
+        "signedValue": 99.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12084,7 +12092,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12093,7 +12101,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 2,
-        "signedValue": 60,
+        "signedValue": 60.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12102,7 +12110,7 @@
         "buffRawcode": "B02N",
         "category": 2,
         "level": 1,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12111,7 +12119,7 @@
         "buffRawcode": "B083",
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12120,7 +12128,7 @@
         "buffRawcode": "B03O",
         "category": 2,
         "level": 1,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12129,7 +12137,7 @@
         "buffRawcode": "B07M",
         "category": 2,
         "level": 1,
-        "signedValue": 40,
+        "signedValue": 40.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12138,7 +12146,7 @@
         "buffRawcode": "B004",
         "category": 2,
         "level": 1,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12147,7 +12155,7 @@
         "buffRawcode": "B07D",
         "category": 2,
         "level": 1,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12156,7 +12164,7 @@
         "buffRawcode": "B06Q",
         "category": 2,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12165,7 +12173,7 @@
         "buffRawcode": "B07C",
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12174,7 +12182,7 @@
         "buffRawcode": "B07L",
         "category": 2,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12183,7 +12191,7 @@
         "buffRawcode": "B03V",
         "category": 2,
         "level": 1,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12192,7 +12200,7 @@
         "buffRawcode": "B01W",
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12201,7 +12209,7 @@
         "buffRawcode": "B00X",
         "category": 2,
         "level": 1,
-        "signedValue": 40,
+        "signedValue": 40.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12210,7 +12218,7 @@
         "buffRawcode": "B06X",
         "category": 2,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12219,7 +12227,7 @@
         "buffRawcode": "B06U",
         "category": 2,
         "level": 1,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12228,7 +12236,7 @@
         "buffRawcode": "B06L",
         "category": 2,
         "level": 1,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12237,7 +12245,7 @@
         "buffRawcode": "B068",
         "category": 2,
         "level": 1,
-        "signedValue": 7,
+        "signedValue": 7.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12246,7 +12254,7 @@
         "buffRawcode": "B04P",
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12255,7 +12263,7 @@
         "buffRawcode": "B065",
         "category": 2,
         "level": 1,
-        "signedValue": 40,
+        "signedValue": 40.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12264,7 +12272,7 @@
         "buffRawcode": "B04D",
         "category": 2,
         "level": 1,
-        "signedValue": 15,
+        "signedValue": 15.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12273,7 +12281,7 @@
         "buffRawcode": "B06Q",
         "category": 2,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12282,7 +12290,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 70,
+        "signedValue": 70.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12291,7 +12299,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 2,
-        "signedValue": 40,
+        "signedValue": 40.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12300,7 +12308,7 @@
         "buffRawcode": "B05R",
         "category": 2,
         "level": 1,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12309,7 +12317,7 @@
         "buffRawcode": "B05P",
         "category": 2,
         "level": 1,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12318,7 +12326,7 @@
         "buffRawcode": "B05N",
         "category": 2,
         "level": 1,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12327,7 +12335,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12336,7 +12344,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 2,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12345,7 +12353,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 3,
-        "signedValue": 42,
+        "signedValue": 42.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12354,7 +12362,7 @@
         "buffRawcode": "B05C",
         "category": 2,
         "level": 1,
-        "signedValue": 7,
+        "signedValue": 7.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12363,7 +12371,7 @@
         "buffRawcode": "B056",
         "category": 2,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12372,7 +12380,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12381,7 +12389,7 @@
         "buffRawcode": "B04X",
         "category": 2,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12390,7 +12398,7 @@
         "buffRawcode": "B04O",
         "category": 2,
         "level": 1,
-        "signedValue": 7,
+        "signedValue": 7.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12399,7 +12407,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12408,7 +12416,7 @@
         "buffRawcode": "B04C",
         "category": 2,
         "level": 1,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12417,7 +12425,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 70,
+        "signedValue": 70.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12426,7 +12434,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12435,7 +12443,7 @@
         "buffRawcode": "B044",
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12444,7 +12452,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 200,
+        "signedValue": 200.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12453,7 +12461,7 @@
         "buffRawcode": "B02C",
         "category": 2,
         "level": 1,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12462,7 +12470,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12471,7 +12479,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12480,7 +12488,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 250,
+        "signedValue": 250.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12489,7 +12497,7 @@
         "buffRawcode": "B03M",
         "category": 2,
         "level": 1,
-        "signedValue": 7,
+        "signedValue": 7.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12498,7 +12506,7 @@
         "buffRawcode": "B03H",
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12507,7 +12515,7 @@
         "buffRawcode": "B03F",
         "category": 2,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12516,7 +12524,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 75,
+        "signedValue": 75.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12525,7 +12533,7 @@
         "buffRawcode": "B03B",
         "category": 2,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12534,7 +12542,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 60,
+        "signedValue": 60.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12543,7 +12551,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 2,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12552,7 +12560,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 33,
+        "signedValue": 33.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12561,7 +12569,7 @@
         "buffRawcode": "B040",
         "category": 2,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12570,7 +12578,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12579,7 +12587,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 2,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12588,7 +12596,7 @@
         "buffRawcode": "B032",
         "category": 2,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12597,7 +12605,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12606,7 +12614,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12615,7 +12623,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 2,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12624,7 +12632,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12633,7 +12641,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12642,7 +12650,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12651,7 +12659,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12660,7 +12668,7 @@
         "buffRawcode": "B02N",
         "category": 2,
         "level": 1,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12669,7 +12677,7 @@
         "buffRawcode": "B01X",
         "category": 2,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12678,7 +12686,7 @@
         "buffRawcode": "B002",
         "category": 2,
         "level": 1,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12687,7 +12695,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 70,
+        "signedValue": 70.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12696,7 +12704,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 2,
-        "signedValue": 80,
+        "signedValue": 80.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12705,7 +12713,7 @@
         "buffRawcode": "B02C",
         "category": 2,
         "level": 1,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12714,7 +12722,7 @@
         "buffRawcode": "B024",
         "category": 2,
         "level": 1,
-        "signedValue": 99,
+        "signedValue": 99.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12723,7 +12731,7 @@
         "buffRawcode": "B00G",
         "category": 2,
         "level": 1,
-        "signedValue": 55,
+        "signedValue": 55.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12732,7 +12740,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 70,
+        "signedValue": 70.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12741,7 +12749,7 @@
         "buffRawcode": "B01Z",
         "category": 2,
         "level": 1,
-        "signedValue": 40,
+        "signedValue": 40.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12750,7 +12758,7 @@
         "buffRawcode": "B01X",
         "category": 2,
         "level": 1,
-        "signedValue": 12,
+        "signedValue": 12.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12759,7 +12767,7 @@
         "buffRawcode": "B005",
         "category": 2,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12768,7 +12776,7 @@
         "buffRawcode": "B01M",
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12777,7 +12785,7 @@
         "buffRawcode": "B01K",
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12786,7 +12794,7 @@
         "buffRawcode": "B01G",
         "category": 2,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12795,7 +12803,7 @@
         "buffRawcode": "B01F",
         "category": 2,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12804,7 +12812,7 @@
         "buffRawcode": "B019",
         "category": 2,
         "level": 1,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12813,7 +12821,7 @@
         "buffRawcode": "B004",
         "category": 2,
         "level": 1,
-        "signedValue": 5,
+        "signedValue": 5.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12822,7 +12830,7 @@
         "buffRawcode": "B012",
         "category": 2,
         "level": 1,
-        "signedValue": 5,
+        "signedValue": 5.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12831,7 +12839,7 @@
         "buffRawcode": "B001",
         "category": 2,
         "level": 1,
-        "signedValue": 5,
+        "signedValue": 5.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12840,7 +12848,7 @@
         "buffRawcode": "B010",
         "category": 2,
         "level": 1,
-        "signedValue": 5,
+        "signedValue": 5.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12849,7 +12857,7 @@
         "buffRawcode": "B00W",
         "category": 2,
         "level": 1,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12858,7 +12866,7 @@
         "buffRawcode": "B012",
         "category": 2,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12867,7 +12875,7 @@
         "buffRawcode": "B067",
         "category": 2,
         "level": 1,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12876,7 +12884,7 @@
         "buffRawcode": "B00S",
         "category": 2,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12885,7 +12893,7 @@
         "buffRawcode": "B00R",
         "category": 2,
         "level": 1,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12894,7 +12902,7 @@
         "buffRawcode": "B00H",
         "category": 2,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12903,7 +12911,7 @@
         "buffRawcode": "B00G",
         "category": 2,
         "level": 1,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12912,7 +12920,7 @@
         "buffRawcode": "B08D",
         "category": 2,
         "level": 1,
-        "signedValue": 40,
+        "signedValue": 40.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12921,7 +12929,7 @@
         "buffRawcode": "B010",
         "category": 2,
         "level": 1,
-        "signedValue": 42,
+        "signedValue": 42.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12930,7 +12938,7 @@
         "buffRawcode": "B001",
         "category": 2,
         "level": 1,
-        "signedValue": 15,
+        "signedValue": 15.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12939,7 +12947,7 @@
         "buffRawcode": "B004",
         "category": 2,
         "level": 1,
-        "signedValue": 15,
+        "signedValue": 15.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12948,7 +12956,7 @@
         "buffRawcode": "B005",
         "category": 2,
         "level": 1,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12957,7 +12965,7 @@
         "buffRawcode": "B001",
         "category": 2,
         "level": 1,
-        "signedValue": 40,
+        "signedValue": 40.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12966,7 +12974,7 @@
         "buffRawcode": "B002",
         "category": 2,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12975,7 +12983,7 @@
         "buffRawcode": null,
         "category": 2,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb8",
         "ownerRestriction": null
       },
@@ -12984,7 +12992,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 33,
+        "signedValue": 33.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -12993,7 +13001,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13002,7 +13010,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 2,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13011,7 +13019,7 @@
         "buffRawcode": "B00P",
         "category": 3,
         "level": 1,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13020,7 +13028,7 @@
         "buffRawcode": "B010",
         "category": 3,
         "level": 1,
-        "signedValue": 5,
+        "signedValue": 5.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13029,7 +13037,7 @@
         "buffRawcode": "B010",
         "category": 3,
         "level": 1,
-        "signedValue": 42,
+        "signedValue": 42.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13038,7 +13046,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13047,7 +13055,7 @@
         "buffRawcode": "B021",
         "category": 3,
         "level": 1,
-        "signedValue": 325,
+        "signedValue": 325.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13056,7 +13064,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 12,
+        "signedValue": 12.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13065,7 +13073,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 10,
+        "signedValue": 10.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13074,7 +13082,7 @@
         "buffRawcode": "B02M",
         "category": 3,
         "level": 1,
-        "signedValue": 20,
+        "signedValue": 20.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13083,7 +13091,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13092,7 +13100,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13101,7 +13109,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13110,7 +13118,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 2,
-        "signedValue": 45,
+        "signedValue": 45.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13119,7 +13127,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 40,
+        "signedValue": 40.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13128,7 +13136,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 2,
-        "signedValue": 40,
+        "signedValue": 40.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13137,7 +13145,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13146,7 +13154,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13155,7 +13163,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 60,
+        "signedValue": 60.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13164,7 +13172,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13173,7 +13181,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 55,
+        "signedValue": 55.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13182,7 +13190,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13191,7 +13199,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 2,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13200,7 +13208,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 3,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13209,7 +13217,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 4,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13218,7 +13226,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 60,
+        "signedValue": 60.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13227,7 +13235,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 70,
+        "signedValue": 70.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13236,7 +13244,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13245,7 +13253,7 @@
         "buffRawcode": "B07G",
         "category": 3,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13254,7 +13262,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 50,
+        "signedValue": 50.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13263,7 +13271,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 30,
+        "signedValue": 30.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13272,7 +13280,7 @@
         "buffRawcode": "B02M",
         "category": 3,
         "level": 1,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13281,7 +13289,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 1,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13290,7 +13298,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 2,
-        "signedValue": 25,
+        "signedValue": 25.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13299,7 +13307,7 @@
         "buffRawcode": null,
         "category": 3,
         "level": 2,
-        "signedValue": 35,
+        "signedValue": 35.0,
         "function": "Bb9",
         "ownerRestriction": null
       },
@@ -13308,7 +13316,7 @@
         "buffRawcode": "B02M",
         "category": 4,
         "level": 1,
-        "signedValue": -15,
+        "signedValue": -15.0,
         "function": "BcB",
         "ownerRestriction": null
       },
@@ -13317,7 +13325,7 @@
         "buffRawcode": "B02M",
         "category": 4,
         "level": 1,
-        "signedValue": -15,
+        "signedValue": -15.0,
         "function": "BcB",
         "ownerRestriction": null
       },
@@ -13326,7 +13334,7 @@
         "buffRawcode": "B00E",
         "category": 4,
         "level": 1,
-        "signedValue": -30,
+        "signedValue": -30.0,
         "function": "BcB",
         "ownerRestriction": "h0AH"
       },
@@ -13335,7 +13343,7 @@
         "buffRawcode": null,
         "category": 4,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "BcB",
         "ownerRestriction": null
       },
@@ -13344,7 +13352,7 @@
         "buffRawcode": null,
         "category": 4,
         "level": 1,
-        "signedValue": -20,
+        "signedValue": -20.0,
         "function": "BcB",
         "ownerRestriction": null
       },
@@ -13353,7 +13361,7 @@
         "buffRawcode": "B00E",
         "category": 4,
         "level": 1,
-        "signedValue": -10,
+        "signedValue": -10.0,
         "function": "BcB",
         "ownerRestriction": null
       },
@@ -13362,7 +13370,7 @@
         "buffRawcode": "B00E",
         "category": 4,
         "level": 1,
-        "signedValue": -10,
+        "signedValue": -10.0,
         "function": "BcB",
         "ownerRestriction": null
       },
@@ -13371,7 +13379,7 @@
         "buffRawcode": null,
         "category": 1,
         "level": 1,
-        "signedValue": -5,
+        "signedValue": -5.0,
         "function": "BcB",
         "ownerRestriction": null
       }

@@ -24,8 +24,8 @@ class MapOnlyUncommonRosterTests(unittest.TestCase):
 
     def test_all_source_catalogs_register_exactly_fourteen_uncommons(self):
         uncommon = [u for u in self.units["entries"] if u["grade"] == "안흔함"]
-        self.assertEqual(self.units["expectedTotal"], 273)
-        self.assertEqual(len(self.units["entries"]), 273)
+        self.assertEqual(self.units["expectedTotal"], 274)
+        self.assertEqual(len(self.units["entries"]), 274)
         self.assertEqual(len(uncommon), 14)
         self.assertEqual([u["id"] for u in uncommon],
                          ["U-%02d" % i for i in range(1, 15)])
@@ -39,7 +39,7 @@ class MapOnlyUncommonRosterTests(unittest.TestCase):
         self.assertEqual(self.index["gradeFiles"][1]["catalogCount"], 14)
         self.assertEqual(self.audit["byGrade"]["안흔함"]["catalog"], 14)
         self.assertEqual(self.matrix["byGrade"]["안흔함"]["units"], 14)
-        self.assertEqual(len(self.matrix["entries"]), 273)
+        self.assertEqual(len(self.matrix["entries"]), 274)
 
     def test_zombie_identity_weapon_stats_and_ability_codes_are_from_w3x(self):
         source = next(x for x in self.source["mapObjects"]
@@ -85,7 +85,7 @@ class MapOnlyUncommonRosterTests(unittest.TestCase):
     def test_unknown_original_combat_and_nonexistent_web_page_stay_unknown(self):
         zombie = next(x for x in self.missing["characters"]
                       if x["catalogUnitId"] == "U-14")
-        self.assertEqual(self.missing["summary"]["charactersWithoutTooltipProfiles"], 73)
+        self.assertEqual(self.missing["summary"]["charactersWithoutTooltipProfiles"], 74)
         self.assertEqual(zombie["mapUnitRawcode"], "h00H")
         self.assertIsNone(zombie["webDexUrl"])
         self.assertEqual(zombie["originalAbilityRawcodesInMapOrder"],

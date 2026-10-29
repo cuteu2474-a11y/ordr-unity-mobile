@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from build_original_map_base_stats import (  # noqa: E402
-    COMMON_RAWCODES, attack_stats, clean_name, normalize_name,
+    COMMON_RAWCODES, attack_stats, clean_name, normalize_name, object_stats,
 )
 from classify_character_skills import family  # noqa: E402
 from reconcile_ambiguous_original_map_objects import (  # noqa: E402
@@ -37,6 +37,16 @@ class WarcraftObjectAttackTests(unittest.TestCase):
         self.assertEqual(clean_name("|CFFFF0000몽키.D.루피|r"), "몽키.D.루피")
         self.assertEqual(normalize_name("바질 호킨스"), normalize_name("바질호킨스"))
 
+    def test_object_stats_returns_a_source_object_instead_of_none(self):
+        row = object_stats('h05X', '실버즈 레일리 - 희귀',
+                           {'weapsOn': '1', 'cool1': '0.85', 'dmgplus1': '20000',
+                            'dice1': '1', 'sides1': '4'},
+                           {'HP': '10'}, {'abilList': 'A01S,Avul'})
+        self.assertEqual(row['rawcode'], 'h05X')
+        self.assertEqual(row['mapGradeSuffix'], '희귀')
+        self.assertEqual(row['attack1']['minimumBaseDamage'], 20001)
+        self.assertEqual(row['originalAbilityList'], 'A01S,Avul')
+
 
 class GeneratedDataTests(unittest.TestCase):
     @classmethod
@@ -58,16 +68,16 @@ class GeneratedDataTests(unittest.TestCase):
     def test_full_source_index_and_partial_verified_join(self):
         report = self.source["summary"]
         self.assertEqual(report["originalNamedObjects"], 1493)
-        self.assertEqual(report["catalogCharacters"], 273)
-        self.assertEqual(report["linkedCatalogCharacters"], 272)
+        self.assertEqual(report["catalogCharacters"], 274)
+        self.assertEqual(report["linkedCatalogCharacters"], 273)
         self.assertEqual(report["unresolvedCatalogCharacters"], 1)
-        self.assertEqual(report["linkedWithAttack1"], 271)
+        self.assertEqual(report["linkedWithAttack1"], 272)
         self.assertEqual(report["mappingStatusCounts"]["reviewed-map-name-alias-and-grade"], 54)
         self.assertEqual(report["mappingStatusCounts"]["verified-jass-fusion-result"], 6)
         self.assertEqual(report["mappingStatusCounts"]["verified-jass-label-and-fusion-result"], 49)
         self.assertEqual(report["gameplayParityVerified"], 0)
         rows = self.source["catalogEntries"]
-        self.assertEqual(len({r["catalogId"] for r in rows}), 273)
+        self.assertEqual(len({r["catalogId"] for r in rows}), 274)
         linked = [r for r in rows if r["originalRawcode"]]
         self.assertEqual(len({r["originalRawcode"] for r in linked}), len(linked))
         self.assertTrue(all(r["combatParityVerified"] is False for r in rows))
@@ -78,6 +88,17 @@ class GeneratedDataTests(unittest.TestCase):
                 self.assertIsNone(row["sourceMapName"])
         self.assertEqual([row["catalogId"] for row in rows if not row["originalRawcode"]],
                          ["E-02"])
+
+    def test_original_only_rare_rayleigh_is_distinct_from_legendary_rayleigh(self):
+        rows = {row['catalogId']: row for row in self.source['catalogEntries']}
+        rare = rows['R-43']
+        self.assertEqual(rare['catalogName'], '실버즈 레일리')
+        self.assertEqual(rare['originalRawcode'], 'h05X')
+        self.assertEqual(rare['sourceMapName'], '실버즈 레일리 - 희귀')
+        self.assertEqual(rare['mappingStatus'], 'unique-map-name-and-grade')
+        self.assertIn('A01S', rare['originalAbilityList'].split(','))
+        self.assertNotEqual(rare['originalRawcode'], rows['L-07']['originalRawcode'])
+        self.assertFalse(rare['combatParityVerified'])
 
     def test_54_reviewed_aliases_use_pinned_names_and_actual_object_stats(self):
         rows = {row["catalogId"]: row for row in self.source["catalogEntries"]}

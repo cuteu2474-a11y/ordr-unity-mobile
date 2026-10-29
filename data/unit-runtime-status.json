@@ -3,8 +3,8 @@
   "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
   "allUnitsComplete": false,
   "summary": {
-    "catalogEntries": 273,
-    "objectBasicAttackModels": 271,
+    "catalogEntries": 274,
+    "objectBasicAttackModels": 272,
     "modelEffectOwners": 112,
     "connectedModelEffectDefinitions": 144,
     "documentedSkillEntries": 554,
@@ -1709,6 +1709,21 @@
       "fullUnitImplementationVerified": false,
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
+        "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "R-43",
+      "name": "실버즈 레일리",
+      "grade": "희귀함",
+      "originalRawcode": "h05X",
+      "objectBasicAttackModel": true,
+      "connectedModelEffects": [],
+      "connectedManualFunctions": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
       ]
     },

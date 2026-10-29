@@ -192,6 +192,7 @@ def object_stats(rawcode, name, weapons, balance, abilities):
         # They do not describe its triggers, targets or actual JASS behavior.
         "originalAbilityList": abilities.get("abilList"),
     }
+    return result
 
 
 def build(w3x, catalog):

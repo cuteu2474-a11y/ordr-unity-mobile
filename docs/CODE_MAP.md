@@ -32,7 +32,7 @@ flowchart TD
 | 원작 피해 연결 | [Ordr323DamageWorldBinding.cs](../Assets/Scripts/Combat/Ordr323DamageWorldBinding.cs), [Ordr323OriginalDamageRules.cs](../Assets/Scripts/Combat/Ordr323OriginalDamageRules.cs), [Ordr323MapDamageMath.cs](../Assets/Scripts/Combat/Ordr323MapDamageMath.cs) | 확인된 원시 타격·방어·중첩·정수화 계약과 맵 상수. 모든 계약의 실제 공급자가 완성된 것은 아님 |
 | 공유 지갑·보유 목록 | [SharedEconomySession.cs](../Assets/Scripts/Core/SharedEconomySession.cs), [EconomyTransactions.cs](../Assets/Scripts/Core/EconomyTransactions.cs), [UnitRoster.cs](../Assets/Scripts/Core/UnitRoster.cs) | 같은 지갑과 실제 인스턴스를 모든 기능이 사용 |
 | 흔함 소환 | [Original323SourceCommonWispWorld.cs](../Assets/Scripts/Combat/Original323SourceCommonWispWorld.cs) | 원본 추첨 구조·배치·해적선 보류·실패 결과 유지. 별도 균등 가챠로 교체하지 않음 |
-| 실제 127개 조합 | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs): `RegisterReviewed`, `ConfirmFusion` | 검수한 제작식·재료/목재 차감·`OriginalFusionUnitSwap`. 모든 미리보기를 실행 허가하지 않음 |
+| 실제 132개 조합 | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs): `RegisterReviewed`, `ConfirmFusion` | 검수한 제작식·원본 UNIT/WOOD 차감·`OriginalFusionUnitSwap`, 채팅형 히든/ET01 시작 위치. 미리보기만으로 제작 허가하지 않음 |
 | 원본 특수 조합 기반 | [OriginalJassFusionPlanner.cs](../Assets/Scripts/Mobile/OriginalJassFusionPlanner.cs), [OriginalJassFusionAtomicCoordinator.cs](../Assets/Scripts/Mobile/OriginalJassFusionAtomicCoordinator.cs) | 원본 조건 순서·특수 조건·정확한 재료 인스턴스. 새 거래 엔진을 만들기 전에 확인 |
 | 일반 돈 도박 연습 | [SourceModelRegularMoneyGambling.cs](../Assets/Scripts/Mobile/SourceModelRegularMoneyGambling.cs), [원본 비용·재고 자료](../data/original-2323C-money-gambling-shop.json) | 실제 수동 10골드 차감/반환·공유 모바일 난수·논리 재고·영수증. 네이티브 재고/Warcraft RNG 동등성 미검증, 고급 해금 없음 |
 | 판매 | [Original323LowerGradeSaleService.cs](../Assets/Scripts/Mobile/Original323LowerGradeSaleService.cs) | 원본 판매 능력, 공통 판매 포인트, 같은 지갑·난수·롤백 |
@@ -97,8 +97,10 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 
 [MobilePanelScrollGesture.cs](../Assets/Scripts/Unity/MobilePanelScrollGesture.cs)는 본문 드래그 임계값·상하한·탭/드래그 해제를 분리합니다. `HandlePanelScroll`은 GUI 배율 적용 전 좌표를 정규화하며, 드래그가 성립하면 IMGUI hotControl을 취소하고 드래그/해제 이벤트를 버튼보다 먼저 소비합니다. `BeginPanelScroll`/`EndPanelScroll`은 실제 Repaint 레이아웃에서 본문 높이/뷰포트를 측정합니다. 오른쪽 스크롤바는 직접 조작하도록 제외합니다. 연금술 대상 목록은 외부 본문 스크롤 하나를 사용합니다.
 
-## 히든 채팅 조합 11개
+## 히든 채팅 조합 13개·영원 채팅 조합 1개
 
-`Original323CommonFusionPort.ReviewedHidden`은 원본 채팅 콜백에 별도 게임 상태 변경이 없고, 재료가 매핑됐으며 결과 CH8 처리도 필요 없는 11개만 허용합니다. `RegisterReviewed`의 히든 재료 범위는 흔함~희귀함이며 네이티브 능력을 가진 시전자를 요구하지 않습니다. `ConfirmFusion`은 히든만 고정 원본 플레이어 0 시작점에 만들고, 기존 116개는 능력 소유 재료의 위치를 계속 사용합니다. 원자적 거래 경로는 같습니다.
+`Original323CommonFusionPort.ReviewedHidden`은 원본 채팅 콜백에 별도 게임 상태 변경이 없고, 재료가 매핑됐으며 결과 CH8 처리가 필요 없는 13개만 허용합니다. `RegisterReviewed`의 히든 재료 범위는 흔함~희귀함이며 네이티브 능력 시전자를 요구하지 않습니다. `ReviewedEternal`은 동일한 실시간 UNIT/WOOD 거래를 재사용하는 **ET01 비비 1개**로, 원본 JASS의 추가 오디오/대사 호출과 게임 상태 변경을 구분해 감사했습니다. 히든/ET01 결과는 원본 플레이어 0 시작점, 전설 등 능력형 결과는 시전 재료 위치에 배치합니다. A01S·ET01의 목재 5와 다른 전설의 목재 3은 원본 등록 데이터에서 읽습니다.
 
-[원본 감사 도구](../tools/audit_original_hidden_fusions.py)와 [원본 히든 거래 근거](../data/original-2323C-hidden-material-swaps.json)는 채팅 등록·래퍼·콜백 전체와 공통 거래 함수를 기록합니다. YY15의 XM 초기화, 해적선/변형 재료, CH8 추가 효과는 기존 잠금을 유지합니다. `OriginalHiddenMaterialSwapTests`는 이 근거를 레지스트리/객체와 대조하고, 상태 변경·보상·위치 변경을 넣은 콜백을 거절하는지 확인합니다.
+[원본 히든 감사](../tools/audit_original_hidden_fusions.py)와 [히든 거래 근거](../data/original-2323C-hidden-material-swaps.json), [영원 ET01 감사](../tools/audit_original_simple_eternal_fusion.py)는 채팅 등록·래퍼·콜백·원본 매핑을 검사합니다. YY15의 XM 초기화, 해적선 h060, CH8 추가 효과는 기존 잠금을 유지합니다. 원본 전용 **R-43=h05X**는 실제 W3X 객체로 추가했지만 UU01은 UPUN 표식만 있어 무료 생성되지 않습니다.
+
+`tools/classify_original_fusion_blockers.py`는 원본 265개와 `Reviewed*` 실제 허용 배열을 자동 집계해 [미연결 조합 133건과 중첩 원인](../data/original-fusion-unconnected-review.json)을 재생성합니다. 다른 상위 등급의 `KING`/`UBAN`/`RDUN`·변신·아이템 조건은 해당 원본 상태·효과·정산 공급자가 실제로 연결되기 전까지 제작을 거절합니다. 이 분류는 미리보기 UI나 실제 지급 권한이 아닙니다.

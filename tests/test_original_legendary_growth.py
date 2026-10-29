@@ -15,15 +15,16 @@ class OriginalLegendaryGrowthTests(unittest.TestCase):
             (DATA / 'original-2323C-map-base-stats.json').read_text())['catalogEntries'] if r.get('originalRawcode')}
 
     def test_legendary_materials_and_exact_wood_cost_match_source(self):
-        self.assertEqual(31, len(self.audit['recipes']))
-        self.assertEqual(31, len({r['resultCatalogId'] for r in self.audit['recipes']}))
+        self.assertEqual(33, len(self.audit['recipes']))
+        self.assertEqual(33, len({r['resultCatalogId'] for r in self.audit['recipes']}))
         for row in self.audit['recipes']:
             source = self.registry[row['abilityRawcode']]
             self.assertCountEqual(source['conditions'], row['conditions'])
             self.assertEqual(source['results'], row['results'])
-            self.assertEqual([{'kind': 'WOOD', 'rawcode': 'WOOD', 'count': 3}],
+            expected_wood = 5 if row['abilityRawcode'] == 'A01S' else 3
+            self.assertEqual([{'kind': 'WOOD', 'rawcode': 'WOOD', 'count': expected_wood}],
                              [r for r in row['conditions'] if r['kind'] == 'WOOD'])
-            self.assertEqual(3, row['woodCost'])
+            self.assertEqual(expected_wood, row['woodCost'])
             self.assertEqual('전설', self.objects[row['results'][0]['rawcode']]['grade'])
 
     def test_legendary_casters_are_actual_material_actors(self):
@@ -41,7 +42,7 @@ class OriginalLegendaryGrowthTests(unittest.TestCase):
             self.assertEqual(casters, row['originalCasterCatalogIds'])
 
     def test_additional_creation_and_unmapped_variant_recipes_are_excluded(self):
-        excluded = {'A00O', 'A02D', 'A025', 'A0UG', 'A01S', 'A02Q', 'A02G', 'A113'}
+        excluded = {'A00O', 'A02D', 'A025', 'A0UG', 'A02Q', 'A02G'}
         self.assertEqual(excluded, set(self.audit['excludedAbilities']))
         self.assertTrue(excluded.isdisjoint({r['abilityRawcode'] for r in self.audit['recipes']}))
 

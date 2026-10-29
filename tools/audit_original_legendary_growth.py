@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit 31 Legendary material/WOOD swaps, excluding extra creation paths."""
+"""Audit source-backed Legendary material/WOOD swaps, excluding extra creation paths."""
 import argparse
 import json
 from pathlib import Path
@@ -18,8 +18,8 @@ def audit(jass, abilities_path, data, port_path):
     registry = {r['abilityRawcode']: r for r in extract(jass)['registrations']}
     allowlist = port_path.read_text().split('string[,] ReviewedLegendary = {', 1)[1].split('};', 1)[0]
     reviewed = re.findall(r'\{ "(\w{4})", "(\w{4})", "(L-\d+)" \}', allowlist)
-    if len(reviewed) != 31 or len({x[0] for x in reviewed}) != 31:
-        raise ValueError('Expected 31 explicit Legendary recipes')
+    if len(reviewed) != 33 or len({x[0] for x in reviewed}) != 33:
+        raise ValueError('Expected 33 explicit Legendary recipes')
     creation = re.search(r'^function CH8 takes .*?^endfunction$', text, re.M | re.S).group(0)
     recipes = []
     for ability, rawcode, unit_id in reviewed:
@@ -29,7 +29,11 @@ def audit(jass, abilities_path, data, port_path):
                 {'kind': 'UNIT', 'rawcode': rawcode, 'count': 1}]:
             raise ValueError('Changed Legendary result: ' + ability)
         wood = [r for r in recipe['conditions'] if r['kind'] == 'WOOD']
-        if wood != [{'kind': 'WOOD', 'rawcode': 'WOOD', 'count': 3}]:
+        # A01S is the source's Rare-Rayleigh branch with a 5-wood cost;
+        # every other audited Legendary has 3. The runtime reads either
+        # amount from this registry, never from this exception table.
+        expected_wood = 5 if ability == 'A01S' else 3
+        if wood != [{'kind': 'WOOD', 'rawcode': 'WOOD', 'count': expected_wood}]:
             raise ValueError('Unreviewed Legendary cost')
         casters = []
         for row in recipe['conditions']:
@@ -52,14 +56,14 @@ def audit(jass, abilities_path, data, port_path):
         if 'GetUnitTypeId(iI)==$' + rawcode.encode().hex().upper() in creation:
             raise ValueError('Additional creation handler needed')
         recipes.append({**recipe, 'resultCatalogId': unit_id, 'resultName': output['catalogName'],
-                        'originalCasterCatalogIds': casters, 'woodCost': 3,
+                        'originalCasterCatalogIds': casters, 'woodCost': expected_wood,
                         'nativeBaseAbility': native['code'], 'nativeCastSeconds': .06,
                         'nativeCooldownSeconds': 0})
     return {'format': 'ordr-legendary-growth-v1', 'sourceW3xSha256': previous['sourceW3xSha256'],
             'sourceJassSha256': previous['sourceJassSha256'],
             'sourceAbilitySlkSha256': previous['sourceAbilitySlkSha256'],
             'functions': previous['functions'], 'recipes': recipes,
-            'excludedAbilities': ['A00O', 'A02D', 'A025', 'A0UG', 'A01S', 'A02Q', 'A02G', 'A113'],
+            'excludedAbilities': ['A00O', 'A02D', 'A025', 'A0UG', 'A02Q', 'A02G'],
             'retailCombatParityVerified': False,
             'limitations': ['Only reviewed UNIT/WOOD/UPUN material transactions are enabled.',
                             'Extra CH8 creation effects and unmapped material variants remain locked.',

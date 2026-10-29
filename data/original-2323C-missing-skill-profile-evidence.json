@@ -15,19 +15,19 @@
     "data/original-2323C-map-base-stats.json"
   ],
   "summary": {
-    "catalogCharacters": 273,
+    "catalogCharacters": 274,
     "charactersWithTooltipProfiles": 200,
-    "charactersWithoutTooltipProfiles": 73,
+    "charactersWithoutTooltipProfiles": 74,
     "unprofiledByGrade": {
       "안흔함": 14,
       "특별함": 25,
       "특수함": 1,
       "흔함": 9,
-      "희귀함": 24
+      "희귀함": 25
     },
-    "unprofiledWithMapRawcode": 73,
-    "unprofiledWithAbilityCodes": 73,
-    "distinctAbilityRawcodesForResearch": 185,
+    "unprofiledWithMapRawcode": 74,
+    "unprofiledWithAbilityCodes": 74,
+    "distinctAbilityRawcodesForResearch": 188,
     "verifiedSkillFormulasInThisDataset": 0,
     "authorizedOriginalParityImplementations": 0
   },
@@ -85,6 +85,7 @@
     "A01P": 1,
     "A01Q": 1,
     "A01R": 1,
+    "A01S": 1,
     "A01U": 1,
     "A01V": 1,
     "A01W": 1,
@@ -136,7 +137,7 @@
     "A07Q": 1,
     "A07R": 1,
     "A07S": 1,
-    "A07Y": 88,
+    "A07Y": 89,
     "A080": 1,
     "A083": 1,
     "A084": 1,
@@ -179,6 +180,7 @@
     "A0F5": 1,
     "A0F6": 1,
     "A0F7": 1,
+    "A0F8": 1,
     "A0FD": 1,
     "A0FF": 1,
     "A0FH": 1,
@@ -212,12 +214,13 @@
     "A0XP": 1,
     "A113": 1,
     "A12F": 1,
+    "A17T": 1,
     "A19Z": 1,
     "A1A0": 1,
     "A1A1": 1,
     "A1CC": 1,
     "A801": 8,
-    "Avul": 272
+    "Avul": 273
   },
   "warning": "Rawcode lists are original unit-object evidence, not verified skill triggers. Shared rawcode frequency is a research hint, not an effect classification. Missing web tooltip is NOT proof a character has no skills.",
   "characters": [
@@ -868,6 +871,33 @@
       "lessFrequentlyObservedRawcodesForResearchOnly": [
         "A03X",
         "A00H"
+      ],
+      "originalAbilityEffectsResolved": false,
+      "originalSkillJassTriggersResolved": false,
+      "tooltipProfilePresent": false,
+      "originalParitySkillExecutionAuthorized": false,
+      "researchState": "map-ability-ids-only-needs-object-and-jass-skill-review"
+    },
+    {
+      "catalogUnitId": "R-43",
+      "catalogName": "실버즈 레일리",
+      "grade": "희귀함",
+      "webDexUrl": null,
+      "mapUnitRawcode": "h05X",
+      "mapObjectIdentityStatus": "unique-map-name-and-grade",
+      "mapObjectName": "실버즈 레일리 - 희귀",
+      "hasOriginalAttack1ObjectEvidence": true,
+      "originalAbilityRawcodesInMapOrder": [
+        "A07Y",
+        "A01S",
+        "A0F8",
+        "A17T",
+        "Avul"
+      ],
+      "lessFrequentlyObservedRawcodesForResearchOnly": [
+        "A01S",
+        "A0F8",
+        "A17T"
       ],
       "originalAbilityEffectsResolved": false,
       "originalSkillJassTriggersResolved": false,

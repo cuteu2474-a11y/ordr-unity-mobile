@@ -1380,7 +1380,7 @@ namespace Ordr.Mobile.Combat
             storyDispatch = verifiedStory;
         }
 
-        // Supports ALL 271 catalogue types, including the 71 without a detailed
+        // Supports the current catalog, including entries without a detailed
         // skill profile. A provider must supply original-verified basic stats;
         // an unsupported unit remains spawnable but unable to attack.
         public void ConfigureVerifiedUnitAttackProvider(

@@ -8,7 +8,7 @@ using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Unity
 {
-    // One shared temporary sprite for all 271 unit definitions. No Warcraft
+    // One shared temporary sprite for all current unit definitions. No Warcraft
     // model, copyrighted texture or invented gameplay combat values are used.
     // This component only mirrors units that the game session actually owns.
     public sealed class OrdrUnitWorldPresenter : MonoBehaviour

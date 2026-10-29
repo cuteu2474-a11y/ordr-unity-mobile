@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit eleven Hidden chat-driven material swaps from the pinned original JASS.
+"""Audit reviewed Hidden chat-driven material swaps from the pinned original JASS.
 
 No native cast is substituted: these commands directly call BI2. Results use
 player zero's original start. Extra callbacks, CH8 effects and variant materials
@@ -55,8 +55,8 @@ def audit(jass, data, port):
     registry = {r['abilityRawcode']: r for r in extract(jass)['registrations']}
     block = port.read_text().split('string[,] ReviewedHidden = {', 1)[1].split('};', 1)[0]
     reviewed = re.findall(r'\{ "(YY\d{2})", "(\w{4})", "(H-\d+)" \}', block)
-    if len(reviewed) != 11 or len({r[0] for r in reviewed}) != 11:
-        raise ValueError('Expected eleven explicit Hidden recipes')
+    if len(reviewed) != 13 or len({r[0] for r in reviewed}) != 13:
+        raise ValueError('Expected thirteen explicit Hidden recipes')
     for fragment in ('call DefineStartLocation(0,-3776.,4480.)',
                      'call SetPlayerStartLocation(Player(0),0)'):
         if fragment not in text:
@@ -97,8 +97,8 @@ def audit(jass, data, port):
             'sourceJassSha256': JASS_SHA, 'positionPlayerZero': {'x': -3776, 'y': 4480},
             'recipes': recipes, 'functions': evidence, 'retailCombatParityVerified': False,
             'excludedHiddenAbilities': ['YY01', 'YY04', 'YY07', 'YY08', 'YY09', 'YY12',
-                                        'YY13', 'YY15', 'YY18', 'YY20', 'YY25'],
-            'limitations': ['Only eleven reviewed chat-driven material transactions are connected.',
+                                        'YY13', 'YY15', 'YY20'],
+            'limitations': ['Only thirteen reviewed chat-driven material transactions are connected.',
                             'YY15 resets XM in its chat callback; it is not a pure material swap.',
                             'Ship/variant materials and additional CH8 effects remain locked.',
                             'Hidden skills, native combat and retail gameplay parity remain incomplete.']}

@@ -185,6 +185,8 @@ namespace Ordr.Mobile.Tests
         [TestCase("A02H", "L-08")]
         [TestCase("A00H", "L-37")]
         [TestCase("A1CC", "L-39")]
+        [TestCase("A113", "L-14")]
+        [TestCase("A01S", "L-07")]
         [TestCase("YY02", "H-05")]
         [TestCase("YY03", "H-10")]
         [TestCase("YY05", "H-03")]
@@ -196,6 +198,9 @@ namespace Ordr.Mobile.Tests
         [TestCase("YY17", "H-01")]
         [TestCase("YY22", "H-20")]
         [TestCase("YY23", "H-21")]
+        [TestCase("YY18", "H-19")]
+        [TestCase("YY25", "H-22")]
+        [TestCase("ET01", "E-06")]
         public void AllReviewedRecipesConsumeActualMaterialsAndCreateOneResult(string ability, string result)
         {
             var game = Create();
@@ -206,8 +211,10 @@ namespace Ordr.Mobile.Tests
                 for (int i = 0; i < requirement.Value; i++) game.Combat.SpawnCharacter(id, 125, 340);
             }
             long unrelated = game.Combat.SpawnCharacter("C-07", 888, 999);
-            bool legendary = result.StartsWith("L-", StringComparison.Ordinal);
-            if (legendary) game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", 3));
+            int sourceWood = game.Registry.FindByAbility(ability).OrderedConditions
+                .Where(row => row.Kind == "WOOD").Sum(row => row.Count);
+            if (sourceWood > 0)
+                game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", sourceWood));
             var offer = Offer(game, ability);
             Assert.IsTrue(offer.IsReady, string.Join(",", offer.MissingMaterials));
             long[] consumed = offer.SuggestedMaterialInstances.ToArray();
@@ -218,9 +225,10 @@ namespace Ordr.Mobile.Tests
                 game.Fusion.ConfirmFusion(ability, consumed).State);
             var now = game.Combat.MobileUnitSnapshot();
             var made = now.Single(row => row.Unit.Id == result);
-            bool hidden = result.StartsWith("H-", StringComparison.Ordinal);
-            Assert.AreEqual(hidden ? -3776 : 125, made.Position.X);
-            Assert.AreEqual(hidden ? 4480 : 340, made.Position.Y);
+            bool originalChat = result.StartsWith("H-", StringComparison.Ordinal) ||
+                result.StartsWith("E-", StringComparison.Ordinal);
+            Assert.AreEqual(originalChat ? -3776 : 125, made.Position.X);
+            Assert.AreEqual(originalChat ? 4480 : 340, made.Position.Y);
             Assert.IsFalse(now.Any(row => consumed.Contains(row.InstanceId)));
             Assert.IsTrue(now.Any(row => row.InstanceId == unrelated));
             Assert.AreEqual(2, now.Count);
@@ -282,7 +290,7 @@ namespace Ordr.Mobile.Tests
         public void GaimonRawcodeMapsToLiveRosterButDoesNotUnlockUnreviewedFusion()
         {
             var game = Create();
-            Assert.AreEqual(273, game.Map.Count);
+            Assert.AreEqual(274, game.Map.Count);
             Assert.AreEqual("h0BG", game.Map.Find(SpecialGradeMobilePolicy.Gaimon).OriginalRawcode);
             Assert.AreEqual("가이몬 - 특수", game.Map.Find(SpecialGradeMobilePolicy.Gaimon).MapName);
             string id;
@@ -315,8 +323,9 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(127, game.Fusion.ExecutableRecipeCount);
-            Assert.AreEqual(11, game.Fusion.ExecutableHiddenRecipeCount);
+            Assert.AreEqual(132, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(13, game.Fusion.ExecutableHiddenRecipeCount);
+            Assert.AreEqual(1, game.Fusion.ExecutableEternalRecipeCount);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
             var fresh = Offer(game, "A012");
             Assert.AreEqual(ManualActionState.Succeeded,
@@ -353,7 +362,72 @@ namespace Ordr.Mobile.Tests
                 game.Fusion.ConfirmFusion("A03D", ready.SuggestedMaterialInstances).State);
             Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A00O"));
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("A01S"));
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("A01S"));
+        }
+
+        [TestCase("A01S", "L-07")]
+        [TestCase("ET01", "E-06")]
+        public void SourceSpecificFiveWoodRecipesRejectChangedBalanceWithoutDuplication(
+            string ability, string resultId)
+        {
+            var game = Create();
+            foreach (var material in game.Registry.FindByAbility(ability).RequiredUnitRawcodes())
+            {
+                string id;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id));
+                for (int i = 0; i < material.Value; i++) game.Combat.SpawnCharacter(id, 100, 200);
+            }
+            var originalCount = game.Combat.CharacterCount;
+            var originalWoodCost = game.Registry.FindByAbility(ability).OrderedConditions
+                .Where(x => x.Kind == "WOOD").Sum(x => x.Count);
+            Assert.AreEqual(5, originalWoodCost);
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", originalWoodCost));
+            var ready = Offer(game, ability);
+            Assert.IsTrue(ready.IsReady);
+            Assert.IsTrue(game.Economy.Wallet.TryExchange(
+                new ResourceBundle().Add("wood", 1), new ResourceBundle()));
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion(ability, ready.SuggestedMaterialInstances).State);
+            Assert.AreEqual(originalCount, game.Combat.CharacterCount);
+            Assert.IsFalse(game.Combat.MobileUnitSnapshot().Any(x => x.Unit.Id == resultId));
+            Assert.AreEqual(originalWoodCost - 1, game.Economy.Wallet.Balance("wood"));
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", 1));
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion(ability, ready.SuggestedMaterialInstances).State);
+            Assert.AreEqual(resultId, game.Combat.MobileUnitSnapshot().Single().Unit.Id);
+            Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion(ability, ready.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, game.Combat.CharacterCount);
+        }
+
+        [TestCase("A113")]
+        [TestCase("YY18")]
+        [TestCase("YY25")]
+        public void NewlyMappedRareRayleighMaterialCannotBeReplacedAfterUserSelection(string ability)
+        {
+            var game = Create();
+            foreach (var material in game.Registry.FindByAbility(ability).RequiredUnitRawcodes())
+            {
+                string id;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id));
+                for (int i = 0; i < material.Value; i++) game.Combat.SpawnCharacter(id, 80, 90);
+            }
+            int wood = game.Registry.FindByAbility(ability).OrderedConditions
+                .Where(x => x.Kind == "WOOD").Sum(x => x.Count);
+            if (wood > 0) game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", wood));
+            var ready = Offer(game, ability);
+            Assert.IsTrue(ready.IsReady);
+            long oldRayleigh = game.Combat.MobileUnitSnapshot().Single(x => x.Unit.Id == "R-43").InstanceId;
+            game.Combat.RemoveCharacter(oldRayleigh);
+            long newRayleigh = game.Combat.SpawnCharacter("R-43", 99, 110);
+            var countBefore = game.Combat.CharacterCount;
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion(ability, ready.SuggestedMaterialInstances).State);
+            Assert.AreEqual(countBefore, game.Combat.CharacterCount);
+            Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == newRayleigh));
+            Assert.AreEqual(wood, game.Economy.Wallet.Balance("wood"));
+            Assert.IsTrue(Offer(game, ability).IsReady);
         }
 
         [Test]
@@ -372,7 +446,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(2, game.Combat.CharacterCount);
             Assert.AreEqual("C-01", game.Combat.Roster.Get(luffy).UnitId);
             Assert.AreEqual("C-08", game.Combat.Roster.Get(replacement).UnitId);
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("ET01"));
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("ET01"));
         }
 
         [Test]
@@ -418,7 +492,7 @@ namespace Ordr.Mobile.Tests
         {
             var game = Create();
             foreach (string ability in new[] { "YY01", "YY04", "YY07", "YY08", "YY09", "YY12",
-                "YY13", "YY15", "YY18", "YY20", "YY25", "ET01", "A19Z", "A1A1", "A1A0" })
+                "YY13", "YY15", "YY20", "ET02", "A19Z", "A1A1", "A1A0" })
             {
                 Assert.IsFalse(game.Fusion.CanCommitRecipe(ability), ability);
                 Assert.AreEqual(ManualActionState.NotImplemented,
@@ -678,7 +752,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(11, result.Position.X);
             Assert.AreEqual(22, result.Position.Y);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("ET01"));
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("ET02"));
         }
 
         [Test]
@@ -699,7 +773,9 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(13, owner.ExecutableCommonFusionCount);
                 Assert.AreEqual(31, owner.ExecutableSpecialFusionCount);
                 Assert.AreEqual(41, owner.ExecutableRareFusionCount);
-                Assert.AreEqual(31, owner.ExecutableLegendaryFusionCount);
+                Assert.AreEqual(33, owner.ExecutableLegendaryFusionCount);
+                Assert.AreEqual(13, owner.ExecutableHiddenFusionCount);
+                Assert.AreEqual(1, owner.ExecutableEternalFusionCount);
                 Assert.AreEqual(ManualActionState.Succeeded, owner.RequestCommonWispBatch(5).State);
                 Assert.AreEqual(5, owner.Combat.CharacterCount);
                 Assert.AreEqual(6, owner.SharedEconomy.Units.Count); // Plus non-combat evolution.

@@ -20,7 +20,7 @@ class UnitRuntimeStatusTests(unittest.TestCase):
     def test_covers_every_source_catalog_identity_without_promoting_verification(self):
         source = read('original-2323C-map-base-stats.json')
         original = {r['catalogId']: r for r in source['catalogEntries']}
-        self.assertEqual(273, len(self.rows))
+        self.assertEqual(274, len(self.rows))
         self.assertEqual(set(original), set(self.rows))
         self.assertEqual(source['sourceW3xSha256'], self.status['sourceW3xSha256'])
         self.assertFalse(self.status['allUnitsComplete'])

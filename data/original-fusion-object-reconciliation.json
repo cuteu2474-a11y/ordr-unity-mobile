@@ -7,12 +7,12 @@
   "warning": "Object rawcode links and material/cost matches do NOT prove UPUN and other side conditions, transactional consumption, world effects or gameplay parity.",
   "summary": {
     "uniqueCwrUnitRawcodes": 280,
-    "originalCatalogObjectMatchedRawcodes": 272,
+    "originalCatalogObjectMatchedRawcodes": 273,
     "previouslyUnresolvedIngredientRawcodes": 163,
-    "newlyCrossReferencedIngredients": 156,
-    "stillWithoutCatalogIdentity": 7,
+    "newlyCrossReferencedIngredients": 157,
+    "stillWithoutCatalogIdentity": 6,
     "ingredientConditionOccurrences": 775,
-    "catalogMatchedIngredientConditionOccurrences": 712,
+    "catalogMatchedIngredientConditionOccurrences": 717,
     "webRecipeCount": 10,
     "matchingWebRecipes": 10,
     "catalogVsJassLabelConflicts": 0
@@ -1333,8 +1333,8 @@
       "resultOfAbilities": [
         "UU01"
       ],
-      "catalogUnitId": null,
-      "objectCatalogMappingStatus": null,
+      "catalogUnitId": "R-43",
+      "objectCatalogMappingStatus": "unique-map-name-and-grade",
       "originalW3xObjectName": "실버즈 레일리 - 희귀",
       "jassLabelCatalogUnitId": null,
       "approvedForMaterialConsumption": false

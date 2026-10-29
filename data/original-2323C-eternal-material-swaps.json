@@ -1,0 +1,105 @@
+{
+  "format": "ordr-eternal-material-swaps-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "recipe": {
+    "abilityRawcode": "ET01",
+    "jassLine": null,
+    "results": [
+      {
+        "kind": "UNIT",
+        "rawcode": "h057",
+        "count": 1
+      }
+    ],
+    "conditions": [
+      {
+        "kind": "UNIT",
+        "rawcode": "h05F",
+        "count": 1
+      },
+      {
+        "kind": "UNIT",
+        "rawcode": "h05W",
+        "count": 1
+      },
+      {
+        "kind": "UNIT",
+        "rawcode": "h01X",
+        "count": 1
+      },
+      {
+        "kind": "UNIT",
+        "rawcode": "h01S",
+        "count": 1
+      },
+      {
+        "kind": "UNIT",
+        "rawcode": "h00S",
+        "count": 1
+      },
+      {
+        "kind": "UNIT",
+        "rawcode": "h01G",
+        "count": 1
+      },
+      {
+        "kind": "WOOD",
+        "rawcode": "WOOD",
+        "count": 5
+      }
+    ],
+    "resultCatalogId": "E-06",
+    "ingredients": [
+      {
+        "rawcode": "h05F",
+        "catalogId": "LI-09",
+        "count": 1
+      },
+      {
+        "rawcode": "h05W",
+        "catalogId": "T-02",
+        "count": 1
+      },
+      {
+        "rawcode": "h01X",
+        "catalogId": "R-06",
+        "count": 1
+      },
+      {
+        "rawcode": "h01S",
+        "catalogId": "R-17",
+        "count": 1
+      },
+      {
+        "rawcode": "h00S",
+        "catalogId": "S-04",
+        "count": 1
+      },
+      {
+        "rawcode": "h01G",
+        "catalogId": "S-32",
+        "count": 1
+      }
+    ],
+    "chatCommands": [
+      "파이러츠왕녀",
+      "vivi et"
+    ],
+    "spawnAtPlayerZeroStart": {
+      "x": -3776,
+      "y": 4480
+    }
+  },
+  "sourceFunctionSha256LF": {
+    "B6B": "95c04b04111d7d67dade9419c394f788d824b7c4845a214b26478477addfd2be",
+    "B6C": "331c02c4542cc4e8cf4d0e9574fb2fc19081a461f57766c6c8f37364aac38b26",
+    "B6D": "a41495342dfbb677b5699f92cadf233b997e64773d4b5a5b3ca527c565bf0f66"
+  },
+  "combatParityVerified": false,
+  "limitations": [
+    "ET01 audio initialization is presentation, not a material expense.",
+    "Actual Eternal combat skills/attacks and sound playback remain unverified.",
+    "No other ET recipes are enabled; item, KING and UBAN require live state."
+  ]
+}

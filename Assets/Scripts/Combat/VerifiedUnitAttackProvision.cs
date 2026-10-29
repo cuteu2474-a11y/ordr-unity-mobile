@@ -3,8 +3,8 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
-    // Supplies only original-source-confirmed per-unit values. The character
-    // catalogue has 271 unit IDs, but their existence is not proof of a
+    // Supplies only original-source-confirmed per-unit values. The catalog
+    // contains many unit IDs, but their existence is not proof of a
     // Warcraft base attack, attack interval, damage school or first swing time.
     public sealed class OriginalVerifiedAttackBinding
     {

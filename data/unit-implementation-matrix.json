@@ -3,12 +3,12 @@
   "mode": "nightmare-otherworld",
   "generatedOn": "2026-10-21",
   "purpose": "All-unit runtime registration and remaining original-combat implementation worklist; no invented stats.",
-  "scopeWarning": "273/273 are catalog-addressable roster units, not 271 fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
+  "scopeWarning": "274/274 are catalog-addressable roster units, not fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
   "summary": {
-    "units": 273,
-    "catalogRosterEligible": 273,
+    "units": 274,
+    "catalogRosterEligible": 274,
     "partialSkillProfiles": 200,
-    "uncollectedProfiles": 73,
+    "uncollectedProfiles": 74,
     "skillEntries": 554,
     "passiveEntries": 295,
     "linkedJassRawcodes": 81,
@@ -36,7 +36,7 @@
       "rawcodeLinks": 0
     },
     "희귀함": {
-      "units": 42,
+      "units": 43,
       "profiles": 18,
       "rawcodeLinks": 0
     },
@@ -2150,6 +2150,24 @@
         "physical",
         "stun"
       ],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "R-43",
+      "name": "실버즈 레일리",
+      "grade": "희귀함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
       "passiveKinds": [],
       "jassLabelRawcode": null,
       "jassAbilityRawcode": null,

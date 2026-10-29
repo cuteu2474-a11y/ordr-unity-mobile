@@ -1801,6 +1801,105 @@
       "nativeBaseAbility": "AHwe",
       "nativeCastSeconds": 0.06,
       "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A113",
+      "jassLine": 61392,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h08S",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h010",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        }
+      ],
+      "resultCatalogId": "L-14",
+      "resultName": "브륄레",
+      "originalCasterCatalogIds": [
+        "R-30"
+      ],
+      "woodCost": 3,
+      "nativeBaseAbility": "Aroa",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
+    },
+    {
+      "abilityRawcode": "A01S",
+      "jassLine": 61287,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03A",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h05X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h028",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h018",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0B5",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h049",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        }
+      ],
+      "resultCatalogId": "L-07",
+      "resultName": "레일리",
+      "originalCasterCatalogIds": [
+        "R-43"
+      ],
+      "woodCost": 5,
+      "nativeBaseAbility": "AHwe",
+      "nativeCastSeconds": 0.06,
+      "nativeCooldownSeconds": 0
     }
   ],
   "excludedAbilities": [
@@ -1808,10 +1907,8 @@
     "A02D",
     "A025",
     "A0UG",
-    "A01S",
     "A02Q",
-    "A02G",
-    "A113"
+    "A02G"
   ],
   "retailCombatParityVerified": false,
   "limitations": [

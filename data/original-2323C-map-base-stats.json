@@ -17,18 +17,18 @@
   ],
   "summary": {
     "originalNamedObjects": 1493,
-    "catalogCharacters": 273,
-    "linkedCatalogCharacters": 272,
+    "catalogCharacters": 274,
+    "linkedCatalogCharacters": 273,
     "unresolvedCatalogCharacters": 1,
     "mappingStatusCounts": {
       "reviewed-map-name-alias-and-grade": 54,
-      "unique-map-name-and-grade": 154,
+      "unique-map-name-and-grade": 155,
       "unmatched": 1,
       "verified-common-map-identity": 9,
       "verified-jass-fusion-result": 6,
       "verified-jass-label-and-fusion-result": 49
     },
-    "linkedWithAttack1": 271,
+    "linkedWithAttack1": 272,
     "gameplayParityVerified": 0
   },
   "catalogEntries": [
@@ -3517,6 +3517,39 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A03Y,A03Z,A0B9,Avul,A0N9",
+      "combatParityVerified": false
+    },
+    {
+      "catalogId": "R-43",
+      "catalogName": "실버즈 레일리",
+      "grade": "희귀함",
+      "mappingStatus": "unique-map-name-and-grade",
+      "originalRawcode": "h05X",
+      "candidateRawcodes": [],
+      "sourceMapName": "실버즈 레일리 - 희귀",
+      "attack1": {
+        "attackCooldownSeconds": 0.85,
+        "baseDamagePlus": 20000,
+        "diceCount": 1,
+        "diceSides": 4,
+        "originalRange": 600,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "normal",
+        "attackPointSeconds": 0.27,
+        "minimumBaseDamage": 20001,
+        "maximumBaseDamage": 20004
+      },
+      "attack2": null,
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A07Y,A01S,A0F8,A17T,Avul",
       "combatParityVerified": false
     },
     {

@@ -527,6 +527,98 @@
         "킬러조합",
         "killer"
       ]
+    },
+    {
+      "abilityRawcode": "YY18",
+      "jassLine": 61516,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h07L",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h07J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Q",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h010",
+          "count": 2
+        }
+      ],
+      "resultCatalogId": "H-19",
+      "resultName": "캐럿",
+      "chatWrapper": "Bqs",
+      "chatHandler": "Bqt",
+      "commands": [
+        "캐럿조합",
+        "carrot"
+      ]
+    },
+    {
+      "abilityRawcode": "YY25",
+      "jassLine": 61544,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h047",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h05C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01M",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05X",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-22",
+      "resultName": "피셔타이거",
+      "chatWrapper": "BqS",
+      "chatHandler": "BqT",
+      "commands": [
+        "피셔타이거조합",
+        "tiger"
+      ]
     }
   ],
   "functions": {
@@ -544,6 +636,16 @@
       "line": 4690,
       "sha256LF": "a5fc7c1d9eb99cb1acccd3bf1ec9eacf20d8b3445141826622d85081e0672930",
       "source": "function BIw takes nothing returns nothing\nset WS=0\nset Q5=null\nset WT=null\nset WU=0\nset WV=false\nset WW=0.\nset WX=0.\ncall GroupClear(Q6)\nendfunction"
+    },
+    "BqS": {
+      "line": 16357,
+      "sha256LF": "549574a3aa0901b3cce7ba6118d4b23b1ffc1697af578d4306bbda4d9492abbb",
+      "source": "function BqS takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "BqT": {
+      "line": 16364,
+      "sha256LF": "a87bbce37f295e85dcff853e8455e11d3e7208cd351127045655bb1b8648cca8",
+      "source": "function BqT takes nothing returns nothing\nif not BqS($59593235) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000피셔타이거 : |r|cffFA8072달려! 다시는 잡히지 마라!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
     },
     "Bqf": {
       "line": 16497,
@@ -574,6 +676,16 @@
       "line": 16594,
       "sha256LF": "cb926c650a5cf6e365a06ff9b04e70a6157f52b35a4d9b29438b1225edabfef0",
       "source": "function Bqo takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Bqn($59593232) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000키쿠노죠 : |r|cffFA8072소첩은 사무라이입니다! |r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "Bqs": {
+      "line": 16692,
+      "sha256LF": "bc997062f90bc790eb87da32272d6b36ee81a73776bba7f31f094a43165d861b",
+      "source": "function Bqs takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "Bqt": {
+      "line": 16699,
+      "sha256LF": "82b43d4863404c4645d66f08b054f35fce45b15bca6ef9c85e1c2f7a147bc4f5",
+      "source": "function Bqt takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Bqs($59593138) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000캐럿 : |r|cffFA8072내 당근!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
     },
     "Bqy": {
       "line": 16742,
@@ -696,12 +808,10 @@
     "YY12",
     "YY13",
     "YY15",
-    "YY18",
-    "YY20",
-    "YY25"
+    "YY20"
   ],
   "limitations": [
-    "Only eleven reviewed chat-driven material transactions are connected.",
+    "Only thirteen reviewed chat-driven material transactions are connected.",
     "YY15 resets XM in its chat callback; it is not a pure material swap.",
     "Ship/variant materials and additional CH8 effects remain locked.",
     "Hidden skills, native combat and retail gameplay parity remain incomplete."
