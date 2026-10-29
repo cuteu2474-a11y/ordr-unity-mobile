@@ -4,6 +4,13 @@
 
 현재 기능 범위는 [START_HERE](START_HERE.md), 재사용할 구현은 [CODE_MAP](CODE_MAP.md)을 먼저 확인합니다. 과거 P0~P5 및 A~K 항목의 미체크 표시는 당시 전체 완성 기준이므로 이미 연결된 기능을 다시 만들라는 지시가 아닙니다. 기존 ID와 근거는 [P0~P5 보존본](archive/PLAYABLE_ROADMAP-20261028.md), [133개 상세 항목 보존본](archive/개발-작업목록-20261028.md)에 남겼습니다.
 
+## 2026-10-29 APK 결과 파일 쓰기 권한 수정
+
+- [x] `c84ae4d` 실행 40883799065: Unity 빌드·자료/해시/CRC/CPU·실제 v2 서명 통과 후 검증 JSON 쓰기 `PermissionError` 확인. APK 첨부는 건너뜀.
+- [x] 기존 워크플로의 복사 → runner 임시 폴더에서 동일 검증 → 단일 폴더 4개 파일 첨부로 수정. 컨테이너 출력에 쓰지 않으며 원본 APK는 보존.
+- [x] Python 179개·공백·문서 링크 검사 통과(`c84ae4d` + 수정). 신규 2개는 실제 shell 블록/입력 fixture/signer 대역 검사이고 root 로컬 환경의 권한 강제·실제 서명/Unity/기기 검사가 아님.
+- [ ] 새 APK 첨부 성공·설치·플레이 확인. 푸시 후 시작까지만 확인하고 종료.
+
 ## 2026-10-29 APK 업로드 차단 수정
 
 - [x] 사용자 요청으로 `ee5cd0d` 실행 40838453130 확인: Python·Unity EditMode·Android 생성 성공, 고정 `resources.assets` ZIP 이름 검사 실패로 APK 업로드 건너뜀. 약 30MB 파일 생성 로그는 있으나 APK 아티팩트 없음.

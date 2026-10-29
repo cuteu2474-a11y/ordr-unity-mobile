@@ -4,6 +4,15 @@
 
 새 AI는 이 문서 → [코드 구조](CODE_MAP.md) → [작업목록](PLAYABLE_ROADMAP.md) 순서로 읽는다. 운영 규칙은 루트 [AGENTS.md](../AGENTS.md)를 따른다. 이후 게임 코드가 바뀌면 이 문서의 범위도 다시 대조한다. 문서 정리 커밋은 게임 기능을 바꾸지 않는다.
 
+## 2026-10-29 APK 검증 결과 파일 쓰기 권한 수정
+
+사용자 요청으로 `c84ae4d`의 [실행 40883799065](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/40883799065)을 확인했습니다. Python·Unity EditMode·Android 빌드·필수 JSON 패킹 증빙·APK 해시/CRC/CPU 검사가 통과했고 실제 `apksigner`는 v2 서명을 검증했습니다. 이후 `build/Android/ORDR-Mobile-Development.verification.json`을 쓸 때 `PermissionError`가 발생해 APK 첨부가 다시 건너뛰었습니다. 앞선 고정 리소스 파일명 문제와 별개인 출력 디렉터리 쓰기 권한 문제입니다.
+
+- 기존 워크플로에서 APK와 `.build.json`을 실행 사용자 소유의 `$RUNNER_TEMP/ordr-apk-package`로 복사한 뒤 검증합니다. Unity 컨테이너의 출력 디렉터리에는 결과를 쓰지 않습니다. 검증 JSON·체크섬은 이 패키지 폴더에 만들고, 같은 폴더의 4개 파일을 기존 APK 아티팩트로 첨부합니다.
+- 필수 자료·해시·CRC·두 CPU·실제 서명 검사는 유지하며 검증 실패 시 업로드하지 않습니다. 새 브랜치/워크플로 없이 기존 `[apk-preview]` 경로로 한 번만 제작을 요청합니다.
+- 로컬 검사(`c84ae4d` + 수정): Python **179개 통과**, 공백·문서 링크 검사 통과. 신규 2개는 실제 워크플로의 shell 블록을 읽어 읽기 전용 모드의 입력 fixture에서 별도 폴더의 4개 결과 생성/원본 불변과 서명 명령 실패 시 성공 보고서 미생성을 검사합니다. 로컬 실행은 root이므로 권한 자체의 강제는 CI의 일반 runner 사용자에서 확인하며, signer는 대역입니다. 실제 APK 서명/Unity/기기 검사로 보고하지 않습니다.
+- 수정 후 Actions 시작까지만 확인하고 종료합니다. 새 APK 첨부 성공·설치·실기 플레이는 아직 미확인입니다.
+
 ## 2026-10-29 APK 미첨부 원인과 수정
 
 사용자 요청으로 `ee5cd0d`의 [실행 40838453130](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/40838453130)을 확인했습니다. Python·Unity EditMode 단계와 Unity Android 생성은 성공했고 약 30MB APK 및 필수 JSON 20개 패킹이 로그에 기록돼 있습니다. 그러나 후속 Python 검사가 ZIP 내부 `assets/bin/Data/resources.assets`라는 고정 이름을 요구해 실패했고, APK 업로드는 건너뛰었습니다. 해당 실행에는 다운로드 가능한 APK 아티팩트가 없습니다. 실제 내부 리소스 파일명은 이 로그만으로 특정하지 않습니다.

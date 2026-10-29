@@ -32,7 +32,7 @@ Unity 없이 실행한 공통 C# 컴파일/NUnit은 검사한 코드 범위만 �
 | push 커밋 메시지에 `[apk-preview]` 포함 | `check`에 의존하는 `android-apk-preview` 실행 |
 | 동시 실행 | 그룹 `ordr-unity-editmode`, `cancel-in-progress: false` |
 | 검사 아티팩트 | `unity-editmode-results` |
-| APK 아티팩트 | `ordr-mobile-android-development-apk`, `build/Android/ORDR-Mobile-Development.apk` 및 패킹 증빙·검증 JSON·SHA-256, 보존 14일 |
+| APK 아티팩트 | `ordr-mobile-android-development-apk`, `ORDR-Mobile-Development.apk` 및 패킹 증빙·검증 JSON·SHA-256, 보존 14일 |
 
 CI에 `UNITY_LICENSE`, `UNITY_EMAIL`, `UNITY_PASSWORD` 설정이 필요합니다. 값이나 키 파일을 코드·문서·로그에 노출하지 않습니다. 라이선스 단계 실패를 게임 테스트 실패로 혼동하지 않습니다.
 
@@ -52,6 +52,8 @@ Unity -batchmode -nographics -quit -projectPath "$PWD" -buildTarget Android \
 
 빌드 전 20개 `data/` 파일을 동기화·검사합니다. 기본 씬을 빌드하고 실패 시 예외로 CI를 실패시키며 이전 APK를 새 성공 결과로 재사용하지 않습니다. 생성 뒤 빌더가 실제 `BuildReport.packedAssets`의 필수 20개 자산 패킹과 생성 APK 해시를 `.build.json`에 기록합니다. `tools/verify_android_apk.py`는 이 증빙과 importer의 전체 목록·실제 APK 해시를 대조하고 필수 네이티브 라이브러리·ZIP CRC와 실제 Android `apksigner verify`를 검사합니다. 내부 `resources.assets` 이름을 고정하지 않습니다. Unity의 [빌드 콘텐츠 문서](https://docs.unity3d.com/kr/current/Manual/build-content-output.html)도 출력 파일명의 버전별 변경 가능성을 명시합니다. 서명 확인은 실제 설치·게임 플레이 검사와 별개입니다.
 
+CI에서는 Unity 컨테이너가 만든 APK·패킹 증빙을 `$RUNNER_TEMP/ordr-apk-package`로 복사하고 그 복사본을 검증합니다. 쓰기 권한이 있는 이 폴더에 검증 JSON·SHA-256을 생성하고 폴더 전체를 첨부합니다. 컨테이너의 원본 `build/Android`에 결과 파일을 쓰지 않습니다.
+
 성공한 Actions 실행의 **Artifacts → ordr-mobile-android-development-apk**에서 ZIP을 내려받아 풀면 APK, `.build.json`, `.apk.sha256`, `.verification.json`이 있습니다. 생성 APK의 실제 SHA-256과 소스 커밋을 확인할 수 있습니다. 빌드가 실패하거나 진행 중이면 이 결과물이 있다고 안내하지 않습니다. 현재 게임은 10R/20R 개발용 연습이며 전체 저장·65R·전체 스킬은 미완성입니다.
 
 ## 결과 해석과 조회
@@ -65,3 +67,5 @@ Unity -batchmode -nographics -quit -projectPath "$PWD" -buildTarget Android \
 ## 2026-10-29 APK가 보이지 않았던 실행
 
 `ee5cd0d`의 [실행 40838453130](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/40838453130)에서 Unity Android 단계는 약 30MB APK를 생성했지만 후속 고정 리소스 파일명 검사가 실패해 APK 첨부가 건너뛰어졌습니다. 남아 있는 아티팩트는 EditMode 결과뿐입니다. 이번 수정은 실제 Unity 패킹 증빙과 APK 해시를 사용합니다. 수정 후 다운로드 성공이나 기기 플레이를 미리 통과로 표시하지 않습니다.
+
+`c84ae4d`의 [실행 40883799065](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/40883799065)에서는 패킹 증빙/해시/CRC/CPU와 실제 v2 서명까지 통과했으나 검증 JSON을 컨테이너 출력 옆에 쓰다 권한 오류가 발생했습니다. 이 때문에 APK 아티팩트는 첨부되지 않았습니다. 현재 워크플로는 runner 임시 폴더의 복사본을 사용합니다. 검증 생략이나 권한 전체 개방으로 처리하지 않습니다.

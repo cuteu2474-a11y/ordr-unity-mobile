@@ -105,17 +105,19 @@ jobs:
           set -euo pipefail
           signer=$(find "${ANDROID_HOME:?}/build-tools" -name apksigner -type f | sort -V | tail -n 1)
           test -n "$signer"
-          python3 tools/verify_android_apk.py build/Android/ORDR-Mobile-Development.apk \
+          # Unity's Docker container can leave build/ owned by root.
+          # Read its output and verify a runner-owned package; do not write there.
+          package="${RUNNER_TEMP:?}/ordr-apk-package"
+          mkdir -p "$package"
+          cp build/Android/ORDR-Mobile-Development.apk \
+            build/Android/ORDR-Mobile-Development.build.json "$package/"
+          python3 tools/verify_android_apk.py "$package/ORDR-Mobile-Development.apk" \
             --apksigner "$signer" --commit "$ORDR_SOURCE_COMMIT"
 
       - name: 개발용 APK 첨부
         uses: actions/upload-artifact@v4
         with:
           name: ordr-mobile-android-development-apk
-          path: |
-            build/Android/ORDR-Mobile-Development.apk
-            build/Android/ORDR-Mobile-Development.build.json
-            build/Android/ORDR-Mobile-Development.apk.sha256
-            build/Android/ORDR-Mobile-Development.verification.json
+          path: ${{ runner.temp }}/ordr-apk-package/
           if-no-files-found: error
           retention-days: 14

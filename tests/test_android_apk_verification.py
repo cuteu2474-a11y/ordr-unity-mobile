@@ -1,5 +1,9 @@
 import hashlib
 import json
+import os
+import shutil
+import subprocess
+import textwrap
 from pathlib import Path
 import tempfile
 import unittest
@@ -117,3 +121,77 @@ class AndroidApkVerificationTests(unittest.TestCase):
             path = self.make_apk(directory).rename(Path(directory) / 'fixture.aab')
             with self.assertRaises(ValueError):
                 inspect_apk(path)
+
+
+class AndroidApkWorkflowPackagingTests(unittest.TestCase):
+    make_apk = AndroidApkVerificationTests.make_apk
+    write_manifest = AndroidApkVerificationTests.write_manifest
+    # Run the actual workflow shell block against container fixtures and a
+    # signer command stub. This is a permissions/packaging test, not a real APK
+    # signature, Unity build or device-play check.
+    def run_workflow_package(self, signer_exit):
+        repo = Path(__file__).resolve().parents[1]
+        workflow = (repo / '.github/workflows/unity-editmode.yml').read_text()
+        step = workflow.split('- name: APK 필수 데이터·CPU·서명·체크섬 검증', 1)[1]
+        step = step.split('\n      - name:', 1)[0]
+        script = textwrap.dedent(step.split('        run: |\n', 1)[1])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            root.chmod(0o755)
+            build = root / 'build/Android'
+            build.mkdir(parents=True)
+            apk = self.make_apk(build).rename(build / 'ORDR-Mobile-Development.apk')
+            (build / 'fixture.build.json').rename(apk.with_suffix('.build.json'))
+            initial_hash = hashlib.sha256(apk.read_bytes()).hexdigest()
+            for name in ['tools/verify_android_apk.py', 'Assets/Editor/OrdrCharacterDataSync.cs']:
+                target = root / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(repo / name, target)
+            signer = root / 'sdk/build-tools/fixture/apksigner'
+            signer.parent.mkdir(parents=True)
+            signer.write_text('#!/bin/sh\nexit ' + str(signer_exit) + '\n')
+            signer.chmod(0o755)
+            runtime = root / 'runner-temp'
+            runtime.mkdir(mode=0o777)
+            runtime.chmod(0o777)
+            # Reproduce Docker's root-owned, read-only-to-runner output.
+            for source in build.iterdir():
+                source.chmod(0o444)
+            build.chmod(0o555)
+            # A normal CI runner enforces these permissions. Root test hosts
+            # still verify the exact shell flow leaves the source untouched.
+            try:
+                result = subprocess.run(['/bin/bash', '-euo', 'pipefail', '-c', script],
+                    cwd=root, env={**os.environ, 'ANDROID_HOME': str(root / 'sdk'),
+                                   'RUNNER_TEMP': str(runtime), 'ORDR_SOURCE_COMMIT': 'a' * 40},
+                    capture_output=True, text=True)
+                package = runtime / 'ordr-apk-package'
+                if signer_exit:
+                    self.assertNotEqual(0, result.returncode)
+                    self.assertFalse(list(package.glob('*.verification.json')))
+                    self.assertFalse(list(package.glob('*.sha256')))
+                else:
+                    self.assertEqual(0, result.returncode, result.stderr)
+                    self.assertEqual({apk.name, apk.with_suffix('.build.json').name,
+                                      apk.with_suffix('.verification.json').name,
+                                      apk.name + '.sha256'}, {file.name for file in package.iterdir()})
+                    self.assertEqual(initial_hash, hashlib.sha256((package / apk.name).read_bytes()).hexdigest())
+                    self.assertEqual(apk.with_suffix('.build.json').read_bytes(),
+                                     (package / apk.with_suffix('.build.json').name).read_bytes())
+                    self.assertEqual(initial_hash + '  ' + apk.name + '\n',
+                                     (package / (apk.name + '.sha256')).read_text())
+                    report = json.loads((package / apk.with_suffix('.verification.json').name).read_text())
+                    self.assertEqual(initial_hash, report['sha256'])
+                    self.assertEqual('a' * 40, report['sourceCommit'])
+                    self.assertFalse(report['deviceGameplayVerified'])
+                    self.assertIn('path: ${{ runner.temp }}/ordr-apk-package/', workflow)
+                self.assertEqual(initial_hash, hashlib.sha256(apk.read_bytes()).hexdigest())
+                self.assertEqual(2, len(list(build.iterdir())))
+            finally:
+                build.chmod(0o755)
+
+    def test_runner_packages_read_only_unity_output(self):
+        self.run_workflow_package(signer_exit=0)
+
+    def test_failed_signer_does_not_produce_success_reports(self):
+        self.run_workflow_package(signer_exit=1)
