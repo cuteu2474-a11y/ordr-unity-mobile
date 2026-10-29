@@ -114,6 +114,7 @@ jobs:
           name: ordr-mobile-android-development-apk
           path: |
             build/Android/ORDR-Mobile-Development.apk
+            build/Android/ORDR-Mobile-Development.build.json
             build/Android/ORDR-Mobile-Development.apk.sha256
             build/Android/ORDR-Mobile-Development.verification.json
           if-no-files-found: error

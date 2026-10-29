@@ -12,12 +12,40 @@ REQUIRED = (
     'AndroidManifest.xml',
     'classes.dex',
     'assets/bin/Data/globalgamemanagers',
-    'assets/bin/Data/resources.assets',
     'lib/arm64-v8a/libil2cpp.so',
     'lib/arm64-v8a/libunity.so',
     'lib/armeabi-v7a/libil2cpp.so',
     'lib/armeabi-v7a/libunity.so',
 )
+
+
+def required_runtime_assets():
+    # Read the importer's single source list; do not maintain a second roster.
+    importer = Path(__file__).resolve().parents[1] / 'Assets/Editor/OrdrCharacterDataSync.cs'
+    source = importer.read_text(encoding='utf-8')
+    match = re.search(r'\bDataFiles\s*=\s*\{(.*?)\};', source, re.S)
+    files = re.findall(r'"([^"\n]+\.json)"', match.group(1)) if match else []
+    if not files or len(files) != len(set(files)):
+        raise ValueError('Cannot read the unique runtime resource list from the importer')
+    return ['Assets/Resources/OrdrData/' + name for name in files]
+
+
+def verify_runtime_manifest(path, digest):
+    manifest_path = path.with_suffix('.build.json')
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+    except (OSError, ValueError) as error:
+        raise ValueError('Unity runtime data build manifest is missing or invalid') from error
+    if not isinstance(manifest, dict) or manifest.get('formatVersion') != 1:
+        raise ValueError('Unsupported Unity runtime data build manifest')
+    if manifest.get('apkSha256') != digest:
+        raise ValueError('Unity build manifest does not match this APK SHA-256')
+    assets = manifest.get('runtimeAssets')
+    expected = required_runtime_assets()
+    if (not isinstance(assets, list) or any(not isinstance(item, str) for item in assets)
+            or len(assets) != len(set(assets)) or set(assets) != set(expected)):
+        raise ValueError('Unity build manifest must contain every required runtime asset exactly once')
+    return assets
 
 
 def inspect_apk(path):
@@ -42,7 +70,9 @@ def inspect_apk(path):
     with path.open('rb') as stream:
         for block in iter(lambda: stream.read(1024 * 1024), b''):
             digest.update(block)
+    assets = verify_runtime_manifest(path, digest.hexdigest())
     return {'file': path.name, 'bytes': path.stat().st_size,
+            'runtimeAssets': assets, 'runtimeDataVerifiedBy': 'Unity BuildReport.packedAssets',
             'sha256': digest.hexdigest(), 'abis': ['arm64-v8a', 'armeabi-v7a']}
 
 

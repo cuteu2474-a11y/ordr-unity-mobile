@@ -47,6 +47,11 @@ namespace Ordr.Mobile.Editor
         // disabled menus or unit effects when an input is missing.
         private static readonly string[] RequiredRuntimeData = DataFiles;
 
+        internal static string[] RequiredRuntimeAssetPaths()
+        {
+            return RequiredRuntimeData.Select(file => "Assets/Resources/OrdrData/" + file).ToArray();
+        }
+
         static OrdrCharacterDataSync()
         {
             EditorApplication.delayCall += SyncOnProjectOpen;
