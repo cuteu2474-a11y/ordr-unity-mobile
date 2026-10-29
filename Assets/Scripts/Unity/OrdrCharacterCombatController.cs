@@ -2432,12 +2432,12 @@ namespace Ordr.Mobile.Unity
             // cadence, enemy roles, HP and the explicitly supplied observer.
             // Do NOT call or counterfeit the original round event witness.
             VerifiedWavePlan plan = RequireVerifiedMonsterWavePlan(waveNumber);
-            BeginAuthorizedVerifiedMonsterWave(waveNumber, plan);
+            BeginAuthorizedVerifiedMonsterWave(waveNumber, plan, false);
         }
 #endif
 
         private void BeginAuthorizedVerifiedMonsterWave(
-            int waveNumber, VerifiedWavePlan plan)
+            int waveNumber, VerifiedWavePlan plan, bool originalEventConfirmed = true)
         {
             // BGo dispatches l0 before the next round is entered. CU8/CU7
             // defeats a player whose previous boss remains outstanding.
@@ -2466,6 +2466,8 @@ namespace Ordr.Mobile.Unity
                 }
             }
             VerifiedWaveDirector.Begin(Combat, plan);
+            if (originalEventConfirmed)
+                commonSourceFusion?.ConfirmObservedOriginalRound(waveNumber);
             RecordSessionIssue("라운드 시작", waveNumber + "라운드 / 원본 이벤트 승인");
             PersonalMissions?.OnRoundStarted();
         }
@@ -2535,6 +2537,7 @@ namespace Ordr.Mobile.Unity
             VerifiedWavePlan first = RequireVerifiedMonsterWavePlan(1);
             if (!IsUnitPreparation) BeginSession();
             VerifiedWaveDirector.Begin(Combat, first);
+            commonSourceFusion?.ConfirmObservedOriginalRound(1);
             RecordSessionIssue("라운드 시작", "1라운드 / 원본 이벤트 승인");
             PersonalMissions?.OnRoundStarted();
         }

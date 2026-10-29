@@ -12,7 +12,8 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 REVIEWED_NAMES = ('Reviewed', 'ReviewedSpecial', 'ReviewedRare',
-                  'ReviewedLegendary', 'ReviewedHidden', 'ReviewedEternal')
+                  'ReviewedLegendary', 'ReviewedHidden', 'ReviewedEternal',
+                  'ReviewedRestricted')
 CONDITION_GROUPS = {
     'ITEM': 'item-payment',
     'SKPT': 'trait-counter', 'CHCT': 'trait-counter', 'IFCT': 'trait-counter',

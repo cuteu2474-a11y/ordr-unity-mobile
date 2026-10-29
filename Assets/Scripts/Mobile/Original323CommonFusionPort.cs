@@ -7,7 +7,7 @@ using Ordr.Mobile.Data;
 namespace Ordr.Mobile.Mobile
 {
     // Executable scope reviewed against CWR/CH5/CHu/CHx/CHy/CT1/CT2.
-    // Reviewed material-only recipes use original UNIT/WOOD costs and UPUN
+    // Reviewed recipes use original UNIT/GOLD/WOOD costs and UPUN
     // presentation markers. CH5/CHi register no UPUN check/payment callback.
     // AOsf-based casts (two Special, one Rare) remain pending a native-cast audit.
     // Legendary entries with additional creation handlers or unmapped materials stay locked.
@@ -155,6 +155,18 @@ namespace Ordr.Mobile.Mobile
         private static readonly string[,] ReviewedEternal = {
             { "ET01", "h057", "E-06" }
         };
+        // Callback audit (pinned JASS): Bvu/B9k/B9K/B_M/B5Q/B4r
+        // perform only BI2 plus narration/audio; no extra creation, item,
+        // player-state, trait or permanent ability effects. All other
+        // KING/UBAN recipes retain their original execution locks.
+        private static readonly string[,] ReviewedRestricted = {
+            { "A0RP", "h040", "LI-05" },
+            { "IM02", "h04B", "I-09" },
+            { "IM03", "h04C", "I-01" },
+            { "IM10", "h04G", "I-10" },
+            { "ET09", "h05B", "E-10" },
+            { "ET11", "h059", "E-07" }
+        };
         // Original chat wrappers call BI1(GetPlayerStartLocationX/Y).
         // config: SetPlayerStartLocation(Player(0),0); DefineStartLocation(0,-3776.,4480.).
         private const double HiddenResultX = -3776.0;
@@ -164,6 +176,8 @@ namespace Ordr.Mobile.Mobile
         private readonly OriginalMapBaseStatCatalog objects;
         private readonly OriginalJassFusionPlanner planner;
         private readonly IOriginalFusionPort fallback;
+        private readonly OriginalJassKnownConditions verifiedConditions;
+        private readonly Original323FusionVerifiedRestrictions sourceRestrictions;
         private readonly Dictionary<string, string> mappings = new Dictionary<string, string>();
         private readonly HashSet<string> supported = new HashSet<string>();
         private readonly Dictionary<string, string> resultGrades = new Dictionary<string, string>();
@@ -178,11 +192,19 @@ namespace Ordr.Mobile.Mobile
         public int ExecutableLegendaryRecipeCount => ReviewedLegendary.GetLength(0);
         public int ExecutableHiddenRecipeCount => ReviewedHidden.GetLength(0);
         public int ExecutableEternalRecipeCount => ReviewedEternal.GetLength(0);
+        public int ExecutableRestrictedRecipeCount => ReviewedRestricted.GetLength(0);
+        public int SourceBannedUnitCount => sourceRestrictions.BannedUnitCount;
+
+        internal void ConfirmObservedOriginalRound(int round)
+        {
+            sourceRestrictions.ConfirmObservedOriginalRound(round);
+        }
 
         public Original323CommonFusionPort(CharacterCombatRuntime world, SharedEconomySession shared,
             CharacterUnitCatalog units, OriginalMapBaseStatCatalog originalObjects,
             OriginalJassFusionCatalog registrations, OriginalUnitRawcodeLabelCatalog labels,
-            IOriginalFusionPort readOnlyFallback)
+            IOriginalFusionPort readOnlyFallback,
+            Original323FusionVerifiedRestrictions verifiedSourceRestrictions = null)
         {
             combat = world ?? throw new ArgumentNullException(nameof(world));
             economy = shared ?? throw new ArgumentNullException(nameof(shared));
@@ -192,6 +214,18 @@ namespace Ordr.Mobile.Mobile
                 objects.SourceW3xSha256 != OriginalCommonSaleRules.OriginalMapSha256 || registrations == null ||
                 registrations.SourceSha256 != OriginalVerifiedUnitObjectMap.ExpectedJassSha256)
                 throw new ArgumentException("원본 조합과 실제 보유 세션이 일치하지 않습니다.");
+            if (verifiedSourceRestrictions != null &&
+                !ReferenceEquals(verifiedSourceRestrictions.SourceSession, combat.Game))
+                throw new ArgumentException("조합 조건의 원본 세션이 다릅니다.");
+            sourceRestrictions = verifiedSourceRestrictions ??
+                new Original323FusionVerifiedRestrictions(combat.Game);
+            verifiedConditions = new OriginalJassKnownConditions(sourceRestrictions);
+            // Source-backed object identities are reusable by every fusion tier.
+            // This alone grants no ability and does not make a recipe executable.
+            foreach (var original in objects.All)
+                if (!string.IsNullOrEmpty(original.OriginalRawcode))
+                    Bind(units, original.UnitId, original.OriginalRawcode,
+                        units.Require(original.UnitId).Grade);
             for (int i = 0; i < CommonRawcodes.Length; i++)
                 Bind(units, "C-" + (i + 1).ToString("D2"), CommonRawcodes[i], "흔함");
             Bind(units, "U-14", "h00H", "안흔함"); // original zombie material, not a free acquisition
@@ -227,6 +261,7 @@ namespace Ordr.Mobile.Mobile
             Bind(units, "LI-09", "h05F", "제한됨");
             Bind(units, "T-02", "h05W", "변화");
             RegisterReviewed(units, registrations, ReviewedEternal, "영원한");
+            RegisterRestricted(units, registrations);
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
             planner.SetVerifiedObjectMap(this);
@@ -284,15 +319,89 @@ namespace Ordr.Mobile.Mobile
             var row = objects.Find(id);
             if (units.Require(id).Grade != grade || row == null || row.OriginalRawcode != rawcode)
                 throw new FormatException("검수한 하위 등급 원본 객체가 다릅니다: " + id);
-            mappings.Add(rawcode, id);
+            string already;
+            if (mappings.TryGetValue(rawcode, out already))
+            {
+                if (already != id) throw new FormatException("원본 객체 ID 충돌: " + rawcode);
+            }
+            else mappings.Add(rawcode, id);
+        }
+
+        private void RegisterRestricted(CharacterUnitCatalog units,
+            OriginalJassFusionCatalog registrations)
+        {
+            for (int i = 0; i < ReviewedRestricted.GetLength(0); i++)
+            {
+                string ability = ReviewedRestricted[i, 0];
+                string result = ReviewedRestricted[i, 1];
+                string id = ReviewedRestricted[i, 2];
+                string grade = units.Require(id).Grade;
+                if (grade != "제한됨" && grade != "불멸의" && grade != "영원한")
+                    throw new FormatException("상위 조합 결과 등급 불일치: " + ability);
+                Bind(units, id, result, grade);
+                var recipe = registrations.FindByAbility(ability);
+                if (recipe == null || recipe.Results.Count != 1 ||
+                    recipe.Results[0].Kind != "UNIT" || recipe.Results[0].Count != 1 ||
+                    recipe.Results[0].Rawcode != result)
+                    throw new FormatException("검수된 상위 조합 결과가 바뀌었습니다: " + ability);
+                bool materials = false, wood = false, banned = false, king = false, caster = false;
+                foreach (var condition in recipe.OrderedConditions)
+                {
+                    string materialId;
+                    switch (condition.Kind)
+                    {
+                        case "UNIT":
+                            if (condition.Count < 1 || !mappings.TryGetValue(condition.Rawcode, out materialId))
+                                throw new FormatException("상위 조합의 원본 재료 객체가 없습니다: " + ability);
+                            materials = true;
+                            foreach (string native in objects.Find(materialId).OriginalAbilityRawcodes)
+                                if (native == ability) caster = true;
+                            break;
+                        case "GOLD":
+                            if (condition.Rawcode != "GOLD" || condition.Count < 1)
+                                throw new FormatException("상위 조합 골드 원본 조건 불일치: " + ability);
+                            break;
+                        case "WOOD":
+                            if (condition.Rawcode != "WOOD" || condition.Count < 1 || wood)
+                                throw new FormatException("상위 조합 목재 원본 조건 불일치: " + ability);
+                            wood = true;
+                            break;
+                        case "UPUN": break; // display/upgrade recommendation only
+                        case "UBAN":
+                            if (banned || condition.Rawcode != result)
+                                throw new FormatException("상위 조합 밴 대상이 다릅니다: " + ability);
+                            banned = true;
+                            break;
+                        case "KING":
+                            if (king || condition.Rawcode != result)
+                                throw new FormatException("상위 조합 항법 대상이 다릅니다: " + ability);
+                            king = true;
+                            break;
+                        case "RMAX":
+                            if (condition.Count < 1)
+                                throw new FormatException("상위 조합 라운드 상한이 다릅니다: " + ability);
+                            break;
+                        default:
+                            throw new FormatException("상위 조합의 미검수 조건: " + ability + "/" + condition.Kind);
+                    }
+                }
+                if (!materials || !wood || !banned || !king ||
+                    (grade == "제한됨" && !caster))
+                    throw new FormatException("상위 조합 원본 시전자/필수 조건 누락: " + ability);
+                supported.Add(ability);
+                resultGrades.Add(ability, grade);
+            }
         }
         public bool TryResolveUnit(string rawcode, out string id)
         { return mappings.TryGetValue(rawcode ?? "", out id); }
         public bool CanSatisfy(OriginalJassFusionInstruction instruction, string ability, out string reason)
         {
-            bool allowed = instruction != null && instruction.Kind == "UPUN" && supported.Contains(ability);
-            reason = allowed ? null : "이 하위 조합에서 검증되지 않은 추가 조건입니다.";
-            return allowed;
+            if (instruction == null || !supported.Contains(ability))
+            {
+                reason = "실행 검수를 통과하지 않은 원본 조합입니다.";
+                return false;
+            }
+            return verifiedConditions.CanSatisfy(instruction, ability, out reason);
         }
         public bool CanCommitRecipe(string id) => id != null && supported.Contains(id);
 
@@ -310,10 +419,14 @@ namespace Ordr.Mobile.Mobile
                 foreach (var material in ready.Materials)
                     parts.Add(material.Name + " ×" + material.RequiredCount +
                         " (보유 " + material.OwnedCount + ")");
+                var costs = new List<string>();
+                if (ready.GoldCost > 0)
+                    costs.Add("골드 " + ready.GoldCost + " (보유 " + economy.Wallet.Balance("gold") + ")");
+                if (ready.LumberCost > 0)
+                    costs.Add("목재 " + ready.LumberCost + " (보유 " + economy.Wallet.Balance("wood") + ")");
                 result.Add(new MobileFusionPreview(offer.RecipeId, ready.ResultName + " · " + resultGrades[offer.RecipeId],
-                    string.Join(" + ", parts) + (ready.LumberCost > 0
-                        ? " · 목재 " + ready.LumberCost + " (보유 " + economy.Wallet.Balance("wood") + ")"
-                        : " · 추가 재화 없음"),
+                    string.Join(" + ", parts) + (costs.Count > 0
+                        ? " · " + string.Join(" · ", costs) : " · 추가 재화 없음"),
                     ready.SuggestedMaterialIds, missing));
             }
             return result.AsReadOnly();
@@ -339,7 +452,8 @@ namespace Ordr.Mobile.Mobile
                 foreach (long id in ready.SuggestedMaterialIds)
                     if (!exact.Remove(id)) return Reject("확인한 재료와 현재 재료가 다릅니다.");
                 double resultX = HiddenResultX, resultY = HiddenResultY;
-                if (resultGrades[ability] != "히든" && resultGrades[ability] != "영원한")
+                if (resultGrades[ability] != "히든" && resultGrades[ability] != "영원한" &&
+                    resultGrades[ability] != "불멸의")
                 {
                     // CT1 uses the exact material actor owning the cast ability.
                     MobileUnitSnapshot caster = null;

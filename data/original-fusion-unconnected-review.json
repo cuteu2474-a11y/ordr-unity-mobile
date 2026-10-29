@@ -12,22 +12,23 @@
   ],
   "summary": {
     "sourceRecipesExcludingTest": 265,
-    "liveExecutableRecipes": 132,
-    "blockedRecipes": 133,
+    "liveExecutableRecipes": 138,
+    "blockedRecipes": 127,
     "liveExecutableByGrade": {
       "Reviewed": 13,
       "ReviewedSpecial": 31,
       "ReviewedRare": 41,
       "ReviewedLegendary": 33,
       "ReviewedHidden": 13,
-      "ReviewedEternal": 1
+      "ReviewedEternal": 1,
+      "ReviewedRestricted": 6
     },
     "blockedByReason": {
       "chat-player-state-effect": 1,
       "creation-followup-CH8": 13,
       "item-payment": 3,
       "native-cast-AOsf": 3,
-      "navigation-ban-state": 75,
+      "navigation-ban-state": 69,
       "no-unit-payment-in-registration": 24,
       "round-state": 15,
       "special-native-result": 8,
@@ -987,28 +988,6 @@
       ]
     },
     {
-      "abilityRawcode": "A0RP",
-      "resultRawcodes": [
-        "h040"
-      ],
-      "resultNames": [
-        "아인 - 제한"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "UBAN",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 5000,
-      "sourceWoodCost": 5,
-      "reasonCodes": [
-        "navigation-ban-state"
-      ]
-    },
-    {
       "abilityRawcode": "A18P",
       "resultRawcodes": [
         "h08Q"
@@ -1844,48 +1823,6 @@
       ]
     },
     {
-      "abilityRawcode": "IM02",
-      "resultRawcodes": [
-        "h04B"
-      ],
-      "resultNames": [
-        "금사자 시키 - 불멸"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 10,
-      "reasonCodes": [
-        "navigation-ban-state"
-      ]
-    },
-    {
-      "abilityRawcode": "IM03",
-      "resultRawcodes": [
-        "h04C"
-      ],
-      "resultNames": [
-        "몽키.D.거프 - 불멸"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 10,
-      "reasonCodes": [
-        "navigation-ban-state"
-      ]
-    },
-    {
       "abilityRawcode": "IM04",
       "resultRawcodes": [
         "h04D"
@@ -1997,27 +1934,6 @@
       ],
       "resultNames": [
         "흰수염 - 불멸"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 10,
-      "reasonCodes": [
-        "navigation-ban-state"
-      ]
-    },
-    {
-      "abilityRawcode": "IM10",
-      "resultRawcodes": [
-        "h04G"
-      ],
-      "resultNames": [
-        "제트 - 불멸"
       ],
       "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
@@ -2207,54 +2123,12 @@
       ]
     },
     {
-      "abilityRawcode": "ET09",
-      "resultRawcodes": [
-        "h05B"
-      ],
-      "resultNames": [
-        "카벤딧슈 - 영원"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 5,
-      "reasonCodes": [
-        "navigation-ban-state"
-      ]
-    },
-    {
       "abilityRawcode": "ET10",
       "resultRawcodes": [
         "h08R"
       ],
       "resultNames": [
         "코즈키 오뎅 - 영원"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 5,
-      "reasonCodes": [
-        "navigation-ban-state"
-      ]
-    },
-    {
-      "abilityRawcode": "ET11",
-      "resultRawcodes": [
-        "h059"
-      ],
-      "resultNames": [
-        "포트거스.D.에이스 - 영원"
       ],
       "unmappedUnitRawcodes": [],
       "originalConditionKinds": [

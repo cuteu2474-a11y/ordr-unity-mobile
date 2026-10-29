@@ -45,7 +45,7 @@ namespace Ordr.Mobile.Tests
         }
         private static string Data(string name) => File.ReadAllText(
             Path.Combine(Application.dataPath, "..", "data", name));
-        private static Live Create()
+        private static Live Create(Func<int, int> banIndex = null)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -64,7 +64,8 @@ namespace Ordr.Mobile.Tests
                 Data("original-fusion-object-reconciliation.json"), registry, units);
             var fallback = new OriginalJassReadOnlyFusionPort(registry, preview, id => world.IsStoryDeployed(id));
             return new Live { Combat = world, Economy = shared, Map = map, Registry = registry,
-                Fusion = new Original323CommonFusionPort(world, shared, units, map, registry, labels, fallback) };
+                Fusion = new Original323CommonFusionPort(world, shared, units, map, registry, labels,
+                    fallback, new Original323FusionVerifiedRestrictions(world.Game, banIndex ?? (n => 0))) };
         }
         private static MobileFusionPreview Offer(Live game, string ability) => game.Fusion
             .AvailableRecipes(game.Combat.MobileUnitSnapshot()).Single(row => row.RecipeId == ability);
@@ -323,7 +324,8 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(132, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(138, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(6, game.Fusion.ExecutableRestrictedRecipeCount);
             Assert.AreEqual(13, game.Fusion.ExecutableHiddenRecipeCount);
             Assert.AreEqual(1, game.Fusion.ExecutableEternalRecipeCount);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
@@ -753,6 +755,102 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(22, result.Position.Y);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("ET02"));
+        }
+
+        [TestCase("A0RP", "LI-05", false)]
+        [TestCase("IM02", "I-09", true)]
+        [TestCase("IM03", "I-01", true)]
+        [TestCase("IM10", "I-10", true)]
+        [TestCase("ET09", "E-10", true)]
+        [TestCase("ET11", "E-07", true)]
+        public void SourceBanAndKingGatedBatchExecutesOnlyVerifiedPlainCallbacks(
+            string ability, string expectedUnit, bool chat)
+        {
+            var game = Create(n => 0); // fixed 8/3/1/2 source ban draws
+            Assert.AreEqual(14, game.Fusion.SourceBannedUnitCount);
+            Assert.IsTrue(game.Fusion.CanCommitRecipe(ability));
+            var recipe = game.Registry.FindByAbility(ability);
+            var expectedMaterials = recipe.OrderedConditions
+                .Where(row => row.Kind == "UNIT").ToList();
+            int index = 0;
+            foreach (var ingredient in expectedMaterials)
+            {
+                string id = game.Map.All.Single(row => row.OriginalRawcode == ingredient.Rawcode).UnitId;
+                for (int i = 0; i < ingredient.Count; i++)
+                    game.Combat.SpawnCharacter(id, 100 + index++ * 10, 200);
+            }
+            long goldCost = recipe.OrderedConditions.Where(row => row.Kind == "GOLD")
+                .Sum(row => (long)row.Count);
+            long woodCost = recipe.OrderedConditions.Where(row => row.Kind == "WOOD")
+                .Sum(row => (long)row.Count);
+            var requiredCost = new ResourceBundle();
+            if (goldCost > 0) requiredCost.Add("gold", goldCost);
+            if (woodCost > 0) requiredCost.Add("wood", woodCost);
+            game.Economy.Wallet.Grant(requiredCost);
+            var offer = Offer(game, ability);
+            Assert.IsTrue(offer.IsReady, string.Join("; ", offer.MissingMaterials));
+            Assert.AreEqual(expectedMaterials.Sum(row => row.Count), offer.SuggestedMaterialInstances.Count);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State);
+            var actual = game.Combat.MobileUnitSnapshot().Single();
+            Assert.AreEqual(expectedUnit, actual.Unit.Id);
+            Assert.AreEqual(chat ? -3776 : 100, actual.Position.X);
+            Assert.AreEqual(chat ? 4480 : 200, actual.Position.Y);
+            Assert.AreEqual(60, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State,
+                "Repeated confirmation must not grant another result.");
+            Assert.AreEqual(1, game.Combat.CharacterCount);
+        }
+
+        [Test]
+        public void SourceBanAndIncompleteOriginalRoundAreFailClosed()
+        {
+            var game = Create(n => n == 10 ? 4 : 0);
+            Assert.AreEqual(14, game.Fusion.SourceBannedUnitCount);
+            var banned = game.Registry.FindByAbility("A0RP").OrderedConditions
+                .Single(c => c.Kind == "UBAN");
+            string reason;
+            Assert.IsFalse(game.Fusion.CanSatisfy(banned, "A0RP", out reason));
+            StringAssert.Contains("밴", reason);
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("IM01"),
+                "Unimplemented helper-unit callbacks must stay locked.");
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("ET04"),
+                "Unimplemented player-state callbacks must stay locked.");
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A6"),
+                "RMAX alone must not unlock unreviewed helper creation.");
+            var source = new Original323FusionVerifiedRestrictions(game.Combat.Game, n => 0);
+            int round;
+            Assert.IsFalse(source.TryGetOriginalRoundCounter(out round));
+            game.Combat.Game.BeginWave(1);
+            Assert.IsFalse(source.TryGetOriginalRoundCounter(out round),
+                "A UI or unobserved game wave is not the original RMAX witness.");
+        }
+
+        [Test]
+        public void UpperFusionRechecksCostImmediatelyBeforeAtomicCommit()
+        {
+            var game = Create(n => 0);
+            var ability = "IM03";
+            var recipe = game.Registry.FindByAbility(ability);
+            foreach (var ingredient in recipe.OrderedConditions.Where(c => c.Kind == "UNIT"))
+            {
+                string id = game.Map.All.Single(row => row.OriginalRawcode == ingredient.Rawcode).UnitId;
+                for (int i = 0; i < ingredient.Count; i++) game.Combat.SpawnCharacter(id, 1, 2);
+            }
+            long wood = recipe.OrderedConditions.Where(c => c.Kind == "WOOD")
+                .Sum(c => (long)c.Count);
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", wood));
+            var preview = Offer(game, ability);
+            Assert.IsTrue(preview.IsReady);
+            Assert.IsTrue(game.Economy.Wallet.TryExchange(
+                new ResourceBundle().Add("wood", wood), new ResourceBundle()));
+            int before = game.Combat.CharacterCount;
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion(ability, preview.SuggestedMaterialInstances).State);
+            Assert.AreEqual(before, game.Combat.CharacterCount);
+            Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
         }
 
         [Test]

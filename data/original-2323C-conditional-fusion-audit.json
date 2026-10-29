@@ -1,0 +1,36 @@
+{
+  "format": "ordr-conditional-fusion-audit-v1",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "verifiedBanState": {
+    "sourceInitialization": "CNn/CNm; uX+uY+uZ: 8 of 30; ua+ub+uc: 3 of 12; ud: 1 of 11; uT: 2 of 10",
+    "stateFormula": "xB(player, rawcode) = not w8(player,rawcode) and w9(player,rawcode)",
+    "sourceWrites": "CNm writes hn[-1,rawcode]; no SaveBoolean(hm,...) source writer",
+    "mobileRandomness": "same uniform-without-replacement probabilities; not the original Warcraft RNG sequence"
+  },
+  "verifiedKingState": {
+    "sourceCheck": "CHh: only if RC[player]>0, RC==hr or Q7[player]>=1 blocks",
+    "mobileCurrentState": "RC remains source-default 0: 패왕의길 selection CKQ is not yet exposed; 최고의도움 is unrelated",
+    "futureRestriction": "when a 패왕의길 selection becomes available, wire RC/Q7 state before permitting these recipes"
+  },
+  "verifiedRoundState": {
+    "sourceCheck": "CH3: X3 <= RMAX count",
+    "mobileWitness": "acknowledge only verified original round-start path, not Editor preview, session wave or UI alone"
+  },
+  "reviewedExecutable": [
+    { "ability": "A0RP", "result": "h040", "catalogId": "LI-05", "callback": "Bvu", "trigger": "BC5", "effectsAfterBI2": "narration/audio only" },
+    { "ability": "IM02", "result": "h04B", "catalogId": "I-09", "callback": "B9k", "trigger": "chat", "effectsAfterBI2": "narration/audio only" },
+    { "ability": "IM03", "result": "h04C", "catalogId": "I-01", "callback": "B9K", "trigger": "chat", "effectsAfterBI2": "narration/audio only" },
+    { "ability": "IM10", "result": "h04G", "catalogId": "I-10", "callback": "B_M", "trigger": "chat", "effectsAfterBI2": "narration/audio only" },
+    { "ability": "ET09", "result": "h05B", "catalogId": "E-10", "callback": "B5Q", "trigger": "chat", "effectsAfterBI2": "narration/audio only" },
+    { "ability": "ET11", "result": "h059", "catalogId": "E-07", "callback": "B4r", "trigger": "chat", "effectsAfterBI2": "narration/audio only" }
+  ],
+  "deferredExamples": [
+    { "ability": "A007", "reason": "Bvg creates a persistent helper unit" },
+    { "ability": "IM01", "reason": "B8Y creates a persistent helper unit with abilities" },
+    { "ability": "IM04", "reason": "B99 grants +20% line explosion state" },
+    { "ability": "ET04", "reason": "B7z enforces one-per-player, sets flags and conditional ability" },
+    { "ability": "ET07", "reason": "B7W adds an item, changes player-state and starts a timer" },
+    { "ability": "ET12", "reason": "B8I invokes extra B8G state handler" }
+  ]
+}
