@@ -122,7 +122,12 @@ namespace Ordr.Mobile.Tests
             Assert.Greater(layout.SkillMargin.height, 40f);
             Assert.Greater(layout.Story.height, 28f);
             Assert.Greater(layout.Battle.height, 120f);
-            Assert.Less(layout.Story.yMax, layout.RightDrawer.yMax);
+            // The title/footer cards were removed: story and details now
+            // both finish at the six-pixel bottom safe-area inset.
+            Assert.AreEqual(384f, layout.Story.yMax, .01f);
+            Assert.AreEqual(layout.RightDrawer.yMax, layout.Story.yMax, .01f);
+            Assert.Less(layout.Battle.yMax, layout.SkillMargin.yMin);
+            Assert.Less(layout.SkillMargin.yMax, layout.Story.yMin);
             Assert.Greater(layout.RightDrawer.width, 250f);
         }
 

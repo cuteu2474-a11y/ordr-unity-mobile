@@ -88,3 +88,5 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 ## 시작화면·얇은 자원 HUD
 
 `OrdrMainSceneShell.IsStartScreenVisible`/`EnterGame`이 제목 화면과 기존 준비/검증 첫 라운드 진입을 연결합니다. 제목 화면 중에는 `OrdrMobileTouchPanel`/`OrdrUnitWorldPresenter`의 메뉴/이름표와 월드 입력을 막습니다. `MobileMapSkillLayout.HeaderHeight`는 이제 0이며 `StatusMargin`은 **하단 카드가 아닌 상단 얇은 자원 줄**입니다. `ResourceChip`은 한 줄 표식/항목명/숫자를 그립니다. 일시정지는 왼쪽 스크롤 밖에 있으며, 준비 전투 시작·초기화는 점수판에 있습니다. `DrawWisp`의 흔함 버튼은 `RequestCommonWispBatch(1)`만 직접 호출하고 별도 횟수 상태를 보유하지 않습니다. `TabGuide`/`showTabGuide`는 삭제됐습니다.
+
+가로 공간을 채우는 레이아웃에서 `Story.yMax`와 `RightDrawer.yMax`는 같은 하단 안전 여백 경계입니다. `MobileDedicatedSkillTests.ReducedMapsKeepSkillRibbonAndStorySeparateOnSmallLandscapeScreens`도 이 동일 경계와 메인/스킬/스토리 간 분리를 검사합니다. 과거 하단 자원 카드를 위한 엄격한 부등식을 다시 적용하지 않습니다.
