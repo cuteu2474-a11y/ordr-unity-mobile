@@ -622,7 +622,7 @@
     },
     {
       "abilityRawcode": "YY04",
-      "jassLine": null,
+      "jassLine": 61421,
       "results": [
         {
           "kind": "UNIT",
@@ -631,6 +631,11 @@
         }
       ],
       "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H0B2",
+          "count": 1
+        },
         {
           "kind": "UNIT",
           "rawcode": "h035",
@@ -645,11 +650,6 @@
           "kind": "UNIT",
           "rawcode": "h060",
           "count": 1
-        },
-        {
-          "kind": "UPUN",
-          "rawcode": "H0B2",
-          "count": 1
         }
       ],
       "resultCatalogId": "H-02",
@@ -663,7 +663,7 @@
     },
     {
       "abilityRawcode": "YY07",
-      "jassLine": null,
+      "jassLine": 61441,
       "results": [
         {
           "kind": "UNIT",
@@ -704,7 +704,7 @@
     },
     {
       "abilityRawcode": "YY08",
-      "jassLine": null,
+      "jassLine": 61447,
       "results": [
         {
           "kind": "UNIT",
@@ -713,6 +713,11 @@
         }
       ],
       "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H08U",
+          "count": 1
+        },
         {
           "kind": "UNIT",
           "rawcode": "h01T",
@@ -732,11 +737,6 @@
           "kind": "UNIT",
           "rawcode": "h060",
           "count": 1
-        },
-        {
-          "kind": "UPUN",
-          "rawcode": "H08U",
-          "count": 1
         }
       ],
       "resultCatalogId": "H-07",
@@ -750,7 +750,7 @@
     },
     {
       "abilityRawcode": "YY09",
-      "jassLine": null,
+      "jassLine": 61454,
       "results": [
         {
           "kind": "UNIT",
@@ -786,7 +786,7 @@
     },
     {
       "abilityRawcode": "YY12",
-      "jassLine": null,
+      "jassLine": 61475,
       "results": [
         {
           "kind": "UNIT",

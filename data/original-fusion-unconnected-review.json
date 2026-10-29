@@ -13,8 +13,8 @@
   ],
   "summary": {
     "sourceRecipesExcludingTest": 265,
-    "liveExecutableRecipes": 143,
-    "blockedRecipes": 122,
+    "liveExecutableRecipes": 150,
+    "blockedRecipes": 115,
     "liveExecutableByGrade": {
       "Reviewed": 13,
       "ReviewedSpecial": 31,
@@ -22,7 +22,7 @@
       "ReviewedLegendary": 33,
       "ReviewedHidden": 18,
       "ReviewedEternal": 1,
-      "ReviewedRestricted": 6
+      "ReviewedRestricted": 13
     },
     "blockedByReason": {
       "chat-player-state-effect": 1,
@@ -33,7 +33,7 @@
       "round-state": 15,
       "special-native-result": 8,
       "special-target-or-pick": 6,
-      "top-tier-route-or-callback-audit": 69,
+      "top-tier-route-or-callback-audit": 62,
       "trait-counter": 12,
       "transformation-effect": 4,
       "unmapped-original-unit": 5
@@ -996,26 +996,6 @@
       ]
     },
     {
-      "abilityRawcode": "TR01",
-      "resultRawcodes": [
-        "H08V"
-      ],
-      "resultNames": [
-        "날씨는 맑음"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
       "abilityRawcode": "TR02",
       "resultRawcodes": [
         "H098"
@@ -1170,26 +1150,6 @@
         "UBAN",
         "UNIT",
         "UPUN"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "TR10",
-      "resultRawcodes": [
-        "H094"
-      ],
-      "resultNames": [
-        "운명의 마술사"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT"
       ],
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
@@ -1398,52 +1358,12 @@
       ]
     },
     {
-      "abilityRawcode": "TR21",
-      "resultRawcodes": [
-        "H0BX"
-      ],
-      "resultNames": [
-        "일그러진 미래"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
       "abilityRawcode": "TR22",
       "resultRawcodes": [
         "H09A"
       ],
       "resultNames": [
         "바다의 협객"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "TR23",
-      "resultRawcodes": [
-        "H091"
-      ],
-      "resultNames": [
-        "순록 의사"
       ],
       "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
@@ -1504,46 +1424,6 @@
       ],
       "resultNames": [
         "백개의 심장을 바친 자"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "TR27",
-      "resultRawcodes": [
-        "H08Y"
-      ],
-      "resultNames": [
-        "무적의 아이언 파이러츠"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "TR28",
-      "resultRawcodes": [
-        "H08X"
-      ],
-      "resultNames": [
-        "분노하는 맹호"
       ],
       "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
@@ -1894,27 +1774,6 @@
       "sourceWoodCost": 5,
       "reasonCodes": [
         "item-payment",
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "ET08",
-      "resultRawcodes": [
-        "h058"
-      ],
-      "resultNames": [
-        "쥬라클 미호크 - 영원"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 5,
-      "reasonCodes": [
         "top-tier-route-or-callback-audit"
       ]
     },

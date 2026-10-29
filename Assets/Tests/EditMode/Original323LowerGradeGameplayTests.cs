@@ -341,8 +341,8 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(143, game.Fusion.ExecutableRecipeCount);
-            Assert.AreEqual(6, game.Fusion.ExecutableRestrictedRecipeCount);
+            Assert.AreEqual(150, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(13, game.Fusion.ExecutableRestrictedRecipeCount);
             Assert.AreEqual(18, game.Fusion.ExecutableHiddenRecipeCount);
             Assert.AreEqual(1, game.Fusion.ExecutableEternalRecipeCount);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
@@ -386,6 +386,7 @@ namespace Ordr.Mobile.Tests
 
         [TestCase("A01S", "L-07")]
         [TestCase("ET01", "E-06")]
+        [TestCase("ET08", "E-04")]
         public void SourceSpecificFiveWoodRecipesRejectChangedBalanceWithoutDuplication(
             string ability, string resultId)
         {
@@ -842,6 +843,13 @@ namespace Ordr.Mobile.Tests
         [TestCase("IM10", "I-10", true)]
         [TestCase("ET09", "E-10", true)]
         [TestCase("ET11", "E-07", true)]
+        [TestCase("TR01", "TR-02", true)]
+        [TestCase("TR10", "TR-09", true)]
+        [TestCase("TR21", "TR-21", true)]
+        [TestCase("TR23", "TR-23", true)]
+        [TestCase("TR27", "TR-28", true)]
+        [TestCase("TR28", "TR-29", true)]
+        [TestCase("ET08", "E-04", true)]
         public void OtherworldSourceGatedBatchExecutesOnlyVerifiedPlainCallbacks(
             string ability, string expectedUnit, bool chat)
         {
@@ -972,8 +980,88 @@ namespace Ordr.Mobile.Tests
             string id;
             Assert.IsTrue(game.Fusion.TryResolveUnit("h04S", out id));
             Assert.AreEqual("KM-01", id);
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR01"),
-                "Unreviewed top-tier callbacks and route conditions stay locked.");
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR09"),
+                "The H099/H08T material alias requires a separate reviewed transaction.");
+        }
+
+        [TestCase("TR01")]
+        [TestCase("TR10")]
+        [TestCase("TR21")]
+        [TestCase("TR23")]
+        [TestCase("TR27")]
+        [TestCase("TR28")]
+        public void TranscendFusionConsumesAnAcquiredKumaOnlyAfterManualChoice(string ability)
+        {
+            var game = Create();
+            var witness = new ObservedSourceMaterialEvent();
+            var rewards = new Original323SourceMaterialRewardWorld(game.Combat,
+                game.Economy, CharacterUnitCatalog.FromJson(Data("units.json")), game.Map, witness);
+            foreach (var material in game.Registry.FindByAbility(ability).RequiredUnitRawcodes())
+            {
+                if (material.Key == Original323SourceMaterialRewardWorld.KumaRawcode) continue;
+                string id;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id));
+                for (int i = 0; i < material.Value; i++) game.Combat.SpawnCharacter(id, 10, 20);
+            }
+            int before = game.Combat.CharacterCount;
+            Assert.IsFalse(Offer(game, ability).IsReady);
+            witness.Confirmed.Add("story:CQB:e01A:1");
+            Assert.IsTrue(rewards.TryRecordObservedStoryClearWisp("story"));
+            Assert.IsFalse(Offer(game, ability).IsReady,
+                "An outstanding Wisp is not already a Kuma actor.");
+            long kuma;
+            Assert.IsTrue(rewards.TryChooseKuma(out kuma));
+            var offer = Offer(game, ability);
+            Assert.IsTrue(offer.IsReady);
+            Assert.That(offer.SuggestedMaterialInstances, Does.Contain(kuma));
+            var duplicate = offer.SuggestedMaterialInstances.ToList();
+            duplicate[duplicate.Count - 1] = duplicate[0];
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion(ability, duplicate).State);
+            Assert.AreEqual(before + 1, game.Combat.CharacterCount);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, game.Combat.CharacterCount);
+            Assert.IsFalse(game.Combat.MobileUnitSnapshot().Any(u => u.InstanceId == kuma));
+            Assert.AreEqual(60, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"),
+                "Reviewed TR registrations do not charge invented wood.");
+            Assert.IsFalse(rewards.TryRecordObservedStoryClearWisp("story"));
+            Assert.IsFalse(rewards.TryChooseKuma(out kuma));
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State);
+        }
+
+        [Test]
+        public void EternalMihawkRequiresTwoDistinctShipsAndRejectsAStaleShipSelection()
+        {
+            var game = Create();
+            foreach (var material in game.Registry.FindByAbility("ET08").RequiredUnitRawcodes())
+            {
+                string id;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id));
+                int count = material.Key == "h060" ? 1 : material.Value;
+                for (int i = 0; i < count; i++) game.Combat.SpawnCharacter(id, 1, 2);
+            }
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", 5));
+            Assert.IsFalse(Offer(game, "ET08").IsReady);
+            long secondShip = game.Combat.SpawnCharacter("PS-01", 3, 4);
+            var ready = Offer(game, "ET08");
+            Assert.IsTrue(ready.IsReady);
+            game.Combat.RemoveCharacter(secondShip);
+            long replacement = game.Combat.SpawnCharacter("PS-01", 5, 6);
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("ET08", ready.SuggestedMaterialInstances).State);
+            Assert.AreEqual(5, game.Economy.Wallet.Balance("wood"));
+            Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(u => u.InstanceId == replacement));
+            var fresh = Offer(game, "ET08");
+            game.Fusion.FusionCommitted += (id, catalog, raw) => { throw new Exception("observer"); };
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion("ET08", fresh.SuggestedMaterialInstances).State);
+            Assert.AreEqual("E-04", game.Combat.MobileUnitSnapshot().Single().Unit.Id);
+            Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("ET08", fresh.SuggestedMaterialInstances).State);
         }
 
         [Test]

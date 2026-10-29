@@ -174,7 +174,17 @@ namespace Ordr.Mobile.Mobile
             { "IM03", "h04C", "I-01" },
             { "IM10", "h04G", "I-10" },
             { "ET09", "h05B", "E-10" },
-            { "ET11", "h059", "E-07" }
+            { "ET11", "h059", "E-07" },
+            // Pinned TR/ET callbacks: narration/audio or an unused, read-only
+            // Bjp skin entitlement check. No helper/item/permanent mutations.
+            // TR09's CHy/BH0 material alias remains explicitly unapproved.
+            { "TR01", "H08V", "TR-02" },
+            { "TR10", "H094", "TR-09" },
+            { "TR21", "H0BX", "TR-21" },
+            { "TR23", "H091", "TR-23" },
+            { "TR27", "H08Y", "TR-28" },
+            { "TR28", "H08X", "TR-29" },
+            { "ET08", "h058", "E-04" }
         };
         // Original chat wrappers call BI1(GetPlayerStartLocationX/Y).
         // config: SetPlayerStartLocation(Player(0),0); DefineStartLocation(0,-3776.,4480.).
@@ -305,6 +315,10 @@ namespace Ordr.Mobile.Mobile
                         ((resultGrade == "특별함" || resultGrade == "희귀함" || resultGrade == "전설" || resultGrade == "히든") && grade == "안흔함") ||
                         ((resultGrade == "희귀함" || resultGrade == "전설" || resultGrade == "히든") && grade == "특별함") ||
                         ((resultGrade == "전설" || resultGrade == "히든") && grade == "희귀함") ||
+                        // Source YY04 consumes Legendary Shanks h035 as well
+                        // as h060. Permit only that audited identity/recipe.
+                        (resultGrade == "히든" && ability == "YY04" &&
+                            instruction.Rawcode == "h035" && id == "L-17" && grade == "전설") ||
                         (resultGrade == "히든" &&
                             instruction.Rawcode == Original323SourceCommonWispWorld.PirateShipRawcode &&
                             id == Original323SourceCommonWispWorld.PirateShipCatalogId &&
@@ -349,7 +363,7 @@ namespace Ordr.Mobile.Mobile
                 string result = ReviewedRestricted[i, 1];
                 string id = ReviewedRestricted[i, 2];
                 string grade = units.Require(id).Grade;
-                if (grade != "제한됨" && grade != "불멸의" && grade != "영원한")
+                if (grade != "제한됨" && grade != "불멸의" && grade != "영원한" && grade != "초월함")
                     throw new FormatException("상위 조합 결과 등급 불일치: " + ability);
                 Bind(units, id, result, grade);
                 var recipe = registrations.FindByAbility(ability);
@@ -398,7 +412,9 @@ namespace Ordr.Mobile.Mobile
                             throw new FormatException("상위 조합의 미검수 조건: " + ability + "/" + condition.Kind);
                     }
                 }
-                if (!materials || !wood || !banned || !king ||
+                // The six reviewed TR registrations have NO GOLD/WOOD cost.
+                // Other reviewed restricted tiers retain their source WOOD.
+                if (!materials || (grade == "초월함" ? wood : !wood) || !banned || !king ||
                     (grade == "제한됨" && !caster))
                     throw new FormatException("상위 조합 원본 시전자/필수 조건 누락: " + ability);
                 supported.Add(ability);
@@ -466,7 +482,7 @@ namespace Ordr.Mobile.Mobile
                     if (!exact.Remove(id)) return Reject("확인한 재료와 현재 재료가 다릅니다.");
                 double resultX = HiddenResultX, resultY = HiddenResultY;
                 if (resultGrades[ability] != "히든" && resultGrades[ability] != "영원한" &&
-                    resultGrades[ability] != "불멸의")
+                    resultGrades[ability] != "불멸의" && resultGrades[ability] != "초월함")
                 {
                     // CT1 uses the exact material actor owning the cast ability.
                     MobileUnitSnapshot caster = null;

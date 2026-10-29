@@ -2,7 +2,13 @@
 
 기준 게임 코드: `3cc8997` · 현재 범위는 [시작 안내](START_HERE.md), 실행 순서는 [작업목록](PLAYABLE_ROADMAP.md).
 
-### 해적선 히든 조합 공동 경로
+### 현재 제작 포트: 150개 (2026-10-30)
+
+`Original323CommonFusionPort.ReviewedRestricted`는 기존 6종에 초월 6종(TR01/10/21/23/27/28)·영원 ET08을 더해 13종입니다. `RegisterRestricted`는 초월 원본에 목재 조건이 없고 다른 검수 상위 등급에는 목재 조건이 있는 차이를 유지합니다. 초월 결과는 다른 채팅형과 같은 플레이어 시작점에 생성합니다. YY04는 원본 h035/L-17 전설 재료만 예외로 허용합니다.
+
+`tools/audit_original_transcend_material_swaps.py` / `data/original-2323C-transcend-material-swaps.json`은 고정 JASS의 wrapper/handler/명령 등록·CH8·CHy alias·Bjp/Bjm 읽기 전용 조회를 대조합니다. `tests/test_original_transcend_material_swaps.py`는 저장한 함수로 검수를 재생하고 추가 상태/능력/미검수 호출을 거절합니다. `Original323LowerGradeGameplayTests`는 공유 지갑/로스터에서 수동 쿠마 선택→제작·실제 재료/비용·중복/오래된 선택을 검사합니다. 코드 허용 150/265와 실제 획득 경로·원작 전투·기기 검증은 구분합니다.
+
+## 해적선 히든 조합 공동 경로
 
 `Original323CommonFusionPort.ReviewedHidden`은 원본 JASS 감사 18종(해적선 `h060` 5종 포함)의 **실행 허용 목록**입니다. `OriginalJassFusionPlanner`가 원본 CWR 재료/수량과 실제 `PS-01` 보유 객체를 다시 확인하고 `BeginOriginalFusionUnitSwap`이 한 거래로 소비·생성·복구합니다. **`UPUN`은 소비/무료 소환 조건이 아닙니다.** 게임 원작 대사·음성은 별도 후속 이식 대상이며 `YY01/YY13/YY15/YY20/YY26`은 미승인입니다. 근거: [히든 조합 JASS 함수 감사](../data/original-2323C-hidden-material-swaps.json).
 
@@ -40,7 +46,7 @@ flowchart TD
 | 원작 피해 연결 | [Ordr323DamageWorldBinding.cs](../Assets/Scripts/Combat/Ordr323DamageWorldBinding.cs), [Ordr323OriginalDamageRules.cs](../Assets/Scripts/Combat/Ordr323OriginalDamageRules.cs), [Ordr323MapDamageMath.cs](../Assets/Scripts/Combat/Ordr323MapDamageMath.cs) | 확인된 원시 타격·방어·중첩·정수화 계약과 맵 상수. 모든 계약의 실제 공급자가 완성된 것은 아님 |
 | 공유 지갑·보유 목록 | [SharedEconomySession.cs](../Assets/Scripts/Core/SharedEconomySession.cs), [EconomyTransactions.cs](../Assets/Scripts/Core/EconomyTransactions.cs), [UnitRoster.cs](../Assets/Scripts/Core/UnitRoster.cs) | 같은 지갑과 실제 인스턴스를 모든 기능이 사용 |
 | 흔함·해적선 위습 소환 | [Original323SourceCommonWispWorld.cs](../Assets/Scripts/Combat/Original323SourceCommonWispWorld.cs), [OriginalWispCombatRewardWorld.cs](../Assets/Scripts/Combat/OriginalWispCombatRewardWorld.cs) | 원본 24/10000 해적선 별도 분기와 흔함 9종 추첨 유지, PS-01 보유 유닛 생성·위습 차감·실패 롤백·동일 당첨 재사용. 해적선은 모바일 자동 배치이고 원본 특수 출현 위치는 미확인 |
-| 실제 138개 조합 | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs): `RegisterReviewed`, `RegisterRestricted`, `ConfirmFusion` | 검수한 제작식·원본 UNIT/GOLD/WOOD 차감·`OriginalFusionUnitSwap`, 채팅형 히든/불멸/영원 시작 위치. 미리보기만으로 제작 허가하지 않음 |
+| 실제 150개 조합 | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs): `RegisterReviewed`, `RegisterRestricted`, `ConfirmFusion` | 검수한 제작식·원본 UNIT/GOLD/WOOD 차감·`OriginalFusionUnitSwap`, 채팅형 히든/불멸/영원 시작 위치. 미리보기만으로 제작 허가하지 않음 |
 | 이세계 밴·항법·라운드 상태 | [Original323FusionVerifiedRestrictions.cs](../Assets/Scripts/Mobile/Original323FusionVerifiedRestrictions.cs), [OriginalJassKnownConditions.cs](../Assets/Scripts/Mobile/OriginalJassKnownConditions.cs) | 원본 CNn 밴은 변질모드 전용이므로 이세계모드 0종, CKQ 미선택 RC=0, 승인된 웨이브 기록 후 RMAX; 다른 특수 소비/효과는 계속 거부 |
 | 원본 특수 조합 기반 | [OriginalJassFusionPlanner.cs](../Assets/Scripts/Mobile/OriginalJassFusionPlanner.cs), [OriginalJassFusionAtomicCoordinator.cs](../Assets/Scripts/Mobile/OriginalJassFusionAtomicCoordinator.cs) | 원본 조건 순서·특수 조건·정확한 재료 인스턴스. 새 거래 엔진을 만들기 전에 확인 |
 | 일반 돈 도박 연습 | [SourceModelRegularMoneyGambling.cs](../Assets/Scripts/Mobile/SourceModelRegularMoneyGambling.cs), [원본 비용·재고 자료](../data/original-2323C-money-gambling-shop.json) | 실제 수동 10골드 차감/반환·공유 모바일 난수·논리 재고·영수증. 네이티브 재고/Warcraft RNG 동등성 미검증, 고급 해금 없음 |

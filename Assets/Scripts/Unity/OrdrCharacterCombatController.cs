@@ -114,7 +114,7 @@ namespace Ordr.Mobile.Unity
                     "특별함·희귀함 원본 주문 타격은 전투 생성 전에 한 번만 연결하세요.");
             if (MapBaseStats == null)
                 throw new InvalidOperationException(
-                    "원본 273종 유닛/객체 능력 데이터를 먼저 로드하세요.");
+                    "원본 유닛/객체 능력 데이터를 먼저 로드하세요.");
             specialRareNativeImpactWitness = verifiedNativeSource ??
                 throw new ArgumentNullException(nameof(verifiedNativeSource));
         }
@@ -2051,8 +2051,13 @@ namespace Ordr.Mobile.Unity
                 }
                 UnitDefinitions = UnitImplementationRegistry.Combine(Units, Skills,
                     OriginalUnitRawcodes);
-                if (Units.Count != 274 || Skills.CharacterCount != 200 ||
-                    UnitDefinitions.Count != 274)
+                // Source-only ships/Kuma/tokens are catalog entries too.
+                // Compare complete definitions to the loaded catalog rather
+                // than an outdated fixed total. The original object loader
+                // already rejects any missing/extra catalog object identity.
+                if (Units.Count < 272 || Skills.CharacterCount != 200 ||
+                    UnitDefinitions.Count != Units.Count ||
+                    (MapBaseStats != null && MapBaseStats.Count != Units.Count))
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
                 // This is already pinned to the actual CUo/CUn/CJ source.
                 // Do not require an external installer for verified start

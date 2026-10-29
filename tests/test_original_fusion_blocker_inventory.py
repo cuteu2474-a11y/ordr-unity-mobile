@@ -22,14 +22,14 @@ class FusionBlockerInventoryTests(unittest.TestCase):
     def test_all_265_source_recipes_are_recounted_from_real_csharp_arrays(self):
         self.assertEqual(build(self.data, self.port), self.inventory)
         summary = self.inventory['summary']
-        self.assertEqual((265, 143, 122), (summary['sourceRecipesExcludingTest'],
+        self.assertEqual((265, 150, 115), (summary['sourceRecipesExcludingTest'],
                                          summary['liveExecutableRecipes'],
                                          summary['blockedRecipes']))
         self.assertEqual({'Reviewed': 13, 'ReviewedSpecial': 31, 'ReviewedRare': 41,
                           'ReviewedLegendary': 33, 'ReviewedHidden': 18,
-                          'ReviewedEternal': 1, 'ReviewedRestricted': 6},
+                          'ReviewedEternal': 1, 'ReviewedRestricted': 13},
                          summary['liveExecutableByGrade'])
-        self.assertEqual(122, len({r['abilityRawcode'] for r in self.inventory['blocked']}))
+        self.assertEqual(115, len({r['abilityRawcode'] for r in self.inventory['blocked']}))
 
     def test_grouped_reasons_preserve_source_costs_and_unknown_materials(self):
         for row in self.inventory['blocked']:
@@ -42,8 +42,8 @@ class FusionBlockerInventoryTests(unittest.TestCase):
         blocked = {r['abilityRawcode']: r for r in self.inventory['blocked']}
         for ability in ('YY04', 'YY07', 'YY08', 'YY09', 'YY12'):
             self.assertNotIn(ability, blocked, "Pinned JASS chat-only ship fusions are executable")
-        self.assertIn('top-tier-route-or-callback-audit', blocked['TR01']['reasonCodes'])
-        self.assertNotIn('navigation-ban-state', blocked['TR01']['reasonCodes'])
+        self.assertIn('top-tier-route-or-callback-audit', blocked['TR09']['reasonCodes'])
+        self.assertNotIn('navigation-ban-state', blocked['TR09']['reasonCodes'])
         self.assertIn('item-payment', blocked['ET02']['reasonCodes'])
         self.assertIn('native-cast-AOsf', blocked['A19Z']['reasonCodes'])
         self.assertIn('chat-player-state-effect', blocked['YY15']['reasonCodes'])
@@ -84,7 +84,8 @@ class FusionBlockerInventoryTests(unittest.TestCase):
             registration = self.source[ability]
             self.assertEqual(registration['results'], [dict(kind='UNIT', rawcode=rawcode, count=1)])
             kinds = {c['kind'] for c in registration['conditions']}
-            self.assertTrue({'UNIT', 'WOOD', 'KING', 'UBAN'}.issubset(kinds))
+            self.assertTrue({'UNIT', 'KING', 'UBAN'}.issubset(kinds))
+            self.assertEqual(not ability.startswith('TR'), 'WOOD' in kinds)
             self.assertTrue(kinds.issubset({'UNIT', 'WOOD', 'GOLD', 'KING', 'UBAN',
                                            'UPUN', 'RMAX'}))
             for kind in ('KING', 'UBAN'):

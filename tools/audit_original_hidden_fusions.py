@@ -81,6 +81,8 @@ def audit(jass, data, port):
                 raise ValueError('Unreviewed Hidden condition/cost')
             material = objects[condition['rawcode']]
             if not (material['grade'] in ('흔함', '안흔함', '특별함', '희귀함') or
+                    (ability == 'YY04' and condition['rawcode'] == 'h035' and
+                     material['catalogId'] == 'L-17' and material['grade'] == '전설') or
                     (condition['rawcode'] == 'h060' and
                      material['catalogId'] == 'PS-01' and
                      material['grade'] == '해적선')):

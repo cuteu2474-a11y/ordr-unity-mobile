@@ -19,19 +19,135 @@
     "mobileWitness": "acknowledge only verified original round-start path, not Editor preview, session wave or UI alone"
   },
   "reviewedExecutable": [
-    { "ability": "A0RP", "result": "h040", "catalogId": "LI-05", "callback": "Bvu", "trigger": "BC5", "effectsAfterBI2": "narration/audio only" },
-    { "ability": "IM02", "result": "h04B", "catalogId": "I-09", "callback": "B9k", "trigger": "chat", "effectsAfterBI2": "narration/audio only" },
-    { "ability": "IM03", "result": "h04C", "catalogId": "I-01", "callback": "B9K", "trigger": "chat", "effectsAfterBI2": "narration/audio only" },
-    { "ability": "IM10", "result": "h04G", "catalogId": "I-10", "callback": "B_M", "trigger": "chat", "effectsAfterBI2": "narration/audio only" },
-    { "ability": "ET09", "result": "h05B", "catalogId": "E-10", "callback": "B5Q", "trigger": "chat", "effectsAfterBI2": "narration/audio only" },
-    { "ability": "ET11", "result": "h059", "catalogId": "E-07", "callback": "B4r", "trigger": "chat", "effectsAfterBI2": "narration/audio only" }
+    {
+      "ability": "A0RP",
+      "result": "h040",
+      "catalogId": "LI-05",
+      "callback": "Bvu",
+      "trigger": "BC5",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "IM02",
+      "result": "h04B",
+      "catalogId": "I-09",
+      "callback": "B9k",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "IM03",
+      "result": "h04C",
+      "catalogId": "I-01",
+      "callback": "B9K",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "IM10",
+      "result": "h04G",
+      "catalogId": "I-10",
+      "callback": "B_M",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "ET09",
+      "result": "h05B",
+      "catalogId": "E-10",
+      "callback": "B5Q",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "ET11",
+      "result": "h059",
+      "catalogId": "E-07",
+      "callback": "B4r",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "TR01",
+      "result": "H08V",
+      "catalogId": "TR-02",
+      "callback": "Bxl",
+      "trigger": "chat",
+      "effectsAfterBI2": "read-only unused skin query and presentation only"
+    },
+    {
+      "ability": "TR10",
+      "result": "H094",
+      "catalogId": "TR-09",
+      "callback": "B2a",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "TR21",
+      "result": "H0BX",
+      "catalogId": "TR-21",
+      "callback": "B4F",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "TR23",
+      "result": "H091",
+      "catalogId": "TR-23",
+      "callback": "Byd",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "TR27",
+      "result": "H08Y",
+      "catalogId": "TR-28",
+      "callback": "Byz",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "TR28",
+      "result": "H08X",
+      "catalogId": "TR-29",
+      "callback": "B1i",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio only"
+    },
+    {
+      "ability": "ET08",
+      "result": "h058",
+      "catalogId": "E-04",
+      "callback": "B6F",
+      "trigger": "chat",
+      "effectsAfterBI2": "read-only unused skin query and presentation only"
+    }
   ],
   "deferredExamples": [
-    { "ability": "A007", "reason": "Bvg creates a persistent helper unit" },
-    { "ability": "IM01", "reason": "B8Y creates a persistent helper unit with abilities" },
-    { "ability": "IM04", "reason": "B99 grants +20% line explosion state" },
-    { "ability": "ET04", "reason": "B7z enforces one-per-player, sets flags and conditional ability" },
-    { "ability": "ET07", "reason": "B7W adds an item, changes player-state and starts a timer" },
-    { "ability": "ET12", "reason": "B8I invokes extra B8G state handler" }
+    {
+      "ability": "A007",
+      "reason": "Bvg creates a persistent helper unit"
+    },
+    {
+      "ability": "IM01",
+      "reason": "B8Y creates a persistent helper unit with abilities"
+    },
+    {
+      "ability": "IM04",
+      "reason": "B99 grants +20% line explosion state"
+    },
+    {
+      "ability": "ET04",
+      "reason": "B7z enforces one-per-player, sets flags and conditional ability"
+    },
+    {
+      "ability": "ET07",
+      "reason": "B7W adds an item, changes player-state and starts a timer"
+    },
+    {
+      "ability": "ET12",
+      "reason": "B8I invokes extra B8G state handler"
+    }
   ]
 }

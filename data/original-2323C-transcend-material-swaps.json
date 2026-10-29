@@ -1,0 +1,736 @@
+{
+  "format": "ordr-transcend-material-swaps-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "recipes": [
+    {
+      "ability": "TR01",
+      "result": "H08V",
+      "catalogId": "TR-02",
+      "name": "나미",
+      "grade": "초월함",
+      "ingredients": [
+        {
+          "rawcode": "h02P",
+          "catalogId": "L-02",
+          "count": 1
+        },
+        {
+          "rawcode": "h039",
+          "catalogId": "L-23",
+          "count": 1
+        },
+        {
+          "rawcode": "h00P",
+          "catalogId": "S-03",
+          "count": 1
+        },
+        {
+          "rawcode": "h011",
+          "catalogId": "S-16",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "catalogId": "KM-01",
+          "count": 1
+        }
+      ],
+      "registration": {
+        "abilityRawcode": "TR01",
+        "jassLine": null,
+        "results": [
+          {
+            "kind": "UNIT",
+            "rawcode": "H08V",
+            "count": 1
+          }
+        ],
+        "conditions": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h02P",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h039",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h00P",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h011",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h04S",
+            "count": 1
+          },
+          {
+            "kind": "UBAN",
+            "rawcode": "H08V",
+            "count": 1
+          },
+          {
+            "kind": "KING",
+            "rawcode": "H08V",
+            "count": 1
+          }
+        ]
+      },
+      "wrapper": "Bxh",
+      "handler": "Bxl",
+      "commands": [
+        "날씨는맑음",
+        "nami tr"
+      ],
+      "skinQueryOnly": true
+    },
+    {
+      "ability": "TR10",
+      "result": "H094",
+      "catalogId": "TR-09",
+      "name": "바질호킨스",
+      "grade": "초월함",
+      "ingredients": [
+        {
+          "rawcode": "h02S",
+          "catalogId": "L-27",
+          "count": 1
+        },
+        {
+          "rawcode": "h03E",
+          "catalogId": "L-31",
+          "count": 1
+        },
+        {
+          "rawcode": "h01R",
+          "catalogId": "R-39",
+          "count": 1
+        },
+        {
+          "rawcode": "h01U",
+          "catalogId": "R-14",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "catalogId": "KM-01",
+          "count": 1
+        }
+      ],
+      "registration": {
+        "abilityRawcode": "TR10",
+        "jassLine": null,
+        "results": [
+          {
+            "kind": "UNIT",
+            "rawcode": "H094",
+            "count": 1
+          }
+        ],
+        "conditions": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h02S",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h03E",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h01R",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h01U",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h04S",
+            "count": 1
+          },
+          {
+            "kind": "UBAN",
+            "rawcode": "H094",
+            "count": 1
+          },
+          {
+            "kind": "KING",
+            "rawcode": "H094",
+            "count": 1
+          }
+        ]
+      },
+      "wrapper": "B2Z",
+      "handler": "B2a",
+      "commands": [
+        "운명의마술사",
+        "hawkins tr"
+      ],
+      "skinQueryOnly": false
+    },
+    {
+      "ability": "TR21",
+      "result": "H0BX",
+      "catalogId": "TR-21",
+      "name": "보니",
+      "grade": "초월함",
+      "ingredients": [
+        {
+          "rawcode": "h055",
+          "catalogId": "H-13",
+          "count": 1
+        },
+        {
+          "rawcode": "h030",
+          "catalogId": "L-32",
+          "count": 1
+        },
+        {
+          "rawcode": "h00W",
+          "catalogId": "S-22",
+          "count": 1
+        },
+        {
+          "rawcode": "h01C",
+          "catalogId": "S-02",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "catalogId": "KM-01",
+          "count": 1
+        }
+      ],
+      "registration": {
+        "abilityRawcode": "TR21",
+        "jassLine": null,
+        "results": [
+          {
+            "kind": "UNIT",
+            "rawcode": "H0BX",
+            "count": 1
+          }
+        ],
+        "conditions": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h055",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h030",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h00W",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h01C",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h04S",
+            "count": 1
+          },
+          {
+            "kind": "UBAN",
+            "rawcode": "H0BX",
+            "count": 1
+          },
+          {
+            "kind": "KING",
+            "rawcode": "H0BX",
+            "count": 1
+          }
+        ]
+      },
+      "wrapper": "B4E",
+      "handler": "B4F",
+      "commands": [
+        "일그러진미래",
+        "bonney tr"
+      ],
+      "skinQueryOnly": false
+    },
+    {
+      "ability": "TR23",
+      "result": "H091",
+      "catalogId": "TR-23",
+      "name": "쵸파",
+      "grade": "초월함",
+      "ingredients": [
+        {
+          "rawcode": "h03S",
+          "catalogId": "L-25",
+          "count": 1
+        },
+        {
+          "rawcode": "h03K",
+          "catalogId": "L-29",
+          "count": 1
+        },
+        {
+          "rawcode": "h008",
+          "catalogId": "C-06",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "catalogId": "KM-01",
+          "count": 1
+        }
+      ],
+      "registration": {
+        "abilityRawcode": "TR23",
+        "jassLine": null,
+        "results": [
+          {
+            "kind": "UNIT",
+            "rawcode": "H091",
+            "count": 1
+          }
+        ],
+        "conditions": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h03S",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h03K",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h008",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h04S",
+            "count": 1
+          },
+          {
+            "kind": "UBAN",
+            "rawcode": "H091",
+            "count": 1
+          },
+          {
+            "kind": "KING",
+            "rawcode": "H091",
+            "count": 1
+          }
+        ]
+      },
+      "wrapper": "Byc",
+      "handler": "Byd",
+      "commands": [
+        "순록의사!",
+        "chopper tr"
+      ],
+      "skinQueryOnly": false
+    },
+    {
+      "ability": "TR27",
+      "result": "H08Y",
+      "catalogId": "TR-28",
+      "name": "프랑키",
+      "grade": "초월함",
+      "ingredients": [
+        {
+          "rawcode": "h030",
+          "catalogId": "L-32",
+          "count": 1
+        },
+        {
+          "rawcode": "h07N",
+          "catalogId": "T-03",
+          "count": 1
+        },
+        {
+          "rawcode": "h023",
+          "catalogId": "R-36",
+          "count": 1
+        },
+        {
+          "rawcode": "h01G",
+          "catalogId": "S-32",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "catalogId": "KM-01",
+          "count": 1
+        }
+      ],
+      "registration": {
+        "abilityRawcode": "TR27",
+        "jassLine": null,
+        "results": [
+          {
+            "kind": "UNIT",
+            "rawcode": "H08Y",
+            "count": 1
+          }
+        ],
+        "conditions": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h030",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h07N",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h023",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h01G",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h04S",
+            "count": 1
+          },
+          {
+            "kind": "UBAN",
+            "rawcode": "H08Y",
+            "count": 1
+          },
+          {
+            "kind": "KING",
+            "rawcode": "H08Y",
+            "count": 1
+          }
+        ]
+      },
+      "wrapper": "Byy",
+      "handler": "Byz",
+      "commands": [
+        "무적의아이언파이러츠",
+        "franky tr"
+      ],
+      "skinQueryOnly": false
+    },
+    {
+      "ability": "TR28",
+      "result": "H08X",
+      "catalogId": "TR-29",
+      "name": "후지토라",
+      "grade": "초월함",
+      "ingredients": [
+        {
+          "rawcode": "h031",
+          "catalogId": "L-37",
+          "count": 1
+        },
+        {
+          "rawcode": "h046",
+          "catalogId": "H-20",
+          "count": 1
+        },
+        {
+          "rawcode": "h01Y",
+          "catalogId": "R-10",
+          "count": 1
+        },
+        {
+          "rawcode": "h00E",
+          "catalogId": "U-09",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "catalogId": "KM-01",
+          "count": 1
+        }
+      ],
+      "registration": {
+        "abilityRawcode": "TR28",
+        "jassLine": null,
+        "results": [
+          {
+            "kind": "UNIT",
+            "rawcode": "H08X",
+            "count": 1
+          }
+        ],
+        "conditions": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h031",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h046",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h01Y",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h00E",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h04S",
+            "count": 1
+          },
+          {
+            "kind": "UBAN",
+            "rawcode": "H08X",
+            "count": 1
+          },
+          {
+            "kind": "KING",
+            "rawcode": "H08X",
+            "count": 1
+          }
+        ]
+      },
+      "wrapper": "B1h",
+      "handler": "B1i",
+      "commands": [
+        "분노하는맹호",
+        "fujitora tr"
+      ],
+      "skinQueryOnly": false
+    },
+    {
+      "ability": "ET08",
+      "result": "h058",
+      "catalogId": "E-04",
+      "name": "미호크",
+      "grade": "영원한",
+      "ingredients": [
+        {
+          "rawcode": "h048",
+          "catalogId": "D-04",
+          "count": 1
+        },
+        {
+          "rawcode": "h043",
+          "catalogId": "H-01",
+          "count": 1
+        },
+        {
+          "rawcode": "h026",
+          "catalogId": "R-25",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "catalogId": "PS-01",
+          "count": 2
+        }
+      ],
+      "registration": {
+        "abilityRawcode": "ET08",
+        "jassLine": null,
+        "results": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h058",
+            "count": 1
+          }
+        ],
+        "conditions": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h048",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h043",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h026",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h060",
+            "count": 2
+          },
+          {
+            "kind": "WOOD",
+            "rawcode": "WOOD",
+            "count": 5
+          },
+          {
+            "kind": "UBAN",
+            "rawcode": "h058",
+            "count": 1
+          },
+          {
+            "kind": "KING",
+            "rawcode": "h058",
+            "count": 1
+          }
+        ]
+      },
+      "wrapper": "B6E",
+      "handler": "B6F",
+      "commands": [
+        "매의눈미호크",
+        "mihawk et"
+      ],
+      "skinQueryOnly": true
+    }
+  ],
+  "spawnAtPlayerZeroStart": {
+    "x": -3776,
+    "y": 4480
+  },
+  "functions": {
+    "B1h": {
+      "source": "function B1h takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction",
+      "sha256LF": "f825200ea1ed32809ddc5f6d8611e14a4a0cd9b9bb787b986aff9c4965693e6c"
+    },
+    "B1i": {
+      "source": "function B1i takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not B1h($54523238) then\nreturn\nendif\ncall StartSound(BHD(\"SE\\\\huji.mp3\",null,127,1.*1.,false,0,0))\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffc0c0c0후지토라 잇쇼우 : |r|cff00fa9a세계정부는 신이라도 되는 겁니까!|r\")\nendfunction",
+      "sha256LF": "006dd4198b41641b9b3b1d00d9e09c072243c1afab720780c03d78385b1ed35b"
+    },
+    "B1u": {
+      "source": "function B1u takes nothing returns nothing\ncall w5($48303858,function B1t)\ncall Bcx(\"분노하는맹호\",true,function B1i)\ncall Bcx(\"fujitora tr\",true,function B1i)\nset bg=CreateTrigger()\ncall BKD(bg)\ncall TriggerAddAction(bg,function B1r)\nset bi=CreateTrigger()\ncall BKD(bi)\ncall TriggerAddAction(bi,function B1s)\nset bh=CreateTrigger()\ncall BKD(bh)\ncall TriggerAddAction(bh,function B1o)\ncall BC5(KH,$41313158,function B1m)\nendfunction",
+      "sha256LF": "65dc2796da67077f3023086edd531686b20d614af9ba4276b85b114b2d8696e9"
+    },
+    "B2Z": {
+      "source": "function B2Z takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction",
+      "sha256LF": "6a503fa993a0be0eec9ff352bee267052f4111f7633e5d08cb74a6c6f5cadc11"
+    },
+    "B2a": {
+      "source": "function B2a takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not B2Z($54523130) then\nreturn\nendif\ncall StartSound(BHD(\"SE\\\\hawkins.mp3\",null,127,1.*1.,false,0,0))\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffc0c0c0바질 호킨스 : |r|cff00fa9a놀라게 해서 미안하군, 오늘은 살생하면 운이 떨어지는 날이다.|r\")\nendfunction",
+      "sha256LF": "10b0a9d45e0ab7f7c22191e5bd60ed1a7ff2afe794361f1f4e05dd510c7b4459"
+    },
+    "B2b": {
+      "source": "function B2b takes nothing returns nothing\ncall Bcx(\"운명의마술사\",true,function B2a)\ncall Bcx(\"hawkins tr\",true,function B2a)\ncall w5($48303934,function B2W)\ncall BKD(bz)\ncall TriggerAddAction(bz,function B2S)\ncall BKD(b0)\ncall TriggerAddAction(b0,function B2T)\ncall BKD(b1)\ncall TriggerAddAction(b1,function B2U)\ncall BKD(b2)\ncall TriggerAddAction(b2,function B2V)\ncall BC5(KH,$41305045,function B2X)\ncall BC5(KH,$41305046,function B2Y)\nendfunction",
+      "sha256LF": "92eef0e2ca9d6ef33e81ba73c868485bff33f4107483cb3b2936ecd2c53b9181"
+    },
+    "B4E": {
+      "source": "function B4E takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction",
+      "sha256LF": "43f367d2c490cf54a4a02dc489928cb189f2e5e7b094c8c4247346e8a0ff93d4"
+    },
+    "B4F": {
+      "source": "function B4F takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not B4E($54523231) then\nreturn\nendif\ncall StartSound(BHD(\"SE\\\\Jewelrybonney.mp3\",null,127,1.*1.,false,0,0))\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffc0c0c0주얼리 보니 : |r|cff00fa9a난 보니! 적이다. 기억해둬. 하지만 구해준 건 고마워...|r\")\nendfunction",
+      "sha256LF": "58d3835b5902e900f283b231ccdfd1fdf27232a386eea297629f787cc2e653af"
+    },
+    "B4H": {
+      "source": "function B4H takes nothing returns nothing\ncall Bcx(\"일그러진미래\",true,function B4F)\ncall Bcx(\"bonney tr\",true,function B4F)\ncall w5($48304258,function B4C)\ncall w5($48304259,function B4D)\ncall BKD(ch)\ncall TriggerAddAction(ch,function B34)\ncall BKD(cg)\ncall TriggerAddAction(cg,function B31)\ncall BKD(cf)\ncall TriggerAddAction(cf,function B37)\ncall BC5(KH,$41305648,function B4G)\nendfunction",
+      "sha256LF": "ca4962713b79079b467d34087284192fc9d449fe28ed7ce3438aec8c24124561"
+    },
+    "B6E": {
+      "source": "function B6E takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction",
+      "sha256LF": "f0ec5998162f0977066595fc48223f93c79fc32003bf318eb5f6993cf44093ac"
+    },
+    "B6F": {
+      "source": "function B6F takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nlocal unit Yu\nif not B6E($45543038) then\nreturn\nendif\nset Yu=FirstOfGroup(Q6)\ncall StartSound(BHD(\"SE\\\\mihawk.mp3\",null,127,1.*1.,false,0,0))\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|CFFFFFA78쥬라클 미호크 : |CFFC15AF4자신을 알고 세상을 알고 강해져라! 이 나를 넘어봐라!\")\ncall Bjp(Yu)\nset Yu=null\nendfunction",
+      "sha256LF": "2849ef6e6991761283c1481f747060a71743533aaa629112e52f30439c8aa0ba"
+    },
+    "B6W": {
+      "source": "function B6W takes nothing returns nothing\ncall Bcx(\"매의눈미호크\",true,function B6F)\ncall Bcx(\"mihawk et\",true,function B6F)\ncall w5($68303538,function B6V)\ncall w5($6830375A,function B6V)\nset dU=CreateTrigger()\ncall BKD(dU)\ncall TriggerAddAction(dU,function B6M)\nset dW=CreateTrigger()\ncall BKD(dW)\ncall TriggerAddAction(dW,function B6T)\nset dV=CreateTrigger()\ncall BKD(dV)\ncall TriggerAddAction(dV,function B6U)\nset dX=CreateTrigger()\ncall BKD(dX)\ncall TriggerAddAction(dX,function B6K)\ncall BC5(KH,$41304146,function B6G)\nendfunction",
+      "sha256LF": "28cc33b47f989632510f1718781e31a410db0f0207183f92daf0e9c0c80f35ef"
+    },
+    "Bjm": {
+      "source": "function Bjm takes player Cl returns boolean\nlocal integer JG=GetPlayerId(Cl)\nreturn TU[JG]==MW or TU[JG]==MQ or TU[JG]==KW or TU[JG]==MR or TU[JG]==MS or TU[JG]==MU or TU[JG]==MV\nendfunction",
+      "sha256LF": "e050d19a7011315665be1833ae73c788a133b61a7cfefdaa8ebba5ce89a32b1a"
+    },
+    "Bjp": {
+      "source": "function Bjp takes unit Cm returns boolean\nlocal player RT=GetOwningPlayer(Cm)\nlocal string TS\nlocal integer Zm\nlocal boolean Zn\nset TS=Sv[GetPlayerId(RT)]\nif GetUnitTypeId(Cm)==$68303438 then\nset Zm=SE\nelseif GetUnitTypeId(Cm)==$68303432 then\nset Zm=SL\nelseif GetUnitTypeId(Cm)==$68303254 then\nset Zm=SP\nelseif GetUnitTypeId(Cm)==$68303535 then\nset Zm=SJ\nelseif GetUnitTypeId(Cm)==$68303543 then\nset Zm=SH\nelseif GetUnitTypeId(Cm)==$68303538 then\nset Zm=SK\nelseif GetUnitTypeId(Cm)==$48303938 then\nset Zm=SG\nelseif GetUnitTypeId(Cm)==$48303856 then\nset Zm=SF\nelseif GetUnitTypeId(Cm)==$4830354E then\nset Zm=SI\nelseif GetUnitTypeId(Cm)==$48303941 then\nset Zm=SM\nelseif GetUnitTypeId(Cm)==$48303936 then\nset Zm=SO\nelseif GetUnitTypeId(Cm)==$48303939 then\nset Zm=SS\nelseif GetUnitTypeId(Cm)==$48304244 then\nset Zm=SQ\nelseif GetUnitTypeId(Cm)==$48303855 then\nset Zm=SR\nelseif GetUnitTypeId(Cm)==$68303441 then\nset Zm=SN\nelse\ncall DisplayTimedTextToPlayer(RT,0,0,5,\"|cffff0000[Error]|r 해당 유닛은 스킨이 존재하지 않습니다.\")\nset RT=null\nreturn false\nendif\nset Zn=LoadBoolean(SD,StringHash(TS),Zm) or (GetUnitTypeId(Cm)==TT and Bjm(RT))\nset RT=null\nreturn Zn\nendfunction",
+      "sha256LF": "7405a969b8f27e194336898b0a5f4e1eb9d92cb615cb0e45425fbf3cc6634823"
+    },
+    "Bxh": {
+      "source": "function Bxh takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction",
+      "sha256LF": "2d756658f6798485bdbe0242fa57a2269e3de2c03d0e81e4b03c684b147f4bd9"
+    },
+    "Bxl": {
+      "source": "function Bxl takes nothing returns nothing\nlocal unit Yu\nif not Bxh($54523031) then\nreturn\nendif\nset Yu=FirstOfGroup(Q6)\ncall Bjp(Yu)\ncall StartSound(BHD(\"SE\\\\Nami.mp3\",null,127,1.*1.,false,0,0))\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffc0c0c0나미 : |r|cff00fa9a네가 아무리 강해도 내 예보는 빗나가지 않아! |r\")\nset Yu=null\nendfunction",
+      "sha256LF": "448f067ef966339912258e0a3632f424a4df1e8fd2a1375d873f4de6377e5e0e"
+    },
+    "Bxu": {
+      "source": "function Bxu takes nothing returns nothing\ncall Bcx(\"날씨는맑음\",true,function Bxl)\ncall Bcx(\"nami tr\",true,function Bxl)\ncall w5($48303856,function Bxt)\ncall w5($48303842,function Bxt)\ncall BKD(Zo)\ncall TriggerAddAction(Zo,function Bxp)\ncall BKD(Zp)\ncall TriggerAddAction(Zp,function Bxq)\ncall BKD(Zr)\ncall TriggerAddAction(Zr,function Bxs)\ncall BC5(KH,$4130534F,function Bxm)\ncall BKD(Zu)\ncall TriggerAddAction(Zu,function Bxo)\nendfunction",
+      "sha256LF": "7a3ef3f78b57e70ade31fc403cfda58afcdf3091d2f80898771c63754ab60b89"
+    },
+    "Byc": {
+      "source": "function Byc takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction",
+      "sha256LF": "0ef868690dcb94f7812edd3b4a69e7c03b117d311be9b61a651d276e767d31a4"
+    },
+    "Byd": {
+      "source": "function Byd takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Byc($54523233) then\nreturn\nendif\ncall StartSound(BHD(\"SE\\\\Chopper.mp3\",null,127,1.*1.,false,0,0))\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffc0c0c0토니토니 쵸파 : |r|cff00fa9a난 의사야! 적도 아군도 모두 구해줄게!|r\")\nendfunction",
+      "sha256LF": "8aaefa2475e0f225ad3ef41a035c73a70feadf34a55f7830aebb1c6e984ac0ea"
+    },
+    "Byf": {
+      "source": "function Byf takes nothing returns nothing\ncall Bcx(\"순록의사!\",true,function Byd)\ncall Bcx(\"chopper tr\",true,function Byd)\ncall w5($48303931,function Byb)\ncall w5($48303933,function Bya)\ncall BC5(KH,$41304F4F,function Bye)\ncall BKD(aG)\ncall TriggerAddAction(aG,function ByZ)\nendfunction",
+      "sha256LF": "2e1a9aaa8021084dab19bfad0322cd908b4c9c4899cd55cba71e31422f5cb889"
+    },
+    "Byy": {
+      "source": "function Byy takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction",
+      "sha256LF": "1b82932bd90973b8aa15d6d0afb655c6d867110433c33b91f97d9ec0d45d6878"
+    },
+    "Byz": {
+      "source": "function Byz takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Byy($54523237) then\nreturn\nendif\ncall StartSound(BHD(\"SE\\\\Franky.mp3\",null,127,1.*1.,false,0,0))\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffc0c0c0프랑키 : |r|cff00fa9a드디어 왔구나 너희들, 기다렸다구!|r\")\nendfunction",
+      "sha256LF": "2624c8744759e677f4d4a52da28b20f7642fa3f94d6d70206cda9ec950f9f163"
+    },
+    "BzJ": {
+      "source": "function BzJ takes nothing returns nothing\ncall Bcx(\"무적의아이언파이러츠\",true,function Byz)\ncall Bcx(\"franky tr\",true,function Byz)\ncall w5($48303859,function BzH)\ncall w5($48304256,function BzI)\nset aY=CreateTrigger()\ncall BKD(aY)\ncall TriggerAddAction(aY,function By8)\nset aW=CreateTrigger()\ncall BKD(aW)\ncall TriggerAddAction(aW,function By9)\nset aX=CreateTrigger()\ncall BKD(aX)\ncall TriggerAddAction(aX,function BzF)\ncall BC5(KH,$41304737,function BzG)\ncall BC5(KH,$41313244,function By0)\nendfunction",
+      "sha256LF": "7f6be90e38a42feaa47d3967bf9141000637001fabb589b1db390da0672f83a5"
+    },
+    "CH5": {
+      "source": "function CH5 takes nothing returns nothing\ncall BGR($474F4C44,function CHj)\ncall BGS($474F4C44,function CHk)\ncall BGR($574F4F44,function CHl)\ncall BGS($574F4F44,function CHm)\ncall BGR($554E4954,function CHu)\ncall BGS($554E4954,function CHx)\ncall BGR($5049434B,function CHz)\ncall BGS($5049434B,function CH0)\ncall BGR($534B5054,function CHn)\ncall BGS($534B5054,function CHo)\ncall BGR($4954454D,function CHp)\ncall BGS($4954454D,function CHq)\ncall BGR($43484354,function CHr)\ncall BGS($43484354,function CHs)\ncall BGR($49464354,function CH1)\ncall BGS($49464354,function CH2)\ncall BGR($524D4158,function CH3)\ncall BGS($524D4158,function CH4)\ncall BGT($554E4954,function CHy)\nendfunction",
+      "sha256LF": "93995dfe8a9165f9317c6f76ce9c8911cad4933257cdd80a085206ed5a4bb16f"
+    },
+    "CH8": {
+      "source": "function CH8 takes nothing returns nothing\nlocal unit iI=GetEnteringUnit()\nlocal integer JG=GetPlayerId(GetOwningPlayer(iI))\nlocal timer Db\nif GetUnitAbilityLevel(iI,$416C6F63)>0 then\nset iI=null\nreturn\nendif\nif JG==7 then\nset iI=null\nreturn\nendif\nif LZ[JG]!=0 and IsUnitType(GetTriggerUnit(),UNIT_TYPE_GIANT) then\ncall BH1(LZ[JG],iI)\ncall BkC(iI)\nendif\nif GetUnitTypeId(iI)==$68303438 then\nset LL[JG]=LL[JG]+10\nset Db=BHs(JG)\ncall TimerStart(Db,.01,false,function CH6)\nset Db=null\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303431 then\nset LL[JG]=LL[JG]+10\nset Db=BHs(JG)\ncall TimerStart(Db,.01,false,function CH7)\nset Db=null\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303748 then\ncall Bc6(iI,GetRectCenterX(Lm[JG]),GetRectCenterY(Lm[JG]))\ncall UnitRemoveAbilityBJ($416D6F76,iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303335 then\ncall Btf(JG,iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303837 then\ncall BuF(JG,iI)\ncall SetPlayerTechResearchedSwap($52303343,1,Player(JG))\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303250 then\ncall BsP(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303432 then\ncall SetPlayerTechResearchedSwap($52303331,1,Player(JG))\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303254 then\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303342 then\ncall BuN(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303358 then\ncall Br4(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303535 then\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303550 then\ncall SetPlayerTechResearchedSwap($52303052,1,Player(JG))\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68304247 then\ncall CCP(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303732 then\ncall CC1(JG)\nset iI=null\nreturn\nendif\nset iI=null\nendfunction",
+      "sha256LF": "1ec038ddd22e024c26ad7116f9eff4040bd18a2760074ed3ec802d914cebe96f"
+    },
+    "CHi": {
+      "source": "function CHi takes nothing returns nothing\ncall BGR($5542414E,function CHg)\ncall BGR($4B494E47,function CHh)\nendfunction",
+      "sha256LF": "b19bd25599a95b6252b1be51b74b3e21e41dda0321cc06337030ea8cdcac48df"
+    },
+    "CHy": {
+      "source": "function CHy takes nothing returns nothing\nlocal player iF=Player(Wl)\nlocal integer iH=Wn\nlocal integer iG=Wo\nlocal integer VU=LZ[GetPlayerId(iF)]\nlocal real EN\nlocal real JS\nlocal unit Cm\nlocal integer EK=0\nif WV then\nset EN=WW\nset JS=WX\nelse\nset EN=GetPlayerStartLocationX(iF)\nset JS=GetPlayerStartLocationY(iF)\nendif\nloop\nexitwhen EK==iG\nset Cm=CreateUnit(iF,iH,EN,JS,bj_UNIT_FACING)\nif GetUnitTypeId(Cm)==$48303939 or GetUnitTypeId(Cm)==$48304232 then\ncall BH0(VU,Cm,$48303854)\nelse\ncall BH1(VU,Cm)\nendif\ncall GroupAddUnit(Q6,Cm)\nset EK=EK+1\nendloop\nset iF=null\nset Cm=null\nendfunction",
+      "sha256LF": "1c4e59257453fc2c3120f1f93344e7bc261df1ecb0c61b1c67c955ed0835e4c4"
+    }
+  },
+  "limitations": [
+    "Material swap authorization only; acquisition and combat parity remain separate.",
+    "TR01/ET08 discard the read-only Bjp skin check; skin/audio presentation is not ported.",
+    "TR09 H099 uses CHy/BH0 alias H08T and remains locked.",
+    "Global Q4 counters, navigation effects and quest callbacks are not certified by this callback audit.",
+    "Kuma still requires an external settled source story event; no free acquisition is introduced."
+  ]
+}

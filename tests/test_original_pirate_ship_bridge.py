@@ -21,7 +21,7 @@ class OriginalPirateShipBridgeTests(unittest.TestCase):
         origin = next(r for r in data["mapObjects"] if r["rawcode"] == "h060")
         slk = next(r for r in native["entries"] if r["rawcode"] == "h060")
         catalog = next(r for r in units["entries"] if r["id"] == "PS-01")
-        self.assertEqual("0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5",
+        self.assertEqual("0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
                          data["sourceW3xSha256"])
         self.assertEqual("해적선", catalog["grade"])
         self.assertEqual("original-W3X-only", catalog["catalogEvidenceOrigin"])
@@ -58,7 +58,7 @@ class OriginalPirateShipBridgeTests(unittest.TestCase):
     def test_hidden_uses_are_now_resolvable_but_not_silently_authorized(self):
         inventory = load("original-fusion-unconnected-review.json")
         rows = {r["abilityRawcode"]: r for r in inventory["blocked"]}
-        self.assertEqual((265, 143, 122),
+        self.assertEqual((265, 150, 115),
                          tuple(inventory["summary"][x] for x in
                                ("sourceRecipesExcludingTest", "liveExecutableRecipes",
                                 "blockedRecipes")))

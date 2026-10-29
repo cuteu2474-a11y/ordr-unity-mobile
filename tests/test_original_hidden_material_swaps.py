@@ -37,6 +37,8 @@ class OriginalHiddenMaterialSwapTests(unittest.TestCase):
                     if material['rawcode'] == 'h060':
                         self.assertEqual('PS-01', item['catalogId'])
                         self.assertEqual('해적선', item['grade'])
+                    elif row['abilityRawcode'] == 'YY04' and material['rawcode'] == 'h035':
+                        self.assertEqual(('L-17', '전설'), (item['catalogId'], item['grade']))
                     else:
                         self.assertIn(item['grade'],
                                       ('흔함', '안흔함', '특별함', '희귀함'))
