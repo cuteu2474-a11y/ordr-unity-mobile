@@ -13,14 +13,14 @@
   ],
   "summary": {
     "sourceRecipesExcludingTest": 265,
-    "liveExecutableRecipes": 138,
-    "blockedRecipes": 127,
+    "liveExecutableRecipes": 143,
+    "blockedRecipes": 122,
     "liveExecutableByGrade": {
       "Reviewed": 13,
       "ReviewedSpecial": 31,
       "ReviewedRare": 41,
       "ReviewedLegendary": 33,
-      "ReviewedHidden": 13,
+      "ReviewedHidden": 18,
       "ReviewedEternal": 1,
       "ReviewedRestricted": 6
     },
@@ -31,7 +31,6 @@
       "native-cast-AOsf": 3,
       "no-unit-payment-in-registration": 24,
       "round-state": 15,
-      "source-callback-or-native-effect-needs-audit": 5,
       "special-native-result": 8,
       "special-target-or-pick": 6,
       "top-tier-route-or-callback-audit": 69,
@@ -256,98 +255,6 @@
       "sourceWoodCost": 0,
       "reasonCodes": [
         "creation-followup-CH8"
-      ]
-    },
-    {
-      "abilityRawcode": "YY04",
-      "resultRawcodes": [
-        "h03U"
-      ],
-      "resultNames": [
-        "레드포스호 - 히든"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "UNIT",
-        "UPUN"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "source-callback-or-native-effect-needs-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "YY07",
-      "resultRawcodes": [
-        "h03Q"
-      ],
-      "resultNames": [
-        "모비딕호 - 히든"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "UNIT"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "source-callback-or-native-effect-needs-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "YY08",
-      "resultRawcodes": [
-        "h03R"
-      ],
-      "resultNames": [
-        "반 더 데켄 - 히든"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "UNIT",
-        "UPUN"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "source-callback-or-native-effect-needs-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "YY09",
-      "resultRawcodes": [
-        "h03P"
-      ],
-      "resultNames": [
-        "발라티에 - 히든"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "UNIT"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "source-callback-or-native-effect-needs-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "YY12",
-      "resultRawcodes": [
-        "h03L"
-      ],
-      "resultNames": [
-        "사우전드 써니호 - 히든"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "UNIT"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "source-callback-or-native-effect-needs-audit"
       ]
     },
     {

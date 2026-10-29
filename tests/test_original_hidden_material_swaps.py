@@ -20,7 +20,7 @@ class OriginalHiddenMaterialSwapTests(unittest.TestCase):
             (ROOT / 'data/original-2323C-map-base-stats.json').read_text())['catalogEntries'] if r.get('originalRawcode')}
 
     def test_hidden_transactions_preserve_material_order_identity_and_zero_extra_cost(self):
-        self.assertEqual(13, len(self.audit['recipes']))
+        self.assertEqual(18, len(self.audit['recipes']))
         for row in self.audit['recipes']:
             source = self.registry[row['abilityRawcode']]
             self.assertCountEqual(source['conditions'], row['conditions'])
@@ -33,8 +33,13 @@ class OriginalHiddenMaterialSwapTests(unittest.TestCase):
             for material in row['conditions']:
                 self.assertIn(material['kind'], ('UNIT', 'UPUN'))
                 if material['kind'] == 'UNIT':
-                    self.assertIn(self.objects[material['rawcode']]['grade'],
-                                  ('흔함', '안흔함', '특별함', '희귀함'))
+                    item = self.objects[material['rawcode']]
+                    if material['rawcode'] == 'h060':
+                        self.assertEqual('PS-01', item['catalogId'])
+                        self.assertEqual('해적선', item['grade'])
+                    else:
+                        self.assertIn(item['grade'],
+                                      ('흔함', '안흔함', '특별함', '희귀함'))
             self.assertFalse(self.audit['retailCombatParityVerified'])
 
     def test_chat_entries_have_no_hidden_gameplay_mutation_or_creation_hook(self):
@@ -62,6 +67,30 @@ class OriginalHiddenMaterialSwapTests(unittest.TestCase):
                 changed[name] = changed[name].replace(old, replacement)
                 with self.assertRaises(ValueError):
                     require_simple_chat_entry(row['abilityRawcode'], changed)
+
+    def test_five_pirate_ship_recipes_have_only_original_chat_bi2_side_effects(self):
+        expected = {
+            'YY04': ('BsB', 'BsC', 'H-02', '레드포스호'),
+            'YY07': ('Brw', 'Brx', 'H-06', '모비딕호'),
+            'YY08': ('BqW', 'BqX', 'H-07', '반더데켄'),
+            'YY09': ('Brz', 'Br0', 'H-08', '발라티에'),
+            'YY12': ('Brs', 'Brt', 'H-15', '써니호'),
+        }
+        rows = {x['abilityRawcode']: x for x in self.audit['recipes']}
+        self.assertTrue(set(expected).issubset(rows))
+        functions = {k: x['source'] for k, x in self.audit['functions'].items()}
+        for ability, (wrapper, handler, catalog_id, name) in expected.items():
+            with self.subTest(ability=ability):
+                row = rows[ability]
+                self.assertEqual((wrapper, handler), (row['chatWrapper'], row['chatHandler']))
+                self.assertEqual((catalog_id, name), (row['resultCatalogId'], row['resultName']))
+                self.assertEqual(1, len([x for x in row['conditions']
+                                         if x['kind'] == 'UNIT' and x['rawcode'] == 'h060']))
+                self.assertFalse(any(x['kind'] not in ('UNIT', 'UPUN')
+                                     for x in row['conditions']))
+                self.assertEqual((wrapper, handler),
+                                 require_simple_chat_entry(ability, functions))
+                self.assertNotIn(ability, self.audit['excludedHiddenAbilities'])
 
     def test_runtime_allowlist_matches_audited_recipes_and_excludes_unhandled_paths(self):
         source = (ROOT / 'Assets/Scripts/Mobile/Original323CommonFusionPort.cs').read_text()

@@ -4,7 +4,7 @@
   "executionSource": "Assets/Scripts/Mobile/Original323CommonFusionPort.cs",
   "policy": "nightmare-otherworld; object names are display evidence only, never permission to consume or create units",
   "summary": {
-    "blockedRecipeCount": 127,
+    "blockedRecipeCount": 122,
     "unmappedRecipeCount": 47,
     "distinctSourceOnlyObjects": 6,
     "sourceOnlyRoleOccurrences": 49

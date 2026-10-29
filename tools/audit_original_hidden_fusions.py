@@ -55,8 +55,8 @@ def audit(jass, data, port):
     registry = {r['abilityRawcode']: r for r in extract(jass)['registrations']}
     block = port.read_text().split('string[,] ReviewedHidden = {', 1)[1].split('};', 1)[0]
     reviewed = re.findall(r'\{ "(YY\d{2})", "(\w{4})", "(H-\d+)" \}', block)
-    if len(reviewed) != 13 or len({r[0] for r in reviewed}) != 13:
-        raise ValueError('Expected thirteen explicit Hidden recipes')
+    if len(reviewed) != 18 or len({r[0] for r in reviewed}) != 18:
+        raise ValueError('Expected eighteen explicit Hidden recipes')
     for fragment in ('call DefineStartLocation(0,-3776.,4480.)',
                      'call SetPlayerStartLocation(Player(0),0)'):
         if fragment not in text:
@@ -79,7 +79,11 @@ def audit(jass, data, port):
                 continue
             if condition['kind'] != 'UNIT' or condition['count'] <= 0:
                 raise ValueError('Unreviewed Hidden condition/cost')
-            if objects[condition['rawcode']]['grade'] not in ('흔함', '안흔함', '특별함', '희귀함'):
+            material = objects[condition['rawcode']]
+            if not (material['grade'] in ('흔함', '안흔함', '특별함', '희귀함') or
+                    (condition['rawcode'] == 'h060' and
+                     material['catalogId'] == 'PS-01' and
+                     material['grade'] == '해적선')):
                 raise ValueError('Unreviewed Hidden material identity')
         wrapper, handler = require_simple_chat_entry(ability, functions)
         commands = re.findall(r'call Bcx\("([^"\n]+)",true,function ' + handler + r'\)', text)
@@ -96,12 +100,12 @@ def audit(jass, data, port):
     return {'format': 'ordr-hidden-material-swaps-v1', 'sourceW3xSha256': MAP_SHA,
             'sourceJassSha256': JASS_SHA, 'positionPlayerZero': {'x': -3776, 'y': 4480},
             'recipes': recipes, 'functions': evidence, 'retailCombatParityVerified': False,
-            'excludedHiddenAbilities': ['YY01', 'YY04', 'YY07', 'YY08', 'YY09', 'YY12',
-                                        'YY13', 'YY15', 'YY20'],
-            'limitations': ['Only thirteen reviewed chat-driven material transactions are connected.',
-                            'YY15 resets XM in its chat callback; it is not a pure material swap.',
-                            'Ship/variant materials and additional CH8 effects remain locked.',
-                            'Hidden skills, native combat and retail gameplay parity remain incomplete.']}
+            'excludedHiddenAbilities': ['YY01', 'YY13', 'YY15', 'YY20'],
+            'limitations': [
+                'Eighteen source-reviewed chat-driven BI2 material swaps are connected, including five pirate-ship material recipes.',
+                'YY15 resets XM in its chat callback; it is not a pure material swap.',
+                'YY01/YY13/YY20 have creation follow-up effects and remain locked.',
+                'Hidden skills, native combat and retail gameplay parity remain incomplete.']}
 
 
 if __name__ == '__main__':

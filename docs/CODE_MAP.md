@@ -2,6 +2,10 @@
 
 기준 게임 코드: `3cc8997` · 현재 범위는 [시작 안내](START_HERE.md), 실행 순서는 [작업목록](PLAYABLE_ROADMAP.md).
 
+### 해적선 히든 조합 공동 경로
+
+`Original323CommonFusionPort.ReviewedHidden`은 원본 JASS 감사 18종(해적선 `h060` 5종 포함)의 **실행 허용 목록**입니다. `OriginalJassFusionPlanner`가 원본 CWR 재료/수량과 실제 `PS-01` 보유 객체를 다시 확인하고 `BeginOriginalFusionUnitSwap`이 한 거래로 소비·생성·복구합니다. **`UPUN`은 소비/무료 소환 조건이 아닙니다.** 게임 원작 대사·음성은 별도 후속 이식 대상이며 `YY01/YY13/YY15/YY20/YY26`은 미승인입니다. 근거: [히든 조합 JASS 함수 감사](../data/original-2323C-hidden-material-swaps.json).
+
 ## 기본 씬에서 전투까지
 
 ```mermaid

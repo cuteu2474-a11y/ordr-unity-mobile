@@ -619,6 +619,206 @@
         "피셔타이거조합",
         "tiger"
       ]
+    },
+    {
+      "abilityRawcode": "YY04",
+      "jassLine": null,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03U",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0B2",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-02",
+      "resultName": "레드포스호",
+      "chatWrapper": "BsB",
+      "chatHandler": "BsC",
+      "commands": [
+        "레드포스호조합",
+        "redforce"
+      ]
+    },
+    {
+      "abilityRawcode": "YY07",
+      "jassLine": null,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03Q",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02E",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-06",
+      "resultName": "모비딕호",
+      "chatWrapper": "Brw",
+      "chatHandler": "Brx",
+      "commands": [
+        "모비딕호조합",
+        "mobydick"
+      ]
+    },
+    {
+      "abilityRawcode": "YY08",
+      "jassLine": null,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03R",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h021",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08U",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-07",
+      "resultName": "반더데켄",
+      "chatWrapper": "BqW",
+      "chatHandler": "BqX",
+      "commands": [
+        "반더데켄조합",
+        "decken"
+      ]
+    },
+    {
+      "abilityRawcode": "YY09",
+      "jassLine": null,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03P",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-08",
+      "resultName": "발라티에",
+      "chatWrapper": "Brz",
+      "chatHandler": "Br0",
+      "commands": [
+        "발라티에조합",
+        "baratie"
+      ]
+    },
+    {
+      "abilityRawcode": "YY12",
+      "jassLine": null,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03L",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-15",
+      "resultName": "써니호",
+      "chatWrapper": "Brs",
+      "chatHandler": "Brt",
+      "commands": [
+        "써니호조합",
+        "sunny"
+      ]
     }
   ],
   "functions": {
@@ -646,6 +846,16 @@
       "line": 16364,
       "sha256LF": "a87bbce37f295e85dcff853e8455e11d3e7208cd351127045655bb1b8648cca8",
       "source": "function BqT takes nothing returns nothing\nif not BqS($59593235) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000피셔타이거 : |r|cffFA8072달려! 다시는 잡히지 마라!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "BqW": {
+      "line": 16402,
+      "sha256LF": "b6374386d4d9a0f785e1a21f192e4bb4fab8e060f88373ac467f2f4017fd7b03",
+      "source": "function BqW takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "BqX": {
+      "line": 16409,
+      "sha256LF": "ba2170a5c39b5578f49595f1ab77a4f3f3f5692417770c65ff229e6835b90108",
+      "source": "function BqX takes nothing returns nothing\nif not BqW($59593038) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000반 더 데켄 : |r|cffFA8072다 날려 버리겠어!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
     },
     "Bqf": {
       "line": 16497,
@@ -696,6 +906,11 @@
       "line": 16749,
       "sha256LF": "fb10b4f978ad487aa65fa422c0b0d59bab64dfa8f5e77d37df6828ca60f76aa9",
       "source": "function Bqz takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Bqy($59593035) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000레베카 : |r|cffFA8072 내가 도플라밍고를 쓰러트리겠어!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "Br0": {
+      "line": 17559,
+      "sha256LF": "24d2b73f331cc9d83db0c07c6c786a07fdd5dc12af0f9a13bfdfabb2c3ac7d65",
+      "source": "function Br0 takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Brz($59593039) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000발라티에 : |r|cffFA8072...|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
     },
     "BrC": {
       "line": 16945,
@@ -767,6 +982,41 @@
       "sha256LF": "b21864200ab4e06e455e3dc7cf05d8db26705953afbab0948de895f896d64378",
       "source": "function Brl takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Brk($59593134) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000시류 : |r|cffFA8072베어버려서... 미안.|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
     },
+    "Brs": {
+      "line": 17470,
+      "sha256LF": "792e25600a0440fbe565e4c516c69a382d9d0f5b5b18521459edb1e21a71dee4",
+      "source": "function Brs takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "Brt": {
+      "line": 17477,
+      "sha256LF": "de28530b1afaf3c9accd210fc499a72b933a43773ecc89e4a7d7fd8e2cc9f870",
+      "source": "function Brt takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Brs($59593132) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000아이스버그 : |r|cffFA8072그럼 이런 이름은 어떠냐? 사우전드 써니호!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "Brw": {
+      "line": 17531,
+      "sha256LF": "ba255afe75489ade21a89f26a0bff41b2f77e7baa41fcc5af18f78b2bbae1c09",
+      "source": "function Brw takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "Brx": {
+      "line": 17538,
+      "sha256LF": "0b0c1ff00bb62d23ea3d506bc0c14cc1feb2ce866095b54423e9cf92f8326149",
+      "source": "function Brx takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Brw($59593037) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000모비딕호 : |r|cffFA8072...|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "Brz": {
+      "line": 17552,
+      "sha256LF": "7ee4f513e6135baca1c1fdc7d4b068b5ec3e9b0a5102a3d46132c9a2b50d476c",
+      "source": "function Brz takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "BsB": {
+      "line": 17647,
+      "sha256LF": "a5802a23becf7063af35b5cad9c8832b1ac18b270643d181e8ce3d2722b05df8",
+      "source": "function BsB takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "BsC": {
+      "line": 17654,
+      "sha256LF": "3695080020cc27b551b8fb2101e9c81795f6a76f7b74db1fa4bfbb07bbf9d061",
+      "source": "function BsC takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not BsB($59593034) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000레드포스호 : |r|cffFA8072...|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
     "CH5": {
       "line": 48360,
       "sha256LF": "93995dfe8a9165f9317c6f76ce9c8911cad4933257cdd80a085206ed5a4bb16f",
@@ -801,19 +1051,14 @@
   "retailCombatParityVerified": false,
   "excludedHiddenAbilities": [
     "YY01",
-    "YY04",
-    "YY07",
-    "YY08",
-    "YY09",
-    "YY12",
     "YY13",
     "YY15",
     "YY20"
   ],
   "limitations": [
-    "Only thirteen reviewed chat-driven material transactions are connected.",
+    "Eighteen source-reviewed chat-driven BI2 material swaps are connected, including five pirate-ship material recipes.",
     "YY15 resets XM in its chat callback; it is not a pure material swap.",
-    "Ship/variant materials and additional CH8 effects remain locked.",
+    "YY01/YY13/YY20 have creation follow-up effects and remain locked.",
     "Hidden skills, native combat and retail gameplay parity remain incomplete."
   ]
 }

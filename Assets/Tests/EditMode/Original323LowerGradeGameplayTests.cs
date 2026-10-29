@@ -201,6 +201,12 @@ namespace Ordr.Mobile.Tests
         [TestCase("YY23", "H-21")]
         [TestCase("YY18", "H-19")]
         [TestCase("YY25", "H-22")]
+        // Five pinned source-only pirate-ship material recipes.
+        [TestCase("YY04", "H-02")]
+        [TestCase("YY07", "H-06")]
+        [TestCase("YY08", "H-07")]
+        [TestCase("YY09", "H-08")]
+        [TestCase("YY12", "H-15")]
         [TestCase("ET01", "E-06")]
         public void AllReviewedRecipesConsumeActualMaterialsAndCreateOneResult(string ability, string result)
         {
@@ -324,9 +330,9 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(138, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(143, game.Fusion.ExecutableRecipeCount);
             Assert.AreEqual(6, game.Fusion.ExecutableRestrictedRecipeCount);
-            Assert.AreEqual(13, game.Fusion.ExecutableHiddenRecipeCount);
+            Assert.AreEqual(18, game.Fusion.ExecutableHiddenRecipeCount);
             Assert.AreEqual(1, game.Fusion.ExecutableEternalRecipeCount);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
             var fresh = Offer(game, "A012");
@@ -489,12 +495,74 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
         }
 
+        [TestCase("YY04", "H-02")]
+        [TestCase("YY07", "H-06")]
+        [TestCase("YY08", "H-07")]
+        [TestCase("YY09", "H-08")]
+        [TestCase("YY12", "H-15")]
+        public void PirateShipHiddenCraftUsesRealWispRewardAndRechecksExactLiveInventory(
+            string ability, string expectedResult)
+        {
+            var game = Create();
+            // The original e0IX draw, not a synthetic material injected into a
+            // replacement wallet, supplies the source-only h060 actor.
+            var source = new Original323SourceCommonWispWorld(game.Combat,
+                CharacterUnitCatalog.FromJson(Data("units.json")), game.Map, new Rolls(1));
+            var recruit = new Original323CommonWispRecruitmentService(
+                game.Combat, game.Economy, game.Map, source);
+            var ship = recruit.RecruitOne();
+            Assert.IsNotNull(ship);
+            Assert.AreEqual("PS-01", ship.CatalogId);
+            var required = game.Registry.FindByAbility(ability).OrderedConditions
+                .Where(c => c.Kind == "UNIT").ToArray();
+            Assert.AreEqual(1, required.Count(c => c.Rawcode == "h060"));
+            foreach (var item in required.Where(c => c.Rawcode != "h060"))
+            {
+                string id = game.Map.All.Single(row => row.OriginalRawcode == item.Rawcode).UnitId;
+                for (int i = 0; i < item.Count; i++)
+                    game.Combat.SpawnCharacter(id, 200 + i, 300);
+            }
+            var ready = Offer(game, ability);
+            Assert.IsTrue(ready.IsReady, string.Join("; ", ready.MissingMaterials));
+            Assert.IsTrue(ready.SuggestedMaterialInstances.Contains(ship.InstanceId));
+            Assert.AreEqual(required.Sum(item => item.Count),
+                ready.SuggestedMaterialInstances.Count);
+
+            // Remove one actual input after preview. Confirm must never
+            // consume the ship or grant a result with a stale selection.
+            long removed = ready.SuggestedMaterialInstances.First(x => x != ship.InstanceId);
+            string replenishedId = game.Combat.Roster.Get(removed).UnitId;
+            game.Combat.RemoveCharacter(removed);
+            int beforeReject = game.Combat.CharacterCount;
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion(ability, ready.SuggestedMaterialInstances).State);
+            Assert.AreEqual(beforeReject, game.Combat.CharacterCount);
+            Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == ship.InstanceId));
+
+            // Replenish the exact source catalog material, then confirm
+            // explicitly with a newly assessed selection.
+            game.Combat.SpawnCharacter(replenishedId, 201, 301);
+            var current = Offer(game, ability);
+            Assert.IsTrue(current.IsReady);
+            int committed = 0;
+            game.Fusion.FusionCommitted += (id, catalog, raw) => committed++;
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion(ability, current.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, committed);
+            Assert.AreEqual(expectedResult, game.Combat.MobileUnitSnapshot().Single().Unit.Id);
+            Assert.AreEqual(0, game.Combat.MobileUnitSnapshot().Count(x => x.Unit.Id == "PS-01"));
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion(ability, current.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, committed);
+            Assert.AreEqual(4, game.Economy.Wallet.Balance(WispResourceIds.Random));
+        }
+
         [Test]
         public void HiddenCreationEffectsAndVariantMaterialsStayLocked()
         {
             var game = Create();
-            foreach (string ability in new[] { "YY01", "YY04", "YY07", "YY08", "YY09", "YY12",
-                "YY13", "YY15", "YY20", "ET02", "A19Z", "A1A1", "A1A0" })
+            foreach (string ability in new[] { "YY01", "YY13", "YY15", "YY20",
+                "ET02", "A19Z", "A1A1", "A1A0" })
             {
                 Assert.IsFalse(game.Fusion.CanCommitRecipe(ability), ability);
                 Assert.AreEqual(ManualActionState.NotImplemented,

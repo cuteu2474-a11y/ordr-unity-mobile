@@ -148,7 +148,16 @@ namespace Ordr.Mobile.Mobile
             { "YY14", "h03J", "H-14" }, { "YY16", "h03Y", "H-18" },
             { "YY17", "h043", "H-01" }, { "YY22", "h046", "H-20" },
             { "YY23", "h045", "H-21" },
-            { "YY18", "h07L", "H-19" }, { "YY25", "h047", "H-22" }
+            { "YY18", "h07L", "H-19" }, { "YY25", "h047", "H-22" },
+            // Pinned JASS BsB/BsC, Brw/Brx, BqW/BqX, Brz/Br0,
+            // Brs/Brt: same BIw -> BI1 -> BI2 chat transaction;
+            // their handlers only narrate/play local sound after commit.
+            // h060 is the verified source-only pirate ship, not a Common.
+            { "YY04", "h03U", "H-02" },
+            { "YY07", "h03Q", "H-06" },
+            { "YY08", "h03R", "H-07" },
+            { "YY09", "h03P", "H-08" },
+            { "YY12", "h03L", "H-15" }
         };
         // Source ET01 is a chat-driven BI2 swap; its callback adds only
         // text/audio setup, not an additional gameplay resource or result.
@@ -296,6 +305,10 @@ namespace Ordr.Mobile.Mobile
                         ((resultGrade == "특별함" || resultGrade == "희귀함" || resultGrade == "전설" || resultGrade == "히든") && grade == "안흔함") ||
                         ((resultGrade == "희귀함" || resultGrade == "전설" || resultGrade == "히든") && grade == "특별함") ||
                         ((resultGrade == "전설" || resultGrade == "히든") && grade == "희귀함") ||
+                        (resultGrade == "히든" &&
+                            instruction.Rawcode == Original323SourceCommonWispWorld.PirateShipRawcode &&
+                            id == Original323SourceCommonWispWorld.PirateShipCatalogId &&
+                            grade == "해적선") ||
                         (resultGrade == "영원한" && (grade == "흔함" || grade == "안흔함" ||
                             grade == "특별함" || grade == "희귀함" || grade == "전설" ||
                             grade == "히든" || grade == "변화" || grade == "제한됨"));

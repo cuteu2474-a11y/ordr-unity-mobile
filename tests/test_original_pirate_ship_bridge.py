@@ -58,17 +58,16 @@ class OriginalPirateShipBridgeTests(unittest.TestCase):
     def test_hidden_uses_are_now_resolvable_but_not_silently_authorized(self):
         inventory = load("original-fusion-unconnected-review.json")
         rows = {r["abilityRawcode"]: r for r in inventory["blocked"]}
-        self.assertEqual((265, 138, 127),
+        self.assertEqual((265, 143, 122),
                          tuple(inventory["summary"][x] for x in
                                ("sourceRecipesExcludingTest", "liveExecutableRecipes",
                                 "blockedRecipes")))
-        for ability in ("YY01", "YY04", "YY07", "YY08", "YY09", "YY12"):
-            self.assertIn(ability, rows)
-            self.assertNotIn("h060", rows[ability]["unmappedUnitRawcodes"])
-        self.assertIn("creation-followup-CH8", rows["YY01"]["reasonCodes"])
         for ability in ("YY04", "YY07", "YY08", "YY09", "YY12"):
-            self.assertIn("source-callback-or-native-effect-needs-audit",
-                          rows[ability]["reasonCodes"])
+            self.assertNotIn(ability, rows,
+                             "Pure source chat callbacks now use the common atomic fusion engine")
+        self.assertIn("YY01", rows)
+        self.assertNotIn("h060", rows["YY01"]["unmappedUnitRawcodes"])
+        self.assertIn("creation-followup-CH8", rows["YY01"]["reasonCodes"])
         self.assertIn("no-unit-payment-in-registration", rows["YY26"]["reasonCodes"])
         self.assertEqual(47, inventory["summary"]["blockedByReason"]["unmapped-original-unit"])
 
