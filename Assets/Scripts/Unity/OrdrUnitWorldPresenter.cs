@@ -69,6 +69,12 @@ namespace Ordr.Mobile.Unity
             new Dictionary<string, LastEnemyPosition>(StringComparer.Ordinal);
         private readonly List<AttackCueVisual> attackCues = new List<AttackCueVisual>();
         private readonly List<Vector2> framePoints = new List<Vector2>();
+        private IReadOnlyList<MobileOwnedUnitGroup> formationGroups = new List<MobileOwnedUnitGroup>();
+        private MobileOwnedFormationLayout formationLayout;
+        private int formationPage;
+        private readonly HashSet<long> formationVisibleIds = new HashSet<long>();
+        private long? lastFormationSelection;
+        public int MainOwnedUnitCount { get; private set; }
         private GameObject evolutionMarker;
         private SpriteRenderer evolutionIcon;
         private bool cameraFramed;
@@ -155,6 +161,7 @@ namespace Ordr.Mobile.Unity
                 initialCameraHalfHeight = halfHeight;
                 cameraFramed = true;
             }
+            ApplyCenteredFormation(layout);
         }
 
         private bool TryBattleLayout(out MobileMapSkillLayout layout)
@@ -234,15 +241,15 @@ namespace Ordr.Mobile.Unity
                 if (touch.phase == TouchPhase.Began)
                 {
                     pointerStart = touch.position;
-                    pointerBeganOverMap = ContainsScreenPixel(layout, touch.position);
+                    pointerBeganOverMap = ContainsScreenPixel(layout, touch.position) &&
+                        !FormationContains(touch.position);
                     pointerDragged = false;
                 }
-                else if (touch.phase == TouchPhase.Moved && pointerBeganOverMap &&
-                    !multitouchGestureUsed)
+                else if (touch.phase == TouchPhase.Moved && !multitouchGestureUsed)
                 {
                     if ((touch.position - pointerStart).sqrMagnitude > 100f)
                         pointerDragged = true;
-                    if (pointerDragged) ApplyPan(touch.deltaPosition, layout);
+                    if (pointerDragged && pointerBeganOverMap) ApplyPan(touch.deltaPosition, layout);
                 }
                 if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
                 {
@@ -260,13 +267,13 @@ namespace Ordr.Mobile.Unity
             {
                 pointerStart = mouse;
                 previousMouse = mouse;
-                pointerBeganOverMap = ContainsScreenPixel(layout, mouse);
+                pointerBeganOverMap = ContainsScreenPixel(layout, mouse) && !FormationContains(mouse);
                 pointerDragged = false;
             }
-            if (Input.GetMouseButton(0) && pointerBeganOverMap)
+            if (Input.GetMouseButton(0))
             {
                 if ((mouse - pointerStart).sqrMagnitude > 100f) pointerDragged = true;
-                if (pointerDragged) ApplyPan(mouse - previousMouse, layout);
+                if (pointerDragged && pointerBeganOverMap) ApplyPan(mouse - previousMouse, layout);
             }
             previousMouse = mouse;
             if (Input.GetMouseButtonUp(0))
@@ -318,19 +325,20 @@ namespace Ordr.Mobile.Unity
                 : new Color(0.38f, 0.87f, 0.91f, 1f);
         }
 
-        // Explicit camera commands; never move actors or continuously chase
-        // newly summoned enemies. Useful after panning/zooming on a tablet.
+        // Explicitly reveal an owned character's formation page. Actual actor
+        // coordinates are never moved to match these presentation slots.
         public bool ShowOwnedUnit(long instanceId)
         {
-            if (controller == null || controller.Combat == null) return false;
-            if (worldCamera == null) worldCamera = Camera.main;
-            if (worldCamera == null) return false;
-            foreach (var unit in controller.Combat.MobileUnitSnapshot())
-                if (unit.InstanceId == instanceId)
+            if (controller == null || controller.Combat == null ||
+                controller.Combat.IsStoryDeployed(instanceId)) return false;
+            SyncOwnedUnits(controller.Combat);
+            for (int i = 0; i < formationGroups.Count; i++)
+                if (formationGroups[i].Contains(instanceId))
                 {
-                    Vector3 old = worldCamera.transform.position;
-                    worldCamera.transform.position = new Vector3(
-                        (float)unit.Position.X, (float)unit.Position.Y, old.z);
+                    formationPage = formationLayout == null ? 0 : i / formationLayout.Capacity;
+                    // Selecting a roster entry also reveals its nameplate page.
+                    controller.Combat.Roster.Select(instanceId);
+                    lastFormationSelection = null;
                     return true;
                 }
             return false;
@@ -373,14 +381,16 @@ namespace Ordr.Mobile.Unity
         private void CollectMainBattlefieldPositions()
         {
             framePoints.Clear();
-            foreach (var visual in visuals.Values)
-                if (visual.Root.activeSelf)
-                    framePoints.Add(visual.Root.transform.position);
+            if (controller != null && controller.PracticeBattle != null)
+                foreach (var point in controller.PracticeBattle.RouteCorners)
+                    framePoints.Add(new Vector2((float)point.X, (float)point.Y));
+            if (controller != null && controller.Combat != null)
+                foreach (var entry in controller.Combat.MobileUnitSnapshot())
+                    if (!controller.Combat.IsStoryDeployed(entry.InstanceId))
+                        framePoints.Add(new Vector2((float)entry.Position.X, (float)entry.Position.Y));
             foreach (var enemy in enemyVisuals.Values)
-                if (enemy.Root.activeSelf)
-                    framePoints.Add(enemy.Root.transform.position);
-            // e0HP is a menu-controlled non-combat resource actor, not a
-            // battlefield extent. It must not shrink the actual battle view.
+                if (enemy.Root.activeSelf) framePoints.Add(enemy.Root.transform.position);
+            if (framePoints.Count == 0) framePoints.Add(Vector2.zero);
         }
 
         // A short presentation-only pulse replaces character swing/movement
@@ -722,6 +732,10 @@ namespace Ordr.Mobile.Unity
         private void SyncOwnedUnits(CharacterCombatRuntime combat)
         {
             var entries = combat.MobileUnitSnapshot();
+            formationGroups = MobileOwnedUnitFormation.Group(entries,
+                id => !combat.IsStoryDeployed(id));
+            MainOwnedUnitCount = 0;
+            foreach (var group in formationGroups) MainOwnedUnitCount += group.InstanceIds.Count;
             var alive = new HashSet<long>();
             foreach (var entry in entries)
             {
@@ -750,8 +764,6 @@ namespace Ordr.Mobile.Unity
                     visuals.Add(entry.InstanceId, visual);
                 }
 
-                visual.Root.transform.position = new Vector3(
-                    (float)entry.Position.X, (float)entry.Position.Y, 0f);
                 bool isSelected = combat.Roster.SelectedId.HasValue &&
                     combat.Roster.SelectedId.Value == entry.InstanceId;
                 float size = Mathf.Max(1f, markerDiameterWorldUnits) *
@@ -762,7 +774,8 @@ namespace Ordr.Mobile.Unity
                     : ColorForGrade(visual.Grade);
                 // Deployed story units remain in the roster, but are no longer
                 // represented as attackers in the main battle lane.
-                visual.Root.SetActive(!combat.IsStoryDeployed(entry.InstanceId));
+                if (combat.IsStoryDeployed(entry.InstanceId) && visual.Root.activeSelf)
+                    visual.Root.SetActive(false);
             }
 
             var expired = new List<long>();
@@ -773,6 +786,135 @@ namespace Ordr.Mobile.Unity
                     expired.Add(item.Key);
                 }
             foreach (long id in expired) visuals.Remove(id);
+            Rect safe = Screen.safeArea;
+            if (safe.width > safe.height && worldCamera != null)
+                ApplyCenteredFormation(MobileMapSkillLayout.Calculate(safe, Screen.height,
+                    MobileMapSkillLayout.UiScale(safe, Screen.dpi)));
+        }
+
+        private void ApplyCenteredFormation(MobileMapSkillLayout layout)
+        {
+            if (worldCamera == null || !worldCamera.orthographic) return;
+            float scale = MobileMapSkillLayout.UiScale(Screen.safeArea, Screen.dpi);
+            formationLayout = MobileOwnedFormationLayout.Calculate(layout.Battle, scale,
+                formationGroups.Count, formationPage);
+            long? selected = controller == null || controller.Combat == null
+                ? null : controller.Combat.Roster.SelectedId;
+            if (selected != lastFormationSelection)
+            {
+                for (int i = 0; i < formationGroups.Count; i++)
+                    if (formationGroups[i].Contains(selected))
+                    { formationPage = i / formationLayout.Capacity; break; }
+                lastFormationSelection = selected;
+                formationLayout = MobileOwnedFormationLayout.Calculate(layout.Battle, scale,
+                    formationGroups.Count, formationPage);
+            }
+            formationPage = formationLayout.Page;
+            formationVisibleIds.Clear();
+            for (int i = 0; i < formationLayout.Cells.Length; i++)
+                foreach (long id in formationGroups[formationLayout.Start + i].InstanceIds)
+                    formationVisibleIds.Add(id);
+            foreach (var pair in visuals)
+            {
+                bool visible = formationVisibleIds.Contains(pair.Key);
+                if (pair.Value.Root.activeSelf != visible) pair.Value.Root.SetActive(visible);
+            }
+            for (int i = 0; i < formationLayout.Cells.Length; i++)
+            {
+                var group = formationGroups[formationLayout.Start + i];
+                Rect cell = formationLayout.Cells[i];
+                Vector2 icon = new Vector2(cell.x + 16f * scale, cell.center.y);
+                Vector3 position = worldCamera.ScreenToWorldPoint(new Vector3(icon.x,
+                    Screen.height - icon.y, worldCamera.WorldToScreenPoint(Vector3.zero).z));
+                position.z = 0f;
+                float size = 23f * scale * worldCamera.orthographicSize * 2f /
+                    Mathf.Max(1f, worldCamera.pixelHeight);
+                long representative = group.Contains(selected) ? selected.Value : group.InstanceIds[0];
+                foreach (long id in group.InstanceIds)
+                {
+                    Visual visual;
+                    if (!visuals.TryGetValue(id, out visual)) continue;
+                    visual.Root.transform.position = position;
+                    visual.Root.transform.localScale = new Vector3(size, size, 1f);
+                    visual.Icon.enabled = id == representative;
+                }
+            }
+        }
+
+        private bool FormationContains(Vector2 screen)
+        {
+            if (formationLayout == null) return false;
+            Vector2 point = new Vector2(screen.x, Screen.height - screen.y);
+            if (formationLayout.Footer.Contains(point)) return true;
+            foreach (Rect cell in formationLayout.Cells) if (cell.Contains(point)) return true;
+            return false;
+        }
+
+        private void OnGUI()
+        {
+            if (controller == null || controller.Combat == null || formationLayout == null ||
+                Screen.safeArea.width <= Screen.safeArea.height) return;
+            GUISkin old = OrdrMobileUiTheme.Activate();
+            try
+            {
+                float scale = MobileMapSkillLayout.UiScale(Screen.safeArea, Screen.dpi);
+                var nameStyle = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(13f * scale),
+                    fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft,
+                    wordWrap = true, richText = false, clipping = TextClipping.Clip,
+                    padding = new RectOffset(0, 0, 0, 0) };
+                var metaStyle = new GUIStyle(nameStyle) { fontSize = Mathf.RoundToInt(10f * scale),
+                    wordWrap = false, fontStyle = FontStyle.Normal };
+                long? selected = controller.Combat.Roster.SelectedId;
+                for (int i = 0; i < formationLayout.Cells.Length; i++)
+                {
+                    var group = formationGroups[formationLayout.Start + i];
+                    Rect cell = formationLayout.Cells[i];
+                    bool chosen = group.Contains(selected);
+                    // Leave the world marker/attack pulse visible to the left.
+                    var label = new Rect(cell.x + 30f * scale, cell.y,
+                        cell.width - 30f * scale, cell.height);
+                    GUI.Box(label, GUIContent.none, chosen ? OrdrMobileUiTheme.SelectedTab : GUI.skin.box);
+                    var text = new Rect(label.x + 4f * scale, label.y + 2f * scale,
+                        label.width - 8f * scale, label.height - 15f * scale);
+                    nameStyle.fontSize = Mathf.RoundToInt(13f * scale);
+                    int smallest = Mathf.RoundToInt(10f * scale);
+                    while (nameStyle.fontSize > smallest &&
+                        nameStyle.CalcHeight(new GUIContent(group.Unit.Name), text.width) > text.height)
+                        nameStyle.fontSize--;
+                    GUI.Label(text, group.Unit.Name, nameStyle);
+                    metaStyle.normal.textColor = ColorForGrade(group.Unit.Grade);
+                    GUI.Label(new Rect(text.x, label.yMax - 14f * scale, text.width, 12f * scale),
+                        group.Unit.Grade + " ×" + group.InstanceIds.Count, metaStyle);
+                }
+                Rect footer = formationLayout.Footer;
+                metaStyle.alignment = TextAnchor.MiddleCenter;
+                metaStyle.normal.textColor = Color.white;
+                if (formationLayout.Pages == 1 && selected.HasValue)
+                    foreach (var group in formationGroups)
+                        if (group.Contains(selected))
+                            GUI.Label(footer, group.Unit.Name + " · #" + selected.Value +
+                                (group.InstanceIds.Count > 1 ? " · 다시 탭해 개체 선택" : " · 선택됨"), metaStyle);
+                if (formationLayout.Pages > 1)
+                {
+                    float buttonWidth = Mathf.Min(68f * scale, footer.width * .27f);
+                    var button = new GUIStyle(GUI.skin.button) { fontSize = Mathf.RoundToInt(12f * scale),
+                        padding = new RectOffset(2, 2, 2, 2) };
+                    bool enabled = GUI.enabled;
+                    GUI.enabled = enabled && formationPage > 0;
+                    if (GUI.Button(new Rect(footer.x, footer.y, buttonWidth, footer.height), "이전", button))
+                        formationPage--;
+                    GUI.enabled = enabled && formationPage + 1 < formationLayout.Pages;
+                    if (GUI.Button(new Rect(footer.xMax - buttonWidth, footer.y, buttonWidth, footer.height), "다음", button))
+                        formationPage++;
+                    GUI.enabled = enabled;
+                    metaStyle.alignment = TextAnchor.MiddleCenter;
+                    metaStyle.normal.textColor = Color.white;
+                    GUI.Label(new Rect(footer.x + buttonWidth, footer.y,
+                        footer.width - buttonWidth * 2, footer.height),
+                        (formationPage + 1) + "/" + formationLayout.Pages + " · " + formationGroups.Count + "종", metaStyle);
+                }
+            }
+            finally { GUI.skin = old; }
         }
 
         private void ReadWorldSelection(CharacterCombatRuntime combat)
@@ -806,6 +948,23 @@ namespace Ordr.Mobile.Unity
             var touchPanel = GetComponent<OrdrMobileTouchPanel>();
             if (touchPanel != null && touchPanel.BlocksWorldTap(onGui)) return;
 
+            if (formationLayout != null)
+            {
+                if (formationLayout.Footer.Contains(onGui)) return;
+                for (int i = 0; i < formationLayout.Cells.Length; i++)
+                    if (formationLayout.Cells[i].Contains(onGui))
+                    {
+                        var group = formationGroups[formationLayout.Start + i];
+                        // A sale/fusion may have committed since the 0.12s
+                        // display snapshot. Select from the live group only.
+                        foreach (var live in MobileOwnedUnitFormation.Group(combat.MobileUnitSnapshot(),
+                            id => !combat.IsStoryDeployed(id)))
+                            if (live.Unit.Id == group.Unit.Id)
+                            { combat.Roster.Select(live.NextSelection(combat.Roster.SelectedId)); break; }
+                        nextRefresh = 0f;
+                        return;
+                    }
+            }
             long nearestId = 0;
             float nearestPixels2 = Mathf.Max(16f, selectionTapRadiusPixels);
             nearestPixels2 *= nearestPixels2;
@@ -838,7 +997,11 @@ namespace Ordr.Mobile.Unity
                     nearestPixels2 = d2;
                 }
             }
-            if (nearestId != 0) combat.Roster.Select(nearestId);
+            if (nearestId != 0)
+            {
+                try { combat.Roster.Select(nearestId); }
+                catch (KeyNotFoundException) { nextRefresh = 0f; }
+            }
         }
 
         private static Color ColorForGrade(string grade)

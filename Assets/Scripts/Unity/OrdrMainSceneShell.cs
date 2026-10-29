@@ -143,8 +143,9 @@ namespace Ordr.Mobile.Unity
             // SpriteRenderers, making the verified units appear invisible.
             OrdrMobileUiTheme.DrawMapCorners(layout.Battle,OrdrMobileUiTheme.Gold);
             GUI.Label(new Rect(layout.Battle.x+8f,layout.Battle.y+5f,
-                Mathf.Min(148f,layout.Battle.width-16f),27f),
-                "메인 전장",OrdrMobileUiTheme.Overline);
+                layout.Battle.width-16f,27f),
+                "메인 전장 · 보유 " + (GetComponent<OrdrUnitWorldPresenter>()?.MainOwnedUnitCount ?? 0) + "기",
+                OrdrMobileUiTheme.Overline);
             // The story viewport is not populated by the main world camera.
             // Paint its placeholder instead of exposing a black blank region.
             GUI.Box(layout.Story, GUIContent.none, GUI.skin.box);
