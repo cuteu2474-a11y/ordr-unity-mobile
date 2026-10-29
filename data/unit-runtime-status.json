@@ -3,7 +3,7 @@
   "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
   "allUnitsComplete": false,
   "summary": {
-    "catalogEntries": 275,
+    "catalogEntries": 277,
     "objectBasicAttackModels": 273,
     "modelEffectOwners": 112,
     "connectedModelEffectDefinitions": 144,
@@ -4748,6 +4748,38 @@
       "fullUnitImplementationVerified": false,
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "KM-01",
+      "name": "바솔로뮤 쿠마",
+      "grade": "초월함",
+      "originalRawcode": "h04S",
+      "objectBasicAttackModel": false,
+      "connectedModelEffects": [],
+      "connectedManualFunctions": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원본 획득 사건과 모바일 발생 연결 필요",
+        "네이티브 비전투 능력 원작 동등성 미검증"
+      ]
+    },
+    {
+      "catalogId": "LT-01",
+      "name": "행운의 토큰",
+      "grade": "재료",
+      "originalRawcode": "h06G",
+      "objectBasicAttackModel": false,
+      "connectedModelEffects": [],
+      "connectedManualFunctions": [],
+      "documentedSkills": 0,
+      "documentedPassives": 0,
+      "fullUnitImplementationVerified": false,
+      "remainingWork": [
+        "원본 획득 사건과 모바일 발생 연결 필요",
+        "네이티브 비전투 능력 원작 동등성 미검증"
       ]
     }
   ]

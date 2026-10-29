@@ -33,12 +33,12 @@ class OriginalFusionObjectReconciliationTests(unittest.TestCase):
     def test_all_source_identities_are_not_approvals(self):
         s = self.result["summary"]
         self.assertEqual(s["uniqueCwrUnitRawcodes"], 280)
-        self.assertEqual(s["originalCatalogObjectMatchedRawcodes"], 274)
+        self.assertEqual(s["originalCatalogObjectMatchedRawcodes"], 276)
         self.assertEqual(s["previouslyUnresolvedIngredientRawcodes"], 163)
-        self.assertEqual(s["newlyCrossReferencedIngredients"], 158)
-        self.assertEqual(s["stillWithoutCatalogIdentity"], 5)
+        self.assertEqual(s["newlyCrossReferencedIngredients"], 160)
+        self.assertEqual(s["stillWithoutCatalogIdentity"], 3)
         self.assertEqual(s["ingredientConditionOccurrences"], 775)
-        self.assertEqual(s["catalogMatchedIngredientConditionOccurrences"], 727)
+        self.assertEqual(s["catalogMatchedIngredientConditionOccurrences"], 771)
         self.assertTrue(all(not r["approvedForMaterialConsumption"]
                             for r in self.result["entries"]))
 
@@ -57,7 +57,7 @@ class OriginalFusionObjectReconciliationTests(unittest.TestCase):
         unknown = {r["rawcode"]: r for r in self.result["entries"]
                    if r["ingredientUseCount"] and r["catalogUnitId"] is None}
         self.assertEqual(set(unknown),
-            {"h04S","h06G","h05Y","H08T","h0AN"})
+            {"h05Y","H08T","h0AN"})
         zombie = next(r for r in self.result["entries"] if r["rawcode"] == "h00H")
         self.assertEqual(zombie["catalogUnitId"], "U-14")
         self.assertEqual(zombie["originalW3xObjectName"], "좀비 - 안흔함")

@@ -1,0 +1,134 @@
+{
+  "format": "ordr-2323C-source-material-acquisition-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "mode": "nightmare-otherworld-only",
+  "authorization": "original source identity does not itself authorize an unobserved reward or CWR fusion",
+  "materialObjects": [
+    {
+      "catalogId": "KM-01",
+      "rawcode": "h04S",
+      "name": "바솔로뮤 쿠마 - 초월",
+      "sourceOnly": true,
+      "sourceAbilityRawcodes": [
+        "Avul",
+        "A07O"
+      ],
+      "originalAttackModel": null,
+      "originalCwrIngredientRecipes": 30
+    },
+    {
+      "catalogId": "LT-01",
+      "rawcode": "h06G",
+      "name": "행운의 토큰",
+      "sourceOnly": true,
+      "sourceAbilityRawcodes": [
+        "A0K9",
+        "A0OV",
+        "A0JE",
+        "A080",
+        "Avul"
+      ],
+      "originalAttackModel": null,
+      "originalCwrIngredientRecipes": 14
+    }
+  ],
+  "story": {
+    "startRewardFunction": "CQB",
+    "startRewardJassLine": 54588,
+    "startRewardSha256LF": "5555be9b65d7da22c5743347ecc2d2634efc3ba3c7bc88516384ae7cb4753489",
+    "eligiblePlayer": "Ji[EK] true",
+    "grant": {
+      "gold": 10000,
+      "wood": 4,
+      "otherUnit": "YR",
+      "otherUnitCount": 2,
+      "transcendWispRawcode": "e01A",
+      "transcendWispCount": 1
+    },
+    "mobileAdapterRequires": "external source event attesting all original story rewards already settled; this bridge records only the transcendence Wisp entitlement",
+    "conversionFunction": "CSN",
+    "conversionJassLine": 56507,
+    "conversionSha256LF": "9d2138879dc6cf1346aed3dce63ae3211b54939bd629e3ccb0cfa0801b1bacab",
+    "triggerRect": "B7",
+    "triggerRectBounds": {
+      "minX": -2016,
+      "maxX": -1824,
+      "minY": -5760,
+      "maxY": -5600
+    },
+    "inputUnitRawcode": "e01A",
+    "resultUnitRawcode": "h04S",
+    "count": 1,
+    "creationPosition": "player start location, -3776/4480 for player zero",
+    "choice": "manual mobile player decision, never automatic"
+  },
+  "tokenSources": [
+    {
+      "function": "CJK",
+      "line": 49383,
+      "sha256LF": "6651db25b76d8ba6204604792251e9ffaccd14fd9e7d656a6c6e85ce320877d5",
+      "event": "high unit gambling failure",
+      "failureRule": "BFi(1,100)<=30",
+      "baseTokenCount": 1,
+      "bonus": "kW==kX: additional h06G and 1 wood",
+      "sourceShopUnit": "h06D",
+      "sourceUnitBalanceGoldCost": 2000,
+      "sourceUnitBalanceWoodCost": 4
+    },
+    {
+      "function": "CJM",
+      "line": 49431,
+      "sha256LF": "c250da144529864cb4c23b3bab052e06b20e894dc9d0d7831d38d97e320c7f5f",
+      "event": "otherworld unit gambling failure",
+      "failureRule": "BFi(1,100)>15+kc[JG] if kW==kX else >15; kW==ka casino branch changes reward",
+      "baseTokenCount": 1,
+      "bonus": "risk hedge adds 15 percentage points to future e2; source acquisition must verify full event"
+    },
+    {
+      "function": "CGk",
+      "line": 46900,
+      "sha256LF": "61198ee4ae7f16bf24576366c5a2e5b24ccafee59064a615ca4c57ae1b251de2",
+      "event": "gift chest opened",
+      "baseTokenCount": 1,
+      "bonus": "70%: 2500 gold; otherwise 1 wood"
+    },
+    {
+      "function": "CCk",
+      "line": 41855,
+      "sha256LF": "dc1d40433a87c00eb6edcb99fcf8abd9f908bf5dbd4acf9ae6049febda9db496",
+      "event": "special native bonus",
+      "baseTokenCount": 1,
+      "bonus": "33% extra token, independently 33% 1 wood"
+    },
+    {
+      "function": "CKJ",
+      "line": 50150,
+      "sha256LF": "01c29d98b8f32d099105a65c5c1a9ee5bde38b1b6d2690473d8885c494914342",
+      "event": "verified 20 Compu exchange",
+      "baseTokenCount": 1,
+      "bonus": "original ke[0..13] unit"
+    }
+  ],
+  "tokenOtherConsumption": {
+    "rerollFunction": "CRl",
+    "line": 55842,
+    "sha256LF": "16ac78a926495382e95bd9e12283640f3e961ed7311b2a4c4812406cd5c6fc4d",
+    "originalRule": "outside kW==kX, consumes one actual h06G unit to reroll the otherworld unit; pending until full original random and unit transaction audit"
+  },
+  "status": {
+    "sourceRosterIdentitiesMapped": true,
+    "sourceEventReceiptGateImplemented": true,
+    "parentSourceEventAutomaticallyEmittedByDefaultGame": false,
+    "materialRolesReusableInCwr": true,
+    "newCraftableRecipes": 0,
+    "extraTopTierConditionsStillLocked": true
+  },
+  "caveats": [
+    "Do not treat W3X UnitBalance stock costs of the token actors as acquisition prices.",
+    "Do not create Kuma before a source-confirmed CQB reward and explicit CSN choice.",
+    "Do not grant luck tokens for money gambling CJB/CJC.",
+    "Do not apply mutated-mode bans to nightmare-otherworld.",
+    "Mobile reward bridge is not a complete story boss/advanced unit-gambling implementation."
+  ]
+}

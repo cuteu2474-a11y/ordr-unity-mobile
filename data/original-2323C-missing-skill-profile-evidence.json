@@ -15,20 +15,22 @@
     "data/original-2323C-map-base-stats.json"
   ],
   "summary": {
-    "catalogCharacters": 275,
+    "catalogCharacters": 277,
     "charactersWithTooltipProfiles": 200,
-    "charactersWithoutTooltipProfiles": 75,
+    "charactersWithoutTooltipProfiles": 77,
     "unprofiledByGrade": {
       "안흔함": 14,
+      "재료": 1,
+      "초월함": 1,
       "특별함": 25,
       "특수함": 1,
+      "해적선": 1,
       "흔함": 9,
-      "희귀함": 25,
-      "해적선": 1
+      "희귀함": 25
     },
-    "unprofiledWithMapRawcode": 75,
-    "unprofiledWithAbilityCodes": 75,
-    "distinctAbilityRawcodesForResearch": 189,
+    "unprofiledWithMapRawcode": 77,
+    "unprofiledWithAbilityCodes": 77,
+    "distinctAbilityRawcodesForResearch": 192,
     "verifiedSkillFormulasInThisDataset": 0,
     "authorizedOriginalParityImplementations": 0
   },
@@ -134,12 +136,13 @@
     "A05H": 1,
     "A07I": 2,
     "A07M": 1,
+    "A07O": 32,
     "A07P": 1,
     "A07Q": 1,
     "A07R": 1,
     "A07S": 1,
     "A07Y": 89,
-    "A080": 1,
+    "A080": 2,
     "A083": 1,
     "A084": 1,
     "A087": 1,
@@ -194,12 +197,13 @@
     "A0FU": 1,
     "A0FV": 1,
     "A0FX": 1,
-    "A0JE": 56,
+    "A0JE": 57,
     "A0JV": 4,
     "A0K2": 1,
     "A0K3": 1,
     "A0K4": 1,
     "A0K6": 1,
+    "A0K9": 1,
     "A0N5": 1,
     "A0N6": 1,
     "A0N7": 1,
@@ -212,6 +216,7 @@
     "A0NF": 1,
     "A0NG": 1,
     "A0NH": 1,
+    "A0OV": 2,
     "A0QI": 1,
     "A0XP": 1,
     "A113": 1,
@@ -222,7 +227,7 @@
     "A1A1": 1,
     "A1CC": 1,
     "A801": 8,
-    "Avul": 274
+    "Avul": 276
   },
   "warning": "Rawcode lists are original unit-object evidence, not verified skill triggers. Shared rawcode frequency is a research hint, not an effect classification. Missing web tooltip is NOT proof a character has no skills.",
   "characters": [
@@ -2247,24 +2252,45 @@
       "researchState": "map-ability-ids-only-needs-object-and-jass-skill-review"
     },
     {
-      "catalogUnitId": "X-08",
-      "catalogName": "가이몬",
-      "grade": "특수함",
+      "catalogUnitId": "KM-01",
+      "catalogName": "바솔로뮤 쿠마",
+      "grade": "초월함",
       "webDexUrl": null,
-      "mapUnitRawcode": "h0BG",
-      "mapObjectIdentityStatus": "unique-map-name-and-grade",
-      "mapObjectName": "가이몬 - 특수",
-      "hasOriginalAttack1ObjectEvidence": true,
+      "mapUnitRawcode": "h04S",
+      "mapObjectIdentityStatus": "verified-source-story-transcend-choice",
+      "mapObjectName": "바솔로뮤 쿠마 - 초월",
+      "hasOriginalAttack1ObjectEvidence": false,
       "originalAbilityRawcodesInMapOrder": [
-        "A0DD",
-        "A0DH",
-        "A801",
+        "Avul",
+        "A07O"
+      ],
+      "lessFrequentlyObservedRawcodesForResearchOnly": [],
+      "originalAbilityEffectsResolved": false,
+      "originalSkillJassTriggersResolved": false,
+      "tooltipProfilePresent": false,
+      "originalParitySkillExecutionAuthorized": false,
+      "researchState": "map-ability-ids-only-needs-object-and-jass-skill-review"
+    },
+    {
+      "catalogUnitId": "LT-01",
+      "catalogName": "행운의 토큰",
+      "grade": "재료",
+      "webDexUrl": null,
+      "mapUnitRawcode": "h06G",
+      "mapObjectIdentityStatus": "verified-source-unit-gambling-reward",
+      "mapObjectName": "행운의 토큰",
+      "hasOriginalAttack1ObjectEvidence": false,
+      "originalAbilityRawcodesInMapOrder": [
+        "A0K9",
+        "A0OV",
+        "A0JE",
+        "A080",
         "Avul"
       ],
       "lessFrequentlyObservedRawcodesForResearchOnly": [
-        "A0DD",
-        "A0DH",
-        "A801"
+        "A0K9",
+        "A0OV",
+        "A080"
       ],
       "originalAbilityEffectsResolved": false,
       "originalSkillJassTriggersResolved": false,
@@ -2288,6 +2314,32 @@
       ],
       "lessFrequentlyObservedRawcodesForResearchOnly": [
         "A0BB"
+      ],
+      "originalAbilityEffectsResolved": false,
+      "originalSkillJassTriggersResolved": false,
+      "tooltipProfilePresent": false,
+      "originalParitySkillExecutionAuthorized": false,
+      "researchState": "map-ability-ids-only-needs-object-and-jass-skill-review"
+    },
+    {
+      "catalogUnitId": "X-08",
+      "catalogName": "가이몬",
+      "grade": "특수함",
+      "webDexUrl": null,
+      "mapUnitRawcode": "h0BG",
+      "mapObjectIdentityStatus": "unique-map-name-and-grade",
+      "mapObjectName": "가이몬 - 특수",
+      "hasOriginalAttack1ObjectEvidence": true,
+      "originalAbilityRawcodesInMapOrder": [
+        "A0DD",
+        "A0DH",
+        "A801",
+        "Avul"
+      ],
+      "lessFrequentlyObservedRawcodesForResearchOnly": [
+        "A0DD",
+        "A0DH",
+        "A801"
       ],
       "originalAbilityEffectsResolved": false,
       "originalSkillJassTriggersResolved": false,

@@ -3,12 +3,12 @@
   "mode": "nightmare-otherworld",
   "generatedOn": "2026-10-21",
   "purpose": "All-unit runtime registration and remaining original-combat implementation worklist; no invented stats.",
-  "scopeWarning": "275/275 are catalog-addressable roster units, not fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
+  "scopeWarning": "277/277 are catalog-addressable roster units, not fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
   "summary": {
-    "units": 275,
-    "catalogRosterEligible": 275,
+    "units": 277,
+    "catalogRosterEligible": 277,
     "partialSkillProfiles": 200,
-    "uncollectedProfiles": 75,
+    "uncollectedProfiles": 77,
     "skillEntries": 554,
     "passiveEntries": 295,
     "linkedJassRawcodes": 81,
@@ -66,9 +66,9 @@
       "rawcodeLinks": 6
     },
     "초월함": {
-      "units": 30,
-      "profiles": 30,
-      "rawcodeLinks": 30
+      "units": 1,
+      "profiles": 0,
+      "rawcodeLinks": 0
     },
     "영원한": {
       "units": 12,
@@ -96,6 +96,11 @@
       "rawcodeLinks": 0
     },
     "해적선": {
+      "units": 1,
+      "profiles": 0,
+      "rawcodeLinks": 0
+    },
+    "재료": {
       "units": 1,
       "profiles": 0,
       "rawcodeLinks": 0
@@ -6949,6 +6954,42 @@
       "jassLabelRawcode": null,
       "jassAbilityRawcode": null,
       "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "KM-01",
+      "name": "바솔로뮤 쿠마",
+      "grade": "초월함",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "source-W3X-event",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "LT-01",
+      "name": "행운의 토큰",
+      "grade": "재료",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "source-W3X-event",
       "patchStatEvidenceFields": [],
       "verifiedBasicAttack": false,
       "originalCombatParity": "not-verified"

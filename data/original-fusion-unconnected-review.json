@@ -36,7 +36,7 @@
       "top-tier-route-or-callback-audit": 69,
       "trait-counter": 12,
       "transformation-effect": 4,
-      "unmapped-original-unit": 47
+      "unmapped-original-unit": 5
     }
   },
   "blocked": [
@@ -1003,9 +1003,7 @@
       "resultNames": [
         "날씨는 맑음"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1014,8 +1012,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1026,9 +1023,7 @@
       "resultNames": [
         "악마의 자식"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1037,8 +1032,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1049,9 +1043,7 @@
       "resultNames": [
         "해군의 홍일점"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1060,8 +1052,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1072,9 +1063,7 @@
       "resultNames": [
         "어둠의 조커"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1083,8 +1072,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1095,9 +1083,7 @@
       "resultNames": [
         "검은 정의를 좇는 하얀 새"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1106,8 +1092,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1118,9 +1103,7 @@
       "resultNames": [
         "최강의 검사"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1129,8 +1112,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1141,9 +1123,7 @@
       "resultNames": [
         "다섯번째 황제"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1153,8 +1133,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1165,9 +1144,7 @@
       "resultNames": [
         "치밀하고 비열한 어둠"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1176,8 +1153,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1188,9 +1164,7 @@
       "resultNames": [
         "해적왕이 될 사나이"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1200,8 +1174,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1212,9 +1185,7 @@
       "resultNames": [
         "운명의 마술사"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1223,8 +1194,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1235,9 +1205,7 @@
       "resultNames": [
         "해군대장 노란 원숭이"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1246,8 +1214,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1258,9 +1225,7 @@
       "resultNames": [
         "소울 킹"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1269,8 +1234,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1281,9 +1245,7 @@
       "resultNames": [
         "혁명군 참모총장"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1292,8 +1254,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1304,9 +1265,7 @@
       "resultNames": [
         "지옥에서 돌아온 자"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1315,8 +1274,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1327,9 +1285,7 @@
       "resultNames": [
         "정상해전 종결자"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1338,8 +1294,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1350,9 +1305,7 @@
       "resultNames": [
         "해왕류를 다스리는 인어공주"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1361,8 +1314,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1373,9 +1325,7 @@
       "resultNames": [
         "신 해군대장 초록 소"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1384,8 +1334,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1396,9 +1345,7 @@
       "resultNames": [
         "해군원수 붉은 개"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1407,8 +1354,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1419,9 +1365,7 @@
       "resultNames": [
         "오니히메"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1430,8 +1374,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1442,9 +1385,7 @@
       "resultNames": [
         "바다의 전사"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1453,8 +1394,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1465,9 +1405,7 @@
       "resultNames": [
         "일그러진 미래"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1476,8 +1414,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1488,9 +1425,7 @@
       "resultNames": [
         "바다의 협객"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1499,8 +1434,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1511,9 +1445,7 @@
       "resultNames": [
         "순록 의사"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1522,8 +1454,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1534,9 +1465,7 @@
       "resultNames": [
         "전 해군대장 푸른 꿩"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1545,8 +1474,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1557,9 +1485,7 @@
       "resultNames": [
         "신세대의 이단아"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1568,8 +1494,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1580,9 +1505,7 @@
       "resultNames": [
         "백개의 심장을 바친 자"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1591,8 +1514,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1603,9 +1525,7 @@
       "resultNames": [
         "무적의 아이언 파이러츠"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1614,8 +1534,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1626,9 +1545,7 @@
       "resultNames": [
         "분노하는 맹호"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1637,8 +1554,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1649,9 +1565,7 @@
       "resultNames": [
         "해군의 미래"
       ],
-      "unmappedUnitRawcodes": [
-        "h04S"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -1660,8 +1574,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1673,7 +1586,6 @@
         "세계 최고의 과학자"
       ],
       "unmappedUnitRawcodes": [
-        "h04S",
         "h0AN"
       ],
       "originalConditionKinds": [
@@ -2323,9 +2235,7 @@
       "resultNames": [
         "고죠 사토루 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2337,8 +2247,7 @@
       "sourceWoodCost": 7,
       "reasonCodes": [
         "special-target-or-pick",
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2349,9 +2258,7 @@
       "resultNames": [
         "나미카제 미나토 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2361,8 +2268,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2373,9 +2279,7 @@
       "resultNames": [
         "료우기 시키 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2385,8 +2289,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2397,9 +2300,7 @@
       "resultNames": [
         "히그마 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2411,8 +2312,7 @@
       "sourceWoodCost": 7,
       "reasonCodes": [
         "special-target-or-pick",
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2423,9 +2323,7 @@
       "resultNames": [
         "부릉냐 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2435,8 +2333,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2447,9 +2344,7 @@
       "resultNames": [
         "야쿠모 유카리 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2461,8 +2356,7 @@
       "sourceWoodCost": 7,
       "reasonCodes": [
         "special-target-or-pick",
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2473,9 +2367,7 @@
       "resultNames": [
         "콘파쿠 요우무 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2487,8 +2379,7 @@
       "sourceWoodCost": 7,
       "reasonCodes": [
         "special-target-or-pick",
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2499,9 +2390,7 @@
       "resultNames": [
         "아냐 포저 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2511,8 +2400,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2523,9 +2411,7 @@
       "resultNames": [
         "쿠죠 죠타로 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2535,8 +2421,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2547,9 +2432,7 @@
       "resultNames": [
         "쿠치키 뱌쿠야 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2561,8 +2444,7 @@
       "sourceWoodCost": 7,
       "reasonCodes": [
         "special-target-or-pick",
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2573,9 +2455,7 @@
       "resultNames": [
         "카마도 네즈코 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2585,8 +2465,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2597,9 +2476,7 @@
       "resultNames": [
         "샌즈 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2609,8 +2486,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2621,9 +2497,7 @@
       "resultNames": [
         "타츠마키 - 신비"
       ],
-      "unmappedUnitRawcodes": [
-        "h06G"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -2633,8 +2507,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2646,7 +2519,6 @@
         "한마 유지로 - 신비"
       ],
       "unmappedUnitRawcodes": [
-        "h06G",
         "h0C2"
       ],
       "originalConditionKinds": [

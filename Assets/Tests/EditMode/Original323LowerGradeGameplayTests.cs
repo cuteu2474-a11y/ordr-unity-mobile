@@ -29,6 +29,17 @@ namespace Ordr.Mobile.Tests
                 return value;
             }
         }
+        private sealed class ObservedSourceMaterialEvent : IOriginal323SourceMaterialEventWitness
+        {
+            public readonly HashSet<string> Confirmed = new HashSet<string>();
+            public bool TryConfirmSettledOriginalEvent(string id, string function,
+                string raw, int count, out string evidence)
+            {
+                evidence = "observed-war3map.j:parent-purchase-story-settlement";
+                return Confirmed.Contains(id + ":" + function + ":" + raw + ":" + count);
+            }
+        }
+
         private sealed class DifferentPlacement : IOriginalPlacementRules
         {
             public bool TryChoosePosition(CatalogUnit unit, UnitState original, out double x, out double y)
@@ -297,7 +308,7 @@ namespace Ordr.Mobile.Tests
         public void GaimonRawcodeMapsToLiveRosterButDoesNotUnlockUnreviewedFusion()
         {
             var game = Create();
-            Assert.AreEqual(275, game.Map.Count);
+            Assert.AreEqual(277, game.Map.Count);
             Assert.AreEqual("h0BG", game.Map.Find(SpecialGradeMobilePolicy.Gaimon).OriginalRawcode);
             Assert.AreEqual("가이몬 - 특수", game.Map.Find(SpecialGradeMobilePolicy.Gaimon).MapName);
             string id;
@@ -930,6 +941,75 @@ namespace Ordr.Mobile.Tests
                 game.Fusion.ConfirmFusion(ability, preview.SuggestedMaterialInstances).State);
             Assert.AreEqual(before, game.Combat.CharacterCount);
             Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
+        }
+
+        [Test]
+        public void StoryBossRewardCreatesOnlyOneSpendableTranscendWispAndConvertsItToKuma()
+        {
+            var game = Create();
+            var witness = new ObservedSourceMaterialEvent();
+            var world = new Original323SourceMaterialRewardWorld(game.Combat,
+                game.Economy, CharacterUnitCatalog.FromJson(Data("units.json")), game.Map, witness);
+            long result;
+            Assert.IsFalse(world.TryChooseKuma(out result));
+            Assert.IsFalse(world.TryRecordObservedStoryClearWisp("story-1"),
+                "A UI event is not a story boss clear.");
+            Assert.AreEqual(0, world.PendingTranscendWisps);
+            witness.Confirmed.Add("story-1:CQB:e01A:1");
+            Assert.IsTrue(world.TryRecordObservedStoryClearWisp("story-1"));
+            Assert.IsFalse(world.TryRecordObservedStoryClearWisp("story-1"),
+                "Duplicate CQB event must not create another story reward.");
+            Assert.AreEqual(1, world.PendingTranscendWisps);
+            Assert.IsTrue(world.TryChooseKuma(out result));
+            Assert.AreEqual(0, world.PendingTranscendWisps);
+            Assert.AreEqual("KM-01", game.Combat.Roster.Get(result).UnitId);
+            Assert.AreEqual(-3776, game.Combat.Roster.Get(result).X);
+            Assert.AreEqual(4480, game.Combat.Roster.Get(result).Y);
+            Assert.AreEqual("h04S", game.Map.Find("KM-01").OriginalRawcode);
+            Assert.AreEqual(1, game.Combat.CharacterCount);
+            Assert.IsFalse(world.TryChooseKuma(out result),
+                "No extra Kuma is created without another confirmed story Wisp.");
+            string id;
+            Assert.IsTrue(game.Fusion.TryResolveUnit("h04S", out id));
+            Assert.AreEqual("KM-01", id);
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR01"),
+                "Unreviewed top-tier callbacks and route conditions stay locked.");
+        }
+
+        [Test]
+        public void ObservedLuckTokenEventsCreateRealCwrMaterialsWithoutFreeGamblingRewards()
+        {
+            var game = Create();
+            var witness = new ObservedSourceMaterialEvent();
+            var world = new Original323SourceMaterialRewardWorld(game.Combat,
+                game.Economy, CharacterUnitCatalog.FromJson(Data("units.json")), game.Map, witness);
+            IReadOnlyList<long> tokens;
+            long gold = game.Economy.Wallet.Balance("gold");
+            long wood = game.Economy.Wallet.Balance("wood");
+            Assert.IsFalse(world.TryRecordObservedTokenAward("gamble-1", "CJK", 1, out tokens));
+            Assert.IsFalse(world.TryRecordObservedTokenAward("gamble-1", "CJB", 1, out tokens),
+                "Money gambling does not pay source luck tokens.");
+            witness.Confirmed.Add("gamble-1:CJK:h06G:1");
+            Assert.IsTrue(world.TryRecordObservedTokenAward("gamble-1", "CJK", 1, out tokens));
+            Assert.AreEqual(1, tokens.Count);
+            Assert.AreEqual("LT-01", game.Combat.Roster.Get(tokens[0]).UnitId);
+            Assert.AreEqual(-3776, game.Combat.Roster.Get(tokens[0]).X);
+            Assert.AreEqual(4480, game.Combat.Roster.Get(tokens[0]).Y);
+            Assert.IsFalse(world.TryRecordObservedTokenAward("gamble-1", "CJK", 1, out tokens));
+            Assert.AreEqual(1, game.Combat.CharacterCount);
+            witness.Confirmed.Add("risk-1:CCk:h06G:2");
+            Assert.IsTrue(world.TryRecordObservedTokenAward("risk-1", "CCk", 2, out tokens));
+            Assert.AreEqual(2, tokens.Count);
+            Assert.AreEqual(3, game.Combat.CharacterCount);
+            Assert.AreEqual(gold, game.Economy.Wallet.Balance("gold"),
+                "The already-settled source purchase is never charged again.");
+            Assert.AreEqual(wood, game.Economy.Wallet.Balance("wood"),
+                "Other original gifts/wood must be settled by the witness.");
+            string id;
+            Assert.IsTrue(game.Fusion.TryResolveUnit("h06G", out id));
+            Assert.AreEqual("LT-01", id);
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("A0QG"),
+                "PICK/extra callbacks remain locked until source verification.");
         }
 
         [Test]

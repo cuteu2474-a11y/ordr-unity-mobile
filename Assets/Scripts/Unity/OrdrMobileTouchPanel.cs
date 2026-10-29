@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Ordr.Mobile.Mobile;
 using Ordr.Mobile.Combat;
@@ -1545,6 +1546,28 @@ namespace Ordr.Mobile.Unity
                 if (!string.IsNullOrEmpty(controller.VerifiedCommonWispUnavailableReason))
                     GUILayout.Label(controller.VerifiedCommonWispUnavailableReason);
                 GUILayout.EndVertical();
+            }
+
+            // Source-confirmed story boss reward only. An ordinary menu
+            // press can NEVER simulate a missing CQB award event.
+            if (controller.OriginalSourceMaterialRewards != null)
+            {
+                var rewards = controller.OriginalSourceMaterialRewards;
+                GUILayout.Label("행운의 토큰 " +
+                    controller.Combat.MobileUnitSnapshot().Count(x => x.Unit.Id == "LT-01") +
+                    "개 · 원본 도박/상자 결과에서만 획득");
+                if (rewards.PendingTranscendWisps > 0)
+                {
+                    GUILayout.BeginVertical(GUI.skin.box);
+                    GUILayout.Label("스토리 보상 초월위습 " +
+                        rewards.PendingTranscendWisps + "개",
+                        OrdrMobileUiTheme.SectionTitle);
+                    if (GUILayout.Button("초월위습 1개 → 바솔로뮤 쿠마 선택",
+                        OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
+                        RunWispDirect("스토리 초월위습 · 쿠마",
+                            () => controller.RequestOriginalTranscendKumaChoice());
+                    GUILayout.EndVertical();
+                }
             }
 
             DrawWispResourceShortcuts();

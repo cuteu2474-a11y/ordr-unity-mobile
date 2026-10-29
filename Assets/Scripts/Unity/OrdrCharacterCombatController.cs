@@ -861,6 +861,62 @@ namespace Ordr.Mobile.Unity
         }
         // Only the roster identity of the source-pinned non-combat e0HP.
         // This is not an ordinary attacking character or a Wisp resource.
+        // Pinned JASS CQB/CSN and CJK/CJM/CGk/CCk/CKJ noncombat
+        // acquisition bridge. A runtime native/replay witness is mandatory.
+        // The default practice game does NOT manufacture story victories,
+        // gambling failures or free source-material units.
+        public Original323SourceMaterialRewardWorld OriginalSourceMaterialRewards
+        { get; private set; }
+
+        public void ConfigureVerifiedOriginalSourceMaterialEvents(
+            IOriginal323SourceMaterialEventWitness sourceEvents)
+        {
+            if (Combat == null || Units == null || MapBaseStats == null ||
+                SharedEconomy == null || OriginalSourceMaterialRewards != null)
+                throw new InvalidOperationException(
+                    "원본 재료 보상은 실제 전투 월드 준비 후 한 번만 연결하세요.");
+            OriginalSourceMaterialRewards = new Original323SourceMaterialRewardWorld(
+                Combat, SharedEconomy, Units, MapBaseStats, sourceEvents);
+        }
+
+        public bool TryRecordObservedStoryTranscendWisp(string sourceEventId)
+        {
+            return OriginalSourceMaterialRewards != null &&
+                OriginalSourceMaterialRewards.TryRecordObservedStoryClearWisp(sourceEventId);
+        }
+
+        public bool TryRecordObservedLuckToken(string sourceEventId,
+            string originalFunction, int originalCount, out IReadOnlyList<long> actorIds)
+        {
+            actorIds = Array.Empty<long>();
+            return OriginalSourceMaterialRewards != null &&
+                OriginalSourceMaterialRewards.TryRecordObservedTokenAward(
+                    sourceEventId, originalFunction, originalCount, out actorIds);
+        }
+
+        // User explicitly selects Kuma from one already source-confirmed
+        // story transcendence Wisp. This does not choose for the player.
+        public ManualActionResult RequestOriginalTranscendKumaChoice()
+        {
+            if (OriginalSourceMaterialRewards == null)
+                return ManualActionResult.Unavailable("스토리 초월위습 보상 확인");
+            long actorId;
+            try
+            {
+                if (!OriginalSourceMaterialRewards.TryChooseKuma(out actorId))
+                    return new ManualActionResult(ManualActionState.Rejected,
+                        "원본 스토리 보상 초월위습이 없거나 현재 사용할 수 없습니다.");
+                return new ManualActionResult(ManualActionState.Succeeded,
+                    "초월위습 1개 사용 · 바솔로뮤 쿠마 획득");
+            }
+            catch (Exception error)
+            {
+                Debug.LogException(error);
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "초월위습 교환 실패 · 원본 보유 상태를 유지했습니다.");
+            }
+        }
+
         public long? StartingEvolutionActorId { get; private set; }
         public PersonalMissionGameplay PersonalMissions { get; private set; }
         private IOriginalMissionRandom missionRandom;

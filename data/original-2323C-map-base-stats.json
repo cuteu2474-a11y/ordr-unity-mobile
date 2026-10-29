@@ -17,8 +17,8 @@
   ],
   "summary": {
     "originalNamedObjects": 1493,
-    "catalogCharacters": 275,
-    "linkedCatalogCharacters": 274,
+    "catalogCharacters": 277,
+    "linkedCatalogCharacters": 276,
     "unresolvedCatalogCharacters": 1,
     "mappingStatusCounts": {
       "reviewed-map-name-alias-and-grade": 54,
@@ -27,6 +27,8 @@
       "verified-common-map-identity": 9,
       "verified-jass-fusion-result": 6,
       "verified-jass-label-and-fusion-result": 49,
+      "verified-source-story-transcend-choice": 1,
+      "verified-source-unit-gambling-reward": 1,
       "verified-source-wisp-pirate-ship": 1
     },
     "linkedWithAttack1": 273,
@@ -9260,6 +9262,50 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0BB,A0JE,Avul",
+      "combatParityVerified": false
+    },
+    {
+      "catalogId": "KM-01",
+      "catalogName": "바솔로뮤 쿠마",
+      "grade": "초월함",
+      "mappingStatus": "verified-source-story-transcend-choice",
+      "originalRawcode": "h04S",
+      "candidateRawcodes": [],
+      "sourceMapName": "바솔로뮤 쿠마 - 초월",
+      "attack1": null,
+      "attack2": null,
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "Avul,A07O",
+      "combatParityVerified": false
+    },
+    {
+      "catalogId": "LT-01",
+      "catalogName": "행운의 토큰",
+      "grade": "재료",
+      "mappingStatus": "verified-source-unit-gambling-reward",
+      "originalRawcode": "h06G",
+      "candidateRawcodes": [],
+      "sourceMapName": "행운의 토큰",
+      "attack1": null,
+      "attack2": null,
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0K9,A0OV,A0JE,A080,Avul",
       "combatParityVerified": false
     }
   ],

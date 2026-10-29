@@ -266,6 +266,26 @@ def build(w3x, catalog):
             code = "h060"
             status = "verified-source-wisp-pirate-ship"
             candidates = [code]
+        elif uid in ("KM-01", "LT-01"):
+            # Source-only roster materials, NEVER a free native acquisition.
+            # CQB->e01A->CSN creates Kuma, while CJK/CJM/CGk/CCk/CKJ
+            # create h06G only after their original parent transactions.
+            fixed = {
+                "KM-01": ("h04S", "바솔로뮤 쿠마", "초월함",
+                          "바솔로뮤 쿠마 - 초월",
+                          "verified-source-story-transcend-choice", "Avul,A07O"),
+                "LT-01": ("h06G", "행운의 토큰", "재료",
+                          "행운의 토큰",
+                          "verified-source-unit-gambling-reward", "A0K9,A0OV,A0JE,A080,Avul"),
+            }
+            code, name, grade, original_name, status, ability_list = fixed[uid]
+            obj = objects.get(code)
+            if (unit["name"] != name or unit["grade"] != grade or
+                    obj is None or obj["mapName"] != original_name or
+                    obj["attack1"] is not None or
+                    obj["originalAbilityList"] != ability_list):
+                raise ValueError("Original source-only material drift: " + uid)
+            candidates = [code]
         else:
             expected_grade = GRADE_SUFFIX[unit["grade"]]
             candidates = by_name_grade.get(

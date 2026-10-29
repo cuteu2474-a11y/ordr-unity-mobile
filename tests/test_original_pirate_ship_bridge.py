@@ -69,7 +69,7 @@ class OriginalPirateShipBridgeTests(unittest.TestCase):
         self.assertNotIn("h060", rows["YY01"]["unmappedUnitRawcodes"])
         self.assertIn("creation-followup-CH8", rows["YY01"]["reasonCodes"])
         self.assertIn("no-unit-payment-in-registration", rows["YY26"]["reasonCodes"])
-        self.assertEqual(47, inventory["summary"]["blockedByReason"]["unmapped-original-unit"])
+        self.assertEqual(5, inventory["summary"]["blockedByReason"]["unmapped-original-unit"])
 
 
 if __name__ == "__main__":

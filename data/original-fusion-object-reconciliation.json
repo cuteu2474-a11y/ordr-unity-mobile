@@ -7,12 +7,12 @@
   "warning": "Object rawcode links and material/cost matches do NOT prove UPUN and other side conditions, transactional consumption, world effects or gameplay parity.",
   "summary": {
     "uniqueCwrUnitRawcodes": 280,
-    "originalCatalogObjectMatchedRawcodes": 274,
+    "originalCatalogObjectMatchedRawcodes": 276,
     "previouslyUnresolvedIngredientRawcodes": 163,
-    "newlyCrossReferencedIngredients": 158,
-    "stillWithoutCatalogIdentity": 5,
+    "newlyCrossReferencedIngredients": 160,
+    "stillWithoutCatalogIdentity": 3,
     "ingredientConditionOccurrences": 775,
-    "catalogMatchedIngredientConditionOccurrences": 727,
+    "catalogMatchedIngredientConditionOccurrences": 771,
     "webRecipeCount": 10,
     "matchingWebRecipes": 10,
     "catalogVsJassLabelConflicts": 0
@@ -465,8 +465,8 @@
       "rawcode": "h04S",
       "ingredientUseCount": 30,
       "resultOfAbilities": [],
-      "catalogUnitId": null,
-      "objectCatalogMappingStatus": null,
+      "catalogUnitId": "KM-01",
+      "objectCatalogMappingStatus": "verified-source-story-transcend-choice",
       "originalW3xObjectName": "바솔로뮤 쿠마 - 초월",
       "jassLabelCatalogUnitId": null,
       "approvedForMaterialConsumption": false
@@ -475,8 +475,8 @@
       "rawcode": "h06G",
       "ingredientUseCount": 14,
       "resultOfAbilities": [],
-      "catalogUnitId": null,
-      "objectCatalogMappingStatus": null,
+      "catalogUnitId": "LT-01",
+      "objectCatalogMappingStatus": "verified-source-unit-gambling-reward",
       "originalW3xObjectName": "행운의 토큰",
       "jassLabelCatalogUnitId": null,
       "approvedForMaterialConsumption": false

@@ -4,7 +4,7 @@
   "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
   "scope": "all catalog units plus all original object owners; native armor/speed/attack aura families only",
   "summary": {
-    "catalogUnitsScanned": 275,
+    "catalogUnitsScanned": 277,
     "catalogUnitsWithObjectAuras": 116,
     "unknownCatalogObjectLists": 1,
     "mapObjectAuraOwners": 168,
@@ -9887,6 +9887,22 @@
       "name": "해적선",
       "grade": "해적선",
       "unitRawcode": "h060",
+      "objectAuraCodes": [],
+      "doesNotProveAbsenceOfJassOrRuntimeAddedEffects": true
+    },
+    {
+      "catalogUnitId": "KM-01",
+      "name": "바솔로뮤 쿠마",
+      "grade": "초월함",
+      "unitRawcode": "h04S",
+      "objectAuraCodes": [],
+      "doesNotProveAbsenceOfJassOrRuntimeAddedEffects": true
+    },
+    {
+      "catalogUnitId": "LT-01",
+      "name": "행운의 토큰",
+      "grade": "재료",
+      "unitRawcode": "h06G",
       "objectAuraCodes": [],
       "doesNotProveAbsenceOfJassOrRuntimeAddedEffects": true
     }

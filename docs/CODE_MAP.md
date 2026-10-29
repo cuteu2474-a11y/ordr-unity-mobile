@@ -6,6 +6,10 @@
 
 `Original323CommonFusionPort.ReviewedHidden`은 원본 JASS 감사 18종(해적선 `h060` 5종 포함)의 **실행 허용 목록**입니다. `OriginalJassFusionPlanner`가 원본 CWR 재료/수량과 실제 `PS-01` 보유 객체를 다시 확인하고 `BeginOriginalFusionUnitSwap`이 한 거래로 소비·생성·복구합니다. **`UPUN`은 소비/무료 소환 조건이 아닙니다.** 게임 원작 대사·음성은 별도 후속 이식 대상이며 `YY01/YY13/YY15/YY20/YY26`은 미승인입니다. 근거: [히든 조합 JASS 함수 감사](../data/original-2323C-hidden-material-swaps.json).
 
+### 초월 쿠마·행운 토큰 사건 기반 재료 획득
+
+`Assets/Scripts/Combat/Original323SourceMaterialRewardWorld.cs`는 실제 `IOriginal323SourceMaterialEventWitness`가 원본 *상위 거래 정산 완료*를 증명한 사건만 받아 원본 `e01A` 권리 또는 `LT-01` 토큰 유닛을 기존 공유 지갑/보유 런타임에 기록합니다. 유저는 `OrdrCharacterCombatController.RequestOriginalTranscendKumaChoice`로 이미 획득한 초월위습 1개를 `KM-01`로 바꾸며, 위습 UI 버튼은 보유할 때만 열립니다. **기본 게임에 외부 원본 사건 제공자는 아직 없음** → 플레이 자체에서 보스 클리어·고급 도박 보상을 자동 지급하지 않음. `CJB/CJC` 돈도박은 별도입니다. 원본 함수·비용·조건: [source-material-acquisition](../data/original-2323C-source-material-acquisition.json). 도감 정체성 연결은 제작 허용이 아니며 `KING/PICK` 등 미구현 조합은 여전히 잠깁니다.
+
 ## 기본 씬에서 전투까지
 
 ```mermaid
