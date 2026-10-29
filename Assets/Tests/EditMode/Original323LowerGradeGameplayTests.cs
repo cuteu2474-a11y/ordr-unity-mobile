@@ -185,6 +185,17 @@ namespace Ordr.Mobile.Tests
         [TestCase("A02H", "L-08")]
         [TestCase("A00H", "L-37")]
         [TestCase("A1CC", "L-39")]
+        [TestCase("YY02", "H-05")]
+        [TestCase("YY03", "H-10")]
+        [TestCase("YY05", "H-03")]
+        [TestCase("YY06", "H-04")]
+        [TestCase("YY10", "H-11")]
+        [TestCase("YY11", "H-12")]
+        [TestCase("YY14", "H-14")]
+        [TestCase("YY16", "H-18")]
+        [TestCase("YY17", "H-01")]
+        [TestCase("YY22", "H-20")]
+        [TestCase("YY23", "H-21")]
         public void AllReviewedRecipesConsumeActualMaterialsAndCreateOneResult(string ability, string result)
         {
             var game = Create();
@@ -207,8 +218,9 @@ namespace Ordr.Mobile.Tests
                 game.Fusion.ConfirmFusion(ability, consumed).State);
             var now = game.Combat.MobileUnitSnapshot();
             var made = now.Single(row => row.Unit.Id == result);
-            Assert.AreEqual(125, made.Position.X);
-            Assert.AreEqual(340, made.Position.Y);
+            bool hidden = result.StartsWith("H-", StringComparison.Ordinal);
+            Assert.AreEqual(hidden ? -3776 : 125, made.Position.X);
+            Assert.AreEqual(hidden ? 4480 : 340, made.Position.Y);
             Assert.IsFalse(now.Any(row => consumed.Contains(row.InstanceId)));
             Assert.IsTrue(now.Any(row => row.InstanceId == unrelated));
             Assert.AreEqual(2, now.Count);
@@ -303,7 +315,8 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(116, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(127, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(11, game.Fusion.ExecutableHiddenRecipeCount);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
             var fresh = Offer(game, "A012");
             Assert.AreEqual(ManualActionState.Succeeded,
@@ -376,6 +389,43 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual("U-02", result.Unit.Id);
             Assert.AreEqual(900, result.Position.X);
             Assert.AreEqual(200, result.Position.Y);
+        }
+
+        [Test]
+        public void HiddenFusionRechecksStaleMaterialsAndRejectsDuplicatesBeforeConsuming()
+        {
+            var game = Create();
+            long perona = game.Combat.SpawnCharacter("R-13", 10, 20);
+            long sugar = game.Combat.SpawnCharacter("R-24", 30, 40);
+            var offer = Offer(game, "YY05");
+            Assert.IsTrue(offer.IsReady);
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("YY05", new[] { perona, perona }).State);
+            Assert.AreEqual(2, game.Combat.CharacterCount);
+            game.Combat.RemoveCharacter(sugar);
+            long replacement = game.Combat.SpawnCharacter("R-24", 50, 60);
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("YY05", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual("R-13", game.Combat.Roster.Get(perona).UnitId);
+            Assert.AreEqual("R-24", game.Combat.Roster.Get(replacement).UnitId);
+            Assert.AreEqual(2, game.Combat.CharacterCount);
+            Assert.AreEqual(60, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
+        }
+
+        [Test]
+        public void HiddenCreationEffectsAndVariantMaterialsStayLocked()
+        {
+            var game = Create();
+            foreach (string ability in new[] { "YY01", "YY04", "YY07", "YY08", "YY09", "YY12",
+                "YY13", "YY15", "YY18", "YY20", "YY25", "ET01", "A19Z", "A1A1", "A1A0" })
+            {
+                Assert.IsFalse(game.Fusion.CanCommitRecipe(ability), ability);
+                Assert.AreEqual(ManualActionState.NotImplemented,
+                    game.Fusion.ConfirmFusion(ability, new long[0]).State, ability);
+            }
+            Assert.AreEqual(0, game.Combat.CharacterCount);
+            Assert.AreEqual(60, game.Economy.Wallet.Balance("gold"));
         }
 
         [Test]

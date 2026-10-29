@@ -1,0 +1,709 @@
+{
+  "format": "ordr-hidden-material-swaps-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "positionPlayerZero": {
+    "x": -3776,
+    "y": 4480
+  },
+  "recipes": [
+    {
+      "abilityRawcode": "YY02",
+      "jassLine": 61406,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h044",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H09I",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0CJ",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02F",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h025",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00D",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-05",
+      "resultName": "류마",
+      "chatWrapper": "Brg",
+      "chatHandler": "Brh",
+      "commands": [
+        "류마조합",
+        "ryuma"
+      ]
+    },
+    {
+      "abilityRawcode": "YY03",
+      "jassLine": 61413,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03W",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H09E",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h040",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Z",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-10",
+      "resultName": "베르고",
+      "chatWrapper": "BrK",
+      "chatHandler": "BrL",
+      "commands": [
+        "베르고조합",
+        "vergo"
+      ]
+    },
+    {
+      "abilityRawcode": "YY05",
+      "jassLine": 61427,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03T",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h05B",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h027",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-03",
+      "resultName": "레베카",
+      "chatWrapper": "Bqy",
+      "chatHandler": "Bqz",
+      "commands": [
+        "레베카조합",
+        "rebecca"
+      ]
+    },
+    {
+      "abilityRawcode": "YY06",
+      "jassLine": 61433,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03N",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H0BL",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h06A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h025",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h017",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-04",
+      "resultName": "료쿠규",
+      "chatWrapper": "BrC",
+      "chatHandler": "BrD",
+      "commands": [
+        "료쿠규조합",
+        "ryokugyu"
+      ]
+    },
+    {
+      "abilityRawcode": "YY10",
+      "jassLine": 61459,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03O",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h067",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01M",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00X",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-11",
+      "resultName": "봉쿠레",
+      "chatWrapper": "Brc",
+      "chatHandler": "Brd",
+      "commands": [
+        "봉쿠레조합",
+        "bonkurei"
+      ]
+    },
+    {
+      "abilityRawcode": "YY11",
+      "jassLine": 61467,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03M",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H092",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08W",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h09V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h020",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05L",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-12",
+      "resultName": "사보",
+      "chatWrapper": "Bqj",
+      "chatHandler": "Bqk",
+      "commands": [
+        "사보조합",
+        "sabo"
+      ]
+    },
+    {
+      "abilityRawcode": "YY14",
+      "jassLine": 61488,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03J",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h0CJ",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h026",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Z",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-14",
+      "resultName": "시류",
+      "chatWrapper": "Brk",
+      "chatHandler": "Brl",
+      "commands": [
+        "시류조합",
+        "shiryu"
+      ]
+    },
+    {
+      "abilityRawcode": "YY16",
+      "jassLine": 61502,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03Y",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h05A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-18",
+      "resultName": "이완코브",
+      "chatWrapper": "Bqf",
+      "chatHandler": "Bqg",
+      "commands": [
+        "이완코브조합",
+        "ivankov"
+      ]
+    },
+    {
+      "abilityRawcode": "YY17",
+      "jassLine": 61508,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h043",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H09F",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h058",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h029",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02E",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-01",
+      "resultName": "검호",
+      "chatWrapper": "BrR",
+      "chatHandler": "BrS",
+      "commands": [
+        "검호조합",
+        "mihawk"
+      ]
+    },
+    {
+      "abilityRawcode": "YY22",
+      "jassLine": 61529,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h046",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H08X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08R",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02F",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Y",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-20",
+      "resultName": "키쿠노죠",
+      "chatWrapper": "Bqn",
+      "chatHandler": "Bqo",
+      "commands": [
+        "키쿠조합",
+        "kiku"
+      ]
+    },
+    {
+      "abilityRawcode": "YY23",
+      "jassLine": 61536,
+      "results": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h045",
+          "count": 1
+        }
+      ],
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "H0B4",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h016",
+          "count": 1
+        }
+      ],
+      "resultCatalogId": "H-21",
+      "resultName": "킬러",
+      "chatWrapper": "BrY",
+      "chatHandler": "BrZ",
+      "commands": [
+        "킬러조합",
+        "killer"
+      ]
+    }
+  ],
+  "functions": {
+    "BI1": {
+      "line": 4704,
+      "sha256LF": "ebc06e2ed80b3153a24b5c48465507672cf9cf05a02e5ebb4fafc6125245c3b1",
+      "source": "function BI1 takes real EN,real JS returns nothing\nset WW=EN\nset WX=JS\nset WV=true\nendfunction"
+    },
+    "BI2": {
+      "line": 4709,
+      "sha256LF": "3e9c647437b17410624f39d990138fb49aecb8736d7d2d832818ae181fd68f36",
+      "source": "function BI2 takes nothing returns boolean\nlocal integer WY\nif WS==0 or Q5==null then\ncall BJDebugMsg(\"Fusion: 필수 설정이 제공되지 않았습니다.\")\nreturn false\nendif\nset WY=GetPlayerId(Q5)\nif not BGc(WS,WY) then\nreturn false\nendif\ncall BGd(WS,WY)\ncall BGe(WS,WY)\ncall TriggerEvaluate(Q4)\nreturn true\nendfunction"
+    },
+    "BIw": {
+      "line": 4690,
+      "sha256LF": "a5fc7c1d9eb99cb1acccd3bf1ec9eacf20d8b3445141826622d85081e0672930",
+      "source": "function BIw takes nothing returns nothing\nset WS=0\nset Q5=null\nset WT=null\nset WU=0\nset WV=false\nset WW=0.\nset WX=0.\ncall GroupClear(Q6)\nendfunction"
+    },
+    "Bqf": {
+      "line": 16497,
+      "sha256LF": "ba4dd4f94bf45c27042d22d2b5e2e204b796c21dd6012b22ced5952b1c66a9e2",
+      "source": "function Bqf takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "Bqg": {
+      "line": 16504,
+      "sha256LF": "fe3525b851ff9d030178fe828934df4adf2b47020fac2351f11c0120e02e0df6",
+      "source": "function Bqg takes nothing returns nothing\nif not Bqf($59593136) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000엠포리오 이완코브 : |r|cffFA8072임펠다운 낙원의 왕이다!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "Bqj": {
+      "line": 16539,
+      "sha256LF": "715375fcab64e1bffce7472d02cbcfd7dcdc9b467b69b191b40cf35d22c0e6b1",
+      "source": "function Bqj takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "Bqk": {
+      "line": 16546,
+      "sha256LF": "e8835685152f8be816fc0cafbbe81fa6ea567f0fa2cc94b3e2c96d9625f50d3b",
+      "source": "function Bqk takes nothing returns nothing\nif not Bqj($59593131) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000사보 : |r|cffFA8072내 악력은 인간의 두개골 정도는 간단히 부숴버리지!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "Bqn": {
+      "line": 16587,
+      "sha256LF": "fa663851b3c968a014e54012b46471820fb98a34ddfbdddf7f9cd7ba513b41aa",
+      "source": "function Bqn takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "Bqo": {
+      "line": 16594,
+      "sha256LF": "cb926c650a5cf6e365a06ff9b04e70a6157f52b35a4d9b29438b1225edabfef0",
+      "source": "function Bqo takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Bqn($59593232) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000키쿠노죠 : |r|cffFA8072소첩은 사무라이입니다! |r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "Bqy": {
+      "line": 16742,
+      "sha256LF": "9881d13252bd10d620ffa9f706066993b2cb7019e62569ed7a41c7d442fe898f",
+      "source": "function Bqy takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "Bqz": {
+      "line": 16749,
+      "sha256LF": "fb10b4f978ad487aa65fa422c0b0d59bab64dfa8f5e77d37df6828ca60f76aa9",
+      "source": "function Bqz takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Bqy($59593035) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000레베카 : |r|cffFA8072 내가 도플라밍고를 쓰러트리겠어!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "BrC": {
+      "line": 16945,
+      "sha256LF": "fad2444e25fb30eae52cdf294375e0b3bbe2d1ee88f887144a96c72ef8877923",
+      "source": "function BrC takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "BrD": {
+      "line": 16952,
+      "sha256LF": "a91dc30f0bda75dd516d29039873f6b1d0862bd8b9802bfc931376ee00403bb2",
+      "source": "function BrD takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not BrC($59593036) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000료쿠규 : |r|cffFA8072바깥 세상은 지금 엉망진창이라고...!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "BrK": {
+      "line": 17069,
+      "sha256LF": "0b300e3d0129c5585fb918a3b0925505ff0f89b2b42cc2c7fb209ae6bc3de5e1",
+      "source": "function BrK takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "BrL": {
+      "line": 17076,
+      "sha256LF": "822a4f64ec6d0c796eba98da14b9b520c4bf9a45db26f100fb6b59505b2ae597",
+      "source": "function BrL takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not BrK($59593033) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000베르고 : |r|cffFA8072숨겨봤자 어른들에겐 다 들키는 법이란다.|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "BrR": {
+      "line": 17136,
+      "sha256LF": "bc22e52dc1bd32afdb72f96258774befab0072ec8c32530392f0e3ad5441ec72",
+      "source": "function BrR takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "BrS": {
+      "line": 17143,
+      "sha256LF": "7f90c999d697dd10d25c1ac2b0a93384a555a333bd759661b4111972c9d33f95",
+      "source": "function BrS takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not BrR($59593137) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000쥬라클 미호크 : |r|cffFA8072나는 몇 년이 지나도 최강의 자리에서 널 기다리겠다.|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "BrY": {
+      "line": 17219,
+      "sha256LF": "548be85276afb3bf17398183eb82995c7ac6a7778aca27a25e569b2ba2411116",
+      "source": "function BrY takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "BrZ": {
+      "line": 17226,
+      "sha256LF": "b69eba5eced48bd8c6a24ca1b3d5e8ba00a5b467381d19088ffb0b02b50d108b",
+      "source": "function BrZ takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not BrY($59593233) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000킬러 : |r|cffFA8072...죽인다!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "Brc": {
+      "line": 17260,
+      "sha256LF": "7dbc612e125eb03a754e12379a75f96fc88fb3915a7abe5522794b8f317a512c",
+      "source": "function Brc takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "Brd": {
+      "line": 17267,
+      "sha256LF": "ad38680f7400e471696b54a5b77311aa4e95cc60832d9cb4beca9eb128749047",
+      "source": "function Brd takes nothing returns nothing\nif not Brc($59593130) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000봉쿠레 : |r|cffFA8072친구니까! 다른 이유 따윈 필요없어!|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "Brg": {
+      "line": 17297,
+      "sha256LF": "d789f49f3ded83a513d907bf95c59a87aa585db227edef93562235c7af3ba698",
+      "source": "function Brg takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "Brh": {
+      "line": 17304,
+      "sha256LF": "ee0387fa7a691ce7e9899fa2442691551e1dd0373ddc32a22345e67c903fedb6",
+      "source": "function Brh takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Brg($59593032) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000류마 : |r|cffFA8072슈스이... 당신이 주인이라면 이 칼도 더 바랄 바 없겠지요.|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "Brk": {
+      "line": 17348,
+      "sha256LF": "957ba708df79df16550842d0088a395fbe862ec6d0a91616345369baec358537",
+      "source": "function Brk takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction"
+    },
+    "Brl": {
+      "line": 17355,
+      "sha256LF": "b21864200ab4e06e455e3dc7cf05d8db26705953afbab0948de895f896d64378",
+      "source": "function Brl takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not Brk($59593134) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000시류 : |r|cffFA8072베어버려서... 미안.|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction"
+    },
+    "CH5": {
+      "line": 48360,
+      "sha256LF": "93995dfe8a9165f9317c6f76ce9c8911cad4933257cdd80a085206ed5a4bb16f",
+      "source": "function CH5 takes nothing returns nothing\ncall BGR($474F4C44,function CHj)\ncall BGS($474F4C44,function CHk)\ncall BGR($574F4F44,function CHl)\ncall BGS($574F4F44,function CHm)\ncall BGR($554E4954,function CHu)\ncall BGS($554E4954,function CHx)\ncall BGR($5049434B,function CHz)\ncall BGS($5049434B,function CH0)\ncall BGR($534B5054,function CHn)\ncall BGS($534B5054,function CHo)\ncall BGR($4954454D,function CHp)\ncall BGS($4954454D,function CHq)\ncall BGR($43484354,function CHr)\ncall BGS($43484354,function CHs)\ncall BGR($49464354,function CH1)\ncall BGS($49464354,function CH2)\ncall BGR($524D4158,function CH3)\ncall BGS($524D4158,function CH4)\ncall BGT($554E4954,function CHy)\nendfunction"
+    },
+    "CH8": {
+      "line": 48391,
+      "sha256LF": "1ec038ddd22e024c26ad7116f9eff4040bd18a2760074ed3ec802d914cebe96f",
+      "source": "function CH8 takes nothing returns nothing\nlocal unit iI=GetEnteringUnit()\nlocal integer JG=GetPlayerId(GetOwningPlayer(iI))\nlocal timer Db\nif GetUnitAbilityLevel(iI,$416C6F63)>0 then\nset iI=null\nreturn\nendif\nif JG==7 then\nset iI=null\nreturn\nendif\nif LZ[JG]!=0 and IsUnitType(GetTriggerUnit(),UNIT_TYPE_GIANT) then\ncall BH1(LZ[JG],iI)\ncall BkC(iI)\nendif\nif GetUnitTypeId(iI)==$68303438 then\nset LL[JG]=LL[JG]+10\nset Db=BHs(JG)\ncall TimerStart(Db,.01,false,function CH6)\nset Db=null\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303431 then\nset LL[JG]=LL[JG]+10\nset Db=BHs(JG)\ncall TimerStart(Db,.01,false,function CH7)\nset Db=null\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303748 then\ncall Bc6(iI,GetRectCenterX(Lm[JG]),GetRectCenterY(Lm[JG]))\ncall UnitRemoveAbilityBJ($416D6F76,iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303335 then\ncall Btf(JG,iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303837 then\ncall BuF(JG,iI)\ncall SetPlayerTechResearchedSwap($52303343,1,Player(JG))\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303250 then\ncall BsP(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303432 then\ncall SetPlayerTechResearchedSwap($52303331,1,Player(JG))\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303254 then\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303342 then\ncall BuN(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303358 then\ncall Br4(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303535 then\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303550 then\ncall SetPlayerTechResearchedSwap($52303052,1,Player(JG))\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68304247 then\ncall CCP(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303732 then\ncall CC1(JG)\nset iI=null\nreturn\nendif\nset iI=null\nendfunction"
+    },
+    "CHi": {
+      "line": 48123,
+      "sha256LF": "b19bd25599a95b6252b1be51b74b3e21e41dda0321cc06337030ea8cdcac48df",
+      "source": "function CHi takes nothing returns nothing\ncall BGR($5542414E,function CHg)\ncall BGR($4B494E47,function CHh)\nendfunction"
+    },
+    "CHu": {
+      "line": 48222,
+      "sha256LF": "0a682ec26ec0c9fc0b333d5dc96c5c424849564b981532d7eba206583394e1e9",
+      "source": "function CHu takes nothing returns nothing\nlocal player hk=Player(Wl)\nlocal integer ho=Wn\nlocal integer hs=Wo\nlocal integer ht\nif GetUnitTypeId(GetSpellTargetUnit())==ho then\nset hs=hs+1\nendif\nset ht=hs-BH3(LZ[GetPlayerId(hk)],ho,function CHt)\nif ht>0 then\ncall DisplayTextToPlayer(hk,0,0,\"재료 부족 : \"+GetObjectName(ho)+\" \"+I2S(ht)+\"개\")\ncall BGb(false)\nendif\nset hk=null\nendfunction"
+    },
+    "CHx": {
+      "line": 48263,
+      "sha256LF": "9e4794f1c4747d2ca1fff374186bb81159c3a2e15abc073b460f452fde64f842",
+      "source": "function CHx takes nothing returns nothing\nlocal player hu=Player(Wl)\nlocal integer h6=Wn\nlocal integer hv=Wo\nlocal integer VU=LZ[GetPlayerId(hu)]\nif WT!=null and h6==WU then\nif IsUnitType(GetEnumUnit(),UNIT_TYPE_HERO) then\ncall RemoveUnit(WT)\nelse\ncall BdD(WT)\nendif\nset hv=hv-1\nendif\nset hv=hv-BH4(VU,h6,hv,function CHv)\ncall BH4(VU,h6,hv,function CHw)\nset hu=null\nendfunction"
+    },
+    "CHy": {
+      "line": 48280,
+      "sha256LF": "1c4e59257453fc2c3120f1f93344e7bc261df1ecb0c61b1c67c955ed0835e4c4",
+      "source": "function CHy takes nothing returns nothing\nlocal player iF=Player(Wl)\nlocal integer iH=Wn\nlocal integer iG=Wo\nlocal integer VU=LZ[GetPlayerId(iF)]\nlocal real EN\nlocal real JS\nlocal unit Cm\nlocal integer EK=0\nif WV then\nset EN=WW\nset JS=WX\nelse\nset EN=GetPlayerStartLocationX(iF)\nset JS=GetPlayerStartLocationY(iF)\nendif\nloop\nexitwhen EK==iG\nset Cm=CreateUnit(iF,iH,EN,JS,bj_UNIT_FACING)\nif GetUnitTypeId(Cm)==$48303939 or GetUnitTypeId(Cm)==$48304232 then\ncall BH0(VU,Cm,$48303854)\nelse\ncall BH1(VU,Cm)\nendif\ncall GroupAddUnit(Q6,Cm)\nset EK=EK+1\nendloop\nset iF=null\nset Cm=null\nendfunction"
+    }
+  },
+  "retailCombatParityVerified": false,
+  "excludedHiddenAbilities": [
+    "YY01",
+    "YY04",
+    "YY07",
+    "YY08",
+    "YY09",
+    "YY12",
+    "YY13",
+    "YY15",
+    "YY18",
+    "YY20",
+    "YY25"
+  ],
+  "limitations": [
+    "Only eleven reviewed chat-driven material transactions are connected.",
+    "YY15 resets XM in its chat callback; it is not a pure material swap.",
+    "Ship/variant materials and additional CH8 effects remain locked.",
+    "Hidden skills, native combat and retail gameplay parity remain incomplete."
+  ]
+}

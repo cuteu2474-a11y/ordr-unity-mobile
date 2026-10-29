@@ -11,6 +11,7 @@ namespace Ordr.Mobile.Mobile
     // presentation markers. CH5/CHi register no UPUN check/payment callback.
     // AOsf-based casts (two Special, one Rare) remain pending a native-cast audit.
     // Legendary entries with additional creation handlers or unmapped materials stay locked.
+    // Eleven reviewed Hidden chat recipes use the player-zero start position, not a caster.
     public sealed class Original323CommonFusionPort : IOriginalFusionPort,
         IOriginalFusionCommitCapability, IOriginalFusionRecipeCommitCapability,
         IVerifiedUnitRawcodeMap, IOriginalJassSpecialConditionEvaluator
@@ -138,6 +139,18 @@ namespace Ordr.Mobile.Mobile
             { "A00H", "h031", "L-37" },
             { "A1CC", "h0CM", "L-39" },
         };
+        private static readonly string[,] ReviewedHidden = {
+            { "YY02", "h044", "H-05" }, { "YY03", "h03W", "H-10" },
+            { "YY05", "h03T", "H-03" }, { "YY06", "h03N", "H-04" },
+            { "YY10", "h03O", "H-11" }, { "YY11", "h03M", "H-12" },
+            { "YY14", "h03J", "H-14" }, { "YY16", "h03Y", "H-18" },
+            { "YY17", "h043", "H-01" }, { "YY22", "h046", "H-20" },
+            { "YY23", "h045", "H-21" }
+        };
+        // Original chat wrappers call BI1(GetPlayerStartLocationX/Y).
+        // config: SetPlayerStartLocation(Player(0),0); DefineStartLocation(0,-3776.,4480.).
+        private const double HiddenResultX = -3776.0;
+        private const double HiddenResultY = 4480.0;
         private readonly CharacterCombatRuntime combat;
         private readonly SharedEconomySession economy;
         private readonly OriginalMapBaseStatCatalog objects;
@@ -155,6 +168,7 @@ namespace Ordr.Mobile.Mobile
         public int ExecutableSpecialRecipeCount => ReviewedSpecial.GetLength(0);
         public int ExecutableRareRecipeCount => ReviewedRare.GetLength(0);
         public int ExecutableLegendaryRecipeCount => ReviewedLegendary.GetLength(0);
+        public int ExecutableHiddenRecipeCount => ReviewedHidden.GetLength(0);
 
         public Original323CommonFusionPort(CharacterCombatRuntime world, SharedEconomySession shared,
             CharacterUnitCatalog units, OriginalMapBaseStatCatalog originalObjects,
@@ -195,6 +209,7 @@ namespace Ordr.Mobile.Mobile
             Bind(units, "X-07", "h09T", "특수함");
             Bind(units, SpecialGradeMobilePolicy.Gaimon, "h0BG", "특수함");
             RegisterReviewed(units, registrations, ReviewedLegendary, "전설");
+            RegisterReviewed(units, registrations, ReviewedHidden, "히든");
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
             planner.SetVerifiedObjectMap(this);
@@ -225,16 +240,16 @@ namespace Ordr.Mobile.Mobile
                         throw new FormatException("하위 조합의 원본 조건 범위가 변경됐습니다.");
                     string grade = units.Require(id).Grade;
                     bool permitted = grade == "흔함" ||
-                        ((resultGrade == "특별함" || resultGrade == "희귀함" || resultGrade == "전설") && grade == "안흔함") ||
-                        ((resultGrade == "희귀함" || resultGrade == "전설") && grade == "특별함") ||
-                        (resultGrade == "전설" && grade == "희귀함");
+                        ((resultGrade == "특별함" || resultGrade == "희귀함" || resultGrade == "전설" || resultGrade == "히든") && grade == "안흔함") ||
+                        ((resultGrade == "희귀함" || resultGrade == "전설" || resultGrade == "히든") && grade == "특별함") ||
+                        ((resultGrade == "전설" || resultGrade == "히든") && grade == "희귀함");
                     if (!permitted)
                         throw new FormatException("검수하지 않은 등급의 조합 재료입니다.");
                     hasMaterials = true;
                     foreach (var nativeAbility in objects.Find(id).OriginalAbilityRawcodes)
                         if (nativeAbility == ability) hasCaster = true;
                 }
-                if (!hasMaterials || !hasCaster || (resultGrade == "전설" && !hasWood))
+                if (!hasMaterials || (resultGrade != "히든" && !hasCaster) || (resultGrade == "전설" && !hasWood))
                     throw new FormatException("원본 조합 시전자 또는 검수한 목재 비용 누락");
                 supported.Add(ability);
                 resultGrades.Add(ability, resultGrade);
@@ -300,20 +315,25 @@ namespace Ordr.Mobile.Mobile
                 if (exact.Count != selected.Count) return Reject("같은 재료를 중복 사용할 수 없습니다.");
                 foreach (long id in ready.SuggestedMaterialIds)
                     if (!exact.Remove(id)) return Reject("확인한 재료와 현재 재료가 다릅니다.");
-                // CT1 casts from an actual material actor that owns this ability,
-                // and BI1 preserves that caster's exact current coordinates.
-                MobileUnitSnapshot caster = null;
-                var materials = new HashSet<long>(ready.SuggestedMaterialIds);
-                foreach (var row in owned)
+                double resultX = HiddenResultX, resultY = HiddenResultY;
+                if (resultGrades[ability] != "히든")
                 {
-                    if (!materials.Contains(row.InstanceId)) continue;
-                    foreach (string native in objects.Find(row.Unit.Id).OriginalAbilityRawcodes)
-                        if (native == ability) { caster = row; break; }
-                    if (caster != null) break;
+                    // CT1 uses the exact material actor owning the cast ability.
+                    MobileUnitSnapshot caster = null;
+                    var materials = new HashSet<long>(ready.SuggestedMaterialIds);
+                    foreach (var row in owned)
+                    {
+                        if (!materials.Contains(row.InstanceId)) continue;
+                        foreach (string native in objects.Find(row.Unit.Id).OriginalAbilityRawcodes)
+                            if (native == ability) { caster = row; break; }
+                        if (caster != null) break;
+                    }
+                    if (caster == null) return Reject("원본 조합 능력을 가진 재료가 없습니다.");
+                    resultX = caster.Position.X;
+                    resultY = caster.Position.Y;
                 }
-                if (caster == null) return Reject("원본 조합 능력을 가진 재료가 없습니다.");
                 using (var swap = combat.BeginOriginalFusionUnitSwap(ready.SuggestedMaterialIds,
-                    ready.ResultUnitId, caster.Position.X, caster.Position.Y))
+                    ready.ResultUnitId, resultX, resultY))
                 {
                     created = swap.ResultInstanceId;
                     if (ready.GoldCost == 0 && ready.LumberCost == 0) swap.Commit();
