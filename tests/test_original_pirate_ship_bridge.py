@@ -58,7 +58,7 @@ class OriginalPirateShipBridgeTests(unittest.TestCase):
     def test_hidden_uses_are_now_resolvable_but_not_silently_authorized(self):
         inventory = load("original-fusion-unconnected-review.json")
         rows = {r["abilityRawcode"]: r for r in inventory["blocked"]}
-        self.assertEqual((265, 150, 115),
+        self.assertEqual((265, 152, 113),
                          tuple(inventory["summary"][x] for x in
                                ("sourceRecipesExcludingTest", "liveExecutableRecipes",
                                 "blockedRecipes")))
@@ -69,7 +69,7 @@ class OriginalPirateShipBridgeTests(unittest.TestCase):
         self.assertNotIn("h060", rows["YY01"]["unmappedUnitRawcodes"])
         self.assertIn("creation-followup-CH8", rows["YY01"]["reasonCodes"])
         self.assertIn("no-unit-payment-in-registration", rows["YY26"]["reasonCodes"])
-        self.assertEqual(5, inventory["summary"]["blockedByReason"]["unmapped-original-unit"])
+        self.assertEqual(4, inventory["summary"]["blockedByReason"]["unmapped-original-unit"])
 
 
 if __name__ == "__main__":

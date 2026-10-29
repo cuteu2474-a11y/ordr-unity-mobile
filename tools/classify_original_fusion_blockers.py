@@ -57,6 +57,10 @@ def build(data, port):
     all_ids = {r['abilityRawcode'] for r in all_rows}
     if len(all_rows) != len(all_ids) or not enabled.issubset(all_ids):
         raise ValueError('Source registry and executable allowlist disagree')
+    # CHy/BH0 H08T is an ingredient bucket, not another unit.
+    material_groups = json.loads((data / 'original-2323C-owned-material-fusions.json').read_text())['materialGroups']
+    resolved_groups = {raw for raw, group in material_groups.items()
+                       if all(code in verified for code in group['rawcodes'])}
     blocked = []
     by_reason = Counter()
     for recipe in all_rows:
@@ -66,7 +70,7 @@ def build(data, port):
         conditions = recipe['conditions']
         needed = {c['rawcode'] for c in conditions if c['kind'] == 'UNIT'}
         results = {c['rawcode'] for c in recipe['results'] if c['kind'] == 'UNIT'}
-        unmapped = sorted((needed | results) - set(verified))
+        unmapped = sorted((needed - set(verified) - resolved_groups) | (results - set(verified)))
         reasons = set()
         if unmapped:
             reasons.add('unmapped-original-unit')

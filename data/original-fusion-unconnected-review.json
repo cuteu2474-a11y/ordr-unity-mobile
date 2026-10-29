@@ -13,8 +13,8 @@
   ],
   "summary": {
     "sourceRecipesExcludingTest": 265,
-    "liveExecutableRecipes": 150,
-    "blockedRecipes": 115,
+    "liveExecutableRecipes": 152,
+    "blockedRecipes": 113,
     "liveExecutableByGrade": {
       "Reviewed": 13,
       "ReviewedSpecial": 31,
@@ -22,7 +22,7 @@
       "ReviewedLegendary": 33,
       "ReviewedHidden": 18,
       "ReviewedEternal": 1,
-      "ReviewedRestricted": 13
+      "ReviewedRestricted": 15
     },
     "blockedByReason": {
       "chat-player-state-effect": 1,
@@ -33,10 +33,10 @@
       "round-state": 15,
       "special-native-result": 8,
       "special-target-or-pick": 6,
-      "top-tier-route-or-callback-audit": 62,
+      "top-tier-route-or-callback-audit": 60,
       "trait-counter": 12,
       "transformation-effect": 4,
-      "unmapped-original-unit": 5
+      "unmapped-original-unit": 4
     }
   },
   "blocked": [
@@ -1137,27 +1137,6 @@
       ]
     },
     {
-      "abilityRawcode": "TR09",
-      "resultRawcodes": [
-        "H099"
-      ],
-      "resultNames": [
-        "해적왕이 될 사나이"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "KING",
-        "UBAN",
-        "UNIT",
-        "UPUN"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
       "abilityRawcode": "TR11",
       "resultRawcodes": [
         "H0B5"
@@ -1677,9 +1656,7 @@
       "resultNames": [
         "태양의 신"
       ],
-      "unmappedUnitRawcodes": [
-        "H08T"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "ITEM",
         "UNIT",
@@ -1688,8 +1665,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "item-payment",
-        "unmapped-original-unit"
+        "item-payment"
       ]
     },
     {
@@ -2334,27 +2310,6 @@
       ],
       "resultNames": [
         "샌즈 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A12C",
-      "resultRawcodes": [
-        "h0BC"
-      ],
-      "resultNames": [
-        "타츠마키 - 신비"
       ],
       "unmappedUnitRawcodes": [],
       "originalConditionKinds": [

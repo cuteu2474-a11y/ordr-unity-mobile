@@ -13,7 +13,7 @@ import re
 from extract_original_lower_grade_gameplay import JASS_SHA, MAP_SHA
 
 
-REVIEWED = ('TR01', 'TR10', 'TR21', 'TR23', 'TR27', 'TR28', 'ET08')
+REVIEWED = ('TR01', 'TR10', 'TR21', 'TR23', 'TR27', 'TR28', 'ET08', 'TR09')
 
 
 def review_functions(functions, data, port):
@@ -43,12 +43,16 @@ def review_functions(functions, data, port):
                      'LoadBoolean', 'StringHash', 'Bjm'}:
             raise ValueError('Unreviewed skin query dependency')
     # These are the source creation pipeline's exceptional material aliases.
-    # H099 (TR09 Luffy) is not an ordinary rawcode swap, even though its
-    # own chat handler only narrates. It must remain locked.
+    # H099 (TR09 Luffy) is kept as an object identity; the H08T bucket
+    # is resolved separately by the material planner.
     if 'GetUnitTypeId(Cm)==$48303939 or GetUnitTypeId(Cm)==$48304232' not in functions['CHy']:
         raise ValueError('Source creation alias branch changed')
-    if '"TR09"' in block:
-        raise ValueError('TR09 alias transaction is not reviewed')
+    if 'call BH0(VU,Cm,$48303854)' not in functions['CHy']:
+        raise ValueError('Source Luffy group bucket changed')
+    groups = port.parent / 'Original323FusionMaterialGroups.cs'
+    if not groups.exists() or 'rawcode == "H08T"' not in groups.read_text() or \
+            'new[] { "TR-08", "TR-14" }' not in groups.read_text():
+        raise ValueError('Live original material group is not connected')
     recipes = []
     for ability in REVIEWED:
         row = registry[ability]
@@ -140,13 +144,14 @@ def audit(jass, data, port):
     return {'format': 'ordr-transcend-material-swaps-v1',
             'sourceW3xSha256': MAP_SHA, 'sourceJassSha256': JASS_SHA,
             'recipes': recipes, 'spawnAtPlayerZeroStart': {'x': -3776, 'y': 4480},
+            'materialGroups': {'H08T': ['H099', 'H0B2']},
             'functions': {name: {'source': functions[name],
                                 'sha256LF': hashlib.sha256(functions[name].encode()).hexdigest()}
                           for name in sorted(used)},
             'limitations': [
                 'Material swap authorization only; acquisition and combat parity remain separate.',
                 'TR01/ET08 discard the read-only Bjp skin check; skin/audio presentation is not ported.',
-                'TR09 H099 uses CHy/BH0 alias H08T and remains locked.',
+                'TR09 H099 remains a real object; H08T is a material-only group for H099/H0B2.',
                 'Global Q4 counters, navigation effects and quest callbacks are not certified by this callback audit.',
                 'Kuma still requires an external settled source story event; no free acquisition is introduced.']}
 

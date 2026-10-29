@@ -122,6 +122,22 @@
       "callback": "B6F",
       "trigger": "chat",
       "effectsAfterBI2": "read-only unused skin query and presentation only"
+    },
+    {
+      "ability": "TR09",
+      "result": "H099",
+      "catalogId": "TR-08",
+      "callback": "ByI",
+      "trigger": "chat",
+      "effectsAfterBI2": "narration/audio; CHy H08T material bucket handled separately"
+    },
+    {
+      "ability": "A12C",
+      "result": "h0BC",
+      "catalogId": "MY-12",
+      "callback": "CFm",
+      "trigger": "BC5",
+      "effectsAfterBI2": "local result lookup and narration/audio only; player-start spawn"
     }
   ],
   "deferredExamples": [

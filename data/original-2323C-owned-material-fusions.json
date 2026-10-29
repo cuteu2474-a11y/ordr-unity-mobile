@@ -1,0 +1,118 @@
+{
+  "format": "ordr-source-owned-material-fusions-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceAbilitySlkSha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda",
+  "recipe": {
+    "abilityRawcode": "A12C",
+    "jassLine": null,
+    "results": [
+      {
+        "kind": "UNIT",
+        "rawcode": "h0BC",
+        "count": 1
+      }
+    ],
+    "conditions": [
+      {
+        "kind": "UNIT",
+        "rawcode": "h06W",
+        "count": 1
+      },
+      {
+        "kind": "UNIT",
+        "rawcode": "h0AH",
+        "count": 1
+      },
+      {
+        "kind": "UNIT",
+        "rawcode": "h030",
+        "count": 1
+      },
+      {
+        "kind": "UNIT",
+        "rawcode": "h06G",
+        "count": 1
+      },
+      {
+        "kind": "GOLD",
+        "rawcode": "GOLD",
+        "count": 10000
+      },
+      {
+        "kind": "WOOD",
+        "rawcode": "WOOD",
+        "count": 7
+      },
+      {
+        "kind": "KING",
+        "rawcode": "h0BC",
+        "count": 1
+      }
+    ]
+  },
+  "resultCatalogId": "MY-12",
+  "casterCatalogIds": [
+    "RN-08"
+  ],
+  "nativeFields": {
+    "code": "AHwe",
+    "levels": "1",
+    "targs1": "_",
+    "Cast1": "0.06",
+    "Dur1": "0.",
+    "HeroDur1": "0.",
+    "Cool1": "0.",
+    "Area1": "0.",
+    "Rng1": "0.0",
+    "UnitID1": "hwat"
+  },
+  "spawnAtPlayerZeroStart": {
+    "x": -3776,
+    "y": 4480
+  },
+  "functions": {
+    "CFl": {
+      "sha256LF": "56095d045870ffcffac667f0225b276dcaf4db9fe45157f81a9cda22db21659c",
+      "source": "function CFl takes nothing returns boolean\ncall BIw()\nset Q5=GetOwningPlayer(GetSpellAbilityUnit())\ncall BI1(GetPlayerStartLocationX(GetOwningPlayer(GetSpellAbilityUnit())),GetPlayerStartLocationY(GetOwningPlayer(GetSpellAbilityUnit())))\nset WS=GetSpellAbilityId()\ncall BIz(GetSpellAbilityUnit())\nreturn BI2()\nendfunction"
+    },
+    "CFm": {
+      "sha256LF": "11dc2f333904803f59bf3558b33f716aa10e393cd315bb93b190f005bb725b44",
+      "source": "function CFm takes nothing returns nothing\nlocal integer JG\nlocal unit Yu\nif not CFl() then\nreturn\nendif\nset Yu=FirstOfGroup(Q6)\nset JG=GetPlayerId(GetOwningPlayer(Yu))\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffdc143c타츠마키 : |r|cff4FC9DE그 얘기 재밌어 보이는데? 내가 나설까?|r\")\ncall StartSound(BHD(\"SE\\\\Tatsumaki.mp3\",null,127,1.*1.,false,0,0))\nset Yu=null\nendfunction"
+    },
+    "CFu": {
+      "sha256LF": "fd5b3a2ab0c8f67a48e6d65e7a8d7b59407f7f43de3ba3a24797c9384760b20a",
+      "source": "function CFu takes nothing returns nothing\ncall w5($68304243,function CFs)\ncall BC5(KH,$41313243,function CFm)\ncall BC5(KH,$4130575A,function CFt)\ncall BKD(gg)\ncall TriggerAddAction(gg,function CFo)\ncall BKD(gh)\ncall TriggerAddAction(gh,function CFq)\ncall BKD(gi)\ncall TriggerAddAction(gi,function CFr)\nendfunction"
+    },
+    "CH8": {
+      "sha256LF": "1ec038ddd22e024c26ad7116f9eff4040bd18a2760074ed3ec802d914cebe96f",
+      "source": "function CH8 takes nothing returns nothing\nlocal unit iI=GetEnteringUnit()\nlocal integer JG=GetPlayerId(GetOwningPlayer(iI))\nlocal timer Db\nif GetUnitAbilityLevel(iI,$416C6F63)>0 then\nset iI=null\nreturn\nendif\nif JG==7 then\nset iI=null\nreturn\nendif\nif LZ[JG]!=0 and IsUnitType(GetTriggerUnit(),UNIT_TYPE_GIANT) then\ncall BH1(LZ[JG],iI)\ncall BkC(iI)\nendif\nif GetUnitTypeId(iI)==$68303438 then\nset LL[JG]=LL[JG]+10\nset Db=BHs(JG)\ncall TimerStart(Db,.01,false,function CH6)\nset Db=null\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303431 then\nset LL[JG]=LL[JG]+10\nset Db=BHs(JG)\ncall TimerStart(Db,.01,false,function CH7)\nset Db=null\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303748 then\ncall Bc6(iI,GetRectCenterX(Lm[JG]),GetRectCenterY(Lm[JG]))\ncall UnitRemoveAbilityBJ($416D6F76,iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303335 then\ncall Btf(JG,iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303837 then\ncall BuF(JG,iI)\ncall SetPlayerTechResearchedSwap($52303343,1,Player(JG))\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303250 then\ncall BsP(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303432 then\ncall SetPlayerTechResearchedSwap($52303331,1,Player(JG))\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303254 then\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303342 then\ncall BuN(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303358 then\ncall Br4(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303535 then\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303550 then\ncall SetPlayerTechResearchedSwap($52303052,1,Player(JG))\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68304247 then\ncall CCP(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303732 then\ncall CC1(JG)\nset iI=null\nreturn\nendif\nset iI=null\nendfunction"
+    },
+    "CHy": {
+      "sha256LF": "1c4e59257453fc2c3120f1f93344e7bc261df1ecb0c61b1c67c955ed0835e4c4",
+      "source": "function CHy takes nothing returns nothing\nlocal player iF=Player(Wl)\nlocal integer iH=Wn\nlocal integer iG=Wo\nlocal integer VU=LZ[GetPlayerId(iF)]\nlocal real EN\nlocal real JS\nlocal unit Cm\nlocal integer EK=0\nif WV then\nset EN=WW\nset JS=WX\nelse\nset EN=GetPlayerStartLocationX(iF)\nset JS=GetPlayerStartLocationY(iF)\nendif\nloop\nexitwhen EK==iG\nset Cm=CreateUnit(iF,iH,EN,JS,bj_UNIT_FACING)\nif GetUnitTypeId(Cm)==$48303939 or GetUnitTypeId(Cm)==$48304232 then\ncall BH0(VU,Cm,$48303854)\nelse\ncall BH1(VU,Cm)\nendif\ncall GroupAddUnit(Q6,Cm)\nset EK=EK+1\nendloop\nset iF=null\nset Cm=null\nendfunction"
+    },
+    "BH0": {
+      "sha256LF": "a2374c025a1c06ec8f82687bda8f98f1d3d8ba8f8b3cb893e7da3a504fcd14fd",
+      "source": "function BH0 takes integer VU,unit Cm,integer Mt returns boolean\nif not Lb[VU] then\nreturn false\nendif\nif IsUnitInGroup(Cm,Lc[VU]) then\nreturn false\nendif\nif not HaveSavedHandle(VV,VU,Mt) then\ncall SaveGroupHandle(VV,VU,Mt,CreateGroup())\nendif\ncall GroupAddUnit(Lc[VU],Cm)\ncall GroupAddUnit(LoadGroupHandle(VV,VU,Mt),Cm)\nreturn true\nendfunction"
+    },
+    "BH1": {
+      "sha256LF": "30e6a23792109a104e6ec20a7973cb16e3a0e36468dcdc70043f238cca88c607",
+      "source": "function BH1 takes integer VU,unit Cm returns boolean\nreturn BH0(VU,Cm,GetUnitTypeId(Cm))\nendfunction"
+    }
+  },
+  "materialGroups": {
+    "H08T": {
+      "rawcodes": [
+        "H099",
+        "H0B2"
+      ],
+      "catalogIds": [
+        "TR-08",
+        "TR-14"
+      ]
+    }
+  },
+  "acquisitionPriority": "deferred by user; craft from owned materials; no normal start grants added",
+  "combatParityVerified": false
+}

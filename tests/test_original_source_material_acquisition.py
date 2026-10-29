@@ -91,15 +91,15 @@ class OriginalSourceMaterialAcquisitionTests(unittest.TestCase):
         self.assertNotIn('case "CJC"', source)
 
     def test_object_linking_reduces_only_blocker_reason_not_craft_permissions(self):
-        self.assertEqual(150, self.blocked["summary"]["liveExecutableRecipes"])
-        self.assertEqual(115, self.blocked["summary"]["blockedRecipes"])
-        self.assertEqual(5, self.blocked["summary"]["blockedByReason"]["unmapped-original-unit"])
+        self.assertEqual(152, self.blocked["summary"]["liveExecutableRecipes"])
+        self.assertEqual(113, self.blocked["summary"]["blockedRecipes"])
+        self.assertEqual(4, self.blocked["summary"]["blockedByReason"]["unmapped-original-unit"])
         source_only = read("original-fusion-source-only-materials.json")
-        self.assertEqual(4, source_only["summary"]["distinctSourceOnlyObjects"])
-        self.assertEqual({"H08T", "h05Y", "h0AN", "h0C2"},
+        self.assertEqual(3, source_only["summary"]["distinctSourceOnlyObjects"])
+        self.assertEqual({"h05Y", "h0AN", "h0C2"},
                          {x["rawcode"] for x in source_only["entries"]})
         csharp = (ROOT / "Assets/Scripts/Mobile/Original323CommonFusionPort.cs").read_text()
-        self.assertNotIn('{ "TR09",', csharp)
+        self.assertNotIn('{ "TR06",', csharp)
         self.assertNotIn('{ "A0QG",', csharp)
 
 

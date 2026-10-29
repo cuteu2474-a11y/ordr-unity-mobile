@@ -610,11 +610,101 @@
         "mihawk et"
       ],
       "skinQueryOnly": true
+    },
+    {
+      "ability": "TR09",
+      "result": "H099",
+      "catalogId": "TR-08",
+      "name": "루피",
+      "grade": "초월함",
+      "ingredients": [
+        {
+          "rawcode": "h02Z",
+          "catalogId": "L-13",
+          "count": 1
+        },
+        {
+          "rawcode": "h02Y",
+          "catalogId": "L-10",
+          "count": 1
+        },
+        {
+          "rawcode": "h024",
+          "catalogId": "R-29",
+          "count": 1
+        },
+        {
+          "rawcode": "h04S",
+          "catalogId": "KM-01",
+          "count": 1
+        }
+      ],
+      "registration": {
+        "abilityRawcode": "TR09",
+        "jassLine": null,
+        "results": [
+          {
+            "kind": "UNIT",
+            "rawcode": "H099",
+            "count": 1
+          }
+        ],
+        "conditions": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h02Z",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h02Y",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h024",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h04S",
+            "count": 1
+          },
+          {
+            "kind": "UBAN",
+            "rawcode": "H099",
+            "count": 1
+          },
+          {
+            "kind": "KING",
+            "rawcode": "H099",
+            "count": 1
+          },
+          {
+            "kind": "UPUN",
+            "rawcode": "H0BK",
+            "count": 1
+          }
+        ]
+      },
+      "wrapper": "ByF",
+      "handler": "ByI",
+      "commands": [
+        "해적왕이될사나이",
+        "luffy tr"
+      ],
+      "skinQueryOnly": false
     }
   ],
   "spawnAtPlayerZeroStart": {
     "x": -3776,
     "y": 4480
+  },
+  "materialGroups": {
+    "H08T": [
+      "H099",
+      "H0B2"
+    ]
   },
   "functions": {
     "B1h": {
@@ -685,6 +775,18 @@
       "source": "function Bxu takes nothing returns nothing\ncall Bcx(\"날씨는맑음\",true,function Bxl)\ncall Bcx(\"nami tr\",true,function Bxl)\ncall w5($48303856,function Bxt)\ncall w5($48303842,function Bxt)\ncall BKD(Zo)\ncall TriggerAddAction(Zo,function Bxp)\ncall BKD(Zp)\ncall TriggerAddAction(Zp,function Bxq)\ncall BKD(Zr)\ncall TriggerAddAction(Zr,function Bxs)\ncall BC5(KH,$4130534F,function Bxm)\ncall BKD(Zu)\ncall TriggerAddAction(Zu,function Bxo)\nendfunction",
       "sha256LF": "7a3ef3f78b57e70ade31fc403cfda58afcdf3091d2f80898771c63754ab60b89"
     },
+    "ByF": {
+      "source": "function ByF takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction",
+      "sha256LF": "ebe4b10637d97becfd96d915b1ca50e7795e27875dd6c55ad3104ae52af5bf9f"
+    },
+    "ByI": {
+      "source": "function ByI takes nothing returns nothing\nif not ByF($54523039) then\nreturn\nendif\ncall StartSound(BHD(\"SE\\\\Luffy.mp3\",null,127,1.*1.,false,0,0))\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffc0c0c0몽키.D.루피 : |r|cff00fa9a나 해적왕이 될게!|r\")\nendfunction",
+      "sha256LF": "a97a28f7d8ad3185bfdd06b005b35803969ffbbad6c4a2fc75899e7e52775684"
+    },
+    "ByU": {
+      "source": "function ByU takes nothing returns nothing\ncall w5($48303939,function ByT)\ncall w5($48304339,function ByT)\ncall Bcx(\"해적왕이될사나이\",true,function ByI)\ncall Bcx(\"luffy tr\",true,function ByI)\nset aB=CreateTrigger()\ncall BKD(aB)\ncall TriggerAddAction(aB,function ByS)\nset aE=CreateTrigger()\ncall BKD(aE)\ncall TriggerAddAction(aE,function ByP)\nset aC=CreateTrigger()\ncall BKD(aC)\ncall TriggerAddAction(aC,function ByO)\ncall BC5(KH,$41303445,function ByM)\nendfunction",
+      "sha256LF": "bb2183af85d32a95ddd34e8dfa27c3bd2bd9ca0ed012abe32dce75fddd63216b"
+    },
     "Byc": {
       "source": "function Byc takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction",
       "sha256LF": "0ef868690dcb94f7812edd3b4a69e7c03b117d311be9b61a651d276e767d31a4"
@@ -729,7 +831,7 @@
   "limitations": [
     "Material swap authorization only; acquisition and combat parity remain separate.",
     "TR01/ET08 discard the read-only Bjp skin check; skin/audio presentation is not ported.",
-    "TR09 H099 uses CHy/BH0 alias H08T and remains locked.",
+    "TR09 H099 remains a real object; H08T is a material-only group for H099/H0B2.",
     "Global Q4 counters, navigation effects and quest callbacks are not certified by this callback audit.",
     "Kuma still requires an external settled source story event; no free acquisition is introduced."
   ]

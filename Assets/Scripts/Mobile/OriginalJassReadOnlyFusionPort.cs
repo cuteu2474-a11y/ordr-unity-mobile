@@ -90,6 +90,9 @@ namespace Ordr.Mobile.Mobile
         private readonly OriginalJassFusionCatalog original;
         private readonly OriginalFusionObjectPreviewCatalog names;
         private readonly Func<long, bool> storyDeployed;
+        private IVerifiedUnitRawcodeMap liveObjects;
+        private CharacterUnitCatalog liveUnits;
+        private IOriginalJassFusionMaterialGroups liveGroups;
         public bool CanCommit { get { return false; } }
 
         public OriginalJassReadOnlyFusionPort(OriginalJassFusionCatalog registrations,
@@ -99,6 +102,16 @@ namespace Ordr.Mobile.Mobile
             original = registrations ?? throw new ArgumentNullException(nameof(registrations));
             names = objectNames ?? throw new ArgumentNullException(nameof(objectNames));
             storyDeployed = deployed ?? throw new ArgumentNullException(nameof(deployed));
+        }
+
+        // Actual owned source objects can be shown even when their acquisition
+        // route is unfinished. This is a preview; CanCommit remains false.
+        internal void ConfigureOwnedMaterialPreview(IVerifiedUnitRawcodeMap objects,
+            CharacterUnitCatalog units, IOriginalJassFusionMaterialGroups groups)
+        {
+            liveObjects = objects ?? throw new ArgumentNullException(nameof(objects));
+            liveUnits = units ?? throw new ArgumentNullException(nameof(units));
+            liveGroups = groups ?? throw new ArgumentNullException(nameof(groups));
         }
 
         public IReadOnlyList<MobileFusionPreview> AvailableRecipes(
@@ -162,16 +175,43 @@ namespace Ordr.Mobile.Mobile
                     int required = requirements[rawcode];
                     string title = item == null
                         ? "미확인 원본 객체" : item.DisplayName;
+                    string liveId = null;
+                    IReadOnlyList<string> group = null;
+                    var available = new List<long>();
+                    bool mapped = false;
+                    if (liveGroups != null && liveGroups.TryGetMaterialGroup(rawcode, out group))
+                    {
+                        var groupNames = new List<string>();
+                        foreach (string member in group)
+                        {
+                            groupNames.Add(liveUnits.Require(member).Name);
+                            List<long> ids;
+                            if (byUnit.TryGetValue(member, out ids)) available.AddRange(ids);
+                        }
+                        title = string.Join(" 또는 ", groupNames);
+                        mapped = true;
+                    }
+                    else
+                    {
+                        if (liveObjects != null) liveObjects.TryResolveUnit(rawcode, out liveId);
+                        if (liveId == null) liveId = item?.CatalogUnitId;
+                        if (liveId != null)
+                        {
+                            mapped = true;
+                            if (liveUnits != null) title = liveUnits.Require(liveId).Name + " · " + liveUnits.Require(liveId).Grade;
+                            List<long> ids;
+                            if (byUnit.TryGetValue(liveId, out ids)) available.AddRange(ids);
+                        }
+                    }
                     descriptions.Add(title + " x" + required);
-                    if (item == null || item.CatalogUnitId == null)
+                    if (!mapped)
                     {
                         missing.Add(title + " [" + rawcode +
                             "] (원본 객체는 확인됐지만 획득·보유 구현 미검증) x" +
                             required);
                         continue;
                     }
-                    List<long> available;
-                    byUnit.TryGetValue(item.CatalogUnitId, out available);
+                    available.Sort();
                     int assigned = 0;
                     if (available != null)
                         foreach (long id in available)

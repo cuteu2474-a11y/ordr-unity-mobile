@@ -13,11 +13,11 @@ class SourceOnlyMaterialAuditTests(unittest.TestCase):
     def test_all_objects_from_pinned_registry_are_explained_without_aliases(self):
         audited = build(ROOT / "data")
         self.assertEqual(audited, json.loads((ROOT / "data/original-fusion-source-only-materials.json").read_text()))
-        self.assertEqual(5, audited["summary"]["unmappedRecipeCount"])
-        self.assertEqual(4, audited["summary"]["distinctSourceOnlyObjects"])
-        self.assertEqual(5, audited["summary"]["sourceOnlyRoleOccurrences"])
+        self.assertEqual(4, audited["summary"]["unmappedRecipeCount"])
+        self.assertEqual(3, audited["summary"]["distinctSourceOnlyObjects"])
+        self.assertEqual(4, audited["summary"]["sourceOnlyRoleOccurrences"])
         objects = {r["rawcode"]: r for r in audited["entries"]}
-        self.assertEqual({"h05Y", "h0AN", "H08T", "h0C2"}, set(objects))
+        self.assertEqual({"h05Y", "h0AN", "h0C2"}, set(objects))
         self.assertEqual(["A0QG"], objects["h0C2"]["resultRecipes"])
         self.assertTrue(all(r["catalogUnitId"] is None for r in audited["entries"]))
 

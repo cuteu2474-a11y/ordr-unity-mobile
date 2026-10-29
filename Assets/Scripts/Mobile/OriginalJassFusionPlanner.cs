@@ -91,6 +91,7 @@ namespace Ordr.Mobile.Mobile
         private readonly CharacterUnitCatalog catalog;
         private IOriginalJassSpecialConditionEvaluator specialRules;
         private IVerifiedUnitRawcodeMap verifiedObjectMap;
+        private IOriginalJassFusionMaterialGroups verifiedMaterialGroups;
 
         public OriginalJassFusionPlanner(OriginalJassFusionCatalog original,
             OriginalUnitRawcodeLabelCatalog labels, Func<long, bool> storyDeployed,
@@ -114,6 +115,13 @@ namespace Ordr.Mobile.Mobile
         public void SetVerifiedObjectMap(IVerifiedUnitRawcodeMap verified)
         {
             verifiedObjectMap = verified;
+        }
+
+        // A material bucket may contain multiple distinct source objects.
+        // This never changes result-object resolution or grants a new unit.
+        public void SetVerifiedMaterialGroups(IOriginalJassFusionMaterialGroups groups)
+        {
+            verifiedMaterialGroups = groups;
         }
 
         public int RegistrationCount { get { return original.Count; } }
@@ -200,13 +208,42 @@ namespace Ordr.Mobile.Mobile
                 string ingredientId, ingredientName, ingredientReason;
                 bool mapped = ResolveOriginalUnit(rawcode, out ingredientId,
                     out ingredientName, out ingredientReason);
+                IReadOnlyList<string> group = null;
+                if (verifiedMaterialGroups != null &&
+                    verifiedMaterialGroups.TryGetMaterialGroup(rawcode, out group))
+                {
+                    if (catalog == null || group == null || group.Count == 0)
+                        throw new FormatException("원본 조합 재료 분류가 비어 있습니다.");
+                    var memberIds = new HashSet<string>(StringComparer.Ordinal);
+                    var names = new List<string>();
+                    foreach (string member in group)
+                    {
+                        if (member == null || !memberIds.Add(member) || catalog.Find(member) == null)
+                            throw new FormatException("원본 조합 재료 분류의 유닛 ID 오류");
+                        names.Add(catalog.Require(member).Name);
+                    }
+                    ingredientId = null; // group identity is not an actor/catalog ID
+                    ingredientName = string.Join(" 또는 ", names);
+                    ingredientReason = null;
+                    mapped = true;
+                }
                 int required = needed[rawcode];
                 int owned = 0;
                 List<long> list = null;
+                if (group != null)
+                {
+                    list = new List<long>();
+                    foreach (string member in group)
+                    {
+                        List<long> instances;
+                        if (allUnits.TryGetValue(member, out instances)) list.AddRange(instances);
+                    }
+                    list.Sort();
+                }
                 if (!mapped)
                     reasons.Add("재료 " + ingredientReason);
                 var boundIds = new List<long>();
-                if (mapped && allUnits.TryGetValue(ingredientId, out list))
+                if (mapped && (group != null || allUnits.TryGetValue(ingredientId, out list)))
                 {
                     owned = Math.Min(list.Count, required);
                     for (int i = 0; i < owned; i++)

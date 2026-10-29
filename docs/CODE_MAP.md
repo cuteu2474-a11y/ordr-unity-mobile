@@ -2,7 +2,15 @@
 
 기준 게임 코드: `3cc8997` · 현재 범위는 [시작 안내](START_HERE.md), 실행 순서는 [작업목록](PLAYABLE_ROADMAP.md).
 
-### 현재 제작 포트: 150개 (2026-10-30)
+### 보유 재료 우선·실제 152개 제작 포트 (2026-10-30)
+
+`Original323FusionMaterialGroups` / `IOriginalJassFusionMaterialGroups`는 **실제 객체 정체성과 CWR UNIT 재료 그룹을 분리**합니다. 현재 H08T 그룹의 구성원은 원본 CHy/BH0 그대로 TR-08(H099), TR-14(H0B2)입니다. `OriginalJassFusionPlanner.SetVerifiedMaterialGroups`는 원본 재료별 실제 인스턴스를 묶어 선택하되 결과 rawcode 매핑에는 사용하지 않습니다.
+
+`Original323CommonFusionPort`는 초월 루피 TR09와 신비 타츠마키 A12C를 추가해 **152개**를 실행합니다. 검수 상위 배열은 15개입니다. 신비 A12C는 원본 UBAN이 없고 KING/GOLD/WOOD 및 실제 시전자 소유를 확인하며, CFl의 결과 위치는 시전자 위치가 아닌 플레이어 시작점입니다. `OriginalJassReadOnlyFusionPort.ConfigureOwnedMaterialPreview`는 같은 실제 객체·그룹으로 보유 목록을 읽지만 제작 권한은 부여하지 않습니다.
+
+유닛 구현/조합 검증에서는 실제 보유 쿠마를 입력으로 준비합니다. 사용자 최신 지시상 쿠마/토큰 획득 경로는 나중이며, 다음 필수 작업으로 강제하지 않습니다. `Original323OwnedMaterialFusionTests`는 전체 실행 허용 식에 대해 실제 공유 로스터/지갑 거래를 검사합니다. 원본 함수/능력 필드 감사는 `audit_original_owned_material_fusions.py` 및 `original-2323C-owned-material-fusions.json`을 참고합니다.
+
+## 현재 제작 포트: 150개 (2026-10-30)
 
 `Original323CommonFusionPort.ReviewedRestricted`는 기존 6종에 초월 6종(TR01/10/21/23/27/28)·영원 ET08을 더해 13종입니다. `RegisterRestricted`는 초월 원본에 목재 조건이 없고 다른 검수 상위 등급에는 목재 조건이 있는 차이를 유지합니다. 초월 결과는 다른 채팅형과 같은 플레이어 시작점에 생성합니다. YY04는 원본 h035/L-17 전설 재료만 예외로 허용합니다.
 
@@ -46,7 +54,7 @@ flowchart TD
 | 원작 피해 연결 | [Ordr323DamageWorldBinding.cs](../Assets/Scripts/Combat/Ordr323DamageWorldBinding.cs), [Ordr323OriginalDamageRules.cs](../Assets/Scripts/Combat/Ordr323OriginalDamageRules.cs), [Ordr323MapDamageMath.cs](../Assets/Scripts/Combat/Ordr323MapDamageMath.cs) | 확인된 원시 타격·방어·중첩·정수화 계약과 맵 상수. 모든 계약의 실제 공급자가 완성된 것은 아님 |
 | 공유 지갑·보유 목록 | [SharedEconomySession.cs](../Assets/Scripts/Core/SharedEconomySession.cs), [EconomyTransactions.cs](../Assets/Scripts/Core/EconomyTransactions.cs), [UnitRoster.cs](../Assets/Scripts/Core/UnitRoster.cs) | 같은 지갑과 실제 인스턴스를 모든 기능이 사용 |
 | 흔함·해적선 위습 소환 | [Original323SourceCommonWispWorld.cs](../Assets/Scripts/Combat/Original323SourceCommonWispWorld.cs), [OriginalWispCombatRewardWorld.cs](../Assets/Scripts/Combat/OriginalWispCombatRewardWorld.cs) | 원본 24/10000 해적선 별도 분기와 흔함 9종 추첨 유지, PS-01 보유 유닛 생성·위습 차감·실패 롤백·동일 당첨 재사용. 해적선은 모바일 자동 배치이고 원본 특수 출현 위치는 미확인 |
-| 실제 150개 조합 | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs): `RegisterReviewed`, `RegisterRestricted`, `ConfirmFusion` | 검수한 제작식·원본 UNIT/GOLD/WOOD 차감·`OriginalFusionUnitSwap`, 채팅형 히든/불멸/영원 시작 위치. 미리보기만으로 제작 허가하지 않음 |
+| 실제 152개 조합 | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs): `RegisterReviewed`, `RegisterRestricted`, `ConfirmFusion` | 검수한 제작식·원본 UNIT/GOLD/WOOD 차감·`OriginalFusionUnitSwap`, 채팅형 히든/불멸/영원 시작 위치. 미리보기만으로 제작 허가하지 않음 |
 | 이세계 밴·항법·라운드 상태 | [Original323FusionVerifiedRestrictions.cs](../Assets/Scripts/Mobile/Original323FusionVerifiedRestrictions.cs), [OriginalJassKnownConditions.cs](../Assets/Scripts/Mobile/OriginalJassKnownConditions.cs) | 원본 CNn 밴은 변질모드 전용이므로 이세계모드 0종, CKQ 미선택 RC=0, 승인된 웨이브 기록 후 RMAX; 다른 특수 소비/효과는 계속 거부 |
 | 원본 특수 조합 기반 | [OriginalJassFusionPlanner.cs](../Assets/Scripts/Mobile/OriginalJassFusionPlanner.cs), [OriginalJassFusionAtomicCoordinator.cs](../Assets/Scripts/Mobile/OriginalJassFusionAtomicCoordinator.cs) | 원본 조건 순서·특수 조건·정확한 재료 인스턴스. 새 거래 엔진을 만들기 전에 확인 |
 | 일반 돈 도박 연습 | [SourceModelRegularMoneyGambling.cs](../Assets/Scripts/Mobile/SourceModelRegularMoneyGambling.cs), [원본 비용·재고 자료](../data/original-2323C-money-gambling-shop.json) | 실제 수동 10골드 차감/반환·공유 모바일 난수·논리 재고·영수증. 네이티브 재고/Warcraft RNG 동등성 미검증, 고급 해금 없음 |

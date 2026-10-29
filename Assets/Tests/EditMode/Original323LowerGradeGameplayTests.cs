@@ -341,8 +341,8 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(150, game.Fusion.ExecutableRecipeCount);
-            Assert.AreEqual(13, game.Fusion.ExecutableRestrictedRecipeCount);
+            Assert.AreEqual(152, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(15, game.Fusion.ExecutableRestrictedRecipeCount);
             Assert.AreEqual(18, game.Fusion.ExecutableHiddenRecipeCount);
             Assert.AreEqual(1, game.Fusion.ExecutableEternalRecipeCount);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
@@ -980,8 +980,8 @@ namespace Ordr.Mobile.Tests
             string id;
             Assert.IsTrue(game.Fusion.TryResolveUnit("h04S", out id));
             Assert.AreEqual("KM-01", id);
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR09"),
-                "The H099/H08T material alias requires a separate reviewed transaction.");
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR06"),
+                "Unreviewed helper-unit callbacks remain locked.");
         }
 
         [TestCase("TR01")]

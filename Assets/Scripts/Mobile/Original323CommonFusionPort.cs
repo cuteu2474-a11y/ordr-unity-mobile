@@ -177,14 +177,16 @@ namespace Ordr.Mobile.Mobile
             { "ET11", "h059", "E-07" },
             // Pinned TR/ET callbacks: narration/audio or an unused, read-only
             // Bjp skin entitlement check. No helper/item/permanent mutations.
-            // TR09's CHy/BH0 material alias remains explicitly unapproved.
+            // TR09 uses the separately source-reviewed CHy/BH0 material bucket.
             { "TR01", "H08V", "TR-02" },
             { "TR10", "H094", "TR-09" },
             { "TR21", "H0BX", "TR-21" },
             { "TR23", "H091", "TR-23" },
             { "TR27", "H08Y", "TR-28" },
             { "TR28", "H08X", "TR-29" },
-            { "ET08", "h058", "E-04" }
+            { "ET08", "h058", "E-04" },
+            { "TR09", "H099", "TR-08" },
+            { "A12C", "h0BC", "MY-12" }
         };
         // Original chat wrappers call BI1(GetPlayerStartLocationX/Y).
         // config: SetPlayerStartLocation(Player(0),0); DefineStartLocation(0,-3776.,4480.).
@@ -284,6 +286,10 @@ namespace Ordr.Mobile.Mobile
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
             planner.SetVerifiedObjectMap(this);
+            var materialGroups = new Original323FusionMaterialGroups(objects);
+            planner.SetVerifiedMaterialGroups(materialGroups);
+            var ownedPreview = fallback as OriginalJassReadOnlyFusionPort;
+            ownedPreview?.ConfigureOwnedMaterialPreview(this, units, materialGroups);
         }
 
         private void RegisterReviewed(CharacterUnitCatalog units, OriginalJassFusionCatalog registrations,
@@ -363,7 +369,7 @@ namespace Ordr.Mobile.Mobile
                 string result = ReviewedRestricted[i, 1];
                 string id = ReviewedRestricted[i, 2];
                 string grade = units.Require(id).Grade;
-                if (grade != "제한됨" && grade != "불멸의" && grade != "영원한" && grade != "초월함")
+                if (grade != "제한됨" && grade != "불멸의" && grade != "영원한" && grade != "초월함" && grade != "신비함")
                     throw new FormatException("상위 조합 결과 등급 불일치: " + ability);
                 Bind(units, id, result, grade);
                 var recipe = registrations.FindByAbility(ability);
@@ -412,10 +418,11 @@ namespace Ordr.Mobile.Mobile
                             throw new FormatException("상위 조합의 미검수 조건: " + ability + "/" + condition.Kind);
                     }
                 }
-                // The six reviewed TR registrations have NO GOLD/WOOD cost.
+                // The seven reviewed TR registrations have NO GOLD/WOOD cost.
                 // Other reviewed restricted tiers retain their source WOOD.
-                if (!materials || (grade == "초월함" ? wood : !wood) || !banned || !king ||
-                    (grade == "제한됨" && !caster))
+                if (!materials || (grade == "초월함" ? wood : !wood) ||
+                    (grade == "신비함" ? banned : !banned) || !king ||
+                    ((grade == "제한됨" || grade == "신비함") && !caster))
                     throw new FormatException("상위 조합 원본 시전자/필수 조건 누락: " + ability);
                 supported.Add(ability);
                 resultGrades.Add(ability, grade);
@@ -482,7 +489,7 @@ namespace Ordr.Mobile.Mobile
                     if (!exact.Remove(id)) return Reject("확인한 재료와 현재 재료가 다릅니다.");
                 double resultX = HiddenResultX, resultY = HiddenResultY;
                 if (resultGrades[ability] != "히든" && resultGrades[ability] != "영원한" &&
-                    resultGrades[ability] != "불멸의" && resultGrades[ability] != "초월함")
+                    resultGrades[ability] != "불멸의" && resultGrades[ability] != "초월함" && resultGrades[ability] != "신비함")
                 {
                     // CT1 uses the exact material actor owning the cast ability.
                     MobileUnitSnapshot caster = null;

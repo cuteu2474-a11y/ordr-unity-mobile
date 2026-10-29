@@ -4,29 +4,12 @@
   "executionSource": "Assets/Scripts/Mobile/Original323CommonFusionPort.cs",
   "policy": "nightmare-otherworld; object names are display evidence only, never permission to consume or create units",
   "summary": {
-    "blockedRecipeCount": 115,
-    "unmappedRecipeCount": 5,
-    "distinctSourceOnlyObjects": 4,
-    "sourceOnlyRoleOccurrences": 5
+    "blockedRecipeCount": 113,
+    "unmappedRecipeCount": 4,
+    "distinctSourceOnlyObjects": 3,
+    "sourceOnlyRoleOccurrences": 4
   },
   "entries": [
-    {
-      "rawcode": "H08T",
-      "originalW3xObjectName": "해적왕이 될 사나이 / 다섯번째 황제",
-      "catalogUnitId": null,
-      "ingredientRecipes": [
-        "ET02"
-      ],
-      "resultRecipes": [],
-      "affectedRecipes": [
-        "ET02"
-      ],
-      "otherBlockingReasons": [
-        "item-payment"
-      ],
-      "acquisitionStatus": "no-verified-gameplay-acquisition",
-      "requiredNextEvidence": "verified-original-object-catalog-and-acquisition-before-transaction"
-    },
     {
       "rawcode": "h05Y",
       "originalW3xObjectName": "고대의 배 - 희귀",

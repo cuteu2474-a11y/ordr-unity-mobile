@@ -86,8 +86,10 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(offer.OriginalMaterialsAndCost.Contains("특수 조건 3개"));
             CollectionAssert.AreEquivalent(new long[] { 30, 31 },
                 offer.SuggestedMaterialInstances);
-            Assert.IsTrue(offer.IsReady,
-                "읽기 전용 재료 확보 여부일 뿐 실제 조합 승인과는 무관");
+            Assert.IsFalse(offer.IsReady,
+                "읽기 전용 재료가 모두 있어도 미승인 거래는 제작 준비로 표시하지 않습니다.");
+            Assert.AreEqual(1, offer.MissingMaterials.Count,
+                "실제 재료 부족 없이 제작 미승인 사유만 남아야 합니다.");
             Assert.AreEqual(ManualActionState.NotImplemented,
                 port.ConfirmFusion("A00D", offer.SuggestedMaterialInstances).State);
             var manual = new MobileManualInteraction();
@@ -109,7 +111,9 @@ namespace Ordr.Mobile.Tests
             }, "A00D");
             Assert.IsFalse(offer.IsReady);
             Assert.IsTrue(offer.MissingMaterials.Count > 0);
-            var unknown = names.Find("h04S");
+            Assert.AreEqual("KM-01", names.Find("h04S").CatalogUnitId,
+                "쿠마 객체 매핑과 실제 획득 경로의 구현은 별개입니다.");
+            var unknown = names.Find("h05Y");
             Assert.IsNull(unknown.CatalogUnitId);
             Assert.IsFalse(port.CanCommit);
         }
