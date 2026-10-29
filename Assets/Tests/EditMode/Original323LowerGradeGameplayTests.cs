@@ -45,7 +45,7 @@ namespace Ordr.Mobile.Tests
         }
         private static string Data(string name) => File.ReadAllText(
             Path.Combine(Application.dataPath, "..", "data", name));
-        private static Live Create(Func<int, int> banIndex = null)
+        private static Live Create()
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -65,7 +65,7 @@ namespace Ordr.Mobile.Tests
             var fallback = new OriginalJassReadOnlyFusionPort(registry, preview, id => world.IsStoryDeployed(id));
             return new Live { Combat = world, Economy = shared, Map = map, Registry = registry,
                 Fusion = new Original323CommonFusionPort(world, shared, units, map, registry, labels,
-                    fallback, new Original323FusionVerifiedRestrictions(world.Game, banIndex ?? (n => 0))) };
+                    fallback, new Original323FusionVerifiedRestrictions(world.Game)) };
         }
         private static MobileFusionPreview Offer(Live game, string ability) => game.Fusion
             .AvailableRecipes(game.Combat.MobileUnitSnapshot()).Single(row => row.RecipeId == ability);
@@ -763,11 +763,11 @@ namespace Ordr.Mobile.Tests
         [TestCase("IM10", "I-10", true)]
         [TestCase("ET09", "E-10", true)]
         [TestCase("ET11", "E-07", true)]
-        public void SourceBanAndKingGatedBatchExecutesOnlyVerifiedPlainCallbacks(
+        public void OtherworldSourceGatedBatchExecutesOnlyVerifiedPlainCallbacks(
             string ability, string expectedUnit, bool chat)
         {
-            var game = Create(n => 0); // fixed 8/3/1/2 source ban draws
-            Assert.AreEqual(14, game.Fusion.SourceBannedUnitCount);
+            var game = Create(); // 이세계모드는 변질모드의 CNn 밴 추첨을 실행하지 않음
+            Assert.AreEqual(0, game.Fusion.SourceBannedUnitCount);
             Assert.IsTrue(game.Fusion.CanCommitRecipe(ability));
             var recipe = game.Registry.FindByAbility(ability);
             var expectedMaterials = recipe.OrderedConditions
@@ -805,22 +805,33 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void SourceBanAndIncompleteOriginalRoundAreFailClosed()
+        public void OtherworldModeDoesNotApplyMutatedModeBansOrUnobservedRounds()
         {
-            var game = Create(n => n == 10 ? 4 : 0);
-            Assert.AreEqual(14, game.Fusion.SourceBannedUnitCount);
-            var banned = game.Registry.FindByAbility("A0RP").OrderedConditions
-                .Single(c => c.Kind == "UBAN");
+            var game = Create();
+            Assert.AreEqual(GameSession.ModeId, "nightmare-otherworld");
+            Assert.AreEqual(0, game.Fusion.SourceBannedUnitCount);
+            var verified = new Original323FusionVerifiedRestrictions(game.Combat.Game);
+            foreach (string originalBanPoolMember in new[] { "H099", "h04J", "h04B", "h05B", "h040" })
+            {
+                bool banned;
+                Assert.IsTrue(verified.TryIsUnitBanned(originalBanPoolMember, out banned));
+                Assert.IsFalse(banned, "변질모드 밴 후보라도 이세계모드에서는 조합 금지 없음");
+            }
             string reason;
-            Assert.IsFalse(game.Fusion.CanSatisfy(banned, "A0RP", out reason));
-            StringAssert.Contains("밴", reason);
+            foreach (string ability in new[] { "A0RP", "IM02", "IM03", "IM10", "ET09", "ET11" })
+            {
+                var banCondition = game.Registry.FindByAbility(ability).OrderedConditions
+                    .Single(c => c.Kind == "UBAN");
+                Assert.IsTrue(game.Fusion.CanSatisfy(banCondition, ability, out reason));
+                Assert.IsNull(reason);
+            }
             Assert.IsFalse(game.Fusion.CanCommitRecipe("IM01"),
                 "Unimplemented helper-unit callbacks must stay locked.");
             Assert.IsFalse(game.Fusion.CanCommitRecipe("ET04"),
                 "Unimplemented player-state callbacks must stay locked.");
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A6"),
                 "RMAX alone must not unlock unreviewed helper creation.");
-            var source = new Original323FusionVerifiedRestrictions(game.Combat.Game, n => 0);
+            var source = new Original323FusionVerifiedRestrictions(game.Combat.Game);
             int round;
             Assert.IsFalse(source.TryGetOriginalRoundCounter(out round));
             game.Combat.Game.BeginWave(1);
@@ -831,7 +842,7 @@ namespace Ordr.Mobile.Tests
         [Test]
         public void UpperFusionRechecksCostImmediatelyBeforeAtomicCommit()
         {
-            var game = Create(n => 0);
+            var game = Create();
             var ability = "IM03";
             var recipe = game.Registry.FindByAbility(ability);
             foreach (var ingredient in recipe.OrderedConditions.Where(c => c.Kind == "UNIT"))

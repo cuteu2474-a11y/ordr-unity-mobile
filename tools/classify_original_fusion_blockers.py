@@ -19,7 +19,7 @@ CONDITION_GROUPS = {
     'SKPT': 'trait-counter', 'CHCT': 'trait-counter', 'IFCT': 'trait-counter',
     'GREN': 'transformation-effect', 'PICK': 'special-target-or-pick',
     'RDUN': 'round-state', 'RMAX': 'round-state',
-    'KING': 'navigation-ban-state', 'UBAN': 'navigation-ban-state',
+    'KING': 'top-tier-route-or-callback-audit',
     'SPEC': 'special-native-result',
 }
 NATIVE_UNVERIFIED = {'A19Z', 'A1A1', 'A1A0'}
@@ -71,6 +71,11 @@ def build(data, port):
         if unmapped:
             reasons.add('unmapped-original-unit')
         for item in conditions:
+            if item['kind'] == 'UBAN':
+                # CNn/CNm's ban table is populated ONLY by 변질 mode (th[tl]).
+                # The target is fixed to 이세계 mode (th[tn]), so UBAN does
+                # not block any otherwise verified recipe in this build.
+                continue
             if item['kind'] in CONDITION_GROUPS:
                 reasons.add(CONDITION_GROUPS[item['kind']])
             elif item['kind'] not in {'UNIT', 'GOLD', 'WOOD', 'UPUN'}:
@@ -109,6 +114,7 @@ def build(data, port):
             'Verified object identities do not prove the missing unit can be obtained in gameplay.',
             'GOLD/WOOD are source costs, while UPUN is presentation-only, never a consumed unit.',
             'Unknown callbacks or native effects stay locked even when material IDs are mapped.',
+            'Original UBAN is a 변질-mode-only ban; 이세계 mode never activates its draw. UBAN is retained in originalConditionKinds but is not a blocking reason.',
         ],
         'summary': {'sourceRecipesExcludingTest': len(all_rows),
                     'liveExecutableRecipes': len(enabled),

@@ -8,7 +8,8 @@
     "Only C# explicitly reviewed recipes are executable; registry entries are not authorization.",
     "Verified object identities do not prove the missing unit can be obtained in gameplay.",
     "GOLD/WOOD are source costs, while UPUN is presentation-only, never a consumed unit.",
-    "Unknown callbacks or native effects stay locked even when material IDs are mapped."
+    "Unknown callbacks or native effects stay locked even when material IDs are mapped.",
+    "Original UBAN is a 변질-mode-only ban; 이세계 mode never activates its draw. UBAN is retained in originalConditionKinds but is not a blocking reason."
   ],
   "summary": {
     "sourceRecipesExcludingTest": 265,
@@ -28,11 +29,11 @@
       "creation-followup-CH8": 13,
       "item-payment": 3,
       "native-cast-AOsf": 3,
-      "navigation-ban-state": 69,
       "no-unit-payment-in-registration": 24,
       "round-state": 15,
       "special-native-result": 8,
       "special-target-or-pick": 6,
+      "top-tier-route-or-callback-audit": 69,
       "trait-counter": 12,
       "transformation-effect": 4,
       "unmapped-original-unit": 57
@@ -913,7 +914,7 @@
       "sourceGoldCost": 5000,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -937,7 +938,7 @@
       "sourceWoodCost": 5,
       "reasonCodes": [
         "item-payment",
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -959,7 +960,7 @@
       "sourceGoldCost": 30000,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -983,7 +984,7 @@
       "sourceGoldCost": 5000,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1007,7 +1008,7 @@
       "sourceGoldCost": 5000,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "trait-counter"
       ]
     },
@@ -1032,7 +1033,7 @@
       "sourceGoldCost": 5000,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1056,7 +1057,7 @@
       "sourceGoldCost": 5000,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1080,7 +1081,7 @@
       "sourceGoldCost": 5000,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1104,8 +1105,8 @@
       "sourceGoldCost": 5000,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state",
-        "round-state"
+        "round-state",
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1127,7 +1128,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1150,7 +1151,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1173,7 +1174,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1196,7 +1197,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1219,7 +1220,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1242,7 +1243,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1266,7 +1267,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1289,7 +1290,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1313,7 +1314,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1336,7 +1337,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1359,7 +1360,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1382,7 +1383,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1405,7 +1406,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1428,7 +1429,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1451,7 +1452,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1474,7 +1475,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1497,7 +1498,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1520,7 +1521,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1543,7 +1544,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1566,7 +1567,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1589,7 +1590,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1612,7 +1613,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1635,7 +1636,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1658,7 +1659,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1681,7 +1682,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1704,7 +1705,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1727,7 +1728,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1750,7 +1751,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1773,7 +1774,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1797,7 +1798,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -1819,7 +1820,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 10,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1840,7 +1841,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 10,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1861,7 +1862,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 10,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1882,7 +1883,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 10,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1903,7 +1904,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 10,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1924,7 +1925,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 10,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1945,7 +1946,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 10,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1966,7 +1967,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 10,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1987,7 +1988,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 10,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2031,7 +2032,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2052,7 +2053,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2073,7 +2074,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2095,7 +2096,7 @@
       "sourceWoodCost": 5,
       "reasonCodes": [
         "item-payment",
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2118,7 +2119,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2140,7 +2141,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2161,7 +2162,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "navigation-ban-state"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2453,8 +2454,8 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
         "special-target-or-pick",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2478,7 +2479,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2502,7 +2503,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2527,8 +2528,8 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
         "special-target-or-pick",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2552,7 +2553,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2577,8 +2578,8 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
         "special-target-or-pick",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2603,8 +2604,8 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
         "special-target-or-pick",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2628,7 +2629,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2652,7 +2653,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2677,8 +2678,8 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
         "special-target-or-pick",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2702,7 +2703,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2726,7 +2727,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2750,7 +2751,7 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     },
@@ -2776,8 +2777,8 @@
       "sourceGoldCost": 10000,
       "sourceWoodCost": 7,
       "reasonCodes": [
-        "navigation-ban-state",
         "special-target-or-pick",
+        "top-tier-route-or-callback-audit",
         "unmapped-original-unit"
       ]
     }

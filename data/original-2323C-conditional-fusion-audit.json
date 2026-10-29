@@ -3,10 +3,11 @@
   "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
   "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
   "verifiedBanState": {
-    "sourceInitialization": "CNn/CNm; uX+uY+uZ: 8 of 30; ua+ub+uc: 3 of 12; ud: 1 of 11; uT: 2 of 10",
+    "sourceModeSelection": "th[tl] (변질모드) evaluates oC in original JASS; th[tn] (이세계모드) does not",
+    "sourceTriggerRegistration": "TriggerAddCondition(oC,Condition(function CNn)); CNn selects 8/3/1/2 bans only when oC evaluated",
     "stateFormula": "xB(player, rawcode) = not w8(player,rawcode) and w9(player,rawcode)",
     "sourceWrites": "CNm writes hn[-1,rawcode]; no SaveBoolean(hm,...) source writer",
-    "mobileRandomness": "same uniform-without-replacement probabilities; not the original Warcraft RNG sequence"
+    "mobileMode": "nightmare-otherworld: CNn is never evaluated, no unit is banned; no ban RNG draws"
   },
   "verifiedKingState": {
     "sourceCheck": "CHh: only if RC[player]>0, RC==hr or Q7[player]>=1 blocks",

@@ -41,7 +41,8 @@ class FusionBlockerInventoryTests(unittest.TestCase):
             self.assertTrue(row['reasonCodes'])
         blocked = {r['abilityRawcode']: r for r in self.inventory['blocked']}
         self.assertEqual(['h060'], blocked['YY04']['unmappedUnitRawcodes'])
-        self.assertIn('navigation-ban-state', blocked['TR01']['reasonCodes'])
+        self.assertIn('top-tier-route-or-callback-audit', blocked['TR01']['reasonCodes'])
+        self.assertNotIn('navigation-ban-state', blocked['TR01']['reasonCodes'])
         self.assertIn('item-payment', blocked['ET02']['reasonCodes'])
         self.assertIn('native-cast-AOsf', blocked['A19Z']['reasonCodes'])
         self.assertIn('chat-player-state-effect', blocked['YY15']['reasonCodes'])
@@ -92,16 +93,17 @@ class FusionBlockerInventoryTests(unittest.TestCase):
         self.assertIn('sourceRestrictions.ConfirmObservedOriginalRound', code)
         self.assertIn('BeginOriginalFusionUnitSwap', code)
 
-    def test_ban_pool_sizes_match_source_draws_without_duplicate_codes(self):
+    def test_otherworld_mode_never_draws_mutated_mode_bans(self):
         raw = (ROOT / 'Assets/Scripts/Mobile/Original323FusionVerifiedRestrictions.cs').read_text()
-        groups = re.search(r'SourceBanPools = \{(.*?)\n        \};', raw, re.S)
-        self.assertIsNotNone(groups)
-        parts = re.findall(r'new\[\] \{(.*?)\}', groups.group(1), re.S)
-        self.assertEqual([30, 12, 11, 10],
-                         [len(re.findall(r'"[A-Za-z0-9]{4}"', p)) for p in parts])
-        all_codes = re.findall(r'"([A-Za-z0-9]{4})"', groups.group(1))
-        self.assertEqual(63, len(set(all_codes)))
-        self.assertIn('SourceBanDrawCounts = { 8, 3, 1, 2 }', raw)
+        evidence = json.loads((self.data / 'original-2323C-conditional-fusion-audit.json').read_text())
+        self.assertIn('th[tl]', evidence['verifiedBanState']['sourceModeSelection'])
+        self.assertIn('th[tn]', evidence['verifiedBanState']['sourceModeSelection'])
+        self.assertIn('nightmare-otherworld', evidence['verifiedBanState']['mobileMode'])
+        self.assertIn('GameSession.ModeId != "nightmare-otherworld"', raw)
+        self.assertIn('public int BannedUnitCount => 0', raw)
+        self.assertIn('isBanned = false;', raw)
+        self.assertNotIn('SourceBanPools', raw)
+        self.assertNotIn('new Random()', raw)
 
 
 if __name__ == '__main__':
