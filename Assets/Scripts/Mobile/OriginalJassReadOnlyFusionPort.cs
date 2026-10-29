@@ -165,7 +165,8 @@ namespace Ordr.Mobile.Mobile
                     descriptions.Add(title + " x" + required);
                     if (item == null || item.CatalogUnitId == null)
                     {
-                        missing.Add(title + " (실제 보유 유닛 대응 미확인) x" +
+                        missing.Add(title + " [" + rawcode +
+                            "] (원본 객체는 확인됐지만 획득·보유 구현 미검증) x" +
                             required);
                         continue;
                     }
@@ -193,7 +194,8 @@ namespace Ordr.Mobile.Mobile
                     ? "원본 결과 객체 미확인"
                     : resultObject.DisplayName;
                 if (resultObject == null || resultObject.CatalogUnitId == null)
-                    missing.Add("원본 결과 유닛의 카탈로그 대응 미확인");
+                    missing.Add("원본 결과 객체 " + recipe.Results[0].Rawcode +
+                        "의 카탈로그/생성 연결 미검증");
                 string summary = (descriptions.Count == 0
                     ? "원본 UNIT 재료 없음" : string.Join(" + ", descriptions.ToArray())) +
                     " | 등록 GOLD " + gold + " / WOOD " + wood +
