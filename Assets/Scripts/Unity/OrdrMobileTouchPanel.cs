@@ -42,9 +42,15 @@ namespace Ordr.Mobile.Unity
         private string selectedCatalogUnitId;
         private Vector2 scroll;
         private Vector2 tabsScroll;
+        private Vector2 dashboardScroll;
+        private Vector2 noticeScroll;
+        private bool showTabGuide;
+        private bool showPanelTools;
+        private bool showFullNotice;
+        private string lastNotice;
         private Vector2 dedicatedScroll;
         private string dedicatedNotice;
-        private string notice = "모바일 조작 패널";
+        private string notice = "";
         private IReadOnlyList<MobileFusionPreview> fusionOffers =
             new List<MobileFusionPreview>().AsReadOnly();
         private IReadOnlyList<MobileManualOffer> economyOffers =
@@ -210,11 +216,11 @@ namespace Ordr.Mobile.Unity
             if(area.width<100f||area.height<22f)return;
             var economy=controller.SharedEconomy;
             var chips=MobileMapSkillLayout.StatusChipRects(area);
-            OrdrMobileUiTheme.ResourceChip(chips[0],"GOLD",
+            OrdrMobileUiTheme.ResourceChip(chips[0],"골드",
                 economy==null?"--":economy.Wallet.Balance("gold").ToString(),OrdrMobileUiTheme.Gold);
-            OrdrMobileUiTheme.ResourceChip(chips[1],"WOOD",
+            OrdrMobileUiTheme.ResourceChip(chips[1],"목재",
                 economy==null?"--":economy.Wallet.Balance("wood").ToString(),OrdrMobileUiTheme.Aqua);
-            OrdrMobileUiTheme.ResourceChip(chips[2],"WISP",
+            OrdrMobileUiTheme.ResourceChip(chips[2],"위습",
                 economy==null?"--":economy.Wallet.Balance(WispResourceIds.Random).ToString(),
                 new Color(.77f,.63f,1f,1f));
         }
@@ -224,31 +230,31 @@ namespace Ordr.Mobile.Unity
             Rect area = MobileMapSkillLayout.Scaled(layout.LeftTabs, scale);
             GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
             GUILayout.Label("ORDR", OrdrMobileUiTheme.SectionTitle,GUILayout.Height(29f));
-            GUILayout.Label("NIGHTMARE  /  S2",OrdrMobileUiTheme.Overline,
+            GUILayout.Label("악몽 · 이세계",OrdrMobileUiTheme.Overline,
                 GUILayout.Height(20f));
             // Use touch/trackpad scrolling without the large default Unity
             // scrollbar stealing width from Korean navigation labels.
             tabsScroll = GUILayout.BeginScrollView(tabsScroll, false, false,
                 GUIStyle.none, GUIStyle.none, GUILayout.ExpandHeight(true));
 
-            GUILayout.Label("BATTLE  전투",OrdrMobileUiTheme.Overline);
-            DrawLeftTab(Tab.Play, "01   전황");
-            DrawLeftTab(Tab.Wisp, "02   위습");
-            DrawLeftTab(Tab.Treasure, "03   보물 탐색");
-            DrawLeftTab(Tab.Helper, "04   도움소");
+            GUILayout.Label("플레이",OrdrMobileUiTheme.Overline);
+            DrawLeftTab(Tab.Play, "전황");
+            DrawLeftTab(Tab.Wisp, "위습");
+            DrawLeftTab(Tab.Treasure, "보물 탐색");
+            DrawLeftTab(Tab.Helper, "도움소");
             if (controller.Original323HelperCow != null &&
                 controller.Original323HelperCow.AlchemyNavigationChosen)
-                DrawLeftTab(Tab.Alchemy, "04   연금술");
+                DrawLeftTab(Tab.Alchemy, "연금술");
             GUILayout.Space(5f);
-            GUILayout.Label("CREW  편성",OrdrMobileUiTheme.Overline);
-            DrawLeftTab(Tab.Units, "05   유닛");
-            DrawLeftTab(Tab.Fusion, "06   조합");
-            DrawLeftTab(Tab.Story, "07   스토리");
+            GUILayout.Label("편성",OrdrMobileUiTheme.Overline);
+            DrawLeftTab(Tab.Units, "유닛");
+            DrawLeftTab(Tab.Fusion, "조합");
+            DrawLeftTab(Tab.Story, "스토리");
             GUILayout.Space(5f);
-            GUILayout.Label("SYSTEM  운영",OrdrMobileUiTheme.Overline);
-            DrawLeftTab(Tab.Shop, "08   상점");
-            DrawLeftTab(Tab.Gambling, "09   도박");
-            DrawLeftTab(Tab.Missions, "10   미션");
+            GUILayout.Label("운영",OrdrMobileUiTheme.Overline);
+            DrawLeftTab(Tab.Shop, "상점");
+            DrawLeftTab(Tab.Gambling, "도박");
+            DrawLeftTab(Tab.Missions, "미션");
 
             GUILayout.EndScrollView();
             GUILayout.EndArea();
@@ -260,7 +266,7 @@ namespace Ordr.Mobile.Unity
             GUIStyle style = chosen ? OrdrMobileUiTheme.SelectedTab :
                 OrdrMobileUiTheme.NavButton;
             if (GUILayout.Button(title, style,
-                GUILayout.MinHeight(OrdrMobileUiTheme.PrimaryTapHeight),
+                GUILayout.MinHeight(OrdrMobileUiTheme.ComfortableTapHeight),
                 GUILayout.ExpandWidth(true)))
                 SelectTab(tab);
         }
@@ -272,33 +278,44 @@ namespace Ordr.Mobile.Unity
             OrdrMobileUiTheme.DrawPanelAccent(new Rect(0,0,area.width,area.height),
                 OrdrMobileUiTheme.Gold);
             GUILayout.BeginVertical();
-            GUILayout.Label("COMMAND DECK  /  NIGHTMARE",
-                OrdrMobileUiTheme.Overline,GUILayout.Height(24f));
+            GUILayout.Label("선택한 메뉴", OrdrMobileUiTheme.Overline,GUILayout.Height(20f));
             GUILayout.BeginHorizontal();
             GUILayout.Label(TabTitle(currentTab), OrdrMobileUiTheme.SectionTitle,
-                GUILayout.ExpandWidth(true));
-            if (controller.Diagnostics.Count > 0 &&
-                GUILayout.Button("기록 복사", GUILayout.Width(96f), GUILayout.MinHeight(66f)))
-            {
-                GUIUtility.systemCopyBuffer = controller.ExportSessionDiagnostics();
-                notice = "진행 기록을 클립보드에 복사했습니다.";
-            }
-            if (controller.Combat == null &&
-                GUILayout.Button("진단 복사", GUILayout.Width(96f), GUILayout.MinHeight(66f)))
-            {
-                GUIUtility.systemCopyBuffer = controller.ExportFirstWaveReadiness();
-                notice = "실전 시작 차단 요인을 클립보드에 복사했습니다.";
-            }
-            if (GUILayout.Button("닫기 ×", GUILayout.Width(82f), GUILayout.MinHeight(66f)))
+                GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
+            if (GUILayout.Button("닫기", GUILayout.Width(64f), GUILayout.MinHeight(52f)))
                 CloseDrawer();
             GUILayout.EndHorizontal();
 
             scroll = GUILayout.BeginScrollView(scroll, GUILayout.ExpandHeight(true));
-            GUILayout.BeginVertical(GUI.skin.box);
-            GUILayout.Label("HOW TO PLAY  /  조작 안내",OrdrMobileUiTheme.Overline);
-            GUILayout.Label(TabGuide(currentTab),OrdrMobileUiTheme.Explanation,
-                GUILayout.MinHeight(56f));
-            GUILayout.EndVertical();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(showTabGuide ? "안내 접기" : "조작 안내", GUILayout.MinHeight(52f)))
+                showTabGuide = !showTabGuide;
+            if (GUILayout.Button(showPanelTools ? "도구 접기" : "기록 도구", GUILayout.MinHeight(52f)))
+                showPanelTools = !showPanelTools;
+            GUILayout.EndHorizontal();
+            if (showPanelTools)
+            {
+                if (controller.Diagnostics.Count > 0 &&
+                    GUILayout.Button("진행 기록 복사", GUILayout.MinHeight(56f)))
+                {
+                    GUIUtility.systemCopyBuffer = controller.ExportSessionDiagnostics();
+                    notice = "진행 기록을 클립보드에 복사했습니다.";
+                }
+                if (controller.Combat == null &&
+                    GUILayout.Button("진단 정보 복사", GUILayout.MinHeight(56f)))
+                {
+                    GUIUtility.systemCopyBuffer = controller.ExportFirstWaveReadiness();
+                    notice = "실전 시작 차단 요인을 클립보드에 복사했습니다.";
+                }
+            }
+            if (showTabGuide)
+            {
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.Label("조작 안내",OrdrMobileUiTheme.Overline);
+                GUILayout.Label(TabGuide(currentTab),OrdrMobileUiTheme.Explanation,
+                    GUILayout.MinHeight(56f));
+                GUILayout.EndVertical();
+            }
             if (Combat == null && currentTab != Tab.Units)
                 GUILayout.Label("게임 월드 연결 전입니다. 재화나 유닛을 임의로 처리하지 않습니다.");
             else
@@ -321,9 +338,28 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndScrollView();
             if (!string.IsNullOrWhiteSpace(notice))
             {
+                if (!string.Equals(lastNotice, notice, StringComparison.Ordinal))
+                {
+                    lastNotice = notice;
+                    showFullNotice = false;
+                    noticeScroll = Vector2.zero;
+                }
                 GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label("SYSTEM MESSAGE",OrdrMobileUiTheme.Overline);
-                GUILayout.Label(notice,GUILayout.MinHeight(24f));
+                float noticeWidth = Mathf.Max(60f, area.width - 48f);
+                bool longNotice = GUI.skin.label.CalcHeight(new GUIContent(notice), noticeWidth) > 48f;
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(notice, GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true),
+                    GUILayout.MinHeight(24f), GUILayout.MaxHeight(48f));
+                if (longNotice && GUILayout.Button(showFullNotice ? "접기" : "전체",
+                    GUILayout.Width(64f), GUILayout.MinHeight(48f)))
+                    showFullNotice = !showFullNotice;
+                GUILayout.EndHorizontal();
+                if (showFullNotice && longNotice)
+                {
+                    noticeScroll = GUILayout.BeginScrollView(noticeScroll, GUILayout.Height(86f));
+                    GUILayout.Label(notice);
+                    GUILayout.EndScrollView();
+                }
                 GUILayout.EndVertical();
             }
 
@@ -337,18 +373,17 @@ namespace Ordr.Mobile.Unity
         {
             Rect area=MobileMapSkillLayout.Scaled(layout.RightDrawer,scale);
             GUILayout.BeginArea(area,OrdrMobileUiTheme.Panel);
-            GUILayout.Label("TACTICAL OVERVIEW  /  S2.323[C]",
-                OrdrMobileUiTheme.Overline,GUILayout.Height(25f));
-            GUILayout.Label("그랜드라인 작전실",OrdrMobileUiTheme.SectionTitle);
+            GUILayout.Label("악몽 · 이세계", OrdrMobileUiTheme.Overline,GUILayout.Height(20f));
+            GUILayout.Label("작전실",OrdrMobileUiTheme.SectionTitle);
             GUILayout.Space(5f);
+            dashboardScroll = GUILayout.BeginScrollView(dashboardScroll, GUILayout.ExpandHeight(true));
             if(Combat==null)
                 GUILayout.Label("전투 대기 · 위습 소환으로 전력을 편성하세요.");
             else
             {
                 var game=Combat.Game;
                 GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label(controller.IsUnitPreparation?"READY  /  출격 준비":
-                    "BATTLE  /  전황",OrdrMobileUiTheme.Subheading);
+                GUILayout.Label(controller.IsUnitPreparation?"출격 준비":"현재 전황",OrdrMobileUiTheme.Subheading);
                 GUILayout.Label("라운드 "+game.CurrentWave+
                     "   전투 유닛 "+Combat.CharacterCount+
                     "   남은 적 "+game.AliveEnemies);
@@ -376,27 +411,29 @@ namespace Ordr.Mobile.Unity
             if(controller.PersonalMissions!=null)
             {
                 GUILayout.Space(5f);
-                GUILayout.Label("MISSION TRACKER",OrdrMobileUiTheme.Overline);
+                GUILayout.Label("미션 진행",OrdrMobileUiTheme.Overline);
                 var missions=controller.PersonalMissions.Missions;
                 foreach(var slot in missions.Slots)
                     GUILayout.Label(slot.Mission.Name+"  "+
                         missions.ProgressAt(slot.Index)+"/"+
                         slot.Mission.RequiredCount+(slot.Completed?"  완료":""));
             }
-            GUILayout.FlexibleSpace();
-            GUILayout.Label("QUICK ACTIONS  /  직접 조작",OrdrMobileUiTheme.Overline);
+            GUILayout.EndScrollView();
+            GUILayout.Label("빠른 이동",OrdrMobileUiTheme.Overline);
             GUILayout.BeginHorizontal();
             if(GUILayout.Button("위습",OrdrMobileUiTheme.PrimaryButton,
-                GUILayout.MinHeight(64)))SelectTab(Tab.Wisp);
-            if(GUILayout.Button("조합",GUILayout.MinHeight(64)))
+                GUILayout.MinHeight(56)))SelectTab(Tab.Wisp);
+            if(GUILayout.Button("조합",GUILayout.MinHeight(56)))
             {
                 SelectTab(Tab.Fusion);
                 fusionExecutableOnly=true;
             }
             GUILayout.EndHorizontal();
-            if(GUILayout.Button("보유 유닛",GUILayout.MinHeight(60)))SelectTab(Tab.Units);
-            if(GUILayout.Button("보물 탐색 가챠",GUILayout.MinHeight(64)))
+            GUILayout.BeginHorizontal();
+            if(GUILayout.Button("보유 유닛",GUILayout.MinHeight(56)))SelectTab(Tab.Units);
+            if(GUILayout.Button("보물 탐색",GUILayout.MinHeight(56)))
                 SelectTab(Tab.Treasure);
+            GUILayout.EndHorizontal();
             GUILayout.EndArea();
         }
 
@@ -725,7 +762,7 @@ namespace Ordr.Mobile.Unity
             Rect area = MobileMapSkillLayout.Scaled(layout.SkillMargin, scale);
             GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
             GUILayout.BeginHorizontal();
-            GUILayout.Label("SKILLS",OrdrMobileUiTheme.Overline,GUILayout.Width(68f),
+            GUILayout.Label("스킬",OrdrMobileUiTheme.Overline,GUILayout.Width(48f),
                 GUILayout.MinHeight(Mathf.Max(40f, area.height - 9f)));
 
             var actions = controller.DedicatedSkills;

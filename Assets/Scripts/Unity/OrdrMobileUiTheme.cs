@@ -72,8 +72,9 @@ namespace Ordr.Mobile.Unity
             themedSkin.button.fontStyle = FontStyle.Bold;
             themedSkin.button.fontSize = 19;
             themedSkin.button.alignment = TextAnchor.MiddleCenter;
-            themedSkin.button.wordWrap = false;
+            themedSkin.button.wordWrap = true;
             themedSkin.button.clipping = TextClipping.Clip;
+            themedSkin.button.margin = new RectOffset(3, 3, 4, 4);
 
             themedSkin.label = new GUIStyle(source.label);
             themedSkin.label.normal.textColor = Text;
@@ -101,7 +102,7 @@ namespace Ordr.Mobile.Unity
             sectionTitle.fontSize = 23;
             sectionTitle.fontStyle = FontStyle.Bold;
             sectionTitle.alignment = TextAnchor.MiddleLeft;
-            sectionTitle.wordWrap = false;
+            sectionTitle.wordWrap = true;
 
             currencyText = new GUIStyle(themedSkin.label);
             currencyText.normal.textColor = Muted;
@@ -112,6 +113,7 @@ namespace Ordr.Mobile.Unity
             navButton = new GUIStyle(themedSkin.button);
             navButton.alignment = TextAnchor.MiddleLeft;
             navButton.padding = new RectOffset(13,8,7,7);
+            navButton.wordWrap = false;
             overline = new GUIStyle(themedSkin.label);
             overline.fontSize = 13;
             overline.fontStyle = FontStyle.Bold;
@@ -133,6 +135,7 @@ namespace Ordr.Mobile.Unity
             explanation.normal.textColor = new Color(0.92f,0.97f,1f,1f);
             themedSkin.toggle = new GUIStyle(source.toggle);
             themedSkin.toggle.fontSize = 18;
+            themedSkin.toggle.wordWrap = true;
             themedSkin.toggle.normal.textColor = Text;
             themedSkin.toggle.onNormal.textColor = Text;
             themedSkin.scrollView = new GUIStyle(source.scrollView);
@@ -194,21 +197,34 @@ namespace Ordr.Mobile.Unity
             GUI.Box(slot, GUIContent.none, Panel);
             Stroke(new Rect(slot.x+2f,slot.y+5f,3f,Mathf.Max(0f,slot.height-10f)),tint);
             float pad = Mathf.Min(10f,slot.width*.07f);
-            float leftWidth = Mathf.Min(52f,slot.width*.43f);
+            float contentWidth = Mathf.Max(0f, slot.width - pad * 2f);
+            float labelHeight = Mathf.Clamp(slot.height * .38f, 16f, 21f);
             var key = new GUIStyle(GUI.skin.label);
+            key.padding = new RectOffset(0, 0, 0, 0);
             key.wordWrap = false;
             key.clipping = TextClipping.Clip;
             key.fontSize = Mathf.RoundToInt(Mathf.Clamp(slot.height*.24f,11f,14f));
             key.normal.textColor = tint;
-            key.alignment = TextAnchor.MiddleLeft;
+            key.alignment = TextAnchor.MiddleCenter;
+            if (slot.height < 34f)
+            {
+                GUI.Label(new Rect(slot.x + pad, slot.y, contentWidth, slot.height),
+                    new GUIContent(type + " " + amount), key);
+                return;
+            }
             var value = new GUIStyle(key);
             value.fontStyle = FontStyle.Bold;
-            value.fontSize = Mathf.RoundToInt(Mathf.Clamp(slot.height*.31f,12f,21f));
+            value.fontSize = Mathf.RoundToInt(Mathf.Clamp((slot.height-labelHeight-2f)*.76f,12f,24f));
             value.normal.textColor = Color.white;
-            value.alignment = TextAnchor.MiddleRight;
-            GUI.Label(new Rect(slot.x+pad,slot.y,Mathf.Max(0f,leftWidth),slot.height),type,key);
-            GUI.Label(new Rect(slot.x+pad+leftWidth,slot.y,
-                Mathf.Max(0f,slot.width-leftWidth-pad*2f),slot.height),amount,value);
+            value.alignment = TextAnchor.MiddleCenter;
+            // Give the number the full chip width; the old side-by-side
+            // English label consumed most of a phone's narrow resource chip.
+            var number = new GUIContent(amount, type + " " + amount);
+            while (value.fontSize > 12 && value.CalcSize(number).x > contentWidth)
+                value.fontSize--;
+            GUI.Label(new Rect(slot.x+pad,slot.y+2f,contentWidth,labelHeight),type,key);
+            GUI.Label(new Rect(slot.x+pad,slot.y+labelHeight,
+                contentWidth,Mathf.Max(0f,slot.height-labelHeight-2f)),number,value);
         }
 
         private static void Stroke(Rect area, Color tint)

@@ -17,6 +17,9 @@ namespace Ordr.Mobile.Tests
             var safe=new Rect(0,0,width,height);
             float scale=MobileMapSkillLayout.UiScale(safe,dpi);
             var layout=MobileMapSkillLayout.Calculate(safe,height,scale);
+            // Header leaves at least 48 logical pixels for the pause button
+            // after its vertical inset, including on high-density displays.
+            Assert.GreaterOrEqual(layout.HeaderHeight / scale - 8f, 48f - .01f);
             var area=MobileMapSkillLayout.Scaled(layout.StatusMargin,scale);
             var chips=MobileMapSkillLayout.StatusChipRects(area);
             Assert.AreEqual(3,chips.Length);

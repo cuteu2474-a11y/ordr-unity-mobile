@@ -46,29 +46,26 @@ namespace Ordr.Mobile.Unity
 
             var title = new GUIStyle(GUI.skin.label);
             title.alignment = TextAnchor.MiddleLeft;
-            title.fontSize = Mathf.RoundToInt(Mathf.Clamp(safe.height * 0.034f, 17f, 28f));
+            title.fontSize = Mathf.RoundToInt(20f * scale);
             title.fontStyle = FontStyle.Bold;
             title.wordWrap = false;
             title.clipping = TextClipping.Clip;
             title.normal.textColor = OrdrMobileUiTheme.Gold;
 
             var detail = new GUIStyle(GUI.skin.label);
-            detail.fontSize = Mathf.RoundToInt(Mathf.Clamp(safe.height * 0.020f, 11f, 17f));
+            detail.fontSize = Mathf.RoundToInt(14f * scale);
             detail.normal.textColor = new Color(0.81f, 0.89f, 0.96f, 1f);
             detail.wordWrap = false;
             detail.clipping = TextClipping.Clip;
 
             // Fixed header rows must not wrap into each other on Android.
-            string heading = "ORDR / NIGHTMARE  ·  OTHERWORLD";
+            string heading = "원랜디 · 악몽 / 이세계";
 #if UNITY_EDITOR
             if (controller != null && controller.IsEditorPreview)
                 heading = "EDITOR 체험 · 가상 능력치 / 정식 게임 아님";
 #endif
-            float headerTextWidth = Mathf.Max(100f, headerWidth - 125f);
-            if (controller != null && controller.Combat != null &&
-                controller.Combat.Game.Phase == SessionPhase.Running &&
-                !controller.IsUnitPreparation)
-                headerTextWidth = Mathf.Max(100f, headerWidth - 125f);
+            float pauseWidth = 106f * scale;
+            float headerTextWidth = Mathf.Max(100f, headerWidth - pauseWidth - 20f * scale);
             GUI.Label(new Rect(left, top + 2f,
                 headerTextWidth, layout.HeaderHeight * 0.56f), heading, title);
 
@@ -77,8 +74,7 @@ namespace Ordr.Mobile.Unity
                 status = "캐릭터 데이터 불러오기 대기 중";
             else if (controller.Combat == null ||
                 controller.Combat.Game.Phase == SessionPhase.NotStarted)
-                status = "캐릭터 도감 " + controller.Units.Count +
-                    "종  |  검증된 첫 라운드 시작 대기";
+                status = "개발용 연습 · 위습 소환부터 시작하세요";
             else if (controller.PracticeBattle != null)
                 status = controller.Combat.Game.Phase == SessionPhase.Running
                     ? "연습 " + controller.Combat.Game.CurrentWave + "/" + controller.PracticeBattle.LastRound + " · " +
@@ -101,9 +97,12 @@ namespace Ordr.Mobile.Unity
                 controller.Combat.Game.Phase == SessionPhase.Running &&
                 !controller.IsUnitPreparation)
             {
-                var pauseRect = new Rect(left + headerWidth - 103f, top + 5f, 94f,
-                    Mathf.Min(38f, layout.HeaderHeight * 0.52f));
-                if (GUI.Button(pauseRect, controller.IsGameplayPaused ? "계속" : "일시정지", OrdrMobileUiTheme.NavButton))
+                var pauseRect = new Rect(left + headerWidth - pauseWidth - 6f * scale,
+                    top + 4f * scale, pauseWidth, layout.HeaderHeight - 8f * scale);
+                var pauseStyle = new GUIStyle(OrdrMobileUiTheme.NavButton);
+                pauseStyle.fontSize = Mathf.RoundToInt(18f * scale);
+                pauseStyle.alignment = TextAnchor.MiddleCenter;
+                if (GUI.Button(pauseRect, controller.IsGameplayPaused ? "계속" : "일시정지", pauseStyle))
                 {
                     try { controller.SetManualGameplayPause(!controller.IsGameplayPaused); }
                     catch (InvalidOperationException ex) { Debug.LogWarning(ex.Message); }
@@ -145,14 +144,14 @@ namespace Ordr.Mobile.Unity
             OrdrMobileUiTheme.DrawMapCorners(layout.Battle,OrdrMobileUiTheme.Gold);
             GUI.Label(new Rect(layout.Battle.x+8f,layout.Battle.y+5f,
                 Mathf.Min(148f,layout.Battle.width-16f),27f),
-                "MAIN FIELD  /  전장",OrdrMobileUiTheme.Overline);
+                "메인 전장",OrdrMobileUiTheme.Overline);
             // The story viewport is not populated by the main world camera.
             // Paint its placeholder instead of exposing a black blank region.
             GUI.Box(layout.Story, GUIContent.none, GUI.skin.box);
             OrdrMobileUiTheme.DrawMapCorners(layout.Story,OrdrMobileUiTheme.Aqua);
             GUI.Label(new Rect(layout.Story.x+12f,layout.Story.y+5f,
                 Mathf.Max(0f,layout.Story.width-24f),27f),
-                "STORY  /  스토리 전장",OrdrMobileUiTheme.Overline);
+                "스토리 전장",OrdrMobileUiTheme.Overline);
             if (controller != null &&
                 (controller.Combat == null ||
                  controller.Combat.Game.Phase == SessionPhase.NotStarted))
@@ -195,9 +194,9 @@ namespace Ordr.Mobile.Unity
                 }
                 string message = string.IsNullOrEmpty(startFailure)
                     ? (ready ? "게임 시작 준비 완료" :
-                        "평타 중심 개발용 연습입니다. 몬스터 최종 수치와 스킬은 원작 대조 중입니다. 위습을 소환하고 조합한 뒤 전투를 시작하세요.")
+                        "개발용 연습 · 위습을 소환하고 조합한 뒤 전투를 시작하세요.")
                     : startFailure;
-                var hint = new GUIStyle(detail) { alignment = TextAnchor.UpperCenter };
+                var hint = new GUIStyle(detail) { alignment = TextAnchor.UpperCenter, wordWrap = true };
                 GUI.Label(new Rect(button.x, button.yMax + 9f,
                     button.width, Mathf.Min(64f, layout.Battle.height * 0.3f)),
                     message, hint);

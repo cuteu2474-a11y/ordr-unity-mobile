@@ -35,7 +35,10 @@ namespace Ordr.Mobile.Unity
             float top = screenHeight - safe.yMax;
             float left = safe.xMin + margin;
             float usableWidth = safe.width - 2f * margin;
-            float headerHeight = Mathf.Clamp(safe.height * 0.09f, 44f, 68f);
+            // Reserve the same touch-sized header at every display density.
+            // A physical-pixel cap made pause/status text tiny on dense phones.
+            float headerHeight = Mathf.Clamp(safe.height * 0.09f,
+                56f * uiScale, 72f * uiScale);
             float gap = Mathf.Clamp(safe.height * 0.009f, 5f, 9f);
             // Korean labels need room after IMGUI padding and scrollbar gutter.
             // The old 116px cap wrapped navigation to one character per line.
