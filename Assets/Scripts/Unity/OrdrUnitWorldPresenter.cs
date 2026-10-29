@@ -131,6 +131,8 @@ namespace Ordr.Mobile.Unity
             UpdateAttackFlashes();
             UpdateEnemyFlashes();
             UpdateAttackCues();
+            var shell = GetComponent<OrdrMainSceneShell>();
+            if (shell != null && shell.IsStartScreenVisible) return;
             HandleCameraNavigation();
             ReadWorldSelection(combat);
         }
@@ -852,6 +854,8 @@ namespace Ordr.Mobile.Unity
 
         private void OnGUI()
         {
+            var shell = GetComponent<OrdrMainSceneShell>();
+            if (shell != null && shell.IsStartScreenVisible) return;
             if (controller == null || controller.Combat == null || formationLayout == null ||
                 Screen.safeArea.width <= Screen.safeArea.height) return;
             GUISkin old = OrdrMobileUiTheme.Activate();
@@ -892,8 +896,7 @@ namespace Ordr.Mobile.Unity
                 if (formationLayout.Pages == 1 && selected.HasValue)
                     foreach (var group in formationGroups)
                         if (group.Contains(selected))
-                            GUI.Label(footer, group.Unit.Name + " · #" + selected.Value +
-                                (group.InstanceIds.Count > 1 ? " · 다시 탭해 개체 선택" : " · 선택됨"), metaStyle);
+                            GUI.Label(footer, group.Unit.Name + " · #" + selected.Value + " · 선택됨", metaStyle);
                 if (formationLayout.Pages > 1)
                 {
                     float buttonWidth = Mathf.Min(68f * scale, footer.width * .27f);

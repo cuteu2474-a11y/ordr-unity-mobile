@@ -31,14 +31,13 @@ namespace Ordr.Mobile.Unity
             if (safe.width <= safe.height)
                 throw new ArgumentException("ORDR 모바일은 가로 화면 전용입니다.", nameof(safe));
 
-            float margin = Mathf.Clamp(safe.width * 0.015f, 10f, 24f);
+            float margin = 6f * uiScale;
             float top = screenHeight - safe.yMax;
             float left = safe.xMin + margin;
             float usableWidth = safe.width - 2f * margin;
-            // Reserve the same touch-sized header at every display density.
-            // A physical-pixel cap made pause/status text tiny on dense phones.
-            float headerHeight = Mathf.Clamp(safe.height * 0.09f,
-                56f * uiScale, 72f * uiScale);
+            // No title header. Only a thin RTS-style resource strip remains.
+            float headerHeight = 0f;
+            float resourceHeight = 26f * uiScale;
             float gap = Mathf.Clamp(safe.height * 0.009f, 5f, 9f);
             // Korean labels need room after IMGUI padding and scrollbar gutter.
             // The old 116px cap wrapped navigation to one character per line.
@@ -55,15 +54,14 @@ namespace Ordr.Mobile.Unity
             float mapWidth = horizontalSpace * 0.54f;
             float drawerWidth = horizontalSpace - mapWidth;
 
-            float mapTop = top + headerHeight + gap;
+            float mapTop = top + margin + resourceHeight + gap;
             float available = top + safe.height - margin - mapTop;
             if (available < 120f || mapWidth < 120f)
                 throw new ArgumentOutOfRangeException(nameof(safe), "가로 전장 표시 공간이 부족합니다.");
 
-            // Reserve a compact lower status region, not a large empty block.
-            // Keep the swipeable ribbon comfortably touch-sized even as the
-            // battlefields shrink.
-            float playableHeight = available * 0.86f;
+            // Fill the space below the resource strip to the bottom inset.
+            // The ribbon stays touch-sized; main/story keep their 80:20 ratio.
+            float playableHeight = available;
             float ribbonHeight = Mathf.Min(
                 Mathf.Max(52f * uiScale, safe.height * 0.083f), playableHeight * 0.27f);
             float fieldSpace = playableHeight - ribbonHeight - gap * 2f;
@@ -75,12 +73,12 @@ namespace Ordr.Mobile.Unity
             return new MobileMapSkillLayout
             {
                 HeaderHeight = headerHeight,
-                LeftTabs = new Rect(left, mapTop, railWidth, available),
+                LeftTabs = new Rect(left, top + margin, railWidth, safe.height - margin * 2f),
                 Battle = new Rect(mapLeft, mapTop, mapWidth, battleHeight),
                 SkillMargin = new Rect(mapLeft, ribbonTop, mapWidth, ribbonHeight),
                 Story = new Rect(mapLeft, storyTop, mapWidth, storyHeight),
-                StatusMargin = new Rect(mapLeft, storyTop + storyHeight + gap,
-                    mapWidth, available - playableHeight - gap),
+                StatusMargin = new Rect(mapLeft, top + margin,
+                    horizontalSpace + gap, resourceHeight),
                 // Right-side content retains the full available height even
                 // though the battlefields themselves have become smaller.
                 RightDrawer = new Rect(mapLeft + mapWidth + gap,

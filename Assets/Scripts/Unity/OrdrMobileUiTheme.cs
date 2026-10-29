@@ -194,37 +194,23 @@ namespace Ordr.Mobile.Unity
 
         internal static void ResourceChip(Rect slot, string type, string amount, Color tint)
         {
-            GUI.Box(slot, GUIContent.none, Panel);
-            Stroke(new Rect(slot.x+2f,slot.y+5f,3f,Mathf.Max(0f,slot.height-10f)),tint);
-            float pad = Mathf.Min(10f,slot.width*.07f);
-            float contentWidth = Mathf.Max(0f, slot.width - pad * 2f);
-            float labelHeight = Mathf.Clamp(slot.height * .38f, 16f, 21f);
-            var key = new GUIStyle(GUI.skin.label);
-            key.padding = new RectOffset(0, 0, 0, 0);
-            key.wordWrap = false;
-            key.clipping = TextClipping.Clip;
-            key.fontSize = Mathf.RoundToInt(Mathf.Clamp(slot.height*.24f,11f,14f));
+            // A single baseline: small resource marker, label and actual value.
+            float icon = 7f;
+            Stroke(new Rect(slot.x + 4f, slot.center.y - icon * .5f, icon, icon), tint);
+            var key = new GUIStyle(GUI.skin.label) { fontSize = 11,
+                alignment = TextAnchor.MiddleLeft, wordWrap = false,
+                padding = new RectOffset(0, 0, 0, 0), clipping = TextClipping.Clip };
             key.normal.textColor = tint;
-            key.alignment = TextAnchor.MiddleCenter;
-            if (slot.height < 34f)
-            {
-                GUI.Label(new Rect(slot.x + pad, slot.y, contentWidth, slot.height),
-                    new GUIContent(type + " " + amount), key);
-                return;
-            }
-            var value = new GUIStyle(key);
-            value.fontStyle = FontStyle.Bold;
-            value.fontSize = Mathf.RoundToInt(Mathf.Clamp((slot.height-labelHeight-2f)*.76f,12f,24f));
+            float labelWidth = key.CalcSize(new GUIContent(type)).x;
+            GUI.Label(new Rect(slot.x + 16f, slot.y, labelWidth, slot.height), type, key);
+            var value = new GUIStyle(key) { fontSize = 16, fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleRight };
             value.normal.textColor = Color.white;
-            value.alignment = TextAnchor.MiddleCenter;
-            // Give the number the full chip width; the old side-by-side
-            // English label consumed most of a phone's narrow resource chip.
-            var number = new GUIContent(amount, type + " " + amount);
-            while (value.fontSize > 12 && value.CalcSize(number).x > contentWidth)
-                value.fontSize--;
-            GUI.Label(new Rect(slot.x+pad,slot.y+2f,contentWidth,labelHeight),type,key);
-            GUI.Label(new Rect(slot.x+pad,slot.y+labelHeight,
-                contentWidth,Mathf.Max(0f,slot.height-labelHeight-2f)),number,value);
+            var number = new GUIContent(amount);
+            var valueRect = new Rect(slot.x + 20f + labelWidth, slot.y,
+                Mathf.Max(0f, slot.width - 26f - labelWidth), slot.height);
+            while (value.fontSize > 9 && value.CalcSize(number).x > valueRect.width) value.fontSize--;
+            GUI.Label(valueRect, number, value);
         }
 
         private static void Stroke(Rect area, Color tint)

@@ -84,3 +84,7 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 ## 전장 보유 편대 표시
 
 [MobileOwnedUnitFormation.cs](../Assets/Scripts/Unity/MobileOwnedUnitFormation.cs)의 `Group`은 실제 보유 스냅샷을 카탈로그 ID별로 읽기 전용 집계하고, `MobileOwnedFormationLayout.Calculate`는 메인 전장 안의 중앙 정렬 칸·페이지를 계산합니다. `OrdrUnitWorldPresenter.ApplyCenteredFormation`만 표시용 Transform을 배치합니다. 런타임 `UnitState`를 이동시키지 않으며, 이름·등급·수량과 실제 개체 선택은 같은 그룹/칸을 사용합니다. `CollectMainBattlefieldPositions`는 원래 게임 좌표를 유지해 화면 슬롯과 카메라 프레이밍이 서로 영향을 주지 않게 합니다. `ReadWorldSelection`은 이름 칸 탭 직전 실제 보유 그룹을 다시 확인합니다.
+
+## 시작화면·얇은 자원 HUD
+
+`OrdrMainSceneShell.IsStartScreenVisible`/`EnterGame`이 제목 화면과 기존 준비/검증 첫 라운드 진입을 연결합니다. 제목 화면 중에는 `OrdrMobileTouchPanel`/`OrdrUnitWorldPresenter`의 메뉴/이름표와 월드 입력을 막습니다. `MobileMapSkillLayout.HeaderHeight`는 이제 0이며 `StatusMargin`은 **하단 카드가 아닌 상단 얇은 자원 줄**입니다. `ResourceChip`은 한 줄 표식/항목명/숫자를 그립니다. 일시정지는 왼쪽 스크롤 밖에 있으며, 준비 전투 시작·초기화는 점수판에 있습니다. `DrawWisp`의 흔함 버튼은 `RequestCommonWispBatch(1)`만 직접 호출하고 별도 횟수 상태를 보유하지 않습니다. `TabGuide`/`showTabGuide`는 삭제됐습니다.

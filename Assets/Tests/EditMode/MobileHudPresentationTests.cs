@@ -71,9 +71,10 @@ namespace Ordr.Mobile.Tests
             var safe=new Rect(0,0,width,height);
             float scale=MobileMapSkillLayout.UiScale(safe,dpi);
             var layout=MobileMapSkillLayout.Calculate(safe,height,scale);
-            // Header leaves at least 48 logical pixels for the pause button
-            // after its vertical inset, including on high-density displays.
-            Assert.GreaterOrEqual(layout.HeaderHeight / scale - 8f, 48f - .01f);
+            Assert.AreEqual(0f, layout.HeaderHeight, "The gameplay title header must not reserve space.");
+            Assert.LessOrEqual(layout.StatusMargin.height / scale, 28f);
+            Assert.Less(layout.StatusMargin.yMax, layout.Battle.yMin);
+            Assert.AreEqual(safe.height - 6f * scale, layout.Story.yMax, .02f);
             var area=MobileMapSkillLayout.Scaled(layout.StatusMargin,scale);
             var chips=MobileMapSkillLayout.StatusChipRects(area);
             Assert.AreEqual(3,chips.Length);
@@ -87,6 +88,43 @@ namespace Ordr.Mobile.Tests
             }
             Assert.LessOrEqual(layout.Battle.xMax,layout.RightDrawer.xMin);
             Assert.GreaterOrEqual(layout.SkillMargin.yMin,layout.Battle.yMax);
+        }
+
+        [Test]
+        public void TitleScreenBlocksWorldInputAndStartsOnlyOnePreparationSession()
+        {
+            var root = new GameObject("ORDR title-to-game integration");
+            root.SetActive(false);
+            try
+            {
+                var owner = root.AddComponent<OrdrCharacterCombatController>();
+                var shell = root.AddComponent<OrdrMainSceneShell>();
+                typeof(OrdrMainSceneShell).GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Invoke(shell, null);
+                Assert.IsTrue(shell.IsStartScreenVisible);
+                Assert.Throws<InvalidOperationException>(() => shell.EnterGame());
+                Assert.IsTrue(shell.IsStartScreenVisible);
+                Assert.IsNull(owner.Combat);
+                typeof(OrdrCharacterCombatController).GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Invoke(owner, null);
+                var panel = root.GetComponent<OrdrMobileTouchPanel>();
+                Assert.IsTrue(panel.BlocksWorldTap(Vector2.zero));
+                shell.EnterGame();
+                Assert.IsFalse(shell.IsStartScreenVisible);
+                Assert.IsTrue(owner.IsUnitPreparation);
+                Assert.AreEqual(0, owner.Combat.Game.CurrentWave);
+                Assert.AreEqual(0, owner.Combat.EnemyCount);
+                var originalSession = owner.SharedEconomy;
+                long gold = originalSession.Wallet.Balance("gold");
+                long wood = originalSession.Wallet.Balance("wood");
+                int actors = originalSession.Units.Count;
+                shell.EnterGame();
+                Assert.AreSame(originalSession, owner.SharedEconomy);
+                Assert.AreEqual(gold, owner.SharedEconomy.Wallet.Balance("gold"));
+                Assert.AreEqual(wood, owner.SharedEconomy.Wallet.Balance("wood"));
+                Assert.AreEqual(actors, owner.SharedEconomy.Units.Count);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
         }
 
         [Test]

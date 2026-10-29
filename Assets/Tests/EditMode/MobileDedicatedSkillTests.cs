@@ -55,28 +55,28 @@ namespace Ordr.Mobile.Tests
             Assert.Less(layout.SkillMargin.yMax, layout.Story.yMin);
             Assert.LessOrEqual(layout.Story.yMax, screenHeight + 0.01f);
             Assert.Less(layout.LeftTabs.xMax, layout.Battle.xMin);
-            Assert.AreEqual(layout.LeftTabs.yMin, layout.Battle.yMin, 0.01f);
+            Assert.Less(layout.LeftTabs.yMin, layout.Battle.yMin);
             Assert.GreaterOrEqual(layout.LeftTabs.yMax, layout.Story.yMax - 0.01f);
             Assert.AreEqual(layout.Battle.yMin, layout.RightDrawer.yMin, 0.01f);
-            Assert.Greater(layout.RightDrawer.yMax, layout.Story.yMax);
+            Assert.AreEqual(layout.RightDrawer.yMax, layout.Story.yMax, .02f);
             Assert.Less(layout.Battle.xMax, layout.RightDrawer.xMin);
             Assert.Greater(layout.RightDrawer.width, 0f);
             Assert.Less(layout.RightDrawer.xMax, safe.xMax);
-            // Both battlefields are intentionally smaller than the former
-            // full-width, full-height layout.  Right details never overlap.
+            // Keep the requested narrow maps/right details, but reclaim the
+            // old title header and bottom resource-card space vertically.
             Assert.Less(layout.Battle.width, safe.width * 0.60f);
             Assert.Less(layout.Story.width, safe.width * 0.60f);
-            Assert.Less(layout.Battle.height + layout.SkillMargin.height +
-                layout.Story.height, safe.height * 0.88f);
+            Assert.Greater(layout.Battle.height + layout.SkillMargin.height +
+                layout.Story.height, safe.height * 0.84f);
             Assert.Greater(layout.RightDrawer.width, layout.Battle.width * 0.80f);
             Assert.Greater(layout.StatusMargin.height, 18f);
             Assert.Less(layout.StatusMargin.height, safe.height * 0.17f);
             Assert.GreaterOrEqual(layout.LeftTabs.width, 150f);
             Assert.GreaterOrEqual(layout.LeftTabs.width /
                 MobileMapSkillLayout.UiScale(safe, dpi), 90f);
-            Assert.GreaterOrEqual(layout.StatusMargin.yMin, layout.Story.yMax);
+            Assert.Less(layout.StatusMargin.yMax, layout.Battle.yMin);
             Assert.LessOrEqual(layout.StatusMargin.yMax, screenHeight + 0.01f);
-            Assert.Less(layout.StatusMargin.xMax, layout.RightDrawer.xMin);
+            Assert.AreEqual(layout.StatusMargin.xMax, layout.RightDrawer.xMax, .02f);
             Assert.LessOrEqual(layout.RightDrawer.yMax, screenHeight + 0.01f);
             var viewport = layout.MainCameraViewport(safe.xMax + (screenHeight - safe.yMax), screenHeight);
             Assert.Greater(viewport.height, 0f);
