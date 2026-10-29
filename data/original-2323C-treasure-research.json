@@ -86,5 +86,32 @@
       "firstLine": 59119,
       "source": "function CVC takes nothing returns nothing\nlocal integer YJ=X3\nlocal integer EK=0\nif ModuloInteger(X3,10)==0 and X3>0 and (X3>0 and X3<=50) then\ncall BeM(n9,\"(신세계 이전까지 매 10라운드마다 갱신)\")\nendif\nif YJ==1 then\ncall SetPlayerTechResearched(HY,$52303030,12)\ncall SetPlayerTechResearched(HY,$52303031,12)\ncall SetPlayerTechResearched(HY,$52303032,12)\ncall SetPlayerTechResearched(HY,$52303033,12)\ncall SetPlayerTechResearched(HY,$52303034,12)\ncall SetPlayerTechResearched(HY,$52303139,12)\ncall SetPlayerTechResearched(HY,$52303256,12)\nelseif YJ==10 then\ncall BhG()\nset EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall CUT(Player(EK))\nendif\nset EK=EK+1\nendloop\nelseif YJ==15 then\nset EK=0\nloop\nexitwhen EK>=LG\ncall SetPlayerTechResearched(Player(EK),$52303047,1)\nset EK=EK+1\nendloop\ncall DisplayTimedTextToPlayer(GetLocalPlayer(),0,0,5,\"|cffF15F5F[시스템]|r 깅 제압 미션 활성화\")\nelseif YJ==20 then\ncall SetPlayerTechResearched(HY,$52303030,21)\ncall SetPlayerTechResearched(HY,$52303031,21)\ncall SetPlayerTechResearched(HY,$52303032,21)\ncall SetPlayerTechResearched(HY,$52303033,21)\ncall SetPlayerTechResearched(HY,$52303034,21)\ncall SetPlayerTechResearched(HY,$52303139,21)\ncall SetPlayerTechResearched(HY,$52303256,21)\nelseif YJ==31 then\nset EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall CUU(Player(EK))\nendif\nset EK=EK+1\nendloop\nelseif YJ==41 then\nif NE==NF then\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,\"|cff04ffc4[알림]|r 41라운드가 되어 유닛 카운트가 |cffff00ff55|r (으)로 줄어듭니다. 유닛 카운트 경고 알림이 45부터 활성화됩니다.\")\nset ia=55\nelseif NE==NL then\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,\"|cff04ffc4[알림]|r 41라운드가 되어 유닛 카운트가 |cffff00ff50|r (으)로 줄어듭니다. 유닛 카운트 경고 알림이 40부터 활성화됩니다.\")\nset ia=50\nendif\ncall MultiboardSetTitleText(iZ[iV],\"|cffffb0ff유닛 카운트 제한 : |cff00FF00\"+(I2S(ia)+\" |cffffb0ff도달시 패배\"))\nendif\nif YJ>=3 and YJ<10 then\nset EK=0\nloop\nexitwhen EK>=LG\nif not jJ[EK] and not jK[EK] and Ji[EK] then\ncall DisplayTimedTextToPlayer(Player(EK),0,0,3,\"|cff04ffc4[알림]|r 좌측 상단에 |cffffcc00'로그인'|r 버튼을 눌러 로드를 진행해주세요. |cffFF00009라운드|r까지만 로드가 가능합니다.\")\ncall DisplayTimedTextToPlayer(Player(EK),0,0,3,\"|cff04ffc4[알림]|r |cffffcc00'-오프라인모드'|r 명령어를 통해 세이브횟수 50회를 획득할 수 있습니다.\\n|cffFF0000※ 주의 : 세이브를 할 수 없습니다.|r \")\nendif\nset EK=EK+1\nendloop\nendif\nif YJ>=21 and YJ<25 then\nset EK=0\nloop\nexitwhen EK>=LG\nif not P9[EK] and Ji[EK] then\nif YJ==21 then\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 지금부터 기록지침을 통해 항법을 선택할 수 있습니다.\")\nelse\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 항법을 아직 선택하지 않으셨습니다.\\n|cffFF0000※ 주의 : 25라운드 시작전까지 항법을 선택하지 않으시면 강제 선택됩니다.|r\")\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 항법을 아직 선택하지 않으셨습니다.\\n|cffFF0000※ 주의 : 25라운드 시작전까지 항법을 선택하지 않으시면 강제 선택됩니다.|r\")\ncall DisplayTimedTextToPlayer(Player(EK),0,0,5,\"|cff04ffc4[알림]|r 항법을 아직 선택하지 않으셨습니다.\\n|cffFF0000※ 주의 : 25라운드 시작전까지 항법을 선택하지 않으시면 강제 선택됩니다.|r\")\nendif\nendif\nset EK=EK+1\nendloop\nendif\nendfunction"
     }
+  },
+  "searchAbilityOrigin": {
+    "abilityRawcode": "A05D",
+    "mobileMenuOwner": {
+      "rawcode": "H0C4",
+      "originalObjectName": "기록지침"
+    },
+    "allSourceAbilityOwners": [
+      {
+        "rawcode": "H0C4",
+        "originalObjectName": "기록지침"
+      },
+      {
+        "rawcode": "h084",
+        "originalObjectName": "시노부 - 제한"
+      }
+    ],
+    "sourceAbilityOwnersFile": "Units\\UnitAbilities.slk",
+    "sourceAbilityOwnersSha256": "fbd47be22d1482d63df15d70d7a8fa38f7f26b288443a5d74aa056104aef139d",
+    "sourceUnitNamesFile": "Units\\CampaignUnitStrings.txt",
+    "sourceUnitNamesSha256": "3e16625f147113e5e4c58a4ad1a58a8b259eeccba57e638db6f9e21cd0cf1a10",
+    "spellEffectRegistration": {
+      "line": 62896,
+      "source": "call BC5(KH,$41303544,function CJm)"
+    },
+    "collectionCall": "call BeN(JG,GetSpellTargetLoc(),LM[JG],Xq,true)",
+    "scope": "Read-only extraction from the pinned W3X; UI ownership only. Shinobu also owns the same ability. Gaimon CCP/CCQ are separate bonus/reveal paths; no new gacha probability, unlock or payout authority."
   }
 }

@@ -37,7 +37,7 @@ namespace Ordr.Mobile.Unity
             float usableWidth = safe.width - 2f * margin;
             // No title header. Only a thin RTS-style resource strip remains.
             float headerHeight = 0f;
-            float resourceHeight = 26f * uiScale;
+            float resourceHeight = 36f * uiScale;
             float gap = Mathf.Clamp(safe.height * 0.009f, 5f, 9f);
             // Korean labels need room after IMGUI padding and scrollbar gutter.
             // The old 116px cap wrapped navigation to one character per line.
@@ -90,14 +90,14 @@ namespace Ordr.Mobile.Unity
         {
             if (area.width <= 0f || area.height <= 0f)
                 throw new ArgumentOutOfRangeException(nameof(area));
-            float gap=Mathf.Clamp(area.width*.015f,3f,9f);
-            float width=(area.width-gap*2f)/3f;
-            if(width<=0f)throw new ArgumentOutOfRangeException(nameof(area));
-            return new [] {
-                new Rect(area.x,area.y,width,area.height),
-                new Rect(area.x+width+gap,area.y,width,area.height),
-                new Rect(area.x+(width+gap)*2f,area.y,width,area.height)
-            };
+            const int count = 4;
+            float gap = Mathf.Clamp(area.width * .01f, 3f, 8f);
+            float width = (area.width - gap * (count - 1)) / count;
+            if (width <= 0f) throw new ArgumentOutOfRangeException(nameof(area));
+            var slots = new Rect[count];
+            for (int i = 0; i < count; i++)
+                slots[i] = new Rect(area.x + (width + gap) * i, area.y, width, area.height);
+            return slots;
         }
 
         // Used by the world presenter to reject UI taps even when

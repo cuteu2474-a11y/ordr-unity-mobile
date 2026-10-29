@@ -138,6 +138,11 @@ namespace Ordr.Mobile.Unity
             themedSkin.toggle.wordWrap = true;
             themedSkin.toggle.normal.textColor = Text;
             themedSkin.toggle.onNormal.textColor = Text;
+            themedSkin.verticalScrollbar = new GUIStyle(source.verticalScrollbar);
+            themedSkin.verticalScrollbar.fixedWidth = 22f;
+            themedSkin.verticalScrollbarThumb = new GUIStyle(source.verticalScrollbarThumb);
+            themedSkin.verticalScrollbarThumb.fixedHeight = 0f;
+            themedSkin.verticalScrollbarThumb.stretchHeight = true;
             themedSkin.scrollView = new GUIStyle(source.scrollView);
             themedSkin.scrollView.normal.background = null;
         }
@@ -195,15 +200,15 @@ namespace Ordr.Mobile.Unity
         internal static void ResourceChip(Rect slot, string type, string amount, Color tint)
         {
             // A single baseline: small resource marker, label and actual value.
-            float icon = 7f;
+            float icon = 8f;
             Stroke(new Rect(slot.x + 4f, slot.center.y - icon * .5f, icon, icon), tint);
-            var key = new GUIStyle(GUI.skin.label) { fontSize = 11,
+            var key = new GUIStyle(GUI.skin.label) { fontSize = 13,
                 alignment = TextAnchor.MiddleLeft, wordWrap = false,
                 padding = new RectOffset(0, 0, 0, 0), clipping = TextClipping.Clip };
             key.normal.textColor = tint;
             float labelWidth = key.CalcSize(new GUIContent(type)).x;
             GUI.Label(new Rect(slot.x + 16f, slot.y, labelWidth, slot.height), type, key);
-            var value = new GUIStyle(key) { fontSize = 16, fontStyle = FontStyle.Bold,
+            var value = new GUIStyle(key) { fontSize = 18, fontStyle = FontStyle.Bold,
                 alignment = TextAnchor.MiddleRight };
             value.normal.textColor = Color.white;
             var number = new GUIContent(amount);

@@ -65,20 +65,22 @@ namespace Ordr.Mobile.Tests
         [TestCase(2288f,1080f,440f)]
         [TestCase(756f,390f,460f)]
         [TestCase(1152f,700f,320f)]
-        public void ThreeResourceSlotsRemainInsideTheirLandscapeArea(
+        public void FourResourceSlotsRemainInsideTheirLandscapeArea(
             float width,float height,float dpi)
         {
             var safe=new Rect(0,0,width,height);
             float scale=MobileMapSkillLayout.UiScale(safe,dpi);
             var layout=MobileMapSkillLayout.Calculate(safe,height,scale);
             Assert.AreEqual(0f, layout.HeaderHeight, "The gameplay title header must not reserve space.");
-            Assert.LessOrEqual(layout.StatusMargin.height / scale, 28f);
+            Assert.AreEqual(36f, layout.StatusMargin.height / scale, .01f);
             Assert.Less(layout.StatusMargin.yMax, layout.Battle.yMin);
             Assert.AreEqual(safe.height - 6f * scale, layout.Story.yMax, .02f);
             var area=MobileMapSkillLayout.Scaled(layout.StatusMargin,scale);
+            area = new Rect(area.xMax - Mathf.Min(760f, area.width - 12f) - 6f, area.y,
+                Mathf.Min(760f, area.width - 12f), area.height);
             var chips=MobileMapSkillLayout.StatusChipRects(area);
-            Assert.AreEqual(3,chips.Length);
-            for(int i=0;i<3;i++)
+            Assert.AreEqual(4,chips.Length);
+            for(int i=0;i<4;i++)
             {
                 Assert.Greater(chips[i].width,0f);
                 Assert.GreaterOrEqual(chips[i].xMin,area.xMin-.01f);
@@ -125,6 +127,47 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(actors, owner.SharedEconomy.Units.Count);
             }
             finally { UnityEngine.Object.DestroyImmediate(root); }
+        }
+
+        [Test]
+        public void PanelDragScrollsAndConsumesReleaseWithoutTurningATapIntoAnAction()
+        {
+            var gesture = new MobilePanelScrollGesture();
+            var viewport = new Rect(300, 60, 300, 250);
+            float y = 100f;
+            gesture.Begin(new Vector2(350, 150), viewport, y);
+            Assert.IsTrue(gesture.IsTracking);
+            Assert.IsFalse(gesture.Move(new Vector2(350, 154), 500f, ref y));
+            Assert.AreEqual(100f, y);
+            Assert.IsFalse(gesture.End(), "A short tap must remain available to buttons.");
+            gesture.Begin(new Vector2(350, 150), viewport, y);
+            Assert.IsTrue(gesture.Move(new Vector2(350, 100), 500f, ref y));
+            Assert.AreEqual(150f, y);
+            Assert.IsTrue(gesture.Move(new Vector2(350, -900), 500f, ref y));
+            Assert.AreEqual(500f, y, "Dragging past the viewport clamps to the content bottom.");
+            Assert.IsTrue(gesture.End(), "Drag release must be consumed before drawing buttons.");
+            Assert.IsFalse(gesture.IsTracking);
+            Assert.IsFalse(gesture.End());
+        }
+
+        [Test]
+        public void PanelGestureLeavesScrollbarAndOutsideTouchesAloneAndCancelsOnNavigation()
+        {
+            var gesture = new MobilePanelScrollGesture();
+            var viewport = new Rect(300, 60, 300, 250);
+            float y = 100f;
+            foreach (var point in new[] { new Vector2(290, 150), new Vector2(590, 150) })
+            {
+                gesture.Begin(point, viewport, y);
+                Assert.IsFalse(gesture.IsTracking);
+                Assert.IsFalse(gesture.Move(new Vector2(350, 90), 500, ref y));
+            }
+            gesture.Begin(new Vector2(350, 100), viewport, y);
+            Assert.IsTrue(gesture.Move(new Vector2(350, 300), 500, ref y));
+            Assert.AreEqual(0f, y);
+            gesture.Cancel();
+            Assert.IsFalse(gesture.Move(new Vector2(350, 50), 500, ref y));
+            Assert.IsFalse(gesture.End());
         }
 
         [Test]
