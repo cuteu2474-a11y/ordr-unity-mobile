@@ -291,7 +291,7 @@ namespace Ordr.Mobile.Tests
         public void GaimonRawcodeMapsToLiveRosterButDoesNotUnlockUnreviewedFusion()
         {
             var game = Create();
-            Assert.AreEqual(274, game.Map.Count);
+            Assert.AreEqual(275, game.Map.Count);
             Assert.AreEqual("h0BG", game.Map.Find(SpecialGradeMobilePolicy.Gaimon).OriginalRawcode);
             Assert.AreEqual("가이몬 - 특수", game.Map.Find(SpecialGradeMobilePolicy.Gaimon).MapName);
             string id;
@@ -862,6 +862,34 @@ namespace Ordr.Mobile.Tests
                 game.Fusion.ConfirmFusion(ability, preview.SuggestedMaterialInstances).State);
             Assert.AreEqual(before, game.Combat.CharacterCount);
             Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
+        }
+
+        [Test]
+        public void DefaultControllerRareRandomWispResultCreatesAndNamesRealPirateShip()
+        {
+            var root = new GameObject("ORDR pirate ship wisp integration");
+            root.SetActive(false);
+            try
+            {
+                var owner = root.AddComponent<OrdrCharacterCombatController>();
+                typeof(OrdrCharacterCombatController).GetMethod("Awake",
+                    BindingFlags.NonPublic | BindingFlags.Instance).Invoke(owner, null);
+                owner.ConfigureRandomWispResourceRng(new Rolls(1));
+                owner.BeginUnitPreparation();
+                long before = owner.WispBalance(WispResourceIds.Random);
+                var result = owner.RequestCommonWispBatch(1);
+                Assert.AreEqual(ManualActionState.Succeeded, result.State);
+                StringAssert.Contains("해적선", result.Message);
+                Assert.AreEqual(before - 1, owner.WispBalance(WispResourceIds.Random));
+                var ship = owner.Combat.MobileUnitSnapshot().Single();
+                Assert.AreEqual("PS-01", ship.Unit.Id);
+                Assert.AreEqual("해적선", ship.Unit.Name);
+                Assert.AreEqual("해적선", ship.Unit.Grade);
+                Assert.AreEqual("h060", owner.MapBaseStats.Find("PS-01").OriginalRawcode);
+                Assert.AreEqual(1, owner.Combat.CharacterCount);
+                Assert.AreEqual(0, owner.Combat.Game.CurrentWave);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
         }
 
         [Test]

@@ -75,7 +75,7 @@ namespace Ordr.Mobile.Tests
                 Assert.IsNotNull(awake);
                 awake.Invoke(c, null); // EditMode inactive GameObject, no gameplay tick.
                 Assert.IsNotNull(c.Units);
-                Assert.AreEqual(274, c.Units.Count);
+                Assert.AreEqual(275, c.Units.Count);
                 Assert.IsNotNull(c.Skills);
                 Assert.IsNotNull(c.OriginalMonsterSpawnIdentities);
                 Assert.IsNotNull(c.OriginalMonsterObjectAbilities);

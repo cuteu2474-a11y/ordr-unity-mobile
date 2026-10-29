@@ -249,6 +249,23 @@ def build(w3x, catalog):
                 raise ValueError("Common identity drift: " + uid)
             status = "verified-common-map-identity"
             candidates = [code]
+        elif uid == "PS-01":
+            # e0IX BIU can roll the source-only pirate ship. It has no
+            # normal grade suffix and is not one of the nine common units.
+            obj = objects.get("h060")
+            if (unit["name"] != "해적선" or unit["grade"] != "해적선" or
+                    obj is None or obj["mapName"] != "해적선" or
+                    obj["mapGradeSuffix"] is not None or
+                    obj["attack1"] is None or
+                    obj["attack1"]["baseDamagePlus"] != 510 or
+                    obj["attack1"]["diceCount"] != 2 or
+                    obj["attack1"]["diceSides"] != 4 or
+                    obj["attack1"]["attackCooldownSeconds"] != 0.9 or
+                    obj["originalAbilityList"] != "A0BB,A0JE,Avul"):
+                raise ValueError("Pinned source pirate-ship identity drift")
+            code = "h060"
+            status = "verified-source-wisp-pirate-ship"
+            candidates = [code]
         else:
             expected_grade = GRADE_SUFFIX[unit["grade"]]
             candidates = by_name_grade.get(

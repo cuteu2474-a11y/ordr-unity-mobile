@@ -5,9 +5,9 @@
   "policy": "nightmare-otherworld; object names are display evidence only, never permission to consume or create units",
   "summary": {
     "blockedRecipeCount": 127,
-    "unmappedRecipeCount": 57,
-    "distinctSourceOnlyObjects": 7,
-    "sourceOnlyRoleOccurrences": 60
+    "unmappedRecipeCount": 47,
+    "distinctSourceOnlyObjects": 6,
+    "sourceOnlyRoleOccurrences": 49
   },
   "entries": [
     {
@@ -121,47 +121,6 @@
       ],
       "acquisitionStatus": "no-verified-gameplay-acquisition",
       "requiredNextEvidence": "verified-original-object-catalog-and-acquisition-before-transaction"
-    },
-    {
-      "rawcode": "h060",
-      "originalW3xObjectName": "해적선",
-      "catalogUnitId": null,
-      "ingredientRecipes": [
-        "A0UH",
-        "A19W",
-        "A1A5",
-        "ET08",
-        "YY01",
-        "YY04",
-        "YY07",
-        "YY08",
-        "YY09",
-        "YY12"
-      ],
-      "resultRecipes": [
-        "YY26"
-      ],
-      "affectedRecipes": [
-        "A0UH",
-        "A19W",
-        "A1A5",
-        "ET08",
-        "YY01",
-        "YY04",
-        "YY07",
-        "YY08",
-        "YY09",
-        "YY12",
-        "YY26"
-      ],
-      "otherBlockingReasons": [
-        "creation-followup-CH8",
-        "no-unit-payment-in-registration",
-        "special-target-or-pick",
-        "top-tier-route-or-callback-audit"
-      ],
-      "acquisitionStatus": "source-wisp-rare-draw-retained-no-spawn",
-      "requiredNextEvidence": "verified-pirate-ship-catalog-combat-and-pending-wisp-transaction"
     },
     {
       "rawcode": "h06G",

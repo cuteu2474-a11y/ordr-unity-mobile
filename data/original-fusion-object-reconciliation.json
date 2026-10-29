@@ -7,12 +7,12 @@
   "warning": "Object rawcode links and material/cost matches do NOT prove UPUN and other side conditions, transactional consumption, world effects or gameplay parity.",
   "summary": {
     "uniqueCwrUnitRawcodes": 280,
-    "originalCatalogObjectMatchedRawcodes": 273,
+    "originalCatalogObjectMatchedRawcodes": 274,
     "previouslyUnresolvedIngredientRawcodes": 163,
-    "newlyCrossReferencedIngredients": 157,
-    "stillWithoutCatalogIdentity": 6,
+    "newlyCrossReferencedIngredients": 158,
+    "stillWithoutCatalogIdentity": 5,
     "ingredientConditionOccurrences": 775,
-    "catalogMatchedIngredientConditionOccurrences": 717,
+    "catalogMatchedIngredientConditionOccurrences": 727,
     "webRecipeCount": 10,
     "matchingWebRecipes": 10,
     "catalogVsJassLabelConflicts": 0
@@ -499,8 +499,8 @@
       "resultOfAbilities": [
         "YY26"
       ],
-      "catalogUnitId": null,
-      "objectCatalogMappingStatus": null,
+      "catalogUnitId": "PS-01",
+      "objectCatalogMappingStatus": "verified-source-wisp-pirate-ship",
       "originalW3xObjectName": "해적선",
       "jassLabelCatalogUnitId": null,
       "approvedForMaterialConsumption": false

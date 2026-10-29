@@ -722,15 +722,18 @@ namespace Ordr.Mobile.Unity
                 return new ManualActionResult(ManualActionState.Rejected, "한 번에 1~100개를 선택해 주세요.");
             int done = 0;
             string stopped = null;
+            string lastSuccess = null;
             while (done < requested)
             {
                 if (!CanRecruitVerifiedCommonWisp) { stopped = VerifiedCommonWispUnavailableReason; break; }
                 var result = RequestVerifiedCommonWispRecruitment();
                 if (result.State != ManualActionState.Succeeded) { stopped = result.Message; break; }
+                lastSuccess = result.Message;
                 done++;
             }
             return new ManualActionResult(done == 0 ? ManualActionState.Rejected : ManualActionState.Succeeded,
-                "흔함 소환 " + done + "/" + requested + "회" +
+                done == 1 && requested == 1 ? lastSuccess :
+                "랜덤위습 소환 " + done + "/" + requested + "회" +
                 (done < requested ? " · 남은 위습 보존" + (string.IsNullOrEmpty(stopped) ? "" : " · " + stopped) : ""));
         }
         public CharacterCombatRuntime Combat { get; private set; }
@@ -843,7 +846,8 @@ namespace Ordr.Mobile.Unity
                 RecordSessionIssue("위습 소환", recruited == null ? result.CatalogId :
                     recruited.Name);
                 return new ManualActionResult(ManualActionState.Succeeded,
-                    "흔함 유닛 소환 완료: " +
+                    (result.CatalogId == Original323SourceCommonWispWorld.PirateShipCatalogId
+                        ? "해적선 소환 완료: " : "흔함 유닛 소환 완료: ") +
                     (recruited == null ? result.CatalogId : recruited.Name) +
                     " (랜덤위습 " + result.SpentRandomWisps + "개 사용)");
             }
@@ -2165,8 +2169,8 @@ namespace Ordr.Mobile.Unity
             // BIQ/BIR/BIS/BIU/BIY/CRy are fully specified in the original
             // JASS. Use the same per-session random stream as resource Wisp
             // actions; a different approved original world may override this
-            // before the game starts. A rare pirate ship is held pending and
-            // never silently converted into an ordinary common unit.
+            // before the game starts. A rare pirate ship is now a separate
+            // source-object unit; it never rerolls into an ordinary common.
             if (MapBaseStats != null && Units != null)
             {
                 var originalDrawWorld = new Original323SourceCommonWispWorld(

@@ -3,12 +3,12 @@
   "mode": "nightmare-otherworld",
   "generatedOn": "2026-10-21",
   "purpose": "All-unit runtime registration and remaining original-combat implementation worklist; no invented stats.",
-  "scopeWarning": "274/274 are catalog-addressable roster units, not fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
+  "scopeWarning": "275/275 are catalog-addressable roster units, not fully implemented fighting units. 200 profiles are partially transcribed. Stats/formulas and full native behaviors remain unverified.",
   "summary": {
-    "units": 274,
-    "catalogRosterEligible": 274,
+    "units": 275,
+    "catalogRosterEligible": 275,
     "partialSkillProfiles": 200,
-    "uncollectedProfiles": 74,
+    "uncollectedProfiles": 75,
     "skillEntries": 554,
     "passiveEntries": 295,
     "linkedJassRawcodes": 81,
@@ -93,6 +93,11 @@
     "신비함": {
       "units": 13,
       "profiles": 13,
+      "rawcodeLinks": 0
+    },
+    "해적선": {
+      "units": 1,
+      "profiles": 0,
       "rawcodeLinks": 0
     }
   },
@@ -6923,6 +6928,24 @@
       "passiveKinds": [
         "movementSlowAura"
       ],
+      "jassLabelRawcode": null,
+      "jassAbilityRawcode": null,
+      "rawcodeEvidence": "unresolved",
+      "patchStatEvidenceFields": [],
+      "verifiedBasicAttack": false,
+      "originalCombatParity": "not-verified"
+    },
+    {
+      "id": "PS-01",
+      "name": "해적선",
+      "grade": "해적선",
+      "rosterDefinition": "implemented",
+      "skillProfile": "not-collected",
+      "skillEntries": 0,
+      "passiveEntries": 0,
+      "triggerKinds": [],
+      "effectKinds": [],
+      "passiveKinds": [],
       "jassLabelRawcode": null,
       "jassAbilityRawcode": null,
       "rawcodeEvidence": "unresolved",

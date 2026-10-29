@@ -191,7 +191,7 @@ namespace Ordr.Mobile.Tests
 
         [TestCase(1)]
         [TestCase(24)]
-        public void OriginalPirateShipBranchCannotConsumeWispOrRerollAsCommon(int rareRoll)
+        public void OriginalPirateShipBranchSpawnsOneDistinctSourceUnitAndSpendsOneWisp(int rareRoll)
         {
             var game = Create(2);
             var random = new FixedSourceBfi(rareRoll);
@@ -199,16 +199,82 @@ namespace Ordr.Mobile.Tests
                 game.Units, game.Objects, random);
             var service = Service(game, source);
 
-            Assert.IsTrue(service.CanRecruit);
-            Assert.IsNull(service.RecruitOne());
-            Assert.IsTrue(source.HasPendingPirateShip);
-            Assert.IsFalse(service.CanRecruit);
-            Assert.IsNull(service.RecruitOne());
+            var result = service.RecruitOne();
+            Assert.IsNotNull(result);
+            Assert.AreEqual("PS-01", result.CatalogId);
+            Assert.AreEqual(1, result.SpentRandomWisps);
+            Assert.AreEqual("해적선", game.Combat.MobileUnitSnapshot()[0].Unit.Name);
+            Assert.AreEqual("해적선", game.Combat.MobileUnitSnapshot()[0].Unit.Grade);
+            Assert.AreEqual(1, game.Combat.CharacterCount);
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(WispResourceIds.Random));
+            Assert.AreEqual("h060", game.Objects.Find("PS-01").OriginalRawcode);
+            Assert.AreEqual(1, source.ConfirmedPirateShipDraws);
             Assert.AreEqual(0, source.ConfirmedCommonDraws);
+            Assert.IsFalse(source.HasPendingPirateShip);
+            Assert.IsTrue(service.CanRecruit);
+            random.AssertCalls("1..10000");
+        }
+
+        [Test]
+        public void AbortedPirateShipCreationRollsBackButRetryKeepsExactOriginalDraw()
+        {
+            var game = Create(2);
+            var random = new FixedSourceBfi(1);
+            var source = new Original323SourceCommonWispWorld(game.Combat,
+                game.Units, game.Objects, random);
+            using (var first = source.Begin())
+            {
+                long instanceId;
+                string rawcode;
+                Assert.IsTrue(first.TryCreate(out instanceId, out rawcode));
+                Assert.AreEqual("h060", rawcode);
+                Assert.AreEqual(1, game.Combat.CharacterCount);
+                // Commit deliberately not called.
+            }
+            Assert.IsTrue(source.HasPendingPirateShip);
+            Assert.IsTrue(source.CanDraw);
             Assert.AreEqual(0, game.Combat.CharacterCount);
             Assert.AreEqual(2, game.Economy.Wallet.Balance(WispResourceIds.Random));
-            StringAssert.Contains("해적선", source.UnavailableReason);
+            var second = Service(game, source).RecruitOne();
+            Assert.AreEqual("PS-01", second.CatalogId);
+            Assert.AreEqual(1, source.ConfirmedPirateShipDraws);
+            Assert.AreEqual(1, game.Combat.CharacterCount);
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(WispResourceIds.Random));
             random.AssertCalls("1..10000");
+        }
+
+        [Test]
+        public void PirateShipDoesNotAdvanceNineCommonCountersOrSkipSecondDrawRule()
+        {
+            var game = Create(3);
+            var random = new FixedSourceBfi(24, 10000, 0, 10000, 0, 1);
+            var source = new Original323SourceCommonWispWorld(game.Combat,
+                game.Units, game.Objects, random);
+            var service = Service(game, source);
+            Assert.AreEqual("PS-01", service.RecruitOne().CatalogId);
+            Assert.AreEqual("C-01", service.RecruitOne().CatalogId);
+            Assert.AreEqual("C-02", service.RecruitOne().CatalogId);
+            Assert.AreEqual(1, source.ConfirmedPirateShipDraws);
+            Assert.AreEqual(2, source.ConfirmedCommonDraws);
+            Assert.AreEqual(3, game.Combat.CharacterCount);
+            random.AssertCalls("1..10000", "1..10000", "0..8",
+                "1..10000", "0..8", "0..8");
+        }
+
+        [Test]
+        public void PirateShipBaseAttackIsMappedFromSourceButNotClaimedAsFinalDamage()
+        {
+            var game = Create();
+            var ship = game.Objects.Find("PS-01");
+            Assert.AreEqual("verified-source-wisp-pirate-ship", ship.MappingStatus);
+            Assert.AreEqual(510, ship.Attack1.BaseDamagePlus);
+            Assert.AreEqual(2, ship.Attack1.DiceCount);
+            Assert.AreEqual(4, ship.Attack1.DiceSides);
+            Assert.AreEqual(512, ship.Attack1.MinimumBaseDamage);
+            Assert.AreEqual(518, ship.Attack1.MaximumBaseDamage);
+            Assert.AreEqual(0.9, ship.Attack1.AttackCooldownSeconds);
+            Assert.AreEqual("missile", ship.Attack1.OriginalWeaponType);
+            Assert.IsFalse(ship.CombatParityVerified);
         }
 
         [Test]

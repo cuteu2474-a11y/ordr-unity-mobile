@@ -98,9 +98,8 @@ namespace Ordr.Mobile.Combat
         IOriginal323CommonWispRecruitmentTransaction Begin();
     }
 
-    // Optional availability guard for a source branch that cannot yet be
-    // represented by the Character catalog (e.g. the original pirate ship).
-    // The draw remains pending; it must never be silently redrawn as a common.
+    // Optional availability guard for a branch unavailable in the verified
+    // world. A pending original draw must never reroll as a different unit.
     public interface IOriginal323CommonWispRecruitmentAvailability
     {
         bool CanDraw { get; }
@@ -211,8 +210,12 @@ namespace Ordr.Mobile.Combat
                                 if (catalogId != null) throw new InvalidOperationException(
                                     "동일 소환 인스턴스 중복");
                                 catalogId = candidate.Unit.Id;
-                                if (candidate.Unit.Grade != "흔함")
-                                    throw new InvalidOperationException("흔함이 아닌 원본 소환 결과");
+                                bool ship = rawcode == Original323SourceCommonWispWorld.PirateShipRawcode;
+                                if (ship
+                                    ? (catalogId != Original323SourceCommonWispWorld.PirateShipCatalogId ||
+                                        candidate.Unit.Grade != "해적선")
+                                    : candidate.Unit.Grade != "흔함")
+                                    throw new InvalidOperationException("원본 위습 소환 결과 등급/객체 불일치");
                             }
                         if (string.IsNullOrWhiteSpace(catalogId))
                             throw new InvalidOperationException("소환한 유닛의 실제 보유 정보가 없습니다.");

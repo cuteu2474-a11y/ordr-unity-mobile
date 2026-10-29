@@ -40,7 +40,9 @@ class FusionBlockerInventoryTests(unittest.TestCase):
                              sum(x['count'] for x in source if x['kind'] == 'WOOD'))
             self.assertTrue(row['reasonCodes'])
         blocked = {r['abilityRawcode']: r for r in self.inventory['blocked']}
-        self.assertEqual(['h060'], blocked['YY04']['unmappedUnitRawcodes'])
+        self.assertEqual([], blocked['YY04']['unmappedUnitRawcodes'])
+        self.assertIn('source-callback-or-native-effect-needs-audit',
+                      blocked['YY04']['reasonCodes'])
         self.assertIn('top-tier-route-or-callback-audit', blocked['TR01']['reasonCodes'])
         self.assertNotIn('navigation-ban-state', blocked['TR01']['reasonCodes'])
         self.assertIn('item-payment', blocked['ET02']['reasonCodes'])

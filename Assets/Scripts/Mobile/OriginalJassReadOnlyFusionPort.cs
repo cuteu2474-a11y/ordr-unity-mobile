@@ -185,6 +185,9 @@ namespace Ordr.Mobile.Mobile
                         missing.Add(title + " " + (required - assigned) + "기 부족");
                 }
 
+                // Unapproved recipes must never look ready just because all
+                // listed units happen to be owned.
+                missing.Add("원본 제작 거래 미연결: 추가 조건/생성 효과 검수 필요");
                 var resultObject = recipe.Results.Count == 1 &&
                     recipe.Results[0].Kind == "UNIT" &&
                     recipe.Results[0].Count == 1

@@ -31,12 +31,13 @@
       "native-cast-AOsf": 3,
       "no-unit-payment-in-registration": 24,
       "round-state": 15,
+      "source-callback-or-native-effect-needs-audit": 5,
       "special-native-result": 8,
       "special-target-or-pick": 6,
       "top-tier-route-or-callback-audit": 69,
       "trait-counter": 12,
       "transformation-effect": 4,
-      "unmapped-original-unit": 57
+      "unmapped-original-unit": 47
     }
   },
   "blocked": [
@@ -246,9 +247,7 @@
       "resultNames": [
         "방주맥심 - 히든"
       ],
-      "unmappedUnitRawcodes": [
-        "h060"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "UNIT",
         "UPUN"
@@ -256,8 +255,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "creation-followup-CH8",
-        "unmapped-original-unit"
+        "creation-followup-CH8"
       ]
     },
     {
@@ -268,9 +266,7 @@
       "resultNames": [
         "레드포스호 - 히든"
       ],
-      "unmappedUnitRawcodes": [
-        "h060"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "UNIT",
         "UPUN"
@@ -278,7 +274,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "unmapped-original-unit"
+        "source-callback-or-native-effect-needs-audit"
       ]
     },
     {
@@ -289,16 +285,14 @@
       "resultNames": [
         "모비딕호 - 히든"
       ],
-      "unmappedUnitRawcodes": [
-        "h060"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "UNIT"
       ],
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "unmapped-original-unit"
+        "source-callback-or-native-effect-needs-audit"
       ]
     },
     {
@@ -309,9 +303,7 @@
       "resultNames": [
         "반 더 데켄 - 히든"
       ],
-      "unmappedUnitRawcodes": [
-        "h060"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "UNIT",
         "UPUN"
@@ -319,7 +311,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "unmapped-original-unit"
+        "source-callback-or-native-effect-needs-audit"
       ]
     },
     {
@@ -330,16 +322,14 @@
       "resultNames": [
         "발라티에 - 히든"
       ],
-      "unmappedUnitRawcodes": [
-        "h060"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "UNIT"
       ],
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "unmapped-original-unit"
+        "source-callback-or-native-effect-needs-audit"
       ]
     },
     {
@@ -350,16 +340,14 @@
       "resultNames": [
         "사우전드 써니호 - 히든"
       ],
-      "unmappedUnitRawcodes": [
-        "h060"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "UNIT"
       ],
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "unmapped-original-unit"
+        "source-callback-or-native-effect-needs-audit"
       ]
     },
     {
@@ -427,17 +415,14 @@
       "resultNames": [
         "해적선"
       ],
-      "unmappedUnitRawcodes": [
-        "h060"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "UPUN"
       ],
       "sourceGoldCost": 0,
       "sourceWoodCost": 0,
       "reasonCodes": [
-        "no-unit-payment-in-registration",
-        "unmapped-original-unit"
+        "no-unit-payment-in-registration"
       ]
     },
     {
@@ -971,9 +956,7 @@
       "resultNames": [
         "시노부 - 제한"
       ],
-      "unmappedUnitRawcodes": [
-        "h060"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -984,8 +967,7 @@
       "sourceGoldCost": 5000,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -1020,9 +1002,7 @@
       "resultNames": [
         "갓 에넬 - 제한"
       ],
-      "unmappedUnitRawcodes": [
-        "h060"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "GOLD",
         "KING",
@@ -1033,8 +1013,7 @@
       "sourceGoldCost": 5000,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2107,9 +2086,7 @@
       "resultNames": [
         "쥬라클 미호크 - 영원"
       ],
-      "unmappedUnitRawcodes": [
-        "h060"
-      ],
+      "unmappedUnitRawcodes": [],
       "originalConditionKinds": [
         "KING",
         "UBAN",
@@ -2119,8 +2096,7 @@
       "sourceGoldCost": 0,
       "sourceWoodCost": 5,
       "reasonCodes": [
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
+        "top-tier-route-or-callback-audit"
       ]
     },
     {
@@ -2441,7 +2417,6 @@
         "고죠 사토루 - 신비"
       ],
       "unmappedUnitRawcodes": [
-        "h060",
         "h06G"
       ],
       "originalConditionKinds": [

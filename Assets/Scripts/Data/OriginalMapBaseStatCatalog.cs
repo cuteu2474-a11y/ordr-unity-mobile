@@ -110,8 +110,13 @@ namespace Ordr.Mobile.Data
                  MappingStatus != "unique-map-name-and-grade" &&
                  MappingStatus != "reviewed-map-name-alias-and-grade" &&
                  MappingStatus != "verified-jass-fusion-result" &&
-                 MappingStatus != "verified-jass-label-and-fusion-result"))
+                 MappingStatus != "verified-jass-label-and-fusion-result" &&
+                 MappingStatus != "verified-source-wisp-pirate-ship"))
                 throw new FormatException(UnitId + ": 원본 rawcode 매핑 근거가 불완전합니다.");
+            if (MappingStatus == "verified-source-wisp-pirate-ship" &&
+                (UnitId != "PS-01" || unit.Grade != "해적선" ||
+                 OriginalRawcode != "h060" || MapName != "해적선"))
+                throw new FormatException("원본 해적선 객체 식별 근거가 다릅니다.");
             string abilityList = OrdrJson.String(source, "originalAbilityList");
             var originalAbilities = new List<string>();
             if (!string.IsNullOrEmpty(abilityList))

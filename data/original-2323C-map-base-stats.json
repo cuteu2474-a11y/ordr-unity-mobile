@@ -17,8 +17,8 @@
   ],
   "summary": {
     "originalNamedObjects": 1493,
-    "catalogCharacters": 274,
-    "linkedCatalogCharacters": 273,
+    "catalogCharacters": 275,
+    "linkedCatalogCharacters": 274,
     "unresolvedCatalogCharacters": 1,
     "mappingStatusCounts": {
       "reviewed-map-name-alias-and-grade": 54,
@@ -26,9 +26,10 @@
       "unmatched": 1,
       "verified-common-map-identity": 9,
       "verified-jass-fusion-result": 6,
-      "verified-jass-label-and-fusion-result": 49
+      "verified-jass-label-and-fusion-result": 49,
+      "verified-source-wisp-pirate-ship": 1
     },
-    "linkedWithAttack1": 272,
+    "linkedWithAttack1": 273,
     "gameplayParityVerified": 0
   },
   "catalogEntries": [
@@ -9226,6 +9227,39 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A0XU,A0XR,A0XQ,A0XV",
+      "combatParityVerified": false
+    },
+    {
+      "catalogId": "PS-01",
+      "catalogName": "해적선",
+      "grade": "해적선",
+      "mappingStatus": "verified-source-wisp-pirate-ship",
+      "originalRawcode": "h060",
+      "candidateRawcodes": [],
+      "sourceMapName": "해적선",
+      "attack1": {
+        "attackCooldownSeconds": 0.9,
+        "baseDamagePlus": 510,
+        "diceCount": 2,
+        "diceSides": 4,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.1,
+        "minimumBaseDamage": 512,
+        "maximumBaseDamage": 518
+      },
+      "attack2": null,
+      "baseStats": {
+        "hitPoints": 10,
+        "mana": null,
+        "healthRegeneration": 0,
+        "manaRegeneration": 0,
+        "armor": 0,
+        "armorType": "medium",
+        "movementSpeed": 522
+      },
+      "originalAbilityList": "A0BB,A0JE,Avul",
       "combatParityVerified": false
     }
   ],
