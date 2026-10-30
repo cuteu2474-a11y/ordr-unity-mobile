@@ -52,6 +52,7 @@ namespace Ordr.Mobile.Combat
     {
         private readonly Original323MonsterObjectAbilityCatalog originalObjects;
         private readonly IOriginal323LiveBashTargetWitness witness;
+        private readonly Original323MonsterNativeAbilityRuntime sharedNativeAbilities;
 
         public Original323LiveBashTargetRules(
             Original323MonsterObjectAbilityCatalog sourceObjects,
@@ -67,6 +68,20 @@ namespace Ordr.Mobile.Combat
                     nameof(sourceObjects));
         }
 
+        // The shared engine can be used by all native skill handlers, while
+        // the legacy Bash-only witness remains valid for older integrations.
+        public Original323LiveBashTargetRules(
+            Original323MonsterObjectAbilityCatalog sourceObjects,
+            Original323MonsterNativeAbilityRuntime nativeAbilities)
+        {
+            originalObjects = sourceObjects ??
+                throw new ArgumentNullException(nameof(sourceObjects));
+            sharedNativeAbilities = nativeAbilities ??
+                throw new ArgumentNullException(nameof(nativeAbilities));
+            if (originalObjects.Count != 100)
+                throw new ArgumentException("원본 몬스터 객체 100종 검증 자료가 필요합니다.");
+        }
+
         public bool TryInspect(CombatEnemy enemy, out bool warcraftHero,
             out bool bashImmune, out string sourceEvidence)
         {
@@ -74,6 +89,15 @@ namespace Ordr.Mobile.Combat
             bashImmune = true;
             sourceEvidence = null;
             if (enemy == null || !enemy.IsAlive) return false;
+            if (sharedNativeAbilities != null)
+            {
+                string currentProof;
+                if (!sharedNativeAbilities.TryInspectBash(enemy, out warcraftHero,
+                        out bashImmune, out currentProof)) return false;
+                sourceEvidence = "S2 2.323[C] shared live native flags / " +
+                    currentProof;
+                return true;
+            }
 
             Original323ObservedBashTarget observed;
             if (!witness.TryObserveCurrent(enemy, out observed) ||

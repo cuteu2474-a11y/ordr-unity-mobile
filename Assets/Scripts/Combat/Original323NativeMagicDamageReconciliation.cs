@@ -282,6 +282,7 @@ namespace Ordr.Mobile.Combat
         private readonly IOriginal323NativeMagicImpactWitness original;
         private readonly IOriginal323NativeMagicHpConversion quantization;
         private readonly IOriginal323NativeMagicModifierWitness modifiers;
+        private readonly Original323MonsterNativeAbilityRuntime sharedNativeAbilities;
 
         // One observed forked-lightning impact can contain multiple native
         // hits. Keep EVERY selected monster stable until the WHOLE impact is
@@ -321,18 +322,27 @@ namespace Ordr.Mobile.Combat
         public Original323VerifiedNativeMagicImpactAdapter(
             IOriginal323NativeMagicImpactWitness source,
             IOriginal323NativeMagicHpConversion nativeHp)
-            : this(source, nativeHp, null)
+            : this(source, nativeHp, null, null)
         { }
 
         public Original323VerifiedNativeMagicImpactAdapter(
             IOriginal323NativeMagicImpactWitness source,
             IOriginal323NativeMagicHpConversion nativeHp,
             IOriginal323NativeMagicModifierWitness nativeModifiers)
+            : this(source, nativeHp, nativeModifiers, null)
+        { }
+
+        public Original323VerifiedNativeMagicImpactAdapter(
+            IOriginal323NativeMagicImpactWitness source,
+            IOriginal323NativeMagicHpConversion nativeHp,
+            IOriginal323NativeMagicModifierWitness nativeModifiers,
+            Original323MonsterNativeAbilityRuntime nativeAbilities)
         {
             original = source ?? throw new ArgumentNullException(nameof(source));
             quantization = nativeHp ??
                 throw new ArgumentNullException(nameof(nativeHp));
             modifiers = nativeModifiers;
+            sharedNativeAbilities = nativeAbilities;
         }
 
         public bool TryConfirmOriginalDummyImpact(
@@ -368,8 +378,17 @@ namespace Ordr.Mobile.Combat
                 // Capture even immune / selected-but-not-hit monsters:
                 // their observed state must not silently change during
                 // verification of another target in this same impact.
-                selectedStates.Add(target.TargetId,
-                    new SelectedTargetState(current));
+                var selectedBeforeInspection = new SelectedTargetState(current);
+                // Optional independent native ability evidence. Never infer
+                // immunity from Aeth, object ownership or a mobile lane.
+                if (sharedNativeAbilities != null)
+                {
+                    Original323ObservedMonsterNativeAbilities nativeState;
+                    if (!sharedNativeAbilities.TryInspect(current, out nativeState) ||
+                        nativeState.MagicImmune != target.OriginalMagicImmune ||
+                        !selectedBeforeInspection.Matches(current)) return false;
+                }
+                selectedStates.Add(target.TargetId, selectedBeforeInspection);
                 if (target.OriginalMagicImmune)
                     immune.Add(target.TargetId);
             }
