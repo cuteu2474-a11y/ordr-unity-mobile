@@ -350,8 +350,14 @@ namespace Ordr.Mobile.Tests
             using (var game = Create(true, true, 65))
             {
                 game.Combat.SpawnCharacter("U-09", -4000, 4000);
-                var events = game.Battle.Advance(1);
                 Assert.AreEqual(65, game.Battle.LastRound);
+                double leadInSeconds = game.Battle.PreparationSecondsRemaining;
+                Assert.AreEqual(Original323BossRoundRules.FirstRoundWaitSeconds, leadInSeconds);
+                var preparationEvents = game.Battle.Advance(leadInSeconds);
+                Assert.AreEqual(0, game.Combat.EnemyCount);
+                Assert.IsFalse(preparationEvents.Any(e => e.Type == CharacterCombatEventType.SkillActivated));
+                var events = game.Battle.Advance(2);
+                Assert.Greater(game.Combat.EnemyCount, 0);
                 Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated && e.Detail.Contains("추가 피해")));
             }
         }

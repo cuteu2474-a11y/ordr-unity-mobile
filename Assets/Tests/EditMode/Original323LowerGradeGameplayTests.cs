@@ -1150,7 +1150,7 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(31, owner.ExecutableSpecialFusionCount);
                 Assert.AreEqual(41, owner.ExecutableRareFusionCount);
                 Assert.AreEqual(34, owner.ExecutableLegendaryFusionCount);
-                Assert.AreEqual(13, owner.ExecutableHiddenFusionCount);
+                Assert.AreEqual(19, owner.ExecutableHiddenFusionCount);
                 Assert.AreEqual(1, owner.ExecutableEternalFusionCount);
                 Assert.AreEqual(ManualActionState.Succeeded, owner.RequestCommonWispBatch(5).State);
                 Assert.AreEqual(5, owner.Combat.CharacterCount);
