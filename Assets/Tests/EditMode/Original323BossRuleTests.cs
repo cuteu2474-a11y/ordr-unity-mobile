@@ -86,6 +86,8 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(35, seconds);
             Assert.IsTrue(Original323BossRoundRules.TryGetCountdownSeconds(50, out seconds));
             Assert.AreEqual(60, seconds);
+            Assert.AreEqual(21, Original323BossRoundRules.FirstRoundWaitSeconds);
+            Assert.AreEqual(70, Original323BossRoundRules.PostRound50TransitionSeconds);
             Assert.IsTrue(Original323BossRoundRules.TryGetCountdownSeconds(55, out seconds));
             Assert.AreEqual(32, seconds);
             Assert.IsFalse(Original323BossRoundRules.TryGetCountdownSeconds(0, out seconds));

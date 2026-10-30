@@ -360,11 +360,34 @@ namespace Ordr.Mobile.Tests
             {
                 Assert.AreEqual(65, game.Battle.LastRound);
                 Assert.AreEqual(1, game.Combat.Game.CurrentWave);
+                Assert.AreEqual(21, game.Battle.PreparationSecondsRemaining, 1e-6);
+                Assert.AreEqual(56, game.Battle.SecondsRemaining, 1e-6);
                 game.Battle.Advance(.5);
+                Assert.AreEqual(0, game.Combat.Game.AliveEnemies);
+                Assert.AreEqual(20.5, game.Battle.PreparationSecondsRemaining, 1e-6);
+                game.Battle.Advance(21.1);
+                Assert.AreEqual(0, game.Battle.PreparationSecondsRemaining, 1e-6);
                 Assert.AreEqual(1, game.Combat.Game.AliveEnemies);
                 Assert.AreEqual(338, game.Combat.MobileEnemySnapshot().Single().Health);
                 Assert.AreEqual(0, game.Combat.Game.LeakedEnemies);
             }
+        }
+
+        [Test]
+        public void OnlyStandaloneSixtyFiveRoundUsesSourceVerifiedPreparationAndTransition()
+        {
+            var standalone = new SourceModelPracticeCatalog(
+                Data("mobile-standalone-enemy-model.json"), 65);
+            Assert.AreEqual(21, standalone.ModelLeadInSeconds(1));
+            Assert.AreEqual(0, standalone.ModelLeadInSeconds(2));
+            Assert.AreEqual(0, standalone.ModelLeadInSeconds(50));
+            Assert.AreEqual(70, standalone.ModelLeadInSeconds(51));
+            Assert.AreEqual(0, standalone.ModelLeadInSeconds(55));
+            Assert.AreEqual(0, standalone.ModelLeadInSeconds(65));
+            Assert.Throws<ArgumentOutOfRangeException>(() => standalone.ModelLeadInSeconds(66));
+
+            var training = new SourceModelPracticeCatalog(Data("mobile-practice-battle-model.json"));
+            Assert.AreEqual(0, training.ModelLeadInSeconds(1));
         }
 
         [Test]

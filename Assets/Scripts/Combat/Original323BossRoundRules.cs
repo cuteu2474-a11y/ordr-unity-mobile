@@ -11,6 +11,9 @@ namespace Ordr.Mobile.Combat
     public static class Original323BossRoundRules
     {
         public const int FinalRound = 65;
+        // JASS CVG/CVT: first spawn wait and 50->51 new-world transition.
+        public const int FirstRoundWaitSeconds = 21;
+        public const int PostRound50TransitionSeconds = 70;
         public const int FastLateBossKillThresholdSeconds = 16;
         public const int FastLateBossKillScore = 1000;
         public const int OtherLateBossKillScore = 500;

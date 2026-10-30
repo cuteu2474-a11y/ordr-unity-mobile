@@ -66,6 +66,16 @@ class MobilePracticeDataTests(unittest.TestCase):
             self.assertEqual({'line', 'boss'},
                              {r['role'] for r in game['rounds'] if r['wave'] == wave})
 
+    def test_standalone_round_lead_ins_match_fixed_jass_evidence(self):
+        rules = json.loads((DATA / 'original-2323C-round-boss-rules.json').read_text())
+        self.assertIs(False, rules['liveGameplayParityVerified'])
+        timers = rules['roundTimersSeconds']
+        self.assertEqual(21, timers['firstRoundWait'])
+        self.assertEqual(70, timers['transitionAfterRound50'])
+        constants = (DATA.parents[0] / 'Assets/Scripts/Combat/Original323BossRoundRules.cs').read_text()
+        self.assertIn('public const int FirstRoundWaitSeconds = 21;', constants)
+        self.assertIn('public const int PostRound50TransitionSeconds = 70;', constants)
+
 
 if __name__ == '__main__':
     unittest.main()

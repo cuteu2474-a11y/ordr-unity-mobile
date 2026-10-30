@@ -30,6 +30,15 @@ namespace Ordr.Mobile.Combat
         public int LastRound { get; private set; }
         public int EnemyLimit => 70;
         public int RoundWisps => 2;
+        // Source-backed pre-wave pauses only in the standalone 65R model.
+        // They are not independent proof of Warcraft's absolute round clock.
+        public double ModelLeadInSeconds(int round)
+        {
+            if (round < 1 || round > LastRound) throw new ArgumentOutOfRangeException(nameof(round));
+            if (!standaloneInitialMagicAbilityLevel.HasValue) return 0;
+            return round == 1 ? Original323BossRoundRules.FirstRoundWaitSeconds :
+                round == 51 ? Original323BossRoundRules.PostRound50TransitionSeconds : 0;
+        }
         public CombatPathPoint Spawn => route.AtDistance(0);
         private static string RoundKey(int number, string role) => number + ":" + role;
         public Round GetRound(int number, CharacterEnemyKind kind)
@@ -146,6 +155,7 @@ namespace Ordr.Mobile.Combat
         public int Defeated { get; internal set; }
         public int AliveEnemies { get; internal set; }
         public long GoldAwarded { get; internal set; }
+        public double LeadInSeconds { get; internal set; }
         public int BossScoreAwarded { get; internal set; }
     }
 
@@ -165,6 +175,7 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, double> distanceTravelled = new Dictionary<string, double>();
         private readonly HashSet<string> rewarded = new HashSet<string>();
         private double roundStart;
+        private double roundLeadInSeconds;
         private int roundStartingDefeated;
         private long roundStartingGold;
         private int roundStartingBossScore;
@@ -176,6 +187,8 @@ namespace Ordr.Mobile.Combat
         // New-world boss points are not a wallet currency or monster-kill gold.
         public int BossScoreAwarded { get; private set; }
         public int RoundWispsAwarded { get; private set; }
+        public double PreparationSecondsRemaining =>
+            !Started ? 0 : Math.Max(0, roundLeadInSeconds - (combat.Time - roundStart));
         public double SecondsRemaining
         {
             get
@@ -183,7 +196,7 @@ namespace Ordr.Mobile.Combat
                 int seconds;
                 if (!Started || !Original323BossRoundRules.TryGetCountdownSeconds(
                     combat.Game.CurrentWave, out seconds)) return 0;
-                double remaining = seconds - (combat.Time - roundStart);
+                double remaining = seconds + roundLeadInSeconds - (combat.Time - roundStart);
                 return remaining <= 1e-8 ? 0 : remaining;
             }
         }
@@ -226,13 +239,22 @@ namespace Ordr.Mobile.Combat
             roundStartingDefeated = combat.Game.DefeatedEnemies;
             roundStartingGold = GoldAwarded;
             roundStartingBossScore = BossScoreAwarded;
+            roundLeadInSeconds = catalog.ModelLeadInSeconds(wave);
             var plan = plans[wave - 1];
+            var delayed = roundLeadInSeconds > 0 ? new List<VerifiedWaveEnemy>() : null;
             foreach (var spawn in plan.Spawns)
             {
-                bornAt.Add(spawn.EnemyId, roundStart + spawn.AtSeconds);
+                bornAt.Add(spawn.EnemyId, roundStart + roundLeadInSeconds + spawn.AtSeconds);
                 damage.UnitEffects?.RegisterPracticeTarget(spawn.EnemyId);
+                if (delayed != null)
+                    delayed.Add(new VerifiedWaveEnemy(
+                        spawn.AtSeconds + roundLeadInSeconds, spawn.EnemyId, spawn.Health,
+                        spawn.Kind, spawn.X, spawn.Y, spawn.PathProgress, spawn.Defenses,
+                        spawn.OriginalRawcode, spawn.NativePassiveTargetProfile));
             }
-            waves.Begin(combat, plan);
+            waves.Begin(combat, delayed == null ? plan :
+                new VerifiedWavePlan(wave, delayed,
+                    plan.Evidence + "; MODEL_ONLY: original first/transition lead-in"));
             if (wave > 1)
             {
                 economy.Wallet.Grant(new ResourceBundle().Add(WispResourceIds.Random, catalog.RoundWisps));
@@ -339,6 +361,7 @@ namespace Ordr.Mobile.Combat
             if (wave <= 0 || (history.Count > 0 && history[history.Count - 1].Wave == wave)) return;
             history.Add(new SourceModelPracticeRoundResult { Wave = wave,
                 ElapsedSeconds = combat.Time - roundStart,
+                LeadInSeconds = roundLeadInSeconds,
                 Defeated = combat.Game.DefeatedEnemies - roundStartingDefeated,
                 AliveEnemies = combat.Game.AliveEnemies, GoldAwarded = GoldAwarded - roundStartingGold,
                 BossScoreAwarded = BossScoreAwarded - roundStartingBossScore });
