@@ -1,0 +1,168 @@
+{
+  "format": "ordr-story-solo-nightmare-initial-stats-reference-v1",
+  "gameVersion": "S2 2.323[C]",
+  "difficulty": "nightmare",
+  "mode": "otherworld",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceFiles": [
+    "Units/UnitBalance.slk",
+    "Units/UpgradeData.slk",
+    "war3map.j"
+  ],
+  "sourceJassEvidence": [
+    "CUM:58044-58045 sets Player(5) R012=1",
+    "CN3:52774-52776 runs BeP after first spawn",
+    "BeP:8727-8746 sets solo Player(5) R02K=1, R021=1"
+  ],
+  "initialResearchEffects": [
+    {
+      "rawcode": "R012",
+      "tag": "rhpo",
+      "effectPercent": 58
+    },
+    {
+      "rawcode": "R02K",
+      "tag": "rhpo",
+      "effectPercent": -5
+    },
+    {
+      "rawcode": "R021",
+      "tag": "rhpo",
+      "effectPercent": -25
+    }
+  ],
+  "modeledNetInitialPercent": 128,
+  "initialMagicDefenseA04QLevel": 16,
+  "initialMagicDamageTakenPercent": 90,
+  "calculationScope": "single-player initial researched-tech object model; not native runtime verified, events/rounding not fully emulated",
+  "retailEffectiveStatsVerified": false,
+  "stages": [
+    {
+      "stage": 1,
+      "rawcode": "n000",
+      "baseHp": 70200,
+      "baseArmor": 10,
+      "baseRegenPerSecond": 0,
+      "modelSoloNightmareHp": 89856,
+      "modelSoloNightmareArmor": 10
+    },
+    {
+      "stage": 2,
+      "rawcode": "n002",
+      "baseHp": 255150,
+      "baseArmor": 29,
+      "baseRegenPerSecond": 0,
+      "modelSoloNightmareHp": 326592,
+      "modelSoloNightmareArmor": 29
+    },
+    {
+      "stage": 3,
+      "rawcode": "n003",
+      "baseHp": 850500,
+      "baseArmor": 46,
+      "baseRegenPerSecond": 0,
+      "modelSoloNightmareHp": 1088640,
+      "modelSoloNightmareArmor": 46
+    },
+    {
+      "stage": 4,
+      "rawcode": "n004",
+      "baseHp": 2064300,
+      "baseArmor": 60,
+      "baseRegenPerSecond": 0,
+      "modelSoloNightmareHp": 2642304,
+      "modelSoloNightmareArmor": 60
+    },
+    {
+      "stage": 5,
+      "rawcode": "n005",
+      "baseHp": 4456200,
+      "baseArmor": 75,
+      "baseRegenPerSecond": 0,
+      "modelSoloNightmareHp": 5703936,
+      "modelSoloNightmareArmor": 75
+    },
+    {
+      "stage": 6,
+      "rawcode": "n006",
+      "baseHp": 11700000,
+      "baseArmor": 92,
+      "baseRegenPerSecond": 0,
+      "modelSoloNightmareHp": 14976000,
+      "modelSoloNightmareArmor": 92
+    },
+    {
+      "stage": 7,
+      "rawcode": "n007",
+      "baseHp": 21100000,
+      "baseArmor": 115,
+      "baseRegenPerSecond": 0,
+      "modelSoloNightmareHp": 27008000,
+      "modelSoloNightmareArmor": 115
+    },
+    {
+      "stage": 8,
+      "rawcode": "n008",
+      "baseHp": 45140000,
+      "baseArmor": 129,
+      "baseRegenPerSecond": 0,
+      "modelSoloNightmareHp": 57779200,
+      "modelSoloNightmareArmor": 129
+    },
+    {
+      "stage": 9,
+      "rawcode": "n00A",
+      "baseHp": 99225000,
+      "baseArmor": 132,
+      "baseRegenPerSecond": 1000,
+      "modelSoloNightmareHp": 127008000,
+      "modelSoloNightmareArmor": 132
+    },
+    {
+      "stage": 10,
+      "rawcode": "n001",
+      "baseHp": 115000000,
+      "baseArmor": 188,
+      "baseRegenPerSecond": 1000,
+      "modelSoloNightmareHp": 147200000,
+      "modelSoloNightmareArmor": 188
+    },
+    {
+      "stage": 11,
+      "rawcode": "n00C",
+      "baseHp": 140000000,
+      "baseArmor": 210,
+      "baseRegenPerSecond": 1000,
+      "modelSoloNightmareHp": 179200000,
+      "modelSoloNightmareArmor": 210
+    },
+    {
+      "stage": 12,
+      "rawcode": "n00D",
+      "baseHp": 155000000,
+      "baseArmor": 240,
+      "baseRegenPerSecond": 1000,
+      "modelSoloNightmareHp": 198400000,
+      "modelSoloNightmareArmor": 240
+    },
+    {
+      "stage": 13,
+      "rawcode": "n00B",
+      "baseHp": 190000000,
+      "baseArmor": 275,
+      "baseRegenPerSecond": 1000,
+      "modelSoloNightmareHp": 243200000,
+      "modelSoloNightmareArmor": 275
+    },
+    {
+      "stage": 14,
+      "rawcode": "n009",
+      "baseHp": 288800000,
+      "baseArmor": 300,
+      "baseRegenPerSecond": 1000,
+      "modelSoloNightmareHp": 369664000,
+      "modelSoloNightmareArmor": 300
+    }
+  ]
+}

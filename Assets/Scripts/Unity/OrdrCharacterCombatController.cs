@@ -662,6 +662,18 @@ namespace Ordr.Mobile.Unity
         public Original323StoryBuildingPracticeWorld PracticeStoryBuildings { get; private set; }
         public Original323StoryBuildingCatalog StoryBuildingCatalog { get; private set; }
         public Original323SoloStoryScenario SoloStory { get; private set; }
+        private IOriginal323StoryNativeRewardPort originalStoryNativeAwards;
+        public Original323StoryMobileProgression StoryProgression { get; private set; }
+        public void ConfigureOriginal323StoryNativeAwards(IOriginal323StoryNativeRewardPort port)
+        {
+            originalStoryNativeAwards = port ??
+                throw new ArgumentNullException(nameof(port));
+            if (StoryProgression != null)
+            {
+                StoryProgression.ConnectAdditionalNativeEffects(port);
+                SoloStory?.NativeRewards.ApplyPending(StoryProgression);
+            }
+        }
         private IOriginal323StoryBuildingSpawnAuthorization originalStoryStages;
         private IOriginal323StoryBuildingSpawnWitness originalStorySpawnWitness;
         private IOriginal323StoryBuildingClearWitness originalStoryClearWitness;
@@ -764,8 +776,16 @@ namespace Ordr.Mobile.Unity
                         new Original323SoloStoryMovement(Combat, MapBaseStats));
                 var scenario = new Original323SoloStoryScenario(
                     Combat, buildings, SharedEconomy);
-                try { scenario.Start(); }
+                var progression = new Original323StoryMobileProgression();
+                try
+                {
+                    if (originalStoryNativeAwards != null)
+                        progression.ConnectAdditionalNativeEffects(originalStoryNativeAwards);
+                    scenario.ConfigureNativeAwardPort(progression);
+                    scenario.Start();
+                }
                 catch { scenario.Dispose(); throw; }
+                StoryProgression = progression;
                 StoryBuildingCatalog = catalog;
                 PracticeStoryBuildings = buildings;
                 SoloStory = scenario;

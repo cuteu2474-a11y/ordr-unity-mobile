@@ -226,6 +226,17 @@ namespace Ordr.Mobile.Combat
             Health -= dealt;
             return dealt;
         }
+
+        // Source-model passive regeneration. Never resurrect defeated
+        // targets, exceed the current max HP or alter the wave counters.
+        public long RecoverHitPoints(long amount)
+        {
+            if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount));
+            if (!IsAlive || amount == 0) return 0;
+            long healed = Math.Min(amount, MaxHealth - Health);
+            Health += healed;
+            return healed;
+        }
     }
 
     // Combat outcomes must be recorded from the same canonical damage/leak

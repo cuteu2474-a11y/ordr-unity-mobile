@@ -1157,6 +1157,13 @@ namespace Ordr.Mobile.Unity
                         Math.Ceiling(scenario.EggheadDeadlineRemaining) + "초");
                 if (!string.IsNullOrWhiteSpace(scenario.LastNotice))
                     GUILayout.Label(scenario.LastNotice);
+                var progression = controller.StoryProgression;
+                if (progression != null)
+                    GUILayout.Label("스토리 연구 " + progression.Researches.Count +
+                        "개 · 기본 특성포인트 " + progression.TraitPoints + "개");
+                if (scenario.NativeRewards.PendingCount > 0)
+                    GUILayout.Label("대상 미연결: 고대의 배·영웅 경험치·그린블러드 등 " +
+                        scenario.NativeRewards.PendingCount + "건");
                 GUILayout.Label("건물 객체 기본 체력 모델 · 스토리 전체 진행은 65R 전투 권장");
             }
             var catalog = controller.StoryBuildingCatalog;
@@ -1208,8 +1215,8 @@ namespace Ordr.Mobile.Unity
                     "건물 목록만 표시됩니다.");
             GUILayout.Label(scenario == null
                 ? "원본 정산 확인 전에는 보상을 자동 지급하지 않습니다."
-                : "연습 게임에서 검증된 기본 재화·위습을 지급합니다. " +
-                  "원본 추가 연구·특성·기록지침은 아직 별도 연결이 필요합니다.");
+                : "원본 일반 재화·위습 지급, 연구·기본 특성포인트 진행 상태 적용. " +
+                  "고대의 배·특성 추가 보너스·영웅 경험치·그린블러드는 후속 연결이 필요합니다.");
             if (!controller.ManualActions.HasStoryService)
                 GUILayout.Label("원작 스토리 파견 서비스 미연결: 파견 기능 비활성");
             foreach (var unit in Combat.MobileUnitSnapshot())

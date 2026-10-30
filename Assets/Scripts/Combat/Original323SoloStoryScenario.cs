@@ -62,11 +62,20 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, long> ownedDamage =
             new Dictionary<string, long>(StringComparer.Ordinal);
         private readonly HashSet<int> completed = new HashSet<int>();
+        public Original323StoryNativeRewardQueue NativeRewards { get; } =
+            new Original323StoryNativeRewardQueue();
+        private IOriginal323StoryNativeRewardPort nativeRewardPort;
+        public void ConfigureNativeAwardPort(IOriginal323StoryNativeRewardPort port)
+        {
+            nativeRewardPort = port ?? throw new ArgumentNullException(nameof(port));
+            NativeRewards.ApplyPending(nativeRewardPort);
+        }
         private readonly HashSet<int> issued = new HashSet<int>();
         private bool disposed;
         private int pendingStage;
         private double nextSpawnAt;
         private double eggheadSpawnAt = -1;
+        private double lastRegenAt;
 
         public int ActiveStage { get; private set; }
         public int HighestDestroyedStage { get; private set; }
@@ -113,6 +122,7 @@ namespace Ordr.Mobile.Combat
             issued.Add(stage);
             ActiveStage = stage;
             LastNotice = spawn.Building.Name + " 건물 등장 (객체 기본 모델)";
+            lastRegenAt = combat.Time;
             if (stage == 14) eggheadSpawnAt = combat.Time;
         }
 
@@ -150,8 +160,8 @@ namespace Ordr.Mobile.Combat
             // Actual CQB gives a physical e01A actor; do not grant a
             // source-verified Kuma entitlement from a MODEL_ONLY kill.
             if (stage == 10) result.Add(PracticeTranscendWisp, 1);
-            // Non-resource native side effects are tracked, not invented.
-            if (stage >= 5) result.Add(PendingNativeSideEffects, 1);
+            // Native research, talents, XP, h05Y and Green Blood are
+            // typed obligations, not fake wallet currencies.
             return result;
         }
 
@@ -162,8 +172,7 @@ namespace Ordr.Mobile.Combat
             if (record == null || record.Building.Stage != ActiveStage ||
                 reason != CombatEnemyExitReason.Defeated) return;
             int stage = record.Building.Stage;
-            if (!completed.Add(stage)) return;
-            HighestDestroyedStage = Math.Max(HighestDestroyedStage, stage);
+            if (completed.Contains(stage)) return;
             long damage;
             // In the single-player model the sole owning player receives MVP
             // when their real owned actor inflicted damage; zero-hit scripted
@@ -173,11 +182,25 @@ namespace Ordr.Mobile.Combat
             var payout = Pay[stage];
             var rewards = Bundle(payout, contributor, stage);
             string receipt = "practice:story-stage:" + stage;
-            if (economy.Wallet.TryGrantOnce(receipt, rewards))
+            // Commit one wallet receipt before recording the stage. Wallet
+            // observers may throw AFTER a committed payment: never pay twice.
+            bool newGrant = false;
+            try { newGrant = economy.Wallet.TryGrantOnce(receipt, rewards); }
+            catch
+            {
+                if (!economy.Wallet.HasCompletedTransaction(receipt)) throw;
+            }
+            if (newGrant)
             {
                 AwardedGold += payout.Gold + (contributor ? payout.MvpGold : 0);
                 AwardedWood += payout.Wood + (contributor ? payout.ContributionWood : 0);
             }
+            completed.Add(stage);
+            HighestDestroyedStage = Math.Max(HighestDestroyedStage, stage);
+            // A pending native reward is displayed as NOT APPLIED. Only
+            // a real, connected target runtime may settle that effect.
+            NativeRewards.RecordCommittedClear(stage);
+            NativeRewards.ApplyPending(nativeRewardPort);
             int next; double delay;
             if (Original323StoryUnlockRules.TryNextStageOnDestroy(stage,
                 Nightmare, out next, out delay))
@@ -216,6 +239,29 @@ namespace Ordr.Mobile.Combat
                 int next = pendingStage;
                 pendingStage = 0;
                 SpawnNext(next);
+            }
+            // UnitBalance.slk: story buildings 9-14 have 'always' 1000 HP/s.
+            // The whole-second source model uses the paused combat clock.
+            // It never heals after a real canonical kill event.
+            if (ActiveStage >= Original323StorySoloStats.PerSecondRegenFromStage &&
+                !completed.Contains(ActiveStage))
+            {
+                long seconds = (long)Math.Floor(
+                    Math.Max(0, combat.Time - lastRegenAt));
+                if (seconds > 0)
+                {
+                    lastRegenAt += seconds;
+                    foreach (var item in world.Encounters)
+                    {
+                        if (item.Building.Stage != ActiveStage ||
+                            item.State != Original323StoryBuildingState.Alive) continue;
+                        var target = combat.EnemyOf(item.EnemyId);
+                        if (target == null) continue;
+                        long heal = checked(seconds *
+                            Original323StorySoloStats.RegenPerSecond);
+                        target.RecoverHitPoints(heal);
+                    }
+                }
             }
             if (eggheadSpawnAt >= 0 &&
                 Original323StoryUnlockRules.EggheadTimedOut(

@@ -151,7 +151,10 @@ namespace Ordr.Mobile.Combat
                 .FromVerifiedMagicAbilityLevel(CharacterEnemyKind.Story,
                     building.BaseArmor, building.ArmorType, 16,
                     "MODEL_ONLY: original 2.323[C] Nightmare NJ=16 initial story building");
-            return SpawnInternal(building, building.BaseHitPoints, x, y,
+            // W3X upgrades for solo Nightmare are applied to Player(5)'s
+            // story buildings; do not reuse their unmodified SLK HP.
+            long modelHealth = Original323StorySoloStats.InitialHitPoints(building);
+            return SpawnInternal(building, modelHealth, x, y,
                 baseline, null, null);
         }
 

@@ -1,0 +1,133 @@
+{
+  "format": "ordr-2323c-story-native-rewards-source-evidence-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "scope": "JASS source obligations; native operations remain pending without a connected real game runtime",
+  "effects": [
+    {
+      "stage": 5,
+      "kind": "research",
+      "rawcode": "R01N",
+      "jassLine": 53560
+    },
+    {
+      "stage": 8,
+      "kind": "research",
+      "rawcode": "R01O",
+      "jassLine": 54183
+    },
+    {
+      "stage": 9,
+      "kind": "research",
+      "rawcode": "R01P",
+      "jassLine": 54393
+    },
+    {
+      "stage": 9,
+      "kind": "ancient-ship",
+      "rawcode": "h05Y",
+      "quantity": 1,
+      "originalSpawn": "player start",
+      "jassLine": 54392
+    },
+    {
+      "stage": 10,
+      "kind": "research",
+      "rawcode": "R01Q",
+      "jassLine": 54599
+    },
+    {
+      "stage": 12,
+      "kind": "research",
+      "rawcode": "R01S",
+      "jassLine": 55015
+    },
+    {
+      "stage": 8,
+      "kind": "trait-points",
+      "baseAmount": 1,
+      "function": "BdL",
+      "conditionalBonus": "kW[JG] == ka grants additional +1",
+      "jassLine": 54184
+    },
+    {
+      "stage": 9,
+      "kind": "trait-points",
+      "baseAmount": 1,
+      "function": "BdL",
+      "conditionalBonus": "kW[JG] == ka grants additional +1",
+      "jassLine": 54394
+    },
+    {
+      "stage": 10,
+      "kind": "trait-points",
+      "baseAmount": 1,
+      "function": "BdL",
+      "conditionalBonus": "kW[JG] == ka grants additional +1",
+      "jassLine": 54600
+    },
+    {
+      "stage": 11,
+      "kind": "trait-points",
+      "baseAmount": 1,
+      "function": "BdL",
+      "conditionalBonus": "kW[JG] == ka grants additional +1",
+      "jassLine": 54807
+    },
+    {
+      "stage": 12,
+      "kind": "trait-points",
+      "baseAmount": 1,
+      "function": "BdL",
+      "conditionalBonus": "kW[JG] == ka grants additional +1",
+      "jassLine": 55016
+    },
+    {
+      "stage": 13,
+      "kind": "trait-points",
+      "baseAmount": 1,
+      "function": "BdL",
+      "conditionalBonus": "kW[JG] == ka grants additional +1",
+      "jassLine": 55227
+    },
+    {
+      "stage": 13,
+      "kind": "hero-xp",
+      "amountPerHero": 300,
+      "originalTargetGroup": "Hp[VT[player]]",
+      "jassLines": [
+        55215,
+        55226
+      ]
+    },
+    {
+      "stage": 14,
+      "kind": "hero-xp",
+      "amountPerHero": 300,
+      "originalTargetGroup": "Hp[VT[player]]",
+      "jassLines": [
+        55464,
+        55473
+      ]
+    },
+    {
+      "stage": 14,
+      "kind": "greenblood",
+      "abilityRawcode": "A13A",
+      "target": "RV[player]",
+      "jassLine": 55474,
+      "castHandler": "CKe",
+      "castHandlerJassLines": [
+        50636,
+        50698
+      ]
+    }
+  ],
+  "notes": [
+    "Ancient ship is a physical unit h05Y awarded at stage 9; it is not e01A stage-10 transcend Wisp.",
+    "GreenBlood A13A is a single-use ability on RV player building, not an automatically free unit.",
+    "Hero experience applies to Hp[VT[player]] only; the complete set of eligible hero instances must be sourced.",
+    "Trait points have a separate conditional bonus for kW[JG]==ka; model queues unconditional base only.",
+    "Stage payout base money/wisps remain in distinct shared-wallet model."
+  ]
+}
