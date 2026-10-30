@@ -1,0 +1,1242 @@
+{
+  "format": "ordr-attack-skill-batch-audit-v1",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "unitCount": 20,
+  "runtimeAuthorization": false,
+  "scope": "20 source callback identities and direct dependencies; not executable skills",
+  "dispatch": [
+    {
+      "function": "w5",
+      "line": 3123,
+      "sha256": "95530d68b11ef597e6a4a2f2a65730b0e36d5faa451161820821b54439896b54",
+      "customDependencies": [],
+      "externalDependencies": [
+        "Condition",
+        "CreateTrigger",
+        "HaveSavedHandle",
+        "LoadTriggerHandle",
+        "SaveTriggerHandle",
+        "TriggerAddCondition"
+      ],
+      "sourceOperations": []
+    },
+    {
+      "function": "w6",
+      "line": 3129,
+      "sha256": "fe3e837acb80101299af7812f0352f6d5095496f8221a876174d32a7c4ce470c",
+      "customDependencies": [],
+      "externalDependencies": [
+        "GetAttacker",
+        "GetUnitTypeId",
+        "LoadTriggerHandle",
+        "TriggerEvaluate"
+      ],
+      "sourceOperations": []
+    },
+    {
+      "function": "w7",
+      "line": 3133,
+      "sha256": "7ade6ce8c38ca936f5e3e3f614c1fc733c7729f687b16669fbe779f3984a343d",
+      "customDependencies": [
+        "w6"
+      ],
+      "externalDependencies": [
+        "Condition",
+        "CreateTrigger",
+        "Player",
+        "TriggerAddCondition",
+        "TriggerRegisterPlayerUnitEventSimple"
+      ],
+      "sourceOperations": []
+    }
+  ],
+  "units": [
+    {
+      "catalogId": "U-04",
+      "name": "블루노",
+      "rawcode": "h00M",
+      "callback": {
+        "function": "Bnm",
+        "line": 14818,
+        "sha256": "0c570b2a030b5cb2dc2b5224ab1a85f157f956b342781194b594b7d5d94afb5e",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetOwningPlayer",
+          "GetPlayerId",
+          "GetUnitFacing",
+          "GetUnitLoc",
+          "IssuePointOrderLoc",
+          "RemoveLocation",
+          "SetUnitUserData"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=10 then",
+          "set Vr=CreateUnitAtLoc(HY,$65304B44,Id,I0)",
+          "call IssuePointOrderLoc(Vr,\"carrionswarm\",Id)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "U-13",
+      "name": "후쿠로",
+      "rawcode": "h00A",
+      "callback": {
+        "function": "Bnp",
+        "line": 14833,
+        "sha256": "3aaa896d54e263cbf1593f1944dc10e40a9f2716d5b5c1c8d9241b0af8708880",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetOwningPlayer",
+          "GetPlayerId",
+          "GetUnitFacing",
+          "GetUnitLoc",
+          "IssuePointOrderLoc",
+          "RemoveLocation",
+          "SetUnitUserData"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=10 then",
+          "set Vr=CreateUnitAtLoc(HY,$65304B44,Id,I0)",
+          "call IssuePointOrderLoc(Vr,\"carrionswarm\",Id)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "S-03",
+      "name": "나미 크리마텍트",
+      "rawcode": "h00P",
+      "callback": {
+        "function": "Bnt",
+        "line": 14866,
+        "sha256": "0a6d2dcbaca3ef6c6e34e65c4fcd365db887dcd3dff2128b1e5b86010571c152",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetOwningPlayer",
+          "GetPlayerId",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "RemoveLocation",
+          "SetUnitUserData",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=10 then",
+          "set Vr=CreateUnitAtLoc(HY,$6530304B,Ie,bj_UNIT_FACING)",
+          "call UnitDamagePointLoc(JL,0,400,Ie,800,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "S-13",
+      "name": "상디 검은다리",
+      "rawcode": "h013",
+      "callback": {
+        "function": "Bn6",
+        "line": 14984,
+        "sha256": "7f25e876984ff5992bce87a524d9949cc016e5e7d7856624c64fa738a6fdfd61",
+        "customDependencies": [
+          "BFi",
+          "Bcb"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "RemoveLocation"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=20 then",
+          "set Vr=CreateUnitAtLoc(HY,$65303050,Ie,bj_UNIT_FACING)",
+          "call Bcb(JL,RN,500.,1.,1.,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        },
+        {
+          "function": "Bcb",
+          "line": 8226,
+          "sha256": "aca658628fb2e1b77b1d546f7fef3bc4d5973c6c015b4ebcaf9425f3a692ca74",
+          "customDependencies": [
+            "BFj"
+          ],
+          "externalDependencies": [
+            "UnitDamageTarget"
+          ],
+          "sourceOperations": [
+            "local real H4=BFj(Hy,Hz)",
+            "call UnitDamageTarget(Hv,Hw,IB,true,false,H0,H1,WEAPON_TYPE_WHOKNOWS)"
+          ]
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "R-11",
+      "name": "미호크",
+      "rawcode": "h04H",
+      "callback": {
+        "function": "Bo4",
+        "line": 15532,
+        "sha256": "64113390828ad904d62faa01cddb60bb541d2f68290f7dd11cbea7ceec725707",
+        "customDependencies": [
+          "BFi",
+          "Bcb"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "RemoveLocation"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=10 then",
+          "set Vr=CreateUnitAtLoc(HY,$65303145,Ie,bj_UNIT_FACING)",
+          "call Bcb(JL,RN,12500.,1.,2.,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        },
+        {
+          "function": "Bcb",
+          "line": 8226,
+          "sha256": "aca658628fb2e1b77b1d546f7fef3bc4d5973c6c015b4ebcaf9425f3a692ca74",
+          "customDependencies": [
+            "BFj"
+          ],
+          "externalDependencies": [
+            "UnitDamageTarget"
+          ],
+          "sourceOperations": [
+            "local real H4=BFj(Hy,Hz)",
+            "call UnitDamageTarget(Hv,Hw,IB,true,false,H0,H1,WEAPON_TYPE_WHOKNOWS)"
+          ]
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "R-12",
+      "name": "바르톨로메오",
+      "rawcode": "h01W",
+      "callback": {
+        "function": "Bo6",
+        "line": 15547,
+        "sha256": "9353a17cb101a159e20406d9fab7481de4f3ba7d4aafe77aaa432ccf8f53d23b",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "RemoveLocation",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=10 then",
+          "set Vr=CreateUnitAtLoc(HY,$65303146,Ie,bj_UNIT_FACING)",
+          "call UnitDamagePointLoc(JL,0.,375,Ie,6000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "R-13",
+      "name": "바제스",
+      "rawcode": "h01V",
+      "callback": {
+        "function": "Bo9",
+        "line": 15562,
+        "sha256": "35573923ffbb30a4e0e0b02d688aa79244b79900b14d38a8e696bd46d4166789",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetLocationX",
+          "GetLocationY",
+          "GetOwningPlayer",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "IssuePointOrderById",
+          "OrderId",
+          "RemoveLocation",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=10 then",
+          "set Vr=CreateUnitAtLoc(HY,$65303147,Ie,bj_UNIT_FACING)",
+          "call IssuePointOrderById(Vr,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+          "call UnitDamagePointLoc(JL,0.,425,Ie,12000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "R-21",
+      "name": "상디 디아블잠브",
+      "rawcode": "h02I",
+      "callback": {
+        "function": "BpM",
+        "line": 15658,
+        "sha256": "51455f78b3bcf717047ee589791436878e4c6cb3f56cfef78743731987fb6cc6",
+        "customDependencies": [
+          "BFi",
+          "Bcb"
+        ],
+        "externalDependencies": [
+          "GetAttacker",
+          "GetTriggerUnit"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=20 then",
+          "call Bcb(JL,RN,5000.,.8,1.5,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        },
+        {
+          "function": "Bcb",
+          "line": 8226,
+          "sha256": "aca658628fb2e1b77b1d546f7fef3bc4d5973c6c015b4ebcaf9425f3a692ca74",
+          "customDependencies": [
+            "BFj"
+          ],
+          "externalDependencies": [
+            "UnitDamageTarget"
+          ],
+          "sourceOperations": [
+            "local real H4=BFj(Hy,Hz)",
+            "call UnitDamageTarget(Hv,Hw,IB,true,false,H0,H1,WEAPON_TYPE_WHOKNOWS)"
+          ]
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "R-23",
+      "name": "센토마루",
+      "rawcode": "h028",
+      "callback": {
+        "function": "BpQ",
+        "line": 15694,
+        "sha256": "c4cca60157dfe208f7d159d3de2315677473003a3675b4560bc78a11c267e2f7",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "GetAttacker",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "RemoveLocation",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=30 then",
+          "call UnitDamagePointLoc(JL,0.,260.,Ie,5000,ATTACK_TYPE_CHAOS,DAMAGE_TYPE_NORMAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "R-26",
+      "name": "아오키지",
+      "rawcode": "h02B",
+      "callback": {
+        "function": "BpX",
+        "line": 15759,
+        "sha256": "c85ec0b5a5ccefadda4fad65ad9c1d784232d6591713b164672de67ee3013a9a",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetLocationX",
+          "GetLocationY",
+          "GetOwningPlayer",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "IssuePointOrderById",
+          "OrderId",
+          "RemoveLocation",
+          "UnitAddAbility",
+          "UnitApplyTimedLife",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=10 then",
+          "set Vr=CreateUnitAtLoc(HY,$6530314C,Ie,bj_UNIT_FACING)",
+          "set Vr=CreateUnitAtLoc(HY,$68304335,Ie,bj_UNIT_FACING)",
+          "call UnitAddAbility(Vr,$41313459)",
+          "call UnitApplyTimedLife(Vr,$42487765,1)",
+          "call IssuePointOrderById(Vr,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+          "call UnitDamagePointLoc(JL,0.,405,Ie,9000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "R-30",
+      "name": "우솝 보잉열도",
+      "rawcode": "h02C",
+      "callback": {
+        "function": "Bpd",
+        "line": 15822,
+        "sha256": "6bf31bb3b97a25d825a148852a9f3578e8968458994f569145ac8a21466d53d4",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetLocationX",
+          "GetLocationY",
+          "GetOwningPlayer",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "IssuePointOrderById",
+          "OrderId",
+          "RemoveLocation",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=10 then",
+          "set Vr=CreateUnitAtLoc(HY,$65303150,Ie,bj_UNIT_FACING)",
+          "call IssuePointOrderById(Vr,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+          "call UnitDamagePointLoc(JL,0.,485,Ie,7500,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "R-31",
+      "name": "이완코브",
+      "rawcode": "h02A",
+      "callback": {
+        "function": "Bpf",
+        "line": 15840,
+        "sha256": "c167ae0e09d4b790c7f4fef5be4aee7c357337ba4bca543e9922ed9e8f15b934",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetLocationX",
+          "GetLocationY",
+          "GetOwningPlayer",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "IssuePointOrderById",
+          "OrderId",
+          "RemoveLocation",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=7 then",
+          "set Vr=CreateUnitAtLoc(HY,$65303151,Ie,bj_UNIT_FACING)",
+          "call IssuePointOrderById(Vr,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+          "call UnitDamagePointLoc(JL,0.,500,Ie,13000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "R-35",
+      "name": "쵸파 혼포인트",
+      "rawcode": "h02K",
+      "callback": {
+        "function": "Bps",
+        "line": 16011,
+        "sha256": "a5c919f3c956929150268f9b43fa381dfdc08aee4edb559eb379bb259615d4cd",
+        "customDependencies": [
+          "BFi",
+          "Bcb"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetRandomDirectionDeg",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "RemoveLocation",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=12 then",
+          "set Vr=CreateUnitAtLoc(HY,$65303158,Ie,GetRandomDirectionDeg())",
+          "call UnitDamagePointLoc(JL,0,375,Ie,35000,ATTACK_TYPE_SIEGE,DAMAGE_TYPE_NORMAL)",
+          "call Bcb(JL,RN,17500.,1.,1.,ATTACK_TYPE_SIEGE,DAMAGE_TYPE_NORMAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        },
+        {
+          "function": "Bcb",
+          "line": 8226,
+          "sha256": "aca658628fb2e1b77b1d546f7fef3bc4d5973c6c015b4ebcaf9425f3a692ca74",
+          "customDependencies": [
+            "BFj"
+          ],
+          "externalDependencies": [
+            "UnitDamageTarget"
+          ],
+          "sourceOperations": [
+            "local real H4=BFj(Hy,Hz)",
+            "call UnitDamageTarget(Hv,Hw,IB,true,false,H0,H1,WEAPON_TYPE_WHOKNOWS)"
+          ]
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "R-38",
+      "name": "크로커다일 Mr.0",
+      "rawcode": "h02H",
+      "callback": {
+        "function": "Bpx",
+        "line": 16048,
+        "sha256": "e434958a6f1aae0e5a54802d486c5e0984b753dd6416b2c7aad7469dcfd5e0c7",
+        "customDependencies": [
+          "BFi",
+          "Bcb"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetTriggerUnit",
+          "GetUnitFacing",
+          "GetUnitLoc",
+          "RemoveLocation"
+        ],
+        "sourceOperations": [
+          "if BFi(1,1000)<=75 then",
+          "set Vr=CreateUnitAtLoc(HY,$6530315A,Id,GetUnitFacing(JL))",
+          "call Bcb(JL,RN,17500.,1.,1.5,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        },
+        {
+          "function": "Bcb",
+          "line": 8226,
+          "sha256": "aca658628fb2e1b77b1d546f7fef3bc4d5973c6c015b4ebcaf9425f3a692ca74",
+          "customDependencies": [
+            "BFj"
+          ],
+          "externalDependencies": [
+            "UnitDamageTarget"
+          ],
+          "sourceOperations": [
+            "local real H4=BFj(Hy,Hz)",
+            "call UnitDamageTarget(Hv,Hw,IB,true,false,H0,H1,WEAPON_TYPE_WHOKNOWS)"
+          ]
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "H-11",
+      "name": "봉쿠레",
+      "rawcode": "h03O",
+      "callback": {
+        "function": "Bre",
+        "line": 17276,
+        "sha256": "fac49822ce356583bb378c47e6b39dedd382976802554aeab6d7a3c35887b368",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetLocationX",
+          "GetLocationY",
+          "GetTriggerUnit",
+          "GetUnitFacing",
+          "GetUnitLoc",
+          "IssuePointOrderById",
+          "OrderId",
+          "RemoveLocation",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=12 then",
+          "set JI=CreateUnitAtLoc(HY,$65303348,Ie,GetUnitFacing(JL))",
+          "call IssuePointOrderById(JI,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+          "call UnitDamagePointLoc(JL,0,500,Ie,85000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "H-16",
+      "name": "아오키지",
+      "rawcode": "h041",
+      "callback": {
+        "function": "Bq3",
+        "line": 16780,
+        "sha256": "2b32d0cd942d2170f7604d06357c425f9e3e74160e1bcd4184ed6d9f49b1e9d1",
+        "customDependencies": [
+          "BFi",
+          "Bcb"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetLocationX",
+          "GetLocationY",
+          "GetRandomDirectionDeg",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "IssuePointOrderById",
+          "OrderId",
+          "PercentTo255",
+          "RemoveLocation",
+          "SetUnitVertexColor",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=10 then",
+          "set JI=CreateUnitAtLoc(HY,$65303331,Ie,GetRandomDirectionDeg())",
+          "call IssuePointOrderById(JI,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+          "call Bcb(JL,RN,330000.,1.,1.,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)",
+          "call UnitDamagePointLoc(JL,0,415,Ie,120000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        },
+        {
+          "function": "Bcb",
+          "line": 8226,
+          "sha256": "aca658628fb2e1b77b1d546f7fef3bc4d5973c6c015b4ebcaf9425f3a692ca74",
+          "customDependencies": [
+            "BFj"
+          ],
+          "externalDependencies": [
+            "UnitDamageTarget"
+          ],
+          "sourceOperations": [
+            "local real H4=BFj(Hy,Hz)",
+            "call UnitDamageTarget(Hv,Hw,IB,true,false,H0,H1,WEAPON_TYPE_WHOKNOWS)"
+          ]
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "H-18",
+      "name": "이완코브",
+      "rawcode": "h03Y",
+      "callback": {
+        "function": "Bqh",
+        "line": 16513,
+        "sha256": "1676d64dd8b35e8e9c861ce9f9583b671e7ab4a6de6741dd9b8355d292291929",
+        "customDependencies": [
+          "BFi"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetLocationX",
+          "GetLocationY",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "IssuePointOrderById",
+          "OrderId",
+          "RemoveLocation",
+          "SetUnitFlyHeight",
+          "SetUnitScale",
+          "SetUnitVertexColor",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=11 then",
+          "set JI=CreateUnitAtLoc(HY,$65303256,Ie,bj_UNIT_FACING)",
+          "call IssuePointOrderById(JI,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+          "set JI=CreateUnitAtLoc(HY,$65303133,Ie,bj_UNIT_FACING)",
+          "call UnitDamagePointLoc(JL,0,500,Ie,100000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "L-29",
+      "name": "쵸파 유력강화",
+      "rawcode": "h03K",
+      "callback": {
+        "function": "BsF",
+        "line": 17690,
+        "sha256": "487913de3fbcd4412057a3df69d730d5b83602b989f488cd79183706fa287880",
+        "customDependencies": [
+          "BFi",
+          "Bcb"
+        ],
+        "externalDependencies": [
+          "AngleBetweenPoints",
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetTriggerUnit",
+          "GetUnitLoc",
+          "RemoveLocation"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=15 then",
+          "set JI=CreateUnitAtLoc(HY,$65303353,Ie,XP)",
+          "call Bcb(JL,RN,150000,1.,3.,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        },
+        {
+          "function": "Bcb",
+          "line": 8226,
+          "sha256": "aca658628fb2e1b77b1d546f7fef3bc4d5973c6c015b4ebcaf9425f3a692ca74",
+          "customDependencies": [
+            "BFj"
+          ],
+          "externalDependencies": [
+            "UnitDamageTarget"
+          ],
+          "sourceOperations": [
+            "local real H4=BFj(Hy,Hz)",
+            "call UnitDamageTarget(Hv,Hw,IB,true,false,H0,H1,WEAPON_TYPE_WHOKNOWS)"
+          ]
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "L-33",
+      "name": "크래커",
+      "rawcode": "h03H",
+      "callback": {
+        "function": "Btd",
+        "line": 18796,
+        "sha256": "51c7ffa210ba9ae7f44ae69049de68ebb8f9681dc95eef36d0b6ade6a5f36483",
+        "customDependencies": [
+          "BFi",
+          "Bcb"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetTriggerUnit",
+          "GetUnitFacing",
+          "GetUnitLoc",
+          "RemoveLocation",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "call Bcb(JL,RN,20000.,1.,1.,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)",
+          "if BFi(1,100)<=8 then",
+          "set JI=CreateUnitAtLoc(HY,$65303458,Ie,GetUnitFacing(JL))",
+          "call UnitDamagePointLoc(JL,0,550,Ie,250000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        },
+        {
+          "function": "Bcb",
+          "line": 8226,
+          "sha256": "aca658628fb2e1b77b1d546f7fef3bc4d5973c6c015b4ebcaf9425f3a692ca74",
+          "customDependencies": [
+            "BFj"
+          ],
+          "externalDependencies": [
+            "UnitDamageTarget"
+          ],
+          "sourceOperations": [
+            "local real H4=BFj(Hy,Hz)",
+            "call UnitDamageTarget(Hv,Hw,IB,true,false,H0,H1,WEAPON_TYPE_WHOKNOWS)"
+          ]
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    },
+    {
+      "catalogId": "RN-04",
+      "name": "센토 이스즈",
+      "rawcode": "h06X",
+      "callback": {
+        "function": "CCg",
+        "line": 41816,
+        "sha256": "0297374fef452cadeb476b5fda5f70e5bf6e15a6bbb22be4d020d92a802cca40",
+        "customDependencies": [
+          "BFi",
+          "Bd8"
+        ],
+        "externalDependencies": [
+          "CreateUnitAtLoc",
+          "GetAttacker",
+          "GetOwningPlayer",
+          "GetTriggerUnit",
+          "GetUnitFacing",
+          "GetUnitLoc",
+          "IssueTargetOrderById",
+          "OrderId",
+          "RemoveLocation",
+          "UnitDamagePointLoc"
+        ],
+        "sourceOperations": [
+          "if BFi(1,100)<=17 then",
+          "set JI=CreateUnitAtLoc(RT,$65304C44,Ie,GetUnitFacing(JL))",
+          "set JI=CreateUnitAtLoc(RT,$65304C45,Ie,GetUnitFacing(JL))",
+          "call IssueTargetOrderById(JI,OrderId(\"faeriefire\"),RN)",
+          "call Bd8(RN,15)",
+          "call UnitDamagePointLoc(JL,0,375.,Ie,1500000.,ATTACK_TYPE_CHAOS,DAMAGE_TYPE_NORMAL)"
+        ]
+      },
+      "directCustomDependencies": [
+        {
+          "function": "BFi",
+          "line": 3596,
+          "sha256": "50d92a74b10e6f8aaf8946f18202186eda20dacf3c17bc0ed645bf5c5749d08e",
+          "customDependencies": [
+            "BFa",
+            "BFd",
+            "BFh"
+          ],
+          "externalDependencies": [
+            "R2I"
+          ],
+          "sourceOperations": []
+        },
+        {
+          "function": "Bd8",
+          "line": 8566,
+          "sha256": "7004edf4399de0c3e15dcb9416a67444a24b0323c617916930f4dd211dc0323e",
+          "customDependencies": [],
+          "externalDependencies": [
+            "GetUnitAbilityLevel",
+            "SetUnitAbilityLevel",
+            "UnitAddAbility"
+          ],
+          "sourceOperations": [
+            "call UnitAddAbility(Cm,XL)"
+          ]
+        }
+      ],
+      "runtimeConnectedByThisAudit": false,
+      "remaining": [
+        "공격 선언 시점 연결",
+        "전체 조건·난수 순서 재현",
+        "보조 객체·주문 및 후속 함수 구현",
+        "피해·상태·처치·보상 통합 검증"
+      ]
+    }
+  ]
+}

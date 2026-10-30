@@ -95,6 +95,8 @@ namespace Ordr.Mobile.Combat
         public string AttackerId { get; }
         public string TargetId { get; }
         public long ActualDamage { get; }
+        // False when a declared-attack effect removed the target before contact.
+        public bool BasicHitApplied { get; }
         public IReadOnlyList<string> ActivatedSkillRawCodes { get; }
         public IReadOnlyList<Original323NativePassiveActivation> NativePassiveActivations { get; }
 
@@ -105,11 +107,13 @@ namespace Ordr.Mobile.Combat
 
         internal BasicAttackResult(string attackerId, string targetId, long damage,
             List<string> activatedSkills,
-            IReadOnlyList<Original323NativePassiveActivation> nativePassives)
+            IReadOnlyList<Original323NativePassiveActivation> nativePassives,
+            bool basicHitApplied = true)
         {
             AttackerId = attackerId;
             TargetId = targetId;
             ActualDamage = damage;
+            BasicHitApplied = basicHitApplied;
             ActivatedSkillRawCodes = activatedSkills.AsReadOnly();
             NativePassiveActivations = new List<Original323NativePassiveActivation>(
                 nativePassives).AsReadOnly();
@@ -472,6 +476,10 @@ namespace Ordr.Mobile.Combat
                         eligibleProcs.Add(proc.RawCode);
             }
 
+            // Check before callbacks: a rejected sequence must not apply a skill.
+            if (unit.NextEventSequence == long.MaxValue)
+                throw new OverflowException("전투 이벤트 순번을 더 늘릴 수 없습니다.");
+
             // Declared-attack effects precede damage. As in JASS ATTACKED,
             // they may still occur if the later hit/formula cannot complete.
             if (verifiedAttackDeclared != null)
@@ -479,6 +487,18 @@ namespace Ordr.Mobile.Combat
             if (verifiedScriptAttackDeclared != null)
                 verifiedScriptAttackDeclared(attackerInstanceId,
                     unit.Spec.UnitRawCode, targetId);
+            // The declaration already happened. A skill may kill/remove its
+            // target before contact; consume this attack slot without rolling
+            // basic damage, native passives, or successful-hit triggers.
+            if (!enemy.IsAlive || !ReferenceEquals(resolution.GetEnemy(targetId), enemy))
+            {
+                if (!scheduler.TryCommitAttack(attackerInstanceId, nextAttackInterval))
+                    return false;
+                ++unit.NextEventSequence;
+                result = new BasicAttackResult(attackerInstanceId, targetId, 0,
+                    new List<string>(), Array.Empty<Original323NativePassiveActivation>(), false);
+                return true;
+            }
             // 피해 계산 오류가 발생하면 공격 쿨타임은 소비하지 않는다.
             var damageRequest = new BasicDamageRequest(attackerInstanceId,
                 unit.Spec.UnitRawCode, effective, targetId, attackerEffects);

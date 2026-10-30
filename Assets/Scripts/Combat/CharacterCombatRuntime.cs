@@ -2526,6 +2526,10 @@ namespace Ordr.Mobile.Combat
                 fired++;
                 events.Add(new CharacterCombatEvent(CharacterCombatEventType.Attack,
                     InstanceKey(id), hit.TargetId, null, "basic", hit.ActualDamage));
+                // A declared skill already handled damage/death/rewards. Do
+                // not run Robin extra hits, native passives or emit a second
+                // basic-attack death for an attack that never made contact.
+                if (!hit.BasicHitApplied) continue;
                 SpatialCombatEnemy primary;
                 if (!enemies.TryGetValue(hit.TargetId, out primary))
                     throw new InvalidOperationException("타격 대상 정보 소실");

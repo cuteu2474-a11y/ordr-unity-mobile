@@ -120,6 +120,65 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(c.Scheduler.IsReady("unit-1"));
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void DeclaredSkillKillConsumesOneAttackWithoutRollingBasicHit(bool scriptCallback)
+        {
+            var c = Setup();
+            c.Resolution.Spawn(new CombatEnemy("enemy", 100));
+            c.Resolution.Spawn(new CombatEnemy("next", 200));
+            c.Pipeline.RegisterUnit("unit-1", Unit(), 0);
+            int declarations = 0, deaths = 0;
+            c.Resolution.EnemyExited += (id, reason) => deaths++;
+            Action<string, string> kill = (actor, target) => {
+                declarations++;
+                long actual;
+                Assert.IsTrue(c.Resolution.TryApplySkillDamage(actor, target, 100, out actual));
+            };
+            if (scriptCallback)
+                c.Pipeline.ConfigureOriginalScriptAttackDeclared((actor, raw, target) => kill(actor, target));
+            else c.Pipeline.ConfigureVerifiedAttackDeclared(kill);
+            BasicAttackResult hit;
+            Assert.IsTrue(c.Pipeline.TryBasicAttack("unit-1",
+                new[] { Target("enemy", 1), Target("next", 2) }, out hit));
+            Assert.IsFalse(hit.BasicHitApplied);
+            Assert.AreEqual(0, hit.ActualDamage);
+            Assert.IsEmpty(hit.ActivatedSkillRawCodes);
+            Assert.IsEmpty(hit.NativePassiveActivations);
+            Assert.IsNull(c.Formula.LastRequest, "Dead target must not consume damage/proc RNG");
+            Assert.AreEqual(1, deaths);
+            Assert.AreEqual(1, declarations);
+            Assert.AreEqual(1, c.Scheduler.NextReadyAt("unit-1"));
+            Assert.IsFalse(c.Pipeline.TryBasicAttack("unit-1", new[] { Target("next", 2) }, out hit));
+            Assert.AreEqual(1, declarations);
+            c.Pipeline.Advance(1);
+            Assert.IsTrue(c.Pipeline.TryBasicAttack("unit-1", new[] { Target("next", 2) }, out hit));
+            Assert.IsTrue(hit.BasicHitApplied);
+            Assert.AreEqual(40, hit.ActualDamage);
+            Assert.AreEqual(60, c.Resolution.GetEnemy("next").Health);
+            Assert.AreEqual(1, deaths);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void DeclaredTargetRemovalCannotHitAReplacementWithTheSameId(bool replace)
+        {
+            var c = Setup();
+            c.Resolution.Spawn(new CombatEnemy("enemy", 100));
+            c.Pipeline.RegisterUnit("unit-1", Unit(), 0);
+            c.Pipeline.ConfigureVerifiedAttackDeclared((actor, target) => {
+                Assert.IsTrue(c.Resolution.TryLeak(target));
+                if (replace) c.Resolution.Spawn(new CombatEnemy(target, 200));
+            });
+            BasicAttackResult hit;
+            Assert.IsTrue(c.Pipeline.TryBasicAttack("unit-1", new[] { Target("enemy", 1) }, out hit));
+            Assert.IsFalse(hit.BasicHitApplied);
+            Assert.IsNull(c.Formula.LastRequest);
+            Assert.IsFalse(c.Scheduler.IsReady("unit-1"));
+            if (replace) Assert.AreEqual(200, c.Resolution.GetEnemy("enemy").Health);
+            else Assert.IsNull(c.Resolution.GetEnemy("enemy"));
+        }
+
         [Test]
         public void BasicHitUsesInjectedFormulaAndTriggersBothSkills()
         {

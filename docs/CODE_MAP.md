@@ -1,5 +1,7 @@
 # 코드 구조와 재사용 지점
 
+- 공격 발동 20명 원본 입력: `tools/audit_attack_skill_batch.py --jass /path/to/war3map.j [--verify]` → `data/original-2323C-attack-skill-batch.json`. 실행 허용 자료가 아니며 직접 호출 다음 단계와 보조 객체 능력은 추가 추적해야 합니다.
+
 몬스터 기본 능력은 `Original323MonsterObjectAbilityCatalog`가 원본 SLK 객체 목록을 읽고, **현재 활성 능력 및 관측된 기절 판정**은 `Original323MonsterNativeAbilityRuntime`이 처리한다. `Original323LiveBashTargetRules`와 `Original323VerifiedNativeMagicImpactAdapter`는 이 공통 공급자를 선택적으로 받아 원본 네이티브 판정을 교차 확인한다. `Aeth`는 피해 면역이 아니며 기본 65R에는 live 공급자가 없어 자동 적용되지 않는다.
 
 22명 공속 오라는 `SourceModelUnitEffects`와 기존 공격 예약 파이프라인의 연습 전용 간격 계산으로 동작한다. 원작 검증 공속 경로와 승인은 별개다.
