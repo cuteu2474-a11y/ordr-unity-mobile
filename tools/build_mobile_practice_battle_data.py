@@ -36,6 +36,20 @@ def build(data, jass_path, balance_path, last_round=20):
         for spawn in wave['normalAndBossSpawns']
     }
     balance = parse_sylk_bytes(balance_path.read_bytes())
+    initial_magic_level = None
+    if last_round == 65:
+        tech = json.loads((data / 'original-2323C-nightmare-monster-tech-evidence.json').read_text())
+        abilities = json.loads((data / 'original-2323C-monster-object-abilities.json').read_text())
+        if (tech['sourceW3xSha256'] != MAP_SHA or tech['sourceWar3mapJSha256'] != JASS_SHA
+                or abilities['sourceW3xSha256'] != MAP_SHA
+                or abilities['sourceWar3mapJSha256'] != JASS_SHA):
+            raise ValueError('Monster A04Q source hashes disagree')
+        initial_magic_level = tech['nightmareMonsterMagicDefense']['initialA04QAbilityLevel']
+        if initial_magic_level != 16:
+            raise ValueError('Nightmare initial A04Q level changed')
+        object_abilities = {x['rawcode']: set(x['objectBaseAbilities']) for x in abilities['entries']}
+        if any('A04Q' not in object_abilities.get(rawcode, ()) for rawcode in expected.values()):
+            raise ValueError('Wave monster lacks original A04Q base ability')
     entries = []
     for row in models['waveMonsterInitialStatModels']:
         if row['waveNumber'] > last_round:
@@ -67,7 +81,7 @@ def build(data, jass_path, balance_path, last_round=20):
     difficulty = next(body for body in re.findall(r'elseif NE==NL then\n(.*?)\nendif', source, re.S) if 'set ia=70' in body)
     if 'set ia=70' not in difficulty or 'call Bcz(Player(EK),2)' not in source:
         raise ValueError('Round/Wisp source rules changed')
-    return {'format': ('ordr-mobile-practice-model-v1' if last_round == 20 else
+    result = {'format': ('ordr-mobile-practice-model-v1' if last_round == 20 else
                        'ordr-mobile-standalone-source-model-v1'), 'sourceW3xSha256': MAP_SHA,
             'sourceJassSha256': JASS_SHA, 'retailParityVerified': False,
             'safeForVerifiedMonsterWaveRuntime': False, 'lastRound': last_round,
@@ -78,6 +92,9 @@ def build(data, jass_path, balance_path, last_round=20):
                            'Route centers/raw movement speed approximate native region turns/collision.',
                            'Damage retains fractional remainder per target; retail float rounding unverified.',
                            'Source-derived simulation is not a verified original-client parity result.']}
+    if last_round == 65:
+        result['initialMagicAbilityLevel'] = initial_magic_level
+    return result
 
 
 def main():

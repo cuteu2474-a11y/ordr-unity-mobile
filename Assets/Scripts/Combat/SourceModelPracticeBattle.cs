@@ -24,6 +24,7 @@ namespace Ordr.Mobile.Combat
         // Each new-world boss wave can contain both a line enemy and a boss.
         // Never let the last row in the JSON overwrite the other role.
         private readonly Dictionary<string, Round> rounds = new Dictionary<string, Round>();
+        private readonly int? standaloneInitialMagicAbilityLevel;
         private readonly VerifiedCombatPath route;
         public IReadOnlyList<CombatPathPoint> RouteCorners { get; private set; }
         public int LastRound { get; private set; }
@@ -49,6 +50,13 @@ namespace Ordr.Mobile.Combat
             if ((!originalTraining && !standalone) || lastRound > sourceLastRound)
                 throw new ArgumentOutOfRangeException(nameof(lastRound), "요청한 라운드 전체의 원본 모델이 필요합니다.");
             LastRound = lastRound;
+            if (standalone)
+            {
+                double level = Number(root, "initialMagicAbilityLevel");
+                if (level != Original323NightmareA04QSpawnState.NightmareInitialLevel)
+                    throw new FormatException("독립 65R 적의 원본 초기 A04Q 레벨이 다릅니다.");
+                standaloneInitialMagicAbilityLevel = (int)level;
+            }
             if (
                 OrdrJson.RequiredString(root, "sourceW3xSha256") != OriginalCommonSaleRules.OriginalMapSha256 ||
                 OrdrJson.RequiredString(root, "sourceJassSha256") != Original323SourceCommonWispWorld.PinnedWar3mapJSha256 ||
@@ -113,10 +121,17 @@ namespace Ordr.Mobile.Combat
                 if (entry.Rawcode != model.Rawcode ||
                     (entry.Kind == CharacterEnemyKind.Boss ? "boss" : "line") != model.Role)
                     throw new FormatException("연습 모델과 원본 출현 객체가 다릅니다.");
+                // A04Q is assigned at native spawn. Its starting Nightmare level
+                // and Def5 table are source-derived, while later events remain unmodeled.
+                EnemyDefenseProfile defense = standaloneInitialMagicAbilityLevel.HasValue
+                    ? Ordr323VerifiedDefenseAbilities.FromVerifiedMagicAbilityLevel(
+                        entry.Kind, model.Armor, model.ArmorType,
+                        standaloneInitialMagicAbilityLevel.Value,
+                        "MODEL_ONLY: JASS initial A04Q + W3A Def5")
+                    : new EnemyDefenseProfile(entry.Kind, model.Armor, null,
+                        model.ArmorType, "MODEL_ONLY: reference-engine initial defense");
                 spawns.Add(new VerifiedWaveEnemy(entry.AtSeconds, entry.InstanceId, model.Health,
-                    entry.Kind, point.X, point.Y, 0, new EnemyDefenseProfile(entry.Kind,
-                        model.Armor, null, model.ArmorType, "MODEL_ONLY: reference-engine initial defense"),
-                    model.Rawcode));
+                    entry.Kind, point.X, point.Y, 0, defense, model.Rawcode));
             }
             return new VerifiedWavePlan(number, spawns, "MODEL_ONLY: development practice; NOT retail live evidence");
         }
@@ -131,6 +146,7 @@ namespace Ordr.Mobile.Combat
         public int Defeated { get; internal set; }
         public int AliveEnemies { get; internal set; }
         public long GoldAwarded { get; internal set; }
+        public int BossScoreAwarded { get; internal set; }
     }
 
     // Drives the existing combat runtime/director/wallet. No parallel damage
@@ -151,11 +167,14 @@ namespace Ordr.Mobile.Combat
         private double roundStart;
         private int roundStartingDefeated;
         private long roundStartingGold;
+        private int roundStartingBossScore;
         private readonly List<SourceModelPracticeRoundResult> history = new List<SourceModelPracticeRoundResult>();
         public IReadOnlyList<SourceModelPracticeRoundResult> RoundHistory => history.AsReadOnly();
         public bool Started { get; private set; }
         public string ResultMessage { get; private set; }
         public long GoldAwarded { get; private set; }
+        // New-world boss points are not a wallet currency or monster-kill gold.
+        public int BossScoreAwarded { get; private set; }
         public int RoundWispsAwarded { get; private set; }
         public double SecondsRemaining
         {
@@ -206,6 +225,7 @@ namespace Ordr.Mobile.Combat
             roundStart = combat.Time;
             roundStartingDefeated = combat.Game.DefeatedEnemies;
             roundStartingGold = GoldAwarded;
+            roundStartingBossScore = BossScoreAwarded;
             var plan = plans[wave - 1];
             foreach (var spawn in plan.Spawns)
             {
@@ -292,6 +312,15 @@ namespace Ordr.Mobile.Combat
         private void RewardActualDeath(int spawnWave, string id)
         {
             if (!rewarded.Add(id)) return;
+            string defeatedBossRawcode;
+            int bossPoints;
+            // Bdf credits points only for actual 55/60/65 boss deaths. The
+            // simulated round clock is explicit model time, not a live witness.
+            if (spawnWave == combat.Game.CurrentWave &&
+                waves.TryGetDefeatedBossRawcode(spawnWave, id, out defeatedBossRawcode) &&
+                Original323BossRoundRules.TryGetLateBossScore(
+                    spawnWave, combat.Time - roundStart, out bossPoints))
+                BossScoreAwarded = checked(BossScoreAwarded + bossPoints);
             int roll = scriptRandom.NextInclusive(1, 4), amount;
             if (!Original323MonsterGoldRules.TryEvaluateObservedRoll(
                 combat.Game.CurrentWave, roll, 0, out amount))
@@ -311,7 +340,8 @@ namespace Ordr.Mobile.Combat
             history.Add(new SourceModelPracticeRoundResult { Wave = wave,
                 ElapsedSeconds = combat.Time - roundStart,
                 Defeated = combat.Game.DefeatedEnemies - roundStartingDefeated,
-                AliveEnemies = combat.Game.AliveEnemies, GoldAwarded = GoldAwarded - roundStartingGold });
+                AliveEnemies = combat.Game.AliveEnemies, GoldAwarded = GoldAwarded - roundStartingGold,
+                BossScoreAwarded = BossScoreAwarded - roundStartingBossScore });
         }
         private void Finish(bool won, string message)
         {

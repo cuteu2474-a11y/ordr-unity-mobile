@@ -63,6 +63,7 @@ namespace Ordr.Mobile.Tests
                 Assert.Greater(game.Combat.Game.DefeatedEnemies, 0);
                 Assert.Greater(game.Battle.GoldAwarded, 0);
                 Assert.AreEqual(60 + game.Battle.GoldAwarded, game.Economy.Wallet.Balance("gold"));
+                Assert.AreEqual(0, game.Battle.BossScoreAwarded);
                 Assert.AreEqual(0, game.Combat.Game.LeakedEnemies);
             }
         }
@@ -329,12 +330,23 @@ namespace Ordr.Mobile.Tests
             var identity = Original323MonsterWaveIdentityCatalog.FromJson(
                 Data("original-2323C-monster-wave-script-evidence.json"));
             var catalog = new SourceModelPracticeCatalog(Data("mobile-standalone-enemy-model.json"), 65);
+            double expectedMagicResistance;
+            Assert.IsTrue(Ordr323VerifiedDefenseAbilities.TryGetNightmareBaselineResistance(
+                out expectedMagicResistance));
             int monsters = 0;
             for (int wave = 1; wave <= 65; wave++)
             {
                 var plan = catalog.BuildPracticePlan(wave, identity);
                 Assert.IsTrue(identity.MatchesSinglePlayerSpawnCadence(plan), "wave " + wave);
                 Assert.IsTrue(plan.Spawns.All(x => x.Health > 0), "wave " + wave);
+                foreach (var enemy in plan.Spawns)
+                {
+                    Assert.AreEqual(Original323NightmareA04QSpawnState.NightmareInitialLevel,
+                        enemy.Defenses.MagicAbilityLevel, "wave " + wave);
+                    Assert.AreEqual(expectedMagicResistance,
+                        enemy.Defenses.MagicResistancePercent.Value, 0.0001,
+                        "wave " + wave);
+                }
                 monsters += plan.Spawns.Count;
                 if (wave == 55 || wave == 60 || wave == 65)
                 {
@@ -353,6 +365,21 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(338, game.Combat.MobileEnemySnapshot().Single().Health);
                 Assert.AreEqual(0, game.Combat.Game.LeakedEnemies);
             }
+        }
+
+        [Test]
+        public void StandaloneMagicDefenseLevelCannotDriftOrBecomeRetailApproval()
+        {
+            string standalone = Data("mobile-standalone-enemy-model.json");
+            Assert.Throws<FormatException>(() => new SourceModelPracticeCatalog(
+                standalone.Replace("\"initialMagicAbilityLevel\": 16",
+                    "\"initialMagicAbilityLevel\": 15"), 65));
+            var oldPractice = new SourceModelPracticeCatalog(
+                Data("mobile-practice-battle-model.json"));
+            var identity = Original323MonsterWaveIdentityCatalog.FromJson(
+                Data("original-2323C-monster-wave-script-evidence.json"));
+            Assert.IsFalse(oldPractice.BuildPracticePlan(1, identity).Spawns[0]
+                .Defenses.MagicResistancePercent.HasValue);
         }
 
         [Test]

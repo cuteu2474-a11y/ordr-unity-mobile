@@ -46,7 +46,15 @@ class MobilePracticeDataTests(unittest.TestCase):
         self.assertIs(False, game['safeForVerifiedMonsterWaveRuntime'])
         self.assertEqual(70, game['initialEnemyLimit'])
         self.assertEqual(2, game['roundRandomWisps'])
+        tech = json.loads((DATA / 'original-2323C-nightmare-monster-tech-evidence.json').read_text())
+        abilities = json.loads((DATA / 'original-2323C-monster-object-abilities.json').read_text())
+        source_abilities = {row['rawcode']: set(row['objectBaseAbilities'])
+                            for row in abilities['entries']}
+        self.assertEqual(tech['nightmareMonsterMagicDefense']['initialA04QAbilityLevel'],
+                         game['initialMagicAbilityLevel'])
+        self.assertEqual(16, game['initialMagicAbilityLevel'])
         for row in game['rounds']:
+            self.assertIn('A04Q', source_abilities[row['rawcode']])
             key = (row['wave'], row['role'])
             stat = stat_rows[key]
             self.assertEqual(spawn_ids[key], row['rawcode'])
