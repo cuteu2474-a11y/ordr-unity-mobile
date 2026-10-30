@@ -212,17 +212,16 @@ namespace Ordr.Mobile.Combat
                 }
                 else if (component.Type == "armorBreak")
                 {
-                    if (!component.Number("stacks").HasValue) return false;
+                    int count;
+                    int? limit;
+                    if (!CommonSkillStatusEffects.TryReadArmorBreak(component, out count, out limit)) return false;
                 }
-                else if (component.Type == "stun" ||
-                         component.Type == "armorReduction" ||
-                         component.Type == "movementSlow" ||
-                         component.Type == "movementSlowPercent" ||
-                         component.Type == "magicResistanceReduction" ||
-                         component.Type == "magicDamageAmplification" ||
-                         component.Type == "explosiveDamageAmplification")
+                else if (CommonSkillStatusEffects.IsTimedStatus(component.Type))
                 {
-                    if (!component.Number("durationSeconds").HasValue) return false;
+                    CombatEffectType kind;
+                    double amount, duration;
+                    if (!CommonSkillStatusEffects.TryRead(component, out kind, out amount, out duration))
+                        return false;
                 }
                 else if (specialAllowed == null || !specialAllowed(component))
                     return false;

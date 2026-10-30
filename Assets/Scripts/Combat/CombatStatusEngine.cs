@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
@@ -28,6 +29,69 @@ namespace Ordr.Mobile.Combat
     {
         Aura,
         TriggeredSkill
+    }
+
+    // Shared parsing for timed combat effects. Values are inputs to the
+    // status engine, not proof of a skill's native target, stacking or damage.
+    public static class CommonSkillStatusEffects
+    {
+        public static bool IsTimedStatus(string type)
+        {
+            return type == "stun" || type == "armorReduction" ||
+                type == "movementSlow" || type == "movementSlowPercent" ||
+                type == "magicResistanceReduction" || type == "magicDamageAmplification" ||
+                type == "explosiveDamageAmplification" || type == "allDamageAmplification";
+        }
+
+        public static bool TryRead(ImportedCombatEffect component,
+            out CombatEffectType kind, out double amount, out double duration)
+        {
+            kind = CombatEffectType.Stun; amount = 0; duration = 0;
+            if (component == null) return false;
+            string field;
+            switch (component.Type)
+            {
+                case "stun": kind = CombatEffectType.Stun; field = null; break;
+                case "armorReduction": kind = CombatEffectType.ArmorReduction; field = "amount"; break;
+                case "movementSlow":
+                case "movementSlowPercent": kind = CombatEffectType.MovementSlowPercent; field = "percent"; break;
+                case "magicResistanceReduction": kind = CombatEffectType.MagicResistanceReduction; field = "percent"; break;
+                case "magicDamageAmplification": kind = CombatEffectType.MagicDamageAmplification; field = "percent"; break;
+                case "explosiveDamageAmplification": kind = CombatEffectType.ExplosiveDamageAmplification; field = "percent"; break;
+                case "allDamageAmplification": kind = CombatEffectType.AllDamageAmplification; field = "percent"; break;
+                default: return false;
+            }
+            // Caps and extra per-effect rules require their own verified
+            // handler: applying just the displayed percentage loses rules.
+            foreach (string key in new[] { "maxPercent", "maxStacks", "stacks",
+                "percentByTargetKind", "amountByTargetKind" })
+                if (component.Get(key) != null) return false;
+            double? value = field == null ? 1 : component.Number(field);
+            double? seconds = component.Number("durationSeconds");
+            if (!value.HasValue || !seconds.HasValue || double.IsNaN(value.Value) ||
+                double.IsInfinity(value.Value) || value.Value < 0 ||
+                double.IsNaN(seconds.Value) || double.IsInfinity(seconds.Value) ||
+                seconds.Value <= 0) return false;
+            amount = value.Value; duration = seconds.Value;
+            return true;
+        }
+
+        public static bool TryReadArmorBreak(ImportedCombatEffect component,
+            out int count, out int? limit)
+        {
+            count = 0; limit = null;
+            if (component == null || component.Type != "armorBreak") return false;
+            double? value = component.Number("stacks");
+            double? maximum = component.Number("maxStacks");
+            if (!value.HasValue || double.IsNaN(value.Value) || double.IsInfinity(value.Value) ||
+                value.Value < 1 || value.Value > int.MaxValue || Math.Floor(value.Value) != value.Value ||
+                (maximum.HasValue && (double.IsNaN(maximum.Value) || double.IsInfinity(maximum.Value) ||
+                    maximum.Value < 0 || maximum.Value > int.MaxValue ||
+                    Math.Floor(maximum.Value) != maximum.Value))) return false;
+            count = (int)value.Value;
+            if (maximum.HasValue) limit = (int)maximum.Value;
+            return true;
+        }
     }
 
     public sealed class CombatEffect

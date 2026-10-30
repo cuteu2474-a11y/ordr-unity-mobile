@@ -137,11 +137,11 @@ namespace Ordr.Mobile.Tests
         public void RuntimeRosterContainsZombieWithoutChangingTheOtherThirteen()
         {
             var units = ReadUnits();
-            Assert.AreEqual(274, units.Count);
+            Assert.AreEqual(277, units.Count);
             var emptySkills = CharacterSkillCatalog.FromJson(
                 "{\"gameVersion\":\"S2 2.323[C]\",\"profiles\":[]}");
             var registry = UnitImplementationRegistry.Combine(units, emptySkills, null);
-            Assert.AreEqual(274, registry.Count);
+            Assert.AreEqual(277, registry.Count);
             Assert.AreEqual(14, registry.OfGrade("안흔함").Count);
             var zombie = registry.Require("U-14");
             Assert.AreEqual("좀비", zombie.DisplayName);
@@ -169,7 +169,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(4, zombie.Attack1.DiceSides.Value);
             Assert.AreEqual(1050, zombie.Attack1.OriginalRange.Value);
             var mapped = new OriginalMapMappedNativeAttackEvidenceCatalog(map);
-            Assert.AreEqual(272, mapped.Count);
+            Assert.AreEqual(273, mapped.Count);
             Assert.AreEqual("h00H", mapped.Find("U-14").Rawcode);
             Assert.AreEqual(Ordr323AttackType.Pierce,
                 mapped.Find("U-14").NativeAttackType);

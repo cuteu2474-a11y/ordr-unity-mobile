@@ -172,11 +172,7 @@ namespace Ordr.Mobile.Combat
 
         private static bool IsStandardEffect(string type)
         {
-            return type == "stun" || type == "armorReduction" ||
-                type == "movementSlow" || type == "movementSlowPercent" ||
-                type == "magicResistanceReduction" ||
-                type == "magicDamageAmplification" ||
-                type == "explosiveDamageAmplification" || type == "armorBreak";
+            return CommonSkillStatusEffects.IsTimedStatus(type) || type == "armorBreak";
         }
 
         // 원작의 각 타격 시각을 확인한 공급자만 허용.
@@ -249,6 +245,22 @@ namespace Ordr.Mobile.Combat
                      component.Type == "magicResistanceReduction") &&
                     !verified323DefenseRouter.CanRoute(casterId, profile, skill, component))
                     return false;
+                else if (CommonSkillStatusEffects.IsTimedStatus(component.Type) &&
+                    !(verified323DefenseRouter != null && component.Type == "magicResistanceReduction"))
+                {
+                    CombatEffectType kind;
+                    double amount, duration;
+                    if (!CommonSkillStatusEffects.TryRead(component, out kind, out amount, out duration))
+                        return false;
+                }
+                else if (component.Type == "armorBreak" && verified323DefenseRouter == null)
+                {
+                    int count;
+                    int? limit;
+                    if (component.Get("maxArmorReduction") != null ||
+                        !CommonSkillStatusEffects.TryReadArmorBreak(component, out count, out limit))
+                        return false;
+                }
                 else if (!IsStandardEffect(component.Type) &&
                     !CanHandleSpecialComponent(profile, skill, component))
                     return false;
@@ -412,73 +424,43 @@ namespace Ordr.Mobile.Combat
                 return;
             }
 
-            CombatEffectType kind;
-            double? amount = null;
-            switch (component.Type)
+            if (component.Type == "armorBreak")
             {
-                case "stun":
-                    kind = CombatEffectType.Stun;
-                    amount = 1;
-                    break;
-                case "armorReduction":
-                    kind = CombatEffectType.ArmorReduction;
-                    amount = component.Number("amount");
-                    break;
-                case "movementSlow":
-                case "movementSlowPercent":
-                    kind = CombatEffectType.MovementSlowPercent;
-                    amount = component.Number("percent");
-                    break;
-                case "magicResistanceReduction":
-                    kind = CombatEffectType.MagicResistanceReduction;
-                    amount = component.Number("percent");
-                    break;
-                case "magicDamageAmplification":
-                    kind = CombatEffectType.MagicDamageAmplification;
-                    amount = component.Number("percent");
-                    break;
-                case "explosiveDamageAmplification":
-                    kind = CombatEffectType.ExplosiveDamageAmplification;
-                    amount = component.Number("percent");
-                    break;
-                case "armorBreak":
-                    double? count = component.Number("stacks");
-                    if (!count.HasValue || count.Value <= 0 ||
-                        count.Value > int.MaxValue || Math.Floor(count.Value) != count.Value)
-                    {
-                        Defer(casterId, target.Id, skill.Name, "아머브레이크 수량 미확인.");
-                        return;
-                    }
-                    int current;
-                    armorBreakStacks.TryGetValue(target.Id, out current);
-                    int next = checked(current + (int)count.Value);
-                    double? limit = component.Number("maxStacks");
-                    if (limit.HasValue && limit.Value >= 0 && limit.Value <= int.MaxValue)
-                        next = Math.Min(next, (int)limit.Value);
-                    armorBreakStacks[target.Id] = next;
-                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.ArmorBreakApplied,
-                        casterId, target.Id, skill.Name, "stack", next));
+                int count;
+                int? limit;
+                if (component.Get("maxArmorReduction") != null ||
+                    !CommonSkillStatusEffects.TryReadArmorBreak(component, out count, out limit))
+                {
+                    Defer(casterId, target.Id, skill.Name, "아머브레이크 수량 미확인.");
                     return;
-                default:
-                    if (specialEffects != null &&
-                        specialEffects.Supports(profile, skill, component))
-                    {
-                        string failure;
-                        if (!specialEffects.TryApply(casterId, profile, skill,
-                            component, target, isPrimary, out failure))
-                            Defer(casterId, target.Id, skill.Name,
-                                failure ?? "특수효과 적용 조건 불일치");
-                        return;
-                    }
-                    Defer(casterId, target.Id, skill.Name,
-                        "별도 효과 실행기 미구현: " + component.Type);
-                    return;
+                }
+                int current;
+                armorBreakStacks.TryGetValue(target.Id, out current);
+                long sum = (long)current + count;
+                int next = limit.HasValue ? (int)Math.Min(sum, limit.Value) : checked((int)sum);
+                armorBreakStacks[target.Id] = next;
+                events.Add(new CharacterCombatEvent(CharacterCombatEventType.ArmorBreakApplied,
+                    casterId, target.Id, skill.Name, "stack", next));
+                return;
             }
-
-            double? duration = component.Number("durationSeconds");
-            if (!amount.HasValue || !duration.HasValue || duration.Value <= 0)
+            if (!CommonSkillStatusEffects.IsTimedStatus(component.Type))
             {
-                // 효과 지속시간이 원본에서 불분명하면 영구/즉시 만료로 임의 변환하지 않음.
+                if (specialEffects != null && specialEffects.Supports(profile, skill, component))
+                {
+                    string failure;
+                    if (!specialEffects.TryApply(casterId, profile, skill,
+                        component, target, isPrimary, out failure))
+                        Defer(casterId, target.Id, skill.Name,
+                            failure ?? "특수효과 적용 조건 불일치");
+                }
+                else Defer(casterId, target.Id, skill.Name,
+                    "별도 효과 실행기 미구현: " + component.Type);
+                return;
+            }
+            CombatEffectType kind;
+            double amount, duration;
+            if (!CommonSkillStatusEffects.TryRead(component, out kind, out amount, out duration))
+            {
                 Defer(casterId, target.Id, skill.Name,
                     "효과 수치 또는 지속시간 미확인: " + component.Type);
                 return;
@@ -490,7 +472,7 @@ namespace Ordr.Mobile.Combat
                 return;
             }
             status.Apply(new CombatEffect(casterId + ":" + skill.Id, kind,
-                CombatEffectOrigin.TriggeredSkill, amount.Value, duration.Value));
+                CombatEffectOrigin.TriggeredSkill, amount, duration));
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.StatusApplied,
                 casterId, target.Id, skill.Name, component.Type, 0));
         }
