@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from build_original_map_base_stats import (  # noqa: E402
     COMMON_RAWCODES, attack_stats, clean_name, normalize_name, object_stats,
 )
-from classify_character_skills import family  # noqa: E402
+from classify_character_skills import family, build  # noqa: E402
 from reconcile_ambiguous_original_map_objects import (  # noqa: E402
     REVIEWED_MAP_NAME_ALIASES, reconcile,
 )
@@ -64,6 +64,34 @@ class GeneratedDataTests(unittest.TestCase):
         ).read_text(encoding="utf-8"))
         cls.profiles = json.loads((ROOT / "data/character-skill-profiles.json").read_text(
             encoding="utf-8"))
+
+    def test_skill_queue_rebuilds_against_current_runtime_catalog(self):
+        units = json.loads((ROOT / "data/units.json").read_text(encoding="utf-8"))
+        runtime = json.loads((ROOT / "data/unit-runtime-status.json").read_text(encoding="utf-8"))
+        result = build(units, self.profiles, self.source, runtime)
+        self.assertEqual(result, self.skills)
+        self.assertEqual(len(result["units"]), len(units["entries"]))
+        self.assertEqual(result["summary"]["unitsWithConnectedModelEffects"],
+                         runtime["summary"]["modelEffectOwners"])
+        self.assertEqual(result["summary"]["unitsWithoutTooltipProfile"],
+                         len(units["entries"]) - len(self.profiles["profiles"]))
+        unknown = next(row for row in result["units"] if not row["tooltipProfilePresent"])
+        self.assertIsNone(unknown["documentedSkillCount"])
+        self.assertIsNone(unknown["documentedPassiveCount"])
+        self.assertTrue(all(not row["originalExecutionVerified"] for row in result["skills"]))
+
+    def test_skill_queue_rejects_missing_or_duplicate_catalog_and_stale_runtime(self):
+        units = json.loads((ROOT / "data/units.json").read_text(encoding="utf-8"))
+        runtime = json.loads((ROOT / "data/unit-runtime-status.json").read_text(encoding="utf-8"))
+        incomplete = dict(self.source, catalogEntries=self.source["catalogEntries"][:-1])
+        with self.assertRaises(ValueError):
+            build(units, self.profiles, incomplete, runtime)
+        duplicated = dict(runtime, entries=runtime["entries"] + [runtime["entries"][0]])
+        with self.assertRaises(ValueError):
+            build(units, self.profiles, self.source, duplicated)
+        changed = dict(runtime, sourceW3xSha256="incorrect")
+        with self.assertRaises(ValueError):
+            build(units, self.profiles, self.source, changed)
 
     def test_full_source_index_and_partial_verified_join(self):
         report = self.source["summary"]

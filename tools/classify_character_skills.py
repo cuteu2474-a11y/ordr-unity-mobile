@@ -38,14 +38,30 @@ def family(trigger):
     return "special-condition-needs-analysis"
 
 
-def build(units, profiles, object_catalog):
+def build(units, profiles, object_catalog, runtime_status=None):
     for doc in (units, profiles, object_catalog):
         if doc["gameVersion"] != VERSION:
             raise ValueError("Mixed ORDR game versions in skill classification")
     unit_index = {row["id"]: row for row in units["entries"]}
     object_index = {row["catalogId"]: row for row in object_catalog["catalogEntries"]}
-    if len(unit_index) != 271 or len(object_index) != 271:
-        raise ValueError("Character DB or map index is incomplete")
+    if (len(unit_index) != len(units["entries"]) or
+            len(object_index) != len(object_catalog["catalogEntries"]) or
+            set(unit_index) != set(object_index) or
+            units.get("expectedTotal") != len(unit_index)):
+        raise ValueError("Character DB or map index is inconsistent")
+    profile_index = {row["unitId"]: row for row in profiles["profiles"]}
+    if len(profile_index) != len(profiles["profiles"]) or not set(profile_index) <= set(unit_index):
+        raise ValueError("Duplicate or unknown tooltip profile")
+    runtime = {}
+    if runtime_status is not None:
+        if runtime_status.get("sourceW3xSha256") != object_catalog.get("sourceW3xSha256"):
+            raise ValueError("Runtime export and source map fingerprint differ")
+        runtime = {row["catalogId"]: row for row in runtime_status["entries"]}
+        if len(runtime) != len(runtime_status["entries"]) or set(runtime) != set(unit_index):
+            raise ValueError("Runtime export does not cover the current catalog")
+        for uid, row in runtime.items():
+            if row["originalRawcode"] != object_index[uid]["originalRawcode"]:
+                raise ValueError("Runtime source identity mismatch: " + uid)
 
     rows = []
     groups = defaultdict(list)
@@ -99,6 +115,22 @@ def build(units, profiles, object_catalog):
         })
     templates.sort(key=lambda x: (-x["skillCount"], x["family"],
                                   x["documentedTrigger"], x["documentedEffectTypes"]))
+    unit_rows = []
+    for uid, unit in unit_index.items():
+        obj = object_index[uid]
+        profile = profile_index.get(uid)
+        status = runtime.get(uid)
+        unit_rows.append({
+            "catalogId": uid, "unitName": unit["name"], "grade": unit["grade"],
+            "mapUnitRawcode": obj["originalRawcode"],
+            "objectAbilityRawcodes": (obj.get("originalAbilityList") or "").split(",") if obj.get("originalAbilityList") else [],
+            "tooltipProfilePresent": profile is not None,
+            "documentedSkillCount": len(profile.get("skills", [])) if profile else None,
+            "documentedPassiveCount": len(profile.get("passives", [])) if profile else None,
+            "connectedModelEffects": status["connectedModelEffects"] if status else None,
+            "connectedManualFunctions": status["connectedManualFunctions"] if status else None,
+            "remainingWork": status["remainingWork"] if status else None,
+        })
     return {
         "format": "ordr-skill-template-research-queue-v1",
         "gameVersion": VERSION,
@@ -107,6 +139,8 @@ def build(units, profiles, object_catalog):
         "summary": {
             "catalogCharacters": len(unit_index),
             "tooltipProfiles": len(profiles["profiles"]),
+            "unitsWithoutTooltipProfile": len(unit_index) - len(profile_index),
+            "unitsWithConnectedModelEffects": sum(bool(r["connectedModelEffects"]) for r in unit_rows) if runtime else None,
             "skillEntries": len(rows),
             "passiveEntries": passives,
             "skillEntriesOnMappedUnits": linked_skills,
@@ -118,6 +152,8 @@ def build(units, profiles, object_catalog):
         },
         "templateGroups": templates,
         "skills": rows,
+        "units": unit_rows,
+        "unitStatusNote": "Connected effects are per-unit model exports; they cannot prove that any individual tooltip skill is implemented or original-equivalent.",
     }
 
 
@@ -130,7 +166,8 @@ def main():
     args = parser.parse_args()
     read = lambda path: json.loads((args.data_dir / path).read_text(encoding="utf-8"))
     result = build(read("units.json"), read("character-skill-profiles.json"),
-                   read("original-2323C-map-base-stats.json"))
+                   read("original-2323C-map-base-stats.json"),
+                   read("unit-runtime-status.json"))
     content = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
     if args.verify:
         if not args.output.exists() or args.output.read_text(encoding="utf-8") != content:

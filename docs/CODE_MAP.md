@@ -131,3 +131,7 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 [원본 히든 감사](../tools/audit_original_hidden_fusions.py)와 [히든 거래 근거](../data/original-2323C-hidden-material-swaps.json), [영원 ET01 감사](../tools/audit_original_simple_eternal_fusion.py)는 채팅 등록·래퍼·콜백·원본 매핑을 검사합니다. YY15의 XM 초기화, 해적선 h060, CH8 추가 효과는 기존 잠금을 유지합니다. 원본 전용 **R-43=h05X**는 실제 W3X 객체로 추가했지만 UU01은 UPUN 표식만 있어 무료 생성되지 않습니다.
 
 `tools/classify_original_fusion_blockers.py`는 원본 265개와 `Reviewed*` 실제 허용 배열을 자동 집계해 [미연결 조합 127건과 중첩 원인](../data/original-fusion-unconnected-review.json)을 재생성합니다. [조건부 조합 6건 감사](../data/original-2323C-conditional-fusion-audit.json)는 **변질/이세계 모드별 밴 트리거**와 항법·콜백 부가 효과를 분리합니다. 남은 상위 등급의 `KING`/`UBAN` 외 추가 생성, 원본 패왕의길 선택 효과, `RDUN`·변신·아이템 조건은 전체 원본 상태·효과·정산이 실제 연결되기 전까지 제작을 거절합니다. 이 분류는 미리보기 UI나 실제 지급 권한이 아닙니다.
+
+## 전체 스킬 분류
+
+`tools/classify_character_skills.py`는 현재 도감·원본 객체·`unit-runtime-status.json`의 ID 집합/원본 해시를 대조하고 `data/original-2323C-skill-research-queue.json`을 생성합니다. 툴팁 스킬 유형별 묶음과 유닛별 기존 모델 효과를 함께 제공하되, 두 항목을 자동으로 동일 스킬이라고 판정하거나 전투 실행을 승인하지 않습니다. 누락 프로필은 `null`로 표시합니다.
