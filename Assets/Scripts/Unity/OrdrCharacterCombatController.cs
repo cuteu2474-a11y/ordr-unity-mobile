@@ -659,6 +659,8 @@ namespace Ordr.Mobile.Unity
         private IOriginalWispRandom sessionScriptRandom;
         public SourceModelPracticeBattle PracticeBattle { get; private set; }
         public Original323CreepPracticeWorld PracticeCreeps { get; private set; }
+        public Original323StoryBuildingPracticeWorld PracticeStoryBuildings { get; private set; }
+        public Original323StoryBuildingCatalog StoryBuildingCatalog { get; private set; }
         public SourceModelRegularMoneyGambling PracticeMoneyGambling { get; private set; }
 
         // Source-confirmed creep placement and unit eligibility are not yet known.
@@ -669,6 +671,16 @@ namespace Ordr.Mobile.Unity
             if (PracticeCreeps == null)
                 throw new InvalidOperationException("원본 기반 연습 전투를 먼저 시작하세요.");
             return PracticeCreeps.SpawnPracticeStage(stage, x, y);
+        }
+
+        // Explicit development encounter only. Real placement, stage unlocks and
+        // source-authorized dispatch are separate prerequisites for retail play.
+        public Original323StoryBuildingEncounter SpawnPracticeStoryBuilding(
+            int stage, double x, double y)
+        {
+            if (PracticeStoryBuildings == null)
+                throw new InvalidOperationException("스토리 건물 연습 전투를 먼저 시작하세요.");
+            return PracticeStoryBuildings.SpawnPracticeBuilding(stage, x, y);
         }
 
         public void BeginPracticeBattle(int lastRound = 10)
@@ -692,6 +704,7 @@ namespace Ordr.Mobile.Unity
             if (creepData == null)
                 throw new InvalidOperationException("크립 원본 객체 자료가 APK에 없습니다.");
             var creepCatalog = Original323CreepObjectCatalog.FromJson(creepData.text);
+            var storyCatalog = Original323StoryBuildingCatalog.FromJson(creepData.text);
             var prepared = new SourceModelPracticeBattle(Combat, VerifiedWaveDirector, SharedEconomy,
                 new SourceModelPracticeCatalog(data.text, lastRound), OriginalMonsterSpawnIdentities,
                 sourceModelDamage, sessionScriptRandom, () =>
@@ -706,6 +719,8 @@ namespace Ordr.Mobile.Unity
             PracticeBattle = prepared;
             PracticeBattle.Start();
             PracticeCreeps = new Original323CreepPracticeWorld(Combat, creepCatalog);
+            StoryBuildingCatalog = storyCatalog;
+            PracticeStoryBuildings = new Original323StoryBuildingPracticeWorld(Combat, storyCatalog);
             var presenter = GetComponent<OrdrUnitWorldPresenter>();
             if (presenter != null) presenter.ShowAllOwnedUnits();
             RecordSessionIssue("원본 기반 독립 전투 시작", lastRound + "R · 외부 원작 실행 불필요 · 몬스터 HP/피해 최종 원작 대조 전");
@@ -803,7 +818,7 @@ namespace Ordr.Mobile.Unity
             runGate.SetManualPause(paused);
         }
 
-        private void OnDestroy() { Wisps?.Dispose(); PracticeBattle?.Dispose(); PracticeCreeps?.Dispose(); UnitDecompositions?.Dispose(); }
+        private void OnDestroy() { Wisps?.Dispose(); PracticeBattle?.Dispose(); PracticeCreeps?.Dispose(); PracticeStoryBuildings?.Dispose(); UnitDecompositions?.Dispose(); }
 
         private void OnApplicationPause(bool paused)
         {

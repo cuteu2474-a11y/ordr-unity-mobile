@@ -16,3 +16,7 @@
 모바일 장시간 플레이 검증. 연습용 건물 파괴는 보상을 지급하지 않는다.
 기존 스토리 파견 포트와 공통 전투 엔진을 재사용하고, 원본 확인 없이
 새 지갑·피해 공식·보상 지급기를 만들지 않는다.
+
+## 모바일 전투 연결
+
+`OrdrCharacterCombatController.BeginPracticeBattle`는 동일한 원본 객체 JSON에서 14개 스토리 건물을 검증하고 `PracticeStoryBuildings`를 초기화한다. `SpawnPracticeStoryBuilding(stage,x,y)`는 호출자가 명시적으로 제공한 좌표에서만 개발용 건물 전투를 생성한다. `OrdrMobileTouchPanel`의 스토리 탭은 14개 건물 및 파괴/제거 상태를 보여준다. 기존 수동 파견 버튼은 `IOriginalStoryDispatchPort`가 공급될 때만 실제로 작동한다. 실전 좌표·파견 조건을 추측해 자동 연결하지 않는다.

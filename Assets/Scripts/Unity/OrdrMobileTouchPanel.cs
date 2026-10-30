@@ -1143,6 +1143,31 @@ namespace Ordr.Mobile.Unity
 
         private void DrawStory()
         {
+            GUILayout.Label("스토리 건물 14종", OrdrMobileUiTheme.Subheading);
+            var catalog = controller.StoryBuildingCatalog;
+            var world = controller.PracticeStoryBuildings;
+            if (catalog == null)
+                GUILayout.Label("원본 스토리 건물 자료는 전투 시작 후 표시됩니다.");
+            else
+            {
+                for (int stage = 1; stage <= 14; stage++)
+                {
+                    var building = catalog.Find(stage);
+                    if (building == null) continue;
+                    string status = "미배치";
+                    if (world != null)
+                    {
+                        foreach (var encounter in world.Encounters)
+                            if (encounter.Building.Stage == stage)
+                                status = encounter.State == Original323StoryBuildingState.Alive
+                                    ? "건물 유지" : encounter.State == Original323StoryBuildingState.Destroyed
+                                        ? "파괴 기록" : "제거 기록";
+                    }
+                    GUILayout.Label(building.Name + " · " + status);
+                }
+            }
+            GUILayout.Label("원본 스토리 건물의 실전 출현 위치·진행 조건·보상은 미검증입니다. " +
+                "연습 생성 API는 검증용이며 이 화면에서 임의로 소환하지 않습니다.");
             if (!controller.ManualActions.HasStoryService)
                 GUILayout.Label("원작 스토리 파견 서비스 미연결: 파견 기능 비활성");
             foreach (var unit in Combat.MobileUnitSnapshot())
