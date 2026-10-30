@@ -1,0 +1,264 @@
+{
+  "format": "ordr-original-story-jass-evidence-v1",
+  "version": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceWar3mapJSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "scope": "stage-order-and-unlock-source-evidence-not-final-nightmare-stats-or-complete-rewards",
+  "difficultyIds": {
+    "hard": 3,
+    "hell": 4,
+    "god": 5,
+    "nightmare": 6
+  },
+  "spawnRect": {
+    "name": "B1",
+    "rectJassLine": 14750,
+    "minX": -6880,
+    "maxX": -6656,
+    "minY": -5184,
+    "maxY": -4960,
+    "centerX": -6768,
+    "centerY": -5072
+  },
+  "entry": {
+    "sourceFunction": "CN3",
+    "line": 52774,
+    "registerFunction": "CN4",
+    "registerLine": 52778,
+    "gameStart": "CUM",
+    "gameStartEventLine": 58092
+  },
+  "stageCount": 14,
+  "stages": [
+    {
+      "stage": 1,
+      "name": "로그타운",
+      "rawcode": "n000",
+      "spawnFunction": "CNv",
+      "spawnJassLine": 52717,
+      "deathFunction": "CN1",
+      "deathRegisterJassLine": 52781,
+      "advanceJassLine": 52769,
+      "nextStage": 2,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 2,
+      "name": "알라바스타",
+      "rawcode": "n002",
+      "spawnFunction": "COC",
+      "spawnJassLine": 52926,
+      "deathFunction": "COI",
+      "deathRegisterJassLine": 52985,
+      "advanceJassLine": 52978,
+      "nextStage": 3,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 3,
+      "name": "하늘섬",
+      "rawcode": "n003",
+      "spawnFunction": "COR",
+      "spawnJassLine": 53130,
+      "deathFunction": "COX",
+      "deathRegisterJassLine": 53190,
+      "advanceJassLine": 53183,
+      "nextStage": 4,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 4,
+      "name": "워터세븐",
+      "rawcode": "n004",
+      "spawnFunction": "COg",
+      "spawnJassLine": 53335,
+      "deathFunction": "COm",
+      "deathRegisterJassLine": 53396,
+      "advanceJassLine": 53389,
+      "nextStage": 5,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 5,
+      "name": "스릴러바크",
+      "rawcode": "n005",
+      "spawnFunction": "COv",
+      "spawnJassLine": 53541,
+      "deathFunction": "CO1",
+      "deathRegisterJassLine": 53610,
+      "advanceJassLine": 53603,
+      "nextStage": 6,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 6,
+      "name": "샤봉디제도",
+      "rawcode": "n006",
+      "spawnFunction": "CPB",
+      "spawnJassLine": 53755,
+      "deathFunction": "CPH",
+      "deathRegisterJassLine": 53819,
+      "advanceJassLine": 53812,
+      "nextStage": 7,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 7,
+      "name": "임펠다운",
+      "rawcode": "n007",
+      "spawnFunction": "CPQ",
+      "spawnJassLine": 53964,
+      "deathFunction": "CPW",
+      "deathRegisterJassLine": 54020,
+      "advanceJassLine": 54013,
+      "nextStage": 8,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 8,
+      "name": "마린포드",
+      "rawcode": "n008",
+      "spawnFunction": "CPf",
+      "spawnJassLine": 54165,
+      "deathFunction": "CPl",
+      "deathRegisterJassLine": 54230,
+      "advanceJassLine": 54223,
+      "nextStage": 9,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 9,
+      "name": "어인섬",
+      "rawcode": "n00A",
+      "spawnFunction": "CPu",
+      "spawnJassLine": 54375,
+      "deathFunction": "CP0",
+      "deathRegisterJassLine": 54434,
+      "advanceJassLine": 54427,
+      "nextStage": 10,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 10,
+      "name": "펑크해저드",
+      "rawcode": "n001",
+      "spawnFunction": "CP9",
+      "spawnJassLine": 54579,
+      "deathFunction": "CQG",
+      "deathRegisterJassLine": 54644,
+      "advanceJassLine": 54637,
+      "nextStage": 11,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 11,
+      "name": "드레스로자",
+      "rawcode": "n00C",
+      "spawnFunction": "CQP",
+      "spawnJassLine": 54789,
+      "deathFunction": "CQV",
+      "deathRegisterJassLine": 54851,
+      "advanceJassLine": 54844,
+      "nextStage": 12,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 12,
+      "name": "홀케이크섬",
+      "rawcode": "n00D",
+      "spawnFunction": "CQe",
+      "spawnJassLine": 54996,
+      "deathFunction": "CQk",
+      "deathRegisterJassLine": 55061,
+      "advanceJassLine": 55054,
+      "nextStage": 13,
+      "delaySeconds": 0,
+      "nextRequiresDifficultyAtLeast": null
+    },
+    {
+      "stage": 13,
+      "name": "와노쿠니",
+      "rawcode": "n00B",
+      "spawnFunction": "CQt",
+      "spawnJassLine": 55206,
+      "deathFunction": "CQ0",
+      "deathRegisterJassLine": 55290,
+      "advanceJassLine": 55267,
+      "nextStage": 14,
+      "delaySeconds": 120,
+      "nextRequiresDifficultyAtLeast": 5
+    },
+    {
+      "stage": 14,
+      "name": "에그헤드",
+      "rawcode": "n009",
+      "spawnFunction": "CRB",
+      "spawnJassLine": 55448,
+      "deathFunction": "CRI",
+      "deathRegisterJassLine": 55517,
+      "advanceJassLine": 55510,
+      "nextStage": null,
+      "delaySeconds": null,
+      "nextRequiresDifficultyAtLeast": null
+    }
+  ],
+  "round35": {
+    "checkFunction": "CVD",
+    "jassLines": [
+      59237,
+      59285
+    ],
+    "readCounter": "on",
+    "onIncreasesOnBuildingSpawnStages": "1..13",
+    "onIncreasesAfterStage13Defeat": true,
+    "thresholds": [
+      {
+        "difficulty": 3,
+        "requiredDestroyedStage": 9,
+        "jassLine": 59239
+      },
+      {
+        "difficulty": 4,
+        "requiredDestroyedStage": 11,
+        "jassLine": 59251
+      },
+      {
+        "difficulty": 5,
+        "requiredDestroyedStage": 12,
+        "jassLine": 59263
+      },
+      {
+        "difficulty": 6,
+        "requiredDestroyedStage": 13,
+        "jassLine": 59275
+      }
+    ]
+  },
+  "egghead": {
+    "requiresMinimumDifficulty": 5,
+    "delayAfterStage13KillSeconds": 120,
+    "delayJassLine": 55282,
+    "deadlineSecondsAfterSpawn": 240,
+    "deadlineJassLine": 55460,
+    "lossHandler": "CQ9",
+    "lossJassLine": 55433
+  },
+  "rewardBoundary": {
+    "mode": "not_implemented_from_this_audit",
+    "sourceFunctionStage10": "CQB",
+    "sourceFunctionLine": 54588,
+    "specificStoryGrantMayNotApplyToOtherStages": true
+  },
+  "retailParityVerified": false
+}
