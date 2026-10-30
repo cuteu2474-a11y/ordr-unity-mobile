@@ -15,9 +15,16 @@ namespace Ordr.Mobile.Mobile
         bool TryRecall(long unitInstanceId);
     }
 
+    // Story members removed by the canonical roster have no remaining lane.
+    public interface IOriginal323StoryDispatchUnitLifecycle
+    {
+        void OnUnitRemoved(long instanceId);
+    }
+
     // Canonical manual state is committed only AFTER the source movement succeeds.
     // No automatic dispatch, invented reward, timer or stage unlock.
-    public sealed class Original323StoryManualDispatch : IOriginalStoryDispatchPort
+    public sealed class Original323StoryManualDispatch :
+        IOriginalStoryDispatchPort, IOriginal323StoryDispatchUnitLifecycle
     {
         private readonly CharacterCombatRuntime combat;
         private readonly IOriginal323StoryUnitMovement movement;
@@ -53,6 +60,7 @@ namespace Ordr.Mobile.Mobile
                 return new ManualActionResult(ManualActionState.Rejected,
                     "원본 스토리 전장 이동이 완료되지 않았습니다.");
             deployed.Add(id);
+            combat.RefreshAfterCommittedStoryLaneChange(id);
             return new ManualActionResult(ManualActionState.Succeeded,
                 "선택한 유닛을 스토리 전장에 파견했습니다.");
         }
@@ -69,11 +77,13 @@ namespace Ordr.Mobile.Mobile
                 return new ManualActionResult(ManualActionState.Rejected,
                     "원본 스토리 복귀 이동이 완료되지 않았습니다.");
             deployed.Remove(id);
+            combat.RefreshAfterCommittedStoryLaneChange(id);
             return new ManualActionResult(ManualActionState.Succeeded,
                 "유닛이 메인 전장으로 복귀했습니다.");
         }
 
         // Called only after the canonical unit removal has been confirmed.
+        public void OnUnitRemoved(long id) { ForgetRemovedUnit(id); }
         public void ForgetRemovedUnit(long id)
         {
             if (Owned(id))

@@ -661,6 +661,7 @@ namespace Ordr.Mobile.Unity
         public Original323CreepPracticeWorld PracticeCreeps { get; private set; }
         public Original323StoryBuildingPracticeWorld PracticeStoryBuildings { get; private set; }
         public Original323StoryBuildingCatalog StoryBuildingCatalog { get; private set; }
+        public Original323SoloStoryScenario SoloStory { get; private set; }
         private IOriginal323StoryBuildingSpawnAuthorization originalStoryStages;
         private IOriginal323StoryBuildingSpawnWitness originalStorySpawnWitness;
         private IOriginal323StoryBuildingClearWitness originalStoryClearWitness;
@@ -738,6 +739,40 @@ namespace Ordr.Mobile.Unity
             return PracticeStoryBuildings.SpawnPracticeBuilding(stage, x, y);
         }
 
+        // The original CUM spawns Loguetown before wave one. The model arena
+        // starts at unit preparation and retains its session across battle start.
+        private void EnsureSoloStoryStarted(string pinnedStatsJson = null)
+        {
+            if (SoloStory != null) return;
+            if (Combat == null || SharedEconomy == null ||
+                Combat.Game.Phase != SessionPhase.Running)
+                throw new InvalidOperationException("스토리 시작 전 공유 세션이 필요합니다.");
+            if (string.IsNullOrEmpty(pinnedStatsJson))
+            {
+                var asset = Resources.Load<TextAsset>(
+                    "OrdrData/original-2323C-monster-object-stats");
+                if (asset == null)
+                    throw new InvalidOperationException("스토리 건물 원본 객체 자료가 APK에 없습니다.");
+                pinnedStatsJson = asset.text;
+            }
+            var catalog = Original323StoryBuildingCatalog.FromJson(pinnedStatsJson);
+            var buildings = new Original323StoryBuildingPracticeWorld(Combat, catalog);
+            try
+            {
+                if (storyDispatchRules == null)
+                    ConfigureVerifiedStoryBuildingDispatch(
+                        new Original323SoloStoryMovement(Combat, MapBaseStats));
+                var scenario = new Original323SoloStoryScenario(
+                    Combat, buildings, SharedEconomy);
+                try { scenario.Start(); }
+                catch { scenario.Dispose(); throw; }
+                StoryBuildingCatalog = catalog;
+                PracticeStoryBuildings = buildings;
+                SoloStory = scenario;
+            }
+            catch { buildings.Dispose(); throw; }
+        }
+
         public void BeginPracticeBattle(int lastRound = 10)
         {
             if (Combat == null) ConfigureCatalogOnlyWorld(unchecked((uint)Environment.TickCount));
@@ -759,23 +794,22 @@ namespace Ordr.Mobile.Unity
             if (creepData == null)
                 throw new InvalidOperationException("크립 원본 객체 자료가 APK에 없습니다.");
             var creepCatalog = Original323CreepObjectCatalog.FromJson(creepData.text);
-            var storyCatalog = Original323StoryBuildingCatalog.FromJson(creepData.text);
             var prepared = new SourceModelPracticeBattle(Combat, VerifiedWaveDirector, SharedEconomy,
                 new SourceModelPracticeCatalog(data.text, lastRound), OriginalMonsterSpawnIdentities,
                 sourceModelDamage, sessionScriptRandom, () =>
                 {
                     PersonalMissions?.OnRoundStarted();
+                    SoloStory?.OnRoundStarted();
                     RecordSessionIssue("전투 라운드", Combat.Game.CurrentWave + "라운드 / 원본 최종 전투 미검증");
                 });
             if (Combat.Game.Phase == SessionPhase.NotStarted) BeginSession();
             sourceModelDamage.Enable();
             Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
             Combat.BindExistingVerifiedAttacks();
+            EnsureSoloStoryStarted(creepData.text);
             PracticeBattle = prepared;
-            PracticeBattle.Start();
             PracticeCreeps = new Original323CreepPracticeWorld(Combat, creepCatalog);
-            StoryBuildingCatalog = storyCatalog;
-            PracticeStoryBuildings = new Original323StoryBuildingPracticeWorld(Combat, storyCatalog);
+            PracticeBattle.Start();
             var presenter = GetComponent<OrdrUnitWorldPresenter>();
             if (presenter != null) presenter.ShowAllOwnedUnits();
             RecordSessionIssue("원본 기반 독립 전투 시작", lastRound + "R · 외부 원작 실행 불필요 · 몬스터 HP/피해 최종 원작 대조 전");
@@ -796,6 +830,7 @@ namespace Ordr.Mobile.Unity
         {
             if (Combat == null) ConfigureCatalogOnlyWorld(unchecked((uint)Environment.TickCount));
             BeginSession();
+            EnsureSoloStoryStarted();
         }
 
         public ManualActionResult RequestLowerGradeSale(long instanceId)
@@ -873,7 +908,7 @@ namespace Ordr.Mobile.Unity
             runGate.SetManualPause(paused);
         }
 
-        private void OnDestroy() { Wisps?.Dispose(); PracticeBattle?.Dispose(); PracticeCreeps?.Dispose(); PracticeStoryBuildings?.Dispose(); UnitDecompositions?.Dispose(); }
+        private void OnDestroy() { Wisps?.Dispose(); PracticeBattle?.Dispose(); SoloStory?.Dispose(); PracticeCreeps?.Dispose(); PracticeStoryBuildings?.Dispose(); UnitDecompositions?.Dispose(); }
 
         private void OnApplicationPause(bool paused)
         {
@@ -2821,6 +2856,16 @@ namespace Ordr.Mobile.Unity
                     runGate.SetManualPause(true);
                     return;
                 }
+            }
+            // Story timers use simulation time, not wall-clock time.
+            // This also progresses the exact JASS 120s spawn / 240s deadline.
+            try { SoloStory?.Advance(); }
+            catch (Exception ex)
+            {
+                runGate.SetManualPause(true);
+                RecordSessionIssue("스토리 진행 중단", ex.Message);
+                Debug.LogException(ex);
+                return;
             }
             UnitDecompositions?.Advance(Math.Max(0.0, Combat.Time - timeBeforeStep));
             // The same advancing combat clock drives helper mana regen.

@@ -1120,8 +1120,13 @@ namespace Ordr.Mobile.Combat
                     TargetPriority.Nearest);
         }
 
+        // Forward actual HP damage before enemy death and lane cleanup.
+        // Source-model story MVP uses real committed damage only.
+        public event Action<string, string, long, bool> ActualEnemyDamage;
         private void OnActualDamage(string actor, string enemyId, long actualDamage, bool killed)
         {
+            var listener = ActualEnemyDamage;
+            if (listener != null) listener(actor, enemyId, actualDamage, killed);
             // The basic-only practice must not award Moria's passive materials.
             if (UsesSourceModelBasicAttacks) return;
             SpatialCombatEnemy enemy;
@@ -1380,6 +1385,16 @@ namespace Ordr.Mobile.Combat
             storyDispatch = verifiedStory;
         }
 
+        // A story dispatch commits AFTER the original movement transaction.
+        // Reconcile all lane-filtered auras with the newly committed lane.
+        public void RefreshAfterCommittedStoryLaneChange(long instanceId)
+        {
+            if (!characters.ContainsKey(instanceId))
+                throw new KeyNotFoundException("파견 대상 유닛이 없습니다.");
+            CancelOriginalUnitCast(instanceId);
+            RefreshEnemyAuras();
+        }
+
         // Supports the current catalog, including entries without a detailed
         // skill profile. A provider must supply original-verified basic stats;
         // an unsupported unit remains spawnable but unable to attack.
@@ -1438,6 +1453,8 @@ namespace Ordr.Mobile.Combat
         public GameSession Game { get { return game; } }
         public UnitRoster Roster { get { return roster; } }
         public int CharacterCount { get { return characters.Count; } }
+        // Constant-time ownership test for story participation accounting.
+        public bool IsOwnedCombatCharacter(long id) => id > 0 && characters.ContainsKey(id);
         public int EnemyCount { get { return enemies.Count; } }
         public int ReadyAttackers
         {
@@ -2131,6 +2148,8 @@ namespace Ordr.Mobile.Combat
             // half-consumed roster (or during rollback of the staged result).
             if (!internalOriginalFusionMutation) RefreshEnemyAuras();
             roster.Remove(instanceId);
+            var storyLifecycle = storyDispatch as IOriginal323StoryDispatchUnitLifecycle;
+            if (storyLifecycle != null) storyLifecycle.OnUnitRemoved(instanceId);
         }
 
         // Used only by an uncommitted Wisp transaction. A failed reward must

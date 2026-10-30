@@ -22,7 +22,7 @@ namespace Ordr.Mobile.Unity
         private Tab currentTab = Tab.Play;
         private float nextFusionRefresh;
         private string fusionInventorySignature;
-        private int selectedPracticeRounds = 20;
+        private int selectedPracticeRounds = 65;
         private bool browsingFullCatalog;
         private bool showUnitDetails;
         private long? expandedOwnedUnitId;
@@ -1144,6 +1144,21 @@ namespace Ordr.Mobile.Unity
         private void DrawStory()
         {
             GUILayout.Label("스토리 건물 14종", OrdrMobileUiTheme.Subheading);
+            var scenario = controller.SoloStory;
+            if (scenario != null)
+            {
+                GUILayout.Label("스토리 진행 " + scenario.HighestDestroyedStage + "/14 격파 · " +
+                    "현재 건물 " + scenario.ActiveStage, OrdrMobileUiTheme.Subheading);
+                if (scenario.EggheadWaitRemaining > 0)
+                    GUILayout.Label("에그헤드 등장까지 " +
+                        Math.Ceiling(scenario.EggheadWaitRemaining) + "초");
+                if (scenario.EggheadDeadlineRemaining > 0)
+                    GUILayout.Label("에그헤드 파괴 제한시간 " +
+                        Math.Ceiling(scenario.EggheadDeadlineRemaining) + "초");
+                if (!string.IsNullOrWhiteSpace(scenario.LastNotice))
+                    GUILayout.Label(scenario.LastNotice);
+                GUILayout.Label("건물 객체 기본 체력 모델 · 스토리 전체 진행은 65R 전투 권장");
+            }
             var catalog = controller.StoryBuildingCatalog;
             var world = controller.PracticeStoryBuildings;
             if (catalog == null)
@@ -1164,6 +1179,8 @@ namespace Ordr.Mobile.Unity
                             alive = encounter.State == Original323StoryBuildingState.Alive;
                             settled = encounter.SourceSettlementConfirmed;
                             status = encounter.SourceSettlementConfirmed ? "원본 정산 확인" :
+                                scenario != null && encounter.State == Original323StoryBuildingState.Destroyed
+                                    ? "연습 파괴 완료 · 기본 보상 지급" :
                                 alive ? "건물 유지" :
                                 encounter.State == Original323StoryBuildingState.Destroyed
                                     ? "파괴 · 원본 보상 대조 필요" : "제거 기록";
@@ -1186,11 +1203,13 @@ namespace Ordr.Mobile.Unity
                     GUILayout.EndHorizontal();
                 }
             }
-            if (!controller.CanRequestOriginalStoryBuilding)
+            if (!controller.CanRequestOriginalStoryBuilding && scenario == null)
                 GUILayout.Label("원본 스토리 등장 조건 및 실제 좌표 공급자 미연결 · " +
                     "건물 목록만 표시됩니다.");
-            GUILayout.Label("스토리 건물은 이동하지 않고, 파괴해도 원본 정산 확인 전에는 " +
-                "골드·목재·초월위습을 임의로 지급하지 않습니다.");
+            GUILayout.Label(scenario == null
+                ? "원본 정산 확인 전에는 보상을 자동 지급하지 않습니다."
+                : "연습 게임에서 검증된 기본 재화·위습을 지급합니다. " +
+                  "원본 추가 연구·특성·기록지침은 아직 별도 연결이 필요합니다.");
             if (!controller.ManualActions.HasStoryService)
                 GUILayout.Label("원작 스토리 파견 서비스 미연결: 파견 기능 비활성");
             foreach (var unit in Combat.MobileUnitSnapshot())

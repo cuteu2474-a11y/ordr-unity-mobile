@@ -127,8 +127,10 @@ namespace Ordr.Mobile.Combat
         private void RequireRunning()
         {
             if (disposed) throw new ObjectDisposedException(nameof(Original323StoryBuildingPracticeWorld));
-            if (combat.Game.Phase != SessionPhase.Running || combat.Game.CurrentWave == 0)
-                throw new InvalidOperationException("전투 라운드가 시작되지 않았습니다.");
+            // Original CUM spawns Loguetown at game-mode selection, before
+            // the first round begins. Story is not a wave enemy.
+            if (combat.Game.Phase != SessionPhase.Running)
+                throw new InvalidOperationException("게임 세션이 시작되지 않았습니다.");
         }
 
         // Explicit MODEL_ONLY entry, never a source-verified stage clear.
@@ -141,8 +143,16 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentOutOfRangeException(nameof(x));
             var building = catalog.Find(stage);
             if (building == null) throw new ArgumentOutOfRangeException(nameof(stage));
+            // Original CUM selects NJ=16 for Nightmare and CNv..CRB
+            // immediately applies A04Q at the current NJ level. The offline
+            // baseline uses that source-backed initial level; later JASS
+            // upgrades/mutations are NOT silently invented.
+            var baseline = Ordr323VerifiedDefenseAbilities
+                .FromVerifiedMagicAbilityLevel(CharacterEnemyKind.Story,
+                    building.BaseArmor, building.ArmorType, 16,
+                    "MODEL_ONLY: original 2.323[C] Nightmare NJ=16 initial story building");
             return SpawnInternal(building, building.BaseHitPoints, x, y,
-                building.PracticeDefense(), null, null);
+                baseline, null, null);
         }
 
         // Spawns only after stage authorization AND independent current-runtime

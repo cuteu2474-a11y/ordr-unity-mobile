@@ -70,38 +70,61 @@ namespace Ordr.Mobile.Unity
                     layout.Story.width - 16f, 22f), "스토리 전장", OrdrMobileUiTheme.Overline);
 
                 var combat = controller == null ? null : controller.Combat;
-                // The story lane is a separate BUILDING display, not the wave
-                // camera. Show a compact HP summary of real spawned targets.
+                // Render the story in its own smaller HUD battlefield. The
+                // world camera remains on the main fight; the static story
+                // building must not be shown as a travelling wave monster.
                 var storyWorld = controller == null ? null : controller.PracticeStoryBuildings;
+                var soloStory = controller == null ? null : controller.SoloStory;
                 if (combat != null && storyWorld != null)
                 {
-                    int activeBuildings = 0, drawn = 0;
-                    int maxRows = Mathf.Clamp(
-                        Mathf.FloorToInt((layout.Story.height - 32f * scale) / (23f * scale)),
-                        0, 2);
-                    foreach (var encounter in storyWorld.Encounters)
+                    Ordr.Mobile.Combat.Original323StoryBuildingEncounter alive = null;
+                    foreach (var item in storyWorld.Encounters)
+                        if (item.State == Ordr.Mobile.Combat.Original323StoryBuildingState.Alive)
+                            alive = item;
+                    int dispatched = 0;
+                    foreach (var unit in combat.MobileUnitSnapshot())
+                        if (combat.IsStoryDeployed(unit.InstanceId)) dispatched++;
+                    if (alive != null)
                     {
-                        if (encounter.State !=
-                            Ordr.Mobile.Combat.Original323StoryBuildingState.Alive)
-                            continue;
-                        activeBuildings++;
-                        if (drawn >= maxRows) continue;
-                        var target = combat.EnemyOf(encounter.EnemyId);
-                        if (target == null) continue;
-                        GUI.Label(new Rect(layout.Story.x + 12f * scale,
-                                layout.Story.y + (29f + 23f * drawn) * scale,
-                                layout.Story.width - 24f * scale, 23f * scale),
-                            encounter.Building.Name + " · 건물 체력 " +
-                            target.Health + " / " + target.MaxHealth,
-                            OrdrMobileUiTheme.Subheading);
-                        drawn++;
+                        var target = combat.EnemyOf(alive.EnemyId);
+                        if (target != null)
+                        {
+                            float inset = 12f * scale;
+                            float nameY = layout.Story.y + 29f * scale;
+                            GUI.Label(new Rect(layout.Story.x + inset, nameY,
+                                    layout.Story.width - inset * 2f, 25f * scale),
+                                alive.Building.Name + " · HP " +
+                                target.Health + " / " + target.MaxHealth,
+                                OrdrMobileUiTheme.Subheading);
+                            Rect bar = new Rect(layout.Story.x + inset,
+                                nameY + 27f * scale, layout.Story.width - inset * 2f,
+                                Mathf.Max(5f, 9f * scale));
+                            float ratio = Mathf.Clamp01(
+                                (float)((double)target.Health / target.MaxHealth));
+                            Color previousColor = GUI.color;
+                            GUI.color = new Color(.16f, .20f, .25f, 1f);
+                            GUI.DrawTexture(bar, Texture2D.whiteTexture);
+                            GUI.color = new Color(.25f + .55f * (1f - ratio),
+                                .36f + .42f * ratio, .30f, 1f);
+                            GUI.DrawTexture(new Rect(bar.x, bar.y,
+                                bar.width * ratio, bar.height), Texture2D.whiteTexture);
+                            GUI.color = previousColor;
+                        }
                     }
-                    if (activeBuildings > drawn && drawn > 0)
+                    string footer = "파견 유닛 " + dispatched + "기";
+                    if (soloStory != null)
+                    {
+                        footer += " · 스토리 " + soloStory.HighestDestroyedStage + "/14";
+                        if (soloStory.EggheadWaitRemaining > 0)
+                            footer += " · 등장 " + Math.Ceiling(soloStory.EggheadWaitRemaining) + "초";
+                        else if (soloStory.EggheadDeadlineRemaining > 0)
+                            footer += " · 제한 " + Math.Ceiling(soloStory.EggheadDeadlineRemaining) + "초";
+                    }
+                    if (layout.Story.height > 82f * scale)
                         GUI.Label(new Rect(layout.Story.x + 12f * scale,
-                                layout.Story.yMax - 23f * scale,
+                                layout.Story.yMax - 25f * scale,
                                 layout.Story.width - 24f * scale, 22f * scale),
-                            "외 스토리 건물 " + (activeBuildings - drawn) + "개 · 스토리 탭",
-                            OrdrMobileUiTheme.Overline);
+                            footer, OrdrMobileUiTheme.Overline);
                 }
                 if (combat != null && (combat.Game.Phase == SessionPhase.Won ||
                     combat.Game.Phase == SessionPhase.Lost))
@@ -113,6 +136,8 @@ namespace Ordr.Mobile.Unity
                     var resultStyle = new GUIStyle(GUI.skin.label) {
                         fontSize = Mathf.RoundToInt(17f * scale), alignment = TextAnchor.MiddleCenter };
                     GUI.Label(new Rect(panel.x + 8f, panel.y + 8f, panel.width - 16f, 46f * scale),
+                        controller.SoloStory != null && controller.SoloStory.LostByStory
+                            ? controller.SoloStory.LastNotice :
                         controller.PracticeBattle == null ? combat.Game.Phase.ToString() :
                             controller.PracticeBattle.ResultMessage, resultStyle);
                     var restart = new Rect(panel.x + 8f, panel.yMax - 56f * scale,
