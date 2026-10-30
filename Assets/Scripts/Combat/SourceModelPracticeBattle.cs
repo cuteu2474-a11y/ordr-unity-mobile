@@ -21,28 +21,40 @@ namespace Ordr.Mobile.Combat
             public string ArmorType { get; internal set; }
             public double MovementSpeed { get; internal set; }
         }
-        private readonly Dictionary<int, Round> rounds = new Dictionary<int, Round>();
+        // Each new-world boss wave can contain both a line enemy and a boss.
+        // Never let the last row in the JSON overwrite the other role.
+        private readonly Dictionary<string, Round> rounds = new Dictionary<string, Round>();
         private readonly VerifiedCombatPath route;
         public IReadOnlyList<CombatPathPoint> RouteCorners { get; private set; }
-        private const int ModelLastRound = 20;
         public int LastRound { get; private set; }
         public int EnemyLimit => 70;
         public int RoundWisps => 2;
         public CombatPathPoint Spawn => route.AtDistance(0);
-        public Round GetRound(int number) => rounds[number];
+        private static string RoundKey(int number, string role) => number + ":" + role;
+        public Round GetRound(int number, CharacterEnemyKind kind)
+        {
+            return rounds[RoundKey(number, kind == CharacterEnemyKind.Boss ? "boss" : "line")];
+        }
         public CombatPathPoint Position(double travelled) => route.AtDistance(travelled % route.Length);
 
         public SourceModelPracticeCatalog(string json, int lastRound = 10)
         {
-            if (lastRound != 10 && lastRound != 20) throw new ArgumentOutOfRangeException(nameof(lastRound));
-            LastRound = lastRound;
             var root = OrdrJson.Object(OrdrJson.Parse(json), "practice model");
-            if (OrdrJson.RequiredString(root, "format") != "ordr-mobile-practice-model-v1" ||
+            string format = OrdrJson.RequiredString(root, "format");
+            int sourceLastRound = (int)Number(root, "lastRound");
+            bool originalTraining = format == "ordr-mobile-practice-model-v1" && sourceLastRound == 20;
+            bool standalone = format == "ordr-mobile-standalone-source-model-v1" && sourceLastRound == 65;
+            if (lastRound != 10 && lastRound != 20 && lastRound != 65)
+                throw new ArgumentOutOfRangeException(nameof(lastRound));
+            if ((!originalTraining && !standalone) || lastRound > sourceLastRound)
+                throw new ArgumentOutOfRangeException(nameof(lastRound), "요청한 라운드 전체의 원본 모델이 필요합니다.");
+            LastRound = lastRound;
+            if (
                 OrdrJson.RequiredString(root, "sourceW3xSha256") != OriginalCommonSaleRules.OriginalMapSha256 ||
                 OrdrJson.RequiredString(root, "sourceJassSha256") != Original323SourceCommonWispWorld.PinnedWar3mapJSha256 ||
                 !Equals(OrdrJson.Value(root, "retailParityVerified"), false) ||
                 !Equals(OrdrJson.Value(root, "safeForVerifiedMonsterWaveRuntime"), false) ||
-                Number(root, "lastRound") != ModelLastRound || Number(root, "initialEnemyLimit") != EnemyLimit ||
+                Number(root, "initialEnemyLimit") != EnemyLimit ||
                 Number(root, "roundRandomWisps") != RoundWisps)
                 throw new FormatException("별도 연습 전투 모델의 출처·미검증 표시가 필요합니다.");
             var points = new List<CombatPathPoint>();
@@ -63,17 +75,22 @@ namespace Ordr.Mobile.Combat
                 string code = OrdrJson.RequiredString(row, "rawcode");
                 string armor = OrdrJson.RequiredString(row, "armorType");
                 Ordr323ArmorType parsed;
-                if (number < 1 || number > ModelLastRound || number != Math.Floor(number) ||
+                string role = OrdrJson.RequiredString(row, "role");
+                string key = RoundKey((int)number, role);
+                if (number < 1 || number > sourceLastRound || number != Math.Floor(number) ||
                     hp < 1 || hp >= long.MaxValue || hp != Math.Floor(hp) || speed <= 0 ||
-                    code.Length != 4 || rounds.ContainsKey((int)number) ||
+                    code.Length != 4 || (role != "line" && role != "boss") ||
+                    rounds.ContainsKey(key) ||
                     !Ordr323OriginalDamageRules.TryReadArmorType(armor, out parsed))
                     throw new FormatException("연습 몬스터의 출처 수치가 올바르지 않습니다.");
-                rounds.Add((int)number, new Round { Number = (int)number,
+                rounds.Add(key, new Round { Number = (int)number,
                     Rawcode = code, Name = OrdrJson.RequiredString(row, "name"),
-                    Role = OrdrJson.RequiredString(row, "role"), Health = (long)hp,
+                    Role = role, Health = (long)hp,
                     Armor = Number(row, "armor"), ArmorType = armor, MovementSpeed = speed });
             }
-            if (rounds.Count != ModelLastRound) throw new FormatException("연습 라운드 자료 누락");
+            int expected = sourceLastRound == 20 ? 20 : 68;
+            if (rounds.Count != expected)
+                throw new FormatException("원본의 일반·보스 라운드 모델 자료 누락");
         }
         private static double Number(Dictionary<string, object> row, string key)
         {
@@ -85,11 +102,14 @@ namespace Ordr.Mobile.Combat
         public VerifiedWavePlan BuildPracticePlan(int number, Original323MonsterWaveIdentityCatalog original)
         {
             if (number < 1 || number > LastRound) throw new ArgumentOutOfRangeException(nameof(number));
-            var model = GetRound(number);
             var spawns = new List<VerifiedWaveEnemy>();
             var point = Spawn;
             foreach (var entry in original.BuildSinglePlayerSpawnTemplates(number))
             {
+                Round model;
+                if (!rounds.TryGetValue(RoundKey(number,
+                    entry.Kind == CharacterEnemyKind.Boss ? "boss" : "line"), out model))
+                    throw new FormatException("라운드 몬스터 역할 모델 누락");
                 if (entry.Rawcode != model.Rawcode ||
                     (entry.Kind == CharacterEnemyKind.Boss ? "boss" : "line") != model.Role)
                     throw new FormatException("연습 모델과 원본 출현 객체가 다릅니다.");
@@ -254,7 +274,7 @@ namespace Ordr.Mobile.Combat
                 var status = combat.StatusOf(enemy.Id);
                 double active = Math.Max(0, elapsed - Math.Min(elapsed, status.RemainingStunSeconds));
                 double slow = SourceModelUnitEffects.ResolveSingleAura(status.Snapshot(), CombatEffectType.MovementSlowPercent);
-                double speed = catalog.GetRound(wave).MovementSpeed;
+                double speed = catalog.GetRound(wave, enemy.Kind).MovementSpeed;
                 // Explicit reference movement model. Native acceleration and
                 // collision/Arsk remain outside the retail approval boundary.
                 speed = Math.Max(Original323AuraCommonRules.MapMinimumUnitSpeed,

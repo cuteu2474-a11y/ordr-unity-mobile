@@ -17,6 +17,7 @@ namespace Ordr.Mobile.Editor
         private static readonly string[] DataFiles =
         {
             "mobile-practice-battle-model.json",
+            "mobile-standalone-enemy-model.json",
             "practice-native-inherited-defaults.json",
             "units.json",
             "character-skill-profiles.json",

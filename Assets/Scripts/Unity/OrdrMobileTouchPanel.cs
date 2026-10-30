@@ -510,8 +510,11 @@ namespace Ordr.Mobile.Unity
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button(selectedPracticeRounds == 10 ? "10R ✓" : "10R", GUILayout.MinHeight(54))) selectedPracticeRounds = 10;
                 if (GUILayout.Button(selectedPracticeRounds == 20 ? "20R ✓" : "20R", GUILayout.MinHeight(54))) selectedPracticeRounds = 20;
+                if (GUILayout.Button(selectedPracticeRounds == 65 ? "65R ✓" : "65R", GUILayout.MinHeight(54))) selectedPracticeRounds = 65;
                 GUILayout.EndHorizontal();
-                if (GUILayout.Button("준비 완료 · " + selectedPracticeRounds + "R 연습 시작",
+                if (selectedPracticeRounds == 65)
+                    GUILayout.Label("원본 출현 규칙·악몽 초기 수치 모델 기반 · 동적 면역/최종 피해 일치 검증 전");
+                if (GUILayout.Button("준비 완료 · " + selectedPracticeRounds + "R 전투 시작",
                     OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
                 {
                     try { controller.BeginPracticeBattle(selectedPracticeRounds); notice = "전투 시작 · 소환과 조합은 계속할 수 있습니다."; }

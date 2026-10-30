@@ -1,0 +1,717 @@
+{
+  "format": "ordr-mobile-standalone-source-model-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "retailParityVerified": false,
+  "safeForVerifiedMonsterWaveRuntime": false,
+  "lastRound": 65,
+  "initialEnemyLimit": 70,
+  "roundRandomWisps": 2,
+  "routeCenters": [
+    {
+      "x": -4960.0,
+      "y": 5632.0
+    },
+    {
+      "x": -4992.0,
+      "y": 3456.0
+    },
+    {
+      "x": -2560.0,
+      "y": 3456.0
+    },
+    {
+      "x": -2560.0,
+      "y": 5632.0
+    }
+  ],
+  "rounds": [
+    {
+      "wave": 1,
+      "role": "line",
+      "rawcode": "o00I",
+      "name": "레벨 01 알비다",
+      "health": 338,
+      "armor": 0.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 2,
+      "role": "line",
+      "rawcode": "o004",
+      "name": "레벨 02 찌질한 해왕류",
+      "health": 425,
+      "armor": 1.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 3,
+      "role": "line",
+      "rawcode": "o00A",
+      "name": "레벨 03 해적사냥꾼조로",
+      "health": 575,
+      "armor": 1.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 4,
+      "role": "line",
+      "rawcode": "o009",
+      "name": "레벨 04 모건",
+      "health": 750,
+      "armor": 2.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 5,
+      "role": "line",
+      "rawcode": "o008",
+      "name": "레벨 05 캡틴 버기",
+      "health": 950,
+      "armor": 3.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 6,
+      "role": "line",
+      "rawcode": "o00D",
+      "name": "레벨 06 캡틴 크로",
+      "health": 1275,
+      "armor": 3.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 7,
+      "role": "line",
+      "rawcode": "o006",
+      "name": "레벨 07 깅",
+      "health": 1625,
+      "armor": 4.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 8,
+      "role": "line",
+      "rawcode": "o005",
+      "name": "레벨 08 클리크",
+      "health": 2150,
+      "armor": 5.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 9,
+      "role": "line",
+      "rawcode": "o00B",
+      "name": "레벨 09 하찌",
+      "health": 2550,
+      "armor": 6.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 10,
+      "role": "boss",
+      "rawcode": "o01V",
+      "name": "레벨 10 [보스]아론",
+      "health": 137750,
+      "armor": 13.0,
+      "armorType": "large",
+      "objectMovementSpeed": 275.0
+    },
+    {
+      "wave": 11,
+      "role": "line",
+      "rawcode": "o003",
+      "name": "레벨 11 타시기",
+      "health": 2750,
+      "armor": 7.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 12,
+      "role": "line",
+      "rawcode": "o00C",
+      "name": "레벨 12 스모커",
+      "health": 3500,
+      "armor": 8.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 13,
+      "role": "line",
+      "rawcode": "o00F",
+      "name": "레벨 13 Mr.9",
+      "health": 4475,
+      "armor": 9.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 14,
+      "role": "line",
+      "rawcode": "o00M",
+      "name": "레벨 14 Mr.6",
+      "health": 5600,
+      "armor": 11.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 15,
+      "role": "line",
+      "rawcode": "o00H",
+      "name": "레벨 15 Mr.5",
+      "health": 9559,
+      "armor": 12.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 16,
+      "role": "line",
+      "rawcode": "o00G",
+      "name": "레벨 16 Mr.4",
+      "health": 13103,
+      "armor": 14.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 17,
+      "role": "line",
+      "rawcode": "o00N",
+      "name": "레벨 17 Mr.3",
+      "health": 15931,
+      "armor": 16.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 18,
+      "role": "line",
+      "rawcode": "o00E",
+      "name": "레벨 18 Mr.2",
+      "health": 17793,
+      "armor": 17.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 19,
+      "role": "line",
+      "rawcode": "o00O",
+      "name": "레벨 19 Mr.1",
+      "health": 20048,
+      "armor": 18.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 20,
+      "role": "boss",
+      "rawcode": "o01W",
+      "name": "레벨 20 [보스]크로커다일",
+      "health": 807500,
+      "armor": 29.0,
+      "armorType": "large",
+      "objectMovementSpeed": 275.0
+    },
+    {
+      "wave": 21,
+      "role": "line",
+      "rawcode": "o00P",
+      "name": "레벨 21 체스",
+      "health": 23270,
+      "armor": 19.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 22,
+      "role": "line",
+      "rawcode": "o00Q",
+      "name": "레벨 22 마리모",
+      "health": 25776,
+      "armor": 20.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 23,
+      "role": "line",
+      "rawcode": "o00R",
+      "name": "레벨 23 도르돈",
+      "health": 33652,
+      "armor": 21.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 24,
+      "role": "line",
+      "rawcode": "o00S",
+      "name": "레벨 24 와포루",
+      "health": 45466,
+      "armor": 22.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 25,
+      "role": "line",
+      "rawcode": "o00T",
+      "name": "레벨 25 베라미",
+      "health": 56743,
+      "armor": 23.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 26,
+      "role": "line",
+      "rawcode": "o007",
+      "name": "레벨 26 사토리",
+      "health": 67662,
+      "armor": 36.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 27,
+      "role": "line",
+      "rawcode": "o00U",
+      "name": "레벨 27 게다츠",
+      "health": 83235,
+      "armor": 37.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 28,
+      "role": "line",
+      "rawcode": "o00V",
+      "name": "레벨 28 오움",
+      "health": 93080,
+      "armor": 38.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 29,
+      "role": "line",
+      "rawcode": "o00X",
+      "name": "레벨 29 슈라",
+      "health": 114560,
+      "armor": 40.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 30,
+      "role": "boss",
+      "rawcode": "o01X",
+      "name": "레벨 30 [보스]에넬",
+      "health": 7125000,
+      "armor": 115.0,
+      "armorType": "large",
+      "objectMovementSpeed": 275.0
+    },
+    {
+      "wave": 31,
+      "role": "line",
+      "rawcode": "o01G",
+      "name": "레벨 31 폭시",
+      "health": 450170,
+      "armor": 53.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 32,
+      "role": "line",
+      "rawcode": "o010",
+      "name": "레벨 32 칼리파",
+      "health": 553420,
+      "armor": 57.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 33,
+      "role": "line",
+      "rawcode": "o011",
+      "name": "레벨 33 후쿠로",
+      "health": 660800,
+      "armor": 69.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 34,
+      "role": "line",
+      "rawcode": "o012",
+      "name": "레벨 34 쿠마도리",
+      "health": 745878,
+      "armor": 70.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 35,
+      "role": "line",
+      "rawcode": "o017",
+      "name": "레벨 35 블루노",
+      "health": 899266,
+      "armor": 95.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 36,
+      "role": "line",
+      "rawcode": "o018",
+      "name": "레벨 36 재브라",
+      "health": 1025892,
+      "armor": 96.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 37,
+      "role": "line",
+      "rawcode": "o019",
+      "name": "레벨 37 카쿠",
+      "health": 1143184,
+      "armor": 97.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 38,
+      "role": "line",
+      "rawcode": "o01A",
+      "name": "레벨 38 루치",
+      "health": 1197700,
+      "armor": 110.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 39,
+      "role": "line",
+      "rawcode": "o015",
+      "name": "레벨 39 찌질이 스팬담",
+      "health": 1,
+      "armor": 39.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 40,
+      "role": "boss",
+      "rawcode": "o01Y",
+      "name": "레벨 40 [보스]루치",
+      "health": 27550000,
+      "armor": 170.0,
+      "armorType": "large",
+      "objectMovementSpeed": 275.0
+    },
+    {
+      "wave": 41,
+      "role": "line",
+      "rawcode": "o01B",
+      "name": "레벨 41 압살롬",
+      "health": 3675000,
+      "armor": 111.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 42,
+      "role": "line",
+      "rawcode": "o01F",
+      "name": "레벨 42 오즈",
+      "health": 4725000,
+      "armor": 112.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 43,
+      "role": "line",
+      "rawcode": "o01E",
+      "name": "레벨 43 모리아",
+      "health": 6300000,
+      "armor": 124.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 44,
+      "role": "line",
+      "rawcode": "o01D",
+      "name": "레벨 44 쿠마",
+      "health": 7875000,
+      "armor": 124.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 45,
+      "role": "line",
+      "rawcode": "o01O",
+      "name": "레벨 45 키자루",
+      "health": 9975000,
+      "armor": 125.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 46,
+      "role": "line",
+      "rawcode": "o01H",
+      "name": "레벨 46 마리골드",
+      "health": 19740000,
+      "armor": 125.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 47,
+      "role": "line",
+      "rawcode": "o01L",
+      "name": "레벨 47 마젤란",
+      "health": 23992500,
+      "armor": 137.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 48,
+      "role": "line",
+      "rawcode": "o01M",
+      "name": "레벨 48 미호크",
+      "health": 29874600,
+      "armor": 137.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 49,
+      "role": "line",
+      "rawcode": "o01T",
+      "name": "레벨 49 아카이누",
+      "health": 34650000,
+      "armor": 138.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 50,
+      "role": "boss",
+      "rawcode": "o01Z",
+      "name": "레벨 50 [보스]센고쿠",
+      "health": 197600000,
+      "armor": 350.0,
+      "armorType": "large",
+      "objectMovementSpeed": 275.0
+    },
+    {
+      "wave": 51,
+      "role": "line",
+      "rawcode": "o01U",
+      "name": "레벨 51 호디존스",
+      "health": 56886000,
+      "armor": 168.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 52,
+      "role": "line",
+      "rawcode": "o01N",
+      "name": "레벨 52 베르고",
+      "health": 64870000,
+      "armor": 178.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 53,
+      "role": "line",
+      "rawcode": "o01Q",
+      "name": "레벨 53 시저",
+      "health": 71357000,
+      "armor": 179.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 54,
+      "role": "line",
+      "rawcode": "o01R",
+      "name": "레벨 54 피카",
+      "health": 75349000,
+      "armor": 180.0,
+      "armorType": "fort",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 55,
+      "role": "line",
+      "rawcode": "o01S",
+      "name": "레벨 55 트레볼",
+      "health": 86726200,
+      "armor": 183.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 55,
+      "role": "boss",
+      "rawcode": "o001",
+      "name": "레벨 55 [보스]도플라밍고",
+      "health": 116821496,
+      "armor": 360.0,
+      "armorType": "large",
+      "objectMovementSpeed": 245.0
+    },
+    {
+      "wave": 56,
+      "role": "line",
+      "rawcode": "o028",
+      "name": "레벨 56 호미즈",
+      "health": 93812000,
+      "armor": 187.0,
+      "armorType": "large",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 57,
+      "role": "line",
+      "rawcode": "o00Z",
+      "name": "레벨 57 샬롯 크래커",
+      "health": 101796000,
+      "armor": 181.0,
+      "armorType": "fort",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 58,
+      "role": "line",
+      "rawcode": "o020",
+      "name": "레벨 58 샬롯 스무디",
+      "health": 109680200,
+      "armor": 182.0,
+      "armorType": "hero",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 59,
+      "role": "line",
+      "rawcode": "o021",
+      "name": "레벨 59 샬롯 카타쿠리",
+      "health": 115668200,
+      "armor": 206.0,
+      "armorType": "hero",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 60,
+      "role": "line",
+      "rawcode": "o02G",
+      "name": "레벨 60 제우스",
+      "health": 124251000,
+      "armor": 180.0,
+      "armorType": "normal",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 60,
+      "role": "boss",
+      "rawcode": "o02C",
+      "name": "레벨 60 [보스]빅 맘",
+      "health": 121125000,
+      "armor": 372.0,
+      "armorType": "large",
+      "objectMovementSpeed": 245.0
+    },
+    {
+      "wave": 61,
+      "role": "line",
+      "rawcode": "o026",
+      "name": "레벨 61 바질 호킨스",
+      "health": 135549511,
+      "armor": 186.0,
+      "armorType": "large",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 62,
+      "role": "line",
+      "rawcode": "o025",
+      "name": "레벨 62 잭",
+      "health": 140917600,
+      "armor": 180.0,
+      "armorType": "fort",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 63,
+      "role": "line",
+      "rawcode": "o027",
+      "name": "레벨 63 퀸",
+      "health": 155787800,
+      "armor": 194.0,
+      "armorType": "large",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 64,
+      "role": "line",
+      "rawcode": "o00K",
+      "name": "레벨 64 킹",
+      "health": 165767800,
+      "armor": 190.0,
+      "armorType": "hero",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 65,
+      "role": "line",
+      "rawcode": "o02H",
+      "name": "레벨 65 오로치",
+      "health": 161775800,
+      "armor": 191.0,
+      "armorType": "hero",
+      "objectMovementSpeed": 300.0
+    },
+    {
+      "wave": 65,
+      "role": "boss",
+      "rawcode": "o02B",
+      "name": "레벨 65 [보스]카이도",
+      "health": 129152504,
+      "armor": 395.0,
+      "armorType": "large",
+      "objectMovementSpeed": 245.0
+    }
+  ],
+  "limitations": [
+    "Reference-engine HP/armor model, not observed retail final stats.",
+    "Basic object attacks only; skills/auras/upgrades are not a full game recreation.",
+    "Route centers/raw movement speed approximate native region turns/collision.",
+    "Damage retains fractional remainder per target; retail float rounding unverified.",
+    "Source-derived simulation is not a verified original-client parity result."
+  ]
+}

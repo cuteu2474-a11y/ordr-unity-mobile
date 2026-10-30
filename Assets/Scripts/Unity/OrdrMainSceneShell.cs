@@ -130,7 +130,7 @@ namespace Ordr.Mobile.Unity
             GUI.enabled = previous;
             GUI.Label(new Rect(panel.x + 8f, panel.y + 214f * scale,
                 width - 16f, 38f * scale), string.IsNullOrEmpty(startFailure) ?
-                "개발용 연습 · 10R / 20R" : startFailure, subtitle);
+                "원본 기반 전투 · 10R / 20R / 65R (최종 수치 검증 중)" : startFailure, subtitle);
         }
     }
 }

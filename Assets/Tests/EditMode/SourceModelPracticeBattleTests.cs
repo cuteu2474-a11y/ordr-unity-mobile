@@ -42,7 +42,8 @@ namespace Ordr.Mobile.Tests
             for (int i = 0; i < attackers; i++) combat.SpawnCharacter(attackerUnitId, -4000 + 20 * i, 4000);
             var identity = Original323MonsterWaveIdentityCatalog.FromJson(Data("original-2323C-monster-wave-script-evidence.json"));
             var battle = new SourceModelPracticeBattle(combat, new CombatWaveDirector(), shared,
-                new SourceModelPracticeCatalog(Data("mobile-practice-battle-model.json"), lastRound), identity,
+                new SourceModelPracticeCatalog(Data(lastRound == 65
+                    ? "mobile-standalone-enemy-model.json" : "mobile-practice-battle-model.json"), lastRound), identity,
                 rules, new WinningGold(), null);
             battle.Start();
             return new Live { Combat = combat, Economy = shared, Battle = battle };
@@ -281,9 +282,12 @@ namespace Ordr.Mobile.Tests
         public void PracticeLengthIsExplicitAndUnsupportedLengthsFailBeforeCombatMutation()
         {
             string json = Data("mobile-practice-battle-model.json");
+            string standalone = Data("mobile-standalone-enemy-model.json");
             Assert.AreEqual(10, new SourceModelPracticeCatalog(json).LastRound);
             Assert.AreEqual(20, new SourceModelPracticeCatalog(json, 20).LastRound);
             Assert.Throws<ArgumentOutOfRangeException>(() => new SourceModelPracticeCatalog(json, 65));
+            Assert.AreEqual(65, new SourceModelPracticeCatalog(standalone, 65).LastRound);
+            Assert.Throws<ArgumentOutOfRangeException>(() => new SourceModelPracticeCatalog(standalone, 66));
             var root = new GameObject("ORDR practice length");
             root.SetActive(false);
             try
@@ -294,11 +298,11 @@ namespace Ordr.Mobile.Tests
                 owner.BeginUnitPreparation();
                 owner.Combat.SpawnCharacter("C-01", -4000, 4000);
                 long wisps = owner.WispBalance(WispResourceIds.Random);
-                Assert.Throws<ArgumentOutOfRangeException>(() => owner.BeginPracticeBattle(65));
+                Assert.Throws<ArgumentOutOfRangeException>(() => owner.BeginPracticeBattle(42));
                 Assert.AreEqual(0, owner.Combat.Game.CurrentWave);
                 Assert.AreEqual(wisps, owner.WispBalance(WispResourceIds.Random));
-                owner.BeginPracticeBattle(20);
-                Assert.AreEqual(20, owner.PracticeBattle.LastRound);
+                owner.BeginPracticeBattle(65);
+                Assert.AreEqual(65, owner.PracticeBattle.LastRound);
                 Assert.AreEqual(1, owner.Combat.Game.CurrentWave);
                 Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
             }
@@ -308,11 +312,47 @@ namespace Ordr.Mobile.Tests
         [Test]
         public void PracticeModelCannotBeRelabelledAsRetailVerified()
         {
-            string json = Data("mobile-practice-battle-model.json");
-            Assert.Throws<FormatException>(() => new SourceModelPracticeCatalog(
-                json.Replace("\"retailParityVerified\": false", "\"retailParityVerified\": true")));
-            Assert.Throws<FormatException>(() => new SourceModelPracticeCatalog(
-                json.Replace("\"safeForVerifiedMonsterWaveRuntime\": false", "\"safeForVerifiedMonsterWaveRuntime\": true")));
+            foreach (int length in new[] { 20, 65 })
+            {
+                string json = Data(length == 65
+                    ? "mobile-standalone-enemy-model.json" : "mobile-practice-battle-model.json");
+                Assert.Throws<FormatException>(() => new SourceModelPracticeCatalog(
+                    json.Replace("\"retailParityVerified\": false", "\"retailParityVerified\": true"), length));
+                Assert.Throws<FormatException>(() => new SourceModelPracticeCatalog(
+                    json.Replace("\"safeForVerifiedMonsterWaveRuntime\": false", "\"safeForVerifiedMonsterWaveRuntime\": true"), length));
+            }
+        }
+
+        [Test]
+        public void AllSixtyFiveSourceWavesBuildWithoutAnExternalLiveWitness()
+        {
+            var identity = Original323MonsterWaveIdentityCatalog.FromJson(
+                Data("original-2323C-monster-wave-script-evidence.json"));
+            var catalog = new SourceModelPracticeCatalog(Data("mobile-standalone-enemy-model.json"), 65);
+            int monsters = 0;
+            for (int wave = 1; wave <= 65; wave++)
+            {
+                var plan = catalog.BuildPracticePlan(wave, identity);
+                Assert.IsTrue(identity.MatchesSinglePlayerSpawnCadence(plan), "wave " + wave);
+                Assert.IsTrue(plan.Spawns.All(x => x.Health > 0), "wave " + wave);
+                monsters += plan.Spawns.Count;
+                if (wave == 55 || wave == 60 || wave == 65)
+                {
+                    Assert.AreEqual(36, plan.Spawns.Count);
+                    Assert.AreEqual(1, plan.Spawns.Count(x => x.Kind == CharacterEnemyKind.Boss));
+                    Assert.AreEqual(35, plan.Spawns.Count(x => x.Kind == CharacterEnemyKind.Line));
+                }
+            }
+            Assert.AreEqual(65 * 35 - 5 * 34 + 3, monsters);
+            using (var game = Create(0, 65))
+            {
+                Assert.AreEqual(65, game.Battle.LastRound);
+                Assert.AreEqual(1, game.Combat.Game.CurrentWave);
+                game.Battle.Advance(.5);
+                Assert.AreEqual(1, game.Combat.Game.AliveEnemies);
+                Assert.AreEqual(338, game.Combat.MobileEnemySnapshot().Single().Health);
+                Assert.AreEqual(0, game.Combat.Game.LeakedEnemies);
+            }
         }
 
         [Test]

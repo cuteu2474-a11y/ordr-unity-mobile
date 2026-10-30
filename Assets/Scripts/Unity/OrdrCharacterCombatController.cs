@@ -666,14 +666,22 @@ namespace Ordr.Mobile.Unity
             if (sourceModelDamage == null || PracticeBattle != null || Combat.Game.CurrentWave != 0 ||
                 (Combat.Game.Phase != SessionPhase.NotStarted && !IsUnitPreparation))
                 throw new InvalidOperationException("새 게임 또는 유닛 준비 상태에서 연습을 시작하세요.");
-            var data = Resources.Load<TextAsset>("OrdrData/mobile-practice-battle-model");
-            if (data == null) throw new InvalidOperationException("연습 전투 자료가 APK에 없습니다.");
+            if (lastRound != 10 && lastRound != 20 && lastRound != 65)
+                throw new ArgumentOutOfRangeException(nameof(lastRound));
+            // Standalone Unity simulation uses the source-derived 65-round
+            // model directly. No Warcraft instance or external live-event
+            // witness is required to drive combat. Parity flags stay false.
+            string resource = lastRound == 65
+                ? "OrdrData/mobile-standalone-enemy-model"
+                : "OrdrData/mobile-practice-battle-model";
+            var data = Resources.Load<TextAsset>(resource);
+            if (data == null) throw new InvalidOperationException("원본 기반 몬스터 전투 자료가 APK에 없습니다.");
             var prepared = new SourceModelPracticeBattle(Combat, VerifiedWaveDirector, SharedEconomy,
                 new SourceModelPracticeCatalog(data.text, lastRound), OriginalMonsterSpawnIdentities,
                 sourceModelDamage, sessionScriptRandom, () =>
                 {
                     PersonalMissions?.OnRoundStarted();
-                    RecordSessionIssue("연습 라운드", Combat.Game.CurrentWave + "라운드 / 원본 최종 전투 미검증");
+                    RecordSessionIssue("전투 라운드", Combat.Game.CurrentWave + "라운드 / 원본 최종 전투 미검증");
                 });
             if (Combat.Game.Phase == SessionPhase.NotStarted) BeginSession();
             sourceModelDamage.Enable();
@@ -683,7 +691,7 @@ namespace Ordr.Mobile.Unity
             PracticeBattle.Start();
             var presenter = GetComponent<OrdrUnitWorldPresenter>();
             if (presenter != null) presenter.ShowAllOwnedUnits();
-            RecordSessionIssue("개발용 연습 시작", lastRound + "R · 평타 중심 · 몬스터 HP/피해 최종 원작 대조 전");
+            RecordSessionIssue("원본 기반 독립 전투 시작", lastRound + "R · 외부 원작 실행 불필요 · 몬스터 HP/피해 최종 원작 대조 전");
         }
         public int ExecutableCommonFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableCommonRecipeCount;
         public int ExecutableSpecialFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableSpecialRecipeCount;
