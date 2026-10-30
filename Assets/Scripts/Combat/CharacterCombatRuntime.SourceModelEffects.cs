@@ -79,18 +79,23 @@ namespace Ordr.Mobile.Combat
             if (passive != null)
             {
                 if (passive.Kind == OriginalNativePassiveKind.Critical ||
-                    passive.Kind == OriginalNativePassiveKind.CriticalStun)
+                    passive.Kind == OriginalNativePassiveKind.CriticalStun ||
+                    passive.Kind == OriginalNativePassiveKind.CriticalBonus ||
+                    passive.Kind == OriginalNativePassiveKind.CriticalBonusStun)
                     events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                         InstanceKey(actor.Id), hit.TargetId, passive.Name,
                         "연습 객체 크리티컬 · " + passive.CriticalMultiplier + "배 타격에 반영", 0));
                 if (passive.Kind == OriginalNativePassiveKind.Bonus ||
-                    passive.Kind == OriginalNativePassiveKind.BonusStun)
+                    passive.Kind == OriginalNativePassiveKind.BonusStun ||
+                    passive.Kind == OriginalNativePassiveKind.CriticalBonus ||
+                    passive.Kind == OriginalNativePassiveKind.CriticalBonusStun)
                     events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                         InstanceKey(actor.Id), hit.TargetId, passive.Name,
                         "연습 객체 추가 피해 " + passive.BonusDamage + " · 기본 타격에 반영", 0));
                 if ((passive.Kind == OriginalNativePassiveKind.Stun ||
                      passive.Kind == OriginalNativePassiveKind.CriticalStun ||
-                     passive.Kind == OriginalNativePassiveKind.BonusStun) && primary.Enemy.IsAlive &&
+                     passive.Kind == OriginalNativePassiveKind.BonusStun ||
+                     passive.Kind == OriginalNativePassiveKind.CriticalBonusStun) && primary.Enemy.IsAlive &&
                     hit.ActualDamage > 0 && primary.Kind == CharacterEnemyKind.Line)
                 {
                     var status = primary.Enemy.Status;
@@ -136,3 +141,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

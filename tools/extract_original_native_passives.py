@@ -2,7 +2,8 @@
 """Extract source AHbh passives with a separate practice-only first-rank set.
 
 Inputs are unmodified SLKs from the pinned user-owned 2.323[C] W3X.
-Bonus-damage effects, multiple active bashes and missing fields remain excluded.
+Multiple active bashes and missing fields remain excluded. Bonus and mixed
+effects are separate development models; rank changes are not implemented.
 """
 import argparse
 import hashlib
@@ -98,10 +99,9 @@ def extract(ability_file, owner_file, base_file, w3x):
             if chance <= 0 or chance > 100 or bonus < 0 or cooldown != 0 or data_d != 0:
                 continue
             if bonus > 0:
-                # One single-level ability, without critical/multiple-bash
-                # interaction. The damage school and final retail HP impact
-                # are not proven by these object fields.
-                if levels != 1 or multiplier != 0 or duration < 0 or hero < 0 or (duration == 0 and hero != 0):
+                # A single active ability; A0QS is explicitly first-rank only.
+                # Retail damage school, immunity and final HP remain unverified.
+                if (levels > 1 and ability != 'A0QS') or (multiplier != 0 and multiplier <= 1) or duration < 0 or hero < 0 or (duration == 0 and hero != 0):
                     continue
                 mask_parts = set(row['targs1'].split(','))
                 if 'air' not in mask_parts or not mask_parts <= {'air', 'ground', 'enemies', 'neutral'}:
@@ -109,11 +109,13 @@ def extract(ability_file, owner_file, base_file, w3x):
                 scaled = chance * 10000
                 if scaled != int(scaled):
                     raise ValueError("확률 정밀도 초과: " + ability)
+                critical = multiplier > 1
                 practice_bonus.append({
                     'catalogId': character['catalogId'], 'catalogName': character['catalogName'],
                     'originalUnitRawcode': raw, 'abilityRawcode': ability, 'level': 1,
-                    'kind': 'bonus-stun' if duration > 0 else 'bonus',
+                    'kind': ('critical-bonus-stun' if duration > 0 else 'critical-bonus') if critical else ('bonus-stun' if duration > 0 else 'bonus'),
                     'chancePerMillion': int(scaled), 'bonusDamage': float(bonus),
+                    'criticalMultiplier': float(multiplier), 'declaredLevels': levels,
                     'normalStunSeconds': float(duration), 'heroStunSeconds': float(hero),
                     'targetMask': row['targs1'],
                     'sourceFields': {field: row[field] for field in fields},
@@ -167,3 +169,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

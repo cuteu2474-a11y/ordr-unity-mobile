@@ -5,8 +5,8 @@
   "summary": {
     "catalogEntries": 277,
     "objectBasicAttackModels": 273,
-    "modelEffectOwners": 158,
-    "connectedModelEffectDefinitions": 203,
+    "modelEffectOwners": 165,
+    "connectedModelEffectDefinitions": 217,
     "documentedSkillEntries": 554,
     "documentedPassiveEntries": 295,
     "fullyVerifiedUnits": 0,
@@ -385,7 +385,9 @@
       "grade": "특별함",
       "originalRawcode": "h01K",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "X-드레이크 · 크리티컬과 추가 피해 · 객체 확률 10% · 객체 추가 피해 2200 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -880,7 +882,9 @@
       "grade": "특별함",
       "originalRawcode": "h01B",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "킬러 · 크리티컬과 추가 피해와 기절 · 객체 확률 10% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 2500 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -1967,6 +1971,7 @@
       "originalRawcode": "h02T",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "마르코 환수종 · 크리티컬과 추가 피해 · 객체 확률 15% · 객체 추가 피해 100000 / 연습 계산·원작 면역 미검증",
         "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -2075,7 +2080,9 @@
       "grade": "전설",
       "originalRawcode": "h035",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "샹크스 · 크리티컬과 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 25000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
@@ -2698,6 +2705,7 @@
       "originalRawcode": "h03M",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "사보 · 크리티컬과 추가 피해 · 객체 확률 15% · 객체 추가 피해 150000 / 연습 계산·원작 면역 미검증",
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -2733,7 +2741,9 @@
       "grade": "히든",
       "originalRawcode": "h03J",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "시류 · 크리티컬과 추가 피해와 기절 · 객체 확률 15% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 250000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
@@ -3507,7 +3517,9 @@
       "grade": "초월함",
       "originalRawcode": "H08Z",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "샹크스 · 크리티컬과 추가 피해와 기절 · 객체 확률 12% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 1,
@@ -3543,7 +3555,9 @@
       "grade": "초월함",
       "originalRawcode": "H08U",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "시라호시 · 크리티컬과 추가 피해 · 객체 확률 17% · 객체 추가 피해 250000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
@@ -3634,6 +3648,7 @@
       "originalRawcode": "H09F",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "조로 · 크리티컬과 추가 피해와 기절 · 객체 확률 25% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 200000 / 연습 계산·원작 면역 미검증",
         "적 방어력 감소 30 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -3916,6 +3931,7 @@
       "originalRawcode": "h05A",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "버기 · 크리티컬과 추가 피해와 기절 · 객체 확률 7.77% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 3333333 / 연습 계산·원작 면역 미검증",
         "적 방어력 감소 30 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -4007,6 +4023,7 @@
       "originalRawcode": "h05B",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "카번딧슈 · 크리티컬과 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 400000 / 연습 계산·원작 면역 미검증",
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -4043,6 +4060,7 @@
       "originalRawcode": "h05C",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "핸콕 · 크리티컬과 추가 피해와 기절 · 객체 확률 15% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500000 / 연습 계산·원작 면역 미검증",
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -4229,6 +4247,7 @@
       "originalRawcode": "h04G",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "제트 · 추가 피해와 기절 · 객체 확률 100% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영 · 객체 추가 피해 50000 / 연습 계산·원작 면역 미검증",
         "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -4363,7 +4382,9 @@
       "grade": "랜덤",
       "originalRawcode": "h06U",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "K · 크리티컬과 추가 피해 · 객체 확률 18% · 객체 추가 피해 400000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 0,

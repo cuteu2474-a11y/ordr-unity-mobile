@@ -166,11 +166,29 @@ namespace Ordr.Mobile.Tests
                     CollectionAssert.AreEqual(expected, game.Rules.UnitEffects.Describe(id, raw), id);
                     checkedUnits++;
                 }
-                Assert.AreEqual(20, checkedUnits);
+                Assert.AreEqual(21, checkedUnits);
             }
         }
         [Test]
-        public void AllThirtyNineBonusOwnersApplyOneSharedAttackPacket()
+        public void MixedCriticalBonusHasBothEventsOnOneSuccessfulAttack()
+        {
+            using (var game = Create(true, true))
+            {
+                long actor = game.Combat.SpawnCharacter("S-31", -4000, 4000);
+                var events = game.Battle.Advance(1.6);
+                Assert.IsTrue(events.Any(e => e.ActorId == actor.ToString() && e.Detail.Contains("크리티컬")));
+                Assert.IsTrue(events.Any(e => e.ActorId == actor.ToString() && e.Detail.Contains("추가 피해")));
+                Assert.IsTrue(events.Any(e => e.ActorId == actor.ToString() && e.Detail.Contains("기절")));
+            }
+            using (var game = Create(false, true))
+            {
+                long actor = game.Combat.SpawnCharacter("S-31", -4000, 4000);
+                var events = game.Battle.Advance(1.6);
+                Assert.IsFalse(events.Any(e => e.ActorId == actor.ToString() && e.Type == CharacterCombatEventType.SkillActivated));
+            }
+        }
+        [Test]
+        public void AllFiftyThreeBonusOwnersApplyOneSharedAttackPacket()
         {
             var root = OrdrJson.Object(OrdrJson.Parse(Data("original-2323C-native-pure-passives.json")), "passives");
             int count = 0;
@@ -202,7 +220,7 @@ namespace Ordr.Mobile.Tests
                 }
                 count++;
             }
-            Assert.AreEqual(39, count);
+            Assert.AreEqual(53, count);
         }
         [Test]
         public void BonusDescriptionsMatchPublishedRuntimeStatus()
@@ -223,7 +241,7 @@ namespace Ordr.Mobile.Tests
                     CollectionAssert.AreEqual(expected, game.Rules.UnitEffects.Describe(id, raw), id);
                     count++;
                 }
-                Assert.AreEqual(39, count);
+                Assert.AreEqual(53, count);
             }
         }
         [Test]
@@ -349,3 +367,4 @@ namespace Ordr.Mobile.Tests
         }
     }
 }
+

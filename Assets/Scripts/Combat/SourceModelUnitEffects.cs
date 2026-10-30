@@ -48,9 +48,10 @@ namespace Ordr.Mobile.Combat
             if (passive != null) result.Add(passive.Name + " · 객체 확률 " +
                 (passive.ChancePerMillion / 10000.0).ToString("0.####") + "%" +
                 (passive.Kind == OriginalNativePassiveKind.Stun ? " · 일반 몬스터 / 보스 저항 검증 대기" :
-                    (passive.Kind == OriginalNativePassiveKind.CriticalStun || passive.Kind == OriginalNativePassiveKind.BonusStun) ?
+                    (passive.Kind == OriginalNativePassiveKind.CriticalStun || passive.Kind == OriginalNativePassiveKind.BonusStun || passive.Kind == OriginalNativePassiveKind.CriticalBonusStun) ?
                     " · 일반 몬스터 기절 / 보스 저항 검증 대기" : "") +
                 (passives.PracticeFirstLevelForRawcode(rawcode) != null ? " · 연습 1단계 / 강화 미반영" : "") +
+                (passive.DeclaredLevels > 1 ? " · 연습 1단계 / 강화 미반영" : "") +
                 (passive.BonusDamage > 0 ? " · 객체 추가 피해 " + passive.BonusDamage.ToString("0.####") +
                     " / 연습 계산·원작 면역 미검증" : ""));
             if (id == "U-01") result.Add("꽃꽃 열매 · 같은 전장 최대 3명 타격 (연습 대상 선택/동시 타격 모델)");
@@ -107,8 +108,10 @@ namespace Ordr.Mobile.Combat
             if (roll >= passive.ChancePerMillion) return raw;
             pending[key] = passive;
             if (passive.Kind == OriginalNativePassiveKind.Critical ||
-                passive.Kind == OriginalNativePassiveKind.CriticalStun)
-                return raw * passive.CriticalMultiplier;
+                passive.Kind == OriginalNativePassiveKind.CriticalStun ||
+                passive.Kind == OriginalNativePassiveKind.CriticalBonus ||
+                passive.Kind == OriginalNativePassiveKind.CriticalBonusStun)
+                return raw * passive.CriticalMultiplier + passive.BonusDamage;
             // Warsmash reference pre-damage bonus path: bonus is added to the
             // attack packet before the model's armor calculation. This is not
             // a claim about retail Warcraft bonus school or final HP parity.
@@ -135,3 +138,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

@@ -1,5 +1,7 @@
 # 코드 구조와 재사용 지점
 
+복합 치명타·추가 피해 13명과 제트 1단계는 기존 개발용 효과 경로에 추가되어 있다. 원작 최종 피해 검증이나 강화 기능 구현을 뜻하지 않는다.
+
 기준 게임 코드: 최신 `main` · 현재 범위는 [시작 안내](START_HERE.md), 실행 순서는 [작업목록](PLAYABLE_ROADMAP.md).
 
 ### 최신 154개 제작: 읽기 전용 생성 후처리 두 건
@@ -136,3 +138,4 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 ## 전체 스킬 분류
 
 `tools/classify_character_skills.py`는 현재 도감·원본 객체·`unit-runtime-status.json`의 ID 집합/원본 해시를 대조하고 `data/original-2323C-skill-research-queue.json`을 생성합니다. 툴팁 스킬 유형별 묶음과 유닛별 기존 모델 효과를 함께 제공하되, 두 항목을 자동으로 동일 스킬이라고 판정하거나 전투 실행을 승인하지 않습니다. 누락 프로필은 `null`로 표시합니다.
+

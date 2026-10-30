@@ -5,7 +5,7 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
-    public enum OriginalNativePassiveKind { Critical, Stun, CriticalStun, Bonus, BonusStun }
+    public enum OriginalNativePassiveKind { Critical, Stun, CriticalStun, Bonus, BonusStun, CriticalBonus, CriticalBonusStun }
 
     public sealed class OriginalNativePassive
     {
@@ -19,6 +19,7 @@ namespace Ordr.Mobile.Combat
         public double BonusDamage { get; internal set; }
         public double NormalStunSeconds { get; internal set; }
         public double HeroStunSeconds { get; internal set; }
+        public int DeclaredLevels { get; internal set; } = 1;
         public string OriginalTargetMask { get; internal set; }
     }
 
@@ -187,22 +188,27 @@ namespace Ordr.Mobile.Combat
                     if (token != "air" && token != "ground" && token != "enemies" && token != "neutral")
                         throw new FormatException("연습 추가 피해 대상 분류 미지원: " + code);
                 }
-                bool stun = kind == "bonus-stun";
-                if ((!stun && kind != "bonus") || !air || chance <= 0 || chance > 100 ||
-                    scaled != Math.Floor(scaled) || multiplier != 0 || bonus <= 0 ||
+                bool stun = kind == "bonus-stun" || kind == "critical-bonus-stun";
+                bool critical = kind == "critical-bonus" || kind == "critical-bonus-stun";
+                double levels = OrdrJson.Number(row, "declaredLevels") ?? 1;
+                if ((!stun && !critical && kind != "bonus") || !air || chance <= 0 || chance > 100 ||
+                    levels < 1 || levels > 3 || Math.Floor(levels) != levels ||
+                    scaled != Math.Floor(scaled) || (critical ? multiplier <= 1 : multiplier != 0) || bonus <= 0 ||
                     Field(fields, "Cool1") != 0 || Field(fields, "DataD1") != 0 ||
                     (stun ? normal <= 0 || hero < 0 : normal != 0 || hero != 0) ||
                     OrdrJson.Number(row, "chancePerMillion") != scaled ||
                     OrdrJson.Number(row, "bonusDamage") != bonus ||
+                    (critical && OrdrJson.Number(row, "criticalMultiplier") != multiplier) ||
                     OrdrJson.Number(row, "normalStunSeconds") != normal ||
                     OrdrJson.Number(row, "heroStunSeconds") != hero ||
                     OrdrJson.RequiredString(row, "targetMask") != mask)
                     throw new FormatException("연습 추가 피해 원본 수치 오류: " + code);
                 result.practiceBonus.Add(raw, new OriginalNativePassive {
                     CatalogId = id, OwnerRawcode = raw, AbilityRawcode = code,
-                    Name = OrdrJson.RequiredString(row, "catalogName") + (stun ? " · 추가 피해와 기절" : " · 추가 피해"),
-                    Kind = stun ? OriginalNativePassiveKind.BonusStun : OriginalNativePassiveKind.Bonus,
-                    ChancePerMillion = (int)scaled, BonusDamage = bonus,
+                    Name = OrdrJson.RequiredString(row, "catalogName") + (critical ? " · 크리티컬과 추가 피해" : " · 추가 피해") + (stun ? "와 기절" : ""),
+                    Kind = critical ? (stun ? OriginalNativePassiveKind.CriticalBonusStun : OriginalNativePassiveKind.CriticalBonus) :
+                        (stun ? OriginalNativePassiveKind.BonusStun : OriginalNativePassiveKind.Bonus),
+                    ChancePerMillion = (int)scaled, BonusDamage = bonus, CriticalMultiplier = multiplier, DeclaredLevels = (int)levels,
                     NormalStunSeconds = normal, HeroStunSeconds = hero, OriginalTargetMask = mask
                 });
             }
@@ -315,3 +321,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

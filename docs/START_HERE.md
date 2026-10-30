@@ -1,5 +1,9 @@
 # 여기서 개발을 시작하세요
 
+## 복합 패시브와 제트 1단계 연습 모델 (2026-10-30)
+
+원본 단일 능력의 치명타와 추가 피해가 결합된 13명, 그리고 제트(I-10)의 추가 피해·기절 1단계를 연습 전투에 연결했다. 한 번 판정해 치명타 배율과 추가 피해를 한 공격에 반영한다. 제트 강화와 원작의 최종 피해·면역·보스 기절 저항은 미검증이다. 로우·상디·스네이크맨·불릿의 강화와 블루노·후쿠로의 람각은 원본 조건을 확인했으나 아직 연결하지 않았다.
+
 정리일: 2026-10-28 · 게임 코드 기준: [최신 `main`](https://github.com/cuteu2474-a11y/ordr-unity-mobile/tree/main) (이 문서의 이전 날짜별 항목은 당시 이력)
 
 새 AI는 이 문서 → [코드 구조](CODE_MAP.md) → [작업목록](PLAYABLE_ROADMAP.md) 순서로 읽는다. 운영 규칙은 루트 [AGENTS.md](../AGENTS.md)를 따른다. 이후 게임 코드가 바뀌면 이 문서의 범위도 다시 대조한다. 문서 정리 커밋은 게임 기능을 바꾸지 않는다.
@@ -9,11 +13,11 @@
 - APK 미리보기 CI에서 막힌 Unity EditMode 검사 3건은 새 게임 규칙 결함이 아니라 기존 테스트와 구현 간 불일치였습니다: 좁은 가로 화면의 전장 점유율 경계(83.846% 대 기존 84%), 전설 조합 실제 허용 34개 대 구형 33개, 원본 골드 당첨 난수 `3` 대신 항상 실패 난수 `4`를 넣는 테스트 대역.
 - 전장/조합/보상 규칙은 바꾸지 않고 테스트 기준과 난수 대역을 바로잡고, 골드 비당첨 시 처치는 집계하되 골드는 0인 회귀 검사도 추가했습니다. 이 정정만으로 Android 설치·실기 플레이 성공을 주장하지 않습니다.
 
-## 추가 피해 패시브 39명 연습 모델 (2026-10-30)
+## 이전 작업: 추가 피해 패시브 39명 연습 모델 (2026-10-30)
 
 원본 W3X의 단일 1단계 AHbh 능력에서 추가 피해가 확인된 39명을 기존 10/20/65라운드 독립 전투에 연결했습니다. 에이스·타시기·하찌와 특별함·희귀·전설·히든 등입니다. 같은 한 번의 확률 판정에서 추가 피해를 평타 패킷에 합산하고, 기절이 있는 능력은 살아 있는 일반 몬스터에 원본 객체 지속시간을 적용합니다. 사망·처치·골드는 기존 경로를 사용합니다. 상세 소유자와 원본 수치는 [능력 자료](../data/original-2323C-native-pure-passives.json)의 `practiceBonusEntries`에 있습니다.
 
-추가 피해 계산은 공개 [Warsmash 능력 설정](https://github.com/Retera/WarsmashModEngine/blob/f9e0aeed4be372d6016519d0e97b384aa873f374/core/assets/abilityBehaviors/generalPassives.json)과 [피해 합산 코드](https://github.com/Retera/WarsmashModEngine/blob/f9e0aeed4be372d6016519d0e97b384aa873f374/core/src/com/etheller/warsmash/viewer5/handlers/w3x/simulation/combat/attacks/listeners/CUnitAttackDamageTakenModificationListenerDamageModResult.java)를 참고한 개발 모델입니다. 원본 Warcraft의 최종 피해 종류·방어·면역·반올림과 동등하다고 검증된 것은 아닙니다. 보스 기절 저항·다중 AHbh·추가 피해와 치명타가 섞인 능력·여러 단계 능력·람각은 이번 범위 밖입니다. 기존 원본 검증 전용 카탈로그에는 추가하지 않습니다.
+추가 피해 계산은 공개 [Warsmash 능력 설정](https://github.com/Retera/WarsmashModEngine/blob/f9e0aeed4be372d6016519d0e97b384aa873f374/core/assets/abilityBehaviors/generalPassives.json)과 [피해 합산 코드](https://github.com/Retera/WarsmashModEngine/blob/f9e0aeed4be372d6016519d0e97b384aa873f374/core/src/com/etheller/warsmash/viewer5/handlers/w3x/simulation/combat/attacks/listeners/CUnitAttackDamageTakenModificationListenerDamageModResult.java)를 참고한 개발 모델입니다. 원본 Warcraft의 최종 피해 종류·방어·면역·반올림과 동등하다고 검증된 것은 아닙니다. 보스 기절 저항·다중 AHbh·다단계 강화·람각은 미완료입니다. 기존 원본 검증 전용 카탈로그에는 추가하지 않습니다.
 
 [유닛 현황](../data/unit-runtime-status.json)은 이전 C# 출력과 이번 39개 설명을 합쳐 재생성했으며 Unity 검사에서 실제 설명과 대조합니다. 유닛 158명의 모델 효과 203개는 전체 스킬 완성 수가 아닙니다.
 
@@ -400,3 +404,4 @@ APK 아티팩트 이름은 `ordr-mobile-android-development-apk`, 경로는 `bui
 ## 바로 이어서 할 일
 
 성현 님의 2026-10-30 최신 지시에 따라 [작업목록](PLAYABLE_ROADMAP.md)의 **N3 남은 조합 연결을 먼저 진행**한다. 현재 127개 제작식은 재사용하고, 아카이누 상태 초기화·전설 추가 생성·변형 재료·상위 특수 조건을 원본 근거와 함께 묶어 처리한다. 각 작업의 기존 구현·수정 위치·완료 기준·막힌 근거는 작업목록에 있다. [문서 목차](README.md)에서 세부 자료를 찾고, [과거 기록](archive/README.md)의 ‘다음 작업’을 현재 우선순위로 읽지 않는다.
+
