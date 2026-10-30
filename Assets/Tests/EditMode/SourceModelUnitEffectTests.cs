@@ -19,7 +19,12 @@ namespace Ordr.Mobile.Tests
             public int Next(int upper) => upper == 1000000 && !proc ? upper - 1 : 0;
         }
         private sealed class Gold : IOriginalWispRandom
-        { public int NextInclusive(int min, int max) => max; }
+        {
+            private readonly bool winningRoll;
+            public Gold(bool winningRoll) { this.winningRoll = winningRoll; }
+            public int NextInclusive(int min, int max) =>
+                winningRoll ? Original323MonsterGoldRules.WinningGoldRoll : max;
+        }
         private sealed class Live : IDisposable
         {
             public CharacterCombatRuntime Combat;
@@ -30,7 +35,8 @@ namespace Ordr.Mobile.Tests
             public void Dispose() { Battle.Dispose(); }
         }
         private static string Data(string file) => File.ReadAllText(Path.Combine(Application.dataPath, "..", "data", file));
-        private static Live Create(bool proc = true, bool durableEnemy = false, int lastRound = 10)
+        private static Live Create(bool proc = true, bool durableEnemy = false,
+            int lastRound = 10, bool winningGoldRoll = false)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -56,7 +62,7 @@ namespace Ordr.Mobile.Tests
             var battle = new SourceModelPracticeBattle(combat, new CombatWaveDirector(), economy,
                 new SourceModelPracticeCatalog(model, lastRound),
                 Original323MonsterWaveIdentityCatalog.FromJson(Data("original-2323C-monster-wave-script-evidence.json")),
-                rules, new Gold(), null);
+                rules, new Gold(winningGoldRoll), null);
             battle.Start();
             return new Live { Combat = combat, Battle = battle, Rules = rules, Units = units, Map = map };
         }
@@ -223,7 +229,7 @@ namespace Ordr.Mobile.Tests
         [Test]
         public void BonusKillUsesNormalDefeatAndGoldPath()
         {
-            using (var game = Create())
+            using (var game = Create(winningGoldRoll: true))
             {
                 game.Combat.SpawnCharacter("U-05", -4000, 4000);
                 var events = game.Battle.Advance(1);
@@ -231,6 +237,18 @@ namespace Ordr.Mobile.Tests
                 Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.EnemyDefeated));
                 Assert.Greater(game.Combat.Game.DefeatedEnemies, 0);
                 Assert.Greater(game.Battle.GoldAwarded, 0);
+            }
+        }
+        [Test]
+        public void BonusKillWithoutWinningGoldRollStillCountsAsDefeat()
+        {
+            using (var game = Create())
+            {
+                game.Combat.SpawnCharacter("U-05", -4000, 4000);
+                var events = game.Battle.Advance(1);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.EnemyDefeated));
+                Assert.Greater(game.Combat.Game.DefeatedEnemies, 0);
+                Assert.AreEqual(0, game.Battle.GoldAwarded);
             }
         }
         [Test]
