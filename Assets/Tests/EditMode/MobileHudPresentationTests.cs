@@ -115,13 +115,22 @@ namespace Ordr.Mobile.Tests
                 Assert.IsFalse(shell.IsStartScreenVisible);
                 Assert.IsTrue(owner.IsUnitPreparation);
                 Assert.AreEqual(0, owner.Combat.Game.CurrentWave);
-                Assert.AreEqual(0, owner.Combat.EnemyCount);
+                // CUM starts Loguetown in the preparation session. It is a
+                // static story BUILDING, not a counted wave monster.
+                Assert.AreEqual(1, owner.Combat.EnemyCount);
+                Assert.AreEqual(0, owner.Combat.Game.AliveEnemies);
+                Assert.IsNotNull(owner.SoloStory);
+                Assert.AreEqual(1, owner.SoloStory.ActiveStage);
+                var originalStory = owner.SoloStory;
                 var originalSession = owner.SharedEconomy;
                 long gold = originalSession.Wallet.Balance("gold");
                 long wood = originalSession.Wallet.Balance("wood");
                 int actors = originalSession.Units.Count;
                 shell.EnterGame();
                 Assert.AreSame(originalSession, owner.SharedEconomy);
+                Assert.AreSame(originalStory, owner.SoloStory);
+                Assert.AreEqual(1, owner.Combat.EnemyCount);
+                Assert.AreEqual(0, owner.Combat.Game.AliveEnemies);
                 Assert.AreEqual(gold, owner.SharedEconomy.Wallet.Balance("gold"));
                 Assert.AreEqual(wood, owner.SharedEconomy.Wallet.Balance("wood"));
                 Assert.AreEqual(actors, owner.SharedEconomy.Units.Count);

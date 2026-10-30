@@ -174,6 +174,9 @@ namespace Ordr.Mobile.Tests
             runtime.SpawnEnemy("a", 20000000, CharacterEnemyKind.Line, 50, 0, 0);
             runtime.SpawnEnemy("b", 20000000, CharacterEnemyKind.Boss, 90, 0, 0);
             runtime.SpawnEnemy("story", 20000000, CharacterEnemyKind.Story, 550, 0, 0);
+            // Wave accounting intentionally excludes the static story target.
+            Assert.AreEqual(3, runtime.EnemyCount);
+            Assert.AreEqual(2, runtime.Game.AliveEnemies);
             var cow = new TestCow();
             var data = new TestData();
             var resolver = new TestResolver();
@@ -202,7 +205,9 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(live.TryCommitCast("A0BZ", 70, 0));
             Assert.IsNull(runtime.EnemyOf("a"));
             Assert.IsNull(runtime.EnemyOf("b"));
-            Assert.AreEqual(1, runtime.Game.AliveEnemies); // story remains
+            Assert.AreEqual(1, runtime.EnemyCount); // story target still exists
+            Assert.AreEqual(0, runtime.Game.AliveEnemies); // wave enemies only
+            Assert.AreEqual(20000000, runtime.EnemyOf("story").Health);
             Assert.AreEqual(2, runtime.Game.DefeatedEnemies);
         }
 

@@ -180,7 +180,12 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(13, buildings.DestroyedCount);
                 Assert.AreEqual(13, buildings.Encounters.Count);
                 double wait = story.EggheadWaitRemaining;
-                Assert.Greater(wait, 119.0);
+                // The 120-second clock starts on the ACTUAL Wano death hit,
+                // not at the end of the enclosing 1.1-second combat step.
+                // This leaves approximately 118.9 seconds here.
+                Assert.Greater(wait, 110.0);
+                Assert.LessOrEqual(wait,
+                    Original323StoryUnlockRules.EggheadDelayAfterWanoKillSeconds);
                 combat.Step(wait - 0.1);
                 story.Advance();
                 Assert.AreEqual(13, story.ActiveStage);

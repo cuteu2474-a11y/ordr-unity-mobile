@@ -1160,7 +1160,12 @@ namespace Ordr.Mobile.Tests
                 typeof(OrdrCharacterCombatController).GetMethod("Update",
                     BindingFlags.NonPublic | BindingFlags.Instance).Invoke(owner, null);
                 Assert.AreEqual(0, owner.Combat.Time);
-                Assert.AreEqual(0, owner.Combat.EnemyCount);
+                // The first story building is present even before wave 1.
+                // No practice battle ticks and no wave-counter mutations.
+                Assert.AreEqual(1, owner.Combat.EnemyCount);
+                Assert.AreEqual(0, owner.Combat.Game.AliveEnemies);
+                Assert.AreEqual(1, owner.SoloStory.ActiveStage);
+                Assert.AreEqual(0, owner.SoloStory.HighestDestroyedStage);
                 Assert.Throws<InvalidOperationException>(() => owner.BeginUnitPreparation());
                 Assert.AreEqual(60, owner.SharedEconomy.Wallet.Balance("gold"));
                 string blocked;
