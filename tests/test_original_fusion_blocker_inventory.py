@@ -22,14 +22,14 @@ class FusionBlockerInventoryTests(unittest.TestCase):
     def test_all_265_source_recipes_are_recounted_from_real_csharp_arrays(self):
         self.assertEqual(build(self.data, self.port), self.inventory)
         summary = self.inventory['summary']
-        self.assertEqual((265, 152, 113), (summary['sourceRecipesExcludingTest'],
+        self.assertEqual((265, 154, 111), (summary['sourceRecipesExcludingTest'],
                                          summary['liveExecutableRecipes'],
                                          summary['blockedRecipes']))
         self.assertEqual({'Reviewed': 13, 'ReviewedSpecial': 31, 'ReviewedRare': 41,
-                          'ReviewedLegendary': 33, 'ReviewedHidden': 18,
+                          'ReviewedLegendary': 34, 'ReviewedHidden': 19,
                           'ReviewedEternal': 1, 'ReviewedRestricted': 15},
                          summary['liveExecutableByGrade'])
-        self.assertEqual(113, len({r['abilityRawcode'] for r in self.inventory['blocked']}))
+        self.assertEqual(111, len({r['abilityRawcode'] for r in self.inventory['blocked']}))
 
     def test_grouped_reasons_preserve_source_costs_and_unknown_materials(self):
         for row in self.inventory['blocked']:
@@ -54,6 +54,8 @@ class FusionBlockerInventoryTests(unittest.TestCase):
         self.assertNotIn('A113', blocked)
         self.assertNotIn('YY18', blocked)
         self.assertNotIn('YY25', blocked)
+        self.assertNotIn('YY13', blocked)
+        self.assertNotIn('A02D', blocked)
         self.assertNotIn('ET01', blocked)
         for ability in ('A0RP', 'IM02', 'IM03', 'IM10', 'ET09', 'ET11'):
             self.assertNotIn(ability, blocked)

@@ -1,6 +1,10 @@
 # 코드 구조와 재사용 지점
 
-기준 게임 코드: `3cc8997` · 현재 범위는 [시작 안내](START_HERE.md), 실행 순서는 [작업목록](PLAYABLE_ROADMAP.md).
+기준 게임 코드: 최신 `main` · 현재 범위는 [시작 안내](START_HERE.md), 실행 순서는 [작업목록](PLAYABLE_ROADMAP.md).
+
+### 최신 154개 제작: 읽기 전용 생성 후처리 두 건
+
+`Original323CommonFusionPort.ReviewedLegendary`의 **A02D 마르코**와 `ReviewedHidden`의 **YY13 스튜시**는 기존 원자적 유닛 교체·목재 차감·출현 위치 경로를 재사용합니다. `audit_original_readonly_creation_fusions.py`는 고정 W3X/JASS의 A02D 네이티브 시전, YY13 채팅 wrapper, `CH8→Bjp/Bjm` 읽기 전용 처리 전체와 실제 C# 허용 목록을 대조합니다. [감사 JSON](../data/original-2323C-readonly-creation-fusions.json)과 [회귀 검사](../tests/test_original_readonly_creation_fusions.py)는 신규 게임 상태 변경을 거절합니다. 나머지 CH8 능력·보조 객체/영구 효과는 구현되지 않았으므로 잠겨 있습니다. 아래 152개·150개 절은 과거 단계 설명입니다.
 
 ### 보유 재료 우선·실제 152개 제작 포트 (2026-10-30)
 
@@ -54,7 +58,7 @@ flowchart TD
 | 원작 피해 연결 | [Ordr323DamageWorldBinding.cs](../Assets/Scripts/Combat/Ordr323DamageWorldBinding.cs), [Ordr323OriginalDamageRules.cs](../Assets/Scripts/Combat/Ordr323OriginalDamageRules.cs), [Ordr323MapDamageMath.cs](../Assets/Scripts/Combat/Ordr323MapDamageMath.cs) | 확인된 원시 타격·방어·중첩·정수화 계약과 맵 상수. 모든 계약의 실제 공급자가 완성된 것은 아님 |
 | 공유 지갑·보유 목록 | [SharedEconomySession.cs](../Assets/Scripts/Core/SharedEconomySession.cs), [EconomyTransactions.cs](../Assets/Scripts/Core/EconomyTransactions.cs), [UnitRoster.cs](../Assets/Scripts/Core/UnitRoster.cs) | 같은 지갑과 실제 인스턴스를 모든 기능이 사용 |
 | 흔함·해적선 위습 소환 | [Original323SourceCommonWispWorld.cs](../Assets/Scripts/Combat/Original323SourceCommonWispWorld.cs), [OriginalWispCombatRewardWorld.cs](../Assets/Scripts/Combat/OriginalWispCombatRewardWorld.cs) | 원본 24/10000 해적선 별도 분기와 흔함 9종 추첨 유지, PS-01 보유 유닛 생성·위습 차감·실패 롤백·동일 당첨 재사용. 해적선은 모바일 자동 배치이고 원본 특수 출현 위치는 미확인 |
-| 실제 152개 조합 | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs): `RegisterReviewed`, `RegisterRestricted`, `ConfirmFusion` | 검수한 제작식·원본 UNIT/GOLD/WOOD 차감·`OriginalFusionUnitSwap`, 채팅형 히든/불멸/영원 시작 위치. 미리보기만으로 제작 허가하지 않음 |
+| 실제 154개 조합 | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs): `RegisterReviewed`, `RegisterRestricted`, `ConfirmFusion` | 검수한 제작식·원본 UNIT/GOLD/WOOD 차감·`OriginalFusionUnitSwap`, 채팅형 히든/불멸/영원 시작 위치. 미리보기만으로 제작 허가하지 않음 |
 | 이세계 밴·항법·라운드 상태 | [Original323FusionVerifiedRestrictions.cs](../Assets/Scripts/Mobile/Original323FusionVerifiedRestrictions.cs), [OriginalJassKnownConditions.cs](../Assets/Scripts/Mobile/OriginalJassKnownConditions.cs) | 원본 CNn 밴은 변질모드 전용이므로 이세계모드 0종, CKQ 미선택 RC=0, 승인된 웨이브 기록 후 RMAX; 다른 특수 소비/효과는 계속 거부 |
 | 원본 특수 조합 기반 | [OriginalJassFusionPlanner.cs](../Assets/Scripts/Mobile/OriginalJassFusionPlanner.cs), [OriginalJassFusionAtomicCoordinator.cs](../Assets/Scripts/Mobile/OriginalJassFusionAtomicCoordinator.cs) | 원본 조건 순서·특수 조건·정확한 재료 인스턴스. 새 거래 엔진을 만들기 전에 확인 |
 | 일반 돈 도박 연습 | [SourceModelRegularMoneyGambling.cs](../Assets/Scripts/Mobile/SourceModelRegularMoneyGambling.cs), [원본 비용·재고 자료](../data/original-2323C-money-gambling-shop.json) | 실제 수동 10골드 차감/반환·공유 모바일 난수·논리 재고·영수증. 네이티브 재고/Warcraft RNG 동등성 미검증, 고급 해금 없음 |

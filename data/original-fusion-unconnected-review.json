@@ -13,20 +13,20 @@
   ],
   "summary": {
     "sourceRecipesExcludingTest": 265,
-    "liveExecutableRecipes": 152,
-    "blockedRecipes": 113,
+    "liveExecutableRecipes": 154,
+    "blockedRecipes": 111,
     "liveExecutableByGrade": {
       "Reviewed": 13,
       "ReviewedSpecial": 31,
       "ReviewedRare": 41,
-      "ReviewedLegendary": 33,
-      "ReviewedHidden": 18,
+      "ReviewedLegendary": 34,
+      "ReviewedHidden": 19,
       "ReviewedEternal": 1,
       "ReviewedRestricted": 15
     },
     "blockedByReason": {
       "chat-player-state-effect": 1,
-      "creation-followup-CH8": 13,
+      "creation-followup-CH8": 11,
       "item-payment": 3,
       "native-cast-AOsf": 3,
       "no-unit-payment-in-registration": 24,
@@ -136,26 +136,6 @@
       ]
     },
     {
-      "abilityRawcode": "A02D",
-      "resultRawcodes": [
-        "h02T"
-      ],
-      "resultNames": [
-        "마르코 환수종 - 전설"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "UNIT",
-        "UPUN",
-        "WOOD"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 3,
-      "reasonCodes": [
-        "creation-followup-CH8"
-      ]
-    },
-    {
       "abilityRawcode": "A025",
       "resultRawcodes": [
         "h035"
@@ -245,25 +225,6 @@
       ],
       "resultNames": [
         "방주맥심 - 히든"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "UNIT",
-        "UPUN"
-      ],
-      "sourceGoldCost": 0,
-      "sourceWoodCost": 0,
-      "reasonCodes": [
-        "creation-followup-CH8"
-      ]
-    },
-    {
-      "abilityRawcode": "YY13",
-      "resultRawcodes": [
-        "h055"
-      ],
-      "resultNames": [
-        "스튜시 - 히든"
       ],
       "unmappedUnitRawcodes": [],
       "originalConditionKinds": [

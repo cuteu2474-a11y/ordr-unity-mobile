@@ -58,7 +58,7 @@ class OriginalPirateShipBridgeTests(unittest.TestCase):
     def test_hidden_uses_are_now_resolvable_but_not_silently_authorized(self):
         inventory = load("original-fusion-unconnected-review.json")
         rows = {r["abilityRawcode"]: r for r in inventory["blocked"]}
-        self.assertEqual((265, 152, 113),
+        self.assertEqual((265, 154, 111),
                          tuple(inventory["summary"][x] for x in
                                ("sourceRecipesExcludingTest", "liveExecutableRecipes",
                                 "blockedRecipes")))

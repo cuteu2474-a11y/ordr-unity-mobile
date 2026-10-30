@@ -1,0 +1,194 @@
+{
+  "format": "ordr-readonly-creation-fusions-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "reviewed": {
+    "A02D": {
+      "resultRawcode": "h02T",
+      "catalogId": "L-11",
+      "grade": "전설",
+      "sourceRegistration": {
+        "abilityRawcode": "A02D",
+        "jassLine": null,
+        "results": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h02T",
+            "count": 1
+          }
+        ],
+        "conditions": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h022",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h01M",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h02M",
+            "count": 1
+          },
+          {
+            "kind": "WOOD",
+            "rawcode": "WOOD",
+            "count": 3
+          },
+          {
+            "kind": "UPUN",
+            "rawcode": "H092",
+            "count": 1
+          },
+          {
+            "kind": "UPUN",
+            "rawcode": "h04A",
+            "count": 1
+          },
+          {
+            "kind": "UPUN",
+            "rawcode": "h059",
+            "count": 1
+          },
+          {
+            "kind": "UPUN",
+            "rawcode": "h08O",
+            "count": 1
+          }
+        ]
+      },
+      "materials": [
+        {
+          "rawcode": "h022",
+          "catalogId": "R-08",
+          "count": 1
+        },
+        {
+          "rawcode": "h01M",
+          "catalogId": "R-42",
+          "count": 1
+        },
+        {
+          "rawcode": "h02M",
+          "catalogId": "R-16",
+          "count": 1
+        }
+      ],
+      "originalCasterCatalogIds": [
+        "R-08"
+      ]
+    },
+    "YY13": {
+      "resultRawcode": "h055",
+      "catalogId": "H-13",
+      "grade": "히든",
+      "sourceRegistration": {
+        "abilityRawcode": "YY13",
+        "jassLine": null,
+        "results": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h055",
+            "count": 1
+          }
+        ],
+        "conditions": [
+          {
+            "kind": "UNIT",
+            "rawcode": "h023",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h028",
+            "count": 1
+          },
+          {
+            "kind": "UNIT",
+            "rawcode": "h027",
+            "count": 1
+          },
+          {
+            "kind": "UPUN",
+            "rawcode": "H0BX",
+            "count": 1
+          },
+          {
+            "kind": "UPUN",
+            "rawcode": "H0AA",
+            "count": 1
+          },
+          {
+            "kind": "UPUN",
+            "rawcode": "h06A",
+            "count": 1
+          }
+        ]
+      },
+      "materials": [
+        {
+          "rawcode": "h023",
+          "catalogId": "R-36",
+          "count": 1
+        },
+        {
+          "rawcode": "h028",
+          "catalogId": "R-23",
+          "count": 1
+        },
+        {
+          "rawcode": "h027",
+          "catalogId": "R-24",
+          "count": 1
+        }
+      ],
+      "originalCasterCatalogIds": []
+    }
+  },
+  "legendaryNativeFields": {
+    "code": "AHwe",
+    "targs1": "_",
+    "Cast1": "0.06",
+    "Cool1": "0.",
+    "Dur1": "0.",
+    "HeroDur1": "0."
+  },
+  "originalHiddenChatCommands": [
+    "스튜시조합",
+    "stussy"
+  ],
+  "functions": {
+    "CH8": {
+      "source": "function CH8 takes nothing returns nothing\nlocal unit iI=GetEnteringUnit()\nlocal integer JG=GetPlayerId(GetOwningPlayer(iI))\nlocal timer Db\nif GetUnitAbilityLevel(iI,$416C6F63)>0 then\nset iI=null\nreturn\nendif\nif JG==7 then\nset iI=null\nreturn\nendif\nif LZ[JG]!=0 and IsUnitType(GetTriggerUnit(),UNIT_TYPE_GIANT) then\ncall BH1(LZ[JG],iI)\ncall BkC(iI)\nendif\nif GetUnitTypeId(iI)==$68303438 then\nset LL[JG]=LL[JG]+10\nset Db=BHs(JG)\ncall TimerStart(Db,.01,false,function CH6)\nset Db=null\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303431 then\nset LL[JG]=LL[JG]+10\nset Db=BHs(JG)\ncall TimerStart(Db,.01,false,function CH7)\nset Db=null\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303748 then\ncall Bc6(iI,GetRectCenterX(Lm[JG]),GetRectCenterY(Lm[JG]))\ncall UnitRemoveAbilityBJ($416D6F76,iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303335 then\ncall Btf(JG,iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303837 then\ncall BuF(JG,iI)\ncall SetPlayerTechResearchedSwap($52303343,1,Player(JG))\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303250 then\ncall BsP(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303432 then\ncall SetPlayerTechResearchedSwap($52303331,1,Player(JG))\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303254 then\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303342 then\ncall BuN(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303358 then\ncall Br4(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303535 then\ncall Bjp(iI)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303550 then\ncall SetPlayerTechResearchedSwap($52303052,1,Player(JG))\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68304247 then\ncall CCP(JG)\nset iI=null\nreturn\nendif\nif GetUnitTypeId(iI)==$68303732 then\ncall CC1(JG)\nset iI=null\nreturn\nendif\nset iI=null\nendfunction",
+      "sha256LF": "1ec038ddd22e024c26ad7116f9eff4040bd18a2760074ed3ec802d914cebe96f"
+    },
+    "Bjp": {
+      "source": "function Bjp takes unit Cm returns boolean\nlocal player RT=GetOwningPlayer(Cm)\nlocal string TS\nlocal integer Zm\nlocal boolean Zn\nset TS=Sv[GetPlayerId(RT)]\nif GetUnitTypeId(Cm)==$68303438 then\nset Zm=SE\nelseif GetUnitTypeId(Cm)==$68303432 then\nset Zm=SL\nelseif GetUnitTypeId(Cm)==$68303254 then\nset Zm=SP\nelseif GetUnitTypeId(Cm)==$68303535 then\nset Zm=SJ\nelseif GetUnitTypeId(Cm)==$68303543 then\nset Zm=SH\nelseif GetUnitTypeId(Cm)==$68303538 then\nset Zm=SK\nelseif GetUnitTypeId(Cm)==$48303938 then\nset Zm=SG\nelseif GetUnitTypeId(Cm)==$48303856 then\nset Zm=SF\nelseif GetUnitTypeId(Cm)==$4830354E then\nset Zm=SI\nelseif GetUnitTypeId(Cm)==$48303941 then\nset Zm=SM\nelseif GetUnitTypeId(Cm)==$48303936 then\nset Zm=SO\nelseif GetUnitTypeId(Cm)==$48303939 then\nset Zm=SS\nelseif GetUnitTypeId(Cm)==$48304244 then\nset Zm=SQ\nelseif GetUnitTypeId(Cm)==$48303855 then\nset Zm=SR\nelseif GetUnitTypeId(Cm)==$68303441 then\nset Zm=SN\nelse\ncall DisplayTimedTextToPlayer(RT,0,0,5,\"|cffff0000[Error]|r 해당 유닛은 스킨이 존재하지 않습니다.\")\nset RT=null\nreturn false\nendif\nset Zn=LoadBoolean(SD,StringHash(TS),Zm) or (GetUnitTypeId(Cm)==TT and Bjm(RT))\nset RT=null\nreturn Zn\nendfunction",
+      "sha256LF": "7405a969b8f27e194336898b0a5f4e1eb9d92cb615cb0e45425fbf3cc6634823"
+    },
+    "Bjm": {
+      "source": "function Bjm takes player Cl returns boolean\nlocal integer JG=GetPlayerId(Cl)\nreturn TU[JG]==MW or TU[JG]==MQ or TU[JG]==KW or TU[JG]==MR or TU[JG]==MS or TU[JG]==MU or TU[JG]==MV\nendfunction",
+      "sha256LF": "e050d19a7011315665be1833ae73c788a133b61a7cfefdaa8ebba5ce89a32b1a"
+    },
+    "BrG": {
+      "source": "function BrG takes integer WR returns boolean\ncall BIw()\nset Q5=GetTriggerPlayer()\nset WS=WR\ncall BI1(GetPlayerStartLocationX(GetTriggerPlayer()),GetPlayerStartLocationY(GetTriggerPlayer()))\nreturn BI2()\nendfunction",
+      "sha256LF": "36454368955954a28ccdf099c46f8f1e7991fb6524c1f66862f95069436b37c6"
+    },
+    "BrH": {
+      "source": "function BrH takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nif not BrG($59593133) then\nreturn\nendif\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,\"|cffFF0000스튜시 : |r|cffFA8072당신도 잠들어 줘...|r\")\nif GetLocalPlayer()==GetTriggerPlayer() then\ncall StartSound(XF)\nendif\nendfunction",
+      "sha256LF": "930d521d6aea451130867dcee6913614d3f0ffab23a181b9caa700e06339fbfb"
+    },
+    "BrJ": {
+      "source": "function BrJ takes nothing returns nothing\ncall Bcx(\"스튜시조합\",true,function BrH)\ncall Bcx(\"stussy\",true,function BrH)\ncall w5($68303535,function BrI)\ncall w5($68304137,function BrI)\nendfunction",
+      "sha256LF": "30f7d871993878838112e84d966568f04eea347f932167fc62357fd634d90c65"
+    }
+  },
+  "limits": [
+    "Only discarded read-only skin entitlement queries are omitted.",
+    "No source cost, additional unit, player state or item is waived.",
+    "Material swap is not retail character skill/combat parity."
+  ]
+}

@@ -100,8 +100,13 @@ class OriginalHiddenMaterialSwapTests(unittest.TestCase):
         actual = re.findall(r'\{ "(YY\d{2})", "(\w{4})", "(H-\d+)" \}', block)
         expected = [(r['abilityRawcode'], r['results'][0]['rawcode'], r['resultCatalogId'])
                     for r in self.audit['recipes']]
+        additional = json.loads((ROOT / 'data/original-2323C-readonly-creation-fusions.json').read_text())
+        # YY13 was deliberately excluded by the earlier no-CH8 audit; it is
+        # now separately authorized after proving CH8's Bjp path read-only.
+        expected.append(('YY13', 'h055', additional['reviewed']['YY13']['catalogId']))
         self.assertEqual(expected, actual)
-        self.assertTrue(set(self.audit['excludedHiddenAbilities']).isdisjoint(r[0] for r in actual))
+        self.assertTrue((set(self.audit['excludedHiddenAbilities']) - {'YY13'})
+                        .isdisjoint(r[0] for r in actual))
         self.assertIn('YY15', self.audit['excludedHiddenAbilities'])
 
 

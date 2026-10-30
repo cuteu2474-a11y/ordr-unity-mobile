@@ -140,6 +140,9 @@ namespace Ordr.Mobile.Mobile
             { "A1CC", "h0CM", "L-39" },
             { "A113", "h08S", "L-14" },
             { "A01S", "h03A", "L-07" },
+            // Pinned CH8 calls only the discarded, read-only Bjp skin query
+            // for h02T; A02D has the regular AHwe caster/material swap.
+            { "A02D", "h02T", "L-11" },
         };
         private static readonly string[,] ReviewedHidden = {
             { "YY02", "h044", "H-05" }, { "YY03", "h03W", "H-10" },
@@ -157,7 +160,10 @@ namespace Ordr.Mobile.Mobile
             { "YY07", "h03Q", "H-06" },
             { "YY08", "h03R", "H-07" },
             { "YY09", "h03P", "H-08" },
-            { "YY12", "h03L", "H-15" }
+            { "YY12", "h03L", "H-15" },
+            // BrG/BrH is BI2 followed by local sound/text. CH8's h055
+            // branch only discards Bjp's read-only skin entitlement query.
+            { "YY13", "h055", "H-13" }
         };
         // Source ET01 is a chat-driven BI2 swap; its callback adds only
         // text/audio setup, not an additional gameplay resource or result.

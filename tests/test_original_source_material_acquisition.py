@@ -91,8 +91,8 @@ class OriginalSourceMaterialAcquisitionTests(unittest.TestCase):
         self.assertNotIn('case "CJC"', source)
 
     def test_object_linking_reduces_only_blocker_reason_not_craft_permissions(self):
-        self.assertEqual(152, self.blocked["summary"]["liveExecutableRecipes"])
-        self.assertEqual(113, self.blocked["summary"]["blockedRecipes"])
+        self.assertEqual(154, self.blocked["summary"]["liveExecutableRecipes"])
+        self.assertEqual(111, self.blocked["summary"]["blockedRecipes"])
         self.assertEqual(4, self.blocked["summary"]["blockedByReason"]["unmapped-original-unit"])
         source_only = read("original-fusion-source-only-materials.json")
         self.assertEqual(3, source_only["summary"]["distinctSourceOnlyObjects"])

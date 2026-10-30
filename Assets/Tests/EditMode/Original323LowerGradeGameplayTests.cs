@@ -199,6 +199,7 @@ namespace Ordr.Mobile.Tests
         [TestCase("A1CC", "L-39")]
         [TestCase("A113", "L-14")]
         [TestCase("A01S", "L-07")]
+        [TestCase("A02D", "L-11")]
         [TestCase("YY02", "H-05")]
         [TestCase("YY03", "H-10")]
         [TestCase("YY05", "H-03")]
@@ -218,6 +219,7 @@ namespace Ordr.Mobile.Tests
         [TestCase("YY08", "H-07")]
         [TestCase("YY09", "H-08")]
         [TestCase("YY12", "H-15")]
+        [TestCase("YY13", "H-13")]
         [TestCase("ET01", "E-06")]
         public void AllReviewedRecipesConsumeActualMaterialsAndCreateOneResult(string ability, string result)
         {
@@ -341,9 +343,10 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(152, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(154, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(34, game.Fusion.ExecutableLegendaryRecipeCount);
+            Assert.AreEqual(19, game.Fusion.ExecutableHiddenRecipeCount);
             Assert.AreEqual(15, game.Fusion.ExecutableRestrictedRecipeCount);
-            Assert.AreEqual(18, game.Fusion.ExecutableHiddenRecipeCount);
             Assert.AreEqual(1, game.Fusion.ExecutableEternalRecipeCount);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
             var fresh = Offer(game, "A012");
@@ -573,7 +576,7 @@ namespace Ordr.Mobile.Tests
         public void HiddenCreationEffectsAndVariantMaterialsStayLocked()
         {
             var game = Create();
-            foreach (string ability in new[] { "YY01", "YY13", "YY15", "YY20",
+            foreach (string ability in new[] { "YY01", "YY15", "YY20", "A00O", "A025",
                 "ET02", "A19Z", "A1A1", "A1A0" })
             {
                 Assert.IsFalse(game.Fusion.CanCommitRecipe(ability), ability);
