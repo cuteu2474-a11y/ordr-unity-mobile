@@ -30,7 +30,7 @@ namespace Ordr.Mobile.Tests
             public void Dispose() { Battle.Dispose(); }
         }
         private static string Data(string file) => File.ReadAllText(Path.Combine(Application.dataPath, "..", "data", file));
-        private static Live Create(bool proc = true)
+        private static Live Create(bool proc = true, bool durableEnemy = false)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -52,7 +52,9 @@ namespace Ordr.Mobile.Tests
                 (id,x,y) => economy.Units.Add(id,x,y), id => economy.Units.Remove(id));
             combat.Start(); rules.Enable(); combat.ConfigureSourceModelBasicAttacks(rules);
             var battle = new SourceModelPracticeBattle(combat, new CombatWaveDirector(), economy,
-                new SourceModelPracticeCatalog(Data("mobile-practice-battle-model.json")),
+                new SourceModelPracticeCatalog(durableEnemy ?
+                    Data("mobile-practice-battle-model.json").Replace("\"health\": 338,", "\"health\": 1000000000000,") :
+                    Data("mobile-practice-battle-model.json")),
                 Original323MonsterWaveIdentityCatalog.FromJson(Data("original-2323C-monster-wave-script-evidence.json")),
                 rules, new Gold(), null);
             battle.Start();
@@ -96,6 +98,70 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(338 - critical, game.Combat.MobileEnemySnapshot().Single().Health);
             }
             Assert.Greater(critical, plain);
+        }
+        [TestCase("X-01")][TestCase("R-22")][TestCase("R-28")]
+        [TestCase("L-10")][TestCase("L-30")][TestCase("H-02")][TestCase("H-21")]
+        [TestCase("TR-05")][TestCase("TR-12")][TestCase("TR-14")][TestCase("TR-26")]
+        [TestCase("E-01")][TestCase("I-01")][TestCase("I-05")]
+        [TestCase("SR-01")][TestCase("SR-02")][TestCase("SR-03")][TestCase("SR-04")]
+        [TestCase("RN-06")][TestCase("RN-11")]
+        public void PracticeFirstLevelEffectActuallyActivatesForAllTwentyOwners(string unitId)
+        {
+            using (var game = Create(true, true))
+            {
+                long actor = game.Combat.SpawnCharacter(unitId, -4000, 4000);
+                var passive = game.Rules.UnitEffects.PassiveFor(game.Map.Find(unitId).OriginalRawcode);
+                Assert.IsNotNull(passive, unitId);
+                Assert.IsFalse(game.Combat.HasVerifiedAttack(actor));
+                var events = game.Battle.Advance(2);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.Attack && e.ActorId == actor.ToString()), unitId);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated && e.ActorId == actor.ToString()), unitId);
+                Assert.IsTrue(game.Rules.UnitEffects.Describe(unitId, game.Map.Find(unitId).OriginalRawcode)
+                    .Any(e => e.Contains("연습 1단계")), unitId);
+            }
+        }
+        [Test]
+        public void CombinedCriticalAndStunShareTheRollAndDoNotRunOnFailure()
+        {
+            long ordinary;
+            using (var game = Create(false, true))
+            {
+                game.Combat.SpawnCharacter("X-01", -4000, 4000);
+                var events = game.Battle.Advance(.6);
+                ordinary = events.First(e => e.Type == CharacterCombatEventType.Attack).Amount;
+                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated));
+                Assert.IsFalse(game.Combat.MobileEnemySnapshot().Any(e => game.Combat.StatusOf(e.Id).IsStunned()));
+            }
+            using (var game = Create(true, true))
+            {
+                game.Combat.SpawnCharacter("X-01", -4000, 4000);
+                var events = game.Battle.Advance(.6);
+                Assert.Greater(events.First(e => e.Type == CharacterCombatEventType.Attack).Amount, ordinary);
+                Assert.IsTrue(game.Combat.MobileEnemySnapshot().Any(e => game.Combat.StatusOf(e.Id).IsStunned()));
+            }
+        }
+        [Test]
+        public void TwentyPracticeDescriptionsMatchThePublishedRuntimeStatus()
+        {
+            using (var game = Create())
+            {
+                var root = OrdrJson.Object(OrdrJson.Parse(Data("unit-runtime-status.json")), "status");
+                int checkedUnits = 0;
+                foreach (var item in OrdrJson.Array(OrdrJson.Value(root, "entries"), "entries"))
+                {
+                    var row = OrdrJson.Object(item, "unit");
+                    string id = OrdrJson.RequiredString(row, "catalogId");
+                    var raw = game.Map.Find(id).OriginalRawcode;
+                    var passive = game.Rules.UnitEffects.PassiveFor(raw);
+                    if (passive == null || !game.Rules.UnitEffects.Describe(id, raw)
+                        .Any(text => text.Contains("연습 1단계"))) continue;
+                    var expected = OrdrJson.Array(OrdrJson.Value(row, "connectedModelEffects"), "effects")
+                        .Select(value => (string)value).ToArray();
+                    CollectionAssert.AreEqual(expected, game.Rules.UnitEffects.Describe(id, raw), id);
+                    checkedUnits++;
+                }
+                Assert.AreEqual(20, checkedUnits);
+            }
         }
         [Test]
         public void BrookStunStopsMovementAndResumesAfterTheSourceDuration()

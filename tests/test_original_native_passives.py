@@ -55,6 +55,30 @@ class OriginalNativePassiveEvidenceTests(unittest.TestCase):
         for excluded in ("U-05", "U-09", "U-12", "L-27", "TR-05", "TR-12", "TR-19", "E-04", "E-06"):
             self.assertNotIn(excluded, self.by_id)
 
+    def test_twenty_practice_passives_are_separate_from_verified_pure_catalog(self):
+        rows = self.data['practiceFirstLevelEntries']
+        self.assertEqual(20, len(rows))
+        self.assertEqual(20, len({r['catalogId'] for r in rows}))
+        self.assertFalse(set(self.by_id) & {r['catalogId'] for r in rows})
+        self.assertEqual('aa938f02c22884f38c5e31bcd6229a35e917a8fab0128331fdab88980cfd50e0',
+                         self.data['abilityOverridesSha256'])
+        base = {r['catalogId']: r for r in json.loads(
+            (ROOT / 'data/original-2323C-map-base-stats.json').read_text())['catalogEntries']}
+        for row in rows:
+            owner = base[row['catalogId']]
+            fields = row['sourceFields']
+            self.assertEqual(row['originalUnitRawcode'], owner['originalRawcode'])
+            self.assertIn(row['abilityRawcode'], owner['originalAbilityList'].split(','))
+            self.assertEqual(1, row['level'])
+            self.assertEqual(0, float(fields['DataC1']))
+            self.assertEqual(0, float(fields['DataD1']))
+            self.assertEqual(0, float(fields['Cool1']))
+            self.assertEqual(row['chancePerMillion'], float(fields['DataA1']) * 10000)
+            self.assertEqual(row['criticalMultiplier'], float(fields['DataB1']))
+            self.assertEqual(row['normalStunSeconds'], float(fields['Dur1']))
+            self.assertEqual(row['heroStunSeconds'], float(fields['HeroDur1']))
+        self.assertEqual(4, sum(r['declaredLevels'] > 1 for r in rows))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Extract complete single-level, pure AHbh critical/stun effects, not guesses.
+"""Extract source AHbh passives with a separate practice-only first-rank set.
 
 Inputs are unmodified SLKs from the pinned user-owned 2.323[C] W3X.
-Mixed damage/critical/stun and missing inheritance fields remain unsupported.
+Bonus-damage effects, multiple active bashes and missing fields remain excluded.
 """
 import argparse
 import hashlib
@@ -10,10 +10,13 @@ import json
 import re
 from decimal import Decimal
 from pathlib import Path
+from build_original_map_base_stats import open_archive
+from extract_original_helper_abilities import read_objects
 
 MAP_SHA = "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c"
 ABILITY_SHA = "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda"
 OWNERS_SHA = "fbd47be22d1482d63df15d70d7a8fa38f7f26b288443a5d74aa056104aef139d"
+OVERRIDES_SHA = "aa938f02c22884f38c5e31bcd6229a35e917a8fab0128331fdab88980cfd50e0"
 
 
 def slk_rows(path, expected_sha):
@@ -45,13 +48,24 @@ def slk_rows(path, expected_sha):
     return {row[headers[1]]: row for row in rows.values()}
 
 
-def extract(ability_file, owner_file, base_file):
+def extract(ability_file, owner_file, base_file, w3x):
     abilities = slk_rows(ability_file, ABILITY_SHA)
     owners = slk_rows(owner_file, OWNERS_SHA)
     base = json.loads(base_file.read_text())
     if base["sourceW3xSha256"] != MAP_SHA:
         raise ValueError("맵 기본 객체 지문 불일치")
+    if hashlib.sha256(w3x.read_bytes()).hexdigest() != MAP_SHA:
+        raise ValueError("원본 W3X 지문 불일치")
+    with open_archive(w3x) as archive:
+        overrides = archive.read_file('war3map.w3a')
+    if not overrides or hashlib.sha256(overrides).hexdigest() != OVERRIDES_SHA:
+        raise ValueError("원본 능력 오버라이드 지문 불일치")
+    # aub1 is an editor tooltip; it does not override gameplay fields.
+    overridden = {new if new.strip('\0') else old
+                  for _, old, new, fields in read_objects(overrides)
+                  if any(field[0] != 'aub1' for field in fields)}
     entries = []
+    practice_mixed = []
     for character in base["catalogEntries"]:
         raw = character.get("originalRawcode")
         if not raw:
@@ -68,7 +82,12 @@ def extract(ability_file, owner_file, base_file):
             continue
         for ability in source_abilities.split(","):
             row = abilities.get(ability, {})
-            if row.get("code") != "AHbh" or row.get("levels") != "1":
+            if row.get("code") != "AHbh":
+                continue
+            if ability in overridden:
+                continue
+            levels = int(row.get("levels", "0"))
+            if levels not in (1, 2, 3):
                 continue
             fields = ("DataA1", "DataB1", "DataC1", "Dur1", "HeroDur1", "Cool1", "DataD1", "targs1")
             if any(field not in row or row[field] in ("_", "") for field in fields):
@@ -78,25 +97,34 @@ def extract(ability_file, owner_file, base_file):
             if chance <= 0 or chance > 100 or bonus != 0 or cooldown != 0 or data_d != 0:
                 continue
             kind = "critical" if multiplier > 1 and duration == 0 and hero == 0 else (
-                "stun" if multiplier == 0 and duration > 0 and hero >= 0 else None)
+                "stun" if multiplier == 0 and duration > 0 and hero >= 0 else (
+                "critical-stun" if multiplier > 1 and duration > 0 and hero >= 0 else None))
             if kind is None:
                 continue
             scaled = chance * 10000
             if scaled != int(scaled):
                 raise ValueError("확률 정밀도 초과: " + ability)
-            entries.append({
+            entry = {
                 "catalogId": character["catalogId"], "catalogName": character["catalogName"],
                 "originalUnitRawcode": raw, "abilityRawcode": ability, "level": 1,
                 "kind": kind, "chancePerMillion": int(scaled),
                 "criticalMultiplier": float(multiplier), "normalStunSeconds": float(duration),
                 "heroStunSeconds": float(hero), "targetMask": row["targs1"],
                 "sourceFields": {field: row[field] for field in fields},
-            })
+            }
+            if levels == 1 and kind != "critical-stun":
+                entries.append(entry)
+            else:
+                entry["declaredLevels"] = levels
+                practice_mixed.append(entry)
     return {"format": "ordr-2323C-native-pure-passives-v1", "gameVersion": "S2 2.323[C]",
             "sourceW3xSha256": MAP_SHA, "abilityDataSha256": ABILITY_SHA,
             "unitAbilitiesSha256": OWNERS_SHA,
+            "abilityOverridesSha256": OVERRIDES_SHA,
             "scope": "complete-single-level-pure-critical-or-stun-only; target eligibility remains live state",
-            "entries": entries}
+            "entries": entries,
+            "practiceFirstLevelEntries": practice_mixed,
+            "practiceFirstLevelScope": "model only; rank upgrades and native simultaneous-effect parity unverified"}
 
 
 def main():
@@ -104,9 +132,10 @@ def main():
     parser.add_argument("--abilities", type=Path, required=True)
     parser.add_argument("--owners", type=Path, required=True)
     parser.add_argument("--base", type=Path, required=True)
+    parser.add_argument("--w3x", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    result = extract(args.abilities, args.owners, args.base)
+    result = extract(args.abilities, args.owners, args.base, args.w3x)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print("원본 순수 기절/크리티컬 능력", len(result["entries"]), "개 추출")
 

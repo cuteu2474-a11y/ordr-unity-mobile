@@ -5,8 +5,8 @@
   "summary": {
     "catalogEntries": 277,
     "objectBasicAttackModels": 273,
-    "modelEffectOwners": 112,
-    "connectedModelEffectDefinitions": 144,
+    "modelEffectOwners": 125,
+    "connectedModelEffectDefinitions": 164,
     "documentedSkillEntries": 554,
     "documentedPassiveEntries": 295,
     "fullyVerifiedUnits": 0,
@@ -910,7 +910,9 @@
       "grade": "특수함",
       "originalRawcode": "h05H",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "모건 · 크리티컬과 기절 · 객체 확률 11% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 0,
@@ -1039,8 +1041,6 @@
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
       "remainingWork": [
-        "가이몬의 꿈 CCP 원본 1회 적용 및 나미 보정 연결 필요",
-        "가이몬 보물 탐색 수동 가챠의 원본 횟수·분포 보정과 실제 수급 검증 필요",
         "원작 최종 피해·타깃·시점 동등성 미검증"
       ]
     },
@@ -1382,7 +1382,9 @@
       "grade": "희귀함",
       "originalRawcode": "h029",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "샹크스 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -1478,7 +1480,9 @@
       "grade": "희귀함",
       "originalRawcode": "h020",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "오즈 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -1895,7 +1899,9 @@
       "grade": "전설",
       "originalRawcode": "h02Y",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "루피 나이트메어 · 크리티컬과 기절 · 객체 확률 18% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 3,
       "documentedPassives": 1,
@@ -2252,6 +2258,7 @@
       "originalRawcode": "h03F",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "카르가라 · 크리티컬과 기절 · 객체 확률 25% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -2450,6 +2457,7 @@
       "originalRawcode": "h03U",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "레드포스호 · 크리티컬과 기절 · 객체 확률 30% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -2783,6 +2791,7 @@
       "originalRawcode": "h045",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "킬러 · 크리티컬과 기절 · 객체 확률 15% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 12 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -3273,7 +3282,9 @@
       "grade": "초월함",
       "originalRawcode": "H096",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "트라팔가 로우 · 크리티컬 · 객체 확률 20% · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
@@ -3406,7 +3417,9 @@
       "grade": "초월함",
       "originalRawcode": "H09H",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "상디 · 기절 · 객체 확률 20% · 일반 몬스터 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
@@ -3440,7 +3453,9 @@
       "grade": "초월함",
       "originalRawcode": "H0B2",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "스네이크맨 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 3,
@@ -3662,7 +3677,9 @@
       "grade": "초월함",
       "originalRawcode": "H0B5",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "키자루 · 크리티컬과 기절 · 객체 확률 15% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 1,
@@ -3753,6 +3770,7 @@
       "originalRawcode": "H0BK",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "니카(루피) · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -3972,7 +3990,9 @@
       "grade": "불멸의",
       "originalRawcode": "h04C",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "거프 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 2,
@@ -4045,7 +4065,9 @@
       "grade": "불멸의",
       "originalRawcode": "h081",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "불릿 · 크리티컬과 기절 · 객체 확률 15% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 0,
@@ -4191,7 +4213,9 @@
       "grade": "세라핌",
       "originalRawcode": "h09Y",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "S-스네이크 · 크리티컬과 기절 · 객체 확률 12.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 1,
@@ -4209,6 +4233,7 @@
       "originalRawcode": "h0A3",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "S-호크 · 크리티컬과 기절 · 객체 확률 12.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -4228,6 +4253,7 @@
       "originalRawcode": "h0A0",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "S-샤크 · 크리티컬과 기절 · 객체 확률 12.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -4246,7 +4272,9 @@
       "grade": "세라핌",
       "originalRawcode": "h0A1",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "S-베어 · 크리티컬과 기절 · 객체 확률 12.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
@@ -4344,6 +4372,7 @@
       "originalRawcode": "h06Z",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "엘리자베스 · 크리티컬과 기절 · 객체 확률 14% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -4431,7 +4460,9 @@
       "grade": "랜덤",
       "originalRawcode": "h06Y",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "토우마 · 크리티컬과 기절 · 객체 확률 100% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
@@ -4762,8 +4793,7 @@
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
       "remainingWork": [
-        "원본 획득 사건과 모바일 발생 연결 필요",
-        "네이티브 비전투 능력 원작 동등성 미검증"
+        "원작 최종 피해·타깃·시점 동등성 미검증"
       ]
     },
     {
@@ -4778,8 +4808,7 @@
       "documentedPassives": 0,
       "fullUnitImplementationVerified": false,
       "remainingWork": [
-        "원본 획득 사건과 모바일 발생 연결 필요",
-        "네이티브 비전투 능력 원작 동등성 미검증"
+        "원작 최종 피해·타깃·시점 동등성 미검증"
       ]
     }
   ]

@@ -46,8 +46,11 @@ class UnitRuntimeStatusTests(unittest.TestCase):
         for passive in read('original-2323C-native-pure-passives.json')['entries']:
             effects = self.rows[passive['catalogId']]['connectedModelEffects']
             self.assertTrue(any('객체 확률' in effect for effect in effects))
-        self.assertEqual(112, sum(bool(r['connectedModelEffects']) for r in self.rows.values()))
-        self.assertEqual(144, sum(len(r['connectedModelEffects']) for r in self.rows.values()))
+        for passive in read('original-2323C-native-pure-passives.json')['practiceFirstLevelEntries']:
+            effects = self.rows[passive['catalogId']]['connectedModelEffects']
+            self.assertTrue(any('연습 1단계' in effect for effect in effects))
+        self.assertEqual(125, sum(bool(r['connectedModelEffects']) for r in self.rows.values()))
+        self.assertEqual(164, sum(len(r['connectedModelEffects']) for r in self.rows.values()))
         self.assertEqual(0, self.status['summary']['fullyVerifiedUnits'])
 
     def test_inherited_mode_is_pinned_to_base_source_and_model_only(self):

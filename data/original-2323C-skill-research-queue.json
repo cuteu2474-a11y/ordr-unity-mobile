@@ -7,7 +7,7 @@
     "catalogCharacters": 277,
     "tooltipProfiles": 200,
     "unitsWithoutTooltipProfile": 77,
-    "unitsWithConnectedModelEffects": 112,
+    "unitsWithConnectedModelEffects": 125,
     "skillEntries": 554,
     "passiveEntries": 295,
     "skillEntriesOnMappedUnits": 548,
@@ -15821,7 +15821,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 1,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "모건 · 크리티컬과 기절 · 객체 확률 11% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -15983,8 +15985,6 @@
       "connectedModelEffects": [],
       "connectedManualFunctions": [],
       "remainingWork": [
-        "가이몬의 꿈 CCP 원본 1회 적용 및 나미 보정 연결 필요",
-        "가이몬 보물 탐색 수동 가챠의 원본 횟수·분포 보정과 실제 수급 검증 필요",
         "원작 최종 피해·타깃·시점 동등성 미검증"
       ]
     },
@@ -16474,7 +16474,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "샹크스 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -16608,7 +16610,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "오즈 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -17193,7 +17197,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 3,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "루피 나이트메어 · 크리티컬과 기절 · 객체 확률 18% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -17675,6 +17681,7 @@
       "documentedSkillCount": 2,
       "documentedPassiveCount": 2,
       "connectedModelEffects": [
+        "카르가라 · 크리티컬과 기절 · 객체 확률 25% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -17945,6 +17952,7 @@
       "documentedSkillCount": 1,
       "documentedPassiveCount": 2,
       "connectedModelEffects": [
+        "레드포스호 · 크리티컬과 기절 · 객체 확률 30% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 30 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -18388,6 +18396,7 @@
       "documentedSkillCount": 1,
       "documentedPassiveCount": 1,
       "connectedModelEffects": [
+        "킬러 · 크리티컬과 기절 · 객체 확률 15% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 12 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -19101,7 +19110,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 4,
       "documentedPassiveCount": 2,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "트라팔가 로우 · 크리티컬 · 객체 확률 20% · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -19310,7 +19321,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 4,
       "documentedPassiveCount": 2,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "상디 · 기절 · 객체 확률 20% · 일반 몬스터 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -19366,7 +19379,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 5,
       "documentedPassiveCount": 3,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "스네이크맨 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -19722,7 +19737,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 5,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "키자루 · 크리티컬과 기절 · 객체 확률 15% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -19868,6 +19885,7 @@
       "documentedSkillCount": 6,
       "documentedPassiveCount": 4,
       "connectedModelEffects": [
+        "니카(루피) · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -20191,7 +20209,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 5,
       "documentedPassiveCount": 2,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "거프 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -20304,7 +20324,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 5,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "불릿 · 크리티컬과 기절 · 객체 확률 15% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -20524,7 +20546,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 4,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "S-스네이크 · 크리티컬과 기절 · 객체 확률 12.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -20549,6 +20573,7 @@
       "documentedSkillCount": 3,
       "documentedPassiveCount": 2,
       "connectedModelEffects": [
+        "S-호크 · 크리티컬과 기절 · 객체 확률 12.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -20575,6 +20600,7 @@
       "documentedSkillCount": 2,
       "documentedPassiveCount": 4,
       "connectedModelEffects": [
+        "S-샤크 · 크리티컬과 기절 · 객체 확률 12.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -20602,7 +20628,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 4,
       "documentedPassiveCount": 2,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "S-베어 · 크리티컬과 기절 · 객체 확률 12.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -20736,6 +20764,7 @@
       "documentedSkillCount": 3,
       "documentedPassiveCount": 1,
       "connectedModelEffects": [
+        "엘리자베스 · 크리티컬과 기절 · 객체 확률 14% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 이동속도 감소(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -20851,7 +20880,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "토우마 · 크리티컬과 기절 · 객체 확률 100% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -21315,8 +21346,7 @@
       "connectedModelEffects": [],
       "connectedManualFunctions": [],
       "remainingWork": [
-        "원본 획득 사건과 모바일 발생 연결 필요",
-        "네이티브 비전투 능력 원작 동등성 미검증"
+        "원작 최종 피해·타깃·시점 동등성 미검증"
       ]
     },
     {
@@ -21337,8 +21367,7 @@
       "connectedModelEffects": [],
       "connectedManualFunctions": [],
       "remainingWork": [
-        "원본 획득 사건과 모바일 발생 연결 필요",
-        "네이티브 비전투 능력 원작 동등성 미검증"
+        "원작 최종 피해·타깃·시점 동등성 미검증"
       ]
     }
   ],

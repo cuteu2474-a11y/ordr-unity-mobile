@@ -103,6 +103,7 @@ namespace Ordr.Mobile.Tests
             CharacterUnitCatalog units; OriginalMapBaseStatCatalog map;
             var catalog = Load(out units, out map);
             Assert.AreEqual(26, catalog.Count);
+            Assert.AreEqual(20, catalog.PracticeFirstLevelCount);
             Assert.AreEqual(1.5, catalog.ForRawcode("h00M").CriticalMultiplier);
             Assert.AreEqual(2, catalog.ForRawcode("h00R").CriticalMultiplier);
             Assert.AreEqual(700000, catalog.ForRawcode("h00X").ChancePerMillion);

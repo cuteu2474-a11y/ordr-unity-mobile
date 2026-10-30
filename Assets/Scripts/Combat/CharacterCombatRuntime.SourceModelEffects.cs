@@ -78,11 +78,12 @@ namespace Ordr.Mobile.Combat
             var passive = sourceModelUnitEffects.Take(InstanceKey(actor.Id), hit.TargetId);
             if (passive != null)
             {
-                if (passive.Kind == OriginalNativePassiveKind.Critical)
+                if (passive.Kind != OriginalNativePassiveKind.Stun)
                     events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                         InstanceKey(actor.Id), hit.TargetId, passive.Name,
                         "연습 객체 크리티컬 · " + passive.CriticalMultiplier + "배 타격에 반영", 0));
-                else if (primary.Enemy.IsAlive && hit.ActualDamage > 0 && primary.Kind == CharacterEnemyKind.Line)
+                if (passive.Kind != OriginalNativePassiveKind.Critical && primary.Enemy.IsAlive &&
+                    hit.ActualDamage > 0 && primary.Kind == CharacterEnemyKind.Line)
                 {
                     var status = primary.Enemy.Status;
                     string key = "practice-passive:" + passive.AbilityRawcode;

@@ -5,7 +5,7 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
-    public enum OriginalNativePassiveKind { Critical, Stun }
+    public enum OriginalNativePassiveKind { Critical, Stun, CriticalStun }
 
     public sealed class OriginalNativePassive
     {
@@ -27,6 +27,9 @@ namespace Ordr.Mobile.Combat
     {
         private readonly Dictionary<string, OriginalNativePassive> byOwner =
             new Dictionary<string, OriginalNativePassive>(StringComparer.Ordinal);
+        // Separate practice-only catalog: never exposed to the verified native path.
+        private readonly Dictionary<string, OriginalNativePassive> practiceFirstLevel =
+            new Dictionary<string, OriginalNativePassive>(StringComparer.Ordinal);
         public int Count { get { return byOwner.Count; } }
         public IEnumerable<OriginalNativePassive> All { get { return byOwner.Values; } }
         public OriginalNativePassive ForRawcode(string rawcode)
@@ -34,6 +37,12 @@ namespace Ordr.Mobile.Combat
             OriginalNativePassive value;
             return rawcode != null && byOwner.TryGetValue(rawcode, out value) ? value : null;
         }
+        public OriginalNativePassive PracticeFirstLevelForRawcode(string rawcode)
+        {
+            OriginalNativePassive value;
+            return rawcode != null && practiceFirstLevel.TryGetValue(rawcode, out value) ? value : null;
+        }
+        public int PracticeFirstLevelCount { get { return practiceFirstLevel.Count; } }
 
         public static Original323NativePassiveCatalog FromJson(string json,
             OriginalMapBaseStatCatalog originalMap)
@@ -47,6 +56,8 @@ namespace Ordr.Mobile.Combat
                 OrdrJson.RequiredString(root, "sourceW3xSha256") != originalMap.SourceW3xSha256 ||
                 OrdrJson.RequiredString(root, "abilityDataSha256") !=
                     Original323UncommonAbilityCatalog.AbilityDataSlkSha256 ||
+                OrdrJson.RequiredString(root, "abilityOverridesSha256") !=
+                    "aa938f02c22884f38c5e31bcd6229a35e917a8fab0128331fdab88980cfd50e0" ||
                 OrdrJson.RequiredString(root, "unitAbilitiesSha256") !=
                     "fbd47be22d1482d63df15d70d7a8fa38f7f26b288443a5d74aa056104aef139d")
                 throw new FormatException("원본 네이티브 스킬 자료 지문 불일치");
@@ -89,6 +100,52 @@ namespace Ordr.Mobile.Combat
                     Name = OrdrJson.RequiredString(row, "catalogName") +
                         (crit ? " · 크리티컬" : " · 기절"),
                     Kind = crit ? OriginalNativePassiveKind.Critical : OriginalNativePassiveKind.Stun,
+                    ChancePerMillion = (int)scaled, CriticalMultiplier = multiplier,
+                    NormalStunSeconds = normal, HeroStunSeconds = hero, OriginalTargetMask = mask
+                });
+            }
+            object practiceRows = OrdrJson.Value(root, "practiceFirstLevelEntries");
+            if (practiceRows != null)
+            foreach (var item in OrdrJson.Array(practiceRows, "practice first-level passives"))
+            {
+                var row = OrdrJson.Object(item, "practice passive");
+                string id = OrdrJson.RequiredString(row, "catalogId");
+                string raw = OrdrJson.RequiredString(row, "originalUnitRawcode");
+                string code = OrdrJson.RequiredString(row, "abilityRawcode");
+                string kind = OrdrJson.RequiredString(row, "kind");
+                double? levels = OrdrJson.Number(row, "declaredLevels");
+                var owner = originalMap.Find(id);
+                if (owner == null || owner.OriginalRawcode != raw || code.Length != 4 ||
+                    !Contains(owner.OriginalAbilityRawcodes, code) ||
+                    Contains(owner.SourceJassFusionAbilityRawcodes, code) ||
+                    OrdrJson.Number(row, "level") != 1 || !levels.HasValue ||
+                    levels.Value < 1 || levels.Value > 3 || Math.Floor(levels.Value) != levels.Value ||
+                    result.byOwner.ContainsKey(raw) || result.practiceFirstLevel.ContainsKey(raw))
+                    throw new FormatException("연습 패시브 소유 관계 오류: " + id);
+                var fields = OrdrJson.Object(OrdrJson.Value(row, "sourceFields"), "source fields");
+                double chance = Field(fields, "DataA1"), multiplier = Field(fields, "DataB1");
+                double bonus = Field(fields, "DataC1"), normal = Field(fields, "Dur1");
+                double hero = Field(fields, "HeroDur1"), scaled = chance * 10000;
+                string mask = OrdrJson.RequiredString(fields, "targs1");
+                bool critical = kind == "critical" || kind == "critical-stun";
+                bool stun = kind == "stun" || kind == "critical-stun";
+                if ((!critical && !stun) || (levels.Value == 1 && kind != "critical-stun") ||
+                    chance <= 0 || chance > 100 || scaled != Math.Floor(scaled) ||
+                    bonus != 0 || Field(fields, "Cool1") != 0 || Field(fields, "DataD1") != 0 ||
+                    (critical ? multiplier <= 1 : multiplier != 0) ||
+                    (stun ? normal <= 0 || hero < 0 : normal != 0 || hero != 0) ||
+                    OrdrJson.Number(row, "chancePerMillion") != scaled ||
+                    OrdrJson.Number(row, "criticalMultiplier") != multiplier ||
+                    OrdrJson.Number(row, "normalStunSeconds") != normal ||
+                    OrdrJson.Number(row, "heroStunSeconds") != hero ||
+                    OrdrJson.RequiredString(row, "targetMask") != mask)
+                    throw new FormatException("연습 패시브 원본 수치 오류: " + code);
+                result.practiceFirstLevel.Add(raw, new OriginalNativePassive {
+                    CatalogId = id, OwnerRawcode = raw, AbilityRawcode = code,
+                    Name = OrdrJson.RequiredString(row, "catalogName") +
+                        (kind == "critical-stun" ? " · 크리티컬과 기절" : critical ? " · 크리티컬" : " · 기절"),
+                    Kind = kind == "critical-stun" ? OriginalNativePassiveKind.CriticalStun :
+                        critical ? OriginalNativePassiveKind.Critical : OriginalNativePassiveKind.Stun,
                     ChancePerMillion = (int)scaled, CriticalMultiplier = multiplier,
                     NormalStunSeconds = normal, HeroStunSeconds = hero, OriginalTargetMask = mask
                 });
