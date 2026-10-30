@@ -1746,6 +1746,21 @@ namespace Ordr.Mobile.Unity
                     autoSkillRules ?? new MobileUnlimitedAutoSkillTargetRules());
         }
 
+        // Call only with an original-rule-backed movement transaction provider.
+        // No fallback dispatch is installed for unverified practice sessions.
+        public Original323StoryManualDispatch ConfigureVerifiedStoryBuildingDispatch(
+            IOriginal323StoryUnitMovement sourceMovement)
+        {
+            if (Combat == null || sourceMovement == null)
+                throw new InvalidOperationException(
+                    "원본 스토리 이동 공급자와 전투 월드가 필요합니다.");
+            if (storyDispatchRules != null)
+                throw new InvalidOperationException("스토리 파견 공급자가 이미 연결됐습니다.");
+            var dispatch = new Original323StoryManualDispatch(Combat, sourceMovement);
+            ConfigureManualMobileSystems(dispatch, originalFusionPort, originalEconomyPort);
+            return dispatch;
+        }
+
         public void ConfigureManualMobileSystems(IOriginalStoryDispatchPort originalStory,
             IOriginalFusionPort originalFusion, IOriginalEconomyPort originalEconomy)
         {
