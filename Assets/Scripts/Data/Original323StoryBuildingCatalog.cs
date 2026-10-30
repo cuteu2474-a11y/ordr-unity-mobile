@@ -30,6 +30,10 @@ namespace Ordr.Mobile.Data
 
         public static Original323StoryBuildingCatalog FromJson(string json)
         {
+            // Both lanes share the same SHA-pinned 100-object source file.
+            // Verify the original SLK source-file digests as well as the
+            // story-specific identities, not only an untrusted JSON label.
+            Original323CreepObjectCatalog.FromJson(json);
             var root = OrdrJson.Object(OrdrJson.Parse(json), "story building objects");
             if (OrdrJson.RequiredString(root, "format") != "ordr-original-monster-object-stats-v1" ||
                 OrdrJson.RequiredString(root, "gameVersion") != "S2 2.323[C]" ||
@@ -47,6 +51,12 @@ namespace Ordr.Mobile.Data
                 {"n00A",9},{"n001",10},{"n00C",11},{"n00D",12},
                 {"n00B",13},{"n009",14}
             };
+            var names = new[] {
+                null, "로그타운", "알라바스타", "하늘섬", "워터세븐",
+                "스릴러바크", "샤봉디제도", "임펠다운", "마린포드",
+                "어인섬", "펑크해저드", "드레스로자",
+                "홀케이크섬", "와노쿠니", "에그헤드"
+            };
             int total = 0;
             foreach (var item in OrdrJson.Array(OrdrJson.Value(root,"entries"),"entries"))
             {
@@ -61,7 +71,7 @@ namespace Ordr.Mobile.Data
                 double? hp = OrdrJson.Number(row,"objectBaseHitPoints");
                 double? armor = OrdrJson.Number(row,"objectBaseArmor");
                 string type = OrdrJson.RequiredString(row,"warcraftArmorType");
-                if (!name.StartsWith(stage + ". ", StringComparison.Ordinal) ||
+                if (name != stage + ". " + names[stage] ||
                     !hp.HasValue || hp.Value < 1 || hp.Value > long.MaxValue ||
                     Math.Floor(hp.Value) != hp.Value ||
                     !armor.HasValue || double.IsNaN(armor.Value) ||

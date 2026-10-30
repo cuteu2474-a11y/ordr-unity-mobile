@@ -309,9 +309,11 @@ namespace Ordr.Mobile.Combat
         {
             foreach (var enemy in combat.MobileEnemySnapshot())
             {
-                // A creep is an independent stationary encounter, not part of
-                // the 65R JASS line route or its spawn-time dictionary.
-                if (enemy.Kind == CharacterEnemyKind.Creep) continue;
+                // Only waves have bornAt and route velocity. A story BUILDING,
+                // creep or challenge is not a 65R moving spawn.
+                if (enemy.Kind != CharacterEnemyKind.Line &&
+                    enemy.Kind != CharacterEnemyKind.Boss &&
+                    enemy.Kind != CharacterEnemyKind.Enraged) continue;
                 int wave;
                 double birth;
                 if (!waves.TryGetLivingMonsterSpawnWave(enemy.Id, out wave) || !bornAt.TryGetValue(enemy.Id, out birth))

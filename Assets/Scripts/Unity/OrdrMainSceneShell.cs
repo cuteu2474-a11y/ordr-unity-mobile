@@ -70,6 +70,39 @@ namespace Ordr.Mobile.Unity
                     layout.Story.width - 16f, 22f), "스토리 전장", OrdrMobileUiTheme.Overline);
 
                 var combat = controller == null ? null : controller.Combat;
+                // The story lane is a separate BUILDING display, not the wave
+                // camera. Show a compact HP summary of real spawned targets.
+                var storyWorld = controller == null ? null : controller.PracticeStoryBuildings;
+                if (combat != null && storyWorld != null)
+                {
+                    int activeBuildings = 0, drawn = 0;
+                    int maxRows = Mathf.Clamp(
+                        Mathf.FloorToInt((layout.Story.height - 32f * scale) / (23f * scale)),
+                        0, 2);
+                    foreach (var encounter in storyWorld.Encounters)
+                    {
+                        if (encounter.State !=
+                            Ordr.Mobile.Combat.Original323StoryBuildingState.Alive)
+                            continue;
+                        activeBuildings++;
+                        if (drawn >= maxRows) continue;
+                        var target = combat.EnemyOf(encounter.EnemyId);
+                        if (target == null) continue;
+                        GUI.Label(new Rect(layout.Story.x + 12f * scale,
+                                layout.Story.y + (29f + 23f * drawn) * scale,
+                                layout.Story.width - 24f * scale, 23f * scale),
+                            encounter.Building.Name + " · 건물 체력 " +
+                            target.Health + " / " + target.MaxHealth,
+                            OrdrMobileUiTheme.Subheading);
+                        drawn++;
+                    }
+                    if (activeBuildings > drawn && drawn > 0)
+                        GUI.Label(new Rect(layout.Story.x + 12f * scale,
+                                layout.Story.yMax - 23f * scale,
+                                layout.Story.width - 24f * scale, 22f * scale),
+                            "외 스토리 건물 " + (activeBuildings - drawn) + "개 · 스토리 탭",
+                            OrdrMobileUiTheme.Overline);
+                }
                 if (combat != null && (combat.Game.Phase == SessionPhase.Won ||
                     combat.Game.Phase == SessionPhase.Lost))
                 {

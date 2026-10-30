@@ -1155,19 +1155,42 @@ namespace Ordr.Mobile.Unity
                     var building = catalog.Find(stage);
                     if (building == null) continue;
                     string status = "미배치";
+                    bool alive = false, settled = false;
                     if (world != null)
                     {
                         foreach (var encounter in world.Encounters)
-                            if (encounter.Building.Stage == stage)
-                                status = encounter.State == Original323StoryBuildingState.Alive
-                                    ? "건물 유지" : encounter.State == Original323StoryBuildingState.Destroyed
-                                        ? "파괴 기록" : "제거 기록";
+                        {
+                            if (encounter.Building.Stage != stage) continue;
+                            alive = encounter.State == Original323StoryBuildingState.Alive;
+                            settled = encounter.SourceSettlementConfirmed;
+                            status = encounter.SourceSettlementConfirmed ? "원본 정산 확인" :
+                                alive ? "건물 유지" :
+                                encounter.State == Original323StoryBuildingState.Destroyed
+                                    ? "파괴 · 원본 보상 대조 필요" : "제거 기록";
+                            if (alive)
+                            {
+                                var enemy = Combat.EnemyOf(encounter.EnemyId);
+                                if (enemy != null)
+                                    status += " · HP " + enemy.Health + "/" + enemy.MaxHealth;
+                            }
+                        }
                     }
-                    GUILayout.Label(building.Name + " · " + status);
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(building.Name + " · " + status,
+                        GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
+                    if (controller.CanRequestOriginalStoryBuilding && !alive && !settled)
+                    {
+                        if (GUILayout.Button("출현 요청", GUILayout.Width(105), GUILayout.MinHeight(58)))
+                            ShowResult(controller.RequestOriginalStoryBuilding(stage));
+                    }
+                    GUILayout.EndHorizontal();
                 }
             }
-            GUILayout.Label("원본 스토리 건물의 실전 출현 위치·진행 조건·보상은 미검증입니다. " +
-                "연습 생성 API는 검증용이며 이 화면에서 임의로 소환하지 않습니다.");
+            if (!controller.CanRequestOriginalStoryBuilding)
+                GUILayout.Label("원본 스토리 등장 조건 및 실제 좌표 공급자 미연결 · " +
+                    "건물 목록만 표시됩니다.");
+            GUILayout.Label("스토리 건물은 이동하지 않고, 파괴해도 원본 정산 확인 전에는 " +
+                "골드·목재·초월위습을 임의로 지급하지 않습니다.");
             if (!controller.ManualActions.HasStoryService)
                 GUILayout.Label("원작 스토리 파견 서비스 미연결: 파견 기능 비활성");
             foreach (var unit in Combat.MobileUnitSnapshot())

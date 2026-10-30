@@ -27,7 +27,14 @@ namespace Ordr.Mobile.Combat
             BlockExternalMutationDuringOriginalFusion();
             if (!UsesSourceModelBasicAttacks || !processingStep) throw new InvalidOperationException("연습 이동 단계가 아닙니다.");
             SpatialCombatEnemy enemy;
-            if (enemies.TryGetValue(id, out enemy) && enemy.Enemy.IsAlive) enemy.Move(x, y, 0);
+            if (enemies.TryGetValue(id, out enemy) && enemy.Enemy.IsAlive)
+            {
+                if (enemy.Kind != CharacterEnemyKind.Line &&
+                    enemy.Kind != CharacterEnemyKind.Boss &&
+                    enemy.Kind != CharacterEnemyKind.Enraged)
+                    throw new InvalidOperationException("비웨이브/스토리 건물은 라운드 경로를 이동하지 않습니다.");
+                enemy.Move(x, y, 0);
+            }
         }
         private void RefreshSourceModelAuras()
         {

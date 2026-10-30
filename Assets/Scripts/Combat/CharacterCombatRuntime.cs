@@ -2191,8 +2191,12 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentException("적 분류와 방어 프로필 분류가 다릅니다.");
             var enemy = new CombatEnemy(enemyId, health, verifiedDefenses);
             var spatial = new SpatialCombatEnemy(enemy, kind, x, y, pathProgress);
-            // Creep kills/leaks must not change the 65R monster count or loss gate.
-            resolution.Spawn(enemy, kind != CharacterEnemyKind.Creep);
+            // Only routed 65R line/boss enemies affect wave deaths and loss.
+            // Story buildings, creeps and challenge encounters are separate lanes.
+            bool partOfWave = kind == CharacterEnemyKind.Line ||
+                kind == CharacterEnemyKind.Boss ||
+                kind == CharacterEnemyKind.Enraged;
+            resolution.Spawn(enemy, partOfWave);
             enemies.Add(enemyId, spatial);
             statuses.Add(enemyId, enemy.Status);
             armorBreakStacks.Add(enemyId, 0);
@@ -2212,6 +2216,8 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy enemy;
             if (!enemies.TryGetValue(enemyId, out enemy))
                 throw new KeyNotFoundException("존재하지 않는 적 ID.");
+            if (enemy.Kind == CharacterEnemyKind.Story)
+                throw new InvalidOperationException("스토리 건물은 이동할 수 없습니다.");
             if (statuses[enemyId].IsStunned()) return false;
             enemy.Move(x, y, progress);
             RefreshEnemyAuras();
@@ -2248,6 +2254,8 @@ namespace Ordr.Mobile.Combat
                 if (!enemies.TryGetValue(item.Id, out live) || !live.Enemy.IsAlive)
                     throw new InvalidOperationException(
                         "원본 이동 관측 대상이 실제 생존 적과 다릅니다.");
+                if (live.Kind == CharacterEnemyKind.Story)
+                    throw new InvalidOperationException("스토리 건물은 관측 경로로도 이동할 수 없습니다.");
                 if (!statuses[item.Id].IsStunned())
                     allowed.Add(new KeyValuePair<SpatialCombatEnemy,
                         Original323ObservedMonsterPosition>(live, item));
@@ -2272,6 +2280,8 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy enemy;
             if (!enemies.TryGetValue(enemyId, out enemy))
                 throw new KeyNotFoundException("존재하지 않는 적 ID.");
+            if (enemy.Kind == CharacterEnemyKind.Story)
+                throw new InvalidOperationException("스토리 건물은 강제 이동할 수 없습니다.");
             enemy.Move(x, y, progress);
             RefreshEnemyAuras();
         }

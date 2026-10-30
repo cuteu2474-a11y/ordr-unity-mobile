@@ -661,6 +661,61 @@ namespace Ordr.Mobile.Unity
         public Original323CreepPracticeWorld PracticeCreeps { get; private set; }
         public Original323StoryBuildingPracticeWorld PracticeStoryBuildings { get; private set; }
         public Original323StoryBuildingCatalog StoryBuildingCatalog { get; private set; }
+        private IOriginal323StoryBuildingSpawnAuthorization originalStoryStages;
+        private IOriginal323StoryBuildingSpawnWitness originalStorySpawnWitness;
+        private IOriginal323StoryBuildingClearWitness originalStoryClearWitness;
+        public bool CanRequestOriginalStoryBuilding =>
+            PracticeStoryBuildings != null && originalStoryStages != null &&
+            originalStorySpawnWitness != null;
+        
+        // Original runtime/replay source is mandatory. Practice mode does not
+        // invent an unlock rule, final Nightmare stats or a story victory.
+        public void ConfigureVerifiedStoryBuildingStages(
+            IOriginal323StoryBuildingSpawnAuthorization stageAuthorization,
+            IOriginal323StoryBuildingSpawnWitness spawnWitness,
+            IOriginal323StoryBuildingClearWitness clearWitness)
+        {
+            if (stageAuthorization == null || spawnWitness == null || clearWitness == null)
+                throw new ArgumentNullException("스토리 등장/파괴·정산 원본 공급자를 모두 연결해야 합니다.");
+            if (originalStoryStages != null || originalStorySpawnWitness != null ||
+                originalStoryClearWitness != null)
+                throw new InvalidOperationException("스토리 원본 이벤트 공급자를 중복 연결할 수 없습니다.");
+            originalStoryStages = stageAuthorization;
+            originalStorySpawnWitness = spawnWitness;
+            originalStoryClearWitness = clearWitness;
+        }
+
+        public ManualActionResult RequestOriginalStoryBuilding(int stage)
+        {
+            if (!CanRequestOriginalStoryBuilding)
+                return ManualActionResult.Unavailable("원본 스토리 건물 출현");
+            try
+            {
+                var building = PracticeStoryBuildings.SpawnAuthorizedBuilding(
+                    stage, originalStoryStages, originalStorySpawnWitness);
+                return new ManualActionResult(ManualActionState.Succeeded,
+                    building.Building.Name + " · 원본 건물 출현 확인");
+            }
+            catch (ArgumentException error)
+            {
+                return new ManualActionResult(ManualActionState.Rejected, error.Message);
+            }
+            catch (InvalidOperationException error)
+            {
+                return new ManualActionResult(ManualActionState.Rejected, error.Message);
+            }
+        }
+
+        // Called only after the external source has actually settled the full
+        // original clear transaction. It does not issue reward from a model kill.
+        public bool TryRecordObservedStoryBuildingSettlement(
+            string enemyId, string settledEventId)
+        {
+            return PracticeStoryBuildings != null &&
+                originalStoryClearWitness != null &&
+                PracticeStoryBuildings.TryRecordSettledClear(
+                    enemyId, settledEventId, originalStoryClearWitness);
+        }
         public SourceModelRegularMoneyGambling PracticeMoneyGambling { get; private set; }
 
         // Source-confirmed creep placement and unit eligibility are not yet known.
