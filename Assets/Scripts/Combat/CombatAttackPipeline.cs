@@ -198,12 +198,19 @@ namespace Ordr.Mobile.Combat
 
         private IOriginalUnitAttackModifiers originalModifierRules;
         private IOriginal323VerifiedNativeAttackCadence verifiedNativeCadence;
+        private Func<BasicAttackSpec, IReadOnlyList<CombatEffect>, double> practiceAttackCadence;
+        internal void ConfigurePracticeAttackCadence(Func<BasicAttackSpec, IReadOnlyList<CombatEffect>, double> cadence)
+        {
+            if (practiceAttackCadence != null || verifiedNativeCadence != null || units.Count != 0)
+                throw new InvalidOperationException("연습 공속은 전투 유닛 생성 전에만 연결할 수 있습니다.");
+            practiceAttackCadence = cadence ?? throw new ArgumentNullException(nameof(cadence));
+        }
         private Func<string, IReadOnlyList<CombatEffect>> getAttackerEffects;
 
         public void ConfigureVerifiedNativeAttackCadence(
             IOriginal323VerifiedNativeAttackCadence originalRules)
         {
-            if (verifiedNativeCadence != null)
+            if (verifiedNativeCadence != null || practiceAttackCadence != null)
                 throw new InvalidOperationException(
                     "원본 공속 타이밍 공식은 두 번 연결할 수 없습니다.");
             verifiedNativeCadence = originalRules ??
@@ -216,7 +223,7 @@ namespace Ordr.Mobile.Combat
         {
             if (string.IsNullOrWhiteSpace(attackerId))
                 throw new ArgumentException("공격자 인스턴스 ID가 필요합니다.");
-            if (verifiedNativeCadence != null || !units.ContainsKey(attackerId) ||
+            if (verifiedNativeCadence != null || practiceAttackCadence != null || !units.ContainsKey(attackerId) ||
                 getAttackerEffects == null)
                 return false;
             var active = getAttackerEffects(attackerId);
@@ -426,6 +433,14 @@ namespace Ordr.Mobile.Combat
                     hasNativeSpeedBuff = true;
             if (hasNativeSpeedBuff)
             {
+                if (practiceAttackCadence != null)
+                {
+                    nextAttackInterval = practiceAttackCadence(effective, attackerEffects);
+                    if (double.IsNaN(nextAttackInterval) || double.IsInfinity(nextAttackInterval) || nextAttackInterval <= 0)
+                        throw new InvalidOperationException("연습 공격 간격 오류");
+                }
+                else
+                {
                 string timingEvidence;
                 double verifiedNext;
                 if (verifiedNativeCadence == null ||
@@ -440,6 +455,7 @@ namespace Ordr.Mobile.Combat
                     throw new InvalidOperationException(
                         "검증된 워크래프트 공격 간격이 유효하지 않습니다.");
                 nextAttackInterval = verifiedNext;
+                }
             }
 
             // Read-only target preflight while the enemy is still alive,
@@ -494,3 +510,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

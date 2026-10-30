@@ -65,7 +65,7 @@ namespace Ordr.Mobile.Combat
                 !Ordr323OriginalDamageRules.TryReadArmorType(target.Defenses.WarcraftArmorType, out armor))
                 throw new NotSupportedException("출처가 있는 공격·적 방어 자료가 필요합니다.");
             foreach (var effect in request.AttackerEffects)
-                if (effect.Type != CombatEffectType.AttackPowerBuff ||
+                if ((effect.Type != CombatEffectType.AttackPowerBuff && effect.Type != CombatEffectType.AttackSpeedBuff) ||
                     !effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal))
                     throw new NotSupportedException("연습의 출처가 확인되지 않은 공격 효과입니다.");
             double rawDamage = attack.RollObjectBaseDamage(random);
@@ -92,3 +92,4 @@ namespace Ordr.Mobile.Combat
         { throw new NotSupportedException("연습 전투의 미연결 스킬 피해는 계산하지 않습니다."); }
     }
 }
+

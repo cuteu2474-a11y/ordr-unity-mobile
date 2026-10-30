@@ -114,12 +114,12 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void PinnedNativeAoaeAuditLinks59OwnersWith51SlowsAnd18AttackSpeedBuffs()
+        public void PinnedNativeAoaeAuditIncludesFriendAndSelfSpeedAuras()
         {
             var source = Speeds();
-            Assert.AreEqual(59, source.UnitCount);
+            Assert.AreEqual(64, source.UnitCount);
             Assert.AreEqual(51, source.MovementSlowDefinitionCount);
-            Assert.AreEqual(18, source.AllyAttackSpeedDefinitionCount);
+            Assert.AreEqual(23, source.AllyAttackSpeedDefinitionCount);
 
             var smoker = Only(source, "S-14");
             Assert.AreEqual("A08F", smoker.AbilityRawcode);
@@ -150,6 +150,10 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(CombatEffectType.AttackSpeedBuff, brook.Type);
             Assert.AreEqual(10, brook.Amount);
             Assert.IsTrue(brook.TargetsAllies);
+            var self = Only(source, "TR-02");
+            Assert.AreEqual(12, self.Amount);
+            Assert.IsTrue(self.AllowsAllyRole(true));
+            Assert.IsFalse(self.AllowsAllyRole(false));
         }
 
         [Test]
@@ -157,7 +161,7 @@ namespace Ordr.Mobile.Tests
         {
             var all = Combined();
             Assert.Greater(all.UnitCount, 58);
-            Assert.AreEqual(131, all.DefinitionCount);
+            Assert.AreEqual(136, all.DefinitionCount);
             Assert.AreEqual(1, all.FindAll("S-14").Count,
                 "Pinned smoker slow cannot stack with the identical W3X audit.");
             Assert.AreEqual(1, all.FindAll("S-29").Count);
@@ -244,3 +248,4 @@ namespace Ordr.Mobile.Tests
         }
     }
 }
+

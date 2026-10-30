@@ -66,6 +66,81 @@ namespace Ordr.Mobile.Tests
             battle.Start();
             return new Live { Combat = combat, Battle = battle, Rules = rules, Units = units, Map = map };
         }
+        [TestCase("X-02")][TestCase("R-18")][TestCase("L-04")][TestCase("L-05")]
+        [TestCase("L-29")][TestCase("L-35")][TestCase("H-08")][TestCase("TR-02")]
+        [TestCase("TR-13")][TestCase("TR-14")][TestCase("TR-22")][TestCase("TR-23")]
+        [TestCase("TR-30")][TestCase("E-01")][TestCase("E-09")][TestCase("E-11")]
+        [TestCase("I-02")][TestCase("I-03")][TestCase("RN-12")][TestCase("RN-14")]
+        [TestCase("MY-06")][TestCase("MY-08")]
+        public void TwentyTwoSpeedAurasReachTheirSourceAllowedRecipients(string id)
+        {
+            using (var game = Create(true, true))
+            {
+                long caster = game.Combat.SpawnCharacter(id, -4000, 4000);
+                long ally = game.Combat.SpawnCharacter("C-01", -4000, 4000);
+                var aura = game.Rules.UnitEffects.AurasFor(id).Single(a => a.Level == 1 && a.Type == CombatEffectType.AttackSpeedBuff);
+                game.Battle.Advance(.5);
+                bool casterHas = game.Combat.UnitStatusOf(caster).Snapshot().Any(e => e.Type == CombatEffectType.AttackSpeedBuff);
+                bool allyHas = game.Combat.UnitStatusOf(ally).Snapshot().Any(e => e.Type == CombatEffectType.AttackSpeedBuff);
+                Assert.AreEqual(aura.AllowsAllyRole(true), casterHas, id);
+                Assert.AreEqual(aura.AllowsAllyRole(false), allyHas, id);
+                Assert.IsFalse(game.Combat.HasVerifiedAttack(caster), id);
+            }
+        }
+        [Test]
+        public void PracticeSpeedAuraChangesNextAttackAndRemovalRestoresBaseCadence()
+        {
+            using (var game = Create(true, true))
+            {
+                long caster = game.Combat.SpawnCharacter("X-02", -4000, 4000);
+                long ally = game.Combat.SpawnCharacter("C-01", -4000, 4000);
+                game.Battle.Advance(.5);
+                var boosted = game.Combat.InspectBasicAttack(ally).NextAttackAtSeconds;
+                Assert.IsTrue(boosted.HasValue);
+                // First line monster appears at 0.5s; the ready attacker hits then.
+                Assert.AreEqual(.5 + 1.02 / 1.11, boosted.Value, 1e-6);
+                game.Combat.RemoveCharacter(caster);
+                game.Battle.Advance(1.1);
+                var restored = game.Combat.InspectBasicAttack(ally).NextAttackAtSeconds;
+                Assert.IsTrue(restored.HasValue);
+                Assert.AreEqual(boosted.Value + 1.02, restored.Value, 1e-6);
+            }
+        }
+        [Test]
+        public void DifferentSpeedAurasAreDeferredWithoutBlockingBasicAttacks()
+        {
+            using (var game = Create(true, true))
+            {
+                game.Combat.SpawnCharacter("X-02", -4000, 4000);
+                game.Combat.SpawnCharacter("R-18", -4000, 4000);
+                long ally = game.Combat.SpawnCharacter("C-01", -4000, 4000);
+                var events = game.Battle.Advance(.5);
+                Assert.IsFalse(game.Combat.UnitStatusOf(ally).Snapshot().Any(e => e.Type == CombatEffectType.AttackSpeedBuff));
+                Assert.Greater(game.Rules.UnitEffects.DeferredAuraGroups, 0);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.Attack && e.ActorId == ally.ToString()));
+            }
+        }
+        [Test]
+        public void AllPublishedPracticeSpeedDescriptionsMatchLiveCatalog()
+        {
+            using (var game = Create())
+            {
+                var root = OrdrJson.Object(OrdrJson.Parse(Data("unit-runtime-status.json")), "status");
+                int count = 0;
+                foreach (var item in OrdrJson.Array(OrdrJson.Value(root, "entries"), "entries"))
+                {
+                    var row = OrdrJson.Object(item, "unit");
+                    string id = OrdrJson.RequiredString(row, "catalogId");
+                    var descriptions = game.Rules.UnitEffects.Describe(id, game.Map.Find(id).OriginalRawcode);
+                    if (!descriptions.Any(text => text.Contains("공격속도 증가(%)"))) continue;
+                    var published = OrdrJson.Array(OrdrJson.Value(row, "connectedModelEffects"), "effects")
+                        .Select(value => (string)value).ToArray();
+                    CollectionAssert.AreEqual(published, descriptions, id);
+                    count++;
+                }
+                Assert.AreEqual(22, count);
+            }
+        }
         [Test]
         public void MappedObjectAttacksCoverAllGradesWithoutFreeSpawnsOrRetailApproval()
         {

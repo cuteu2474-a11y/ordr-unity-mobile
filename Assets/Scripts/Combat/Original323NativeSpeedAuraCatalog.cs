@@ -143,7 +143,8 @@ namespace Ordr.Mobile.Combat
                             attackSpeed == 0 && mask == "air,enemies,ground";
                         bool allySpeed = safeFields && movement == 0 &&
                             attackSpeed > 0 && attackSpeed <= 1 &&
-                            mask.Contains("friend") && !mask.Contains("enemies");
+                            ((mask.Contains("friend") && !mask.Contains("enemies")) ||
+                             mask == "invulnerable,self");
 
                         if (!enemySlow && !allySpeed)
                         {
@@ -244,3 +245,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

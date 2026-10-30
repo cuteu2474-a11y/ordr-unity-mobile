@@ -234,7 +234,7 @@ namespace Ordr.Mobile.Tests
         public void FullAuditAddsEighteenNewDefinitionsWithoutDuplicatingGuard()
         {
             var all = AllAuras();
-            Assert.AreEqual(149, all.DefinitionCount);
+            Assert.AreEqual(154, all.DefinitionCount);
             var guard = all.FindAll("S-25");
             Assert.AreEqual(1, guard.Count, "Existing A0EM is not applied twice.");
             Assert.AreEqual(25, ExactlyOne(all, "R-35").Amount);
@@ -436,3 +436,4 @@ namespace Ordr.Mobile.Tests
         }
     }
 }
+

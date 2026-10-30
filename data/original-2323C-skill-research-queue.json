@@ -7,7 +7,7 @@
     "catalogCharacters": 277,
     "tooltipProfiles": 200,
     "unitsWithoutTooltipProfile": 77,
-    "unitsWithConnectedModelEffects": 165,
+    "unitsWithConnectedModelEffects": 175,
     "skillEntries": 554,
     "passiveEntries": 295,
     "skillEntriesOnMappedUnits": 548,
@@ -15868,7 +15868,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 1,
       "documentedPassiveCount": 3,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 11 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -16418,7 +16420,8 @@
       "documentedSkillCount": 0,
       "documentedPassiveCount": 1,
       "connectedModelEffects": [
-        "브룩 음악가 · 추가 피해와 기절 · 객체 확률 14.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 4500 / 연습 계산·원작 면역 미검증"
+        "브룩 음악가 · 추가 피해와 기절 · 객체 확률 14.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 4500 / 연습 계산·원작 면역 미검증",
+        "아군 공격속도 증가(%) 10 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "remainingWork": [
@@ -17102,6 +17105,7 @@
       "documentedPassiveCount": 6,
       "connectedModelEffects": [
         "적 방어력 감소 10 · 1단계 / 중첩 충돌 시 보류",
+        "아군 공격속도 증가(%) 5 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -17125,7 +17129,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 1,
       "documentedPassiveCount": 2,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 17 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -17715,7 +17721,8 @@
       "documentedSkillCount": 1,
       "documentedPassiveCount": 4,
       "connectedModelEffects": [
-        "적 방어력 감소 18 · 1단계 / 중첩 충돌 시 보류"
+        "적 방어력 감소 18 · 1단계 / 중첩 충돌 시 보류",
+        "아군 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "remainingWork": [
@@ -17867,6 +17874,7 @@
       "documentedSkillCount": 1,
       "documentedPassiveCount": 3,
       "connectedModelEffects": [
+        "아군 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -18164,7 +18172,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 1,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 22 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -19103,7 +19113,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 4,
       "documentedPassiveCount": 3,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "자신의 공격속도 증가(%) 12 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -19433,7 +19445,8 @@
       "documentedSkillCount": 5,
       "documentedPassiveCount": 1,
       "connectedModelEffects": [
-        "샹크스 · 크리티컬과 추가 피해와 기절 · 객체 확률 12% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500000 / 연습 계산·원작 면역 미검증"
+        "샹크스 · 크리티컬과 추가 피해와 기절 · 객체 확률 12% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500000 / 연습 계산·원작 면역 미검증",
+        "자신의 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "remainingWork": [
@@ -19463,7 +19476,8 @@
       "documentedSkillCount": 5,
       "documentedPassiveCount": 3,
       "connectedModelEffects": [
-        "스네이크맨 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+        "스네이크맨 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
+        "자신의 공격속도 증가(%) 15 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "remainingWork": [
@@ -19699,7 +19713,8 @@
       "documentedSkillCount": 5,
       "documentedPassiveCount": 4,
       "connectedModelEffects": [
-        "징베 · 기절 · 객체 확률 40% · 일반 몬스터 / 보스 저항 검증 대기"
+        "징베 · 기절 · 객체 확률 40% · 일반 몬스터 / 보스 저항 검증 대기",
+        "아군 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "remainingWork": [
@@ -19730,6 +19745,7 @@
       "documentedPassiveCount": 4,
       "connectedModelEffects": [
         "적 방어력 감소 50 · 1단계 / 중첩 충돌 시 보류",
+        "아군 공격속도 증가(%) 40 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -19939,6 +19955,7 @@
       "documentedSkillCount": 7,
       "documentedPassiveCount": 4,
       "connectedModelEffects": [
+        "아군 공격속도 증가(%) 40 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -19973,6 +19990,7 @@
       "connectedModelEffects": [
         "니카(루피) · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류",
+        "아군 공격속도 증가(%) 25 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -20188,7 +20206,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 5,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 15 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -20243,7 +20263,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 4,
       "documentedPassiveCount": 2,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -20326,7 +20348,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 4,
       "documentedPassiveCount": 2,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -20354,7 +20378,8 @@
       "documentedSkillCount": 6,
       "documentedPassiveCount": 2,
       "connectedModelEffects": [
-        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
+        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
+        "아군 공격속도 증가(%) 45 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "remainingWork": [
@@ -20997,7 +21022,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "자신의 공격속도 증가(%) 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -21043,7 +21070,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 1,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 10 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -21202,7 +21231,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 4,
       "documentedPassiveCount": 2,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "자신의 공격속도 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -21259,6 +21290,7 @@
       "documentedSkillCount": 7,
       "documentedPassiveCount": 4,
       "connectedModelEffects": [
+        "아군 공격속도 증가(%) 30 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],

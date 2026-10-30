@@ -15,6 +15,12 @@ namespace Ordr.Mobile.Combat
         {
             sourceModelRules = rules;
             sourceModelUnitEffects = rules.UnitEffects;
+            if (sourceModelUnitEffects != null)
+                attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {
+                    // Reference-model cadence; this does not authorize native timing.
+                    double speed = SourceModelUnitEffects.ResolveSingleAura(effects, CombatEffectType.AttackSpeedBuff);
+                    return attack.IntervalSeconds / (1 + Math.Min(speed / 100.0, 4));
+                });
         }
         internal void MoveSourceModelEnemy(string id, double x, double y)
         {
@@ -38,6 +44,7 @@ namespace Ordr.Mobile.Combat
             {
                 if (IsStoryDeployed(target) || (activeOriginalFusionSwap != null && activeOriginalFusionSwap.Hides(target))) continue;
                 ApplySourceModelAuraGroup(ordered, target, null, CombatEffectType.AttackPowerBuff);
+                ApplySourceModelAuraGroup(ordered, target, null, CombatEffectType.AttackSpeedBuff);
             }
             foreach (var enemy in enemies.Values)
             {

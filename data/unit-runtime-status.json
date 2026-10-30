@@ -5,8 +5,8 @@
   "summary": {
     "catalogEntries": 277,
     "objectBasicAttackModels": 273,
-    "modelEffectOwners": 165,
-    "connectedModelEffectDefinitions": 217,
+    "modelEffectOwners": 175,
+    "connectedModelEffectDefinitions": 239,
     "documentedSkillEntries": 554,
     "documentedPassiveEntries": 295,
     "fullyVerifiedUnits": 0,
@@ -950,7 +950,9 @@
       "grade": "특수함",
       "originalRawcode": "h08N",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 11 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 3,
@@ -1353,7 +1355,8 @@
       "originalRawcode": "h01N",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "브룩 음악가 · 추가 피해와 기절 · 객체 확률 14.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 4500 / 연습 계산·원작 면역 미검증"
+        "브룩 음악가 · 추가 피해와 기절 · 객체 확률 14.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 4500 / 연습 계산·원작 면역 미검증",
+        "아군 공격속도 증가(%) 10 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
@@ -1841,6 +1844,7 @@
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
         "적 방어력 감소 10 · 1단계 / 중첩 충돌 시 보류",
+        "아군 공격속도 증가(%) 5 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -1859,7 +1863,9 @@
       "grade": "전설",
       "originalRawcode": "h02Q",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 17 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 2,
@@ -2300,7 +2306,8 @@
       "originalRawcode": "h03K",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "적 방어력 감소 18 · 1단계 / 중첩 충돌 시 보류"
+        "적 방어력 감소 18 · 1단계 / 중첩 충돌 시 보류",
+        "아군 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
@@ -2412,6 +2419,7 @@
       "originalRawcode": "h087",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "아군 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -2634,7 +2642,9 @@
       "grade": "히든",
       "originalRawcode": "h03P",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 22 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
@@ -3308,7 +3318,9 @@
       "grade": "초월함",
       "originalRawcode": "H08V",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "자신의 공격속도 증가(%) 12 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 3,
@@ -3518,7 +3530,8 @@
       "originalRawcode": "H08Z",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "샹크스 · 크리티컬과 추가 피해와 기절 · 객체 확률 12% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500000 / 연습 계산·원작 면역 미검증"
+        "샹크스 · 크리티컬과 추가 피해와 기절 · 객체 확률 12% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500000 / 연습 계산·원작 면역 미검증",
+        "자신의 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 5,
@@ -3537,7 +3550,8 @@
       "originalRawcode": "H0B2",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "스네이크맨 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영"
+        "스네이크맨 · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
+        "자신의 공격속도 증가(%) 15 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 5,
@@ -3686,7 +3700,8 @@
       "originalRawcode": "H09A",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "징베 · 기절 · 객체 확률 40% · 일반 몬스터 / 보스 저항 검증 대기"
+        "징베 · 기절 · 객체 확률 40% · 일반 몬스터 / 보스 저항 검증 대기",
+        "아군 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 5,
@@ -3706,6 +3721,7 @@
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
         "적 방어력 감소 50 · 1단계 / 중첩 충돌 시 보류",
+        "아군 공격속도 증가(%) 40 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -3836,6 +3852,7 @@
       "originalRawcode": "H0AA",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "아군 공격속도 증가(%) 40 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -3858,6 +3875,7 @@
       "connectedModelEffects": [
         "니카(루피) · 크리티컬과 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 연습 1단계 / 강화 미반영",
         "적 방어력 감소 35 · 1단계 / 중첩 충돌 시 보류",
+        "아군 공격속도 증가(%) 25 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -4005,7 +4023,9 @@
       "grade": "영원한",
       "originalRawcode": "h067",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 15 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 5,
       "documentedPassives": 1,
@@ -4042,7 +4062,9 @@
       "grade": "영원한",
       "originalRawcode": "h06A",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
@@ -4098,7 +4120,9 @@
       "grade": "불멸의",
       "originalRawcode": "h04D",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
@@ -4116,7 +4140,8 @@
       "originalRawcode": "h049",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류"
+        "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
+        "아군 공격속도 증가(%) 45 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 6,
@@ -4571,7 +4596,9 @@
       "grade": "랜덤",
       "originalRawcode": "h071",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "자신의 공격속도 증가(%) 35 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 1,
@@ -4605,7 +4632,9 @@
       "grade": "랜덤",
       "originalRawcode": "h072",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아군 공격속도 증가(%) 10 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
       "documentedPassives": 1,
@@ -4715,7 +4744,9 @@
       "grade": "신비함",
       "originalRawcode": "h09N",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "자신의 공격속도 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 4,
       "documentedPassives": 2,
@@ -4753,6 +4784,7 @@
       "originalRawcode": "h08M",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
+        "아군 공격속도 증가(%) 30 · 1단계 / 중첩 충돌 시 보류",
         "적 이동속도 감소(%) 40 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],

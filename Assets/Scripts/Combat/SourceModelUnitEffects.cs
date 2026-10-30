@@ -56,7 +56,8 @@ namespace Ordr.Mobile.Combat
                     " / 연습 계산·원작 면역 미검증" : ""));
             if (id == "U-01") result.Add("꽃꽃 열매 · 같은 전장 최대 3명 타격 (연습 대상 선택/동시 타격 모델)");
             foreach (var aura in AurasFor(id))
-                if (IsSupportedAura(aura)) result.Add(AuraName(aura.Type) + " " +
+                if (IsSupportedAura(aura)) result.Add((aura.Type == CombatEffectType.AttackSpeedBuff &&
+                    aura.TargetMask == "invulnerable,self" ? "자신의 공격속도 증가(%)" : AuraName(aura.Type)) + " " +
                     aura.Amount.ToString("0.####") + " · 1단계 / 중첩 충돌 시 보류");
             return result.AsReadOnly();
         }
@@ -67,12 +68,20 @@ namespace Ordr.Mobile.Combat
                 case CombatEffectType.ArmorReduction: return "적 방어력 감소";
                 case CombatEffectType.MovementSlowPercent: return "적 이동속도 감소(%)";
                 case CombatEffectType.AttackPowerBuff: return "아군 기본 공격력 증가(%)";
+                case CombatEffectType.AttackSpeedBuff: return "아군 공격속도 증가(%)";
                 default: return type.ToString();
             }
         }
         internal bool IsSupportedAura(Original323SpecialAura aura)
         {
             if (aura.Level != 1) return false;
+            // Koby owns another speed aura with unresolved W3A overrides;
+            // applying only one could silently invent its stacking result.
+            if (aura.Type == CombatEffectType.AttackSpeedBuff && aura.UnitId == "TR-24") return false;
+            if (aura.Type == CombatEffectType.AttackSpeedBuff &&
+                aura.TargetMask != "air,invulnerable,self,ground,vulnerable,friend" &&
+                aura.TargetMask != "air,invulnerable,notself,ground,vulnerable,friend" &&
+                aura.TargetMask != "invulnerable,self") return false;
             if (!aura.TargetsAllies)
             {
                 bool air = false, enemy = false;
@@ -86,7 +95,8 @@ namespace Ordr.Mobile.Combat
             } // Dynamic rank upgrades are NOT assumed.
             if (aura.Type == CombatEffectType.ArmorReduction)
                 return aura.RawArmorPercentageMode.HasValue ? aura.RawArmorPercentageMode.Value == 0 : sourceFlatArmorMode;
-            return aura.Type == CombatEffectType.MovementSlowPercent || aura.Type == CombatEffectType.AttackPowerBuff;
+            return aura.Type == CombatEffectType.MovementSlowPercent || aura.Type == CombatEffectType.AttackPowerBuff ||
+                aura.Type == CombatEffectType.AttackSpeedBuff;
         }
         internal double BeforeBasicHit(BasicDamageRequest request, CombatEnemy target, double raw)
         {
