@@ -78,11 +78,19 @@ namespace Ordr.Mobile.Combat
             var passive = sourceModelUnitEffects.Take(InstanceKey(actor.Id), hit.TargetId);
             if (passive != null)
             {
-                if (passive.Kind != OriginalNativePassiveKind.Stun)
+                if (passive.Kind == OriginalNativePassiveKind.Critical ||
+                    passive.Kind == OriginalNativePassiveKind.CriticalStun)
                     events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                         InstanceKey(actor.Id), hit.TargetId, passive.Name,
                         "연습 객체 크리티컬 · " + passive.CriticalMultiplier + "배 타격에 반영", 0));
-                if (passive.Kind != OriginalNativePassiveKind.Critical && primary.Enemy.IsAlive &&
+                if (passive.Kind == OriginalNativePassiveKind.Bonus ||
+                    passive.Kind == OriginalNativePassiveKind.BonusStun)
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                        InstanceKey(actor.Id), hit.TargetId, passive.Name,
+                        "연습 객체 추가 피해 " + passive.BonusDamage + " · 기본 타격에 반영", 0));
+                if ((passive.Kind == OriginalNativePassiveKind.Stun ||
+                     passive.Kind == OriginalNativePassiveKind.CriticalStun ||
+                     passive.Kind == OriginalNativePassiveKind.BonusStun) && primary.Enemy.IsAlive &&
                     hit.ActualDamage > 0 && primary.Kind == CharacterEnemyKind.Line)
                 {
                     var status = primary.Enemy.Status;

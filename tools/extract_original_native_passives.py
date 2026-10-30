@@ -66,6 +66,7 @@ def extract(ability_file, owner_file, base_file, w3x):
                   if any(field[0] != 'aub1' for field in fields)}
     entries = []
     practice_mixed = []
+    practice_bonus = []
     for character in base["catalogEntries"]:
         raw = character.get("originalRawcode")
         if not raw:
@@ -94,7 +95,29 @@ def extract(ability_file, owner_file, base_file, w3x):
                 continue
             chance, multiplier, bonus, duration, hero, cooldown, data_d = (
                 Decimal(row[field]) for field in fields[:-1])
-            if chance <= 0 or chance > 100 or bonus != 0 or cooldown != 0 or data_d != 0:
+            if chance <= 0 or chance > 100 or bonus < 0 or cooldown != 0 or data_d != 0:
+                continue
+            if bonus > 0:
+                # One single-level ability, without critical/multiple-bash
+                # interaction. The damage school and final retail HP impact
+                # are not proven by these object fields.
+                if levels != 1 or multiplier != 0 or duration < 0 or hero < 0 or (duration == 0 and hero != 0):
+                    continue
+                mask_parts = set(row['targs1'].split(','))
+                if 'air' not in mask_parts or not mask_parts <= {'air', 'ground', 'enemies', 'neutral'}:
+                    continue
+                scaled = chance * 10000
+                if scaled != int(scaled):
+                    raise ValueError("확률 정밀도 초과: " + ability)
+                practice_bonus.append({
+                    'catalogId': character['catalogId'], 'catalogName': character['catalogName'],
+                    'originalUnitRawcode': raw, 'abilityRawcode': ability, 'level': 1,
+                    'kind': 'bonus-stun' if duration > 0 else 'bonus',
+                    'chancePerMillion': int(scaled), 'bonusDamage': float(bonus),
+                    'normalStunSeconds': float(duration), 'heroStunSeconds': float(hero),
+                    'targetMask': row['targs1'],
+                    'sourceFields': {field: row[field] for field in fields},
+                })
                 continue
             kind = "critical" if multiplier > 1 and duration == 0 and hero == 0 else (
                 "stun" if multiplier == 0 and duration > 0 and hero >= 0 else (
@@ -124,7 +147,9 @@ def extract(ability_file, owner_file, base_file, w3x):
             "scope": "complete-single-level-pure-critical-or-stun-only; target eligibility remains live state",
             "entries": entries,
             "practiceFirstLevelEntries": practice_mixed,
-            "practiceFirstLevelScope": "model only; rank upgrades and native simultaneous-effect parity unverified"}
+            "practiceFirstLevelScope": "model only; rank upgrades and native simultaneous-effect parity unverified",
+            "practiceBonusEntries": practice_bonus,
+            "practiceBonusScope": "model only; reference attack-bonus pipeline; retail school, immunity and final HP parity unverified"}
 
 
 def main():

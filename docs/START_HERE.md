@@ -4,6 +4,14 @@
 
 새 AI는 이 문서 → [코드 구조](CODE_MAP.md) → [작업목록](PLAYABLE_ROADMAP.md) 순서로 읽는다. 운영 규칙은 루트 [AGENTS.md](../AGENTS.md)를 따른다. 이후 게임 코드가 바뀌면 이 문서의 범위도 다시 대조한다. 문서 정리 커밋은 게임 기능을 바꾸지 않는다.
 
+## 추가 피해 패시브 39명 연습 모델 (2026-10-30)
+
+원본 W3X의 단일 1단계 AHbh 능력에서 추가 피해가 확인된 39명을 기존 10/20/65라운드 독립 전투에 연결했습니다. 에이스·타시기·하찌와 특별함·희귀·전설·히든 등입니다. 같은 한 번의 확률 판정에서 추가 피해를 평타 패킷에 합산하고, 기절이 있는 능력은 살아 있는 일반 몬스터에 원본 객체 지속시간을 적용합니다. 사망·처치·골드는 기존 경로를 사용합니다. 상세 소유자와 원본 수치는 [능력 자료](../data/original-2323C-native-pure-passives.json)의 `practiceBonusEntries`에 있습니다.
+
+추가 피해 계산은 공개 [Warsmash 능력 설정](https://github.com/Retera/WarsmashModEngine/blob/f9e0aeed4be372d6016519d0e97b384aa873f374/core/assets/abilityBehaviors/generalPassives.json)과 [피해 합산 코드](https://github.com/Retera/WarsmashModEngine/blob/f9e0aeed4be372d6016519d0e97b384aa873f374/core/src/com/etheller/warsmash/viewer5/handlers/w3x/simulation/combat/attacks/listeners/CUnitAttackDamageTakenModificationListenerDamageModResult.java)를 참고한 개발 모델입니다. 원본 Warcraft의 최종 피해 종류·방어·면역·반올림과 동등하다고 검증된 것은 아닙니다. 보스 기절 저항·다중 AHbh·추가 피해와 치명타가 섞인 능력·여러 단계 능력·람각은 이번 범위 밖입니다. 기존 원본 검증 전용 카탈로그에는 추가하지 않습니다.
+
+[유닛 현황](../data/unit-runtime-status.json)은 이전 C# 출력과 이번 39개 설명을 합쳐 재생성했으며 Unity 검사에서 실제 설명과 대조합니다. 유닛 158명의 모델 효과 203개는 전체 스킬 완성 수가 아닙니다.
+
 ## 20명 패시브 연습 전투 연결 (2026-10-30)
 
 원본 맵의 능력/소유 객체와 W3A 게임 효과 오버라이드를 대조하고, 추가 피해가 없는 단일 AHbh 능력의 1단계 효과 20개를 기존 연습 전투에 연결했습니다. 대상: 모건(특수), 샹크스·오즈(희귀), 루피 나이트메어·카르가라(전설), 레드포스호·킬러(히든), 로우·상디·스네이크맨·키자루(초월), 니카(영원), 거프·불릿(불멸), 세라핌 4명, 엘리자베스·토우마(랜덤). 16개는 치명타와 기절이 같이 있는 단일 레벨, 4개는 다단계 능력의 첫 단계입니다.

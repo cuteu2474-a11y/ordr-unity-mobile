@@ -30,7 +30,7 @@ namespace Ordr.Mobile.Tests
             public void Dispose() { Battle.Dispose(); }
         }
         private static string Data(string file) => File.ReadAllText(Path.Combine(Application.dataPath, "..", "data", file));
-        private static Live Create(bool proc = true, bool durableEnemy = false)
+        private static Live Create(bool proc = true, bool durableEnemy = false, int lastRound = 10)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -51,10 +51,10 @@ namespace Ordr.Mobile.Tests
             economy.ApplyVerifiedStart(Original323SoloStartProfile.Create(),
                 (id,x,y) => economy.Units.Add(id,x,y), id => economy.Units.Remove(id));
             combat.Start(); rules.Enable(); combat.ConfigureSourceModelBasicAttacks(rules);
+            string model = Data(lastRound == 65 ? "mobile-standalone-enemy-model.json" : "mobile-practice-battle-model.json");
+            if (durableEnemy) model = model.Replace("\"health\": 338,", "\"health\": 1000000000000,");
             var battle = new SourceModelPracticeBattle(combat, new CombatWaveDirector(), economy,
-                new SourceModelPracticeCatalog(durableEnemy ?
-                    Data("mobile-practice-battle-model.json").Replace("\"health\": 338,", "\"health\": 1000000000000,") :
-                    Data("mobile-practice-battle-model.json")),
+                new SourceModelPracticeCatalog(model, lastRound),
                 Original323MonsterWaveIdentityCatalog.FromJson(Data("original-2323C-monster-wave-script-evidence.json")),
                 rules, new Gold(), null);
             battle.Start();
@@ -161,6 +161,87 @@ namespace Ordr.Mobile.Tests
                     checkedUnits++;
                 }
                 Assert.AreEqual(20, checkedUnits);
+            }
+        }
+        [Test]
+        public void AllThirtyNineBonusOwnersApplyOneSharedAttackPacket()
+        {
+            var root = OrdrJson.Object(OrdrJson.Parse(Data("original-2323C-native-pure-passives.json")), "passives");
+            int count = 0;
+            foreach (var item in OrdrJson.Array(OrdrJson.Value(root, "practiceBonusEntries"), "bonus"))
+            {
+                var row = OrdrJson.Object(item, "bonus");
+                string id = OrdrJson.RequiredString(row, "catalogId");
+                long boosted;
+                using (var game = Create(true, true))
+                {
+                    long actor = game.Combat.SpawnCharacter(id, -4000, 4000);
+                    var events = game.Battle.Advance(1.6);
+                    boosted = events.First(e => e.Type == CharacterCombatEventType.Attack && e.ActorId == actor.ToString()).Amount;
+                    Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                        e.ActorId == actor.ToString() && e.Detail.Contains("추가 피해")), id);
+                    Assert.IsFalse(game.Combat.HasVerifiedAttack(actor), id);
+                    Assert.IsTrue(game.Rules.UnitEffects.Describe(id, game.Map.Find(id).OriginalRawcode)
+                        .Any(e => e.Contains("객체 추가 피해")), id);
+                }
+                if (OrdrJson.Number(row, "chancePerMillion") < 1000000)
+                using (var game = Create(false, true))
+                {
+                    long actor = game.Combat.SpawnCharacter(id, -4000, 4000);
+                    var events = game.Battle.Advance(1.6);
+                    long normal = events.First(e => e.Type == CharacterCombatEventType.Attack && e.ActorId == actor.ToString()).Amount;
+                    Assert.Greater(boosted, normal, id);
+                    Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                        e.ActorId == actor.ToString() && e.Detail.Contains("추가 피해")), id);
+                }
+                count++;
+            }
+            Assert.AreEqual(39, count);
+        }
+        [Test]
+        public void BonusDescriptionsMatchPublishedRuntimeStatus()
+        {
+            using (var game = Create())
+            {
+                var root = OrdrJson.Object(OrdrJson.Parse(Data("unit-runtime-status.json")), "status");
+                int count = 0;
+                foreach (var item in OrdrJson.Array(OrdrJson.Value(root, "entries"), "entries"))
+                {
+                    var row = OrdrJson.Object(item, "unit");
+                    string id = OrdrJson.RequiredString(row, "catalogId");
+                    string raw = game.Map.Find(id).OriginalRawcode;
+                    var passive = game.Rules.UnitEffects.PassiveFor(raw);
+                    if (passive == null || passive.BonusDamage <= 0) continue;
+                    var expected = OrdrJson.Array(OrdrJson.Value(row, "connectedModelEffects"), "effects")
+                        .Select(value => (string)value).ToArray();
+                    CollectionAssert.AreEqual(expected, game.Rules.UnitEffects.Describe(id, raw), id);
+                    count++;
+                }
+                Assert.AreEqual(39, count);
+            }
+        }
+        [Test]
+        public void BonusKillUsesNormalDefeatAndGoldPath()
+        {
+            using (var game = Create())
+            {
+                game.Combat.SpawnCharacter("U-05", -4000, 4000);
+                var events = game.Battle.Advance(1);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated && e.Detail.Contains("추가 피해")));
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.EnemyDefeated));
+                Assert.Greater(game.Combat.Game.DefeatedEnemies, 0);
+                Assert.Greater(game.Battle.GoldAwarded, 0);
+            }
+        }
+        [Test]
+        public void BonusPassiveAlsoRunsInStandaloneSixtyFiveRoundBattle()
+        {
+            using (var game = Create(true, true, 65))
+            {
+                game.Combat.SpawnCharacter("U-09", -4000, 4000);
+                var events = game.Battle.Advance(1);
+                Assert.AreEqual(65, game.Battle.LastRound);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated && e.Detail.Contains("추가 피해")));
             }
         }
         [Test]

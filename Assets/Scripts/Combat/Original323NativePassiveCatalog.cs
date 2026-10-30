@@ -5,7 +5,7 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
-    public enum OriginalNativePassiveKind { Critical, Stun, CriticalStun }
+    public enum OriginalNativePassiveKind { Critical, Stun, CriticalStun, Bonus, BonusStun }
 
     public sealed class OriginalNativePassive
     {
@@ -16,6 +16,7 @@ namespace Ordr.Mobile.Combat
         public OriginalNativePassiveKind Kind { get; internal set; }
         public int ChancePerMillion { get; internal set; }
         public double CriticalMultiplier { get; internal set; }
+        public double BonusDamage { get; internal set; }
         public double NormalStunSeconds { get; internal set; }
         public double HeroStunSeconds { get; internal set; }
         public string OriginalTargetMask { get; internal set; }
@@ -30,6 +31,8 @@ namespace Ordr.Mobile.Combat
         // Separate practice-only catalog: never exposed to the verified native path.
         private readonly Dictionary<string, OriginalNativePassive> practiceFirstLevel =
             new Dictionary<string, OriginalNativePassive>(StringComparer.Ordinal);
+        private readonly Dictionary<string, OriginalNativePassive> practiceBonus =
+            new Dictionary<string, OriginalNativePassive>(StringComparer.Ordinal);
         public int Count { get { return byOwner.Count; } }
         public IEnumerable<OriginalNativePassive> All { get { return byOwner.Values; } }
         public OriginalNativePassive ForRawcode(string rawcode)
@@ -43,6 +46,12 @@ namespace Ordr.Mobile.Combat
             return rawcode != null && practiceFirstLevel.TryGetValue(rawcode, out value) ? value : null;
         }
         public int PracticeFirstLevelCount { get { return practiceFirstLevel.Count; } }
+        public OriginalNativePassive PracticeBonusForRawcode(string rawcode)
+        {
+            OriginalNativePassive value;
+            return rawcode != null && practiceBonus.TryGetValue(rawcode, out value) ? value : null;
+        }
+        public int PracticeBonusCount { get { return practiceBonus.Count; } }
 
         public static Original323NativePassiveCatalog FromJson(string json,
             OriginalMapBaseStatCatalog originalMap)
@@ -147,6 +156,53 @@ namespace Ordr.Mobile.Combat
                     Kind = kind == "critical-stun" ? OriginalNativePassiveKind.CriticalStun :
                         critical ? OriginalNativePassiveKind.Critical : OriginalNativePassiveKind.Stun,
                     ChancePerMillion = (int)scaled, CriticalMultiplier = multiplier,
+                    NormalStunSeconds = normal, HeroStunSeconds = hero, OriginalTargetMask = mask
+                });
+            }
+            object bonusRows = OrdrJson.Value(root, "practiceBonusEntries");
+            if (bonusRows != null)
+            foreach (var item in OrdrJson.Array(bonusRows, "practice bonus passives"))
+            {
+                var row = OrdrJson.Object(item, "practice bonus passive");
+                string id = OrdrJson.RequiredString(row, "catalogId");
+                string raw = OrdrJson.RequiredString(row, "originalUnitRawcode");
+                string code = OrdrJson.RequiredString(row, "abilityRawcode");
+                string kind = OrdrJson.RequiredString(row, "kind");
+                var owner = originalMap.Find(id);
+                if (owner == null || owner.OriginalRawcode != raw || code.Length != 4 ||
+                    !Contains(owner.OriginalAbilityRawcodes, code) ||
+                    Contains(owner.SourceJassFusionAbilityRawcodes, code) ||
+                    OrdrJson.Number(row, "level") != 1 || result.byOwner.ContainsKey(raw) ||
+                    result.practiceFirstLevel.ContainsKey(raw) || result.practiceBonus.ContainsKey(raw))
+                    throw new FormatException("연습 추가 피해 소유 관계 오류: " + id);
+                var fields = OrdrJson.Object(OrdrJson.Value(row, "sourceFields"), "source fields");
+                double chance = Field(fields, "DataA1"), multiplier = Field(fields, "DataB1");
+                double bonus = Field(fields, "DataC1"), normal = Field(fields, "Dur1");
+                double hero = Field(fields, "HeroDur1"), scaled = chance * 10000;
+                string mask = OrdrJson.RequiredString(fields, "targs1");
+                bool air = false;
+                foreach (string token in mask.Split(','))
+                {
+                    if (token == "air") air = true;
+                    if (token != "air" && token != "ground" && token != "enemies" && token != "neutral")
+                        throw new FormatException("연습 추가 피해 대상 분류 미지원: " + code);
+                }
+                bool stun = kind == "bonus-stun";
+                if ((!stun && kind != "bonus") || !air || chance <= 0 || chance > 100 ||
+                    scaled != Math.Floor(scaled) || multiplier != 0 || bonus <= 0 ||
+                    Field(fields, "Cool1") != 0 || Field(fields, "DataD1") != 0 ||
+                    (stun ? normal <= 0 || hero < 0 : normal != 0 || hero != 0) ||
+                    OrdrJson.Number(row, "chancePerMillion") != scaled ||
+                    OrdrJson.Number(row, "bonusDamage") != bonus ||
+                    OrdrJson.Number(row, "normalStunSeconds") != normal ||
+                    OrdrJson.Number(row, "heroStunSeconds") != hero ||
+                    OrdrJson.RequiredString(row, "targetMask") != mask)
+                    throw new FormatException("연습 추가 피해 원본 수치 오류: " + code);
+                result.practiceBonus.Add(raw, new OriginalNativePassive {
+                    CatalogId = id, OwnerRawcode = raw, AbilityRawcode = code,
+                    Name = OrdrJson.RequiredString(row, "catalogName") + (stun ? " · 추가 피해와 기절" : " · 추가 피해"),
+                    Kind = stun ? OriginalNativePassiveKind.BonusStun : OriginalNativePassiveKind.Bonus,
+                    ChancePerMillion = (int)scaled, BonusDamage = bonus,
                     NormalStunSeconds = normal, HeroStunSeconds = hero, OriginalTargetMask = mask
                 });
             }

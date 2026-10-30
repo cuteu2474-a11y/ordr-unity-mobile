@@ -7,7 +7,7 @@
     "catalogCharacters": 277,
     "tooltipProfiles": 200,
     "unitsWithoutTooltipProfile": 77,
-    "unitsWithConnectedModelEffects": 125,
+    "unitsWithConnectedModelEffects": 158,
     "skillEntries": 554,
     "passiveEntries": 295,
     "skillEntriesOnMappedUnits": 548,
@@ -14830,7 +14830,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "에이스 · 추가 피해 · 객체 확률 10% · 객체 추가 피해 200 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -14920,7 +14922,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "타시기 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 200 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -14987,7 +14991,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "하찌 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 150 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -15193,7 +15199,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "루피 기어세컨드 · 추가 피해와 기절 · 객체 확률 25% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 30 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -15286,7 +15294,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "버기 마기탄 · 추가 피해와 기절 · 객체 확률 30% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 800 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [
         {
           "name": "유닛 분해",
@@ -15405,7 +15415,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아론 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -15566,7 +15578,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "징베 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -15588,7 +15602,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "챠카 · 추가 피해 · 객체 확률 10% · 객체 추가 피해 3500 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -15802,7 +15818,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "헤르메포 · 추가 피해 · 객체 확률 100% · 객체 추가 피해 100 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -15890,7 +15908,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "아이스버그 · 추가 피해와 기절 · 객체 확률 50% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -16030,7 +16050,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 1,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "거프 · 추가 피해 · 객체 확률 20% · 객체 추가 피해 20000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -16121,7 +16143,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "루피 기어써드 · 추가 피해 · 객체 확률 25% · 객체 추가 피해 3000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -16250,7 +16274,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "바르톨로메오 · 추가 피해와 기절 · 객체 확률 17% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 6000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -16316,7 +16342,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "반더 데켄 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 2000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -16359,7 +16387,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "벤 베크만 · 추가 피해와 기절 · 객체 확률 35% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 2500 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -16383,7 +16413,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 0,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "브룩 음악가 · 추가 피해와 기절 · 객체 확률 14.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 4500 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "나머지 패시브·변신·조건·연구 효과의 원본 대응 필요",
@@ -16407,7 +16439,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "비비 · 추가 피해와 기절 · 객체 확률 10% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 20000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -16541,7 +16575,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "시류 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 25000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -16793,7 +16829,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "카쿠 · 추가 피해 · 객체 확률 15% · 객체 추가 피해 5000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -16817,6 +16855,7 @@
       "documentedSkillCount": 0,
       "documentedPassiveCount": 1,
       "connectedModelEffects": [
+        "캡틴 키드 · 추가 피해와 기절 · 객체 확률 40% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 6000 / 연습 계산·원작 면역 미검증",
         "적 이동속도 감소(%) 15 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -16888,7 +16927,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "킨에몬 · 추가 피해 · 객체 확률 25% · 객체 추가 피해 10000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -16933,7 +16974,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "핸콕 · 추가 피해와 기절 · 객체 확률 15% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 10000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -16955,7 +16998,9 @@
       "tooltipProfilePresent": false,
       "documentedSkillCount": null,
       "documentedPassiveCount": null,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "실버즈 레일리 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 60000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "원작 최종 피해·타깃·시점 동등성 미검증"
@@ -17127,6 +17172,7 @@
       "documentedSkillCount": 2,
       "documentedPassiveCount": 3,
       "connectedModelEffects": [
+        "레일리 · 추가 피해와 기절 · 객체 확률 12% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 70000 / 연습 계산·원작 면역 미검증",
         "적 방어력 감소 20 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
       ],
@@ -17175,7 +17221,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "루치 · 추가 피해와 기절 · 객체 확률 15% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 250000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -17276,6 +17324,7 @@
       "documentedSkillCount": 3,
       "documentedPassiveCount": 1,
       "connectedModelEffects": [
+        "바르톨로메오 · 추가 피해와 기절 · 객체 확률 17% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 6000 / 연습 계산·원작 면역 미검증",
         "적 방어력 감소 12 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -17438,6 +17487,7 @@
       "documentedSkillCount": 3,
       "documentedPassiveCount": 1,
       "connectedModelEffects": [
+        "스모커 · 추가 피해와 기절 · 객체 확률 18% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 250000 / 연습 계산·원작 면역 미검증",
         "적 이동속도 감소(%) 50 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -17583,7 +17633,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "제파 · 추가 피해와 기절 · 객체 확률 30% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 150000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -17628,7 +17680,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 3,
       "documentedPassiveCount": 2,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "징베 · 추가 피해와 기절 · 객체 확률 25% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 600000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -17705,7 +17759,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 3,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "코비 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 155000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -17827,7 +17883,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "핸콕 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 150000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -17979,6 +18037,7 @@
       "documentedSkillCount": 0,
       "documentedPassiveCount": 1,
       "connectedModelEffects": [
+        "레베카 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 150000 / 연습 계산·원작 면역 미검증",
         "적 방어력 감소 18 · 1단계 / 중첩 충돌 시 보류"
       ],
       "connectedManualFunctions": [],
@@ -18073,7 +18132,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 1,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "반더데켄 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 150000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -18352,7 +18413,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "캐럿 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 300000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -18373,7 +18436,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 2,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "키쿠노죠 · 추가 피해와 기절 · 객체 확률 20% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 100000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -18544,7 +18609,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 3,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "캐럿 · 추가 피해와 기절 · 객체 확률 50% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 350000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -18738,7 +18805,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 4,
       "documentedPassiveCount": 0,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "에넬 · 추가 피해와 기절 · 객체 확률 50% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -19170,7 +19239,9 @@
       "tooltipProfilePresent": true,
       "documentedSkillCount": 4,
       "documentedPassiveCount": 2,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "루치 · 추가 피해와 기절 · 객체 확률 25% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500000 / 연습 계산·원작 면역 미검증"
+      ],
       "connectedManualFunctions": [],
       "remainingWork": [
         "도감 스킬별 원본 함수·실행 순서 대응과 전투 연결 필요",
@@ -20295,6 +20366,7 @@
       "documentedSkillCount": 5,
       "documentedPassiveCount": 3,
       "connectedModelEffects": [
+        "로져 · 추가 피해와 기절 · 객체 확률 12.5% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 500000 / 연습 계산·원작 면역 미검증",
         "적 방어력 감소 60 · 1단계 / 중첩 충돌 시 보류",
         "아군 기본 공격력 증가(%) 60 · 1단계 / 중첩 충돌 시 보류"
       ],

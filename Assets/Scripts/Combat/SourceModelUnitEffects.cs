@@ -39,7 +39,7 @@ namespace Ordr.Mobile.Combat
             }
         }
         public OriginalNativePassive PassiveFor(string rawcode) => passives.ForRawcode(rawcode) ??
-            passives.PracticeFirstLevelForRawcode(rawcode);
+            passives.PracticeFirstLevelForRawcode(rawcode) ?? passives.PracticeBonusForRawcode(rawcode);
         public IReadOnlyList<Original323SpecialAura> AurasFor(string id) => auras.FindAll(id);
         public IReadOnlyList<string> Describe(string id, string rawcode)
         {
@@ -48,8 +48,11 @@ namespace Ordr.Mobile.Combat
             if (passive != null) result.Add(passive.Name + " · 객체 확률 " +
                 (passive.ChancePerMillion / 10000.0).ToString("0.####") + "%" +
                 (passive.Kind == OriginalNativePassiveKind.Stun ? " · 일반 몬스터 / 보스 저항 검증 대기" :
-                    passive.Kind == OriginalNativePassiveKind.CriticalStun ? " · 일반 몬스터 기절 / 보스 저항 검증 대기" : "") +
-                (passives.PracticeFirstLevelForRawcode(rawcode) != null ? " · 연습 1단계 / 강화 미반영" : ""));
+                    (passive.Kind == OriginalNativePassiveKind.CriticalStun || passive.Kind == OriginalNativePassiveKind.BonusStun) ?
+                    " · 일반 몬스터 기절 / 보스 저항 검증 대기" : "") +
+                (passives.PracticeFirstLevelForRawcode(rawcode) != null ? " · 연습 1단계 / 강화 미반영" : "") +
+                (passive.BonusDamage > 0 ? " · 객체 추가 피해 " + passive.BonusDamage.ToString("0.####") +
+                    " / 연습 계산·원작 면역 미검증" : ""));
             if (id == "U-01") result.Add("꽃꽃 열매 · 같은 전장 최대 3명 타격 (연습 대상 선택/동시 타격 모델)");
             foreach (var aura in AurasFor(id))
                 if (IsSupportedAura(aura)) result.Add(AuraName(aura.Type) + " " +
@@ -91,7 +94,7 @@ namespace Ordr.Mobile.Combat
             var passive = PassiveFor(request.UnitRawCode);
             if (!practiceTargets.Contains(target.Id) || passive == null || (target.Defenses.Kind != CharacterEnemyKind.Line &&
                 target.Defenses.Kind != CharacterEnemyKind.Boss)) return raw;
-            // First-twenty-round practice targets are the source air objects.
+            // The development combat path treats its line/boss targets as air.
             // Boss Arsk/JASS resistance has no approved reduction equation;
             // model stuns therefore only affect ordinary line monsters.
             if (passive.Kind == OriginalNativePassiveKind.Stun &&
@@ -103,7 +106,13 @@ namespace Ordr.Mobile.Combat
             if (roll < 0 || roll >= 1000000) throw new InvalidOperationException("패시브 난수 범위 오류");
             if (roll >= passive.ChancePerMillion) return raw;
             pending[key] = passive;
-            return passive.Kind != OriginalNativePassiveKind.Stun ? raw * passive.CriticalMultiplier : raw;
+            if (passive.Kind == OriginalNativePassiveKind.Critical ||
+                passive.Kind == OriginalNativePassiveKind.CriticalStun)
+                return raw * passive.CriticalMultiplier;
+            // Warsmash reference pre-damage bonus path: bonus is added to the
+            // attack packet before the model's armor calculation. This is not
+            // a claim about retail Warcraft bonus school or final HP parity.
+            return raw + passive.BonusDamage;
         }
         internal OriginalNativePassive Take(string actor, string target)
         {

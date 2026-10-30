@@ -79,6 +79,30 @@ class OriginalNativePassiveEvidenceTests(unittest.TestCase):
             self.assertEqual(row['heroStunSeconds'], float(fields['HeroDur1']))
         self.assertEqual(4, sum(r['declaredLevels'] > 1 for r in rows))
 
+    def test_bonus_effects_are_source_backed_and_separate_from_verified_passives(self):
+        rows = self.data['practiceBonusEntries']
+        self.assertEqual(39, len(rows))
+        self.assertEqual(39, len({r['catalogId'] for r in rows}))
+        self.assertFalse(set(self.by_id) & {r['catalogId'] for r in rows})
+        self.assertFalse({r['catalogId'] for r in self.data['practiceFirstLevelEntries']} &
+                         {r['catalogId'] for r in rows})
+        base = {r['catalogId']: r for r in json.loads(
+            (ROOT / 'data/original-2323C-map-base-stats.json').read_text())['catalogEntries']}
+        for row in rows:
+            fields = row['sourceFields']
+            owner = base[row['catalogId']]
+            self.assertEqual(row['originalUnitRawcode'], owner['originalRawcode'])
+            self.assertIn(row['abilityRawcode'], owner['originalAbilityList'].split(','))
+            self.assertEqual(0, float(fields['DataB1']))
+            self.assertEqual(row['bonusDamage'], float(fields['DataC1']))
+            self.assertEqual(row['chancePerMillion'], float(fields['DataA1']) * 10000)
+            self.assertEqual(row['normalStunSeconds'], float(fields['Dur1']))
+            self.assertEqual(row['heroStunSeconds'], float(fields['HeroDur1']))
+            self.assertEqual(0, float(fields['Cool1']))
+            self.assertEqual(0, float(fields['DataD1']))
+        self.assertEqual(200, next(r['bonusDamage'] for r in rows if r['catalogId'] == 'U-05'))
+        self.assertEqual(150, next(r['bonusDamage'] for r in rows if r['catalogId'] == 'U-12'))
+
 
 if __name__ == "__main__":
     unittest.main()
