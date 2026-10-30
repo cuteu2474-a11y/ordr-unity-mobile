@@ -2191,7 +2191,8 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentException("적 분류와 방어 프로필 분류가 다릅니다.");
             var enemy = new CombatEnemy(enemyId, health, verifiedDefenses);
             var spatial = new SpatialCombatEnemy(enemy, kind, x, y, pathProgress);
-            resolution.Spawn(enemy);
+            // Creep kills/leaks must not change the 65R monster count or loss gate.
+            resolution.Spawn(enemy, kind != CharacterEnemyKind.Creep);
             enemies.Add(enemyId, spatial);
             statuses.Add(enemyId, enemy.Status);
             armorBreakStacks.Add(enemyId, 0);

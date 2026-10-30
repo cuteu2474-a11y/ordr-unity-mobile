@@ -238,6 +238,9 @@ namespace Ordr.Mobile.Combat
         private readonly CombatScheduler scheduler;
         private readonly Dictionary<string, CombatEnemy> enemies =
             new Dictionary<string, CombatEnemy>(StringComparer.Ordinal);
+        // Creep encounters are tracked independently of main lane-wave counts.
+        private readonly HashSet<string> nonWaveEnemyIds =
+            new HashSet<string>(StringComparer.Ordinal);
 
         // 실제 적용된 피해만 전달. 평타/즉발/지속 스킬의 처치 참여를 공통 집계한다.
         public event Action<string, string, long, bool> DamageApplied;
@@ -249,13 +252,16 @@ namespace Ordr.Mobile.Combat
             this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
         }
 
-        public void Spawn(CombatEnemy enemy)
+        public void Spawn(CombatEnemy enemy, bool countsForWave = true)
         {
             if (enemy == null) throw new ArgumentNullException(nameof(enemy));
             if (!enemy.IsAlive) throw new InvalidOperationException("사망한 적은 소환할 수 없습니다.");
             if (enemies.ContainsKey(enemy.Id)) throw new InvalidOperationException("중복 적 ID입니다.");
-            session.SpawnEnemy();
+            if (countsForWave) session.SpawnEnemy();
+            else if (session.Phase != SessionPhase.Running)
+                throw new InvalidOperationException("전투가 시작되어야 비웨이브 적을 생성할 수 있습니다.");
             enemies.Add(enemy.Id, enemy);
+            if (!countsForWave) nonWaveEnemyIds.Add(enemy.Id);
         }
 
         public bool TryAttack(string attackerId, string enemyId, double nextAttackDelay,
@@ -269,7 +275,7 @@ namespace Ordr.Mobile.Combat
             actualDamage = enemy.ReceiveDamage(verifiedDamage);
             if (!enemy.IsAlive)
             {
-                session.DefeatEnemy();
+                if (!nonWaveEnemyIds.Remove(enemyId)) session.DefeatEnemy();
                 enemies.Remove(enemyId);
             }
             DamageApplied?.Invoke(attackerId, enemyId, actualDamage, !enemy.IsAlive);
@@ -297,7 +303,7 @@ namespace Ordr.Mobile.Combat
             actualDamage = enemy.ReceiveDamage(verifiedDamage);
             if (!enemy.IsAlive)
             {
-                session.DefeatEnemy();
+                if (!nonWaveEnemyIds.Remove(enemyId)) session.DefeatEnemy();
                 enemies.Remove(enemyId);
             }
             DamageApplied?.Invoke(attackerId, enemyId, actualDamage, !enemy.IsAlive);
@@ -310,7 +316,7 @@ namespace Ordr.Mobile.Combat
         {
             CombatEnemy enemy;
             if (!enemies.TryGetValue(enemyId, out enemy)) return false;
-            session.LeakEnemy();
+            if (!nonWaveEnemyIds.Remove(enemyId)) session.LeakEnemy();
             enemies.Remove(enemyId);
             EnemyExited?.Invoke(enemyId, CombatEnemyExitReason.Escaped);
             return true;

@@ -69,6 +69,37 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void IndependentCreepsDoNotJoinWavePathOrLineLossCounter()
+        {
+            using (var game = Create(5))
+            using (var creeps = new Original323CreepPracticeWorld(game.Combat,
+                Original323CreepObjectCatalog.FromJson(
+                    Data("original-2323C-monster-object-stats.json"))))
+            {
+                var creep = creeps.SpawnPracticeStage(1, -8000, -8000);
+                Assert.AreEqual(0, game.Combat.Game.AliveEnemies);
+                var before = game.Combat.MobileEnemySnapshot()
+                    .Single(x => x.Id == creep.EnemyId);
+                Assert.AreEqual(360000, before.Health);
+                Assert.DoesNotThrow(() => game.Battle.Advance(2));
+                var after = game.Combat.MobileEnemySnapshot()
+                    .Single(x => x.Id == creep.EnemyId);
+                Assert.AreEqual(before.X, after.X);
+                Assert.AreEqual(before.Y, after.Y);
+                Assert.AreEqual(360000, after.Health,
+                    "Without the user's creep hunter list, even ready attackers must not target creeps.");
+                Assert.AreEqual(game.Combat.MobileEnemySnapshot()
+                    .Count(x => x.Kind != CharacterEnemyKind.Creep),
+                    game.Combat.Game.AliveEnemies);
+                Assert.AreEqual(0, creeps.DefeatedCount);
+                Assert.AreEqual(0, creeps.EscapedCount);
+                Assert.IsTrue(game.Combat.LeakEnemy(creep.EnemyId));
+                Assert.AreEqual(0, game.Combat.Game.LeakedEnemies);
+                Assert.AreEqual(Original323CreepEncounterState.Escaped, creep.State);
+            }
+        }
+
+        [Test]
         public void EmptyBoardAdvancesOnSourceTimerAndGrantsTwoWispsExactlyOnce()
         {
             using (var game = Create())

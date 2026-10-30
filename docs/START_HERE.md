@@ -1,5 +1,11 @@
 # 여기서 개발을 시작하세요
 
+## 크립 3단계 객체 기반 연습 전투 연결 (2026-10-30)
+
+원본 W3X에서 추출한 크립 **듀공(n00E)·파파구(n00F)·슈슈(n00G)** 3종의 기본 체력·방어력·원본 이름을 엄격히 검증하는 `Original323CreepObjectCatalog`와, 기존 `CharacterCombatRuntime`에 실제 크립 인스턴스를 생성·추적하는 `Original323CreepPracticeWorld`를 연결했습니다. `OrdrCharacterCombatController.BeginPracticeBattle()` 이후 `SpawnPracticeCreepStage(stage, x, y)`로 명시적 연습 소환이 가능하며 처치/도주 사건은 기존 `CombatResolution`을 사용합니다. **크립은 65R 라운드 몬스터 수·패배/처치 카운터와 분리**되어 있고, 라운드 이동 루프에서도 제외됩니다.
+
+**원작 완료 아님:** 원본의 실제 크립 출현 좌표·시각, 크립 공격/이동/저격 가능 유닛 명단, 이세계 악몽의 최종 HP·방어, `Amim` 실제 면역, 보상 및 확률은 확인 전이므로 자동 소환·접근 권한·재화 지급을 활성화하지 않았습니다. 사망 보상은 지급하지 않고 미검증 상태로 남습니다. `data/original-2323C-monster-object-stats.json`을 Editor가 빌드에 동기화합니다. [남은 연결](PLAYABLE_ROADMAP.md) / [전투 근거](standalone-enemy-runtime.md).
+
 ## 공격 선언 스킬의 선행 처치 처리 (2026-10-30)
 
 공격 선언 콜백이 적을 먼저 처치/제거하면 평타 피해 계산과 공격 예약이 모두 취소되던 공통 경로를 수정했습니다. 선언한 공격은 기존 공속의 다음 공격 시각을 예약하고, 실제 평타 명중은 별도로 구분합니다. 이미 사라진 대상에 기본 피해/패시브 난수를 쓰거나, 로빈 추가 타격·명중 후 스킬·평타 처치 이벤트를 다시 발생시키지 않습니다. 같은 ID로 교체된 적도 기존 공격의 대상으로 재사용하지 않습니다.
