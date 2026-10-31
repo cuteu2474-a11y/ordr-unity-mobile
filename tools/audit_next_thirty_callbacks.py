@@ -45,7 +45,8 @@ def inspect(path, review):
         raise ValueError("Duplicate catalog ID")
     results = []
     for row in entries:
-        callbacks = sorted(registrations.get(row["rawcode"], ()))
+        rawcode = row["rawcode"]
+        callbacks = sorted(registrations.get(rawcode, ())) if isinstance(rawcode, str) else []
         if len(callbacks) > 1:
             raise ValueError("Ambiguous attack callbacks: " + row["id"])
         dependencies = []

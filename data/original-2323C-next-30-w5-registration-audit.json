@@ -1,0 +1,190 @@
+{
+  "format": "ordr-next-30-w5-registration-audit-v1",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "unitCount": 30,
+  "registeredCallbacks": 28,
+  "runtimeAuthorization": false,
+  "warning": "Verified w5 registration names only; native spells, indirect callbacks, damage and targets not audited. Missing registration is not missing skill.",
+  "entries": [
+    {
+      "id": "S-32",
+      "rawcode": "h01G",
+      "callback": null,
+      "registrationFound": false
+    },
+    {
+      "id": "R-03",
+      "rawcode": "h021",
+      "callback": "Boa",
+      "registrationFound": true
+    },
+    {
+      "id": "R-05",
+      "rawcode": "h02L",
+      "callback": "Boi",
+      "registrationFound": true
+    },
+    {
+      "id": "R-07",
+      "rawcode": "h025",
+      "callback": "Bos",
+      "registrationFound": true
+    },
+    {
+      "id": "H-05",
+      "rawcode": "h044",
+      "callback": "Bri",
+      "registrationFound": true
+    },
+    {
+      "id": "H-09",
+      "rawcode": "h03X",
+      "callback": "Br8",
+      "registrationFound": true
+    },
+    {
+      "id": "H-13",
+      "rawcode": "h055",
+      "callback": "BrI",
+      "registrationFound": true
+    },
+    {
+      "id": "H-15",
+      "rawcode": "h03L",
+      "callback": "Bru",
+      "registrationFound": true
+    },
+    {
+      "id": "H-17",
+      "rawcode": "h03Z",
+      "callback": "Bq9",
+      "registrationFound": true
+    },
+    {
+      "id": "L-08",
+      "rawcode": "h03C",
+      "callback": "Buo",
+      "registrationFound": true
+    },
+    {
+      "id": "L-19",
+      "rawcode": "h037",
+      "callback": "Btq",
+      "registrationFound": true
+    },
+    {
+      "id": "L-21",
+      "rawcode": "h042",
+      "callback": "Bt2",
+      "registrationFound": true
+    },
+    {
+      "id": "L-27",
+      "rawcode": "h02S",
+      "callback": "Bsk",
+      "registrationFound": true
+    },
+    {
+      "id": "L-32",
+      "rawcode": "h030",
+      "callback": "BtL",
+      "registrationFound": true
+    },
+    {
+      "id": "L-01",
+      "rawcode": "h02U",
+      "callback": "Bsu",
+      "registrationFound": true
+    },
+    {
+      "id": "L-16",
+      "rawcode": "h034",
+      "callback": "Btb",
+      "registrationFound": true
+    },
+    {
+      "id": "L-23",
+      "rawcode": "h039",
+      "callback": "Bt8",
+      "registrationFound": true
+    },
+    {
+      "id": "L-38",
+      "rawcode": "h03B",
+      "callback": "BuT",
+      "registrationFound": true
+    },
+    {
+      "id": "TR-21",
+      "rawcode": "H0BX",
+      "callback": "B4C",
+      "registrationFound": true
+    },
+    {
+      "id": "TR-28",
+      "rawcode": "H08Y",
+      "callback": "BzH",
+      "registrationFound": true
+    },
+    {
+      "id": "TR-01",
+      "rawcode": "H090",
+      "callback": "Bz1",
+      "registrationFound": true
+    },
+    {
+      "id": "TR-03",
+      "rawcode": "H09E",
+      "callback": "B1P",
+      "registrationFound": true
+    },
+    {
+      "id": "TR-17",
+      "rawcode": "H095",
+      "callback": "B0e",
+      "registrationFound": true
+    },
+    {
+      "id": "TR-27",
+      "rawcode": "H05N",
+      "callback": "B19",
+      "registrationFound": true
+    },
+    {
+      "id": "E-03",
+      "rawcode": "h0CJ",
+      "callback": "B8E",
+      "registrationFound": true
+    },
+    {
+      "id": "E-06",
+      "rawcode": "h057",
+      "callback": "B59",
+      "registrationFound": true
+    },
+    {
+      "id": "E-02",
+      "rawcode": null,
+      "callback": null,
+      "registrationFound": false
+    },
+    {
+      "id": "I-09",
+      "rawcode": "h04B",
+      "callback": "B93",
+      "registrationFound": true
+    },
+    {
+      "id": "LI-10",
+      "rawcode": "h0AI",
+      "callback": "BwW",
+      "registrationFound": true
+    },
+    {
+      "id": "MY-10",
+      "rawcode": "h0CC",
+      "callback": "CGO",
+      "registrationFound": true
+    }
+  ]
+}
