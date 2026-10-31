@@ -1,0 +1,408 @@
+{
+  "format": "ordr-next-30-source-review-v1",
+  "unitCount": 30,
+  "runtimeAuthorization": false,
+  "sourceStatus": "data/unit-runtime-status.json",
+  "sourceProfiles": "data/character-skill-profiles.json",
+  "note": "Tooltip evidence only. Do not activate unverified skills.",
+  "entries": [
+    {
+      "id": "S-32",
+      "name": "파이러츠 도킹5",
+      "grade": "특별함",
+      "rawcode": "h01G",
+      "documentedSkills": 1,
+      "triggerTypes": [
+        "onSkillUse"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "R-03",
+      "name": "검은수염",
+      "grade": "희귀함",
+      "rawcode": "h021",
+      "documentedSkills": 1,
+      "triggerTypes": [
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "R-05",
+      "name": "트라팔가 로우 죽음의 외과의사",
+      "grade": "희귀함",
+      "rawcode": "h02L",
+      "documentedSkills": 1,
+      "triggerTypes": [
+        "manual"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "R-07",
+      "name": "류마",
+      "grade": "희귀함",
+      "rawcode": "h025",
+      "documentedSkills": 1,
+      "triggerTypes": [
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "H-05",
+      "name": "류마",
+      "grade": "히든",
+      "rawcode": "h044",
+      "documentedSkills": 1,
+      "triggerTypes": [
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "H-09",
+      "name": "방주맥심",
+      "grade": "히든",
+      "rawcode": "h03X",
+      "documentedSkills": 1,
+      "triggerTypes": [
+        "activeMana"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "H-13",
+      "name": "스튜시",
+      "grade": "히든",
+      "rawcode": "h055",
+      "documentedSkills": 1,
+      "triggerTypes": [
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "H-15",
+      "name": "써니호",
+      "grade": "히든",
+      "rawcode": "h03L",
+      "documentedSkills": 2,
+      "triggerTypes": [
+        "activeMana",
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "H-17",
+      "name": "아카이누",
+      "grade": "히든",
+      "rawcode": "h03Z",
+      "documentedSkills": 1,
+      "triggerTypes": [
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "L-08",
+      "name": "트라팔가 로우",
+      "grade": "전설",
+      "rawcode": "h03C",
+      "documentedSkills": 3,
+      "triggerTypes": [
+        "onAttack",
+        "manual"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "L-19",
+      "name": "슈가",
+      "grade": "전설",
+      "rawcode": "h037",
+      "documentedSkills": 3,
+      "triggerTypes": [
+        "onAttack",
+        "manual"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "L-21",
+      "name": "시노부",
+      "grade": "전설",
+      "rawcode": "h042",
+      "documentedSkills": 3,
+      "triggerTypes": [
+        "onAttack",
+        "manual"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "L-27",
+      "name": "조로",
+      "grade": "전설",
+      "rawcode": "h02S",
+      "documentedSkills": 3,
+      "triggerTypes": [
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "L-32",
+      "name": "쿠마 폭군",
+      "grade": "전설",
+      "rawcode": "h030",
+      "documentedSkills": 3,
+      "triggerTypes": [
+        "activeMana",
+        "onAttack",
+        "manual"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "L-01",
+      "name": "검은수염",
+      "grade": "전설",
+      "rawcode": "h02U",
+      "documentedSkills": 2,
+      "triggerTypes": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "L-16",
+      "name": "상디",
+      "grade": "전설",
+      "rawcode": "h034",
+      "documentedSkills": 2,
+      "triggerTypes": [
+        "onEachBasicAttack",
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "L-23",
+      "name": "시키",
+      "grade": "전설",
+      "rawcode": "h039",
+      "documentedSkills": 2,
+      "triggerTypes": [
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "L-38",
+      "name": "흰수염",
+      "grade": "전설",
+      "rawcode": "h03B",
+      "documentedSkills": 2,
+      "triggerTypes": [
+        "activeHealth",
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "TR-21",
+      "name": "보니",
+      "grade": "초월함",
+      "rawcode": "H0BX",
+      "documentedSkills": 7,
+      "triggerTypes": [
+        "activeMana",
+        "onAttack",
+        "onTransform",
+        "onAgeStacksReached"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "TR-28",
+      "name": "프랑키",
+      "grade": "초월함",
+      "rawcode": "H08Y",
+      "documentedSkills": 6,
+      "triggerTypes": [
+        "activeMana",
+        "manual",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "TR-01",
+      "name": "검은수염",
+      "grade": "초월함",
+      "rawcode": "H090",
+      "documentedSkills": 5,
+      "triggerTypes": [
+        "activeHealth",
+        "onAttack",
+        "onSkillActivated"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "TR-03",
+      "name": "도플라밍고",
+      "grade": "초월함",
+      "rawcode": "H09E",
+      "documentedSkills": 5,
+      "triggerTypes": [
+        "activeMana",
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "TR-17",
+      "name": "아카이누",
+      "grade": "초월함",
+      "rawcode": "H095",
+      "documentedSkills": 5,
+      "triggerTypes": [
+        "activeMana",
+        "onAttack",
+        "onSkillActivated",
+        "onAttackAgainstSpecialTarget"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "TR-27",
+      "name": "타시기",
+      "grade": "초월함",
+      "rawcode": "H05N",
+      "documentedSkills": 4,
+      "triggerTypes": [
+        "activeMana",
+        "onAttack",
+        "onBasicAttackOrSkill"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "E-03",
+      "name": "류마",
+      "grade": "영원한",
+      "rawcode": "h0CJ",
+      "documentedSkills": 7,
+      "triggerTypes": [
+        "activeMana",
+        "onAttack",
+        "afterBasicDamageThreshold"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "E-06",
+      "name": "비비",
+      "grade": "영원한",
+      "rawcode": "h057",
+      "documentedSkills": 7,
+      "triggerTypes": [
+        "activeMana",
+        "manual",
+        "onSkillOrAttack",
+        "onAttack",
+        "onSkill"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "E-02",
+      "name": "니카(스네이크)",
+      "grade": "영원한",
+      "rawcode": null,
+      "documentedSkills": 6,
+      "triggerTypes": [
+        "activeHealth",
+        "activeMana",
+        "onAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "I-09",
+      "name": "시키",
+      "grade": "불멸의",
+      "rawcode": "h04B",
+      "documentedSkills": 6,
+      "triggerTypes": [
+        "activeMana",
+        "onAttack",
+        "summonedUnitOnAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "LI-10",
+      "name": "킹",
+      "grade": "제한됨",
+      "rawcode": "h0AI",
+      "documentedSkills": 5,
+      "triggerTypes": [
+        "verifiedCondition",
+        "onAttack",
+        "onEveryAttack"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    },
+    {
+      "id": "MY-10",
+      "name": "콘파쿠 요우무",
+      "grade": "신비함",
+      "rawcode": "h0CC",
+      "documentedSkills": 5,
+      "triggerTypes": [
+        "onEveryAttack",
+        "activeMana",
+        "onAttack",
+        "activeHealth"
+      ],
+      "connectedEffects": 0,
+      "sourceVerified": false
+    }
+  ]
+}
