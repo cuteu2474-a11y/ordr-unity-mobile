@@ -158,32 +158,39 @@ namespace Ordr.Mobile.Tests
             }
         }
         [Test]
-        public void CriticalModifiesOneBasicPacketBeforeArmorAndReportsAnActivation()
+        public void CriticalAndRankyakuHaveIndependentActivationAndDamageAccounting()
         {
+            // X-01 has a confirmed practice critical; U-04 has a separate
+            // attacked-event Rankyaku. Do not conflate their two proc systems.
             long plain, critical;
             using (var game = Create(false, true))
             {
-                long id = game.Combat.SpawnCharacter("U-04", -4000, 4000);
+                game.Combat.SpawnCharacter("X-01", -4000, 4000);
                 var events = game.Battle.Advance(.6);
-                plain = events.Single(e => e.Type == CharacterCombatEventType.Attack).Amount;
-                Assert.IsFalse(game.Combat.HasVerifiedAttack(id));
-                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
-                    e.Detail.Contains("원본 크리티컬")));
+                plain = events.First(e => e.Type == CharacterCombatEventType.Attack).Amount;
+                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated));
             }
+            using (var game = Create(true, true))
+            {
+                game.Combat.SpawnCharacter("X-01", -4000, 4000);
+                var events = game.Battle.Advance(.6);
+                critical = events.First(e => e.Type == CharacterCombatEventType.Attack).Amount;
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated));
+            }
+            Assert.Greater(critical, plain);
             using (var game = Create(true, true))
             {
                 game.Combat.SpawnCharacter("U-04", -4000, 4000);
                 var events = game.Battle.Advance(.6);
-                critical = events.Single(e => e.Type == CharacterCombatEventType.Attack).Amount;
                 Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
-                    e.Detail.Contains("원본 크리티컬")));
+                    e.Detail.Contains("공격 선언 분기")));
+                long basic = events.Where(e => e.Type == CharacterCombatEventType.Attack).Sum(e => e.Amount);
                 long rankyaku = events.Where(e => e.Type == CharacterCombatEventType.SkillDamage &&
                     e.Detail.Contains("Bnm")).Sum(e => e.Amount);
                 Assert.Greater(rankyaku, 0);
-                Assert.AreEqual(1000000000000L - critical - rankyaku,
+                Assert.AreEqual(1000000000000L - basic - rankyaku,
                     game.Combat.MobileEnemySnapshot().Single().Health);
             }
-            Assert.Greater(critical, plain);
         }
         [TestCase("X-01")][TestCase("R-22")][TestCase("R-28")]
         [TestCase("L-10")][TestCase("L-30")][TestCase("H-02")][TestCase("H-21")]

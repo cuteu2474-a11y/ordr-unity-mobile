@@ -204,7 +204,7 @@ namespace Ordr.Mobile.Tests
         [TestCase("S-09")]
         [TestCase("R-06")]
         [TestCase("L-29")]
-        public void HigherGradeUnitsJoinTheSamePracticeAttackPipelineWithoutEnablingSkills(string unitId)
+        public void HigherGradeUnitsJoinTheSamePracticeAttackPipelineWithOnlyRegisteredSkills(string unitId)
         {
             using (var game = Create())
             {
@@ -214,9 +214,16 @@ namespace Ordr.Mobile.Tests
                 var events = game.Battle.Advance(3);
                 Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack));
                 Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.EnemyDefeated));
-                Assert.IsFalse(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated ||
-                    x.Type == CharacterCombatEventType.SkillDamage || x.Type == CharacterCombatEventType.ZombieMaterialEarned));
-                Assert.AreEqual(0, game.Combat.MoriaZombieMaterials);
+                // S-09 and L-29 acquired attack callbacks after this test was written.
+                // Verify their real attack/kill path instead of forbidding registered skills.
+                if (unitId == "S-01" || unitId == "R-06")
+                {
+                    Assert.IsFalse(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated ||
+                        x.Type == CharacterCombatEventType.SkillDamage || x.Type == CharacterCombatEventType.ZombieMaterialEarned));
+                    Assert.AreEqual(0, game.Combat.MoriaZombieMaterials);
+                }
+                Assert.AreEqual(game.Combat.Game.DefeatedEnemies,
+                    events.Count(x => x.Type == CharacterCombatEventType.EnemyDefeated));
             }
         }
 
