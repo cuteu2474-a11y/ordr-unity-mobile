@@ -161,22 +161,27 @@ namespace Ordr.Mobile.Tests
         public void CriticalModifiesOneBasicPacketBeforeArmorAndReportsAnActivation()
         {
             long plain, critical;
-            using (var game = Create(false))
+            using (var game = Create(false, true))
             {
                 long id = game.Combat.SpawnCharacter("U-04", -4000, 4000);
                 var events = game.Battle.Advance(.6);
                 plain = events.Single(e => e.Type == CharacterCombatEventType.Attack).Amount;
                 Assert.IsFalse(game.Combat.HasVerifiedAttack(id));
-                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated));
+                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains("원본 크리티컬")));
             }
-            using (var game = Create())
+            using (var game = Create(true, true))
             {
                 game.Combat.SpawnCharacter("U-04", -4000, 4000);
                 var events = game.Battle.Advance(.6);
                 critical = events.Single(e => e.Type == CharacterCombatEventType.Attack).Amount;
-                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated));
-                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage));
-                Assert.AreEqual(338 - critical, game.Combat.MobileEnemySnapshot().Single().Health);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains("원본 크리티컬")));
+                long rankyaku = events.Where(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.Detail.Contains("Bnm")).Sum(e => e.Amount);
+                Assert.Greater(rankyaku, 0);
+                Assert.AreEqual(1000000000000L - critical - rankyaku,
+                    game.Combat.MobileEnemySnapshot().Single().Health);
             }
             Assert.Greater(critical, plain);
         }

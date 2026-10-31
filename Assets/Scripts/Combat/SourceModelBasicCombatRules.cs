@@ -36,6 +36,17 @@ namespace Ordr.Mobile.Combat
             foreach (var row in attacks.All) byRawcode.Add(row.Rawcode, row);
         }
         public void Enable() { Enabled = true; }
+        // Shared with the practice basic dice. This models source BFi/BFj
+        // call order but is not a Warcraft-native RNG-seed claim.
+        internal int NextScriptRoll(int exclusiveUpperBound)
+        {
+            if (!Enabled || exclusiveUpperBound <= 0)
+                throw new InvalidOperationException("연습 공격 스크립트 난수 준비 전");
+            int result = random.Next(exclusiveUpperBound);
+            if (result < 0 || result >= exclusiveUpperBound)
+                throw new InvalidOperationException("연습 공격 스크립트 난수 범위 오류");
+            return result;
+        }
         public void ForgetEnemy(string id) { fractions.Remove(id); }
 
         public bool TryResolve(CatalogUnit unit, CharacterSkillProfile profile,

@@ -15,6 +15,7 @@ namespace Ordr.Mobile.Combat
         {
             sourceModelRules = rules;
             sourceModelUnitEffects = rules.UnitEffects;
+            attackPipeline.ConfigurePracticeScriptAttackDeclared(OnSourceModelScriptAttackDeclared);
             if (sourceModelUnitEffects != null)
                 attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {
                     // Reference-model cadence; this does not authorize native timing.

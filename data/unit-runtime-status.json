@@ -5,8 +5,8 @@
   "summary": {
     "catalogEntries": 277,
     "objectBasicAttackModels": 273,
-    "modelEffectOwners": 175,
-    "connectedModelEffectDefinitions": 239,
+    "modelEffectOwners": 184,
+    "connectedModelEffectDefinitions": 259,
     "documentedSkillEntries": 554,
     "documentedPassiveEntries": 295,
     "fullyVerifiedUnits": 0,
@@ -211,7 +211,8 @@
       "originalRawcode": "h00M",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "블루노 · 크리티컬 · 객체 확률 15%"
+        "블루노 · 크리티컬 · 객체 확률 15%",
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
@@ -354,7 +355,8 @@
       "originalRawcode": "h00A",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "후쿠로 · 크리티컬 · 객체 확률 15%"
+        "후쿠로 · 크리티컬 · 객체 확률 15%",
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
@@ -423,7 +425,9 @@
       "grade": "특별함",
       "originalRawcode": "h00P",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -589,7 +593,9 @@
       "grade": "특별함",
       "originalRawcode": "h013",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "공격 선언 기술 · 20% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -1238,7 +1244,9 @@
       "grade": "희귀함",
       "originalRawcode": "h04H",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -1254,7 +1262,8 @@
       "originalRawcode": "h01W",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "바르톨로메오 · 추가 피해와 기절 · 객체 확률 17% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 6000 / 연습 계산·원작 면역 미검증"
+        "바르톨로메오 · 추가 피해와 기절 · 객체 확률 17% · 일반 몬스터 기절 / 보스 저항 검증 대기 · 객체 추가 피해 6000 / 연습 계산·원작 면역 미검증",
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
@@ -1270,7 +1279,9 @@
       "grade": "희귀함",
       "originalRawcode": "h01V",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -1408,7 +1419,9 @@
       "grade": "희귀함",
       "originalRawcode": "h02I",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "공격 선언 기술 · 20% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -1440,7 +1453,9 @@
       "grade": "희귀함",
       "originalRawcode": "h028",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "공격 선언 기술 · 30% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -1490,7 +1505,8 @@
       "originalRawcode": "h02B",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "적 이동속도 감소(%) 10 · 1단계 / 중첩 충돌 시 보류"
+        "적 이동속도 감소(%) 10 · 1단계 / 중첩 충돌 시 보류",
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
@@ -1555,7 +1571,9 @@
       "grade": "희귀함",
       "originalRawcode": "h02C",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
       "documentedPassives": 0,
@@ -1570,7 +1588,9 @@
       "grade": "희귀함",
       "originalRawcode": "h02A",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "공격 선언 기술 · 7% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,
@@ -1632,7 +1652,8 @@
       "originalRawcode": "h02K",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류"
+        "아군 기본 공격력 증가(%) 25 · 1단계 / 중첩 충돌 시 보류",
+        "공격 선언 기술 · 12% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
@@ -1686,7 +1707,8 @@
       "originalRawcode": "h02H",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "적 이동속도 감소(%) 15 · 1단계 / 중첩 충돌 시 보류"
+        "적 이동속도 감소(%) 15 · 1단계 / 중첩 충돌 시 보류",
+        "공격 선언 기술 · 7.5% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
@@ -2307,7 +2329,8 @@
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
         "적 방어력 감소 18 · 1단계 / 중첩 충돌 시 보류",
-        "아군 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류"
+        "아군 공격속도 증가(%) 20 · 1단계 / 중첩 충돌 시 보류",
+        "공격 선언 기술 · 15% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
@@ -2381,7 +2404,8 @@
       "originalRawcode": "h03H",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류"
+        "적 방어력 감소 25 · 1단계 / 중첩 충돌 시 보류",
+        "공격 선언 기술 · 8% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 2,
@@ -2696,7 +2720,8 @@
       "originalRawcode": "h03O",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "적 방어력 감소 11 · 1단계 / 중첩 충돌 시 보류"
+        "적 방어력 감소 11 · 1단계 / 중첩 충돌 시 보류",
+        "공격 선언 기술 · 12% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
@@ -2786,7 +2811,8 @@
       "originalRawcode": "h041",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류"
+        "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류",
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
@@ -2821,7 +2847,8 @@
       "originalRawcode": "h03Y",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "적 방어력 감소 11 · 1단계 / 중첩 충돌 시 보류"
+        "적 방어력 감소 11 · 1단계 / 중첩 충돌 시 보류",
+        "공격 선언 기술 · 11% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 2,
@@ -4457,7 +4484,9 @@
       "grade": "랜덤",
       "originalRawcode": "h06X",
       "objectBasicAttackModel": true,
-      "connectedModelEffects": [],
+      "connectedModelEffects": [
+        "공격 선언 기술 · 17% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+      ],
       "connectedManualFunctions": [],
       "documentedSkills": 2,
       "documentedPassives": 0,

@@ -169,6 +169,7 @@ namespace Ordr.Mobile.Combat
 
         private Action<string, string> verifiedAttackDeclared;
         private Action<string, string, string> verifiedScriptAttackDeclared;
+        private Action<string, string, string> practiceScriptAttackDeclared;
         // JASS w5 uses EVENT_PLAYER_UNIT_ATTACKED, before the normal attack hit.
         // The callback only routes registered, source-checked original effects.
         public void ConfigureVerifiedAttackDeclared(Action<string, string> callback)
@@ -187,6 +188,17 @@ namespace Ordr.Mobile.Combat
                     "원본 공격 선언 확률 이벤트가 이미 연결되어 있습니다.");
             verifiedScriptAttackDeclared = sourceObservedEvent ??
                 throw new ArgumentNullException(nameof(sourceObservedEvent));
+        }
+
+        // Separate offline model hook. It must never masquerade as the
+        // source-observed Warcraft attacked-event callback above.
+        internal void ConfigurePracticeScriptAttackDeclared(
+            Action<string, string, string> modelEvent)
+        {
+            if (practiceScriptAttackDeclared != null || units.Count != 0)
+                throw new InvalidOperationException("연습 공격 스크립트는 유닛 등록 전에 한 번만 연결하세요.");
+            practiceScriptAttackDeclared = modelEvent ??
+                throw new ArgumentNullException(nameof(modelEvent));
         }
 
         private Func<string, string, string, bool> verifiedProcPreflight;
@@ -486,6 +498,9 @@ namespace Ordr.Mobile.Combat
                 verifiedAttackDeclared(attackerInstanceId, targetId);
             if (verifiedScriptAttackDeclared != null)
                 verifiedScriptAttackDeclared(attackerInstanceId,
+                    unit.Spec.UnitRawCode, targetId);
+            if (practiceScriptAttackDeclared != null)
+                practiceScriptAttackDeclared(attackerInstanceId,
                     unit.Spec.UnitRawCode, targetId);
             // The declaration already happened. A skill may kill/remove its
             // target before contact; consume this attack slot without rolling

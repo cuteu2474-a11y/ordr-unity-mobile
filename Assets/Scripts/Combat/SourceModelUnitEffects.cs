@@ -59,6 +59,12 @@ namespace Ordr.Mobile.Combat
                 if (IsSupportedAura(aura)) result.Add((aura.Type == CombatEffectType.AttackSpeedBuff &&
                     aura.TargetMask == "invulnerable,self" ? "자신의 공격속도 증가(%)" : AuraName(aura.Type)) + " " +
                     aura.Amount.ToString("0.####") + " · 1단계 / 중첩 충돌 시 보류");
+            SourceScriptAttackSpec script;
+            if (SourceModelScriptAttackCatalog.TryGet(rawcode, out script) &&
+                script.CatalogId == id)
+                result.Add("공격 선언 기술 · " +
+                    (100.0 * script.RollSuccess / script.RollSides).ToString("0.####") +
+                    "% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증");
             return result.AsReadOnly();
         }
         public static string AuraName(CombatEffectType type)
