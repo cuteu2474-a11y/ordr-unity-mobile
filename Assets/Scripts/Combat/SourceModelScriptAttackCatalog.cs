@@ -6,7 +6,7 @@ namespace Ordr.Mobile.Combat
     // Offline practice ONLY. Each row is transcribed from the pinned w5 attack
     // callbacks in original-2323C-attack-skill-batch.json. These are source
     // instructions, NOT permission to claim Warcraft native spell parity.
-    public enum SourceScriptHitShape { Direct, Circle, RankyakuLine }
+    public enum SourceScriptHitShape { Direct, Circle, RankyakuLine, AttackerCircle, ProjectileLine }
 
     public sealed class SourceScriptHit
     {
@@ -38,16 +38,18 @@ namespace Ordr.Mobile.Combat
         public IReadOnlyList<SourceScriptHit> Always { get; private set; }
         public IReadOnlyList<SourceScriptHit> OnProc { get; private set; }
         public string DeferredNativeEffect { get; private set; }
+        public double DelaySeconds { get; private set; }
 
         internal SourceScriptAttackSpec(string id, string raw, string function,
             int sides, int success, SourceScriptHit[] always,
-            SourceScriptHit[] triggered, string deferred)
+            SourceScriptHit[] triggered, string deferred, double delaySeconds = 0)
         {
             CatalogId = id; UnitRawcode = raw; JassFunction = function;
             RollSides = sides; RollSuccess = success;
             Always = Array.AsReadOnly(always ?? Array.Empty<SourceScriptHit>());
             OnProc = Array.AsReadOnly(triggered ?? Array.Empty<SourceScriptHit>());
             DeferredNativeEffect = deferred;
+            DelaySeconds = delaySeconds;
         }
     }
 

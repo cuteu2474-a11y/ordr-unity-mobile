@@ -1,0 +1,644 @@
+{
+  "format": "ordr-next-20-skill-object-leads-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "pinnedJassSha256NotRereadInThisInventory": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "runtimeAuthorization": false,
+  "scope": "20 unit rawcodes, W3X object ability IDs and available tooltip details only",
+  "importantLimit": "Original W3X/JASS source bytes are not in the repository; ability IDs do not establish their combat behavior.",
+  "summary": {
+    "unitCount": 20,
+    "objectAbilitiesMapped": 20,
+    "tooltipProfiles": 1,
+    "tooltipProfilesMissing": 19,
+    "originalAttackCastCallbacksVerifiedHere": 0,
+    "fullyImplementableWithoutFurtherOriginalExtraction": 0
+  },
+  "units": [
+    {
+      "catalogId": "U-02",
+      "name": "베포",
+      "grade": "안흔함",
+      "originalUnitRawcode": "h00C",
+      "objectAbilityRawcodesInMapOrder": [
+        "A07Y",
+        "A0JE",
+        "A0B8",
+        "A01X",
+        "A017",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0B8",
+        "A01X",
+        "A017"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/U2",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "U-06",
+      "name": "이나즈마",
+      "grade": "안흔함",
+      "originalUnitRawcode": "h00I",
+      "objectAbilityRawcodesInMapOrder": [
+        "A07Y",
+        "A0JE",
+        "A0B8",
+        "A00Z",
+        "A01I",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0B8",
+        "A00Z",
+        "A01I"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/U6",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "U-07",
+      "name": "저격왕",
+      "grade": "안흔함",
+      "originalUnitRawcode": "h00N",
+      "objectAbilityRawcodesInMapOrder": [
+        "A07Y",
+        "A0JE",
+        "A0B8",
+        "A01D",
+        "A01K",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0B8",
+        "A01D",
+        "A01K"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/U7",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "U-08",
+      "name": "쵸파 럼블볼",
+      "grade": "안흔함",
+      "originalUnitRawcode": "h00G",
+      "objectAbilityRawcodesInMapOrder": [
+        "A07Y",
+        "A0B8",
+        "A00B",
+        "A014",
+        "A1A1",
+        "Avul",
+        "A0JE"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0B8",
+        "A00B",
+        "A014",
+        "A1A1"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/U8",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "U-10",
+      "name": "페로나",
+      "grade": "안흔함",
+      "originalUnitRawcode": "h00J",
+      "objectAbilityRawcodesInMapOrder": [
+        "A07Y",
+        "A0JE",
+        "A0B8",
+        "A030",
+        "A01N",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0B8",
+        "A030",
+        "A01N"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/U10",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "U-11",
+      "name": "프랑키",
+      "grade": "안흔함",
+      "originalUnitRawcode": "h00L",
+      "objectAbilityRawcodesInMapOrder": [
+        "A07Y",
+        "A0JE",
+        "A0B8",
+        "A02Y",
+        "A01Q",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0B8",
+        "A02Y",
+        "A01Q"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/U11",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "U-14",
+      "name": "좀비",
+      "grade": "안흔함",
+      "originalUnitRawcode": "h00H",
+      "objectAbilityRawcodesInMapOrder": [
+        "A029",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A029"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": null,
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-04",
+      "name": "로빈 오하라",
+      "grade": "특별함",
+      "originalUnitRawcode": "h00S",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0JE",
+        "A07Y",
+        "A0BA",
+        "A08A",
+        "Avul",
+        "A0NC"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A08A",
+        "A0NC"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S4",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-05",
+      "name": "트라팔가 로우",
+      "grade": "특별함",
+      "originalUnitRawcode": "h01H",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0JE",
+        "A07Y",
+        "A0BA",
+        "A08B",
+        "A02Z",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [],
+      "tooltipProfileAvailable": true,
+      "tooltipSkillsNotJassVerified": [
+        {
+          "name": "선택 아군 가속",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "allyAttackSpeedBuff",
+              "percent": 100,
+              "durationSeconds": 7,
+              "nonStackingWith": [
+                "otherAttackSpeedAcceleration"
+              ]
+            }
+          ],
+          "target": "selectedOwnedUnit",
+          "cooldownSeconds": 50
+        }
+      ],
+      "tooltipSourceUrl": "https://ordr.kr/character/S5",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-08",
+      "name": "마르코",
+      "grade": "특별함",
+      "originalUnitRawcode": "h00T",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0JE",
+        "A07Y",
+        "A0BA",
+        "A08M",
+        "A00I",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A08M",
+        "A00I"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S8",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-09",
+      "name": "모리아",
+      "grade": "특별함",
+      "originalUnitRawcode": "h00B",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0JE",
+        "A07Y",
+        "A0BA",
+        "A028",
+        "A016",
+        "Avul",
+        "A087"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A028",
+        "A016",
+        "A087"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S9",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-12",
+      "name": "봉쿠레",
+      "grade": "특별함",
+      "originalUnitRawcode": "h014",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0JE",
+        "A07Y",
+        "A0BA",
+        "A08P",
+        "A008",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A08P",
+        "A008"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S12",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-15",
+      "name": "스쿼드",
+      "grade": "특별함",
+      "originalUnitRawcode": "h012",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0EE",
+        "A0JE",
+        "A07Y",
+        "A0BA",
+        "A02A",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0EE",
+        "A02A"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S15",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-17",
+      "name": "압살롬",
+      "grade": "특별함",
+      "originalUnitRawcode": "h010",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0JE",
+        "A07Y",
+        "A080",
+        "A01V",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A080",
+        "A01V"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S17",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-18",
+      "name": "에넬",
+      "grade": "특별함",
+      "originalUnitRawcode": "h00Q",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0JE",
+        "A07Y",
+        "A0BA",
+        "A084",
+        "A0NB",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A084",
+        "A0NB"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S18",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-19",
+      "name": "에이스 2번 대대장",
+      "grade": "특별함",
+      "originalUnitRawcode": "h01J",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0JE",
+        "A07Y",
+        "A0ER",
+        "A0BA",
+        "A00R",
+        "A01F",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0ER",
+        "A00R",
+        "A01F"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S19",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-20",
+      "name": "우솝 화염탄",
+      "grade": "특별함",
+      "originalUnitRawcode": "h00Z",
+      "objectAbilityRawcodesInMapOrder": [
+        "A01W",
+        "A0JE",
+        "A07Y",
+        "A0EG",
+        "A0BA",
+        "A00Q",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A01W",
+        "A0EG",
+        "A00Q"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S20",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-22",
+      "name": "조로 귀기",
+      "grade": "특별함",
+      "originalUnitRawcode": "h00W",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0E7",
+        "A0JE",
+        "A07Y",
+        "A0BA",
+        "A02R",
+        "A02T",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0E7",
+        "A02R",
+        "A02T"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S22",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-27",
+      "name": "캡틴 크로",
+      "grade": "특별함",
+      "originalUnitRawcode": "h00V",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0EK",
+        "A0JE",
+        "A07Y",
+        "A0BA",
+        "A02F",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0EK",
+        "A02F"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S27",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    },
+    {
+      "catalogId": "S-28",
+      "name": "쿠마",
+      "grade": "특별함",
+      "originalUnitRawcode": "h017",
+      "objectAbilityRawcodesInMapOrder": [
+        "A0E9",
+        "A0EA",
+        "A0JE",
+        "A07Y",
+        "A0BA",
+        "A02V",
+        "Avul"
+      ],
+      "lowFrequencyAbilityLeadsNotVerifiedAsCombatSkills": [
+        "A0E9",
+        "A0EA",
+        "A02V"
+      ],
+      "tooltipProfileAvailable": false,
+      "tooltipSkillsNotJassVerified": [],
+      "tooltipSourceUrl": "https://ordr.kr/character/S28",
+      "connectedModelEffectCount": 0,
+      "attackOrCastCallbackFromOriginalJassVerified": false,
+      "nativeAbilityEffectsVerified": false,
+      "readyForFullSkillImplementation": false,
+      "nextSourceWork": [
+        "원본 JASS w5/w6/w7 및 개별 시전 등록·간접 호출 경로 감사",
+        "원본 W3A 능력·보조 소환물과 범위/주기/확률/대상/피해 검증",
+        "원본 동등성 여부와 개발 모델 실행 권한을 별도로 판정"
+      ]
+    }
+  ]
+}

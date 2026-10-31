@@ -186,6 +186,15 @@ namespace Ordr.Mobile.Combat
             timedEffects.Advance(seconds, advanceOtherClocks);
         }
 
+        // The offline source-attack model shares the SAME combat clock as
+        // existing status expirations and multi-hit effects. Never call this
+        // from the original/verified Warcraft combat observer.
+        internal void SchedulePracticeSourceAttack(string attackerId,
+            string targetId, double delaySeconds, Action callback)
+        {
+            timedEffects.Schedule(attackerId, targetId, delaySeconds, callback);
+        }
+
         public void CancelCaster(string id) { timedEffects.CancelCaster(id); }
         public void CancelTarget(string id) { timedEffects.CancelTarget(id); }
 

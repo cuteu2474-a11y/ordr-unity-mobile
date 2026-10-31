@@ -6,17 +6,23 @@ namespace Ordr.Mobile.Combat
 {
     public sealed partial class CharacterCombatRuntime
     {
-        // These twenty script callbacks run ONLY in the independent offline
+        // These twenty-six script callbacks run ONLY in the independent offline
         // practice model. The original verified/WC3 observer path is untouched.
         // Warcraft native dummy casts, exact defense semantics, original
         // enumeration order and final damage quantization remain unverified.
         private void OnSourceModelScriptAttackDeclared(
             string attackerId, string rawcode, string primaryTargetId)
         {
+            // A08B has no w5 callback; its source object is an autonomous
+            // Unholy Frenzy (Auhf). Cast targeting is a mobile policy, not
+            // a fabricated JASS callback. See TrySourceModelLowFrenzy.
+            if (rawcode == "h01H" && UsesSourceModelBasicAttacks && processingStep)
+                TrySourceModelLowFrenzy(attackerId);
             SourceScriptAttackSpec script;
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 !processingStep || game.Phase != SessionPhase.Running ||
-                !SourceModelScriptAttackCatalog.TryGet(rawcode, out script))
+                (!SourceModelScriptAttackCatalog.TryGet(rawcode, out script) &&
+                 !SourceModelNextAttackCatalog.TryGet(rawcode, out script)))
                 return;
 
             long id;
@@ -45,7 +51,25 @@ namespace Ordr.Mobile.Combat
                 "MODEL_ONLY 원본 " + script.JassFunction + " 공격 선언 분기 " +
                 roll + "/" + script.RollSides,
                 0));
-            ApplySourceScriptHits(actor, primary, script, script.OnProc);
+            if (script.DelaySeconds > 0)
+            {
+                // BoB captures the attacked unit's LOCATION at state 0. The
+                // AoE still happens there if that primary dies before .29s.
+                // Use a synthetic target key so the normal target-death
+                // cancellation cannot erase a location-based JASS effect.
+                double pinnedX = primary.X, pinnedY = primary.Y;
+                effectExecutor.SchedulePracticeSourceAttack(attackerId,
+                    "practice-slam:" + attackerId, script.DelaySeconds, () => {
+                        if (characters.ContainsKey(actor.Id))
+                            ApplySourceScriptHits(actor, primary, script, script.OnProc,
+                                pinnedX, pinnedY);
+                    });
+            }
+            else
+                ApplySourceScriptHits(actor, primary, script, script.OnProc);
+
+            if (script.CatalogId == "S-12")
+                ScheduleSourceModelPhoenixFire(actor, primary, script);
             if (!string.IsNullOrWhiteSpace(script.DeferredNativeEffect))
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.EffectDeferred, attackerId,
@@ -55,7 +79,8 @@ namespace Ordr.Mobile.Combat
         }
 
         private List<SpatialCombatEnemy> SourceScriptTargets(
-            CharacterInstance actor, SpatialCombatEnemy primary, SourceScriptHit hit)
+            CharacterInstance actor, SpatialCombatEnemy primary, SourceScriptHit hit,
+            double? pinnedX = null, double? pinnedY = null)
         {
             var found = new List<SpatialCombatEnemy>();
             if (hit.Shape == SourceScriptHitShape.Direct)
@@ -71,14 +96,20 @@ namespace Ordr.Mobile.Combat
             {
                 if (!candidate.Enemy.IsAlive ||
                     !CanAttackInThisLane(actor, candidate)) continue;
-                if (hit.Shape == SourceScriptHitShape.Circle)
+                if (hit.Shape == SourceScriptHitShape.Circle ||
+                    hit.Shape == SourceScriptHitShape.AttackerCircle)
                 {
-                    double x = candidate.X - primary.X;
-                    double y = candidate.Y - primary.Y;
+                    double cx = hit.Shape == SourceScriptHitShape.AttackerCircle
+                        ? position.X : (pinnedX ?? primary.X);
+                    double cy = hit.Shape == SourceScriptHitShape.AttackerCircle
+                        ? position.Y : (pinnedY ?? primary.Y);
+                    double x = candidate.X - cx;
+                    double y = candidate.Y - cy;
                     if (x * x + y * y <= hit.Radius * hit.Radius)
                         found.Add(candidate);
                 }
-                else if (hit.Shape == SourceScriptHitShape.RankyakuLine && length > 0)
+                else if ((hit.Shape == SourceScriptHitShape.RankyakuLine ||
+                          hit.Shape == SourceScriptHitShape.ProjectileLine) && length > 0)
                 {
                     // AUcs/A0VS geometry from W3A. Current target defines
                     // the MOBILE automatic direction; the original native
@@ -98,14 +129,58 @@ namespace Ordr.Mobile.Combat
             return found;
         }
 
+        private void ScheduleSourceModelPhoenixFire(CharacterInstance actor,
+            SpatialCombatEnemy primary, SourceScriptAttackSpec script)
+        {
+            // Source: Bn4 creates h0C5 with A08O/Apxf at the attacker for
+            // 1.2s. A08O has 250 damage, .2s cooldown, 800 acquisition range.
+            // First fire and retargeting are not JASS-observed, hence this is
+            // a deliberately labeled mobile result approximation. Five full
+            // .2s intervals before expiry; no imaginary permanent summon.
+            var spawn = roster.Get(actor.Id);
+            string attackerId = InstanceKey(actor.Id);
+            for (int tick = 1; tick <= 5; tick++)
+            {
+                effectExecutor.SchedulePracticeSourceAttack(attackerId,
+                    "practice-phoenix:" + attackerId + ":" + tick, tick * .2, () => {
+                        if (!characters.ContainsKey(actor.Id)) return;
+                        var closest = NearestSourceModelTarget(actor, spawn.X, spawn.Y, 800);
+                        if (closest == null) return;
+                        ApplySourceScriptHits(actor, closest, script, new[] {
+                            new SourceScriptHit(SourceScriptHitShape.Direct, 0, 0,
+                                250, 1, 1, Ordr323AttackType.Spells) });
+                    });
+            }
+        }
+
+        private SpatialCombatEnemy NearestSourceModelTarget(CharacterInstance actor,
+            double x, double y, double radius)
+        {
+            SpatialCombatEnemy closest = null;
+            double nearest = radius * radius;
+            foreach (var candidate in enemies.Values)
+            {
+                if (!candidate.Enemy.IsAlive ||
+                    !CanAttackInThisLane(actor, candidate)) continue;
+                double dx = candidate.X - x, dy = candidate.Y - y;
+                double squared = dx * dx + dy * dy;
+                if (squared > nearest || (squared == nearest && closest != null &&
+                    StringComparer.Ordinal.Compare(candidate.Id, closest.Id) >= 0)) continue;
+                closest = candidate;
+                nearest = squared;
+            }
+            return closest;
+        }
+
         private void ApplySourceScriptHits(CharacterInstance actor,
             SpatialCombatEnemy primary, SourceScriptAttackSpec script,
-            IReadOnlyList<SourceScriptHit> hits)
+            IReadOnlyList<SourceScriptHit> hits,
+            double? pinnedX = null, double? pinnedY = null)
         {
             string attackerId = InstanceKey(actor.Id);
             foreach (var hit in hits)
             {
-                var targets = SourceScriptTargets(actor, primary, hit);
+                var targets = SourceScriptTargets(actor, primary, hit, pinnedX, pinnedY);
                 foreach (var target in targets)
                 {
                     Ordr323ArmorType armor;
@@ -139,7 +214,10 @@ namespace Ordr.Mobile.Combat
                         CharacterCombatEventType.SkillDamage, attackerId,
                         target.Id, actor.Catalog.Name + " 공격 기술",
                         "MODEL_ONLY 원본 " + script.JassFunction +
-                        " JASS 기본 피해·범위, 최종 네이티브 미검증",
+                        (script.CatalogId == "S-08" || script.CatalogId == "S-12" ||
+                         script.CatalogId == "S-18" || script.CatalogId == "S-19"
+                            ? " 네이티브 객체 수치 기반 모바일 근사, 실제 타격 미검증"
+                            : " JASS 기본 피해·범위, 최종 엔진 면역 미검증"),
                         actual));
                     if (!target.Enemy.IsAlive)
                         events.Add(new CharacterCombatEvent(

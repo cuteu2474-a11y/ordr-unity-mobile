@@ -52,12 +52,22 @@ class UnitRuntimeStatusTests(unittest.TestCase):
         for passive in read('original-2323C-native-pure-passives.json')['practiceBonusEntries']:
             effects = self.rows[passive['catalogId']]['connectedModelEffects']
             self.assertTrue(any('객체 추가 피해' in effect for effect in effects))
-        self.assertEqual(184, sum(bool(r['connectedModelEffects']) for r in self.rows.values()))
-        self.assertEqual(259, sum(len(r['connectedModelEffects']) for r in self.rows.values()))
+        self.assertEqual(194, sum(bool(r['connectedModelEffects']) for r in self.rows.values()))
+        self.assertEqual(269, sum(len(r['connectedModelEffects']) for r in self.rows.values()))
         attack_audit = read('original-2323C-attack-skill-batch.json')
         self.assertEqual(20, sum(any('공격 선언 기술 · ' in effect for effect in
             self.rows[row['catalogId']]['connectedModelEffects'])
             for row in attack_audit['units']))
+        next_audit = read('original-2323C-next-20-native-source-audit.json')
+        source_callbacks = [r for r in next_audit['units'] if r['w5AttackCallbacksRegistered']]
+        self.assertEqual(6, len(source_callbacks))
+        for row in source_callbacks:
+            effects = self.rows[row['catalogId']]['connectedModelEffects']
+            self.assertTrue(any('공격 선언 기술 · ' in e for e in effects), row['catalogId'])
+        self.assertTrue(any('A08B 언홀리' in e for e in self.rows['S-05']['connectedModelEffects']))
+        self.assertTrue(any('A087 블랙' in e for e in self.rows['S-09']['connectedModelEffects']))
+        self.assertTrue(any('A0EG 리퀴드' in e for e in self.rows['S-20']['connectedModelEffects']))
+        self.assertTrue(any('A0EA 피닉스' in e for e in self.rows['S-28']['connectedModelEffects']))
         self.assertEqual(0, self.status['summary']['fullyVerifiedUnits'])
 
     def test_inherited_mode_is_pinned_to_base_source_and_model_only(self):

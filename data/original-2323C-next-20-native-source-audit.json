@@ -1,0 +1,5999 @@
+{
+  "format": "ordr-next-20-source-jass-native-ability-audit-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceAbilityDataSha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda",
+  "sourceUnitAbilitiesSha256": "fbd47be22d1482d63df15d70d7a8fa38f7f26b288443a5d74aa056104aef139d",
+  "sourceW3aSha256": "aa938f02c22884f38c5e31bcd6229a35e917a8fab0128331fdab88980cfd50e0",
+  "runtimeAuthorization": false,
+  "caveat": "Native base code/data and literal JASS references do not establish Warcraft built-in effect, automatic activation or retail parity.",
+  "summary": {
+    "units": 20,
+    "objectAbilityEntries": 121,
+    "cwrRegisteredAbilityEntries": 31,
+    "sharedSystemOrNativeEntries": 70,
+    "nativeAbilityLeadsStillNeedingRuntimeReview": 20,
+    "w5AttackCallbackOwners": 6,
+    "fullOriginalSkillImplementationsApproved": 0
+  },
+  "units": [
+    {
+      "catalogId": "U-02",
+      "name": "베포",
+      "originalUnitRawcode": "h00C",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0B8",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A01X",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A017",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "Aroa",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroa",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataC1": "0.0",
+            "DataD1": "0.0",
+            "BuffID1": "Broa"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "U-06",
+      "name": "이나즈마",
+      "originalUnitRawcode": "h00I",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0B8",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A00Z",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A01I",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "Aroa",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroa",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataC1": "0.0",
+            "DataD1": "0.0",
+            "BuffID1": "Broa"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "U-07",
+      "name": "저격왕",
+      "originalUnitRawcode": "h00N",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0B8",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A01D",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A01K",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "Aroa",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroa",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataC1": "0.0",
+            "DataD1": "0.0",
+            "BuffID1": "Broa"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "U-08",
+      "name": "쵸파 럼블볼",
+      "originalUnitRawcode": "h00G",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0B8",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A00B",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A014",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "Aroa",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroa",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataC1": "0.0",
+            "DataD1": "0.0",
+            "BuffID1": "Broa"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A1A1",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AOsf",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AOsf",
+            "Cast1": "0.06",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "200.0",
+            "Rng1": "800.0",
+            "UnitID1": "ngzc",
+            "BuffID1": "BOsf"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "U-10",
+      "name": "페로나",
+      "originalUnitRawcode": "h00J",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0B8",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A030",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A01N",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "Aroa",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroa",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataC1": "0.0",
+            "DataD1": "0.0",
+            "BuffID1": "Broa"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "U-11",
+      "name": "프랑키",
+      "originalUnitRawcode": "h00L",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0B8",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A02Y",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A01Q",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "Aroa",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroa",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataC1": "0.0",
+            "DataD1": "0.0",
+            "BuffID1": "Broa"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "U-14",
+      "name": "좀비",
+      "originalUnitRawcode": "h00H",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A029",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-04",
+      "name": "로빈 오하라",
+      "originalUnitRawcode": "h00S",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A08A",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "Aroc",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroc",
+            "targs1": "air,enemies,ground",
+            "Cast1": "0.0",
+            "Dur1": "0.01",
+            "HeroDur1": "0.01",
+            "Cool1": "0.",
+            "Area1": "600.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataB1": "1000000000.",
+            "DataC1": "2"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0NC",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-05",
+      "name": "트라팔가 로우",
+      "originalUnitRawcode": "h01H",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [
+        {
+          "name": "선택 아군 가속",
+          "trigger": "manual",
+          "components": [
+            {
+              "type": "allyAttackSpeedBuff",
+              "percent": 100,
+              "durationSeconds": 7,
+              "nonStackingWith": [
+                "otherAttackSpeedAcceleration"
+              ]
+            }
+          ],
+          "target": "selectedOwnedUnit",
+          "cooldownSeconds": 50
+        }
+      ],
+      "abilities": [
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A08B",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "Auhf",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Auhf",
+            "targs1": "air,ground,friend,self,vuln,invu",
+            "Cast1": "0.0",
+            "Dur1": "7.",
+            "HeroDur1": "7.",
+            "Cool1": "50.",
+            "Area1": "0.0",
+            "Rng1": "750.",
+            "DataA1": "1.",
+            "DataB1": "0.",
+            "BuffID1": "B006"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A02Z",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-08",
+      "name": "마르코",
+      "originalUnitRawcode": "h00T",
+      "w5AttackCallbacksRegistered": [
+        {
+          "function": "Bn0",
+          "line": 62591
+        }
+      ],
+      "w5AttackCallbackEvidence": [
+        {
+          "function": "Bn0",
+          "sourceLine": 14916,
+          "attackEventChancePercent": 10,
+          "sourceOperations": [
+            "if BFi(1,100)<=10 then",
+            "set Vr=CreateUnitAtLoc(HY,$65304B44,Id,GetUnitFacing(JL))",
+            "call IssueImmediateOrderById(Vr,OrderId(\"fanofknives\"))"
+          ],
+          "directCustomDependencies": [
+            "BFi"
+          ],
+          "indirectSourceEffectsUnverified": true
+        }
+      ],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A08M",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "AHbh",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHbh",
+            "targs1": "none",
+            "Cast1": "0.0",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataB1": "0.0",
+            "DataC1": "0.",
+            "DataD1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A00I",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-09",
+      "name": "모리아",
+      "originalUnitRawcode": "h00B",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A028",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A016",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "Aroa",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroa",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataC1": "0.0",
+            "DataD1": "0.0",
+            "BuffID1": "Broa"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A087",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "ANba",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "ANba",
+            "targs1": "air,nonancient,nonsapper,nonhero,enemies,ground",
+            "Cast1": "0.0",
+            "Dur1": "0.05",
+            "HeroDur1": "0.05",
+            "Cool1": "0.",
+            "Area1": "0.0",
+            "Rng1": "2000.",
+            "DataA1": "0.",
+            "DataB1": "1",
+            "DataC1": "10.",
+            "UnitID1": "h00H",
+            "BuffID1": "BNba,BNdm"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-12",
+      "name": "봉쿠레",
+      "originalUnitRawcode": "h014",
+      "w5AttackCallbacksRegistered": [
+        {
+          "function": "Bn4",
+          "line": 62591
+        }
+      ],
+      "w5AttackCallbackEvidence": [
+        {
+          "function": "Bn4",
+          "sourceLine": 14967,
+          "attackEventChancePercent": 12,
+          "sourceOperations": [
+            "if BFi(1,100)<=12 then",
+            "set Vr=CreateUnitAtLoc(HY,$68304335,Id,bj_UNIT_FACING)",
+            "call UnitAddAbility(Vr,$4130384F)",
+            "call UnitApplyTimedLife(Vr,$42487765,1.2)"
+          ],
+          "directCustomDependencies": [
+            "BFi"
+          ],
+          "indirectSourceEffectsUnverified": true
+        }
+      ],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A08P",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "AHbh",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHbh",
+            "targs1": "none",
+            "Cast1": "0.0",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataB1": "0.0",
+            "DataC1": "0.",
+            "DataD1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A008",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-15",
+      "name": "스쿼드",
+      "originalUnitRawcode": "h012",
+      "w5AttackCallbacksRegistered": [
+        {
+          "function": "BoC",
+          "line": 15046
+        }
+      ],
+      "w5AttackCallbackEvidence": [
+        {
+          "function": "BoC",
+          "sourceLine": 15041,
+          "attackEventChancePercent": 16,
+          "sourceOperations": [
+            "if BFi(1,100)<=16 then",
+            "call TriggerExecute(Vy)"
+          ],
+          "directCustomDependencies": [
+            "BFi"
+          ],
+          "indirectSourceEffectsUnverified": true
+        }
+      ],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0EE",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "Aimp",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aimp",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A02A",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-17",
+      "name": "압살롬",
+      "originalUnitRawcode": "h010",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A080",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 2,
+          "jassLiteralReferences": [
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A01V",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-18",
+      "name": "에넬",
+      "originalUnitRawcode": "h00Q",
+      "w5AttackCallbacksRegistered": [
+        {
+          "function": "Bnr",
+          "line": 62591
+        }
+      ],
+      "w5AttackCallbackEvidence": [
+        {
+          "function": "Bnr",
+          "sourceLine": 14848,
+          "attackEventChancePercent": 10,
+          "sourceOperations": [
+            "if BFi(1,100)<=10 then",
+            "set Vr=CreateUnitAtLoc(HY,$65304B44,Id,bj_UNIT_FACING)",
+            "call IssueTargetOrder(Vr,\"forkedlightning\",RN)"
+          ],
+          "directCustomDependencies": [
+            "BFi"
+          ],
+          "indirectSourceEffectsUnverified": true
+        }
+      ],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A084",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "Aroc",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroc",
+            "targs1": "none",
+            "Cast1": "0.0",
+            "Dur1": "0.01",
+            "HeroDur1": "0.01",
+            "Cool1": "0.",
+            "Area1": "600.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataB1": "1000000000.",
+            "DataC1": "4"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0NB",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-19",
+      "name": "에이스 2번 대대장",
+      "originalUnitRawcode": "h01J",
+      "w5AttackCallbacksRegistered": [
+        {
+          "function": "BoE",
+          "line": 62591
+        }
+      ],
+      "w5AttackCallbackEvidence": [
+        {
+          "function": "BoE",
+          "sourceLine": 15051,
+          "attackEventChancePercent": 14,
+          "sourceOperations": [
+            "if BFi(1,100)<=14 then",
+            "set Vr=CreateUnitAtLoc(HY,$65304B47,Id,GetUnitFacing(JL))",
+            "call IssuePointOrder(Vr,\"carrionswarm\",GetUnitX(RN),GetUnitY(RN))"
+          ],
+          "directCustomDependencies": [
+            "BFi"
+          ],
+          "indirectSourceEffectsUnverified": true
+        }
+      ],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0ER",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "Aimp",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aimp",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A00R",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A01F",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "Aroa",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroa",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataC1": "0.0",
+            "DataD1": "0.0",
+            "BuffID1": "Broa"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-20",
+      "name": "우솝 화염탄",
+      "originalUnitRawcode": "h00Z",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A01W",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0EG",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "Aliq",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aliq",
+            "targs1": "structure,air,enemies,neutral,ground",
+            "Cast1": "0.0",
+            "Dur1": "3.0",
+            "HeroDur1": "3.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0",
+            "DataA1": "150.",
+            "DataB1": "0.0",
+            "DataC1": "0.",
+            "BuffID1": "Bliq"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A00Q",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "Aroa",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroa",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataC1": "0.0",
+            "DataD1": "0.0",
+            "BuffID1": "Broa"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-22",
+      "name": "조로 귀기",
+      "originalUnitRawcode": "h00W",
+      "w5AttackCallbacksRegistered": [
+        {
+          "function": "BoI",
+          "line": 62591
+        }
+      ],
+      "w5AttackCallbackEvidence": [
+        {
+          "function": "BoI",
+          "sourceLine": 15075,
+          "attackEventChancePercent": 15,
+          "sourceOperations": [
+            "if BFi(1,100)<=15 then",
+            "set Vr=CreateUnitAtLoc(HY,$65303054,Ie,GetUnitFacing(JL))",
+            "set Vr=CreateUnitAtLoc(HY,$65303054,Ie,GetUnitFacing(JL)-90)",
+            "call BiZ(Cl,450,Ie,Condition(function BoG),function BoH)"
+          ],
+          "directCustomDependencies": [
+            "BFi",
+            "BiE",
+            "BiF",
+            "BiZ",
+            "BoG",
+            "BoH"
+          ],
+          "indirectSourceEffectsUnverified": true
+        }
+      ],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0E7",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "Aimp",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aimp",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A02R",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A02T",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "Aroa",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aroa",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.0",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "DataA1": "0.",
+            "DataC1": "0.0",
+            "DataD1": "0.0",
+            "BuffID1": "Broa"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-27",
+      "name": "캡틴 크로",
+      "originalUnitRawcode": "h00V",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0EK",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "Aimp",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aimp",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A02F",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    },
+    {
+      "catalogId": "S-28",
+      "name": "쿠마",
+      "originalUnitRawcode": "h017",
+      "w5AttackCallbacksRegistered": [],
+      "w5AttackCallbackEvidence": [],
+      "tooltipSkills": [],
+      "abilities": [
+        {
+          "abilityRawcode": "A0E9",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "Aimp",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Aimp",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0EA",
+          "classification": "NATIVE_ABILITY_NEEDS_TRIGGER_AND_EFFECT_REVIEW",
+          "warcraftNativeBaseAbility": "Apxf",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Apxf",
+            "targs1": "ground,air,enemy",
+            "Cast1": "0.0",
+            "Dur1": "0.01",
+            "HeroDur1": "0.01",
+            "Cool1": "0.2",
+            "Area1": "600.0",
+            "Rng1": "0.0",
+            "DataA1": "150.",
+            "DataB1": "0."
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 0,
+          "jassLiteralReferences": [],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0JE",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 1,
+          "jassLiteralReferences": [
+            {
+              "function": "main",
+              "functionStartsAtLine": 62591,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A07Y",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AAns",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AAns",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 18,
+          "jassLiteralReferences": [
+            {
+              "function": "Bn2",
+              "functionStartsAtLine": 14933,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "BoK",
+              "functionStartsAtLine": 15095,
+              "rawcodeLiteralMatches": 2
+            },
+            {
+              "function": "CJP",
+              "functionStartsAtLine": 49480,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJU",
+              "functionStartsAtLine": 49594,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJY",
+              "functionStartsAtLine": 49642,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRa",
+              "functionStartsAtLine": 55721,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRg",
+              "functionStartsAtLine": 55767,
+              "rawcodeLiteralMatches": 4
+            },
+            {
+              "function": "CRo",
+              "functionStartsAtLine": 55889,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRp",
+              "functionStartsAtLine": 55910,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRq",
+              "functionStartsAtLine": 55931,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRr",
+              "functionStartsAtLine": 55952,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRs",
+              "functionStartsAtLine": 55973,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": true,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A0BA",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "AHpx",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHpx",
+            "Cast1": "0.5",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hphx"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 6,
+          "jassLiteralReferences": [
+            {
+              "function": "CCI",
+              "functionStartsAtLine": 41462,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CCN",
+              "functionStartsAtLine": 41604,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CJZ",
+              "functionStartsAtLine": 49673,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CKg",
+              "functionStartsAtLine": 50700,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CMx",
+              "functionStartsAtLine": 51780,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CRX",
+              "functionStartsAtLine": 55691,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "A02V",
+          "classification": "CWR_FUSION_REGISTERED_COMBAT_USE_NOT_VERIFIED",
+          "warcraftNativeBaseAbility": "AHwe",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "AHwe",
+            "Cast1": "0.06",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.",
+            "Rng1": "0.0",
+            "UnitID1": "hwat",
+            "BuffID1": "BHwe"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 3,
+          "jassLiteralReferences": [
+            {
+              "function": "BjB",
+              "functionStartsAtLine": 11478,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CT2",
+              "functionStartsAtLine": 57132,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CWR",
+              "functionStartsAtLine": 60315,
+              "rawcodeLiteralMatches": 1
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        },
+        {
+          "abilityRawcode": "Avul",
+          "classification": "SHARED_SYSTEM_OR_NATIVE_NOT_UNIT_SKILL_VERIFIED",
+          "warcraftNativeBaseAbility": "Avul",
+          "originalSlkLevelOneFields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          },
+          "war3mapW3aOverrides": [],
+          "jassLiteralReferenceFunctionCount": 4,
+          "jassLiteralReferences": [
+            {
+              "function": "B18",
+              "functionStartsAtLine": 28694,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5E",
+              "functionStartsAtLine": 32968,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "B5F",
+              "functionStartsAtLine": 32971,
+              "rawcodeLiteralMatches": 1
+            },
+            {
+              "function": "CTn",
+              "functionStartsAtLine": 56959,
+              "rawcodeLiteralMatches": 2
+            }
+          ],
+          "jassLiteralReferencesTruncated": false,
+          "confirmedFinalNativeEffect": false
+        }
+      ],
+      "originalFullSkillBehaviorVerified": false
+    }
+  ],
+  "attackDummySourceAbilities": [
+    {
+      "unitRawcode": "e0KD",
+      "nativeAbilityRows": [
+        {
+          "rawcode": "A15O",
+          "base": "AUin",
+          "fields": {
+            "levels": "1",
+            "code": "AUin",
+            "targs1": "air,enemies,ground",
+            "Cast1": "0.0",
+            "Dur1": "2.2",
+            "HeroDur1": "0.44",
+            "Cool1": "0.01",
+            "Area1": "600.",
+            "Rng1": "9999.",
+            "DataA1": "0.",
+            "DataB1": "0.01",
+            "DataC1": "0.",
+            "UnitID1": "h0C5",
+            "BuffID1": "BPSE"
+          }
+        },
+        {
+          "rawcode": "A0VS",
+          "base": "AUcs",
+          "fields": {
+            "levels": "1",
+            "code": "AUcs",
+            "targs1": "ground,air",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "200.",
+            "Rng1": "1700.",
+            "DataA1": "150.",
+            "DataB1": "70000000.",
+            "DataC1": "800.0",
+            "DataD1": "250.",
+            "BuffID1": "BUcs"
+          }
+        },
+        {
+          "rawcode": "A086",
+          "base": "ANfl",
+          "fields": {
+            "levels": "1",
+            "code": "ANfl",
+            "targs1": "air,ground,enemy,neutral,organic",
+            "Cast1": "0.0",
+            "Dur1": "0.7",
+            "HeroDur1": "0.0",
+            "Cool1": "11.0",
+            "Area1": "125.0",
+            "Rng1": "1750.",
+            "DataA1": "1500.",
+            "DataB1": "4",
+            "DataC1": "1700.",
+            "DataD1": "500."
+          }
+        },
+        {
+          "rawcode": "A08I",
+          "base": "Ablo",
+          "fields": {
+            "levels": "1",
+            "code": "Ablo",
+            "targs1": "air,invulnerable,self,ground,vulnerable,friend",
+            "Cast1": "0.0",
+            "Dur1": "1.75",
+            "HeroDur1": "1.75",
+            "Cool1": "0.",
+            "Area1": "0.0",
+            "Rng1": "99999.",
+            "DataA1": "3.6",
+            "DataB1": "0.",
+            "DataC1": "0.",
+            "BuffID1": "B00F"
+          }
+        },
+        {
+          "rawcode": "A08L",
+          "base": "AEfk",
+          "fields": {
+            "levels": "1",
+            "code": "AEfk",
+            "targs1": "air,enemies,neutral,ground",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "1150.",
+            "Rng1": "0.0",
+            "DataA1": "1500.",
+            "DataB1": "800000000.",
+            "DataC1": "7",
+            "DataD1": "100.0"
+          }
+        },
+        {
+          "rawcode": "A0HX",
+          "base": "AUfa",
+          "fields": {
+            "levels": "1",
+            "code": "AUfa",
+            "targs1": "air,invulnerable,self,neutral,ground,friend,player",
+            "Cast1": "0.0",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.0",
+            "Rng1": "99999.",
+            "DataA1": "4.25",
+            "DataB1": "0.",
+            "BuffID1": "B02Z"
+          }
+        },
+        {
+          "rawcode": "Aloc",
+          "base": "Aloc",
+          "fields": {
+            "levels": "1",
+            "code": "Aloc",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        },
+        {
+          "rawcode": "Avul",
+          "base": "Avul",
+          "fields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        }
+      ]
+    },
+    {
+      "unitRawcode": "h0C5",
+      "nativeAbilityRows": [
+        {
+          "rawcode": "Aloc",
+          "base": "Aloc",
+          "fields": {
+            "levels": "1",
+            "code": "Aloc",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        },
+        {
+          "rawcode": "Amrf",
+          "base": "Arav",
+          "fields": {
+            "levels": "1",
+            "code": "Arav",
+            "Cast1": "1.05",
+            "Dur1": "0.6",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "-1.0",
+            "Rng1": "0.0",
+            "DataA1": "nmed",
+            "DataB1": "5",
+            "DataC1": "1.0",
+            "DataD1": "1.0",
+            "UnitID1": "nmdm"
+          }
+        },
+        {
+          "rawcode": "Avul",
+          "base": "Avul",
+          "fields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        }
+      ]
+    },
+    {
+      "unitRawcode": "e0KG",
+      "nativeAbilityRows": [
+        {
+          "rawcode": "A0ES",
+          "base": "AUcs",
+          "fields": {
+            "levels": "1",
+            "code": "AUcs",
+            "targs1": "ground,air",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.",
+            "Area1": "215.",
+            "Rng1": "1700.",
+            "DataA1": "850.",
+            "DataB1": "70000000.",
+            "DataC1": "925.",
+            "DataD1": "400.",
+            "BuffID1": "BUcs"
+          }
+        },
+        {
+          "rawcode": "A054",
+          "base": "AOcl",
+          "fields": {
+            "levels": "1",
+            "code": "AOcl",
+            "targs1": "air,enemies,neutral,ground",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "9.0",
+            "Area1": "1250.",
+            "Rng1": "1600.",
+            "DataA1": "6000.",
+            "DataB1": "8",
+            "DataC1": "-0.1"
+          }
+        },
+        {
+          "rawcode": "A0V5",
+          "base": "AUfa",
+          "fields": {
+            "levels": "1",
+            "code": "AUfa",
+            "targs1": "air,invulnerable,self,neutral,ground,friend,player",
+            "Cast1": "0.0",
+            "Dur1": "0.",
+            "HeroDur1": "0.",
+            "Cool1": "0.",
+            "Area1": "0.0",
+            "Rng1": "9999.",
+            "DataA1": "15.",
+            "DataB1": "0.",
+            "BuffID1": "B06G"
+          }
+        },
+        {
+          "rawcode": "Aloc",
+          "base": "Aloc",
+          "fields": {
+            "levels": "1",
+            "code": "Aloc",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        },
+        {
+          "rawcode": "Avul",
+          "base": "Avul",
+          "fields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        }
+      ]
+    },
+    {
+      "unitRawcode": "e00T",
+      "nativeAbilityRows": [
+        {
+          "rawcode": "Aloc",
+          "base": "Aloc",
+          "fields": {
+            "levels": "1",
+            "code": "Aloc",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        },
+        {
+          "rawcode": "Avul",
+          "base": "Avul",
+          "fields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        }
+      ]
+    },
+    {
+      "unitRawcode": "e00Q",
+      "nativeAbilityRows": [
+        {
+          "rawcode": "Aloc",
+          "base": "Aloc",
+          "fields": {
+            "levels": "1",
+            "code": "Aloc",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        },
+        {
+          "rawcode": "Avul",
+          "base": "Avul",
+          "fields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        }
+      ]
+    },
+    {
+      "unitRawcode": "e00R",
+      "nativeAbilityRows": [
+        {
+          "rawcode": "Aloc",
+          "base": "Aloc",
+          "fields": {
+            "levels": "1",
+            "code": "Aloc",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        },
+        {
+          "rawcode": "Avul",
+          "base": "Avul",
+          "fields": {
+            "levels": "1",
+            "code": "Avul",
+            "Cast1": "0.0",
+            "Dur1": "0.0",
+            "HeroDur1": "0.0",
+            "Cool1": "0.0",
+            "Area1": "0.0",
+            "Rng1": "0.0"
+          }
+        }
+      ]
+    }
+  ]
+}

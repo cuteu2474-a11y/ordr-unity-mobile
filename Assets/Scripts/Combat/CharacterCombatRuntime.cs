@@ -1642,6 +1642,8 @@ namespace Ordr.Mobile.Combat
                     pendingCommandEvents.Add(new CharacterCombatEvent(
                         CharacterCombatEventType.UnitPlaced, InstanceKey(id), null,
                         null, "automatic-verified-position", 0));
+                if (UsesSourceModelBasicAttacks)
+                    StartSourceModelKumaPhoenixFire(id);
             }
             return id;
         }

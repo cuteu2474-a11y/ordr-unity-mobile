@@ -76,8 +76,11 @@ namespace Ordr.Mobile.Combat
                 !Ordr323OriginalDamageRules.TryReadArmorType(target.Defenses.WarcraftArmorType, out armor))
                 throw new NotSupportedException("출처가 있는 공격·적 방어 자료가 필요합니다.");
             foreach (var effect in request.AttackerEffects)
-                if ((effect.Type != CombatEffectType.AttackPowerBuff && effect.Type != CombatEffectType.AttackSpeedBuff) ||
-                    !effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal))
+                if (!((effect.Type == CombatEffectType.AttackPowerBuff ||
+                       effect.Type == CombatEffectType.AttackSpeedBuff) &&
+                      effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal)) &&
+                    !(effect.Type == CombatEffectType.AttackSpeedBuff &&
+                      effect.SourceId.StartsWith("practice-native:A08B:", StringComparison.Ordinal)))
                     throw new NotSupportedException("연습의 출처가 확인되지 않은 공격 효과입니다.");
             double rawDamage = attack.RollObjectBaseDamage(random);
             double power = SourceModelUnitEffects.ResolveSingleAura(request.AttackerEffects, CombatEffectType.AttackPowerBuff);

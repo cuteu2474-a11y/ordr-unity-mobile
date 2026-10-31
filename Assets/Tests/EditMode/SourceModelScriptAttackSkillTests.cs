@@ -29,7 +29,8 @@ namespace Ordr.Mobile.Tests
         private static string Data(string path) =>
             File.ReadAllText(Path.Combine(Application.dataPath, "..", "data", path));
 
-        private static Live Create(string unitId, bool trigger)
+        private static Live Create(string unitId, bool trigger,
+            double x = -4000, double y = 4000, bool enormousHealth = true)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -42,9 +43,11 @@ namespace Ordr.Mobile.Tests
             shared.ApplyVerifiedStart(Original323SoloStartProfile.Create(),
                 (id, x, y) => shared.Units.Add(id, x, y), id => shared.Units.Remove(id));
             combat.Start(); rules.Enable(); combat.ConfigureSourceModelBasicAttacks(rules);
-            combat.SpawnCharacter(unitId, -4000, 4000);
-            string practice = Data("mobile-practice-battle-model.json")
-                .Replace("\"health\": 338,", "\"health\": 1000000000000,");
+            combat.SpawnCharacter(unitId, x, y);
+            string practice = Data("mobile-practice-battle-model.json");
+            if (enormousHealth)
+                practice = practice.Replace("\"health\": 338,",
+                    "\"health\": 1000000000000,");
             var battle = new SourceModelPracticeBattle(combat, new CombatWaveDirector(),
                 shared, new SourceModelPracticeCatalog(practice, 10),
                 Original323MonsterWaveIdentityCatalog.FromJson(
@@ -116,6 +119,114 @@ namespace Ordr.Mobile.Tests
                     e.Detail.Contains("Btd")));
                 Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
                     e.Detail.Contains("Btd")));
+            }
+        }
+
+        [Test]
+        public void AdditionalSixCallbacksMatchPinnedMapAndRemainModelOnly()
+        {
+            var root = OrdrJson.Object(OrdrJson.Parse(
+                Data("original-2323C-next-20-native-source-audit.json")), "next 20 audit");
+            Assert.AreEqual(SourceModelNextAttackCatalog.SourceJassSha256,
+                OrdrJson.RequiredString(root, "sourceJassSha256"));
+            Assert.AreEqual(false, OrdrJson.Value(root, "runtimeAuthorization"));
+            Assert.AreEqual(6, SourceModelNextAttackCatalog.All.Count);
+            foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "units"), "units"))
+            {
+                var row = OrdrJson.Object(raw, "unit");
+                var callbacks = OrdrJson.Array(OrdrJson.Value(row, "w5AttackCallbackEvidence"),
+                    "registered callbacks");
+                if (callbacks.Count == 0) continue;
+                Assert.AreEqual(1, callbacks.Count);
+                var callback = OrdrJson.Object(callbacks[0], "callback");
+                SourceScriptAttackSpec spec;
+                Assert.IsTrue(SourceModelNextAttackCatalog.TryGet(
+                    OrdrJson.RequiredString(row, "originalUnitRawcode"), out spec));
+                Assert.AreEqual(OrdrJson.RequiredString(row, "catalogId"), spec.CatalogId);
+                Assert.AreEqual(OrdrJson.RequiredString(callback, "function"), spec.JassFunction);
+                Assert.AreEqual(OrdrJson.Number(callback, "attackEventChancePercent"),
+                    100.0 * spec.RollSuccess / spec.RollSides);
+                Assert.IsFalse(string.IsNullOrWhiteSpace(spec.DeferredNativeEffect));
+            }
+        }
+
+        [TestCase("S-08")][TestCase("S-12")][TestCase("S-15")]
+        [TestCase("S-18")][TestCase("S-19")][TestCase("S-22")]
+        public void SixAdditionalSkillBranchesActuallyFireInCombat(string unitId)
+        {
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                var source = SourceModelNextAttackCatalog.All.Single(x => x.CatalogId == unitId);
+                var events = live.Battle.Advance(10);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains(source.JassFunction)), unitId);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.EffectDeferred &&
+                    e.Detail.Contains(source.DeferredNativeEffect)), unitId);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.Detail.Contains(source.JassFunction)), unitId);
+            }
+        }
+
+        [Test]
+        public void SquardDirectJassAreaDamageOccursAfterSourcePointTwoNineDelay()
+        {
+            using (var live = Create("S-15", true, -4900, 5400))
+            {
+                bool activated = false;
+                for (int i = 0; i < 150; i++)
+                {
+                    var events = live.Battle.Advance(.05);
+                    if (!events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                        e.Detail.Contains("BoC"))) continue;
+                    Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                        e.Detail.Contains("BoC")));
+                    activated = true;
+                    break;
+                }
+                Assert.IsTrue(activated, "First attack should dispatch BoC");
+                // The declaration may occur part-way through the .05 step:
+                // the .29 second hit must not be visible after just .20s.
+                var before = live.Battle.Advance(.20);
+                Assert.IsFalse(before.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.Detail.Contains("BoC")));
+                var after = live.Battle.Advance(.15);
+                Assert.IsTrue(after.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.Detail.Contains("BoC")));
+            }
+        }
+
+        [TestCase("S-05", "언홀리 프렌지")]
+        [TestCase("S-20", "리퀴드 파이어")]
+        [TestCase("S-28", "피닉스 파이어")]
+        public void SourceNativeBuffAndBurnActuallyActivate(string unitId, string ability)
+        {
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(8);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName != null && e.SkillName.Contains(ability)), unitId);
+                if (unitId == "S-20" || unitId == "S-28")
+                    Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                        e.Detail.Contains(unitId == "S-20" ? "Aliq" : "A0EA")),
+                        "At least one native object modeled damage tick");
+            }
+        }
+
+        [Test]
+        public void MoriaBlackArrowCreatesOneTemporaryRealZombieOnKillingBlow()
+        {
+            using (var live = Create("S-09", true, -4900, 5400, false))
+            {
+                var events = live.Battle.Advance(2);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains("A087/ANba")));
+                var zombie = live.Combat.MobileUnitSnapshot()
+                    .FirstOrDefault(x => x.Unit.Id == "U-14");
+                Assert.IsNotNull(zombie, "Summon must be an attack-capable h00H unit");
+                long firstZombieId = zombie.InstanceId;
+                live.Battle.Advance(11);
+                Assert.IsFalse(live.Combat.MobileUnitSnapshot().Any(x =>
+                    x.InstanceId == firstZombieId), "DataC1=10 lifetime must expire");
             }
         }
     }

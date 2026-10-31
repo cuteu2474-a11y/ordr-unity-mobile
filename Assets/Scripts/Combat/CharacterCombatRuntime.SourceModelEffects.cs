@@ -9,6 +9,10 @@ namespace Ordr.Mobile.Combat
         internal event Action<double> SourceModelTimeAdvancing;
         private SourceModelUnitEffects sourceModelUnitEffects;
         private SourceModelBasicCombatRules sourceModelRules;
+        private readonly Dictionary<long, double> sourceLowFrenzyReadyAt =
+            new Dictionary<long, double>();
+        private readonly Dictionary<string, long> sourceLiquidFireRevision =
+            new Dictionary<string, long>(StringComparer.Ordinal);
         private readonly HashSet<string> modelAuraKeys = new HashSet<string>(StringComparer.Ordinal);
         public SourceModelUnitEffects PracticeUnitEffects => sourceModelUnitEffects;
         internal void ConfigureSourceModelUnitEffects(SourceModelBasicCombatRules rules)
@@ -19,9 +23,35 @@ namespace Ordr.Mobile.Combat
             if (sourceModelUnitEffects != null)
                 attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {
                     // Reference-model cadence; this does not authorize native timing.
-                    double speed = SourceModelUnitEffects.ResolveSingleAura(effects, CombatEffectType.AttackSpeedBuff);
+                    double speed = SourceModelUnitEffects.ResolvePracticeAttackSpeed(effects);
                     return attack.IntervalSeconds / (1 + Math.Min(speed / 100.0, 4));
                 });
+        }
+        private void TrySourceModelLowFrenzy(string attackerId)
+        {
+            long id;
+            CharacterInstance actor;
+            if (sourceModelRules == null ||
+                !long.TryParse(attackerId, out id) ||
+                !characters.TryGetValue(id, out actor) ||
+                !actor.AttackReady || actor.Catalog.Id != "S-05") return;
+            double readyAt;
+            if (sourceLowFrenzyReadyAt.TryGetValue(id, out readyAt) &&
+                !CombatScheduler.HasReached(effectExecutor.Time, readyAt)) return;
+            // A08B/Auhf: +100% attack speed, duration 7s, cooldown 50s,
+            // range 750. Source confirms self is a valid target but not
+            // autocast prioritization. This offline policy targets self.
+            var status = unitStatuses[attackerId];
+            string source = "practice-native:A08B:" + attackerId;
+            status.RemoveSource(source);
+            status.Apply(new CombatEffect(source,
+                CombatEffectType.AttackSpeedBuff,
+                CombatEffectOrigin.TriggeredSkill, 100, 7));
+            sourceLowFrenzyReadyAt[id] = effectExecutor.Time + 50;
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated, attackerId, attackerId,
+                "트라팔가 로우 · 언홀리 프렌지",
+                "MODEL_ONLY A08B: 공격속도 +100% / 7초 / 50초, 자기 시전 모바일 정책 · 원본 자동 타깃 미검증", 0));
         }
         internal void MoveSourceModelEnemy(string id, double x, double y)
         {
@@ -89,6 +119,14 @@ namespace Ordr.Mobile.Combat
         }
         private void CompleteSourceModelHit(CharacterInstance actor, BasicAttackResult hit, SpatialCombatEnemy primary)
         {
+            // These native-object follow-ups have pinned W3A inputs and do
+            // not depend on the optional passive/aura catalog being present.
+            if (actor.Catalog.Id == "S-20" && hit.ActualDamage > 0 &&
+                primary.Enemy.IsAlive)
+                ScheduleSourceModelLiquidFire(actor, primary);
+            if (actor.Catalog.Id == "S-09" && hit.ActualDamage > 0 &&
+                !primary.Enemy.IsAlive && primary.Kind == CharacterEnemyKind.Line)
+                SpawnSourceModelMoriaZombie(actor, primary);
             if (sourceModelUnitEffects == null) return;
             var passive = sourceModelUnitEffects.Take(InstanceKey(actor.Id), hit.TargetId);
             if (passive != null)

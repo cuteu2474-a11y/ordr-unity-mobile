@@ -60,11 +60,20 @@ namespace Ordr.Mobile.Combat
                     aura.TargetMask == "invulnerable,self" ? "자신의 공격속도 증가(%)" : AuraName(aura.Type)) + " " +
                     aura.Amount.ToString("0.####") + " · 1단계 / 중첩 충돌 시 보류");
             SourceScriptAttackSpec script;
-            if (SourceModelScriptAttackCatalog.TryGet(rawcode, out script) &&
+            if ((SourceModelScriptAttackCatalog.TryGet(rawcode, out script) ||
+                 SourceModelNextAttackCatalog.TryGet(rawcode, out script)) &&
                 script.CatalogId == id)
                 result.Add("공격 선언 기술 · " +
                     (100.0 * script.RollSuccess / script.RollSides).ToString("0.####") +
                     "% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증");
+            if (id == "S-05" && rawcode == "h01H")
+                result.Add("A08B 언홀리 프렌지 · 자신 공속 +100% / 7초 / 50초 재사용 · 연습 자기 시전 모델, 원작 자동 대상 미검증");
+            if (id == "S-09" && rawcode == "h00B")
+                result.Add("A087 블랙 애로우 · 일반 적 처치 시 h00H 좀비 1기 / 10초 · 연습 소환 모델, 원본 조건 미검증");
+            if (id == "S-20" && rawcode == "h00Z")
+                result.Add("A0EG 리퀴드 파이어 · 타격 시 150/초 3초 화상 모델 · 원작 틱·면역·중첩 미검증");
+            if (id == "S-28" && rawcode == "h017")
+                result.Add("A0EA 피닉스 파이어 · 0.2초마다 600 범위 150 피해 · 연습 자동 타깃 모델, 원본 타이밍 미검증");
             return result.AsReadOnly();
         }
         public static string AuraName(CombatEffectType type)
@@ -150,6 +159,18 @@ namespace Ordr.Mobile.Combat
             foreach (var effect in effects)
                 if (effect.Type == type && effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal))
                     value = effect.Amount;
+            return value;
+        }
+
+        internal static double ResolvePracticeAttackSpeed(IReadOnlyList<CombatEffect> effects)
+        {
+            double value = ResolveSingleAura(effects, CombatEffectType.AttackSpeedBuff);
+            foreach (var effect in effects)
+                if (effect.Type == CombatEffectType.AttackSpeedBuff &&
+                    effect.SourceId.StartsWith("practice-native:A08B:", StringComparison.Ordinal))
+                    value = Math.Max(value, effect.Amount);
+            // No claim about native cross-buff stacking. This mobile model
+            // uses the strongest known effect until the original is observed.
             return value;
         }
     }
