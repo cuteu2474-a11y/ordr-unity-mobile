@@ -43,8 +43,8 @@ class NextThirtySourceBatchTests(unittest.TestCase):
         code = (COMBAT / "SourceModelBatchAttackCatalog.cs").read_text(encoding="utf-8")
         self.assertIn('Stage("Buo:45/1000", 1000, 45,', code)
         self.assertIn('Stage("Buo:125/1000", 1000, 125,', code)
-        self.assertIn('Stage("Bsk:unconditional Bsj", 0, 0,', code)
-        self.assertIn('Stage("Bsk:10/100 second Bsj", 100, 10,', code)
+        self.assertNotIn('Stage("Bsk:unconditional Bsj",', code)
+        self.assertIn('Stage("Bsk:10/100 fallback Bsj", 100, 10,', code)
         self.assertIn('Circle(385, 150000)', code)
         self.assertIn('Direct(900000, 1, 1.5)', code)
         self.assertIn('null, .04)', code)
@@ -58,6 +58,45 @@ class NextThirtySourceBatchTests(unittest.TestCase):
         self.assertIn("sourceBatchDelayedHitSequence", executor)
         self.assertIn("ApplySourceScriptHits", executor)
         self.assertIn("EffectDeferred", executor)
+        self.assertIn('spec.CatalogId == "L-27"', executor)
+        self.assertIn("primary.Enemy.Health <= primary.Enemy.MaxHealth * .15", executor)
+        self.assertIn("Bsk:health-gate", executor)
+
+
+    def test_attack_type_symbols_match_actual_runtime_enum(self):
+        # JASS ATTACK_TYPE_NORMAL is represented by Spells (index 0), not
+        # an invented Ordr323AttackType.Normal member. Prevent the same
+        # CS0117 compiler error anywhere in our combat source catalogs.
+        enum_source = (COMBAT / "Ordr323MapDamageMath.cs").read_text(encoding="utf-8")
+        declared = re.search(
+            r'public enum Ordr323AttackType\s*\{([^}]+)\}',
+            enum_source, re.DOTALL)
+        self.assertIsNotNone(declared)
+        names = set()
+        for line in declared.group(1).splitlines():
+            line = line.split("//", 1)[0].strip()
+            for member in line.split(","):
+                name = member.split("=", 1)[0].strip()
+                if name:
+                    self.assertRegex(name, r"^[A-Za-z_][A-Za-z0-9_]*$")
+                    names.add(name)
+        self.assertIn("Spells", names)
+        self.assertNotIn("Normal", names)
+        mismatches = {}
+        for file in (ROOT / "Assets/Scripts").rglob("*.cs"):
+            contents = file.read_text(encoding="utf-8")
+            references = set(re.findall(
+                r'\bOrdr323AttackType\.([A-Za-z_][A-Za-z0-9_]*)',
+                contents))
+            if references - names:
+                mismatches[str(file.relative_to(ROOT))] = sorted(references - names)
+        self.assertFalse(mismatches, f"Undefined Ordr323AttackType references: {mismatches}")
+        for filename in ("SourceModelBatchAttackCatalog.cs",
+                         "SourceModelFourthAttackCatalog.cs",
+                         "SourceModelFifthAttackCatalog.cs"):
+            contents = (COMBAT / filename).read_text(encoding="utf-8")
+            self.assertIn("Ordr323AttackType.Spells", contents)
+            self.assertNotIn("Ordr323AttackType.Normal", contents)
 
     def test_coverage_report_never_claims_whole_unit_skill_complete(self):
         report = json.loads((ROOT / "data/original-2323C-next-30-runtime-coverage.json").read_text(encoding="utf-8"))

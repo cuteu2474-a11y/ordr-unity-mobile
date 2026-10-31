@@ -55,7 +55,7 @@ namespace Ordr.Mobile.Combat
         public const string SourceJassSha256 = SourceModelScriptAttackCatalog.SourceJassSha256;
 
         private static SourceScriptHit Direct(double amount, double minimum = 1,
-            double maximum = 1, Ordr323AttackType type = Ordr323AttackType.Normal)
+            double maximum = 1, Ordr323AttackType type = Ordr323AttackType.Spells)
         {
             return new SourceScriptHit(SourceScriptHitShape.Direct, 0, 0,
                 amount, minimum, maximum, type);
@@ -63,7 +63,7 @@ namespace Ordr.Mobile.Combat
 
         private static SourceScriptHit Circle(double radius, double amount,
             double minimum = 1, double maximum = 1,
-            Ordr323AttackType type = Ordr323AttackType.Normal)
+            Ordr323AttackType type = Ordr323AttackType.Spells)
         {
             return new SourceScriptHit(SourceScriptHitShape.Circle, radius, 0,
                 amount, minimum, maximum, type);
@@ -97,14 +97,14 @@ namespace Ordr.Mobile.Combat
                     new[] { Circle(525, 285000) }),
                 Stage("Buo:125/1000", 1000, 125,
                     new[] { Circle(525, 175000) })),
-            // Bsk calls Bsj ALWAYS, then 10% calls it a second time.
+            // Bsk is NOT unconditional: <=15% life AND Bdl triggers
+            // one Bsj, otherwise there is one fallback 10% BFi roll.
+            // The Bdl target ability predicate is not available to the
+            // practice model; low-health targets are explicitly deferred.
             // Bsj state 1 happens after BJ3(.04), with target point pinned.
             new SourceModelBatchAttackSpec("L-27", "h02S", "Bsk/Bsj",
-                "Bsj Bdl and victim <=15% max-health execute extra 2x max-health deferred",
-                Stage("Bsk:unconditional Bsj", 0, 0,
-                    new[] { Direct(900000, 1, 1.5), Circle(385, 150000) },
-                    null, .04),
-                Stage("Bsk:10/100 second Bsj", 100, 10,
+                "Bsk <=15% health requires Bdl(A902/A911/A903/A904) class; exact low-health branch deferred",
+                Stage("Bsk:10/100 fallback Bsj", 100, 10,
                     new[] { Direct(900000, 1, 1.5), Circle(385, 150000) },
                     null, .04)),
             // BtL has an independently gated 115-mana radius-600 branch.

@@ -10,14 +10,14 @@ namespace Ordr.Mobile.Combat
         private static SourceScriptHit Direct(double amount, double min = 1, double max = 1)
         {
             return new SourceScriptHit(SourceScriptHitShape.Direct, 0, 0,
-                amount, min, max, Ordr323AttackType.Normal);
+                amount, min, max, Ordr323AttackType.Spells);
         }
 
         private static SourceScriptHit Circle(double radius, double amount,
             double min = 1, double max = 1)
         {
             return new SourceScriptHit(SourceScriptHitShape.Circle, radius, 0,
-                amount, min, max, Ordr323AttackType.Normal);
+                amount, min, max, Ordr323AttackType.Spells);
         }
 
         private static readonly SourceScriptAttackSpec[] Entries = {

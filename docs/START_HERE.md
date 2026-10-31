@@ -1,3 +1,10 @@
+## Unity 컴파일 실패 일괄 수정 (2026-10-31)
+
+- 워크플로 `41171281180`: Python 비 Unity 회귀 검사는 통과, Unity `CS0117`로 실패하여 APK 작업이 건너뛰어졌습니다. 원인은 `SourceModelBatchAttackCatalog`의 잘못된 `Ordr323AttackType.Normal` 참조 2곳입니다. 같은 잘못된 식별자가 `SourceModelFourthAttackCatalog`·`SourceModelFifthAttackCatalog`에도 각각 2곳 존재했습니다.
+- 원본 JASS `ATTACK_TYPE_NORMAL`에 대응하는 실제 엔진 열거형은 `Ordr323AttackType.Spells`입니다. 3개 파일의 6개 참조를 수정하고, Python 회귀 검사에서 실제 `Ordr323AttackType` 선언과 전투 소스 참조를 비교하도록 했습니다.
+- 독립 원본 대조에서 **전설 조로 `Bsk`에 무조건 스킬 경로가 없는데 이전 개발 모델에 매 공격 + 추가 10% 발동을 넣은 로직 오류**도 확인했습니다. 실제 `Bsk`는 적 체력 15% 이하이면서 `Bdl`이면 한 번 발동, 그렇지 않으면 10%를 판정합니다. 능력 `A902/A911/A903/A904` 확인이 없는 저체력 적은 추측 발동하지 않고 보류하며, 일반 체력 구간의 10%만 모델링합니다.
+- 이번 수정은 컴파일 오류 및 직접 연관 전투 로직에 대한 코드 수정입니다. Unity/Android 결과·실기 동등성은 새 워크플로 확인 전 단정하지 않습니다.
+
 ## 현재 작업 묶음 — 원본 공격 콜백 30명 대조 및 MODEL_ONLY 분리 구현 (2026-10-31)
 
 - 고정 JASS SHA-256 `96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d` 원본에서 30명 중 `w5` 공격 콜백 28명 확인. S-32과 E-02는 해당 경로 없음.
