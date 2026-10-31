@@ -24,7 +24,8 @@ namespace Ordr.Mobile.Combat
                 !processingStep || game.Phase != SessionPhase.Running ||
                 (!SourceModelScriptAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelNextAttackCatalog.TryGet(rawcode, out script) &&
-                 !SourceModelThirdAttackCatalog.TryGet(rawcode, out script)))
+                 !SourceModelThirdAttackCatalog.TryGet(rawcode, out script) &&
+                 !SourceModelFourthAttackCatalog.TryGet(rawcode, out script)))
                 return;
 
             long id;
