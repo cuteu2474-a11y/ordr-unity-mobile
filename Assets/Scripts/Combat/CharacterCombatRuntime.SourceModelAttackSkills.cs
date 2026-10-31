@@ -19,14 +19,16 @@ namespace Ordr.Mobile.Combat
             // a fabricated JASS callback. See TrySourceModelLowFrenzy.
             if (rawcode == "h01H" && UsesSourceModelBasicAttacks && processingStep)
                 TrySourceModelLowFrenzy(attackerId);
-            SourceScriptAttackSpec script;
+            SourceScriptAttackSpec script = null;
+            SourceModelBatchAttackSpec batch = null;
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 !processingStep || game.Phase != SessionPhase.Running ||
                 (!SourceModelScriptAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelNextAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelThirdAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelFourthAttackCatalog.TryGet(rawcode, out script) &&
-                 !SourceModelFifthAttackCatalog.TryGet(rawcode, out script)))
+                 !SourceModelFifthAttackCatalog.TryGet(rawcode, out script) &&
+                 !SourceModelBatchAttackCatalog.TryGet(rawcode, out batch)))
                 return;
 
             long id;
@@ -40,6 +42,12 @@ namespace Ordr.Mobile.Combat
                 !enemies.TryGetValue(primaryTargetId, out primary) ||
                 !primary.Enemy.IsAlive || !CanAttackInThisLane(actor, primary))
                 return;
+
+            if (batch != null)
+            {
+                ExecuteSourceModelBatchAttack(actor, primary, batch);
+                return;
+            }
 
             // JASS Btd (Cracker) uses Bcb every attacked event, THEN rolls
             // its separate e04X/area branch. Do not reverse this ordering.

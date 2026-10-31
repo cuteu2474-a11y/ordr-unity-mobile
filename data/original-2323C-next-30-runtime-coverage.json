@@ -1,0 +1,313 @@
+{
+  "format": "ordr-next-30-runtime-coverage-v2",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "scope": "MODEL_ONLY direct scripted damage and explicit independent BFi branches; not an original/WC3-equivalent skill port",
+  "originalAttackCallbackCount": 28,
+  "unitsWithModeledDamage": 18,
+  "unitsWithoutModeledDamage": 12,
+  "fullyCompleteUnitCount": 0,
+  "apkStatus": "requested-not-built",
+  "note": "A damage packet modeled does not imply a whole unit implemented. Unknown native side effects, state, timed trigger, target ability masks, RNG order, immunity and final damage remain unresolved.",
+  "units": [
+    {
+      "id": "S-32",
+      "name": "파이러츠 도킹5",
+      "rawcode": "h01G",
+      "attackCallback": null,
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Active/cast/original object ability paths (no w5 callback)"
+    },
+    {
+      "id": "R-03",
+      "name": "검은수염",
+      "rawcode": "h021",
+      "attackCallback": "Boa",
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "R-05",
+      "name": "트라팔가 로우 죽음의 외과의사",
+      "rawcode": "h02L",
+      "attackCallback": "Boi",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "R-07",
+      "name": "류마",
+      "rawcode": "h025",
+      "attackCallback": "Bos",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelThird/Fourth/FifthAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "H-05",
+      "name": "류마",
+      "rawcode": "h044",
+      "attackCallback": "Bri",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelThird/Fourth/FifthAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "H-09",
+      "name": "방주맥심",
+      "rawcode": "h03X",
+      "attackCallback": "Br8",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "H-13",
+      "name": "스튜시",
+      "rawcode": "h055",
+      "attackCallback": "BrI",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelThird/Fourth/FifthAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "H-15",
+      "name": "써니호",
+      "rawcode": "h03L",
+      "attackCallback": "Bru",
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "H-17",
+      "name": "아카이누",
+      "rawcode": "h03Z",
+      "attackCallback": "Bq9",
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "L-08",
+      "name": "트라팔가 로우",
+      "rawcode": "h03C",
+      "attackCallback": "Buo",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "L-19",
+      "name": "슈가",
+      "rawcode": "h037",
+      "attackCallback": "Btq",
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "L-21",
+      "name": "시노부",
+      "rawcode": "h042",
+      "attackCallback": "Bt2",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelThird/Fourth/FifthAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "L-27",
+      "name": "조로",
+      "rawcode": "h02S",
+      "attackCallback": "Bsk",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "L-32",
+      "name": "쿠마 폭군",
+      "rawcode": "h030",
+      "attackCallback": "BtL",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "L-01",
+      "name": "검은수염",
+      "rawcode": "h02U",
+      "attackCallback": "Bsu",
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "L-16",
+      "name": "상디",
+      "rawcode": "h034",
+      "attackCallback": "Btb",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelThird/Fourth/FifthAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "L-23",
+      "name": "시키",
+      "rawcode": "h039",
+      "attackCallback": "Bt8",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "L-38",
+      "name": "흰수염",
+      "rawcode": "h03B",
+      "attackCallback": "BuT",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "TR-21",
+      "name": "보니",
+      "rawcode": "H0BX",
+      "attackCallback": "B4C",
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "TR-28",
+      "name": "프랑키",
+      "rawcode": "H08Y",
+      "attackCallback": "BzH",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelThird/Fourth/FifthAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "TR-01",
+      "name": "검은수염",
+      "rawcode": "H090",
+      "attackCallback": "Bz1",
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "TR-03",
+      "name": "도플라밍고",
+      "rawcode": "H09E",
+      "attackCallback": "B1P",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "TR-17",
+      "name": "아카이누",
+      "rawcode": "H095",
+      "attackCallback": "B0e",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "TR-27",
+      "name": "타시기",
+      "rawcode": "H05N",
+      "attackCallback": "B19",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "E-03",
+      "name": "류마",
+      "rawcode": "h0CJ",
+      "attackCallback": "B8E",
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "E-06",
+      "name": "비비",
+      "rawcode": "h057",
+      "attackCallback": "B59",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "E-02",
+      "name": "니카(스네이크)",
+      "rawcode": null,
+      "attackCallback": null,
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Original catalog identity/rawcode mapping and non-w5 ability paths"
+    },
+    {
+      "id": "I-09",
+      "name": "시키",
+      "rawcode": "h04B",
+      "attackCallback": "B93",
+      "damagePacketsModeled": true,
+      "modelLocation": "SourceModelBatchAttackCatalog",
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "LI-10",
+      "name": "킹",
+      "rawcode": "h0AI",
+      "attackCallback": "BwW",
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    },
+    {
+      "id": "MY-10",
+      "name": "콘파쿠 요우무",
+      "rawcode": "h0CC",
+      "attackCallback": "CGO",
+      "damagePacketsModeled": false,
+      "modelLocation": null,
+      "allOriginalSkillsComplete": false,
+      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+    }
+  ]
+}
