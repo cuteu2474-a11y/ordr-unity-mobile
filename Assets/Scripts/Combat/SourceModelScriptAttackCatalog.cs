@@ -70,9 +70,10 @@ namespace Ordr.Mobile.Combat
 
         private static SourceScriptHit Rankyaku()
         {
-            // A0VS/parent AUcs: area1=200, range1=1700, dataA1=150.
-            // Direction toward the current auto-target is a MOBILE MODEL
-            // choice: native PointAtAttackerLocation is NOT yet verified.
+            // A0VS/AUcs: area=200, range=1700, damage=150. Bnm/Bnp
+            // actually order carrionswarm at the ATTACKER'S OWN location.
+            // The mobile aim toward the current target is a model choice:
+            // no Warcraft facing/path witness is available.
             return new SourceScriptHit(SourceScriptHitShape.RankyakuLine,
                 200, 1700, 150, 1, 1, Ordr323AttackType.Spells);
         }
@@ -89,7 +90,7 @@ namespace Ordr.Mobile.Combat
             Row("U-13", "h00A", "Bnp", 100, 10,
                 new[] { Rankyaku() }, "A0VS 원본 투사체/방향·면역 미검증"),
             Row("S-03", "h00P", "Bnt", 100, 10,
-                new[] { Circle(400, 800) }, "e00K 보조 소환의 네이티브 효과"),
+                new[] { Circle(400, 800) }, "e00K/A089 이동속도 -5% 오라의 원본 지속/중첩·면역 미검증"),
             Row("S-13", "h013", "Bn6", 100, 20,
                 new[] { Direct(500) }, "e00P 보조 소환의 네이티브 효과"),
             Row("R-11", "h04H", "Bo4", 100, 10,
@@ -97,17 +98,17 @@ namespace Ordr.Mobile.Combat
             Row("R-12", "h01W", "Bo6", 100, 10,
                 new[] { Circle(375, 6000) }, "e01F 보조 소환의 네이티브 효과"),
             Row("R-13", "h01V", "Bo9", 100, 10,
-                new[] { Circle(425, 12000) }, "e01G inferno 주문의 네이티브 효과"),
+                new[] { Circle(425, 12000) }, "e01G/A14X 인페르노 보스 저항/타격시점 미검증"),
             Row("R-21", "h02I", "BpM", 100, 20,
                 new[] { Direct(5000, .8, 1.5) }),
             Row("R-23", "h028", "BpQ", 100, 30,
                 new[] { Circle(260, 5000, Ordr323AttackType.Chaos) }),
             Row("R-26", "h02B", "BpX", 100, 10,
-                new[] { Circle(405, 9000) }, "e01L/h0C5/A14Y 보조 주문"),
+                new[] { Circle(405, 9000) }, "h0C5/A14Y 인페르노 보스 저항/타격시점 미검증"),
             Row("R-30", "h02C", "Bpd", 100, 10,
-                new[] { Circle(485, 7500) }, "e01P inferno 주문"),
+                new[] { Circle(485, 7500) }, "e01P/A150 인페르노 보스 저항/타격시점 미검증"),
             Row("R-31", "h02A", "Bpf", 100, 7,
-                new[] { Circle(500, 13000) }, "e01Q inferno 주문"),
+                new[] { Circle(500, 13000) }, "e01Q/A151 인페르노 보스 저항/타격시점 미검증"),
             Row("R-35", "h02K", "Bps", 100, 12,
                 new[] { Circle(375, 35000, Ordr323AttackType.Siege),
                     Direct(17500, 1, 1, Ordr323AttackType.Siege) },
@@ -118,17 +119,20 @@ namespace Ordr.Mobile.Combat
                 new[] { Circle(500, 85000) }, "e03H inferno 주문"),
             Row("H-16", "h041", "Bq3", 100, 10,
                 new[] { Direct(330000), Circle(415, 120000) },
-                "e031 inferno 주문"),
+                "e031/A156 인페르노 보스 저항/타격시점 미검증"),
             Row("H-18", "h03Y", "Bqh", 100, 11,
                 new[] { Circle(500, 100000) }, "e02V/e013 보조 소환"),
             Row("L-29", "h03K", "BsF", 100, 15,
                 new[] { Direct(150000, 1, 3) }, "e03S 보조 소환"),
             Row("L-33", "h03H", "Btd", 100, 8,
-                new[] { Circle(550, 250000) }, "e04X 보조 소환",
+                // e04X has only Aloc/Avul: a VISUAL helper. Btd's Bcb
+                // 20000 on every attack and 250000 AoE on 8% are complete
+                // explicit JASS damage; no extra native combat effect.
+                new[] { Circle(550, 250000) }, null,
                 new[] { Direct(20000) }),
             Row("RN-04", "h06X", "CCg", 100, 17,
                 new[] { Circle(375, 1500000, Ordr323AttackType.Chaos) },
-                "Bd8(A04R)+15 및 e0LD/e0LE faeriefire 주문")
+                "Bd8(A04R)+15의 네이티브 isr2 피해 환산과 A10I faeriefire 시전/면역 미검증")
         };
 
         private static readonly Dictionary<string, SourceScriptAttackSpec> ByRawcode = Build();

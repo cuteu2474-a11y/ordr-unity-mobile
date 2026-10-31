@@ -229,5 +229,73 @@ namespace Ordr.Mobile.Tests
                     x.InstanceId == firstZombieId), "DataC1=10 lifetime must expire");
             }
         }
+
+        [TestCase("R-13", "A14X", .9)]
+        [TestCase("R-26", "A14Y", .95)]
+        [TestCase("R-30", "A150", 1.15)]
+        [TestCase("R-31", "A151", 1.2)]
+        [TestCase("H-16", "A156", 1.7)]
+        public void FiveInfernoFollowupsApplyPinnedNativeStunNotExtraDamage(
+            string unitId, string ability, double duration)
+        {
+            var spec = SourceModelLegacyNativeFollowupCatalog.All
+                .Single(x => x.CatalogId == unitId);
+            Assert.AreEqual(ability, spec.AbilityRawcode);
+            Assert.AreEqual(duration, spec.NormalStunSeconds, 1e-9);
+            Assert.AreEqual(.01, spec.ImpactDelaySeconds, 1e-9);
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(6);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains(ability) && e.Detail.Contains("기절")), unitId);
+                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.Detail.Contains(ability)), "AUin DataA1 is ZERO; native stun is not extra damage");
+            }
+        }
+
+        [Test]
+        public void NamiDummyPlacesAnActualFivePercentSlowZone()
+        {
+            using (var live = Create("S-03", true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(2.5);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains("e00K/A089")));
+                Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(e =>
+                    live.Combat.StatusOf(e.Id).Snapshot().Any(status =>
+                        status.SourceId.StartsWith("practice-nami:A089:") &&
+                        status.Type == CombatEffectType.MovementSlowPercent &&
+                        status.Amount == 5)));
+            }
+        }
+
+        [Test]
+        public void SentinelAppliesFifteenNativeA04RLevelsAndSixtySecondFaerieFire()
+        {
+            using (var live = Create("RN-04", true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(5);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains("Bd8(A04R): 1→16")));
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains("e0LE/A10I")));
+                Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(e =>
+                    live.Combat.StatusOf(e.Id).Snapshot().Any(effect =>
+                        effect.SourceId == "practice-native:A10I" &&
+                        effect.Type == CombatEffectType.ArmorReduction &&
+                        effect.Amount == 50 && effect.DurationSeconds == 60)));
+            }
+        }
+
+        [Test]
+        public void CrackerVisualDummyAddsNoUnverifiedSecondDamageSource()
+        {
+            var cracker = SourceModelScriptAttackCatalog.All.Single(x => x.CatalogId == "L-33");
+            Assert.IsNull(cracker.DeferredNativeEffect,
+                "e04X contains only Aloc and Avul; no native combat damage");
+            Assert.AreEqual(1, cracker.Always.Count);
+            Assert.AreEqual(20000, cracker.Always[0].Damage);
+            Assert.AreEqual(250000, cracker.OnProc.Single().Damage);
+        }
     }
 }

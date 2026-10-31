@@ -74,6 +74,18 @@ namespace Ordr.Mobile.Combat
                 result.Add("A0EG 리퀴드 파이어 · 타격 시 150/초 3초 화상 모델 · 원작 틱·면역·중첩 미검증");
             if (id == "S-28" && rawcode == "h017")
                 result.Add("A0EA 피닉스 파이어 · 0.2초마다 600 범위 150 피해 · 연습 자동 타깃 모델, 원본 타이밍 미검증");
+            if (id == "S-03" && rawcode == "h00P")
+                result.Add("A089 크리마텍트 · 소환 위치 반경 450 적 이동속도 -5% 오라 모델 · 소환물 수명/중첩 미검증");
+            SourceModelInfernoFollowup inferno;
+            if (SourceModelLegacyNativeFollowupCatalog.TryGet(id, out inferno))
+                result.Add(inferno.AbilityRawcode + " 인페르노 · " +
+                    inferno.Radius + " 범위 일반 적 기절 " +
+                    inferno.NormalStunSeconds + "초 / 추가 피해 0 · 원본 보스/면역 미검증");
+            if (id == "RN-04" && rawcode == "h06X")
+            {
+                result.Add("A04R/Bd8 · 원본 웨이브 A04R 레벨 +15 누적 · 네이티브 isr2 피해 적용 미검증");
+                result.Add("A10I 페어리 파이어 · 방어력 -50 / 60초 · 연습 모델, 원본 시전 시점/중첩 미검증");
+            }
             return result.AsReadOnly();
         }
         public static string AuraName(CombatEffectType type)
@@ -172,6 +184,31 @@ namespace Ordr.Mobile.Combat
             // No claim about native cross-buff stacking. This mobile model
             // uses the strongest known effect until the original is observed.
             return value;
+        }
+
+        internal static double ResolvePracticeMovementSlow(IReadOnlyList<CombatEffect> effects)
+        {
+            double strongest = 0;
+            foreach (var effect in effects)
+                if (effect.Type == CombatEffectType.MovementSlowPercent &&
+                    (effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-nami:A089:", StringComparison.Ordinal)))
+                    strongest = Math.Max(strongest, effect.Amount);
+            // Native aura conflict rules remain unknown: strongest wins in
+            // this mobile reference rather than silently stacking sources.
+            return strongest;
+        }
+
+        internal static double ResolvePracticeArmorReduction(IReadOnlyList<CombatEffect> effects)
+        {
+            double aura = ResolveSingleAura(effects, CombatEffectType.ArmorReduction);
+            double faerie = 0;
+            foreach (var effect in effects)
+                if (effect.Type == CombatEffectType.ArmorReduction &&
+                    effect.SourceId == "practice-native:A10I")
+                    faerie = Math.Max(faerie, effect.Amount);
+            // This practice arithmetic is not native A04R/isr2 damage logic.
+            return aura + faerie;
         }
     }
 }

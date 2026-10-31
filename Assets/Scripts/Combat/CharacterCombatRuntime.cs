@@ -1372,6 +1372,7 @@ namespace Ordr.Mobile.Combat
                     CanAttackInThisLane(characters[id], enemy));
             RefreshOriginalSpecialAuras();
             RefreshSourceModelAuras();
+            RefreshSourceModelNamiZones();
         }
 
         // 다중 타격/지속 피해 실행 시각은 원작 출처를 가진 공급자만 연결한다.
@@ -2788,6 +2789,7 @@ namespace Ordr.Mobile.Combat
         private void RemoveEnemyRuntimeState(string id)
         {
             moriaParticipation.Forget(id);
+            sourcePracticeA04RLevels.Remove(id);
             effectExecutor.CancelTarget(id);
             enemies.Remove(id);
             statuses.Remove(id);

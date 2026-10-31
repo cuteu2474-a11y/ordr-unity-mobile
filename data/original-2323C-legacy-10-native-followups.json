@@ -1,0 +1,426 @@
+{
+  "format": "ordr-legacy-10-native-followups-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "runtimeAuthorization": "MODEL_ONLY",
+  "verifiedFullWarcraftNativeParity": false,
+  "waveSourceA04RInitialLevel": 1,
+  "waveTypesWithA04R": [
+    "o001",
+    "o003",
+    "o004",
+    "o005",
+    "o006",
+    "o007",
+    "o008",
+    "o009",
+    "o00A",
+    "o00B",
+    "o00C",
+    "o00D",
+    "o00E",
+    "o00F",
+    "o00G",
+    "o00H",
+    "o00I",
+    "o00K",
+    "o00M",
+    "o00N",
+    "o00O",
+    "o00P",
+    "o00Q",
+    "o00R",
+    "o00S",
+    "o00T",
+    "o00U",
+    "o00V",
+    "o00X",
+    "o00Z",
+    "o010",
+    "o011",
+    "o012",
+    "o015",
+    "o017",
+    "o018",
+    "o019",
+    "o01A",
+    "o01B",
+    "o01D",
+    "o01E",
+    "o01F",
+    "o01G",
+    "o01H",
+    "o01L",
+    "o01M",
+    "o01N",
+    "o01O",
+    "o01Q",
+    "o01R",
+    "o01S",
+    "o01T",
+    "o01U",
+    "o01V",
+    "o01W",
+    "o01X",
+    "o01Y",
+    "o01Z",
+    "o020",
+    "o021",
+    "o025",
+    "o026",
+    "o027",
+    "o028",
+    "o02B",
+    "o02C",
+    "o02G",
+    "o02H"
+  ],
+  "waveTypesWithA04RCount": 68,
+  "sourceA04RLevelMax": 26,
+  "sourceSentinelA04RIncrease": 15,
+  "units": [
+    {
+      "catalogId": "U-04",
+      "ownerRawcode": "h00M",
+      "sourceCallback": "Bnm",
+      "nativeDummyRawcode": "e0KD",
+      "dummyAbilityRawcodes": [
+        "A15O",
+        "A0VS",
+        "A086",
+        "A08I",
+        "A08L",
+        "A0HX",
+        "Aloc",
+        "Avul"
+      ],
+      "nativeAbilityRawcode": "A0VS",
+      "nativeAbilityFields": {
+        "code": "AUcs",
+        "targs1": "ground,air",
+        "DataA1": "150.",
+        "DataB1": "70000000.",
+        "DataC1": "800.0",
+        "DataD1": "250.",
+        "Area1": "200.",
+        "Rng1": "1700.",
+        "Cast1": "0.0",
+        "Dur1": "0.0",
+        "HeroDur1": "0.0",
+        "Cool1": "0.",
+        "BuffID1": "BUcs",
+        "levels": "1"
+      },
+      "sourceJassOperations": [
+        "if BFi(1,100)<=10 then",
+        "set Vr=CreateUnitAtLoc(HY,$65304B44,Id,I0)",
+        "call IssuePointOrderLoc(Vr,\"carrionswarm\",Id)"
+      ],
+      "verifiedFinalWarcraftOutput": false
+    },
+    {
+      "catalogId": "U-13",
+      "ownerRawcode": "h00A",
+      "sourceCallback": "Bnp",
+      "nativeDummyRawcode": "e0KD",
+      "dummyAbilityRawcodes": [
+        "A15O",
+        "A0VS",
+        "A086",
+        "A08I",
+        "A08L",
+        "A0HX",
+        "Aloc",
+        "Avul"
+      ],
+      "nativeAbilityRawcode": "A0VS",
+      "nativeAbilityFields": {
+        "code": "AUcs",
+        "targs1": "ground,air",
+        "DataA1": "150.",
+        "DataB1": "70000000.",
+        "DataC1": "800.0",
+        "DataD1": "250.",
+        "Area1": "200.",
+        "Rng1": "1700.",
+        "Cast1": "0.0",
+        "Dur1": "0.0",
+        "HeroDur1": "0.0",
+        "Cool1": "0.",
+        "BuffID1": "BUcs",
+        "levels": "1"
+      },
+      "sourceJassOperations": [
+        "if BFi(1,100)<=10 then",
+        "set Vr=CreateUnitAtLoc(HY,$65304B44,Id,I0)",
+        "call IssuePointOrderLoc(Vr,\"carrionswarm\",Id)"
+      ],
+      "verifiedFinalWarcraftOutput": false
+    },
+    {
+      "catalogId": "S-03",
+      "ownerRawcode": "h00P",
+      "sourceCallback": "Bnt",
+      "nativeDummyRawcode": "e00K",
+      "dummyAbilityRawcodes": [
+        "A089",
+        "Aloc",
+        "Avul"
+      ],
+      "nativeAbilityRawcode": "A089",
+      "nativeAbilityFields": {
+        "code": "AOae",
+        "targs1": "air,enemies,ground",
+        "DataA1": "-0.05",
+        "DataB1": "0.",
+        "Area1": "450.",
+        "Rng1": "0.0",
+        "Cast1": "0.0",
+        "Dur1": "0.0",
+        "HeroDur1": "0.0",
+        "Cool1": "0.0",
+        "BuffID1": "B010",
+        "levels": "1"
+      },
+      "sourceJassOperations": [
+        "if BFi(1,100)<=10 then",
+        "set Vr=CreateUnitAtLoc(HY,$6530304B,Ie,bj_UNIT_FACING)",
+        "call UnitDamagePointLoc(JL,0,400,Ie,800,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+      ],
+      "verifiedFinalWarcraftOutput": false
+    },
+    {
+      "catalogId": "R-13",
+      "ownerRawcode": "h01V",
+      "sourceCallback": "Bo9",
+      "nativeDummyRawcode": "e01G",
+      "dummyAbilityRawcodes": [
+        "A14X",
+        "Aloc",
+        "Avul"
+      ],
+      "nativeAbilityRawcode": "A14X",
+      "nativeAbilityFields": {
+        "code": "AUin",
+        "targs1": "air,enemies,ground",
+        "DataA1": "0.",
+        "DataB1": "0.01",
+        "DataC1": "0.",
+        "Area1": "425.",
+        "Rng1": "9999.",
+        "Cast1": "0.0",
+        "Dur1": "0.9",
+        "HeroDur1": "0.18",
+        "Cool1": "0.01",
+        "UnitID1": "h0C5",
+        "BuffID1": "BPSE",
+        "levels": "1"
+      },
+      "sourceJassOperations": [
+        "if BFi(1,100)<=10 then",
+        "set Vr=CreateUnitAtLoc(HY,$65303147,Ie,bj_UNIT_FACING)",
+        "call IssuePointOrderById(Vr,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+        "call UnitDamagePointLoc(JL,0.,425,Ie,12000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+      ],
+      "verifiedFinalWarcraftOutput": false
+    },
+    {
+      "catalogId": "R-26",
+      "ownerRawcode": "h02B",
+      "sourceCallback": "BpX",
+      "nativeDummyRawcode": "h0C5",
+      "dummyAbilityRawcodes": [
+        "Aloc",
+        "Amrf",
+        "Avul"
+      ],
+      "nativeAbilityRawcode": "A14Y",
+      "nativeAbilityFields": {
+        "code": "AUin",
+        "targs1": "air,enemies,ground",
+        "DataA1": "0.",
+        "DataB1": "0.01",
+        "DataC1": "0.",
+        "Area1": "405.",
+        "Rng1": "9999.",
+        "Cast1": "0.0",
+        "Dur1": "0.95",
+        "HeroDur1": "0.19",
+        "Cool1": "0.01",
+        "UnitID1": "h0C5",
+        "BuffID1": "BPSE",
+        "levels": "1"
+      },
+      "sourceJassOperations": [
+        "if BFi(1,100)<=10 then",
+        "set Vr=CreateUnitAtLoc(HY,$6530314C,Ie,bj_UNIT_FACING)",
+        "set Vr=CreateUnitAtLoc(HY,$68304335,Ie,bj_UNIT_FACING)",
+        "call UnitAddAbility(Vr,$41313459)",
+        "call UnitApplyTimedLife(Vr,$42487765,1)",
+        "call IssuePointOrderById(Vr,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+        "call UnitDamagePointLoc(JL,0.,405,Ie,9000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+      ],
+      "verifiedFinalWarcraftOutput": false
+    },
+    {
+      "catalogId": "R-30",
+      "ownerRawcode": "h02C",
+      "sourceCallback": "Bpd",
+      "nativeDummyRawcode": "e01P",
+      "dummyAbilityRawcodes": [
+        "A150",
+        "Aloc",
+        "Avul"
+      ],
+      "nativeAbilityRawcode": "A150",
+      "nativeAbilityFields": {
+        "code": "AUin",
+        "targs1": "air,enemies,ground",
+        "DataA1": "0.",
+        "DataB1": "0.01",
+        "DataC1": "0.",
+        "Area1": "485.",
+        "Rng1": "9999.",
+        "Cast1": "0.0",
+        "Dur1": "1.15",
+        "HeroDur1": "0.23",
+        "Cool1": "0.01",
+        "UnitID1": "h0C5",
+        "BuffID1": "BPSE",
+        "levels": "1"
+      },
+      "sourceJassOperations": [
+        "if BFi(1,100)<=10 then",
+        "set Vr=CreateUnitAtLoc(HY,$65303150,Ie,bj_UNIT_FACING)",
+        "call IssuePointOrderById(Vr,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+        "call UnitDamagePointLoc(JL,0.,485,Ie,7500,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+      ],
+      "verifiedFinalWarcraftOutput": false
+    },
+    {
+      "catalogId": "R-31",
+      "ownerRawcode": "h02A",
+      "sourceCallback": "Bpf",
+      "nativeDummyRawcode": "e01Q",
+      "dummyAbilityRawcodes": [
+        "A151",
+        "Aloc",
+        "Avul"
+      ],
+      "nativeAbilityRawcode": "A151",
+      "nativeAbilityFields": {
+        "code": "AUin",
+        "targs1": "air,enemies,ground",
+        "DataA1": "0.",
+        "DataB1": "0.01",
+        "DataC1": "0.",
+        "Area1": "500.",
+        "Rng1": "9999.",
+        "Cast1": "0.0",
+        "Dur1": "1.2",
+        "HeroDur1": "0.24",
+        "Cool1": "0.01",
+        "UnitID1": "h0C5",
+        "BuffID1": "BPSE",
+        "levels": "1"
+      },
+      "sourceJassOperations": [
+        "if BFi(1,100)<=7 then",
+        "set Vr=CreateUnitAtLoc(HY,$65303151,Ie,bj_UNIT_FACING)",
+        "call IssuePointOrderById(Vr,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+        "call UnitDamagePointLoc(JL,0.,500,Ie,13000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+      ],
+      "verifiedFinalWarcraftOutput": false
+    },
+    {
+      "catalogId": "H-16",
+      "ownerRawcode": "h041",
+      "sourceCallback": "Bq3",
+      "nativeDummyRawcode": "e031",
+      "dummyAbilityRawcodes": [
+        "A156",
+        "Aloc",
+        "Avul"
+      ],
+      "nativeAbilityRawcode": "A156",
+      "nativeAbilityFields": {
+        "code": "AUin",
+        "targs1": "air,enemies,ground",
+        "DataA1": "0.",
+        "DataB1": "0.01",
+        "DataC1": "0.",
+        "Area1": "415.",
+        "Rng1": "9999.",
+        "Cast1": "0.0",
+        "Dur1": "1.7",
+        "HeroDur1": "0.34",
+        "Cool1": "0.01",
+        "UnitID1": "h0C5",
+        "BuffID1": "BPSE",
+        "levels": "1"
+      },
+      "sourceJassOperations": [
+        "if BFi(1,100)<=10 then",
+        "set JI=CreateUnitAtLoc(HY,$65303331,Ie,GetRandomDirectionDeg())",
+        "call IssuePointOrderById(JI,OrderId(\"dreadlordinferno\"),GetLocationX(Ie),GetLocationY(Ie))",
+        "call Bcb(JL,RN,330000.,1.,1.,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)",
+        "call UnitDamagePointLoc(JL,0,415,Ie,120000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+      ],
+      "verifiedFinalWarcraftOutput": false
+    },
+    {
+      "catalogId": "L-33",
+      "ownerRawcode": "h03H",
+      "sourceCallback": "Btd",
+      "nativeDummyRawcode": "e04X",
+      "dummyAbilityRawcodes": [
+        "Aloc",
+        "Avul"
+      ],
+      "nativeAbilityRawcode": null,
+      "nativeAbilityFields": {},
+      "sourceJassOperations": [
+        "call Bcb(JL,RN,20000.,1.,1.,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)",
+        "if BFi(1,100)<=8 then",
+        "set JI=CreateUnitAtLoc(HY,$65303458,Ie,GetUnitFacing(JL))",
+        "call UnitDamagePointLoc(JL,0,550,Ie,250000,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL)"
+      ],
+      "verifiedFinalWarcraftOutput": false
+    },
+    {
+      "catalogId": "RN-04",
+      "ownerRawcode": "h06X",
+      "sourceCallback": "CCg",
+      "nativeDummyRawcode": "e0LE",
+      "dummyAbilityRawcodes": [
+        "A10I",
+        "Aloc",
+        "Avul"
+      ],
+      "nativeAbilityRawcode": "A10I",
+      "nativeAbilityFields": {
+        "code": "Afae",
+        "targs1": "air,enemies,ground",
+        "DataA1": "50",
+        "DataB1": "1",
+        "Area1": "0.0",
+        "Rng1": "5000.",
+        "Cast1": "0.0",
+        "Dur1": "60.",
+        "HeroDur1": "60.0",
+        "Cool1": "1.0",
+        "BuffID1": "Bfae",
+        "levels": "1"
+      },
+      "sourceJassOperations": [
+        "if BFi(1,100)<=17 then",
+        "set JI=CreateUnitAtLoc(RT,$65304C44,Ie,GetUnitFacing(JL))",
+        "set JI=CreateUnitAtLoc(RT,$65304C45,Ie,GetUnitFacing(JL))",
+        "call IssueTargetOrderById(JI,OrderId(\"faeriefire\"),RN)",
+        "call Bd8(RN,15)",
+        "call UnitDamagePointLoc(JL,0,375.,Ie,1500000.,ATTACK_TYPE_CHAOS,DAMAGE_TYPE_NORMAL)"
+      ],
+      "verifiedFinalWarcraftOutput": false
+    }
+  ]
+}

@@ -6,7 +6,7 @@
     "catalogEntries": 277,
     "objectBasicAttackModels": 273,
     "modelEffectOwners": 194,
-    "connectedModelEffectDefinitions": 269,
+    "connectedModelEffectDefinitions": 277,
     "documentedSkillEntries": 554,
     "documentedPassiveEntries": 295,
     "fullyVerifiedUnits": 0,
@@ -426,7 +426,8 @@
       "originalRawcode": "h00P",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증",
+        "A089 크리마텍트 · 소환 위치 반경 450 적 이동속도 -5% 오라 모델 · 소환물 수명/중첩 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
@@ -1300,7 +1301,8 @@
       "originalRawcode": "h01V",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증",
+        "A14X 인페르노 · 425 범위 일반 적 기절 0.9초 / 추가 피해 0 · 원본 보스/면역 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
@@ -1526,7 +1528,8 @@
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
         "적 이동속도 감소(%) 10 · 1단계 / 중첩 충돌 시 보류",
-        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증",
+        "A14Y 인페르노 · 405 범위 일반 적 기절 0.95초 / 추가 피해 0 · 원본 보스/면역 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
@@ -1592,7 +1595,8 @@
       "originalRawcode": "h02C",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증",
+        "A150 인페르노 · 485 범위 일반 적 기절 1.15초 / 추가 피해 0 · 원본 보스/면역 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 0,
@@ -1609,7 +1613,8 @@
       "originalRawcode": "h02A",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "공격 선언 기술 · 7% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+        "공격 선언 기술 · 7% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증",
+        "A151 인페르노 · 500 범위 일반 적 기절 1.2초 / 추가 피해 0 · 원본 보스/면역 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 2,
@@ -2832,7 +2837,8 @@
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
         "적 이동속도 감소(%) 35 · 1단계 / 중첩 충돌 시 보류",
-        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+        "공격 선언 기술 · 10% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증",
+        "A156 인페르노 · 415 범위 일반 적 기절 1.7초 / 추가 피해 0 · 원본 보스/면역 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 1,
@@ -4505,7 +4511,9 @@
       "originalRawcode": "h06X",
       "objectBasicAttackModel": true,
       "connectedModelEffects": [
-        "공격 선언 기술 · 17% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증"
+        "공격 선언 기술 · 17% 발동 · 연습 피해/범위 모델, 보조 주문·면역·원작 동등성 미검증",
+        "A04R/Bd8 · 원본 웨이브 A04R 레벨 +15 누적 · 네이티브 isr2 피해 적용 미검증",
+        "A10I 페어리 파이어 · 방어력 -50 / 60초 · 연습 모델, 원본 시전 시점/중첩 미검증"
       ],
       "connectedManualFunctions": [],
       "documentedSkills": 2,

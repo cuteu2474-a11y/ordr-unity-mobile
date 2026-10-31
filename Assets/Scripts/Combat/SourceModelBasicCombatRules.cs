@@ -86,7 +86,7 @@ namespace Ordr.Mobile.Combat
             double power = SourceModelUnitEffects.ResolveSingleAura(request.AttackerEffects, CombatEffectType.AttackPowerBuff);
             rawDamage *= 1 + power / 100.0;
             if (UnitEffects != null) rawDamage = UnitEffects.BeforeBasicHit(request, target, rawDamage);
-            double reduction = SourceModelUnitEffects.ResolveSingleAura(target.Status.Snapshot(), CombatEffectType.ArmorReduction);
+            double reduction = SourceModelUnitEffects.ResolvePracticeArmorReduction(target.Status.Snapshot());
             double damage = Ordr323MapDamageMath.ApplyVerifiedFactors(
                 rawDamage, attack.NativeAttackType, armor,
                 true, true, target.Defenses.BaseArmor.Value - reduction, false, 0, 1);

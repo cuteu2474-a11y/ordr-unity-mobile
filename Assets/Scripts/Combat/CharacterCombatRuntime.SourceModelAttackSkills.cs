@@ -52,6 +52,7 @@ namespace Ordr.Mobile.Combat
                 "MODEL_ONLY 원본 " + script.JassFunction + " 공격 선언 분기 " +
                 roll + "/" + script.RollSides,
                 0));
+            BeforeSourceModelLegacyProc(actor, primary, script);
             if (script.DelaySeconds > 0)
             {
                 // BoB captures the attacked unit's LOCATION at state 0. The
@@ -71,6 +72,7 @@ namespace Ordr.Mobile.Combat
 
             if (script.CatalogId == "S-12")
                 ScheduleSourceModelPhoenixFire(actor, primary, script);
+            AfterSourceModelLegacyProc(actor, primary, script);
             if (!string.IsNullOrWhiteSpace(script.DeferredNativeEffect))
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.EffectDeferred, attackerId,
@@ -204,7 +206,9 @@ namespace Ordr.Mobile.Combat
                     // immunity still need original Warcraft comparison.
                     double modeled = Ordr323MapDamageMath.ApplyVerifiedFactors(
                         sourceDamage, hit.Attack, armor, true, true,
-                        target.Enemy.Defenses.BaseArmor.Value, false, 0, 1);
+                        target.Enemy.Defenses.BaseArmor.Value -
+                        SourceModelUnitEffects.ResolvePracticeArmorReduction(
+                            target.Enemy.Status.Snapshot()), false, 0, 1);
                     if (modeled >= long.MaxValue)
                         throw new OverflowException("모델 공격 스킬 피해 범위 초과");
                     long planned = (long)Math.Floor(modeled);

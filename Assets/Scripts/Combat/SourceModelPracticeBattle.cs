@@ -246,6 +246,7 @@ namespace Ordr.Mobile.Combat
             {
                 bornAt.Add(spawn.EnemyId, roundStart + roundLeadInSeconds + spawn.AtSeconds);
                 damage.UnitEffects?.RegisterPracticeTarget(spawn.EnemyId);
+                combat.RegisterSourceModelWaveA04R(spawn.EnemyId, spawn.OriginalRawcode);
                 if (delayed != null)
                     delayed.Add(new VerifiedWaveEnemy(
                         spawn.AtSeconds + roundLeadInSeconds, spawn.EnemyId, spawn.Health,
@@ -320,7 +321,7 @@ namespace Ordr.Mobile.Combat
                     throw new InvalidOperationException("연습 몬스터 출현 이력이 없습니다.");
                 var status = combat.StatusOf(enemy.Id);
                 double active = Math.Max(0, elapsed - Math.Min(elapsed, status.RemainingStunSeconds));
-                double slow = SourceModelUnitEffects.ResolveSingleAura(status.Snapshot(), CombatEffectType.MovementSlowPercent);
+                double slow = SourceModelUnitEffects.ResolvePracticeMovementSlow(status.Snapshot());
                 double speed = catalog.GetRound(wave, enemy.Kind).MovementSpeed;
                 // Explicit reference movement model. Native acceleration and
                 // collision/Arsk remain outside the retail approval boundary.

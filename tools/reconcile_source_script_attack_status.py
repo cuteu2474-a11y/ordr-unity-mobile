@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sync the 20 original + 6 new w5 models and four native follow-ups.
+"""Sync 26 w5 models, 4 new native effects and 7 legacy native followups.
 
 The code source of truth is SourceModelScriptAttackCatalog.cs; the pinned
 JASS audit supplies identities and BFi thresholds. This updater never marks
@@ -41,7 +41,7 @@ def update(data, audit, next_audit):
         effects = row['connectedModelEffects']
         if not any(x.startswith('공격 선언 기술 · ') for x in effects):
             effects.append(label)
-        elif effects[-1] != label:
+        elif label not in effects:
             raise ValueError('Unexpected stale source attack description')
     new_catalog = (ROOT / 'Assets/Scripts/Combat/SourceModelNextAttackCatalog.cs').read_text()
     if new_catalog.count('new SourceScriptAttackSpec(') != 6 or \
@@ -76,6 +76,35 @@ def update(data, audit, next_audit):
     for key, label in native.items():
         if label not in rows[key]['connectedModelEffects']:
             rows[key]['connectedModelEffects'].append(label)
+    legacy_receipt = json.loads((ROOT / 'data/original-2323C-legacy-10-native-followups.json').read_text())
+    if legacy_receipt['sourceJassSha256'] != audit['sourceJassSha256'] or \
+            legacy_receipt['verifiedFullWarcraftNativeParity'] or \
+            legacy_receipt['waveTypesWithA04RCount'] != 68 or \
+            len(legacy_receipt['units']) != 10:
+        raise ValueError('Legacy ten followup receipt is not the pinned source')
+    followups = {
+        'S-03': ['A089 크리마텍트 · 소환 위치 반경 450 적 이동속도 -5% 오라 모델 · 소환물 수명/중첩 미검증'],
+        'RN-04': [
+            'A04R/Bd8 · 원본 웨이브 A04R 레벨 +15 누적 · 네이티브 isr2 피해 적용 미검증',
+            'A10I 페어리 파이어 · 방어력 -50 / 60초 · 연습 모델, 원본 시전 시점/중첩 미검증',
+        ],
+    }
+    for row in legacy_receipt['units']:
+        if row['catalogId'] not in ('R-13', 'R-26', 'R-30', 'R-31', 'H-16'):
+            continue
+        values = row['nativeAbilityFields']
+        if values.get('code') != 'AUin' or values.get('DataA1') != '0.':
+            raise ValueError('Expected only source-zero-damage inferno fields')
+        label = (row['nativeAbilityRawcode'] + ' 인페르노 · ' +
+                 str(float(values['Area1'])).rstrip('0').rstrip('.') +
+                 ' 범위 일반 적 기절 ' +
+                 str(float(values['Dur1'])).rstrip('0').rstrip('.') +
+                 '초 / 추가 피해 0 · 원본 보스/면역 미검증')
+        followups[row['catalogId']] = [label]
+    for key, labels in followups.items():
+        for label in labels:
+            if label not in rows[key]['connectedModelEffects']:
+                rows[key]['connectedModelEffects'].append(label)
     data['summary']['modelEffectOwners'] = sum(bool(x['connectedModelEffects']) for x in data['entries'])
     data['summary']['connectedModelEffectDefinitions'] = sum(len(x['connectedModelEffects']) for x in data['entries'])
     data['allUnitsComplete'] = False
@@ -97,4 +126,4 @@ if __name__ == '__main__':
             raise SystemExit('Attack script runtime status is stale')
     else:
         target.write_text(result)
-    print('26 source attack and 4 native follow-up descriptions reconciled (MODEL_ONLY)')
+    print('26 source attacks and 11 native-followup owners reconciled (MODEL_ONLY)')
