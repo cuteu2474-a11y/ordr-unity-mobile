@@ -180,7 +180,12 @@ namespace Ordr.Mobile.Tests
             Assert.Greater(critical, plain);
             using (var game = Create(true, true))
             {
-                game.Combat.SpawnCharacter("U-04", -4000, 4000);
+                // Mobile targeting has unlimited cast reach, but the
+                // source A0VS carrion-swarm HIT SHAPE is only 1700 long.
+                // The previous (-4000,4000) fixture was ~1893 from the
+                // first route point and incorrectly demanded a hit outside
+                // that shape. Keep the original projectile dimensions.
+                game.Combat.SpawnCharacter("U-04", -4900, 5400);
                 var events = game.Battle.Advance(.6);
                 Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
                     e.Detail.Contains("공격 선언 분기")));
@@ -190,6 +195,47 @@ namespace Ordr.Mobile.Tests
                 Assert.Greater(rankyaku, 0);
                 Assert.AreEqual(1000000000000L - basic - rankyaku,
                     game.Combat.MobileEnemySnapshot().Single().Health);
+            }
+        }
+
+        [Test]
+        public void UnlimitedMobileAttackReachDoesNotExpandRankyakuHitLength()
+        {
+            using (var game = Create(true, true))
+            {
+                // First monster appears at (-4960,5632). The attacker is
+                // ~1893 away; A0VS is 1700 long even if basic attack reach
+                // itself is unlimited within the assigned lane.
+                game.Combat.SpawnCharacter("U-04", -4000, 4000);
+                var events = game.Battle.Advance(.6);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.Attack));
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.Detail.Contains("Bnm")));
+                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.Detail.Contains("Bnm")),
+                    "An attack proc must not stretch its original A0VS hit shape");
+            }
+        }
+
+        [Test]
+        public void EntirePublishedPracticeEffectInventoryMatchesCurrentRuntimeDescriptions()
+        {
+            using (var game = Create())
+            {
+                var root = OrdrJson.Object(OrdrJson.Parse(Data("unit-runtime-status.json")), "status");
+                int checkedUnits = 0;
+                foreach (var item in OrdrJson.Array(OrdrJson.Value(root, "entries"), "entries"))
+                {
+                    var row = OrdrJson.Object(item, "unit");
+                    string id = OrdrJson.RequiredString(row, "catalogId");
+                    string raw = game.Map.Find(id).OriginalRawcode;
+                    var published = OrdrJson.Array(OrdrJson.Value(row, "connectedModelEffects"), "effects")
+                        .Select(value => (string)value).ToArray();
+                    CollectionAssert.AreEqual(published,
+                        game.Rules.UnitEffects.Describe(id, raw), id);
+                    checkedUnits++;
+                }
+                Assert.AreEqual(277, checkedUnits);
             }
         }
         [TestCase("X-01")][TestCase("R-22")][TestCase("R-28")]

@@ -86,14 +86,6 @@ namespace Ordr.Mobile.Combat
                 result.Add("A04R/Bd8 · 원본 웨이브 A04R 레벨 +15 누적 · 네이티브 isr2 피해 적용 미검증");
                 result.Add("A10I 페어리 파이어 · 방어력 -50 / 60초 · 연습 모델, 원본 시전 시점/중첩 미검증");
             }
-            SourceModelNextThirtyUnit nextThirty;
-            if (SourceModelNextThirtySkillCatalog.TryGet(rawcode, out nextThirty) &&
-                nextThirty.CatalogId == id)
-            {
-                foreach (string skill in nextThirty.PracticeAttackSkills)
-                    result.Add(skill + " · 도감 수치 기반 공격 선언 연습 모델; 원본 피해·면역·난수 검증 대기");
-                result.Add("다음 30명 · 도감 기술 및 특성강화 중 검증되지 않은 효과는 실행 보류 (전체 원작 스킬 완료 아님)");
-            }
             return result.AsReadOnly();
         }
         public static string AuraName(CombatEffectType type)
