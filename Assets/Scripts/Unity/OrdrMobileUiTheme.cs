@@ -25,6 +25,12 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle researchNumber;
         private static GUIStyle researchName;
         private static GUIStyle researchDetail;
+        private static GUIStyle accordionClosed;
+        private static GUIStyle accordionOpen;
+        private static GUIStyle accordionTitle;
+        private static GUIStyle accordionMeta;
+        private static GUIStyle accordionArrow;
+        private static GUIStyle accordionBody;
 
         internal static GUIStyle SelectedTab { get { return selectedTab; } }
         internal static GUIStyle PrimaryButton { get { return primaryButton; } }
@@ -36,6 +42,7 @@ namespace Ordr.Mobile.Unity
         internal static GUIStyle Subheading { get { return subheading; } }
         internal static GUIStyle SkillButton { get { return skillButton; } }
         internal static GUIStyle Explanation { get { return explanation; } }
+        internal static GUIStyle AccordionBody { get { return accordionBody; } }
         internal const float ComfortableTapHeight = 56f;
         internal const float PrimaryTapHeight = 64f;
         internal static readonly Color Aqua = new Color(0.31f, 0.87f, 0.78f, 1f);
@@ -156,6 +163,35 @@ namespace Ordr.Mobile.Unity
             researchDetail = new GUIStyle(explanation);
             researchDetail.fontSize = 17;
             researchDetail.normal.textColor = Muted;
+            Texture2D folded = Plate(new Color(.15f,.23f,.34f),
+                new Color(.10f,.17f,.27f),new Color(.40f,.54f,.65f));
+            Texture2D foldedHover = Plate(new Color(.21f,.32f,.44f),
+                new Color(.13f,.23f,.34f),new Color(.56f,.76f,.83f));
+            Texture2D unfolded = Plate(new Color(.22f,.30f,.40f),
+                new Color(.14f,.21f,.31f),new Color(.95f,.72f,.36f));
+            accordionClosed = new GUIStyle(themedSkin.button);
+            Background(accordionClosed, folded, foldedHover, Color.white);
+            accordionClosed.border = new RectOffset(9,9,9,9);
+            accordionClosed.padding = new RectOffset(0,0,0,0);
+            accordionClosed.margin = new RectOffset(4,4,5,5);
+            accordionOpen = new GUIStyle(accordionClosed);
+            Background(accordionOpen, unfolded, unfolded, Color.white);
+            accordionTitle = new GUIStyle(subheading);
+            accordionTitle.fontSize = 21;
+            accordionTitle.wordWrap = false;
+            accordionTitle.clipping = TextClipping.Clip;
+            accordionTitle.normal.textColor = Color.white;
+            accordionMeta = new GUIStyle(researchDetail);
+            accordionMeta.fontSize = 16;
+            accordionMeta.alignment = TextAnchor.MiddleRight;
+            accordionMeta.wordWrap = false;
+            accordionMeta.clipping = TextClipping.Clip;
+            accordionArrow = new GUIStyle(accordionTitle);
+            accordionArrow.fontSize = 20;
+            accordionArrow.alignment = TextAnchor.MiddleCenter;
+            accordionBody = new GUIStyle(themedSkin.box);
+            accordionBody.margin = new RectOffset(7,7,0,12);
+            accordionBody.padding = new RectOffset(14,14,14,16);
             themedSkin.toggle = new GUIStyle(source.toggle);
             themedSkin.toggle.fontSize = 18;
             themedSkin.toggle.wordWrap = true;
@@ -252,6 +288,33 @@ namespace Ordr.Mobile.Unity
                 facilityHeading);
             GUI.Label(new Rect(area.x+18f,area.y+88f,textWidth,42f),description,
                 researchDetail);
+        }
+
+        // The whole 72px row is a touch target; labels are visual overlays.
+        // Text and collapse state are supplied by the owner, never inferred
+        // from gameplay data or used to execute an action.
+        internal static bool DrawAccordionHeader(string title, string meta,
+            bool expanded, Color tint, float height = 72f)
+        {
+            Rect area = GUILayoutUtility.GetRect(0f, height,
+                GUILayout.ExpandWidth(true));
+            bool pressed = GUI.Button(area, GUIContent.none,
+                expanded ? accordionOpen : accordionClosed);
+            if (Event.current.type != EventType.Repaint) return pressed;
+            Stroke(new Rect(area.x+5f,area.y+12f,4f,
+                Mathf.Max(0f,area.height-24f)),tint);
+            GUI.Label(new Rect(area.x+14f,area.y+10f,34f,area.height-20f),
+                expanded ? "▼" : "▶",accordionArrow);
+            float available = Mathf.Max(100f,area.width-70f);
+            float metaWidth = string.IsNullOrEmpty(meta) ? 0f :
+                Mathf.Min(Mathf.Max(82f,available*.32f),170f);
+            float titleWidth = Mathf.Max(40f,area.width-76f-metaWidth);
+            GUI.Label(new Rect(area.x+52f,area.y+9f,titleWidth,area.height-18f),
+                title,accordionTitle);
+            if (metaWidth>0f)
+                GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
+                    metaWidth,area.height-18f),meta,accordionMeta);
+            return pressed;
         }
 
         internal static void DrawResearchPlate(Rect area, int ordinal,

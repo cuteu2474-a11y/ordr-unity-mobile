@@ -22,6 +22,8 @@ class RandomWispSubmenuTests(unittest.TestCase):
         submenu = self.panel.split("private void DrawRandomWispActions()", 1)[1].split(
             "private void DrawHelperCow()", 1)[0]
         self.assertIn("showRandomWispActions = !showRandomWispActions", submenu)
+        self.assertIn("expandedRandomWispDetail", submenu)
+        self.assertEqual(4, submenu.count("DrawAccordionHeader("))
         names = ["1. 흔함 유닛 소환", "2. 골드·목재 추첨", "3. 도움소 마나 충전"]
         self.assertEqual(sorted(submenu.index(name) for name in names),
                          [submenu.index(name) for name in names])
@@ -30,6 +32,20 @@ class RandomWispSubmenuTests(unittest.TestCase):
         self.assertIn("OriginalHelperCowRules.OfferId", submenu)
         self.assertIn("GUI.enabled = wasEnabled && canRecharge;", submenu)
         self.assertIn("TryGetHelperCowMana(out mana)", submenu)
+
+    def test_automatic_wisp_sections_are_foldable_without_new_transactions(self):
+        automatic = self.panel.split("private void DrawAutomaticWispStatus(", 1)[1].split(
+            "private void DrawWisp()", 1)[0]
+        self.assertIn("expandedAutomaticWispIds", automatic)
+        self.assertIn("DrawAccordionHeader(", automatic)
+        self.assertIn("CanAutomaticallyResolve(id)", automatic)
+        self.assertIn("AutomaticFailure(id)", automatic)
+        self.assertNotIn("RequestEconomyAction(", automatic)
+        display = self.panel.split("private void DrawWisp()", 1)[1].split(
+            "private void RunWispDirect(", 1)[0]
+        self.assertLess(display.index("DrawRandomWispActions();"),
+                        display.index("DrawAutomaticWispStatus("))
+        self.assertNotIn("DrawChoiceWispMerge();", display)
 
     def test_helper_panel_has_no_second_mana_recharge_transaction(self):
         helper = self.panel.split("private void DrawHelperCow()", 1)[1].split(

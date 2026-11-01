@@ -56,6 +56,10 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("DrawNavigationMark", theme)
         self.assertIn("DrawResearchPlate", theme)
         self.assertIn("DrawResearchPlate(plate", panel)
+        self.assertIn("DrawAccordionHeader(", panel)
+        self.assertIn("expandedResearchCodes", panel)
+        self.assertIn("DrawAccordionHeader", theme)
+        self.assertIn("GUI.Button(area, GUIContent.none", theme)
         for effect in ("+0.45/초", "+0.8/초", "+12%", "-10%"):
             self.assertIn(effect, catalog)
         self.assertIn("구매 미연결", theme)
