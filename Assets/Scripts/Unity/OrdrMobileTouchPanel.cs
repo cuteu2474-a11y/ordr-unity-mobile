@@ -1721,7 +1721,7 @@ namespace Ordr.Mobile.Unity
             DrawAutomaticWispStatus("희귀위습", WispResourceIds.Rare,
                 "42종 99% / 8종 1% · A0YE 추가 효과 검증 필요");
             DrawAutomaticWispStatus("전설위습", WispResourceIds.Legendary,
-                "전설 60종 · 실제 소환 월드 연결 검증 필요");
+                "전설·히든 60종 · 원본 자동 추첨");
             if (controller.Wisps != null &&
                 ((controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Uncommon) &&
                   controller.WispBalance(WispResourceIds.Uncommon) > 0) ||

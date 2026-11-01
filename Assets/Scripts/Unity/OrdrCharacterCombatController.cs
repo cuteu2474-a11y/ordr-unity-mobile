@@ -1553,8 +1553,8 @@ namespace Ordr.Mobile.Unity
             IOriginalWispBonusAbilityPort verifiedA0ye,
             IVerifiedChoiceWispMergeWorld choiceMerge)
         {
-            if (Combat == null || SharedEconomy == null || commonSourceFusion == null ||
-                originalSharedScriptRandom == null ||
+            if (Combat == null || SharedEconomy == null || MapBaseStats == null ||
+                Units == null || originalSharedScriptRandom == null ||
                 Combat.Game.Phase != SessionPhase.NotStarted ||
                 (Wisps != null && !usesBuiltInAutomaticUncommonWisps))
                 throw new InvalidOperationException(
@@ -1570,8 +1570,14 @@ namespace Ordr.Mobile.Unity
                 originalSharedScriptRandom.ForPurpose(
                     Original323ScriptRandomPurpose.RareWispBranch),
                 nativePool,originalRarePosition,verifiedA0ye);
+            var identityAsset = Resources.Load<TextAsset>(
+                "OrdrData/original-2323C-wisp-character-identity-assignments");
+            if (identityAsset == null)
+                throw new InvalidOperationException("원본 위습 156종 ID 매핑 데이터가 없습니다.");
+            var wispMap = Original323WispAssignedRosterMap.FromSourceJson(
+                identityAsset.text, source.text, Units, MapBaseStats);
             var destination=new OriginalWispCombatRewardWorld(Combat,
-                commonSourceFusion,automatic,automatic);
+                wispMap,automatic,automatic);
             Wisps?.Dispose();
             Wisps=new MobileWispService(SharedEconomy.Wallet,automatic,destination);
             usesBuiltInAutomaticUncommonWisps=false;

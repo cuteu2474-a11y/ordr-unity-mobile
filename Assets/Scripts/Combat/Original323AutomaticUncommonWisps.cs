@@ -59,8 +59,9 @@ namespace Ordr.Mobile.Combat
                 if (!rareEnabled) { x=0; y=0; return false; }
                 return rareSourcePosition.TryGetPosition(id,out x,out y);
             }
-            x = id == WispResourceIds.Special ? -3776 : -3760;
-            y = id == WispResourceIds.Special ? 4480 : 3904;
+            // Source CSE uses Lq center, CSC and CR6 use player start.
+            x = id == WispResourceIds.Uncommon ? -3760 : -3776;
+            y = id == WispResourceIds.Uncommon ? 3904 : 4480;
             return IsVerified(id);
         }
         public bool TryApplyOriginalAbility(long instanceId, string rawcode) =>

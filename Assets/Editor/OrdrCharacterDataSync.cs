@@ -39,7 +39,8 @@ namespace Ordr.Mobile.Editor
             "original-2323C-helper-alchemy-recipes.json",
             "original-unit-rawcode-label-links.json",
             "original-jass-mystic-candidate-reconciliation.json",
-            "original-2323C-wisp-pools.json"
+            "original-2323C-wisp-pools.json",
+            "original-2323C-wisp-character-identity-assignments.json"
         };
 
         // The scene's Awake() requires these actual imported TextAssets.
