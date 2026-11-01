@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
+using Ordr.Mobile.Core;
 using Ordr.Mobile.Unity;
 using UnityEngine;
 
@@ -23,6 +25,55 @@ namespace Ordr.Mobile.Tests
                     "Navigation header failed: " + tab);
                 Assert.IsFalse(string.IsNullOrWhiteSpace(text), "Empty navigation title: " + tab);
             }
+        }
+
+        [Test]
+        public void SevenOriginalPlayerFacilitiesOpenIndependentLeftNavigationPages()
+        {
+            var panel = typeof(OrdrMobileTouchPanel);
+            var tabType = panel.GetNestedType("Tab", BindingFlags.NonPublic);
+            var title = panel.GetMethod("TabTitle", BindingFlags.Static | BindingFlags.NonPublic);
+            var names = new Dictionary<string, string> {
+                { "Gambling", "도박소" }, { "UpgradeOne", "강화소 1" },
+                { "UpgradeTwo", "강화소 2" }, { "Helper", "도움소" },
+                { "Missions", "개인 미션" }, { "Research", "연구소" },
+                { "LogPose", "기록지침" },
+            };
+            Assert.IsFalse(Enum.IsDefined(tabType, "Facilities"),
+                "Player buildings must not be hidden in another facility tab.");
+            foreach (var entry in names)
+            {
+                var tab = Enum.Parse(tabType, entry.Key);
+                Assert.AreEqual(entry.Value, title.Invoke(null, new[] { tab }), entry.Key);
+            }
+        }
+
+        [Test]
+        public void ThreeOriginalResearchBuildingsKeepSeparateVerifiedInventories()
+        {
+            var buildings = new[] {
+                Original323PlayerBuildingResearchCatalog.FirstUpgradeBuilding,
+                Original323PlayerBuildingResearchCatalog.SecondUpgradeBuilding,
+                Original323PlayerBuildingResearchCatalog.ResearchBuilding,
+            };
+            var expectedSizes = new[] { 8, 10, 4 };
+            var seen = new HashSet<string>();
+            for (int i = 0; i < buildings.Length; i++)
+            {
+                var inventory = Original323PlayerBuildingResearchCatalog.ForBuilding(buildings[i]);
+                Assert.AreEqual(expectedSizes[i], inventory.Count, buildings[i]);
+                foreach (var upgrade in inventory)
+                {
+                    Assert.IsTrue(seen.Add(upgrade.Rawcode), "Duplicated original research code");
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(upgrade.Name));
+                    Assert.Greater(upgrade.MaximumLevel, 0);
+                }
+            }
+            Assert.AreEqual(7, Original323PlayerBuildingResearchCatalog.ForBuilding("h06Q")[0].MaximumLevel);
+            Assert.AreEqual("R01V", Original323PlayerBuildingResearchCatalog.ForBuilding("h06R")[9].Rawcode);
+            Assert.AreEqual("기후 변화", Original323PlayerBuildingResearchCatalog.ForBuilding("h06S")[3].Name);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                Original323PlayerBuildingResearchCatalog.ForBuilding("h062"));
         }
 
         [Test]

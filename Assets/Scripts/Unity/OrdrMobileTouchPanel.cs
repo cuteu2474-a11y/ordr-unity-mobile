@@ -14,7 +14,7 @@ namespace Ordr.Mobile.Unity
     // 스토리·조합확인·상점·도박·위습 버튼은 실제 사용자 탭에서만 호출된다.
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
-        private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, LogPose, Helper, Alchemy, Missions }
+        private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, LogPose, Helper, Alchemy, Missions, UpgradeOne, UpgradeTwo, Research }
         private enum ScoreboardPage { Summary, Commons }
 
         [SerializeField] private OrdrCharacterCombatController controller;
@@ -328,10 +328,6 @@ namespace Ordr.Mobile.Unity
 
             DrawLeftTab(Tab.Play, "점수판");
             DrawLeftTab(Tab.Wisp, "위습");
-            DrawLeftTab(Tab.Helper, "도움소");
-            if (controller.Original323HelperCow != null &&
-                controller.Original323HelperCow.AlchemyNavigationChosen)
-                DrawLeftTab(Tab.Alchemy, "연금술");
             GUILayout.Space(5f);
             GUILayout.Label("편성",OrdrMobileUiTheme.Overline);
             DrawLeftTab(Tab.Units, "유닛");
@@ -339,10 +335,19 @@ namespace Ordr.Mobile.Unity
             DrawLeftTab(Tab.Story, "스토리");
             GUILayout.Space(5f);
             GUILayout.Label("운영",OrdrMobileUiTheme.Overline);
+            // Original player buildings are DIRECT left-menu entries; no
+            // extra facility submenu or duplicate Help/Mission/Log tabs.
+            DrawLeftTab(Tab.Gambling, "도박소");
+            DrawLeftTab(Tab.UpgradeOne, "강화소 1");
+            DrawLeftTab(Tab.UpgradeTwo, "강화소 2");
+            DrawLeftTab(Tab.Helper, "도움소");
+            DrawLeftTab(Tab.Missions, "미션");
+            DrawLeftTab(Tab.Research, "연구소");
             DrawLeftTab(Tab.LogPose, "기록지침");
             DrawLeftTab(Tab.Shop, "상점");
-            DrawLeftTab(Tab.Gambling, "도박");
-            DrawLeftTab(Tab.Missions, "미션");
+            if (controller.Original323HelperCow != null &&
+                controller.Original323HelperCow.AlchemyNavigationChosen)
+                DrawLeftTab(Tab.Alchemy, "연금술");
 
             GUILayout.EndScrollView();
             if (Combat != null && Combat.Game.Phase == SessionPhase.Running && !controller.IsUnitPreparation)
@@ -402,6 +407,12 @@ namespace Ordr.Mobile.Unity
                     case Tab.Helper: DrawHelperCow(); break;
                     case Tab.Alchemy: DrawAlchemyPanel(); break;
                     case Tab.Missions: DrawPersonalMissions(); break;
+                    case Tab.UpgradeOne: DrawPlayerBuildingResearch(
+                        Original323PlayerBuildingResearchCatalog.FirstUpgradeBuilding); break;
+                    case Tab.UpgradeTwo: DrawPlayerBuildingResearch(
+                        Original323PlayerBuildingResearchCatalog.SecondUpgradeBuilding); break;
+                    case Tab.Research: DrawPlayerBuildingResearch(
+                        Original323PlayerBuildingResearchCatalog.ResearchBuilding); break;
                 }
             }
             EndPanelScroll(area);
@@ -500,9 +511,30 @@ namespace Ordr.Mobile.Unity
                 case Tab.Fusion: return "조합";
                 case Tab.Story: return "스토리";
                 case Tab.Shop: return "상점";
-                case Tab.Gambling: return "도박";
+                case Tab.Gambling: return "도박소";
                 case Tab.Missions: return "개인 미션";
+                case Tab.UpgradeOne: return "강화소 1";
+                case Tab.UpgradeTwo: return "강화소 2";
+                case Tab.Research: return "연구소";
                 default: throw new ArgumentOutOfRangeException(nameof(tab));
+            }
+        }
+
+        private void DrawPlayerBuildingResearch(string buildingRawcode)
+        {
+            var original = Original323PlayerBuildingResearchCatalog.ForBuilding(buildingRawcode);
+            GUILayout.Label("원본 S2 2.323[C] 건물의 연구 목록 " + original.Count + "종",
+                OrdrMobileUiTheme.Subheading);
+            GUILayout.Label("연구 항목은 원본 맵에서 확인했습니다. " +
+                "실제 연구 구매·재화 소비·유닛 능력치 적용은 아직 연결되지 않았습니다.",
+                OrdrMobileUiTheme.Explanation);
+            foreach (var research in original)
+            {
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.Label(research.Name, OrdrMobileUiTheme.Subheading);
+                GUILayout.Label("원본 최대 " + research.MaximumLevel + "레벨 · 실행 미연결",
+                    OrdrMobileUiTheme.Explanation);
+                GUILayout.EndVertical();
             }
         }
 
