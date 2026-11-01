@@ -14,6 +14,8 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, long> sourceLiquidFireRevision =
             new Dictionary<string, long>(StringComparer.Ordinal);
         private readonly HashSet<string> modelAuraKeys = new HashSet<string>(StringComparer.Ordinal);
+        private readonly Dictionary<long, long> sourceModelStoryLaneRevisions =
+            new Dictionary<long, long>();
         public SourceModelUnitEffects PracticeUnitEffects => sourceModelUnitEffects;
         internal void ConfigureSourceModelUnitEffects(SourceModelBasicCombatRules rules)
         {
@@ -52,6 +54,74 @@ namespace Ordr.Mobile.Combat
                 CharacterCombatEventType.SkillActivated, attackerId, attackerId,
                 "트라팔가 로우 · 언홀리 프렌지",
                 "MODEL_ONLY A08B: 공격속도 +100% / 7초 / 50초, 자기 시전 모바일 정책 · 원본 자동 타깃 미검증", 0));
+        }
+        private long SourceModelLaneRevision(long actorId)
+        {
+            long revision;
+            return sourceModelStoryLaneRevisions.TryGetValue(actorId, out revision)
+                ? revision : 0;
+        }
+
+        // A delayed location attack belongs to the lane at cast time. A
+        // dispatch-and-return must not revive the original attack either.
+        private bool CanFinishSourceModelDelayedAttack(long actorId,
+            bool originalStoryLane, long originalLaneRevision)
+        {
+            return UsesSourceModelBasicAttacks && game.Phase == SessionPhase.Running &&
+                characters.ContainsKey(actorId) &&
+                IsStoryDeployed(actorId) == originalStoryLane &&
+                SourceModelLaneRevision(actorId) == originalLaneRevision;
+        }
+
+        private const string PracticeBonneyArmorSource = "practice-native:A04P";
+
+        // Pinned JASS: H0BX/B4C calls Bd2(RN,10) on ATTACK DECLARED,
+        // before the health/mana-conditional branches. H0BY and those
+        // additional procs require their own unimplemented state witnesses.
+        private void ApplySourceModelBonneyDeclaredArmor(CharacterInstance actor,
+            SpatialCombatEnemy target)
+        {
+            string attackerId = InstanceKey(actor.Id);
+            var status = target.Enemy.Status;
+            int current = 0;
+            bool hasPracticeBonneyState = false;
+            foreach (var effect in status.Snapshot())
+            {
+                if (effect.SourceId != PracticeBonneyArmorSource) continue;
+                if (hasPracticeBonneyState ||
+                    effect.Type != CombatEffectType.ArmorReduction ||
+                    effect.Origin != CombatEffectOrigin.Aura ||
+                    effect.DurationSeconds != 0 || effect.Amount < 10 ||
+                    effect.Amount > 40 || effect.Amount % 10 != 0)
+                {
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                        attackerId, target.Id, "보니 · A04P",
+                        "MODEL_ONLY A04P 상태의 출처/레벨이 불일치하여 보류", 0));
+                    return;
+                }
+                hasPracticeBonneyState = true;
+                current = (int)effect.Amount;
+            }
+            double newArmorChange;
+            if (current > 30 ||
+                !Ordr323VerifiedDefenseAbilities.TryGetArmorChange("A04P",
+                    current + 11, out newArmorChange) || newArmorChange >= 0)
+            {
+                // Idef is sourced only through level 41. No extrapolation.
+                if (sourceBatchPendingReported.Add(attackerId + ":Bonney:A04P-cap:" + target.Id))
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                        attackerId, target.Id, "보니 · A04P",
+                        "MODEL_ONLY A04P 41레벨 초과의 원본 결과 미확인; 추가 적용 보류", 0));
+                return;
+            }
+            status.RemoveSource(PracticeBonneyArmorSource);
+            status.Apply(new CombatEffect(PracticeBonneyArmorSource,
+                CombatEffectType.ArmorReduction, CombatEffectOrigin.Aura,
+                -newArmorChange, 0));
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                attackerId, target.Id, "보니 · A04P",
+                "MODEL_ONLY B4C/Bd2 공격 선언 +10, A04P 누적 " + (current + 10) +
+                "; +20/+2 확률·변신·복합 방깎 중첩은 미검증", 0));
         }
         internal void MoveSourceModelEnemy(string id, double x, double y)
         {

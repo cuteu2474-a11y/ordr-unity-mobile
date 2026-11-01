@@ -5,6 +5,7 @@
   "originalAttackCallbackCount": 28,
   "unitsWithModeledDamage": 18,
   "unitsWithoutModeledDamage": 12,
+  "unitsWithModeledStateEffects": 1,
   "fullyCompleteUnitCount": 0,
   "apkStatus": "requested-not-built",
   "note": "A damage packet modeled does not imply a whole unit implemented. Unknown native side effects, state, timed trigger, target ability masks, RNG order, immunity and final damage remain unresolved.",
@@ -195,9 +196,10 @@
       "rawcode": "H0BX",
       "attackCallback": "B4C",
       "damagePacketsModeled": false,
-      "modelLocation": null,
+      "modelLocation": "CharacterCombatRuntime.SourceModelEffects (base-form A04P declared attack only)",
+      "modeledStateEffect": "MODEL_ONLY H0BX B4C/Bd2 +10 per declared attack to verified W3A level 41; no original proc/transform/RNG authorization",
       "allOriginalSkillsComplete": false,
-      "missingPaths": "Additional trigger graphs, original target gates, native effects and verified runtime parity"
+      "missingPaths": "H0BY transformation, conditional +20/+2, current health/mana gates, exact RNG/order, armor stacking and verified runtime parity"
     },
     {
       "id": "TR-28",

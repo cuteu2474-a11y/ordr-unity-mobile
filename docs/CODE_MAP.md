@@ -1,5 +1,7 @@
 # 코드 구조와 재사용 지점
 
+최근 보니 기본형 부분 스킬은 `CharacterCombatRuntime.SourceModelEffects.cs`의 `ApplySourceModelBonneyDeclaredArmor` → `SourceModelUnitEffects.ResolvePracticeArmorReduction`으로 이어집니다. `H0BY` 변신, +20/+2 확률 분기는 아직 연결하지 않았습니다. 예약 스킬은 `SourceModelLaneRevision/CanFinishSourceModelDelayedAttack`로 공격 선언 당시 전장과 파견 리비전을 검사합니다. 이는 `SourceModel` 개발 경로 전용이고 원본 검증 경로에 적용하지 않습니다.
+
 - 공격 발동 20명 원본 입력: `tools/audit_attack_skill_batch.py --jass /path/to/war3map.j [--verify]` → `data/original-2323C-attack-skill-batch.json`. 실행 허용 자료가 아니며 직접 호출 다음 단계와 보조 객체 능력은 추가 추적해야 합니다.
 
 몬스터 기본 능력은 `Original323MonsterObjectAbilityCatalog`가 원본 SLK 객체 목록을 읽고, **현재 활성 능력 및 관측된 기절 판정**은 `Original323MonsterNativeAbilityRuntime`이 처리한다. `Original323LiveBashTargetRules`와 `Original323VerifiedNativeMagicImpactAdapter`는 이 공통 공급자를 선택적으로 받아 원본 네이티브 판정을 교차 확인한다. `Aeth`는 피해 면역이 아니며 기본 65R에는 live 공급자가 없어 자동 적용되지 않는다.

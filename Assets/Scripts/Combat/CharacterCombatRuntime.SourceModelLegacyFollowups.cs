@@ -100,10 +100,13 @@ namespace Ordr.Mobile.Combat
             // Dur1 is normal stun; h0C5 has no combat attack or spells cast.
             double centerX = primary.X, centerY = primary.Y;
             string actorId = InstanceKey(actor.Id);
+            bool sourceStoryLane = IsStoryDeployed(actor.Id);
+            long sourceLaneRevision = SourceModelLaneRevision(actor.Id);
             effectExecutor.SchedulePracticeSourceAttack(actorId,
                 "practice-inferno:" + actorId + ":" + spec.AbilityRawcode,
                 spec.ImpactDelaySeconds, () => {
-                    if (!characters.ContainsKey(actor.Id)) return;
+                    if (!CanFinishSourceModelDelayedAttack(actor.Id,
+                            sourceStoryLane, sourceLaneRevision)) return;
                     foreach (var enemy in enemies.Values)
                     {
                         if (!enemy.Enemy.IsAlive ||
@@ -138,14 +141,21 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy target)
         {
             string actorId = InstanceKey(actor.Id);
+            bool sourceStoryLane = IsStoryDeployed(actor.Id);
+            long sourceLaneRevision = SourceModelLaneRevision(actor.Id);
             // CCg creates e0LE/A10I and issues faeriefire to RN. Afae has
             // DataA1=50 flat armor loss, Dur1=60; native cast execution can
             // follow the synchronous JASS Bcb, so use the map's .01 model
             // event interval rather than altering the same instant's AoE.
             effectExecutor.SchedulePracticeSourceAttack(actorId, target.Id,
                 .01, () => {
-                    if (!characters.ContainsKey(actor.Id) ||
-                        !target.Enemy.IsAlive) return;
+                    SpatialCombatEnemy current;
+                    if (!CanFinishSourceModelDelayedAttack(actor.Id,
+                            sourceStoryLane, sourceLaneRevision) ||
+                        !target.Enemy.IsAlive ||
+                        !enemies.TryGetValue(target.Id, out current) ||
+                        !ReferenceEquals(current, target) ||
+                        !CanAttackInThisLane(actor, target)) return;
                     string source = "practice-native:A10I";
                     target.Enemy.Status.RemoveSource(source);
                     target.Enemy.Status.Apply(new CombatEffect(source,

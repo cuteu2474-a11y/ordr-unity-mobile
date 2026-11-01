@@ -1393,6 +1393,9 @@ namespace Ordr.Mobile.Combat
             if (!characters.ContainsKey(instanceId))
                 throw new KeyNotFoundException("파견 대상 유닛이 없습니다.");
             CancelOriginalUnitCast(instanceId);
+            if (UsesSourceModelBasicAttacks)
+                sourceModelStoryLaneRevisions[instanceId] =
+                    checked(SourceModelLaneRevision(instanceId) + 1);
             RefreshEnemyAuras();
         }
 
@@ -2142,6 +2145,7 @@ namespace Ordr.Mobile.Combat
             if (instance.AttackReady) attackPipeline.RemoveUnit(InstanceKey(instanceId));
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
             effectExecutor.CancelCaster(InstanceKey(instanceId));
+            sourceModelStoryLaneRevisions.Remove(instanceId);
             lawReadyAt.Remove(instanceId);
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);

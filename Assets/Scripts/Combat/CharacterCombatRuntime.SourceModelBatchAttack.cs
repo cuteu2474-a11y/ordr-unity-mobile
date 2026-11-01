@@ -57,12 +57,15 @@ namespace Ordr.Mobile.Combat
                     else
                     {
                         double centerX = primary.X, centerY = primary.Y;
+                        bool sourceStoryLane = IsStoryDeployed(actor.Id);
+                        long sourceLaneRevision = SourceModelLaneRevision(actor.Id);
                         var captured = stage;
                         long sequence = checked(++sourceBatchDelayedHitSequence);
                         effectExecutor.SchedulePracticeSourceAttack(attackerId,
                             "practice-source-batch:" + attackerId + ":" + sequence,
                             captured.DelaySeconds, () => {
-                                if (!characters.ContainsKey(actor.Id)) return;
+                                if (!CanFinishSourceModelDelayedAttack(actor.Id,
+                                        sourceStoryLane, sourceLaneRevision)) return;
                                 ApplySourceScriptHits(actor, primary,
                                     spec.DamageLabel, captured.Hits,
                                     centerX, centerY);

@@ -7,6 +7,7 @@ using UnityEngine;
 using Ordr.Mobile.Combat;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Tests
 {
@@ -20,6 +21,15 @@ namespace Ordr.Mobile.Tests
         }
         private sealed class NoGold : IOriginalWispRandom
         { public int NextInclusive(int min, int max) => max; }
+        private sealed class MutableStoryLane : IOriginalStoryDispatchPort
+        {
+            public bool Deployed;
+            public bool CanDispatch(long id) => false;
+            public ManualActionResult Dispatch(long id) => null;
+            public bool IsDeployed(long id) => Deployed;
+            public bool CanRecall(long id) => false;
+            public ManualActionResult Recall(long id) => null;
+        }
         private sealed class Live : IDisposable
         {
             public CharacterCombatRuntime Combat;
@@ -296,6 +306,56 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, cracker.Always.Count);
             Assert.AreEqual(20000, cracker.Always[0].Damage);
             Assert.AreEqual(250000, cracker.OnProc.Single().Damage);
+        }
+
+        [Test]
+        public void BonneyBaseAttackDeclaresA04PBeforeHitWithoutInventingConditionalProcs()
+        {
+            using (var live = Create("TR-21", true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(5);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "보니 · A04P" && e.Detail.Contains("B4C/Bd2")));
+                Assert.IsFalse(events.Any(e => e.SkillName == "보니 · A04P" &&
+                    (e.Detail.Contains("SingleProc") || e.Detail.Contains("AreaProc"))));
+                Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(e =>
+                    live.Combat.StatusOf(e.Id).Snapshot().Any(effect =>
+                        effect.SourceId == "practice-native:A04P" &&
+                        effect.Type == CombatEffectType.ArmorReduction &&
+                        effect.Amount >= 10 && effect.Amount <= 40)));
+            }
+        }
+
+        [Test]
+        public void DeferredZoroCircleCannotJumpAcrossStoryLaneOrBackOnReturn()
+        {
+            using (var live = Create("L-27", true, -4900, 5400))
+            {
+                var lane = new MutableStoryLane();
+                live.Combat.ConfigureStoryDeployment(lane);
+                long id = live.Combat.MobileUnitSnapshot()
+                    .Single(x => x.Unit.Id == "L-27").InstanceId;
+                bool declared = false;
+                for (int i = 0; i < 1000; ++i)
+                {
+                    var events = live.Battle.Advance(.005);
+                    if (!events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                        e.Detail.Contains("Bsk:10/100"))) continue;
+                    Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                        e.Detail.Contains("Bsk/Bsj")));
+                    declared = true;
+                    break;
+                }
+                Assert.IsTrue(declared, "The source attack should declare Bsj before .04s");
+                lane.Deployed = true;
+                live.Combat.RefreshAfterCommittedStoryLaneChange(id);
+                lane.Deployed = false;
+                live.Combat.RefreshAfterCommittedStoryLaneChange(id);
+                var after = live.Battle.Advance(.06);
+                Assert.IsFalse(after.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.Detail.Contains("Bsk/Bsj")),
+                    "A returning caster must not revive the old main-lane blast");
+            }
         }
     }
 }

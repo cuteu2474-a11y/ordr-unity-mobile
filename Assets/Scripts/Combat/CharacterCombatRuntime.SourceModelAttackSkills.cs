@@ -21,9 +21,11 @@ namespace Ordr.Mobile.Combat
                 TrySourceModelLowFrenzy(attackerId);
             SourceScriptAttackSpec script = null;
             SourceModelBatchAttackSpec batch = null;
+            bool practiceBonney = rawcode == "H0BX";
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 !processingStep || game.Phase != SessionPhase.Running ||
-                (!SourceModelScriptAttackCatalog.TryGet(rawcode, out script) &&
+                (!practiceBonney &&
+                 !SourceModelScriptAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelNextAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelThirdAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelFourthAttackCatalog.TryGet(rawcode, out script) &&
@@ -42,6 +44,13 @@ namespace Ordr.Mobile.Combat
                 !enemies.TryGetValue(primaryTargetId, out primary) ||
                 !primary.Enemy.IsAlive || !CanAttackInThisLane(actor, primary))
                 return;
+
+            if (practiceBonney)
+            {
+                if (actor.Catalog.Id == "TR-21")
+                    ApplySourceModelBonneyDeclaredArmor(actor, primary);
+                return;
+            }
 
             if (batch != null)
             {
@@ -71,9 +80,12 @@ namespace Ordr.Mobile.Combat
                 // Use a synthetic target key so the normal target-death
                 // cancellation cannot erase a location-based JASS effect.
                 double pinnedX = primary.X, pinnedY = primary.Y;
+                bool sourceStoryLane = IsStoryDeployed(actor.Id);
+                long sourceLaneRevision = SourceModelLaneRevision(actor.Id);
                 effectExecutor.SchedulePracticeSourceAttack(attackerId,
                     "practice-slam:" + attackerId, script.DelaySeconds, () => {
-                        if (characters.ContainsKey(actor.Id))
+                        if (CanFinishSourceModelDelayedAttack(actor.Id,
+                                sourceStoryLane, sourceLaneRevision))
                             ApplySourceScriptHits(actor, primary, script, script.OnProc,
                                 pinnedX, pinnedY);
                     });
@@ -99,7 +111,11 @@ namespace Ordr.Mobile.Combat
             var found = new List<SpatialCombatEnemy>();
             if (hit.Shape == SourceScriptHitShape.Direct)
             {
-                if (primary.Enemy.IsAlive) found.Add(primary);
+                SpatialCombatEnemy current;
+                if (primary.Enemy.IsAlive &&
+                    enemies.TryGetValue(primary.Id, out current) &&
+                    ReferenceEquals(current, primary) &&
+                    CanAttackInThisLane(actor, primary)) found.Add(primary);
                 return found;
             }
             var position = roster.Get(actor.Id);
@@ -153,11 +169,14 @@ namespace Ordr.Mobile.Combat
             // .2s intervals before expiry; no imaginary permanent summon.
             var spawn = roster.Get(actor.Id);
             string attackerId = InstanceKey(actor.Id);
+            bool sourceStoryLane = IsStoryDeployed(actor.Id);
+            long sourceLaneRevision = SourceModelLaneRevision(actor.Id);
             for (int tick = 1; tick <= 5; tick++)
             {
                 effectExecutor.SchedulePracticeSourceAttack(attackerId,
                     "practice-phoenix:" + attackerId + ":" + tick, tick * .2, () => {
-                        if (!characters.ContainsKey(actor.Id)) return;
+                        if (!CanFinishSourceModelDelayedAttack(actor.Id,
+                                sourceStoryLane, sourceLaneRevision)) return;
                         var closest = NearestSourceModelTarget(actor, spawn.X, spawn.Y, 800);
                         if (closest == null) return;
                         ApplySourceScriptHits(actor, closest, script, new[] {
