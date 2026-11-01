@@ -21,6 +21,7 @@ namespace Ordr.Mobile.Combat
                 TrySourceModelLowFrenzy(attackerId);
             SourceScriptAttackSpec script = null;
             SourceModelBatchAttackSpec batch = null;
+            SourceModelNextThirtyUnit nextThirty = null;
             bool practiceBonney = rawcode == "H0BX";
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 !processingStep || game.Phase != SessionPhase.Running ||
@@ -30,7 +31,8 @@ namespace Ordr.Mobile.Combat
                  !SourceModelThirdAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelFourthAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelFifthAttackCatalog.TryGet(rawcode, out script) &&
-                 !SourceModelBatchAttackCatalog.TryGet(rawcode, out batch)))
+                 !SourceModelBatchAttackCatalog.TryGet(rawcode, out batch) &&
+                 !SourceModelNextThirtySkillCatalog.TryGet(rawcode, out nextThirty)))
                 return;
 
             long id;
@@ -55,6 +57,13 @@ namespace Ordr.Mobile.Combat
             if (batch != null)
             {
                 ExecuteSourceModelBatchAttack(actor, primary, batch);
+                return;
+            }
+
+            if (nextThirty != null)
+            {
+                if (nextThirty.CatalogId == actor.Catalog.Id)
+                    ExecuteSourceModelNextThirtyProfileAttacks(actor, primary, nextThirty);
                 return;
             }
 

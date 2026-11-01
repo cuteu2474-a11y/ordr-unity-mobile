@@ -1,5 +1,11 @@
 # 코드 구조와 재사용 지점
 
+## 최신 — 후속 30명 도감 연습 스킬 (2026-11-01)
+
+- `Assets/Scripts/Combat/SourceModelNextThirtySkillCatalog.cs`: 30명 원본 객체 매핑 및 완전한 형태의 16개 도감 패킷만 허용. 원본 JASS 동등성은 미인증.
+- `Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs`: 기존 공격 선언·전장 대상·피해/처치·기절 경로를 재사용하는 `TOOLTIP_MODEL_ONLY` 모델. 복합·미인증 기술은 보류.
+- `Assets/Tests/EditMode/SourceModelScriptAttackSkillTests.cs`: 30명 비중복/객체, 16개 패킷과 확률/원본 미연결 상태의 회귀.
+
 최근 보니 기본형 부분 스킬은 `CharacterCombatRuntime.SourceModelEffects.cs`의 `ApplySourceModelBonneyDeclaredArmor` → `SourceModelUnitEffects.ResolvePracticeArmorReduction`으로 이어집니다. `H0BY` 변신, +20/+2 확률 분기는 아직 연결하지 않았습니다. 예약 스킬은 `SourceModelLaneRevision/CanFinishSourceModelDelayedAttack`로 공격 선언 당시 전장과 파견 리비전을 검사합니다. 이는 `SourceModel` 개발 경로 전용이고 원본 검증 경로에 적용하지 않습니다.
 
 - 공격 발동 20명 원본 입력: `tools/audit_attack_skill_batch.py --jass /path/to/war3map.j [--verify]` → `data/original-2323C-attack-skill-batch.json`. 실행 허용 자료가 아니며 직접 호출 다음 단계와 보조 객체 능력은 추가 추적해야 합니다.

@@ -357,5 +357,97 @@ namespace Ordr.Mobile.Tests
                     "A returning caster must not revive the old main-lane blast");
             }
         }
+
+        [Test]
+        public void SecondThirtyModelsHaveExactRosterAndOnlyWholeTooltipPackets()
+        {
+            var roster = OrdrJson.Object(OrdrJson.Parse(Data("unit-runtime-status.json")),
+                "source roster");
+            var actual = new Dictionary<string, string>();
+            foreach (var value in OrdrJson.Array(OrdrJson.Value(roster, "entries"), "entries"))
+            {
+                var row = OrdrJson.Object(value, "unit");
+                actual.Add(OrdrJson.RequiredString(row, "catalogId"),
+                    OrdrJson.String(row, "originalRawcode"));
+            }
+            var firstThirty = OrdrJson.Object(OrdrJson.Parse(
+                Data("original-2323C-next-30-runtime-coverage.json")), "first thirty");
+            var previous = new HashSet<string>(OrdrJson.Array(
+                OrdrJson.Value(firstThirty, "units"), "units")
+                .Select(x => OrdrJson.RequiredString(OrdrJson.Object(x, "unit"), "id")));
+            var profiles = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
+            Assert.AreEqual(30, SourceModelNextThirtySkillCatalog.All.Count);
+            Assert.AreEqual(30, SourceModelNextThirtySkillCatalog.All
+                .Select(x => x.CatalogId).Distinct().Count());
+            int enabled = 0;
+            foreach (var row in SourceModelNextThirtySkillCatalog.All)
+            {
+                Assert.IsFalse(previous.Contains(row.CatalogId), "Previous batch: " + row.CatalogId);
+                Assert.AreEqual(actual[row.CatalogId], row.Rawcode);
+                SourceModelNextThirtyUnit matched;
+                Assert.IsTrue(SourceModelNextThirtySkillCatalog.TryGet(row.Rawcode, out matched));
+                Assert.AreSame(row, matched);
+                var profile = profiles.Require(row.CatalogId);
+                foreach (string name in row.PracticeAttackSkills)
+                {
+                    var skill = profile.Skills.Single(x => x.Name == name);
+                    Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill),
+                        row.CatalogId + ": " + name);
+                    enabled++;
+                }
+            }
+            Assert.AreEqual(16, enabled, "Only fully parsed tooltip packets are allowed");
+        }
+
+        [TestCase("L-04", "바람바람 열매")]
+        [TestCase("L-13", "배리어 볼")]
+        [TestCase("L-15", "왼손은 수면제")]
+        [TestCase("TR-02", "미라쥬 템포")]
+        [TestCase("TR-04", "범위 마법 스턴")]
+        [TestCase("H-04", "숲 물리")]
+        [TestCase("H-22", "마리조아붕괴")]
+        [TestCase("E-01", "혼합 광역 타격")]
+        [TestCase("E-04", "매 타격 추가 마법")]
+        [TestCase("E-08", "범위 물리")]
+        [TestCase("I-04", "광역 물리 타격")]
+        public void SecondThirtySupportedTooltipAttacksExecuteInPracticeOnly(
+            string unitId, string name)
+        {
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(10);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == name && e.Detail.Contains("TOOLTIP_MODEL_ONLY")), unitId);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == name && e.Amount > 0), unitId);
+            }
+        }
+
+        [Test]
+        public void SecondThirtyUnverifiedFormAndBossSkillsRemainDeferred()
+        {
+            foreach (var unit in new[] { "L-03", "TR-23", "TR-30", "I-06", "I-11" })
+            {
+                using (var live = Create(unit, true, -4900, 5400))
+                {
+                    var events = live.Battle.Advance(6);
+                    Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.EffectDeferred &&
+                        e.Detail.Contains("도감") && e.Detail.Contains("실행하지 않음")), unit);
+                    Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                        e.Detail.Contains("TOOLTIP_MODEL_ONLY")), unit);
+                }
+            }
+        }
+
+        [Test]
+        public void SecondThirtyFailedProcNeverAppliesTooltipDamage()
+        {
+            using (var live = Create("L-13", false, -4900, 5400))
+            {
+                var events = live.Battle.Advance(6);
+                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "배리어 볼"));
+            }
+        }
     }
 }
