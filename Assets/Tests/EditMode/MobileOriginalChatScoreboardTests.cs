@@ -6,13 +6,11 @@ namespace Ordr.Mobile.Tests
     public sealed class MobileOriginalChatScoreboardTests
     {
         [Test]
-        public void OriginalChatCategoriesAndNineCommonsHaveStableLabels()
+        public void PersonalRecordsKeepNineCommonAndFiveGambleLabels()
         {
             Assert.AreEqual(9, MobileOriginalChatScoreboard.CommonCatalogIds.Length);
             Assert.AreEqual(9, MobileOriginalChatScoreboard.CommonNames.Length);
             Assert.AreEqual(5, MobileOriginalChatScoreboard.GambleNames.Length);
-            Assert.AreEqual(7, MobileOriginalChatScoreboard.PlusNames.Length);
-            Assert.AreEqual(1, MobileOriginalChatScoreboard.MinusNames.Length);
             Assert.AreEqual("C-08", MobileOriginalChatScoreboard.CommonCatalogIds[7]);
             Assert.AreEqual("총병", MobileOriginalChatScoreboard.CommonNames[7]);
             Assert.AreEqual("C-09", MobileOriginalChatScoreboard.CommonCatalogIds[8]);

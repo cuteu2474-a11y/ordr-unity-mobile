@@ -23,15 +23,6 @@ namespace Ordr.Mobile.Mobile
             "하급", "중급", "고급", "다른세계", "압살롬"
         };
 
-        public static readonly string[] PlusNames =
-        {
-            "스토리 점수", "(신세계) 마지막 라운드 유닛 점수",
-            "(신세계) 라운드 유닛 점수", "(신세계) 신속한 보스 처치",
-            "(신세계) 보스 처치", "도움소 마나", "(신세계) 진입"
-        };
-
-        public static readonly string[] MinusNames = { "(신세계) 보상 사용" };
-
         private readonly Dictionary<string, int> confirmedCommonDraws =
             new Dictionary<string, int>(StringComparer.Ordinal);
 

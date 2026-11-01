@@ -15,7 +15,7 @@ namespace Ordr.Mobile.Unity
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
         private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, LogPose, Helper, Alchemy, Missions }
-        private enum ScoreboardPage { Summary, Plus, Minus, Commons }
+        private enum ScoreboardPage { Summary, Commons }
 
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private bool openByDefault;
@@ -502,18 +502,13 @@ namespace Ordr.Mobile.Unity
             }
         }
 
-        // The original -점수판/-점수판+/-점수판-/-점수판흔함 were four
-        // chat outputs, not the Warcraft multiboard. The labels below follow
-        // the public ORDR 1.31 ShowScoreBoard source; a complete 2.323[C]
-        // persistent clear-score ledger has not been verified or connected.
+        // Keep only the useful personal stats and confirmed common-wisp draws.
+        // Original + / - breakdown and final score tracking are intentionally
+        // out of scope for the mobile remake at the player's request.
         private void DrawOriginalChatScoreboard()
         {
             GUILayout.BeginHorizontal();
             DrawScoreboardPageButton(ScoreboardPage.Summary, "개인 기록");
-            DrawScoreboardPageButton(ScoreboardPage.Plus, "득점 +");
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            DrawScoreboardPageButton(ScoreboardPage.Minus, "감점 -");
             DrawScoreboardPageButton(ScoreboardPage.Commons, "흔함 획득");
             GUILayout.EndHorizontal();
             GUILayout.Space(6f);
@@ -521,8 +516,6 @@ namespace Ordr.Mobile.Unity
             switch (scoreboardPage)
             {
                 case ScoreboardPage.Summary: DrawOriginalChatScoreSummary(); break;
-                case ScoreboardPage.Plus: DrawOriginalChatScoreBreakdown(true); break;
-                case ScoreboardPage.Minus: DrawOriginalChatScoreBreakdown(false); break;
                 case ScoreboardPage.Commons: DrawOriginalChatCommonDraws(); break;
             }
         }
@@ -555,7 +548,7 @@ namespace Ordr.Mobile.Unity
             var gold = OrdrMobileUiTheme.Gold;
             var aqua = OrdrMobileUiTheme.Aqua;
             var pale = new Color(0.83f, 0.90f, 1f, 1f);
-            GUILayout.Label("현재 연결된 세션 기록만 표시 · 원본 2.323[C] 전체 클리어/세이브 장부는 미연결",
+            GUILayout.Label("현재 연결된 세션 기록만 표시 · 영구 저장/누적 기록은 미연결",
                 OrdrMobileUiTheme.Explanation);
             DrawScoreMetric("플레이어 / 세이브 횟수", "단일 플레이 · 세이브 기록 미연결", pale);
             DrawScoreMetric("게임 버전", "리메이크 개발용 · 원본 S2 2.323[C] 참조", pale);
@@ -564,10 +557,6 @@ namespace Ordr.Mobile.Unity
                 "원본 검증 경로 · 난이도 기록 미연결", pale);
             DrawScoreMetric("최종 유닛 카운트 (유카)",
                 "원본 종료 유카 집계 미연결", gold);
-            DrawScoreMetric("클리어 점수", "원본 클리어 점수 집계 미연결", gold);
-            if (controller.PracticeBattle != null && controller.PracticeBattle.BossScoreAwarded > 0)
-                GUILayout.Label("참고: 연습 보스 추가 점수 " +
-                    controller.PracticeBattle.BossScoreAwarded + "점 (클리어 점수 아님)");
             DrawScoreMetric("항법", controller.Original323HelperNavigation != null &&
                 controller.Original323HelperNavigation.ChosenNavigation != null
                 ? controller.Original323HelperNavigation.ChosenNavigation : "미선택 · 미연결 항법 제외", aqua);
@@ -582,18 +571,6 @@ namespace Ordr.Mobile.Unity
             if (controller.PracticeMoneyGambling != null)
                 GUILayout.Label("별도 연습 일반 돈 도박 " +
                     controller.PracticeMoneyGambling.PurchaseCount + "회 (원작 등급별 도박 통계와 별개)");
-        }
-
-        private void DrawOriginalChatScoreBreakdown(bool positive)
-        {
-            GUILayout.Label("항목 명칭만 연결 · 2.323[C] 확정 클리어 점수 장부 미연결",
-                OrdrMobileUiTheme.Explanation);
-            foreach (string name in positive ? MobileOriginalChatScoreboard.PlusNames :
-                MobileOriginalChatScoreboard.MinusNames)
-                GUILayout.Label("· " + name + " — 점수 미집계");
-            if (positive && controller.PracticeBattle != null)
-                DrawScoreMetric("별도 연습 보스 추가 점수 (원본 총점 아님)",
-                    controller.PracticeBattle.BossScoreAwarded + "점", OrdrMobileUiTheme.Aqua);
         }
 
         private void DrawOriginalChatCommonDraws()

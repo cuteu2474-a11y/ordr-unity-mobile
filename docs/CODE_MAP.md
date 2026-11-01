@@ -167,7 +167,7 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 
 ## 원작 채팅 점수판 화면 (2026-11-01)
 
-`Assets/Scripts/Unity/OrdrMobileTouchPanel.cs`의 `Tab.Play`는 `ScoreboardPage` 네 화면(개인 기록, 득점+, 감점-, 흔함 획득)을 제공합니다. `Assets/Scripts/Mobile/MobileOriginalChatScoreboard.cs`는 오직 `OrdrCharacterCombatController.RequestVerifiedCommonWispRecruitment()`에서 성공적으로 거래된 `C-01`~`C-09` 흔함 소환만 세션 기록으로 셉니다. 전투·경제 원본 거래 로직은 변경하지 않습니다. 항목명은 공개 ORDR **1.31** JASS `ShowScoreBoard`를 참고했으며 **S2 2.323[C]의 실제 클리어 점수 장부와 저장 시스템은 미연결**입니다. UI는 다른 출처의 연습/보물·선택 항법 자료를 원작 최종 점수로 합산하지 않습니다.
+`Assets/Scripts/Unity/OrdrMobileTouchPanel.cs`의 `Tab.Play`는 `ScoreboardPage` 두 화면(개인 기록, 흔함 획득)을 제공합니다. 성현 님 결정으로 클리어 점수, 득점·감점 항목과 계산은 **구현 대상에서 제외**했습니다. `Assets/Scripts/Mobile/MobileOriginalChatScoreboard.cs`는 오직 `OrdrCharacterCombatController.RequestVerifiedCommonWispRecruitment()`에서 성공적으로 거래된 `C-01`~`C-09` 흔함 소환만 세션 기록으로 셉니다. 전투·경제 원본 거래 로직은 변경하지 않습니다. 항목명은 공개 ORDR **1.31** JASS `ShowScoreBoard`를 참고했으며 **S2 2.323[C]의 저장 시스템은 미연결**입니다.
 
 `Assets/Scripts/Unity/MobileOwnedUnitFormation.cs`는 전장 좌표를 바꾸지 않고 한 그룹당 정사각형 터치 칸을 계산합니다. `OrdrUnitWorldPresenter`는 실제 월드 아이콘을 타일 상단 중앙에, 이름·등급·수량을 하단에 배치합니다. 좁은 전장에서는 기존과 같이 페이지 수가 늘어날 수 있습니다.
 
