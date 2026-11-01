@@ -86,11 +86,11 @@ namespace Ordr.Mobile.Unity
             };
         }
 
-        public static Rect[] StatusChipRects(Rect area)
+        public static Rect[] StatusChipRects(Rect area, int count = 4)
         {
             if (area.width <= 0f || area.height <= 0f)
                 throw new ArgumentOutOfRangeException(nameof(area));
-            const int count = 4;
+            if (count < 1) throw new ArgumentOutOfRangeException(nameof(count));
             float gap = Mathf.Clamp(area.width * .01f, 3f, 8f);
             float width = (area.width - gap * (count - 1)) / count;
             if (width <= 0f) throw new ArgumentOutOfRangeException(nameof(area));

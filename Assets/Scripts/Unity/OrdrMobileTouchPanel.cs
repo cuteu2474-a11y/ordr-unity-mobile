@@ -298,10 +298,10 @@ namespace Ordr.Mobile.Unity
             Rect area=MobileMapSkillLayout.Scaled(layout.StatusMargin,scale);
             if(area.width<100f||area.height<22f)return;
             OrdrMobileUiTheme.DrawHeader(area);
-            float stripWidth = Mathf.Min(760f, area.width - 12f);
+            float stripWidth = Mathf.Min(900f, area.width - 12f);
             area = new Rect(area.xMax - stripWidth - 6f, area.y, stripWidth, area.height);
             var economy=controller.SharedEconomy;
-            var chips=MobileMapSkillLayout.StatusChipRects(area);
+            var chips=MobileMapSkillLayout.StatusChipRects(area, 5);
             OrdrMobileUiTheme.ResourceChip(chips[0],"골드",
                 economy==null?"--":economy.Wallet.Balance("gold").ToString(),OrdrMobileUiTheme.Gold);
             OrdrMobileUiTheme.ResourceChip(chips[1],"목재",
@@ -309,7 +309,10 @@ namespace Ordr.Mobile.Unity
             OrdrMobileUiTheme.ResourceChip(chips[2],"위습",
                 economy==null?"--":economy.Wallet.Balance(WispResourceIds.Random).ToString(),
                 new Color(.77f,.63f,1f,1f));
-            OrdrMobileUiTheme.ResourceChip(chips[3], "특성포인트",
+            OrdrMobileUiTheme.ResourceChip(chips[3], "선택위습",
+                economy == null ? "--" : economy.Wallet.Balance(WispResourceIds.Choice).ToString(),
+                new Color(.62f, .83f, 1f, 1f));
+            OrdrMobileUiTheme.ResourceChip(chips[4], "특성포인트",
                 economy == null ? "--" : economy.Wallet.Balance(OriginalMissionWalletRewards.TraitPointsId).ToString(),
                 new Color(1f, .65f, .38f, 1f));
         }
