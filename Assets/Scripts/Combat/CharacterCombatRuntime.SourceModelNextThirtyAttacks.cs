@@ -61,7 +61,85 @@ namespace Ordr.Mobile.Combat
                 ReportSourceModelNextThirtyDeferred(attackerId, primary.Id,
                     row.CatalogId + " 도감 " + actor.Profile.Skills.Count +
                     "개 중 안전한 연습 타격 " + completedModels +
-                    "개만 연결; 나머지 스킬은 실행하지 않음");
+                    "개만 공격 선언에서 연결; 나머지는 이 경로에서 실행하지 않음");
+        }
+
+        // Reuse the SAME resource/cooldown ledger as verified active skills.
+        // Never debit mana/health for a partial tooltip packet; never invent
+        // resources for units lacking a source-backed health/mana provider.
+        private bool TryCastSourceModelNextThirtyActive(CharacterInstance caster,
+            string skillId, string primaryEnemyId, out AbilityCastResult result)
+        {
+            result = AbilityCastResult.UnsupportedEffect;
+            SourceModelNextThirtyUnit row;
+            if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
+                caster.Mapping == null ||
+                !SourceModelNextThirtySkillCatalog.TryGet(
+                    caster.Mapping.AttackSpec.UnitRawCode, out row) ||
+                row.CatalogId != caster.Catalog.Id || caster.Profile == null)
+                return false;
+            ImportedCombatSkill selected = null;
+            foreach (var candidate in caster.Profile.Skills)
+                if (candidate.Id == skillId) { selected = candidate; break; }
+            if (selected == null || !row.AllowsActive(selected.Name)) return false;
+            if (!SourceModelNextThirtySkillCatalog.CanModelCompleteActive(selected))
+                return true;
+            SpatialCombatEnemy primary;
+            if (string.IsNullOrWhiteSpace(primaryEnemyId) ||
+                !enemies.TryGetValue(primaryEnemyId, out primary) ||
+                !primary.Enemy.IsAlive || !CanAttackInThisLane(caster, primary))
+            {
+                result = AbilityCastResult.MissingTarget;
+                return true;
+            }
+            var shape = selected.Target == "single" ?
+                SourceScriptHitShape.Direct : SourceScriptHitShape.Circle;
+            var targets = SourceScriptTargets(caster, primary,
+                new SourceScriptHit(shape, selected.Radius ?? 0,
+                    0, 0, 1, 1, Ordr323AttackType.Spells));
+            if (targets.Count == 0)
+            {
+                result = AbilityCastResult.MissingTarget;
+                return true;
+            }
+            foreach (var component in selected.Components)
+            {
+                if (component.Type == "fixed" || component.Type == "stun") continue;
+                foreach (var target in targets)
+                {
+                    if (!SourceModelNextThirtyComponentTargets(component, primary, target))
+                        continue;
+                    Ordr323ArmorType armor = default(Ordr323ArmorType);
+                    if (!target.Enemy.Defenses.BaseArmor.HasValue ||
+                        !Ordr323OriginalDamageRules.TryReadArmorType(
+                            target.Enemy.Defenses.WarcraftArmorType, out armor))
+                        return true; // Unusable source defense: no resource debit.
+                }
+            }
+            ImportedCombatSkill accepted;
+            result = caster.Abilities.TryCast(skillId, true, false, out accepted);
+            if (result != AbilityCastResult.Cast) return true;
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                InstanceKey(caster.Id), primary.Id, accepted.Name,
+                "TOOLTIP_MODEL_ONLY 자원 소비형 스킬 / 원본 타격·면역 미검증", 0));
+            ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);
+            RemoveDefeatedEnemies();
+            return true;
+        }
+
+        private static bool SourceModelNextThirtyComponentTargets(
+            ImportedCombatEffect component, SpatialCombatEnemy primary,
+            SpatialCombatEnemy target)
+        {
+            if (component.Text("scope") == "singlePrimaryTarget" &&
+                !ReferenceEquals(primary, target)) return false;
+            var kinds = component.Get("onlyTargetKinds") as List<object>;
+            if (kinds == null) return true;
+            string kind = target.Kind == CharacterEnemyKind.Line ? "line" :
+                target.Kind == CharacterEnemyKind.Boss ? "boss" :
+                target.Kind == CharacterEnemyKind.Enraged ? "enraged" :
+                target.Kind == CharacterEnemyKind.Story ? "story" : null;
+            return kind != null && kinds.Contains(kind);
         }
 
         private void ReportSourceModelNextThirtyDeferred(string actorId,
@@ -89,8 +167,8 @@ namespace Ordr.Mobile.Combat
                     {
                         if (target.Kind != CharacterEnemyKind.Line ||
                             !target.Enemy.IsAlive ||
-                            (component.Text("scope") == "singlePrimaryTarget" &&
-                             !ReferenceEquals(primary, target))) continue;
+                            !SourceModelNextThirtyComponentTargets(
+                                component, primary, target)) continue;
                         string source = "practice-tooltip-stun:" + attackerId +
                             ":" + skill.Id;
                         target.Enemy.Status.RemoveSource(source);
@@ -115,44 +193,71 @@ namespace Ordr.Mobile.Combat
                         minimum, maximum,
                         sourceModelRules.NextScriptRoll(1000000) / 1000000.0);
                 }
-                double raw = component.Number("amount").Value * multiplier;
                 foreach (var target in targets)
                 {
                     SpatialCombatEnemy current;
                     if (!target.Enemy.IsAlive ||
                         !enemies.TryGetValue(target.Id, out current) ||
                         !ReferenceEquals(current, target) ||
-                        !CanAttackInThisLane(actor, target)) continue;
-                    Ordr323ArmorType armor;
-                    if (!target.Enemy.Defenses.BaseArmor.HasValue ||
+                        !CanAttackInThisLane(actor, target) ||
+                        !SourceModelNextThirtyComponentTargets(component, primary, target))
+                        continue;
+                    double raw = (component.Number("amount") ??
+                        component.Number("amountPerHit") ?? 0) * multiplier;
+                    if (component.Text("basis") == "targetMaxHealth")
+                        raw += target.Enemy.MaxHealth * component.Number("percent").Value / 100;
+                    raw += target.Enemy.MaxHealth *
+                        ((component.Number("plusTargetMaxHealthPercent") ?? 0) +
+                         (component.Number("extraTargetMaxHealthPercent") ?? 0)) / 100;
+                    raw += (target.Enemy.MaxHealth - target.Enemy.Health) *
+                        (component.Number("plusTargetMissingHealthPercent") ?? 0) / 100;
+                    if (target.Kind == CharacterEnemyKind.Boss)
+                        raw += target.Enemy.MaxHealth *
+                            (component.Number("extraBossMaxHealthPercent") ?? 0) / 100;
+                    if (target.Kind == CharacterEnemyKind.Enraged)
+                        raw += target.Enemy.MaxHealth *
+                            (component.Number("extraEnragedMaxHealthPercent") ?? 0) / 100;
+                    raw += component.Number("extraAmount") ?? 0;
+                    if (ReferenceEquals(primary, target))
+                        raw *= 1 + (component.Number("singlePrimaryTargetExtraPercent") ?? 0) / 100;
+                    if (double.IsNaN(raw) || double.IsInfinity(raw) || raw >= long.MaxValue)
+                        throw new OverflowException("도감 모델 원시 피해량 범위 초과");
+                    Ordr323ArmorType armor = default(Ordr323ArmorType);
+                    if (component.Type != "fixed" &&
+                        (!target.Enemy.Defenses.BaseArmor.HasValue ||
                         !Ordr323OriginalDamageRules.TryReadArmorType(
-                            target.Enemy.Defenses.WarcraftArmorType, out armor))
+                            target.Enemy.Defenses.WarcraftArmorType, out armor)))
                     {
                         ReportSourceModelNextThirtyDeferred(attackerId,
                             target.Id, "대상 방어력·유형 자료 부재");
                         continue;
                     }
-                    // Follow the existing practice arithmetic; physical and
-                    // magical native schools are intentionally NOT certified.
-                    double modeled = Ordr323MapDamageMath.ApplyVerifiedFactors(
-                        raw, Ordr323AttackType.Spells, armor, true, true,
-                        target.Enemy.Defenses.BaseArmor.Value -
-                        SourceModelUnitEffects.ResolvePracticeArmorReduction(
-                            target.Enemy.Status.Snapshot()), false, 0, 1);
-                    if (modeled >= long.MaxValue)
-                        throw new OverflowException("도감 모델 피해량 범위 초과");
-                    long actual;
-                    if (!resolution.TryApplySkillDamage(attackerId, target.Id,
-                            (long)Math.Floor(modeled), out actual)) continue;
-                    events.Add(new CharacterCombatEvent(
-                        CharacterCombatEventType.SkillDamage, attackerId,
-                        target.Id, skill.Name,
-                        "TOOLTIP_MODEL_ONLY " + component.Type +
-                        " / 원작 최종 방어·면역·속성 보정 미검증", actual));
-                    if (!target.Enemy.IsAlive)
+                    int hits = (int)(component.Number("hits") ?? 1);
+                    for (int hit = 0; hit < hits && target.Enemy.IsAlive; hit++)
+                    {
+                        // Fixed tooltip packets bypass the practice armor path.
+                        // This distinction is not yet native Warcraft parity.
+                        double modeled = component.Type == "fixed" ? raw :
+                            Ordr323MapDamageMath.ApplyVerifiedFactors(
+                                raw, Ordr323AttackType.Spells, armor, true, true,
+                                target.Enemy.Defenses.BaseArmor.Value -
+                                SourceModelUnitEffects.ResolvePracticeArmorReduction(
+                                    target.Enemy.Status.Snapshot()), false, 0, 1);
+                        if (modeled >= long.MaxValue || double.IsNaN(modeled))
+                            throw new OverflowException("도감 모델 피해량 범위 초과");
+                        long actual;
+                        if (!resolution.TryApplySkillDamage(attackerId, target.Id,
+                                (long)Math.Floor(modeled), out actual)) break;
                         events.Add(new CharacterCombatEvent(
-                            CharacterCombatEventType.EnemyDefeated, attackerId,
-                            target.Id, skill.Name, "연습 도감 스킬로 적 처치", actual));
+                            CharacterCombatEventType.SkillDamage, attackerId,
+                            target.Id, skill.Name,
+                            "TOOLTIP_MODEL_ONLY " + component.Type +
+                            " / 원작 최종 방어·면역·속성 보정 미검증", actual));
+                        if (!target.Enemy.IsAlive)
+                            events.Add(new CharacterCombatEvent(
+                                CharacterCombatEventType.EnemyDefeated, attackerId,
+                                target.Id, skill.Name, "연습 도감 스킬로 적 처치", actual));
+                    }
                 }
             }
         }

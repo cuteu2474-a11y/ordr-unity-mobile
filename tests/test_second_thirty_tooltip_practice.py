@@ -10,37 +10,78 @@ SOURCE = ROOT / 'Assets/Scripts/Combat/SourceModelNextThirtySkillCatalog.cs'
 
 def rows():
     text = SOURCE.read_text()
-    definitions = re.findall(r'new SourceModelNextThirtyUnit\(([^\n;]*)\)', text)
+    entries = text.split('private static readonly SourceModelNextThirtyUnit[] Entries = {', 1)[1]
+    entries = entries.split('\n        };', 1)[0]
+    definitions = entries.split('new SourceModelNextThirtyUnit(')[1:]
     return [re.findall(r'"([^"]+)"', definition) for definition in definitions]
 
 
 def supported(skill):
-    if skill.get('trigger') not in ('onAttack', 'onEveryAttack'):
+    trigger = skill.get('trigger')
+    if trigger not in ('onAttack', 'onEveryAttack', 'activeMana', 'activeHealth'):
         return False
     if skill.get('target') not in ('area', 'single'):
         return False
     if skill['target'] == 'area' and skill.get('radius', 0) <= 0:
         return False
-    if skill['trigger'] == 'onAttack' and not 0 < skill.get('chancePercent', 0) <= 100:
+    if trigger == 'onAttack' and not 0 < skill.get('chancePercent', 0) <= 100:
         return False
-    if skill['trigger'] == 'onEveryAttack' and 'chancePercent' in skill:
+    if trigger in ('onEveryAttack', 'activeMana', 'activeHealth') and 'chancePercent' in skill:
         return False
-    if set(skill) - {'name', 'trigger', 'target', 'radius', 'chancePercent', 'components'}:
+    active = trigger in ('activeMana', 'activeHealth')
+    allowed = {'name', 'trigger', 'target', 'radius', 'chancePercent', 'components'}
+    if active:
+        allowed |= {'manaCost', 'healthCost', 'cooldownSeconds', 'absoluteCooldownSeconds'}
+        cost = 'manaCost' if trigger == 'activeMana' else 'healthCost'
+        if skill.get(cost, 0) <= 0:
+            return False
+    if set(skill) - allowed:
         return False
     if not skill.get('components'):
         return False
-    damage = False
     for component in skill['components']:
-        if component['type'] in ('physical', 'magical'):
-            if set(component) - {'type', 'amount', 'multiplierRange'}:
+        if component['type'] in ('physical', 'magical', 'fixed'):
+            if set(component) - {
+                'type', 'amount', 'multiplierRange', 'amountPerHit', 'hits',
+                'basis', 'percent', 'scope', 'onlyTargetKinds',
+                'plusTargetMaxHealthPercent', 'plusTargetMissingHealthPercent',
+                'extraTargetMaxHealthPercent', 'extraBossMaxHealthPercent',
+                'extraEnragedMaxHealthPercent', 'extraAmount',
+                'singlePrimaryTargetExtraPercent'
+            }:
                 return False
-            if component.get('amount', 0) <= 0:
+            quantities = ('amount', 'amountPerHit', 'plusTargetMaxHealthPercent',
+                          'plusTargetMissingHealthPercent', 'extraTargetMaxHealthPercent',
+                          'extraBossMaxHealthPercent', 'extraEnragedMaxHealthPercent', 'extraAmount')
+            if any(component[x] <= 0 for x in quantities if x in component):
+                return False
+            if not any(x in component for x in quantities) and 'basis' not in component:
+                return False
+            if ('amountPerHit' in component) != ('hits' in component):
+                return False
+            if 'hits' in component and not (1 <= component['hits'] <= 64 and
+                                            int(component['hits']) == component['hits']):
+                return False
+            if 'basis' in component and (component['basis'] != 'targetMaxHealth' or
+                                        component.get('percent', 0) <= 0):
+                return False
+            if 'basis' not in component and 'percent' in component:
+                return False
+            if 'singlePrimaryTargetExtraPercent' in component and (
+                'amount' not in component or component['singlePrimaryTargetExtraPercent'] <= 0
+            ):
+                return False
+            if component.get('scope') not in (None, 'singlePrimaryTarget'):
+                return False
+            if 'onlyTargetKinds' in component and (
+                not component['onlyTargetKinds'] or
+                set(component['onlyTargetKinds']) - {'line', 'boss', 'enraged', 'story'}
+            ):
                 return False
             if 'multiplierRange' in component:
                 value = component['multiplierRange']
                 if len(value) != 2 or not 0 < value[0] <= value[1]:
                     return False
-            damage = True
         elif component['type'] == 'stun':
             if set(component) - {'type', 'durationSeconds', 'scope', 'ignoresResistance'}:
                 return False
@@ -50,7 +91,7 @@ def supported(skill):
                 return False
         else:
             return False
-    return damage
+    return True
 
 
 class SecondThirtyTooltipPracticeTests(unittest.TestCase):
@@ -73,14 +114,18 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
             self.assertEqual(rawcode, self.status[unit_id]['originalRawcode'])
             self.assertIn(unit_id, self.profiles)
 
-    def test_sixteen_approved_packets_are_whole_and_source_declared(self):
-        count = 0
+    def test_approved_packets_are_whole_and_source_declared(self):
+        attacks = active = 0
         for unit_id, _, *names in self.rows:
             by_name = {skill['name']: skill for skill in self.profiles[unit_id]['skills']}
             for name in names:
                 self.assertTrue(supported(by_name[name]), (unit_id, name))
-                count += 1
-        self.assertEqual(16, count)
+                if by_name[name]['trigger'] in ('activeMana', 'activeHealth'):
+                    active += 1
+                else:
+                    attacks += 1
+        self.assertEqual(29, attacks)
+        self.assertEqual(7, active)
 
     def test_legacy_source_callbacks_are_not_double_activated(self):
         by_id = {unit_id: names for unit_id, _, *names in self.rows}
@@ -93,7 +138,7 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
 
     def test_unresolved_form_or_summon_skills_are_never_auto_approved(self):
         by_id = {unit_id: names for unit_id, _, *names in self.rows}
-        for unit_id in ('TR-23', 'TR-30', 'I-06', 'I-11', 'L-03'):
+        for unit_id in ('TR-23', 'TR-30', 'I-06', 'I-11'):
             self.assertEqual([], by_id[unit_id])
 
 

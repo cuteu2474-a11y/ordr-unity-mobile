@@ -382,7 +382,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(30, SourceModelNextThirtySkillCatalog.All.Count);
             Assert.AreEqual(30, SourceModelNextThirtySkillCatalog.All
                 .Select(x => x.CatalogId).Distinct().Count());
-            int enabled = 0;
+            int enabled = 0, activeEnabled = 0;
             foreach (var row in SourceModelNextThirtySkillCatalog.All)
             {
                 Assert.IsFalse(previous.Contains(row.CatalogId), "Previous batch: " + row.CatalogId);
@@ -398,8 +398,16 @@ namespace Ordr.Mobile.Tests
                         row.CatalogId + ": " + name);
                     enabled++;
                 }
+                foreach (string name in row.PracticeActiveSkills)
+                {
+                    var skill = profile.Skills.Single(x => x.Name == name);
+                    Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill),
+                        row.CatalogId + ": " + name);
+                    activeEnabled++;
+                }
             }
-            Assert.AreEqual(16, enabled, "Only fully parsed tooltip packets are allowed");
+            Assert.AreEqual(29, enabled, "Only whole attack tooltip packets are allowed");
+            Assert.AreEqual(7, activeEnabled, "Resource-gated, whole active packets only");
         }
 
         [TestCase("L-04", "바람바람 열매")]
@@ -413,6 +421,18 @@ namespace Ordr.Mobile.Tests
         [TestCase("E-04", "매 타격 추가 마법")]
         [TestCase("E-08", "범위 물리")]
         [TestCase("I-04", "광역 물리 타격")]
+        [TestCase("L-03", "전격")]
+        [TestCase("L-07", "명왕의 검술")]
+        [TestCase("L-13", "배리어 피스트")]
+        [TestCase("L-15", "타격 스턴")]
+        [TestCase("L-20", "화이트블로우")]
+        [TestCase("H-02", "보스·광폭화 함포")]
+        [TestCase("H-12", "용의 발톱")]
+        [TestCase("TR-09", "광역 3연타")]
+        [TestCase("TR-10", "타격 스턴")]
+        [TestCase("E-04", "연속 범위 타격")]
+        [TestCase("E-08", "단일 스턴")]
+        [TestCase("I-04", "타격·단일 스턴")]
         public void SecondThirtySupportedTooltipAttacksExecuteInPracticeOnly(
             string unitId, string name)
         {
@@ -421,15 +441,49 @@ namespace Ordr.Mobile.Tests
                 var events = live.Battle.Advance(10);
                 Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == name && e.Detail.Contains("TOOLTIP_MODEL_ONLY")), unitId);
-                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
-                    e.SkillName == name && e.Amount > 0), unitId);
+                if (name != "타격 스턴" && name != "단일 스턴")
+                    Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                        e.SkillName == name && e.Amount > 0), unitId);
+                else
+                    Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.StatusApplied &&
+                        e.SkillName == name), unitId);
+            }
+        }
+
+        [TestCase("H-07", "갑판 포격", "H-07:skill:0", 95, false)]
+        [TestCase("TR-04", "체력 소모 광역 공격", "TR-04:skill:0", 40, true)]
+        [TestCase("TR-09", "마나 광역 공격", "TR-09:skill:1", 100, false)]
+        [TestCase("TR-14", "킹코브라", "TR-14:skill:0", 85, false)]
+        [TestCase("E-01", "마나 광역기", "E-01:skill:1", 150, false)]
+        [TestCase("E-04", "마나 고정 피해", "E-04:skill:0", 175, false)]
+        [TestCase("E-08", "마나 광역 스턴", "E-08:skill:0", 145, false)]
+        public void SourceModelActiveConsumesOnlyConfiguredResourcesAndHits(
+            string unitId, string name, string skillId, int cost, bool healthCost)
+        {
+            using (var live = Create(unitId, false, -4900, 5400))
+            {
+                live.Battle.Advance(2);
+                var target = live.Combat.MobileEnemySnapshot().First();
+                Assert.AreEqual(AbilityCastResult.NoResourceState,
+                    live.Combat.TryCastActiveSkill(live.ActorId, skillId, target.Id));
+                var resources = new CharacterResources(1000, 1000, 1000, 1000);
+                live.Combat.ConfigureCharacterResources(live.ActorId, resources);
+                Assert.AreEqual(AbilityCastResult.MissingTarget,
+                    live.Combat.TryCastActiveSkill(live.ActorId, skillId, "missing"));
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(live.ActorId, skillId, target.Id));
+                Assert.AreEqual(healthCost ? 1000 - cost : 1000, resources.Health);
+                Assert.AreEqual(healthCost ? 1000 : 1000 - cost, resources.Mana);
+                Assert.IsTrue(live.Combat.LastEvents.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == name && x.Amount > 0), unitId);
             }
         }
 
         [Test]
         public void SecondThirtyUnverifiedFormAndBossSkillsRemainDeferred()
         {
-            foreach (var unit in new[] { "L-03", "TR-23", "TR-30", "I-06", "I-11" })
+            foreach (var unit in new[] { "TR-23", "TR-30", "I-06", "I-11" })
             {
                 using (var live = Create(unit, true, -4900, 5400))
                 {
@@ -439,6 +493,25 @@ namespace Ordr.Mobile.Tests
                     Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
                         e.Detail.Contains("TOOLTIP_MODEL_ONLY")), unit);
                 }
+            }
+        }
+
+        [Test]
+        public void SecondThirtyIncompleteActivePacketsCannotSpendResources()
+        {
+            var profiles = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
+            foreach (var entry in new[] {
+                new[] { "TR-23", "럼블볼 폭주" },
+                new[] { "E-01", "거대화" },
+                new[] { "TR-30", "베가펑크 마나 공격" },
+                new[] { "I-11", "체력 소모 광역 공격" }
+            })
+            {
+                var skill = profiles.Require(entry[0]).Skills.Single(x => x.Name == entry[1]);
+                Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill),
+                    entry[0] + ": " + entry[1]);
+                var row = SourceModelNextThirtySkillCatalog.All.Single(x => x.CatalogId == entry[0]);
+                Assert.IsFalse(row.AllowsActive(skill.Name));
             }
         }
 
