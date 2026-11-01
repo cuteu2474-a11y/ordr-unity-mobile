@@ -503,8 +503,7 @@ namespace Ordr.Mobile.Tests
             foreach (var entry in new[] {
                 new[] { "TR-23", "럼블볼 폭주" },
                 new[] { "E-01", "거대화" },
-                new[] { "TR-30", "베가펑크 마나 공격" },
-                new[] { "I-11", "체력 소모 광역 공격" }
+                new[] { "TR-30", "베가펑크 마나 공격" }
             })
             {
                 var skill = profiles.Require(entry[0]).Skills.Single(x => x.Name == entry[1]);
@@ -512,6 +511,46 @@ namespace Ordr.Mobile.Tests
                     entry[0] + ": " + entry[1]);
                 var row = SourceModelNextThirtySkillCatalog.All.Single(x => x.CatalogId == entry[0]);
                 Assert.IsFalse(row.AllowsActive(skill.Name));
+            }
+        }
+
+        [Test]
+        public void SecondThirtyModelablePacketDoesNotGrantCastPermission()
+        {
+            var profiles = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
+            var skill = profiles.Require("I-11").Skills.Single(
+                x => x.Name == "체력 소모 광역 공격");
+            // The I-11 tooltip has a parsable damage packet, but no reviewed
+            // authorization in the unit's practice active-skill allow-list.
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill));
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.All.Single(
+                x => x.CatalogId == "I-11").AllowsActive(skill.Name));
+        }
+
+        [TestCase("TR-23", "TR-23:skill:0", "럼블볼 폭주")]
+        [TestCase("E-01", "E-01:skill:0", "거대화")]
+        [TestCase("TR-30", "TR-30:skill:0", "베가펑크 마나 공격")]
+        [TestCase("I-11", "I-11:skill:0", "체력 소모 광역 공격")]
+        [TestCase("TR-09", "TR-09:skill:0", "체력 소모 연타")]
+        [TestCase("I-04", "I-04:skill:0", "광역 혼합 피해")]
+        [TestCase("L-07", "L-07:skill:0", "패기발산")]
+        [TestCase("I-06", "I-06:skill:0", "대자재천신")]
+        public void SecondThirtyUnapprovedActiveSkillCannotSpendThroughGenericFallback(
+            string unitId, string skillId, string skillName)
+        {
+            using (var live = Create(unitId, false, -4900, 5400))
+            {
+                live.Battle.Advance(2);
+                var target = live.Combat.MobileEnemySnapshot().First();
+                var resources = new CharacterResources(1000, 1000, 1000, 1000);
+                live.Combat.ConfigureCharacterResources(live.ActorId, resources);
+                Assert.AreEqual(AbilityCastResult.UnsupportedEffect,
+                    live.Combat.TryCastActiveSkill(live.ActorId, skillId, target.Id), unitId);
+                Assert.AreEqual(1000, resources.Health, unitId);
+                Assert.AreEqual(1000, resources.Mana, unitId);
+                Assert.IsFalse(live.Combat.LastEvents.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == skillName), unitId);
             }
         }
 

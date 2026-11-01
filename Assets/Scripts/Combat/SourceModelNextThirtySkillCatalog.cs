@@ -7,8 +7,9 @@ namespace Ordr.Mobile.Combat
     // Second group of 30 units. This list identifies source object identities,
     // not thirty completed skill kits. A deliberately small allow-list enables
     // *tooltip-based practice packets* only when the complete packet has a
-    // supported shape. Complex form, mana, health, summons and stacking paths
-    // stay deferred until their original JASS/native state can be witnessed.
+    // supported shape AND its skill name is explicitly allow-listed. Seven
+    // resource-consuming practice packets are approved; other health/mana,
+    // form, summon and stacking paths remain deferred until source review.
     public sealed class SourceModelNextThirtyUnit
     {
         public string CatalogId { get; private set; }

@@ -81,7 +81,13 @@ namespace Ordr.Mobile.Combat
             ImportedCombatSkill selected = null;
             foreach (var candidate in caster.Profile.Skills)
                 if (candidate.Id == skillId) { selected = candidate; break; }
-            if (selected == null || !row.AllowsActive(selected.Name)) return false;
+            if (selected == null) return false;
+            // A tooltip that parses as a complete packet is not permission to
+            // execute it. Block unreviewed active skills here, before the
+            // generic ability executor could debit resources as a fallback.
+            if (!row.AllowsActive(selected.Name))
+                return selected.Trigger == "activeMana" ||
+                    selected.Trigger == "activeHealth";
             if (!SourceModelNextThirtySkillCatalog.CanModelCompleteActive(selected))
                 return true;
             SpatialCombatEnemy primary;
