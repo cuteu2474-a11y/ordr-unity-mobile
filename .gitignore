@@ -22,3 +22,7 @@ __pycache__/
 Assets/Resources/OrdrData/
 Assets/Resources/OrdrData.meta
 Assets/Resources.meta
+
+# Personal-use catalog portraits are injected locally before a private APK build.
+# Never publish fan-site image binaries or generated Unity metadata to public GitHub.
+Assets/Resources/CharacterPortraits/

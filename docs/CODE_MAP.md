@@ -1,5 +1,11 @@
 # 코드 구조와 재사용 지점
 
+## 선택적 비공개 도감 초상화
+
+- `tools/import_private_portraits.py`: 저장소 **밖**에 보관한 C1~C9 PNG/ZIP을 검증해 Git 무시 경로 `Assets/Resources/CharacterPortraits/`에 C-01~C-09 이름으로 복사합니다.
+- `Assets/Editor/OrdrPrivateCharacterPortraitImporter.cs`: 로컬 PNG를 Unity Sprite로 설정합니다. `Assets/Scripts/Unity/OrdrCharacterPortraits.cs`가 읽기 전용 캐시를 제공하며, `OrdrUnitWorldPresenter`와 `OrdrMobileTouchPanel`이 동일한 유닛 ID로 표시합니다.
+- 공개 GitHub의 CI에는 이미지가 없어서 기존 원형 마커가 표시됩니다. 개인용 이미지 포함 APK는 [비공개 로컬 빌드](PRIVATE_PORTRAIT_BUILD.md)만 해당합니다. 전투 데이터와 도감 기술 실행 로직에는 영향을 주지 않습니다.
+
 ## 최신 — 원본 결과 기반 변신·소환 모델
 
 - `Assets/Scripts/Combat/SourceModelTemporarySkillCatalog.cs`: 원본 도감의 완전한 단일 변신·분신 공격 패킷만 수용하는 데이터 게이트. 복합 변신·미확정 수치는 거절.

@@ -760,6 +760,7 @@ namespace Ordr.Mobile.Unity
         private void DrawUnitDetails(UnitImplementationDefinition detail)
         {
             GUILayout.BeginVertical(GUI.skin.box);
+            DrawCharacterPortrait(detail.Unit.Id, 112f);
             GUILayout.Label(detail.DisplayName + " · " + detail.Grade);
             if (controller.PracticeBattle != null)
             {
@@ -926,6 +927,7 @@ namespace Ordr.Mobile.Unity
             {
                 bool selected = Combat.Roster.SelectedId == entry.InstanceId;
                 GUILayout.BeginVertical(GUI.skin.box);
+                DrawCharacterPortrait(entry.Unit.Id, 62f);
                 GUILayout.Label(entry.Unit.Name, OrdrMobileUiTheme.Subheading);
                 GUILayout.Label(entry.Unit.Grade + " · #" + entry.InstanceId +
                     (selected ? " · 선택됨" : "") +
@@ -1111,6 +1113,7 @@ namespace Ordr.Mobile.Unity
             {
                 var unit = entries[i];
                 GUILayout.BeginVertical(GUI.skin.box);
+                DrawCharacterPortrait(unit.UnitId, 62f);
                 GUILayout.Label(unit.DisplayName, OrdrMobileUiTheme.Subheading);
                 GUILayout.Label(unit.Grade);
                 if (GUILayout.Button("정보 보기", GUILayout.MinHeight(56)))
@@ -1122,6 +1125,13 @@ namespace Ordr.Mobile.Unity
                 GUILayout.EndVertical();
             }
             DrawPager(catalogPage, pages, next => catalogPage = next);
+        }
+
+        private static void DrawCharacterPortrait(string unitId, float size)
+        {
+            Sprite portrait = OrdrCharacterPortraits.Find(unitId);
+            if (portrait != null)
+                GUILayout.Box(portrait.texture, GUILayout.Width(size), GUILayout.Height(size));
         }
 
         private void DrawPager(int page, int pages, Action<int> changePage)

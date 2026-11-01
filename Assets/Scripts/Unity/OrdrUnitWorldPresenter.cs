@@ -8,9 +8,8 @@ using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Unity
 {
-    // One shared temporary sprite for all current unit definitions. No Warcraft
-    // model, copyrighted texture or invented gameplay combat values are used.
-    // This component only mirrors units that the game session actually owns.
+    // A private APK may include optional catalog sprites; public builds keep
+    // the shared marker. This mirrors only units that the session really owns.
     public sealed class OrdrUnitWorldPresenter : MonoBehaviour
     {
         [SerializeField] private OrdrCharacterCombatController controller;
@@ -26,6 +25,8 @@ namespace Ordr.Mobile.Unity
         {
             public GameObject Root;
             public SpriteRenderer Icon;
+            public SpriteRenderer PortraitFrame;
+            public bool HasPortrait;
             public SpriteRenderer AttackFlash;
             public float AttackFlashStartedAt = -1f;
             public bool IsPreviewFlash;
@@ -750,8 +751,25 @@ namespace Ordr.Mobile.Unity
                         " [" + entry.Unit.Id + "]");
                     visual.Root.transform.SetParent(transform, false);
                     visual.Icon = visual.Root.AddComponent<SpriteRenderer>();
-                    visual.Icon.sprite = markerSprite;
+                    Sprite portrait = OrdrCharacterPortraits.Find(entry.Unit.Id);
+                    visual.HasPortrait = portrait != null;
+                    visual.Icon.sprite = portrait != null ? portrait : markerSprite;
                     visual.Icon.sortingOrder = 10;
+                    if (visual.HasPortrait)
+                    {
+                        // Scale source images to the exact same world footprint
+                        // as the existing marker, regardless of their pixel size.
+                        float longestSide = Mathf.Max(portrait.bounds.size.x,
+                            portrait.bounds.size.y);
+                        if (longestSide > 0f)
+                            visual.Icon.transform.localScale = Vector3.one / longestSide;
+                        var frame = new GameObject("Portrait grade and selection frame");
+                        frame.transform.SetParent(visual.Root.transform, false);
+                        frame.transform.localScale = new Vector3(1.15f, 1.15f, 1f);
+                        visual.PortraitFrame = frame.AddComponent<SpriteRenderer>();
+                        visual.PortraitFrame.sprite = markerSprite;
+                        visual.PortraitFrame.sortingOrder = 9;
+                    }
                     var flash = new GameObject("Attack flash");
                     flash.transform.SetParent(visual.Root.transform, false);
                     visual.AttackFlash = flash.AddComponent<SpriteRenderer>();
@@ -771,9 +789,12 @@ namespace Ordr.Mobile.Unity
                 float size = Mathf.Max(1f, markerDiameterWorldUnits) *
                     (isSelected ? 1.25f : 1f);
                 visual.Root.transform.localScale = new Vector3(size, size, 1f);
-                visual.Icon.color = isSelected
+                Color tint = isSelected
                     ? new Color(1f, 0.95f, 0.35f, 1f)
                     : ColorForGrade(visual.Grade);
+                visual.Icon.color = visual.HasPortrait ? Color.white : tint;
+                if (visual.PortraitFrame != null)
+                    visual.PortraitFrame.color = tint;
                 // Deployed story units remain in the roster, but are no longer
                 // represented as attackers in the main battle lane.
                 if (combat.IsStoryDeployed(entry.InstanceId) && visual.Root.activeSelf)

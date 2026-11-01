@@ -29,6 +29,12 @@ namespace Ordr.Mobile.Editor
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(scene) == null)
                 throw new BuildFailedException("ORDR 기본 게임 씬이 없습니다: " + scene);
             OrdrCharacterDataSync.EnsureRequiredRuntimeResources();
+            // Public builds have no private portraits. If local portraits are
+            // installed, do not silently ship a partly populated/private APK.
+            string[] privatePortraits = PrivatePortraitAssetPaths();
+            foreach (string path in privatePortraits)
+                if (AssetDatabase.LoadAssetAtPath<Sprite>(path) == null)
+                    throw new BuildFailedException("도감 사진 Sprite 임포트 실패: " + path);
 
             string version = Argument("-ordrBuildVersion") ?? "0.1.0";
             string codeText = Argument("-ordrVersionCode") ?? "1";
@@ -69,17 +75,37 @@ namespace Ordr.Mobile.Editor
             if (report == null || report.summary.result != BuildResult.Succeeded ||
                 !File.Exists(ApkPath) || new FileInfo(ApkPath).Length == 0)
                 throw new BuildFailedException("ORDR Android APK 제작 실패. Unity 빌드 로그를 확인하세요.");
-            WriteRuntimeDataBuildManifest(report, manifestPath);
+            WriteRuntimeDataBuildManifest(report, manifestPath, privatePortraits);
             Debug.Log("ORDR 개발용 APK 생성: " + ApkPath + " / " + version + " (" + versionCode + ")");
         }
 
         // Output filenames can change between Unity versions. Ask the actual
         // BuildReport which source assets were packed, then bind that evidence
         // to this exact APK instead of assuming a resources.assets ZIP entry.
-        private static void WriteRuntimeDataBuildManifest(BuildReport report, string path)
+        private static string[] PrivatePortraitAssetPaths()
+        {
+            const string root = "Assets/Resources/CharacterPortraits/";
+            string directory = Path.Combine(Application.dataPath, "Resources", "CharacterPortraits");
+            if (!Directory.Exists(directory) ||
+                Directory.GetFiles(directory, "*.png").Length == 0)
+                return new string[0];
+
+            string[] expected = Enumerable.Range(1, 9)
+                .Select(n => root + "C-" + n.ToString("00", CultureInfo.InvariantCulture) + ".png")
+                .ToArray();
+            string[] missing = expected.Where(path => !File.Exists(
+                Path.Combine(directory, Path.GetFileName(path)))).ToArray();
+            if (missing.Length > 0)
+                throw new BuildFailedException("개인용 도감 사진 9장 중 누락: " + string.Join(", ", missing));
+            return expected;
+        }
+
+        private static void WriteRuntimeDataBuildManifest(BuildReport report, string path,
+            string[] privatePortraits)
         {
             var packed = report.packedAssets.SelectMany(file => file.contents).ToArray();
-            string[] required = OrdrCharacterDataSync.RequiredRuntimeAssetPaths();
+            string[] required = OrdrCharacterDataSync.RequiredRuntimeAssetPaths()
+                .Concat(privatePortraits).ToArray();
             string[] missing = required.Where(source => !packed.Any(asset =>
                 asset.sourceAssetPath == source && asset.packedSize > 0)).ToArray();
             if (missing.Length != 0)
@@ -93,7 +119,8 @@ namespace Ordr.Mobile.Editor
             {
                 formatVersion = 1,
                 apkSha256 = hash,
-                runtimeAssets = required
+                runtimeAssets = required,
+                privatePortraitAssets = privatePortraits
             }, true));
         }
 
@@ -103,6 +130,7 @@ namespace Ordr.Mobile.Editor
             public int formatVersion;
             public string apkSha256;
             public string[] runtimeAssets;
+            public string[] privatePortraitAssets;
         }
 
         private static string Argument(string key)
