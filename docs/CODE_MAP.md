@@ -1,5 +1,13 @@
 # 코드 구조와 재사용 지점
 
+## 자동 위습 지급 공통 연결
+
+- `Original323WispAssignedRosterMap`: W3X 객체 근거와 156개 위습 전용 rawcode→도감 ID 검증 (조합 허용 범위 변경 없음).
+- `Original323MobileWispOutcomeWorld`: 모바일 원본 결과 분포의 별도 스크립트/네이티브 추첨, 네 등급 원본 위치, 희귀 99% `A0YE` 미구현 코드 보류. 원본 난수 시드 동등성은 보장하지 않음.
+- `OriginalWispCombatRewardWorld` + `MobileWispService`: 동일 공유 로스터 생성·지갑 차감·실패 시 유닛/위습/보류 기록 롤백. 완전 검증된 원본 A0YE는 기존 엄격 생성자 경로에서 계속 요구됨.
+- `OrdrCharacterCombatController`: 전투 런타임 구성 뒤 원본 위습 풀·매핑 리소스로 자동 월드를 설치. UI `DrawWisp`는 임시 캐릭터 모드와 미구현 효과를 명시함.
+
+
 ## 선택적 비공개 도감 초상화
 
 - `tools/import_private_portraits.py`: 저장소 **밖**에 보관한 C1~C9 PNG/ZIP을 검증해 Git 무시 경로 `Assets/Resources/CharacterPortraits/`에 C-01~C-09 이름으로 복사합니다.

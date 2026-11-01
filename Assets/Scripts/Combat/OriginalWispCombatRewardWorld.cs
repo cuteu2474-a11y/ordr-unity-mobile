@@ -19,6 +19,14 @@ namespace Ordr.Mobile.Combat
         bool TryApplyOriginalAbility(long instanceId, string abilityRawcode);
     }
 
+    // In mobile character-shell mode only, A0YE is recorded as deferred
+    // source metadata. This is not a real native ability or buff.
+    public interface IOriginalWispDeferredBonusPort
+    {
+        bool TryDeferOriginalAbility(long instanceId, string abilityRawcode);
+        void Forget(long instanceId);
+    }
+
     // A real Combat.SpawnCharacter writes to the very same UnitRoster as the
     // economy session. Rawcode guesses are rejected: only reviewed mappings
     // may instantiate a catalog character.
@@ -28,6 +36,7 @@ namespace Ordr.Mobile.Combat
         private readonly IVerifiedUnitRawcodeMap rawcodes;
         private readonly IOriginalWispSpawnPositionPort positions;
         private readonly IOriginalWispBonusAbilityPort abilities;
+        private readonly IOriginalWispDeferredBonusPort deferredBonuses;
 
         public OriginalWispCombatRewardWorld(CharacterCombatRuntime liveCombat,
             IVerifiedUnitRawcodeMap verifiedMap, IOriginalWispSpawnPositionPort originalPositions,
@@ -37,6 +46,19 @@ namespace Ordr.Mobile.Combat
             rawcodes = verifiedMap ?? throw new ArgumentNullException(nameof(verifiedMap));
             positions = originalPositions ?? throw new ArgumentNullException(nameof(originalPositions));
             abilities = originalAbilities ?? throw new ArgumentNullException(nameof(originalAbilities));
+        }
+
+        // The normal four-argument constructor still requires the REAL
+        // A0YE effect. This opt-in overload is for empty unit shells only.
+        public OriginalWispCombatRewardWorld(CharacterCombatRuntime liveCombat,
+            IVerifiedUnitRawcodeMap verifiedMap,
+            IOriginalWispSpawnPositionPort originalPositions,
+            IOriginalWispBonusAbilityPort originalAbilities,
+            IOriginalWispDeferredBonusPort shellOnlyDeferredBonuses)
+            : this(liveCombat, verifiedMap, originalPositions, originalAbilities)
+        {
+            deferredBonuses = shellOnlyDeferredBonuses ??
+                throw new ArgumentNullException(nameof(shellOnlyDeferredBonuses));
         }
 
         public IWispRewardTransaction Begin() => new Transaction(this);
@@ -53,6 +75,9 @@ namespace Ordr.Mobile.Combat
             {
                 if (disposed || created != 0 || reward == null)
                     throw new InvalidOperationException("위습 보상 트랜잭션 재사용 금지");
+                var sourceRule = owner.rawcodes as IOriginal323WispRewardAssignmentValidator;
+                if (sourceRule != null && !sourceRule.MatchesOriginalReward(reward))
+                    throw new InvalidOperationException("원본 위습 종류/유닛/추가 능력 불일치");
                 string catalogId;
                 double x, y;
                 if (!owner.rawcodes.TryResolveUnit(reward.UnitRawcode, out catalogId) ||
@@ -64,10 +89,21 @@ namespace Ordr.Mobile.Combat
                 created = owner.combat.SpawnVerifiedOriginalPositionCharacter(catalogId, x, y);
                 if (created <= 0 || owner.combat.Roster.Get(created).UnitId != catalogId)
                     throw new InvalidOperationException("공유 유닛 목록 등록 실패");
-                if (reward.BonusAbilityRawcode != null &&
-                    (!String.Equals(reward.BonusAbilityRawcode, "A0YE", StringComparison.Ordinal) ||
-                     !owner.abilities.TryApplyOriginalAbility(created, reward.BonusAbilityRawcode)))
-                    throw new InvalidOperationException("원본 희귀위습 A0YE 적용 실패");
+                if (reward.BonusAbilityRawcode != null)
+                {
+                    if (!String.Equals(reward.BonusAbilityRawcode, "A0YE",
+                        StringComparison.Ordinal))
+                        throw new InvalidOperationException("미확인 위습 추가 능력");
+                    if (owner.deferredBonuses != null)
+                    {
+                        if (!owner.deferredBonuses.TryDeferOriginalAbility(
+                            created, reward.BonusAbilityRawcode))
+                            throw new InvalidOperationException("희귀위습 미구현 능력 기록 실패");
+                    }
+                    else if (!owner.abilities.TryApplyOriginalAbility(
+                        created, reward.BonusAbilityRawcode))
+                        throw new InvalidOperationException("원본 희귀위습 A0YE 적용 실패");
+                }
             }
 
             public void Commit()
@@ -82,7 +118,13 @@ namespace Ordr.Mobile.Combat
                 if (disposed) return;
                 disposed = true;
                 if (!committed && created > 0)
+                {
+                    // A failed debit/commit removes BOTH the unit and its
+                    // unimplemented native-ability receipt. No free reroll.
+                    if (owner.deferredBonuses != null)
+                        owner.deferredBonuses.Forget(created);
                     owner.combat.RollbackUncommittedSpawn(created);
+                }
             }
         }
     }

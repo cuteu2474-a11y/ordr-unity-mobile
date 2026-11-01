@@ -1478,6 +1478,12 @@ namespace Ordr.Mobile.Unity
                 throw new ArgumentNullException(nameof(verifiedRandom));
         }
         public MobileWispService Wisps { get; private set; }
+        private Original323WispDeferredAbilityRegistry deferredWispAbilities;
+        // Original reward UNIT identities are playable as empty mobile shells.
+        // A0YE native ability behavior and exact Warcraft seed are not faked.
+        public bool UsesWispShellMode { get; private set; }
+        public int DeferredWispA0yeCount =>
+            deferredWispAbilities == null ? 0 : deferredWispAbilities.PendingCount;
         private IVerifiedChoiceWispMergeWorld choiceWispWorld;
         private VerifiedEconomyStartProfile verifiedStartingProfile;
         private IOriginalStartEvolutionWorld startEvolutionWorld;
@@ -1541,6 +1547,8 @@ namespace Ordr.Mobile.Unity
             Wisps?.Dispose();
             Wisps = new MobileWispService(SharedEconomy.Wallet, roller, world);
             usesBuiltInAutomaticUncommonWisps = false;
+            UsesWispShellMode = false;
+            deferredWispAbilities = null;
             choiceWispWorld = choiceMerge;
             Wisps.FlushAutomatic();
         }
@@ -1581,6 +1589,8 @@ namespace Ordr.Mobile.Unity
             Wisps?.Dispose();
             Wisps=new MobileWispService(SharedEconomy.Wallet,automatic,destination);
             usesBuiltInAutomaticUncommonWisps=false;
+            UsesWispShellMode = false;
+            deferredWispAbilities = null;
             choiceWispWorld=choiceMerge;
             Wisps.FlushAutomatic();
         }
@@ -2461,15 +2471,49 @@ namespace Ordr.Mobile.Unity
                     originalJassReadOnlyFusionPort);
                 commonSourceFusion.FusionCommitted += OnCommittedOriginalFusion;
                 commonSourceFusion.ObserverFailed += Debug.LogException;
-                var wispPool = originalWispPoolsJson != null ? originalWispPoolsJson :
+            }
+            // Automatic Wisp rewards must NOT depend on executable fusion
+            // recipes. All 156 source pool entries have separate original
+            // W3X identity assignments.
+            if (Wisps == null && MapBaseStats != null && Units != null)
+            {
+                var pool = originalWispPoolsJson != null ? originalWispPoolsJson :
                     Resources.Load<TextAsset>("OrdrData/original-2323C-wisp-pools");
-                if (Wisps == null && wispPool != null)
+                var identities = Resources.Load<TextAsset>(
+                    "OrdrData/original-2323C-wisp-character-identity-assignments");
+                if (pool == null || identities == null)
+                    Debug.LogError("원본 위습 보상표/156종 매핑이 없어 자동 지급을 중단합니다.");
+                else
                 {
-                    var automatic = new Original323AutomaticUncommonWisps(wispPool.text,
-                        new MobileUniformWispRandom());
-                    Wisps = new MobileWispService(SharedEconomy.Wallet, automatic,
-                        new OriginalWispCombatRewardWorld(Combat, commonSourceFusion,
-                            automatic, automatic));
+                    var map = Original323WispAssignedRosterMap.FromSourceJson(
+                        identities.text, pool.text, Units, MapBaseStats);
+                    if (originalSharedScriptRandom == null)
+                    {
+                        // Explicit result-only mobile mode. The script lane
+                        // shares resource/common rolls; Warcraft native pool
+                        // selection has a separate uniform stream. A0YE is
+                        // recorded as pending on an empty character shell.
+                        var roller = new Original323MobileWispOutcomeRoller(
+                            pool.text, sessionScriptRandom,
+                            new Original323MobileNativePoolRandom(
+                                new MobileUniformWispRandom()));
+                        deferredWispAbilities =
+                            new Original323WispDeferredAbilityRegistry(Combat);
+                        Wisps = new MobileWispService(SharedEconomy.Wallet, roller,
+                            new OriginalWispCombatRewardWorld(Combat, map,
+                                roller, roller, deferredWispAbilities));
+                        UsesWispShellMode = true;
+                    }
+                    else
+                    {
+                        // Source-observed H6 mode keeps Rare pending until
+                        // the original native pool and A0YE ports are supplied.
+                        var roller = new Original323AutomaticUncommonWisps(
+                            pool.text, new MobileUniformWispRandom());
+                        Wisps = new MobileWispService(SharedEconomy.Wallet, roller,
+                            new OriginalWispCombatRewardWorld(Combat, map,
+                                roller, roller));
+                    }
                     usesBuiltInAutomaticUncommonWisps = true;
                 }
             }

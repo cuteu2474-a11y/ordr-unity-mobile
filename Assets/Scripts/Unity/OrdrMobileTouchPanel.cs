@@ -1687,10 +1687,14 @@ namespace Ordr.Mobile.Unity
             GUILayout.Label(name + " · " + balance + "개",
                 OrdrMobileUiTheme.SectionTitle);
             GUILayout.Label(sourceRule, OrdrMobileUiTheme.Explanation);
-            GUILayout.Label(ready
-                ? "자동 지급 연결 · 획득 즉시 처리 (미처리 보유분 재시도 가능)"
-                : "원본 보상 지급 연결 대기 · 보유 위습은 소모하지 않음",
-                OrdrMobileUiTheme.Explanation);
+            string state = !ready
+                ? "보상 지급 연결 대기 · 보유 위습은 소모하지 않음"
+                : controller.UsesWispShellMode && id == WispResourceIds.Rare
+                    ? "캐릭터 소환 연결 · A0YE 기술 효과 미구현 (능력 코드만 보존)"
+                    : controller.UsesWispShellMode
+                        ? "캐릭터 소환 연결 · 원본 결과 확률 기반 모바일 모드"
+                        : "자동 지급 연결 · 획득 즉시 처리";
+            GUILayout.Label(state, OrdrMobileUiTheme.Explanation);
             GUILayout.EndVertical();
         }
 
@@ -1712,6 +1716,17 @@ namespace Ordr.Mobile.Unity
             if (controller.PracticeBattle != null)
                 GUILayout.Label("라운드마다 랜덤위습 2개 · 소환 / 조합 / 판매");
             GUILayout.Label("원본 위습 자동 소환", OrdrMobileUiTheme.SectionTitle);
+            if (controller.UsesWispShellMode)
+            {
+                GUILayout.Label(
+                    "빈 캐릭터 우선: 원본 보상 종류·확률을 보존합니다. " +
+                    "워크래프트의 정확한 난수 순서와 미구현 스킬 효과는 아직 재현하지 않습니다.",
+                    OrdrMobileUiTheme.Explanation);
+                if (controller.DeferredWispA0yeCount > 0)
+                    GUILayout.Label("원본 A0YE 효과 대기 캐릭터 " +
+                        controller.DeferredWispA0yeCount + "기",
+                        OrdrMobileUiTheme.Explanation);
+            }
             // Choice Wisp belongs exclusively to the Fusion menu; its balance
             // is already shown in the top resource strip.
             DrawAutomaticWispStatus("안흔함위습", WispResourceIds.Uncommon,
@@ -1719,9 +1734,9 @@ namespace Ordr.Mobile.Unity
             DrawAutomaticWispStatus("특별위습", WispResourceIds.Special,
                 "특별함 33종 · 원본 자동 추첨");
             DrawAutomaticWispStatus("희귀위습", WispResourceIds.Rare,
-                "42종 99% / 8종 1% · A0YE 추가 효과 검증 필요");
+                "희귀 42종 99% / 특수 8종 1% · A0YE 원본 효과 별도");
             DrawAutomaticWispStatus("전설위습", WispResourceIds.Legendary,
-                "전설·히든 60종 · 원본 자동 추첨");
+                "전설·히든 60종 · 원본 보상표 추첨");
             if (controller.Wisps != null &&
                 ((controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Uncommon) &&
                   controller.WispBalance(WispResourceIds.Uncommon) > 0) ||

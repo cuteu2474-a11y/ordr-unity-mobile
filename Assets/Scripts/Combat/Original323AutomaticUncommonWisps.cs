@@ -6,8 +6,8 @@ namespace Ordr.Mobile.Combat
 {
     // CSE/CSF: 13 Uncommon units at Lq[0] center (-3760,3904).
     // CSB/CSC: 33 Special units at player-zero start (-3776,4480).
-    // Class name retained for compatibility. Rare/Legendary stay queued;
-    // their bonus abilities / complete creation worlds remain unconnected.
+    // Class name retained for compatibility. Uncommon/Special/Legendary
+    // use the verified pool; source-observed Rare still requires real A0YE.
     public sealed class Original323AutomaticUncommonWisps : IVerifiedWispRoller,
         IOriginalWispSpawnPositionPort, IOriginalWispBonusAbilityPort
     {
@@ -46,6 +46,7 @@ namespace Ordr.Mobile.Combat
         }
         public bool IsVerified(string id) =>
             (id == WispResourceIds.Uncommon || id == WispResourceIds.Special ||
+             id == WispResourceIds.Legendary ||
              (rareEnabled && id == WispResourceIds.Rare)) && source.IsVerified(id);
         public WispReward Roll(string id)
         {

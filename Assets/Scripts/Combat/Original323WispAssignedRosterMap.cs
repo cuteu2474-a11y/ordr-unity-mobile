@@ -6,12 +6,31 @@ using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
+    // Validation is separate from unit-name lookup: prevent paying a reward
+    // belonging to a different tier or losing its mandatory source ability.
+    public interface IOriginal323WispRewardAssignmentValidator
+    {
+        bool MatchesOriginalReward(WispReward reward);
+    }
+
     // Source Wisp reward IDs only. This map cannot authorize fusion recipes,
     // free spawns or Wisp debits without a committed source-backed Wisp draw.
-    public sealed class Original323WispAssignedRosterMap : IVerifiedUnitRawcodeMap
+    public sealed class Original323WispAssignedRosterMap :
+        IVerifiedUnitRawcodeMap, IOriginal323WispRewardAssignmentValidator
     {
         private readonly Dictionary<string, string> ids =
             new Dictionary<string, string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, WispReward> sourceRewards =
+            new Dictionary<string, WispReward>(StringComparer.Ordinal);
+
+        public bool MatchesOriginalReward(WispReward reward)
+        {
+            if (reward == null) return false;
+            WispReward expected;
+            return sourceRewards.TryGetValue(reward.UnitRawcode, out expected) &&
+                reward.SourceWispId == expected.SourceWispId &&
+                reward.BonusAbilityRawcode == expected.BonusAbilityRawcode;
+        }
 
         public int Count { get { return ids.Count; } }
 
@@ -98,6 +117,9 @@ namespace Ordr.Mobile.Combat
                             result.ids.ContainsKey(rawcode) || !catalogIds.Add(id))
                             throw new FormatException("위습 캐릭터 객체 매핑 불일치: " + rawcode);
                         result.ids.Add(rawcode, id);
+                        result.sourceRewards.Add(rawcode, new WispReward(
+                            "wisp:" + rawWisp, rawcode,
+                            OrdrJson.String(originalBranch, "bonusAbilityRawcode")));
                     }
                 }
             }
