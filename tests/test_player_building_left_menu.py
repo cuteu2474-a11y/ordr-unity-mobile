@@ -64,6 +64,33 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
             self.assertIn(effect, catalog)
         self.assertIn("구매 미연결", theme)
 
+    def test_other_menus_share_expandable_shell_without_new_purchase_paths(self):
+        panel = PANEL.read_text(encoding="utf-8")
+        sections = (
+            ("DrawPersonalMissions", "private static string MissionRewardText(", "TryReroll(slot.Index)"),
+            ("DrawOwnedUnitIndex", "private void DrawUnitConfirmations(", "DrawUnitConfirmations(entry.InstanceId)"),
+            ("DrawStory", "private void DrawFusion(", "RequestOriginalStoryBuilding(stage)"),
+            ("DrawFusion", "private void DrawFusionConfirmation(", "CanExecuteFusionRecipe(offer.RecipeId)"),
+            ("DrawTreasureGacha", "private void DrawAutomaticWispStatus(", "RequestMobileTreasureGacha()"),
+            ("DrawHelperCow", "private void DrawAlchemyPanel(", "ChooseOriginal323Alchemy()"),
+            ("DrawEconomy", "private void RefreshCurrent(", "RequestEconomyAction("),
+            ("DrawAlchemyTargetDropdown", "private void DrawPager(", "alchemyTargetsExpanded"),
+        )
+        for name, following, preserved_action in sections:
+            with self.subTest(menu=name):
+                begin = "private void " + name + "("
+                page = panel.split(begin, 1)[1].split(following, 1)[0]
+                self.assertIn("DrawAccordionHeader(", page)
+                self.assertIn("OrdrMobileUiTheme.AccordionBody", page)
+                self.assertIn(preserved_action, page)
+        self.assertIn("expandedMissionSlots", panel)
+        self.assertIn("expandedStoryStages", panel)
+        self.assertIn("expandedEconomyOffers", panel)
+        self.assertIn("RequestStoryDispatch(unit.InstanceId)", panel)
+        self.assertIn("RequestStoryRecall(unit.InstanceId)", panel)
+        self.assertIn("RequestLowerGradeSale(", panel)
+
+
 
 if __name__ == "__main__":
     unittest.main()

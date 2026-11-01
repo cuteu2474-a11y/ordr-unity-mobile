@@ -57,6 +57,13 @@ namespace Ordr.Mobile.Unity
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<string> expandedResearchCodes =
             new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<int> expandedMissionSlots = new HashSet<int>();
+        private readonly HashSet<int> expandedStoryStages = new HashSet<int>();
+        private readonly HashSet<string> expandedEconomyOffers =
+            new HashSet<string>(StringComparer.Ordinal);
+        private bool showStoryDispatch;
+        private bool showHelperDetails = true;
+        private bool showTreasureDetails = true;
         private readonly Dictionary<Tab, Vector2> tabScrollPositions = new Dictionary<Tab, Vector2>();
         private int catalogGradeIndex;
         private int catalogPage;
@@ -828,7 +835,20 @@ namespace Ordr.Mobile.Unity
                 var rule = slot.Mission;
                 bool expired = !slot.Completed && !slot.RewardPending &&
                     rule.MustFinishBeforeRound > 0 && missions.CurrentRound >= rule.MustFinishBeforeRound;
-                GUILayout.BeginVertical(GUI.skin.box);
+                string state = slot.Completed ? "완료" :
+                    slot.RewardPending ? "보상 지급 대기" :
+                    expired ? "기한 종료" : "진행 중";
+                bool expanded = expandedMissionSlots.Contains(slot.Index);
+                if (OrdrMobileUiTheme.DrawAccordionHeader(
+                    (slot.Index + 1) + ". " + rule.Name,
+                    state, expanded, OrdrMobileUiTheme.Gold))
+                {
+                    if (expanded) expandedMissionSlots.Remove(slot.Index);
+                    else expandedMissionSlots.Add(slot.Index);
+                    expanded = !expanded;
+                }
+                if (!expanded) continue;
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
                 GUILayout.Label((slot.Index + 1) + ". " + rule.Name +
                     (slot.Completed ? "  · 완료" : slot.RewardPending ? "  · 보상 지급 대기" :
                      expired ? "  · 기한 종료" : ""));
@@ -859,7 +879,10 @@ namespace Ordr.Mobile.Unity
                 }
                 else if (gameplay.CanReroll(slot.Index) &&
                     GUILayout.Button("이 미션 교체", GUILayout.MinHeight(56f)))
+                {
                     pendingMissionReroll = slot.Index;
+                    expandedMissionSlots.Add(slot.Index);
+                }
                 GUILayout.EndVertical();
             }
             GUILayout.Label("보유 특성포인트 " + controller.SharedEconomy.Wallet.Balance(
@@ -1175,32 +1198,29 @@ namespace Ordr.Mobile.Unity
             foreach (var entry in displayed)
             {
                 bool selected = Combat.Roster.SelectedId == entry.InstanceId;
-                GUILayout.BeginVertical(GUI.skin.box);
+                bool expanded = expandedOwnedUnitId == entry.InstanceId;
+                string status = entry.Unit.Grade + " · #" + entry.InstanceId +
+                    (selected ? " · 선택됨" : "") +
+                    (pendingBatchSales.Contains(entry.InstanceId) ? " · 판매 선택" : "");
+                if (OrdrMobileUiTheme.DrawAccordionHeader(entry.Unit.Name,
+                    status, expanded, OrdrMobileUiTheme.Aqua))
+                {
+                    expandedOwnedUnitId = expanded ? (long?)null : entry.InstanceId;
+                    pendingCommonSaleId = null;
+                    pendingDecompositionId = null;
+                    expanded = !expanded;
+                }
+                if (!expanded) continue;
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
                 DrawCharacterPortrait(entry.Unit.Id, 62f);
                 GUILayout.Label(entry.Unit.Name, OrdrMobileUiTheme.Subheading);
-                GUILayout.Label(entry.Unit.Grade + " · #" + entry.InstanceId +
-                    (selected ? " · 선택됨" : "") +
-                    (pendingBatchSales.Contains(entry.InstanceId) ? " · 판매 선택" : ""));
-                GUILayout.BeginHorizontal();
+                GUILayout.Label(status);
                 if (GUILayout.Button(selected ? "선택됨" : "선택",
                     selected ? OrdrMobileUiTheme.SelectedTab : GUI.skin.button, GUILayout.MinHeight(56)))
                 {
                     Combat.Roster.Select(entry.InstanceId);
                     selectedCatalogUnitId = entry.Unit.Id;
                     notice = entry.Unit.Name + " 선택";
-                }
-                if (GUILayout.Button(expandedOwnedUnitId == entry.InstanceId ? "관리 접기" : "관리",
-                    GUILayout.MinHeight(56)))
-                {
-                    expandedOwnedUnitId = expandedOwnedUnitId == entry.InstanceId ? (long?)null : entry.InstanceId;
-                    pendingCommonSaleId = null;
-                    pendingDecompositionId = null;
-                }
-                GUILayout.EndHorizontal();
-                if (expandedOwnedUnitId != entry.InstanceId)
-                {
-                    GUILayout.EndVertical();
-                    continue;
                 }
                 if (GUILayout.Button("전장 위치 보기", GUILayout.MinHeight(56)))
                 {
@@ -1458,6 +1478,21 @@ namespace Ordr.Mobile.Unity
                             }
                         }
                     }
+                    string shortStatus = settled ? "정산 확인" :
+                        alive ? "건물 유지" :
+                        status.StartsWith("연습 파괴 완료", StringComparison.Ordinal)
+                            ? "파괴 완료" : status;
+                    bool expanded = expandedStoryStages.Contains(stage);
+                    if (OrdrMobileUiTheme.DrawAccordionHeader(
+                        stage.ToString("00") + "  " + building.Name,
+                        shortStatus, expanded, OrdrMobileUiTheme.Aqua))
+                    {
+                        if (expanded) expandedStoryStages.Remove(stage);
+                        else expandedStoryStages.Add(stage);
+                        expanded = !expanded;
+                    }
+                    if (!expanded) continue;
+                    GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(building.Name + " · " + status,
                         GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
@@ -1467,6 +1502,7 @@ namespace Ordr.Mobile.Unity
                             ShowResult(controller.RequestOriginalStoryBuilding(stage));
                     }
                     GUILayout.EndHorizontal();
+                    GUILayout.EndVertical();
                 }
             }
             if (!controller.CanRequestOriginalStoryBuilding && scenario == null)
@@ -1478,28 +1514,36 @@ namespace Ordr.Mobile.Unity
                   "고대의 배·특성 추가 보너스·영웅 경험치·그린블러드는 후속 연결이 필요합니다.");
             if (!controller.ManualActions.HasStoryService)
                 GUILayout.Label("원작 스토리 파견 서비스 미연결: 파견 기능 비활성");
-            foreach (var unit in Combat.MobileUnitSnapshot())
+            if (OrdrMobileUiTheme.DrawAccordionHeader("스토리 파견 관리",
+                "유닛 목록", showStoryDispatch, OrdrMobileUiTheme.Gold))
+                showStoryDispatch = !showStoryDispatch;
+            if (showStoryDispatch)
             {
-                GUILayout.BeginHorizontal();
-                string name = unit.Unit.Name + " (" + unit.Unit.Grade + ") #" + unit.InstanceId;
-                GUILayout.Label(name, GUILayout.MinWidth(110), GUILayout.ExpandWidth(true));
-                if (GUILayout.Button("선택", GUILayout.Width(64), GUILayout.MinHeight(64)))
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                foreach (var unit in Combat.MobileUnitSnapshot())
                 {
-                    Combat.Roster.Select(unit.InstanceId);
-                    notice = name + " 선택";
-                }
-                if (controller.ManualActions.IsStoryDeployed(unit.InstanceId))
-                {
-                    if (controller.ManualActions.CanRecallStory(unit.InstanceId))
+                    GUILayout.BeginHorizontal();
+                    string name = unit.Unit.Name + " (" + unit.Unit.Grade + ") #" + unit.InstanceId;
+                    GUILayout.Label(name, GUILayout.MinWidth(110), GUILayout.ExpandWidth(true));
+                    if (GUILayout.Button("선택", GUILayout.Width(64), GUILayout.MinHeight(64)))
                     {
-                        if (GUILayout.Button("복귀", GUILayout.Width(72), GUILayout.MinHeight(64)))
-                            ShowResult(controller.ManualActions.RequestStoryRecall(unit.InstanceId));
+                        Combat.Roster.Select(unit.InstanceId);
+                        notice = name + " 선택";
                     }
-                    else GUILayout.Label("파견 중", GUILayout.Width(72));
+                    if (controller.ManualActions.IsStoryDeployed(unit.InstanceId))
+                    {
+                        if (controller.ManualActions.CanRecallStory(unit.InstanceId))
+                        {
+                            if (GUILayout.Button("복귀", GUILayout.Width(72), GUILayout.MinHeight(64)))
+                                ShowResult(controller.ManualActions.RequestStoryRecall(unit.InstanceId));
+                        }
+                        else GUILayout.Label("파견 중", GUILayout.Width(72));
+                    }
+                    else if (GUILayout.Button("파견", GUILayout.Width(72), GUILayout.MinHeight(64)))
+                        ShowResult(controller.ManualActions.RequestStoryDispatch(unit.InstanceId));
+                    GUILayout.EndHorizontal();
                 }
-                else if (GUILayout.Button("파견", GUILayout.Width(72), GUILayout.MinHeight(64)))
-                    ShowResult(controller.ManualActions.RequestStoryDispatch(unit.InstanceId));
-                GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
             }
         }
 
@@ -1590,14 +1634,20 @@ namespace Ordr.Mobile.Unity
             foreach (var offer in visibleOffers)
             {
                 bool executable = controller.ManualActions.CanExecuteFusionRecipe(offer.RecipeId);
-                GUILayout.BeginVertical(GUI.skin.box);
+                string status = !offer.IsReady ? "부족 재료 " + offer.MissingMaterials.Count + "종" :
+                    executable ? "재료 준비 · 제작 가능" : "재료 준비 · 제작 연결 대기";
+                bool expanded = expandedRecipeId == offer.RecipeId;
+                if (OrdrMobileUiTheme.DrawAccordionHeader(offer.Title,
+                    status, expanded, OrdrMobileUiTheme.Gold))
+                {
+                    expandedRecipeId = expanded ? null : offer.RecipeId;
+                    expanded = !expanded;
+                }
+                if (!expanded) continue;
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
                 GUILayout.Label(offer.Title, OrdrMobileUiTheme.Subheading);
-                GUILayout.Label(!offer.IsReady ? "부족 재료 " + offer.MissingMaterials.Count + "종" :
-                    executable ? "재료 준비 · 제작 가능" : "재료 준비 · 제작 연결 대기");
+                GUILayout.Label(status);
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button(expandedRecipeId == offer.RecipeId ? "상세 접기" : "상세 보기",
-                    GUILayout.MinHeight(56)))
-                    expandedRecipeId = expandedRecipeId == offer.RecipeId ? null : offer.RecipeId;
                 bool previousEnabled = GUI.enabled;
                 GUI.enabled = previousEnabled && offer.IsReady && executable;
                 if (GUILayout.Button("제작 선택", OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(56)))
@@ -1757,6 +1807,11 @@ namespace Ordr.Mobile.Unity
 
         private void DrawTreasureGacha()
         {
+            if (OrdrMobileUiTheme.DrawAccordionHeader("보물 탐색",
+                "탐색·결과", showTreasureDetails, OrdrMobileUiTheme.Aqua))
+                showTreasureDetails = !showTreasureDetails;
+            if (!showTreasureDetails) return;
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
             GUILayout.Label("보물 탐색",OrdrMobileUiTheme.SectionTitle);
             var treasure=controller.OriginalTreasureHunt;
             GUILayout.BeginVertical(GUI.skin.box);
@@ -1823,6 +1878,7 @@ namespace Ordr.Mobile.Unity
                         OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(60f));
                 GUILayout.EndVertical();
             }
+            GUILayout.EndVertical();
         }
 
         private void DrawAutomaticWispStatus(string name, string id, string sourceRule)
@@ -2081,6 +2137,11 @@ namespace Ordr.Mobile.Unity
 
         private void DrawHelperCow()
         {
+            if (OrdrMobileUiTheme.DrawAccordionHeader("도움소 세부 관리",
+                "마나·항법", showHelperDetails, OrdrMobileUiTheme.Aqua))
+                showHelperDetails = !showHelperDetails;
+            if (!showHelperDetails) return;
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
             OriginalHelperCowManaSnapshot mana;
             bool connected = controller.ManualActions.TryGetHelperCowMana(out mana);
             GUILayout.Label(connected
@@ -2172,6 +2233,7 @@ namespace Ordr.Mobile.Unity
             GUILayout.Label("A07T의 A04R은 지속 능력 레벨 증가(+5/+8)이며 스턴이 아닙니다.");
 
             GUILayout.Label("마나 충전은 위습 → 랜덤위습 → 도움소 마나 충전에서 이용합니다.");
+            GUILayout.EndVertical();
         }
 
         private void DrawAlchemyPanel()
@@ -2209,12 +2271,14 @@ namespace Ordr.Mobile.Unity
                 pendingAlchemyCastId = null;
             }
 
-            if (GUILayout.Button("연금술 대상 " + (alchemyTargetsExpanded ? "▲" : "▼") +
-                "  " + selectedTitle + "  (보유 " + count + "기)", GUILayout.MinHeight(60)))
+            if (OrdrMobileUiTheme.DrawAccordionHeader("연금술 대상",
+                selectedTitle + " · 보유 " + count + "기",
+                alchemyTargetsExpanded, OrdrMobileUiTheme.Aqua))
                 alchemyTargetsExpanded = !alchemyTargetsExpanded;
 
             if (alchemyTargetsExpanded)
             {
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
                 if (count == 0)
                     GUILayout.Label("선택할 보유 유닛이 없습니다.");
                 else
@@ -2235,6 +2299,7 @@ namespace Ordr.Mobile.Unity
                         GUILayout.EndHorizontal();
                     }
                 }
+                GUILayout.EndVertical();
             }
 
             if (selected == null) return;
@@ -2407,7 +2472,17 @@ namespace Ordr.Mobile.Unity
                     (offer.Id == OriginalRandomWispResourceExchange.OfferId ||
                      offer.Id == OriginalHelperCowRules.OfferId))
                     continue;
-                GUILayout.BeginVertical(GUI.skin.box);
+                string key = category + ":" + offer.Id;
+                bool expanded = expandedEconomyOffers.Contains(key);
+                if (OrdrMobileUiTheme.DrawAccordionHeader(offer.Title,
+                    "상세 보기", expanded, OrdrMobileUiTheme.Gold))
+                {
+                    if (expanded) expandedEconomyOffers.Remove(key);
+                    else expandedEconomyOffers.Add(key);
+                    expanded = !expanded;
+                }
+                if (!expanded) continue;
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
                 GUILayout.Label(offer.Title);
                 GUILayout.Label(offer.OriginalPriceAndRules);
                 if (category == ManualEconomyCategory.Wisp)
