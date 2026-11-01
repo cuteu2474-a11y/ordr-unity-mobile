@@ -20,6 +20,11 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle subheading;
         private static GUIStyle skillButton;
         private static GUIStyle explanation;
+        private static GUIStyle facilityHeading;
+        private static GUIStyle facilityBadge;
+        private static GUIStyle researchNumber;
+        private static GUIStyle researchName;
+        private static GUIStyle researchDetail;
 
         internal static GUIStyle SelectedTab { get { return selectedTab; } }
         internal static GUIStyle PrimaryButton { get { return primaryButton; } }
@@ -133,6 +138,24 @@ namespace Ordr.Mobile.Unity
             explanation.fontStyle = FontStyle.Normal;
             explanation.wordWrap = true;
             explanation.normal.textColor = new Color(0.92f,0.97f,1f,1f);
+            facilityHeading = new GUIStyle(sectionTitle);
+            facilityHeading.fontSize = 27;
+            facilityHeading.normal.textColor = Color.white;
+            facilityBadge = new GUIStyle(overline);
+            facilityBadge.fontSize = 14;
+            facilityBadge.alignment = TextAnchor.MiddleRight;
+            facilityBadge.normal.textColor = Gold;
+            researchNumber = new GUIStyle(subheading);
+            researchNumber.fontSize = 19;
+            researchNumber.alignment = TextAnchor.MiddleCenter;
+            researchNumber.normal.textColor = Color.white;
+            researchName = new GUIStyle(subheading);
+            researchName.fontSize = 21;
+            researchName.normal.textColor = Color.white;
+            researchName.wordWrap = true;
+            researchDetail = new GUIStyle(explanation);
+            researchDetail.fontSize = 17;
+            researchDetail.normal.textColor = Muted;
             themedSkin.toggle = new GUIStyle(source.toggle);
             themedSkin.toggle.fontSize = 18;
             themedSkin.toggle.wordWrap = true;
@@ -195,6 +218,61 @@ namespace Ordr.Mobile.Unity
         {
             Stroke(new Rect(area.x+12f,area.y+4f,
                 Mathf.Max(0f,area.width-24f),2f),accent);
+        }
+
+        // Decorative navigation marks only. The real button retains its full
+        // rectangular hit area and existing selection/toggle semantics.
+        internal static void DrawNavigationMark(Rect area, Color tint, bool selected)
+        {
+            if (area.width < 90f || area.height < 28f) return;
+            Stroke(new Rect(area.x+3f,area.y+8f,3f,area.height-16f),tint);
+            Stroke(new Rect(area.x+11f,area.center.y-3f,6f,6f),tint);
+            if (selected)
+                Stroke(new Rect(area.xMax-15f,area.center.y-2f,7f,4f),
+                    new Color(1f,1f,1f,.85f));
+        }
+
+        // Source-backed facility pages share one game-like visual language.
+        // These plates cannot purchase, mutate resources or claim progress.
+        internal static void DrawFacilityBanner(Rect area, string eyebrow,
+            string title, string description, string counter, Color tint)
+        {
+            GUI.Box(area, GUIContent.none, Panel);
+            Stroke(new Rect(area.x+4f,area.y+10f,4f,area.height-20f),tint);
+            Stroke(new Rect(area.x+17f,area.y+35f,
+                Mathf.Max(0f,area.width-34f),1f),new Color(tint.r,tint.g,tint.b,.4f));
+            Stroke(new Rect(area.xMax-39f,area.y+52f,17f,2f),tint);
+            Stroke(new Rect(area.xMax-31f,area.y+45f,2f,16f),tint);
+            float textWidth = Mathf.Max(60f,area.width-48f);
+            GUI.Label(new Rect(area.x+18f,area.y+10f,
+                Mathf.Max(50f,textWidth-110f),22f),eyebrow,Overline);
+            GUI.Label(new Rect(area.xMax-114f,area.y+9f,96f,23f),counter,
+                facilityBadge);
+            GUI.Label(new Rect(area.x+18f,area.y+45f,textWidth,38f),title,
+                facilityHeading);
+            GUI.Label(new Rect(area.x+18f,area.y+88f,textWidth,42f),description,
+                researchDetail);
+        }
+
+        internal static void DrawResearchPlate(Rect area, int ordinal,
+            string title, string description, int maximumLevel, Color tint)
+        {
+            GUI.Box(area, GUIContent.none, Panel);
+            Stroke(new Rect(area.x+4f,area.y+7f,3f,area.height-14f),tint);
+            Stroke(new Rect(area.x+15f,area.y+13f,42f,42f),
+                new Color(tint.r,tint.g,tint.b,.35f));
+            GUI.Label(new Rect(area.x+15f,area.y+14f,42f,39f),
+                ordinal.ToString("00"),researchNumber);
+            GUI.Label(new Rect(area.x+67f,area.y+11f,
+                Mathf.Max(40f,area.width-82f),48f),title,researchName);
+            GUI.Label(new Rect(area.x+18f,area.y+63f,
+                Mathf.Max(40f,area.width-36f),35f),description,researchDetail);
+            Stroke(new Rect(area.x+18f,area.y+105f,
+                Mathf.Max(0f,area.width-36f),1f),new Color(tint.r,tint.g,tint.b,.3f));
+            GUI.Label(new Rect(area.x+18f,area.y+109f,
+                Mathf.Max(40f,area.width-135f),22f),"구매 미연결",Overline);
+            GUI.Label(new Rect(area.xMax-119f,area.y+108f,101f,22f),
+                "최대 " + maximumLevel + "단계",facilityBadge);
         }
 
         internal static void ResourceChip(Rect slot, string type, string amount, Color tint)

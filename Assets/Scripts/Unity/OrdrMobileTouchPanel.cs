@@ -9,13 +9,32 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Unity
 {
-    // 임시 Android 터치 패널. Unity UI 패키지/추가 이미지 없이 동작하도록
+    // 가로형 게임 HUD. Unity UI 패키지/추가 이미지 없이 동작하도록
     // OnGUI로 구현했으며, 원작 전투 규칙이나 경제 수치는 변경하지 않는다.
     // 스토리·조합확인·상점·도박·위습 버튼은 실제 사용자 탭에서만 호출된다.
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
         private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, LogPose, Helper, Alchemy, Missions, UpgradeOne, UpgradeTwo, Research }
         private enum ScoreboardPage { Summary, Commons }
+
+        private struct FacilityVisual
+        {
+            internal readonly string Eyebrow;
+            internal readonly string Heading;
+            internal readonly string Description;
+            internal readonly string Counter;
+            internal readonly Color Tint;
+
+            internal FacilityVisual(string eyebrow, string heading,
+                string description, string counter, Color tint)
+            {
+                Eyebrow = eyebrow;
+                Heading = heading;
+                Description = description;
+                Counter = counter;
+                Tint = tint;
+            }
+        }
 
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private bool openByDefault;
@@ -369,6 +388,61 @@ namespace Ordr.Mobile.Unity
                 GUILayout.MinHeight(OrdrMobileUiTheme.ComfortableTapHeight),
                 GUILayout.ExpandWidth(true)))
                 SelectTab(tab, true);
+            if (Event.current.type == EventType.Repaint)
+            {
+                FacilityVisual facility;
+                Color tint = TryGetFacilityVisual(tab, out facility) ?
+                    facility.Tint : OrdrMobileUiTheme.Aqua;
+                OrdrMobileUiTheme.DrawNavigationMark(GUILayoutUtility.GetLastRect(),
+                    tint, chosen);
+            }
+        }
+
+        // Purely visual metadata for the seven direct left-menu buildings.
+        // Does not add a facility tab, an economy action or a research effect.
+        private static bool TryGetFacilityVisual(Tab tab, out FacilityVisual visual)
+        {
+            switch (tab)
+            {
+                case Tab.Gambling:
+                    visual = new FacilityVisual("LUCK / 도박소", "운명의 항구",
+                        "보유 재화와 원본 도박 목록을 확인하세요.", "도박 운영",
+                        new Color(1f,.68f,.35f));
+                    return true;
+                case Tab.UpgradeOne:
+                    visual = new FacilityVisual("FORGE I / 강화소", "전투 단련",
+                        "등급별 유닛을 위한 업그레이드 장부입니다.", "8종 연구",
+                        new Color(1f,.69f,.38f));
+                    return true;
+                case Tab.UpgradeTwo:
+                    visual = new FacilityVisual("FORGE II / 강화소", "영원의 단련",
+                        "영원 등급 유닛의 개별 연구 목록입니다.", "10종 연구",
+                        new Color(1f,.77f,.42f));
+                    return true;
+                case Tab.Helper:
+                    visual = new FacilityVisual("SUPPORT / 도움소", "항해 지원",
+                        "항법 선택과 지원 기능을 확인하세요.", "지원 운영",
+                        new Color(.41f,.9f,.76f));
+                    return true;
+                case Tab.Missions:
+                    visual = new FacilityVisual("QUEST / 미션", "의뢰 게시판",
+                        "진행 중인 개인 미션과 보상을 살펴보세요.", "임무 운영",
+                        new Color(.43f,.78f,1f));
+                    return true;
+                case Tab.Research:
+                    visual = new FacilityVisual("LAB / 연구소", "전술 연구",
+                        "체력·마나 재생과 전장 지원을 연구합니다.", "4종 연구",
+                        new Color(.44f,.88f,.96f));
+                    return true;
+                case Tab.LogPose:
+                    visual = new FacilityVisual("EXPLORE / 기록지침", "탐험 기록",
+                        "기록지침의 보물 탐색을 이용하세요.", "탐험 운영",
+                        new Color(.76f,.67f,1f));
+                    return true;
+                default:
+                    visual = default(FacilityVisual);
+                    return false;
+            }
         }
 
         private void DrawRightDrawer(MobileMapSkillLayout layout, float scale)
@@ -390,6 +464,17 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndHorizontal();
 
             scroll = BeginPanelScroll(scroll);
+            FacilityVisual facilityVisual;
+            if (TryGetFacilityVisual(currentTab, out facilityVisual))
+            {
+                Rect banner = GUILayoutUtility.GetRect(0f, 140f,
+                    GUILayout.ExpandWidth(true));
+                OrdrMobileUiTheme.DrawFacilityBanner(banner,
+                    facilityVisual.Eyebrow, facilityVisual.Heading,
+                    facilityVisual.Description, facilityVisual.Counter,
+                    facilityVisual.Tint);
+                GUILayout.Space(12f);
+            }
             if (Combat == null && currentTab != Tab.Units)
                 GUILayout.Label("게임 월드 연결 전입니다. 재화나 유닛을 임의로 처리하지 않습니다.");
             else
@@ -523,18 +608,30 @@ namespace Ordr.Mobile.Unity
         private void DrawPlayerBuildingResearch(string buildingRawcode)
         {
             var original = Original323PlayerBuildingResearchCatalog.ForBuilding(buildingRawcode);
-            GUILayout.Label("원본 S2 2.323[C] 건물의 연구 목록 " + original.Count + "종",
+            GUILayout.Label("원본 검증 연구 목록 · " + original.Count + "종",
                 OrdrMobileUiTheme.Subheading);
             GUILayout.Label("연구 항목은 원본 맵에서 확인했습니다. " +
                 "실제 연구 구매·재화 소비·유닛 능력치 적용은 아직 연결되지 않았습니다.",
                 OrdrMobileUiTheme.Explanation);
-            foreach (var research in original)
+            if (buildingRawcode == Original323PlayerBuildingResearchCatalog.ResearchBuilding)
             {
-                GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label(research.Name, OrdrMobileUiTheme.Subheading);
-                GUILayout.Label("원본 최대 " + research.MaximumLevel + "레벨 · 실행 미연결",
+                GUILayout.Label("체력 소모형 유닛에게 체력은 별도의 스킬 자원입니다. " +
+                    "회복 연구는 생존뿐 아니라 스킬 재사용에도 영향을 줍니다.",
                     OrdrMobileUiTheme.Explanation);
-                GUILayout.EndVertical();
+            }
+            GUILayout.Space(8f);
+            Color tint = buildingRawcode == Original323PlayerBuildingResearchCatalog.ResearchBuilding
+                ? new Color(.44f,.88f,.96f) : new Color(1f,.73f,.39f);
+            for (int i = 0; i < original.Count; i++)
+            {
+                var research = original[i];
+                Rect plate = GUILayoutUtility.GetRect(0f, 138f,
+                    GUILayout.ExpandWidth(true));
+                OrdrMobileUiTheme.DrawResearchPlate(plate, i + 1, research.Name,
+                    string.IsNullOrEmpty(research.EffectSummary)
+                        ? "원본 등급 연구 · 실제 효과 연결 예정" : research.EffectSummary,
+                    research.MaximumLevel, tint);
+                GUILayout.Space(7f);
             }
         }
 

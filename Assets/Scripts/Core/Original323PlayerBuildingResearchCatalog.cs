@@ -11,8 +11,12 @@ namespace Ordr.Mobile.Core
         public string Rawcode { get; private set; }
         public string Name { get; private set; }
         public int MaximumLevel { get; private set; }
+        // Optional verified tooltip summary. Null means the original effect
+        // has not been ported to this read-only presentation catalog.
+        public string EffectSummary { get; private set; }
 
-        public Original323PlayerBuildingResearch(string rawcode, string name, int maximumLevel)
+        public Original323PlayerBuildingResearch(string rawcode, string name,
+            int maximumLevel, string effectSummary = null)
         {
             if (string.IsNullOrWhiteSpace(rawcode) || string.IsNullOrWhiteSpace(name) ||
                 maximumLevel < 1)
@@ -20,6 +24,7 @@ namespace Ordr.Mobile.Core
             Rawcode = rawcode;
             Name = name;
             MaximumLevel = maximumLevel;
+            EffectSummary = effectSummary;
         }
     }
 
@@ -57,10 +62,14 @@ namespace Ordr.Mobile.Core
 
         private static readonly IReadOnlyList<Original323PlayerBuildingResearch> Research =
             Array.AsReadOnly(new[] {
-                new Original323PlayerBuildingResearch("Rhgb", "해상 디너", 1),
-                new Original323PlayerBuildingResearch("Rhra", "카리스마", 1),
-                new Original323PlayerBuildingResearch("Rhpt", "식량 보급", 1),
-                new Original323PlayerBuildingResearch("Rhfc", "기후 변화", 1),
+                new Original323PlayerBuildingResearch("Rhgb", "해상 디너", 1,
+                    "아군 체력 재생 +0.45/초"),
+                new Original323PlayerBuildingResearch("Rhra", "카리스마", 1,
+                    "아군 공격력 +12%"),
+                new Original323PlayerBuildingResearch("Rhpt", "식량 보급", 1,
+                    "아군 마나 재생 +0.8/초"),
+                new Original323PlayerBuildingResearch("Rhfc", "기후 변화", 1,
+                    "적 이동 속도 -10%"),
             });
 
         public static IReadOnlyList<Original323PlayerBuildingResearch> ForBuilding(string rawcode)

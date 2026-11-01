@@ -7,6 +7,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 PANEL = ROOT / "Assets/Scripts/Unity/OrdrMobileTouchPanel.cs"
 CATALOG = ROOT / "Assets/Scripts/Core/Original323PlayerBuildingResearchCatalog.cs"
+THEME = ROOT / "Assets/Scripts/Unity/OrdrMobileUiTheme.cs"
 
 
 class PlayerBuildingLeftMenuTests(unittest.TestCase):
@@ -41,6 +42,23 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
             self.assertIn(code, catalog)
         for upgrade in ("R00F", "R01V", "Rhfc"):
             self.assertIn(upgrade, catalog)
+
+    def test_facility_game_shell_uses_read_only_cards_and_verified_resources(self):
+        panel = PANEL.read_text(encoding="utf-8")
+        catalog = CATALOG.read_text(encoding="utf-8")
+        theme = THEME.read_text(encoding="utf-8")
+        for name in ("LUCK / 도박소", "FORGE I / 강화소", "FORGE II / 강화소",
+                     "SUPPORT / 도움소", "QUEST / 미션", "LAB / 연구소",
+                     "EXPLORE / 기록지침"):
+            self.assertIn(name, panel)
+        self.assertIn("TryGetFacilityVisual(currentTab", panel)
+        self.assertIn("DrawFacilityBanner", theme)
+        self.assertIn("DrawNavigationMark", theme)
+        self.assertIn("DrawResearchPlate", theme)
+        self.assertIn("DrawResearchPlate(plate", panel)
+        for effect in ("+0.45/초", "+0.8/초", "+12%", "-10%"):
+            self.assertIn(effect, catalog)
+        self.assertIn("구매 미연결", theme)
 
 
 if __name__ == "__main__":

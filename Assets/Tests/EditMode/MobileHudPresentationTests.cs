@@ -49,6 +49,32 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void SevenOriginalFacilityPagesHaveDistinctDecorativeBanners()
+        {
+            var panel = typeof(OrdrMobileTouchPanel);
+            var tabType = panel.GetNestedType("Tab", BindingFlags.NonPublic);
+            var visualType = panel.GetNestedType("FacilityVisual", BindingFlags.NonPublic);
+            var find = panel.GetMethod("TryGetFacilityVisual",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.IsNotNull(visualType);
+            Assert.IsNotNull(find);
+            var names = new[] {
+                "Gambling", "UpgradeOne", "UpgradeTwo", "Helper",
+                "Missions", "Research", "LogPose",
+            };
+            foreach (string name in names)
+            {
+                var arguments = new[] { Enum.Parse(tabType, name),
+                    Activator.CreateInstance(visualType) };
+                Assert.IsTrue((bool)find.Invoke(null, arguments), name);
+                Assert.IsNotNull(arguments[1]);
+            }
+            var unrelated = new[] { Enum.Parse(tabType, "Fusion"),
+                Activator.CreateInstance(visualType) };
+            Assert.IsFalse((bool)find.Invoke(null, unrelated));
+        }
+
+        [Test]
         public void ThreeOriginalResearchBuildingsKeepSeparateVerifiedInventories()
         {
             var buildings = new[] {
@@ -72,6 +98,12 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(7, Original323PlayerBuildingResearchCatalog.ForBuilding("h06Q")[0].MaximumLevel);
             Assert.AreEqual("R01V", Original323PlayerBuildingResearchCatalog.ForBuilding("h06R")[9].Rawcode);
             Assert.AreEqual("기후 변화", Original323PlayerBuildingResearchCatalog.ForBuilding("h06S")[3].Name);
+            var laboratory = Original323PlayerBuildingResearchCatalog.ForBuilding("h06S");
+            StringAssert.Contains("+0.45/초", laboratory[0].EffectSummary);
+            StringAssert.Contains("+12%", laboratory[1].EffectSummary);
+            StringAssert.Contains("+0.8/초", laboratory[2].EffectSummary);
+            StringAssert.Contains("-10%", laboratory[3].EffectSummary);
+            Assert.IsNull(Original323PlayerBuildingResearchCatalog.ForBuilding("h06Q")[0].EffectSummary);
             Assert.Throws<ArgumentOutOfRangeException>(() =>
                 Original323PlayerBuildingResearchCatalog.ForBuilding("h062"));
         }
