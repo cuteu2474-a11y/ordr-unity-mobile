@@ -101,6 +101,10 @@ namespace Ordr.Mobile.Core
             wallet.Granted += OnWalletGranted;
         }
         public long Balance(string id) => wallet.Balance(id);
+        // The UI must not advertise a source-verified pool as playable until
+        // its world/ability adapter has explicitly opted into the roller.
+        public bool CanAutomaticallyResolve(string id) =>
+            WispResourceIds.IsAuto(id) && roller.IsVerified(id);
         public void Dispose() { wallet.Granted -= OnWalletGranted; }
 
         private void OnWalletGranted(ResourceBundle reward)

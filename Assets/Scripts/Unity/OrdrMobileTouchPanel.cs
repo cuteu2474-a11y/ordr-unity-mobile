@@ -1678,6 +1678,22 @@ namespace Ordr.Mobile.Unity
             }
         }
 
+        private void DrawAutomaticWispStatus(string name, string id, string sourceRule)
+        {
+            long balance = controller.WispBalance(id);
+            bool ready = controller.Wisps != null &&
+                controller.Wisps.CanAutomaticallyResolve(id);
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label(name + " · " + balance + "개",
+                OrdrMobileUiTheme.SectionTitle);
+            GUILayout.Label(sourceRule, OrdrMobileUiTheme.Explanation);
+            GUILayout.Label(ready
+                ? "자동 지급 연결 · 획득 즉시 처리 (미처리 보유분 재시도 가능)"
+                : "원본 보상 지급 연결 대기 · 보유 위습은 소모하지 않음",
+                OrdrMobileUiTheme.Explanation);
+            GUILayout.EndVertical();
+        }
+
         private void DrawWisp()
         {
             if (controller.StartingEvolutionActorId.HasValue &&
@@ -1695,23 +1711,32 @@ namespace Ordr.Mobile.Unity
             }
             if (controller.PracticeBattle != null)
                 GUILayout.Label("라운드마다 랜덤위습 2개 · 소환 / 조합 / 판매");
-            GUILayout.Label("랜덤위습 " + controller.WispBalance(WispResourceIds.Random) +
-                "개 · 선택위습 " + controller.WispBalance(WispResourceIds.Choice) + "개");
-            GUILayout.Label("자동: 안흔함 " + controller.WispBalance(WispResourceIds.Uncommon) +
-                " / 특별 " + controller.WispBalance(WispResourceIds.Special) +
-                " / 희귀 " + controller.WispBalance(WispResourceIds.Rare) +
-                " / 전설 " + controller.WispBalance(WispResourceIds.Legendary));
-            if (controller.Wisps == null)
-                GUILayout.Label("자동 위습 보상 연결 대기: 보유분 유지");
-            else
+            GUILayout.Label("원본 위습 자동 소환", OrdrMobileUiTheme.SectionTitle);
+            // Choice Wisp belongs exclusively to the Fusion menu; its balance
+            // is already shown in the top resource strip.
+            DrawAutomaticWispStatus("안흔함위습", WispResourceIds.Uncommon,
+                "안흔함 13종 · 원본 자동 추첨");
+            DrawAutomaticWispStatus("특별위습", WispResourceIds.Special,
+                "특별함 33종 · 원본 자동 추첨");
+            DrawAutomaticWispStatus("희귀위습", WispResourceIds.Rare,
+                "42종 99% / 8종 1% · A0YE 추가 효과 검증 필요");
+            DrawAutomaticWispStatus("전설위습", WispResourceIds.Legendary,
+                "전설 60종 · 실제 소환 월드 연결 검증 필요");
+            if (controller.Wisps != null &&
+                ((controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Uncommon) &&
+                  controller.WispBalance(WispResourceIds.Uncommon) > 0) ||
+                 (controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Special) &&
+                  controller.WispBalance(WispResourceIds.Special) > 0) ||
+                 (controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Rare) &&
+                  controller.WispBalance(WispResourceIds.Rare) > 0) ||
+                 (controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Legendary) &&
+                  controller.WispBalance(WispResourceIds.Legendary) > 0)))
             {
-                GUILayout.Label("안흔함 13종 / 특별함 33종 · 원본 확률 자동 지급");
-                if ((controller.WispBalance(WispResourceIds.Uncommon) > 0 ||
-                     controller.WispBalance(WispResourceIds.Special) > 0) &&
-                    GUILayout.Button("대기 중 위습 지급 처리", GUILayout.MinHeight(56)))
+                if (GUILayout.Button("대기 중 자동 위습 보상 처리",
+                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
                 {
                     try { notice = controller.Wisps.FlushAutomatic() + "개 지급 완료"; }
-                    catch (Exception error) { notice = "보유분 유지: " + error.Message; }
+                    catch (Exception error) { notice = "위습 보유분 유지 · " + error.Message; }
                 }
             }
 
