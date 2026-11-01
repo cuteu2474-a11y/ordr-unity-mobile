@@ -887,6 +887,10 @@ namespace Ordr.Mobile.Unity
                 (done < requested ? " · 남은 위습 보존" + (string.IsNullOrEmpty(stopped) ? "" : " · " + stopped) : ""));
         }
         public CharacterCombatRuntime Combat { get; private set; }
+        // Session-only evidence for the original chat scoreboard's common-draw page.
+        // This is not a persistent save counter or a total-clear score ledger.
+        public MobileOriginalChatScoreboard ChatScoreboard { get; } =
+            new MobileOriginalChatScoreboard();
         public bool HasSourceVerifiedDamageRuntime { get; private set; }
 #if UNITY_EDITOR
         // Never serialized or exposed in Android/iOS player assemblies.
@@ -993,6 +997,7 @@ namespace Ordr.Mobile.Unity
                         "랜덤위습이 부족하거나 원본 소환을 완료하지 못했습니다.");
                 }
                 var recruited = Units == null ? null : Units.Find(result.CatalogId);
+                ChatScoreboard.RecordCommittedCommonWispDraw(result.CatalogId);
                 RecordSessionIssue("위습 소환", recruited == null ? result.CatalogId :
                     recruited.Name);
                 return new ManualActionResult(ManualActionState.Succeeded,

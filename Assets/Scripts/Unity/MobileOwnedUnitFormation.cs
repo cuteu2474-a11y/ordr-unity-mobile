@@ -84,16 +84,20 @@ namespace Ordr.Mobile.Unity
                 battle.width - inset * 2f, battle.height - 71f * scale);
             if (content.width <= 0 || content.height <= 0)
                 throw new ArgumentOutOfRangeException(nameof(battle));
-            int columns = Mathf.Clamp(Mathf.FloorToInt((content.width + gap) / (100f * scale + gap)), 1, 3);
-            int maxRows = Mathf.Clamp(Mathf.FloorToInt((content.height + gap) / (44f * scale + gap)), 1, 3);
+            // A compact, near-square battlefield tile is easier to scan and tap
+            // than the former wide horizontal name badge. Pagination adapts to
+            // the smaller phone battlefield without changing combat positions.
+            int columns = Mathf.Clamp(Mathf.FloorToInt((content.width + gap) / (80f * scale + gap)), 1, 3);
+            int maxRows = Mathf.Clamp(Mathf.FloorToInt((content.height + gap) / (72f * scale + gap)), 1, 3);
             int capacity = columns * maxRows;
             int pages = groupCount == 0 ? 1 : (groupCount - 1) / capacity + 1;
             int page = Mathf.Clamp(requestedPage, 0, pages - 1);
             int count = Math.Min(capacity, groupCount - page * capacity);
             int rows = count == 0 ? 0 : (count - 1) / columns + 1;
-            float width = Mathf.Min(150f * scale, (content.width - gap * (columns - 1)) / columns);
-            float height = Mathf.Min(56f * scale,
+            float side = Mathf.Min(94f * scale,
+                (content.width - gap * (columns - 1)) / columns,
                 (content.height - gap * Math.Max(0, rows - 1)) / Math.Max(1, rows));
+            float width = side, height = side;
             var cells = new Rect[count];
             float top = content.center.y - (rows * height + Math.Max(0, rows - 1) * gap) * .5f;
             for (int i = 0; i < count; i++)

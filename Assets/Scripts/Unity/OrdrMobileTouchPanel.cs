@@ -15,11 +15,14 @@ namespace Ordr.Mobile.Unity
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
         private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, LogPose, Helper, Alchemy, Missions }
+        private enum ScoreboardPage { Summary, Plus, Minus, Commons }
 
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private bool openByDefault;
         private bool visible;
         private Tab currentTab = Tab.Play;
+        private ScoreboardPage scoreboardPage;
+        private GUIStyle scoreMetricStyle;
         private float nextFusionRefresh;
         private string fusionInventorySignature;
         private int selectedPracticeRounds = 65;
@@ -156,6 +159,7 @@ namespace Ordr.Mobile.Unity
             panelScrollGesture.Cancel();
             currentTab = selected;
             visible = true;
+            if (selected == Tab.Play) scoreboardPage = ScoreboardPage.Summary;
             Vector2 remembered;
             scroll = restoreScroll && tabScrollPositions.TryGetValue(selected, out remembered)
                 ? remembered : Vector2.zero;
@@ -318,7 +322,6 @@ namespace Ordr.Mobile.Unity
             tabsScroll = GUILayout.BeginScrollView(tabsScroll, false, false,
                 GUIStyle.none, GUIStyle.none, GUILayout.ExpandHeight(true));
 
-            GUILayout.Label("플레이",OrdrMobileUiTheme.Overline);
             DrawLeftTab(Tab.Play, "점수판");
             DrawLeftTab(Tab.Wisp, "위습");
             DrawLeftTab(Tab.Helper, "도움소");
@@ -367,8 +370,12 @@ namespace Ordr.Mobile.Unity
                 OrdrMobileUiTheme.Gold);
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
-            GUILayout.Label(TabTitle(currentTab), OrdrMobileUiTheme.SectionTitle,
-                GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
+            // The chat scoreboard uses its own page selector; a second large
+            // '점수판' heading wastes the phone-sized right drawer.
+            if (currentTab != Tab.Play)
+                GUILayout.Label(TabTitle(currentTab), OrdrMobileUiTheme.SectionTitle,
+                    GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
+            else GUILayout.FlexibleSpace();
             if (GUILayout.Button("닫기", GUILayout.Width(64f), GUILayout.MinHeight(52f)))
                 CloseDrawer();
             GUILayout.EndHorizontal();
@@ -431,8 +438,6 @@ namespace Ordr.Mobile.Unity
         {
             Rect area=MobileMapSkillLayout.Scaled(layout.RightDrawer,scale);
             GUILayout.BeginArea(area,OrdrMobileUiTheme.Panel);
-            GUILayout.Label("점수판",OrdrMobileUiTheme.SectionTitle);
-            GUILayout.Space(5f);
             dashboardScroll = BeginPanelScroll(dashboardScroll);
             if(Combat==null)
                 GUILayout.Label("전투 대기");
@@ -440,18 +445,22 @@ namespace Ordr.Mobile.Unity
             {
                 var game=Combat.Game;
                 GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label(controller.IsUnitPreparation?"출격 준비":"현재 전황",OrdrMobileUiTheme.Subheading);
-                GUILayout.Label("라운드 "+game.CurrentWave+
-                    "   전투 유닛 "+Combat.CharacterCount+
-                    "   남은 적 "+game.AliveEnemies);
+                GUILayout.Label(controller.IsUnitPreparation?"출격 준비":"현재 전황",OrdrMobileUiTheme.SectionTitle);
+                GUILayout.Label("라운드 <color=#F7BD59><b>"+game.CurrentWave+"</b></color>"+
+                    "   전투 유닛 <color=#4FE2C8><b>"+Combat.CharacterCount+"</b></color>"+
+                    "   남은 적 <color=#FF8F7A><b>"+game.AliveEnemies+"</b></color>",
+                    OrdrMobileUiTheme.Explanation);
                 if (controller.OriginalTreasureHunt != null)
                     GUILayout.Label("보물상자 미수집 " +
                         controller.OriginalTreasureHunt.UncollectedCount + "개");
                 if(controller.PracticeBattle!=null)
                 {
-                    GUILayout.Label("남은 시간 " + Math.Ceiling(controller.PracticeBattle.SecondsRemaining) + "초");
-                    GUILayout.Label("처치 "+game.DefeatedEnemies+"   제한 "+
-                        controller.PracticeBattle.EnemyLimit+"마리");
+                    GUILayout.Label("남은 시간 <color=#F7BD59><b>" +
+                        Math.Ceiling(controller.PracticeBattle.SecondsRemaining) +
+                        "초</b></color>", OrdrMobileUiTheme.Explanation);
+                    GUILayout.Label("처치 <color=#4FE2C8><b>"+game.DefeatedEnemies+
+                        "</b></color>   제한 "+controller.PracticeBattle.EnemyLimit+"마리",
+                        OrdrMobileUiTheme.Explanation);
                 }
                 GUILayout.EndVertical();
             }
@@ -493,6 +502,112 @@ namespace Ordr.Mobile.Unity
             }
         }
 
+        // The original -점수판/-점수판+/-점수판-/-점수판흔함 were four
+        // chat outputs, not the Warcraft multiboard. The labels below follow
+        // the public ORDR 1.31 ShowScoreBoard source; a complete 2.323[C]
+        // persistent clear-score ledger has not been verified or connected.
+        private void DrawOriginalChatScoreboard()
+        {
+            GUILayout.BeginHorizontal();
+            DrawScoreboardPageButton(ScoreboardPage.Summary, "개인 기록");
+            DrawScoreboardPageButton(ScoreboardPage.Plus, "득점 +");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            DrawScoreboardPageButton(ScoreboardPage.Minus, "감점 -");
+            DrawScoreboardPageButton(ScoreboardPage.Commons, "흔함 획득");
+            GUILayout.EndHorizontal();
+            GUILayout.Space(6f);
+
+            switch (scoreboardPage)
+            {
+                case ScoreboardPage.Summary: DrawOriginalChatScoreSummary(); break;
+                case ScoreboardPage.Plus: DrawOriginalChatScoreBreakdown(true); break;
+                case ScoreboardPage.Minus: DrawOriginalChatScoreBreakdown(false); break;
+                case ScoreboardPage.Commons: DrawOriginalChatCommonDraws(); break;
+            }
+        }
+
+        private void DrawScoreboardPageButton(ScoreboardPage page, string label)
+        {
+            if (GUILayout.Button(label + (scoreboardPage == page ? " ✓" : ""),
+                scoreboardPage == page ? OrdrMobileUiTheme.SelectedTab : GUI.skin.button,
+                GUILayout.MinHeight(54f)))
+            {
+                scoreboardPage = page;
+                scroll = Vector2.zero;
+            }
+        }
+
+        private void DrawScoreMetric(string label, string value, Color highlight)
+        {
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label(label, OrdrMobileUiTheme.Overline);
+            if (scoreMetricStyle == null)
+                scoreMetricStyle = new GUIStyle(OrdrMobileUiTheme.Explanation) {
+                    fontStyle = FontStyle.Bold, fontSize = 20, wordWrap = true };
+            scoreMetricStyle.normal.textColor = highlight;
+            GUILayout.Label(value, scoreMetricStyle);
+            GUILayout.EndVertical();
+        }
+
+        private void DrawOriginalChatScoreSummary()
+        {
+            var gold = OrdrMobileUiTheme.Gold;
+            var aqua = OrdrMobileUiTheme.Aqua;
+            var pale = new Color(0.83f, 0.90f, 1f, 1f);
+            GUILayout.Label("현재 연결된 세션 기록만 표시 · 원본 2.323[C] 전체 클리어/세이브 장부는 미연결",
+                OrdrMobileUiTheme.Explanation);
+            DrawScoreMetric("플레이어 / 세이브 횟수", "단일 플레이 · 세이브 기록 미연결", pale);
+            DrawScoreMetric("게임 버전", "리메이크 개발용 · 원본 S2 2.323[C] 참조", pale);
+            DrawScoreMetric("난이도 / 모드", controller.IsUnitPreparation ? "출격 준비 · 단일 플레이" :
+                controller.PracticeBattle != null ? selectedPracticeRounds + "R 연습 · 단일 플레이" :
+                "원본 검증 경로 · 난이도 기록 미연결", pale);
+            DrawScoreMetric("최종 유닛 카운트 (유카)",
+                "원본 종료 유카 집계 미연결", gold);
+            DrawScoreMetric("클리어 점수", "원본 클리어 점수 집계 미연결", gold);
+            if (controller.PracticeBattle != null && controller.PracticeBattle.BossScoreAwarded > 0)
+                GUILayout.Label("참고: 연습 보스 추가 점수 " +
+                    controller.PracticeBattle.BossScoreAwarded + "점 (클리어 점수 아님)");
+            DrawScoreMetric("항법", controller.Original323HelperNavigation != null &&
+                controller.Original323HelperNavigation.ChosenNavigation != null
+                ? controller.Original323HelperNavigation.ChosenNavigation : "미선택 · 미연결 항법 제외", aqua);
+            DrawScoreMetric("최상위 유닛 제작 수", "원본 제작 누적 집계 미연결", pale);
+            DrawScoreMetric("보물 발견", controller.OriginalTreasureHunt != null
+                ? controller.OriginalTreasureHunt.CollectedCount + "개 · 이번 세션 확인된 수집"
+                : "원본 보물 수집 장부 미연결", aqua);
+
+            GUILayout.Label("유닛 도박", OrdrMobileUiTheme.Subheading);
+            foreach (string name in MobileOriginalChatScoreboard.GambleNames)
+                GUILayout.Label("· " + name + " — 시도/성공 통계 미연결");
+            if (controller.PracticeMoneyGambling != null)
+                GUILayout.Label("별도 연습 일반 돈 도박 " +
+                    controller.PracticeMoneyGambling.PurchaseCount + "회 (원작 등급별 도박 통계와 별개)");
+        }
+
+        private void DrawOriginalChatScoreBreakdown(bool positive)
+        {
+            GUILayout.Label("항목 명칭만 연결 · 2.323[C] 확정 클리어 점수 장부 미연결",
+                OrdrMobileUiTheme.Explanation);
+            foreach (string name in positive ? MobileOriginalChatScoreboard.PlusNames :
+                MobileOriginalChatScoreboard.MinusNames)
+                GUILayout.Label("· " + name + " — 점수 미집계");
+            if (positive && controller.PracticeBattle != null)
+                DrawScoreMetric("별도 연습 보스 추가 점수 (원본 총점 아님)",
+                    controller.PracticeBattle.BossScoreAwarded + "점", OrdrMobileUiTheme.Aqua);
+        }
+
+        private void DrawOriginalChatCommonDraws()
+        {
+            var journal = controller.ChatScoreboard;
+            GUILayout.Label("이번 세션에서 실제 성공한 흔함 위습 소환만 집계 · 영구 세이브 기록 아님",
+                OrdrMobileUiTheme.Explanation);
+            DrawScoreMetric("확인된 흔함 획득 합계", journal.ConfirmedCommonDraws + "기",
+                OrdrMobileUiTheme.Gold);
+            for (int i = 0; i < MobileOriginalChatScoreboard.CommonCatalogIds.Length; i++)
+                GUILayout.Label("· " + MobileOriginalChatScoreboard.CommonNames[i] + "  " +
+                    journal.CommonDrawCount(MobileOriginalChatScoreboard.CommonCatalogIds[i]) + "기");
+        }
+
         private void DrawPlay()
         {
             if (Combat == null || controller.SharedEconomy == null)
@@ -500,6 +615,11 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("전투 대기");
                 return;
             }
+            DrawOriginalChatScoreboard();
+            // Non-summary pages are read-only record pages. Preparation/start
+            // and restart actions remain on the main scoreboard page.
+            if (scoreboardPage != ScoreboardPage.Summary) return;
+            GUILayout.Space(10f);
             var game = Combat.Game;
             var practice = controller.PracticeBattle;
             GUILayout.Label("보유 전투 유닛 " + Combat.CharacterCount + " · 자동 공격 " + Combat.ReadyAttackers);

@@ -111,8 +111,8 @@ namespace Ordr.Mobile.Unity
             panel = new GUIStyle(themedSkin.box);
             panel.padding = new RectOffset(12,12,11,11);
             navButton = new GUIStyle(themedSkin.button);
-            navButton.alignment = TextAnchor.MiddleLeft;
-            navButton.padding = new RectOffset(13,8,7,7);
+            navButton.alignment = TextAnchor.MiddleCenter;
+            navButton.padding = new RectOffset(8,8,7,7);
             navButton.wordWrap = false;
             overline = new GUIStyle(themedSkin.label);
             overline.fontSize = 13;

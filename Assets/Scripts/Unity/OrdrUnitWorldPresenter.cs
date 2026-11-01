@@ -846,7 +846,9 @@ namespace Ordr.Mobile.Unity
             {
                 var group = formationGroups[formationLayout.Start + i];
                 Rect cell = formationLayout.Cells[i];
-                Vector2 icon = new Vector2(cell.x + 16f * scale, cell.center.y);
+                // Character art lives above the caption inside the square tile.
+                Vector2 icon = new Vector2(cell.center.x,
+                    cell.y + Mathf.Min(29f * scale, cell.height * .34f));
                 Vector3 position = worldCamera.ScreenToWorldPoint(new Vector3(icon.x,
                     Screen.height - icon.y, worldCamera.WorldToScreenPoint(Vector3.zero).z));
                 position.z = 0f;
@@ -895,19 +897,23 @@ namespace Ordr.Mobile.Unity
                     var group = formationGroups[formationLayout.Start + i];
                     Rect cell = formationLayout.Cells[i];
                     bool chosen = group.Contains(selected);
-                    // Leave the world marker/attack pulse visible to the left.
-                    var label = new Rect(cell.x + 30f * scale, cell.y,
-                        cell.width - 30f * scale, cell.height);
+                    // The marker/attack pulse occupies the top of the square;
+                    // draw the label only in its lower part so IMGUI does not
+                    // cover the in-world character image.
+                    var label = new Rect(cell.x, cell.y + cell.height * .53f,
+                        cell.width, cell.height * .47f);
                     GUI.Box(label, GUIContent.none, chosen ? OrdrMobileUiTheme.SelectedTab : GUI.skin.box);
-                    var text = new Rect(label.x + 4f * scale, label.y + 2f * scale,
-                        label.width - 8f * scale, label.height - 15f * scale);
-                    nameStyle.fontSize = Mathf.RoundToInt(13f * scale);
+                    var text = new Rect(label.x + 3f * scale, label.y + 1f * scale,
+                        label.width - 6f * scale, label.height - 13f * scale);
+                    nameStyle.fontSize = Mathf.RoundToInt(12f * scale);
+                    nameStyle.alignment = TextAnchor.MiddleCenter;
                     int smallest = Mathf.RoundToInt(10f * scale);
                     while (nameStyle.fontSize > smallest &&
                         nameStyle.CalcHeight(new GUIContent(group.Unit.Name), text.width) > text.height)
                         nameStyle.fontSize--;
                     GUI.Label(text, group.Unit.Name, nameStyle);
                     metaStyle.normal.textColor = ColorForGrade(group.Unit.Grade);
+                    metaStyle.alignment = TextAnchor.MiddleCenter;
                     GUI.Label(new Rect(text.x, label.yMax - 14f * scale, text.width, 12f * scale),
                         group.Unit.Grade + " ×" + group.InstanceIds.Count, metaStyle);
                 }

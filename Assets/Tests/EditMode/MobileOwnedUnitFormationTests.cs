@@ -77,8 +77,8 @@ namespace Ordr.Mobile.Tests
                 for (int i = 0; i < page.Cells.Length; i++)
                 {
                     var cell = page.Cells[i];
-                    Assert.GreaterOrEqual(cell.width / scale, 100f - .01f);
-                    Assert.GreaterOrEqual(cell.height / scale, 44f - .01f);
+                    Assert.GreaterOrEqual(cell.width / scale, 60f - .01f);
+                    Assert.AreEqual(cell.width, cell.height, .01f);
                     Assert.GreaterOrEqual(cell.xMin, battle.xMin);
                     Assert.LessOrEqual(cell.xMax, battle.xMax);
                     Assert.GreaterOrEqual(cell.yMin, battle.yMin + 25f * scale - .01f);
