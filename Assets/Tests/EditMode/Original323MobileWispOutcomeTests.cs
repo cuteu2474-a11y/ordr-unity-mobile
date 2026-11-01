@@ -166,5 +166,85 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(-3776d, x);
             Assert.AreEqual(4480d, y);
         }
+        [TestCase(WispResourceIds.Uncommon, 13, 99, 0)]
+        [TestCase(WispResourceIds.Special, 33, 99, 0)]
+        [TestCase(WispResourceIds.Rare, 42, 99, 42)]
+        [TestCase(WispResourceIds.Rare, 8, 100, 0)]
+        [TestCase(WispResourceIds.Legendary, 60, 99, 0)]
+        public void EverySourcePoolSlotCreatesOneOwnedUnitAndCanBeRemoved(
+            string kind, int size, int branch, int deferredCount)
+        {
+            var live = Create();
+            var script = new Script(branch);
+            var native = new Native(0);
+            var roller = new Original323MobileWispOutcomeRoller(
+                Read("original-2323C-wisp-pools.json"), script, native);
+            var deferred = new Original323WispDeferredAbilityRegistry(live.Combat);
+            using (var service = new MobileWispService(live.Wallet, roller,
+                new OriginalWispCombatRewardWorld(live.Combat, live.Mapping, roller, roller, deferred), true))
+            {
+                for (int index = 0; index < size; index++)
+                {
+                    native.Index = index;
+                    Assert.IsTrue(service.GrantOnce(kind + ":" + branch + ":" + index, kind));
+                    Assert.AreEqual(1, service.FlushAutomaticSafely());
+                    Assert.AreEqual(index + 1, live.Combat.CharacterCount);
+                    Assert.AreEqual(index + 1, live.Combat.Roster.Count);
+                    Assert.AreEqual(0, service.Balance(kind));
+                    Assert.IsFalse(service.GrantOnce(kind + ":" + branch + ":" + index, kind));
+                }
+                Assert.AreEqual(size, native.Calls);
+                Assert.AreEqual(kind == WispResourceIds.Rare ? size : 0, script.Calls);
+                Assert.AreEqual(deferredCount, deferred.PendingCount);
+                var ids = new System.Collections.Generic.HashSet<string>();
+                foreach (var unit in live.Combat.MobileUnitSnapshot())
+                {
+                    Assert.IsTrue(ids.Add(unit.Unit.Id), "Each source slot has a distinct catalog identity.");
+                    live.Combat.RemoveCharacter(unit.InstanceId);
+                }
+                Assert.AreEqual(0, live.Combat.CharacterCount);
+                Assert.AreEqual(0, live.Combat.Roster.Count);
+                Assert.AreEqual(0, deferred.PendingCount);
+                Assert.AreEqual(0, service.FlushAutomaticSafely(true));
+            }
+        }
+
+        [Test]
+        public void FailedAbilityApplicationCannotBeCommittedByCaller()
+        {
+            var live = Create();
+            var roller = new Original323MobileWispOutcomeRoller(
+                Read("original-2323C-wisp-pools.json"), new Script(99), new Native(0));
+            // Four-argument constructor deliberately requires the real A0YE.
+            var world = new OriginalWispCombatRewardWorld(live.Combat, live.Mapping, roller, roller);
+            using (var transaction = world.Begin())
+            {
+                Assert.Throws<InvalidOperationException>(() => transaction.Apply(
+                    new WispReward(WispResourceIds.Rare, "h09X", "A0YE")));
+                Assert.Throws<InvalidOperationException>(() => transaction.Commit());
+            }
+            Assert.AreEqual(0, live.Combat.CharacterCount);
+            Assert.AreEqual(0, live.Combat.Roster.Count);
+        }
+
+        [Test]
+        public void RemovingUncommittedResultBlocksCommitAndRollbackIsIdempotent()
+        {
+            var live = Create();
+            var roller = new Original323MobileWispOutcomeRoller(
+                Read("original-2323C-wisp-pools.json"), new Script(99), new Native(0));
+            var deferred = new Original323WispDeferredAbilityRegistry(live.Combat);
+            var world = new OriginalWispCombatRewardWorld(live.Combat, live.Mapping, roller, roller, deferred);
+            using (var transaction = world.Begin())
+            {
+                transaction.Apply(new WispReward(WispResourceIds.Rare, "h09X", "A0YE"));
+                live.Combat.RemoveCharacter(live.Combat.MobileUnitSnapshot()[0].InstanceId);
+                Assert.Throws<System.Collections.Generic.KeyNotFoundException>(() => transaction.Commit());
+            }
+            Assert.AreEqual(0, deferred.PendingCount);
+            Assert.AreEqual(0, live.Combat.Roster.Count);
+        }
+
     }
 }
+

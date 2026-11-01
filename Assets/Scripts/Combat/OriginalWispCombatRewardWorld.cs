@@ -67,13 +67,14 @@ namespace Ordr.Mobile.Combat
         {
             private readonly OriginalWispCombatRewardWorld owner;
             private long created;
+            private bool applied;
             private bool committed;
             private bool disposed;
 
             public Transaction(OriginalWispCombatRewardWorld world) { owner = world; }
             public void Apply(WispReward reward)
             {
-                if (disposed || created != 0 || reward == null)
+                if (disposed || committed || created != 0 || reward == null)
                     throw new InvalidOperationException("위습 보상 트랜잭션 재사용 금지");
                 var sourceRule = owner.rawcodes as IOriginal323WispRewardAssignmentValidator;
                 if (sourceRule != null && !sourceRule.MatchesOriginalReward(reward))
@@ -104,12 +105,15 @@ namespace Ordr.Mobile.Combat
                         created, reward.BonusAbilityRawcode))
                         throw new InvalidOperationException("원본 희귀위습 A0YE 적용 실패");
                 }
+                applied = true;
             }
 
             public void Commit()
             {
-                if (disposed || created <= 0 || committed)
+                if (disposed || !applied || created <= 0 || committed)
                     throw new InvalidOperationException("위습 월드 거래 확정 실패");
+                // A removed result cannot consume its Wisp or commit a receipt.
+                owner.combat.Roster.Get(created);
                 committed = true;
             }
 
@@ -307,3 +311,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

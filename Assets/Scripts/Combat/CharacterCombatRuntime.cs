@@ -2185,7 +2185,9 @@ namespace Ordr.Mobile.Combat
         public void RollbackUncommittedSpawn(long instanceId)
         {
             string key = InstanceKey(instanceId);
-            RemoveCharacter(instanceId);
+            // A failed transaction may discover that another lifecycle already
+            // removed its result. Still clear its uncommitted presentation cues.
+            if (characters.ContainsKey(instanceId)) RemoveCharacter(instanceId);
             pendingCommandEvents.RemoveAll(evt => evt.ActorId == key &&
                 (evt.Type == CharacterCombatEventType.UnitSpawned ||
                  evt.Type == CharacterCombatEventType.UnitPlaced));
@@ -2847,4 +2849,5 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+
 

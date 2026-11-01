@@ -32,6 +32,9 @@ namespace Ordr.Mobile.Core
     {
         public List<EconomyBalanceState> Balances = new List<EconomyBalanceState>();
         public List<string> CompletedRewards = new List<string>();
+        // An already drawn automatic Wisp must survive the same save/rollback
+        // as its balance. Older saves have no draws and remain readable.
+        public List<PendingWispRewardState> PendingWispRewards = new List<PendingWispRewardState>();
     }
 
     public sealed class EconomyWallet
@@ -42,6 +45,24 @@ namespace Ordr.Mobile.Core
         private readonly Dictionary<string, long> balances = new Dictionary<string, long>(StringComparer.Ordinal);
         private readonly HashSet<string> completedRewards =
             new HashSet<string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, WispReward> pendingWispRewards =
+            new Dictionary<string, WispReward>(StringComparer.Ordinal);
+
+        internal WispReward PendingWispReward(string id)
+        {
+            WispReward reward;
+            return pendingWispRewards.TryGetValue(id, out reward) ? reward : null;
+        }
+
+        internal void RememberWispReward(WispReward reward)
+        {
+            if (reward == null || Balance(reward.SourceWispId) < 1)
+                throw new InvalidOperationException("보유 위습 없는 추첨 결과는 저장할 수 없습니다.");
+            pendingWispRewards.Add(reward.SourceWispId, reward);
+        }
+
+        internal void CompleteWispReward(string id) { pendingWispRewards.Remove(id); }
+
         public long Balance(string id) { long value; return balances.TryGetValue(id, out value) ? value : 0; }
 
         public bool HasCompletedTransaction(string transactionId)
@@ -106,6 +127,11 @@ namespace Ordr.Mobile.Core
             state.Balances.Sort((a, b) => string.CompareOrdinal(a.Id, b.Id));
             state.CompletedRewards.AddRange(completedRewards);
             state.CompletedRewards.Sort(StringComparer.Ordinal);
+            foreach (var reward in pendingWispRewards.Values)
+                state.PendingWispRewards.Add(new PendingWispRewardState {
+                    SourceWispId = reward.SourceWispId, UnitRawcode = reward.UnitRawcode,
+                    BonusAbilityRawcode = reward.BonusAbilityRawcode });
+            state.PendingWispRewards.Sort((a, b) => string.CompareOrdinal(a.SourceWispId, b.SourceWispId));
             return state;
         }
 
@@ -125,7 +151,31 @@ namespace Ordr.Mobile.Core
             foreach (string key in state.CompletedRewards)
                 if (string.IsNullOrWhiteSpace(key) || !done.Add(key))
                     throw new FormatException("1회 보상 저장 상태가 잘못됐습니다.");
+            var draws = new Dictionary<string, WispReward>(StringComparer.Ordinal);
+            if (state.PendingWispRewards != null)
+                foreach (var draw in state.PendingWispRewards)
+                {
+                    long balance;
+                    string bonus = draw == null || string.IsNullOrEmpty(draw.BonusAbilityRawcode)
+                        ? null : draw.BonusAbilityRawcode;
+                    if (draw == null || !WispResourceIds.IsAuto(draw.SourceWispId) ||
+                        !next.TryGetValue(draw.SourceWispId, out balance) || balance < 1 ||
+                        draws.ContainsKey(draw.SourceWispId) ||
+                        (bonus != null &&
+                         (draw.SourceWispId != WispResourceIds.Rare || bonus != "A0YE")))
+                        throw new FormatException("위습 보류 추첨 저장 상태가 잘못됐습니다.");
+                    WispReward previous;
+                    var restored = new WispReward(draw.SourceWispId,
+                        draw.UnitRawcode, bonus);
+                    if (pendingWispRewards.TryGetValue(draw.SourceWispId, out previous) &&
+                        previous.UnitRawcode == draw.UnitRawcode &&
+                        previous.BonusAbilityRawcode == bonus)
+                        restored = previous;
+                    draws.Add(draw.SourceWispId, restored);
+                }
             Replace(next);
+            pendingWispRewards.Clear();
+            foreach (var pair in draws) pendingWispRewards.Add(pair.Key, pair.Value);
             completedRewards.Clear();
             foreach (var key in done) completedRewards.Add(key);
         }
@@ -223,3 +273,4 @@ namespace Ordr.Mobile.Core
         public void Play() => throw new InvalidOperationException("원작 확률과 보상표 검증 전에는 도박을 실행할 수 없습니다.");
     }
 }
+

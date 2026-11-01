@@ -1695,6 +1695,12 @@ namespace Ordr.Mobile.Unity
                         ? "캐릭터 소환 연결 · 원본 결과 확률 기반 모바일 모드"
                         : "자동 지급 연결 · 획득 즉시 처리";
             GUILayout.Label(state, OrdrMobileUiTheme.Explanation);
+            string failure = controller.Wisps?.AutomaticFailure(id);
+            if (!string.IsNullOrEmpty(failure))
+                GUILayout.Label("지급 보류 · 위습과 추첨 결과 보존\n" + failure,
+                    OrdrMobileUiTheme.Explanation);
+            else if (ready && balance > 0)
+                GUILayout.Label("게임 진행 시 자동 지급 대기", OrdrMobileUiTheme.Explanation);
             GUILayout.EndVertical();
         }
 
@@ -1747,12 +1753,14 @@ namespace Ordr.Mobile.Unity
                  (controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Legendary) &&
                   controller.WispBalance(WispResourceIds.Legendary) > 0)))
             {
-                if (GUILayout.Button("대기 중 자동 위습 보상 처리",
+                bool wasEnabled = GUI.enabled;
+                GUI.enabled = wasEnabled && controller.CanProcessAutomaticWisps;
+                if (GUILayout.Button("대기 중 자동 위습 보상 재시도",
                     OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
                 {
-                    try { notice = controller.Wisps.FlushAutomatic() + "개 지급 완료"; }
-                    catch (Exception error) { notice = "위습 보유분 유지 · " + error.Message; }
+                    notice = controller.RequestAutomaticWispRetry().Message;
                 }
+                GUI.enabled = wasEnabled;
             }
 
             DrawRandomWispActions();
@@ -2316,4 +2324,5 @@ namespace Ordr.Mobile.Unity
         }
     }
 }
+
 

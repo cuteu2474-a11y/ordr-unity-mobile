@@ -1,5 +1,11 @@
 # 코드 구조와 재사용 지점
 
+## 자동 위습 거래 경계·재시도
+
+- `MobileWispService(..., deferAutomaticUntilFlush: true)`는 실제 컨트롤러 구성에서 사용합니다. `Update`의 실행/정지 검사 뒤 `FlushAutomaticSafely`가 각 등급을 독립 정산하고, 실패 등급은 명시적 재시도 전까지 멈춥니다. 기존 동기식 서비스 호출은 호환용으로 유지합니다.
+- `EconomyWalletState.PendingWispRewards`는 미처리 **추첨 결과**만 잔액/1회 지급 영수증과 함께 보존합니다. 별도 위습 수량 큐나 별도 세이브 엔진을 만들지 않았습니다. 유닛·논리 시간·난수 전체 저장은 여전히 별도 과제입니다.
+- `RequestAutomaticWispRetry`와 위습 UI는 진행 중인 세션에서만 재시도하고 등급별 오류를 표시합니다. 미확인 원본 능력/난수 인증을 우회하지 않습니다.
+
 ## 자동 위습 지급 공통 연결
 
 - `Original323WispAssignedRosterMap`: W3X 객체 근거와 156개 위습 전용 rawcode→도감 ID 검증 (조합 허용 범위 변경 없음).

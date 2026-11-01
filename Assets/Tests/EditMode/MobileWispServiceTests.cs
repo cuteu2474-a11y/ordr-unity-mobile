@@ -25,6 +25,8 @@ namespace Ordr.Mobile.Tests
             public WispReward LastReward;
             public bool Fail;
             public bool FailCommit;
+            public string FailTier;
+            public int Attempts;
             public IWispRewardTransaction Begin() => new Transaction(this);
             private sealed class Transaction : IWispRewardTransaction
             {
@@ -35,7 +37,8 @@ namespace Ordr.Mobile.Tests
                 public void Apply(WispReward reward)
                 {
                     world.LastReward = reward;
-                    if (world.Fail) throw new InvalidOperationException();
+                    world.Attempts++;
+                    if (world.Fail || reward.SourceWispId == world.FailTier) throw new InvalidOperationException();
                     world.Count++;
                     applied = true;
                 }
@@ -230,5 +233,124 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, wallet.Balance(WispResourceIds.Choice));
             Assert.AreEqual(0, merge.Created);
         }
+
+        [Test]
+        public void DeferredGrantCannotSpawnBeforeItsEnclosingTransactionCommits()
+        {
+            var wallet = new EconomyWallet();
+            var world = new World();
+            var roller = new Roller();
+            using (var service = new MobileWispService(wallet, roller, world, true))
+            {
+                var before = wallet.CaptureState();
+                service.GrantOnce("rolled-back-story", WispResourceIds.Special, 2);
+                Assert.AreEqual(0, roller.Calls);
+                Assert.AreEqual(0, world.Count);
+                wallet.RestoreState(before);
+                Assert.AreEqual(0, service.FlushAutomaticSafely());
+                Assert.IsTrue(service.GrantOnce("rolled-back-story", WispResourceIds.Special, 2));
+                Assert.AreEqual(2, service.FlushAutomaticSafely());
+                Assert.IsFalse(service.GrantOnce("rolled-back-story", WispResourceIds.Special, 2));
+                Assert.AreEqual(0, service.FlushAutomaticSafely());
+                Assert.AreEqual(2, world.Count);
+            }
+        }
+
+        [Test]
+        public void SafeDrainIsolatesOneTierAndDoesNotRetryEveryFrame()
+        {
+            var wallet = new EconomyWallet();
+            var world = new World { FailTier = WispResourceIds.Special };
+            var roller = new Roller();
+            using (var service = new MobileWispService(wallet, roller, world, true))
+            {
+                foreach (string id in new[] { WispResourceIds.Uncommon, WispResourceIds.Special,
+                    WispResourceIds.Rare, WispResourceIds.Legendary }) service.Grant(id);
+                Assert.AreEqual(3, service.FlushAutomaticSafely());
+                Assert.AreEqual(3, world.Count);
+                Assert.AreEqual(1, service.Balance(WispResourceIds.Special));
+                Assert.IsNotNull(service.AutomaticFailure(WispResourceIds.Special));
+                int calls = roller.Calls, attempts = world.Attempts;
+                Assert.AreEqual(0, service.FlushAutomaticSafely());
+                Assert.AreEqual(attempts, world.Attempts);
+                world.FailTier = null;
+                Assert.AreEqual(1, service.FlushAutomaticSafely(true));
+                Assert.AreEqual(calls, roller.Calls, "Retry must reuse the saved draw.");
+                Assert.IsNull(service.AutomaticFailure(WispResourceIds.Special));
+                Assert.AreEqual(4, world.Count);
+            }
+        }
+
+        [TestCase(WispResourceIds.Uncommon, false)]
+        [TestCase(WispResourceIds.Special, true)]
+        [TestCase(WispResourceIds.Rare, false)]
+        [TestCase(WispResourceIds.Rare, true)]
+        [TestCase(WispResourceIds.Legendary, true)]
+        public void FailedDrawSurvivesWalletSerializationAndServiceReplacement(string kind, bool failCommit)
+        {
+            var wallet = new EconomyWallet();
+            var failed = new World { Fail = !failCommit, FailCommit = failCommit };
+            using (var service = new MobileWispService(wallet, new Roller(), failed, true))
+            {
+                service.GrantOnce("source-rare", kind);
+                Assert.AreEqual(0, service.FlushAutomaticSafely());
+            }
+            string json = UnityEngine.JsonUtility.ToJson(wallet.CaptureState());
+            var restored = new EconomyWallet();
+            restored.RestoreState(UnityEngine.JsonUtility.FromJson<EconomyWalletState>(json));
+            var roller = new Roller();
+            var world = new World();
+            using (var service = new MobileWispService(restored, roller, world, true))
+            {
+                Assert.IsFalse(service.GrantOnce("source-rare", kind));
+                Assert.AreEqual(1, service.FlushAutomaticSafely());
+                Assert.AreEqual(0, roller.Calls);
+                Assert.AreEqual(failed.LastReward.UnitRawcode, world.LastReward.UnitRawcode);
+                Assert.AreEqual(kind == WispResourceIds.Rare ? "A0YE" : null, world.LastReward.BonusAbilityRawcode);
+                Assert.AreEqual(0, restored.CaptureState().PendingWispRewards.Count);
+                Assert.AreEqual(0, service.FlushAutomaticSafely(true));
+            }
+        }
+
+        [Test]
+        public void InvalidPendingDrawRestoreCannotReplaceLiveWalletOrReceipts()
+        {
+            var wallet = new EconomyWallet();
+            using (var service = new MobileWispService(wallet, new Roller(), new World { Fail = true }, true))
+            {
+                service.GrantOnce("saved", WispResourceIds.Rare);
+                service.FlushAutomaticSafely();
+                string before = UnityEngine.JsonUtility.ToJson(wallet.CaptureState());
+                var invalid = wallet.CaptureState();
+                invalid.PendingWispRewards.Add(invalid.PendingWispRewards[0]);
+                Assert.Throws<FormatException>(() => wallet.RestoreState(invalid));
+                Assert.AreEqual(before, UnityEngine.JsonUtility.ToJson(wallet.CaptureState()));
+                invalid = wallet.CaptureState();
+                invalid.PendingWispRewards[0].BonusAbilityRawcode = "FAKE";
+                Assert.Throws<FormatException>(() => wallet.RestoreState(invalid));
+                Assert.AreEqual(before, UnityEngine.JsonUtility.ToJson(wallet.CaptureState()));
+                invalid = wallet.CaptureState();
+                invalid.Balances[0].Amount = 0;
+                Assert.Throws<FormatException>(() => wallet.RestoreState(invalid));
+                Assert.AreEqual(before, UnityEngine.JsonUtility.ToJson(wallet.CaptureState()));
+            }
+        }
+
+        [Test]
+        public void OldWalletSaveAndDisposedServiceCannotDuplicateRewards()
+        {
+            var wallet = new EconomyWallet();
+            wallet.RestoreState(UnityEngine.JsonUtility.FromJson<EconomyWalletState>(
+                "{\"Balances\":[{\"Id\":\"wisp:e017\",\"Amount\":1}],\"CompletedRewards\":[]}"));
+            var world = new World();
+            var old = new MobileWispService(wallet, new Roller(), world, true);
+            old.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => old.FlushAutomatic());
+            Assert.Throws<ObjectDisposedException>(() => old.Grant(WispResourceIds.Uncommon));
+            using (var current = new MobileWispService(wallet, new Roller(), world, true))
+                Assert.AreEqual(1, current.FlushAutomaticSafely());
+            Assert.AreEqual(1, world.Count);
+        }
     }
 }
+

@@ -1482,6 +1482,20 @@ namespace Ordr.Mobile.Unity
         // Original reward UNIT identities are playable as empty mobile shells.
         // A0YE native ability behavior and exact Warcraft seed are not faked.
         public bool UsesWispShellMode { get; private set; }
+        public bool CanProcessAutomaticWisps => Wisps != null && Combat != null &&
+            Combat.Game.Phase == SessionPhase.Running && runGate.CanAdvance;
+        public ManualActionResult RequestAutomaticWispRetry()
+        {
+            if (!CanProcessAutomaticWisps)
+                return new ManualActionResult(ManualActionState.Rejected, "게임 진행 중에 위습 지급을 재시도할 수 있습니다.");
+            int count = Wisps.FlushAutomaticSafely(true);
+            bool pending = false;
+            foreach (string id in new[] { WispResourceIds.Uncommon, WispResourceIds.Special,
+                WispResourceIds.Rare, WispResourceIds.Legendary })
+                pending |= Wisps.AutomaticFailure(id) != null;
+            return new ManualActionResult(pending ? ManualActionState.Rejected : ManualActionState.Succeeded, count + "개 지급 완료" +
+                (pending ? " · 남은 위습의 보류 사유를 확인해 주세요." : ""));
+        }
         public int DeferredWispA0yeCount =>
             deferredWispAbilities == null ? 0 : deferredWispAbilities.PendingCount;
         private IVerifiedChoiceWispMergeWorld choiceWispWorld;
@@ -1545,12 +1559,12 @@ namespace Ordr.Mobile.Unity
                 : OriginalWispRewardCatalog.FromOriginalJassJson(
                     source.text, scriptRng, nativePool);
             Wisps?.Dispose();
-            Wisps = new MobileWispService(SharedEconomy.Wallet, roller, world);
+            Wisps = new MobileWispService(SharedEconomy.Wallet, roller, world, true);
             usesBuiltInAutomaticUncommonWisps = false;
             UsesWispShellMode = false;
             deferredWispAbilities = null;
             choiceWispWorld = choiceMerge;
-            Wisps.FlushAutomatic();
+            // Existing balances are drained by Update after session start.
         }
 
         // A verified rare-Wisp path is enabled only when ALL original
@@ -1587,12 +1601,12 @@ namespace Ordr.Mobile.Unity
             var destination=new OriginalWispCombatRewardWorld(Combat,
                 wispMap,automatic,automatic);
             Wisps?.Dispose();
-            Wisps=new MobileWispService(SharedEconomy.Wallet,automatic,destination);
+            Wisps=new MobileWispService(SharedEconomy.Wallet,automatic,destination,true);
             usesBuiltInAutomaticUncommonWisps=false;
             UsesWispShellMode = false;
             deferredWispAbilities = null;
             choiceWispWorld=choiceMerge;
-            Wisps.FlushAutomatic();
+            // Existing balances are drained by Update after session start.
         }
 
         // Uses the exact same roster as CharacterCombatRuntime; unreviewed
@@ -2501,7 +2515,7 @@ namespace Ordr.Mobile.Unity
                             new Original323WispDeferredAbilityRegistry(Combat);
                         Wisps = new MobileWispService(SharedEconomy.Wallet, roller,
                             new OriginalWispCombatRewardWorld(Combat, map,
-                                roller, roller, deferredWispAbilities));
+                                roller, roller, deferredWispAbilities), true);
                         UsesWispShellMode = true;
                     }
                     else
@@ -2512,7 +2526,7 @@ namespace Ordr.Mobile.Unity
                             pool.text, new MobileUniformWispRandom());
                         Wisps = new MobileWispService(SharedEconomy.Wallet, roller,
                             new OriginalWispCombatRewardWorld(Combat, map,
-                                roller, roller));
+                                roller, roller), true);
                     }
                     usesBuiltInAutomaticUncommonWisps = true;
                 }
@@ -2884,6 +2898,9 @@ namespace Ordr.Mobile.Unity
             // Combat, round events, shared mana regeneration and source RNG
             // remain on one paused logical clock.
             if (!runGate.CanAdvance) return;
+            // Grant callbacks may run inside source transactions or combat
+            // enumeration. Redeem only after those callers have unwound.
+            Wisps?.FlushAutomaticSafely();
             if (IsUnitPreparation)
             {
                 UnitDecompositions?.Advance(Time.deltaTime);
@@ -2972,4 +2989,5 @@ namespace Ordr.Mobile.Unity
         }
     }
 }
+
 

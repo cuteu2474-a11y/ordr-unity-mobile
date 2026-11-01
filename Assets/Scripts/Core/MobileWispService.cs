@@ -33,6 +33,14 @@ namespace Ordr.Mobile.Core
         }
     }
 
+    [Serializable]
+    public sealed class PendingWispRewardState
+    {
+        public string SourceWispId;
+        public string UnitRawcode;
+        public string BonusAbilityRawcode;
+    }
+
     // 확률 및 풀은 원본에서 검증한 공급자만 제공한다. 임의 테이블은 허용하지 않는다.
     public interface IVerifiedWispRoller
     {
@@ -88,16 +96,19 @@ namespace Ordr.Mobile.Core
         private readonly IVerifiedWispRoller roller;
         private readonly IWispRewardWorld world;
         private bool processing;
-        // A failed spawn/debit/commit retries the same source draw. Otherwise
-        // retrying an unavailable result would turn failure into a free reroll.
-        private readonly Dictionary<string, WispReward> pendingRewards =
-            new Dictionary<string, WispReward>();
+        private bool disposed;
+        private readonly bool deferAutomatic;
+        private static readonly string[] AutomaticKinds = { WispResourceIds.Uncommon,
+            WispResourceIds.Special, WispResourceIds.Rare, WispResourceIds.Legendary };
+        private readonly Dictionary<string, string> failures = new Dictionary<string, string>();
+        public string AutomaticFailure(string id) => failures.TryGetValue(id, out var reason) ? reason : null;
         public MobileWispService(EconomyWallet sharedWallet, IVerifiedWispRoller verifiedRoller,
-            IWispRewardWorld transactionalWorld)
+            IWispRewardWorld transactionalWorld, bool deferAutomaticUntilFlush = false)
         {
             wallet = sharedWallet ?? throw new ArgumentNullException(nameof(sharedWallet));
             roller = verifiedRoller ?? throw new ArgumentNullException(nameof(verifiedRoller));
             world = transactionalWorld ?? throw new ArgumentNullException(nameof(transactionalWorld));
+            deferAutomatic = deferAutomaticUntilFlush;
             wallet.Granted += OnWalletGranted;
         }
         public long Balance(string id) => wallet.Balance(id);
@@ -105,10 +116,17 @@ namespace Ordr.Mobile.Core
         // its world/ability adapter has explicitly opted into the roller.
         public bool CanAutomaticallyResolve(string id) =>
             WispResourceIds.IsAuto(id) && roller.IsVerified(id);
-        public void Dispose() { wallet.Granted -= OnWalletGranted; }
+        public void Dispose() { disposed = true; wallet.Granted -= OnWalletGranted; }
+        private void RequireActive()
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(MobileWispService));
+        }
 
         private void OnWalletGranted(ResourceBundle reward)
         {
+            // Unity drains only at a safe frame boundary, after the enclosing
+            // story/shop/fusion transaction has committed or rolled back.
+            if (deferAutomatic || disposed) return;
             foreach (var entry in reward.Entries)
                 if (WispResourceIds.IsAuto(entry.Key))
                 { FlushAutomatic(); return; }
@@ -118,6 +136,7 @@ namespace Ordr.Mobile.Core
         // FlushAutomatic()으로 이어서 처리하며 별도 큐와 지갑이 어긋나지 않는다.
         public void Grant(string id, long count = 1)
         {
+            RequireActive();
             if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
             if (!IsKnown(id)) throw new ArgumentException("알 수 없는 위습");
             wallet.Grant(new ResourceBundle().Add(id, count));
@@ -126,6 +145,7 @@ namespace Ordr.Mobile.Core
         // 이벤트 ID가 있는 상점·임무·유닛 보상은 이 경로로만 지급한다.
         public bool GrantOnce(string sourceEventId, string id, long count = 1)
         {
+            RequireActive();
             if (string.IsNullOrWhiteSpace(sourceEventId) || !IsKnown(id) || count <= 0)
                 throw new ArgumentException("원본 보상 이벤트·위습 ID·수량이 필요합니다.");
             bool granted = wallet.TryGrantOnce("wisp:" + sourceEventId,
@@ -135,55 +155,84 @@ namespace Ordr.Mobile.Core
 
         public int FlushAutomatic()
         {
+            RequireActive();
+            if (processing) return 0;
+            processing = true;
+            try
+            {
+                int applied = 0;
+                foreach (string id in AutomaticKinds) applied += FlushTier(id);
+                return applied;
+            }
+            finally { processing = false; }
+        }
+
+        // Isolate failures by tier. Failed tiers stay blocked until an explicit
+        // retry, avoiding repeated spawn/rollback work every Unity frame.
+        public int FlushAutomaticSafely(bool retryFailed = false)
+        {
+            RequireActive();
             if (processing) return 0;
             processing = true;
             int applied = 0;
             try
             {
-                foreach (string id in new[] { WispResourceIds.Uncommon,
-                    WispResourceIds.Special, WispResourceIds.Rare, WispResourceIds.Legendary })
+                foreach (string id in AutomaticKinds)
                 {
-                    if (!roller.IsVerified(id)) continue;
-                    while (wallet.Balance(id) > 0)
-                    {
-                        using (var transaction = world.Begin() ??
-                            throw new InvalidOperationException("위습 월드 거래를 열지 못했습니다."))
-                        {
-                            WispReward reward;
-                            if (!pendingRewards.TryGetValue(id, out reward))
-                            {
-                                reward = roller.Roll(id);
-                                if (reward == null || reward.SourceWispId != id)
-                                    throw new InvalidOperationException("검증되지 않은 위습 보상");
-                                pendingRewards.Add(id, reward);
-                            }
-                            transaction.Apply(reward);
-                            var before = wallet.CaptureState();
-                            try
-                            {
-                                if (!wallet.TryExchange(new ResourceBundle().Add(id, 1),
-                                    new ResourceBundle()))
-                                    throw new InvalidOperationException("위습 소모 실패");
-                                transaction.Commit();
-                                pendingRewards.Remove(id);
-                            }
-                            catch
-                            {
-                                wallet.RestoreState(before);
-                                throw;
-                            }
-                        }
-                        applied = checked(applied + 1);
-                    }
+                    if (wallet.Balance(id) == 0) { failures.Remove(id); continue; }
+                    if (!retryFailed && failures.ContainsKey(id)) continue;
+                    try { FlushTier(id, () => applied++); failures.Remove(id); }
+                    catch (Exception error) { failures[id] = error.Message; }
                 }
+                return applied;
             }
             finally { processing = false; }
+        }
+
+        private int FlushTier(string id, Action onApplied = null)
+        {
+            if (!roller.IsVerified(id)) return 0;
+            int applied = 0;
+            while (wallet.Balance(id) > 0)
+            {
+                using (var transaction = world.Begin() ??
+                    throw new InvalidOperationException("위습 월드 거래를 열지 못했습니다."))
+                {
+                    var reward = wallet.PendingWispReward(id);
+                    if (reward == null)
+                    {
+                        reward = roller.Roll(id);
+                        if (reward == null || reward.SourceWispId != id)
+                            throw new InvalidOperationException("검증되지 않은 위습 보상");
+                        wallet.RememberWispReward(reward);
+                    }
+                    transaction.Apply(reward);
+                    var before = wallet.CaptureState();
+                    try
+                    {
+                        if (!wallet.TryExchange(new ResourceBundle().Add(id, 1),
+                            new ResourceBundle()))
+                            throw new InvalidOperationException("위습 소모 실패");
+                        transaction.Commit();
+                        wallet.CompleteWispReward(id);
+                        failures.Remove(id);
+                    }
+                    catch
+                    {
+                        wallet.RestoreState(before);
+                        throw;
+                    }
+                }
+                applied = checked(applied + 1);
+                onApplied?.Invoke();
+            }
             return applied;
         }
 
         // 선택위습은 Merge UI에서만 명시적으로 소비. 검증된 선택 결과만 허용.
         public bool MergeChoice(string selectedUnitRawcode, IVerifiedChoiceWispMergeWorld mergeWorld)
         {
+            RequireActive();
             if (string.IsNullOrWhiteSpace(selectedUnitRawcode) ||
                 selectedUnitRawcode.Length != 4 || mergeWorld == null)
                 throw new ArgumentException("검증된 Merge 선택과 실행기가 필요합니다.");
@@ -220,3 +269,4 @@ namespace Ordr.Mobile.Core
             id == WispResourceIds.Choice || WispResourceIds.IsAuto(id);
     }
 }
+
