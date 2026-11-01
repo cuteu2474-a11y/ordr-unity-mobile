@@ -1,0 +1,1154 @@
+{
+  "format": "ordr-wisp-character-identity-assignments-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "purpose": "Identity assignment only. Does not enable creation, purchase, RNG, combat, skills or wisp spending.",
+  "evidenceStatus": "JASS label matches are provisional identity candidates, not approved for automatic unit consumption.",
+  "mappedCandidateCount": 22,
+  "unresolvedCount": 134,
+  "wisps": [
+    {
+      "wispRawcode": "e017",
+      "branches": [
+        {
+          "chancePercent": 100,
+          "bonusAbilityRawcode": null,
+          "entries": [
+            {
+              "rawcode": "h00M",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56374
+            },
+            {
+              "rawcode": "h00A",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56375
+            },
+            {
+              "rawcode": "h00O",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56376
+            },
+            {
+              "rawcode": "h00C",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56377
+            },
+            {
+              "rawcode": "h00D",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56378
+            },
+            {
+              "rawcode": "h00I",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56379
+            },
+            {
+              "rawcode": "h00N",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56380
+            },
+            {
+              "rawcode": "h00E",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56381
+            },
+            {
+              "rawcode": "h00G",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56382
+            },
+            {
+              "rawcode": "h00J",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56383
+            },
+            {
+              "rawcode": "h00K",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56384
+            },
+            {
+              "rawcode": "h00L",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56385
+            },
+            {
+              "rawcode": "h00F",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56386
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "wispRawcode": "e016",
+      "branches": [
+        {
+          "chancePercent": 100,
+          "bonusAbilityRawcode": null,
+          "entries": [
+            {
+              "rawcode": "h01K",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56323
+            },
+            {
+              "rawcode": "h00Q",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56324
+            },
+            {
+              "rawcode": "h00B",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56325
+            },
+            {
+              "rawcode": "h00P",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56326
+            },
+            {
+              "rawcode": "h00S",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56327
+            },
+            {
+              "rawcode": "h00R",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56328
+            },
+            {
+              "rawcode": "h00W",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56329
+            },
+            {
+              "rawcode": "h00T",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56330
+            },
+            {
+              "rawcode": "h00U",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56331
+            },
+            {
+              "rawcode": "h017",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56332
+            },
+            {
+              "rawcode": "h016",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56333
+            },
+            {
+              "rawcode": "h015",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56334
+            },
+            {
+              "rawcode": "h014",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56335
+            },
+            {
+              "rawcode": "h013",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56336
+            },
+            {
+              "rawcode": "h01F",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56337
+            },
+            {
+              "rawcode": "h012",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56338
+            },
+            {
+              "rawcode": "h011",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56339
+            },
+            {
+              "rawcode": "h010",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56340
+            },
+            {
+              "rawcode": "h00Z",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56341
+            },
+            {
+              "rawcode": "h00Y",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56342
+            },
+            {
+              "rawcode": "h00X",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56343
+            },
+            {
+              "rawcode": "h018",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56344
+            },
+            {
+              "rawcode": "h019",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56345
+            },
+            {
+              "rawcode": "h01C",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56346
+            },
+            {
+              "rawcode": "h00V",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56347
+            },
+            {
+              "rawcode": "h01A",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56348
+            },
+            {
+              "rawcode": "h01B",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56349
+            },
+            {
+              "rawcode": "h01D",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56350
+            },
+            {
+              "rawcode": "h01E",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56351
+            },
+            {
+              "rawcode": "h01H",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56352
+            },
+            {
+              "rawcode": "h01G",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56353
+            },
+            {
+              "rawcode": "h01J",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56354
+            },
+            {
+              "rawcode": "h01I",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56355
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "wispRawcode": "e019",
+      "branches": [
+        {
+          "chancePercent": 99,
+          "bonusAbilityRawcode": "A0YE",
+          "entries": [
+            {
+              "rawcode": "h09X",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56405
+            },
+            {
+              "rawcode": "h01Q",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56406
+            },
+            {
+              "rawcode": "h025",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56407
+            },
+            {
+              "rawcode": "h01L",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56408
+            },
+            {
+              "rawcode": "h022",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56409
+            },
+            {
+              "rawcode": "h021",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56410
+            },
+            {
+              "rawcode": "h020",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56411
+            },
+            {
+              "rawcode": "h01Z",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56412
+            },
+            {
+              "rawcode": "h01Y",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56413
+            },
+            {
+              "rawcode": "h01X",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56414
+            },
+            {
+              "rawcode": "h01W",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56415
+            },
+            {
+              "rawcode": "h01V",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56416
+            },
+            {
+              "rawcode": "h01U",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56417
+            },
+            {
+              "rawcode": "h01T",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56418
+            },
+            {
+              "rawcode": "h02M",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56419
+            },
+            {
+              "rawcode": "h01S",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56420
+            },
+            {
+              "rawcode": "h01R",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56421
+            },
+            {
+              "rawcode": "h01M",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56422
+            },
+            {
+              "rawcode": "h01N",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56423
+            },
+            {
+              "rawcode": "h01O",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56424
+            },
+            {
+              "rawcode": "h05L",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56425
+            },
+            {
+              "rawcode": "h01P",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56426
+            },
+            {
+              "rawcode": "h02I",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56427
+            },
+            {
+              "rawcode": "h029",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56428
+            },
+            {
+              "rawcode": "h028",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56429
+            },
+            {
+              "rawcode": "h027",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56430
+            },
+            {
+              "rawcode": "h026",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56431
+            },
+            {
+              "rawcode": "h02A",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56432
+            },
+            {
+              "rawcode": "h024",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56433
+            },
+            {
+              "rawcode": "h02C",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56434
+            },
+            {
+              "rawcode": "h02D",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56435
+            },
+            {
+              "rawcode": "h02G",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56436
+            },
+            {
+              "rawcode": "h02F",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56437
+            },
+            {
+              "rawcode": "h02E",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56438
+            },
+            {
+              "rawcode": "h04H",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56439
+            },
+            {
+              "rawcode": "h023",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56440
+            },
+            {
+              "rawcode": "h02B",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56441
+            },
+            {
+              "rawcode": "h02H",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56442
+            },
+            {
+              "rawcode": "h02J",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56443
+            },
+            {
+              "rawcode": "h02K",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56444
+            },
+            {
+              "rawcode": "h02L",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56445
+            },
+            {
+              "rawcode": "h05K",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56446
+            }
+          ]
+        },
+        {
+          "chancePercent": 1,
+          "bonusAbilityRawcode": null,
+          "entries": [
+            {
+              "rawcode": "h05H",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56447
+            },
+            {
+              "rawcode": "h08N",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56448
+            },
+            {
+              "rawcode": "h05Q",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56449
+            },
+            {
+              "rawcode": "h05O",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56450
+            },
+            {
+              "rawcode": "h05P",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56451
+            },
+            {
+              "rawcode": "h05R",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56452
+            },
+            {
+              "rawcode": "h09T",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56453
+            },
+            {
+              "rawcode": "h0BG",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56454
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "wispRawcode": "e015",
+      "branches": [
+        {
+          "chancePercent": 100,
+          "bonusAbilityRawcode": null,
+          "entries": [
+            {
+              "rawcode": "h03K",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56232
+            },
+            {
+              "rawcode": "h02N",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56233
+            },
+            {
+              "rawcode": "h02O",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56234
+            },
+            {
+              "rawcode": "h02P",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56235
+            },
+            {
+              "rawcode": "h09Z",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56236
+            },
+            {
+              "rawcode": "h02Q",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56237
+            },
+            {
+              "rawcode": "h02R",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56238
+            },
+            {
+              "rawcode": "h02S",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56239
+            },
+            {
+              "rawcode": "h02T",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56240
+            },
+            {
+              "rawcode": "h02U",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56241
+            },
+            {
+              "rawcode": "h02W",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56242
+            },
+            {
+              "rawcode": "h02X",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56243
+            },
+            {
+              "rawcode": "h02Y",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56244
+            },
+            {
+              "rawcode": "h02Z",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56245
+            },
+            {
+              "rawcode": "h030",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56246
+            },
+            {
+              "rawcode": "h032",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56247
+            },
+            {
+              "rawcode": "h033",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56248
+            },
+            {
+              "rawcode": "h034",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56249
+            },
+            {
+              "rawcode": "h03H",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56250
+            },
+            {
+              "rawcode": "h035",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56251
+            },
+            {
+              "rawcode": "h036",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56252
+            },
+            {
+              "rawcode": "h037",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56253
+            },
+            {
+              "rawcode": "h02V",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56254
+            },
+            {
+              "rawcode": "h042",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56255
+            },
+            {
+              "rawcode": "h038",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56256
+            },
+            {
+              "rawcode": "h039",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56257
+            },
+            {
+              "rawcode": "h03A",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56258
+            },
+            {
+              "rawcode": "h03B",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56259
+            },
+            {
+              "rawcode": "h03S",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56260
+            },
+            {
+              "rawcode": "h03I",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56261
+            },
+            {
+              "rawcode": "h03G",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56262
+            },
+            {
+              "rawcode": "h03F",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56263
+            },
+            {
+              "rawcode": "h03E",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56264
+            },
+            {
+              "rawcode": "h0AH",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56265
+            },
+            {
+              "rawcode": "h03C",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56266
+            },
+            {
+              "rawcode": "h031",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56267
+            },
+            {
+              "rawcode": "h087",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56268
+            },
+            {
+              "rawcode": "h08S",
+              "candidateCatalogId": null,
+              "candidateName": null,
+              "identityEvidence": "unresolved",
+              "sourceJassLine": 56269
+            },
+            {
+              "rawcode": "h03X",
+              "candidateCatalogId": "H-09",
+              "candidateName": "방주맥심",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56270
+            },
+            {
+              "rawcode": "h044",
+              "candidateCatalogId": "H-05",
+              "candidateName": "류마",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56271
+            },
+            {
+              "rawcode": "h03W",
+              "candidateCatalogId": "H-10",
+              "candidateName": "베르고",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56272
+            },
+            {
+              "rawcode": "h03U",
+              "candidateCatalogId": "H-02",
+              "candidateName": "레드포스호",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56273
+            },
+            {
+              "rawcode": "h03T",
+              "candidateCatalogId": "H-03",
+              "candidateName": "레베카",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56274
+            },
+            {
+              "rawcode": "h03N",
+              "candidateCatalogId": "H-04",
+              "candidateName": "료쿠규",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56275
+            },
+            {
+              "rawcode": "h03Q",
+              "candidateCatalogId": "H-06",
+              "candidateName": "모비딕호",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56276
+            },
+            {
+              "rawcode": "h03R",
+              "candidateCatalogId": "H-07",
+              "candidateName": "반더데켄",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56277
+            },
+            {
+              "rawcode": "h03P",
+              "candidateCatalogId": "H-08",
+              "candidateName": "발라티에",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56278
+            },
+            {
+              "rawcode": "h03O",
+              "candidateCatalogId": "H-11",
+              "candidateName": "봉쿠레",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56279
+            },
+            {
+              "rawcode": "h03M",
+              "candidateCatalogId": "H-12",
+              "candidateName": "사보",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56280
+            },
+            {
+              "rawcode": "h03L",
+              "candidateCatalogId": "H-15",
+              "candidateName": "써니호",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56281
+            },
+            {
+              "rawcode": "h055",
+              "candidateCatalogId": "H-13",
+              "candidateName": "스튜시",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56282
+            },
+            {
+              "rawcode": "h03J",
+              "candidateCatalogId": "H-14",
+              "candidateName": "시류",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56283
+            },
+            {
+              "rawcode": "h03Z",
+              "candidateCatalogId": "H-17",
+              "candidateName": "아카이누",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56284
+            },
+            {
+              "rawcode": "h03Y",
+              "candidateCatalogId": "H-18",
+              "candidateName": "이완코브",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56285
+            },
+            {
+              "rawcode": "h043",
+              "candidateCatalogId": "H-01",
+              "candidateName": "검호",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56286
+            },
+            {
+              "rawcode": "h07L",
+              "candidateCatalogId": "H-19",
+              "candidateName": "캐럿",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56287
+            },
+            {
+              "rawcode": "h041",
+              "candidateCatalogId": "H-16",
+              "candidateName": "아오키지",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56288
+            },
+            {
+              "rawcode": "h046",
+              "candidateCatalogId": "H-20",
+              "candidateName": "키쿠노죠",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56289
+            },
+            {
+              "rawcode": "h045",
+              "candidateCatalogId": "H-21",
+              "candidateName": "킬러",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56290
+            },
+            {
+              "rawcode": "h047",
+              "candidateCatalogId": "H-22",
+              "candidateName": "피셔타이거",
+              "identityEvidence": "original-jass-label-correlated",
+              "sourceJassLine": 56291
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
