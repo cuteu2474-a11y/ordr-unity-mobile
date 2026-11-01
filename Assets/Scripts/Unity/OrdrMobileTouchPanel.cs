@@ -32,6 +32,7 @@ namespace Ordr.Mobile.Unity
         private string expandedRecipeId;
         private string catalogSearch = "";
         private bool showChoiceWisp;
+        private bool showRandomWispActions = true;
         private readonly Dictionary<Tab, Vector2> tabScrollPositions = new Dictionary<Tab, Vector2>();
         private int catalogGradeIndex;
         private int catalogPage;
@@ -1711,26 +1712,7 @@ namespace Ordr.Mobile.Unity
                 }
             }
 
-            int? cost = controller.VerifiedCommonWispRecruitmentCost;
-            if (!cost.HasValue || cost.Value <= 0)
-                GUILayout.Label("흔함 소환: 원본 추첨·비용 연결 대기");
-            else
-            {
-                GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label("흔함 소환 · 1회당 위습 " + cost.Value + "개",
-                    OrdrMobileUiTheme.SectionTitle);
-                bool wasEnabled = GUI.enabled;
-                GUI.enabled = wasEnabled && controller.CanRecruitVerifiedCommonWisp;
-                if (GUILayout.Button("1회 소환",
-                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
-                {
-                    RunWispDirect("흔함 소환", () => controller.RequestCommonWispBatch(1));
-                }
-                GUI.enabled = wasEnabled;
-                if (!string.IsNullOrEmpty(controller.VerifiedCommonWispUnavailableReason))
-                    GUILayout.Label(controller.VerifiedCommonWispUnavailableReason);
-                GUILayout.EndVertical();
-            }
+            DrawRandomWispActions();
 
             // Source-confirmed story boss reward only. An ordinary menu
             // press can NEVER simulate a missing CQB award event.
@@ -1754,7 +1736,6 @@ namespace Ordr.Mobile.Unity
                 }
             }
 
-            DrawWispResourceShortcuts();
             DrawEconomy(ManualEconomyCategory.Wisp);
             if (wispActions.Recent.Count > 0)
             {
@@ -1781,18 +1762,47 @@ namespace Ordr.Mobile.Unity
             RefreshCurrent();
         }
 
-        private void DrawWispResourceShortcuts()
+        private void DrawRandomWispActions()
         {
-            bool canExchange = false, canRecharge = false;
+            GUILayout.BeginVertical(GUI.skin.box);
+            if (GUILayout.Button((showRandomWispActions ? "랜덤위습 접기 ▲ · " :
+                "랜덤위습 펼치기 ▼ · ") +
+                controller.WispBalance(WispResourceIds.Random) + "개",
+                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
+                showRandomWispActions = !showRandomWispActions;
+            if (!showRandomWispActions)
+            {
+                GUILayout.EndVertical();
+                return;
+            }
+
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label("1. 흔함 유닛 소환", OrdrMobileUiTheme.SectionTitle);
+            int? cost = controller.VerifiedCommonWispRecruitmentCost;
+            if (!cost.HasValue || cost.Value <= 0)
+                GUILayout.Label("원본 소환 추첨·비용 연결 대기");
+            else
+            {
+                GUILayout.Label("1회당 랜덤위습 " + cost.Value + "개");
+                bool wasEnabled = GUI.enabled;
+                GUI.enabled = wasEnabled && controller.CanRecruitVerifiedCommonWisp;
+                if (GUILayout.Button("1회 소환",
+                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
+                    RunWispDirect("흔함 소환", () => controller.RequestCommonWispBatch(1));
+                GUI.enabled = wasEnabled;
+                if (!string.IsNullOrEmpty(controller.VerifiedCommonWispUnavailableReason))
+                    GUILayout.Label(controller.VerifiedCommonWispUnavailableReason);
+            }
+            GUILayout.EndVertical();
+
+            bool canExchange = false;
             foreach (var offer in economyOffers)
             {
                 if (offer.Id == OriginalRandomWispResourceExchange.OfferId)
                     canExchange = true;
-                if (offer.Id == OriginalHelperCowRules.OfferId)
-                    canRecharge = true;
             }
             GUILayout.BeginVertical(GUI.skin.box);
-            GUILayout.Label("랜덤위습 자원 추첨", OrdrMobileUiTheme.SectionTitle);
+            GUILayout.Label("2. 골드·목재 추첨", OrdrMobileUiTheme.SectionTitle);
             GUILayout.Label("목재 67% / 라운드 × 75골드 33% · 1회에 위습 1개");
             bool wasEnabled = GUI.enabled;
             GUI.enabled = wasEnabled && canExchange &&
@@ -1817,19 +1827,34 @@ namespace Ordr.Mobile.Unity
             else if (Combat == null || Combat.Game.CurrentWave == 0)
                 GUILayout.Label("라운드 시작 후 사용할 수 있습니다.");
 
-            if (canRecharge)
-            {
-                GUILayout.Label("도움소 마나 · 위습 1개");
-                GUI.enabled = wasEnabled &&
-                    controller.WispBalance(WispResourceIds.Random) > 0 &&
-                    controller.HelperCowRecharge != null &&
-                    controller.HelperCowRecharge.CanRecharge;
-                if (GUILayout.Button("도움소 마나 즉시 충전", GUILayout.MinHeight(60)))
-                    RunWispDirect("도움소 마나 충전", () =>
-                        controller.ManualActions.RequestEconomyAction(
-                            ManualEconomyCategory.Wisp, OriginalHelperCowRules.OfferId));
-                GUI.enabled = wasEnabled;
-            }
+            GUILayout.EndVertical();
+
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label("3. 도움소 마나 충전", OrdrMobileUiTheme.SectionTitle);
+            int round = Combat == null ? 0 : Combat.Game.CurrentWave;
+            int gain = OriginalHelperCowRules.RechargeAmount(round);
+            GUILayout.Label("랜덤위습 1개 → 마나 " + gain + " 회복");
+            OriginalHelperCowManaSnapshot mana;
+            bool connected = controller.ManualActions.TryGetHelperCowMana(out mana);
+            GUILayout.Label(connected
+                ? "현재 도움소 마나 " + mana.Current.ToString("0.#") +
+                  " / " + mana.Maximum.ToString("0.#")
+                : "도움소 생성·마나 연결 대기");
+            GUILayout.Label("마나가 가득 차 있어도 사용 시 위습 1개를 소비합니다.");
+            bool canRecharge = controller.HelperCowRecharge != null &&
+                controller.HelperCowRecharge.CanRecharge;
+            GUI.enabled = wasEnabled && canRecharge;
+            if (GUILayout.Button("마나 충전", OrdrMobileUiTheme.PrimaryButton,
+                GUILayout.MinHeight(64)))
+                RunWispDirect("도움소 마나 충전", () =>
+                    controller.ManualActions.RequestEconomyAction(
+                        ManualEconomyCategory.Wisp, OriginalHelperCowRules.OfferId));
+            GUI.enabled = wasEnabled;
+            if (!canRecharge)
+                GUILayout.Label(!connected ? "게임 시작 후 이용할 수 있습니다." :
+                    controller.WispBalance(WispResourceIds.Random) < 1 ?
+                    "랜덤위습 1개가 필요합니다." : "진행 중인 게임에서 이용할 수 있습니다.");
+            GUILayout.EndVertical();
             GUILayout.EndVertical();
         }
 
@@ -1928,20 +1953,7 @@ namespace Ordr.Mobile.Unity
                 : "자동 광역 스킬: 전투 조건 충족 시 검증된 처리기로 실행");
             GUILayout.Label("A07T의 A04R은 지속 능력 레벨 증가(+5/+8)이며 스턴이 아닙니다.");
 
-            int round = Combat == null ? 0 : Combat.Game.CurrentWave;
-            int gain = OriginalHelperCowRules.RechargeAmount(round);
-            GUILayout.Label("랜덤위습 1개 사용 → 마나 " + gain +
-                " 회복 (최대 마나 상태에서도 위습 소비)");
-            bool canRecharge = controller.HelperCowRecharge != null &&
-                controller.HelperCowRecharge.CanRecharge;
-            bool previouslyEnabled = GUI.enabled;
-            GUI.enabled = previouslyEnabled && canRecharge;
-            if (GUILayout.Button("랜덤위습 1개로 마나 충전",
-                GUILayout.MinHeight(64)))
-                RunWispDirect("도움소 마나 충전", () =>
-                    controller.ManualActions.RequestEconomyAction(
-                        ManualEconomyCategory.Wisp, OriginalHelperCowRules.OfferId));
-            GUI.enabled = previouslyEnabled;
+            GUILayout.Label("마나 충전은 위습 → 랜덤위습 → 도움소 마나 충전에서 이용합니다.");
         }
 
         private void DrawAlchemyPanel()
