@@ -1784,12 +1784,12 @@ namespace Ordr.Mobile.Unity
             else
             {
                 GUILayout.Label("1회당 랜덤위습 " + cost.Value + "개");
-                bool wasEnabled = GUI.enabled;
-                GUI.enabled = wasEnabled && controller.CanRecruitVerifiedCommonWisp;
+                bool commonRecruitWasEnabled = GUI.enabled;
+                GUI.enabled = commonRecruitWasEnabled && controller.CanRecruitVerifiedCommonWisp;
                 if (GUILayout.Button("1회 소환",
                     OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
                     RunWispDirect("흔함 소환", () => controller.RequestCommonWispBatch(1));
-                GUI.enabled = wasEnabled;
+                GUI.enabled = commonRecruitWasEnabled;
                 if (!string.IsNullOrEmpty(controller.VerifiedCommonWispUnavailableReason))
                     GUILayout.Label(controller.VerifiedCommonWispUnavailableReason);
             }
