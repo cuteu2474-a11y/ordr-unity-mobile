@@ -7,6 +7,12 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      build_apk:
+        description: 'Unity 검증 후 Android 개발용 APK 제작'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -59,8 +65,8 @@ jobs:
 
   android-apk-preview:
     name: Android 개발용 APK 제작
-    # APK는 명시적으로 요청된 커밋에서만 만든다. 이후 매 push마다 빌드하지 않는다.
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[apk-preview]') }}
+    # 명시적 APK 요청 시에만 빌드한다. 일반 push/수동 검사로 중복 빌드하지 않는다.
+    if: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[apk-preview]')) || (github.event_name == 'workflow_dispatch' && inputs.build_apk == true) }}
     needs: check
     runs-on: ubuntu-latest
     permissions:
