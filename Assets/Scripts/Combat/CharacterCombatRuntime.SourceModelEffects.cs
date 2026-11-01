@@ -22,12 +22,15 @@ namespace Ordr.Mobile.Combat
             sourceModelRules = rules;
             sourceModelUnitEffects = rules.UnitEffects;
             attackPipeline.ConfigurePracticeScriptAttackDeclared(OnSourceModelScriptAttackDeclared);
-            if (sourceModelUnitEffects != null)
-                attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {
-                    // Reference-model cadence; this does not authorize native timing.
-                    double speed = SourceModelUnitEffects.ResolvePracticeAttackSpeed(effects);
-                    return attack.IntervalSeconds / (1 + Math.Min(speed / 100.0, 4));
-                });
+            attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {
+                // Reuse the shared cadence path for a temporary form. Its flat
+                // interval change is distinct from percentage-based auras.
+                double speed = SourceModelUnitEffects.ResolvePracticeAttackSpeed(effects);
+                double interval = attack.IntervalSeconds /
+                    (1 + Math.Min(speed / 100.0, 4));
+                return Math.Max(.01, interval -
+                    SourceModelTemporarySkillCatalog.FormIntervalReduction(effects));
+            });
         }
         private void TrySourceModelLowFrenzy(string attackerId)
         {

@@ -2042,6 +2042,16 @@ namespace Ordr.Mobile.Combat
             if (!characters.TryGetValue(instanceId, out caster))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
 
+            AbilityCastResult formCast;
+            int priorEvents = events.Count;
+            if (TryCastSourceForm(caster, skillId, out formCast))
+            {
+                if (!processingStep)
+                    for (int index = priorEvents; index < events.Count; index++)
+                        pendingCommandEvents.Add(events[index]);
+                return formCast;
+            }
+
             SpatialCombatEnemy enemy = null;
             bool hasTarget = !string.IsNullOrWhiteSpace(primaryEnemyId) &&
                 enemies.TryGetValue(primaryEnemyId, out enemy) &&
@@ -2145,6 +2155,7 @@ namespace Ordr.Mobile.Combat
             if (instance.AttackReady) attackPipeline.RemoveUnit(InstanceKey(instanceId));
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
             effectExecutor.CancelCaster(InstanceKey(instanceId));
+            RemoveSourceTemporaryActors(instanceId);
             sourceModelStoryLaneRevisions.Remove(instanceId);
             lawReadyAt.Remove(instanceId);
             auras.RemoveAll(instanceId);
@@ -2359,6 +2370,7 @@ namespace Ordr.Mobile.Combat
                     status.Advance(elapsed);
                 RefreshEnemyAuras();
             });
+            RefreshSourceTemporaryActors();
         }
 
         private bool CanAttackInThisLane(CharacterInstance unit,
@@ -2423,6 +2435,13 @@ namespace Ordr.Mobile.Combat
             {
                 if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
                     unit.Mapping == null) continue;
+                double castFinish;
+                if (UsesSourceModelBasicAttacks &&
+                    sourceFormCastFinishes.TryGetValue(unit.Id, out castFinish))
+                {
+                    if (!next.HasValue || castFinish < next.Value) next = castFinish;
+                    continue;
+                }
                 double? at = attackPipeline.NextAttackAt(InstanceKey(unit.Id));
                 var candidates = BuildBasicAttackCandidates(unit);
                 if (!attackPipeline.HasUnresolvedNativeAttackSpeed(
@@ -2536,7 +2555,7 @@ namespace Ordr.Mobile.Combat
                 if (fired >= budget) break;
                 CharacterInstance unit = characters[id];
                 if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
-                    unit.Mapping == null) continue;
+                    unit.Mapping == null || SourceFormIsCasting(id)) continue;
                 var at = attackPipeline.NextAttackAt(InstanceKey(id));
                 if (!at.HasValue ||
                     !CombatScheduler.HasReached(scheduler.Time, at.Value)) continue;
@@ -2661,6 +2680,7 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentOutOfRangeException(nameof(deltaSeconds));
             pendingStepSeconds += deltaSeconds;
             events.Clear();
+            sourceFormCastWake = false;
             if (pendingCommandEvents.Count != 0)
             {
                 events.AddRange(pendingCommandEvents);
@@ -2705,9 +2725,18 @@ namespace Ordr.Mobile.Combat
                     completed += periodic;
                     if (fired == 0 && previews == 0 && periodic == 0)
                     {
+                        // A cast-time wake-up is a real scheduler event, not
+                        // an empty frame: attacks later in this same Step must
+                        // still run after the form completes.
+                        if (sourceFormCastWake && pendingStepSeconds > 0)
+                        {
+                            sourceFormCastWake = false;
+                            continue;
+                        }
                         // 자동 시전으로 적이 사라지는 경우 등 다음 시간으로 진행.
                         AdvanceCombatTime(pendingStepSeconds);
                         pendingStepSeconds = 0;
+                        sourceFormCastWake = false;
                         break;
                     }
                     if (pendingStepSeconds == 0) break;

@@ -1,5 +1,11 @@
 # 코드 구조와 재사용 지점
 
+## 최신 — 원본 결과 기반 변신·소환 모델
+
+- `Assets/Scripts/Combat/SourceModelTemporarySkillCatalog.cs`: 원본 도감의 완전한 단일 변신·분신 공격 패킷만 수용하는 데이터 게이트. 복합 변신·미확정 수치는 거절.
+- `Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTemporarySkills.cs`: 임시 폼·시전시간·소환 수명/소유자·레일리 분신 피해·시노부 분신 기절을 독립 연습 전투에 연결. 조합 재료로 사용하거나 외부 원작 검증 경로로 승격하지 않음.
+- `SourceModelBasicCombatRules`와 기존 공격 간격 콜백이 폼의 평타 증가·고정 간격 감소를 처리하며, `CombatTimedEffectQueue`와 `CombatStatusEngine`이 시전/만료 시계를 공유합니다. 새 전투 정산기는 만들지 않았습니다.
+
 ## 최신 — 후속 30명 도감 연습 스킬 (2026-11-01)
 
 - `Assets/Scripts/Combat/SourceModelNextThirtySkillCatalog.cs`: 30명 원본 객체 매핑 및 완전한 형태의 16개 도감 패킷만 허용. 원본 JASS 동등성은 미인증.

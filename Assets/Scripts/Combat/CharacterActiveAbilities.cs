@@ -194,10 +194,15 @@ namespace Ordr.Mobile.Combat
         private static bool CanExecuteAllComponents(ImportedCombatSkill skill,
             bool verifiedTiming, Func<ImportedCombatEffect, bool> specialAllowed)
         {
-            if (skill.Target != "single" && skill.Target != "area" &&
-                skill.Target != "targetCircle" && skill.Target != "casterArea")
+            bool supportedSelfForm = skill.Target == null &&
+                skill.Components.Count == 1 &&
+                skill.Components[0].Type == "transform" &&
+                specialAllowed != null && specialAllowed(skill.Components[0]);
+            if (!supportedSelfForm && skill.Target != "single" &&
+                skill.Target != "area" && skill.Target != "targetCircle" &&
+                skill.Target != "casterArea")
                 return false;
-            if (skill.Target != "single" && (!skill.Radius.HasValue ||
+            if (!supportedSelfForm && skill.Target != "single" && (!skill.Radius.HasValue ||
                 skill.Radius.Value <= 0)) return false;
             foreach (var component in skill.Components)
             {

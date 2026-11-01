@@ -23,6 +23,7 @@ namespace Ordr.Mobile.Combat
             SourceModelBatchAttackSpec batch = null;
             SourceModelNextThirtyUnit nextThirty = null;
             bool practiceBonney = rawcode == "H0BX";
+            bool standaloneTemporary = IsStandaloneSourceTemporaryAttack(rawcode);
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 !processingStep || game.Phase != SessionPhase.Running ||
                 (!practiceBonney &&
@@ -32,7 +33,8 @@ namespace Ordr.Mobile.Combat
                  !SourceModelFourthAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelFifthAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelBatchAttackCatalog.TryGet(rawcode, out batch) &&
-                 !SourceModelNextThirtySkillCatalog.TryGet(rawcode, out nextThirty)))
+                 !SourceModelNextThirtySkillCatalog.TryGet(rawcode, out nextThirty) &&
+                 !standaloneTemporary))
                 return;
 
             long id;
@@ -46,6 +48,12 @@ namespace Ordr.Mobile.Combat
                 !enemies.TryGetValue(primaryTargetId, out primary) ||
                 !primary.Enemy.IsAlive || !CanAttackInThisLane(actor, primary))
                 return;
+
+            if (standaloneTemporary)
+            {
+                ExecuteSourceTemporaryAttack(actor, primary);
+                return;
+            }
 
             if (practiceBonney)
             {
@@ -71,6 +79,9 @@ namespace Ordr.Mobile.Combat
             // its separate e04X/area branch. Do not reverse this ordering.
             ApplySourceScriptHits(actor, primary, script, script.Always);
             int roll = sourceModelRules.NextScriptRoll(script.RollSides) + 1;
+            // Independent clone proc, after the already-registered Bt2 roll:
+            // retaining that order avoids changing its historical RNG draw.
+            if (rawcode == "h042") ExecuteSourceTimedClone(actor, primary);
             if (roll > script.RollSuccess) return;
             string skillName = actor.Catalog.Name + " 공격 기술";
             if (script.CatalogId == "U-04" || script.CatalogId == "U-13")
@@ -257,11 +268,13 @@ namespace Ordr.Mobile.Combat
                     events.Add(new CharacterCombatEvent(
                         CharacterCombatEventType.SkillDamage, attackerId,
                         target.Id, actor.Catalog.Name + " 공격 기술",
-                        "MODEL_ONLY 원본 " + script.JassFunction +
-                        (script.CatalogId == "S-08" || script.CatalogId == "S-12" ||
+                        "MODEL_ONLY " + script.JassFunction +
+                        (script.JassFunction == "tooltip-clone-proxy"
+                            ? " 도감 분신 파동 / 원본 연속 공격·네이티브 동등성 미검증"
+                            : (script.CatalogId == "S-08" || script.CatalogId == "S-12" ||
                          script.CatalogId == "S-18" || script.CatalogId == "S-19"
                             ? " 네이티브 객체 수치 기반 모바일 근사, 실제 타격 미검증"
-                            : " JASS 기본 피해·범위, 최종 엔진 면역 미검증"),
+                            : " JASS 기본 피해·범위, 최종 엔진 면역 미검증")),
                         actual));
                     if (!target.Enemy.IsAlive)
                         events.Add(new CharacterCombatEvent(

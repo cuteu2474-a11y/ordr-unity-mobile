@@ -15,9 +15,9 @@ namespace Ordr.Mobile.Tests
     {
         private sealed class Dice : ICombatProcRandom
         {
-            private readonly bool trigger;
-            public Dice(bool trigger) { this.trigger = trigger; }
-            public int Next(int bound) => trigger ? 0 : bound - 1;
+            public bool Trigger;
+            public Dice(bool trigger) { Trigger = trigger; }
+            public int Next(int bound) => Trigger ? 0 : bound - 1;
         }
         private sealed class NoGold : IOriginalWispRandom
         { public int NextInclusive(int min, int max) => max; }
@@ -34,6 +34,8 @@ namespace Ordr.Mobile.Tests
         {
             public CharacterCombatRuntime Combat;
             public SourceModelPracticeBattle Battle;
+            public long ActorId;
+            public Dice Rolls;
             public void Dispose() { Battle.Dispose(); }
         }
         private static string Data(string path) =>
@@ -53,7 +55,7 @@ namespace Ordr.Mobile.Tests
             shared.ApplyVerifiedStart(Original323SoloStartProfile.Create(),
                 (id, x, y) => shared.Units.Add(id, x, y), id => shared.Units.Remove(id));
             combat.Start(); rules.Enable(); combat.ConfigureSourceModelBasicAttacks(rules);
-            combat.SpawnCharacter(unitId, x, y);
+            long actorId = combat.SpawnCharacter(unitId, x, y);
             string practice = Data("mobile-practice-battle-model.json");
             if (enormousHealth)
                 practice = practice.Replace("\"health\": 338,",
@@ -64,7 +66,8 @@ namespace Ordr.Mobile.Tests
                     Data("original-2323C-monster-wave-script-evidence.json")),
                 rules, new NoGold(), null);
             battle.Start();
-            return new Live { Combat = combat, Battle = battle };
+            return new Live { Combat = combat, Battle = battle,
+                ActorId = actorId, Rolls = dice };
         }
 
         [Test]
@@ -447,6 +450,180 @@ namespace Ordr.Mobile.Tests
                 var events = live.Battle.Advance(6);
                 Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
                     e.SkillName == "배리어 볼"));
+            }
+        }
+
+        [Test]
+        public void TemporaryFormCatalogAcceptsOnlyCompleteStandalonePackets()
+        {
+            var profiles = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
+            SourceModelFormSpec form;
+            Assert.IsTrue(SourceModelTemporarySkillCatalog.TryReadCompleteForm(
+                profiles.Require("TR-14").Skills.Single(x => x.Name == "블랙 맘바 각성"), out form));
+            Assert.AreEqual(8.5, form.Duration);
+            Assert.AreEqual(12500, form.FlatAttackPower);
+            Assert.AreEqual(.03, form.AttackIntervalReduction);
+            Assert.IsTrue(SourceModelTemporarySkillCatalog.TryReadCompleteForm(
+                profiles.Require("TR-18").Skills.Single(x => x.Name == "인수화"), out form));
+            Assert.AreEqual(75000, form.FlatAttackPower);
+            Assert.AreEqual(.07, form.AttackIntervalReduction);
+            Assert.IsFalse(SourceModelTemporarySkillCatalog.TryReadCompleteForm(
+                profiles.Require("TR-23").Skills.Single(x => x.Name == "럼블볼 폭주"), out form));
+            Assert.IsFalse(SourceModelTemporarySkillCatalog.TryReadCompleteForm(
+                profiles.Require("E-01").Skills.Single(x => x.Name == "거대화"), out form));
+            double damage, radius;
+            Assert.IsTrue(SourceModelTemporarySkillCatalog.TryReadClonePulse(
+                profiles.Require("I-03").Skills.Single(x => x.Name == "분신"),
+                out damage, out radius));
+            Assert.AreEqual(100000, damage);
+            Assert.AreEqual(400, radius);
+            string name;
+            double duration, stun;
+            Assert.IsTrue(SourceModelTemporarySkillCatalog.TryReadTimedClone(
+                profiles.Require("L-21").Skills.Single(x => x.Name == "인술 분신"),
+                out name, out duration, out stun));
+            Assert.AreEqual("분신", name);
+            Assert.AreEqual(2, duration);
+            Assert.AreEqual(1.5, stun);
+        }
+
+        [Test]
+        public void SnakeFormUsesSameOwnedUnitAndExpiresWithoutRecreatingIt()
+        {
+            using (var live = Create("TR-14", true, -4900, 5400))
+            {
+                int owned = live.Combat.CharacterCount;
+                var events = new List<CharacterCombatEvent>();
+                for (int tick = 0; tick < 100 &&
+                    live.Combat.PracticeFormOf(live.ActorId) == null; tick++)
+                    events.AddRange(live.Battle.Advance(.2));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "블랙 맘바 각성"));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.StatusApplied &&
+                    x.SkillName == "블랙 맘바 각성"));
+                Assert.AreEqual("blackMamba", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(owned, live.Combat.CharacterCount);
+                var status = live.Combat.UnitStatusOf(live.ActorId).Snapshot();
+                Assert.AreEqual(12500, SourceModelTemporarySkillCatalog.FlatFormPower(status));
+                Assert.AreEqual(.03, SourceModelTemporarySkillCatalog.FormIntervalReduction(status));
+                live.Rolls.Trigger = false;
+                live.Battle.Advance(15);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(owned, live.Combat.CharacterCount);
+            }
+        }
+
+        [Test]
+        public void FailedSnakeFormRollDoesNotApplyAnyBuff()
+        {
+            using (var live = Create("TR-14", false, -4900, 5400))
+            {
+                var events = live.Battle.Advance(6);
+                Assert.IsFalse(events.Any(x => x.SkillName == "블랙 맘바 각성" &&
+                    x.Type == CharacterCombatEventType.StatusApplied));
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+            }
+        }
+
+        [Test]
+        public void PendingSnakeFormDoesNotReturnAcrossStoryDispatchAndRecall()
+        {
+            using (var live = Create("TR-14", true, -4900, 5400))
+            {
+                var lane = new MutableStoryLane();
+                live.Combat.ConfigureStoryDeployment(lane);
+                bool castStarted = false;
+                for (int tick = 0; tick < 100; tick++)
+                {
+                    var events = live.Battle.Advance(.05);
+                    if (!events.Any(x => x.Type == CharacterCombatEventType.SkillActivated &&
+                        x.SkillName == "블랙 맘바 각성")) continue;
+                    castStarted = true;
+                    break;
+                }
+                Assert.IsTrue(castStarted);
+                live.Rolls.Trigger = false;
+                lane.Deployed = true;
+                live.Combat.RefreshAfterCommittedStoryLaneChange(live.ActorId);
+                lane.Deployed = false;
+                live.Combat.RefreshAfterCommittedStoryLaneChange(live.ActorId);
+                var after = live.Battle.Advance(3);
+                Assert.IsFalse(after.Any(x => x.Type == CharacterCombatEventType.StatusApplied &&
+                    x.SkillName == "블랙 맘바 각성"));
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+            }
+        }
+
+        [Test]
+        public void YamatoFormSpendsConfiguredHealthOnceAndReverts()
+        {
+            using (var live = Create("TR-18", false, -4900, 5400))
+            {
+                var resources = new CharacterResources(1000, 1000, 0, 0);
+                live.Combat.ConfigureCharacterResources(live.ActorId, resources);
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "TR-18:skill:0", null));
+                Assert.AreEqual(905, resources.Health);
+                Assert.AreEqual("beast", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(75000, SourceModelTemporarySkillCatalog.FlatFormPower(
+                    live.Combat.UnitStatusOf(live.ActorId).Snapshot()));
+                live.Battle.Advance(4);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(905, resources.Health);
+            }
+        }
+
+        [Test]
+        public void FormWithoutResourceStateCannotSpendHealthOrActivate()
+        {
+            using (var live = Create("TR-18", true, -4900, 5400))
+            {
+                Assert.AreEqual(AbilityCastResult.NoResourceState,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "TR-18:skill:0", null));
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+            }
+        }
+
+        [Test]
+        public void RayleighClonePulseUsesActualCombatDamageAndProcRoll()
+        {
+            using (var live = Create("I-03", true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(6);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "분신"));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.Detail.Contains("clone-proxy") && x.Amount > 0));
+            }
+            using (var live = Create("I-03", false, -4900, 5400))
+            {
+                var events = live.Battle.Advance(6);
+                Assert.IsFalse(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.Detail.Contains("clone-proxy")));
+            }
+        }
+
+        [Test]
+        public void ShinobuCloneKeepsOwnerAndDoesNotInventIndependentAttacks()
+        {
+            using (var live = Create("L-21", true, -4900, 5400))
+            {
+                int owned = live.Combat.CharacterCount;
+                var events = new List<CharacterCombatEvent>();
+                for (int tick = 0; tick < 100 &&
+                    live.Combat.PracticeSummonsOf(live.ActorId).Count == 0; tick++)
+                    events.AddRange(live.Battle.Advance(.2));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "인술 분신"));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.EffectDeferred &&
+                    x.Detail.Contains("분신 기본 공격 횟수")));
+                Assert.AreEqual(owned, live.Combat.CharacterCount);
+                var summons = live.Combat.PracticeSummonsOf(live.ActorId);
+                Assert.IsTrue(summons.Count > 0);
+                Assert.IsTrue(summons.All(x => x.OwnerId == live.ActorId &&
+                    x.Name == "분신" && !x.HasIndependentCombat));
+                live.Combat.RemoveCharacter(live.ActorId);
+                Assert.AreEqual(0, live.Combat.PracticeSummonsOf(live.ActorId).Count);
             }
         }
     }
