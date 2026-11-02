@@ -40,7 +40,7 @@ namespace Ordr.Mobile.Combat
             foreach (var row in attacks.All) byRawcode.Add(row.Rawcode, row);
             // Only explicit source-backed form/summon identities can join the
             // practice attacker path. Unlisted map objects stay ineligible.
-            foreach (string raw in new[] { "H0B6", "h0AD", "H0AB", "H0AE", "H0AM", "h06N", "h085", "h0A9" })
+            foreach (string raw in new[] { "H0B6", "h0AD", "H0AB", "H0AE", "H0AM", "h06N", "h085", "h0A9", "h0C2" })
             {
                 var attack = objects.FindMapObjectAttack(raw);
                 if (attack == null || !attack.BaseDamagePlus.HasValue ||
@@ -108,6 +108,22 @@ namespace Ordr.Mobile.Combat
         {
             binding = null;
             if (!Enabled || unit == null) return false;
+            // Hanma is an ORIGINAL W3X CWR A0QG fusion result omitted from
+            // the older 277-entry web catalog. This is an attack-only
+            // practice model: it never makes A0QG fusion conditions executable.
+            if (unit.Id == "MY-14" && unit.CatalogEntryKind == "fusion-result" &&
+                unit.OriginalSourceRawcode == "h0C2")
+            {
+                var attack = objects.FindMapObjectAttack("h0C2");
+                OriginalMapCommonNativeAttackEvidence evidence;
+                if (attack == null || !attack.AttackPointSeconds.HasValue ||
+                    !byRawcode.TryGetValue("h0C2", out evidence)) return false;
+                binding = new OriginalVerifiedAttackBinding(new BasicAttackSpec(
+                    evidence.BaseDamagePlus + (long)evidence.DiceCount,
+                    evidence.CooldownSeconds, DamageSchool.Physical, DamageTraits.None),
+                    attack.AttackPointSeconds.Value, evidence.Rawcode, Evidence);
+                return true;
+            }
             var raw = objects.Find(unit.Id);
             var source = attacks.Find(unit.Id);
             if (raw == null || source == null || raw.Attack1 == null ||

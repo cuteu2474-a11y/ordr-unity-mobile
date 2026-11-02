@@ -10,6 +10,7 @@ namespace Ordr.Mobile.Data
         public string Name { get; private set; }
         public string GameRawCode { get; private set; }
         public string VariantOfUnitId { get; private set; }
+        public string OriginalSourceRawcode { get; private set; }
         public bool IsAlternateForm { get { return !string.IsNullOrEmpty(VariantOfUnitId); } }
         public string CatalogEntryKind { get; private set; }
         // Tooltip evidence is independent of Warcraft rawcodes and may be
@@ -32,6 +33,7 @@ namespace Ordr.Mobile.Data
             Name = OrdrJson.RequiredString(fields, "name");
             GameRawCode = OrdrJson.String(fields, "gameRawCode");
             VariantOfUnitId = OrdrJson.String(fields, "variantOfUnitId");
+            OriginalSourceRawcode = OrdrJson.String(fields, "originalSourceRawcode");
             CatalogEntryKind = OrdrJson.String(fields, "catalogEntryKind");
             SkillSpecsStatus = OrdrJson.String(fields, "skillSpecsStatus");
             IsDetailAvailable = SkillSpecsStatus == "partial" || SkillSpecsStatus == "complete";
@@ -92,7 +94,9 @@ namespace Ordr.Mobile.Data
             var root = OrdrJson.Object(OrdrJson.Parse(json), "wiki-unit-catalog-extension.json");
             if (OrdrJson.RequiredString(root, "gameVersion") != "S2 2.323[C]" ||
                 OrdrJson.RequiredString(root, "format") != "ordr-wiki-unit-extension-v1" ||
-                OrdrJson.Number(root, "baseCatalogEntries") != entries.Count)
+                OrdrJson.Number(root, "baseCatalogEntries") != entries.Count ||
+                OrdrJson.RequiredString(root, "sourceW3xSha256") !=
+                    "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c")
                 throw new FormatException("위키 확장 카탈로그의 원본 버전/등록 수 불일치");
             var next = new Dictionary<string, CatalogUnit>(entries, StringComparer.Ordinal);
             foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "reclassifications"),
@@ -116,6 +120,16 @@ namespace Ordr.Mobile.Data
                 var unit = new CatalogUnit(OrdrJson.Object(raw, "extended unit"));
                 if (next.ContainsKey(unit.Id))
                     throw new FormatException("위키 확장 유닛 ID 중복: " + unit.Id);
+                // A display identity cannot masquerade as an independently verified
+                // Warcraft attacker. Only these original W3X rawcodes are known.
+                if (unit.OriginalSourceRawcode != null &&
+                    !((unit.Id == "MY-14" && unit.OriginalSourceRawcode == "h0C2" &&
+                       unit.CatalogEntryKind == "fusion-result") ||
+                      (unit.Id == "R-44" && unit.OriginalSourceRawcode == "h05Y" &&
+                       unit.CatalogEntryKind == "support-object") ||
+                      (unit.Id == "TR-32" && unit.OriginalSourceRawcode == "H0B6" &&
+                       unit.CatalogEntryKind == "alternate-form")))
+                    throw new FormatException("원본 객체 출처를 확인하지 않은 위키 ID: " + unit.Id);
                 if (unit.AttackPowerMin.HasValue || unit.GameRawCode != null ||
                     (unit.CatalogEntryKind != "alternate-form" &&
                      unit.CatalogEntryKind != "support-object" &&

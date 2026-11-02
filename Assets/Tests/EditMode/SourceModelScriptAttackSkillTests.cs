@@ -56,6 +56,10 @@ namespace Ordr.Mobile.Tests
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
             var map = OriginalMapBaseStatCatalog.FromJson(
                 Data("original-2323C-map-base-stats.json"), units);
+            // Pinned W3X stats are validated against the source 277 catalog
+            // before the nine source/wikilink identities are overlaid.
+            if (unitId == "MY-14" || unitId == "TR-31" || unitId == "R-44")
+                units.ApplyWikiExtension(Data("wiki-unit-catalog-extension.json"));
             var dice = new Dice(trigger);
             var rules = new SourceModelBasicCombatRules(map, dice);
             if (withNativeAuras)
@@ -90,6 +94,39 @@ namespace Ordr.Mobile.Tests
             battle.Start();
             return new Live { Combat = combat, Battle = battle,
                 ActorId = actorId, Rolls = dice };
+        }
+
+        [Test]
+        public void NewMysticHanmaUsesOriginalObjectAttackInsteadOfEmptyShell()
+        {
+            var source = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"),
+                CharacterUnitCatalog.FromJson(Data("units.json")));
+            var original = source.FindMapObjectAttack("h0C2");
+            Assert.NotNull(original);
+            Assert.AreEqual(152501d, original.MinimumBaseDamage.Value);
+            Assert.AreEqual(152504d, original.MaximumBaseDamage.Value);
+            Assert.AreEqual(0.71d, original.AttackCooldownSeconds.Value, 0.00001d);
+            using (var live = Create("MY-14", true))
+            {
+                var status = live.Combat.InspectBasicAttack(live.ActorId);
+                Assert.AreNotEqual(BasicAttackReadinessKind.UnverifiedSource, status.Kind);
+                var results = live.Battle.Advance(5);
+                Assert.IsTrue(results.Any(x => x.Type == CharacterCombatEventType.Attack),
+                    "Hanma's original source attack must reach the normal battle pipeline");
+            }
+        }
+
+        [Test]
+        public void WikiSupportDoesNotInventDamageAndFormsCannotSpawnAlone()
+        {
+            using (var live = Create("R-44", true))
+            {
+                Assert.AreEqual(BasicAttackReadinessKind.UnverifiedSource,
+                    live.Combat.InspectBasicAttack(live.ActorId).Kind);
+            }
+            Assert.Throws<InvalidOperationException>(() => Create("TR-31", true),
+                "The extra Zoro form must never become a free independent unit");
         }
 
         [Test]

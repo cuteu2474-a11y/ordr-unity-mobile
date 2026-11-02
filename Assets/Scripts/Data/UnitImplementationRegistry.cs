@@ -29,7 +29,11 @@ namespace Ordr.Mobile.Data
             OriginalUnitRawcodeLabelLink originalLabel)
         {
             Unit = unit ?? throw new ArgumentNullException(nameof(unit));
-            if (profile != null && profile.UnitId != unit.Id)
+            // Additional wiki forms inherit ONLY their owner's documented
+            // tooltip. Form-specific combat packets remain unapproved until
+            // their original W3X state/ability levels are identified.
+            string sourceProfileId = unit.IsAlternateForm ? unit.VariantOfUnitId : unit.Id;
+            if (profile != null && profile.UnitId != sourceProfileId)
                 throw new FormatException("캐릭터 ID와 상세 스킬 데이터가 다릅니다: " + unit.Id);
             UnitId = unit.Id;
             DisplayName = unit.Name;
@@ -71,7 +75,7 @@ namespace Ordr.Mobile.Data
                     }
             }
             if (unit.IsAlternateForm)
-                issues.Add("추가 전투 형태: 독립 획득/조합 금지, 실제 변신 경로 확인 필요");
+                issues.Add("기본 캐릭터의 도감 스킬 설명만 공유; 형태별 전투 효과·변신 조건 검증 필요, 독립 획득/조합 금지");
             if (unit.CatalogEntryKind == "support-object")
                 issues.Add("기능성 유닛: 원본 거래·상호작용 연결 확인 필요");
             // Source-verification gates are kept explicit to avoid treating a
@@ -131,7 +135,8 @@ namespace Ordr.Mobile.Data
 
             foreach (var unit in units.All)
             {
-                var profile = skills.Find(unit.Id);
+                var profile = skills.Find(unit.IsAlternateForm ?
+                    unit.VariantOfUnitId : unit.Id);
                 var original = originalLinks == null ? null : originalLinks.FindUnit(unit.Id);
                 var definition = new UnitImplementationDefinition(unit, profile, original);
                 if (result.byId.ContainsKey(unit.Id))
@@ -147,7 +152,9 @@ namespace Ordr.Mobile.Data
                     result.gradeOrder.Add(unit.Grade);
                 }
                 gradeUnits.Add(definition);
-                if (profile != null)
+                // Parent tooltip counts are unique; showing the same
+                // profile on a form must not inflate 200 source profiles.
+                if (profile != null && !unit.IsAlternateForm)
                 {
                     result.DetailedProfiles++;
                     checked

@@ -1,3 +1,12 @@
+## 2026-11-03 · 누락 캐릭터 전수등록 후 실제 전투 경로 보강 (최신)
+
+- **실제 범위:** 기본 원본 277 + 위키 확장 9 = **286개 카탈로그 정체성**(5개는 독립 유닛이 아닌 전투 형태). 새 `tools/build_character_runtime_coverage.py`와 `data/character-runtime-coverage.json`으로 286개 전체를 **도감 정보/평타 객체/실행 모델/남은 원본 미검증**으로 분리해 기록합니다. 기존 `data/unit-runtime-status.json` 277행은 출처가 고정된 원본 자료이므로 임의로 286행으로 늘리지 않습니다.
+- **원본 객체로 실제 새 평타 연결:** 한마 유지로 `MY-14 / h0C2`의 원본 W3X `dmgplus1=152500, dice=1, sides=4, cool=0.71, dmgpt=0.26`을 기존 `SourceModelBasicCombatRules → CombatAttackPipeline → 공통 HP/처치`에 연결. 기본 객체 피해 범위 **152501–152504**, 간격 **0.71초**입니다. 이는 **오프라인 MODEL_ONLY**로, 원본 합성 `A0QG` 실행 권한·원작 버프/방어/면역/스킬 시전 동등성을 부여하지 않습니다. 기존 273개 객체 기본 평타 모델과 합산하면 **274개**입니다.
+- **변형/중복의 구조적 결함 보완:** `TR-31~35`의 원본 부모(`TR-20, TR-23, TR-30`) 도감 프로필을 **읽기 전용 메타데이터로 공유**합니다. `UnitImplementationRegistry`의 원본 상세 프로필·스킬 수 집계를 **200개·554개·295개** 그대로 유지하며, `CharacterCombatRuntime.SpawnCharacterCore`에서 추가 형태의 별도 소환/원본 조합 우회를 금지합니다. 실제 변신 효과·능력치·스킬은 별도 원본 근거 없이 발명하지 않습니다.
+- **지원 객체와 UI:** 고대의 배 `R-44` 및 전설 `L-40/L-41`은 원본 기술·생성 경로 미확정 상태로 남겨둡니다. 유닛 세부 정보에서 `MY-14`처럼 base catalog에 없는 원본 객체의 평타 수치/연결 상태도 표시하며, 원본 스탯 전체 검증 전에 위키 확장을 적용하지 않습니다. 해적선은 히든으로 유지합니다.
+- **전수 실태:** 총 286개 중 독립 유닛 ID **281**·형태 ID **5**, 상세 도감 프로필 원본 **200**·형태에서 부모 프로필 참조 **5**, 프로필이 전혀 없는 정체성 **81**. 원본 전투 **완전 검증 0**이며, 274개 평타 모델/오라·일부 스킬 실행과 원작에서 실제 완성된 고유 스킬은 구분합니다. 특히 새 전설 2종·고대의 배·미연결 77개 기존 상세 프로필, 초월 변신의 실제 원본 트리거, 스킬 원본 확률·면역은 **남은 작업**입니다.
+- **회귀 검증:** Python `tests/test_character_runtime_coverage.py`, Unity `WikiUnitExtensionCatalogTests` 및 `SourceModelScriptAttackSkillTests`에 총수·원본 무기 숫자·한마 평타 실행·추가 형태 독립 소환 거부·부모 도감 스킬 승계 검사 추가. 로컬 Unity Editor/Android 및 CI 테스트 **결과 확인 전**이므로 아직 게임 전체 완료라고 주장하지 않습니다.
+
 ## 2026-11-03 · TMO.GG 누락 유닛·형태 카탈로그 확장 (최신)
 
 - 원본 **277종 데이터/전투 스냅샷은 변경하지 않고**, `data/wiki-unit-catalog-extension.json`을 Editor 동기화 → Unity `CharacterUnitCatalog.ApplyWikiExtension`으로 결합해 **카탈로그 정의 286개**를 지원합니다. 원본 `OriginalMapBaseStatCatalog` 277건의 출처 검사 후 확장하며 신규 항목에 가상 공격력·조합 허가를 부여하지 않습니다.

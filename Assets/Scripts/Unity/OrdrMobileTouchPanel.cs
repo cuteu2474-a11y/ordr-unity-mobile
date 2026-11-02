@@ -1077,13 +1077,17 @@ namespace Ordr.Mobile.Unity
             if (controller.PracticeBattle != null)
             {
                 var native = controller.MapBaseStats.Find(detail.Unit.Id);
+                var sourceAttack = native?.Attack1 ??
+                    controller.MapBaseStats.FindMapObjectAttack(
+                        detail.Unit.OriginalSourceRawcode);
                 OrdrMobileUiTheme.DrawStatusRow("기본 공격",
-                    native?.Attack1 != null ? "연결" : "정보 없음",
+                    sourceAttack != null ? "객체 모델" : "정보 없음",
                     OrdrMobileUiTheme.Aqua);
                 var effects = Combat.PracticeUnitEffects;
                 if (effects != null)
                 {
-                    var connected = effects.Describe(detail.Unit.Id, native?.OriginalRawcode);
+                    var connected = effects.Describe(detail.Unit.Id,
+                        native?.OriginalRawcode ?? detail.Unit.OriginalSourceRawcode);
                     foreach (string text in connected)
                         GUILayout.Label("· " + text);
                 }
@@ -1129,7 +1133,9 @@ namespace Ordr.Mobile.Unity
                     : "원본 기절: " + chance + " 확률 · 일반 " + nativePassive.NormalStunSeconds.ToString("0.##") +
                       "초 / 영웅 " + nativePassive.HeroStunSeconds.ToString("0.##") + "초");
             }
-            var attack = originalMap == null ? null : originalMap.Attack1;
+            var attack = originalMap != null ? originalMap.Attack1 :
+                controller.MapBaseStats == null ? null :
+                controller.MapBaseStats.FindMapObjectAttack(detail.Unit.OriginalSourceRawcode);
             if (attack != null && attack.MinimumBaseDamage.HasValue &&
                 attack.MaximumBaseDamage.HasValue &&
                 attack.BaseAttacksPerSecond.HasValue)

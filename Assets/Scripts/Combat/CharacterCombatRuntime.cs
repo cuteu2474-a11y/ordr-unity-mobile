@@ -1590,6 +1590,13 @@ namespace Ordr.Mobile.Combat
             bool preserveOriginalSourcePosition = false)
         {
             CatalogUnit catalogUnit = units.Require(catalogUnitId);
+            // Wiki forms share an existing source character. They can only
+            // appear through a proven transformation, never as free roster
+            // identities or independent fusion outcomes.
+            if (catalogUnit.IsAlternateForm)
+                throw new InvalidOperationException(
+                    "전투 형태는 원본 캐릭터의 변신 결과로만 적용합니다: " +
+                    catalogUnitId);
             long id = roster.Add(catalogUnitId, x, y);
             var profile = profiles.Find(catalogUnitId);
             characters.Add(id, new CharacterInstance {

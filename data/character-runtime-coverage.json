@@ -1,0 +1,4994 @@
+{
+  "format": "ordr-character-runtime-coverage-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "warning": "Catalog addressability, attack-only MODEL_ONLY and actual Warcraft parity are separate states; 286 is NOT a finished combat unit count.",
+  "summary": {
+    "catalogIdentities": 286,
+    "sourceCatalogIdentities": 277,
+    "wikiExtensionIdentities": 9,
+    "independentRosterIdentities": 281,
+    "alternateCombatForms": 5,
+    "sourceObjectBasicAttackModels": 274,
+    "sourceTooltips": 200,
+    "formInheritedTooltips": 5,
+    "identitiesWithoutOwnOrInheritedTooltip": 81,
+    "fullyOriginalCombatVerified": 0,
+    "byGrade": {
+      "랜덤": 14,
+      "변화": 5,
+      "불멸의": 12,
+      "세라핌": 4,
+      "신비함": 14,
+      "안흔함": 14,
+      "영원한": 12,
+      "왜곡됨": 6,
+      "재료": 1,
+      "전설": 41,
+      "제한됨": 10,
+      "초월함": 36,
+      "특별함": 33,
+      "특수함": 8,
+      "흔함": 9,
+      "희귀함": 44,
+      "히든": 23
+    }
+  },
+  "entries": [
+    {
+      "id": "C-01",
+      "name": "루피",
+      "grade": "흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h003",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "C-02",
+      "name": "조로",
+      "grade": "흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h002",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "C-03",
+      "name": "나미",
+      "grade": "흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h001",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "C-04",
+      "name": "우솝",
+      "grade": "흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h007",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "C-05",
+      "name": "상디",
+      "grade": "흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h004",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "C-06",
+      "name": "쵸파",
+      "grade": "흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h008",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "C-07",
+      "name": "버기",
+      "grade": "흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h005",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "C-08",
+      "name": "총병",
+      "grade": "흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h009",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "C-09",
+      "name": "칼병",
+      "grade": "흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h006",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-01",
+      "name": "로빈",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00O",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-02",
+      "name": "베포",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00C",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-03",
+      "name": "브룩",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00D",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-04",
+      "name": "블루노",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00M",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-05",
+      "name": "에이스",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00K",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-06",
+      "name": "이나즈마",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00I",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-07",
+      "name": "저격왕",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00N",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-08",
+      "name": "쵸파 럼블볼",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00G",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-09",
+      "name": "타시기",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00E",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-10",
+      "name": "페로나",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00J",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-11",
+      "name": "프랑키",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00L",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-12",
+      "name": "하찌",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00F",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-13",
+      "name": "후쿠로",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00A",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "U-14",
+      "name": "좀비",
+      "grade": "안흔함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00H",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-01",
+      "name": "X-드레이크",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01K",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-02",
+      "name": "갱 뱃지",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01C",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-03",
+      "name": "나미 크리마텍트",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00P",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-04",
+      "name": "로빈 오하라",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00S",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-05",
+      "name": "트라팔가 로우",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01H",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-06",
+      "name": "루치",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00R",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-07",
+      "name": "루피 기어세컨드",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00U",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-08",
+      "name": "마르코",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00T",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-09",
+      "name": "모리아",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00B",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-10",
+      "name": "바질호킨스",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h016",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-11",
+      "name": "버기 마기탄",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h015",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-12",
+      "name": "봉쿠레",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h014",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-13",
+      "name": "상디 검은다리",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h013",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-14",
+      "name": "스모커",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01F",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-15",
+      "name": "스쿼드",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h012",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-16",
+      "name": "아론",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h011",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-17",
+      "name": "압살롬",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h010",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-18",
+      "name": "에넬",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00Q",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-19",
+      "name": "에이스 2번 대대장",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01J",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-20",
+      "name": "우솝 화염탄",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00Z",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-21",
+      "name": "이나즈마 혁명군",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00X",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-22",
+      "name": "조로 귀기",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00W",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-23",
+      "name": "징베",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h018",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-24",
+      "name": "챠카",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h019",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-25",
+      "name": "쵸파 가드포인트",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01D",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-26",
+      "name": "쵸파 두뇌강화",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01E",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-27",
+      "name": "캡틴 크로",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00V",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-28",
+      "name": "쿠마",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h017",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-29",
+      "name": "크로커다일",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01A",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-30",
+      "name": "키드",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h00Y",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-31",
+      "name": "킬러",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01B",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-32",
+      "name": "파이러츠 도킹5",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01G",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "S-33",
+      "name": "헤르메포",
+      "grade": "특별함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01I",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "X-01",
+      "name": "모건",
+      "grade": "특수함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05H",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "X-02",
+      "name": "베티",
+      "grade": "특수함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h08N",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "X-03",
+      "name": "블고리",
+      "grade": "특수함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05Q",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "X-04",
+      "name": "아이스버그",
+      "grade": "특수함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05O",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "X-05",
+      "name": "오타마",
+      "grade": "특수함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05P",
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "원본 객체 기본 공격 모델 없음 또는 비전투 지원 객체",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "X-06",
+      "name": "페루",
+      "grade": "특수함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05R",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "X-07",
+      "name": "폭시",
+      "grade": "특수함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09T",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "X-08",
+      "name": "가이몬",
+      "grade": "특수함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0BG",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-01",
+      "name": "X-드레이크",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09X",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-02",
+      "name": "거프",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01Q",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-03",
+      "name": "검은수염",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h021",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-04",
+      "name": "도플라밍고",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01L",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-05",
+      "name": "트라팔가 로우 죽음의 외과의사",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02L",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-06",
+      "name": "루피 기어써드",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01X",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-07",
+      "name": "류마",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h025",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-08",
+      "name": "마르코 불사조",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h022",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-09",
+      "name": "마젤란",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01Z",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-10",
+      "name": "모몬가",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01Y",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-11",
+      "name": "미호크",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04H",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-12",
+      "name": "바르톨로메오",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01W",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-13",
+      "name": "바제스",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01V",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-14",
+      "name": "바질 호킨스 스트로맨",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01U",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-15",
+      "name": "반더 데켄",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01T",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-16",
+      "name": "베이비 5",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02M",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-17",
+      "name": "벤 베크만",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01S",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-18",
+      "name": "브룩 음악가",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01N",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-19",
+      "name": "비비",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01O",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-20",
+      "name": "사보",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05L",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-21",
+      "name": "상디 디아블잠브",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02I",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-22",
+      "name": "샹크스",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h029",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-23",
+      "name": "센토마루",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h028",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-24",
+      "name": "슈가",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h027",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-25",
+      "name": "시류",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h026",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-26",
+      "name": "아오키지",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02B",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-27",
+      "name": "아카이누",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01P",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-28",
+      "name": "오즈",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h020",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-29",
+      "name": "와이퍼",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h024",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-30",
+      "name": "우솝 보잉열도",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02C",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-31",
+      "name": "이완코브",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02A",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-32",
+      "name": "제프",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02G",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-33",
+      "name": "조로 현상금 사냥꾼",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02F",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-34",
+      "name": "죠즈",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02E",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-35",
+      "name": "쵸파 혼포인트",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02K",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-36",
+      "name": "카쿠",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h023",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-37",
+      "name": "캡틴 키드",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02D",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-38",
+      "name": "크로커다일 Mr.0",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02H",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-39",
+      "name": "키자루",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01R",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-40",
+      "name": "킨에몬",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02J",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-41",
+      "name": "페로나 홀로홀로",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05K",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-42",
+      "name": "핸콕",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h01M",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-43",
+      "name": "실버즈 레일리",
+      "grade": "희귀함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05X",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-01",
+      "name": "검은수염",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02U",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-02",
+      "name": "나미",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02P",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-03",
+      "name": "네코마무시",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09Z",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-04",
+      "name": "드래곤",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02W",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-05",
+      "name": "라분",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02Q",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-06",
+      "name": "레이쥬",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h033",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-07",
+      "name": "레일리",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03A",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-08",
+      "name": "트라팔가 로우",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03C",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-09",
+      "name": "루치",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02R",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-10",
+      "name": "루피 나이트메어",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02Y",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-11",
+      "name": "마르코 환수종",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02T",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-12",
+      "name": "모리아",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02N",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-13",
+      "name": "바르톨로메오",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02Z",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-14",
+      "name": "브륄레",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h08S",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-15",
+      "name": "블랙마리아",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02X",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-16",
+      "name": "상디",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h034",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-17",
+      "name": "샹크스",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h035",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-18",
+      "name": "센고쿠",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h036",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-19",
+      "name": "슈가",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h037",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-20",
+      "name": "스모커",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02V",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-21",
+      "name": "시노부",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h042",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-22",
+      "name": "시저",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h038",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-23",
+      "name": "시키",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h039",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-24",
+      "name": "에이스",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02O",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-25",
+      "name": "울티",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03S",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-26",
+      "name": "제파",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03I",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-27",
+      "name": "조로",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h02S",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-28",
+      "name": "징베",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03G",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-29",
+      "name": "쵸파 유력강화",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03K",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-30",
+      "name": "카르가라",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03F",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-31",
+      "name": "코비",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03E",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-32",
+      "name": "쿠마 폭군",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h030",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-33",
+      "name": "크래커",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03H",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-34",
+      "name": "킹",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0AH",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-35",
+      "name": "토키",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h087",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-36",
+      "name": "핸콕",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h032",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-37",
+      "name": "후지토라",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h031",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-38",
+      "name": "흰수염",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03B",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-39",
+      "name": "히바리",
+      "grade": "전설",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0CM",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-01",
+      "name": "검호",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h043",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-02",
+      "name": "레드포스호",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03U",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-03",
+      "name": "레베카",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03T",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-04",
+      "name": "료쿠규",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03N",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-05",
+      "name": "류마",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h044",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-06",
+      "name": "모비딕호",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03Q",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-07",
+      "name": "반더데켄",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03R",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-08",
+      "name": "발라티에",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03P",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-09",
+      "name": "방주맥심",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03X",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-10",
+      "name": "베르고",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03W",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-11",
+      "name": "봉쿠레",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03O",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-12",
+      "name": "사보",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03M",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-13",
+      "name": "스튜시",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h055",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-14",
+      "name": "시류",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03J",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-15",
+      "name": "써니호",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03L",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-16",
+      "name": "아오키지",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h041",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-17",
+      "name": "아카이누",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03Z",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-18",
+      "name": "이완코브",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03Y",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-19",
+      "name": "캐럿",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h07L",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-20",
+      "name": "키쿠노죠",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h046",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-21",
+      "name": "킬러",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h045",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "H-22",
+      "name": "피셔타이거",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h047",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "T-01",
+      "name": "도플라밍고",
+      "grade": "변화",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05S",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "T-02",
+      "name": "비비",
+      "grade": "변화",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05W",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "T-03",
+      "name": "베이비 5",
+      "grade": "변화",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h07N",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "T-04",
+      "name": "카쿠",
+      "grade": "변화",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0CK",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "T-05",
+      "name": "캐럿",
+      "grade": "변화",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h07J",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LI-01",
+      "name": "레드필드",
+      "grade": "제한됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05G",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LI-02",
+      "name": "레베카",
+      "grade": "제한됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05I",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LI-03",
+      "name": "마르코",
+      "grade": "제한됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h08O",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LI-04",
+      "name": "시노부",
+      "grade": "제한됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h084",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LI-05",
+      "name": "아인",
+      "grade": "제한됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h040",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LI-06",
+      "name": "알비다",
+      "grade": "제한됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h08Q",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LI-07",
+      "name": "에넬",
+      "grade": "제한됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05E",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LI-08",
+      "name": "카타쿠리",
+      "grade": "제한됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h07I",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LI-09",
+      "name": "크로커다일",
+      "grade": "제한됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05F",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LI-10",
+      "name": "킹",
+      "grade": "제한됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0AI",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "D-01",
+      "name": "블랙마리아",
+      "grade": "왜곡됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04U",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "D-02",
+      "name": "코알라",
+      "grade": "왜곡됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h03V",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "D-03",
+      "name": "퀸",
+      "grade": "왜곡됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0CI",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "D-04",
+      "name": "페로나",
+      "grade": "왜곡됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h048",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "D-05",
+      "name": "포트거스.D.에이스",
+      "grade": "왜곡됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05V",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "D-06",
+      "name": "바제스",
+      "grade": "왜곡됨",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09V",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-01",
+      "name": "검은수염",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H090",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-02",
+      "name": "나미",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H08V",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-03",
+      "name": "도플라밍고",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H09E",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-04",
+      "name": "로빈",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H098",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-05",
+      "name": "트라팔가 로우",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H096",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-06",
+      "name": "료쿠규",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H0BL",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-07",
+      "name": "루치",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H08W",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-08",
+      "name": "루피",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H099",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-09",
+      "name": "바질호킨스",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H094",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-10",
+      "name": "브룩",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H09I",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-11",
+      "name": "사보",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H092",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-12",
+      "name": "상디",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H09H",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-13",
+      "name": "샹크스",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H08Z",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-14",
+      "name": "스네이크맨",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H0B2",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-15",
+      "name": "시라호시",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H08U",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-16",
+      "name": "아오키지",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H097",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-17",
+      "name": "아카이누",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H095",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-18",
+      "name": "야마토",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H0BD",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-19",
+      "name": "우솝",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H09B",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-20",
+      "name": "조로",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H09F",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-21",
+      "name": "보니",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H0BX",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-22",
+      "name": "징베",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H09A",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-23",
+      "name": "쵸파",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H091",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 4,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-24",
+      "name": "코비",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H0CO",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-25",
+      "name": "키드",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H0B4",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-26",
+      "name": "키자루",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H0B5",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-27",
+      "name": "타시기",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H05N",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-28",
+      "name": "프랑키",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H08Y",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-29",
+      "name": "후지토라",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H08X",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-30",
+      "name": "베가펑크",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H0AA",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-01",
+      "name": "니카(루피)",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "H0BK",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 4,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-02",
+      "name": "니카(스네이크)",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": null,
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "원본 객체 기본 공격 모델 없음 또는 비전투 지원 객체",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-03",
+      "name": "류마",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0CJ",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-04",
+      "name": "미호크",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h058",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-05",
+      "name": "버기",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05A",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-06",
+      "name": "비비",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h057",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-07",
+      "name": "에이스",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h059",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-08",
+      "name": "오뎅",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h08R",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-09",
+      "name": "우타",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h067",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-10",
+      "name": "카번딧슈",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05B",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-11",
+      "name": "테조로",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h06A",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "E-12",
+      "name": "핸콕",
+      "grade": "영원한",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05C",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-01",
+      "name": "거프",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04C",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-02",
+      "name": "드래곤",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04D",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-03",
+      "name": "레일리",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h049",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-04",
+      "name": "로져",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04J",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-05",
+      "name": "불릿",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h081",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-06",
+      "name": "빅맘",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04Q",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-07",
+      "name": "센고쿠",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04E",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-08",
+      "name": "스코퍼가반",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04F",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-09",
+      "name": "시키",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04B",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-10",
+      "name": "제트",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04G",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-11",
+      "name": "카이도",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h07M",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "I-12",
+      "name": "흰수염",
+      "grade": "불멸의",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04A",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "SR-01",
+      "name": "S-스네이크",
+      "grade": "세라핌",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09Y",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "SR-02",
+      "name": "S-호크",
+      "grade": "세라핌",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0A3",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "SR-03",
+      "name": "S-샤크",
+      "grade": "세라핌",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0A0",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "SR-04",
+      "name": "S-베어",
+      "grade": "세라핌",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0A1",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-01",
+      "name": "K",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h06U",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-02",
+      "name": "나루토",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h06V",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-03",
+      "name": "메구밍",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h065",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-04",
+      "name": "센토 이스즈",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h06X",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-05",
+      "name": "야가미 라이토",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h073",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-06",
+      "name": "엘리자베스",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h06Z",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-07",
+      "name": "옌",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09K",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-08",
+      "name": "요츠바",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h06W",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-09",
+      "name": "이사야마 요미",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h070",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-10",
+      "name": "이치의 율자",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09L",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-11",
+      "name": "토우마",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h06Y",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-12",
+      "name": "이치고",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h071",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-13",
+      "name": "페이몬",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h06T",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "RN-14",
+      "name": "하네카와 츠바사",
+      "grade": "랜덤",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h072",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-01",
+      "name": "고죠 사토루",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09M",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-02",
+      "name": "네즈코",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0BF",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-03",
+      "name": "료우기 시키",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0A2",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-04",
+      "name": "미나토",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09W",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-05",
+      "name": "바쿠야",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h08I",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-06",
+      "name": "부릉냐",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09N",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-07",
+      "name": "샌즈",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h083",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-08",
+      "name": "아냐 포저",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h08M",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 2,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-09",
+      "name": "야쿠모 유카리",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0A6",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-10",
+      "name": "콘파쿠 요우무",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0CC",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-11",
+      "name": "쿠죠 죠타로",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h09R",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 3,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-12",
+      "name": "타츠마키",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0BC",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-13",
+      "name": "히그마",
+      "grade": "신비함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0AC",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 1,
+      "ownTooltipProfile": true,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "PS-01",
+      "name": "해적선",
+      "grade": "히든",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h060",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "KM-01",
+      "name": "바솔로뮤 쿠마",
+      "grade": "초월함",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h04S",
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "원본 객체 기본 공격 모델 없음 또는 비전투 지원 객체",
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "LT-01",
+      "name": "행운의 토큰",
+      "grade": "재료",
+      "entryKind": "original-catalog",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h06G",
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "원본 객체 기본 공격 모델 없음 또는 비전투 지원 객체",
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "R-44",
+      "name": "고대의 배",
+      "grade": "희귀함",
+      "entryKind": "support-object",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h05Y",
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "원본 객체 기본 공격 모델 없음 또는 비전투 지원 객체",
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-40",
+      "name": "장군좀비",
+      "grade": "전설",
+      "entryKind": "support-object",
+      "variantOfUnitId": null,
+      "sourceRawcode": null,
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "원본 객체 기본 공격 모델 없음 또는 비전투 지원 객체",
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "L-41",
+      "name": "히루루크의 묘비",
+      "grade": "전설",
+      "entryKind": "support-object",
+      "variantOfUnitId": null,
+      "sourceRawcode": null,
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "원본 객체 기본 공격 모델 없음 또는 비전투 지원 객체",
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-31",
+      "name": "조로 염왕",
+      "grade": "초월함",
+      "entryKind": "alternate-form",
+      "variantOfUnitId": "TR-20",
+      "sourceRawcode": null,
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": true,
+      "independentRosterIdentity": false,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "별도 획득 금지; 원본 변신 조건·형태별 스킬 미검증",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-32",
+      "name": "쵸파 몬스터포인트",
+      "grade": "초월함",
+      "entryKind": "alternate-form",
+      "variantOfUnitId": "TR-23",
+      "sourceRawcode": "H0B6",
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": true,
+      "independentRosterIdentity": false,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "별도 획득 금지; 원본 변신 조건·형태별 스킬 미검증",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-33",
+      "name": "베가펑크(스네이크)",
+      "grade": "초월함",
+      "entryKind": "alternate-form",
+      "variantOfUnitId": "TR-30",
+      "sourceRawcode": null,
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": true,
+      "independentRosterIdentity": false,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "별도 획득 금지; 원본 변신 조건·형태별 스킬 미검증",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-34",
+      "name": "베가펑크(베어)",
+      "grade": "초월함",
+      "entryKind": "alternate-form",
+      "variantOfUnitId": "TR-30",
+      "sourceRawcode": null,
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": true,
+      "independentRosterIdentity": false,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "별도 획득 금지; 원본 변신 조건·형태별 스킬 미검증",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TR-35",
+      "name": "베가펑크(샤크)",
+      "grade": "초월함",
+      "entryKind": "alternate-form",
+      "variantOfUnitId": "TR-30",
+      "sourceRawcode": null,
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": true,
+      "independentRosterIdentity": false,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "별도 획득 금지; 원본 변신 조건·형태별 스킬 미검증",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "MY-14",
+      "name": "한마 유지로",
+      "grade": "신비함",
+      "entryKind": "fusion-result",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0C2",
+      "sourceBasicAttackModel": true,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    }
+  ]
+}
