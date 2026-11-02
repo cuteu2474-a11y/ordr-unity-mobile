@@ -16,29 +16,39 @@ class RandomWispSubmenuTests(unittest.TestCase):
         cls.controller = CONTROLLER.read_text(encoding="utf-8")
         cls.manual = MANUAL.read_text(encoding="utf-8")
 
-    def test_all_three_actions_live_under_one_expandable_random_wisp_section(self):
+    def test_all_three_random_wisp_rows_execute_directly_on_single_press(self):
         self.assertIn("private bool showRandomWispActions = true;", self.panel)
         self.assertIn("DrawRandomWispActions();", self.panel)
         submenu = self.panel.split("private void DrawRandomWispActions()", 1)[1].split(
             "private void DrawHelperCow()", 1)[0]
         self.assertIn("showRandomWispActions = !showRandomWispActions", submenu)
-        self.assertIn("expandedRandomWispDetail", submenu)
-        self.assertEqual(4, submenu.count("DrawAccordionHeader("))
+        self.assertEqual(1, submenu.count("DrawAccordionHeader("))
+        self.assertEqual(3, submenu.count("DrawActionRow("))
+        self.assertNotIn("expandedRandomWispDetail", submenu)
+        self.assertNotIn("GUILayout.Label(", submenu)
         names = ["1. 흔함 유닛 소환", "2. 골드·목재 추첨", "3. 도움소 마나 충전"]
         self.assertEqual(sorted(submenu.index(name) for name in names),
                          [submenu.index(name) for name in names])
         self.assertIn("RequestCommonWispBatch(1)", submenu)
-        self.assertIn("foreach (int count in new[] { 1, 5, 10 })", submenu)
+        self.assertIn("VerifiedCommonWispRecruitmentCost", submenu)
+        self.assertIn("CanRecruitVerifiedCommonWisp", submenu)
+        self.assertIn("OriginalRandomWispResourceExchange.OfferId", submenu)
+        self.assertIn("RequestEconomyAction(", submenu)
         self.assertIn("OriginalHelperCowRules.OfferId", submenu)
         self.assertIn("GUI.enabled = wasEnabled && canRecharge;", submenu)
-        self.assertIn("TryGetHelperCowMana(out mana)", submenu)
+        self.assertNotIn("RepeatExplicitResourceUse", submenu)
+        self.assertNotIn("foreach (int count in new[] { 1, 5, 10 })", submenu)
 
-    def test_automatic_wisp_sections_are_foldable_without_new_transactions(self):
+    def test_automatic_wisp_rows_retry_existing_awards_without_details(self):
         automatic = self.panel.split("private void DrawAutomaticWispStatus(", 1)[1].split(
             "private void DrawWisp()", 1)[0]
-        self.assertIn("expandedAutomaticWispIds", automatic)
-        self.assertIn("DrawAccordionHeader(", automatic)
+        self.assertIn("DrawActionRow(", automatic)
+        self.assertNotIn("DrawAccordionHeader(", automatic)
+        self.assertNotIn("expandedAutomaticWispIds", automatic)
         self.assertIn("CanAutomaticallyResolve(id)", automatic)
+        self.assertIn("balance > 0", automatic)
+        self.assertIn("CanProcessAutomaticWisps", automatic)
+        self.assertIn("RequestAutomaticWispRetry()", automatic)
         self.assertIn("AutomaticFailure(id)", automatic)
         self.assertNotIn("RequestEconomyAction(", automatic)
         display = self.panel.split("private void DrawWisp()", 1)[1].split(
@@ -46,6 +56,16 @@ class RandomWispSubmenuTests(unittest.TestCase):
         self.assertLess(display.index("DrawRandomWispActions();"),
                         display.index("DrawAutomaticWispStatus("))
         self.assertNotIn("DrawChoiceWispMerge();", display)
+        self.assertNotIn("빈 캐릭터 우선:", display)
+
+    def test_remaining_wisp_offers_are_direct_actions_but_other_offers_confirm(self):
+        economy = self.panel.split("private void DrawEconomy(", 1)[1].split(
+            "private void RefreshCurrent(", 1)[0]
+        self.assertIn("category == ManualEconomyCategory.Wisp", economy)
+        self.assertIn("DrawActionRow(offer.Title", economy)
+        self.assertIn("RunWispDirect(offer.Title", economy)
+        self.assertIn("pendingEconomy = offer", economy)
+        self.assertIn("OrdrMobileUiTheme.AccordionBody", economy)
 
     def test_helper_panel_has_no_second_mana_recharge_transaction(self):
         helper = self.panel.split("private void DrawHelperCow()", 1)[1].split(

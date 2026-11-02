@@ -52,9 +52,6 @@ namespace Ordr.Mobile.Unity
         private string catalogSearch = "";
         private bool showChoiceWisp;
         private bool showRandomWispActions = true;
-        private int expandedRandomWispDetail = -1;
-        private readonly HashSet<string> expandedAutomaticWispIds =
-            new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<string> expandedResearchCodes =
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<int> expandedMissionSlots = new HashSet<int>();
@@ -1881,41 +1878,24 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
         }
 
-        private void DrawAutomaticWispStatus(string name, string id, string sourceRule)
+        private void DrawAutomaticWispStatus(string name, string id)
         {
             long balance = controller.WispBalance(id);
             string failure = controller.Wisps?.AutomaticFailure(id);
-            bool expanded = expandedAutomaticWispIds.Contains(id);
-            if (OrdrMobileUiTheme.DrawAccordionHeader(name,
-                string.IsNullOrEmpty(failure) ? balance + "개" :
-                    "보류 · " + balance + "개", expanded, OrdrMobileUiTheme.Aqua))
-            {
-                if (expanded) expandedAutomaticWispIds.Remove(id);
-                else expandedAutomaticWispIds.Add(id);
-                expanded = !expanded;
-            }
-            if (!expanded) return;
             bool ready = controller.Wisps != null &&
                 controller.Wisps.CanAutomaticallyResolve(id);
-            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-            GUILayout.Label(sourceRule, OrdrMobileUiTheme.Explanation);
-            string state = !ready
-                ? "보상 지급 연결 대기 · 보유 위습은 소모하지 않음"
-                : controller.UsesWispShellMode && id == WispResourceIds.Rare
-                    ? "캐릭터 소환 연결 · A0YE 기술 효과 미구현 (능력 코드만 보존)"
-                    : controller.UsesWispShellMode
-                        ? "캐릭터 소환 연결 · 원본 결과 확률 기반 모바일 모드"
-                        : "자동 지급 연결 · 획득 즉시 처리";
-            GUILayout.Label(state, OrdrMobileUiTheme.Explanation);
+            bool wasEnabled = GUI.enabled;
+            GUI.enabled = wasEnabled && ready && balance > 0 &&
+                controller.CanProcessAutomaticWisps;
+            if (OrdrMobileUiTheme.DrawActionRow(name,
+                string.IsNullOrEmpty(failure) ? balance + "개" :
+                    "보류 · " + balance + "개", OrdrMobileUiTheme.Aqua))
+                notice = controller.RequestAutomaticWispRetry().Message;
+            GUI.enabled = wasEnabled;
+            // A failed automatic grant is never rerolled; keep its reason visible.
             if (!string.IsNullOrEmpty(failure))
-                GUILayout.Label("지급 보류 · 위습과 추첨 결과 보존\n" + failure,
-                    OrdrMobileUiTheme.Explanation);
-            else if (ready && balance > 0)
-                GUILayout.Label("게임 진행 시 자동 지급 대기", OrdrMobileUiTheme.Explanation);
-            GUILayout.EndVertical();
+                GUILayout.Label("지급 보류: " + failure, OrdrMobileUiTheme.Explanation);
         }
-
-
 
         private void DrawWisp()
         {
@@ -1932,52 +1912,15 @@ namespace Ordr.Mobile.Unity
                 }
                 GUILayout.EndHorizontal();
             }
-            if (controller.PracticeBattle != null)
-                GUILayout.Label("라운드마다 랜덤위습 2개 · 소환 / 조합 / 판매");
-            if (controller.UsesWispShellMode)
-            {
-                GUILayout.Label(
-                    "빈 캐릭터 우선: 원본 보상 종류·확률을 보존합니다. " +
-                    "워크래프트의 정확한 난수 순서와 미구현 스킬 효과는 아직 재현하지 않습니다.",
-                    OrdrMobileUiTheme.Explanation);
-                if (controller.DeferredWispA0yeCount > 0)
-                    GUILayout.Label("원본 A0YE 효과 대기 캐릭터 " +
-                        controller.DeferredWispA0yeCount + "기",
-                        OrdrMobileUiTheme.Explanation);
-            }
             DrawRandomWispActions();
             GUILayout.Space(10f);
             GUILayout.Label("원본 위습 자동 소환", OrdrMobileUiTheme.SectionTitle);
             // Choice Wisp belongs exclusively to the Fusion menu; its balance
             // is already shown in the top resource strip.
-            DrawAutomaticWispStatus("안흔함위습", WispResourceIds.Uncommon,
-                "안흔함 13종 · 원본 자동 추첨");
-            DrawAutomaticWispStatus("특별위습", WispResourceIds.Special,
-                "특별함 33종 · 원본 자동 추첨");
-            DrawAutomaticWispStatus("희귀위습", WispResourceIds.Rare,
-                "희귀 42종 99% / 특수 8종 1% · A0YE 원본 효과 별도");
-            DrawAutomaticWispStatus("전설위습", WispResourceIds.Legendary,
-                "전설·히든 60종 · 원본 보상표 추첨");
-            if (controller.Wisps != null &&
-                ((controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Uncommon) &&
-                  controller.WispBalance(WispResourceIds.Uncommon) > 0) ||
-                 (controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Special) &&
-                  controller.WispBalance(WispResourceIds.Special) > 0) ||
-                 (controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Rare) &&
-                  controller.WispBalance(WispResourceIds.Rare) > 0) ||
-                 (controller.Wisps.CanAutomaticallyResolve(WispResourceIds.Legendary) &&
-                  controller.WispBalance(WispResourceIds.Legendary) > 0)))
-            {
-                bool wasEnabled = GUI.enabled;
-                GUI.enabled = wasEnabled && controller.CanProcessAutomaticWisps;
-                if (GUILayout.Button("대기 중 자동 위습 보상 재시도",
-                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
-                {
-                    notice = controller.RequestAutomaticWispRetry().Message;
-                }
-                GUI.enabled = wasEnabled;
-            }
-
+            DrawAutomaticWispStatus("안흔함위습", WispResourceIds.Uncommon);
+            DrawAutomaticWispStatus("특별위습", WispResourceIds.Special);
+            DrawAutomaticWispStatus("희귀위습", WispResourceIds.Rare);
+            DrawAutomaticWispStatus("전설위습", WispResourceIds.Legendary);
             // Source-confirmed story boss reward only. An ordinary menu
             // press can NEVER simulate a missing CQB award event.
             if (controller.OriginalSourceMaterialRewards != null)
@@ -2037,101 +1980,40 @@ namespace Ordr.Mobile.Unity
 
             GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
             bool wasEnabled = GUI.enabled;
-            bool summonExpanded = expandedRandomWispDetail == 0;
-            if (OrdrMobileUiTheme.DrawAccordionHeader("1. 흔함 유닛 소환",
-                "1회", summonExpanded, OrdrMobileUiTheme.Aqua, 64f))
-                expandedRandomWispDetail = summonExpanded ? -1 : 0;
-            if (expandedRandomWispDetail == 0)
-            {
-                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                int? cost = controller.VerifiedCommonWispRecruitmentCost;
-                if (!cost.HasValue || cost.Value <= 0)
-                    GUILayout.Label("원본 소환 추첨·비용 연결 대기");
-                else
-                {
-                    GUILayout.Label("1회당 랜덤위습 " + cost.Value + "개");
-                    bool commonRecruitWasEnabled = GUI.enabled;
-                    GUI.enabled = commonRecruitWasEnabled && controller.CanRecruitVerifiedCommonWisp;
-                    if (GUILayout.Button("1회 소환",
-                        OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
-                        RunWispDirect("흔함 소환", () => controller.RequestCommonWispBatch(1));
-                    GUI.enabled = commonRecruitWasEnabled;
-                    if (!string.IsNullOrEmpty(controller.VerifiedCommonWispUnavailableReason))
-                        GUILayout.Label(controller.VerifiedCommonWispUnavailableReason);
-                }
-                GUILayout.EndVertical();
-            }
 
-            bool exchangeExpanded = expandedRandomWispDetail == 1;
-            if (OrdrMobileUiTheme.DrawAccordionHeader("2. 골드·목재 추첨",
-                "1·5·10회", exchangeExpanded, OrdrMobileUiTheme.Gold, 64f))
-                expandedRandomWispDetail = exchangeExpanded ? -1 : 1;
-            if (expandedRandomWispDetail == 1)
-            {
-                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                bool canExchange = false;
-                foreach (var offer in economyOffers)
-                {
-                    if (offer.Id == OriginalRandomWispResourceExchange.OfferId)
-                        canExchange = true;
-                }
-                GUILayout.Label("목재 67% / 라운드 × 75골드 33% · 1회에 위습 1개");
-                GUI.enabled = wasEnabled && canExchange &&
-                    Combat != null && Combat.Game.CurrentWave > 0 &&
-                    controller.WispBalance(WispResourceIds.Random) > 0;
-                GUILayout.BeginHorizontal();
-                foreach (int count in new[] { 1, 5, 10 })
-                {
-                    if (GUILayout.Button(count + "회 사용", GUILayout.MinHeight(60)))
-                    {
-                        int requested = count;
-                        RunWispDirect("자원 추첨 " + count + "회", () =>
-                            MobileManualBatchActions.RepeatExplicitResourceUse(requested,
-                                () => controller.ManualActions.RequestEconomyAction(
-                                    ManualEconomyCategory.Wisp,
-                                    OriginalRandomWispResourceExchange.OfferId)));
-                    }
-                }
-                GUILayout.EndHorizontal();
-                GUI.enabled = wasEnabled;
-                if (!canExchange) GUILayout.Label("원본 자원 추첨 연결 대기");
-                else if (Combat == null || Combat.Game.CurrentWave == 0)
-                    GUILayout.Label("라운드 시작 후 사용할 수 있습니다.");
-                GUILayout.EndVertical();
-            }
+            // One press is one verified purchase. Do not add a detail/confirm step.
+            int? cost = controller.VerifiedCommonWispRecruitmentCost;
+            GUI.enabled = wasEnabled && cost.HasValue && cost.Value > 0 &&
+                controller.CanRecruitVerifiedCommonWisp;
+            if (OrdrMobileUiTheme.DrawActionRow("1. 흔함 유닛 소환",
+                "1회", OrdrMobileUiTheme.Aqua, 64f))
+                RunWispDirect("흔함 소환", () => controller.RequestCommonWispBatch(1));
+            GUI.enabled = wasEnabled;
 
-            bool rechargeExpanded = expandedRandomWispDetail == 2;
-            if (OrdrMobileUiTheme.DrawAccordionHeader("3. 도움소 마나 충전",
-                "1회", rechargeExpanded, OrdrMobileUiTheme.Aqua, 64f))
-                expandedRandomWispDetail = rechargeExpanded ? -1 : 2;
-            if (expandedRandomWispDetail == 2)
-            {
-                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                int round = Combat == null ? 0 : Combat.Game.CurrentWave;
-                int gain = OriginalHelperCowRules.RechargeAmount(round);
-                GUILayout.Label("랜덤위습 1개 → 마나 " + gain + " 회복");
-                OriginalHelperCowManaSnapshot mana;
-                bool connected = controller.ManualActions.TryGetHelperCowMana(out mana);
-                GUILayout.Label(connected
-                    ? "현재 도움소 마나 " + mana.Current.ToString("0.#") +
-                      " / " + mana.Maximum.ToString("0.#")
-                    : "도움소 생성·마나 연결 대기");
-                GUILayout.Label("마나가 가득 차 있어도 사용 시 위습 1개를 소비합니다.");
-                bool canRecharge = controller.HelperCowRecharge != null &&
-                    controller.HelperCowRecharge.CanRecharge;
-                GUI.enabled = wasEnabled && canRecharge;
-                if (GUILayout.Button("마나 충전", OrdrMobileUiTheme.PrimaryButton,
-                    GUILayout.MinHeight(64)))
-                    RunWispDirect("도움소 마나 충전", () =>
-                        controller.ManualActions.RequestEconomyAction(
-                            ManualEconomyCategory.Wisp, OriginalHelperCowRules.OfferId));
-                GUI.enabled = wasEnabled;
-                if (!canRecharge)
-                    GUILayout.Label(!connected ? "게임 시작 후 이용할 수 있습니다." :
-                        controller.WispBalance(WispResourceIds.Random) < 1 ?
-                        "랜덤위습 1개가 필요합니다." : "진행 중인 게임에서 이용할 수 있습니다.");
-                GUILayout.EndVertical();
-            }
+            bool canExchange = false;
+            foreach (var offer in economyOffers)
+                if (offer.Id == OriginalRandomWispResourceExchange.OfferId)
+                    canExchange = true;
+            GUI.enabled = wasEnabled && canExchange &&
+                Combat != null && Combat.Game.CurrentWave > 0 &&
+                controller.WispBalance(WispResourceIds.Random) > 0;
+            if (OrdrMobileUiTheme.DrawActionRow("2. 골드·목재 추첨",
+                "1회", OrdrMobileUiTheme.Gold, 64f))
+                RunWispDirect("자원 추첨 1회", () =>
+                    controller.ManualActions.RequestEconomyAction(
+                        ManualEconomyCategory.Wisp,
+                        OriginalRandomWispResourceExchange.OfferId));
+            GUI.enabled = wasEnabled;
+
+            bool canRecharge = controller.HelperCowRecharge != null &&
+                controller.HelperCowRecharge.CanRecharge;
+            GUI.enabled = wasEnabled && canRecharge;
+            if (OrdrMobileUiTheme.DrawActionRow("3. 도움소 마나 충전",
+                "1회", OrdrMobileUiTheme.Aqua, 64f))
+                RunWispDirect("도움소 마나 충전", () =>
+                    controller.ManualActions.RequestEconomyAction(
+                        ManualEconomyCategory.Wisp, OriginalHelperCowRules.OfferId));
+            GUI.enabled = wasEnabled;
             GUILayout.EndVertical();
         }
 
@@ -2472,6 +2354,17 @@ namespace Ordr.Mobile.Unity
                     (offer.Id == OriginalRandomWispResourceExchange.OfferId ||
                      offer.Id == OriginalHelperCowRules.OfferId))
                     continue;
+                if (category == ManualEconomyCategory.Wisp)
+                {
+                    if (OrdrMobileUiTheme.DrawActionRow(offer.Title,
+                        "1회", OrdrMobileUiTheme.Gold))
+                    {
+                        string id = offer.Id;
+                        RunWispDirect(offer.Title, () =>
+                            controller.ManualActions.RequestEconomyAction(category, id));
+                    }
+                    continue;
+                }
                 string key = category + ":" + offer.Id;
                 bool expanded = expandedEconomyOffers.Contains(key);
                 if (OrdrMobileUiTheme.DrawAccordionHeader(offer.Title,
@@ -2485,16 +2378,7 @@ namespace Ordr.Mobile.Unity
                 GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
                 GUILayout.Label(offer.Title);
                 GUILayout.Label(offer.OriginalPriceAndRules);
-                if (category == ManualEconomyCategory.Wisp)
-                {
-                    if (GUILayout.Button("바로 사용", GUILayout.MinHeight(64)))
-                    {
-                        string id = offer.Id;
-                        RunWispDirect(offer.Title, () =>
-                            controller.ManualActions.RequestEconomyAction(category, id));
-                    }
-                }
-                else if (GUILayout.Button("선택", GUILayout.MinHeight(64)))
+                if (GUILayout.Button("선택", GUILayout.MinHeight(64)))
                 {
                     pendingEconomy = offer;
                     notice = "구매 대기";

@@ -317,6 +317,31 @@ namespace Ordr.Mobile.Unity
             return pressed;
         }
 
+        // A tappable operation row: one press is the action, never an expansion.
+        // The caller owns eligibility, resource checks and the transaction.
+        internal static bool DrawActionRow(string title, string meta,
+            Color tint, float height = 72f)
+        {
+            Rect area = GUILayoutUtility.GetRect(0f, height,
+                GUILayout.ExpandWidth(true));
+            bool pressed = GUI.Button(area, GUIContent.none, accordionClosed);
+            if (Event.current.type != EventType.Repaint) return pressed;
+            Stroke(new Rect(area.x+5f,area.y+12f,4f,
+                Mathf.Max(0f,area.height-24f)),tint);
+            GUI.Label(new Rect(area.x+14f,area.y+10f,34f,area.height-20f),
+                "▶",accordionArrow);
+            float available = Mathf.Max(100f,area.width-70f);
+            float metaWidth = string.IsNullOrEmpty(meta) ? 0f :
+                Mathf.Min(Mathf.Max(82f,available*.32f),170f);
+            float titleWidth = Mathf.Max(40f,area.width-76f-metaWidth);
+            GUI.Label(new Rect(area.x+52f,area.y+9f,titleWidth,area.height-18f),
+                title,accordionTitle);
+            if (metaWidth>0f)
+                GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
+                    metaWidth,area.height-18f),meta,accordionMeta);
+            return pressed;
+        }
+
         internal static void DrawResearchPlate(Rect area, int ordinal,
             string title, string description, int maximumLevel, Color tint)
         {
