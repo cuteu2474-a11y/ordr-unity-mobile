@@ -14,6 +14,14 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, int>();
         private readonly Dictionary<long, int> sourceKaidoAttackCounters =
             new Dictionary<long, int>();
+        private sealed class SourceKaidoArmorStacks
+        {
+            public int Single;
+            public int Area;
+        }
+        private readonly Dictionary<long, Dictionary<string, SourceKaidoArmorStacks>>
+            sourceKaidoArmorStacks =
+                new Dictionary<long, Dictionary<string, SourceKaidoArmorStacks>>();
         private readonly List<SourceModelVegapunkSatellite> sourceSatellites =
             new List<SourceModelVegapunkSatellite>();
         private long sourceNextSatelliteId;
@@ -217,6 +225,139 @@ namespace Ordr.Mobile.Combat
             sourceKaidoAttackCounters[actor.Id] = current;
             if (current == 10)
                 ExecuteKaidoTenthModelPacket(actor, primary);
+            else
+                ExecuteKaidoEighthPercentModelPacket(actor, primary);
+        }
+
+        private bool SourceKaidoIsDragon(long id)
+        {
+            string form;
+            return sourceNativeForms.TryGetValue(id, out form) &&
+                form.StartsWith("카이도 용형", StringComparison.Ordinal);
+        }
+
+        private void ExecuteKaidoEighthPercentModelPacket(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            bool dragon = SourceKaidoIsDragon(actor.Id);
+            string name = dragon ? "용형 타격" : "인간형 타격";
+            var skill = FindSourceSkill(actor, name);
+            double flat = dragon ? 1200000 : 500000;
+            if (skill == null || skill.Trigger != "onAttack" ||
+                skill.ChancePercent != 8 || skill.Radius != 500 ||
+                skill.Components.Count != (dragon ? 1 : 4) ||
+                skill.Components[0].Type != "physical" ||
+                skill.Components[0].Number("amount") != flat ||
+                skill.Components[0].Number("plusBasicAttackDamagePercent") !=
+                    (dragon ? 30 : 50) || !SourceRollSkill(skill)) return;
+            if (dragon)
+            {
+                // Tooltip multiplier 1..2; a uniform model draw is not
+                // a claim about the original JASS random distribution.
+                double fraction = sourceModelRules.NextScriptRoll(1000000) / 1000000.0;
+                flat *= 1 + fraction;
+            }
+            else if (skill.Components[3].Type == "critical" &&
+                skill.Components[3].Number("chancePercent") == 40 &&
+                skill.Components[3].Number("multiplier") == 1.5 &&
+                SourceRoll1To(100) <= 40)
+                flat *= 1.5;
+            string attacker = InstanceKey(actor.Id);
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                attacker, primary.Id, name,
+                "TOOLTIP_MODEL_ONLY 8% 발동 / 확정 물리 기본량만 처리", 0));
+            ApplySourceModelAreaPacket(attacker, IsStoryDeployed(actor.Id), primary,
+                500, flat, Ordr323AttackType.Spells, name);
+            if (!dragon)
+            {
+                if (skill.Components[1].Type == "fixed" &&
+                    skill.Components[1].Number("amount") == 850000 &&
+                    skill.Components[1].Text("scope") == "singlePrimaryTarget")
+                    ApplySourceModelFixedPrimaryPacket(attacker, primary, 850000, name);
+                ApplySourceModelLineStun(attacker, primary, name, 1.5);
+            }
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                attacker, primary.Id, name,
+                "평타 비례 추가피해·원본 치명/고정 피해 면역 계산 미검증", 0));
+        }
+
+        private void ApplySourceKaidoArmorStack(CharacterInstance actor,
+            SpatialCombatEnemy target, bool area)
+        {
+            if (!target.Enemy.IsAlive || !CanAttackInThisLane(actor, target)) return;
+            Dictionary<string, SourceKaidoArmorStacks> perTarget;
+            if (!sourceKaidoArmorStacks.TryGetValue(actor.Id, out perTarget))
+            {
+                perTarget = new Dictionary<string, SourceKaidoArmorStacks>(StringComparer.Ordinal);
+                sourceKaidoArmorStacks.Add(actor.Id, perTarget);
+            }
+            SourceKaidoArmorStacks stacks;
+            if (!perTarget.TryGetValue(target.Id, out stacks))
+            {
+                stacks = new SourceKaidoArmorStacks();
+                perTarget.Add(target.Id, stacks);
+            }
+            bool dragon = SourceKaidoIsDragon(actor.Id);
+            if (area) stacks.Area = Math.Min(10, stacks.Area + (dragon ? 2 : 1));
+            else stacks.Single = Math.Min(10, stacks.Single + (dragon ? 1 : 2));
+            // Explicit tooltip model: initial 70 on the first direct hit,
+            // +5 for subsequent direct stacks, and +3 per area stack.
+            // No original native stack-lifetime/interaction claim.
+            double reduction = (stacks.Single > 0 ? 70 + 5 * (stacks.Single - 1) : 0) +
+                3 * stacks.Area;
+            string key = "practice-kaido:armor:" + actor.Id;
+            target.Enemy.Status.RemoveSource(key);
+            target.Enemy.Status.Apply(new CombatEffect(key,
+                CombatEffectType.ArmorReduction, CombatEffectOrigin.Aura,
+                reduction, 0));
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.StatusApplied,
+                InstanceKey(actor.Id), target.Id, "약육강식",
+                "TOOLTIP_MODEL_ONLY 방어 감소 " + reduction +
+                " / 단일 " + stacks.Single + "/10 · 광역 " + stacks.Area + "/10", 0));
+        }
+
+        private void ApplySourceKaidoBasicArmor(CharacterInstance actor,
+            SpatialCombatEnemy target)
+        {
+            if (actor.Catalog.Id != "I-11" || !target.Enemy.IsAlive) return;
+            var skill = FindSourceSkill(actor, "약육강식");
+            if (skill == null || skill.Trigger != "onAttackAndSkill" ||
+                skill.Components.Count != 2 ||
+                skill.Components[0].Type != "armorReduction" ||
+                skill.Components[0].Number("amount") != 70 ||
+                skill.Components[0].Number("additionalPerStack") != 5 ||
+                skill.Components[0].Number("maxStacks") != 10 ||
+                skill.Components[1].Type != "armorReduction" ||
+                skill.Components[1].Number("amountPerStack") != 3 ||
+                skill.Components[1].Number("maxStacks") != 10) return;
+            ApplySourceKaidoArmorStack(actor, target, false);
+        }
+
+        private void ForgetSourceKaidoArmorEnemy(string enemyId)
+        {
+            foreach (var perTarget in sourceKaidoArmorStacks.Values)
+                perTarget.Remove(enemyId);
+        }
+
+        private void RefreshSourceKaidoArmorLanes()
+        {
+            foreach (var owner in sourceKaidoArmorStacks)
+            {
+                CharacterInstance actor;
+                if (!characters.TryGetValue(owner.Key, out actor)) continue;
+                string key = "practice-kaido:armor:" + owner.Key;
+                var expired = new List<string>();
+                foreach (var entry in owner.Value)
+                {
+                    SpatialCombatEnemy target;
+                    if (!enemies.TryGetValue(entry.Key, out target))
+                    { expired.Add(entry.Key); continue; }
+                    if (CanAttackInThisLane(actor, target)) continue;
+                    target.Enemy.Status.RemoveSource(key);
+                    expired.Add(entry.Key);
+                }
+                foreach (string enemyId in expired) owner.Value.Remove(enemyId);
+            }
         }
 
         private void ExecuteKaidoTenthModelPacket(CharacterInstance actor,
@@ -253,7 +394,10 @@ namespace Ordr.Mobile.Combat
                 double dx = target.X - primary.X, dy = target.Y - primary.Y;
                 if (dx * dx + dy * dy <= 500 * 500 &&
                     CanAttackInThisLane(actor, target))
+                {
                     ApplySourceModelLineStun(attacker, target, name, 2.5);
+                    ApplySourceKaidoArmorStack(actor, target, true);
+                }
             }
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
                 attacker, primary.Id, name,
@@ -266,6 +410,10 @@ namespace Ordr.Mobile.Combat
             sourceNativeForms.Remove(id);
             sourceKaidoLifeCounters.Remove(id);
             sourceKaidoAttackCounters.Remove(id);
+            sourceKaidoArmorStacks.Remove(id);
+            string armorKey = "practice-kaido:armor:" + id;
+            foreach (var enemy in enemies.Values)
+                enemy.Enemy.Status.RemoveSource(armorKey);
             // B4a satellites are independent player-owned units; removing
             // the creator does not delete them or refund spent resources.
         }

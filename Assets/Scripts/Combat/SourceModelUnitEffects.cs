@@ -204,6 +204,7 @@ namespace Ordr.Mobile.Combat
             double aura = ResolveSingleAura(effects, CombatEffectType.ArmorReduction);
             double faerie = 0;
             double bonney = 0;
+            double kaido = 0;
             foreach (var effect in effects)
                 if (effect.Type == CombatEffectType.ArmorReduction &&
                     effect.SourceId == "practice-native:A10I")
@@ -211,10 +212,13 @@ namespace Ordr.Mobile.Combat
                 else if (effect.Type == CombatEffectType.ArmorReduction &&
                     effect.SourceId == "practice-native:A04P")
                     bonney = Math.Max(bonney, effect.Amount);
+                else if (effect.Type == CombatEffectType.ArmorReduction &&
+                    effect.SourceId.StartsWith("practice-kaido:armor:", StringComparison.Ordinal))
+                    kaido = Math.Max(kaido, effect.Amount);
             // This practice arithmetic is not native A04R/isr2 damage logic.
             // Native A04P + aura/Faerie Fire stacking is unverified. The
             // offline model uses the greater instead of adding fake stacks.
-            return Math.Max(aura + faerie, bonney);
+            return Math.Max(Math.Max(aura + faerie, bonney), kaido);
         }
     }
 }

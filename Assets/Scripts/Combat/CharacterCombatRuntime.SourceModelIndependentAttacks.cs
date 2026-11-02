@@ -200,6 +200,21 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        private void ApplySourceModelFixedPrimaryPacket(string attackerId,
+            SpatialCombatEnemy target, long damage, string skill)
+        {
+            if (damage < 0) throw new ArgumentOutOfRangeException(nameof(damage));
+            if (!target.Enemy.IsAlive) return;
+            long actual;
+            if (!resolution.TryApplySkillDamage(attackerId, target.Id, damage, out actual)) return;
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillDamage,
+                attackerId, target.Id, skill,
+                "TOOLTIP_MODEL_ONLY 고정 피해 / 원작 면역·방어 무시 조건 미검증", actual));
+            if (!target.Enemy.IsAlive)
+                events.Add(new CharacterCombatEvent(CharacterCombatEventType.EnemyDefeated,
+                    attackerId, target.Id, skill, "모델 고정 피해 처치", actual));
+        }
+
         private void CompleteSourceIndependentHit(SourceIndependentAttacker actor,
             SpatialCombatEnemy primary)
         {
@@ -212,6 +227,31 @@ namespace Ordr.Mobile.Combat
                     skill.Components[0].Number("basicAttackMagicalDamage") != 50000) return;
                 ApplySourceModelAreaPacket(actor.Key, actor.StoryLane, primary,
                     325, 50000, Ordr323AttackType.Spells, "인술 분신 범위 마법");
+                var followup = FindProfileSkill(actor.SkillProfile, "급습");
+                if (followup != null && followup.Trigger == "onAttack" &&
+                    followup.ChancePercent == 15 &&
+                    followup.Number("summonedCloneProcChanceMultiplier") == .5 &&
+                    followup.Number("summonedCloneEffectMultiplier") == .5 &&
+                    followup.Components.Count == 3 &&
+                    followup.Components[0].Type == "magical" &&
+                    followup.Components[0].Number("amount") == 400000 &&
+                    followup.Components[1].Number("percent") == 7 &&
+                    followup.Components[2].Number("percent") == 1.25 &&
+                    sourceModelRules.NextScriptRoll(1000) < 75)
+                {
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                        actor.Key, primary.Id, "분신 급습",
+                        "TOOLTIP_MODEL_ONLY 분신 7.5% / 피해 50%", 0));
+                    ApplySourceModelAreaPacket(actor.Key, actor.StoryLane, primary,
+                        0, 200000, Ordr323AttackType.Spells, "분신 급습");
+                    double extra = primary.Kind == CharacterEnemyKind.Line
+                        ? primary.Enemy.MaxHealth * .035 :
+                        primary.Kind == CharacterEnemyKind.Boss
+                            ? primary.Enemy.MaxHealth * .00625 : 0;
+                    if (extra > 0 && primary.Enemy.IsAlive)
+                        ApplySourceModelAreaPacket(actor.Key, actor.StoryLane, primary,
+                            0, extra, Ordr323AttackType.Spells, "분신 급습 · 비례 피해");
+                }
                 return;
             }
             if (actor.Rawcode != "H0AB" && actor.Rawcode != "H0AE") return;
@@ -251,8 +291,35 @@ namespace Ordr.Mobile.Combat
             }
             else
             {
-                // Atlas's attack-power scaling and native critical damage
-                // remain unconnected. Its self haste is separately complete.
+                var explosive = FindProfileSkill(actor.SkillProfile, "아틀라스 평타·치명타");
+                if (explosive != null && explosive.Trigger == "satelliteOnAttack" &&
+                    explosive.ChancePercent == 25 && explosive.Components.Count == 3 &&
+                    explosive.Components[0].Type == "explosive" &&
+                    explosive.Components[0].Number("attackPowerPercent") == 45 &&
+                    explosive.Components[0].Number("radius") == 400 &&
+                    explosive.Components[1].Type == "critical" &&
+                    explosive.Components[1].Number("multiplier") == 2.5 &&
+                    explosive.Components[2].Type == "stun" &&
+                    explosive.Components[2].Number("durationSeconds") == 1 &&
+                    SourceRollSkill(explosive))
+                {
+                    // The map object dice are known, but native attack-power
+                    // conversion and crit occurrence order are not witnessed.
+                    double power = sourceModelRules.RollSourceObjectAttackPower("H0AE");
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                        actor.Key, primary.Id, explosive.Name,
+                        "TOOLTIP_MODEL_ONLY 25% / 공격력45% × 2.5 모델", 0));
+                    ApplySourceModelAreaPacket(actor.Key, actor.StoryLane, primary,
+                        400, power * .45 * 2.5, Ordr323AttackType.Spells,
+                        explosive.Name);
+                    foreach (var target in enemies.Values)
+                    {
+                        double dx = target.X - primary.X, dy = target.Y - primary.Y;
+                        if (dx * dx + dy * dy <= 400 * 400 &&
+                            CanSourceIndependentAttack(actor, target))
+                            ApplySourceModelLineStun(actor.Key, target, explosive.Name, 1);
+                    }
+                }
                 var haste = FindProfileSkill(actor.SkillProfile, "아틀라스 날뛰기");
                 if (haste != null && haste.Trigger == "satelliteOnAttack" &&
                     haste.ChancePercent == 15 && haste.Components.Count == 2 &&
@@ -269,6 +336,11 @@ namespace Ordr.Mobile.Combat
                     events.Add(new CharacterCombatEvent(CharacterCombatEventType.StatusApplied,
                         actor.Key, actor.Key, haste.Name,
                         "TOOLTIP_MODEL_ONLY 45% 공격속도 2.25초 / 힘 계수 피해 보류", 0));
+                    if (haste.Components[1].Type == "magical" &&
+                        haste.Components[1].Number("amount") == 400000 &&
+                        haste.Components[1].Number("strengthScalingPerPoint") == 4000)
+                        ApplySourceModelAreaPacket(actor.Key, actor.StoryLane, primary,
+                            0, 400000, Ordr323AttackType.Spells, haste.Name);
                 }
             }
         }

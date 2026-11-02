@@ -62,6 +62,14 @@ namespace Ordr.Mobile.Combat
             return rawcode != null && independentAttacks.TryGetValue(rawcode, out attack)
                 ? attack : null;
         }
+        internal long RollSourceObjectAttackPower(string rawcode)
+        {
+            OriginalMapCommonNativeAttackEvidence evidence;
+            if (!Enabled || !independentAttacks.ContainsKey(rawcode) ||
+                !byRawcode.TryGetValue(rawcode, out evidence))
+                throw new NotSupportedException("원본 독립 객체 공격력 주사위 자료가 없습니다.");
+            return evidence.RollObjectBaseDamage(random);
+        }
         internal void SetSourceForm(string instanceId, string rawcode)
         {
             if (!Enabled || SourceObjectAttack(rawcode) == null)

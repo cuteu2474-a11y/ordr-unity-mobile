@@ -17,9 +17,11 @@ namespace Ordr.Mobile.Tests
         {
             public bool Trigger;
             public bool ForceSugarSuicide;
+            public bool BlockKaidoMorph;
             public Dice(bool trigger) { Trigger = trigger; }
             public int Next(int bound) => ForceSugarSuicide && bound == 1000
-                ? 8 : Trigger ? 0 : bound - 1;
+                ? 8 : BlockKaidoMorph && bound == 100
+                    ? 99 : Trigger ? 0 : bound - 1;
         }
         private sealed class NoGold : IOriginalWispRandom
         { public int NextInclusive(int min, int max) => max; }
@@ -688,6 +690,30 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void TransformedChopperRawObjectAurasAreTimedByFormAndNotExtraBaseDamage()
+        {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var resources = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                Data("original-2323C-unit-object-stats.json"), map);
+            using (var live = Create("TR-23", true, -4900, 5400))
+            {
+                live.Combat.ConfigureSourceModelUnitResources(resources);
+                live.Battle.Advance(4);
+                Assert.IsNotNull(live.Combat.PracticeNativeFormOf(live.ActorId));
+                var effects = live.Combat.UnitStatusOf(live.ActorId).Snapshot();
+                Assert.IsTrue(effects.Any(e =>
+                    e.Type == CombatEffectType.AttackPowerBuff &&
+                    e.SourceId.Contains("native-object:A0OK") && e.Amount == 40));
+                Assert.IsTrue(effects.Any(e =>
+                    e.Type == CombatEffectType.AttackSpeedBuff &&
+                    e.SourceId.Contains("native-object:A0OJ") && e.Amount == 40));
+                live.Combat.RemoveCharacter(live.ActorId);
+            }
+        }
+
+        [Test]
         public void VegapunkSatellitePurchaseIsAtomicUniqueAndNotACombatRosterUnit()
         {
             using (var live = Create("TR-30", false, -4900, 5400))
@@ -922,6 +948,13 @@ namespace Ordr.Mobile.Tests
                     e.Type == CharacterCombatEventType.StatusApplied &&
                     e.ActorId.StartsWith("practice-satellite:") &&
                     e.SkillName == "아틀라스 날뛰기"));
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.ActorId.StartsWith("practice-satellite:") &&
+                    e.SkillName == "아틀라스 평타·치명타" && e.Amount > 0));
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "아틀라스 날뛰기" && e.Amount > 0));
             }
         }
 
@@ -940,6 +973,31 @@ namespace Ordr.Mobile.Tests
                 Assert.IsFalse(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == "카이도 변신"));
+            }
+        }
+
+        [Test]
+        public void KaidoModelEighthPercentHitAndArmorStacksUseSharedEnemyStatus()
+        {
+            using (var live = Create("I-11", true, -4900, 5400))
+            {
+                live.Rolls.BlockKaidoMorph = true;
+                var events = live.Battle.Advance(4);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "인간형 타격" && e.Amount > 0));
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.StatusApplied &&
+                    e.SkillName == "약육강식"));
+                Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(enemy =>
+                    live.Combat.StatusOf(enemy.Id).Snapshot().Any(effect =>
+                        effect.Type == CombatEffectType.ArmorReduction &&
+                        effect.SourceId.StartsWith("practice-kaido:armor:") &&
+                        effect.Amount >= 70)));
+                live.Combat.RemoveCharacter(live.ActorId);
+                Assert.IsFalse(live.Combat.MobileEnemySnapshot().Any(enemy =>
+                    live.Combat.StatusOf(enemy.Id).Snapshot().Any(effect =>
+                        effect.SourceId.StartsWith("practice-kaido:armor:"))));
             }
         }
 
@@ -1342,6 +1400,8 @@ namespace Ordr.Mobile.Tests
                     x.ActorId.StartsWith("practice-summon:") && x.Amount > 0));
                 Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
                     x.SkillName == "인술 분신 범위 마법" && x.Amount > 0));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "분신 급습" && x.Amount > 0));
                 live.Combat.RemoveCharacter(live.ActorId);
                 Assert.AreEqual(0, live.Combat.PracticeSummonsOf(live.ActorId).Count);
             }

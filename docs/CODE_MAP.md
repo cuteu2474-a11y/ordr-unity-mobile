@@ -1,4 +1,12 @@
-> **최신 경로:** 쵸파 스플래시/카이도 10회 flat/릴리스 발동/아틀라스 가속/슈가 자폭/시노부 분신은 이 파일 끝의 **「변신·위성·분신 공통 후속 피해 경로」**를 확인하세요. 다음 단락의 '미연결'은 당시 기록입니다.
+# 2026-11-03 SourceModel 공통 오라·방어 스택·추가 스킬 (최신)
+
+- `CharacterCombatRuntime.SourceModelEffects.RefreshSourceModelAuras → RefreshSourceNativeObjectAuras`: H0B6 `A0OK/A0OL` +40 공격력, `A0OJ` +40 공속, `A0OI` -50 방어(825), H0AB `A034` -40 방어(800). 원본 `data/original-2323C-all-unit-aura-audit.json`의 능력·대상 수치를 고정하며, 0초 오라 상태를 매 프레임 기존 상태 엔진에서 재계산합니다. 혼합/동일 타입 다중 오라에 임의 합산하지 않습니다.
+- `CharacterCombatRuntime.SourceModelNativeCharacters`: `ExecuteKaidoEighthPercentModelPacket`이 도감 8% 인간/용형 flat 패킷+인간형 단일 fixed/라인 기절·인간형 40% 치명/용형 1~2배 모델을 처리. `ApplySourceKaidoBasicArmor/ApplySourceKaidoArmorStack`은 공격자-적별 단일·광역 최대10 스택을 분리하고 현재 상태를 한 개 armorReduction 효과로 기록합니다. `ForgetNativeSourceCharacter`, `RemoveEnemyRuntimeState`, `RefreshSourceKaidoArmorLanes`에서 정리합니다.
+- `SourceModelUnitEffects.ResolvePracticeArmorReduction`은 기존 오라+Faerie/Bonney와 카이도 적별 스택 상태를 보수적인 최대값 모델로 처리. `SourceModelBasicCombatRules.RollSourceObjectAttackPower`는 원본 독립 객체의 별도 주사위를 공유 RNG로 뽑는 모델 진입점입니다.
+- `CharacterCombatRuntime.SourceModelIndependentAttacks.CompleteSourceIndependentHit`의 아틀라스 25% 45%×2.5/r400·라인기절1초, 가속 15% 발동 때 마법40만 flat과 힘 계수 보류, 시노부 분신 7.5% 절반효과 급습까지 같은 `ApplySourceModelAreaPacket/ApplySourceModelFixedPrimaryPacket`·HP/처치 이벤트 사용. 해당 수치는 툴팁 기반 모델이지 네이티브 최종 피해 증명은 아닙니다.
+- 신규 EditMode 회귀는 `SourceModelScriptAttackSkillTests.cs`에 추가했습니다. 로컬 Python **255개 통과**, whitespace 검사 통과. Unity 실행기 부재로 C# EditMode/Android 실행은 미확인입니다. 런타임 전투 미검증 분기는 여전히 분리합니다.
+
+> **이전 연결 경로:** 쵸파 스플래시/카이도 10회 flat/릴리스 발동/아틀라스 가속/슈가 자폭/시노부 분신은 이 파일 끝의 **「변신·위성·분신 공통 후속 피해 경로」**를 확인하세요.
 
 # 2026-11-02 변신·독립 소환 객체 평타 모델 연결
 

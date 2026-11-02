@@ -2855,6 +2855,7 @@ namespace Ordr.Mobile.Combat
 
         private void RemoveEnemyRuntimeState(string id)
         {
+            ForgetSourceKaidoArmorEnemy(id);
             moriaParticipation.Forget(id);
             sourcePracticeA04RLevels.Remove(id);
             sourceSpecialPullHeldUntil.Remove(id);
