@@ -33,6 +33,7 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle accordionBody;
         private static GUIStyle wispCountCaption;
         private static GUIStyle wispCountValue;
+        private static GUIStyle statusValue;
 
         internal static GUIStyle SelectedTab { get { return selectedTab; } }
         internal static GUIStyle PrimaryButton { get { return primaryButton; } }
@@ -204,6 +205,10 @@ namespace Ordr.Mobile.Unity
             wispCountValue.fontStyle = FontStyle.Bold;
             wispCountValue.alignment = TextAnchor.MiddleCenter;
             wispCountValue.normal.textColor = Color.white;
+            statusValue = new GUIStyle(accordionMeta);
+            statusValue.fontSize = 21;
+            statusValue.fontStyle = FontStyle.Bold;
+            statusValue.normal.textColor = Color.white;
             themedSkin.toggle = new GUIStyle(source.toggle);
             themedSkin.toggle.fontSize = 18;
             themedSkin.toggle.wordWrap = true;
@@ -296,10 +301,38 @@ namespace Ordr.Mobile.Unity
                 Mathf.Max(50f,textWidth-110f),22f),eyebrow,Overline);
             GUI.Label(new Rect(area.xMax-114f,area.y+9f,96f,23f),counter,
                 facilityBadge);
-            GUI.Label(new Rect(area.x+18f,area.y+45f,textWidth,38f),title,
+            GUI.Label(new Rect(area.x+18f,area.y+43f,textWidth,40f),title,
                 facilityHeading);
-            GUI.Label(new Rect(area.x+18f,area.y+88f,textWidth,42f),description,
-                researchDetail);
+        }
+
+        // Read-only game data uses the same compact card language as actions.
+        internal static void DrawStatusRow(string title, string value,
+            Color tint, float height = 64f)
+        {
+            Rect area = GUILayoutUtility.GetRect(0f, height,
+                GUILayout.ExpandWidth(true));
+            GUI.Box(area, GUIContent.none, accordionClosed);
+            if (Event.current.type != EventType.Repaint) return;
+            Stroke(new Rect(area.x+5f,area.y+12f,4f,
+                Mathf.Max(0f,area.height-24f)),tint);
+            float valueWidth = Mathf.Min(154f,Mathf.Max(100f,area.width*.36f));
+            float titleWidth = Mathf.Max(40f,area.width-valueWidth-42f);
+            int originalTitleSize = accordionTitle.fontSize;
+            var titleText = new GUIContent(title);
+            while (accordionTitle.fontSize > 14 &&
+                accordionTitle.CalcSize(titleText).x > titleWidth)
+                accordionTitle.fontSize--;
+            GUI.Label(new Rect(area.x+18f,area.y+8f,titleWidth,area.height-16f),
+                titleText,accordionTitle);
+            accordionTitle.fontSize = originalTitleSize;
+            int originalValueSize = statusValue.fontSize;
+            var valueText = new GUIContent(value);
+            while (statusValue.fontSize > 14 &&
+                statusValue.CalcSize(valueText).x > valueWidth-10f)
+                statusValue.fontSize--;
+            GUI.Label(new Rect(area.xMax-valueWidth-14f,area.y+8f,
+                valueWidth,area.height-16f),valueText,statusValue);
+            statusValue.fontSize = originalValueSize;
         }
 
         // The whole 72px row is a touch target; labels are visual overlays.
@@ -403,7 +436,7 @@ namespace Ordr.Mobile.Unity
             Stroke(new Rect(area.x+18f,area.y+105f,
                 Mathf.Max(0f,area.width-36f),1f),new Color(tint.r,tint.g,tint.b,.3f));
             GUI.Label(new Rect(area.x+18f,area.y+109f,
-                Mathf.Max(40f,area.width-135f),22f),"구매 미연결",Overline);
+                Mathf.Max(40f,area.width-135f),22f),"구매 준비 중",Overline);
             GUI.Label(new Rect(area.xMax-119f,area.y+108f,101f,22f),
                 "최대 " + maximumLevel + "단계",facilityBadge);
         }

@@ -36,7 +36,7 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("case Tab.Research: DrawPlayerBuildingResearch(", panel)
         page = panel.split("private void DrawPlayerBuildingResearch(", 1)[1].split(
             "private void DrawOriginalChatScoreboard(", 1)[0]
-        self.assertIn("실제 연구 구매·재화 소비·유닛 능력치 적용은 아직 연결되지 않았습니다", page)
+        self.assertIn("구매 준비 중", page)
         self.assertNotIn("GUILayout.Button(", page)
         for code in ("h06Q", "h06R", "h06S"):
             self.assertIn(code, catalog)
@@ -62,33 +62,69 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("GUI.Button(area, GUIContent.none", theme)
         for effect in ("+0.45/초", "+0.8/초", "+12%", "-10%"):
             self.assertIn(effect, catalog)
-        self.assertIn("구매 미연결", theme)
+        self.assertIn("구매 준비 중", theme)
 
-    def test_other_menus_share_expandable_shell_without_new_purchase_paths(self):
+    def test_operating_menus_are_action_first_and_require_confirm_for_spending(self):
         panel = PANEL.read_text(encoding="utf-8")
         sections = (
-            ("DrawPersonalMissions", "private static string MissionRewardText(", "TryReroll(slot.Index)"),
-            ("DrawOwnedUnitIndex", "private void DrawUnitConfirmations(", "DrawUnitConfirmations(entry.InstanceId)"),
-            ("DrawStory", "private void DrawFusion(", "RequestOriginalStoryBuilding(stage)"),
-            ("DrawFusion", "private void DrawFusionConfirmation(", "CanExecuteFusionRecipe(offer.RecipeId)"),
-            ("DrawTreasureGacha", "private void DrawAutomaticWispStatus(", "RequestMobileTreasureGacha()"),
-            ("DrawHelperCow", "private void DrawAlchemyPanel(", "ChooseOriginal323Alchemy()"),
-            ("DrawEconomy", "private void RefreshCurrent(", "RequestEconomyAction("),
-            ("DrawAlchemyTargetDropdown", "private void DrawPager(", "alchemyTargetsExpanded"),
+            ("DrawPersonalMissions", "private static string MissionRewardText(",
+             "DrawAccordionHeader(", "TryReroll(slot.Index)"),
+            ("DrawOwnedUnitIndex", "private void DrawUnitConfirmations(",
+             "DrawActionRow(entry.Unit.Name", "DrawUnitConfirmations(entry.InstanceId)"),
+            ("DrawStory", "private void DrawFusion(",
+             "DrawStatusRow(name", "RequestOriginalStoryBuilding(stage)"),
+            ("DrawFusion", "private void DrawFusionConfirmation(",
+             "DrawActionRow(offer.Title", "pendingFusion = offer"),
+            ("DrawTreasureGacha", "private void DrawAutomaticWispStatus(",
+             "DrawActionRow(\"보물 탐색\"", "RequestMobileTreasureGacha()"),
+            ("DrawHelperCow", "private void DrawAlchemyPanel(",
+             "DrawStatusRow(\"도움소 마나\"", "ChooseOriginal323Alchemy()"),
+            ("DrawEconomy", "private void RefreshCurrent(",
+             "DrawActionRow(offer.Title", "pendingEconomy = offer"),
+            ("DrawAlchemyTargetDropdown", "private void DrawOriginalJassAudit(",
+             "DrawAccordionHeader(", "pendingAlchemyCastId = selected.InstanceId"),
         )
-        for name, following, preserved_action in sections:
+        for name, following, affordance, preserved_action in sections:
             with self.subTest(menu=name):
                 begin = "private void " + name + "("
                 page = panel.split(begin, 1)[1].split(following, 1)[0]
-                self.assertIn("DrawAccordionHeader(", page)
-                self.assertIn("OrdrMobileUiTheme.AccordionBody", page)
+                self.assertIn(affordance, page)
                 self.assertIn(preserved_action, page)
+
         self.assertIn("expandedMissionSlots", panel)
-        self.assertIn("expandedStoryStages", panel)
-        self.assertIn("expandedEconomyOffers", panel)
+        self.assertNotIn("expandedStoryStages", panel)
+        self.assertNotIn("expandedEconomyOffers", panel)
         self.assertIn("RequestStoryDispatch(unit.InstanceId)", panel)
         self.assertIn("RequestStoryRecall(unit.InstanceId)", panel)
         self.assertIn("RequestLowerGradeSale(", panel)
+        self.assertIn("CanExecuteFusionRecipe(offer.RecipeId)", panel)
+        self.assertIn("MobileFusionProductionAssistant.CraftRepeated(", panel)
+        self.assertIn("판매 확인", panel)
+        self.assertIn("분해 시작", panel)
+        self.assertIn("유닛 소비 및 연금술 확정", panel)
+        self.assertIn("구매 확정", panel)
+
+    def test_shared_readable_status_rows_keep_inert_information_inert(self):
+        panel = PANEL.read_text(encoding="utf-8")
+        theme = THEME.read_text(encoding="utf-8")
+        self.assertIn("DrawStatusRow(", theme)
+        examples = (
+            ("DrawStandbyDashboard", 'DrawStatusRow("라운드"'),
+            ("DrawOriginalChatScoreSummary", 'DrawScoreMetric("전투"'),
+            ("DrawPersonalMissions", 'DrawStatusRow("미션 교체"'),
+            ("DrawStory", "DrawStatusRow(name"),
+            ("DrawHelperCow", 'DrawStatusRow("도움소 마나"'),
+            ("DrawTreasureGacha", 'DrawStatusRow("남은 보물"'),
+        )
+        for menu, marker in examples:
+            body = panel.split("private void " + menu + "(", 1)[1].split(
+                "\n        private ", 1
+            )[0]
+            self.assertIn(marker, body, menu)
+        self.assertIn("if (showOriginalAudit) DrawOriginalJassAudit();", panel)
+        self.assertNotIn("원본 출현 규칙·악몽 초기 수치 모델 기반", panel)
+        self.assertNotIn("원본 보물 좌표·보상 월드 연결 대기", panel)
+        self.assertNotIn("원본 맵 고유 능력", panel)
 
 
 

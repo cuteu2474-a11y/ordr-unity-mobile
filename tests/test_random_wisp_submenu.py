@@ -99,7 +99,8 @@ class RandomWispSubmenuTests(unittest.TestCase):
         helper = self.panel.split("private void DrawHelperCow()", 1)[1].split(
             "private void DrawAlchemyPanel()", 1)[0]
         self.assertNotIn("OriginalHelperCowRules.OfferId", helper)
-        self.assertIn("위습 → 랜덤위습 → 도움소 마나 충전", helper)
+        self.assertIn("TryGetHelperCowMana(out mana)", helper)
+        self.assertNotIn("마나 충전은 위습", helper)
 
     def test_original_solo_cow_is_connected_to_existing_transaction(self):
         begin = self.controller.split("public void BeginSession()", 1)[1].split(

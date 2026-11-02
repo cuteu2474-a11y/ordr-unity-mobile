@@ -41,7 +41,6 @@ namespace Ordr.Mobile.Unity
         private bool visible;
         private Tab currentTab = Tab.Play;
         private ScoreboardPage scoreboardPage;
-        private GUIStyle scoreMetricStyle;
         private float nextFusionRefresh;
         private string fusionInventorySignature;
         private int selectedPracticeRounds = 65;
@@ -55,12 +54,8 @@ namespace Ordr.Mobile.Unity
         private readonly HashSet<string> expandedResearchCodes =
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<int> expandedMissionSlots = new HashSet<int>();
-        private readonly HashSet<int> expandedStoryStages = new HashSet<int>();
-        private readonly HashSet<string> expandedEconomyOffers =
-            new HashSet<string>(StringComparer.Ordinal);
         private bool showStoryDispatch;
-        private bool showHelperDetails = true;
-        private bool showTreasureDetails = true;
+        private bool showOriginalAudit;
         private readonly Dictionary<Tab, Vector2> tabScrollPositions = new Dictionary<Tab, Vector2>();
         private int catalogGradeIndex;
         private int catalogPage;
@@ -476,7 +471,7 @@ namespace Ordr.Mobile.Unity
             FacilityVisual facilityVisual;
             if (TryGetFacilityVisual(currentTab, out facilityVisual))
             {
-                Rect banner = GUILayoutUtility.GetRect(0f, 140f,
+                Rect banner = GUILayoutUtility.GetRect(0f, 94f,
                     GUILayout.ExpandWidth(true));
                 OrdrMobileUiTheme.DrawFacilityBanner(banner,
                     facilityVisual.Eyebrow, facilityVisual.Heading,
@@ -545,33 +540,34 @@ namespace Ordr.Mobile.Unity
         // It contains battle state only; navigation stays in the left rail.
         private void DrawStandbyDashboard(MobileMapSkillLayout layout,float scale)
         {
-            Rect area=MobileMapSkillLayout.Scaled(layout.RightDrawer,scale);
-            GUILayout.BeginArea(area,OrdrMobileUiTheme.Panel);
+            Rect area = MobileMapSkillLayout.Scaled(layout.RightDrawer, scale);
+            GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
             dashboardScroll = BeginPanelScroll(dashboardScroll);
-            if(Combat==null)
+            if (Combat == null)
                 GUILayout.Label("전투 대기");
             else
             {
-                var game=Combat.Game;
-                GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label(controller.IsUnitPreparation?"출격 준비":"현재 전황",OrdrMobileUiTheme.SectionTitle);
-                GUILayout.Label("라운드 <color=#F7BD59><b>"+game.CurrentWave+"</b></color>"+
-                    "   전투 유닛 <color=#4FE2C8><b>"+Combat.CharacterCount+"</b></color>"+
-                    "   남은 적 <color=#FF8F7A><b>"+game.AliveEnemies+"</b></color>",
-                    OrdrMobileUiTheme.Explanation);
+                var game = Combat.Game;
+                GUILayout.Label(controller.IsUnitPreparation ? "출격 준비" : "현재 전황",
+                    OrdrMobileUiTheme.SectionTitle);
+                OrdrMobileUiTheme.DrawStatusRow("라운드",
+                    game.CurrentWave + "R", OrdrMobileUiTheme.Gold);
+                OrdrMobileUiTheme.DrawStatusRow("전투 유닛",
+                    Combat.CharacterCount + "기", OrdrMobileUiTheme.Aqua);
+                OrdrMobileUiTheme.DrawStatusRow("남은 적",
+                    game.AliveEnemies + "기", new Color(1f,.56f,.47f));
                 if (controller.OriginalTreasureHunt != null)
-                    GUILayout.Label("보물상자 미수집 " +
-                        controller.OriginalTreasureHunt.UncollectedCount + "개");
-                if(controller.PracticeBattle!=null)
+                    OrdrMobileUiTheme.DrawStatusRow("남은 보물",
+                        controller.OriginalTreasureHunt.UncollectedCount + "개",
+                        OrdrMobileUiTheme.Gold);
+                if (controller.PracticeBattle != null)
                 {
-                    GUILayout.Label("남은 시간 <color=#F7BD59><b>" +
-                        Math.Ceiling(controller.PracticeBattle.SecondsRemaining) +
-                        "초</b></color>", OrdrMobileUiTheme.Explanation);
-                    GUILayout.Label("처치 <color=#4FE2C8><b>"+game.DefeatedEnemies+
-                        "</b></color>   제한 "+controller.PracticeBattle.EnemyLimit+"마리",
-                        OrdrMobileUiTheme.Explanation);
+                    OrdrMobileUiTheme.DrawStatusRow("남은 시간",
+                        Math.Ceiling(controller.PracticeBattle.SecondsRemaining) + "초",
+                        OrdrMobileUiTheme.Gold);
+                    OrdrMobileUiTheme.DrawStatusRow("처치",
+                        game.DefeatedEnemies + "기", OrdrMobileUiTheme.Aqua);
                 }
-                GUILayout.EndVertical();
             }
             EndPanelScroll(area);
             GUILayout.EndArea();
@@ -617,17 +613,8 @@ namespace Ordr.Mobile.Unity
         private void DrawPlayerBuildingResearch(string buildingRawcode)
         {
             var original = Original323PlayerBuildingResearchCatalog.ForBuilding(buildingRawcode);
-            GUILayout.Label("원본 검증 연구 목록 · " + original.Count + "종",
-                OrdrMobileUiTheme.Subheading);
-            GUILayout.Label("연구 항목은 원본 맵에서 확인했습니다. " +
-                "실제 연구 구매·재화 소비·유닛 능력치 적용은 아직 연결되지 않았습니다.",
-                OrdrMobileUiTheme.Explanation);
-            if (buildingRawcode == Original323PlayerBuildingResearchCatalog.ResearchBuilding)
-            {
-                GUILayout.Label("체력 소모형 유닛에게 체력은 별도의 스킬 자원입니다. " +
-                    "회복 연구는 생존뿐 아니라 스킬 재사용에도 영향을 줍니다.",
-                    OrdrMobileUiTheme.Explanation);
-            }
+            OrdrMobileUiTheme.DrawStatusRow("연구 목록",
+                original.Count + "종 · 구매 준비 중", OrdrMobileUiTheme.Gold);
             GUILayout.Space(8f);
             Color tint = buildingRawcode == Original323PlayerBuildingResearchCatalog.ResearchBuilding
                 ? new Color(.44f,.88f,.96f) : new Color(1f,.73f,.39f);
@@ -689,56 +676,39 @@ namespace Ordr.Mobile.Unity
 
         private void DrawScoreMetric(string label, string value, Color highlight)
         {
-            GUILayout.BeginVertical(GUI.skin.box);
-            GUILayout.Label(label, OrdrMobileUiTheme.Overline);
-            if (scoreMetricStyle == null)
-                scoreMetricStyle = new GUIStyle(OrdrMobileUiTheme.Explanation) {
-                    fontStyle = FontStyle.Bold, fontSize = 20, wordWrap = true };
-            scoreMetricStyle.normal.textColor = highlight;
-            GUILayout.Label(value, scoreMetricStyle);
-            GUILayout.EndVertical();
+            OrdrMobileUiTheme.DrawStatusRow(label, value, highlight, 68f);
         }
 
         private void DrawOriginalChatScoreSummary()
         {
             var gold = OrdrMobileUiTheme.Gold;
             var aqua = OrdrMobileUiTheme.Aqua;
-            var pale = new Color(0.83f, 0.90f, 1f, 1f);
-            GUILayout.Label("현재 연결된 세션 기록만 표시 · 영구 저장/누적 기록은 미연결",
-                OrdrMobileUiTheme.Explanation);
-            DrawScoreMetric("플레이어 / 세이브 횟수", "단일 플레이 · 세이브 기록 미연결", pale);
-            DrawScoreMetric("게임 버전", "리메이크 개발용 · 원본 S2 2.323[C] 참조", pale);
-            DrawScoreMetric("난이도 / 모드", controller.IsUnitPreparation ? "출격 준비 · 단일 플레이" :
-                controller.PracticeBattle != null ? selectedPracticeRounds + "R 연습 · 단일 플레이" :
-                "원본 검증 경로 · 난이도 기록 미연결", pale);
-            DrawScoreMetric("최종 유닛 카운트 (유카)",
-                "원본 종료 유카 집계 미연결", gold);
-            DrawScoreMetric("항법", controller.Original323HelperNavigation != null &&
-                controller.Original323HelperNavigation.ChosenNavigation != null
-                ? controller.Original323HelperNavigation.ChosenNavigation : "미선택 · 미연결 항법 제외", aqua);
-            DrawScoreMetric("최상위 유닛 제작 수", "원본 제작 누적 집계 미연결", pale);
-            DrawScoreMetric("보물 발견", controller.OriginalTreasureHunt != null
-                ? controller.OriginalTreasureHunt.CollectedCount + "개 · 이번 세션 확인된 수집"
-                : "원본 보물 수집 장부 미연결", aqua);
-
-            GUILayout.Label("유닛 도박", OrdrMobileUiTheme.Subheading);
-            foreach (string name in MobileOriginalChatScoreboard.GambleNames)
-                GUILayout.Label("· " + name + " — 시도/성공 통계 미연결");
+            DrawScoreMetric("전투", controller.IsUnitPreparation ? "출격 준비" :
+                controller.PracticeBattle != null ? selectedPracticeRounds + "R 연습" :
+                "원본 세션", gold);
+            if (controller.Original323HelperNavigation != null &&
+                controller.Original323HelperNavigation.ChosenNavigation != null)
+                DrawScoreMetric("항법",
+                    controller.Original323HelperNavigation.ChosenNavigation, aqua);
+            if (controller.OriginalTreasureHunt != null)
+                DrawScoreMetric("보물 수집",
+                    controller.OriginalTreasureHunt.CollectedCount + "개", aqua);
             if (controller.PracticeMoneyGambling != null)
-                GUILayout.Label("별도 연습 일반 돈 도박 " +
-                    controller.PracticeMoneyGambling.PurchaseCount + "회 (원작 등급별 도박 통계와 별개)");
+                DrawScoreMetric("일반 돈 도박",
+                    controller.PracticeMoneyGambling.PurchaseCount + "회", gold);
         }
 
         private void DrawOriginalChatCommonDraws()
         {
             var journal = controller.ChatScoreboard;
-            GUILayout.Label("이번 세션에서 실제 성공한 흔함 위습 소환만 집계 · 영구 세이브 기록 아님",
-                OrdrMobileUiTheme.Explanation);
-            DrawScoreMetric("확인된 흔함 획득 합계", journal.ConfirmedCommonDraws + "기",
-                OrdrMobileUiTheme.Gold);
+            DrawScoreMetric("흔함 획득",
+                journal.ConfirmedCommonDraws + "기", OrdrMobileUiTheme.Gold);
             for (int i = 0; i < MobileOriginalChatScoreboard.CommonCatalogIds.Length; i++)
-                GUILayout.Label("· " + MobileOriginalChatScoreboard.CommonNames[i] + "  " +
-                    journal.CommonDrawCount(MobileOriginalChatScoreboard.CommonCatalogIds[i]) + "기");
+                OrdrMobileUiTheme.DrawStatusRow(
+                    MobileOriginalChatScoreboard.CommonNames[i],
+                    journal.CommonDrawCount(
+                        MobileOriginalChatScoreboard.CommonCatalogIds[i]) + "기",
+                    OrdrMobileUiTheme.Aqua);
         }
 
         private void DrawPlay()
@@ -755,7 +725,10 @@ namespace Ordr.Mobile.Unity
             GUILayout.Space(10f);
             var game = Combat.Game;
             var practice = controller.PracticeBattle;
-            GUILayout.Label("보유 전투 유닛 " + Combat.CharacterCount + " · 자동 공격 " + Combat.ReadyAttackers);
+            OrdrMobileUiTheme.DrawStatusRow("전투 유닛",
+                Combat.CharacterCount + "기", OrdrMobileUiTheme.Aqua);
+            OrdrMobileUiTheme.DrawStatusRow("공격 준비",
+                Combat.ReadyAttackers + "기", OrdrMobileUiTheme.Gold);
             if (controller.IsUnitPreparation)
             {
                 bool previous = GUI.enabled;
@@ -765,8 +738,6 @@ namespace Ordr.Mobile.Unity
                 if (GUILayout.Button(selectedPracticeRounds == 20 ? "20R ✓" : "20R", GUILayout.MinHeight(54))) selectedPracticeRounds = 20;
                 if (GUILayout.Button(selectedPracticeRounds == 65 ? "65R ✓" : "65R", GUILayout.MinHeight(54))) selectedPracticeRounds = 65;
                 GUILayout.EndHorizontal();
-                if (selectedPracticeRounds == 65)
-                    GUILayout.Label("원본 출현 규칙·악몽 초기 수치 모델 기반 · 동적 면역/최종 피해 일치 검증 전");
                 if (GUILayout.Button("준비 완료 · " + selectedPracticeRounds + "R 전투 시작",
                     OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
                 {
@@ -777,16 +748,21 @@ namespace Ordr.Mobile.Unity
             }
             if (practice != null)
             {
-                GUILayout.Label("남은 시간 " + Math.Ceiling(practice.SecondsRemaining) + "초");
-                GUILayout.Label("처치 " + game.DefeatedEnemies + " · 남은 적 " + game.AliveEnemies +
-                    "/" + practice.EnemyLimit + " · 전투 시간 " + Math.Floor(Combat.Time) + "초");
-                GUILayout.Label("처치 골드 +" + practice.GoldAwarded +
-                    " · 라운드 위습 +" + practice.RoundWispsAwarded);
+                OrdrMobileUiTheme.DrawStatusRow("남은 시간",
+                    Math.Ceiling(practice.SecondsRemaining) + "초", OrdrMobileUiTheme.Gold);
+                OrdrMobileUiTheme.DrawStatusRow("남은 적",
+                    game.AliveEnemies + "/" + practice.EnemyLimit,
+                    OrdrMobileUiTheme.Aqua);
+                OrdrMobileUiTheme.DrawStatusRow("처치",
+                    game.DefeatedEnemies + "기", OrdrMobileUiTheme.Gold);
+                GUILayout.Label("골드 +" + practice.GoldAwarded +
+                    " · 위습 +" + practice.RoundWispsAwarded);
                 foreach (var enemy in Combat.MobileEnemySnapshot())
                     if (enemy.Kind == CharacterEnemyKind.Boss)
                         GUILayout.Label("보스 HP " + enemy.Health + " / " + enemy.MaxHealth);
                 if (Combat.PracticeUnitEffects != null && Combat.PracticeUnitEffects.DeferredAuraGroups > 0)
-                    GUILayout.Label("오라 중첩 확인 대기 " + Combat.PracticeUnitEffects.DeferredAuraGroups + "건");
+                    OrdrMobileUiTheme.DrawStatusRow("오라",
+                        "처리 대기", OrdrMobileUiTheme.Gold);
             }
             if (GUILayout.Button(confirmReturnToTitle ? "확인 · 시작화면으로" : "시작화면으로",
                 GUILayout.MinHeight(56)))
@@ -821,10 +797,10 @@ namespace Ordr.Mobile.Unity
                 return;
             }
             var missions = gameplay.Missions;
-            GUILayout.Label("목표 달성 시 보상이 자동으로 지급됩니다.");
-            GUILayout.Label(missions.HasRerolled ? "미션 교체 사용 완료" :
-                missions.CurrentRound >= 10 ? "미션 교체 기간 종료" :
-                "10라운드 전까지 미완료 미션 1개를 한 번 교체할 수 있습니다.");
+            OrdrMobileUiTheme.DrawStatusRow("미션 교체",
+                missions.HasRerolled ? "사용 완료" :
+                missions.CurrentRound >= 10 ? "기간 종료" : "1회 가능",
+                OrdrMobileUiTheme.Gold);
             bool hasPendingReward = false;
             foreach (var slot in missions.Slots)
             {
@@ -834,7 +810,8 @@ namespace Ordr.Mobile.Unity
                     rule.MustFinishBeforeRound > 0 && missions.CurrentRound >= rule.MustFinishBeforeRound;
                 string state = slot.Completed ? "완료" :
                     slot.RewardPending ? "보상 지급 대기" :
-                    expired ? "기한 종료" : "진행 중";
+                    expired ? "기한 종료" :
+                    missions.ProgressAt(slot.Index) + "/" + rule.RequiredCount;
                 bool expanded = expandedMissionSlots.Contains(slot.Index);
                 if (OrdrMobileUiTheme.DrawAccordionHeader(
                     (slot.Index + 1) + ". " + rule.Name,
@@ -846,11 +823,10 @@ namespace Ordr.Mobile.Unity
                 }
                 if (!expanded) continue;
                 GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                GUILayout.Label((slot.Index + 1) + ". " + rule.Name +
-                    (slot.Completed ? "  · 완료" : slot.RewardPending ? "  · 보상 지급 대기" :
-                     expired ? "  · 기한 종료" : ""));
-                GUILayout.Label(rule.Objective);
-                GUILayout.Label("진행 " + missions.ProgressAt(slot.Index) + " / " + rule.RequiredCount);
+                GUILayout.Label(rule.Objective, OrdrMobileUiTheme.Subheading);
+                OrdrMobileUiTheme.DrawStatusRow("진행",
+                    missions.ProgressAt(slot.Index) + " / " + rule.RequiredCount,
+                    OrdrMobileUiTheme.Aqua);
                 if (rule.AllGambleTiersRequired)
                     GUILayout.Label("하급 " + missions.EventCount(OriginalMissionSignal.LowGambleAttempted) +
                         "  /  중급 " + missions.EventCount(OriginalMissionSignal.MidGambleAttempted) +
@@ -882,13 +858,14 @@ namespace Ordr.Mobile.Unity
                 }
                 GUILayout.EndVertical();
             }
-            GUILayout.Label("보유 특성포인트 " + controller.SharedEconomy.Wallet.Balance(
-                OriginalMissionWalletRewards.TraitPointsId));
+            OrdrMobileUiTheme.DrawStatusRow("특성포인트",
+                controller.SharedEconomy.Wallet.Balance(
+                    OriginalMissionWalletRewards.TraitPointsId).ToString(),
+                OrdrMobileUiTheme.Gold);
             if (missions.AllThreeCompleted)
                 GUILayout.Label("개인 미션 3개 완료 · 승리 시 추가 베리 1개 대상");
             if (hasPendingReward)
             {
-                GUILayout.Label("달성한 보상의 지급을 다시 시도할 수 있습니다.");
                 if (GUILayout.Button("미지급 보상 다시 처리", GUILayout.MinHeight(56f)))
                     gameplay.RetryRewards();
             }
@@ -939,7 +916,7 @@ namespace Ordr.Mobile.Unity
 
             var actions = controller.DedicatedSkills;
             if (!actions.IsConnected)
-                GUILayout.Label("원작 실행 기능 연결 대기");
+                GUILayout.Label("스킬 준비 중");
             else
             {
                 var available = actions.Available();
@@ -1055,21 +1032,21 @@ namespace Ordr.Mobile.Unity
             if (controller.PracticeBattle != null)
             {
                 var native = controller.MapBaseStats.Find(detail.Unit.Id);
-                GUILayout.Label(native?.Attack1 != null
-                    ? "연습: 객체 기본 공격 · 아래 연결 효과 사용 / 전체 스킬 미완성"
-                    : "기본 공격 없음 또는 원본 객체 연결 대기");
+                OrdrMobileUiTheme.DrawStatusRow("기본 공격",
+                    native?.Attack1 != null ? "연결" : "정보 없음",
+                    OrdrMobileUiTheme.Aqua);
                 var effects = Combat.PracticeUnitEffects;
                 if (effects != null)
                 {
                     var connected = effects.Describe(detail.Unit.Id, native?.OriginalRawcode);
-                    foreach (string text in connected) GUILayout.Label("연습 연결 · " + text);
-                    if (connected.Count == 0) GUILayout.Label("추가 효과 연결 없음 · 도감 설명은 실행 완료를 의미하지 않습니다.");
+                    foreach (string text in connected)
+                        GUILayout.Label("· " + text);
                 }
             }
             if (detail.Profile == null && detail.Unit.Id == "C-01")
-                GUILayout.Label("흔함 루피: 추가 공격 스킬 없음 (원본 JASS 등록 능력 기준)");
+                GUILayout.Label("추가 스킬 없음");
             else if (detail.Profile == null)
-                GUILayout.Label("상세 기술: 원본 도감 정보 미수집");
+                GUILayout.Label("스킬 정보 준비 중");
             else
             {
                 GUILayout.Label("스킬 " + detail.SkillCount +
@@ -1087,12 +1064,11 @@ namespace Ordr.Mobile.Unity
                 controller.OriginalUncommonAbilities != null)
             {
                 var abilities = controller.OriginalUncommonAbilities.ForUnit(detail.Unit.Id);
-                GUILayout.Label("원본 맵 고유 능력 " + abilities.Count +
-                    "개 (전투 실행은 독립 검증 필요)");
+                GUILayout.Label("고유 능력 " + abilities.Count + "개",
+                    OrdrMobileUiTheme.Subheading);
                 foreach (var native in abilities)
                     GUILayout.Label("· " + native.Name);
-                if (abilities.Count == 0)
-                    GUILayout.Label("원본에서 확인된 추가 공격 능력 없음. 조합·판매 능력은 별도.");
+
             }
             // Original W3X base values are display-only until hit damage,
             // modifiers and JASS timing have their independent verification.
@@ -1113,17 +1089,16 @@ namespace Ordr.Mobile.Unity
                 attack.MaximumBaseDamage.HasValue &&
                 attack.BaseAttacksPerSecond.HasValue)
             {
-                GUILayout.Label("맵 기본 공격력: " +
+                OrdrMobileUiTheme.DrawStatusRow("기본 공격력",
                     attack.MinimumBaseDamage.Value + "~" +
-                    attack.MaximumBaseDamage.Value);
-                GUILayout.Label("기본 공속: " +
-                    attack.BaseAttacksPerSecond.Value.ToString("0.##") +
-                    "회/초 (" + attack.AttackCooldownSeconds.Value.ToString("0.##") +
-                    "초/타)");
+                    attack.MaximumBaseDamage.Value, OrdrMobileUiTheme.Gold);
+                OrdrMobileUiTheme.DrawStatusRow("공격 간격",
+                    attack.AttackCooldownSeconds.Value.ToString("0.##") +
+                    "초", OrdrMobileUiTheme.Aqua);
             }
             else
             {
-                GUILayout.Label("공격력·기본 공속: 원본 수치 미확인");
+                GUILayout.Label("기본 공격 정보 없음");
             }
             GUILayout.EndVertical();
         }
@@ -1180,7 +1155,8 @@ namespace Ordr.Mobile.Unity
                 return;
             }
             var owned = Combat.MobileUnitSnapshot();
-            GUILayout.Label("보유 " + owned.Count + "기 · 이름/등급/번호 검색");
+            OrdrMobileUiTheme.DrawStatusRow("보유 유닛",
+                owned.Count + "기", OrdrMobileUiTheme.Aqua);
             string query = GUILayout.TextField(ownedSearch, GUILayout.MinHeight(56f));
             if (query != ownedSearch) { ownedSearch = query; ownedPage = 0; }
             GUILayout.BeginHorizontal();
@@ -1218,28 +1194,28 @@ namespace Ordr.Mobile.Unity
                 bool selected = Combat.Roster.SelectedId == entry.InstanceId;
                 bool expanded = expandedOwnedUnitId == entry.InstanceId;
                 string status = entry.Unit.Grade + " · #" + entry.InstanceId +
-                    (selected ? " · 선택됨" : "") +
+                    (selected ? " ✓" : "") +
                     (pendingBatchSales.Contains(entry.InstanceId) ? " · 판매 선택" : "");
-                if (OrdrMobileUiTheme.DrawAccordionHeader(entry.Unit.Name,
-                    status, expanded, OrdrMobileUiTheme.Aqua))
+                GUILayout.BeginHorizontal();
+                if (OrdrMobileUiTheme.DrawActionRow(entry.Unit.Name,
+                    status, OrdrMobileUiTheme.Aqua, 72f))
+                {
+                    Combat.Roster.Select(entry.InstanceId);
+                    selectedCatalogUnitId = entry.Unit.Id;
+                    notice = entry.Unit.Name + " 선택";
+                }
+                if (GUILayout.Button(expanded ? "접기" : "관리",
+                    GUILayout.Width(80f), GUILayout.MinHeight(72f)))
                 {
                     expandedOwnedUnitId = expanded ? (long?)null : entry.InstanceId;
                     pendingCommonSaleId = null;
                     pendingDecompositionId = null;
                     expanded = !expanded;
                 }
+                GUILayout.EndHorizontal();
                 if (!expanded) continue;
                 GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
                 DrawCharacterPortrait(entry.Unit.Id, 62f);
-                GUILayout.Label(entry.Unit.Name, OrdrMobileUiTheme.Subheading);
-                GUILayout.Label(status);
-                if (GUILayout.Button(selected ? "선택됨" : "선택",
-                    selected ? OrdrMobileUiTheme.SelectedTab : GUI.skin.button, GUILayout.MinHeight(56)))
-                {
-                    Combat.Roster.Select(entry.InstanceId);
-                    selectedCatalogUnitId = entry.Unit.Id;
-                    notice = entry.Unit.Name + " 선택";
-                }
                 if (GUILayout.Button("전장 위치 보기", GUILayout.MinHeight(56)))
                 {
                     var presenter = controller.GetComponent<OrdrUnitWorldPresenter>();
@@ -1362,7 +1338,7 @@ namespace Ordr.Mobile.Unity
             var grades = definitions.Grades;
             if (grades.Count == 0) return;
             catalogGradeIndex = Math.Max(0, Math.Min(catalogGradeIndex, grades.Count));
-            GUILayout.Label("이름·등급·유닛 번호로 검색");
+            GUILayout.Label("도감 검색", OrdrMobileUiTheme.Overline);
             string query = GUILayout.TextField(catalogSearch, GUILayout.MinHeight(56));
             if (query != catalogSearch) { catalogSearch = query; catalogPage = 0; }
             GUILayout.BeginHorizontal();
@@ -1399,17 +1375,16 @@ namespace Ordr.Mobile.Unity
             for (int i = catalogPage * pageSize; i < Math.Min(entries.Count, (catalogPage + 1) * pageSize); i++)
             {
                 var unit = entries[i];
-                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.BeginHorizontal();
                 DrawCharacterPortrait(unit.UnitId, 62f);
-                GUILayout.Label(unit.DisplayName, OrdrMobileUiTheme.Subheading);
-                GUILayout.Label(unit.Grade);
-                if (GUILayout.Button("정보 보기", GUILayout.MinHeight(56)))
+                if (OrdrMobileUiTheme.DrawActionRow(unit.DisplayName,
+                    unit.Grade, OrdrMobileUiTheme.Aqua, 72f))
                 {
                     selectedCatalogUnitId = unit.UnitId;
                     showUnitDetails = true;
                     scroll = Vector2.zero;
                 }
-                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
             }
             DrawPager(catalogPage, pages, next => catalogPage = next);
         }
@@ -1458,15 +1433,11 @@ namespace Ordr.Mobile.Unity
                 if (progression != null)
                     GUILayout.Label("스토리 연구 " + progression.Researches.Count +
                         "개 · 기본 특성포인트 " + progression.TraitPoints + "개");
-                if (scenario.NativeRewards.PendingCount > 0)
-                    GUILayout.Label("대상 미연결: 고대의 배·영웅 경험치·그린블러드 등 " +
-                        scenario.NativeRewards.PendingCount + "건");
-                GUILayout.Label("건물 객체 기본 체력 모델 · 스토리 전체 진행은 65R 전투 권장");
             }
             var catalog = controller.StoryBuildingCatalog;
             var world = controller.PracticeStoryBuildings;
             if (catalog == null)
-                GUILayout.Label("원본 스토리 건물 자료는 전투 시작 후 표시됩니다.");
+                GUILayout.Label("스토리 건물 준비 중", OrdrMobileUiTheme.Overline);
             else
             {
                 for (int stage = 1; stage <= 14; stage++)
@@ -1500,38 +1471,23 @@ namespace Ordr.Mobile.Unity
                         alive ? "건물 유지" :
                         status.StartsWith("연습 파괴 완료", StringComparison.Ordinal)
                             ? "파괴 완료" : status;
-                    bool expanded = expandedStoryStages.Contains(stage);
-                    if (OrdrMobileUiTheme.DrawAccordionHeader(
-                        stage.ToString("00") + "  " + building.Name,
-                        shortStatus, expanded, OrdrMobileUiTheme.Aqua))
-                    {
-                        if (expanded) expandedStoryStages.Remove(stage);
-                        else expandedStoryStages.Add(stage);
-                        expanded = !expanded;
-                    }
-                    if (!expanded) continue;
-                    GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label(building.Name + " · " + status,
-                        GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
+                    string name = stage.ToString("00") + "  " + building.Name;
                     if (controller.CanRequestOriginalStoryBuilding && !alive && !settled)
                     {
-                        if (GUILayout.Button("출현 요청", GUILayout.Width(105), GUILayout.MinHeight(58)))
+                        if (OrdrMobileUiTheme.DrawActionRow(name,
+                            "출현", OrdrMobileUiTheme.Gold))
                             ShowResult(controller.RequestOriginalStoryBuilding(stage));
                     }
-                    GUILayout.EndHorizontal();
-                    GUILayout.EndVertical();
+                    else
+                        OrdrMobileUiTheme.DrawStatusRow(name,
+                            shortStatus, OrdrMobileUiTheme.Aqua);
+                    if (alive && status.IndexOf("HP ", StringComparison.Ordinal) >= 0)
+                        GUILayout.Label(status, OrdrMobileUiTheme.Overline);
                 }
             }
-            if (!controller.CanRequestOriginalStoryBuilding && scenario == null)
-                GUILayout.Label("원본 스토리 등장 조건 및 실제 좌표 공급자 미연결 · " +
-                    "건물 목록만 표시됩니다.");
-            GUILayout.Label(scenario == null
-                ? "원본 정산 확인 전에는 보상을 자동 지급하지 않습니다."
-                : "원본 일반 재화·위습 지급, 연구·기본 특성포인트 진행 상태 적용. " +
-                  "고대의 배·특성 추가 보너스·영웅 경험치·그린블러드는 후속 연결이 필요합니다.");
             if (!controller.ManualActions.HasStoryService)
-                GUILayout.Label("원작 스토리 파견 서비스 미연결: 파견 기능 비활성");
+                OrdrMobileUiTheme.DrawStatusRow("스토리 파견",
+                    "준비 중", OrdrMobileUiTheme.Gold);
             if (OrdrMobileUiTheme.DrawAccordionHeader("스토리 파견 관리",
                 "유닛 목록", showStoryDispatch, OrdrMobileUiTheme.Gold))
                 showStoryDispatch = !showStoryDispatch;
@@ -1617,12 +1573,10 @@ namespace Ordr.Mobile.Unity
                 scroll = Vector2.zero;
             }
             GUILayout.EndHorizontal();
-            DrawOriginalJassAudit();
 
-            if (!controller.ManualActions.HasFusionService)
-                GUILayout.Label("원작 조합식·재료·비용 시스템 미연결");
-            else if (!controller.ManualActions.HasExecutableFusionService)
-                GUILayout.Label("원작 제작 트리거 미연결: 미리보기 전용, 재료 소비 불가");
+            if (!controller.ManualActions.HasExecutableFusionService)
+                OrdrMobileUiTheme.DrawStatusRow("제작",
+                    "준비 중", OrdrMobileUiTheme.Gold);
             if (GUILayout.Button("보유 재료 새로고침", GUILayout.MinHeight(64)))
             {
                 RefreshCurrent();
@@ -1655,20 +1609,11 @@ namespace Ordr.Mobile.Unity
                 string status = !offer.IsReady ? "부족 재료 " + offer.MissingMaterials.Count + "종" :
                     executable ? "재료 준비 · 제작 가능" : "재료 준비 · 제작 연결 대기";
                 bool expanded = expandedRecipeId == offer.RecipeId;
-                if (OrdrMobileUiTheme.DrawAccordionHeader(offer.Title,
-                    status, expanded, OrdrMobileUiTheme.Gold))
-                {
-                    expandedRecipeId = expanded ? null : offer.RecipeId;
-                    expanded = !expanded;
-                }
-                if (!expanded) continue;
-                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                GUILayout.Label(offer.Title, OrdrMobileUiTheme.Subheading);
-                GUILayout.Label(status);
                 GUILayout.BeginHorizontal();
                 bool previousEnabled = GUI.enabled;
                 GUI.enabled = previousEnabled && offer.IsReady && executable;
-                if (GUILayout.Button("제작 선택", OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(56)))
+                if (OrdrMobileUiTheme.DrawActionRow(offer.Title,
+                    "제작", OrdrMobileUiTheme.Gold, 72f))
                 {
                     pendingFusion = offer;
                     fusionRepeatCount = 1;
@@ -1677,7 +1622,17 @@ namespace Ordr.Mobile.Unity
                     notice = "제작 대기";
                 }
                 GUI.enabled = previousEnabled;
+                if (GUILayout.Button(expanded ? "접기" : "상세",
+                    GUILayout.Width(80f), GUILayout.MinHeight(72f)))
+                {
+                    expandedRecipeId = expanded ? null : offer.RecipeId;
+                    expanded = !expanded;
+                }
                 GUILayout.EndHorizontal();
+                if (!expanded) continue;
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                OrdrMobileUiTheme.DrawStatusRow("재료",
+                    status, OrdrMobileUiTheme.Aqua);
                 if (expandedRecipeId == offer.RecipeId)
                 {
                     if (GUILayout.Button(fusionBookmarks.Contains(offer.RecipeId) ? "즐겨찾기 해제" : "즐겨찾기 저장",
@@ -1721,7 +1676,7 @@ namespace Ordr.Mobile.Unity
             if (routeId != null)
             {
                 GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label("원본 재료 계보 (실제 제작 승인이 아님)");
+                GUILayout.Label("하위 조합 경로", OrdrMobileUiTheme.Subheading);
                 foreach (var step in routeSteps)
                     GUILayout.Label(new string('　', Math.Min(step.Depth, 5)) +
                         "· " + step.Name + " ×" + step.Count +
@@ -1749,6 +1704,10 @@ namespace Ordr.Mobile.Unity
                 GUI.enabled = previous;
                 GUILayout.EndHorizontal();
             }
+            if (GUILayout.Button(showOriginalAudit ? "원본 등록식 닫기" : "원본 등록식 보기",
+                GUILayout.MinHeight(56f)))
+                showOriginalAudit = !showOriginalAudit;
+            if (showOriginalAudit) DrawOriginalJassAudit();
         }
 
         private void DrawFusionConfirmation()
@@ -1803,7 +1762,7 @@ namespace Ordr.Mobile.Unity
             GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
             var targets = controller.ChoiceWispTargets;
             if (targets.Count == 0)
-                GUILayout.Label("원본 선택·조합 규칙 미연결");
+                GUILayout.Label("선택 대상 준비 중", OrdrMobileUiTheme.Overline);
             else if (controller.WispBalance(WispResourceIds.Choice) > 0)
             {
                 foreach (var target in targets)
@@ -1825,78 +1784,53 @@ namespace Ordr.Mobile.Unity
 
         private void DrawTreasureGacha()
         {
-            if (OrdrMobileUiTheme.DrawAccordionHeader("보물 탐색",
-                "탐색·결과", showTreasureDetails, OrdrMobileUiTheme.Aqua))
-                showTreasureDetails = !showTreasureDetails;
-            if (!showTreasureDetails) return;
-            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-            GUILayout.Label("보물 탐색",OrdrMobileUiTheme.SectionTitle);
-            var treasure=controller.OriginalTreasureHunt;
-            GUILayout.BeginVertical(GUI.skin.box);
-            if(treasure==null)
-                GUILayout.Label("원본 보물 좌표·보상 월드 연결 대기",
-                    OrdrMobileUiTheme.Explanation);
-            else
-            {
-                GUILayout.Label("등장 보물 "+treasure.SpawnCount+
-                    "개 · 남은 보물 "+treasure.UncollectedCount+"개",
-                    OrdrMobileUiTheme.Subheading);
-            }
-            bool valid=treasure!=null && controller.MobileTreasureGacha!=null &&
+            var treasure = controller.OriginalTreasureHunt;
+            if (treasure != null)
+                OrdrMobileUiTheme.DrawStatusRow("남은 보물",
+                    treasure.UncollectedCount + "개", OrdrMobileUiTheme.Aqua);
+
+            bool valid = treasure != null && controller.MobileTreasureGacha != null &&
                 controller.MobileTreasureGacha.CanAttempt &&
                 controller.HasOwnedOriginalGaimon &&
                 controller.GaimonDream.Applied &&
-                Combat!=null && Combat.Game.Phase==SessionPhase.Running &&
-                !controller.IsUnitPreparation && Combat.Game.CurrentWave>0;
-            bool before=GUI.enabled;
-            GUI.enabled=before && valid;
-            if (GUILayout.Button("보물 탐색",OrdrMobileUiTheme.PrimaryButton,
-                GUILayout.MinHeight(78f)))
+                Combat != null && Combat.Game.Phase == SessionPhase.Running &&
+                !controller.IsUnitPreparation && Combat.Game.CurrentWave > 0;
+            bool wasEnabled = GUI.enabled;
+            GUI.enabled = wasEnabled && valid;
+            if (OrdrMobileUiTheme.DrawActionRow("보물 탐색",
+                "실행", OrdrMobileUiTheme.Gold, 80f))
             {
-                lastTreasureResult=controller.RequestMobileTreasureGacha();
-                lastTreasureRound=Combat.Game.CurrentWave;
+                lastTreasureResult = controller.RequestMobileTreasureGacha();
+                lastTreasureRound = Combat.Game.CurrentWave;
             }
-            GUI.enabled=before;
-            if(!controller.HasOwnedOriginalGaimon)
-                GUILayout.Label("원본 가이몬(X-08/h0BG)을 실제 보유해야 탐색할 수 있습니다. 가이몬이 포함된 희귀위습 1% 분기는 확인됐지만 희귀위습 자동 지급은 아직 미완성입니다.",
-                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(86f));
-            if(controller.HasOwnedOriginalGaimon)
-                GUILayout.Label(controller.GaimonDream.Applied ?
-                    "가이몬의 꿈 1회 적용 · 보물 탐색 범위 "+controller.GaimonDream.SearchHalfExtent.ToString("0") :
-                    "가이몬의 꿈 원본 YL 플레이어 상태 확인 대기",
-                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(56f));
-            if(treasure==null)
-                GUILayout.Label("원본 보물 배치·실제 시전·보상 월드 연결 대기",
-                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(64f));
-            if(controller.MobileTreasureGacha==null ||
-                !controller.MobileTreasureGacha.CanAttempt)
-                GUILayout.Label("원작 대비 발견 확률과 탐색 횟수 검증이 미완료입니다. 임의 확률과 무료 보상을 지급하지 않습니다.",
-                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(86f));
-            // CCQ/R is automatic by policy. Only a witnessed original
-            // event produces information, never a second payout button.
-            if(controller.GaimonReveal != null &&
+            GUI.enabled = wasEnabled;
+            if (!valid)
+                GUILayout.Label(!controller.HasOwnedOriginalGaimon ? "가이몬 필요" :
+                    controller.MobileTreasureGacha == null ||
+                    !controller.MobileTreasureGacha.CanAttempt ? "탐색 준비 중" :
+                    !controller.GaimonDream.Applied ? "가이몬의 꿈 필요" :
+                    "진행 중인 라운드에서 사용 가능",
+                    OrdrMobileUiTheme.Overline);
+
+            // The verified reveal is only a status; it never pays out again.
+            if (controller.GaimonReveal != null &&
                 controller.GaimonReveal.LastAuthorizedReveal != null)
             {
-                var report=controller.GaimonReveal.LastAuthorizedReveal;
-                GUILayout.Label("가이몬 R 보물 공개 · "+report.OriginalRound+
-                    "라운드에 "+report.RevealedCount+
-                    "개 표시 (미수집 · 미지급)",
-                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(64f));
+                var report = controller.GaimonReveal.LastAuthorizedReveal;
+                OrdrMobileUiTheme.DrawStatusRow("최근 공개",
+                    report.RevealedCount + "개 · " + report.OriginalRound + "R",
+                    OrdrMobileUiTheme.Aqua);
             }
-            GUILayout.EndVertical();
-            if(lastTreasureResult!=null)
+            if (lastTreasureResult != null)
             {
-                GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label(lastTreasureRound+"라운드 탐색 결과",
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                GUILayout.Label(lastTreasureRound + "R 탐색 결과",
                     OrdrMobileUiTheme.Subheading);
-                GUILayout.Label(lastTreasureResult.Message,
-                    OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(60f));
-                if(lastTreasureResult.Collected>0)
-                    GUILayout.Label("획득 "+lastTreasureResult.RewardText(),
-                        OrdrMobileUiTheme.Explanation,GUILayout.MinHeight(60f));
+                GUILayout.Label(lastTreasureResult.Message);
+                if (lastTreasureResult.Collected > 0)
+                    GUILayout.Label("획득 " + lastTreasureResult.RewardText());
                 GUILayout.EndVertical();
             }
-            GUILayout.EndVertical();
         }
 
         private void DrawAutomaticWispStatus(string name, string id)
@@ -2025,40 +1959,25 @@ namespace Ordr.Mobile.Unity
 
         private void DrawHelperCow()
         {
-            if (OrdrMobileUiTheme.DrawAccordionHeader("도움소 세부 관리",
-                "마나·항법", showHelperDetails, OrdrMobileUiTheme.Aqua))
-                showHelperDetails = !showHelperDetails;
-            if (!showHelperDetails) return;
-            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
             OriginalHelperCowManaSnapshot mana;
             bool connected = controller.ManualActions.TryGetHelperCowMana(out mana);
-            GUILayout.Label(connected
-                ? "도움소 h08A · 마나 " + mana.Current.ToString("0.#") +
-                  " / " + mana.Maximum.ToString("0.#")
-                : "도움소 생성 또는 실제 마나 월드 연결 대기");
-            GUILayout.Label("랜덤위습 보유 " +
-                controller.WispBalance(WispResourceIds.Random) + "개");
+            OrdrMobileUiTheme.DrawStatusRow("도움소 마나",
+                connected ? mana.Current.ToString("0.#") +
+                    "/" + mana.Maximum.ToString("0.#") : "준비 중",
+                OrdrMobileUiTheme.Aqua);
+            OrdrMobileUiTheme.DrawStatusRow("랜덤위습",
+                controller.WispBalance(WispResourceIds.Random) + "개",
+                OrdrMobileUiTheme.Gold);
             if (controller.Original323HelperCow != null)
             {
                 var helper = controller.Original323HelperCow;
-                var values = new Ordr323OriginalHelperCastDataSource();
-                foreach (string ability in new[] { "A0BZ", "A07T" })
-                {
-                    int level = helper.GetAbilityLevel(ability);
-                    OriginalHelperCowVerifiedCastData verified;
-                    if (values.TryRead(ability, level, out verified))
-                        GUILayout.Label(ability + " · 레벨 " + level +
-                            " · 마나 " + verified.ManaCost.ToString("0") +
-                            " · 쿨타임 " + verified.CooldownSeconds.ToString("0") + "초");
-                    else
-                        GUILayout.Label(ability + " · 원본 시전 수치 확인 필요");
-                }
                 var navigation = controller.Original323HelperNavigation;
                 if (navigation != null && navigation.ChosenNavigation != null)
-                    GUILayout.Label("항법 선택: " + navigation.ChosenNavigation);
+                    OrdrMobileUiTheme.DrawStatusRow("항법",
+                        navigation.ChosenNavigation, OrdrMobileUiTheme.Aqua);
                 else if (navigation != null)
                 {
-                    GUILayout.Label("항법은 21라운드부터 단 한 번 선택합니다.");
+                    GUILayout.Label("항법 선택 · 21R부터 1회", OrdrMobileUiTheme.Overline);
                     bool wasEnabled = GUI.enabled;
                     GUI.enabled = wasEnabled && navigation.CanChooseMaximumOutput;
                     if (!pendingMaximumOutput && !pendingAlchemy)
@@ -2102,26 +2021,24 @@ namespace Ordr.Mobile.Unity
                 }
                 if (helper.ManaPotionChargesRemaining > 0)
                 {
-                    GUILayout.Label("마나 포션: " + helper.ManaPotionChargesRemaining +
-                        "회 남음 · 성공적으로 시전한 뒤 마나 300 회복");
+                    OrdrMobileUiTheme.DrawStatusRow("마나 포션",
+                        helper.ManaPotionChargesRemaining + "회",
+                        OrdrMobileUiTheme.Gold);
                     bool wasEnabled = GUI.enabled;
                     GUI.enabled = wasEnabled && controller.Original323ManaPotion != null &&
                         controller.Original323ManaPotion.CanAttempt;
-                    if (GUILayout.Button("마나 포션 사용", GUILayout.MinHeight(64)))
+                    if (GUILayout.Button("마나 포션 사용 · 마나 +300",
+                        OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
                         notice = controller.UseOriginal323ManaPotion()
                             ? "마나 포션 사용 완료" : "원본 마나 포션 시전 조건 미충족";
                     GUI.enabled = wasEnabled;
                     if (controller.Original323ManaPotion == null)
-                        GUILayout.Label("포션 시전 비용 검증 대기: 사용 불가");
+                        GUILayout.Label("마나 포션 사용 준비 중", OrdrMobileUiTheme.Overline);
                 }
             }
-            GUILayout.Label(controller.HelperCowAutoArea == null
-                ? "자동 광역 스킬: 원본 피해·대상 판정기 미연결"
-                : "자동 광역 스킬: 전투 조건 충족 시 검증된 처리기로 실행");
-            GUILayout.Label("A07T의 A04R은 지속 능력 레벨 증가(+5/+8)이며 스턴이 아닙니다.");
-
-            GUILayout.Label("마나 충전은 위습 → 랜덤위습 → 도움소 마나 충전에서 이용합니다.");
-            GUILayout.EndVertical();
+            OrdrMobileUiTheme.DrawStatusRow("자동 광역 지원",
+                controller.HelperCowAutoArea == null ? "준비 중" : "자동 적용",
+                OrdrMobileUiTheme.Aqua);
         }
 
         private void DrawAlchemyPanel()
@@ -2129,10 +2046,12 @@ namespace Ordr.Mobile.Unity
             if (controller.Original323HelperCow == null ||
                 !controller.Original323HelperCow.AlchemyNavigationChosen)
             {
-                GUILayout.Label("도움소에서 연금술 항법을 선택하면 열립니다.");
+                OrdrMobileUiTheme.DrawStatusRow("연금술",
+                    "항법 선택 필요", OrdrMobileUiTheme.Aqua);
                 return;
             }
-            GUILayout.Label("연금술 · 마나 100 / 쿨타임 5초");
+            OrdrMobileUiTheme.DrawStatusRow("연금술",
+                "마나 100 · 5초", OrdrMobileUiTheme.Aqua);
             DrawAlchemyTargetDropdown();
         }
 
@@ -2197,13 +2116,13 @@ namespace Ordr.Mobile.Unity
             var recipe = link == null || refunds == null ? null : refunds.Find(link.Rawcode);
             if (recipe == null)
             {
-                GUILayout.Label("이름상 원본 R3 환급표 미확인: 대상의 실제 ID 검증 필요");
+                GUILayout.Label("재료 환급 정보 준비 중", OrdrMobileUiTheme.Overline);
             }
             else
             {
                 // Names are preview hints only; the locked world inspects the
                 // actual original target rawcode immediately before spending.
-                GUILayout.Label("원본 조합 재료 환급 미리보기 (실제 대상 검증 전)");
+                GUILayout.Label("환급 재료", OrdrMobileUiTheme.Subheading);
                 if (recipe.RefundUnits.Count == 0)
                     GUILayout.Label("반환되는 UNIT 재료 없음");
                 foreach (var unit in recipe.RefundUnits)
@@ -2217,7 +2136,7 @@ namespace Ordr.Mobile.Unity
             var casting = controller.Original323AlchemyCasting;
             if (casting == null)
             {
-                GUILayout.Label("원본 객체/원자적 소비 월드 미연결 · 실행 대기");
+                GUILayout.Label("연금술 실행 준비 중", OrdrMobileUiTheme.Overline);
                 return;
             }
             if (casting.CooldownRemaining > 0)
@@ -2232,7 +2151,7 @@ namespace Ordr.Mobile.Unity
             }
             else
             {
-                GUILayout.Label("선택한 유닛이 영구 소비됩니다. 원본 조건과 재료는 확정 시 재검증됩니다.");
+                GUILayout.Label("이 유닛이 영구 소비됩니다. 계속할까요?");
                 if (GUILayout.Button("유닛 소비 및 연금술 확정", GUILayout.MinHeight(64)))
                 {
                     var result = controller.TryUseOriginal323Alchemy(selected.InstanceId);
@@ -2339,23 +2258,50 @@ namespace Ordr.Mobile.Unity
         {
             if (!controller.ManualActions.HasEconomyService &&
                 category != ManualEconomyCategory.Wisp)
-                GUILayout.Label("원작 경제 서비스 미연결");
-            if (GUILayout.Button("목록 새로고침", GUILayout.MinHeight(56)))
-                RefreshCurrent();
-            if (category == ManualEconomyCategory.Gambling && controller.PracticeMoneyGambling != null)
+                OrdrMobileUiTheme.DrawStatusRow("거래",
+                    "준비 중", OrdrMobileUiTheme.Gold);
+
+            if (category == ManualEconomyCategory.Gambling &&
+                controller.PracticeMoneyGambling != null)
             {
                 var shop = controller.PracticeMoneyGambling;
-                GUILayout.Label("일반 돈 도박 재고 " + shop.Stock + "/3" +
-                    (shop.Stock < SourceModelRegularMoneyGambling.MaximumStock ?
-                        " · 다음 충전 " + Math.Ceiling(shop.SecondsUntilRestock) + "초" : "") +
-                    " · 사용 " + shop.PurchaseCount + "회 / 반환 " + shop.GoldReturned + "골드");
-                GUILayout.Label("현재 연습에서는 일반 돈 도박만 실행할 수 있습니다.");
+                OrdrMobileUiTheme.DrawStatusRow("일반 돈 도박",
+                    shop.Stock + "/3회", OrdrMobileUiTheme.Gold);
+                if (shop.Stock < SourceModelRegularMoneyGambling.MaximumStock)
+                    GUILayout.Label("다음 충전 " +
+                        Math.Ceiling(shop.SecondsUntilRestock) + "초");
             }
+
+            // Selection is one tap, but real currency spending still confirms.
+            if (category != ManualEconomyCategory.Wisp && pendingEconomy != null)
+            {
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                GUILayout.Label((category == ManualEconomyCategory.Gambling ?
+                    "도박 확인 · " : "구매 확인 · ") + pendingEconomy.Title,
+                    OrdrMobileUiTheme.Subheading);
+                GUILayout.Label(pendingEconomy.OriginalPriceAndRules);
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button(category == ManualEconomyCategory.Gambling
+                    ? "도박 실행" : "구매 확정", OrdrMobileUiTheme.PrimaryButton,
+                    GUILayout.MinHeight(66f)))
+                {
+                    ShowResult(controller.ManualActions.RequestEconomyAction(
+                        category, pendingEconomy.Id));
+                    pendingEconomy = null;
+                    RefreshCurrent();
+                }
+                if (GUILayout.Button("취소", GUILayout.MinHeight(66f)))
+                    pendingEconomy = null;
+                GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
+            }
+
+            if (GUILayout.Button("새로고침", GUILayout.MinHeight(56f)))
+                RefreshCurrent();
             if (economyOffers.Count == 0)
-                GUILayout.Label("현재 이 메뉴에서 실행할 수 있는 상품이 없습니다.");
+                GUILayout.Label("이용 가능한 항목 없음");
             foreach (var offer in economyOffers)
             {
-                // Already available as immediate 1/5/10-use shortcuts.
                 if (category == ManualEconomyCategory.Wisp &&
                     (offer.Id == OriginalRandomWispResourceExchange.OfferId ||
                      offer.Id == OriginalHelperCowRules.OfferId))
@@ -2369,43 +2315,14 @@ namespace Ordr.Mobile.Unity
                         RunWispDirect(offer.Title, () =>
                             controller.ManualActions.RequestEconomyAction(category, id));
                     }
-                    continue;
                 }
-                string key = category + ":" + offer.Id;
-                bool expanded = expandedEconomyOffers.Contains(key);
-                if (OrdrMobileUiTheme.DrawAccordionHeader(offer.Title,
-                    "상세 보기", expanded, OrdrMobileUiTheme.Gold))
-                {
-                    if (expanded) expandedEconomyOffers.Remove(key);
-                    else expandedEconomyOffers.Add(key);
-                    expanded = !expanded;
-                }
-                if (!expanded) continue;
-                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                GUILayout.Label(offer.Title);
-                GUILayout.Label(offer.OriginalPriceAndRules);
-                if (GUILayout.Button("선택", GUILayout.MinHeight(64)))
+                else if (OrdrMobileUiTheme.DrawActionRow(offer.Title,
+                    "선택", OrdrMobileUiTheme.Gold))
                 {
                     pendingEconomy = offer;
-                    notice = "구매 대기";
+                    scroll = Vector2.zero;
+                    notice = "구매 확인";
                 }
-                GUILayout.EndVertical();
-            }
-            if (category != ManualEconomyCategory.Wisp && pendingEconomy != null)
-            {
-                GUILayout.Label("확인: " + pendingEconomy.Title);
-                GUILayout.Label(pendingEconomy.OriginalPriceAndRules);
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("직접 실행", GUILayout.MinHeight(66)))
-                {
-                    ShowResult(controller.ManualActions.RequestEconomyAction(
-                        category, pendingEconomy.Id));
-                    pendingEconomy = null;
-                    RefreshCurrent();
-                }
-                if (GUILayout.Button("취소", GUILayout.MinHeight(66)))
-                    pendingEconomy = null;
-                GUILayout.EndHorizontal();
             }
         }
 
