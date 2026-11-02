@@ -31,6 +31,8 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle accordionMeta;
         private static GUIStyle accordionArrow;
         private static GUIStyle accordionBody;
+        private static GUIStyle wispCountCaption;
+        private static GUIStyle wispCountValue;
 
         internal static GUIStyle SelectedTab { get { return selectedTab; } }
         internal static GUIStyle PrimaryButton { get { return primaryButton; } }
@@ -192,6 +194,16 @@ namespace Ordr.Mobile.Unity
             accordionBody = new GUIStyle(themedSkin.box);
             accordionBody.margin = new RectOffset(7,7,0,12);
             accordionBody.padding = new RectOffset(14,14,14,16);
+            wispCountCaption = new GUIStyle(accordionMeta);
+            wispCountCaption.fontSize = 13;
+            wispCountCaption.fontStyle = FontStyle.Bold;
+            wispCountCaption.alignment = TextAnchor.MiddleCenter;
+            wispCountCaption.normal.textColor = Muted;
+            wispCountValue = new GUIStyle(accordionTitle);
+            wispCountValue.fontSize = 27;
+            wispCountValue.fontStyle = FontStyle.Bold;
+            wispCountValue.alignment = TextAnchor.MiddleCenter;
+            wispCountValue.normal.textColor = Color.white;
             themedSkin.toggle = new GUIStyle(source.toggle);
             themedSkin.toggle.fontSize = 18;
             themedSkin.toggle.wordWrap = true;
@@ -294,7 +306,7 @@ namespace Ordr.Mobile.Unity
         // Text and collapse state are supplied by the owner, never inferred
         // from gameplay data or used to execute an action.
         internal static bool DrawAccordionHeader(string title, string meta,
-            bool expanded, Color tint, float height = 72f)
+            bool expanded, Color tint, float height = 72f, bool countBadge = false)
         {
             Rect area = GUILayoutUtility.GetRect(0f, height,
                 GUILayout.ExpandWidth(true));
@@ -307,20 +319,24 @@ namespace Ordr.Mobile.Unity
                 expanded ? "▼" : "▶",accordionArrow);
             float available = Mathf.Max(100f,area.width-70f);
             float metaWidth = string.IsNullOrEmpty(meta) ? 0f :
+                countBadge ? 118f :
                 Mathf.Min(Mathf.Max(82f,available*.32f),170f);
             float titleWidth = Mathf.Max(40f,area.width-76f-metaWidth);
             GUI.Label(new Rect(area.x+52f,area.y+9f,titleWidth,area.height-18f),
                 title,accordionTitle);
             if (metaWidth>0f)
-                GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
+            {
+                if (countBadge) DrawWispCountBadge(area, meta, tint);
+                else GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
                     metaWidth,area.height-18f),meta,accordionMeta);
+            }
             return pressed;
         }
 
         // A tappable operation row: one press is the action, never an expansion.
         // The caller owns eligibility, resource checks and the transaction.
         internal static bool DrawActionRow(string title, string meta,
-            Color tint, float height = 72f)
+            Color tint, float height = 72f, bool countBadge = false)
         {
             Rect area = GUILayoutUtility.GetRect(0f, height,
                 GUILayout.ExpandWidth(true));
@@ -332,14 +348,43 @@ namespace Ordr.Mobile.Unity
                 "▶",accordionArrow);
             float available = Mathf.Max(100f,area.width-70f);
             float metaWidth = string.IsNullOrEmpty(meta) ? 0f :
+                countBadge ? 118f :
                 Mathf.Min(Mathf.Max(82f,available*.32f),170f);
             float titleWidth = Mathf.Max(40f,area.width-76f-metaWidth);
             GUI.Label(new Rect(area.x+52f,area.y+9f,titleWidth,area.height-18f),
                 title,accordionTitle);
             if (metaWidth>0f)
-                GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
+            {
+                if (countBadge) DrawWispCountBadge(area, meta, tint);
+                else GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
                     metaWidth,area.height-18f),meta,accordionMeta);
+            }
             return pressed;
+        }
+
+        // Keep quantities legible even when a zero-balance action is disabled.
+        // This is a read-only overlay; the parent row remains the only touch target.
+        private static void DrawWispCountBadge(Rect area, string count, Color tint)
+        {
+            float width = 112f;
+            float height = Mathf.Min(60f, area.height - 10f);
+            Rect badge = new Rect(area.xMax - width - 12f,
+                area.y + (area.height - height) * .5f, width, height);
+            bool wasEnabled = GUI.enabled;
+            GUI.enabled = true;
+            GUI.Box(badge, GUIContent.none, accordionOpen);
+            Stroke(new Rect(badge.x+4f, badge.y+8f, 4f,
+                Mathf.Max(0f,badge.height-16f)), tint);
+            GUI.Label(new Rect(badge.x+11f,badge.y+3f,badge.width-18f,18f),
+                "남은 수량", wispCountCaption);
+            var value = new GUIStyle(wispCountValue);
+            var content = new GUIContent(count);
+            while (value.fontSize > 16 &&
+                value.CalcSize(content).x > badge.width-18f)
+                value.fontSize--;
+            GUI.Label(new Rect(badge.x+10f,badge.y+20f,
+                badge.width-16f,badge.height-23f),content,value);
+            GUI.enabled = wasEnabled;
         }
 
         internal static void DrawResearchPlate(Rect area, int ordinal,

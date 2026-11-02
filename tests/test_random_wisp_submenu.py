@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PANEL = ROOT / "Assets/Scripts/Unity/OrdrMobileTouchPanel.cs"
 CONTROLLER = ROOT / "Assets/Scripts/Unity/OrdrCharacterCombatController.cs"
 MANUAL = ROOT / "Assets/Scripts/Mobile/MobileManualInteraction.cs"
+THEME = ROOT / "Assets/Scripts/Unity/OrdrMobileUiTheme.cs"
 
 
 class RandomWispSubmenuTests(unittest.TestCase):
@@ -66,6 +67,33 @@ class RandomWispSubmenuTests(unittest.TestCase):
         self.assertIn("RunWispDirect(offer.Title", economy)
         self.assertIn("pendingEconomy = offer", economy)
         self.assertIn("OrdrMobileUiTheme.AccordionBody", economy)
+
+    def test_evolution_selection_is_in_units_not_wisp_and_counts_are_prominent(self):
+        units = self.panel.split("private void DrawUnits()", 1)[1].split(
+            "private void DrawUnitDetails(", 1)[0]
+        wisp = self.panel.split("private void DrawWisp()", 1)[1].split(
+            "private void RunWispDirect(", 1)[0]
+        evo = self.panel.split("private void DrawStartingEvolutionSelection()", 1)[1].split(
+            "private void DrawUnitDetails(", 1)[0]
+        self.assertIn("DrawStartingEvolutionSelection();", units)
+        self.assertIn("if (!browsingFullCatalog)", units)
+        self.assertIn("StartingEvolutionActorId", evo)
+        self.assertIn("SharedEconomy.Units.Select(id)", evo)
+        self.assertNotIn("StartingEvolutionActorId", wisp)
+        self.assertNotIn("빈 캐릭터 우선", wisp)
+        self.assertNotIn("원본 위습 자동 소환", wisp)
+
+        random = self.panel.split("private void DrawRandomWispActions()", 1)[1].split(
+            "private void DrawHelperCow()", 1)[0]
+        automatic = self.panel.split("private void DrawAutomaticWispStatus(", 1)[1].split(
+            "private void DrawWisp()", 1)[0]
+        self.assertIn("OrdrMobileUiTheme.Gold, 80f, true", random)
+        self.assertIn("OrdrMobileUiTheme.Aqua, 76f, true", automatic)
+        theme = THEME.read_text(encoding="utf-8")
+        self.assertIn("DrawWispCountBadge(", theme)
+        self.assertIn('"남은 수량"', theme)
+        self.assertIn("wispCountValue.fontSize = 27;", theme)
+        self.assertIn("GUI.enabled = wasEnabled;", theme)
 
     def test_helper_panel_has_no_second_mana_recharge_transaction(self):
         helper = self.panel.split("private void DrawHelperCow()", 1)[1].split(

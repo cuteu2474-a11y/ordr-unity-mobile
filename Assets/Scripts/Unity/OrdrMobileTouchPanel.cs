@@ -1011,6 +1011,8 @@ namespace Ordr.Mobile.Unity
                 DrawUnitDetails(detail);
                 return;
             }
+            if (!browsingFullCatalog)
+                DrawStartingEvolutionSelection();
             if (detail != null)
             {
                 GUILayout.BeginVertical(GUI.skin.box);
@@ -1024,6 +1026,25 @@ namespace Ordr.Mobile.Unity
             }
             if (browsingFullCatalog) DrawCatalogIndex(definitions);
             else DrawOwnedUnitIndex();
+        }
+
+        private void DrawStartingEvolutionSelection()
+        {
+            if (!controller.StartingEvolutionActorId.HasValue ||
+                controller.SharedEconomy == null) return;
+
+            long id = controller.StartingEvolutionActorId.Value;
+            GUILayout.BeginHorizontal(OrdrMobileUiTheme.AccordionBody);
+            GUILayout.Label("시작 진화체 (비전투) 1개",
+                OrdrMobileUiTheme.Subheading,
+                GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
+            if (GUILayout.Button("선택", OrdrMobileUiTheme.PrimaryButton,
+                GUILayout.Width(90f), GUILayout.MinHeight(64f)))
+            {
+                controller.SharedEconomy.Units.Select(id);
+                notice = "진화체를 선택했습니다. 진화 기능은 원본 연결 대기 중입니다.";
+            }
+            GUILayout.EndHorizontal();
         }
 
         private void DrawUnitDetails(UnitImplementationDefinition detail)
@@ -1888,8 +1909,7 @@ namespace Ordr.Mobile.Unity
             GUI.enabled = wasEnabled && ready && balance > 0 &&
                 controller.CanProcessAutomaticWisps;
             if (OrdrMobileUiTheme.DrawActionRow(name,
-                string.IsNullOrEmpty(failure) ? balance + "개" :
-                    "보류 · " + balance + "개", OrdrMobileUiTheme.Aqua))
+                balance + "개", OrdrMobileUiTheme.Aqua, 76f, true))
                 notice = controller.RequestAutomaticWispRetry().Message;
             GUI.enabled = wasEnabled;
             // A failed automatic grant is never rerolled; keep its reason visible.
@@ -1899,22 +1919,8 @@ namespace Ordr.Mobile.Unity
 
         private void DrawWisp()
         {
-            if (controller.StartingEvolutionActorId.HasValue &&
-                controller.SharedEconomy != null)
-            {
-                long id = controller.StartingEvolutionActorId.Value;
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("시작 진화체 (비전투) 1개", GUILayout.ExpandWidth(true));
-                if (GUILayout.Button("선택", GUILayout.Width(76), GUILayout.MinHeight(56)))
-                {
-                    controller.SharedEconomy.Units.Select(id);
-                    notice = "진화체를 선택했습니다. 진화 기능은 원본 연결 대기 중입니다.";
-                }
-                GUILayout.EndHorizontal();
-            }
             DrawRandomWispActions();
             GUILayout.Space(10f);
-            GUILayout.Label("원본 위습 자동 소환", OrdrMobileUiTheme.SectionTitle);
             // Choice Wisp belongs exclusively to the Fusion menu; its balance
             // is already shown in the top resource strip.
             DrawAutomaticWispStatus("안흔함위습", WispResourceIds.Uncommon);
@@ -1974,7 +1980,7 @@ namespace Ordr.Mobile.Unity
         {
             if (OrdrMobileUiTheme.DrawAccordionHeader("랜덤위습",
                 controller.WispBalance(WispResourceIds.Random) + "개",
-                showRandomWispActions, OrdrMobileUiTheme.Gold))
+                showRandomWispActions, OrdrMobileUiTheme.Gold, 80f, true))
                 showRandomWispActions = !showRandomWispActions;
             if (!showRandomWispActions) return;
 
