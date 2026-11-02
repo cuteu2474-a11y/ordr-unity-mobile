@@ -44,11 +44,9 @@ namespace Ordr.Mobile.Unity
         private float nextFusionRefresh;
         private string fusionInventorySignature;
         private int selectedPracticeRounds = 65;
-        private bool browsingFullCatalog;
         private bool showUnitDetails;
         private long? expandedOwnedUnitId;
         private string expandedRecipeId;
-        private string catalogSearch = "";
         private bool showChoiceWisp;
         private bool showRandomWispActions = true;
         private readonly HashSet<string> expandedResearchCodes =
@@ -57,10 +55,7 @@ namespace Ordr.Mobile.Unity
         private bool showStoryDispatch;
         private bool showOriginalAudit;
         private readonly Dictionary<Tab, Vector2> tabScrollPositions = new Dictionary<Tab, Vector2>();
-        private int catalogGradeIndex;
-        private int catalogPage;
         private int ownedPage;
-        private string ownedSearch = "";
         private OwnedRosterFilter ownedFilter = OwnedRosterFilter.All;
         private bool showRoundHistory;
         private readonly List<long> pendingBatchSales = new List<long>();
@@ -953,34 +948,20 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndArea();
         }
 
-        // Every catalog unit can be inspected; only units actually owned
-        // by the running world appear in the live selection list. No free spawns.
+        // The game UI shows actual owned units only; catalog data remains in the engine.
         private void DrawUnits()
         {
             var definitions = controller.UnitDefinitions;
             if (definitions == null)
             {
-                GUILayout.Label("유닛 카탈로그를 불러오는 중입니다.");
+                GUILayout.Label("유닛 정보를 불러오는 중입니다.");
                 return;
             }
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(browsingFullCatalog ? "전체 도감" : "보유 유닛",
-                OrdrMobileUiTheme.Subheading, GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
-            if (GUILayout.Button(browsingFullCatalog ? "보유 목록" : "전체 도감",
-                GUILayout.Width(110), GUILayout.MinHeight(56)))
-            {
-                browsingFullCatalog = !browsingFullCatalog;
-                showUnitDetails = false;
-                selectedCatalogUnitId = null;
-                pendingCommonSaleId = null;
-                pendingDecompositionId = null;
-                scroll = Vector2.zero;
-            }
-            GUILayout.EndHorizontal();
+            GUILayout.Label("보유 유닛", OrdrMobileUiTheme.Subheading);
             var detail = definitions.Find(selectedCatalogUnitId);
             if (showUnitDetails && detail != null)
             {
-                if (GUILayout.Button("목록으로 돌아가기", GUILayout.MinHeight(56)))
+                if (GUILayout.Button("목록으로", GUILayout.MinHeight(56)))
                 {
                     showUnitDetails = false;
                     scroll = Vector2.zero;
@@ -988,40 +969,41 @@ namespace Ordr.Mobile.Unity
                 DrawUnitDetails(detail);
                 return;
             }
-            if (!browsingFullCatalog)
-                DrawStartingEvolutionSelection();
+            DrawStartingEvolutionSelection();
             if (detail != null)
             {
                 GUILayout.BeginVertical(GUI.skin.box);
                 GUILayout.Label("선택: " + detail.DisplayName, OrdrMobileUiTheme.Subheading);
-                if (GUILayout.Button("스킬·공격 정보 보기", GUILayout.MinHeight(56)))
+                if (GUILayout.Button("스킬·공격 정보", GUILayout.MinHeight(56)))
                 {
                     showUnitDetails = true;
                     scroll = Vector2.zero;
                 }
                 GUILayout.EndVertical();
             }
-            if (browsingFullCatalog) DrawCatalogIndex(definitions);
-            else DrawOwnedUnitIndex();
+            DrawOwnedUnitIndex();
         }
 
         private void DrawStartingEvolutionSelection()
         {
             if (!controller.StartingEvolutionActorId.HasValue ||
-                controller.SharedEconomy == null) return;
-
+                controller.SharedEconomy == null || Combat == null) return;
             long id = controller.StartingEvolutionActorId.Value;
-            GUILayout.BeginHorizontal(OrdrMobileUiTheme.AccordionBody);
-            GUILayout.Label("시작 진화체 (비전투) 1개",
-                OrdrMobileUiTheme.Subheading,
-                GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
-            if (GUILayout.Button("선택", OrdrMobileUiTheme.PrimaryButton,
-                GUILayout.Width(90f), GUILayout.MinHeight(64f)))
+            var progress = controller.EvolutionProgress;
+            string status = "라인 처치 " + (progress == null ? 0 : progress.LineDefeats) + "회" +
+                (Combat.Roster.SelectedId == id ? " · 선택됨" : " · 성장 중");
+            if (OrdrMobileUiTheme.DrawActionRow("진화체", status,
+                OrdrMobileUiTheme.Aqua, 72f))
             {
-                controller.SharedEconomy.Units.Select(id);
-                notice = "진화체를 선택했습니다. 진화 기능은 원본 연결 대기 중입니다.";
+                try
+                {
+                    if (Combat.Roster.Get(id).UnitId != Original323SoloStartProfile.EvolutionRawcode)
+                        return;
+                    controller.SharedEconomy.Units.Select(id);
+                    notice = "진화체 선택";
+                }
+                catch (KeyNotFoundException) { notice = "진화체를 찾을 수 없습니다."; }
             }
-            GUILayout.EndHorizontal();
         }
 
         private void DrawUnitDetails(UnitImplementationDefinition detail)
@@ -1157,28 +1139,25 @@ namespace Ordr.Mobile.Unity
             var owned = Combat.MobileUnitSnapshot();
             OrdrMobileUiTheme.DrawStatusRow("보유 유닛",
                 owned.Count + "기", OrdrMobileUiTheme.Aqua);
-            string query = GUILayout.TextField(ownedSearch, GUILayout.MinHeight(56f));
-            if (query != ownedSearch) { ownedSearch = query; ownedPage = 0; }
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("전체" + (ownedFilter == OwnedRosterFilter.All ? " ✓" : ""), GUILayout.MinHeight(56)))
+            if (GUILayout.Button("전체" + (ownedFilter == OwnedRosterFilter.All ? " ✓" : ""),
+                GUILayout.MinHeight(56)))
             { ownedFilter = OwnedRosterFilter.All; ownedPage = 0; }
-            if (GUILayout.Button("판매 가능" + (ownedFilter == OwnedRosterFilter.Saleable ? " ✓" : ""), GUILayout.MinHeight(56)))
+            if (GUILayout.Button("판매 가능" + (ownedFilter == OwnedRosterFilter.Saleable ? " ✓" : ""),
+                GUILayout.MinHeight(56)))
             { ownedFilter = OwnedRosterFilter.Saleable; ownedPage = 0; }
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("분해 가능" + (ownedFilter == OwnedRosterFilter.Decomposable ? " ✓" : ""), GUILayout.MinHeight(56)))
+            if (GUILayout.Button("분해 가능" + (ownedFilter == OwnedRosterFilter.Decomposable ? " ✓" : ""),
+                GUILayout.MinHeight(56)))
             { ownedFilter = OwnedRosterFilter.Decomposable; ownedPage = 0; }
-            if (GUILayout.Button("조건 초기화", GUILayout.MinHeight(56)))
-            { ownedSearch = ""; ownedFilter = OwnedRosterFilter.All; ownedPage = 0; }
             GUILayout.EndHorizontal();
             int matches, pages, resolved;
-            var displayed = MobileOwnedRosterBrowser.Select(owned, ownedSearch,
-                ownedFilter, u => controller.LowerGradeSales != null &&
-                    controller.LowerGradeSales.CanSell(u), ownedPage, 8,
+            var displayed = MobileOwnedRosterBrowser.Select(owned, "",
+                ownedFilter, x => controller.LowerGradeSales != null &&
+                    controller.LowerGradeSales.CanSell(x), ownedPage, 8,
                 out matches, out pages, out resolved);
             ownedPage = resolved;
-            GUILayout.Label("검색 " + matches + "기 · " + (resolved + 1) + "/" + pages + "쪽");
-            if (matches == 0) GUILayout.Label("조건에 맞는 유닛이 없습니다. 검색어나 필터를 초기화해 보세요.");
+            GUILayout.Label("표시 " + matches + "기");
+            if (matches == 0) GUILayout.Label("해당 유닛이 없습니다.");
             DrawPager(ownedPage, pages, next => ownedPage = next);
             DrawBatchSaleConfirm();
             if (controller.LowerGradeSales != null)
@@ -1331,62 +1310,6 @@ namespace Ordr.Mobile.Unity
                 if (GUILayout.Button("취소", GUILayout.MinHeight(64))) pendingDecompositionId = null;
                 GUILayout.EndHorizontal();
             }
-        }
-
-        private void DrawCatalogIndex(UnitImplementationRegistry definitions)
-        {
-            var grades = definitions.Grades;
-            if (grades.Count == 0) return;
-            catalogGradeIndex = Math.Max(0, Math.Min(catalogGradeIndex, grades.Count));
-            GUILayout.Label("도감 검색", OrdrMobileUiTheme.Overline);
-            string query = GUILayout.TextField(catalogSearch, GUILayout.MinHeight(56));
-            if (query != catalogSearch) { catalogSearch = query; catalogPage = 0; }
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("◀", GUILayout.Width(54), GUILayout.MinHeight(56)))
-            {
-                catalogGradeIndex = (catalogGradeIndex + grades.Count) % (grades.Count + 1);
-                catalogPage = 0;
-            }
-            GUILayout.Label(catalogGradeIndex == 0 ? "모든 등급" : grades[catalogGradeIndex - 1],
-                GUILayout.MinWidth(0f), GUILayout.ExpandWidth(true));
-            if (GUILayout.Button("▶", GUILayout.Width(54), GUILayout.MinHeight(56)))
-            {
-                catalogGradeIndex = (catalogGradeIndex + 1) % (grades.Count + 1);
-                catalogPage = 0;
-            }
-            GUILayout.EndHorizontal();
-            if (GUILayout.Button("검색·등급 초기화", GUILayout.MinHeight(56)))
-            { catalogSearch = ""; catalogGradeIndex = 0; catalogPage = 0; }
-            var source = catalogGradeIndex == 0 ? definitions.All : definitions.OfGrade(grades[catalogGradeIndex - 1]);
-            var entries = new List<UnitImplementationDefinition>();
-            string needle = catalogSearch.Trim();
-            foreach (var item in source)
-                if (needle.Length == 0 ||
-                    item.DisplayName.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                    item.Grade.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                    item.UnitId.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0)
-                    entries.Add(item);
-            const int pageSize = 8;
-            int pages = Math.Max(1, (entries.Count + pageSize - 1) / pageSize);
-            catalogPage = Math.Min(catalogPage, pages - 1);
-            GUILayout.Label("도감 검색 " + entries.Count + "종");
-            if (entries.Count == 0) GUILayout.Label("조건에 맞는 유닛이 없습니다. 모든 등급에서 다시 찾아보세요.");
-            DrawPager(catalogPage, pages, next => catalogPage = next);
-            for (int i = catalogPage * pageSize; i < Math.Min(entries.Count, (catalogPage + 1) * pageSize); i++)
-            {
-                var unit = entries[i];
-                GUILayout.BeginHorizontal();
-                DrawCharacterPortrait(unit.UnitId, 62f);
-                if (OrdrMobileUiTheme.DrawActionRow(unit.DisplayName,
-                    unit.Grade, OrdrMobileUiTheme.Aqua, 72f))
-                {
-                    selectedCatalogUnitId = unit.UnitId;
-                    showUnitDetails = true;
-                    scroll = Vector2.zero;
-                }
-                GUILayout.EndHorizontal();
-            }
-            DrawPager(catalogPage, pages, next => catalogPage = next);
         }
 
         private static void DrawCharacterPortrait(string unitId, float size)

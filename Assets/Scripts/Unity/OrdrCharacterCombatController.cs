@@ -286,6 +286,17 @@ namespace Ordr.Mobile.Unity
 
         private void OnVerifiedMonsterDefeated(int sourceWave, string instanceId)
         {
+            // Record only scheduled ordinary line kills, not bosses or escapes.
+            string monsterRawcode;
+            if (EvolutionProgress != null &&
+                VerifiedWaveDirector.TryGetDefeatedMonsterRawcode(
+                    sourceWave, instanceId, out monsterRawcode) &&
+                !VerifiedWaveDirector.TryGetDefeatedBossRawcode(
+                    sourceWave, instanceId, out monsterRawcode))
+            {
+                if (EvolutionProgress.RecordVerifiedLineDefeat(sourceWave, instanceId))
+                    TryReleaseSourceConfirmedEvolution();
+            }
             if (originalMonsterGold == null) return;
             try
             {
@@ -1073,6 +1084,59 @@ namespace Ordr.Mobile.Unity
         }
 
         public long? StartingEvolutionActorId { get; private set; }
+        public Original323EvolutionProgress EvolutionProgress { get; private set; }
+        private IOriginal323EvolutionReleaseOutcome originalEvolutionRelease;
+
+        public void ConfigureOriginal323EvolutionRelease(IOriginal323EvolutionReleaseOutcome source)
+        {
+            if (Combat != null && Combat.Game.Phase != SessionPhase.NotStarted)
+                throw new InvalidOperationException("진화체 공급자는 게임 시작 전에 등록해야 합니다.");
+            originalEvolutionRelease = source ?? throw new ArgumentNullException(nameof(source));
+        }
+
+        private void TryReleaseSourceConfirmedEvolution()
+        {
+            var p = EvolutionProgress;
+            if (p == null || p.IsReleased || originalEvolutionRelease == null ||
+                !StartingEvolutionActorId.HasValue ||
+                !ReferenceEquals(Combat.Roster, SharedEconomy.Units)) return;
+
+            string unitId;
+            double x, y;
+            if (!originalEvolutionRelease.TryGetReleasedSpecial(
+                p.ActorId, p.LineDefeats, out unitId, out x, out y)) return;
+            var result = Units.Find(unitId);
+            if (result == null || result.Grade != "특별함" || result.Id == "S-17" ||
+                double.IsNaN(x) || double.IsInfinity(x) ||
+                double.IsNaN(y) || double.IsInfinity(y))
+            {
+                RecordSessionIssue("진화체 해방 거절", "원본 결과 또는 좌표 검증 실패");
+                return;
+            }
+
+            long spawned = 0;
+            try
+            {
+                if (Combat.Roster.Get(p.ActorId).UnitId != Original323SoloStartProfile.EvolutionRawcode)
+                    throw new InvalidOperationException("시작 진화체 객체가 변경됐습니다.");
+                spawned = Combat.SpawnCharacter(unitId, x, y);
+                startEvolutionWorld.RemoveAndUntrack(SharedEconomy, p.ActorId);
+                p.RecordSourceConfirmedRelease(spawned);
+                StartingEvolutionActorId = null;
+                RecordSessionIssue("진화체 해방", result.Name);
+            }
+            catch (Exception error)
+            {
+                if (spawned > 0)
+                {
+                    try { Combat.RollbackUncommittedSpawn(spawned); }
+                    catch (Exception rollback) { Debug.LogException(rollback); }
+                }
+                RecordSessionIssue("진화체 해방 실패", error.Message);
+                Debug.LogException(error);
+            }
+        }
+
         public PersonalMissionGameplay PersonalMissions { get; private set; }
         private IOriginalMissionRandom missionRandom;
 
@@ -2600,6 +2664,8 @@ namespace Ordr.Mobile.Unity
             runGate.SetManualPause(false);
             RecordSessionIssue("게임 시작", "악몽 · 이세계모드");
             StartingEvolutionActorId = evolutionId;
+            EvolutionProgress = evolutionId.HasValue
+                ? new Original323EvolutionProgress(evolutionId.Value) : null;
             PersonalMissions = preparedMissions;
             AttachVerifiedSoloHelperCow();
         }
