@@ -4,8 +4,8 @@ using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Combat
 {
-    // Source-backed offline 2.323[C] progression only. Original native form
-    // attack stats/satellite independent combat are not forged here.
+    // Source-backed offline 2.323[C] progression and object-data basic attacks.
+    // Native splash, original form spells and full combat parity stay unverified.
     public sealed partial class CharacterCombatRuntime
     {
         private readonly Dictionary<long, string> sourceNativeForms =
@@ -87,6 +87,8 @@ namespace Ordr.Mobile.Combat
             if (!SourceModelNativeCharacterRules.TryPlanSatelliteCost(rawcode,
                 PracticeSatelliteCorePurchases(), out points, out wood))
                 return false;
+            if (sourceModelRules == null ||
+                sourceModelRules.SourceObjectAttack(rawcode) == null) return false;
             if (sourceNextSatelliteId == long.MaxValue)
                 throw new OverflowException("위성 ID 저장 용량 초과");
             var costs = new ResourceBundle()
@@ -96,14 +98,17 @@ namespace Ordr.Mobile.Combat
             string receipt = SourceModelNativeCharacterRules.SatelliteActionId(rawcode);
             if (!sharedWallet.TryExchangeOnce(receipt, costs, new ResourceBundle()))
                 return false;
+            var position = roster.Get(creatorId);
             var state = new SourceModelVegapunkSatellite(
                 ++sourceNextSatelliteId, creatorId, rawcode, scheduler.Time);
             sourceSatellites.Add(state);
+            RegisterSourceIndependentAttack(SatelliteAttackKey(state.Id), rawcode,
+                IsStoryDeployed(creatorId), position.X, position.Y);
             pendingCommandEvents.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, InstanceKey(creatorId),
                 InstanceKey(creatorId), "베가펑크 · " + state.Name,
                 "MODEL_ONLY B4a: 원본 특성포인트 " + points +
-                "/목재 " + wood + " 소비 / 독립 위성 공격 자료 미연결", 0));
+                "/목재 " + wood + " 소비 / 원본 객체 평타 모델 가동 (네이티브 스킬 미검증)", 0));
             return true;
         }
 
@@ -130,11 +135,12 @@ namespace Ordr.Mobile.Combat
                 // explicitly spend mana; native ability costs are unknown.
                 // We track the requested native identity H0B6, rather than
                 // inventing a four-second buff or a new basic attack spec.
-                sourceNativeForms[actor.Id] = "폭주 변신 요청 · H0B6 (공격 능력 미확인)";
+                sourceModelRules.SetSourceForm(InstanceKey(actor.Id), "H0B6");
+                sourceNativeForms[actor.Id] = "쵸파 폭주형 · H0B6 (객체 평타 모델)";
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
                     primary.Id, "쵸파 럼블볼 폭주",
-                    "MODEL_ONLY Byb: MP150 도달 → metamorphosis / H0B6 원본 객체 수치 미연결", 0));
+                    "MODEL_ONLY Byb: MP150 → H0B6 기본 공격 285001~285003 / 1.2초; 원본 변신 비용·스플래시 미검증", 0));
             }
             else
                 resource.SetMana(Math.Min(150, resource.Mana + 1));
@@ -191,14 +197,16 @@ namespace Ordr.Mobile.Combat
             {
                 string former;
                 sourceNativeForms.TryGetValue(actor.Id, out former);
-                bool dragon = former == "카이도 용형 · h0AD (전투 스탯 확인 대기)";
+                bool dragon = former != null && former.StartsWith("카이도 용형", StringComparison.Ordinal);
+                if (dragon) sourceModelRules.ClearSourceForm(InstanceKey(actor.Id));
+                else sourceModelRules.SetSourceForm(InstanceKey(actor.Id), "h0AD");
                 sourceNativeForms[actor.Id] = dragon ?
-                    "카이도 인간형 · h07M (전투 스탯 확인 대기)" :
-                    "카이도 용형 · h0AD (전투 스탯 확인 대기)";
+                    "카이도 인간형 · h07M (기본 평타 복귀)" :
+                    "카이도 용형 · h0AD (객체 평타 모델)";
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
                     primary.Id, "카이도 변신",
-                    "MODEL_ONLY CBL/CBM: 14% metamorphosis 조건 / B05F 버프·A0PS 원본 관측 미확인", 0));
+                    "MODEL_ONLY CBL/CBM: 14% 변신 / h0AD 기본 공격 250001·1.25초 (용형 시); B05F·A0PS·스플래시 미검증", 0));
                 // Original branch stops other procs on this attacked event.
                 return;
             }
@@ -215,6 +223,7 @@ namespace Ordr.Mobile.Combat
 
         private void ForgetNativeSourceCharacter(long id)
         {
+            if (sourceModelRules != null) sourceModelRules.ClearSourceForm(InstanceKey(id));
             sourceNativeForms.Remove(id);
             sourceKaidoLifeCounters.Remove(id);
             sourceKaidoAttackCounters.Remove(id);

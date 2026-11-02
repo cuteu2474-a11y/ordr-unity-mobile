@@ -21,6 +21,7 @@ namespace Ordr.Mobile.Combat
         {
             sourceModelRules = rules;
             sourceModelUnitEffects = rules.UnitEffects;
+            attackPipeline.ConfigurePracticeAttackOverride(rules.FormAttackOf);
             attackPipeline.ConfigurePracticeScriptAttackDeclared(OnSourceModelScriptAttackDeclared);
             attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {
                 // Reuse the shared cadence path for a temporary form. Its flat

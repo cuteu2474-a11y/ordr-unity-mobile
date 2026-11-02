@@ -18,10 +18,13 @@ namespace Ordr.Mobile.Combat
         public Ordr323AttackType NativeAttackType { get; private set; }
 
         internal OriginalMapCommonNativeAttackEvidence(OriginalMapCharacterBasics source)
+            : this(source.UnitId, source.OriginalRawcode, source.Attack1) { }
+
+        internal OriginalMapCommonNativeAttackEvidence(string unitId, string rawcode,
+            OriginalMapBasicAttack attack)
         {
-            var attack = source.Attack1;
-            UnitId = source.UnitId;
-            Rawcode = source.OriginalRawcode;
+            UnitId = unitId;
+            Rawcode = rawcode;
             BaseDamagePlus = attack.BaseDamagePlus.Value;
             DiceCount = attack.DiceCount.Value;
             DiceSides = attack.DiceSides.Value;

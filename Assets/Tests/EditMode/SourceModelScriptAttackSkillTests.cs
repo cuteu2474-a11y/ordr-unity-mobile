@@ -638,7 +638,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void OriginalNativeFormsHaveSourceSlkPoolsAndNoFakeDamageModifiers()
+        public void OriginalNativeFormsUseMapObjectAttackWithoutInventingNativeSplash()
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var map = OriginalMapBaseStatCatalog.FromJson(
@@ -648,6 +648,9 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(150, catalog.Find("TR-23").MaximumMana);
             Assert.AreEqual(200, catalog.Find("TR-30").MaximumMana);
             Assert.AreEqual(100, catalog.Find("I-11").MaximumHealth);
+            Assert.AreEqual(285001, map.FindMapObjectAttack("H0B6").MinimumBaseDamage.Value);
+            Assert.AreEqual(1.2, map.FindMapObjectAttack("H0B6").AttackCooldownSeconds.Value);
+            Assert.AreEqual(250001, map.FindMapObjectAttack("h0AD").MinimumBaseDamage.Value);
             using (var chopper = Create("TR-23", true, -4900, 5400))
             {
                 chopper.Combat.ConfigureSourceModelUnitResources(catalog);
@@ -657,7 +660,9 @@ namespace Ordr.Mobile.Tests
                     e.SkillName == "쵸파 럼블볼 폭주"));
                 Assert.IsNotNull(chopper.Combat.PracticeFormOf(chopper.ActorId));
                 Assert.IsTrue(chopper.Combat.PracticeFormOf(chopper.ActorId)
-                    .Contains("공격 능력 미확인"));
+                    .Contains("객체 평타 모델"));
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.Attack &&
+                    e.ActorId == chopper.ActorId.ToString() && e.Amount > 0));
             }
             using (var vegapunk = Create("TR-30", true, -4900, 5400))
             {
@@ -667,6 +672,16 @@ namespace Ordr.Mobile.Tests
                     e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == "베가펑크 마나 공격"));
                 Assert.Less(vegapunk.Combat.ResourcesOf(vegapunk.ActorId).Mana, 200);
+            }
+            using (var kaido = Create("I-11", true, -4900, 5400))
+            {
+                var events = kaido.Battle.Advance(6);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "카이도 변신" && e.Detail.Contains("h0AD")));
+                Assert.IsNotNull(kaido.Combat.PracticeFormOf(kaido.ActorId));
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.Attack &&
+                    e.ActorId == kaido.ActorId.ToString() && e.Amount > 0));
             }
         }
 
@@ -698,9 +713,23 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(3, live.Combat.PracticeSatellites().Count);
                 Assert.AreEqual(before, live.Combat.CharacterCount);
                 Assert.IsFalse(live.Combat.PracticeSatellites()[0].IndependentCombatVerified);
+                var sources = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                Assert.AreEqual(27001, sources.FindMapObjectAttack("H0AB").MinimumBaseDamage.Value);
+                var autonomous = live.Battle.Advance(2.5);
+                Assert.IsTrue(autonomous.Any(e =>
+                    e.Type == CharacterCombatEventType.Attack &&
+                    e.ActorId.StartsWith("practice-satellite:") && e.Amount > 0),
+                    "Purchased satellites must commit real model HP damage.");
                 live.Combat.RemoveCharacter(live.ActorId);
                 Assert.AreEqual(3, live.Combat.PracticeSatellites().Count,
                     "Original B4a satellites survive removal of their creator.");
+                autonomous = live.Battle.Advance(2);
+                Assert.IsTrue(autonomous.Any(e =>
+                    e.Type == CharacterCombatEventType.Attack &&
+                    e.ActorId.StartsWith("practice-satellite:") && e.Amount > 0),
+                    "Satellite attacks cannot silently depend on creator existence.");
             }
         }
 
@@ -817,10 +846,12 @@ namespace Ordr.Mobile.Tests
             using (var live = Create("L-19", true, -4900, 5400))
             {
                 int before = live.Combat.Roster.Count;
-                live.Battle.Advance(3);
+                var attacks = live.Battle.Advance(3);
                 var toys = live.Combat.PracticeSummonsOf(live.ActorId);
                 Assert.IsTrue(toys.Any(x => x.SourceUnitRawcode == "h06N" &&
-                    x.ExpiresAt > live.Combat.Time && !x.HasIndependentCombat));
+                    x.ExpiresAt > live.Combat.Time && x.HasIndependentCombat));
+                Assert.IsTrue(attacks.Any(x => x.Type == CharacterCombatEventType.Attack &&
+                    x.ActorId.StartsWith("practice-summon:") && x.Amount > 0));
                 Assert.AreEqual(before, live.Combat.Roster.Count,
                     "A temporary toy is never a fusion material.");
                 live.Combat.RemoveCharacter(live.ActorId);

@@ -1,8 +1,15 @@
+# 2026-11-02 변신·독립 소환 객체 평타 모델 연결
+
+- `OriginalMapBaseStatCatalog.FindMapObjectAttack` → `mapObjects` 원본 rawcode 기반 공격1, `SourceModelBasicCombatRules.SourceObjectAttack/SetSourceForm` → 기존 주사위·대상 방어 계산에 연결합니다. `CombatAttackPipeline.ConfigurePracticeAttackOverride`는 오프라인 연습에만 변신 후 실제 공격 간격/기본 공격 스펙을 공급하며, 원본 검증 공격 공급자는 건드리지 않습니다.
+- `CharacterCombatRuntime.SourceModelNativeCharacters`는 쵸파 MP150 H0B6, 카이도 14% h0AD/기본형 복귀, 베가펑크 원자 거래 뒤 위성 등록을 수행합니다. `CharacterCombatRuntime.SourceModelIndependentAttacks`는 위성 세 종류와 `h06N` 장난감의 별도 ID/시계/주사위/HP/처치·전장 분리를 기존 `CombatAttackPipeline`에 연결하며, `SourceModelTemporarySkills`가 소환 수명 만료·소유자 제거/파견 변경을 정리합니다.
+- 원본 객체 값: H0B6 285001~285003/1.2s, h0AD 250001/1.25s, H0AB 27001~27003/.63s, H0AE 7251~7253/1.15s, H0AM 70001~70003/.75s, h06N 185002~185008/.39s. 최초 공격 한 주기 지연은 **연습 모델 정책**입니다. 대상의 방어·HP 실제 변경은 연습 모델에서 일어나지만 스플래시/원본 네이티브 추가 기술/원작 동등성은 미인증입니다.
+- EditMode: `Assets/Tests/EditMode/SourceModelScriptAttackSkillTests.cs`. Unity/Android 실행 확인 전 성공으로 표시하지 않습니다.
+
 # 2026-11-02 특성포인트 공용 거래 연결
 
 - 스토리 승리 `Original323SoloStoryScenario.NativeRewards` → `Original323StoryMobileProgression(SharedEconomy.Wallet)` → `EconomyWallet.TryGrantOnce(award.Receipt)` → HUD/개인 미션의 `OriginalMissionWalletRewards.TraitPointsId`로 이어집니다. 스토리 단계 8~13의 원본 `BdL`만 승인합니다.
 - `SourceModelNativeCharacterRules.TraitPointsResourceId`가 같은 키를 참조하며, `Original323SourceDedicatedSkillPort`의 버튼 활성화와 `TryAcquirePracticeSatellite`의 원자 결제가 같은 잔액을 읽습니다. 스토리/미션/위성 영수증은 각자 독립적입니다.
-- 스토리 포트만 단독 생성한 출처 감사 테스트는 지갑을 주입하지 않아 상태 관측만 가능하며, 실제 게임 세션은 공유 지갑을 주입합니다. 네이티브 전체 특성·위성 전투는 별도 작업입니다.
+- 스토리 포트만 단독 생성한 출처 감사 테스트는 지갑을 주입하지 않아 상태 관측만 가능하며, 실제 게임 세션은 공유 지갑을 주입합니다. 위성 **객체 기본 공격**은 위 최신 묶음에서 연결했지만 네이티브 고유 스킬·원본 전체 특성은 별도입니다.
 
 ## JASS 고유 특수 스킬 복원 — 2026-11-02
 

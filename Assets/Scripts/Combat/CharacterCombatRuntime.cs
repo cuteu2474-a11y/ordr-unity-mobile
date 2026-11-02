@@ -2460,7 +2460,8 @@ namespace Ordr.Mobile.Combat
         // 현재 표적을 가진 유닛 중 가장 빠른 공격 시점을 찾는다.
         private double? NextEligibleAttackAt()
         {
-            double? next = null;
+            double? next = UsesSourceModelBasicAttacks
+                ? NextSourceIndependentAttackAt() : null;
             foreach (var unit in characters.Values)
             {
                 if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
@@ -2747,13 +2748,16 @@ namespace Ordr.Mobile.Combat
                     if (!UsesSourceModelBasicAttacks) MobileAutomation.RunAutomaticAbilities(this);
                     int fired = ExecuteReadyAttacks(maxAttacksPerStep - completed);
                     completed += fired;
+                    int independent = UsesSourceModelBasicAttacks
+                        ? ExecuteReadySourceIndependentAttacks(maxAttacksPerStep - completed) : 0;
+                    completed += independent;
                     int previews = ExecuteReadyCommonAttackPreviews(
                         maxAttacksPerStep - completed);
                     completed += previews;
                     int periodic = ExecuteReadyPeriodicSkills(
                         maxAttacksPerStep - completed);
                     completed += periodic;
-                    if (fired == 0 && previews == 0 && periodic == 0)
+                    if (fired == 0 && independent == 0 && previews == 0 && periodic == 0)
                     {
                         // A cast-time wake-up is a real scheduler event, not
                         // an empty frame: attacks later in this same Step must

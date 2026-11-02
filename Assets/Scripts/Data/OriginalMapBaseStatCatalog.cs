@@ -190,6 +190,8 @@ namespace Ordr.Mobile.Data
     {
         private readonly Dictionary<string, OriginalMapCharacterBasics> entries =
             new Dictionary<string, OriginalMapCharacterBasics>(StringComparer.Ordinal);
+        private readonly Dictionary<string, OriginalMapBasicAttack> objectAttacks =
+            new Dictionary<string, OriginalMapBasicAttack>(StringComparer.Ordinal);
 
         public string SourceW3xSha256 { get; private set; }
         public int Count { get { return entries.Count; } }
@@ -202,6 +204,15 @@ namespace Ordr.Mobile.Data
             return id != null && entries.TryGetValue(id, out result) ? result : null;
         }
 
+        // Unowned forms and summoned map objects have no catalogId. These are
+        // source *object* attacks, not native/JASS combat-parity certificates.
+        public OriginalMapBasicAttack FindMapObjectAttack(string rawcode)
+        {
+            OriginalMapBasicAttack attack;
+            return rawcode != null && objectAttacks.TryGetValue(rawcode, out attack)
+                ? attack : null;
+        }
+
         public static OriginalMapBaseStatCatalog FromJson(string json, CharacterUnitCatalog units)
         {
             if (units == null) throw new ArgumentNullException(nameof(units));
@@ -212,6 +223,19 @@ namespace Ordr.Mobile.Data
                 throw new FormatException("원본 맵 능력치 데이터 출처가 다릅니다.");
             var result = new OriginalMapBaseStatCatalog();
             result.SourceW3xSha256 = OrdrJson.RequiredString(root, "sourceW3xSha256");
+            object objectRows = OrdrJson.Value(root, "mapObjects");
+            if (objectRows != null)
+                foreach (var raw in OrdrJson.Array(objectRows, "mapObjects"))
+                {
+                    var row = OrdrJson.Object(raw, "map object");
+                    string rawcode = OrdrJson.RequiredString(row, "rawcode");
+                    object sourceAttack = OrdrJson.Value(row, "attack1");
+                    if (sourceAttack == null) continue;
+                    if (rawcode.Length != 4 || result.objectAttacks.ContainsKey(rawcode))
+                        throw new FormatException("원본 객체 공격 코드 중복/오류: " + rawcode);
+                    result.objectAttacks.Add(rawcode, new OriginalMapBasicAttack(
+                        OrdrJson.Object(sourceAttack, "attack1"), rawcode));
+                }
             foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "catalogEntries"), "catalogEntries"))
             {
                 var basic = new OriginalMapCharacterBasics(OrdrJson.Object(raw, "map basic"), units);

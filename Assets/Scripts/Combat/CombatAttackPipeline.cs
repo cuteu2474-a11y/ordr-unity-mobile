@@ -215,6 +215,13 @@ namespace Ordr.Mobile.Combat
         private IOriginalUnitAttackModifiers originalModifierRules;
         private IOriginal323VerifiedNativeAttackCadence verifiedNativeCadence;
         private Func<BasicAttackSpec, IReadOnlyList<CombatEffect>, double> practiceAttackCadence;
+        private Func<string, BasicAttackSpec> practiceAttackOverride;
+        internal void ConfigurePracticeAttackOverride(Func<string, BasicAttackSpec> attack)
+        {
+            if (practiceAttackOverride != null || units.Count != 0)
+                throw new InvalidOperationException("연습 변신 공격 공급자는 시작 전에 연결하세요.");
+            practiceAttackOverride = attack ?? throw new ArgumentNullException(nameof(attack));
+        }
         internal void ConfigurePracticeAttackCadence(Func<BasicAttackSpec, IReadOnlyList<CombatEffect>, double> cadence)
         {
             if (practiceAttackCadence != null || verifiedNativeCadence != null || units.Count != 0)
@@ -283,8 +290,11 @@ namespace Ordr.Mobile.Combat
             RegisteredUnit unit;
             if (!units.TryGetValue(instanceId, out unit))
                 throw new InvalidOperationException("미등록 공격자");
-            if (originalModifierRules == null) return unit.Spec.BasicAttack;
-            return originalModifierRules.Resolve(instanceId, unit.Spec.BasicAttack,
+            BasicAttackSpec baseAttack = practiceAttackOverride == null
+                ? null : practiceAttackOverride(instanceId);
+            if (baseAttack == null) baseAttack = unit.Spec.BasicAttack;
+            if (originalModifierRules == null) return baseAttack;
+            return originalModifierRules.Resolve(instanceId, baseAttack,
                 getAttackerEffects(instanceId)) ??
                 throw new InvalidOperationException("공격력 보정 수치 미확인");
         }

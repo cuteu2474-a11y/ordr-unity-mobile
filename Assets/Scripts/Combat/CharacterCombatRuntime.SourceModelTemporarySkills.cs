@@ -18,7 +18,7 @@ namespace Ordr.Mobile.Combat
         private SourceModelSummonState SpawnSourceTemporaryActor(
             CharacterInstance owner, string skillName, string name,
             double lifetimeSeconds, string sourceRawcode,
-            bool unresolvedLootAbility = false)
+            bool unresolvedLootAbility = false, double spawnX = 0, double spawnY = 0)
         {
             if (!UsesSourceModelBasicAttacks || owner == null ||
                 !characters.ContainsKey(owner.Id) ||
@@ -27,10 +27,16 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("연습 소환수 생성 조건이 올바르지 않습니다.");
             if (sourceNextSummonId == long.MaxValue)
                 throw new OverflowException("연습 소환 ID 범위 초과");
+            bool autonomous = sourceRawcode == "h06N" &&
+                sourceModelRules != null &&
+                sourceModelRules.SourceObjectAttack(sourceRawcode) != null;
             var summon = new SourceModelSummonState(++sourceNextSummonId,
                 owner.Id, skillName, name, effectExecutor.Time + lifetimeSeconds,
-                IsStoryDeployed(owner.Id), false, sourceRawcode,
+                IsStoryDeployed(owner.Id), autonomous, sourceRawcode,
                 unresolvedLootAbility);
+            if (autonomous)
+                RegisterSourceIndependentAttack(SummonAttackKey(summon.Id),
+                    sourceRawcode, summon.StoryLane, spawnX, spawnY, summon.ExpiresAt);
             sourceTemporarySummons.Add(summon);
             return summon;
         }
@@ -75,16 +81,27 @@ namespace Ordr.Mobile.Combat
             sourceFormCastFinishes.Remove(ownerId);
             sourceFormNames.Remove(ownerId);
             ForgetNativeSourceCharacter(ownerId);
-            sourceTemporarySummons.RemoveAll(x => x.OwnerId == ownerId);
+            for (int i = sourceTemporarySummons.Count - 1; i >= 0; i--)
+                if (sourceTemporarySummons[i].OwnerId == ownerId)
+                {
+                    UnregisterSourceIndependentAttack(
+                        SummonAttackKey(sourceTemporarySummons[i].Id));
+                    sourceTemporarySummons.RemoveAt(i);
+                }
         }
 
         private void RefreshSourceTemporaryActors()
         {
             if (!UsesSourceModelBasicAttacks) return;
-            sourceTemporarySummons.RemoveAll(x =>
-                x.ExpiresAt <= effectExecutor.Time ||
-                !characters.ContainsKey(x.OwnerId) ||
-                IsStoryDeployed(x.OwnerId) != x.StoryLane);
+            for (int i = sourceTemporarySummons.Count - 1; i >= 0; i--)
+            {
+                var summon = sourceTemporarySummons[i];
+                if (summon.ExpiresAt > effectExecutor.Time &&
+                    characters.ContainsKey(summon.OwnerId) &&
+                    IsStoryDeployed(summon.OwnerId) == summon.StoryLane) continue;
+                UnregisterSourceIndependentAttack(SummonAttackKey(summon.Id));
+                sourceTemporarySummons.RemoveAt(i);
+            }
         }
 
         private static ImportedCombatSkill FindSourceSkill(

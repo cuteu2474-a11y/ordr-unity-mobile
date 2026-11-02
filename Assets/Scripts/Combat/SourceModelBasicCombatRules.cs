@@ -17,6 +17,10 @@ namespace Ordr.Mobile.Combat
         private readonly ICombatProcRandom random;
         private readonly Dictionary<string, OriginalMapCommonNativeAttackEvidence> byRawcode =
             new Dictionary<string, OriginalMapCommonNativeAttackEvidence>();
+        private readonly Dictionary<string, BasicAttackSpec> independentAttacks =
+            new Dictionary<string, BasicAttackSpec>(StringComparer.Ordinal);
+        private readonly Dictionary<string, string> formRawcodes =
+            new Dictionary<string, string>(StringComparer.Ordinal);
         private readonly Dictionary<string, double> fractions = new Dictionary<string, double>();
         public bool Enabled { get; private set; }
         public SourceModelUnitEffects UnitEffects { get; private set; }
@@ -34,6 +38,42 @@ namespace Ordr.Mobile.Combat
                 throw new ArgumentException("연습 전투의 원본 맵 자료가 다릅니다.");
             attacks = new OriginalMapMappedNativeAttackEvidenceCatalog(source);
             foreach (var row in attacks.All) byRawcode.Add(row.Rawcode, row);
+            // Only explicit source-backed form/summon identities can join the
+            // practice attacker path. Unlisted map objects stay ineligible.
+            foreach (string raw in new[] { "H0B6", "h0AD", "H0AB", "H0AE", "H0AM", "h06N" })
+            {
+                var attack = objects.FindMapObjectAttack(raw);
+                if (attack == null || !attack.BaseDamagePlus.HasValue ||
+                    !attack.DiceCount.HasValue || !attack.DiceSides.HasValue ||
+                    !attack.AttackCooldownSeconds.HasValue ||
+                    !attack.AttackPointSeconds.HasValue ||
+                    attack.AttackPointSeconds.Value > attack.AttackCooldownSeconds.Value)
+                    throw new FormatException("원본 독립 공격 객체가 불완전합니다: " + raw);
+                var evidence = new OriginalMapCommonNativeAttackEvidence(raw, raw, attack);
+                byRawcode.Add(raw, evidence);
+                independentAttacks.Add(raw, new BasicAttackSpec(
+                    evidence.BaseDamagePlus + (long)evidence.DiceCount,
+                    evidence.CooldownSeconds, DamageSchool.Physical, DamageTraits.None));
+            }
+        }
+        internal BasicAttackSpec SourceObjectAttack(string rawcode)
+        {
+            BasicAttackSpec attack;
+            return rawcode != null && independentAttacks.TryGetValue(rawcode, out attack)
+                ? attack : null;
+        }
+        internal void SetSourceForm(string instanceId, string rawcode)
+        {
+            if (!Enabled || SourceObjectAttack(rawcode) == null)
+                throw new InvalidOperationException("연습 변신 공격 출처가 없습니다.");
+            formRawcodes[instanceId] = rawcode;
+        }
+        internal void ClearSourceForm(string instanceId) { formRawcodes.Remove(instanceId); }
+        internal BasicAttackSpec FormAttackOf(string instanceId)
+        {
+            string raw;
+            return formRawcodes.TryGetValue(instanceId, out raw)
+                ? SourceObjectAttack(raw) : null;
         }
         public void Enable() { Enabled = true; }
         // Shared with the practice basic dice. This models source BFi/BFj
@@ -70,8 +110,12 @@ namespace Ordr.Mobile.Combat
             if (!Enabled) throw new NotSupportedException("연습 전투가 시작되지 않았습니다.");
             OriginalMapCommonNativeAttackEvidence attack;
             Ordr323ArmorType armor;
-            if (request == null || target == null || request.UnitRawCode == null ||
-                !byRawcode.TryGetValue(request.UnitRawCode, out attack) ||
+            string rawcode = request == null ? null : request.UnitRawCode;
+            string transformed;
+            if (request != null && formRawcodes.TryGetValue(request.UnitInstanceId, out transformed))
+                rawcode = transformed;
+            if (request == null || target == null || rawcode == null ||
+                !byRawcode.TryGetValue(rawcode, out attack) ||
                 !target.Defenses.BaseArmor.HasValue ||
                 !Ordr323OriginalDamageRules.TryReadArmorType(target.Defenses.WarcraftArmorType, out armor))
                 throw new NotSupportedException("출처가 있는 공격·적 방어 자료가 필요합니다.");

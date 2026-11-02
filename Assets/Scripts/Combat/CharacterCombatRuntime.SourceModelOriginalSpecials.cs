@@ -83,9 +83,10 @@ namespace Ordr.Mobile.Combat
                 bool hasA0CY = SourceRoll1To(100) <=
                     SourceModelOriginalSpecialCallbackRules.SugarLootAbilityRollSuccess;
                 var toy = SpawnSourceTemporaryActor(actor, "장난감 No.31",
-                    "장난감 No.31", 4.5, "h06N", hasA0CY);
+                    "장난감 No.31", 4.5, "h06N", hasA0CY,
+                    primary.X, primary.Y);
                 RecordSourceSpecial(actor, primary, "장난감 No.31",
-                    "Btq: h06N 생성 / 4.5초 / A0CY 능력 " +
+                    "Btq: h06N 생성 / 4.5초 / 독립 객체 평타 / A0CY 능력 " +
                     (hasA0CY ? "부여, 실제 아이템 보상 미인증" : "미부여"));
                 // No invented sellable loot: A0CY is an ability granted on
                 // creation, not an unconditional wallet payout at expiry.

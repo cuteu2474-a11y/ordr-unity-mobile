@@ -1006,7 +1006,7 @@ namespace Ordr.Mobile.Unity
                     {
                         GUILayout.Label("위성 구매: " +
                             Combat.PracticeSatellites().Count + "/3" +
-                            " (독립 공격 모델 미연결)",
+                            " (객체 평타 모델 가동 · 고유 스킬 미검증)",
                             OrdrMobileUiTheme.Overline);
                     }
                     var resources = Combat.ResourcesOf(selectedId);

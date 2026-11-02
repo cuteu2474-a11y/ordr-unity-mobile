@@ -80,8 +80,9 @@ namespace Ordr.Mobile.Combat
         public string OriginalRawcode { get; private set; }
         public string Name { get; private set; }
         public double CreatedAt { get; private set; }
-        // Source UnitBalance.slk entries for H0AB/H0AE/H0AM and independent
-        // target/stats scheduling are not in the shipped runtime baseline.
+        // The offline SourceModel now schedules map-object basic attacks for
+        // these actors. Warcraft-native splash/abilities and final parity are
+        // still NOT independently witnessed, hence this flag remains false.
         public bool IndependentCombatVerified => false;
 
         internal SourceModelVegapunkSatellite(long id, long creator, string raw,
