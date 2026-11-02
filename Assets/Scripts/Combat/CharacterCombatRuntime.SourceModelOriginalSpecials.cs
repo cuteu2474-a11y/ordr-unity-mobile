@@ -96,13 +96,22 @@ namespace Ordr.Mobile.Combat
                     SourceRoll1To(100)))
             {
                 SpawnSourceTemporaryActor(actor, "하비하비열매",
-                    "자폭 장난감", 3, "h06P");
+                    "자폭 장난감", 3, "h06P", false, primary.X, primary.Y);
                 RecordSourceSpecial(actor, primary, "하비하비열매",
-                    "Btq: h06P 생성 / 3초 / selfdestruct 원본 피해 자료 대기");
+                    "Btq: h06P 생성 / 3초 / selfdestruct 명령");
+                var profile = FindSourceSkill(actor, "하비하비열매");
+                if (profile != null && profile.Components.Count == 1 &&
+                    profile.Components[0].Type == "summon" &&
+                    profile.Components[0].Text("explosionDamageSchool") == "physical" &&
+                    profile.Components[0].Number("explosionDamage") == 500000 &&
+                    profile.Components[0].Number("explosionRadius") == 500)
+                    ApplySourceModelAreaPacket(InstanceKey(actor.Id),
+                        IsStoryDeployed(actor.Id), primary, 500, 500000,
+                        Ordr323AttackType.Spells, "하비하비열매 자폭");
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.EffectDeferred, InstanceKey(actor.Id),
                     primary.Id, "하비하비열매",
-                    "h06P 자폭 명령은 확인, AEsd/W3A 실제 범위·피해 불명: 피해 보류", 0));
+                    "TOOLTIP_MODEL_ONLY 자폭 피해 즉시 정산은 근사: 원본 AEsd 발동·피해 타이밍 미검증", 0));
             }
         }
 

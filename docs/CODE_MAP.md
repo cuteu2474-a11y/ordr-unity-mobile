@@ -1,3 +1,5 @@
+> **최신 경로:** 쵸파 스플래시/카이도 10회 flat/릴리스 발동/아틀라스 가속/슈가 자폭/시노부 분신은 이 파일 끝의 **「변신·위성·분신 공통 후속 피해 경로」**를 확인하세요. 다음 단락의 '미연결'은 당시 기록입니다.
+
 # 2026-11-02 변신·독립 소환 객체 평타 모델 연결
 
 - `OriginalMapBaseStatCatalog.FindMapObjectAttack` → `mapObjects` 원본 rawcode 기반 공격1, `SourceModelBasicCombatRules.SourceObjectAttack/SetSourceForm` → 기존 주사위·대상 방어 계산에 연결합니다. `CombatAttackPipeline.ConfigurePracticeAttackOverride`는 오프라인 연습에만 변신 후 실제 공격 간격/기본 공격 스펙을 공급하며, 원본 검증 공격 공급자는 건드리지 않습니다.
@@ -230,4 +232,12 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 `Assets/Scripts/Unity/OrdrMobileTouchPanel.cs`의 `Tab.Play`는 `ScoreboardPage` 두 화면(개인 기록, 흔함 획득)을 제공합니다. 성현 님 결정으로 클리어 점수, 득점·감점 항목과 계산은 **구현 대상에서 제외**했습니다. `Assets/Scripts/Mobile/MobileOriginalChatScoreboard.cs`는 오직 `OrdrCharacterCombatController.RequestVerifiedCommonWispRecruitment()`에서 성공적으로 거래된 `C-01`~`C-09` 흔함 소환만 세션 기록으로 셉니다. 전투·경제 원본 거래 로직은 변경하지 않습니다. 항목명은 공개 ORDR **1.31** JASS `ShowScoreBoard`를 참고했으며 **S2 2.323[C]의 저장 시스템은 미연결**입니다.
 
 `Assets/Scripts/Unity/MobileOwnedUnitFormation.cs`는 전장 좌표를 바꾸지 않고 한 그룹당 정사각형 터치 칸을 계산합니다. `OrdrUnitWorldPresenter`는 실제 월드 아이콘을 타일 상단 중앙에, 이름·등급·수량을 하단에 배치합니다. 좁은 전장에서는 기존과 같이 페이지 수가 늘어날 수 있습니다.
+
+# 2026-11-02 변신·위성·분신 공통 후속 피해 경로 (최신)
+
+- **원본 입력:** `original-2323C-map-base-stats.json → mapObjects`의 `H0B6/h0AD/H0AB/H0AE/H0AM/h06N/h085/h0A9` 평타 자료, `character-skill-profiles.json`의 추가 피해·범위·확률. 원본 불명 수치는 채우지 않습니다.
+- **분산 공격:** `CharacterCombatRuntime.SourceModelEffects.CompleteSourceModelHit → ApplySourceChopperSplash`는 변신 후 성공한 기본 타격에서 반경400 보조 대상만 추가 주사위/방어 정산. `SourceModelNativeCharacters.ExecuteKaidoTenthModelPacket`은 카이도 원본 10회 신호 뒤 확인된 flat 물리 + 라인 기절만 처리, 기본공격 비례/고정 보너스 보류.
+- **독립 공격:** `SourceModelTemporarySkills.SpawnSourceTemporaryActor`가 h06N·h085 소환수의 생명주기/전장/소유자 정리. `SourceModelIndependentAttacks.CompleteSourceIndependentHit`는 구입 위성 릴리스 22%/11%와 아틀라스 15% 가속, 시노부 분신 .73초 평타 뒤 반경325 마법을 적용. 소유자 프로필을 위성 객체에 보존하여 구매자 제거 후 발동을 유지.
+- **공통 정산:** `ApplySourceModelAreaPacket`와 `ApplySourceModelLineStun`은 같은 전장·실제 방어/HP/처치·상태 이벤트·대상 ID 순서를 사용하며 네이티브 원본 피해/면역 인증을 주장하지 않습니다. `SourceModelOriginalSpecials.ExecuteSourceSugar`는 `Btq` 두 분기를 유지하면서 `h06P` 도감 50만 자폭을 즉시 적용하는 **모바일 근사**입니다.
+- **회귀:** `Assets/Tests/EditMode/SourceModelScriptAttackSkillTests.cs`의 소환 객체 동일 주기, 원본 `else-if` 자폭, 구매자 제거 후 위성 발동·아틀라스 가속, 카이도 10회 부분 피해, 분신 독립 공격. 로컬 Python 전체 255개 통과. Unity/Android 빌드 실행 환경이 없으므로 C# EditMode 성공 확인 불가입니다.
 

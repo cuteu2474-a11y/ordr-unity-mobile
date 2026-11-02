@@ -193,6 +193,10 @@ namespace Ordr.Mobile.Combat
         }
         private void CompleteSourceModelHit(CharacterInstance actor, BasicAttackResult hit, SpatialCombatEnemy primary)
         {
+            if (actor.Catalog.Id == "TR-23" && sourceNativeForms.ContainsKey(actor.Id) &&
+                sourceModelRules.FormAttackOf(InstanceKey(actor.Id)) != null &&
+                hit.ActualDamage > 0)
+                ApplySourceChopperSplash(actor, primary);
             // These native-object follow-ups have pinned W3A inputs and do
             // not depend on the optional passive/aura catalog being present.
             if (actor.Catalog.Id == "S-20" && hit.ActualDamage > 0 &&
@@ -264,6 +268,48 @@ namespace Ordr.Mobile.Combat
                     InstanceKey(actor.Id), target.Id, "꽃꽃 열매", "연습 추가 기본 타격", actual));
                 if (!target.Enemy.IsAlive) events.Add(new CharacterCombatEvent(CharacterCombatEventType.EnemyDefeated,
                     InstanceKey(actor.Id), target.Id, "꽃꽃 열매", "연습 추가 타격으로 처치", 0));
+            }
+        }
+
+        private void ApplySourceChopperSplash(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            var skill = FindSourceSkill(actor, "럼블볼 폭주");
+            if (skill == null || skill.Components.Count != 4 ||
+                skill.Components[1].Type != "basicAttackSplash" ||
+                skill.Components[1].Number("radius") != 400) return;
+            var nearby = new List<SpatialCombatEnemy>();
+            foreach (var enemy in enemies.Values)
+            {
+                if (enemy.Id == primary.Id || !enemy.Enemy.IsAlive ||
+                    !CanAttackInThisLane(actor, enemy)) continue;
+                double dx = enemy.X - primary.X, dy = enemy.Y - primary.Y;
+                if (dx * dx + dy * dy <= 400 * 400) nearby.Add(enemy);
+            }
+            nearby.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
+            foreach (var enemy in nearby)
+            {
+                string attacker = InstanceKey(actor.Id);
+                var request = new BasicDamageRequest(attacker,
+                    actor.Mapping.AttackSpec.UnitRawCode,
+                    actor.Mapping.AttackSpec.BasicAttack, enemy.Id,
+                    unitStatuses[attacker].Snapshot());
+                long planned;
+                try { planned = sourceModelRules.ResolveBasicDamage(request, enemy.Enemy); }
+                catch (NotSupportedException ex)
+                {
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                        attacker, enemy.Id, skill.Name, "TOOLTIP_MODEL_ONLY 스플래시: " + ex.Message, 0));
+                    continue;
+                }
+                long actual;
+                if (!resolution.TryApplySkillDamage(attacker, enemy.Id, planned, out actual)) continue;
+                events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillDamage,
+                    attacker, enemy.Id, skill.Name,
+                    "TOOLTIP_MODEL_ONLY 반경400 / 별도 객체 주사위 / 원작 스플래시 분산·방어 미확인", actual));
+                if (!enemy.Enemy.IsAlive)
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.EnemyDefeated,
+                        attacker, enemy.Id, skill.Name, "모델 스플래시 처치", actual));
             }
         }
     }

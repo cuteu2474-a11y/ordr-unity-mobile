@@ -16,8 +16,10 @@ namespace Ordr.Mobile.Tests
         private sealed class Dice : ICombatProcRandom
         {
             public bool Trigger;
+            public bool ForceSugarSuicide;
             public Dice(bool trigger) { Trigger = trigger; }
-            public int Next(int bound) => Trigger ? 0 : bound - 1;
+            public int Next(int bound) => ForceSugarSuicide && bound == 1000
+                ? 8 : Trigger ? 0 : bound - 1;
         }
         private sealed class NoGold : IOriginalWispRandom
         { public int NextInclusive(int min, int max) => max; }
@@ -638,7 +640,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void OriginalNativeFormsUseMapObjectAttackWithoutInventingNativeSplash()
+        public void OriginalNativeFormsUseMapObjectAttackAndKeepSplashModelOnly()
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var map = OriginalMapBaseStatCatalog.FromJson(
@@ -856,6 +858,88 @@ namespace Ordr.Mobile.Tests
                     "A temporary toy is never a fusion material.");
                 live.Combat.RemoveCharacter(live.ActorId);
                 Assert.AreEqual(0, live.Combat.PracticeSummonsOf(live.ActorId).Count);
+            }
+        }
+
+        [Test]
+        public void SugarSuicideUsesSingleElseIfBranchAndAppliesTooltipAreaPacket()
+        {
+            using (var live = Create("L-19", true, -4900, 5400))
+            {
+                live.Rolls.ForceSugarSuicide = true;
+                var events = live.Battle.Advance(3);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "하비하비열매 자폭" && e.Amount > 0));
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.EffectDeferred &&
+                    e.Detail.Contains("타이밍 미검증")));
+                Assert.IsFalse(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "장난감 No.31"));
+            }
+        }
+
+        [Test]
+        public void LilithSatelliteProcsSurviveCreatorRemovalWithoutFusionOwnership()
+        {
+            using (var live = Create("TR-30", true, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle()
+                    .Add(OriginalMissionWalletRewards.TraitPointsId, 2)
+                    .Add("wood", 7));
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AB", wallet));
+                live.Combat.RemoveCharacter(live.ActorId);
+                var events = live.Battle.Advance(3);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "릴리스 단일 스턴"));
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.ActorId.StartsWith("practice-satellite:") &&
+                    e.SkillName == "릴리스 광역 마법" && e.Amount > 0));
+            }
+        }
+
+        [Test]
+        public void AtlasSelfHasteUsesOwnIndependentStatusNotCreatorStatus()
+        {
+            using (var live = Create("TR-30", true, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle()
+                    .Add(OriginalMissionWalletRewards.TraitPointsId, 2)
+                    .Add("wood", 7));
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AE", wallet));
+                live.Combat.RemoveCharacter(live.ActorId);
+                var events = live.Battle.Advance(3);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.StatusApplied &&
+                    e.ActorId.StartsWith("practice-satellite:") &&
+                    e.SkillName == "아틀라스 날뛰기"));
+            }
+        }
+
+        [Test]
+        public void KaidoTenthAttackModelsOnlyPinnedFlatPacketAndDefersScaling()
+        {
+            using (var live = Create("I-11", false, -4900, 5400))
+            {
+                var events = live.Battle.Advance(30);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "인간형 열 번째 공격" && e.Amount > 0));
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.EffectDeferred &&
+                    e.Detail.Contains("평타 비례 추가피해")));
+                Assert.IsFalse(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "카이도 변신"));
             }
         }
 
@@ -1227,8 +1311,17 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void ShinobuCloneKeepsOwnerAndDoesNotInventIndependentAttacks()
+        public void ShinobuCloneUsesPinnedIndependentObjectDiceAndLifetime()
         {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var first = map.FindMapObjectAttack("h085");
+            var second = map.FindMapObjectAttack("h0A9");
+            Assert.AreEqual(.73, first.AttackCooldownSeconds.Value);
+            Assert.AreEqual(first.AttackCooldownSeconds, second.AttackCooldownSeconds);
+            Assert.AreEqual(first.MinimumBaseDamage, second.MinimumBaseDamage);
+            Assert.AreEqual(first.MaximumBaseDamage, second.MaximumBaseDamage);
             using (var live = Create("L-21", true, -4900, 5400))
             {
                 int owned = live.Combat.CharacterCount;
@@ -1238,13 +1331,17 @@ namespace Ordr.Mobile.Tests
                     events.AddRange(live.Battle.Advance(.2));
                 Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated &&
                     x.SkillName == "인술 분신"));
-                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.EffectDeferred &&
-                    x.Detail.Contains("분신 기본 공격 횟수")));
                 Assert.AreEqual(owned, live.Combat.CharacterCount);
                 var summons = live.Combat.PracticeSummonsOf(live.ActorId);
                 Assert.IsTrue(summons.Count > 0);
                 Assert.IsTrue(summons.All(x => x.OwnerId == live.ActorId &&
-                    x.Name == "분신" && !x.HasIndependentCombat));
+                    x.Name == "분신" && x.SourceUnitRawcode == "h085" &&
+                    x.HasIndependentCombat));
+                events.AddRange(live.Battle.Advance(1.1));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack &&
+                    x.ActorId.StartsWith("practice-summon:") && x.Amount > 0));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "인술 분신 범위 마법" && x.Amount > 0));
                 live.Combat.RemoveCharacter(live.ActorId);
                 Assert.AreEqual(0, live.Combat.PracticeSummonsOf(live.ActorId).Count);
             }

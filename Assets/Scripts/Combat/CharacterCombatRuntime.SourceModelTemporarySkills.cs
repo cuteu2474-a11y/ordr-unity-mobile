@@ -27,7 +27,7 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("연습 소환수 생성 조건이 올바르지 않습니다.");
             if (sourceNextSummonId == long.MaxValue)
                 throw new OverflowException("연습 소환 ID 범위 초과");
-            bool autonomous = sourceRawcode == "h06N" &&
+            bool autonomous = (sourceRawcode == "h06N" || sourceRawcode == "h085") &&
                 sourceModelRules != null &&
                 sourceModelRules.SourceObjectAttack(sourceRawcode) != null;
             var summon = new SourceModelSummonState(++sourceNextSummonId,
@@ -36,7 +36,8 @@ namespace Ordr.Mobile.Combat
                 unresolvedLootAbility);
             if (autonomous)
                 RegisterSourceIndependentAttack(SummonAttackKey(summon.Id),
-                    sourceRawcode, summon.StoryLane, spawnX, spawnY, summon.ExpiresAt);
+                    sourceRawcode, summon.StoryLane, spawnX, spawnY, summon.ExpiresAt,
+                    owner.Profile);
             sourceTemporarySummons.Add(summon);
             return summon;
         }
@@ -220,10 +221,9 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        // A short-lived clone is an independent session actor, not an owned
-        // fusion material. Its source profile does not specify the number or
-        // timing of attacks during those 2 seconds, so it cannot deal guessed
-        // damage. The separately documented primary stun can be applied.
+        // Both original summoned objects h085/h0A9 have identical .73s
+        // cooldown and 21501..21502 dice. Their JASS spawn selection is not
+        // known; h085 is the explicit mobile object proxy.
         private void ExecuteSourceTimedClone(CharacterInstance actor,
             SpatialCombatEnemy primary)
         {
@@ -234,12 +234,13 @@ namespace Ordr.Mobile.Combat
             if (!SourceModelTemporarySkillCatalog.TryReadTimedClone(skill,
                     out name, out duration, out stun) || !SourceRollSkill(skill)) return;
             var summon = SpawnSourceTemporaryActor(
-                actor, skill.Name, name, duration, null);
+                actor, skill.Name, name, duration, "h085", false,
+                primary.X, primary.Y);
             string attacker = InstanceKey(actor.Id);
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, attacker, primary.Id,
                 skill.Name, "TOOLTIP_MODEL_ONLY " + name +
-                " 생성 / " + duration + "초 / 독립 공격 간격 미검증", 0));
+                " 생성 / " + duration + "초 / h085 객체 0.73초 공격 / h0A9 동일 수치", 0));
             if (primary.Kind == CharacterEnemyKind.Line && primary.Enemy.IsAlive)
             {
                 string source = "practice-summon-stun:" + summon.Id;
@@ -252,7 +253,7 @@ namespace Ordr.Mobile.Combat
             }
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.EffectDeferred, attacker, primary.Id,
-                skill.Name, "분신 기본 공격 횟수·타이밍 미검증: 추가 피해는 보류", 0));
+                skill.Name, "분신 실제 생성 rawcode·원작 첫 공격 위상·스턴 면역 미검증", 0));
         }
     }
 }

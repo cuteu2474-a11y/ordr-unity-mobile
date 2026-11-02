@@ -103,7 +103,8 @@ namespace Ordr.Mobile.Combat
                 ++sourceNextSatelliteId, creatorId, rawcode, scheduler.Time);
             sourceSatellites.Add(state);
             RegisterSourceIndependentAttack(SatelliteAttackKey(state.Id), rawcode,
-                IsStoryDeployed(creatorId), position.X, position.Y);
+                IsStoryDeployed(creatorId), position.X, position.Y, null,
+                actor.Profile);
             pendingCommandEvents.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, InstanceKey(creatorId),
                 InstanceKey(creatorId), "베가펑크 · " + state.Name,
@@ -215,10 +216,48 @@ namespace Ordr.Mobile.Combat
             int current = previous >= 10 ? 1 : previous + 1;
             sourceKaidoAttackCounters[actor.Id] = current;
             if (current == 10)
-                events.Add(new CharacterCombatEvent(
-                    CharacterCombatEventType.EffectDeferred, InstanceKey(actor.Id),
-                    primary.Id, "카이도 열 번째 공격",
-                    "MODEL_ONLY CBL/CBM: UnitUserData 10회 공격 패킷 / JASS 피해 조건 미해석", 0));
+                ExecuteKaidoTenthModelPacket(actor, primary);
+        }
+
+        private void ExecuteKaidoTenthModelPacket(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            string current;
+            bool dragon = sourceNativeForms.TryGetValue(actor.Id, out current) &&
+                current.StartsWith("카이도 용형", StringComparison.Ordinal);
+            string name = dragon ? "용형 열 번째 공격" : "인간형 열 번째 공격";
+            var skill = FindSourceSkill(actor, name);
+            double flat = dragon ? 3600000 : 2000000;
+            double percent = dragon ? 300 : 400;
+            if (skill == null || skill.Trigger != "everyNthAttack" ||
+                skill.Number("requiredAttacks") != 10 || skill.Radius != 500 ||
+                skill.Components.Count != 3 || skill.Components[0].Type != "physical" ||
+                skill.Components[0].Number("amount") != flat ||
+                skill.Components[0].Number("plusBasicAttackDamagePercent") != percent ||
+                skill.Components[2].Type != "stun" ||
+                skill.Components[2].Number("durationSeconds") != 2.5)
+            {
+                events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                    InstanceKey(actor.Id), primary.Id, name,
+                    "10회 공격 도감 패킷 불완전: 피해 보류", 0));
+                return;
+            }
+            string attacker = InstanceKey(actor.Id);
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                attacker, primary.Id, name,
+                "TOOLTIP_MODEL_ONLY 10번째 공격: 확정 고정 물리 부분만 정산", 0));
+            ApplySourceModelAreaPacket(attacker, IsStoryDeployed(actor.Id),
+                primary, 500, flat, Ordr323AttackType.Spells, name);
+            foreach (var target in enemies.Values)
+            {
+                double dx = target.X - primary.X, dy = target.Y - primary.Y;
+                if (dx * dx + dy * dy <= 500 * 500 &&
+                    CanAttackInThisLane(actor, target))
+                    ApplySourceModelLineStun(attacker, target, name, 2.5);
+            }
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                attacker, primary.Id, name,
+                "원본 JASS 판정·평타 비례 추가피해·고정 비율 보너스·저항 무시 미검증", 0));
         }
 
         private void ForgetNativeSourceCharacter(long id)
