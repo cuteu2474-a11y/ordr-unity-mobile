@@ -120,17 +120,13 @@ namespace Ordr.Mobile.Combat
             foreach (var candidate in caster.Profile.Skills)
                 if (candidate.Id == skillId) { selected = candidate; break; }
             if (selected == null) return false;
-            bool permitted = false;
-            foreach (var approved in approvedNames)
-                if (string.Equals(approved, selected.Name, StringComparison.Ordinal))
-                    { permitted = true; break; }
             // Avoid generic fallback debit for any still-unapproved
             // resource ability on a known model character.
-            if (!permitted)
+            if (caster.Profile.UnitId != caster.Catalog.Id ||
+                !SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                    caster.Catalog.Id, approvedNames, selected))
                 return selected.Trigger == "activeMana" ||
                     selected.Trigger == "activeHealth";
-            if (!SourceModelNextThirtySkillCatalog.CanModelCompleteActive(selected))
-                return true;
             SpatialCombatEnemy primary;
             if (string.IsNullOrWhiteSpace(primaryEnemyId) ||
                 !enemies.TryGetValue(primaryEnemyId, out primary) ||

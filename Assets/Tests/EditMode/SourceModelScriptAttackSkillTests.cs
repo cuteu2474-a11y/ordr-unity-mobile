@@ -403,6 +403,8 @@ namespace Ordr.Mobile.Tests
                     var skill = profile.Skills.Single(x => x.Name == name);
                     Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill),
                         row.CatalogId + ": " + name);
+                    Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                        row.CatalogId, row.PracticeActiveSkills, skill));
                     activeEnabled++;
                 }
             }
@@ -945,6 +947,28 @@ namespace Ordr.Mobile.Tests
                 x => x.CatalogId == "I-11").AllowsActive(skill.Name));
         }
 
+        [Test]
+        public void SameNamedActivePacketsCannotBorrowAnotherUnitsPermission()
+        {
+            var profiles = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
+            var robin = profiles.Require("TR-04").Skills.Single(
+                x => x.Name == "체력 소모 광역 공격");
+            var kaido = profiles.Require("I-11").Skills.Single(x => x.Name == robin.Name);
+            var approved = SourceModelNextThirtySkillCatalog.All.Single(
+                x => x.CatalogId == "TR-04").PracticeActiveSkills;
+            var denied = SourceModelNextThirtySkillCatalog.All.Single(
+                x => x.CatalogId == "I-11").PracticeActiveSkills;
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(kaido));
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                "TR-04", approved, robin));
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                "TR-04", approved, kaido));
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                "I-11", denied, kaido));
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                "TR-0", approved, robin));
+        }
+
         [TestCase("TR-23", "TR-23:skill:0", "럼블볼 폭주")]
         [TestCase("E-01", "E-01:skill:0", "거대화")]
         [TestCase("TR-30", "TR-30:skill:0", "베가펑크 마나 공격")]
@@ -962,10 +986,13 @@ namespace Ordr.Mobile.Tests
                 var target = live.Combat.MobileEnemySnapshot().First();
                 var resources = new CharacterResources(1000, 1000, 1000, 1000);
                 live.Combat.ConfigureCharacterResources(live.ActorId, resources);
-                Assert.AreEqual(AbilityCastResult.UnsupportedEffect,
-                    live.Combat.TryCastActiveSkill(live.ActorId, skillId, target.Id), unitId);
+                int eventCount = live.Combat.LastEvents.Count;
+                for (int attempt = 0; attempt < 3; attempt++)
+                    Assert.AreEqual(AbilityCastResult.UnsupportedEffect,
+                        live.Combat.TryCastActiveSkill(live.ActorId, skillId, target.Id), unitId);
                 Assert.AreEqual(1000, resources.Health, unitId);
                 Assert.AreEqual(1000, resources.Mana, unitId);
+                Assert.AreEqual(eventCount, live.Combat.LastEvents.Count, unitId);
                 Assert.IsFalse(live.Combat.LastEvents.Any(x =>
                     x.Type == CharacterCombatEventType.SkillActivated &&
                     x.SkillName == skillName), unitId);

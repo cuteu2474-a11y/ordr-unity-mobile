@@ -191,6 +191,20 @@ namespace Ordr.Mobile.Combat
             return CanModelComponents(skill);
         }
 
+        // A parsable packet is not authorization. Names can be shared by
+        // different units, so retain the owning identity at the cast boundary.
+        public static bool CanCastApprovedActive(string catalogId,
+            IReadOnlyList<string> approvedNames, ImportedCombatSkill skill)
+        {
+            if (string.IsNullOrWhiteSpace(catalogId) || approvedNames == null ||
+                skill == null || string.IsNullOrEmpty(skill.Id) ||
+                !skill.Id.StartsWith(catalogId + ":skill:", StringComparison.Ordinal) ||
+                !CanModelCompleteActive(skill)) return false;
+            foreach (string name in approvedNames)
+                if (string.Equals(name, skill.Name, StringComparison.Ordinal)) return true;
+            return false;
+        }
+
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
             if (skill == null ||

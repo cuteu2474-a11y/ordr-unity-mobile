@@ -141,6 +141,15 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
         for unit_id in ('TR-23', 'TR-30', 'I-06', 'I-11'):
             self.assertEqual([], by_id[unit_id])
 
+    def test_same_named_complete_packets_have_distinct_unit_permissions(self):
+        by_id = {unit_id: names for unit_id, _, *names in self.rows}
+        name = '체력 소모 광역 공격'
+        for unit_id in ('TR-04', 'I-11'):
+            skill = next(s for s in self.profiles[unit_id]['skills'] if s['name'] == name)
+            self.assertTrue(supported(skill), unit_id)
+        self.assertIn(name, by_id['TR-04'])
+        self.assertNotIn(name, by_id['I-11'])
+
 
 if __name__ == '__main__':
     unittest.main()
