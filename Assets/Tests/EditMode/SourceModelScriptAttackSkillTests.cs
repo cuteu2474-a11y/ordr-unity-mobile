@@ -719,7 +719,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void RestrictedLavaAttackerCircleUsesOwnLocationNotAttackTargetLocation()
+        public void RedfieldMobileEnemyCenteredAreaStillHitsWhenCasterIsFarAway()
         {
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
             var caster = skills.Find("LI-01");
@@ -729,6 +729,8 @@ namespace Ordr.Mobile.Tests
             SourceModelUnconnectedSkillRow row;
             Assert.IsTrue(SourceModelUnconnectedSkillCatalog.TryGet("h05G", out row));
             Assert.AreEqual("LI-01", row.CatalogId);
+            Assert.IsTrue(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("LI-01"));
+            Assert.IsFalse(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("LI-02"));
             CollectionAssert.AreEquivalent(
                 new[] { "핏빛 범위 공격", "광역 마법 공격" }, row.PracticeAttackSkills);
 
@@ -738,16 +740,15 @@ namespace Ordr.Mobile.Tests
                 Assert.IsTrue(events.Any(x =>
                     x.Type == CharacterCombatEventType.SkillDamage &&
                     x.SkillName == "핏빛 범위 공격"),
-                    "Attacker-centered 750-radius model must reach enemy HP nearby");
+                    "Mobile target-centered 750-radius model reaches enemy HP nearby");
             }
             using (var far = Create("LI-01", true, 50000, 50000))
             {
                 var events = far.Battle.Advance(6);
-                Assert.IsFalse(events.Any(x =>
+                Assert.IsTrue(events.Any(x =>
                     x.SkillName == "핏빛 범위 공격" &&
-                    (x.Type == CharacterCombatEventType.SkillDamage ||
-                     x.Type == CharacterCombatEventType.SkillActivated)),
-                    "Unlimited basic attack range must not turn local AoE into a global hit");
+                    x.Type == CharacterCombatEventType.SkillDamage),
+                    "Unlimited reach must retain Redfield's target-centered packet even when far away");
                 Assert.IsTrue(events.Any(x =>
                     x.Type == CharacterCombatEventType.SkillActivated &&
                     x.SkillName == "광역 마법 공격"),

@@ -51,6 +51,9 @@ class FollowupSourceModelSkillTests(unittest.TestCase):
                     self.assertEqual(row["manaCost"], skill["manaCost"])
                     self.assertEqual(row["originalManaMaximum"],
                                      float(self.objects[raw]["originalObjectFields"]["balance"]["manaN"]))
+                if uid == "LI-01":
+                    self.assertEqual("casterArea", skill["target"])
+                    self.assertEqual("targetCenter", row["mobileCenterPolicy"])
 
     def test_single_source_owner_and_separate_attack_active_allowlists(self):
         entries = re.findall(r'new SourceModelUnconnectedSkillRow\(\s*"([^"]+)",\s*"([^"]+)"',
@@ -70,8 +73,13 @@ class FollowupSourceModelSkillTests(unittest.TestCase):
     def test_caster_area_is_explicit_and_native_duplicate_is_excluded(self):
         self.assertIn('skill.Target == "casterArea"', self.parser)
         self.assertIn("!FinitePositive(skill.Radius)", self.parser)
-        self.assertIn('skill.Target == "casterArea" ?', self.executor)
+        self.assertIn('skill.Target == "casterArea" &&', self.executor)
+        self.assertIn('SpecialGradeMobilePolicy.UsesEnemyCenteredArea(catalogId)', self.executor)
         self.assertIn("SourceScriptHitShape.AttackerCircle", self.executor)
+        policy = (ROOT / "Assets" / "Scripts" / "Mobile" /
+                  "SpecialGradeMobilePolicy.cs").read_text(encoding="utf-8")
+        self.assertIn('public const string Redfield = "LI-01"', policy)
+        self.assertIn('return unitId == Marco || unitId == Redfield;', policy)
         self.assertNotIn('new SourceModelUnconnectedSkillRow("L-32", "h030",\n                new[]',
                          self.listing)
         self.assertEqual(3, len(self.evidence["deferredRelatedSkills"]))

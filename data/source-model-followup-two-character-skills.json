@@ -16,9 +16,10 @@
       "trigger": "onAttack",
       "chancePercent": 4,
       "target": "casterArea",
+      "mobileCenterPolicy": "targetCenter",
       "radius": 750,
       "originalParityVerified": false,
-      "note": "The 4% attacker-centered tooltip packet is separate from this unit's previously modeled 5% target-centered 광역 마법 공격. The exact Warcraft RNG order is unverified."
+      "note": "The source tooltip labels this as casterArea, but MOBILE unlimited-reach combat intentionally centers the 750-radius result on the struck enemy. This 4% packet is separate from the existing 5% target-centered 광역 마법 공격. The original JASS center and RNG order are not verified or required for this mobile policy."
     },
     {
       "catalogId": "I-10",

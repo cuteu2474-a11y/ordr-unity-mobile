@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
@@ -66,12 +67,14 @@ namespace Ordr.Mobile.Combat
                     sourceModelRules.NextScriptRoll(1000000) >=
                     (int)Math.Round(skill.ChancePercent.Value * 10000,
                         MidpointRounding.AwayFromZero)) continue;
-                // The tooltip distinguishes a circle around the struck
-                // enemy from one around the attacker. Never turn a
-                // caster-centered spell into a global target-centered AoE.
+                // Preserve the tooltip target metadata, but apply the same
+                // explicit MOBILE result policy as CharacterSkillEffectExecutor.
+                // Other casterArea skills remain attacker-centered; Redfield's
+                // radius 750 follows the chosen enemy even at unlimited reach.
                 var shape = skill.Target == "single" ?
                     SourceScriptHitShape.Direct :
-                    skill.Target == "casterArea" ?
+                    skill.Target == "casterArea" &&
+                    !SpecialGradeMobilePolicy.UsesEnemyCenteredArea(catalogId) ?
                     SourceScriptHitShape.AttackerCircle : SourceScriptHitShape.Circle;
                 var template = new SourceScriptHit(shape, skill.Radius ?? 0,
                     0, 0, 1, 1, Ordr323AttackType.Spells);

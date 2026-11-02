@@ -10,6 +10,7 @@ namespace Ordr.Mobile.Mobile
         public const string Capone = "S-02";
         public const string Law = "S-05";
         public const string Marco = "S-08";
+        public const string Redfield = "LI-01";
         public const string Moria = "S-09";
         public const string Absalom = "S-17";
         public const string DockingFive = "S-32";
@@ -36,7 +37,11 @@ namespace Ordr.Mobile.Mobile
 
         public static bool UsesEnemyCenteredArea(string unitId)
         {
-            return unitId == Marco;
+            // On the mobile unlimited-reach battlefield Redfield's 4% hit
+            // must resolve around the attacked enemy. His tooltip metadata
+            // still says casterArea; this is a deliberate MOBILE-only result
+            // policy, not a claim about the original JASS coordinate source.
+            return unitId == Marco || unitId == Redfield;
         }
 
         // 후보는 매 시전 시점에 재구성한다. 합성·판매·파견 후에도 다시 평가한다.

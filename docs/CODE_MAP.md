@@ -1,4 +1,10 @@
-## 2026-11-03 · 제트/제한됨 신규 패킷 호출 경로 (현재 최신)
+## 2026-11-03 · 레드필드 모바일 결과 기준 보정 (현재 최신)
+
+- `Assets/Scripts/Mobile/SpecialGradeMobilePolicy.cs`: `Redfield = "LI-01"`, `UsesEnemyCenteredArea`는 기존 마르코와 레드필드를 명시적 모바일 보정 대상으로 제한. 원본 도감의 `casterArea` 자료는 변경하지 않음.
+- `CharacterCombatRuntime.SourceModelNextThirtyAttacks.ExecuteSourceModelApprovedProfileAttacks`는 `casterArea`에 대해 해당 정책이 참이면 `Circle`(공격 대상 중심), 아니면 `AttackerCircle`(시전자 중심)을 사용. `CharacterSkillEffectExecutor`의 동일 정책과 일치. 공격 대상 중심은 반경 750을 유지하며 일반 공격 도달 사거리 무제한/메인·스토리 lane 분리/기존 5% 반경700은 그대로.
+- 회귀: `SourceModelScriptAttackSkillTests.RedfieldMobileEnemyCenteredAreaStillHitsWhenCasterIsFarAway`, `SpecialGradeMobilePolicyTests`, `tests/test_source_model_followup_two_skills.py`. JASS 중심 좌표의 원작 실측 검증은 사용자 지시로 보류하며 모바일 결과 모델로만 관리.
+
+## 2026-11-03 · 제트/제한됨 신규 패킷 호출 경로 (이전 구현 기록)
 
 - `SourceModelUnconnectedSkillCatalog`의 `I-10/h04G` 자동 액티브 `마나 광역 공격`은 `CharacterCombatRuntime.SourceModelResources.CanProvisionSourceModelResources → AutoCastApprovedSourceModelActives → TryCastApprovedSourceModelActive → ApplySourceModelNextThirtySkill`로 원본 SLK 160 MP를 정산. `I-10`의 원본 객체 100% 추가 기절은 공통 네이티브 처리 그대로 두고 도감 중복 패킷은 승인하지 않음.
 - `LI-01/h05G`의 4% `핏빛 범위 공격`은 `SourceModelNextThirtySkillCatalog.CanModelCompleteAttack`의 `casterArea` 범위 검증 후 `CharacterCombatRuntime.SourceModelNextThirtyAttacks.ExecuteSourceModelApprovedProfileAttacks → SourceScriptTargets`의 `AttackerCircle`을 사용. 기존 5% `광역 마법 공격`은 `Circle`로 계속 적 대상 중심. 기본 사거리 무제한 정책과 국소 광역 반경은 별개.
