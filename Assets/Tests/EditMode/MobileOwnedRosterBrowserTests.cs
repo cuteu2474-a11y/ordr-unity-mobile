@@ -66,6 +66,56 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void IdenticalCatalogIdsAreGroupedAndInstanceSelectionCycles()
+        {
+            var sample = Sample();
+            var repeated = new[] { sample[0], sample[1], sample[2],
+                new MobileUnitSnapshot(16, sample[0].Unit, null,
+                    new UnitState(16, "C-01", 0, 0)) };
+            int units, groups, pages, resolved;
+            var shown = MobileOwnedRosterBrowser.Group(repeated,
+                OwnedRosterFilter.All, x => true, 0, 8,
+                out units, out groups, out pages, out resolved);
+            Assert.AreEqual(4, units);
+            Assert.AreEqual(3, groups);
+            Assert.AreEqual(2, shown[0].Count);
+            Assert.AreEqual(12L, shown[0].NextSelectable(null));
+            Assert.AreEqual(16L, shown[0].NextSelectable(12));
+            Assert.AreEqual(12L, shown[0].NextSelectable(16));
+            Assert.IsTrue(shown[0].Contains(16));
+            Assert.IsFalse(shown[0].Contains(13));
+        }
+
+        [Test]
+        public void GroupFiltersPrecedePaginationAndEmptyResultsClamp()
+        {
+            var original = Sample();
+            var repeated = new[] { original[0], original[1], original[2],
+                new MobileUnitSnapshot(16, original[0].Unit, null,
+                    new UnitState(16, "C-01", 0, 0)) };
+            int units, groups, pages, resolved;
+            var first = MobileOwnedRosterBrowser.Group(repeated,
+                OwnedRosterFilter.Saleable, x => x.Unit.Id == "C-01" || x.Unit.Id == "C-08",
+                0, 1, out units, out groups, out pages, out resolved);
+            Assert.AreEqual(3, units);
+            Assert.AreEqual(2, groups);
+            Assert.AreEqual(2, pages);
+            Assert.AreEqual(2, first[0].Count);
+            var second = MobileOwnedRosterBrowser.Group(repeated,
+                OwnedRosterFilter.Saleable, x => x.Unit.Id == "C-01" || x.Unit.Id == "C-08",
+                5, 1, out units, out groups, out pages, out resolved);
+            Assert.AreEqual(1, resolved);
+            Assert.AreEqual("C-08", second[0].UnitId);
+            var empty = MobileOwnedRosterBrowser.Group(
+                Array.Empty<MobileUnitSnapshot>(), OwnedRosterFilter.All, x => true,
+                5, 8, out units, out groups, out pages, out resolved);
+            Assert.AreEqual(0, empty.Count);
+            Assert.AreEqual(0, groups);
+            Assert.AreEqual(1, pages);
+            Assert.AreEqual(0, resolved);
+        }
+
+        [Test]
         public void PaginationClampsAfterFusionOrSaleAndHandlesEmptyResults()
         {
             var all = Sample(); int count, pages, resolved;

@@ -46,6 +46,8 @@ namespace Ordr.Mobile.Unity
         private int selectedPracticeRounds = 65;
         private bool showUnitDetails;
         private long? expandedOwnedUnitId;
+        private string expandedOwnedGroupId;
+        private int expandedOwnedGroupPage;
         private string expandedRecipeId;
         private bool showChoiceWisp;
         private bool showRandomWispActions = true;
@@ -958,6 +960,18 @@ namespace Ordr.Mobile.Unity
                 return;
             }
             GUILayout.Label("보유 유닛", OrdrMobileUiTheme.Subheading);
+            // Keep details in sync with the current live roster selection.
+            if (Combat == null || !Combat.Roster.SelectedId.HasValue)
+            {
+                selectedCatalogUnitId = null;
+                showUnitDetails = false;
+            }
+            else
+            {
+                var current = Combat.Roster.Get(Combat.Roster.SelectedId.Value);
+                selectedCatalogUnitId = current.UnitId == Original323SoloStartProfile.EvolutionRawcode
+                    ? null : current.UnitId;
+            }
             var detail = definitions.Find(selectedCatalogUnitId);
             if (showUnitDetails && detail != null)
             {
@@ -1133,84 +1147,121 @@ namespace Ordr.Mobile.Unity
         {
             if (Combat == null)
             {
-                GUILayout.Label("월드가 시작되면 보유한 유닛이 이곳에 표시됩니다.");
+                GUILayout.Label("월드가 시작되면 보유 유닛이 표시됩니다.");
                 return;
             }
             var owned = Combat.MobileUnitSnapshot();
-            OrdrMobileUiTheme.DrawStatusRow("보유 유닛",
-                owned.Count + "기", OrdrMobileUiTheme.Aqua);
+            OrdrMobileUiTheme.DrawStatusRow("보유 유닛", owned.Count + "기", OrdrMobileUiTheme.Aqua);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("전체" + (ownedFilter == OwnedRosterFilter.All ? " ✓" : ""),
-                GUILayout.MinHeight(56)))
-            { ownedFilter = OwnedRosterFilter.All; ownedPage = 0; }
-            if (GUILayout.Button("판매 가능" + (ownedFilter == OwnedRosterFilter.Saleable ? " ✓" : ""),
-                GUILayout.MinHeight(56)))
-            { ownedFilter = OwnedRosterFilter.Saleable; ownedPage = 0; }
-            if (GUILayout.Button("분해 가능" + (ownedFilter == OwnedRosterFilter.Decomposable ? " ✓" : ""),
-                GUILayout.MinHeight(56)))
-            { ownedFilter = OwnedRosterFilter.Decomposable; ownedPage = 0; }
+            if (GUILayout.Button("전체" + (ownedFilter == OwnedRosterFilter.All ? " ✓" : ""), GUILayout.MinHeight(56)))
+            { ownedFilter = OwnedRosterFilter.All; ownedPage = 0; expandedOwnedGroupId = null; }
+            if (GUILayout.Button("판매 가능" + (ownedFilter == OwnedRosterFilter.Saleable ? " ✓" : ""), GUILayout.MinHeight(56)))
+            { ownedFilter = OwnedRosterFilter.Saleable; ownedPage = 0; expandedOwnedGroupId = null; }
+            if (GUILayout.Button("분해 가능" + (ownedFilter == OwnedRosterFilter.Decomposable ? " ✓" : ""), GUILayout.MinHeight(56)))
+            { ownedFilter = OwnedRosterFilter.Decomposable; ownedPage = 0; expandedOwnedGroupId = null; }
             GUILayout.EndHorizontal();
-            int matches, pages, resolved;
-            var displayed = MobileOwnedRosterBrowser.Select(owned, "",
-                ownedFilter, x => controller.LowerGradeSales != null &&
-                    controller.LowerGradeSales.CanSell(x), ownedPage, 8,
-                out matches, out pages, out resolved);
+
+            int unitCount, groupCount, pages, resolved;
+            var displayed = MobileOwnedRosterBrowser.Group(owned, ownedFilter,
+                x => controller.LowerGradeSales != null && controller.LowerGradeSales.CanSell(x),
+                ownedPage, 8, out unitCount, out groupCount, out pages, out resolved);
             ownedPage = resolved;
-            GUILayout.Label("표시 " + matches + "기");
-            if (matches == 0) GUILayout.Label("해당 유닛이 없습니다.");
+            GUILayout.Label(groupCount + "종 · " + unitCount + "기", OrdrMobileUiTheme.Subheading);
+            if (groupCount == 0) GUILayout.Label("해당 유닛이 없습니다.");
             DrawPager(ownedPage, pages, next => ownedPage = next);
             DrawBatchSaleConfirm();
             if (controller.LowerGradeSales != null)
                 GUILayout.Label("흔함 판매 포인트 " + controller.LowerGradeSales.CommonPoints +
                     "/3 · 3기마다 랜덤위습 1개");
-            if (owned.Count > 0 && GUILayout.Button(controller.PracticeBattle == null ? "보유 유닛 전체 보기" : "전장 전체 보기", GUILayout.MinHeight(56)))
+            if (owned.Count > 0 && GUILayout.Button(
+                controller.PracticeBattle == null ? "보유 유닛 전체 보기" : "전장 전체 보기", GUILayout.MinHeight(56)))
             {
                 var presenter = controller.GetComponent<OrdrUnitWorldPresenter>();
                 if (presenter != null) presenter.ShowAllOwnedUnits();
             }
-            foreach (var entry in displayed)
+
+            foreach (var group in displayed)
             {
-                bool selected = Combat.Roster.SelectedId == entry.InstanceId;
-                bool expanded = expandedOwnedUnitId == entry.InstanceId;
-                string status = entry.Unit.Grade + " · #" + entry.InstanceId +
-                    (selected ? " ✓" : "") +
-                    (pendingBatchSales.Contains(entry.InstanceId) ? " · 판매 선택" : "");
+                bool isSelected = group.Contains(Combat.Roster.SelectedId);
+                bool open = expandedOwnedGroupId == group.UnitId;
+                string meta = group.Grade + " · " + group.Count + "기" +
+                    (isSelected ? " · #" + Combat.Roster.SelectedId.Value + " 선택" : "");
                 GUILayout.BeginHorizontal();
-                if (OrdrMobileUiTheme.DrawActionRow(entry.Unit.Name,
-                    status, OrdrMobileUiTheme.Aqua, 72f))
+                if (OrdrMobileUiTheme.DrawActionRow(group.Name + " ×" + group.Count,
+                    meta, OrdrMobileUiTheme.Aqua, 72f))
                 {
-                    Combat.Roster.Select(entry.InstanceId);
-                    selectedCatalogUnitId = entry.Unit.Id;
-                    notice = entry.Unit.Name + " 선택";
+                    long next = group.NextSelectable(Combat.Roster.SelectedId);
+                    Combat.Roster.Select(next);
+                    selectedCatalogUnitId = group.UnitId;
+                    notice = group.Name + " #" + next + " 선택";
                 }
-                if (GUILayout.Button(expanded ? "접기" : "관리",
+                if (GUILayout.Button(open ? "접기" : "관리",
                     GUILayout.Width(80f), GUILayout.MinHeight(72f)))
                 {
-                    expandedOwnedUnitId = expanded ? (long?)null : entry.InstanceId;
+                    expandedOwnedGroupId = open ? null : group.UnitId;
+                    expandedOwnedGroupPage = 0;
+                    expandedOwnedUnitId = !open && group.Count == 1
+                        ? (long?)group.Members[0].InstanceId : null;
                     pendingCommonSaleId = null;
                     pendingDecompositionId = null;
-                    expanded = !expanded;
+                    open = !open;
                 }
                 GUILayout.EndHorizontal();
-                if (!expanded) continue;
+                if (!open) continue;
+
                 GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                DrawCharacterPortrait(entry.Unit.Id, 62f);
-                if (GUILayout.Button("전장 위치 보기", GUILayout.MinHeight(56)))
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("전장 위치", GUILayout.MinHeight(58)))
                 {
                     var presenter = controller.GetComponent<OrdrUnitWorldPresenter>();
-                    if (presenter != null) presenter.ShowOwnedUnit(entry.InstanceId);
+                    if (presenter != null) presenter.ShowOwnedUnit(isSelected
+                        ? Combat.Roster.SelectedId.Value : group.Members[0].InstanceId);
                 }
-                if (GUILayout.Button("재료로 쓰는 조합 찾기 · " + entry.Unit.Name,
-                    GUILayout.MinHeight(54)))
+                if (GUILayout.Button("조합 찾기", GUILayout.MinHeight(58)))
                 {
                     SelectTab(Tab.Fusion);
-                    fusionSearch = entry.Unit.Name;
+                    fusionSearch = group.Name;
                     showOnlyBookmarkedFusion = false;
                     fusionPage = 0;
                     fusionMaterialsReadyOnly = false;
                     fusionExecutableOnly = true;
-                    notice = "실제 제작식 검색만 열었습니다. 재료는 소비되지 않았습니다.";
                 }
+                GUILayout.EndHorizontal();
+
+                int memberPages = Math.Max(1, (group.Count + 7) / 8);
+                expandedOwnedGroupPage = Math.Max(0, Math.Min(expandedOwnedGroupPage, memberPages - 1));
+                if (group.Count > 1)
+                    DrawPager(expandedOwnedGroupPage, memberPages,
+                        next => { expandedOwnedGroupPage = next; expandedOwnedUnitId = null; });
+                int first = expandedOwnedGroupPage * 8;
+                for (int i = first; i < Math.Min(group.Count, first + 8); i++)
+                {
+                    var entry = group.Members[i];
+                    bool selected = Combat.Roster.SelectedId == entry.InstanceId;
+                    bool expanded = expandedOwnedUnitId == entry.InstanceId;
+                    if (group.Count > 1)
+                    {
+                        GUILayout.BeginHorizontal();
+                        if (OrdrMobileUiTheme.DrawActionRow("#" + entry.InstanceId,
+                            selected ? "선택됨" : "유닛 선택", OrdrMobileUiTheme.Aqua, 62f))
+                        {
+                            Combat.Roster.Select(entry.InstanceId);
+                            selectedCatalogUnitId = entry.Unit.Id;
+                            notice = entry.Unit.Name + " #" + entry.InstanceId + " 선택";
+                        }
+                        if (GUILayout.Button(expanded ? "접기" : "관리",
+                            GUILayout.Width(80f), GUILayout.MinHeight(62f)))
+                        {
+                            expandedOwnedUnitId = expanded ? (long?)null : entry.InstanceId;
+                            pendingCommonSaleId = null;
+                            pendingDecompositionId = null;
+                            expanded = !expanded;
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    if (!expanded) continue;
+                    GUILayout.BeginVertical(GUI.skin.box);
+                DrawCharacterPortrait(entry.Unit.Id, 62f);
                 // All nine original common objects have A09G. Never display
                 // A0JE/Avul as manual abilities; the transaction rechecks
                 // exact original rawcode and ownership under its world lock.
@@ -1268,6 +1319,11 @@ namespace Ordr.Mobile.Unity
                     }
                 }
                 DrawUnitConfirmations(entry.InstanceId);
+                    GUILayout.EndVertical();
+                }
+                if (group.Count > 1)
+                    DrawPager(expandedOwnedGroupPage, memberPages,
+                        next => { expandedOwnedGroupPage = next; expandedOwnedUnitId = null; });
                 GUILayout.EndVertical();
             }
             if (!string.IsNullOrEmpty(controller.UnitDecompositions?.LastMessage))

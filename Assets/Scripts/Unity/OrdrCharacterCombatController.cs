@@ -294,8 +294,18 @@ namespace Ordr.Mobile.Unity
                 !VerifiedWaveDirector.TryGetDefeatedBossRawcode(
                     sourceWave, instanceId, out monsterRawcode))
             {
-                if (EvolutionProgress.RecordVerifiedLineDefeat(sourceWave, instanceId))
-                    TryReleaseSourceConfirmedEvolution();
+                try
+                {
+                    if (EvolutionProgress.RecordVerifiedLineDefeat(sourceWave, instanceId))
+                        TryReleaseSourceConfirmedEvolution();
+                }
+                catch (Exception error)
+                {
+                    // Optional source witness errors cannot interrupt the
+                    // original kill settlement and independent gold reward.
+                    RecordSessionIssue("진화체 진행 실패", error.Message);
+                    Debug.LogException(error);
+                }
             }
             if (originalMonsterGold == null) return;
             try
