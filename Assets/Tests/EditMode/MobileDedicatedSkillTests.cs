@@ -28,6 +28,22 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void ExistingOtamaOneTimeReceiptCanBeUsedAsDedicatedActionId()
+        {
+            string id = SpecialGradeMobilePolicy.OtamaRewardId(77);
+            Assert.AreEqual("otama-dango:77", id);
+            var wallet = new Ordr.Mobile.Core.EconomyWallet();
+            Assert.IsFalse(wallet.HasCompletedTransaction(id));
+            Assert.IsTrue(wallet.TryGrantOnce(id,
+                new Ordr.Mobile.Core.ResourceBundle().Add("wood", 16)));
+            Assert.IsTrue(wallet.HasCompletedTransaction(id));
+            Assert.AreEqual(16, wallet.Balance("wood"));
+            Assert.IsFalse(wallet.TryGrantOnce(id,
+                new Ordr.Mobile.Core.ResourceBundle().Add("wood", 16)));
+            Assert.AreEqual(16, wallet.Balance("wood"));
+        }
+
+        [Test]
         public void UnconnectedAndLockedActionsDoNotExecute()
         {
             var actions = new MobileDedicatedSkillActions();

@@ -22,6 +22,7 @@ namespace Ordr.Mobile.Combat
             SourceScriptAttackSpec script = null;
             SourceModelBatchAttackSpec batch = null;
             SourceModelNextThirtyUnit nextThirty = null;
+            SourceModelUnconnectedSkillRow unconnected = null;
             bool practiceBonney = rawcode == "H0BX";
             bool standaloneTemporary = IsStandaloneSourceTemporaryAttack(rawcode);
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
@@ -34,6 +35,7 @@ namespace Ordr.Mobile.Combat
                  !SourceModelFifthAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelBatchAttackCatalog.TryGet(rawcode, out batch) &&
                  !SourceModelNextThirtySkillCatalog.TryGet(rawcode, out nextThirty) &&
+                 !SourceModelUnconnectedSkillCatalog.TryGet(rawcode, out unconnected) &&
                  !standaloneTemporary))
                 return;
 
@@ -72,6 +74,13 @@ namespace Ordr.Mobile.Combat
             {
                 if (nextThirty.CatalogId == actor.Catalog.Id)
                     ExecuteSourceModelNextThirtyProfileAttacks(actor, primary, nextThirty);
+                return;
+            }
+
+            if (unconnected != null)
+            {
+                if (unconnected.CatalogId == actor.Catalog.Id)
+                    ExecuteSourceModelUnconnectedProfileAttacks(actor, primary, unconnected);
                 return;
             }
 

@@ -2549,6 +2549,11 @@ namespace Ordr.Mobile.Unity
                     ManualActions.ConfigureOriginalCommonSale(LowerGradeSales);
             }
             Combat.ConfigureOtamaWoodWallet(SharedEconomy.Wallet);
+            // Reuse the existing one-time wood grant in the combat ledger.
+            // External original dedicated-action providers remain replaceable.
+            if (!DedicatedSkills.IsConnected)
+                DedicatedSkills.Configure(new Original323OtamaDedicatedSkillPort(
+                    Combat, SharedEconomy.Wallet));
             Combat.ConfigureVerifiedUnitAttackProvider(verifiedUnitAttackSource);
             if (MapBaseStats != null)
                 Combat.ConfigureOriginalMapCommonAttackPreview(MapBaseStats);
@@ -3079,7 +3084,11 @@ namespace Ordr.Mobile.Unity
                 Combat.Game.Phase == SessionPhase.Running &&
                 Combat.PendingSimulationSeconds == 0)
             {
-                try { Combat.AutoCastApprovedSourceModelActives(); }
+                try
+                {
+                    Combat.AutoCastApprovedSourceModelActives();
+                    Combat.AutoCastSourceRareLawAcceleration();
+                }
                 catch (Exception ex)
                 {
                     // Auto cast failures are not silently ignored or retried

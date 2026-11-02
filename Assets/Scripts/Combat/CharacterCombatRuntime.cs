@@ -2068,6 +2068,15 @@ namespace Ordr.Mobile.Combat
                 return practiceCast;
             }
 
+            if (TryCastSourceModelUnconnectedActive(
+                    caster, skillId, primaryEnemyId, out practiceCast))
+            {
+                if (!processingStep)
+                    for (int index = priorEvents; index < events.Count; index++)
+                        pendingCommandEvents.Add(events[index]);
+                return practiceCast;
+            }
+
             SpatialCombatEnemy enemy = null;
             bool hasTarget = !string.IsNullOrWhiteSpace(primaryEnemyId) &&
                 enemies.TryGetValue(primaryEnemyId, out enemy) &&
@@ -2174,6 +2183,7 @@ namespace Ordr.Mobile.Combat
             RemoveSourceTemporaryActors(instanceId);
             sourceModelStoryLaneRevisions.Remove(instanceId);
             lawReadyAt.Remove(instanceId);
+            sourceRareLawReadyAt.Remove(instanceId);
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
             sourceModelManagedResourceRows.Remove(instanceId);

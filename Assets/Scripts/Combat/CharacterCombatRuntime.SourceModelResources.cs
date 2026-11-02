@@ -34,14 +34,23 @@ namespace Ordr.Mobile.Combat
                 actor.Mapping.AttackSpec.UnitRawCode == "H0BD")
                 return true;
             SourceModelNextThirtyUnit entry;
-            if (!SourceModelNextThirtySkillCatalog.TryGet(
-                actor.Mapping.AttackSpec.UnitRawCode, out entry) ||
-                entry.CatalogId != actor.Catalog.Id ||
-                entry.PracticeActiveSkills.Count == 0) return false;
+            SourceModelUnconnectedSkillRow extra;
+            IReadOnlyList<string> activeNames;
+            if (SourceModelNextThirtySkillCatalog.TryGet(
+                    actor.Mapping.AttackSpec.UnitRawCode, out entry) &&
+                entry.CatalogId == actor.Catalog.Id)
+                activeNames = entry.PracticeActiveSkills;
+            else if (SourceModelUnconnectedSkillCatalog.TryGet(
+                    actor.Mapping.AttackSpec.UnitRawCode, out extra) &&
+                extra.CatalogId == actor.Catalog.Id)
+                activeNames = extra.PracticeActiveSkills;
+            else return false;
+            if (activeNames.Count == 0) return false;
             foreach (var skill in actor.Profile.Skills)
-                if (entry.AllowsActive(skill.Name) &&
-                    SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill))
-                    return true;
+                foreach (var approved in activeNames)
+                    if (skill.Name == approved &&
+                        SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill))
+                        return true;
             return false;
         }
 
@@ -94,17 +103,28 @@ namespace Ordr.Mobile.Combat
                     SourceFormIsCasting(id) || actor.Abilities.Resources == null)
                     continue;
                 SourceModelNextThirtyUnit row;
-                if (!SourceModelNextThirtySkillCatalog.TryGet(
-                    actor.Mapping.AttackSpec.UnitRawCode, out row) ||
-                    row.CatalogId != actor.Catalog.Id ||
-                    row.PracticeActiveSkills.Count == 0) continue;
+                SourceModelUnconnectedSkillRow extra;
+                IReadOnlyList<string> activeNames;
+                if (SourceModelNextThirtySkillCatalog.TryGet(
+                        actor.Mapping.AttackSpec.UnitRawCode, out row) &&
+                    row.CatalogId == actor.Catalog.Id)
+                    activeNames = row.PracticeActiveSkills;
+                else if (SourceModelUnconnectedSkillCatalog.TryGet(
+                        actor.Mapping.AttackSpec.UnitRawCode, out extra) &&
+                    extra.CatalogId == actor.Catalog.Id)
+                    activeNames = extra.PracticeActiveSkills;
+                else continue;
+                if (activeNames.Count == 0) continue;
                 var targets = BuildTargetCandidates(actor);
                 if (targets.Count == 0) continue;
                 string primary = ChoosePreviewTarget(actor, targets);
                 if (primary == null) continue;
                 foreach (var skill in actor.Profile.Skills)
                 {
-                    if (!row.AllowsActive(skill.Name) ||
+                    bool allowed = false;
+                    foreach (var name in activeNames)
+                        if (name == skill.Name) { allowed = true; break; }
+                    if (!allowed ||
                         !SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill))
                         continue;
                     double hp = skill.Number("healthCost") ?? 0;

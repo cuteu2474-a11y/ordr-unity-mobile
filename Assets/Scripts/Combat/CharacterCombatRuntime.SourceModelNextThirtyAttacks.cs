@@ -15,8 +15,24 @@ namespace Ordr.Mobile.Combat
             CharacterInstance actor, SpatialCombatEnemy primary,
             SourceModelNextThirtyUnit row)
         {
+            ExecuteSourceModelApprovedProfileAttacks(actor, primary,
+                row.CatalogId, row.PracticeAttackSkills);
+        }
+
+        private void ExecuteSourceModelUnconnectedProfileAttacks(
+            CharacterInstance actor, SpatialCombatEnemy primary,
+            SourceModelUnconnectedSkillRow row)
+        {
+            ExecuteSourceModelApprovedProfileAttacks(actor, primary,
+                catalogId, approvedNames);
+        }
+
+        private void ExecuteSourceModelApprovedProfileAttacks(
+            CharacterInstance actor, SpatialCombatEnemy primary, string catalogId,
+            IReadOnlyList<string> approvedNames)
+        {
             string attackerId = InstanceKey(actor.Id);
-            if (actor.Profile == null || actor.Profile.UnitId != row.CatalogId)
+            if (actor.Profile == null || actor.Profile.UnitId != catalogId)
             {
                 ReportSourceModelNextThirtyDeferred(attackerId, primary.Id,
                     "스킬 프로필 또는 유닛 ID 불일치");
@@ -24,7 +40,7 @@ namespace Ordr.Mobile.Combat
             }
 
             int completedModels = 0;
-            foreach (string approvedName in row.PracticeAttackSkills)
+            foreach (string approvedName in approvedNames)
             {
                 ImportedCombatSkill skill = null;
                 foreach (var candidate in actor.Profile.Skills)
@@ -53,13 +69,13 @@ namespace Ordr.Mobile.Combat
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, attackerId,
                     primary.Id, skill.Name,
-                    "TOOLTIP_MODEL_ONLY " + row.CatalogId +
+                    "TOOLTIP_MODEL_ONLY " + catalogId +
                     " 공격 선언 / 결과·시점·난수 원본 미검증", 0));
                 ApplySourceModelNextThirtySkill(actor, primary, skill, targets);
             }
             if (completedModels != actor.Profile.Skills.Count)
                 ReportSourceModelNextThirtyDeferred(attackerId, primary.Id,
-                    row.CatalogId + " 도감 " + actor.Profile.Skills.Count +
+                    catalogId + " 도감 " + actor.Profile.Skills.Count +
                     "개 중 안전한 연습 타격 " + completedModels +
                     "개만 공격 선언에서 연결; 나머지는 이 경로에서 실행하지 않음");
         }
@@ -73,19 +89,44 @@ namespace Ordr.Mobile.Combat
             result = AbilityCastResult.UnsupportedEffect;
             SourceModelNextThirtyUnit row;
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
-                caster.Mapping == null ||
+                caster.Mapping == null || caster.Profile == null ||
                 !SourceModelNextThirtySkillCatalog.TryGet(
                     caster.Mapping.AttackSpec.UnitRawCode, out row) ||
-                row.CatalogId != caster.Catalog.Id || caster.Profile == null)
-                return false;
+                row.CatalogId != caster.Catalog.Id) return false;
+            return TryCastApprovedSourceModelActive(caster, skillId, primaryEnemyId,
+                row.PracticeActiveSkills, out result);
+        }
+
+        private bool TryCastSourceModelUnconnectedActive(CharacterInstance caster,
+            string skillId, string primaryEnemyId, out AbilityCastResult result)
+        {
+            result = AbilityCastResult.UnsupportedEffect;
+            SourceModelUnconnectedSkillRow row;
+            if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
+                caster.Mapping == null || caster.Profile == null ||
+                !SourceModelUnconnectedSkillCatalog.TryGet(
+                    caster.Mapping.AttackSpec.UnitRawCode, out row) ||
+                row.CatalogId != caster.Catalog.Id) return false;
+            return TryCastApprovedSourceModelActive(caster, skillId, primaryEnemyId,
+                row.PracticeActiveSkills, out result);
+        }
+
+        private bool TryCastApprovedSourceModelActive(CharacterInstance caster,
+            string skillId, string primaryEnemyId,
+            IReadOnlyList<string> approvedNames, out AbilityCastResult result)
+        {
+            result = AbilityCastResult.UnsupportedEffect;
             ImportedCombatSkill selected = null;
             foreach (var candidate in caster.Profile.Skills)
                 if (candidate.Id == skillId) { selected = candidate; break; }
             if (selected == null) return false;
-            // A tooltip that parses as a complete packet is not permission to
-            // execute it. Block unreviewed active skills here, before the
-            // generic ability executor could debit resources as a fallback.
-            if (!row.AllowsActive(selected.Name))
+            bool permitted = false;
+            foreach (var approved in approvedNames)
+                if (string.Equals(approved, selected.Name, StringComparison.Ordinal))
+                    { permitted = true; break; }
+            // Avoid generic fallback debit for any still-unapproved
+            // resource ability on a known model character.
+            if (!permitted)
                 return selected.Trigger == "activeMana" ||
                     selected.Trigger == "activeHealth";
             if (!SourceModelNextThirtySkillCatalog.CanModelCompleteActive(selected))
@@ -119,7 +160,7 @@ namespace Ordr.Mobile.Combat
                     if (!target.Enemy.Defenses.BaseArmor.HasValue ||
                         !Ordr323OriginalDamageRules.TryReadArmorType(
                             target.Enemy.Defenses.WarcraftArmorType, out armor))
-                        return true; // Unusable source defense: no resource debit.
+                        return true; // Never debit without target defenses.
                 }
             }
             ImportedCombatSkill accepted;
@@ -127,7 +168,7 @@ namespace Ordr.Mobile.Combat
             if (result != AbilityCastResult.Cast) return true;
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 InstanceKey(caster.Id), primary.Id, accepted.Name,
-                "TOOLTIP_MODEL_ONLY 자원 소비형 스킬 / 원본 타격·면역 미검증", 0));
+                "TOOLTIP_MODEL_ONLY / 원본 타격·면역 미검증", 0));
             ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);
             RemoveDefeatedEnemies();
             return true;

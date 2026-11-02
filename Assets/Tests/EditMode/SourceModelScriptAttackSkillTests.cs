@@ -602,6 +602,91 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void NewAttackPacketsAreIndependentAndSourceProfilesStayComplete()
+        {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
+            var mapping = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            Assert.GreaterOrEqual(SourceModelUnconnectedSkillCatalog.ApprovedAttackPacketCount, 30);
+            var seen = new HashSet<string>();
+            foreach (var row in SourceModelUnconnectedSkillCatalog.All)
+            {
+                Assert.IsTrue(seen.Add(row.Rawcode));
+                Assert.AreEqual(row.Rawcode, mapping.Find(row.CatalogId).OriginalRawcode);
+                Assert.IsNotNull(skills.Find(row.CatalogId));
+                SourceModelNextThirtyUnit previouslyIncluded;
+                Assert.IsFalse(SourceModelNextThirtySkillCatalog.TryGet(
+                    row.Rawcode, out previouslyIncluded), row.CatalogId);
+                foreach (string name in row.PracticeAttackSkills)
+                {
+                    var skill = skills.Find(row.CatalogId).Skills.Single(x => x.Name == name);
+                    Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill),
+                        row.CatalogId + " " + name);
+                }
+                foreach (string name in row.PracticeActiveSkills)
+                {
+                    var skill = skills.Find(row.CatalogId).Skills.Single(x => x.Name == name);
+                    Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill),
+                        row.CatalogId + " " + name);
+                }
+            }
+        }
+
+        [TestCase("RN-02", "대옥 나선환")]
+        [TestCase("RN-13", "비상식량")]
+        [TestCase("LI-01", "광역 마법 공격")]
+        [TestCase("L-24", "산화 부지화")]
+        [TestCase("I-02", "범위 마법 스턴")]
+        public void MissingAttackPacketExecutesInSharedPracticeCombat(
+            string unitId, string skillName)
+        {
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(6);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == skillName && e.Detail.Contains("TOOLTIP_MODEL_ONLY")),
+                    unitId + " " + skillName);
+            }
+        }
+
+        [Test]
+        public void KumaOriginalObjectManaPoolEnablesNewApprovedActiveOnce()
+        {
+            using (var live = Create("L-32", false, -4900, 5400))
+            {
+                var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"), units);
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                Assert.AreEqual(115, live.Combat.ResourcesOf(live.ActorId).Mana);
+                live.Battle.Advance(2);
+                Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives());
+                Assert.AreEqual(0, live.Combat.ResourcesOf(live.ActorId).Mana);
+                Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives());
+            }
+        }
+
+        [Test]
+        public void RareLawAppliesOneTimedAttackSpeedBuffToAnAllyOnly()
+        {
+            using (var live = Create("R-05", false, -4900, 5400))
+            {
+                long ally = live.Combat.SpawnCharacter("C-01", -4900, 5400);
+                live.Battle.Advance(1);
+                Assert.AreEqual(1, live.Combat.AutoCastSourceRareLawAcceleration());
+                Assert.IsTrue(live.Combat.UnitStatusOf(ally).Snapshot().Any(
+                    x => x.Type == CombatEffectType.AttackSpeedBuff &&
+                        x.Amount == 120 && x.DurationSeconds == 8));
+                Assert.AreEqual(0, live.Combat.AutoCastSourceRareLawAcceleration());
+                live.Combat.RemoveCharacter(ally);
+                Assert.AreEqual(0, live.Combat.AutoCastSourceRareLawAcceleration());
+            }
+        }
+
+        [Test]
         public void SecondThirtyUnverifiedFormAndBossSkillsRemainDeferred()
         {
             foreach (var unit in new[] { "TR-23", "TR-30", "I-06", "I-11" })
