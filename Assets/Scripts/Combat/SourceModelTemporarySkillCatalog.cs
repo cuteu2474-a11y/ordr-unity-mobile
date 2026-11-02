@@ -36,13 +36,22 @@ namespace Ordr.Mobile.Combat
         public double ExpiresAt { get; private set; }
         public bool StoryLane { get; private set; }
         public bool HasIndependentCombat { get; private set; }
+        public string SourceUnitRawcode { get; private set; }
+        public bool HasUnresolvedOriginalLootAbility { get; private set; }
 
         internal SourceModelSummonState(long id, long owner, string skill,
-            string name, double expiresAt, bool storyLane, bool hasCombat)
+            string name, double expiresAt, bool storyLane, bool hasCombat,
+            string sourceRawcode = null, bool unresolvedLoot = false)
         {
+            if (id <= 0 || owner <= 0 ||
+                double.IsNaN(expiresAt) || double.IsInfinity(expiresAt) ||
+                expiresAt <= 0)
+                throw new ArgumentException("임시 소환수의 원본 수명과 소유자가 필요합니다.");
             Id = id; OwnerId = owner; SkillName = skill; Name = name;
             ExpiresAt = expiresAt; StoryLane = storyLane;
             HasIndependentCombat = hasCombat;
+            SourceUnitRawcode = sourceRawcode;
+            HasUnresolvedOriginalLootAbility = unresolvedLoot;
         }
     }
 

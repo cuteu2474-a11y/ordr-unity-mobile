@@ -602,6 +602,96 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OriginalSpecialSourcesMatchThePinnedJassAndCatalogRawcodes()
+        {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            Assert.AreEqual(SourceModelScriptAttackCatalog.SourceJassSha256,
+                SourceModelOriginalSpecialCallbackRules.JassSha256);
+            foreach (var id in new[] { "L-19", "R-03", "R-07", "L-27", "L-32" })
+            {
+                var unit = map.Find(id);
+                Assert.IsNotNull(unit);
+                string mapped;
+                Assert.IsTrue(SourceModelOriginalSpecialCallbackRules.TryGetUnit(
+                    unit.OriginalRawcode, out mapped), id);
+                Assert.AreEqual(id, mapped);
+            }
+            Assert.IsTrue(SourceModelOriginalSpecialCallbackRules.SugarToyBranch(8));
+            Assert.IsFalse(SourceModelOriginalSpecialCallbackRules.SugarToyBranch(9));
+            Assert.IsFalse(SourceModelOriginalSpecialCallbackRules.ZoroSourceExecuteCondition(
+                false, 10, 100));
+            Assert.IsTrue(SourceModelOriginalSpecialCallbackRules.ZoroSourceExecuteCondition(
+                true, 15, 100));
+            Assert.AreEqual(7.9,
+                SourceModelOriginalSpecialCallbackRules.RyumaHealthBonus(0, 100),
+                0.0001);
+        }
+
+        [TestCase("L-19", "장난감 No.31")]
+        [TestCase("R-03", "검은수염 어둠")]
+        [TestCase("R-07", "흑도 슈스이")]
+        [TestCase("L-27", "사자의노래")]
+        [TestCase("L-32", "우르스스 쇼크")]
+        public void SourceJassSpecialAttackedCallbackReachesLivePractice(
+            string id, string skill)
+        {
+            using (var live = Create(id, true, -4900, 5400))
+            {
+                if (id == "L-32")
+                {
+                    var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+                    var map = OriginalMapBaseStatCatalog.FromJson(
+                        Data("original-2323C-map-base-stats.json"), units);
+                    live.Combat.ConfigureSourceModelUnitResources(
+                        SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                            Data("original-2323C-unit-object-stats.json"), map));
+                }
+                var all = live.Battle.Advance(6);
+                Assert.IsTrue(all.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == skill), id + " " + skill);
+            }
+        }
+
+        [Test]
+        public void SugarToyUsesSourceSpawnLifetimeNotFusionRoster()
+        {
+            using (var live = Create("L-19", true, -4900, 5400))
+            {
+                int before = live.Combat.Roster.Count;
+                live.Battle.Advance(3);
+                var toys = live.Combat.PracticeSummonsOf(live.ActorId);
+                Assert.IsTrue(toys.Any(x => x.SourceUnitRawcode == "h06N" &&
+                    x.ExpiresAt > live.Combat.Time && !x.HasIndependentCombat));
+                Assert.AreEqual(before, live.Combat.Roster.Count,
+                    "A temporary toy is never a fusion material.");
+                live.Combat.RemoveCharacter(live.ActorId);
+                Assert.AreEqual(0, live.Combat.PracticeSummonsOf(live.ActorId).Count);
+            }
+        }
+
+        [Test]
+        public void KumaJassManaUsesAttackDeclaredNotFreeAutoCast()
+        {
+            using (var live = Create("L-32", false, -4900, 5400))
+            {
+                var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"), units);
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                Assert.AreEqual(115, live.Combat.ResourcesOf(live.ActorId).Mana);
+                Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives());
+                live.Battle.Advance(5);
+                Assert.Less(live.Combat.ResourcesOf(live.ActorId).Mana, 115);
+                Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives());
+            }
+        }
+
+        [Test]
         public void NewAttackPacketsAreIndependentAndSourceProfilesStayComplete()
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
@@ -662,10 +752,13 @@ namespace Ordr.Mobile.Tests
                     SourceModelUnitResourceCatalog.FromOriginalObjectStats(
                         Data("original-2323C-unit-object-stats.json"), map));
                 Assert.AreEqual(115, live.Combat.ResourcesOf(live.ActorId).Mana);
-                live.Battle.Advance(2);
-                Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives());
-                Assert.AreEqual(0, live.Combat.ResourcesOf(live.ActorId).Mana);
-                Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives());
+                Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives(),
+                    "BtL is a SOURCE attack callback, not a button/autocast.");
+                var result = live.Battle.Advance(5);
+                Assert.IsTrue(result.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "우르스스 쇼크"));
+                Assert.Less(live.Combat.ResourcesOf(live.ActorId).Mana, 115);
             }
         }
 

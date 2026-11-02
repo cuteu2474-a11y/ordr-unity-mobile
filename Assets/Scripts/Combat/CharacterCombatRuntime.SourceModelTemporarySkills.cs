@@ -15,6 +15,26 @@ namespace Ordr.Mobile.Combat
             new List<SourceModelSummonState>();
         private long sourceNextSummonId;
 
+        private SourceModelSummonState SpawnSourceTemporaryActor(
+            CharacterInstance owner, string skillName, string name,
+            double lifetimeSeconds, string sourceRawcode,
+            bool unresolvedLootAbility = false)
+        {
+            if (!UsesSourceModelBasicAttacks || owner == null ||
+                !characters.ContainsKey(owner.Id) ||
+                double.IsNaN(lifetimeSeconds) || double.IsInfinity(lifetimeSeconds) ||
+                lifetimeSeconds <= 0 || lifetimeSeconds > 3600)
+                throw new InvalidOperationException("연습 소환수 생성 조건이 올바르지 않습니다.");
+            if (sourceNextSummonId == long.MaxValue)
+                throw new OverflowException("연습 소환 ID 범위 초과");
+            var summon = new SourceModelSummonState(++sourceNextSummonId,
+                owner.Id, skillName, name, effectExecutor.Time + lifetimeSeconds,
+                IsStoryDeployed(owner.Id), false, sourceRawcode,
+                unresolvedLootAbility);
+            sourceTemporarySummons.Add(summon);
+            return summon;
+        }
+
         // These two rawcode paths are deliberately separate from the verified
         // Warcraft observer and from the existing script damage catalogs.
         private static bool IsStandaloneSourceTemporaryAttack(string rawcode) =>
@@ -192,12 +212,8 @@ namespace Ordr.Mobile.Combat
             double duration, stun;
             if (!SourceModelTemporarySkillCatalog.TryReadTimedClone(skill,
                     out name, out duration, out stun) || !SourceRollSkill(skill)) return;
-            if (sourceNextSummonId == long.MaxValue)
-                throw new OverflowException("연습 소환 ID 범위 초과");
-            var summon = new SourceModelSummonState(++sourceNextSummonId,
-                actor.Id, skill.Name, name, effectExecutor.Time + duration,
-                IsStoryDeployed(actor.Id), false);
-            sourceTemporarySummons.Add(summon);
+            var summon = SpawnSourceTemporaryActor(
+                actor, skill.Name, name, duration, null);
             string attacker = InstanceKey(actor.Id);
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, attacker, primary.Id,

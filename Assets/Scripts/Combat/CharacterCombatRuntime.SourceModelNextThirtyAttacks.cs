@@ -24,7 +24,7 @@ namespace Ordr.Mobile.Combat
             SourceModelUnconnectedSkillRow row)
         {
             ExecuteSourceModelApprovedProfileAttacks(actor, primary,
-                catalogId, approvedNames);
+                row.CatalogId, row.PracticeAttackSkills);
         }
 
         private void ExecuteSourceModelApprovedProfileAttacks(

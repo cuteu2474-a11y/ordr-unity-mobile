@@ -57,7 +57,6 @@ namespace Ordr.Mobile.Combat
             new SourceModelUnconnectedSkillRow("MY-09", "h0A6", new[] { "비광충", "생사의 경계" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("MY-12", "h0BC", new[] { "짓누르기" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("MY-13", "h0AC", new[] { "권총 던지기" }, Array.Empty<string>()),
-            new SourceModelUnconnectedSkillRow("L-32", "h030", new[] { "발바닥발바닥 열매" }, new[] { "우르스스 쇼크" }),
         };
         public static readonly IReadOnlyList<SourceModelUnconnectedSkillRow> All =
             Array.AsReadOnly(Entries);

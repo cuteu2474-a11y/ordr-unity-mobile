@@ -319,6 +319,7 @@ namespace Ordr.Mobile.Combat
                 double birth;
                 if (!waves.TryGetLivingMonsterSpawnWave(enemy.Id, out wave) || !bornAt.TryGetValue(enemy.Id, out birth))
                     throw new InvalidOperationException("연습 몬스터 출현 이력이 없습니다.");
+                if (combat.IsSourceModelPullHeld(enemy.Id)) continue;
                 var status = combat.StatusOf(enemy.Id);
                 double active = Math.Max(0, elapsed - Math.Min(elapsed, status.RemainingStunSeconds));
                 double slow = SourceModelUnitEffects.ResolvePracticeMovementSlow(status.Snapshot());

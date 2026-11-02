@@ -30,8 +30,10 @@ namespace Ordr.Mobile.Combat
                 actor.Abilities.Resources != null) return false;
             // Existing form skill also consumes source HP; its runtime
             // already validates the complete transform packet.
-            if (actor.Catalog.Id == "TR-18" &&
-                actor.Mapping.AttackSpec.UnitRawCode == "H0BD")
+            if ((actor.Catalog.Id == "TR-18" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H0BD") ||
+                (actor.Catalog.Id == "L-32" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h030"))
                 return true;
             SourceModelNextThirtyUnit entry;
             SourceModelUnconnectedSkillRow extra;

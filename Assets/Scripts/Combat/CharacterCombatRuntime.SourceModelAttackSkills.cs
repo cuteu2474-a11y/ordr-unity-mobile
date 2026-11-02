@@ -23,6 +23,10 @@ namespace Ordr.Mobile.Combat
             SourceModelBatchAttackSpec batch = null;
             SourceModelNextThirtyUnit nextThirty = null;
             SourceModelUnconnectedSkillRow unconnected = null;
+            string sourceSpecialUnitId;
+            bool specialFromJass =
+                SourceModelOriginalSpecialCallbackRules.TryGetUnit(
+                    rawcode, out sourceSpecialUnitId);
             bool practiceBonney = rawcode == "H0BX";
             bool standaloneTemporary = IsStandaloneSourceTemporaryAttack(rawcode);
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
@@ -36,7 +40,8 @@ namespace Ordr.Mobile.Combat
                  !SourceModelBatchAttackCatalog.TryGet(rawcode, out batch) &&
                  !SourceModelNextThirtySkillCatalog.TryGet(rawcode, out nextThirty) &&
                  !SourceModelUnconnectedSkillCatalog.TryGet(rawcode, out unconnected) &&
-                 !standaloneTemporary))
+                 !standaloneTemporary &&
+                 !specialFromJass))
                 return;
 
             long id;
@@ -50,6 +55,13 @@ namespace Ordr.Mobile.Combat
                 !enemies.TryGetValue(primaryTargetId, out primary) ||
                 !primary.Enemy.IsAlive || !CanAttackInThisLane(actor, primary))
                 return;
+
+            if (specialFromJass)
+            {
+                if (actor.Catalog.Id == sourceSpecialUnitId)
+                    ExecuteSourceModelOriginalSpecial(actor, primary);
+                return;
+            }
 
             if (standaloneTemporary)
             {

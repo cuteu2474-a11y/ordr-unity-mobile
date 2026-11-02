@@ -2853,6 +2853,7 @@ namespace Ordr.Mobile.Combat
         {
             moriaParticipation.Forget(id);
             sourcePracticeA04RLevels.Remove(id);
+            sourceSpecialPullHeldUntil.Remove(id);
             effectExecutor.CancelTarget(id);
             enemies.Remove(id);
             statuses.Remove(id);
