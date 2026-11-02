@@ -15,6 +15,9 @@ namespace Ordr.Mobile.Combat
             CharacterInstance actor, SpatialCombatEnemy primary,
             SourceModelNextThirtyUnit row)
         {
+            // No native on-attack callback is implied by an active-only
+            // skill row (e.g. Big Mom). Do not fabricate deferred events.
+            if (row.PracticeAttackSkills.Count == 0) return;
             ExecuteSourceModelApprovedProfileAttacks(actor, primary,
                 row.CatalogId, row.PracticeAttackSkills);
         }
@@ -23,6 +26,9 @@ namespace Ordr.Mobile.Combat
             CharacterInstance actor, SpatialCombatEnemy primary,
             SourceModelUnconnectedSkillRow row)
         {
+            // Active-only rows must not fire phantom attack procs or spam
+            // deferred skill warnings on every normal attack.
+            if (row.PracticeAttackSkills.Count == 0) return;
             ExecuteSourceModelApprovedProfileAttacks(actor, primary,
                 row.CatalogId, row.PracticeAttackSkills);
         }

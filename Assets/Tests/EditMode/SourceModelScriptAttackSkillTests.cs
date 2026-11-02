@@ -635,6 +635,91 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        // Thirteen source-statted models, deliberately reusing the existing
+        // resource ledger and tooltip effect executor. They are not Warcraft
+        // native-cast parity and must never run without original target data.
+        [TestCase("MY-07", "가스터 블래스터", 100d, false)]
+        [TestCase("MY-08", "요르 포저", 75d, false)]
+        [TestCase("L-32", "우르스스 쇼크", 115d, false)]
+        [TestCase("TR-11", "마나 범위 타격", 125d, false)]
+        [TestCase("TR-12", "유성소바 킥", 115d, false)]
+        [TestCase("TR-15", "해왕류 다이브", 120d, false)]
+        [TestCase("TR-19", "파이어 버드 스타", 140d, false)]
+        [TestCase("TR-24", "어니스티 임팩트", 150d, true)]
+        [TestCase("I-01", "특제 대포환", 160d, false)]
+        [TestCase("I-06", "대자재천신", 115d, true)]
+        [TestCase("MY-04", "나선섬광초륜무후삼식", 100d, false)]
+        [TestCase("MY-05", "종경백제검", 145d, false)]
+        [TestCase("MY-06", "이성의 창조물", 145d, false)]
+        public void AdditionalThirteenCharactersCastSourceStattedActiveInRealPracticeBattle(
+            string unitId, string skillName, double cost, bool spendsHealth)
+        {
+            using (var live = Create(unitId, false, -4900, 5400))
+            {
+                var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+                var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
+                var profile = skills.Find(unitId);
+                Assert.IsNotNull(profile);
+                var skill = profile.Skills.Single(x => x.Name == skillName);
+                Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill),
+                    "All documented components and cost fields must be supported.");
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"), units);
+                var source = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                    Data("original-2323C-unit-object-stats.json"), map);
+                live.Combat.ConfigureSourceModelUnitResources(source);
+                var resources = live.Combat.ResourcesOf(live.ActorId);
+                Assert.IsNotNull(resources, unitId);
+                Assert.AreEqual(cost,
+                    spendsHealth ? resources.MaximumHealth : resources.MaximumMana, 1e-8);
+                live.Battle.Advance(2);
+                Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives(),
+                    unitId + " / " + skillName + " active cast");
+                Assert.AreEqual(0, spendsHealth ? resources.Health : resources.Mana, 1e-8);
+                Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives(),
+                    "No double debit or second free cast in the same combat step");
+                var events = live.Battle.Advance(.1);
+                Assert.IsTrue(events.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == skillName),
+                    unitId + " active must reach the real shared enemy HP pipeline");
+            }
+        }
+
+        [Test]
+        public void KobySourceManaRegenWithoutMaximumCannotAbortEntireCharacterResourceIndex()
+        {
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"),
+                CharacterUnitCatalog.FromJson(Data("units.json")));
+            var index = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                Data("original-2323C-unit-object-stats.json"), map);
+            var koby = index.Find("TR-24");
+            Assert.IsNotNull(koby);
+            Assert.AreEqual("H0CO", koby.OriginalRawcode);
+            Assert.AreEqual(150, koby.MaximumHealth);
+            Assert.AreEqual(0, koby.MaximumMana,
+                "Unspecified source mana capacity is not a free guessed MP pool.");
+            Assert.AreEqual(0, koby.ManaRegeneration);
+            Assert.AreEqual(0.5, koby.DeferredSourceManaRegeneration, 1e-9);
+            Assert.AreEqual(0, koby.CreateStartingPool().Mana);
+        }
+
+        [Test]
+        public void UnsupportedAnyaSlowAndOtherNonAllowlistedEffectsRemainDeferred()
+        {
+            var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
+            var profile = skills.Find("MY-08");
+            var unverified = profile.Skills.Single(x => x.Name == "로이드 포저");
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(unverified));
+            SourceModelUnconnectedSkillRow row;
+            Assert.IsTrue(SourceModelUnconnectedSkillCatalog.TryGet("h08M", out row));
+            Assert.IsFalse(SourceModelUnconnectedSkillCatalog.AllowsActive(row, "로이드 포저"));
+            Assert.IsTrue(SourceModelUnconnectedSkillCatalog.AllowsActive(row, "요르 포저"));
+            Assert.AreEqual(0, row.PracticeAttackSkills.Count,
+                "Auto-cast-only data cannot create an invented attack proc.");
+        }
+
         [Test]
         public void SourceResourceLifecycleHandlesLateSpawnAndExplicitOverride()
         {

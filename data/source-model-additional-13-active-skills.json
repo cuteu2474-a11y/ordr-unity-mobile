@@ -1,0 +1,136 @@
+{
+  "format": "ordr-next-thirteen-complete-tooltip-active-model-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "source": [
+    "data/character-skill-profiles.json",
+    "data/original-2323C-unit-object-stats.json",
+    "data/original-2323C-map-base-stats.json"
+  ],
+  "execution": "TOOLTIP_MODEL_ONLY",
+  "warning": "Source W3X guarantees object resource maxima; tooltip component/timing/target/warcraft native execution are not source-verification. Never synthesize unknown cooldown, damage buffs, resistance or mana maximum.",
+  "completeActivePackets": [
+    {
+      "catalogId": "MY-07",
+      "originalRawcode": "h083",
+      "skillName": "가스터 블래스터",
+      "trigger": "activeMana",
+      "resourceCost": 100,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "MY-08",
+      "originalRawcode": "h08M",
+      "skillName": "요르 포저",
+      "trigger": "activeMana",
+      "resourceCost": 75,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "L-32",
+      "originalRawcode": "h030",
+      "skillName": "우르스스 쇼크",
+      "trigger": "activeMana",
+      "resourceCost": 115,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "TR-11",
+      "originalRawcode": "H092",
+      "skillName": "마나 범위 타격",
+      "trigger": "activeMana",
+      "resourceCost": 125,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "TR-12",
+      "originalRawcode": "H09H",
+      "skillName": "유성소바 킥",
+      "trigger": "activeMana",
+      "resourceCost": 115,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "TR-15",
+      "originalRawcode": "H08U",
+      "skillName": "해왕류 다이브",
+      "trigger": "activeMana",
+      "resourceCost": 120,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "TR-19",
+      "originalRawcode": "H09B",
+      "skillName": "파이어 버드 스타",
+      "trigger": "activeMana",
+      "resourceCost": 140,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "TR-24",
+      "originalRawcode": "H0CO",
+      "skillName": "어니스티 임팩트",
+      "trigger": "activeHealth",
+      "resourceCost": 150,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "I-01",
+      "originalRawcode": "h04C",
+      "skillName": "특제 대포환",
+      "trigger": "activeMana",
+      "resourceCost": 160,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "I-06",
+      "originalRawcode": "h04Q",
+      "skillName": "대자재천신",
+      "trigger": "activeHealth",
+      "resourceCost": 115,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "MY-04",
+      "originalRawcode": "h09W",
+      "skillName": "나선섬광초륜무후삼식",
+      "trigger": "activeMana",
+      "resourceCost": 100,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "MY-05",
+      "originalRawcode": "h08I",
+      "skillName": "종경백제검",
+      "trigger": "activeMana",
+      "resourceCost": 145,
+      "originalParityVerified": false
+    },
+    {
+      "catalogId": "MY-06",
+      "originalRawcode": "h09N",
+      "skillName": "이성의 창조물",
+      "trigger": "activeMana",
+      "resourceCost": 145,
+      "originalParityVerified": false
+    }
+  ],
+  "deferredComponents": [
+    {
+      "catalogId": "MY-08",
+      "skillName": "로이드 포저",
+      "reason": "unsupported movementSlow component and native resistance"
+    }
+  ],
+  "unresolvedManaBaseline": [
+    {
+      "catalogId": "TR-24",
+      "originalRawcode": "H0CO",
+      "health": 150,
+      "manaMaximum": null,
+      "originalManaRegeneration": 0.5,
+      "effectivePracticeManaRegeneration": 0,
+      "reason": "W3X UnitBalance regenMana set without manaN; do not synthesize a pool"
+    }
+  ]
+}

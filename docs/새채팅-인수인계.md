@@ -1,3 +1,12 @@
+## 2026-11-03 · 미구현 캐릭터 13명 자동 액티브 연결·공통 자원 로더 수정 (현재 최신)
+
+- **전투 기능 13명 묶음 구현:** `MY-07 샌즈(가스터 블래스터)`, `MY-08 아냐(요르 포저)`, `L-32 쿠마 폭군(우르스스 쇼크)`, `TR-11 사보(마나 범위 타격)`, `TR-12 상디(유성소바 킥)`, `TR-15 시라호시(해왕류 다이브)`, `TR-19 우솝(파이어 버드 스타)`, `TR-24 코비(어니스티 임팩트)`, `I-01 거프(특제 대포환)`, `I-06 빅맘(대자재천신)`, `MY-04 미나토(나선섬광초륜무후삼식)`, `MY-05 바쿠야(종경백제검)`, `MY-06 부릉냐(이성의 창조물)`. 기존 7개와 합쳐 **명시적으로 허용한 자동 액티브 20개**(모든 캐릭터 전체 스킬 수가 아님).
+- **엔진 경로:** `SourceModelUnconnectedSkillCatalog`에서 기존 공격 스킬 허용 목록을 보존하면서 12명 활성 스킬 연결, `SourceModelNextThirtySkillCatalog`에서 기존 I-06에 1개 연결. `CharacterCombatRuntime.SourceModelResources`의 공통 자동 대상/자원 결제/실행과 `CharacterCombatRuntime.SourceModelNextThirtyAttacks`의 타입별 피해·기절·HP·처치·이벤트 경로 재사용. **액티브만 있는 캐릭터가 평타 때 가짜 스킬 발동/보류 로그를 일으키는 경로 차단.** 기존 `SourceModelUnconnectedSkillCatalog.cs`가 namespace 닫는 중괄호 1개가 누락되어 있던 C# 구문 결함도 함께 수정.
+- **확인된 구조적 원인과 수정:** 원본 `H0CO`(코비 초월)의 `UnitBalance.slk`에는 `HP=150, regenMana=0.5`인데 `manaN`이 누락되어 있었음. 이전 `SourceModelUnitResourceCatalog.FromOriginalObjectStats`는 이 1개 때문에 **265종 자원 인덱스 전체를 예외 중단**시킬 수 있었음. 누락된 마나 상한을 가상 생성하지 않고 0으로 남겨두며, `DeferredSourceManaRegeneration=0.5`에 미검증 원본 재생량을 보존·실전 적용은 보류. 0 상한이 **명시적으로 지정된** 모순 데이터는 계속 예외 처리.
+- **검증 경계:** 13개 기술의 구조/마나·체력 비용·회수·범위/피해 구성은 `data/character-skill-profiles.json`에 있는 **도감 기반 TOOLTIP_MODEL_ONLY**입니다. HP/MP 시작값만 고정 W3X 객체 자료를 사용했습니다. 원본 JASS 네이티브 최종 피해·면역·공격/시전 타이밍과 RNG 동등성은 **미검증**. 아냐 '로이드 포저'처럼 미지원 이동 둔화가 포함된 복합 스킬은 임의 실행하지 않음.
+- **검증 추가:** `data/source-model-additional-13-active-skills.json`에 13명의 고유 ID/원본 rawcode/기술 이름/실제 비용/미검증 표지를 고정. `tests/test_source_model_additional_active_skills.py`는 원본 데이터·대상/비용/중복/차단 증빙을 확인. Unity EditMode `SourceModelScriptAttackSkillTests`에 13종 실제 HP 공격 이벤트·자원 차감·중복 시전 차단, H0CO 예외, 복합효과 미승인 테스트를 추가. **로컬 Unity/Android 및 Actions 결과는 확인 전**이며 완전 원작 캐릭터 구현으로 오인 금지.
+- **다음 과제:** 기존 상세 프로필 없는 77개(확장 포함 81개), 더 많은 고유 오라·소환·변신·피격 조건·네이티브 기술의 원본 호출 근거와 원작 결과 검증. 기존 286개 카탈로그 / 274개 평타 모델 수치는 변함없음.
+
 ## 2026-11-03 · 누락 캐릭터 전수등록 후 실제 전투 경로 보강 (최신)
 
 - **실제 범위:** 기본 원본 277 + 위키 확장 9 = **286개 카탈로그 정체성**(5개는 독립 유닛이 아닌 전투 형태). 새 `tools/build_character_runtime_coverage.py`와 `data/character-runtime-coverage.json`으로 286개 전체를 **도감 정보/평타 객체/실행 모델/남은 원본 미검증**으로 분리해 기록합니다. 기존 `data/unit-runtime-status.json` 277행은 출처가 고정된 원본 자료이므로 임의로 286행으로 늘리지 않습니다.

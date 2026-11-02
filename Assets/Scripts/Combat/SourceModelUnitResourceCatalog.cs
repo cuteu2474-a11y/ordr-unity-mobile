@@ -16,13 +16,18 @@ namespace Ordr.Mobile.Combat
         public double MaximumMana { get; private set; }
         public double HealthRegeneration { get; private set; }
         public double ManaRegeneration { get; private set; }
+        // Source UnitBalance can contain regenMana without manaN. Do not
+        // fabricate a mana maximum or leak uncapped regeneration into combat.
+        public double DeferredSourceManaRegeneration { get; private set; }
 
         internal SourceModelUnitResourceSpec(string id, string rawcode,
-            double health, double mana, double hpRegen, double mpRegen)
+            double health, double mana, double hpRegen, double mpRegen,
+            double deferredManaRegen)
         {
             CatalogUnitId = id; OriginalRawcode = rawcode;
             MaximumHealth = health; MaximumMana = mana;
             HealthRegeneration = hpRegen; ManaRegeneration = mpRegen;
+            DeferredSourceManaRegeneration = deferredManaRegen;
         }
 
         // The source model's HP acts as a spendable unit ability pool.
@@ -95,10 +100,21 @@ namespace Ordr.Mobile.Combat
                     ReadStat(balance, "HP", code),
                     ReadStat(balance, "manaN", code, true),
                     ReadStat(balance, "regenHP", code),
-                    ReadStat(balance, "regenMana", code)
+                    ReadStat(balance, "regenMana", code),
+                    0d // Native regen that cannot be modeled without a source mana cap.
                 };
-                if (stats[0] <= 0 || stats[1] == 0 && stats[3] != 0)
-                    throw new FormatException(code + ": 원본 자원 상한/재생이 잘못됐습니다.");
+                if (stats[0] <= 0)
+                    throw new FormatException(code + ": 원본 체력 상한이 잘못됐습니다.");
+                if (stats[1] == 0 && stats[3] != 0)
+                {
+                    // H0CO has regenMana=0.5 while manaN is absent from SLK:
+                    // this is incomplete inheritance evidence, not an invalid
+                    // character that should abort the entire 265-row catalog.
+                    if (OrdrJson.Value(balance, "manaN") != null)
+                        throw new FormatException(code + ": 0 마나 상한과 양의 재생 충돌");
+                    stats[4] = stats[3];
+                    stats[3] = 0;
+                }
                 byRaw.Add(code, stats);
             }
 
@@ -112,7 +128,7 @@ namespace Ordr.Mobile.Combat
                 if (!byRaw.TryGetValue(unit.OriginalRawcode, out stats)) continue;
                 output.byId.Add(unit.UnitId, new SourceModelUnitResourceSpec(
                     unit.UnitId, unit.OriginalRawcode,
-                    stats[0], stats[1], stats[2], stats[3]));
+                    stats[0], stats[1], stats[2], stats[3], stats[4]));
             }
             return output;
         }

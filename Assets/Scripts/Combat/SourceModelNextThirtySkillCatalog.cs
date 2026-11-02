@@ -8,7 +8,9 @@ namespace Ordr.Mobile.Combat
     // not thirty completed skill kits. A deliberately small allow-list enables
     // *tooltip-based practice packets* only when the complete packet has a
     // supported shape AND its skill name is explicitly allow-listed. Seven
-    // resource-consuming practice packets are approved; other health/mana,
+    // resource-consuming practice packets were previously approved; additional
+    // complete tooltip packets are now connected via the same gated engine.
+    // Other health/mana,
     // form, summon and stacking paths remain deferred until source review.
     public sealed class SourceModelNextThirtyUnit
     {
@@ -85,7 +87,8 @@ namespace Ordr.Mobile.Combat
                 new[] { "범위 물리", "마법 광역", "단일 스턴" },
                 new[] { "마나 광역 스턴" }),
             new SourceModelNextThirtyUnit("I-04", "h04J", "광역 물리 타격", "타격·단일 스턴"),
-            new SourceModelNextThirtyUnit("I-06", "h04Q"),
+            new SourceModelNextThirtyUnit("I-06", "h04Q",
+                Array.Empty<string>(), new[] { "대자재천신" }),
             new SourceModelNextThirtyUnit("I-11", "h07M")
         };
         private static readonly Dictionary<string, SourceModelNextThirtyUnit> ByRawcode =

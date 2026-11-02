@@ -86,8 +86,9 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        // ONLY seven fully modeled, allow-listed active packets are auto-cast
-        // in practice. No guessed spell targets, cooldown or source RNG:
+        // All 20 explicitly allow-listed complete tooltip/model actives
+        // are auto-cast in practice using original W3X resource baselines.
+        // No guessed spell targets, cooldown or source RNG:
         // reuse the same target policy and source script skill executor.
         // All casts settle after the combat Step; never mutate during attacks.
         public int AutoCastApprovedSourceModelActives(int maximumPerFrame = 32)
