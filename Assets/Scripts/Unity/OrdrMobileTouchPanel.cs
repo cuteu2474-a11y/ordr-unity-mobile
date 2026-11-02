@@ -968,9 +968,17 @@ namespace Ordr.Mobile.Unity
             }
             else
             {
-                var current = Combat.Roster.Get(Combat.Roster.SelectedId.Value);
-                selectedCatalogUnitId = current.UnitId == Original323SoloStartProfile.EvolutionRawcode
-                    ? null : current.UnitId;
+                try
+                {
+                    var current = Combat.Roster.Get(Combat.Roster.SelectedId.Value);
+                    selectedCatalogUnitId = current.UnitId == Original323SoloStartProfile.EvolutionRawcode
+                        ? null : current.UnitId;
+                }
+                catch (KeyNotFoundException)
+                {
+                    selectedCatalogUnitId = null;
+                    showUnitDetails = false;
+                }
             }
             var detail = definitions.Find(selectedCatalogUnitId);
             if (showUnitDetails && detail != null)
@@ -1005,10 +1013,8 @@ namespace Ordr.Mobile.Unity
             if (state == null) return;
             if (!state.IsActivated)
             {
-                if (controller.StartingEvolutionActorId.HasValue &&
-                    OrdrMobileUiTheme.DrawActionRow("진화체 사용",
-                        "1개 보유", OrdrMobileUiTheme.Aqua, 72f))
-                    ShowResult(controller.RequestActivateStartingEvolution());
+                OrdrMobileUiTheme.DrawStatusRow("진화체", "자동 활성화 대기",
+                    OrdrMobileUiTheme.Aqua);
                 return;
             }
 

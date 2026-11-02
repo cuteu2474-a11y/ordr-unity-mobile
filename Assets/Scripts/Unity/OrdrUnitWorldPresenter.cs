@@ -86,6 +86,7 @@ namespace Ordr.Mobile.Unity
         private bool suppressSelectionThisFrame;
         private Vector2 pointerStart;
         private Vector2 previousMouse;
+        private SpriteRenderer battlefieldBoard;
         private Sprite markerSprite;
         private Texture2D markerTexture;
         private Sprite healthBarSprite;
@@ -101,6 +102,13 @@ namespace Ordr.Mobile.Unity
             if (worldCamera == null)
                 worldCamera = Camera.main;
             CreateSharedMarker();
+            var deck = new GameObject("ORDR Tactical Battlefield Deck");
+            deck.transform.SetParent(transform, false);
+            battlefieldBoard = deck.AddComponent<SpriteRenderer>();
+            battlefieldBoard.sprite = OrdrBattlefieldArt.BoardSprite;
+            battlefieldBoard.sortingOrder = -100;
+            if (worldCamera != null)
+                worldCamera.backgroundColor = OrdrBattlefieldArt.BackgroundColor;
         }
 
         private void OnEnable()
@@ -150,6 +158,17 @@ namespace Ordr.Mobile.Unity
                 MobileMapSkillLayout.UiScale(safe, Screen.dpi));
             Rect target = layout.MainCameraViewport(Screen.width, Screen.height);
             if (worldCamera.rect != target) worldCamera.rect = target;
+            if (battlefieldBoard != null)
+            {
+                float visibleHeight = worldCamera.orthographicSize * 2f;
+                float visibleWidth = visibleHeight * layout.Battle.width /
+                    Mathf.Max(1f, layout.Battle.height);
+                Vector3 cameraPosition = worldCamera.transform.position;
+                battlefieldBoard.transform.position = new Vector3(
+                    cameraPosition.x, cameraPosition.y, 0f);
+                battlefieldBoard.transform.localScale = new Vector3(
+                    visibleWidth, visibleHeight, 1f);
+            }
             Vector2 center;
             float halfHeight;
             // Set the opening camera ONCE. A defense player's view must not
@@ -325,7 +344,7 @@ namespace Ordr.Mobile.Unity
                 evolutionMarker = new GameObject("ORDR Evolution Actor");
                 evolutionMarker.transform.SetParent(transform, false);
                 evolutionIcon = evolutionMarker.AddComponent<SpriteRenderer>();
-                evolutionIcon.sprite = markerSprite;
+                evolutionIcon.sprite = OrdrBattlefieldArt.EvolutionSprite;
                 evolutionIcon.sortingOrder = 10;
             }
             evolutionMarker.SetActive(true);
@@ -525,7 +544,8 @@ namespace Ordr.Mobile.Unity
                     enemy.Root = new GameObject("ORDR Enemy " + entry.Id);
                     enemy.Root.transform.SetParent(transform, false);
                     enemy.Icon = enemy.Root.AddComponent<SpriteRenderer>();
-                    enemy.Icon.sprite = markerSprite;
+                    enemy.Icon.sprite = OrdrBattlefieldArt.EnemySprite(
+                        entry.Kind == CharacterEnemyKind.Boss);
                     enemy.Icon.sortingOrder = 7;
                     var barBack = new GameObject("HP background");
                     barBack.transform.SetParent(enemy.Root.transform, false);
@@ -763,23 +783,22 @@ namespace Ordr.Mobile.Unity
                     visual.Icon = visual.Root.AddComponent<SpriteRenderer>();
                     Sprite portrait = OrdrCharacterPortraits.Find(entry.Unit.Id);
                     visual.HasPortrait = portrait != null;
-                    visual.Icon.sprite = portrait != null ? portrait : markerSprite;
+                    Sprite artwork = portrait != null ? portrait :
+                        OrdrBattlefieldArt.UnitSprite(entry.Unit.Id);
+                    visual.Icon.sprite = artwork;
                     visual.Icon.sortingOrder = 10;
-                    if (visual.HasPortrait)
-                    {
-                        // Scale source images to the exact same world footprint
-                        // as the existing marker, regardless of their pixel size.
-                        float longestSide = Mathf.Max(portrait.bounds.size.x,
-                            portrait.bounds.size.y);
-                        if (longestSide > 0f)
-                            visual.Icon.transform.localScale = Vector3.one / longestSide;
-                        var frame = new GameObject("Portrait grade and selection frame");
-                        frame.transform.SetParent(visual.Root.transform, false);
-                        frame.transform.localScale = new Vector3(1.15f, 1.15f, 1f);
-                        visual.PortraitFrame = frame.AddComponent<SpriteRenderer>();
-                        visual.PortraitFrame.sprite = markerSprite;
-                        visual.PortraitFrame.sortingOrder = 9;
-                    }
+                    // Private portraits and authored square fallbacks occupy
+                    // the same footprint without clipping or stretching.
+                    float longestSide = Mathf.Max(artwork.bounds.size.x,
+                        artwork.bounds.size.y);
+                    if (longestSide > 0f)
+                        visual.Icon.transform.localScale = Vector3.one / longestSide;
+                    var frame = new GameObject("Grade and selection square frame");
+                    frame.transform.SetParent(visual.Root.transform, false);
+                    frame.transform.localScale = new Vector3(1.10f, 1.10f, 1f);
+                    visual.PortraitFrame = frame.AddComponent<SpriteRenderer>();
+                    visual.PortraitFrame.sprite = OrdrBattlefieldArt.GradeFrame;
+                    visual.PortraitFrame.sortingOrder = 11;
                     var flash = new GameObject("Attack flash");
                     flash.transform.SetParent(visual.Root.transform, false);
                     visual.AttackFlash = flash.AddComponent<SpriteRenderer>();
@@ -802,7 +821,7 @@ namespace Ordr.Mobile.Unity
                 Color tint = isSelected
                     ? new Color(1f, 0.95f, 0.35f, 1f)
                     : ColorForGrade(visual.Grade);
-                visual.Icon.color = visual.HasPortrait ? Color.white : tint;
+                visual.Icon.color = Color.white;
                 if (visual.PortraitFrame != null)
                     visual.PortraitFrame.color = tint;
                 // Deployed story units remain in the roster, but are no longer
@@ -872,6 +891,8 @@ namespace Ordr.Mobile.Unity
                     visual.Root.transform.position = position;
                     visual.Root.transform.localScale = new Vector3(size, size, 1f);
                     visual.Icon.enabled = id == representative;
+                    if (visual.PortraitFrame != null)
+                        visual.PortraitFrame.enabled = id == representative;
                 }
             }
         }
@@ -1083,6 +1104,7 @@ namespace Ordr.Mobile.Unity
                 if (cue.Root != null) Destroy(cue.Root);
             attackCues.Clear();
             if (evolutionMarker != null) Destroy(evolutionMarker);
+            if (battlefieldBoard != null) Destroy(battlefieldBoard.gameObject);
             if (markerSprite != null) Destroy(markerSprite);
             if (markerTexture != null) Destroy(markerTexture);
             if (healthBarSprite != null) Destroy(healthBarSprite);

@@ -1096,6 +1096,9 @@ namespace Ordr.Mobile.Unity
         public Original323EvolutionProgress EvolutionProgress { get; private set; }
         private Original323EvolutionService evolutionService;
         private IOriginal323NativeUnitPoolRandom evolutionNativeRandom;
+        private float nextAutoEvolutionAttempt;
+        public string EvolutionNotice { get; private set; }
+        public float EvolutionNoticeShownAt { get; private set; } = -99f;
 
         public void ConfigureOriginal323EvolutionNativePool(IOriginal323NativeUnitPoolRandom source)
         {
@@ -1116,6 +1119,8 @@ namespace Ordr.Mobile.Unity
                 {
                     StartingEvolutionActorId = null;
                     RecordSessionIssue("진화체 사용", message);
+                    EvolutionNotice = "진화체 성장 시작";
+                    EvolutionNoticeShownAt = Time.unscaledTime;
                 }
                 return new ManualActionResult(succeeded ? ManualActionState.Succeeded :
                     ManualActionState.Rejected, message);
@@ -1140,8 +1145,10 @@ namespace Ordr.Mobile.Unity
                 {
                     var unit = Combat.Roster.Get(id);
                     var catalog = Units.Find(unit.UnitId);
-                    RecordSessionIssue("진화체 해방",
-                        catalog == null ? unit.UnitId : catalog.Name);
+                    string name = catalog == null ? unit.UnitId : catalog.Name;
+                    RecordSessionIssue("진화체 해방", name);
+                    EvolutionNotice = "진화체 해방 · " + name;
+                    EvolutionNoticeShownAt = Time.unscaledTime;
                 }
             }
             catch (Exception error)
@@ -2681,6 +2688,9 @@ namespace Ordr.Mobile.Unity
             StartingEvolutionActorId = evolutionId;
             EvolutionProgress = evolutionId.HasValue
                 ? new Original323EvolutionProgress(evolutionId.Value) : null;
+            EvolutionNotice = null;
+            EvolutionNoticeShownAt = -99f;
+            nextAutoEvolutionAttempt = 0f;
             evolutionService = EvolutionProgress == null ? null :
                 new Original323EvolutionService(Combat, SharedEconomy,
                     startEvolutionWorld, EvolutionProgress, Units, MapBaseStats,
@@ -2987,6 +2997,14 @@ namespace Ordr.Mobile.Unity
             // Combat, round events, shared mana regeneration and source RNG
             // remain on one paused logical clock.
             if (!runGate.CanAdvance) return;
+            // Mobile policy: e0HP activates automatically; no second tap.
+            // Source RNG is consumed at most once, and retries are throttled.
+            if (evolutionService != null && EvolutionProgress != null &&
+                !EvolutionProgress.IsActivated && Time.unscaledTime >= nextAutoEvolutionAttempt)
+            {
+                nextAutoEvolutionAttempt = Time.unscaledTime + 2f;
+                RequestActivateStartingEvolution();
+            }
             // Grant callbacks may run inside source transactions or combat
             // enumeration. Redeem only after those callers have unwound.
             Wisps?.FlushAutomaticSafely();

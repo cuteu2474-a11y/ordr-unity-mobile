@@ -60,14 +60,44 @@ namespace Ordr.Mobile.Unity
                 }
                 var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
                 OrdrMobileUiTheme.DrawMapCorners(layout.Battle, OrdrMobileUiTheme.Gold);
-                GUI.Label(new Rect(layout.Battle.x + 8f, layout.Battle.y + 4f,
-                    layout.Battle.width - 16f, 22f), "메인 전장 · 보유 " +
-                    (GetComponent<OrdrUnitWorldPresenter>()?.MainOwnedUnitCount ?? 0) + "기",
-                    OrdrMobileUiTheme.Overline);
-                GUI.Box(layout.Story, GUIContent.none, GUI.skin.box);
+                var combat = controller == null ? null : controller.Combat;
+                Rect hud = new Rect(layout.Battle.x + 5f * scale,
+                    layout.Battle.y + 4f * scale,
+                    layout.Battle.width - 10f * scale, 30f * scale);
+                GUI.DrawTexture(hud, OrdrBattlefieldArt.HeaderTexture,
+                    ScaleMode.StretchToFill);
+                var hudStyle = new GUIStyle(OrdrMobileUiTheme.Overline) {
+                    alignment = TextAnchor.MiddleCenter,
+                    fontSize = Mathf.RoundToInt(13f * scale),
+                    fontStyle = FontStyle.Bold, wordWrap = false };
+                hudStyle.normal.textColor = Color.white;
+                int count = GetComponent<OrdrUnitWorldPresenter>()?.MainOwnedUnitCount ?? 0;
+                string metrics = combat == null ? "메인 전장" :
+                    "메인 전장   " + combat.Game.CurrentWave + "R   ·   적 " +
+                    combat.Game.AliveEnemies + "   ·   유닛 " + count;
+                GUI.Label(hud, metrics, hudStyle);
+
+                // Story remains a smaller, visually separate battlefield.
+                GUI.DrawTexture(layout.Story, OrdrBattlefieldArt.StoryTexture,
+                    ScaleMode.StretchToFill);
                 OrdrMobileUiTheme.DrawMapCorners(layout.Story, OrdrMobileUiTheme.Aqua);
                 GUI.Label(new Rect(layout.Story.x + 8f, layout.Story.y + 4f,
-                    layout.Story.width - 16f, 22f), "스토리 전장", OrdrMobileUiTheme.Overline);
+                    layout.Story.width - 16f, 22f), "스토리 전장",
+                    OrdrMobileUiTheme.Overline);
+                if (controller != null &&
+                    Time.unscaledTime - controller.EvolutionNoticeShownAt < 2.3f &&
+                    !string.IsNullOrEmpty(controller.EvolutionNotice))
+                {
+                    var noticeBox = new Rect(layout.Battle.center.x - layout.Battle.width * .34f,
+                        layout.Battle.y + 42f * scale, layout.Battle.width * .68f,
+                        35f * scale);
+                    GUI.DrawTexture(noticeBox, OrdrBattlefieldArt.HeaderTexture,
+                        ScaleMode.StretchToFill);
+                    var noticeStyle = new GUIStyle(hudStyle) {
+                        fontSize = Mathf.RoundToInt(17f * scale) };
+                    noticeStyle.normal.textColor = OrdrMobileUiTheme.Gold;
+                    GUI.Label(noticeBox, controller.EvolutionNotice, noticeStyle);
+                }
 
                 var combat = controller == null ? null : controller.Combat;
                 // Render the story in its own smaller HUD battlefield. The

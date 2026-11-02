@@ -37,6 +37,19 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void ProgressCannotReleaseBeforeAutomaticActivation()
+        {
+            var state = new Original323EvolutionProgress(16);
+            Assert.IsFalse(state.IsActivated);
+            Assert.IsFalse(state.IsReleased);
+            Assert.IsFalse(state.RecordVerifiedLineDefeat(1, "line", 1));
+            Assert.IsFalse(state.CanRelease(500));
+            state.Activate(33, "S-01");
+            Assert.IsTrue(state.IsActivated);
+            Assert.AreEqual(0, state.LineDefeats);
+        }
+
+        [Test]
         public void ExperienceRequiresActivationAndUsesUniqueSourceKills()
         {
             var p = new Original323EvolutionProgress(4);
