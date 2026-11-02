@@ -13,7 +13,9 @@ namespace Ordr.Mobile.Combat
     {
         public const string JassSha256 =
             "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d";
-        public const string TraitPointsResourceId = "traitPoints";
+        // Story BdL and personal missions credit this same shared resource.
+        // The dedicated skill port must never use a second, invisible balance.
+        public const string TraitPointsResourceId = OriginalMissionWalletRewards.TraitPointsId;
         public const string WoodResourceId = "wood";
         public const string Vegapunk = "TR-30";
         public const string Chopper = "TR-23";

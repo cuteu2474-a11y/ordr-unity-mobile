@@ -679,27 +679,62 @@ namespace Ordr.Mobile.Tests
                 live.Combat.ConfigureOtamaWoodWallet(wallet);
                 Assert.IsFalse(live.Combat.TryAcquirePracticeSatellite(
                     live.ActorId, "H0AB", wallet));
-                wallet.Grant(new ResourceBundle().Add("traitPoints", 10).Add("wood", 21));
+                wallet.Grant(new ResourceBundle()
+                    .Add(OriginalMissionWalletRewards.TraitPointsId, 10).Add("wood", 21));
                 int before = live.Combat.CharacterCount;
                 Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
                     live.ActorId, "H0AB", wallet));
-                Assert.AreEqual(8, wallet.Balance("traitPoints"));
+                Assert.AreEqual(8, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
                 Assert.AreEqual(14, wallet.Balance("wood"));
                 Assert.IsFalse(live.Combat.TryAcquirePracticeSatellite(
                     live.ActorId, "H0AB", wallet));
                 Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
                     live.ActorId, "H0AE", wallet));
-                Assert.AreEqual(4, wallet.Balance("traitPoints"));
+                Assert.AreEqual(4, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
                 Assert.AreEqual(0, wallet.Balance("wood"));
                 Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
                     live.ActorId, "H0AM", wallet));
-                Assert.AreEqual(0, wallet.Balance("traitPoints"));
+                Assert.AreEqual(0, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
                 Assert.AreEqual(3, live.Combat.PracticeSatellites().Count);
                 Assert.AreEqual(before, live.Combat.CharacterCount);
                 Assert.IsFalse(live.Combat.PracticeSatellites()[0].IndependentCombatVerified);
                 live.Combat.RemoveCharacter(live.ActorId);
                 Assert.AreEqual(3, live.Combat.PracticeSatellites().Count,
                     "Original B4a satellites survive removal of their creator.");
+            }
+        }
+
+        [Test]
+        public void SourceStoryRewardsCanUnlockActualVegapunkPurchaseWithoutFakeCurrency()
+        {
+            using (var live = Create("TR-30", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle().Add("wood", 7));
+                var port = new Original323SourceDedicatedSkillPort(live.Combat, wallet);
+                Assert.IsFalse(port.AvailableSkills().First(x =>
+                    x.Id == SourceModelNativeCharacterRules.SatelliteActionId("H0AB"))
+                    .CanExecute);
+                var queue = new Original323StoryNativeRewardQueue();
+                var story = new Original323StoryMobileProgression(wallet);
+                queue.RecordCommittedClear(8);
+                queue.RecordCommittedClear(9);
+                Assert.AreEqual(4, queue.ApplyPending(story)); // 2 research, 2 BdL
+                Assert.AreEqual(2, wallet.Balance(
+                    OriginalMissionWalletRewards.TraitPointsId));
+                Assert.IsTrue(port.AvailableSkills().First(x =>
+                    x.Id == SourceModelNativeCharacterRules.SatelliteActionId("H0AB"))
+                    .CanExecute);
+                Assert.AreEqual(ManualActionState.Succeeded,
+                    port.Execute(SourceModelNativeCharacterRules.SatelliteActionId("H0AB")).State);
+                Assert.AreEqual(0, wallet.Balance(
+                    OriginalMissionWalletRewards.TraitPointsId));
+                Assert.AreEqual(0, wallet.Balance("wood"));
+                Assert.AreEqual(1, live.Combat.PracticeSatellites().Count);
+                Assert.AreEqual(0, queue.ApplyPending(story));
+                Assert.AreEqual(0, wallet.Balance(
+                    OriginalMissionWalletRewards.TraitPointsId));
             }
         }
 

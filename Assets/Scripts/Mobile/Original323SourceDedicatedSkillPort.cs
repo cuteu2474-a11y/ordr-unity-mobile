@@ -43,7 +43,7 @@ namespace Ordr.Mobile.Mobile
                     SourceModelNativeCharacterRules.SatelliteActionId(rawcode),
                     "베가펑크 · " + SourceModelNativeCharacterRules.SatelliteName(rawcode),
                     "원본 특성포인트 " + points + " / 목재 " + wood +
-                    " (공유 경제 특성포인트 공급 미연결 시 구매 불가)",
+                    " (스토리·미션 보상 획득 후 구매 가능)",
                     true, combat.Game.Phase == SessionPhase.Running && affordable));
             }
             return actions.AsReadOnly();

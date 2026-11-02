@@ -8,7 +8,7 @@
 **최신 후속 변경:** 자동 위습은 게임 컨트롤러에서 거래 후 진행 프레임에 정산하며, 실패 등급별 재시도·보류 결과의 `EconomyWalletState` 저장을 연결했습니다. 원본 풀/매핑/UI Python 6개만 로컬 실행 확인했고, 추가 Unity 16사례·APK·실기 결과는 미확인입니다. 전체 저장이나 A0YE 구현 완료로 보고하지 않습니다.
 
 ## 2026-11-02 베가펑크·쵸파·카이도 JASS 공격 상태
-- `SourceModelNativeCharacterRules`·`CharacterCombatRuntime.SourceModelNativeCharacters`: 원본 Byb/B4a/B4l/CBL·CBM 조건만 모델화하고 기존 공격 엔진을 재활용한다. 무료 위성·무료 traitPoints·임의 변신 공속/공격력·원본 미검증 독립 위성 공격 절대 금지. 베가펑크 위성 구매는 공용 지갑의 traitPoints 공급자가 연결되기 전 비활성화, 코드에서 허위 지급 불허.
+- `SourceModelNativeCharacterRules`·`CharacterCombatRuntime.SourceModelNativeCharacters`: 원본 Byb/B4a/B4l/CBL·CBM 조건만 모델화하고 기존 공격 엔진을 재활용한다. 무료 위성·무료 특성포인트·임의 변신 공속/공격력·원본 미검증 독립 위성 공격 절대 금지. **2026-11-02 이후** 스토리 BdL 및 개인 미션의 승인된 보상이 동일 `trait-points` 공유 지갑에 들어오고 위성 구매도 이 지갑을 사용한다. 원본 전체 FOOD_USED 동등성을 주장하지 않는다.
 - 오타마와 위성 구매를 `Original323SourceDedicatedSkillPort` 하나에 통합한다. 외부 검증 전용 스킬 포트 설정은 덮어쓰지 않는다. 이 변경은 SourceModel 연습 단계이며 UnitBalance 원본과 실제 Warcraft 전투 동등성은 별개다.
 
 ## 최신 2026-11-02 원본 특수 스킬 JASS 분기 분석

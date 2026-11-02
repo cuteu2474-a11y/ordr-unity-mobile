@@ -64,8 +64,8 @@ namespace Ordr.Mobile.Combat
         }
 
         // Original B4a one-ability-per-PLAYER checkout. The Android shared
-        // wallet currently lacks an original trait-point source: this action
-        // is correctly unavailable unless verified points are funded.
+        // wallet accepts source-confirmed story BdL and personal mission points;
+        // it remains unavailable until those entitlements are actually earned.
         // Purchased satellites have their own identity, separate from the
         // character fusion roster, and cannot yield invented combat/rewards.
         public bool TryAcquirePracticeSatellite(long creatorId, string rawcode,
@@ -87,6 +87,8 @@ namespace Ordr.Mobile.Combat
             if (!SourceModelNativeCharacterRules.TryPlanSatelliteCost(rawcode,
                 PracticeSatelliteCorePurchases(), out points, out wood))
                 return false;
+            if (sourceNextSatelliteId == long.MaxValue)
+                throw new OverflowException("위성 ID 저장 용량 초과");
             var costs = new ResourceBundle()
                 .Add(SourceModelNativeCharacterRules.TraitPointsResourceId, points);
             if (wood > 0)
@@ -94,8 +96,6 @@ namespace Ordr.Mobile.Combat
             string receipt = SourceModelNativeCharacterRules.SatelliteActionId(rawcode);
             if (!sharedWallet.TryExchangeOnce(receipt, costs, new ResourceBundle()))
                 return false;
-            if (sourceNextSatelliteId == long.MaxValue)
-                throw new OverflowException("위성 ID 저장 용량 초과");
             var state = new SourceModelVegapunkSatellite(
                 ++sourceNextSatelliteId, creatorId, rawcode, scheduler.Time);
             sourceSatellites.Add(state);

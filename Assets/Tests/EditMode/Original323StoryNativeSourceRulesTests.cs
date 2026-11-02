@@ -31,6 +31,73 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, queue.PendingCount); // Ancient ship is NOT created.
         }
 
+        [Test]
+        public void StoryAndMissionPointsFundOneSharedWalletWithSeparateReceipts()
+        {
+            var wallet = new EconomyWallet();
+            var queue = new Original323StoryNativeRewardQueue();
+            var story = new Original323StoryMobileProgression(wallet);
+            queue.RecordCommittedClear(8);
+            Assert.AreEqual(2, queue.ApplyPending(story));
+            Assert.AreEqual(1, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
+            new OriginalMissionWalletRewards(wallet).Grant("trait-mission", new[] {
+                new OriginalMissionReward(OriginalMissionRewardKind.TraitPoint, "", 2)
+            });
+            Assert.AreEqual(3, wallet.Balance(
+                SourceModelNativeCharacterRules.TraitPointsResourceId));
+            Assert.AreEqual(0, queue.ApplyPending(story));
+            Assert.AreEqual(3, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
+            Assert.IsTrue(wallet.TryExchangeOnce("satellite-cost",
+                new ResourceBundle().Add(
+                    SourceModelNativeCharacterRules.TraitPointsResourceId, 2),
+                new ResourceBundle()));
+            Assert.AreEqual(1, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
+            Assert.IsFalse(wallet.TryExchangeOnce("satellite-cost",
+                new ResourceBundle().Add(
+                    SourceModelNativeCharacterRules.TraitPointsResourceId, 2),
+                new ResourceBundle()));
+            Assert.AreEqual(1, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
+        }
+
+        [Test]
+        public void StoryPointReceiptSurvivesPostCommitObserverFailureAndRetry()
+        {
+            var wallet = new EconomyWallet();
+            wallet.Granted += _ => throw new InvalidOperationException("TEST_ONLY observer");
+            var queue = new Original323StoryNativeRewardQueue();
+            var story = new Original323StoryMobileProgression(wallet);
+            queue.RecordCommittedClear(8);
+            Assert.AreEqual(2, queue.ApplyPending(story));
+            Assert.AreEqual(1, story.TraitPoints);
+            Assert.AreEqual(1, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
+            Assert.IsTrue(wallet.HasCompletedTransaction(
+                "story:native:8:TraitPoints:BdL"));
+            Assert.AreEqual(0, queue.ApplyPending(story));
+            var restoredQueue = new Original323StoryNativeRewardQueue();
+            restoredQueue.RecordCommittedClear(8);
+            Assert.AreEqual(2, restoredQueue.ApplyPending(
+                new Original323StoryMobileProgression(wallet)));
+            Assert.AreEqual(1, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
+        }
+
+        [Test]
+        public void FailedStoryPointWalletCreditLeavesTheNativeAwardPending()
+        {
+            var wallet = new EconomyWallet();
+            wallet.Grant(new ResourceBundle().Add(
+                OriginalMissionWalletRewards.TraitPointsId, long.MaxValue));
+            var queue = new Original323StoryNativeRewardQueue();
+            var story = new Original323StoryMobileProgression(wallet);
+            queue.RecordCommittedClear(8);
+            Assert.Throws<OverflowException>(() => queue.ApplyPending(story));
+            Assert.AreEqual(1, queue.PendingCount);
+            Assert.AreEqual(0, story.TraitPoints);
+            Assert.AreEqual(long.MaxValue, wallet.Balance(
+                OriginalMissionWalletRewards.TraitPointsId));
+            Assert.IsFalse(wallet.HasCompletedTransaction(
+                "story:native:8:TraitPoints:BdL"));
+        }
+
         [TestCase("h032", "h09Y", false)]
         [TestCase("h043", "h0A3", false)]
         [TestCase("h030", "h0A1", false)]

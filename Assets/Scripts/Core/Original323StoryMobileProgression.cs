@@ -16,8 +16,17 @@ namespace Ordr.Mobile.Core
             new HashSet<string>(StringComparer.Ordinal);
         private IOriginal323StoryNativeRewardPort externalEffects;
         private IOriginal323StoryTraitSelection traitSelection;
+        private readonly EconomyWallet sharedWallet;
         private bool traitPointsAlreadySettled;
         public int TraitPoints { get; private set; }
+
+        // The parameterless model remains usable for source-only audits.
+        // Live solo sessions bind the same wallet used by missions and units.
+        public Original323StoryMobileProgression() { }
+        public Original323StoryMobileProgression(EconomyWallet wallet)
+        {
+            sharedWallet = wallet ?? throw new ArgumentNullException(nameof(wallet));
+        }
         public void ConfigureOriginalStoryTraitSelection(
             IOriginal323StoryTraitSelection source)
         {
@@ -70,6 +79,27 @@ namespace Ordr.Mobile.Core
                 int originalPoints = award.Amount;
                 if (traitSelection != null && traitSelection.HasDoublePointStoryTrait())
                     originalPoints = checked(originalPoints + 1);
+                if (sharedWallet != null)
+                {
+                    // The native obligation is settled only once the actual
+                    // spendable balance and durable receipt have been committed.
+                    // A post-commit observer may throw: its receipt still wins
+                    // so replay never grants another set of points.
+                    try
+                    {
+                        if (!sharedWallet.TryGrantOnce(award.Receipt,
+                            new ResourceBundle().Add(
+                                OriginalMissionWalletRewards.TraitPointsId,
+                                originalPoints)) &&
+                            !sharedWallet.HasCompletedTransaction(award.Receipt))
+                            return false;
+                    }
+                    catch
+                    {
+                        if (!sharedWallet.HasCompletedTransaction(award.Receipt))
+                            throw;
+                    }
+                }
                 TraitPoints = checked(TraitPoints + originalPoints);
                 traitPointsAlreadySettled = true;
                 applied.Add(award.Receipt);

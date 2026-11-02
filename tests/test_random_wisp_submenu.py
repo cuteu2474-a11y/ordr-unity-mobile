@@ -76,9 +76,12 @@ class RandomWispSubmenuTests(unittest.TestCase):
         evo = self.panel.split("private void DrawStartingEvolutionSelection()", 1)[1].split(
             "private void DrawUnitDetails(", 1)[0]
         self.assertIn("DrawStartingEvolutionSelection();", units)
-        self.assertIn("if (!browsingFullCatalog)", units)
-        self.assertIn("StartingEvolutionActorId", evo)
-        self.assertIn("SharedEconomy.Units.Select(id)", evo)
+        self.assertNotIn("browsingFullCatalog", units)
+        self.assertIn("EvolutionProgress", evo)
+        self.assertIn("자동 활성화 대기", evo)
+        self.assertIn("state.LineDefeats", evo)
+        self.assertIn("state.ReleasedUnitId", evo)
+        self.assertNotIn("StartingEvolutionActorId", evo)
         self.assertNotIn("StartingEvolutionActorId", wisp)
         self.assertNotIn("빈 캐릭터 우선", wisp)
         self.assertNotIn("원본 위습 자동 소환", wisp)

@@ -796,7 +796,8 @@ namespace Ordr.Mobile.Unity
                         new Original323SoloStoryMovement(Combat, MapBaseStats));
                 var scenario = new Original323SoloStoryScenario(
                     Combat, buildings, SharedEconomy);
-                var progression = new Original323StoryMobileProgression();
+                var progression = new Original323StoryMobileProgression(
+                    SharedEconomy.Wallet);
                 try
                 {
                     if (originalStoryNativeAwards != null)

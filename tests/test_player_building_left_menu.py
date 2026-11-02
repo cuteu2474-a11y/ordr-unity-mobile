@@ -70,7 +70,7 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
             ("DrawPersonalMissions", "private static string MissionRewardText(",
              "DrawAccordionHeader(", "TryReroll(slot.Index)"),
             ("DrawOwnedUnitIndex", "private void DrawUnitConfirmations(",
-             "DrawActionRow(entry.Unit.Name", "DrawUnitConfirmations(entry.InstanceId)"),
+             "DrawActionRow(group.Name +", "DrawUnitConfirmations(entry.InstanceId)"),
             ("DrawStory", "private void DrawFusion(",
              "DrawStatusRow(name", "RequestOriginalStoryBuilding(stage)"),
             ("DrawFusion", "private void DrawFusionConfirmation(",

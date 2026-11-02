@@ -1,3 +1,9 @@
+# 2026-11-02 특성포인트 공용 거래 연결
+
+- 스토리 승리 `Original323SoloStoryScenario.NativeRewards` → `Original323StoryMobileProgression(SharedEconomy.Wallet)` → `EconomyWallet.TryGrantOnce(award.Receipt)` → HUD/개인 미션의 `OriginalMissionWalletRewards.TraitPointsId`로 이어집니다. 스토리 단계 8~13의 원본 `BdL`만 승인합니다.
+- `SourceModelNativeCharacterRules.TraitPointsResourceId`가 같은 키를 참조하며, `Original323SourceDedicatedSkillPort`의 버튼 활성화와 `TryAcquirePracticeSatellite`의 원자 결제가 같은 잔액을 읽습니다. 스토리/미션/위성 영수증은 각자 독립적입니다.
+- 스토리 포트만 단독 생성한 출처 감사 테스트는 지갑을 주입하지 않아 상태 관측만 가능하며, 실제 게임 세션은 공유 지갑을 주입합니다. 네이티브 전체 특성·위성 전투는 별도 작업입니다.
+
 ## JASS 고유 특수 스킬 복원 — 2026-11-02
 
 - [x] 원본 war3map.j SHA `96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d`의 실제 콜백 5종을 확인: L-19 슈가 `Btq`, R-03 검은수염 `Boa/BoZ`, R-07 류마 `Bos`, L-27 조로 `Bsk/Bsj`, L-32 쿠마 `BtL`.
