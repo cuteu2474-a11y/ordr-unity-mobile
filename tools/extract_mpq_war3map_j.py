@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Extract war3map.j from an owned Warcraft III MPQ/W3X map.
+"""Extract an unencrypted member from an owned Warcraft III MPQ/W3X map.
 
 Standard library only; the original binary is never modified or committed.
 Usage: python3 tools/extract_mpq_war3map_j.py map.w3x --output /tmp/war3map.j --verify-2323c
+       python3 tools/extract_mpq_war3map_j.py map.w3x --member war3map.w3a --output /tmp/war3map.w3a --verify-2323c
 """
 import argparse
 import bz2
@@ -78,7 +79,7 @@ def decompress_sector(data, expected_size):
     return result
 
 
-def extract_jass(path):
+def extract_member(path, member_name):
     with path.open("rb") as handle:
         prefix = handle.read(2 << 20)
         base = prefix.find(b"MPQ\x1a")
@@ -100,20 +101,20 @@ def extract_jass(path):
         handle.seek(base + block_offset)
         blocks = decrypt_table(handle.read(block_count * 16),
                                mpq_hash("(block table)", 3))
-        hash_a = mpq_hash("war3map.j", 1)
-        hash_b = mpq_hash("war3map.j", 2)
+        hash_a = mpq_hash(member_name, 1)
+        hash_b = mpq_hash(member_name, 2)
         matches = []
         for index in range(hash_count):
             a, b, _, _, block_index = struct.unpack_from("<2I2HI", hashes, 16 * index)
             if a == hash_a and b == hash_b and block_index < block_count:
                 matches.append(block_index)
         if len(matches) != 1:
-            raise ValueError("Expected one war3map.j; found %d" % len(matches))
+            raise ValueError("Expected one %s; found %d" % (member_name, len(matches)))
         offset, packed, unpacked, flags = struct.unpack_from("<4I",
                                                              blocks, 16 * matches[0])
         if not (flags & 0x80000000) or flags & 0x00010000 or \
                 base + offset + packed > path.stat().st_size:
-            raise ValueError("Missing, encrypted or truncated war3map.j")
+            raise ValueError("Missing, encrypted or truncated " + member_name)
         handle.seek(base + offset)
         content = handle.read(packed)
         if not (flags & 0x200):
@@ -135,26 +136,33 @@ def extract_jass(path):
             expected = min(sector_size, unpacked - len(output))
             output.extend(decompress_sector(content[start:end], expected))
         if len(output) != unpacked:
-            raise ValueError("Incorrect war3map.j length")
+            raise ValueError("Incorrect " + member_name + " length")
         return bytes(output)
+
+
+def extract_jass(path):
+    """Compatibility entry point for existing JASS-only audit scripts."""
+    return extract_member(path, "war3map.j")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("map", type=Path)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--member", default="war3map.j",
+                        help="MPQ member path; default war3map.j")
     parser.add_argument("--verify-2323c", action="store_true",
                         help="require the exact original map and JASS checksums")
     options = parser.parse_args()
     if options.verify_2323c and checksum(options.map) != MAP_SHA:
         raise ValueError("This is not the pinned ORDR S2 2.323[C] map")
-    jass = extract_jass(options.map)
-    digest = hashlib.sha256(jass).hexdigest()
-    if options.verify_2323c and digest != JASS_SHA:
+    content = extract_member(options.map, options.member)
+    digest = hashlib.sha256(content).hexdigest()
+    if options.verify_2323c and options.member.lower() == "war3map.j" and digest != JASS_SHA:
         raise ValueError("Extracted JASS does not match the pinned original")
     options.output.parent.mkdir(parents=True, exist_ok=True)
-    options.output.write_bytes(jass)
-    print("war3map.j bytes=%d sha256=%s" % (len(jass), digest))
+    options.output.write_bytes(content)
+    print("%s bytes=%d sha256=%s" % (options.member, len(content), digest))
 
 
 if __name__ == "__main__":

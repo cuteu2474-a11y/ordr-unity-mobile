@@ -18,9 +18,11 @@ namespace Ordr.Mobile.Tests
             public bool Trigger;
             public bool ForceSugarSuicide;
             public bool BlockKaidoMorph;
+            public bool ForceKaidoSecondBranch;
             public Dice(bool trigger) { Trigger = trigger; }
             public int Next(int bound) => ForceSugarSuicide && bound == 1000
-                ? 8 : BlockKaidoMorph && bound == 100
+                ? 9 : ForceKaidoSecondBranch && bound == 100
+                    ? 14 : BlockKaidoMorph && bound == 100
                     ? 99 : Trigger ? 0 : bound - 1;
         }
         private sealed class NoGold : IOriginalWispRandom
@@ -680,10 +682,13 @@ namespace Ordr.Mobile.Tests
             using (var kaido = Create("I-11", true, -4900, 5400))
             {
                 var events = kaido.Battle.Advance(6);
-                Assert.IsTrue(events.Any(e =>
+                Assert.IsFalse(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == "카이도 변신" && e.Detail.Contains("h0AD")));
-                Assert.IsNotNull(kaido.Combat.PracticeFormOf(kaido.ActorId));
+                Assert.IsNull(kaido.Combat.PracticeFormOf(kaido.ActorId),
+                    "Original h07M lacks A0PS: CBL must not roll 14% auto metamorphosis.");
+                Assert.IsTrue(events.Any(e => e.SkillName == "카이도 100 체력 공격" &&
+                    e.Type == CharacterCombatEventType.SkillDamage && e.Amount > 0));
                 Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.Attack &&
                     e.ActorId == kaido.ActorId.ToString() && e.Amount > 0));
             }
@@ -796,7 +801,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void KaidoSourceAttackEventDoesNotGuessUnverifiedNativeDamage()
+        public void KaidoHundredLifeAttackUsesPinnedElevenSourceAreaPackets()
         {
             using (var live = Create("I-11", true, -4900, 5400))
             {
@@ -810,6 +815,8 @@ namespace Ordr.Mobile.Tests
                 Assert.IsTrue(events.Any(e =>
                     e.Type == CharacterCombatEventType.EffectDeferred &&
                     e.SkillName == "카이도 100 체력 공격"));
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "카이도 100 체력 공격" && e.Amount > 0));
                 Assert.Greater(live.Combat.PracticeKaidoAttackCounterOf(live.ActorId), 0);
             }
         }
@@ -877,7 +884,8 @@ namespace Ordr.Mobile.Tests
                 var attacks = live.Battle.Advance(3);
                 var toys = live.Combat.PracticeSummonsOf(live.ActorId);
                 Assert.IsTrue(toys.Any(x => x.SourceUnitRawcode == "h06N" &&
-                    x.ExpiresAt > live.Combat.Time && x.HasIndependentCombat));
+                    x.ExpiresAt > live.Combat.Time && x.HasIndependentCombat &&
+                    x.SpawnX == -4900 && x.SpawnY == 5400));
                 Assert.IsTrue(attacks.Any(x => x.Type == CharacterCombatEventType.Attack &&
                     x.ActorId.StartsWith("practice-summon:") && x.Amount > 0));
                 Assert.AreEqual(before, live.Combat.Roster.Count,
@@ -903,6 +911,9 @@ namespace Ordr.Mobile.Tests
                 Assert.IsFalse(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == "장난감 No.31"));
+                Assert.IsTrue(live.Combat.PracticeSummonsOf(live.ActorId).Any(x =>
+                    x.SourceUnitRawcode == "h06P" &&
+                    x.SpawnX == -4900 && x.SpawnY == 5400));
             }
         }
 
@@ -973,6 +984,41 @@ namespace Ordr.Mobile.Tests
                 Assert.IsFalse(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == "카이도 변신"));
+            }
+        }
+
+        [Test]
+        public void KaidoTwoOrderedSourceRollsAndUserDataIncrementsAreIndependent()
+        {
+            var audit = OrdrJson.Object(OrdrJson.Parse(
+                Data("original-2323C-source-character-callback-evidence.json")), "source");
+            var original = OrdrJson.Object(OrdrJson.Value(audit, "kaido"), "kaido");
+            Assert.AreEqual(false, OrdrJson.Value(original, "humanObjectHasA0PS"));
+            Assert.AreEqual(true, OrdrJson.Value(original, "dragonObjectHasA0PS"));
+            Assert.IsTrue(SourceModelNativeCharacterRules.KaidoCanRollAutoMorph("h0AD"));
+            Assert.IsFalse(SourceModelNativeCharacterRules.KaidoCanRollAutoMorph("h07M"));
+            Assert.AreEqual(2, SourceModelNativeCharacterRules.KaidoUserDataIncrease(8));
+            Assert.AreEqual(2, SourceModelNativeCharacterRules.KaidoUserDataIncrease(15));
+            Assert.AreEqual(1, SourceModelNativeCharacterRules.KaidoUserDataIncrease(0));
+            using (var firstBranch = Create("I-11", true, -4900, 5400))
+            {
+                var all = firstBranch.Battle.Advance(5);
+                Assert.IsTrue(all.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "인간형 타격"));
+                Assert.IsFalse(all.Any(x => x.SkillName == "카이도 변신"));
+            }
+            using (var normalBranch = Create("I-11", false, -4900, 5400))
+            {
+                var all = normalBranch.Battle.Advance(5);
+                Assert.IsTrue(all.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "인간형 기본 콜백"));
+            }
+            using (var secondBranch = Create("I-11", false, -4900, 5400))
+            {
+                secondBranch.Rolls.ForceKaidoSecondBranch = true;
+                var all = secondBranch.Battle.Advance(5);
+                Assert.IsTrue(all.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "인간형 두 번째 타격"));
             }
         }
 
@@ -1394,7 +1440,10 @@ namespace Ordr.Mobile.Tests
                 Assert.IsTrue(summons.Count > 0);
                 Assert.IsTrue(summons.All(x => x.OwnerId == live.ActorId &&
                     x.Name == "분신" && x.SourceUnitRawcode == "h085" &&
-                    x.HasIndependentCombat));
+                    x.HasIndependentCombat && x.SpawnX != -4900 &&
+                    x.SpawnY != 5400));
+                Assert.IsTrue(events.Any(x => x.SkillName == "인술 분신" &&
+                    x.Detail.Contains("반경119")));
                 events.AddRange(live.Battle.Advance(1.1));
                 Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack &&
                     x.ActorId.StartsWith("practice-summon:") && x.Amount > 0));

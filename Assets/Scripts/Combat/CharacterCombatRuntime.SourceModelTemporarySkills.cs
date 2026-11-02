@@ -33,7 +33,7 @@ namespace Ordr.Mobile.Combat
             var summon = new SourceModelSummonState(++sourceNextSummonId,
                 owner.Id, skillName, name, effectExecutor.Time + lifetimeSeconds,
                 IsStoryDeployed(owner.Id), autonomous, sourceRawcode,
-                unresolvedLootAbility);
+                unresolvedLootAbility, spawnX, spawnY);
             if (autonomous)
                 RegisterSourceIndependentAttack(SummonAttackKey(summon.Id),
                     sourceRawcode, summon.StoryLane, spawnX, spawnY, summon.ExpiresAt,
@@ -221,9 +221,8 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        // Both original summoned objects h085/h0A9 have identical .73s
-        // cooldown and 21501..21502 dice. Their JASS spawn selection is not
-        // known; h085 is the explicit mobile object proxy.
+        // Bt2 explicitly picks h085 for h042 (Shinobu), h0A9 for other
+        // attackers, with a random 119-unit offset from GetTriggerUnit().
         private void ExecuteSourceTimedClone(CharacterInstance actor,
             SpatialCombatEnemy primary)
         {
@@ -233,14 +232,20 @@ namespace Ordr.Mobile.Combat
             double duration, stun;
             if (!SourceModelTemporarySkillCatalog.TryReadTimedClone(skill,
                     out name, out duration, out stun) || !SourceRollSkill(skill)) return;
+            // GetRandomDirectionDeg() precedes both source proc rolls in Bt2;
+            // the offline PRNG draws an angle here only when the clone exists.
+            // This preserves prior script-roll cadence, not WC3 RNG parity.
+            double angle = sourceModelRules.NextScriptRoll(360) * Math.PI / 180.0;
+            double x = primary.X + 119 * Math.Cos(angle);
+            double y = primary.Y + 119 * Math.Sin(angle);
             var summon = SpawnSourceTemporaryActor(
                 actor, skill.Name, name, duration, "h085", false,
-                primary.X, primary.Y);
+                x, y);
             string attacker = InstanceKey(actor.Id);
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, attacker, primary.Id,
                 skill.Name, "TOOLTIP_MODEL_ONLY " + name +
-                " 생성 / " + duration + "초 / h085 객체 0.73초 공격 / h0A9 동일 수치", 0));
+                " 생성 / " + duration + "초 / 원본 h042→h085 / 대상 반경119 무작위 위치 / 객체 0.73초 공격", 0));
             if (primary.Kind == CharacterEnemyKind.Line && primary.Enemy.IsAlive)
             {
                 string source = "practice-summon-stun:" + summon.Id;
@@ -253,7 +258,7 @@ namespace Ordr.Mobile.Combat
             }
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.EffectDeferred, attacker, primary.Id,
-                skill.Name, "분신 실제 생성 rawcode·원작 첫 공격 위상·스턴 면역 미검증", 0));
+                skill.Name, "Bt2 분신 rawcode h085 확인 / WC3 난수 각도·첫 공격 위상·firebolt 스턴/면역 미검증", 0));
         }
     }
 }

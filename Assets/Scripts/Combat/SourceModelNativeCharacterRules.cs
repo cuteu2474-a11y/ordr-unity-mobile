@@ -24,6 +24,18 @@ namespace Ordr.Mobile.Combat
         public const int VegapunkMainMana = 200;
         public const double VegapunkMainDelaySeconds = 1.23;
         public const int KaidoTransformRollPercent = 14;
+        public const int KaidoFirstSpecialRollPercent = 8;
+        public const int KaidoSecondSpecialRollPercent = 15;
+        public const int KaidoSourceCounterThreshold = 10;
+
+        // CBL checks A0PS before rolling. The pinned object list for
+        // original h07M has A0P0 but NO A0PS; transformed h0AD HAS A0PS.
+        // B05F native buff status remains unobserved in offline practice.
+        public static bool KaidoCanRollAutoMorph(string rawcode) => rawcode == "h0AD";
+
+        // B_x/B_1/B_5 increment GetUnitUserData by 2; CBE/CBI by 1.
+        public static int KaidoUserDataIncrease(int branch) =>
+            branch == 8 || branch == 15 ? 2 : branch == 0 ? 1 : 0;
 
         public static bool TryGetNativeAttack(string rawcode, out string unitId)
         {

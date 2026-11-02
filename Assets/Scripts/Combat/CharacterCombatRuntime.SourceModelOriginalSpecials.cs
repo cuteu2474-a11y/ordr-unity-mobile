@@ -74,6 +74,8 @@ namespace Ordr.Mobile.Combat
         private void ExecuteSourceSugar(CharacterInstance actor,
             SpatialCombatEnemy primary)
         {
+            // Btq uses GetUnitLoc(GetAttacker()), never the attacked target.
+            var casterPosition = roster.Get(actor.Id);
             // Btq draws 1..1000 first. If successful, one separate 1..100
             // roll determines the A0CY ability. The suicide branch is an
             // ELSE IF, not a second independent proc on the same attack.
@@ -82,9 +84,9 @@ namespace Ordr.Mobile.Combat
             {
                 bool hasA0CY = SourceRoll1To(100) <=
                     SourceModelOriginalSpecialCallbackRules.SugarLootAbilityRollSuccess;
-                var toy = SpawnSourceTemporaryActor(actor, "장난감 No.31",
+                SpawnSourceTemporaryActor(actor, "장난감 No.31",
                     "장난감 No.31", 4.5, "h06N", hasA0CY,
-                    primary.X, primary.Y);
+                    casterPosition.X, casterPosition.Y);
                 RecordSourceSpecial(actor, primary, "장난감 No.31",
                     "Btq: h06N 생성 / 4.5초 / 독립 객체 평타 / A0CY 능력 " +
                     (hasA0CY ? "부여, 실제 아이템 보상 미인증" : "미부여"));
@@ -96,9 +98,10 @@ namespace Ordr.Mobile.Combat
                     SourceRoll1To(100)))
             {
                 SpawnSourceTemporaryActor(actor, "하비하비열매",
-                    "자폭 장난감", 3, "h06P", false, primary.X, primary.Y);
+                    "자폭 장난감", 3, "h06P", false,
+                    casterPosition.X, casterPosition.Y);
                 RecordSourceSpecial(actor, primary, "하비하비열매",
-                    "Btq: h06P 생성 / 3초 / selfdestruct 명령");
+                    "Btq: 공격자 위치에서 h06P 생성 / 3초 / 피격 대상에게 selfdestruct 명령");
                 var profile = FindSourceSkill(actor, "하비하비열매");
                 if (profile != null && profile.Components.Count == 1 &&
                     profile.Components[0].Type == "summon" &&

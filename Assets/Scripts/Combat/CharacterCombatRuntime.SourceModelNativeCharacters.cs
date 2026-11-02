@@ -195,14 +195,15 @@ namespace Ordr.Mobile.Combat
                 // CBL/CBM call B_m on exactly 100 current HP: the source
                 // counter resets to 1 and starts a large native attack.
                 sourceKaidoLifeCounters[actor.Id] = 1;
-                events.Add(new CharacterCombatEvent(
-                    CharacterCombatEventType.EffectDeferred, InstanceKey(actor.Id),
-                    primary.Id, "카이도 100 체력 공격",
-                    "MODEL_ONLY CBL/CBM: B_m→Jc/Jh / native 피해 콜백 정산 대기", 0));
+                ExecuteKaidoHundredLifeModelPacket(actor, primary);
                 return;
             }
             sourceKaidoLifeCounters[actor.Id] = Math.Min(100, life + 1);
-            if (SourceRoll1To(100) <= 14)
+            // CBL rolls 14% ONLY when A0PS is present; its h07M object
+            // does not carry that ability. CBM h0AD does (unless B05F).
+            if (SourceModelNativeCharacterRules.KaidoCanRollAutoMorph(
+                    SourceKaidoIsDragon(actor.Id) ? "h0AD" : "h07M") &&
+                SourceRoll1To(100) <= SourceModelNativeCharacterRules.KaidoTransformRollPercent)
             {
                 string former;
                 sourceNativeForms.TryGetValue(actor.Id, out former);
@@ -221,12 +222,107 @@ namespace Ordr.Mobile.Combat
             }
             int previous;
             sourceKaidoAttackCounters.TryGetValue(actor.Id, out previous);
-            int current = previous >= 10 ? 1 : previous + 1;
-            sourceKaidoAttackCounters[actor.Id] = current;
-            if (current == 10)
+            if (previous >= SourceModelNativeCharacterRules.KaidoSourceCounterThreshold)
+            {
+                sourceKaidoAttackCounters[actor.Id] = 0;
                 ExecuteKaidoTenthModelPacket(actor, primary);
+            }
             else
-                ExecuteKaidoEighthPercentModelPacket(actor, primary);
+            {
+                // CBL/CBM: first BFi<=8, ELSE-IF new BFi<=15,
+                // otherwise CBE/CBI. These are independent ordered rolls.
+                int branch = SourceRoll1To(100) <=
+                    SourceModelNativeCharacterRules.KaidoFirstSpecialRollPercent ? 8 :
+                    SourceRoll1To(100) <=
+                    SourceModelNativeCharacterRules.KaidoSecondSpecialRollPercent ? 15 : 0;
+                if (branch == 8) ExecuteKaidoEighthPercentModelPacket(actor, primary);
+                else if (branch == 15) ExecuteKaidoSecondSpecialModelPacket(actor, primary);
+                else ExecuteKaidoOrdinaryModelPacket(actor, primary);
+                sourceKaidoAttackCounters[actor.Id] = Math.Min(
+                    SourceModelNativeCharacterRules.KaidoSourceCounterThreshold,
+                    previous + SourceModelNativeCharacterRules.KaidoUserDataIncrease(branch));
+            }
+        }
+
+        private void ExecuteKaidoHundredLifeModelPacket(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            // B_m -> B_k/B_l: at +.38s B_j applies 2,850,000/r900,
+            // then Bcc runs 1,111,111/r900 ten times at +.42s and .1s
+            // intervals. Native Bcc packet flags/damage finalization are
+            // not equivalent to this explicitly labelled offline model.
+            string attacker = InstanceKey(actor.Id), enemyId = primary.Id;
+            bool lane = IsStoryDeployed(actor.Id);
+            long revision = SourceModelLaneRevision(actor.Id);
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                attacker, enemyId, "카이도 100 체력 공격",
+                "MODEL_ONLY B_m→B_k/B_l: 0.38초 후 반경900 2850000 + Bcc 1111111×10", 0));
+            for (int hit = 0; hit < 11; hit++)
+            {
+                int index = hit;
+                effectExecutor.SchedulePracticeSourceAttack(attacker, enemyId,
+                    index == 0 ? .38 : .42 + (index - 1) * .1, () => {
+                        SpatialCombatEnemy live;
+                        if (!CanFinishSourceModelDelayedAttack(actor.Id, lane, revision) ||
+                            !enemies.TryGetValue(enemyId, out live) ||
+                            !live.Enemy.IsAlive || !CanAttackInThisLane(actor, live)) return;
+                        ApplySourceModelAreaPacket(attacker, lane, live, 900,
+                            index == 0 ? 2850000 : 1111111,
+                            index == 0 ? Ordr323AttackType.Spells : Ordr323AttackType.Chaos,
+                            "카이도 100 체력 공격");
+                    });
+            }
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                attacker, enemyId, "카이도 100 체력 공격",
+                "Bcc 원작 공격·피해타입·지연 커맨드/면역 판정은 모델이며 네이티브 실행 미검증", 0));
+        }
+
+        private void ExecuteKaidoSecondSpecialModelPacket(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            bool dragon = SourceKaidoIsDragon(actor.Id);
+            string name = dragon ? "용형 두 번째 타격" : "인간형 두 번째 타격";
+            string attacker = InstanceKey(actor.Id);
+            // B_5: 350000 + eventDamage*.3 in radius500,
+            // 500000 extra primary; B_1: 1,200,000*random(1..2) and
+            // eventDamage*.3 in radius500. EventDamage is not known here.
+            double flat = dragon ? 1200000 *
+                (1 + sourceModelRules.NextScriptRoll(1000000) / 1000000.0) : 350000;
+            bool critical = SourceRoll1To(100) <= 40;
+            if (critical) flat *= 1.5;
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                attacker, primary.Id, name,
+                "MODEL_ONLY B_5/B_1: CBL/CBM 두 번째 15% 분기 · 원본 고정량 부분", 0));
+            ApplySourceModelAreaPacket(attacker, IsStoryDeployed(actor.Id),
+                primary, 500, flat, Ordr323AttackType.Chaos, name);
+            if (!dragon) ApplySourceModelFixedPrimaryPacket(attacker, primary,
+                critical ? 750000 : 500000, name);
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                attacker, primary.Id, name,
+                "원본 EventDamage 비례·40% 분기 난수·공격 면역·지연 판정 미검증", 0));
+        }
+
+        private void ExecuteKaidoOrdinaryModelPacket(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            bool dragon = SourceKaidoIsDragon(actor.Id);
+            string name = dragon ? "용형 기본 콜백" : "인간형 기본 콜백";
+            string attacker = InstanceKey(actor.Id);
+            // CBI: GetEventDamage*.1 + 200000 in radius500, with two
+            // delayed passes. CBE: GetEventDamage*.25 + 150000/r500,
+            // plus a single-target 500000 chaos packet.
+            ApplySourceModelAreaPacket(attacker, IsStoryDeployed(actor.Id),
+                primary, 500, dragon ? 200000 : 150000,
+                Ordr323AttackType.Spells, name);
+            if (dragon)
+                ApplySourceModelAreaPacket(attacker, IsStoryDeployed(actor.Id),
+                    primary, 500, 200000, Ordr323AttackType.Spells, name);
+            else
+                ApplySourceModelAreaPacket(attacker, IsStoryDeployed(actor.Id),
+                    primary, 0, 500000, Ordr323AttackType.Chaos, name);
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                attacker, primary.Id, name,
+                "MODEL_ONLY CBE/CBI: 원본 EventDamage 비례·공격 유형·시간차 면역 미검증", 0));
         }
 
         private bool SourceKaidoIsDragon(long id)
@@ -249,7 +345,8 @@ namespace Ordr.Mobile.Combat
                 skill.Components[0].Type != "physical" ||
                 skill.Components[0].Number("amount") != flat ||
                 skill.Components[0].Number("plusBasicAttackDamagePercent") !=
-                    (dragon ? 30 : 50) || !SourceRollSkill(skill)) return;
+                    (dragon ? 30 : 50)) return;
+            bool critical = false;
             if (dragon)
             {
                 // Tooltip multiplier 1..2; a uniform model draw is not
@@ -260,20 +357,21 @@ namespace Ordr.Mobile.Combat
             else if (skill.Components[3].Type == "critical" &&
                 skill.Components[3].Number("chancePercent") == 40 &&
                 skill.Components[3].Number("multiplier") == 1.5 &&
-                SourceRoll1To(100) <= 40)
+                (critical = SourceRoll1To(100) <= 40))
                 flat *= 1.5;
             string attacker = InstanceKey(actor.Id);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 attacker, primary.Id, name,
-                "TOOLTIP_MODEL_ONLY 8% 발동 / 확정 물리 기본량만 처리", 0));
+                "MODEL_ONLY CBL/CBM 8% 분기 (단일 판정) / 원본 고정량 부분", 0));
             ApplySourceModelAreaPacket(attacker, IsStoryDeployed(actor.Id), primary,
-                500, flat, Ordr323AttackType.Spells, name);
+                500, flat, Ordr323AttackType.Chaos, name);
             if (!dragon)
             {
                 if (skill.Components[1].Type == "fixed" &&
                     skill.Components[1].Number("amount") == 850000 &&
                     skill.Components[1].Text("scope") == "singlePrimaryTarget")
-                    ApplySourceModelFixedPrimaryPacket(attacker, primary, 850000, name);
+                    ApplySourceModelFixedPrimaryPacket(attacker, primary,
+                        critical ? 1275000 : 850000, name);
                 ApplySourceModelLineStun(attacker, primary, name, 1.5);
             }
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,

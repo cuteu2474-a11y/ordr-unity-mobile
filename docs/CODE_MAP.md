@@ -1,4 +1,6 @@
-# 2026-11-03 SourceModel 공통 오라·방어 스택·추가 스킬 (최신)
+> **최신 호출 연결:** 문서 끝 **「원본 콜백·MPQ 재확인」**을 먼저 확인하세요. 특히 카이도 `h07M` 자동 14% 변신을 원본 객체 검사로 수정했습니다.
+
+# 2026-11-03 SourceModel 공통 오라·방어 스택·추가 스킬 (이전 기록)
 
 - `CharacterCombatRuntime.SourceModelEffects.RefreshSourceModelAuras → RefreshSourceNativeObjectAuras`: H0B6 `A0OK/A0OL` +40 공격력, `A0OJ` +40 공속, `A0OI` -50 방어(825), H0AB `A034` -40 방어(800). 원본 `data/original-2323C-all-unit-aura-audit.json`의 능력·대상 수치를 고정하며, 0초 오라 상태를 매 프레임 기존 상태 엔진에서 재계산합니다. 혼합/동일 타입 다중 오라에 임의 합산하지 않습니다.
 - `CharacterCombatRuntime.SourceModelNativeCharacters`: `ExecuteKaidoEighthPercentModelPacket`이 도감 8% 인간/용형 flat 패킷+인간형 단일 fixed/라인 기절·인간형 40% 치명/용형 1~2배 모델을 처리. `ApplySourceKaidoBasicArmor/ApplySourceKaidoArmorStack`은 공격자-적별 단일·광역 최대10 스택을 분리하고 현재 상태를 한 개 armorReduction 효과로 기록합니다. `ForgetNativeSourceCharacter`, `RemoveEnemyRuntimeState`, `RefreshSourceKaidoArmorLanes`에서 정리합니다.
@@ -248,4 +250,11 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - **독립 공격:** `SourceModelTemporarySkills.SpawnSourceTemporaryActor`가 h06N·h085 소환수의 생명주기/전장/소유자 정리. `SourceModelIndependentAttacks.CompleteSourceIndependentHit`는 구입 위성 릴리스 22%/11%와 아틀라스 15% 가속, 시노부 분신 .73초 평타 뒤 반경325 마법을 적용. 소유자 프로필을 위성 객체에 보존하여 구매자 제거 후 발동을 유지.
 - **공통 정산:** `ApplySourceModelAreaPacket`와 `ApplySourceModelLineStun`은 같은 전장·실제 방어/HP/처치·상태 이벤트·대상 ID 순서를 사용하며 네이티브 원본 피해/면역 인증을 주장하지 않습니다. `SourceModelOriginalSpecials.ExecuteSourceSugar`는 `Btq` 두 분기를 유지하면서 `h06P` 도감 50만 자폭을 즉시 적용하는 **모바일 근사**입니다.
 - **회귀:** `Assets/Tests/EditMode/SourceModelScriptAttackSkillTests.cs`의 소환 객체 동일 주기, 원본 `else-if` 자폭, 구매자 제거 후 위성 발동·아틀라스 가속, 카이도 10회 부분 피해, 분신 독립 공격. 로컬 Python 전체 255개 통과. Unity/Android 빌드 실행 환경이 없으므로 C# EditMode 성공 확인 불가입니다.
+
+
+# 2026-11-02 원본 콜백·MPQ 재확인 (최신)
+
+- `tools/extract_mpq_war3map_j.py`: 기존 고정 `war3map.j` 추출에 `--member war3map.w3a` 등 임의 MPQ 멤버 추출을 추가했습니다. `--verify-2323c`는 맵 SHA를 고정, 기본 JASS는 출력 SHA도 고정합니다. 실제 비공개 소스는 Git 밖, 검증된 수치는 `data/original-2323C-source-character-callback-evidence.json`에 기록. `tests/test_original_source_character_callbacks.py`가 맵 객체·실제 JASS·W3A 교차 검사(원본 파일이 없는 CI에서는 소스 재추출만 skip)를 합니다.
+- `SourceModelNativeCharacterRules.KaidoCanRollAutoMorph/KaidoUserDataIncrease` → `CharacterCombatRuntime.SourceModelNativeCharacters.ExecuteKaidoSourceAttack`: `h07M`에 없는 `A0PS`로 잘못 실행하던 14% 자동 변신을 차단. `CBL/CBM`의 선행 8% / 후속 15% / 기본 분기와 사용자 데이터 +2/+2/+1, 10 이상일 때 다음 공격의 특수기를 구현. `ExecuteKaidoHundredLifeModelPacket`은 `B_m/B_k/B_l` 반경900의 11개 소스 수치 패킷을 공유 전투 정산에 지연 연결하며, `ExecuteKaidoSecondSpecialModelPacket/ExecuteKaidoOrdinaryModelPacket`은 고정 피해 부분만 처리하고 `GetEventDamage` 비례분은 명시 보류.
+- `SourceModelOriginalSpecials.ExecuteSourceSugar`는 `roster.Get(actor.Id)`로 생성 위치를 공격자에게 고정. `SourceModelTemporarySkills.ExecuteSourceTimedClone`은 JASS `h042→h085`와 피격자 중심 119 오프셋을 모델 PRNG 각도로 반영. `SourceModelSummonState.SpawnX/Y`에서 실제 생성 위치를 검증할 수 있습니다. firebolt·selfdestruct 네이티브 효과는 도감 근사와 분리해 기록합니다.
 
