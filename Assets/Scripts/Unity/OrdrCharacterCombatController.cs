@@ -296,8 +296,7 @@ namespace Ordr.Mobile.Unity
             {
                 try
                 {
-                    if (EvolutionProgress.RecordVerifiedLineDefeat(sourceWave, instanceId))
-                        TryReleaseSourceConfirmedEvolution();
+                    EvolutionProgress.RecordVerifiedLineDefeat(sourceWave, instanceId, Combat.Time);
                 }
                 catch (Exception error)
                 {
@@ -1095,53 +1094,58 @@ namespace Ordr.Mobile.Unity
 
         public long? StartingEvolutionActorId { get; private set; }
         public Original323EvolutionProgress EvolutionProgress { get; private set; }
-        private IOriginal323EvolutionReleaseOutcome originalEvolutionRelease;
+        private Original323EvolutionService evolutionService;
+        private IOriginal323NativeUnitPoolRandom evolutionNativeRandom;
 
-        public void ConfigureOriginal323EvolutionRelease(IOriginal323EvolutionReleaseOutcome source)
+        public void ConfigureOriginal323EvolutionNativePool(IOriginal323NativeUnitPoolRandom source)
         {
             if (Combat != null && Combat.Game.Phase != SessionPhase.NotStarted)
-                throw new InvalidOperationException("진화체 공급자는 게임 시작 전에 등록해야 합니다.");
-            originalEvolutionRelease = source ?? throw new ArgumentNullException(nameof(source));
+                throw new InvalidOperationException("진화체 난수 공급자는 게임 전에 지정해야 합니다.");
+            evolutionNativeRandom = source ?? throw new ArgumentNullException(nameof(source));
         }
 
-        private void TryReleaseSourceConfirmedEvolution()
+        public ManualActionResult RequestActivateStartingEvolution()
         {
-            var p = EvolutionProgress;
-            if (p == null || p.IsReleased || originalEvolutionRelease == null ||
-                !StartingEvolutionActorId.HasValue ||
-                !ReferenceEquals(Combat.Roster, SharedEconomy.Units)) return;
-
-            string unitId;
-            double x, y;
-            if (!originalEvolutionRelease.TryGetReleasedSpecial(
-                p.ActorId, p.LineDefeats, out unitId, out x, out y)) return;
-            var result = Units.Find(unitId);
-            if (result == null || result.Grade != "특별함" || result.Id == "S-17" ||
-                double.IsNaN(x) || double.IsInfinity(x) ||
-                double.IsNaN(y) || double.IsInfinity(y))
-            {
-                RecordSessionIssue("진화체 해방 거절", "원본 결과 또는 좌표 검증 실패");
-                return;
-            }
-
-            long spawned = 0;
+            if (evolutionService == null)
+                return ManualActionResult.Unavailable("시작 진화체");
             try
             {
-                if (Combat.Roster.Get(p.ActorId).UnitId != Original323SoloStartProfile.EvolutionRawcode)
-                    throw new InvalidOperationException("시작 진화체 객체가 변경됐습니다.");
-                spawned = Combat.SpawnCharacter(unitId, x, y);
-                startEvolutionWorld.RemoveAndUntrack(SharedEconomy, p.ActorId);
-                p.RecordSourceConfirmedRelease(spawned);
-                StartingEvolutionActorId = null;
-                RecordSessionIssue("진화체 해방", result.Name);
+                string message;
+                bool succeeded = evolutionService.TryActivate(out message);
+                if (succeeded)
+                {
+                    StartingEvolutionActorId = null;
+                    RecordSessionIssue("진화체 사용", message);
+                }
+                return new ManualActionResult(succeeded ? ManualActionState.Succeeded :
+                    ManualActionState.Rejected, message);
             }
             catch (Exception error)
             {
-                if (spawned > 0)
+                RecordSessionIssue("진화체 사용 실패", error.Message);
+                Debug.LogException(error);
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "진화체 사용 실패 · 기존 결과를 유지하고 재시도할 수 있습니다.");
+            }
+        }
+
+        private void TryFinishOriginal323Evolution()
+        {
+            if (evolutionService == null || EvolutionProgress == null ||
+                !EvolutionProgress.CanRelease(Combat.Time)) return;
+            try
+            {
+                long id;
+                if (evolutionService.TryRelease(Combat.Time, out id))
                 {
-                    try { Combat.RollbackUncommittedSpawn(spawned); }
-                    catch (Exception rollback) { Debug.LogException(rollback); }
+                    var unit = Combat.Roster.Get(id);
+                    var catalog = Units.Find(unit.UnitId);
+                    RecordSessionIssue("진화체 해방",
+                        catalog == null ? unit.UnitId : catalog.Name);
                 }
+            }
+            catch (Exception error)
+            {
                 RecordSessionIssue("진화체 해방 실패", error.Message);
                 Debug.LogException(error);
             }
@@ -2648,6 +2652,7 @@ namespace Ordr.Mobile.Unity
             if (!Original323SoloStartProfile.MatchesPinnedSource(verifiedStartingProfile) ||
                 startEvolutionWorld == null)
                 throw new InvalidOperationException("원본 시작 e0HP 진화체 월드가 미연결입니다.");
+            Original323EvolutionSourceRules.ValidateCatalog(Units, MapBaseStats);
             var preparedMissions = PersonalMissionGameplay.Prepare(Combat.Game,
                 SharedEconomy.Wallet, missionRandom ??
                     new MobileMissionRandom(unchecked((uint)Environment.TickCount)),
@@ -2676,6 +2681,14 @@ namespace Ordr.Mobile.Unity
             StartingEvolutionActorId = evolutionId;
             EvolutionProgress = evolutionId.HasValue
                 ? new Original323EvolutionProgress(evolutionId.Value) : null;
+            evolutionService = EvolutionProgress == null ? null :
+                new Original323EvolutionService(Combat, SharedEconomy,
+                    startEvolutionWorld, EvolutionProgress, Units, MapBaseStats,
+                    originalSharedScriptRandom == null ? sessionScriptRandom :
+                        originalSharedScriptRandom.ForPurpose(
+                            Original323ScriptRandomPurpose.OtherOriginalScriptCall),
+                    evolutionNativeRandom ?? new Original323MobileNativePoolRandom(
+                        new MobileUniformWispRandom()));
             PersonalMissions = preparedMissions;
             AttachVerifiedSoloHelperCow();
         }
@@ -3035,6 +3048,7 @@ namespace Ordr.Mobile.Unity
                 Debug.LogException(ex);
                 return;
             }
+            TryFinishOriginal323Evolution();
             UnitDecompositions?.Advance(Math.Max(0.0, Combat.Time - timeBeforeStep));
             // The same advancing combat clock drives helper mana regen.
             // UI redraws and wall time must not regenerate extra mana.

@@ -3,14 +3,20 @@ using System.Collections.Generic;
 
 namespace Ordr.Mobile.Core
 {
-    // Source-confirmed line deaths are NOT equivalent to unverified XP.
+    // e0HP is consumed on activation; the preselected dormant unit is
+    // intangible until 152 actual marked kills and 101 source timer ticks.
     public sealed class Original323EvolutionProgress
     {
-        private readonly HashSet<string> credited = new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<string> defeated = new HashSet<string>(StringComparer.Ordinal);
         public long ActorId { get; private set; }
-        public int LineDefeats { get { return credited.Count; } }
+        public long? InitialUncommonId { get; private set; }
+        public string DormantSpecialCatalogId { get; private set; }
+        public bool IsActivated => InitialUncommonId.HasValue;
+        public bool IsUnsealing { get; private set; }
+        public double UnsealStartTime { get; private set; }
+        public int LineDefeats => defeated.Count;
         public long? ReleasedUnitId { get; private set; }
-        public bool IsReleased { get { return ReleasedUnitId.HasValue; } }
+        public bool IsReleased => ReleasedUnitId.HasValue;
 
         public Original323EvolutionProgress(long actorId)
         {
@@ -18,26 +24,40 @@ namespace Ordr.Mobile.Core
             ActorId = actorId;
         }
 
-        public bool RecordVerifiedLineDefeat(int spawnWave, string monsterInstanceId)
+        public void Activate(long uncommonId, string specialId)
         {
-            if (IsReleased) return false;
-            if (spawnWave <= 0 || string.IsNullOrWhiteSpace(monsterInstanceId))
-                throw new ArgumentException("실제 라인 몬스터 처치가 필요합니다.");
-            return credited.Add(spawnWave + ":" + monsterInstanceId);
+            if (IsActivated || IsReleased || LineDefeats != 0 || uncommonId <= 0 ||
+                string.IsNullOrWhiteSpace(specialId))
+                throw new InvalidOperationException("진화체는 한 번만 사용할 수 있습니다.");
+            InitialUncommonId = uncommonId;
+            DormantSpecialCatalogId = specialId;
         }
 
-        public void RecordSourceConfirmedRelease(long newUnitId)
+        public bool RecordVerifiedLineDefeat(int spawnWave, string id, double atTime)
         {
-            if (IsReleased || newUnitId <= 0)
-                throw new InvalidOperationException("진화체 해방을 중복 기록할 수 없습니다.");
-            ReleasedUnitId = newUnitId;
+            if (!IsActivated || IsUnsealing || IsReleased) return false;
+            if (spawnWave <= 0 || string.IsNullOrWhiteSpace(id) ||
+                atTime < 0 || double.IsNaN(atTime) || double.IsInfinity(atTime))
+                throw new ArgumentException("검증된 몬스터와 게임 시간이 필요합니다.");
+            if (!defeated.Add(spawnWave + ":" + id)) return false;
+            if (defeated.Count == Original323EvolutionSourceRules.RequiredLineKills)
+            {
+                IsUnsealing = true;
+                UnsealStartTime = atTime;
+            }
+            return true;
         }
-    }
 
-    // Adapter must supply original XP/threshold/RNG-verified sticky result and coordinates.
-    public interface IOriginal323EvolutionReleaseOutcome
-    {
-        bool TryGetReleasedSpecial(long evolutionActorId, int observedLineDefeats,
-            out string catalogUnitId, out double spawnX, out double spawnY);
+        public bool CanRelease(double atTime) =>
+            IsUnsealing && !IsReleased && !double.IsNaN(atTime) &&
+            atTime + 1e-8 >=
+                UnsealStartTime + Original323EvolutionSourceRules.UnsealSeconds;
+
+        public void RecordSourceConfirmedRelease(long unitId)
+        {
+            if (!IsUnsealing || IsReleased || unitId <= 0)
+                throw new InvalidOperationException("해방은 한 번만 확정합니다.");
+            ReleasedUnitId = unitId;
+        }
     }
 }

@@ -291,41 +291,51 @@ namespace Ordr.Mobile.Unity
 
         private void SyncEvolutionActor()
         {
-            if (controller == null || controller.SharedEconomy == null ||
-                !controller.StartingEvolutionActorId.HasValue)
+            var progress = controller == null ? null : controller.EvolutionProgress;
+            bool dormant = progress != null && progress.IsActivated && !progress.IsReleased;
+            if ((controller == null || controller.SharedEconomy == null ||
+                !controller.StartingEvolutionActorId.HasValue) && !dormant)
             {
                 if (evolutionMarker != null) evolutionMarker.SetActive(false);
                 return;
             }
-            long id = controller.StartingEvolutionActorId.Value;
-            UnitState actor;
-            try { actor = controller.SharedEconomy.Units.Get(id); }
-            catch (KeyNotFoundException)
+            double x = Original323EvolutionSourceRules.DormantX;
+            double y = Original323EvolutionSourceRules.DormantY;
+            bool selected = false;
+            if (!dormant)
             {
-                if (evolutionMarker != null) evolutionMarker.SetActive(false);
-                return;
-            }
-            if (actor.UnitId != Original323SoloStartProfile.EvolutionRawcode)
-            {
-                if (evolutionMarker != null) evolutionMarker.SetActive(false);
-                return;
+                long id = controller.StartingEvolutionActorId.Value;
+                UnitState actor;
+                try { actor = controller.SharedEconomy.Units.Get(id); }
+                catch (KeyNotFoundException)
+                {
+                    if (evolutionMarker != null) evolutionMarker.SetActive(false);
+                    return;
+                }
+                if (actor.UnitId != Original323SoloStartProfile.EvolutionRawcode)
+                {
+                    if (evolutionMarker != null) evolutionMarker.SetActive(false);
+                    return;
+                }
+                x = actor.X; y = actor.Y;
+                selected = controller.SharedEconomy.Units.SelectedId == id;
             }
             if (evolutionMarker == null)
             {
-                evolutionMarker = new GameObject("ORDR Starting Evolution Actor");
+                evolutionMarker = new GameObject("ORDR Evolution Actor");
                 evolutionMarker.transform.SetParent(transform, false);
                 evolutionIcon = evolutionMarker.AddComponent<SpriteRenderer>();
                 evolutionIcon.sprite = markerSprite;
                 evolutionIcon.sortingOrder = 10;
             }
             evolutionMarker.SetActive(true);
-            evolutionMarker.transform.position = new Vector3((float)actor.X,
-                (float)actor.Y, 0f);
-            bool selected = controller.SharedEconomy.Units.SelectedId == id;
+            evolutionMarker.transform.position = new Vector3((float)x, (float)y, 0f);
             evolutionMarker.transform.localScale = Vector3.one *
-                Mathf.Max(1f, markerDiameterWorldUnits) * (selected ? 1.05f : 0.82f);
-            evolutionIcon.color = selected ? new Color(1f, 0.95f, 0.35f, 1f)
-                : new Color(0.38f, 0.87f, 0.91f, 1f);
+                Mathf.Max(1f, markerDiameterWorldUnits) *
+                (selected ? 1.05f : dormant ? 0.92f : 0.82f);
+            evolutionIcon.color = selected ? new Color(1f, 0.95f, 0.35f, 1f) :
+                dormant ? new Color(0.58f, 0.40f, 0.88f, 1f) :
+                new Color(0.38f, 0.87f, 0.91f, 1f);
         }
 
         // Explicitly reveal an owned character's formation page. Actual actor

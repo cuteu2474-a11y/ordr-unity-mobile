@@ -1000,24 +1000,44 @@ namespace Ordr.Mobile.Unity
 
         private void DrawStartingEvolutionSelection()
         {
-            if (!controller.StartingEvolutionActorId.HasValue ||
-                controller.SharedEconomy == null || Combat == null) return;
-            long id = controller.StartingEvolutionActorId.Value;
-            var progress = controller.EvolutionProgress;
-            string status = "라인 처치 " + (progress == null ? 0 : progress.LineDefeats) + "회" +
-                (Combat.Roster.SelectedId == id ? " · 선택됨" : " · 성장 중");
-            if (OrdrMobileUiTheme.DrawActionRow("진화체", status,
-                OrdrMobileUiTheme.Aqua, 72f))
+            if (Combat == null || controller.SharedEconomy == null) return;
+            var state = controller.EvolutionProgress;
+            if (state == null) return;
+            if (!state.IsActivated)
             {
-                try
-                {
-                    if (Combat.Roster.Get(id).UnitId != Original323SoloStartProfile.EvolutionRawcode)
-                        return;
-                    controller.SharedEconomy.Units.Select(id);
-                    notice = "진화체 선택";
-                }
-                catch (KeyNotFoundException) { notice = "진화체를 찾을 수 없습니다."; }
+                if (controller.StartingEvolutionActorId.HasValue &&
+                    OrdrMobileUiTheme.DrawActionRow("진화체 사용",
+                        "1개 보유", OrdrMobileUiTheme.Aqua, 72f))
+                    ShowResult(controller.RequestActivateStartingEvolution());
+                return;
             }
+
+            var dormant = controller.Units.Find(state.DormantSpecialCatalogId);
+            string title = dormant == null ? "진화체" : dormant.Name;
+            if (state.IsReleased)
+            {
+                if (state.ReleasedUnitId.HasValue &&
+                    OrdrMobileUiTheme.DrawActionRow(title, "해방 완료",
+                        OrdrMobileUiTheme.Gold, 72f))
+                {
+                    try
+                    {
+                        Combat.Roster.Select(state.ReleasedUnitId.Value);
+                        selectedCatalogUnitId = state.DormantSpecialCatalogId;
+                        notice = title + " 선택";
+                    }
+                    catch (KeyNotFoundException)
+                    { notice = "해방 유닛이 이미 제거됐습니다."; }
+                }
+                return;
+            }
+            string status = state.IsUnsealing ?
+                "해방 중 " + Math.Max(0,
+                    state.UnsealStartTime + Original323EvolutionSourceRules.UnsealSeconds -
+                    Combat.Time).ToString("0.0") + "초" :
+                state.LineDefeats + " / " + Original323EvolutionSourceRules.RequiredLineKills;
+            OrdrMobileUiTheme.DrawStatusRow(title + " 진화체",
+                status, OrdrMobileUiTheme.Aqua);
         }
 
         private void DrawUnitDetails(UnitImplementationDefinition detail)
