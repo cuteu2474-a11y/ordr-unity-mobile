@@ -20,15 +20,16 @@ def supported(skill):
     trigger = skill.get('trigger')
     if trigger not in ('onAttack', 'onEveryAttack', 'activeMana', 'activeHealth'):
         return False
-    if skill.get('target') not in ('area', 'single'):
+    active = trigger in ('activeMana', 'activeHealth')
+    valid_targets = ('area', 'single') if active else ('area', 'single', 'casterArea')
+    if skill.get('target') not in valid_targets:
         return False
-    if skill['target'] == 'area' and skill.get('radius', 0) <= 0:
+    if skill['target'] in ('area', 'casterArea') and skill.get('radius', 0) <= 0:
         return False
     if trigger == 'onAttack' and not 0 < skill.get('chancePercent', 0) <= 100:
         return False
     if trigger in ('onEveryAttack', 'activeMana', 'activeHealth') and 'chancePercent' in skill:
         return False
-    active = trigger in ('activeMana', 'activeHealth')
     allowed = {'name', 'trigger', 'target', 'radius', 'chancePercent', 'components'}
     if active:
         allowed |= {'manaCost', 'healthCost', 'cooldownSeconds', 'absoluteCooldownSeconds'}
@@ -125,7 +126,8 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
                 else:
                     attacks += 1
         self.assertEqual(29, attacks)
-        self.assertEqual(7, active)
+        self.assertEqual(8, active,
+                         'I-06 Big Mom was approved in the additional 13-active batch')
 
     def test_legacy_source_callbacks_are_not_double_activated(self):
         by_id = {unit_id: names for unit_id, _, *names in self.rows}
@@ -138,8 +140,10 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
 
     def test_unresolved_form_or_summon_skills_are_never_auto_approved(self):
         by_id = {unit_id: names for unit_id, _, *names in self.rows}
-        for unit_id in ('TR-23', 'TR-30', 'I-06', 'I-11'):
+        for unit_id in ('TR-23', 'TR-30', 'I-11'):
             self.assertEqual([], by_id[unit_id])
+        self.assertEqual(['대자재천신'], by_id['I-06'],
+                         'Big Mom has one complete sourced health-cost packet, not a form or summon')
 
     def test_same_named_complete_packets_have_distinct_unit_permissions(self):
         by_id = {unit_id: names for unit_id, _, *names in self.rows}

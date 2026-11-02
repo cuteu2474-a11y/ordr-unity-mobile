@@ -181,8 +181,10 @@ namespace Ordr.Mobile.Combat
         {
             if (skill == null ||
                 !(skill.Trigger == "onAttack" || skill.Trigger == "onEveryAttack") ||
-                !(skill.Target == "area" || skill.Target == "single") ||
-                (skill.Target == "area" && (!skill.Radius.HasValue || skill.Radius.Value <= 0)) ||
+                !(skill.Target == "area" || skill.Target == "single" ||
+                  skill.Target == "casterArea") ||
+                ((skill.Target == "area" || skill.Target == "casterArea") &&
+                 !FinitePositive(skill.Radius)) ||
                 (skill.Trigger == "onAttack" &&
                  (!FinitePositive(skill.ChancePercent) || skill.ChancePercent.Value > 100)) ||
                 (skill.Trigger == "onEveryAttack" && skill.ChancePercent.HasValue) ||

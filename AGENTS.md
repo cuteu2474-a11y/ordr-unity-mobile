@@ -25,7 +25,9 @@
 - 원본에서 다른 모드 전용인 밴·변질 조건을 이세계에 적용하지 않는다. 원작 재화 거래·중복 영수증 차단·롤백·판매/분해 확인 절차는 유지한다.
 - 원본 근거는 data/에 저장한다. Assets/Resources/OrdrData/는 Editor 생성 캐시라 직접 수정·커밋하지 않는다. 원본 W3X, 비공개 도감 이미지, 개인 계정·서명키도 커밋하지 않는다.
 
-## 3. 최신 기능 상태 — 2026-11-02
+## 3. 최신 기능 상태 — 2026-11-03
+
+**최신 후속:** 13명 자동 액티브 묶음 이후 `I-10 제트(h04G)`의 원본 MP160 `마나 광역 공격`과 `LI-01(h05G)`의 4% 시전자 중심 `핏빛 범위 공격`을 기존 SourceModel에 승인했습니다. 명시적 연습 자동 액티브 **21개**, 추가 공격 패킷 **37개**. `casterArea`는 기존 `AttackerCircle`과 반경 게이트를 사용하며 같은 전장 무제한 **기본 공격 사거리**와 별도입니다. L-16/TR-17/I-09/L-32의 원본 JASS 스킬 중복 구현을 금지합니다. 근거는 `data/source-model-followup-two-character-skills.json`, 관련 검사는 `tests/test_source_model_followup_two_skills.py`와 `SourceModelScriptAttackSkillTests.cs`. 이전의 **20/36** 기술 수치는 당시 스냅샷입니다. 여전히 **TOOLTIP_MODEL_ONLY**, 원작 최종 피해·면역·RNG/Unity·Android 인증 아님.
 
 **원본 W3X·전체 JASS 자료 확보 후 재검증 (최신):** 이전의 '원작 자료 부족'은 Git 저장소 바깥의 원본 파일을 탐색하지 못했던 문제다. 소유 W3X/JASS/W3A를 실제로 확인하고 `data/original-2323C-source-character-callback-evidence.json`에 고정했다. **카이도 초기 인간형 h07M에는 A0PS가 없어 14% 자동 변신 추첨을 금지**하고, 용형 h0AD만 해당 능력 보유 시 원본 조건을 모델링한다. CBL/CBM의 첫 8%→별도 15%→기본 분기, 사용자 데이터 +2/+2/+1과 10이상 특수기, B_m 100체력 광역 285만+1111111×10/r900 모델을 연결했다. 슈가는 공격자 위치에 h06N/h06P를 생성하고 시노부 h042는 목표 반경119 위치에 h085를 2초간 소환한다. 원본 JASS 호출·객체 rawcode는 확인했으나 Warcraft 네이티브 효과·최종 RNG/방어·면역·B05F·비례 피해는 **미검증 MODEL_ONLY**이다. 아래 14% 인간형 자동 변신 및 소스 미확보 표현은 **기존 구현 시점 기록**이므로 이 최신 조건을 우선한다.
 

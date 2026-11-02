@@ -44,10 +44,16 @@ namespace Ordr.Mobile.Combat
                 Array.Empty<string>(), new[] { "나선섬광초륜무후삼식" }),
             new SourceModelUnconnectedSkillRow("MY-06", "h09N",
                 Array.Empty<string>(), new[] { "이성의 창조물" }),
+            // I-10 has no already-registered source attack callback here.
+            // Its native object supplies the exact 160 mana maximum; only
+            // this complete tooltip packet is approved for automatic casts.
+            new SourceModelUnconnectedSkillRow("I-10", "h04G",
+                Array.Empty<string>(), new[] { "마나 광역 공격" }),
             new SourceModelUnconnectedSkillRow("L-24", "h02O", new[] { "산화 부지화" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("L-35", "h087", new[] { "시간시간열매" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("T-02", "h05W", new[] { "공작슬래셔" }, Array.Empty<string>()),
-            new SourceModelUnconnectedSkillRow("LI-01", "h05G", new[] { "광역 마법 공격" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("LI-01", "h05G",
+                new[] { "핏빛 범위 공격", "광역 마법 공격" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("LI-02", "h05I", new[] { "단일 스턴" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("LI-04", "h084", new[] { "광역 마법" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("LI-07", "h05E", new[] { "낙뢰 4연타" }, Array.Empty<string>()),

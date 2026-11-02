@@ -86,7 +86,7 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        // All 20 explicitly allow-listed complete tooltip/model actives
+        // Explicitly allow-listed complete tooltip/model actives
         // are auto-cast in practice using original W3X resource baselines.
         // No guessed spell targets, cooldown or source RNG:
         // reuse the same target policy and source script skill executor.

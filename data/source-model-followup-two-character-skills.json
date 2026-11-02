@@ -1,0 +1,53 @@
+{
+  "format": "ordr-source-model-followup-two-character-skills-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "execution": "TOOLTIP_MODEL_ONLY",
+  "sources": [
+    "data/character-skill-profiles.json",
+    "data/unit-runtime-status.json",
+    "data/original-2323C-unit-object-stats.json"
+  ],
+  "additionalPackets": [
+    {
+      "catalogId": "LI-01",
+      "originalRawcode": "h05G",
+      "skillName": "핏빛 범위 공격",
+      "trigger": "onAttack",
+      "chancePercent": 4,
+      "target": "casterArea",
+      "radius": 750,
+      "originalParityVerified": false,
+      "note": "The 4% attacker-centered tooltip packet is separate from this unit's previously modeled 5% target-centered 광역 마법 공격. The exact Warcraft RNG order is unverified."
+    },
+    {
+      "catalogId": "I-10",
+      "originalRawcode": "h04G",
+      "skillName": "마나 광역 공격",
+      "trigger": "activeMana",
+      "manaCost": 160,
+      "originalManaMaximum": 160,
+      "target": "area",
+      "radius": 725,
+      "originalParityVerified": false,
+      "note": "The source SLK maximum is 160; the tooltip provides 5,050,000 magical damage, 8% target missing health, and 3 s stun. Automatic cast timing and Warcraft resistance are unverified."
+    }
+  ],
+  "deferredRelatedSkills": [
+    {
+      "catalogId": "I-10",
+      "skillNames": ["직선 마법 공격", "차지 버스트"],
+      "reason": "Line geometry and self-buff/damage packet are not fully supported."
+    },
+    {
+      "catalogId": "I-10",
+      "skillNames": ["매 타격 스턴"],
+      "reason": "The native object already models the 100% stun and damage; never double count it from the tooltip."
+    },
+    {
+      "catalogId": "LI-01",
+      "skillNames": ["단일 스턴", "평타 단일 고정"],
+      "reason": "Boss overrides and unsupported percent fields are not complete tooltip packets."
+    }
+  ]
+}

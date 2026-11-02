@@ -66,8 +66,13 @@ namespace Ordr.Mobile.Combat
                     sourceModelRules.NextScriptRoll(1000000) >=
                     (int)Math.Round(skill.ChancePercent.Value * 10000,
                         MidpointRounding.AwayFromZero)) continue;
+                // The tooltip distinguishes a circle around the struck
+                // enemy from one around the attacker. Never turn a
+                // caster-centered spell into a global target-centered AoE.
                 var shape = skill.Target == "single" ?
-                    SourceScriptHitShape.Direct : SourceScriptHitShape.Circle;
+                    SourceScriptHitShape.Direct :
+                    skill.Target == "casterArea" ?
+                    SourceScriptHitShape.AttackerCircle : SourceScriptHitShape.Circle;
                 var template = new SourceScriptHit(shape, skill.Radius ?? 0,
                     0, 0, 1, 1, Ordr323AttackType.Spells);
                 var targets = SourceScriptTargets(actor, primary, template);

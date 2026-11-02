@@ -687,6 +687,75 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void ZephyrMissingManaSkillUsesOriginal160ManaAndExistingHpDamageLedger()
+        {
+            using (var live = Create("I-10", false, -4900, 5400))
+            {
+                var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"), units);
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var resource = live.Combat.ResourcesOf(live.ActorId);
+                Assert.IsNotNull(resource);
+                Assert.AreEqual(160d, resource.MaximumMana);
+                live.Battle.Advance(2);
+                Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives());
+                Assert.AreEqual(0d, resource.Mana);
+                Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives(),
+                    "No duplicate debit or free recast from the same mana cap");
+                var settled = live.Battle.Advance(.1);
+                Assert.IsTrue(settled.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "마나 광역 공격"),
+                    "The missing-health bonus and area packet must enter the shared HP ledger");
+                Assert.IsFalse(settled.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillActivated &&
+                    (x.SkillName == "직선 마법 공격" || x.SkillName == "차지 버스트" ||
+                     x.SkillName == "매 타격 스턴")),
+                    "Unsupported mixed/native packets must not be double-executed");
+            }
+        }
+
+        [Test]
+        public void RestrictedLavaAttackerCircleUsesOwnLocationNotAttackTargetLocation()
+        {
+            var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
+            var caster = skills.Find("LI-01");
+            var packet = caster.Skills.Single(x => x.Name == "핏빛 범위 공격");
+            Assert.AreEqual("casterArea", packet.Target);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(packet));
+            SourceModelUnconnectedSkillRow row;
+            Assert.IsTrue(SourceModelUnconnectedSkillCatalog.TryGet("h05G", out row));
+            Assert.AreEqual("LI-01", row.CatalogId);
+            CollectionAssert.AreEquivalent(
+                new[] { "핏빛 범위 공격", "광역 마법 공격" }, row.PracticeAttackSkills);
+
+            using (var near = Create("LI-01", true, -4900, 5400))
+            {
+                var events = near.Battle.Advance(6);
+                Assert.IsTrue(events.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "핏빛 범위 공격"),
+                    "Attacker-centered 750-radius model must reach enemy HP nearby");
+            }
+            using (var far = Create("LI-01", true, 50000, 50000))
+            {
+                var events = far.Battle.Advance(6);
+                Assert.IsFalse(events.Any(x =>
+                    x.SkillName == "핏빛 범위 공격" &&
+                    (x.Type == CharacterCombatEventType.SkillDamage ||
+                     x.Type == CharacterCombatEventType.SkillActivated)),
+                    "Unlimited basic attack range must not turn local AoE into a global hit");
+                Assert.IsTrue(events.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "광역 마법 공격"),
+                    "The preexisting target-centered 5% packet still executes");
+            }
+        }
+
+        [Test]
         public void KobySourceManaRegenWithoutMaximumCannotAbortEntireCharacterResourceIndex()
         {
             var map = OriginalMapBaseStatCatalog.FromJson(

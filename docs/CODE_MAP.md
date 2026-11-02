@@ -1,3 +1,10 @@
+## 2026-11-03 · 제트/제한됨 신규 패킷 호출 경로 (현재 최신)
+
+- `SourceModelUnconnectedSkillCatalog`의 `I-10/h04G` 자동 액티브 `마나 광역 공격`은 `CharacterCombatRuntime.SourceModelResources.CanProvisionSourceModelResources → AutoCastApprovedSourceModelActives → TryCastApprovedSourceModelActive → ApplySourceModelNextThirtySkill`로 원본 SLK 160 MP를 정산. `I-10`의 원본 객체 100% 추가 기절은 공통 네이티브 처리 그대로 두고 도감 중복 패킷은 승인하지 않음.
+- `LI-01/h05G`의 4% `핏빛 범위 공격`은 `SourceModelNextThirtySkillCatalog.CanModelCompleteAttack`의 `casterArea` 범위 검증 후 `CharacterCombatRuntime.SourceModelNextThirtyAttacks.ExecuteSourceModelApprovedProfileAttacks → SourceScriptTargets`의 `AttackerCircle`을 사용. 기존 5% `광역 마법 공격`은 `Circle`로 계속 적 대상 중심. 기본 사거리 무제한 정책과 국소 광역 반경은 별개.
+- 출처/보류: `data/source-model-followup-two-character-skills.json`, `tests/test_source_model_followup_two_skills.py`, `Assets/Tests/EditMode/SourceModelScriptAttackSkillTests.cs`. 새 액티브 1·신규 공격 패킷 1이며 기존 20 자동 액티브/36 추가 공격 패킷을 중복하지 않음. Unity·Android·원본 최종 전투 동등성은 확인 전.
+- 통합 회귀: `tests/test_second_thirty_tooltip_practice.py`의 앞선 I-06 승인 이후 갱신되지 않은 액티브 기대값(7→8)·미허용 목록을 교정하고 `casterArea` 정적 판정을 실 구현과 일치시킴. 로컬 Python 271건 중 270 통과·1 건너뜀; C# Unity EditMode는 미실행.
+
 ## 2026-11-03 · 미구현 캐릭터 13명 자동 액티브 연결·공통 자원 로더 수정 (현재 최신)
 
 - **전투 기능 13명 묶음 구현:** `MY-07 샌즈(가스터 블래스터)`, `MY-08 아냐(요르 포저)`, `L-32 쿠마 폭군(우르스스 쇼크)`, `TR-11 사보(마나 범위 타격)`, `TR-12 상디(유성소바 킥)`, `TR-15 시라호시(해왕류 다이브)`, `TR-19 우솝(파이어 버드 스타)`, `TR-24 코비(어니스티 임팩트)`, `I-01 거프(특제 대포환)`, `I-06 빅맘(대자재천신)`, `MY-04 미나토(나선섬광초륜무후삼식)`, `MY-05 바쿠야(종경백제검)`, `MY-06 부릉냐(이성의 창조물)`. 기존 7개와 합쳐 **명시적으로 허용한 자동 액티브 20개**(모든 캐릭터 전체 스킬 수가 아님).
