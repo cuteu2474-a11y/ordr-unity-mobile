@@ -481,6 +481,127 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void SourceSlkBaselineMatchesAllSevenPreviouslyUnusableActivePools()
+        {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var resourceCatalog = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                Data("original-2323C-unit-object-stats.json"), map);
+            Assert.Greater(resourceCatalog.Count, 200);
+            var expected = new[] {
+                new object[] { "H-07", "h03R", 10d, 95d, 0d, 0d },
+                new object[] { "TR-04", "H098", 40d, 0d, 0.5d, 0d },
+                new object[] { "TR-09", "H094", 40d, 100d, 0.33d, 0d },
+                new object[] { "TR-14", "H0B2", 10d, 85d, 0d, 0d },
+                new object[] { "E-01", "H0BK", 115d, 150d, 0.25d, 0d },
+                new object[] { "E-04", "h058", 10d, 175d, 0d, 2d },
+                new object[] { "E-08", "h08R", 10d, 145d, 0d, 0d },
+                new object[] { "TR-18", "H0BD", 95d, 0d, 0.33d, 0d }
+            };
+            foreach (var row in expected)
+            {
+                var source = resourceCatalog.Find((string)row[0]);
+                Assert.IsNotNull(source, (string)row[0]);
+                Assert.AreEqual(row[1], source.OriginalRawcode);
+                Assert.AreEqual((double)row[2], source.MaximumHealth, 1e-9);
+                Assert.AreEqual((double)row[3], source.MaximumMana, 1e-9);
+                Assert.AreEqual((double)row[4], source.HealthRegeneration, 1e-9);
+                Assert.AreEqual((double)row[5], source.ManaRegeneration, 1e-9);
+            }
+            Assert.Throws<InvalidOperationException>(() =>
+                SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                    Data("original-2323C-unit-object-stats.json")
+                        .Replace("0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5",
+                            "not-source-matched"), map));
+        }
+
+        [Test]
+        public void FullCostHealthIsSpendableOnlyInExplicitSourceMode()
+        {
+            var verified = new CharacterResources(40, 40, 0, 0);
+            Assert.IsFalse(verified.CanSpend(40, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => verified.SetHealth(0));
+            var source = new CharacterResources(40, 40, 0, 0, true);
+            Assert.IsTrue(source.CanSpend(40, 0));
+            source.Spend(40, 0);
+            Assert.AreEqual(0, source.Health);
+            Assert.IsFalse(source.CanSpend(1, 0));
+            source.RegenerateSourceModel(0.5, 0, 2);
+            Assert.AreEqual(1, source.Health, 1e-9);
+            source.RegenerateSourceModel(0.5, 0, 500);
+            Assert.AreEqual(40, source.Health);
+            Assert.Throws<InvalidOperationException>(() =>
+                verified.RegenerateSourceModel(0.5, 0, 1));
+        }
+
+        [TestCase("H-07", "갑판 포격", 95d, false)]
+        [TestCase("TR-04", "체력 소모 광역 공격", 40d, true)]
+        [TestCase("TR-09", "마나 광역 공격", 100d, false)]
+        [TestCase("TR-14", "킹코브라", 85d, false)]
+        [TestCase("E-01", "마나 광역기", 150d, false)]
+        [TestCase("E-04", "마나 고정 피해", 175d, false)]
+        [TestCase("E-08", "마나 광역 스턴", 145d, false)]
+        public void RealSourceBaselineEnablesOneAutomaticActiveWithExactDebit(
+            string unitId, string skillName, double cost, bool spendsHealth)
+        {
+            using (var live = Create(unitId, false, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var resources = live.Combat.ResourcesOf(live.ActorId);
+                Assert.IsNotNull(resources);
+                Assert.AreEqual(spendsHealth ? cost : cost,
+                    spendsHealth ? resources.MaximumHealth : resources.MaximumMana);
+                live.Battle.Advance(2);
+                Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives(),
+                    unitId + " source model cast");
+                Assert.AreEqual(spendsHealth ? 0 : resources.MaximumHealth,
+                    resources.Health, 1e-8);
+                Assert.AreEqual(spendsHealth ? resources.MaximumMana : 0,
+                    resources.Mana, 1e-8);
+                Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives(),
+                    "Casting without replenished resources must not duplicate rewards.");
+                // External source model events settle only on the next
+                // combat step, using the existing central event queue.
+                var events = live.Battle.Advance(.1);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == skillName), unitId);
+            }
+        }
+
+        [Test]
+        public void SourceResourceLifecycleHandlesLateSpawnAndExplicitOverride()
+        {
+            using (var live = Create("C-01", false, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                Assert.IsNull(live.Combat.ResourcesOf(live.ActorId),
+                    "Unapproved unit must not obtain artificial spell resources.");
+                long late = live.Combat.SpawnCharacter("E-04", -4900, 5400);
+                Assert.AreEqual(175, live.Combat.ResourcesOf(late).Mana);
+                var external = new CharacterResources(500, 490, 500, 450);
+                live.Combat.ConfigureCharacterResources(late, external);
+                live.Battle.Advance(2);
+                Assert.AreSame(external, live.Combat.ResourcesOf(late));
+                Assert.AreEqual(490, external.Health);
+                Assert.AreEqual(450, external.Mana,
+                    "Externally provided resources must not receive model regen.");
+                live.Combat.RemoveCharacter(late);
+                Assert.Throws<KeyNotFoundException>(() => live.Combat.ResourcesOf(late));
+            }
+        }
+
+        [Test]
         public void SecondThirtyUnverifiedFormAndBossSkillsRemainDeferred()
         {
             foreach (var unit in new[] { "TR-23", "TR-30", "I-06", "I-11" })

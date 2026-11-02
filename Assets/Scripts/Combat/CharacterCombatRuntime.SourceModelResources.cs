@@ -1,0 +1,124 @@
+using System;
+using System.Collections.Generic;
+using Ordr.Mobile.Data;
+
+namespace Ordr.Mobile.Combat
+{
+    public sealed partial class CharacterCombatRuntime
+    {
+        private SourceModelUnitResourceCatalog sourceModelResourceCatalog;
+        private readonly Dictionary<long, SourceModelUnitResourceSpec>
+            sourceModelManagedResourceRows =
+                new Dictionary<long, SourceModelUnitResourceSpec>();
+
+        public void ConfigureSourceModelUnitResources(SourceModelUnitResourceCatalog source)
+        {
+            if (!UsesSourceModelBasicAttacks || processingStep ||
+                pendingStepSeconds != 0 || sourceModelResourceCatalog != null)
+                throw new InvalidOperationException(
+                    "원본 기반 연습 자원은 전투 모델에 한 번만 연결합니다.");
+            sourceModelResourceCatalog = source ??
+                throw new ArgumentNullException(nameof(source));
+            foreach (var actor in characters.Values)
+                ProvisionSourceModelResources(actor);
+        }
+
+        private bool CanProvisionSourceModelResources(CharacterInstance actor)
+        {
+            if (!UsesSourceModelBasicAttacks || actor == null ||
+                actor.Profile == null || actor.Mapping == null ||
+                actor.Abilities.Resources != null) return false;
+            // Existing form skill also consumes source HP; its runtime
+            // already validates the complete transform packet.
+            if (actor.Catalog.Id == "TR-18" &&
+                actor.Mapping.AttackSpec.UnitRawCode == "H0BD")
+                return true;
+            SourceModelNextThirtyUnit entry;
+            if (!SourceModelNextThirtySkillCatalog.TryGet(
+                actor.Mapping.AttackSpec.UnitRawCode, out entry) ||
+                entry.CatalogId != actor.Catalog.Id ||
+                entry.PracticeActiveSkills.Count == 0) return false;
+            foreach (var skill in actor.Profile.Skills)
+                if (entry.AllowsActive(skill.Name) &&
+                    SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill))
+                    return true;
+            return false;
+        }
+
+        private void ProvisionSourceModelResources(CharacterInstance actor)
+        {
+            if (sourceModelResourceCatalog == null ||
+                !CanProvisionSourceModelResources(actor)) return;
+            var stats = sourceModelResourceCatalog.Find(actor.Catalog.Id);
+            if (stats == null ||
+                stats.OriginalRawcode != actor.Mapping.AttackSpec.UnitRawCode) return;
+            actor.Abilities.ConfigureResources(stats.CreateStartingPool());
+            sourceModelManagedResourceRows.Add(actor.Id, stats);
+        }
+
+        private void AdvanceSourceModelResources(double seconds)
+        {
+            if (!UsesSourceModelBasicAttacks || sourceModelManagedResourceRows.Count == 0)
+                return;
+            foreach (var actor in characters.Values)
+            {
+                SourceModelUnitResourceSpec source;
+                if (sourceModelManagedResourceRows.TryGetValue(actor.Id, out source))
+                    actor.Abilities.Resources.RegenerateSourceModel(
+                        source.HealthRegeneration, source.ManaRegeneration, seconds);
+            }
+        }
+
+        // ONLY seven fully modeled, allow-listed active packets are auto-cast
+        // in practice. No guessed spell targets, cooldown or source RNG:
+        // reuse the same target policy and source script skill executor.
+        // All casts settle after the combat Step; never mutate during attacks.
+        public int AutoCastApprovedSourceModelActives(int maximumPerFrame = 32)
+        {
+            if (maximumPerFrame < 1 || maximumPerFrame > 256)
+                throw new ArgumentOutOfRangeException(nameof(maximumPerFrame));
+            if (!UsesSourceModelBasicAttacks || game.Phase != Ordr.Mobile.Core.SessionPhase.Running ||
+                processingStep || pendingStepSeconds != 0 ||
+                sourceModelResourceCatalog == null) return 0;
+
+            var ids = new List<long>(characters.Keys);
+            ids.Sort();
+            int completed = 0;
+            foreach (long id in ids)
+            {
+                if (completed >= maximumPerFrame) break;
+                CharacterInstance actor;
+                if (!characters.TryGetValue(id, out actor) ||
+                    actor.Profile == null || actor.Mapping == null ||
+                    !actor.AttackReady || IsOriginalUnitCasting(id) ||
+                    SourceFormIsCasting(id) || actor.Abilities.Resources == null)
+                    continue;
+                SourceModelNextThirtyUnit row;
+                if (!SourceModelNextThirtySkillCatalog.TryGet(
+                    actor.Mapping.AttackSpec.UnitRawCode, out row) ||
+                    row.CatalogId != actor.Catalog.Id ||
+                    row.PracticeActiveSkills.Count == 0) continue;
+                var targets = BuildTargetCandidates(actor);
+                if (targets.Count == 0) continue;
+                string primary = ChoosePreviewTarget(actor, targets);
+                if (primary == null) continue;
+                foreach (var skill in actor.Profile.Skills)
+                {
+                    if (!row.AllowsActive(skill.Name) ||
+                        !SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill))
+                        continue;
+                    double hp = skill.Number("healthCost") ?? 0;
+                    double mp = skill.Number("manaCost") ?? 0;
+                    if (!actor.Abilities.Resources.CanSpend(hp, mp)) continue;
+                    if (TryCastActiveSkill(id, skill.Id, primary) ==
+                        AbilityCastResult.Cast)
+                    {
+                        completed++;
+                        break;
+                    }
+                }
+            }
+            return completed;
+        }
+    }
+}

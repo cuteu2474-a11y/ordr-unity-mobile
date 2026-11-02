@@ -843,9 +843,17 @@ namespace Ordr.Mobile.Unity
                     RecordSessionIssue("전투 라운드", Combat.Game.CurrentWave + "라운드 / 원본 최종 전투 미검증");
                 });
             if (Combat.Game.Phase == SessionPhase.NotStarted) BeginSession();
+            var originalResources = Resources.Load<TextAsset>(
+                "OrdrData/original-2323C-unit-object-stats");
+            if (originalResources == null)
+                throw new InvalidOperationException(
+                    "원본 유닛 HP/MP SLK 자료가 APK에 없습니다.");
+            var sourcePool = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                originalResources.text, MapBaseStats);
             sourceModelDamage.Enable();
             Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
             Combat.BindExistingVerifiedAttacks();
+            Combat.ConfigureSourceModelUnitResources(sourcePool);
             EnsureSoloStoryStarted(creepData.text);
             PracticeBattle = prepared;
             PracticeCreeps = new Original323CreepPracticeWorld(Combat, creepCatalog);
@@ -3067,6 +3075,21 @@ namespace Ordr.Mobile.Unity
                 return;
             }
             TryFinishOriginal323Evolution();
+            if (PracticeBattle != null &&
+                Combat.Game.Phase == SessionPhase.Running &&
+                Combat.PendingSimulationSeconds == 0)
+            {
+                try { Combat.AutoCastApprovedSourceModelActives(); }
+                catch (Exception ex)
+                {
+                    // Auto cast failures are not silently ignored or retried
+                    // during a partly settled combat transaction.
+                    RecordSessionIssue("유닛 자동 스킬 중단", ex.Message);
+                    Debug.LogException(ex);
+                    runGate.SetManualPause(true);
+                    return;
+                }
+            }
             UnitDecompositions?.Advance(Math.Max(0.0, Combat.Time - timeBeforeStep));
             // The same advancing combat clock drives helper mana regen.
             // UI redraws and wall time must not regenerate extra mana.

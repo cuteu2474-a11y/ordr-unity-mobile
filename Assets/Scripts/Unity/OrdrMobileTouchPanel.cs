@@ -996,6 +996,18 @@ namespace Ordr.Mobile.Unity
             {
                 GUILayout.BeginVertical(GUI.skin.box);
                 GUILayout.Label("선택: " + detail.DisplayName, OrdrMobileUiTheme.Subheading);
+                if (Combat.Roster.SelectedId.HasValue)
+                {
+                    var resources = Combat.ResourcesOf(Combat.Roster.SelectedId.Value);
+                    if (resources != null)
+                    {
+                        GUILayout.Label("HP " + resources.Health.ToString("0.#") +
+                            "/" + resources.MaximumHealth.ToString("0.#") +
+                            "  ·  MP " + resources.Mana.ToString("0.#") +
+                            "/" + resources.MaximumMana.ToString("0.#"),
+                            OrdrMobileUiTheme.Overline);
+                    }
+                }
                 if (GUILayout.Button("스킬·공격 정보", GUILayout.MinHeight(56)))
                 {
                     showUnitDetails = true;

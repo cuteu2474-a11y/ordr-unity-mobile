@@ -1618,6 +1618,9 @@ namespace Ordr.Mobile.Combat
                             IOriginalVerifiedBasicAttackTargetFilter;
                     }
                 }
+                // Only the optional source-model profile attaches base HP/MP.
+                // Verified/retail sessions never receive inferred resources.
+                ProvisionSourceModelResources(characters[id]);
                 if (!characters[id].AttackReady && commonAttackPreview != null)
                     commonAttackPreview.TryTrack(id, catalogUnitId, scheduler.Time);
                 // Stage is not a combat tick. Recomputing enemy auras here
@@ -1632,6 +1635,7 @@ namespace Ordr.Mobile.Combat
                     attackPipeline.RemoveUnit(InstanceKey(id));
                 if (commonAttackPreview != null) commonAttackPreview.Remove(id);
                 characters.Remove(id);
+                sourceModelManagedResourceRows.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
                 if (!stagedOriginalFusionResult) RefreshEnemyAuras();
@@ -2028,6 +2032,8 @@ namespace Ordr.Mobile.Combat
             CharacterInstance unit;
             if (!characters.TryGetValue(instanceId, out unit))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
+            // External verified resources supersede the practice pool.
+            sourceModelManagedResourceRows.Remove(instanceId);
             unit.Abilities.ConfigureResources(verifiedResources);
         }
 
@@ -2170,6 +2176,7 @@ namespace Ordr.Mobile.Combat
             lawReadyAt.Remove(instanceId);
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
+            sourceModelManagedResourceRows.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
             // Native fusion removes every input as ONE logical batch. Do
             // not run external aura reconciliation with an intermediate,
@@ -2376,6 +2383,7 @@ namespace Ordr.Mobile.Combat
                 attackPipeline.Advance(elapsed);
                 foreach (var unit in characters.Values)
                     unit.Abilities.Advance(elapsed);
+                AdvanceSourceModelResources(elapsed);
                 foreach (var status in statuses.Values)
                     status.Advance(elapsed);
                 foreach (var status in unitStatuses.Values)

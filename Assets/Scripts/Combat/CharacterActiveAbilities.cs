@@ -13,19 +13,23 @@ namespace Ordr.Mobile.Combat
         public double Health { get; private set; }
         public double MaximumMana { get; private set; }
         public double Mana { get; private set; }
+        private readonly bool sourceModelAllowsZeroHealth;
 
-        public CharacterResources(double maxHealth, double health, double maxMana, double mana)
+        public CharacterResources(double maxHealth, double health, double maxMana,
+            double mana, bool sourceModelAllowsZeroHealth = false)
         {
             RequireNonNegativeFinite(maxHealth, nameof(maxHealth));
             RequireNonNegativeFinite(health, nameof(health));
             RequireNonNegativeFinite(maxMana, nameof(maxMana));
             RequireNonNegativeFinite(mana, nameof(mana));
-            if (maxHealth <= 0 || health <= 0 || health > maxHealth)
+            if (maxHealth <= 0 || (sourceModelAllowsZeroHealth ? health < 0 : health <= 0) ||
+                health > maxHealth)
                 throw new ArgumentOutOfRangeException(nameof(health));
             if (mana > maxMana)
                 throw new ArgumentOutOfRangeException(nameof(mana));
             MaximumHealth = maxHealth; Health = health;
             MaximumMana = maxMana; Mana = mana;
+            this.sourceModelAllowsZeroHealth = sourceModelAllowsZeroHealth;
         }
 
         public void SetMana(double value)
@@ -38,7 +42,8 @@ namespace Ordr.Mobile.Combat
         public void SetHealth(double value)
         {
             RequireNonNegativeFinite(value, nameof(value));
-            if (value <= 0 || value > MaximumHealth)
+            if ((sourceModelAllowsZeroHealth ? value < 0 : value <= 0) ||
+                value > MaximumHealth)
                 throw new ArgumentOutOfRangeException(nameof(value));
             Health = value;
         }
@@ -47,8 +52,11 @@ namespace Ordr.Mobile.Combat
         {
             RequireNonNegativeFinite(healthCost, nameof(healthCost));
             RequireNonNegativeFinite(manaCost, nameof(manaCost));
-            // HP 소모로 사망 가능한지 원작 수치가 확인되지 않아 사망 시전을 임의 허용하지 않는다.
-            return healthCost < Health && manaCost <= Mana;
+            // Caller-verified survival HP retains the conservative strict
+            // boundary. Source-mode ability HP can reach 0 without asserting
+            // Warcraft unit death; the SLK maximum equals several spell costs.
+            return (sourceModelAllowsZeroHealth ? healthCost <= Health :
+                healthCost < Health) && manaCost <= Mana;
         }
 
         public void Spend(double healthCost, double manaCost)
@@ -57,6 +65,20 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("스킬에 필요한 체력·마나가 부족합니다.");
             Health -= healthCost;
             Mana -= manaCost;
+        }
+
+        // Only source-backed practice regeneration uses this method. No
+        // wall-clock catch-up or resources regenerated on UI redraws.
+        internal void RegenerateSourceModel(double healthPerSecond,
+            double manaPerSecond, double elapsed)
+        {
+            RequireNonNegativeFinite(healthPerSecond, nameof(healthPerSecond));
+            RequireNonNegativeFinite(manaPerSecond, nameof(manaPerSecond));
+            RequireNonNegativeFinite(elapsed, nameof(elapsed));
+            if (!sourceModelAllowsZeroHealth)
+                throw new InvalidOperationException("검증된 외부 자원은 개발용 자동 재생 대상이 아닙니다.");
+            Health = Math.Min(MaximumHealth, Health + healthPerSecond * elapsed);
+            Mana = Math.Min(MaximumMana, Mana + manaPerSecond * elapsed);
         }
 
         private static void RequireNonNegativeFinite(double value, string argument)
