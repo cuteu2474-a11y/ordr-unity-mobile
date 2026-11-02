@@ -156,95 +156,68 @@ namespace Ordr.Mobile.Combat
                 ordered.Sort();
                 foreach (long target in ordered)
                 {
-                    if (IsStoryDeployed(target) || (activeOriginalFusionSwap != null && activeOriginalFusionSwap.Hides(target))) continue;
+                    if (activeOriginalFusionSwap != null && activeOriginalFusionSwap.Hides(target)) continue;
                     ApplySourceModelAuraGroup(ordered, target, null, CombatEffectType.AttackPowerBuff);
                     ApplySourceModelAuraGroup(ordered, target, null, CombatEffectType.AttackSpeedBuff);
                 }
+                foreach (var independent in sourceIndependentAttackers.Values)
+                {
+                    ApplySourceModelAuraGroup(ordered, null, null,
+                        CombatEffectType.AttackPowerBuff, independent);
+                    ApplySourceModelAuraGroup(ordered, null, null,
+                        CombatEffectType.AttackSpeedBuff, independent);
+                }
                 foreach (var enemy in enemies.Values)
                 {
-                    if (!sourceModelUnitEffects.IsPracticeTarget(enemy.Id) || !enemy.Enemy.IsAlive || (enemy.Kind != CharacterEnemyKind.Line && enemy.Kind != CharacterEnemyKind.Boss)) continue;
+                    if (!sourceModelUnitEffects.IsPracticeTarget(enemy.Id) || !enemy.Enemy.IsAlive) continue;
                     ApplySourceModelAuraGroup(ordered, null, enemy, CombatEffectType.ArmorReduction);
                     ApplySourceModelAuraGroup(ordered, null, enemy, CombatEffectType.MovementSlowPercent);
                 }
             }
             RefreshSourceKaidoArmorLanes();
-            RefreshSourceNativeObjectAuras();
         }
 
-        // Raw W3A/SLK audit: H0B6 A0OK/A0OL +40% allied power,
-        // A0OJ +40% allied speed (825), A0OI -50 armor (825),
-        // H0AB A034 -40 enemy armor (800). These object auras are separate
-        // from the incomplete tooltip transform/active ability arithmetic.
-        private void RefreshSourceNativeObjectAuras()
-        {
-            foreach (var owner in characters.Values)
-            {
-                if (owner.Catalog.Id != "TR-23" || !sourceNativeForms.ContainsKey(owner.Id) ||
-                    IsStoryDeployed(owner.Id) ||
-                    (activeOriginalFusionSwap != null && activeOriginalFusionSwap.Hides(owner.Id))) continue;
-                var source = roster.Get(owner.Id);
-                foreach (var ally in characters.Values)
-                {
-                    if (IsStoryDeployed(ally.Id) ||
-                        (activeOriginalFusionSwap != null && activeOriginalFusionSwap.Hides(ally.Id))) continue;
-                    var position = roster.Get(ally.Id);
-                    double dx = source.X - position.X, dy = source.Y - position.Y;
-                    if (dx * dx + dy * dy > 825 * 825) continue;
-                    string recipient = InstanceKey(ally.Id);
-                    ApplySourceNativeObjectAura(unitStatuses[recipient],
-                        CombatEffectType.AttackPowerBuff, 40,
-                        ally.Id == owner.Id ? "A0OK" : "A0OL");
-                    ApplySourceNativeObjectAura(unitStatuses[recipient],
-                        CombatEffectType.AttackSpeedBuff, 40, "A0OJ");
-                }
-                foreach (var enemy in enemies.Values)
-                {
-                    if (!enemy.Enemy.IsAlive || !CanAttackInThisLane(owner, enemy)) continue;
-                    double dx = source.X - enemy.X, dy = source.Y - enemy.Y;
-                    if (dx * dx + dy * dy <= 825 * 825)
-                        ApplySourceNativeObjectAura(enemy.Enemy.Status,
-                            CombatEffectType.ArmorReduction, 50, "A0OI");
-                }
-            }
-            foreach (var satellite in sourceIndependentAttackers.Values)
-            {
-                if (satellite.Rawcode != "H0AB") continue;
-                foreach (var enemy in enemies.Values)
-                {
-                    if (!enemy.Enemy.IsAlive || !CanSourceIndependentAttack(satellite, enemy)) continue;
-                    double dx = satellite.X - enemy.X, dy = satellite.Y - enemy.Y;
-                    if (dx * dx + dy * dy <= 800 * 800)
-                        ApplySourceNativeObjectAura(enemy.Enemy.Status,
-                            CombatEffectType.ArmorReduction, 40, "A034");
-                }
-            }
-        }
-
-        private void ApplySourceNativeObjectAura(CombatStatusEngine target,
-            CombatEffectType type, double amount, string rawcode)
-        {
-            string key = "practice-aura:native-object:" + rawcode;
-            // Mixed Warcraft aura identities need native stacking evidence.
-            // Single identical source is modeled; never silently sum two.
-            foreach (var effect in target.Snapshot())
-                if (effect.Type == type &&
-                    effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal))
-                    return;
-            modelAuraKeys.Add(key);
-            target.Apply(new CombatEffect(key, type, CombatEffectOrigin.Aura, amount, 0));
-        }
-        private void ApplySourceModelAuraGroup(List<long> casters, long? ally, SpatialCombatEnemy enemy, CombatEffectType type)
+        // Catalog units, transformed forms and purchased/autonomous objects
+        // share ONE native-aura conflict gate. The source map stores their
+        // object rawcodes separately; no character-name special cases.
+        // Our mobile rule deliberately removes the native aura radius within
+        // the same lane, but preserves native role and identity restrictions.
+        private void ApplySourceModelAuraGroup(List<long> casters, long? ally,
+            SpatialCombatEnemy enemy, CombatEffectType type,
+            SourceIndependentAttacker independentTarget = null)
         {
             var contributions = new List<Original323AuraContribution>();
             Original323SpecialAura first = null;
+            bool recipientIsAlly = ally.HasValue || independentTarget != null;
+            bool recipientStoryLane = ally.HasValue ? IsStoryDeployed(ally.Value) :
+                independentTarget != null && independentTarget.StoryLane;
             foreach (long id in casters)
             {
-                if (IsStoryDeployed(id) || (activeOriginalFusionSwap != null && activeOriginalFusionSwap.Hides(id))) continue;
-                foreach (var aura in sourceModelUnitEffects.AurasFor(characters[id].Catalog.Id))
+                if (activeOriginalFusionSwap != null && activeOriginalFusionSwap.Hides(id)) continue;
+                if (recipientIsAlly && IsStoryDeployed(id) != recipientStoryLane) continue;
+                if (!recipientIsAlly && !CanAttackInThisLane(characters[id], enemy)) continue;
+                string form = sourceModelRules.SourceFormRawcodeOf(InstanceKey(id));
+                var definitions = form == null
+                    ? sourceModelUnitEffects.AurasFor(characters[id].Catalog.Id)
+                    : sourceModelUnitEffects.AurasForObject(form);
+                foreach (var aura in definitions)
                 {
                     if (aura.Type != type || !sourceModelUnitEffects.IsSupportedAura(aura)) continue;
-                    if (ally.HasValue && !aura.AllowsAllyRole(id == ally.Value)) continue;
-                    if (!ally.HasValue && !CanAttackInThisLane(characters[id], enemy)) continue;
+                    if (recipientIsAlly && !aura.AllowsAllyRole(ally.HasValue && id == ally.Value)) continue;
+                    first = first ?? aura;
+                    contributions.Add(new Original323AuraContribution(aura.AbilityRawcode,
+                        aura.BuffRawcode, aura.Level, aura.Amount, aura.Type));
+                }
+            }
+            foreach (var independent in sourceIndependentAttackers.Values)
+            {
+                if (recipientIsAlly && independent.StoryLane != recipientStoryLane) continue;
+                if (!recipientIsAlly && !CanSourceIndependentAttack(independent, enemy)) continue;
+                foreach (var aura in sourceModelUnitEffects.AurasForObject(independent.Rawcode))
+                {
+                    if (aura.Type != type || !sourceModelUnitEffects.IsSupportedAura(aura)) continue;
+                    if (recipientIsAlly && !aura.AllowsAllyRole(
+                        independentTarget != null && independentTarget.Key == independent.Key)) continue;
                     first = first ?? aura;
                     contributions.Add(new Original323AuraContribution(aura.AbilityRawcode,
                         aura.BuffRawcode, aura.Level, aura.Amount, aura.Type));
@@ -256,7 +229,8 @@ namespace Ordr.Mobile.Combat
             { sourceModelUnitEffects.DeferredAuraGroups++; return; }
             string key = "practice-aura:" + (int)type + ":" + first.AbilityRawcode;
             modelAuraKeys.Add(key);
-            var status = ally.HasValue ? unitStatuses[InstanceKey(ally.Value)] : enemy.Enemy.Status;
+            var status = ally.HasValue ? unitStatuses[InstanceKey(ally.Value)] :
+                independentTarget != null ? unitStatuses[independentTarget.Key] : enemy.Enemy.Status;
             status.Apply(new CombatEffect(key, type, CombatEffectOrigin.Aura, amount, 0));
         }
         private void CompleteSourceModelHit(CharacterInstance actor, BasicAttackResult hit, SpatialCombatEnemy primary)

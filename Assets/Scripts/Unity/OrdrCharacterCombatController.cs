@@ -44,6 +44,7 @@ namespace Ordr.Mobile.Unity
         public Original323NativeSpeedAuraCatalog OriginalNativeSpeedAuras { get; private set; }
         public Original323NativeCommandAuraCatalog OriginalNativeCommandAuras { get; private set; }
         public Original323CompositeAuraCatalog OriginalCombinedAuras { get; private set; }
+        public Original323MapObjectAuraCatalog OriginalMapObjectAuras { get; private set; }
         private IOriginal323SpecialAuraTargetRules specialAuraTargets;
 
         public void ConfigureVerifiedOriginalSpecialAuraTargets(
@@ -2271,6 +2272,8 @@ namespace Ordr.Mobile.Unity
                         OriginalCombinedAuras = new Original323CompositeAuraCatalog(
                             MapBaseStats, OriginalArmorAuras, OriginalNativeSpeedAuras,
                             OriginalNativeCommandAuras);
+                        OriginalMapObjectAuras = Original323MapObjectAuraCatalog.FromJson(
+                            auraData.text, MapBaseStats);
                     }
                 }
                 var fusionData = verifiedFusionRecipesJson != null ? verifiedFusionRecipesJson :
@@ -2656,7 +2659,8 @@ namespace Ordr.Mobile.Unity
             if (OriginalNativePassives != null && OriginalCombinedAuras != null)
                 sourceModelDamage.ConfigureUnitEffects(new SourceModelUnitEffects(
                     OriginalNativePassives, OriginalCombinedAuras, random,
-                    Resources.Load<TextAsset>("OrdrData/practice-native-inherited-defaults")?.text));
+                    Resources.Load<TextAsset>("OrdrData/practice-native-inherited-defaults")?.text,
+                    OriginalMapObjectAuras));
             ConfigureRuntime(sourceModelDamage, sourceModelDamage, random);
             Debug.LogWarning("ORDR 유닛 준비: 전투는 명시적인 개발용 연습 시작 전까지 비활성입니다.");
         }

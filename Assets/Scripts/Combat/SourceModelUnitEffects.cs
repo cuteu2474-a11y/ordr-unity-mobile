@@ -10,6 +10,7 @@ namespace Ordr.Mobile.Combat
     {
         private readonly Original323NativePassiveCatalog passives;
         private readonly IOriginal323AuraCatalog auras;
+        private readonly IOriginal323AuraCatalog objectAuras;
         private readonly ICombatProcRandom random;
         private readonly Dictionary<string, OriginalNativePassive> pending =
             new Dictionary<string, OriginalNativePassive>(StringComparer.Ordinal);
@@ -20,10 +21,12 @@ namespace Ordr.Mobile.Combat
         private readonly bool sourceFlatArmorMode;
         public int DeferredAuraGroups { get; internal set; }
         public SourceModelUnitEffects(Original323NativePassiveCatalog nativePassives,
-            IOriginal323AuraCatalog sourceAuras, ICombatProcRandom procRandom, string inheritedDefaultsJson = null)
+            IOriginal323AuraCatalog sourceAuras, ICombatProcRandom procRandom,
+            string inheritedDefaultsJson = null, IOriginal323AuraCatalog sourceObjectAuras = null)
         {
             passives = nativePassives ?? throw new ArgumentNullException(nameof(nativePassives));
             auras = sourceAuras ?? throw new ArgumentNullException(nameof(sourceAuras));
+            objectAuras = sourceObjectAuras;
             random = procRandom ?? throw new ArgumentNullException(nameof(procRandom));
             if (inheritedDefaultsJson != null)
             {
@@ -41,6 +44,9 @@ namespace Ordr.Mobile.Combat
         public OriginalNativePassive PassiveFor(string rawcode) => passives.ForRawcode(rawcode) ??
             passives.PracticeFirstLevelForRawcode(rawcode) ?? passives.PracticeBonusForRawcode(rawcode);
         public IReadOnlyList<Original323SpecialAura> AurasFor(string id) => auras.FindAll(id);
+        public IReadOnlyList<Original323SpecialAura> AurasForObject(string originalRawcode) =>
+            objectAuras?.FindAll(originalRawcode) ??
+            Array.AsReadOnly(new Original323SpecialAura[0]);
         public IReadOnlyList<string> Describe(string id, string rawcode)
         {
             var result = new List<string>();

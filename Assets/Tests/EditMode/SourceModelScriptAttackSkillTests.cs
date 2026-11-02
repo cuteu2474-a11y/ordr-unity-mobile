@@ -30,9 +30,10 @@ namespace Ordr.Mobile.Tests
         private sealed class MutableStoryLane : IOriginalStoryDispatchPort
         {
             public bool Deployed;
+            public readonly HashSet<long> DeployedIds = new HashSet<long>();
             public bool CanDispatch(long id) => false;
             public ManualActionResult Dispatch(long id) => null;
-            public bool IsDeployed(long id) => Deployed;
+            public bool IsDeployed(long id) => Deployed || DeployedIds.Contains(id);
             public bool CanRecall(long id) => false;
             public ManualActionResult Recall(long id) => null;
         }
@@ -48,7 +49,8 @@ namespace Ordr.Mobile.Tests
             File.ReadAllText(Path.Combine(Application.dataPath, "..", "data", path));
 
         private static Live Create(string unitId, bool trigger,
-            double x = -4000, double y = 4000, bool enormousHealth = true)
+            double x = -4000, double y = 4000, bool enormousHealth = true,
+            bool withNativeAuras = false)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -56,6 +58,20 @@ namespace Ordr.Mobile.Tests
                 Data("original-2323C-map-base-stats.json"), units);
             var dice = new Dice(trigger);
             var rules = new SourceModelBasicCombatRules(map, dice);
+            if (withNativeAuras)
+            {
+                string audit = Data("original-2323C-all-unit-aura-audit.json");
+                var six = new Original323SpecialAuraCatalog(map);
+                var combined = new Original323CompositeAuraCatalog(map,
+                    Original323ArmorAuraCatalog.FromJson(audit, map, six),
+                    Original323NativeSpeedAuraCatalog.FromJson(audit, map),
+                    Original323NativeCommandAuraCatalog.FromJson(audit, map));
+                rules.ConfigureUnitEffects(new SourceModelUnitEffects(
+                    Original323NativePassiveCatalog.FromJson(
+                        Data("original-2323C-native-pure-passives.json"), map),
+                    combined, dice, Data("practice-native-inherited-defaults.json"),
+                    Original323MapObjectAuraCatalog.FromJson(audit, map)));
+            }
             var combat = new CharacterCombatRuntime(units, skills, rules, rules, dice);
             var shared = new SharedEconomySession(new EconomyWallet(), combat.Roster);
             shared.ApplyVerifiedStart(Original323SoloStartProfile.Create(),
@@ -702,19 +718,116 @@ namespace Ordr.Mobile.Tests
                 Data("original-2323C-map-base-stats.json"), units);
             var resources = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
                 Data("original-2323C-unit-object-stats.json"), map);
-            using (var live = Create("TR-23", true, -4900, 5400))
+            using (var live = Create("TR-23", true, -4900, 5400,
+                withNativeAuras: true))
             {
                 live.Combat.ConfigureSourceModelUnitResources(resources);
+                long farAlly = live.Combat.SpawnCharacter("C-01", 4900, -5400);
                 live.Battle.Advance(4);
                 Assert.IsNotNull(live.Combat.PracticeNativeFormOf(live.ActorId));
                 var effects = live.Combat.UnitStatusOf(live.ActorId).Snapshot();
-                Assert.IsTrue(effects.Any(e =>
+                Assert.AreEqual(1, effects.Count(e =>
                     e.Type == CombatEffectType.AttackPowerBuff &&
-                    e.SourceId.Contains("native-object:A0OK") && e.Amount == 40));
-                Assert.IsTrue(effects.Any(e =>
+                    e.SourceId.StartsWith("practice-aura:") && e.Amount == 40));
+                Assert.AreEqual(1, effects.Count(e =>
                     e.Type == CombatEffectType.AttackSpeedBuff &&
-                    e.SourceId.Contains("native-object:A0OJ") && e.Amount == 40));
+                    e.SourceId.StartsWith("practice-aura:") && e.Amount == 40));
+                Assert.IsTrue(live.Combat.UnitStatusOf(farAlly).Snapshot().Any(e =>
+                    e.Type == CombatEffectType.AttackPowerBuff && e.Amount == 40),
+                    "Mobile native auras cover the same lane regardless of W3X radius.");
                 live.Combat.RemoveCharacter(live.ActorId);
+            }
+        }
+
+        [Test]
+        public void PinnedMapObjectAurasUseOriginalObjectIdentityAndLevel()
+        {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var objects = Original323MapObjectAuraCatalog.FromJson(
+                Data("original-2323C-all-unit-aura-audit.json"), map);
+            var lilith = objects.FindAll("H0AB");
+            Assert.AreEqual(1, lilith.Count);
+            Assert.AreEqual("A034", lilith[0].AbilityRawcode);
+            Assert.AreEqual("B088", lilith[0].BuffRawcode);
+            Assert.AreEqual(CombatEffectType.ArmorReduction, lilith[0].Type);
+            Assert.AreEqual(40, lilith[0].Amount);
+            Assert.AreEqual(1, lilith[0].Level);
+            var form = objects.FindAll("H0B6");
+            CollectionAssert.AreEquivalent(new[] { "A0OK", "A0OJ", "A0OI", "A0OL" },
+                form.Select(a => a.AbilityRawcode).ToArray());
+            Assert.IsEmpty(objects.FindAll("not-a-map-object"));
+        }
+
+        [Test]
+        public void LilithArmorAuraSurvivesCreatorRemovalAtUnlimitedSameLaneReach()
+        {
+            using (var live = Create("TR-30", false, -4000, 4000,
+                withNativeAuras: true))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle()
+                    .Add(OriginalMissionWalletRewards.TraitPointsId, 2).Add("wood", 7));
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AB", wallet));
+                live.Combat.RemoveCharacter(live.ActorId);
+                live.Battle.Advance(.5);
+                Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(enemy =>
+                    live.Combat.StatusOf(enemy.Id).Snapshot().Any(effect =>
+                        effect.Type == CombatEffectType.ArmorReduction &&
+                        effect.SourceId.StartsWith("practice-aura:") && effect.Amount == 40)),
+                    "Satellite object aura is independent of the creator and of its native 800 radius.");
+            }
+        }
+
+        [Test]
+        public void DifferentCharacterAndSatelliteArmorAurasDeferInsteadOfSilentlyStacking()
+        {
+            using (var live = Create("TR-23", false, -4000, 4000,
+                withNativeAuras: true))
+            {
+                long vegapunk = live.Combat.SpawnCharacter("TR-30", -4000, 4000);
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle()
+                    .Add(OriginalMissionWalletRewards.TraitPointsId, 2).Add("wood", 7));
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    vegapunk, "H0AB", wallet));
+                live.Battle.Advance(.5);
+                Assert.Greater(live.Combat.PracticeUnitEffects.DeferredAuraGroups, 0);
+                Assert.IsFalse(live.Combat.MobileEnemySnapshot().Any(enemy =>
+                    live.Combat.StatusOf(enemy.Id).Snapshot().Any(effect =>
+                        effect.Type == CombatEffectType.ArmorReduction &&
+                        effect.SourceId.StartsWith("practice-aura:")));
+                live.Combat.RemoveCharacter(live.ActorId);
+                live.Battle.Advance(.1);
+                Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(enemy =>
+                    live.Combat.StatusOf(enemy.Id).Snapshot().Any(effect =>
+                        effect.Type == CombatEffectType.ArmorReduction &&
+                        effect.SourceId.StartsWith("practice-aura:") && effect.Amount == 40)));
+            }
+        }
+
+        [Test]
+        public void NativeObjectAuraDoesNotLeakAcrossStoryAndMainLanes()
+        {
+            using (var live = Create("TR-23", false, -4900, 5400,
+                withNativeAuras: true))
+            {
+                long storyAlly = live.Combat.SpawnCharacter("C-01", 4500, -4000);
+                long mainAlly = live.Combat.SpawnCharacter("C-02", 4500, -4000);
+                var lanes = new MutableStoryLane();
+                live.Combat.ConfigureStoryDeployment(lanes);
+                lanes.DeployedIds.Add(live.ActorId);
+                lanes.DeployedIds.Add(storyAlly);
+                live.Combat.RefreshAfterCommittedStoryLaneChange(live.ActorId);
+                live.Battle.Advance(.5);
+                Assert.IsTrue(live.Combat.UnitStatusOf(storyAlly).Snapshot().Any(e =>
+                    e.Type == CombatEffectType.AttackPowerBuff && e.Amount == 40));
+                Assert.IsFalse(live.Combat.UnitStatusOf(mainAlly).Snapshot().Any(e =>
+                    e.Type == CombatEffectType.AttackPowerBuff));
             }
         }
 

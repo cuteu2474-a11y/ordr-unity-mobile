@@ -77,6 +77,12 @@ namespace Ordr.Mobile.Combat
             formRawcodes[instanceId] = rawcode;
         }
         internal void ClearSourceForm(string instanceId) { formRawcodes.Remove(instanceId); }
+        internal string SourceFormRawcodeOf(string instanceId)
+        {
+            string rawcode;
+            return instanceId != null && formRawcodes.TryGetValue(instanceId, out rawcode)
+                ? rawcode : null;
+        }
         internal BasicAttackSpec FormAttackOf(string instanceId)
         {
             string raw;

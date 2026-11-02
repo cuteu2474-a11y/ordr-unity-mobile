@@ -1,4 +1,4 @@
-> **최신 호출 연결:** 문서 끝 **「원본 콜백·MPQ 재확인」**을 먼저 확인하세요. 특히 카이도 `h07M` 자동 14% 변신을 원본 객체 검사로 수정했습니다.
+> **최신 호출 연결:** 문서 끝 **「캐릭터 공통 오라·독립 객체」**를 먼저 확인하세요. 카이도 `h07M` 14% 자동 변신 금지 규칙은 유지합니다.
 
 # 2026-11-03 SourceModel 공통 오라·방어 스택·추가 스킬 (이전 기록)
 
@@ -257,4 +257,11 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `tools/extract_mpq_war3map_j.py`: 기존 고정 `war3map.j` 추출에 `--member war3map.w3a` 등 임의 MPQ 멤버 추출을 추가했습니다. `--verify-2323c`는 맵 SHA를 고정, 기본 JASS는 출력 SHA도 고정합니다. 실제 비공개 소스는 Git 밖, 검증된 수치는 `data/original-2323C-source-character-callback-evidence.json`에 기록. `tests/test_original_source_character_callbacks.py`가 맵 객체·실제 JASS·W3A 교차 검사(원본 파일이 없는 CI에서는 소스 재추출만 skip)를 합니다.
 - `SourceModelNativeCharacterRules.KaidoCanRollAutoMorph/KaidoUserDataIncrease` → `CharacterCombatRuntime.SourceModelNativeCharacters.ExecuteKaidoSourceAttack`: `h07M`에 없는 `A0PS`로 잘못 실행하던 14% 자동 변신을 차단. `CBL/CBM`의 선행 8% / 후속 15% / 기본 분기와 사용자 데이터 +2/+2/+1, 10 이상일 때 다음 공격의 특수기를 구현. `ExecuteKaidoHundredLifeModelPacket`은 `B_m/B_k/B_l` 반경900의 11개 소스 수치 패킷을 공유 전투 정산에 지연 연결하며, `ExecuteKaidoSecondSpecialModelPacket/ExecuteKaidoOrdinaryModelPacket`은 고정 피해 부분만 처리하고 `GetEventDamage` 비례분은 명시 보류.
 - `SourceModelOriginalSpecials.ExecuteSourceSugar`는 `roster.Get(actor.Id)`로 생성 위치를 공격자에게 고정. `SourceModelTemporarySkills.ExecuteSourceTimedClone`은 JASS `h042→h085`와 피격자 중심 119 오프셋을 모델 PRNG 각도로 반영. `SourceModelSummonState.SpawnX/Y`에서 실제 생성 위치를 검증할 수 있습니다. firebolt·selfdestruct 네이티브 효과는 도감 근사와 분리해 기록합니다.
+
+# 2026-11-02 캐릭터 공통 오라·독립 객체 (현재 최신)
+
+- `Original323MapObjectAuraCatalog.FromJson(data/original-2323C-all-unit-aura-audit.json, MapBaseStats)`: `mapObjectAuraOwners`의 168개 **원본 소유 목록**을 검증한 뒤 `AHad` 방어 감소, `AOae` 이동 감소/아군 공속, `ACac` 공격력 오라의 완전한 단순 1단계 항목만 채택. 캐릭터 `Original323CompositeAuraCatalog`와 객체 catalog를 별도 유지하므로 `H0AB/H0B6/h0AD`의 원본 객체 ID를 유닛 도감 ID로 오인하지 않습니다. 복합·W3A 상속 미상은 미승인.
+- `OrdrCharacterCombatController.ConfigureCatalogOnlyWorld` → `SourceModelUnitEffects(..., OriginalMapObjectAuras)` → `CharacterCombatRuntime.RefreshSourceModelAuras` → `ApplySourceModelAuraGroup`: 일반 캐릭터의 `AurasFor`, 변신 시 `SourceModelBasicCombatRules.SourceFormRawcodeOf`→`AurasForObject`, 독립 객체의 `SourceIndependentAttacker.Rawcode`→`AurasForObject`를 동일 `Original323AuraCommonRules.TryResolveIdenticalAura`로 통합. 이종 코드/랭크/버프를 임의 합산하지 않으며 충돌은 `DeferredAuraGroups`에 집계합니다.
+- 캐릭터 아군·독립 공격자 아군·연습 적 수신 경로 모두 **같은 전장**에서만 원본 대상 역할을 지키되 **모바일 정책상 오라 반경을 없앴습니다**. 이전 쵸파·릴리스 전용 하드코딩과 대상 거리 판정은 제거합니다. 릴리스 `H0AB/A034/B088/-40`은 원본 객체 자료에서 로드하고 소유자 제거 이후에도 별도 위성 ID로 유지합니다. 이는 오프라인 `MODEL_ONLY`이며 실전 Warcraft 버프 인증은 아닙니다.
+- 관련 Unity EditMode: `SourceModelScriptAttackSkillTests`의 `PinnedMapObjectAuras`, `TransformedChopperRawObjectAuras`, `LilithArmorAura`, `DifferentCharacterAndSatelliteArmorAuras`, `NativeObjectAuraDoesNotLeakAcrossStoryAndMainLanes`. 원본 파일이나 새로운 보상 버튼은 Git에 넣지 않습니다.
 
