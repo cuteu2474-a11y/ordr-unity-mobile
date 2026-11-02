@@ -87,6 +87,8 @@ namespace Ordr.Mobile.Unity
         private Vector2 pointerStart;
         private Vector2 previousMouse;
         private SpriteRenderer battlefieldBoard;
+        private OrdrMonsterPathPresenter monsterPath;
+        private SourceModelPracticeBattle displayedPracticeRoute;
         private Sprite markerSprite;
         private Texture2D markerTexture;
         private Sprite healthBarSprite;
@@ -102,6 +104,9 @@ namespace Ordr.Mobile.Unity
             if (worldCamera == null)
                 worldCamera = Camera.main;
             CreateSharedMarker();
+            monsterPath = GetComponent<OrdrMonsterPathPresenter>();
+            if (monsterPath == null)
+                monsterPath = gameObject.AddComponent<OrdrMonsterPathPresenter>();
             var deck = new GameObject("ORDR Tactical Battlefield Deck");
             deck.transform.SetParent(transform, false);
             battlefieldBoard = deck.AddComponent<SpriteRenderer>();
@@ -135,6 +140,7 @@ namespace Ordr.Mobile.Unity
                 SyncOwnedUnits(combat);
                 SyncEnemies(combat);
                 SyncEvolutionActor();
+                SyncMonsterPath();
                 CollectMainBattlefieldPositions();
             }
             UpdateAttackFlashes();
@@ -408,6 +414,32 @@ namespace Ordr.Mobile.Unity
             initialCameraHalfHeight = halfHeight;
             cameraFramed = true;
             return true;
+        }
+
+        private void SyncMonsterPath()
+        {
+            if (monsterPath == null || controller == null) return;
+            var active = controller.PracticeBattle;
+            if (ReferenceEquals(active, displayedPracticeRoute)) return;
+            if (active == null)
+            {
+                monsterPath.Clear();
+                displayedPracticeRoute = null;
+                return;
+            }
+            // In this battle, MoveLivingMonsters uses the same RouteCorners
+            // and closes the fourth corner back to its spawn.
+            try
+            {
+                monsterPath.ShowPracticeRoute(active.RouteCorners);
+                displayedPracticeRoute = active;
+            }
+            catch (Exception error)
+            {
+                monsterPath.Clear();
+                displayedPracticeRoute = null;
+                Debug.LogException(error);
+            }
         }
 
         private void CollectMainBattlefieldPositions()
@@ -1105,6 +1137,7 @@ namespace Ordr.Mobile.Unity
             attackCues.Clear();
             if (evolutionMarker != null) Destroy(evolutionMarker);
             if (battlefieldBoard != null) Destroy(battlefieldBoard.gameObject);
+            if (monsterPath != null) monsterPath.Clear();
             if (markerSprite != null) Destroy(markerSprite);
             if (markerTexture != null) Destroy(markerTexture);
             if (healthBarSprite != null) Destroy(healthBarSprite);

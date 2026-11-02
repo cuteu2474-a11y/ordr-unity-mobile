@@ -13,6 +13,10 @@ namespace Ordr.Mobile.Unity
         private static Sprite enemy;
         private static Sprite boss;
         private static Sprite evolution;
+        private static Sprite pathFill;
+        private static Sprite pathCircle;
+        private static Sprite pathArrow;
+        private static Sprite pathSpawn;
         private static Texture2D story;
         private static Texture2D header;
         private static readonly Dictionary<string, Sprite> units =
@@ -28,6 +32,41 @@ namespace Ordr.Mobile.Unity
         }
         public static Sprite EvolutionSprite =>
             evolution ?? (evolution = MakeSprite(EvolutionTexture(), 80));
+        public static Sprite PathFillSprite =>
+            pathFill ?? (pathFill = MakeSprite(MakeTexture(1, 1,
+                (x, y) => Color.white), 1));
+        public static Sprite PathCircleSprite =>
+            pathCircle ?? (pathCircle = MakeSprite(MakeTexture(64, 64,
+                (x, y) =>
+                {
+                    float dx = x - 31.5f, dy = y - 31.5f;
+                    float distance = Mathf.Sqrt(dx * dx + dy * dy);
+                    return new Color(1f, 1f, 1f,
+                        Mathf.Clamp01((32.5f - distance) / 2.5f));
+                }), 64));
+        public static Sprite PathArrowSprite =>
+            pathArrow ?? (pathArrow = MakeSprite(MakeTexture(64, 64,
+                (x, y) =>
+                {
+                    // Points right (+X) before world-space segment rotation.
+                    float px = x - 31.5f, py = y - 31.5f;
+                    bool tip = px >= -3f && px <= 23f &&
+                        Mathf.Abs(py) <= (23f - px) * .60f;
+                    bool stem = px >= -23f && px <= 0f && Mathf.Abs(py) <= 5f;
+                    return tip || stem ? Color.white : Color.clear;
+                }), 64));
+        public static Sprite PathSpawnSprite =>
+            pathSpawn ?? (pathSpawn = MakeSprite(MakeTexture(80, 80,
+                (x, y) =>
+                {
+                    float dx = x - 39.5f, dy = y - 39.5f;
+                    float radius = Mathf.Sqrt(dx * dx + dy * dy);
+                    bool rim = radius >= 31f && radius <= 37f;
+                    bool gate = Mathf.Abs(dx) < 19f && Mathf.Abs(dy) < 23f;
+                    if (rim) return new Color(.98f, .49f, .33f, 1f);
+                    if (gate) return new Color(.45f, .13f, .17f, .93f);
+                    return Color.clear;
+                }), 80));
         public static Texture2D StoryTexture =>
             story ?? (story = MakeTexture(256, 96, (x, y) =>
             {
@@ -118,11 +157,8 @@ namespace Ordr.Mobile.Unity
                 bool grid = x % 32 == 0 || y % 32 == 0;
                 if (grid) color = Color.Lerp(color,
                     new Color(.21f, .35f, .38f), .22f);
-                float lane = 120f + 17f * Mathf.Sin(x * .029f + 1f);
-                if (Mathf.Abs(y - lane) < 12f)
-                    color = Color.Lerp(color, new Color(.18f, .35f, .34f), .29f);
-                if (Mathf.Abs(y - lane) < 1.7f)
-                    color = Color.Lerp(color, new Color(.56f, .68f, .48f), .35f);
+                // No decorative pretend lane. Only the active model's real
+                // movement waypoints may draw a route above this base art.
                 // Faint nautical compass-rose chart embellishment.
                 float dx = x - 218f, dy = y - 43f;
                 float distance = Mathf.Sqrt(dx * dx + dy * dy);
