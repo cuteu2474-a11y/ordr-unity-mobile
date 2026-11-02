@@ -20,6 +20,7 @@ namespace Ordr.Mobile.Editor
             "mobile-standalone-enemy-model.json",
             "practice-native-inherited-defaults.json",
             "units.json",
+            "wiki-unit-catalog-extension.json",
             "character-skill-profiles.json",
             "original-stat-evidence.json",
             "original-2323C-map-base-stats.json",
@@ -98,7 +99,7 @@ namespace Ordr.Mobile.Editor
             }
         }
 
-        [MenuItem("ORDR/캐릭터 데이터 273종 · 스킬 200종 동기화")]
+        [MenuItem("ORDR/캐릭터 데이터 · 위키 확장 · 스킬 동기화")]
         public static void Sync()
         {
             CopySourceData(logIfUnchanged: true);

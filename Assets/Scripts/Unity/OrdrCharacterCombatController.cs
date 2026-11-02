@@ -2346,15 +2346,21 @@ namespace Ordr.Mobile.Unity
                     NightmareMonsterA04QSpawns =
                         new Original323NightmareA04QSpawnState();
                 }
+                // Original map object identities are checked before additions.
+                // An extension identity does not grant gameplay combat rules.
+                int pinnedSourceCatalogCount = Units.Count;
+                var wikiExtensionAsset = Resources.Load<TextAsset>(
+                    "OrdrData/wiki-unit-catalog-extension");
+                if (wikiExtensionAsset == null)
+                    throw new InvalidOperationException("위키 유닛 확장 데이터가 APK에 없습니다.");
+                Units.ApplyWikiExtension(wikiExtensionAsset.text);
                 UnitDefinitions = UnitImplementationRegistry.Combine(Units, Skills,
                     OriginalUnitRawcodes);
-                // Source-only ships/Kuma/tokens are catalog entries too.
-                // Compare complete definitions to the loaded catalog rather
-                // than an outdated fixed total. The original object loader
-                // already rejects any missing/extra catalog object identity.
-                if (Units.Count < 272 || Skills.CharacterCount != 200 ||
+                // Source map stats remain the pinned 277 original entries.
+                // Additional forms/support identities have no invented stats.
+                if (Units.Count != 286 || Skills.CharacterCount != 200 ||
                     UnitDefinitions.Count != Units.Count ||
-                    (MapBaseStats != null && MapBaseStats.Count != Units.Count))
+                    (MapBaseStats != null && MapBaseStats.Count != pinnedSourceCatalogCount))
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");
                 // This is already pinned to the actual CUo/CUn/CJ source.
                 // Do not require an external installer for verified start

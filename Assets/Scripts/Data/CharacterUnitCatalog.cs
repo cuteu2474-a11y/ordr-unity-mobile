@@ -9,6 +9,9 @@ namespace Ordr.Mobile.Data
         public string Grade { get; private set; }
         public string Name { get; private set; }
         public string GameRawCode { get; private set; }
+        public string VariantOfUnitId { get; private set; }
+        public bool IsAlternateForm { get { return !string.IsNullOrEmpty(VariantOfUnitId); } }
+        public string CatalogEntryKind { get; private set; }
         // Tooltip evidence is independent of Warcraft rawcodes and may be
         // incomplete or older than the target version. A range is not a
         // ready-to-run attack without timing and damage-school information.
@@ -28,6 +31,8 @@ namespace Ordr.Mobile.Data
             Grade = OrdrJson.RequiredString(fields, "grade");
             Name = OrdrJson.RequiredString(fields, "name");
             GameRawCode = OrdrJson.String(fields, "gameRawCode");
+            VariantOfUnitId = OrdrJson.String(fields, "variantOfUnitId");
+            CatalogEntryKind = OrdrJson.String(fields, "catalogEntryKind");
             SkillSpecsStatus = OrdrJson.String(fields, "skillSpecsStatus");
             IsDetailAvailable = SkillSpecsStatus == "partial" || SkillSpecsStatus == "complete";
             var min = OrdrJson.Number(fields, "attackPowerMin");
@@ -78,6 +83,60 @@ namespace Ordr.Mobile.Data
             CatalogUnit entry = Find(id);
             if (entry == null) throw new KeyNotFoundException("카탈로그에 없는 캐릭터: " + id);
             return entry;
+        }
+
+        // Merge source-reviewed wiki identities only after the pinned original
+        // 277-object catalogue has been validated. No spawn/fusion authority.
+        public void ApplyWikiExtension(string json)
+        {
+            var root = OrdrJson.Object(OrdrJson.Parse(json), "wiki-unit-catalog-extension.json");
+            if (OrdrJson.RequiredString(root, "gameVersion") != "S2 2.323[C]" ||
+                OrdrJson.RequiredString(root, "format") != "ordr-wiki-unit-extension-v1" ||
+                OrdrJson.Number(root, "baseCatalogEntries") != entries.Count)
+                throw new FormatException("위키 확장 카탈로그의 원본 버전/등록 수 불일치");
+            var next = new Dictionary<string, CatalogUnit>(entries, StringComparer.Ordinal);
+            foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "reclassifications"),
+                         "reclassifications"))
+            {
+                var change = OrdrJson.Object(raw, "reclassification");
+                var id = OrdrJson.RequiredString(change, "id");
+                CatalogUnit original;
+                if (!next.TryGetValue(id, out original) ||
+                    original.Grade != OrdrJson.RequiredString(change, "expectedGrade") ||
+                    id != "PS-01" || OrdrJson.RequiredString(change, "grade") != "히든")
+                    throw new FormatException("해적선 분류 변경 근거가 불일치합니다.");
+                var copied = new Dictionary<string, object>(StringComparer.Ordinal);
+                foreach (var pair in original.OriginalFields) copied[pair.Key] = pair.Value;
+                copied["grade"] = "히든";
+                copied["gradeOrder"] = OrdrJson.Number(change, "gradeOrder");
+                next[id] = new CatalogUnit(copied);
+            }
+            foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "entries"), "entries"))
+            {
+                var unit = new CatalogUnit(OrdrJson.Object(raw, "extended unit"));
+                if (next.ContainsKey(unit.Id))
+                    throw new FormatException("위키 확장 유닛 ID 중복: " + unit.Id);
+                if (unit.AttackPowerMin.HasValue || unit.GameRawCode != null ||
+                    (unit.CatalogEntryKind != "alternate-form" &&
+                     unit.CatalogEntryKind != "support-object" &&
+                     unit.CatalogEntryKind != "fusion-result"))
+                    throw new FormatException("확장 유닛의 출처/공격 모델 검증이 필요: " + unit.Id);
+                next.Add(unit.Id, unit);
+            }
+            if (OrdrJson.Number(root, "expectedMergedEntries") != next.Count)
+                throw new FormatException("위키 확장 후 등록 수가 기대값과 다릅니다.");
+            foreach (var unit in next.Values)
+            {
+                if (!unit.IsAlternateForm) continue;
+                CatalogUnit parent;
+                if (!next.TryGetValue(unit.VariantOfUnitId, out parent) ||
+                    parent.IsAlternateForm || parent.Grade != unit.Grade ||
+                    unit.CatalogEntryKind != "alternate-form")
+                    throw new FormatException("유닛 형태의 원본 캐릭터가 유효하지 않습니다: " + unit.Id);
+            }
+            // All-or-nothing: corrupt extension never partially regrades units.
+            entries.Clear();
+            foreach (var pair in next) entries.Add(pair.Key, pair.Value);
         }
 
         public static CharacterUnitCatalog FromJson(string json)

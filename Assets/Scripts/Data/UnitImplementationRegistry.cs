@@ -16,7 +16,9 @@ namespace Ordr.Mobile.Data
         public string LabelLinkedOriginalRawcode { get; private set; }
         public string OriginalCraftingAbility { get; private set; }
         public bool HasOriginalObjectStats { get; private set; }
-        public bool CanSpawnIntoRoster { get { return true; } }
+        // Extra combat forms are catalog identities, not free roster units.
+        public bool CanSpawnIntoRoster { get { return !Unit.IsAlternateForm; } }
+        public string VariantOfUnitId { get { return Unit.VariantOfUnitId; } }
         public bool HasCollectedDetailedSkills { get { return Profile != null; } }
         public bool HasConfirmedNoPublishedSkills { get { return Unit.HasNoPublishedSkills; } }
         public int SkillCount { get { return Profile == null ? 0 : Profile.Skills.Count; } }
@@ -68,6 +70,10 @@ namespace Ordr.Mobile.Data
                         break;
                     }
             }
+            if (unit.IsAlternateForm)
+                issues.Add("추가 전투 형태: 독립 획득/조합 금지, 실제 변신 경로 확인 필요");
+            if (unit.CatalogEntryKind == "support-object")
+                issues.Add("기능성 유닛: 원본 거래·상호작용 연결 확인 필요");
             // Source-verification gates are kept explicit to avoid treating a
             // mobile catalogue entry as a finished playable combat unit.
             MissingImplementation = issues.AsReadOnly();
