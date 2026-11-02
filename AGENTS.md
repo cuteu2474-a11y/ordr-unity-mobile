@@ -7,6 +7,10 @@
 
 **최신 후속 변경:** 자동 위습은 게임 컨트롤러에서 거래 후 진행 프레임에 정산하며, 실패 등급별 재시도·보류 결과의 `EconomyWalletState` 저장을 연결했습니다. 원본 풀/매핑/UI Python 6개만 로컬 실행 확인했고, 추가 Unity 16사례·APK·실기 결과는 미확인입니다. 전체 저장이나 A0YE 구현 완료로 보고하지 않습니다.
 
+## 2026-11-02 베가펑크·쵸파·카이도 JASS 공격 상태
+- `SourceModelNativeCharacterRules`·`CharacterCombatRuntime.SourceModelNativeCharacters`: 원본 Byb/B4a/B4l/CBL·CBM 조건만 모델화하고 기존 공격 엔진을 재활용한다. 무료 위성·무료 traitPoints·임의 변신 공속/공격력·원본 미검증 독립 위성 공격 절대 금지. 베가펑크 위성 구매는 공용 지갑의 traitPoints 공급자가 연결되기 전 비활성화, 코드에서 허위 지급 불허.
+- 오타마와 위성 구매를 `Original323SourceDedicatedSkillPort` 하나에 통합한다. 외부 검증 전용 스킬 포트 설정은 덮어쓰지 않는다. 이 변경은 SourceModel 연습 단계이며 UnitBalance 원본과 실제 Warcraft 전투 동등성은 별개다.
+
 ## 최신 2026-11-02 원본 특수 스킬 JASS 분기 분석
 - JASS SHA 고정: `96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d`. 새 `SourceModelOriginalSpecialCallbackRules`와 `CharacterCombatRuntime.SourceModelOriginalSpecials`에서 슈가 Btq/검은수염 Boa·BoZ/류마 Bos/조로 Bsk·Bsj/쿠마 BtL의 원본 분기 수치를 연습 모델로 연결했다. JASS와 동일한 전투 결과로 인증된 것은 아니며 원본 능력플래그·아이템 보상·면역은 보류한다.
 - 소환수는 `SourceModelSummonState`의 소유자·수명·원본 코드만 보관한다. 소환수 독립 타격/보상을 추정하여 생성하지 않는다. 쿠마의 능력은 자동 버튼 시전이 아니라 공격 선언에 묶이며 이전 중복 도감 경로를 제거한다. 로스터/거래/스토리 분리 유지.

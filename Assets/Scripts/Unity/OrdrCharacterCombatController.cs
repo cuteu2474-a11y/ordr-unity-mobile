@@ -2549,10 +2549,11 @@ namespace Ordr.Mobile.Unity
                     ManualActions.ConfigureOriginalCommonSale(LowerGradeSales);
             }
             Combat.ConfigureOtamaWoodWallet(SharedEconomy.Wallet);
-            // Reuse the existing one-time wood grant in the combat ledger.
-            // External original dedicated-action providers remain replaceable.
+            // One shared interface for Otama's previously implemented
+            // one-time reward and Vegapunk's JASS-priced satellite choices.
+            // External verified dedicated-action providers remain replaceable.
             if (!DedicatedSkills.IsConnected)
-                DedicatedSkills.Configure(new Original323OtamaDedicatedSkillPort(
+                DedicatedSkills.Configure(new Original323SourceDedicatedSkillPort(
                     Combat, SharedEconomy.Wallet));
             Combat.ConfigureVerifiedUnitAttackProvider(verifiedUnitAttackSource);
             if (MapBaseStats != null)

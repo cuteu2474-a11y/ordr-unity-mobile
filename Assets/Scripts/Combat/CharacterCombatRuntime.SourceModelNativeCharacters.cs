@@ -1,0 +1,225 @@
+using System;
+using System.Collections.Generic;
+using Ordr.Mobile.Core;
+
+namespace Ordr.Mobile.Combat
+{
+    // Source-backed offline 2.323[C] progression only. Original native form
+    // attack stats/satellite independent combat are not forged here.
+    public sealed partial class CharacterCombatRuntime
+    {
+        private readonly Dictionary<long, string> sourceNativeForms =
+            new Dictionary<long, string>();
+        private readonly Dictionary<long, int> sourceKaidoLifeCounters =
+            new Dictionary<long, int>();
+        private readonly Dictionary<long, int> sourceKaidoAttackCounters =
+            new Dictionary<long, int>();
+        private readonly List<SourceModelVegapunkSatellite> sourceSatellites =
+            new List<SourceModelVegapunkSatellite>();
+        private long sourceNextSatelliteId;
+
+        private static readonly SourceScriptAttackSpec VegapunkSourceAttack =
+            new SourceScriptAttackSpec("TR-30", "H0AA", "B4l/B4e", 1, 1,
+                null, new[] {
+                    new SourceScriptHit(SourceScriptHitShape.Circle, 575, 0,
+                        4250000, 1, 1, Ordr323AttackType.Chaos),
+                    new SourceScriptHit(SourceScriptHitShape.Circle, 575, 0,
+                        4250000, 1, 1, Ordr323AttackType.Chaos)
+                },
+                "B4e 두 UnitDamagePoint의 서로 다른 DAMAGE_TYPE: 실전 방어/면역 미검증");
+
+        public string PracticeNativeFormOf(long instanceId)
+        {
+            string label;
+            return UsesSourceModelBasicAttacks && characters.ContainsKey(instanceId) &&
+                sourceNativeForms.TryGetValue(instanceId, out label) ? label : null;
+        }
+
+        public int PracticeKaidoAttackCounterOf(long instanceId)
+        {
+            int count;
+            return UsesSourceModelBasicAttacks && characters.ContainsKey(instanceId) &&
+                sourceKaidoAttackCounters.TryGetValue(instanceId, out count) ? count : 0;
+        }
+
+        public IReadOnlyList<SourceModelVegapunkSatellite> PracticeSatellites()
+        {
+            return sourceSatellites.AsReadOnly();
+        }
+
+        public bool HasPracticeSatellite(string rawcode)
+        {
+            foreach (var state in sourceSatellites)
+                if (state.OriginalRawcode == rawcode) return true;
+            return false;
+        }
+
+        public int PracticeSatelliteCorePurchases()
+        {
+            int count = 0;
+            foreach (var state in sourceSatellites)
+                if (state.OriginalRawcode == "H0AB" ||
+                    state.OriginalRawcode == "H0AE") count++;
+            return count;
+        }
+
+        // Original B4a one-ability-per-PLAYER checkout. The Android shared
+        // wallet currently lacks an original trait-point source: this action
+        // is correctly unavailable unless verified points are funded.
+        // Purchased satellites have their own identity, separate from the
+        // character fusion roster, and cannot yield invented combat/rewards.
+        public bool TryAcquirePracticeSatellite(long creatorId, string rawcode,
+            EconomyWallet sharedWallet)
+        {
+            if (sharedWallet == null) throw new ArgumentNullException(nameof(sharedWallet));
+            if (!ReferenceEquals(sharedWallet, otamaRewardWallet) ||
+                !UsesSourceModelBasicAttacks ||
+                game.Phase != SessionPhase.Running || processingStep ||
+                pendingStepSeconds != 0 ||
+                sourceSatellites.Count >= 3 || HasPracticeSatellite(rawcode))
+                return false;
+            CharacterInstance actor;
+            if (!characters.TryGetValue(creatorId, out actor) ||
+                actor.Catalog.Id != SourceModelNativeCharacterRules.Vegapunk ||
+                actor.Mapping == null ||
+                actor.Mapping.AttackSpec.UnitRawCode != "H0AA") return false;
+            long points, wood;
+            if (!SourceModelNativeCharacterRules.TryPlanSatelliteCost(rawcode,
+                PracticeSatelliteCorePurchases(), out points, out wood))
+                return false;
+            var costs = new ResourceBundle()
+                .Add(SourceModelNativeCharacterRules.TraitPointsResourceId, points);
+            if (wood > 0)
+                costs.Add(SourceModelNativeCharacterRules.WoodResourceId, wood);
+            string receipt = SourceModelNativeCharacterRules.SatelliteActionId(rawcode);
+            if (!sharedWallet.TryExchangeOnce(receipt, costs, new ResourceBundle()))
+                return false;
+            if (sourceNextSatelliteId == long.MaxValue)
+                throw new OverflowException("위성 ID 저장 용량 초과");
+            var state = new SourceModelVegapunkSatellite(
+                ++sourceNextSatelliteId, creatorId, rawcode, scheduler.Time);
+            sourceSatellites.Add(state);
+            pendingCommandEvents.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated, InstanceKey(creatorId),
+                InstanceKey(creatorId), "베가펑크 · " + state.Name,
+                "MODEL_ONLY B4a: 원본 특성포인트 " + points +
+                "/목재 " + wood + " 소비 / 독립 위성 공격 자료 미연결", 0));
+            return true;
+        }
+
+        private void ExecuteNativeSourceCharacterAttack(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            if (actor.Catalog.Id == SourceModelNativeCharacterRules.Chopper)
+                ExecuteChopperSourceAttack(actor, primary);
+            else if (actor.Catalog.Id == SourceModelNativeCharacterRules.Vegapunk)
+                ExecuteVegapunkSourceAttack(actor, primary);
+            else if (actor.Catalog.Id == SourceModelNativeCharacterRules.Kaido)
+                ExecuteKaidoSourceAttack(actor, primary);
+        }
+
+        private void ExecuteChopperSourceAttack(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            if (sourceNativeForms.ContainsKey(actor.Id)) return;
+            var resource = actor.Abilities.Resources;
+            if (resource == null || resource.MaximumMana != 150) return;
+            if (resource.Mana == 150)
+            {
+                // Byb issues 'metamorphosis' at full mana. It DOES NOT
+                // explicitly spend mana; native ability costs are unknown.
+                // We track the requested native identity H0B6, rather than
+                // inventing a four-second buff or a new basic attack spec.
+                sourceNativeForms[actor.Id] = "폭주 변신 요청 · H0B6 (공격 능력 미확인)";
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
+                    primary.Id, "쵸파 럼블볼 폭주",
+                    "MODEL_ONLY Byb: MP150 도달 → metamorphosis / H0B6 원본 객체 수치 미연결", 0));
+            }
+            else
+                resource.SetMana(Math.Min(150, resource.Mana + 1));
+        }
+
+        private void ExecuteVegapunkSourceAttack(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            var resource = actor.Abilities.Resources;
+            if (resource == null || resource.MaximumMana != 200) return;
+            if (resource.Mana < 200)
+            {
+                resource.SetMana(Math.Min(200, resource.Mana + 1));
+                return;
+            }
+            resource.SetMana(0);
+            string actorKey = InstanceKey(actor.Id), enemyId = primary.Id;
+            bool lane = IsStoryDeployed(actor.Id);
+            long revision = SourceModelLaneRevision(actor.Id);
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated, actorKey, enemyId,
+                "베가펑크 마나 공격",
+                "MODEL_ONLY B4l: MP200→0 / B4e 1.23초 지연 후 2×4250000 반경575", 0));
+            effectExecutor.SchedulePracticeSourceAttack(actorKey, enemyId,
+                SourceModelNativeCharacterRules.VegapunkMainDelaySeconds, () => {
+                    SpatialCombatEnemy live;
+                    if (!CanFinishSourceModelDelayedAttack(actor.Id, lane, revision) ||
+                        !enemies.TryGetValue(enemyId, out live) ||
+                        !live.Enemy.IsAlive || !CanAttackInThisLane(actor, live)) return;
+                    ApplySourceScriptHits(actor, live, VegapunkSourceAttack,
+                        VegapunkSourceAttack.OnProc);
+                });
+        }
+
+        private void ExecuteKaidoSourceAttack(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            int life;
+            if (!sourceKaidoLifeCounters.TryGetValue(actor.Id, out life))
+                life = 100; // Original UnitBalance.slk HP=100 at spawn.
+            if (life >= 100)
+            {
+                // CBL/CBM call B_m on exactly 100 current HP: the source
+                // counter resets to 1 and starts a large native attack.
+                sourceKaidoLifeCounters[actor.Id] = 1;
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.EffectDeferred, InstanceKey(actor.Id),
+                    primary.Id, "카이도 100 체력 공격",
+                    "MODEL_ONLY CBL/CBM: B_m→Jc/Jh / native 피해 콜백 정산 대기", 0));
+                return;
+            }
+            sourceKaidoLifeCounters[actor.Id] = Math.Min(100, life + 1);
+            if (SourceRoll1To(100) <= 14)
+            {
+                string former;
+                sourceNativeForms.TryGetValue(actor.Id, out former);
+                bool dragon = former == "카이도 용형 · h0AD (전투 스탯 확인 대기)";
+                sourceNativeForms[actor.Id] = dragon ?
+                    "카이도 인간형 · h07M (전투 스탯 확인 대기)" :
+                    "카이도 용형 · h0AD (전투 스탯 확인 대기)";
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
+                    primary.Id, "카이도 변신",
+                    "MODEL_ONLY CBL/CBM: 14% metamorphosis 조건 / B05F 버프·A0PS 원본 관측 미확인", 0));
+                // Original branch stops other procs on this attacked event.
+                return;
+            }
+            int previous;
+            sourceKaidoAttackCounters.TryGetValue(actor.Id, out previous);
+            int current = previous >= 10 ? 1 : previous + 1;
+            sourceKaidoAttackCounters[actor.Id] = current;
+            if (current == 10)
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.EffectDeferred, InstanceKey(actor.Id),
+                    primary.Id, "카이도 열 번째 공격",
+                    "MODEL_ONLY CBL/CBM: UnitUserData 10회 공격 패킷 / JASS 피해 조건 미해석", 0));
+        }
+
+        private void ForgetNativeSourceCharacter(long id)
+        {
+            sourceNativeForms.Remove(id);
+            sourceKaidoLifeCounters.Remove(id);
+            sourceKaidoAttackCounters.Remove(id);
+            // B4a satellites are independent player-owned units; removing
+            // the creator does not delete them or refund spent resources.
+        }
+    }
+}

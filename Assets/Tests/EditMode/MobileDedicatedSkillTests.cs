@@ -44,6 +44,18 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void SatelliteUnknownChoicesNeverCreateFreeResources()
+        {
+            long trait, wood;
+            Assert.IsFalse(SourceModelNativeCharacterRules.TryPlanSatelliteCost(
+                "H000", 0, out trait, out wood));
+            Assert.IsFalse(SourceModelNativeCharacterRules.TryPlanSatelliteCost(
+                "H0AB", 3, out trait, out wood));
+            Assert.Throws<ArgumentException>(() =>
+                SourceModelNativeCharacterRules.SatelliteActionId("H000"));
+        }
+
+        [Test]
         public void UnconnectedAndLockedActionsDoNotExecute()
         {
             var actions = new MobileDedicatedSkillActions();

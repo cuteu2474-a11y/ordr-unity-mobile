@@ -33,7 +33,13 @@ namespace Ordr.Mobile.Combat
             if ((actor.Catalog.Id == "TR-18" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "H0BD") ||
                 (actor.Catalog.Id == "L-32" &&
-                 actor.Mapping.AttackSpec.UnitRawCode == "h030"))
+                 actor.Mapping.AttackSpec.UnitRawCode == "h030") ||
+                (actor.Catalog.Id == "TR-23" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H091") ||
+                (actor.Catalog.Id == "TR-30" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H0AA") ||
+                (actor.Catalog.Id == "I-11" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h07M"))
                 return true;
             SourceModelNextThirtyUnit entry;
             SourceModelUnconnectedSkillRow extra;

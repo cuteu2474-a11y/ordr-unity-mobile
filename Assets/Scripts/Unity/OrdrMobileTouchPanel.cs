@@ -998,7 +998,18 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("선택: " + detail.DisplayName, OrdrMobileUiTheme.Subheading);
                 if (Combat.Roster.SelectedId.HasValue)
                 {
-                    var resources = Combat.ResourcesOf(Combat.Roster.SelectedId.Value);
+                    var selectedId = Combat.Roster.SelectedId.Value;
+                    var form = Combat.PracticeFormOf(selectedId);
+                    if (!string.IsNullOrEmpty(form))
+                        GUILayout.Label("형태: " + form, OrdrMobileUiTheme.Overline);
+                    if (detail.CatalogId == "TR-30")
+                    {
+                        GUILayout.Label("위성 구매: " +
+                            Combat.PracticeSatellites().Count + "/3" +
+                            " (독립 공격 모델 미연결)",
+                            OrdrMobileUiTheme.Overline);
+                    }
+                    var resources = Combat.ResourcesOf(selectedId);
                     if (resources != null)
                     {
                         GUILayout.Label("HP " + resources.Health.ToString("0.#") +

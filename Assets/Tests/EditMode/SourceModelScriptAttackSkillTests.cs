@@ -602,6 +602,125 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OriginalNativeFormsAndSatelliteCatalogUsePinnedJass()
+        {
+            Assert.AreEqual(SourceModelScriptAttackCatalog.SourceJassSha256,
+                SourceModelNativeCharacterRules.JassSha256);
+            Assert.AreEqual(150, SourceModelNativeCharacterRules.ChopperTransformMana);
+            Assert.AreEqual(200, SourceModelNativeCharacterRules.VegapunkMainMana);
+            Assert.AreEqual(1.23, SourceModelNativeCharacterRules.VegapunkMainDelaySeconds);
+            Assert.AreEqual(14, SourceModelNativeCharacterRules.KaidoTransformRollPercent);
+            string mapped;
+            Assert.IsTrue(SourceModelNativeCharacterRules.TryGetNativeAttack("H091", out mapped));
+            Assert.AreEqual("TR-23", mapped);
+            Assert.IsTrue(SourceModelNativeCharacterRules.TryGetNativeAttack("H0AA", out mapped));
+            Assert.AreEqual("TR-30", mapped);
+            Assert.IsTrue(SourceModelNativeCharacterRules.TryGetNativeAttack("h07M", out mapped));
+            Assert.AreEqual("I-11", mapped);
+            Assert.IsFalse(SourceModelNativeCharacterRules.TryGetNativeAttack("h01G", out mapped),
+                "Docking5 activation is unverified and must not be auto-invented.");
+        }
+
+        [TestCase("H0AB", 0, 2, 7)]
+        [TestCase("H0AE", 1, 4, 14)]
+        [TestCase("H0AM", 0, 4, 0)]
+        [TestCase("H0AM", 2, 4, 0)]
+        public void VegapunkSatelliteCostsFollowB4aStage(
+            string rawcode, int previous, long expectedTraits, long expectedWood)
+        {
+            long traits, wood;
+            Assert.IsTrue(SourceModelNativeCharacterRules.TryPlanSatelliteCost(
+                rawcode, previous, out traits, out wood));
+            Assert.AreEqual(expectedTraits, traits);
+            Assert.AreEqual(expectedWood, wood);
+        }
+
+        [Test]
+        public void OriginalNativeFormsHaveSourceSlkPoolsAndNoFakeDamageModifiers()
+        {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var catalog = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                Data("original-2323C-unit-object-stats.json"), map);
+            Assert.AreEqual(150, catalog.Find("TR-23").MaximumMana);
+            Assert.AreEqual(200, catalog.Find("TR-30").MaximumMana);
+            Assert.AreEqual(100, catalog.Find("I-11").MaximumHealth);
+            using (var chopper = Create("TR-23", true, -4900, 5400))
+            {
+                chopper.Combat.ConfigureSourceModelUnitResources(catalog);
+                var events = chopper.Battle.Advance(4);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "쵸파 럼블볼 폭주"));
+                Assert.IsNotNull(chopper.Combat.PracticeFormOf(chopper.ActorId));
+                Assert.IsTrue(chopper.Combat.PracticeFormOf(chopper.ActorId)
+                    .Contains("공격 능력 미확인"));
+            }
+            using (var vegapunk = Create("TR-30", true, -4900, 5400))
+            {
+                vegapunk.Combat.ConfigureSourceModelUnitResources(catalog);
+                var events = vegapunk.Battle.Advance(4);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "베가펑크 마나 공격"));
+                Assert.Less(vegapunk.Combat.ResourcesOf(vegapunk.ActorId).Mana, 200);
+            }
+        }
+
+        [Test]
+        public void VegapunkSatellitePurchaseIsAtomicUniqueAndNotACombatRosterUnit()
+        {
+            using (var live = Create("TR-30", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                Assert.IsFalse(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AB", wallet));
+                wallet.Grant(new ResourceBundle().Add("traitPoints", 10).Add("wood", 21));
+                int before = live.Combat.CharacterCount;
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AB", wallet));
+                Assert.AreEqual(8, wallet.Balance("traitPoints"));
+                Assert.AreEqual(14, wallet.Balance("wood"));
+                Assert.IsFalse(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AB", wallet));
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AE", wallet));
+                Assert.AreEqual(4, wallet.Balance("traitPoints"));
+                Assert.AreEqual(0, wallet.Balance("wood"));
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AM", wallet));
+                Assert.AreEqual(0, wallet.Balance("traitPoints"));
+                Assert.AreEqual(3, live.Combat.PracticeSatellites().Count);
+                Assert.AreEqual(before, live.Combat.CharacterCount);
+                Assert.IsFalse(live.Combat.PracticeSatellites()[0].IndependentCombatVerified);
+                live.Combat.RemoveCharacter(live.ActorId);
+                Assert.AreEqual(3, live.Combat.PracticeSatellites().Count,
+                    "Original B4a satellites survive removal of their creator.");
+            }
+        }
+
+        [Test]
+        public void KaidoSourceAttackEventDoesNotGuessUnverifiedNativeDamage()
+        {
+            using (var live = Create("I-11", true, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var events = live.Battle.Advance(3);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.EffectDeferred &&
+                    e.SkillName == "카이도 100 체력 공격"));
+                Assert.Greater(live.Combat.PracticeKaidoAttackCounterOf(live.ActorId), 0);
+            }
+        }
+
+        [Test]
         public void OriginalSpecialSourcesMatchThePinnedJassAndCatalogRawcodes()
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));

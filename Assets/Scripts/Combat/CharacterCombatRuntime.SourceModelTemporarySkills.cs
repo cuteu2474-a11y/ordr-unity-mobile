@@ -46,6 +46,9 @@ namespace Ordr.Mobile.Combat
         public string PracticeFormOf(long id)
         {
             if (!UsesSourceModelBasicAttacks || !characters.ContainsKey(id)) return null;
+            string nativeForm;
+            if (sourceNativeForms.TryGetValue(id, out nativeForm))
+                return nativeForm;
             string name;
             if (!sourceFormNames.TryGetValue(id, out name)) return null;
             foreach (var effect in unitStatuses[InstanceKey(id)].Snapshot())
@@ -71,6 +74,7 @@ namespace Ordr.Mobile.Combat
         {
             sourceFormCastFinishes.Remove(ownerId);
             sourceFormNames.Remove(ownerId);
+            ForgetNativeSourceCharacter(ownerId);
             sourceTemporarySummons.RemoveAll(x => x.OwnerId == ownerId);
         }
 

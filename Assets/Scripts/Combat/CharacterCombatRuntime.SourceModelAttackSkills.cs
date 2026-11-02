@@ -24,9 +24,12 @@ namespace Ordr.Mobile.Combat
             SourceModelNextThirtyUnit nextThirty = null;
             SourceModelUnconnectedSkillRow unconnected = null;
             string sourceSpecialUnitId;
+            string nativeSourceUnitId;
             bool specialFromJass =
                 SourceModelOriginalSpecialCallbackRules.TryGetUnit(
                     rawcode, out sourceSpecialUnitId);
+            bool nativeFromJass = SourceModelNativeCharacterRules.TryGetNativeAttack(
+                rawcode, out nativeSourceUnitId);
             bool practiceBonney = rawcode == "H0BX";
             bool standaloneTemporary = IsStandaloneSourceTemporaryAttack(rawcode);
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
@@ -41,7 +44,8 @@ namespace Ordr.Mobile.Combat
                  !SourceModelNextThirtySkillCatalog.TryGet(rawcode, out nextThirty) &&
                  !SourceModelUnconnectedSkillCatalog.TryGet(rawcode, out unconnected) &&
                  !standaloneTemporary &&
-                 !specialFromJass))
+                 !specialFromJass &&
+                 !nativeFromJass))
                 return;
 
             long id;
@@ -60,6 +64,12 @@ namespace Ordr.Mobile.Combat
             {
                 if (actor.Catalog.Id == sourceSpecialUnitId)
                     ExecuteSourceModelOriginalSpecial(actor, primary);
+                return;
+            }
+            if (nativeFromJass)
+            {
+                if (actor.Catalog.Id == nativeSourceUnitId)
+                    ExecuteNativeSourceCharacterAttack(actor, primary);
                 return;
             }
 
