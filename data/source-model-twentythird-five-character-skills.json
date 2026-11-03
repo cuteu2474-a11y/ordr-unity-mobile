@@ -1,0 +1,79 @@
+{
+  "version": "ORDR S2 2.323[C]",
+  "batch": 23,
+  "mode": "nightmare-isekai",
+  "status": "TOOLTIP_MODEL_ONLY / not Unity-compiled, not Android-tested, not Warcraft-parity-certified",
+  "inputProfiles": "data/character-skill-profiles.json",
+  "inputUnitRawcodes": "data/original-2323C-map-base-stats.json",
+  "skills": [
+    {
+      "catalogId": "H-09",
+      "character": "방주맥심",
+      "rawcode": "h03X",
+      "skillId": "H-09:skill:0",
+      "name": "뇌영",
+      "trigger": "activeMana",
+      "manaCost": 150,
+      "radius": 800,
+      "modeled": "2150000 magical, 1.2-second line stun, 10% magical resistance reduction, 10% explosive amplification",
+      "existingNativeAttack": "Br8 attack callback retained; no duplicate attack proc",
+      "sourceActiveEvidence": "Br9 → Br8 mana 150 → Br6, Ordr323VerifiedDefenseSkillLinks"
+    },
+    {
+      "catalogId": "H-07",
+      "character": "반더데켄",
+      "rawcode": "h03R",
+      "skillId": "H-07:skill:0",
+      "name": "갑판 포격",
+      "trigger": "activeMana",
+      "manaCost": 95,
+      "radius": 800,
+      "modeled": "3000000 magical plus 4% target missing HP; existing source-model owner/active priority retained"
+    },
+    {
+      "catalogId": "E-04",
+      "character": "미호크",
+      "rawcode": "h058",
+      "skillId": "E-04:skill:0",
+      "name": "마나 고정 피해",
+      "trigger": "activeMana",
+      "manaCost": 175,
+      "radius": 750,
+      "modeled": "5250000 fixed plus 5% target maximum HP; fixed model packet bypasses practice armor"
+    },
+    {
+      "catalogId": "I-06",
+      "character": "빅맘",
+      "rawcode": "h04Q",
+      "skillId": "I-06:skill:0",
+      "name": "대자재천신",
+      "trigger": "activeHealth",
+      "healthCost": 115,
+      "radius": 900,
+      "modeled": "six magical hits, each 900000 plus 1% target maximum HP; HP resource required"
+    },
+    {
+      "catalogId": "RN-05",
+      "character": "야가미 라이토",
+      "rawcode": "h073",
+      "skillId": "RN-05:skill:0",
+      "name": "데스노트",
+      "trigger": "onAttack",
+      "chancePercent": 10,
+      "modeled": "single-target magical damage equal to 25% current HP; boss and story targets excluded"
+    }
+  ],
+  "implementation": [
+    "SourceModelTwentyThirdSkillCatalog requires exact source-profile packet shape and owner/skill index.",
+    "All existing attackers, resource spend, status, target, defense, HP and kill accounting are reused.",
+    "Existing E-04, H-07 and I-06 next-thirty active rows are completed; only H-09 and RN-05 need new owner rows.",
+    "H-09 native Br8 attack is never re-rolled by the new active-only owner row.",
+    "The generic per-frame auto-cast still requires an original-object resource provider."
+  ],
+  "unverified": [
+    "Warcraft native random ordering, hit frames, targeting and boss/hero immunities",
+    "Original Warcraft defense/magic resistance and stacking/expiration semantics",
+    "RN-05 tooltip's 10% probability compared to any unknown native callback",
+    "Unity compilation, EditMode execution, simulator, APK and real-device gameplay"
+  ]
+}

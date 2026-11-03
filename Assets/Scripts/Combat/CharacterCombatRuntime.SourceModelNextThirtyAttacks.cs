@@ -342,6 +342,7 @@ namespace Ordr.Mobile.Combat
                 SourceModelEighteenthSkillCatalog.IsSpecial(skill) ||
                 SourceModelSixteenthSkillCatalog.IsSpecial(skill) ||
                 SourceModelFifteenthSkillCatalog.IsSpecial(skill) ||
+                SourceModelTwentyThirdSkillCatalog.IsSpecial(skill) ||
                 IsSourceModelEighthStatusApproach(skill);
             foreach (var component in skill.Components)
             {
@@ -468,6 +469,9 @@ namespace Ordr.Mobile.Combat
                 {
                     SpatialCombatEnemy current;
                     if (!target.Enemy.IsAlive ||
+                        (skill.Id == "RN-05:skill:0" &&
+                         (target.Kind == CharacterEnemyKind.Boss ||
+                          target.Kind == CharacterEnemyKind.Story)) ||
                         !enemies.TryGetValue(target.Id, out current) ||
                         !ReferenceEquals(current, target) ||
                         !CanAttackInThisLane(actor, target) ||
@@ -488,6 +492,10 @@ namespace Ordr.Mobile.Combat
                         skill, component, target, multiplier) :
                         (component.Number("amount") ??
                          component.Number("amountPerHit") ?? 0) * multiplier;
+                    // Death Note's complete packet is 25% of CURRENT HP,
+                    // not max HP, and never applies to boss/story targets.
+                    if (skill.Id == "RN-05:skill:0")
+                        raw = target.Enemy.Health * 0.25;
                     raw = SourceModelSixthRawDamageAdjustment(actor, primary,
                         skill, component, target, raw);
                     raw = SourceModelSeventhRawDamageAdjustment(actor, primary,

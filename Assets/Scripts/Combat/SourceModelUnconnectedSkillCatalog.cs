@@ -28,6 +28,14 @@ namespace Ordr.Mobile.Combat
         // Source-tooltip-complete *practice* casts only. No inferred JASS cooldown,
         // Warcraft resistance, or non-listed mixed effects are granted.
         private static readonly SourceModelUnconnectedSkillRow[] Entries = {
+            // 23rd batch: Maxim's Br8 native attack proc already runs via the
+            // source-script catalog. Only Br6's separate 150-MP active is added.
+            new SourceModelUnconnectedSkillRow("H-09", "h03X",
+                Array.Empty<string>(), new[] { "뇌영" }),
+            // No duplicate JASS attack handler exists for this registered
+            // owner; boss/story exclusion stays part of the exact packet.
+            new SourceModelUnconnectedSkillRow("RN-05", "h073",
+                new[] { "데스노트" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("MY-07", "h083",
                 Array.Empty<string>(), new[] { "가스터 블래스터" }),
             new SourceModelUnconnectedSkillRow("MY-08", "h08M",

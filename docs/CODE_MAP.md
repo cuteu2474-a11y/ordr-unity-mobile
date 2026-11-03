@@ -454,3 +454,9 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - **호출·UI:** `CharacterCombatRuntime.SourceModelTwentyFirstEquipment.cs`가 전투 중 유닛 생존·조합 중단 조건을 검사하고, 기존 유닛 목록 전체 초기 복원을 지원합니다. `OrdrCharacterCombatController`는 시작 전 공급자 연결→연습 시작 시 기존 유닛 동기화→원본 revision 갱신 시 수동 동기화 포트를 제공합니다. `OrdrMobileTouchPanel.DrawUnits`는 선택된 I-05의 확인된 장착과 아르마다 자격만 표시하며, 실제 증거 제공자가 없으면 동기화 버튼을 숨깁니다. 단위 원본 기술 레벨은 `IOriginalBulletArmadaLevelWitness`에서만 읽습니다.
 - **검증 경계:** `Assets/Tests/EditMode/OriginalEquippedItemLedgerTests.cs`에 전체 목록 대체·낡은 revision·불완전 원본·동일 유닛 이중 합산·오버플로 시나리오를 추가했으나 실행은 금지 상태입니다. 실제 원본 구매/드롭 공급자 없음; `data/source-model-twentysecond-inventory-synchronization.json` 참조. **Python/Unity/APK/Actions 미실행·미조회**.
 
+## 2026-11-03 · 23차 캐릭터 액티브/공격 소스모델 5기
+
+- `SourceModelTwentyThirdSkillCatalog.cs`는 방주맥심 `H-09:0`, `H-07:0`, `E-04:0`, `I-06:0`의 4개 액티브와 `RN-05:0` 공격 발동기를 원본 profile `name/trigger/target/cost/radius/chance/components` **모든 필드·순번**이 일치할 때만 승인합니다. `SourceModelNextThirtySkillCatalog`의 범용 게이트보다 선행하고 불완전 패킷은 전부 거절합니다.
+- `SourceModelUnconnectedSkillCatalog` 신규 소유자 `H-09/h03X`(액티브만), `RN-05/h073`(평타만) 등록. **H-09 기본 Br8 JASS 공격 콜백은 기존 그대로** 사용하며 중복 주사위가 없습니다. 기존 `H-07/h03R`, `E-04/h058`, `I-06/h04Q` next-thirty 소유자/액티브 명단은 재사용합니다.
+- `CharacterCombatRuntime.SourceModelNextThirtyAttacks`는 신규 액티브를 기존 자원/선택 대상/상태/HP·처치 공통 실행기로 전달합니다. RN-05 데스노트는 *피격 당시 현재 HP* 25%를 읽고 보스/스토리를 제외합니다. `SourceModelSixthHitCount` 기존 원본 `hits=6` 횟수 처리를 I-06에서 재사용합니다. 출처 없는 원본 방어/저항·지속 효과 타이밍/면역을 보장하지 않습니다.
+- EditMode 승인 사례만 작성하고 실행하지 않았습니다. 상세: `data/source-model-twentythird-five-character-skills.json`. Python/Unity/Android/APK/Actions 전부 미실행·미조회.

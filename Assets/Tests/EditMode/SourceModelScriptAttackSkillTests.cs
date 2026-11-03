@@ -2150,6 +2150,29 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [TestCase("H-09", "뇌영", true)]
+        [TestCase("H-07", "갑판 포격", true)]
+        [TestCase("E-04", "마나 고정 피해", true)]
+        [TestCase("I-06", "대자재천신", true)]
+        [TestCase("RN-05", "데스노트", false)]
+        public void TwentyThirdSourcePacketIsCompleteAndOwnerScoped(
+            string id, string name, bool active)
+        {
+            var profiles = CharacterSkillCatalog.FromJson(
+                Data("character-skill-profiles.json"));
+            var skill = profiles.Find(id).Skills.Single(x => x.Name == name);
+            Assert.IsTrue(SourceModelTwentyThirdSkillCatalog.IsSpecial(skill));
+            Assert.IsTrue(active ?
+                SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill) :
+                SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill));
+            Assert.IsFalse(active ?
+                SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill) :
+                SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill));
+            // No approval by a shared Korean skill name on another unit.
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                "wrong-owner", new[] { name }, skill));
+        }
+
         [TestCase("RN-02", "대옥 나선환")]
         [TestCase("RN-13", "비상식량")]
         [TestCase("LI-01", "광역 마법 공격")]
