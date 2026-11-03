@@ -419,3 +419,10 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - 같은 17차 파일의 `ConfigureSourceModelBuggyCrewIdentityEvidence`/`TrySpawnWitnessedSourceBuggyCrew`는 외부 확인 원본 rawcode·생성 좌표/추첨 결과와 원본 도감 4개 후보·3/4초 수명을 검증하고, `SourceModelTemporarySkills.SpawnSourceTemporaryActor`의 원본 공격 객체 검사 후 **독립 공격자 등록/만료/제거**를 재사용. `ConfigureSourceModelKaidoNativeMorphEvidence`/`TryApplyWitnessedSourceKaidoForm`은 실제 h07M/h0AD 관측 결과만 적용하며 원래 인스턴스를 유지. 기본 엔진은 후보를 임의 추첨하거나 변신시키지 않음. 이 포트들에는 현재 기본 게임 이벤트 공급자가 없음.
 - 근거/보류 `data/source-model-seventeenth-specials.json`. 새 연결은 Unity/Android·원본 난수/보스 면역 동등성 **미검증**이며 Python·Unity·Actions 결과 조회는 요청 전 실행하지 않음.
 
+## 2026-11-03 · 18차 10개 원본 기술의 미연결 효과·직선 자동 타격 (현재 최신)
+
+- `data/source-model-eighteenth-10-skills.json`의 원본 8명·10개 **실제 미승인 도감 공격**만 새로 추가: 3개 일반 완전 패킷, 7개 전체 원본 스키마가 고정된 복합 패킷. `SourceModelUnconnectedSkillCatalog`의 기존 R-42 한 행에 1개 추가하고 MY-01/R-25/SR-02/H-10/RN-10/D-05/MY-10 일곱 원본 객체 소유자 행을 추가함. 기존 JASS 소유자를 이중 등록하지 않음.
+- `SourceModelEighteenthSkillCatalog.CanModelExactSpecial`이 발동형/확률/대상/반경/중첩 필드·배열·소유 스킬 ID까지 엄격하게 승인. `SourceModelNextThirtySkillCatalog.CanModelCompleteAttack`은 일반 gate 이전에 18차의 완전한 특수 패킷만 선택하여 원래 `TOOLTIP_MODEL_ONLY` 허용 구조를 유지.
+- `CharacterCombatRuntime.SourceModelNextThirtyAttacks`에서 완전 승인된 `line` 기술만 `ProjectileLine`(기존 TR-26과 같은 현재 타깃 방향, 원본 투사체 길이 미검증)으로 연결. `targetCircle`은 기존 타격 대상 중심. `CharacterCombatRuntime.SourceModelEighteenthSkills`는 주 타깃 전용 추가 피해·최대/현재HP 비례·스토리 제외·원본 기본 공격력 배수를 계산하고 기존 `ApplySourceModelCompositeArmorBreak/Status` 및 HP/처치/전장 게이트로 전달함. R-25 일반 라인 폭발과 R-42 주 타깃 폭발은 일반/보스 구분을 보존함.
+- **검증 상태:** 코드를 원본 도감 프로필·mapObjects와 대조한 구현으로, Python·Unity Editor·Android·Actions는 성현 님 명시 요청 전 **실행하지 않음**. 실제 Warcraft 면역·방어·난수·광역 피격 및 출처가 없는 소환/변신 트리거는 미연결.
+

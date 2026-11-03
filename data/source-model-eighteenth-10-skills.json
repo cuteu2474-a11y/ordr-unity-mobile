@@ -1,0 +1,40 @@
+{
+  "format": "ordr-source-model-eighteenth-10-skills-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sources": [
+    "character-skill-profiles.json",
+    "original-2323C-map-base-stats.json"
+  ],
+  "runtimeStatus": "TOOLTIP_MODEL_ONLY_NO_TESTS",
+  "newAttackCount": 10,
+  "newActiveCount": 0,
+  "skills": [
+    {"catalogId":"MY-01","rawcode":"h09M","skillIndex":1,"name":"술식 반전 혁","gate":"complete-tooltip"},
+    {"catalogId":"R-25","rawcode":"h026","skillIndex":0,"name":"단일 스턴 타격","gate":"complete-tooltip"},
+    {"catalogId":"R-25","rawcode":"h026","skillIndex":1,"name":"현재 체력 폭발","gate":"exact-special","result":"normal-line target current HP 15%"},
+    {"catalogId":"SR-02","rawcode":"h0A3","skillIndex":2,"name":"광역 참격","gate":"complete-tooltip","result":"magical 1000000 + eligible boss/enraged maximum HP 5%"},
+    {"catalogId":"R-42","rawcode":"h01M","skillIndex":1,"name":"매혹 계열 범위 공격","gate":"exact-special","result":"center-radius350 magical6000; only primary line current HP 10%"},
+    {"catalogId":"H-10","rawcode":"h03W","skillIndex":1,"name":"기본 공격 발동형 타격","gate":"exact-special","result":"center-radius400 physical240000 and armor break one stack"},
+    {"catalogId":"RN-10","rawcode":"h09L","skillIndex":0,"name":"무기화 빌드 Lv1","gate":"exact-special","result":"radius400 magical250000 range1..2; primary extra100%"},
+    {"catalogId":"D-05","rawcode":"h05V","skillIndex":0,"name":"불주먹","gate":"exact-special","result":"attack-vector lane line width320 magical350000; primary plus500000"},
+    {"catalogId":"MY-10","rawcode":"h0CC","skillIndex":2,"name":"단령검 성불득탈참","gate":"exact-special","result":"attack-vector lane line width600 magical250000, movement slow50% for3sec"},
+    {"catalogId":"MY-10","rawcode":"h0CC","skillIndex":3,"name":"단미검 미진자항참","gate":"exact-special","result":"attack-vector lane line width800 physical8x basic+900000, primary non-story fixed maximum HP4%"}
+  ],
+  "duplicatePrevention": [
+    "Existing BpX/Bpf/Bre/Bq3/Bqh/BsF/Btd source callbacks take precedence: no new R-26/R-31/H-11/H-16/H-18/L-29/L-33 tooltip proc.",
+    "Existing Buo for L-08, Btb for L-16, B59/B52 for E-06, BzH for TR-28 and Bonney form/age effects are not re-rolled.",
+    "Complete tooltip skill packet and exact source owner/rawcode are required at the common attack boundary."
+  ],
+  "unimplemented": [
+    "Real JASS callback timing/seed and native hit order, armor/immunity/resistance, hero levels and status stacking parity.",
+    "E-03 soul stack costs and upgrade formulas, E-11 gold scaling, I-05 item attributes and actual Buggy summon identities.",
+    "Marco/Kaido original form activation, Sunny research acquisition, original summon navigation and Warcraft native effect semantics."
+  ],
+  "verification": {
+    "python": "not_run_user_instruction",
+    "unity": "not_run_user_instruction",
+    "apk": "not_built_user_instruction",
+    "actions": "not_queried_user_instruction"
+  }
+}

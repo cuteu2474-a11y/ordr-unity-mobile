@@ -103,7 +103,9 @@ namespace Ordr.Mobile.Combat
                     skill.Target == "eachMultishotTarget" ||
                     skill.Target == "summon" ?
                     SourceScriptHitShape.Direct :
-                    skill.Id == "TR-26:skill:4" && skill.Target == "line" ?
+                    (skill.Id == "TR-26:skill:4" ||
+                     SourceModelEighteenthSkillCatalog.IsSpecial(skill)) &&
+                    skill.Target == "line" ?
                     SourceScriptHitShape.ProjectileLine :
                     skill.Target == "casterArea" &&
                     !SpecialGradeMobilePolicy.UsesEnemyCenteredArea(catalogId) &&
@@ -308,6 +310,7 @@ namespace Ordr.Mobile.Combat
                 SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsEighthCompositeSkill(skill) ||
+                SourceModelEighteenthSkillCatalog.IsSpecial(skill) ||
                 SourceModelSixteenthSkillCatalog.IsSpecial(skill) ||
                 SourceModelFifteenthSkillCatalog.IsSpecial(skill) ||
                 IsSourceModelEighthStatusApproach(skill);
@@ -438,6 +441,8 @@ namespace Ordr.Mobile.Combat
                         !SourceModelFifteenthComponentTargets(skill, component,
                             primary, target) ||
                         !SourceModelSixteenthComponentTargets(skill, component,
+                            primary, target) ||
+                        !SourceModelEighteenthComponentTargets(skill, component,
                             primary, target))
                         continue;
                     double missingBeforeComponent =
@@ -457,6 +462,8 @@ namespace Ordr.Mobile.Combat
                     raw = SourceModelFifteenthDamageAdjustment(actor, primary,
                         skill, component, target, raw);
                     raw = SourceModelSixteenthDamageAdjustment(actor, primary,
+                        skill, component, target, raw);
+                    raw = SourceModelEighteenthRawDamageAdjustment(actor, primary,
                         skill, component, target, raw);
                     // Rebecca's tooltip gives a per-legacy-level increment.
                     // The offline model has no native legacy-level provider:

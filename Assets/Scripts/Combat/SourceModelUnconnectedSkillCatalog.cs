@@ -136,7 +136,7 @@ namespace Ordr.Mobile.Combat
             new SourceModelUnconnectedSkillRow("TR-07", "H08W",
                 new[] { "격투 스턴", "람각", "지건", "육왕건" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("R-42", "h01M",
-                new[] { "단일 타격·스턴" }, Array.Empty<string>()),
+                new[] { "단일 타격·스턴", "매혹 계열 범위 공격" }, Array.Empty<string>()),
             // Sixth batch: already-modeled native critical/stun entries are
             // excluded, including Shanks, Snakeman, Shirahoshi and Jinbe.
             new SourceModelUnconnectedSkillRow("TR-13", "H08Z",
@@ -189,6 +189,23 @@ namespace Ordr.Mobile.Combat
                 new[] { "기와 돌려차기", "단일 스턴" }, new[] { "어인공수도" }),
             new SourceModelUnconnectedSkillRow("H-15", "h03L",
                 new[] { "일반 포격" }, new[] { "베가펑크 지식 탑재 포격" }),
+            // 18th: owners with mapped native objects and no already-modeled
+            // on-attack JASS callback for these specific skill identities.
+            new SourceModelUnconnectedSkillRow("MY-01", "h09M",
+                new[] { "술식 반전 혁" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("R-25", "h026",
+                new[] { "단일 스턴 타격", "현재 체력 폭발" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("SR-02", "h0A3",
+                new[] { "광역 참격" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("H-10", "h03W",
+                new[] { "기본 공격 발동형 타격" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("RN-10", "h09L",
+                new[] { "무기화 빌드 Lv1" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("D-05", "h05V",
+                new[] { "불주먹" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("MY-10", "h0CC",
+                new[] { "단령검 성불득탈참", "단미검 미진자항참" },
+                Array.Empty<string>()),
         };
         public static readonly IReadOnlyList<SourceModelUnconnectedSkillRow> All =
             Array.AsReadOnly(Entries);
