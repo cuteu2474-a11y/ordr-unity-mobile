@@ -69,15 +69,22 @@ namespace Ordr.Mobile.Combat
                 if (skill.Id == "E-07:skill:3" &&
                     sourceModelFireFistReadyAt.TryGetValue(actor.Id, out readyAt) &&
                     readyAt > Time) continue;
-                if (skill.Trigger == "onAttack" &&
+                if (skill.Trigger == "onAttackWithMana" &&
+                    (actor.Abilities.Resources == null ||
+                     actor.Abilities.Resources.Mana < skill.Number("requiredMana").Value ||
+                     !actor.Abilities.Resources.CanSpend(0, skill.Number("manaCost").Value)))
+                    continue;
+                if ((skill.Trigger == "onAttack" ||
+                     skill.Trigger == "onAttackWithMana") &&
                     sourceModelRules.NextScriptRoll(1000000) >=
-                    (int)Math.Round(skill.ChancePercent.Value * 10000,
+                    (int)Math.Round(SourceModelFifthProcChance(skill) * 10000,
                         MidpointRounding.AwayFromZero)) continue;
                 // Preserve the tooltip target metadata, but apply the same
                 // explicit MOBILE result policy as CharacterSkillEffectExecutor.
                 // Explicit casterArea mobile exceptions follow the chosen
                 // enemy at unlimited reach (Redfield and Rebecca).
-                var shape = skill.Target == "single" ?
+                var shape = skill.Target == "single" ||
+                    skill.Target == "eachMultishotTarget" ?
                     SourceScriptHitShape.Direct :
                     skill.Id == "TR-26:skill:4" && skill.Target == "line" ?
                     SourceScriptHitShape.ProjectileLine :
@@ -94,8 +101,14 @@ namespace Ordr.Mobile.Combat
                 }
                 var template = new SourceScriptHit(shape, skill.Radius ?? 0,
                     lineLength, 0, 1, 1, Ordr323AttackType.Spells);
-                var targets = SourceScriptTargets(actor, primary, template);
+                var targets = skill.Id == "TR-07:skill:1" ?
+                    SourceModelRankyakuTargets(actor, primary, skill.Radius.Value) :
+                    skill.Id == "TR-04:skill:3" ?
+                    SourceModelRobinMultishotTargets(actor, primary) :
+                    SourceScriptTargets(actor, primary, template);
                 if (targets.Count == 0) continue;
+                if (skill.Trigger == "onAttackWithMana")
+                    actor.Abilities.Resources.Spend(0, skill.Number("manaCost").Value);
                 if (skill.Id == "E-07:skill:3")
                     sourceModelFireFistReadyAt[actor.Id] = Time +
                         skill.Number("absoluteCooldownSeconds").Value;
@@ -204,7 +217,10 @@ namespace Ordr.Mobile.Combat
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 InstanceKey(caster.Id), primary.Id, accepted.Name,
                 "TOOLTIP_MODEL_ONLY / 원본 타격·면역 미검증", 0));
-            ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);
+            if (accepted.Id == "E-07:skill:0")
+                SourceModelAceDelayedUltimate(caster, primary, accepted, targets);
+            else
+                ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);
             RemoveDefeatedEnemies();
             return true;
         }
@@ -242,7 +258,8 @@ namespace Ordr.Mobile.Combat
             bool composite = SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) ||
-                SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill);
+                SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill) ||
+                SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill(skill);
             foreach (var component in skill.Components)
             {
                 if (SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) &&
@@ -341,6 +358,18 @@ namespace Ordr.Mobile.Combat
                         raw += component.Number("plusLegacyLevelDamage") ?? 0;
                     if (component.Text("basis") == "targetMaxHealth")
                         raw += target.Enemy.MaxHealth * component.Number("percent").Value / 100;
+                    if (component.Get("plusTargetCurrentHealthPercent") != null &&
+                        !(skill.Id == "TR-07:skill:2" &&
+                          (target.Kind == CharacterEnemyKind.Boss ||
+                           target.Kind == CharacterEnemyKind.Story)))
+                        raw += target.Enemy.Health *
+                            component.Number("plusTargetCurrentHealthPercent").Value / 100;
+                    if (skill.Id == "TR-07:skill:2" &&
+                        (target.Kind == CharacterEnemyKind.Boss ||
+                         target.Kind == CharacterEnemyKind.Story))
+                        raw += 500000;
+                    if (skill.Id == "TR-07:skill:2")
+                        raw *= 1 + SourceModelLucciClears() * .0004;
                     raw += target.Enemy.MaxHealth *
                         ((component.Number("plusTargetMaxHealthPercent") ?? 0) +
                          (component.Number("extraTargetMaxHealthPercent") ?? 0)) / 100;
@@ -436,6 +465,10 @@ namespace Ordr.Mobile.Combat
                     }
                 }
             }
+            // E-07's independent onSkillActivated passive is activated only
+            // by its three documented fire skills, never by every Ace proc.
+            if (skill.Id == "E-07:skill:2" || skill.Id == "E-07:skill:3")
+                SourceModelAceFlameOnSkill(actor, primary, skill, targets);
         }
     }
 }

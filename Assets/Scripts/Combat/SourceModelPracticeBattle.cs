@@ -221,6 +221,7 @@ namespace Ordr.Mobile.Combat
             // Validate every selected source identity before mutating the session.
             for (int wave = 1; wave <= catalog.LastRound; wave++)
                 plans.Add(catalog.BuildPracticePlan(wave, originalSpawns));
+            world.ConfigureSourceModelRouteCorners(catalog.RouteCorners);
         }
         public void Start()
         {

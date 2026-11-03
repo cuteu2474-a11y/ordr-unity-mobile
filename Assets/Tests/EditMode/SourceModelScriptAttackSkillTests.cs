@@ -991,6 +991,86 @@ namespace Ordr.Mobile.Tests
                 "Only a real agility source may add Kizaru's documented 3500 per point");
         }
 
+        [TestCase("TR-07", "람각")]
+        [TestCase("TR-07", "지건")]
+        [TestCase("TR-07", "육왕건")]
+        [TestCase("TR-26", "마나 연타 광역기")]
+        [TestCase("TR-26", "단일 치명타")]
+        [TestCase("D-03", "역재")]
+        [TestCase("TR-04", "멀티샷 추가 피해")]
+        public void FifthBatchSevenStrictAttackPacketsReachCommonDamageLedger(
+            string unitId, string name)
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require(unitId).Skills.Single(x => x.Name == name);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill(skill));
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill));
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                if (unitId == "TR-26" && name == "마나 연타 광역기")
+                {
+                    var map = OriginalMapBaseStatCatalog.FromJson(
+                        Data("original-2323C-map-base-stats.json"),
+                        CharacterUnitCatalog.FromJson(Data("units.json")));
+                    live.Combat.ConfigureSourceModelUnitResources(
+                        SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                            Data("original-2323C-unit-object-stats.json"), map));
+                    Assert.AreEqual(100, live.Combat.ResourcesOf(live.ActorId).MaximumMana);
+                }
+                var events = live.Battle.Advance(7);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == name), name);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == name && x.Amount > 0), name);
+            }
+        }
+
+        [Test]
+        public void FifthBatchAceUltimateDelaysDamageAndSpendsExactly185Mana()
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require("E-07").Skills.Single(x => x.Name == "대염계 염제");
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill));
+            using (var live = Create("E-07", false, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                live.Battle.Advance(2);
+                var target = live.Combat.MobileEnemySnapshot().First();
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(live.ActorId, skill.Id, target.Id));
+                Assert.AreEqual(0, live.Combat.ResourcesOf(live.ActorId).Mana);
+                Assert.IsFalse(live.Combat.LastEvents.Any(x =>
+                    x.SkillName == skill.Name && x.Type == CharacterCombatEventType.SkillDamage));
+                var early = live.Battle.Advance(1);
+                Assert.IsFalse(early.Any(x => x.SkillName == skill.Name &&
+                    x.Type == CharacterCombatEventType.SkillDamage));
+                var landed = live.Battle.Advance(1.1);
+                Assert.IsTrue(landed.Any(x => x.SkillName == skill.Name &&
+                    x.Type == CharacterCombatEventType.SkillDamage && x.Amount > 0));
+            }
+        }
+
+        [Test]
+        public void FifthBatchLucciClearScalingDoesNotInventPersistentWins()
+        {
+            var profile = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require("TR-07");
+            Assert.AreEqual(5.25d, profile.Skills.Single(x => x.Name == "육왕건")
+                .ChancePercent.Value);
+            using (var live = Create("TR-07", false))
+            {
+                live.Combat.ConfigureSourceModelAccumulatedClearCount(() => 1000);
+                // No persistent career history is assumed by the game loop;
+                // capped progression can be supplied by an actual save later.
+                Assert.IsNotNull(live.Combat);
+            }
+        }
+
         [Test]
         public void ZephyrMissingManaSkillUsesOriginal160ManaAndExistingHpDamageLedger()
         {

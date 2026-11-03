@@ -174,7 +174,8 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy target, double multiplier)
         {
             if (SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) ||
-                SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill))
+                SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill) ||
+                SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill(skill))
             {
                 double basic = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
                 // Kizaru's second component is a primary-only bonus based on
@@ -190,6 +191,9 @@ namespace Ordr.Mobile.Combat
                     // The normal hit already happened in the attack pipeline;
                     // only the 4.25x *increment* should hit again.
                     return basic * (component.Number("multiplier").Value - 1) * multiplier;
+                if (skill.Id == "TR-04:skill:3" &&
+                    component.Text("basis") == "basicAttackDamage")
+                    return basic * component.Number("multiplier").Value * multiplier;
                 if (component.Get("amountPerSoldier") != null)
                     return component.Number("amountPerSoldier").Value *
                         SourceModelSongSoldiers(actor.Id) * multiplier;

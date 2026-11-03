@@ -1,0 +1,28 @@
+{
+  "format": "ordr-source-model-fifth-8-composite-skills-v1",
+  "gameVersion": "S2 2.323[C]",
+  "model": "TOOLTIP_MODEL_ONLY",
+  "source": "data/character-skill-profiles.json",
+  "newOnAttackPackets": 7,
+  "newAutomaticActivePackets": 1,
+  "additionalPassive": "E-07:skill:1 발동형 불꽃 지속 피해",
+  "skills": [
+    { "unitId": "TR-07", "rawcode": "H08W", "skillId": "TR-07:skill:1", "name": "람각", "chancePercent": 5, "components": ["magical", "fixed"] },
+    { "unitId": "TR-07", "rawcode": "H08W", "skillId": "TR-07:skill:2", "name": "지건", "chancePercent": 18, "components": ["magical"] },
+    { "unitId": "TR-07", "rawcode": "H08W", "skillId": "TR-07:skill:3", "name": "육왕건", "chancePercent": 5.25, "components": ["explosive", "magical"] },
+    { "unitId": "TR-26", "rawcode": "H0B5", "skillId": "TR-26:skill:0", "name": "마나 연타 광역기", "chancePercent": 6, "components": ["magical"] },
+    { "unitId": "TR-26", "rawcode": "H0B5", "skillId": "TR-26:skill:3", "name": "단일 치명타", "chancePercent": 15, "components": ["critical", "stun"] },
+    { "unitId": "D-03", "rawcode": "h0CI", "skillId": "D-03:skill:1", "name": "역재", "chancePercent": 14, "components": ["magical", "armorReduction"] },
+    { "unitId": "TR-04", "rawcode": "H098", "skillId": "TR-04:skill:3", "name": "멀티샷 추가 피해", "chancePercent": 15, "components": ["physical"] },
+    { "unitId": "E-07", "rawcode": "h059", "skillId": "E-07:skill:0", "name": "대염계 염제", "manaCost": 185, "components": ["magical", "stun"] }
+  ],
+  "mobilePolicies": {
+    "rankyaku": "PracticeBattle source route-corner segment with maximum number of live same-lane monsters; width 495, no caster-centered approximation",
+    "lucciClearCount": "Cumulative completed games 0..300 from configured persisted count provider; otherwise 0. Rankyaku/Rokuogan +0.0025 percentage-points per clear; Rokuogan initial 5.25 max 6.00; Shigan +0.04 percent damage per clear",
+    "kizaruMana": "Source W3X H0B5 baseline MP100; roll only at 75+ MP and consume 50 on successful 6% roll. No invented agility: provider absent yields zero agility contribution",
+    "ace": "Original source h059 baseline MP185; auto active delayed 2 seconds, before/after 3-second stun, plus 3.5-second single-target flame stun and per-target strongest 0.2-second DoT of Fire Fist/Fire Pillar/Entei. Same-lane, alive-target and owner-lane checks; shared scheduler and damage ledger",
+    "queen": "D-03 Yeokjae lacks target kind in tooltip, interpreted enemy-centered radius450; 14% magic250000 + armorReduction20 for 2s",
+    "robin": "TR-04 eachMultishotTarget selects at most 3 distinct same-lane living enemies, extra 2.5x nominal attack damage on proc; no additional proc per selected target",
+    "limitations": "Offline tooltip-derived result policy, not original native immunity/crit/damage parity; persistent lifetime wins and actual agility attribute source are not implemented in save/game runtime"
+  }
+}

@@ -1,4 +1,10 @@
-## 2026-11-03 · 4차 공격 고유기 15개 실행 경로 (현재 최신)
+## 2026-11-03 · 5차 고유 스킬 연결부 (최신)
+
+- **승인:** `SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill/CanModelFifthCompositeComponents`에서 8개의 소유 ID·이름·효과 필드·순서·마나 게이트 검사, 두 유닛별 허용 카탈로그 재사용. 누적 공격 **73**, 자동 액티브 **40**.
+- **경로/성장:** `CharacterCombatRuntime.SourceModelFifthSkills`는 `SourceModelPracticeBattle.RouteCorners`를 사용해 루치 람각의 최다 관통 경로 결정. `ConfigureSourceModelAccumulatedClearCount`는 실제 영구 완료 횟수를 선택적으로 공급하며 미공급=0회. 로빈은 같은 전장 최대 3명; 키자루 마나 게이트와 기존 민첩 공급자 재사용.
+- **시간/상태:** 에이스 화염은 기존 `SchedulePracticeSourceAttack` 전투 시계에서 0.2초마다 예약, 같은 적에는 살아있는 화염 중 최강치만 정산. 유닛 제거·전장 변경·사망 시 취소하며 대염계 타격은 2초 예약 뒤 기존 피해·상태 경로로 들어감. 퀸 역재 방깎은 공통 `CommonSkillStatusEffects`. `data/source-model-fifth-8-composite-skills.json`/`tests/test_source_model_fifth_8_skills.py` 참고. 원본 완전 동등성 미검증.
+
+## 2026-11-03 · 4차 공격 고유기 15개 실행 경로 (이전 기록)
 
 - **명시적 허용:** `SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack/CanModelFourthCompositeComponents`에서 소유 유닛·스킬 인덱스·이름과 구성요소 필드/순서를 검사합니다. `SourceModelNextThirtySkillCatalog`(울티/스모커) + `SourceModelUnconnectedSkillCatalog`(기존 6명/신규 루치 2명·핸콕)를 합쳐 11명 15개 신규 공격만 승인했습니다. 쿠마 전설 10% 발바닥은 이미 `CharacterCombatRuntime.SourceModelOriginalSpecials.BtL`에 있으므로 재등록하지 않았습니다. 추가 공격 **66**, 자동 액티브 **39** 유지.
 - **실행/보정:** `CharacterCombatRuntime.SourceModelNextThirtyAttacks`는 대상/전장/확률 후 공통 `SourceScriptTargets`로 반경 타격 및 키자루 `ProjectileLine`을 선별합니다. `SourceModelCompositeEffects.SourceModelCompositeRawDamage`는 평타 비례·현재 HP·민첩 실수 공급자·보스/스토리 전용 마법계수를 공통 피해 정산에 전달하고, 3연타의 주 대상 +325% 별도 패킷과 에이스 적 중심 추가 단일 피해도 처리합니다. 원본 데이터 JSON은 건드리지 않습니다.

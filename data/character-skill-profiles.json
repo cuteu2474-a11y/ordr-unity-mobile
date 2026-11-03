@@ -6587,7 +6587,7 @@
               "scope": "singlePrimaryTarget"
             }
           ],
-          "chancePercent": 5,
+          "chancePercent": 5.25,
           "maxProcChancePercent": 6,
           "target": "area",
           "radius": 400

@@ -1396,6 +1396,7 @@ namespace Ordr.Mobile.Combat
             // A timed mobile song summon cannot follow its owner between
             // mutually exclusive main and story combat lanes.
             sourceSongSoldierExpiry.Remove(instanceId);
+            RemoveSourceModelAceFlames(instanceId);
             if (UsesSourceModelBasicAttacks)
                 sourceModelStoryLaneRevisions[instanceId] =
                     checked(SourceModelLaneRevision(instanceId) + 1);
@@ -1646,6 +1647,7 @@ namespace Ordr.Mobile.Combat
                 if (commonAttackPreview != null) commonAttackPreview.Remove(id);
                 characters.Remove(id);
                 sourceSongSoldierExpiry.Remove(id);
+                RemoveSourceModelAceFlames(id);
                 sourceModelFireFistReadyAt.Remove(id);
                 sourceModelManagedResourceRows.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
@@ -2199,6 +2201,7 @@ namespace Ordr.Mobile.Combat
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
             sourceSongSoldierExpiry.Remove(instanceId);
+            RemoveSourceModelAceFlames(instanceId);
             sourceModelFireFistReadyAt.Remove(instanceId);
             sourceModelManagedResourceRows.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
@@ -2869,6 +2872,7 @@ namespace Ordr.Mobile.Combat
 
         private void RemoveEnemyRuntimeState(string id)
         {
+            RemoveSourceModelAceFlamesForTarget(id);
             ForgetSourceKaidoArmorEnemy(id);
             moriaParticipation.Forget(id);
             sourcePracticeA04RLevels.Remove(id);

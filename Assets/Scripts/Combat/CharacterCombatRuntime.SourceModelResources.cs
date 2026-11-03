@@ -41,6 +41,14 @@ namespace Ordr.Mobile.Combat
                 (actor.Catalog.Id == "I-11" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "h07M"))
                 return true;
+            // TR-26 has a documented mana-gated on-attack packet rather
+            // than an activeMana skill; its original SLK pool is still needed.
+            if (actor.Catalog.Id == "TR-26" &&
+                actor.Mapping.AttackSpec.UnitRawCode == "H0B5")
+                foreach (var skill in actor.Profile.Skills)
+                    if (skill.Id == "TR-26:skill:0" &&
+                        SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill))
+                        return true;
             SourceModelNextThirtyUnit entry;
             SourceModelUnconnectedSkillRow extra;
             IReadOnlyList<string> activeNames;

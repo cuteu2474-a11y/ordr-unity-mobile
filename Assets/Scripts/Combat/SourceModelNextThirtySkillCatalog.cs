@@ -70,7 +70,7 @@ namespace Ordr.Mobile.Combat
             new SourceModelNextThirtyUnit("H-22", "h047", "마리조아붕괴"),
             new SourceModelNextThirtyUnit("TR-02", "H08V", "미라쥬 템포"),
             new SourceModelNextThirtyUnit("TR-04", "H098",
-                new[] { "범위 마법 스턴", "혼합 타격" },
+                new[] { "범위 마법 스턴", "혼합 타격", "멀티샷 추가 피해" },
                 new[] { "체력 소모 광역 공격" }),
             new SourceModelNextThirtyUnit("TR-09", "H094",
                 new[] { "광역 3연타" }, new[] { "마나 광역 공격" }),
@@ -185,17 +185,25 @@ namespace Ordr.Mobile.Combat
         public static bool CanModelCompleteAttack(ImportedCombatSkill skill)
         {
             bool fourth = IsFourthCompositeAttack(skill);
+            bool fifth = IsFifthCompositeSkill(skill);
             if (skill == null ||
-                !(skill.Trigger == "onAttack" || skill.Trigger == "onEveryAttack") ||
+                !(skill.Trigger == "onAttack" || skill.Trigger == "onEveryAttack" ||
+                  (fifth && skill.Id == "TR-26:skill:0" &&
+                   skill.Trigger == "onAttackWithMana")) ||
                 !(skill.Target == "area" || skill.Target == "single" ||
                   skill.Target == "casterArea" ||
                   (fourth && skill.Id == "D-03:skill:2" &&
                    skill.Target == null && FinitePositive(skill.Radius)) ||
-                  (fourth && skill.Id == "TR-26:skill:4" && skill.Target == "line")) ||
+                  (fifth && skill.Id == "D-03:skill:1" &&
+                   skill.Target == null && FinitePositive(skill.Radius)) ||
+                  (fifth && skill.Id == "TR-04:skill:3" &&
+                   skill.Target == "eachMultishotTarget") ||
+                  ((fourth && skill.Id == "TR-26:skill:4" ||
+                    fifth && skill.Id == "TR-07:skill:1") && skill.Target == "line")) ||
                 ((skill.Target == "area" || skill.Target == "casterArea" ||
                   skill.Target == "line") &&
                  !FinitePositive(skill.Radius)) ||
-                (skill.Trigger == "onAttack" &&
+                ((skill.Trigger == "onAttack" || skill.Trigger == "onAttackWithMana") &&
                  (!FinitePositive(skill.ChancePercent) || skill.ChancePercent.Value > 100)) ||
                 (skill.Trigger == "onEveryAttack" && skill.ChancePercent.HasValue) ||
                 skill.Components.Count == 0) return false;
@@ -203,8 +211,14 @@ namespace Ordr.Mobile.Combat
                 if (key != "name" && key != "trigger" && key != "chancePercent" &&
                     key != "target" && key != "radius" && key != "components" &&
                     !(fourth && skill.Id == "E-07:skill:3" &&
-                      key == "absoluteCooldownSeconds"))
+                      key == "absoluteCooldownSeconds") &&
+                    !(fifth && skill.Id == "TR-07:skill:2" && key == "overrides") &&
+                    !(fifth && skill.Id == "TR-07:skill:3" &&
+                      key == "maxProcChancePercent") &&
+                    !(fifth && skill.Id == "TR-26:skill:0" &&
+                      (key == "requiredMana" || key == "manaCost")))
                     return false;
+            if (fifth) return CanModelFifthCompositeComponents(skill);
             if (fourth)
             {
                 if (skill.Id == "E-07:skill:3" &&
@@ -235,6 +249,7 @@ namespace Ordr.Mobile.Combat
         {
             bool composite = IsFirstCompositeActive(skill);
             bool second = IsSecondCompositeSkill(skill);
+            bool fifth = IsFifthCompositeSkill(skill);
             if (skill == null ||
                 !(skill.Trigger == "activeMana" || skill.Trigger == "activeHealth") ||
                 !(skill.Target == "area" || skill.Target == "single") ||
@@ -252,7 +267,9 @@ namespace Ordr.Mobile.Combat
                     !(composite && skill.Id == "D-03:skill:0" &&
                       key == "oneTimeConditionBypass") &&
                     !(second && skill.Id == "TR-08:skill:0" &&
-                      key == "singleTargetMagicalDamageMultiplier"))
+                      key == "singleTargetMagicalDamageMultiplier") &&
+                    !(fifth && skill.Id == "E-07:skill:0" &&
+                      key == "damageDelaySeconds"))
                     return false;
             foreach (string key in new[] { "cooldownSeconds", "absoluteCooldownSeconds" })
                 if (skill.Get(key) != null &&
@@ -273,6 +290,7 @@ namespace Ordr.Mobile.Combat
             if (second && skill.Id == "TR-08:skill:0" &&
                 !FinitePositive(skill.Number("singleTargetMagicalDamageMultiplier")))
                 return false;
+            if (fifth) return CanModelFifthCompositeComponents(skill);
             if (second) return CanModelSecondCompositeComponents(skill);
             return composite ? CanModelFirstCompositeComponents(skill) :
                 CanModelComponents(skill);
@@ -351,6 +369,65 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        // Fifth batch: exact owner/skill-name pairs only. Shapes are checked
+        // below so newly imported or partial tooltip rows cannot silently run.
+        public static bool IsFifthCompositeSkill(ImportedCombatSkill skill)
+        {
+            if (skill == null) return false;
+            switch (skill.Id)
+            {
+                case "TR-07:skill:1": return skill.Name == "람각";
+                case "TR-07:skill:2": return skill.Name == "지건";
+                case "TR-07:skill:3": return skill.Name == "육왕건";
+                case "TR-26:skill:0": return skill.Name == "마나 연타 광역기";
+                case "TR-26:skill:3": return skill.Name == "단일 치명타";
+                case "E-07:skill:0": return skill.Name == "대염계 염제";
+                case "D-03:skill:1": return skill.Name == "역재";
+                case "TR-04:skill:3": return skill.Name == "멀티샷 추가 피해";
+                default: return false;
+            }
+        }
+
+        private static bool CanModelFifthCompositeComponents(ImportedCombatSkill skill)
+        {
+            string[] fields;
+            switch (skill.Id)
+            {
+                case "TR-07:skill:1": fields = new[] { "magical|amount", "fixed|basis,percent,onlyTargetKinds,scope" }; break;
+                case "TR-07:skill:2": fields = new[] { "magical|amount,plusTargetCurrentHealthPercent" }; break;
+                case "TR-07:skill:3": fields = new[] { "explosive|amount", "magical|amount,plusTargetCurrentHealthPercent,onlyTargetKinds,scope" }; break;
+                case "TR-26:skill:0": fields = new[] { "magical|amountPerHit,agilityScalingPerPoint,multiplierRange,hits" }; break;
+                case "TR-26:skill:3": fields = new[] { "critical|multiplier", "stun|durationSeconds" }; break;
+                case "E-07:skill:0": fields = new[] { "magical|amount,plusTargetMaxHealthPercent,multiplierRange", "stun|durationSeconds,beforeAndAfterHit" }; break;
+                case "D-03:skill:1": fields = new[] { "magical|amount", "armorReduction|amount,durationSeconds" }; break;
+                case "TR-04:skill:3": fields = new[] { "physical|basis,multiplier" }; break;
+                default: return false;
+            }
+            if (!ValidateExplicitCompositeShape(skill, fields)) return false;
+            if (skill.Id == "TR-07:skill:2")
+            {
+                var rows = skill.Get("overrides") as List<object>;
+                if (rows == null || rows.Count != 1) return false;
+                var row = rows[0] as Dictionary<string, object>;
+                var kinds = row != null && row.ContainsKey("targetKinds") ?
+                    row["targetKinds"] as List<object> : null;
+                if (row == null || row.Count != 3 || kinds == null || kinds.Count != 2 ||
+                    !kinds.Contains("boss") || !kinds.Contains("story") ||
+                    !Equals(row["removeCurrentHealthPercent"], true) ||
+                    !Equals(row["extraMagicalAmount"], 500000d)) return false;
+            }
+            if (skill.Id == "TR-07:skill:3" &&
+                (!FinitePositive(skill.Number("maxProcChancePercent")) ||
+                 skill.Number("maxProcChancePercent").Value > 100)) return false;
+            if (skill.Id == "TR-26:skill:0" &&
+                (!FinitePositive(skill.Number("requiredMana")) ||
+                 !FinitePositive(skill.Number("manaCost")) ||
+                 skill.Number("requiredMana").Value < skill.Number("manaCost").Value)) return false;
+            if (skill.Id == "E-07:skill:0" &&
+                !FinitePositive(skill.Number("damageDelaySeconds"))) return false;
+            return true;
+        }
+
         private static bool CanModelFourthCompositeComponents(ImportedCombatSkill skill)
         {
             string[] fields;
@@ -421,7 +498,13 @@ namespace Ordr.Mobile.Combat
                         if (component.Text(key) != "targetCurrentHealth" &&
                             component.Text(key) != "targetMaxHealth" &&
                             !(skill.Id == "L-25:skill:1" &&
+                              component.Text(key) == "basicAttackDamage") &&
+                            !(skill.Id == "TR-04:skill:3" &&
                               component.Text(key) == "basicAttackDamage")) return false;
+                    }
+                    else if (key == "beforeAndAfterHit")
+                    {
+                        if (!Equals(component.Get(key), true)) return false;
                     }
                     else if (key == "multiplierRange")
                     {
