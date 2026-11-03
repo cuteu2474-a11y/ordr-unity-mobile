@@ -28,6 +28,16 @@ namespace Ordr.Mobile.Combat
         // Source-tooltip-complete *practice* casts only. No inferred JASS cooldown,
         // Warcraft resistance, or non-listed mixed effects are granted.
         private static readonly SourceModelUnconnectedSkillRow[] Entries = {
+            // 29th: source-identified owners; do NOT enable Katakuri's
+            // max-speed/approach, Elizabeth's token economy or King passives.
+            new SourceModelUnconnectedSkillRow("LI-08", "h07I",
+                new[] { "단일 타격", "광역 마법" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("L-37", "h031",
+                new[] { "중력검" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("L-34", "h0AH",
+                new[] { "화재" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("RN-06", "h06Z",
+                new[] { "다크니스 에로우" }, Array.Empty<string>()),
             // 28th: source-object matched, whole-tooltip packet practice only.
             // R-02's secondary armor-break roll is separate from the proc;
             // LI-09's null target descriptors use the documented mobile policy.

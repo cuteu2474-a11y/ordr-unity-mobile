@@ -50,6 +50,13 @@ namespace Ordr.Mobile.Combat
                     "스킬 프로필 또는 유닛 ID 불일치");
                 return;
             }
+            if (SourceModelTwentyNinthSkillCatalog.IsOwner(catalogId) &&
+                !SourceModelTwentyNinthSkillCatalog.HasExactApprovedSubset(actor.Profile))
+            {
+                ReportSourceModelNextThirtyDeferred(attackerId, primary.Id,
+                    catalogId + " 승인된 고유기·패시브 패킷이 원본 자료와 다름");
+                return;
+            }
             if (SourceModelTwentyEighthSkillCatalog.IsOwner(catalogId) &&
                 !SourceModelTwentyEighthSkillCatalog.HasExactOwner(
                     actor.Profile, catalogId))
@@ -119,6 +126,7 @@ namespace Ordr.Mobile.Combat
                 var shape = skill.Target == "single" ||
                     skill.Target == "eachMultishotTarget" ||
                     skill.Target == "summon" ||
+                    SourceModelTwentyNinthSkillCatalog.UsesPrimaryTarget(skill) ||
                     SourceModelTwentyEighthSkillCatalog.UsesPrimaryTarget(skill) ||
                     (skill.Id == "E-03:skill:5" && skill.Target == null) ?
                     SourceScriptHitShape.Direct :
@@ -360,6 +368,7 @@ namespace Ordr.Mobile.Combat
         {
             string attackerId = InstanceKey(actor.Id);
             bool composite = SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(skill) ||
+                SourceModelTwentyNinthSkillCatalog.IsSpecial(skill) ||
                 SourceModelTwentyEighthSkillCatalog.IsSpecial(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) ||
@@ -377,6 +386,11 @@ namespace Ordr.Mobile.Combat
                 IsSourceModelEighthStatusApproach(skill);
             foreach (var component in skill.Components)
             {
+                if (skill.Id == "L-34:skill:0")
+                {
+                    ApplySourceModelTwentyNinthKingFire(actor, primary, skill, targets);
+                    break;
+                }
                 if (!SourceModelNineteenthComponentProceeds(skill, component))
                     continue;
                 if (SourceModelEighthSkipDamageComponent(skill, component))

@@ -1,0 +1,123 @@
+{
+  "version": "ORDR S2 2.323[C]",
+  "batch": 29,
+  "mode": "nightmare-isekai",
+  "status": "TOOLTIP_MODEL_ONLY; implementation recorded; Python/Unity/APK/Actions not run or inspected",
+  "sourceFiles": [
+    "data/character-skill-profiles.json",
+    "data/original-2323C-map-base-stats.json",
+    "data/original-2323C-attack-skill-batch.json",
+    "data/original-2323C-native-pure-passives.json"
+  ],
+  "ownerVerification": "Map source originalRawcode and every imported skill and passive field are checked for each approved owner. Unapproved skills remain checked for identity but do not execute.",
+  "approved": [
+    {
+      "owner": "LI-08",
+      "mapRawcode": "h07I",
+      "name": "카타쿠리 - 제한됨",
+      "skills": [
+        {
+          "id": "LI-08:skill:1",
+          "name": "단일 타격",
+          "chancePercent": 20,
+          "effects": ["single target physical 150000", "ordinary line stun 1.2 seconds"],
+          "mobilePolicy": "no source radius or target metadata: only currently attacked enemy"
+        },
+        {
+          "id": "LI-08:skill:2",
+          "name": "광역 마법",
+          "chancePercent": 14,
+          "effects": ["magical 375000"],
+          "radius": 500,
+          "mobilePolicy": "source has radius but no target descriptor: current target-centered circle"
+        }
+      ],
+      "deferred": [
+        "LI-08:skill:0 자기 가속: HP17, threshold35, 1.5-second maximum attack-speed and every-hit bonus are not safely modeled",
+        "LI-08:skill:3 접근 상대 강타: onEnemyEnterRange and target-kind overrides require an entry-range event witness"
+      ]
+    },
+    {
+      "owner": "L-37",
+      "mapRawcode": "h031",
+      "name": "후지토라 - 전설",
+      "skills": [
+        {
+          "id": "L-37:skill:0",
+          "name": "중력검",
+          "chancePercent": 14,
+          "radius": 450,
+          "effects": [
+            "area magical 192500",
+            "primary only physical tooltip skillDamage * 2.5 = 481250 pre-defense practice amount",
+            "ordinary line stun 2.4 seconds",
+            "magic resistance reduction 1 percent with no listed duration, preserved while enemy lives"
+          ]
+        }
+      ],
+      "deferred": ["original damage school order, bosses' actual resistance and JASS proc trigger"]
+    },
+    {
+      "owner": "L-34",
+      "mapRawcode": "h0AH",
+      "name": "킹 - 전설",
+      "skills": [
+        {
+          "id": "L-34:skill:0",
+          "name": "화재",
+          "chancePercent": 14.25,
+          "radius": 450,
+          "effects": [
+            "area magical 200000 immediately",
+            "area magical damage-over-time 42500 each 0.27 seconds for 10 ticks over 2.7 seconds",
+            "armor reduction 20 without source duration; tooltip-model continuous until target death",
+            "separate armor reduction 10 for 2 seconds"
+          ],
+          "mobilePolicy": "same owner/target fire refreshes and cancels earlier scheduled ticks; scheduled damage is invalidated when the unit changes lane or is removed"
+        }
+      ],
+      "deferred": [
+        "The source exclusiveWith poison-skill precedence is not yet native-verified; practice status reports unresolved exclusivity",
+        "The separate onBasicHitDebuff 45 percent slow/3 seconds/250000 magic per second is not enabled",
+        "The original JASS burn refresh versus stacking policy is not known"
+      ]
+    },
+    {
+      "owner": "RN-06",
+      "mapRawcode": "h06Z",
+      "name": "엘리자베스 - 랜덤 영원",
+      "skills": [
+        {
+          "id": "RN-06:skill:0",
+          "name": "다크니스 에로우",
+          "chancePercent": 14,
+          "target": "single",
+          "effects": [
+            "basic attack already applied; practice critical additional damage is nominal raw basic attack power * (14.9 - 1)",
+            "ordinary line stun 3 seconds; source boss override 1.5 seconds is preserved as metadata but not run without native boss immunity evidence"
+          ]
+        }
+      ],
+      "deferred": [
+        "행운의 토큰(Q): source manual two-second cast, 110-second cooldown, generation chance and actual wisp economy require transaction integration",
+        "토큰 교환: verifiedCondition and original resource transaction receipt are not connected"
+      ]
+    }
+  ],
+  "implementation": [
+    "SourceModelTwentyNinthSkillCatalog has exact skill/passive field comparison including four non-runnable packets.",
+    "SourceModelUnconnectedSkillCatalog authorizes only five onAttack names on the four matched map rawcodes.",
+    "SourceModelNextThirtySkillCatalog/CharacterCombatRuntime reuse existing cast rolls, lane targeting, armor/status, enemy damage and defeat ledgers.",
+    "King's no-duration armor effect uses an aura-origin status; +10 for two seconds uses a separate timed skill source to prevent status-constructor exceptions or field collision.",
+    "King burn tick scheduling uses per-attacker/per-target refresh revisions, original 0.27-second intervals and lane/remove/target identity gates.",
+    "Existing native JASS callback catalogs were screened for the four owner rawcodes; no overlapping callback is deliberately reintroduced."
+  ],
+  "verification": {
+    "staticReview": "rawcodes and tooltip field values inspected; static code inspection only",
+    "unityEditMode": "test cases authored, NOT executed",
+    "python": "NOT run by user policy",
+    "apk": "NOT built by user policy",
+    "githubActions": "NOT started manually or queried by user policy",
+    "nativeParity": "NOT established"
+  }
+}

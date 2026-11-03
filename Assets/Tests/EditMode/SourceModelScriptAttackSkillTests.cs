@@ -2267,6 +2267,91 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [TestCase("LI-08", "h07I", 4, 2)]
+        [TestCase("L-37", "h031", 1, 1)]
+        [TestCase("L-34", "h0AH", 1, 1)]
+        [TestCase("RN-06", "h06Z", 3, 1)]
+        public void TwentyNinthOwnersGateFullProfilesButAuthorizeOnlyFiveProcs(
+            string owner, string rawcode, int skillCount, int approved)
+        {
+            var profiles = CharacterSkillCatalog.FromJson(
+                Data("character-skill-profiles.json"));
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var profile = profiles.Require(owner);
+            Assert.AreEqual(rawcode, map.Find(owner).OriginalRawcode);
+            Assert.AreEqual(skillCount, profile.Skills.Count);
+            Assert.IsTrue(SourceModelTwentyNinthSkillCatalog.HasExactApprovedSubset(profile));
+            SourceModelUnconnectedSkillRow row;
+            Assert.IsTrue(SourceModelUnconnectedSkillCatalog.TryGet(rawcode, out row));
+            Assert.AreEqual(owner, row.CatalogId);
+            Assert.AreEqual(approved, row.PracticeAttackSkills.Count);
+            int runnable = 0;
+            foreach (var skill in profile.Skills)
+            {
+                if (SourceModelTwentyNinthSkillCatalog.CanModelExact(skill))
+                {
+                    runnable++;
+                    Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill));
+                }
+                else
+                    Assert.IsFalse(SourceModelTwentyNinthSkillCatalog.IsSpecial(skill));
+            }
+            Assert.AreEqual(approved, runnable);
+            if (owner == "LI-08")
+            {
+                Assert.IsTrue(SourceModelTwentyNinthSkillCatalog.UsesPrimaryTarget(
+                    profile.Skills[1]));
+                Assert.IsFalse(SourceModelTwentyNinthSkillCatalog.UsesPrimaryTarget(
+                    profile.Skills[2]));
+            }
+        }
+
+        [Test]
+        public void TwentyNinthModifyingEvenDeferredSkillsOrPassivesRejectsOwner()
+        {
+            string original = Data("character-skill-profiles.json");
+            var badDeferred = CharacterSkillCatalog.FromJson(original.Replace(
+                "\"name\": \"자기 가속\"", "\"name\": \"임의 가속\""));
+            Assert.IsFalse(SourceModelTwentyNinthSkillCatalog.HasExactApprovedSubset(
+                badDeferred.Require("LI-08")));
+            var badSelected = CharacterSkillCatalog.FromJson(original.Replace(
+                "\"name\": \"중력검\"", "\"name\": \"변조 중력검\""));
+            Assert.IsFalse(SourceModelTwentyNinthSkillCatalog.HasExactApprovedSubset(
+                badSelected.Require("L-37")));
+            var badToken = CharacterSkillCatalog.FromJson(original.Replace(
+                "\"name\": \"행운의 토큰(Q)\"", "\"name\": \"임의 토큰\""));
+            Assert.IsFalse(SourceModelTwentyNinthSkillCatalog.HasExactApprovedSubset(
+                badToken.Require("RN-06")));
+        }
+
+        [TestCase("LI-08", "단일 타격")]
+        [TestCase("LI-08", "광역 마법")]
+        [TestCase("L-37", "중력검")]
+        [TestCase("L-34", "화재")]
+        [TestCase("RN-06", "다크니스 에로우")]
+        public void TwentyNinthFiveProcsConsumeOnlySuccessfulPracticeRolls(
+            string owner, string name)
+        {
+            using (var activated = Create(owner, true, -4900, 5400))
+            {
+                var events = activated.Battle.Advance(6);
+                Assert.IsTrue(events.Any(x => x.Type ==
+                    CharacterCombatEventType.SkillActivated && x.SkillName == name));
+                Assert.IsTrue(events.Any(x => x.Type ==
+                    CharacterCombatEventType.SkillDamage && x.SkillName == name &&
+                    x.Amount > 0));
+                if (owner == "L-34")
+                    Assert.IsTrue(events.Any(x => x.Type ==
+                        CharacterCombatEventType.StatusApplied && x.SkillName == name &&
+                        x.Detail.Contains("방어 감소 20")));
+            }
+            using (var rejected = Create(owner, false, -4900, 5400))
+                Assert.IsFalse(rejected.Battle.Advance(6).Any(x => x.Type ==
+                    CharacterCombatEventType.SkillActivated && x.SkillName == name));
+        }
+
         [Test]
         public void TwentyFifthConflictingTooltipOwnersNeverReceiveForeignSkills()
         {

@@ -1,8 +1,10 @@
 # ORDR Unity 모바일 개발 에이전트 — 최신 지침
 
+**29차 현재(코드 반영, 실행 검사 미실시):** 제한 카타쿠리 `LI-08 h07I` **단일 타격20%·광역 마법14%**, 전설 후지토라 `L-37 h031` **중력검14%**, 전설 킹 `L-34 h0AH` **화재14.25%·0.27초×10회 화상·분리 방깎**, 랜덤 영원 엘리자베스 `RN-06 h06Z` **다크니스 에로우14%** — 4명·5개 원본 툴팁 공격을 객체 신원·승인/비승인 스킬과 패시브 전체 필드 비교 후 기존 피해/상태/처치 원장에 연결했습니다. 카타쿠리 최대 공속·접근 강타, 킹 평타 디버프, 엘리자베스 토큰 거래는 **아직 미연결**. 방깎 무기한 상태의 0초 생성 예외를 공통 효과 생성 규칙에 맞게 수정; 원본 독약 배타·화상 중첩·보스 기절은 미확정. 근거 `data/source-model-twentyninth-katakuri-fujitora-king-elizabeth.json`. **Unity·Python·APK·Actions 실행·조회하지 않음, TOOLTIP_MODEL_ONLY**.
+
 **28차 현재(코드 반영, 실행 검사 미실시):** 희귀 거프 `R-02 h01Q`의 12.5% `거프 타격`(물리12500/주 대상 마법40000·일반 기절2.5초/별도50% 방깎 스택1), 제한 크로커다일 `LI-09 h05F`의 6% 단일 참격·10% 광역 물리·5% 혼합 기절을 전체 원본 도감 패킷/패시브/객체 신원 승인 후 공용 전투 원장에 연결했습니다. 원본에 크로커다일 세 기술의 대상 메타데이터가 없는 부분은 모바일 연습 정책(무반경=주 타깃, 반경 명시=주 타깃 중심)으로 한정했습니다. 25~27차와 신규 묶음의 정확 필드 게이트를 공통화했습니다. 근거 `data/source-model-twentyeighth-garp-crocodile-attacks.json`. **Unity·Python·APK·Actions 실행·조회하지 않음, TOOLTIP_MODEL_ONLY**, 다음은 남은 캐릭터 고유 기술·원본 누락 효과 지속 연결입니다.
 
-최종 정리: 2026-11-03. 프로젝트는 [cuteu2474-a11y/ordr-unity-mobile](https://github.com/cuteu2474-a11y/ordr-unity-mobile)이다. OpenRealm iPad 포팅 및 GrandLineDefense와 **서로 다른 저장소**다. **브랜치는 main만** 사용한다.
+최종 정리: 2026-11-04. 프로젝트는 [cuteu2474-a11y/ordr-unity-mobile](https://github.com/cuteu2474-a11y/ordr-unity-mobile)이다. OpenRealm iPad 포팅 및 GrandLineDefense와 **서로 다른 저장소**다. **브랜치는 main만** 사용한다.
 
 이 파일은 작업 규칙과 현재 연결 상태의 요약이다. 과거 날짜별 구현 기록은 당시의 스냅샷일 뿐 현재 지시가 아니다. **모든 작업은 최신 main의 코드·데이터·문서로 재확인**하고, 기존 구현을 중복해서 만들지 않는다.
 
@@ -28,7 +30,11 @@
 - 원본에서 다른 모드 전용인 밴·변질 조건을 이세계에 적용하지 않는다. 원작 재화 거래·중복 영수증 차단·롤백·판매/분해 확인 절차는 유지한다.
 - 원본 근거는 data/에 저장한다. Assets/Resources/OrdrData/는 Editor 생성 캐시라 직접 수정·커밋하지 않는다. 원본 W3X, 비공개 도감 이미지, 개인 계정·서명키도 커밋하지 않는다.
 
-## 3. 최신 기능 상태 — 2026-11-03
+## 3. 최신 기능 상태 — 2026-11-04
+
+**29차 현재(검사 미실행):** `LI-08` 카타쿠리 2기·`L-37` 후지토라 1기·`L-34` 킹 1기·`RN-06` 엘리자베스 1기, 총 5개 새 고유 공격을 원본 전체 프로필과 원본 객체 ID에 묶어 연결. `SourceModelTwentyNinthSkillCatalog`는 실행하지 않을 카타쿠리 2기·엘리자베스 2기도 원본 필드 비교에 포함하지만 해당 스킬을 허용하지 않습니다. 킹 화재는 20만 마법/42,500×10화상·방감20(만료 미기재)/방감10(2초)를 **서로 다른 상태 출처**로 연결하고 타이머 갱신/유닛 제거·전장 이동을 처리합니다. 원본 독약 배타·화상 갱신/중첩, 툴팁 중력검 2.5배의 JASS 최종 계산, 보스 면역은 추정하지 않습니다. 출처 `data/source-model-twentyninth-katakuri-fujitora-king-elizabeth.json`; Unity EditMode 사례 **작성만**. Python/Unity/APK/Actions **실행 또는 조회하지 않음**, `TOOLTIP_MODEL_ONLY`.
+
+**28차 이전(검사 미실행):** 희귀 거프 `R-02 h01Q` 12.5% 거프 타격과 제한 크로커다일 `LI-09 h05F`의 6%·10%·5% 기술 세 개를 공통 원장에 연결. 원본 도감 전체 필드·패시브·객체 신원 검증과 무반경 기술 주 대상/반경 기술 적 중심 정책. `data/source-model-twentyeighth-garp-crocodile-attacks.json`. Unity/Python/APK/Actions 미실행, `TOOLTIP_MODEL_ONLY`.
 
 **27차 최신(검사 미실행):** 키드 초월 `TR-25 H0B4`의 원본 특성강화 `enhancedChanges` 2행을 기본 4스킬/패시브와 함께 완전 패킷 검증. 실제 강화 확인 공급자가 승인한 소유자만 `펑크 크래시` HP50·200만×3/내측50%·기절2.85초와 `댐드 펑크` 10%·60만 직선/45만 폭발·적 수당 폭발1%로 **기존 펑크 깁슨/리펠을 대체**. 해금 가격/조건 미확인으로 기본 앱의 강화는 비활성. 카르가라 `L-30 h03F`/왜곡 바제스 `D-06 h09V`의 잘못된 와이퍼/사이 도감 기술은 범용 시전 및 유닛 상세 UI에서도 격리(기존 카르가라 네이티브 `A05Z/A060` 기능 중복 등록 없음). `data/source-model-twentyseventh-kid-enhancement-foreign-profile-audit.json`; EditMode 사례 작성만, Unity/Python/APK/CI 실행하지 않음, `TOOLTIP_MODEL_ONLY`. **아래 26차·25차의 미구현 표현은 해당 시점 기록.**
 

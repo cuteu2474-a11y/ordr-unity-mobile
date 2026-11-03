@@ -1,3 +1,10 @@
+## 2026-11-04 · 29차 네 유닛·5공격 원본 전 필드 게이트 (현재 최신)
+
+- SourceModelTwentyNinthSkillCatalog.cs: LI-08(h07I) 카타쿠리 2기, L-37(h031) 후지토라·L-34(h0AH) 킹·RN-06(h06Z) 엘리자베스 각 1기. 스킬 ID/순서/중첩 객체와 패시브를 전부 원본 JSON과 비교하고, 실행 불가 카타쿠리 2기·엘리자베스 2기는 신원 검증만 하며 전투 허용 목록에는 미포함.
+- SourceModelUnconnectedSkillCatalog → SourceModelNextThirtySkillCatalog.CanModelCompleteAttack → CharacterCombatRuntime.SourceModelNextThirtyAttacks: 5기만 주 타깃/대상 중심 범위·개별 발동률·마법/물리/치명·일반 기절·상태/최종 처치 공용 원장으로 연결. CharacterCombatRuntime.SourceModelCompositeEffects의 후지토라 스킬 피해×2.5·엘리자베스 치명 배율 추가분 처리.
+- CharacterCombatRuntime.SourceModelTwentyNinthSkills: 킹 화재 즉시 마법20만, 0.27초 간격 10회 화상42,500, 미기재 지속시간 방어감소20(상시 오라 출처)과 2초 방어감소10(발동 출처)를 별도 상태로 관리; 동일 공격자·적의 화상 갱신, 원본 객체/전장 변경과 사망 시 예약 타격 취소. SourceModelEleventhForms 제거/시간 경로에서 불필요한 상태 기록 정리.
+- 근거 data/source-model-twentyninth-katakuri-fujitora-king-elizabeth.json; Assets/Tests/EditMode/SourceModelScriptAttackSkillTests.cs에 원본 전체 필드/미승인 기술·공격 확률 사례를 작성. 실행한 테스트 없음, 원본 독약 배타·화상 중첩 및 보스 면역/피해 동등성 미확정, TOOLTIP_MODEL_ONLY. 아래 28차는 이전 기록입니다.
+
 ## 2026-11-03 · 28차 공격 패킷·공통 전체 필드 게이트 (최신)
 
 - `SourceModelExactSkillPackets.Matches`: 중첩 객체/배열/스칼라의 **추가·누락·변조·순서 변경**을 거부하는 공용 비교기. 기존 25~27차 로우·키드/강화 패킷도 이 메서드로 검증합니다.

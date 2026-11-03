@@ -44,12 +44,14 @@ namespace Ordr.Mobile.Combat
         {
             SourceModelEleventhForgetForm(id);
             SourceModelTwelfthForgetOwner(id);
+            SourceModelTwentyNinthForgetOwner(id);
             string prefix = InstanceKey(id) + ":";
             var removed = new List<string>();
             foreach (var item in sourceModelBonneyAge.Keys)
                 if (item.StartsWith(prefix, StringComparison.Ordinal)) removed.Add(item);
             foreach (string key in removed) sourceModelBonneyAge.Remove(key);
             SourceModelTwelfthPruneDefeated();
+            SourceModelTwentyNinthPruneDefeated();
         }
 
         private void AdvanceSourceModelEleventhBonney(double seconds)
@@ -65,6 +67,7 @@ namespace Ordr.Mobile.Combat
             }
             foreach (string key in removed) sourceModelBonneyAge.Remove(key);
             SourceModelTwelfthPruneDefeated();
+            SourceModelTwentyNinthPruneDefeated();
         }
 
         private static bool SourceModelEleventhFormHasAttack(string raw) =>

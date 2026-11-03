@@ -185,6 +185,7 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy target, double multiplier)
         {
             if (SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) ||
+                SourceModelTwentyNinthSkillCatalog.IsSpecial(skill) ||
                 SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill) ||
                 SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill) ||
@@ -204,6 +205,13 @@ namespace Ordr.Mobile.Combat
                     // The normal hit already happened in the attack pipeline;
                     // only the 4.25x *increment* should hit again.
                     return basic * (component.Number("multiplier").Value - 1) * multiplier;
+                if (skill.Id == "L-37:skill:0" &&
+                    component.Type == "physical" &&
+                    component.Text("basis") == "skillDamage")
+                    // The tooltip gives 2.5 times the first skill's listed
+                    // 192500 damage. Native post-armor ordering is unknown.
+                    return skill.Components[0].Number("amount").Value *
+                        component.Number("multiplier").Value * multiplier;
                 if (skill.Id == "TR-04:skill:3" &&
                     component.Text("basis") == "basicAttackDamage")
                     return basic * component.Number("multiplier").Value * multiplier;
