@@ -32,6 +32,12 @@ namespace Ordr.Mobile.Combat
             // already validates the complete transform packet.
             if ((actor.Catalog.Id == "TR-18" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "H0BD") ||
+                (actor.Catalog.Id == "TR-03" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H09E") ||
+                (actor.Catalog.Id == "TR-06" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H0BL") ||
+                (actor.Catalog.Id == "TR-28" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H08Y") ||
                 (actor.Catalog.Id == "TR-13" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "H08Z") ||
                 (actor.Catalog.Id == "L-32" &&
@@ -129,6 +135,11 @@ namespace Ordr.Mobile.Combat
                     !actor.AttackReady || IsOriginalUnitCasting(id) ||
                     SourceFormIsCasting(id) || actor.Abilities.Resources == null)
                     continue;
+                if (TryAutoCastSourceModelTenthForm(actor))
+                {
+                    completed++;
+                    continue;
+                }
                 SourceModelNextThirtyUnit row;
                 SourceModelUnconnectedSkillRow extra;
                 IReadOnlyList<string> activeNames;

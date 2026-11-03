@@ -1,3 +1,9 @@
+## 2026-11-03 · 10차 변신 상태·강화 선결조건 연결 (최신)
+
+- `CharacterCombatRuntime.SourceModelTenthForms.cs`에서 도플라밍고·로쿠규·강화 프랑키의 원본 필드 화이트리스트, 동일 유닛 상태/전장 리비전/만료/제거를 관리합니다. `TemporarySkills.PracticeFormOf`, `SourceModelEffects` 공통 시계, `SourceModelResources` 자동 시전, `SourceModelAttackSkills` 공격 선언, `CharacterActiveAbilities` 자원 원장을 공유합니다.
+- 도플라밍고 4.5초·방어력 감소7.5초·공속 간격0.03초·20% 추가 공격, 로쿠규 7초·양분1, 프랑키 장군 6초·MP150·프레스·소드(33% 추가 피해 독립 난수)·빔을 구현. 프랑키 강화 선결조건은 `ConfigureSourceModelFrankyEnhancedEligibility` 실증 공급자만 승인하며 미연결 상태에서는 불가.
+- 기존 native 쵸파·카이도/스네이크맨·야마토 유지; 미확인 패기 변환·원본 스플래시 피해·면역/타이밍은 별도 보류. `tests/test_source_model_tenth_forms.py`와 Unity EditMode 회귀 추가, **TOOLTIP_MODEL_ONLY**.
+
 ## 2026-11-03 · 9차 실제 명중 카운터·다중 투사체·누적 강화 (최신)
 
 - `CombatAttackPipeline.ConfigurePracticeSuccessfulBasicHit`: 원본 `ATTACKED` 선언 경로와 분리해 **HP에 실제 피해가 들어간 확정 명중** 후 호출합니다. `CharacterCombatRuntime.SourceModelEffects`가 이 후속 콜백 및 공용 `SourceModelTimeAdvancing` 투사체 예약을 한 번 연결합니다. 공격 선언 경로는 `CharacterCombatRuntime.SourceModelAttackSkills`에서 기존 native/JASS 및 앞선 도감 스킬을 유지하며 9차만 별도 병렬 실행합니다.

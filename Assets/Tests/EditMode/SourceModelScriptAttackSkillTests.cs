@@ -2231,6 +2231,87 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void DoflamingoAwakeningSpendsSourceManaPreservesIdentityAndExpires()
+        {
+            using (var live = Create("TR-03", false, -4900, 5400))
+            {
+                var resources = new CharacterResources(10, 10, 150, 150);
+                live.Combat.ConfigureCharacterResources(live.ActorId, resources);
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "TR-03:skill:0", null));
+                Assert.AreEqual(0, resources.Mana);
+                Assert.AreEqual("awakening", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(.03, SourceModelTemporarySkillCatalog.FormIntervalReduction(
+                    live.Combat.UnitStatusOf(live.ActorId).Snapshot()), .000001);
+                Assert.AreEqual(AbilityCastResult.Cooldown,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "TR-03:skill:0", null));
+                live.Battle.Advance(4.6);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(0, resources.Mana);
+            }
+        }
+
+        [Test]
+        public void RyokugyuForestFormAddsExactlyOneNutrientAndExpires()
+        {
+            using (var live = Create("TR-06", false, -4900, 5400))
+            {
+                var resources = new CharacterResources(10, 10, 130, 130);
+                live.Combat.ConfigureCharacterResources(live.ActorId, resources);
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "TR-06:skill:0", null));
+                Assert.AreEqual("forest", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(1, live.Combat.PracticeForestNutrientsOf(live.ActorId));
+                Assert.AreEqual(0, resources.Mana);
+                Assert.AreEqual(AbilityCastResult.Cooldown,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "TR-06:skill:0", null));
+                live.Battle.Advance(7.1);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(1, live.Combat.PracticeForestNutrientsOf(live.ActorId));
+            }
+        }
+
+        [Test]
+        public void OrdinaryFrankyCannotUnlockGeneralOrSpendManaForFree()
+        {
+            using (var live = Create("TR-28", true, -4900, 5400))
+            {
+                var resources = new CharacterResources(10, 10, 150, 150);
+                live.Combat.ConfigureCharacterResources(live.ActorId, resources);
+                Assert.AreEqual(AbilityCastResult.MissingOrUnsupportedRequirement,
+                    live.Combat.TryCastActiveSkill(live.ActorId,
+                        "TR-28:enhanced:frankyGeneral", null));
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(150, resources.Mana);
+                Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives());
+            }
+        }
+
+        [Test]
+        public void VerifiedFrankyEnhancementUnlocksGeneralPressAndReverts()
+        {
+            using (var live = Create("TR-28", false, -4900, 5400))
+            {
+                var resources = new CharacterResources(10, 10, 150, 150);
+                live.Combat.ConfigureCharacterResources(live.ActorId, resources);
+                live.Combat.ConfigureSourceModelFrankyEnhancedEligibility(
+                    id => id == live.ActorId);
+                live.Battle.Advance(2);
+                Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives());
+                Assert.AreEqual(0, resources.Mana);
+                Assert.AreEqual("frankyGeneral", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives());
+                var events = live.Battle.Advance(.1);
+                Assert.IsTrue(events.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "제너럴 프레스"),
+                    "Only original-upgraded Franky can debit mana and apply the press packet");
+                live.Battle.Advance(6.1);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+            }
+        }
+
+        [Test]
         public void FormWithoutResourceStateCannotSpendHealthOrActivate()
         {
             using (var live = Create("TR-18", true, -4900, 5400))

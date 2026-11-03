@@ -55,6 +55,8 @@ namespace Ordr.Mobile.Combat
         public string PracticeFormOf(long id)
         {
             if (!UsesSourceModelBasicAttacks || !characters.ContainsKey(id)) return null;
+            string managed = SourceModelTenthActiveForm(id);
+            if (managed != null) return managed;
             string nativeForm;
             if (sourceNativeForms.TryGetValue(id, out nativeForm))
                 return nativeForm;
@@ -83,6 +85,7 @@ namespace Ordr.Mobile.Combat
         {
             sourceFormCastFinishes.Remove(ownerId);
             sourceFormNames.Remove(ownerId);
+            ForgetSourceModelTenthForm(ownerId);
             ForgetNativeSourceCharacter(ownerId);
             for (int i = sourceTemporarySummons.Count - 1; i >= 0; i--)
                 if (sourceTemporarySummons[i].OwnerId == ownerId)
@@ -157,6 +160,8 @@ namespace Ordr.Mobile.Combat
         private bool TryCastSourceForm(CharacterInstance caster, string skillId,
             out AbilityCastResult result)
         {
+            if (TryCastSourceModelTenthForm(caster, skillId, out result))
+                return true;
             result = AbilityCastResult.UnsupportedEffect;
             if (!UsesSourceModelBasicAttacks || caster.Catalog.Id != "TR-18" ||
                 caster.Profile == null) return false;

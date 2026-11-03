@@ -23,6 +23,7 @@ namespace Ordr.Mobile.Combat
             sourceModelUnitEffects = rules.UnitEffects;
             SourceModelTimeAdvancing += AdvanceSourceModelEighthTimeline;
             SourceModelTimeAdvancing += AdvanceSourceModelNinthProjectiles;
+            SourceModelTimeAdvancing += AdvanceSourceModelTenthForms;
             attackPipeline.ConfigurePracticeAttackOverride(rules.FormAttackOf);
             attackPipeline.ConfigurePracticeScriptAttackDeclared(OnSourceModelScriptAttackDeclared);
             attackPipeline.ConfigurePracticeSuccessfulBasicHit(OnSourceModelNinthSuccessfulBasicHit);

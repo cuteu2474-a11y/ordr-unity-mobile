@@ -216,8 +216,11 @@ namespace Ordr.Mobile.Combat
         private static bool CanExecuteAllComponents(ImportedCombatSkill skill,
             bool verifiedTiming, Func<ImportedCombatEffect, bool> specialAllowed)
         {
+            // A source-approved form may include separate status/stack packets.
+            // Authorization remains per-component, not a blanket permission
+            // for arbitrary self-targeted tooltip skills.
             bool supportedSelfForm = skill.Target == null &&
-                skill.Components.Count == 1 &&
+                skill.Components.Count > 0 &&
                 skill.Components[0].Type == "transform" &&
                 specialAllowed != null && specialAllowed(skill.Components[0]);
             if (!supportedSelfForm && skill.Target != "single" &&

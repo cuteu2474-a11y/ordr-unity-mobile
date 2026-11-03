@@ -64,6 +64,7 @@ namespace Ordr.Mobile.Combat
 
             if (ninthOwner)
                 ExecuteSourceModelNinthDeclaredAttack(actor, primary, rawcode);
+            ExecuteSourceModelTenthFormDeclaredAttack(actor, primary, rawcode);
 
             // Ulti's tooltip combines her HP-cost active with +1 HP on each
             // declared basic attack. Only source-managed practice HP is
