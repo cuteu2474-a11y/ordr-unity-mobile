@@ -47,6 +47,7 @@ namespace Ordr.Mobile.Combat
             SourceModelTenthFormState state;
             if (!sourceModelTenthForms.TryGetValue(id, out state)) return null;
             if (state.ExpiresAt > effectExecutor.Time &&
+                (state.Form != "nika" || SourceModelEleventhBonneyHasMana(id)) &&
                 state.StoryLane == IsStoryDeployed(id) &&
                 state.LaneRevision == SourceModelLaneRevision(id)) return state.Form;
             ForgetSourceModelTenthFormState(id);
@@ -55,16 +56,36 @@ namespace Ordr.Mobile.Combat
 
         private void ForgetSourceModelTenthFormState(long id)
         {
+            SourceModelTenthFormState previous;
+            if (sourceModelTenthForms.TryGetValue(id, out previous) &&
+                previous.Form == "nika" && sourceModelRules != null &&
+                sourceModelRules.SourceFormRawcodeOf(InstanceKey(id)) == "H0BY")
+            {
+                sourceModelRules.ClearSourceForm(InstanceKey(id));
+                CharacterInstance actor;
+                SourceModelUnitResourceSpec source;
+                if (characters.TryGetValue(id, out actor) &&
+                    sourceModelManagedResourceRows.TryGetValue(id, out source) &&
+                    actor.Abilities.Resources != null)
+                    actor.Abilities.Resources.SetSourceModelFormManaPool(
+                        source.CreateStartingPool().MaximumMana,
+                        actor.Abilities.Resources.Mana);
+            }
             sourceModelTenthForms.Remove(id);
+            SourceModelEleventhForgetForm(id);
             CombatStatusEngine status;
             if (unitStatuses.TryGetValue(InstanceKey(id), out status))
+            {
                 status.RemoveSource("practice-form:interval:" + id);
+                status.RemoveSource("practice-form:executioner:" + id);
+            }
         }
 
         private void ForgetSourceModelTenthForm(long id)
         {
             ForgetSourceModelTenthFormState(id);
             sourceModelForestNutrients.Remove(id);
+            ForgetSourceModelEleventhActor(id);
         }
 
         private void AdvanceSourceModelTenthForms(double seconds)
@@ -74,6 +95,8 @@ namespace Ordr.Mobile.Combat
             foreach (var pair in sourceModelTenthForms)
                 if (!characters.ContainsKey(pair.Key) ||
                     pair.Value.ExpiresAt <= effectExecutor.Time ||
+                    (pair.Value.Form == "nika" &&
+                     !SourceModelEleventhBonneyHasMana(pair.Key)) ||
                     pair.Value.StoryLane != IsStoryDeployed(pair.Key) ||
                     pair.Value.LaneRevision != SourceModelLaneRevision(pair.Key))
                     finished.Add(pair.Key);
@@ -214,6 +237,8 @@ namespace Ordr.Mobile.Combat
         private bool TryCastSourceModelTenthForm(CharacterInstance actor,
             string skillId, out AbilityCastResult result)
         {
+            if (TryCastSourceModelEleventhForm(actor, skillId, out result))
+                return true;
             result = AbilityCastResult.UnsupportedEffect;
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 actor.Profile == null || actor.Mapping == null) return false;
@@ -319,6 +344,7 @@ namespace Ordr.Mobile.Combat
 
         private bool TryAutoCastSourceModelTenthForm(CharacterInstance actor)
         {
+            if (TryAutoCastSourceModelEleventhForm(actor)) return true;
             string id = null;
             if (SourceModelTenthFormProfile(actor, "TR-03", "H09E"))
                 id = "TR-03:skill:0";
@@ -339,6 +365,7 @@ namespace Ordr.Mobile.Combat
         private void ExecuteSourceModelTenthFormDeclaredAttack(CharacterInstance actor,
             SpatialCombatEnemy primary, string rawcode)
         {
+            ExecuteSourceModelEleventhFormDeclaredAttack(actor, primary, rawcode);
             string form = SourceModelTenthActiveForm(actor.Id);
             if (form == "awakening" &&
                 SourceModelTenthFormProfile(actor, "TR-03", "H09E") &&

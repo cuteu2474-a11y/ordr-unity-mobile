@@ -40,7 +40,7 @@ namespace Ordr.Mobile.Combat
             foreach (var row in attacks.All) byRawcode.Add(row.Rawcode, row);
             // Only explicit source-backed form/summon identities can join the
             // practice attacker path. Unlisted map objects stay ineligible.
-            foreach (string raw in new[] { "H0B6", "h0AD", "H0AB", "H0AE", "H0AM", "h06N", "h085", "h0A9", "h0C2" })
+            foreach (string raw in new[] { "H0B6", "h0AD", "H0AB", "H0AE", "H0AM", "h06N", "h085", "h0A9", "h0C2", "H0BY" })
             {
                 var attack = objects.FindMapObjectAttack(raw);
                 if (attack == null || !attack.BaseDamagePlus.HasValue ||

@@ -30,12 +30,13 @@ namespace Ordr.Mobile.Combat
                     rawcode, out sourceSpecialUnitId);
             bool nativeFromJass = SourceModelNativeCharacterRules.TryGetNativeAttack(
                 rawcode, out nativeSourceUnitId);
-            bool practiceBonney = rawcode == "H0BX";
+            bool practiceBonney = rawcode == "H0BX" || rawcode == "H0BY";
+            bool eleventhFormOwner = SourceModelEleventhFormHasAttack(rawcode);
             bool standaloneTemporary = IsStandaloneSourceTemporaryAttack(rawcode);
             bool ninthOwner = SourceModelNinthSkillCatalog.HasOwner(rawcode);
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 !processingStep || game.Phase != SessionPhase.Running ||
-                (!practiceBonney &&
+                (!practiceBonney && !eleventhFormOwner &&
                  !SourceModelScriptAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelNextAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelThirdAttackCatalog.TryGet(rawcode, out script) &&
@@ -57,7 +58,8 @@ namespace Ordr.Mobile.Combat
                     CultureInfo.InvariantCulture, out id) ||
                 !characters.TryGetValue(id, out actor) ||
                 !actor.AttackReady || actor.Mapping == null ||
-                actor.Mapping.AttackSpec.UnitRawCode != rawcode ||
+                (actor.Mapping.AttackSpec.UnitRawCode != rawcode &&
+                 sourceModelRules.SourceFormRawcodeOf(attackerId) != rawcode) ||
                 !enemies.TryGetValue(primaryTargetId, out primary) ||
                 !primary.Enemy.IsAlive || !CanAttackInThisLane(actor, primary))
                 return;
@@ -116,7 +118,7 @@ namespace Ordr.Mobile.Combat
 
             if (practiceBonney)
             {
-                if (actor.Catalog.Id == "TR-21")
+                if (actor.Catalog.Id == "TR-21" && rawcode == "H0BX")
                     ApplySourceModelBonneyDeclaredArmor(actor, primary);
                 return;
             }

@@ -2323,6 +2323,95 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void NikaGiantSpendsSourceHealthPreservesOwnerAndRevertsAfterFourPointTwoFiveSeconds()
+        {
+            using (var live = Create("E-01", false, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                Assert.AreEqual(115, pool.Health);
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "E-01:skill:0", null));
+                Assert.AreEqual(0, pool.Health);
+                Assert.AreEqual("giant", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(AbilityCastResult.Cooldown,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "E-01:skill:0", null));
+                live.Battle.Advance(4.3);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.Greater(pool.Health, 0,
+                    "The original H0BK object regenerates 0.25 HP per second");
+                Assert.Less(pool.Health, 115);
+            }
+        }
+
+        [Test]
+        public void BonneyNikaUsesSeparateOriginalAttackObjectButTheSameCharacterInstance()
+        {
+            using (var live = Create("TR-21", false, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                Assert.AreEqual(150, pool.MaximumMana);
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "TR-21:skill:0", null));
+                Assert.AreEqual("nika", live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(100, pool.MaximumMana);
+                Assert.AreEqual(100, pool.Mana);
+                pool.SetMana(0);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.AreEqual(150, pool.MaximumMana);
+                Assert.AreEqual(0, pool.Mana);
+                Assert.AreEqual(AbilityCastResult.InsufficientResources,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "TR-21:skill:0", null));
+            }
+        }
+
+        [Test]
+        public void KingRequiresRealFiftyBreaksBeforeSpendingAnyMana()
+        {
+            using (var live = Create("LI-10", true, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                double originalMana = pool.Mana;
+                live.Battle.Advance(2);
+                Assert.AreEqual(AbilityCastResult.MissingOrUnsupportedRequirement,
+                    live.Combat.TryCastActiveSkill(live.ActorId, "LI-10:skill:0", null));
+                Assert.AreEqual(originalMana, pool.Mana);
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+            }
+        }
+
+        [Test]
+        public void MarcoRequiresExplicitExternalFormEvidenceAndSnakeNikaCannotBorrowLuffyObject()
+        {
+            Assert.Throws<InvalidOperationException>(() => Create("E-02", true),
+                "Unmapped alternative Nika must not materialize as the other Luffy");
+            using (var live = Create("LI-03", true, -4900, 5400))
+            {
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                live.Combat.ConfigureSourceModelMarcoFormEvidence(id =>
+                    id == live.ActorId ? "phoenix" : null);
+                Assert.AreEqual("phoenix", live.Combat.PracticeFormOf(live.ActorId));
+            }
+        }
+
+        [Test]
         public void RayleighClonePulseUsesActualCombatDamageAndProcRoll()
         {
             using (var live = Create("I-03", true, -4900, 5400))

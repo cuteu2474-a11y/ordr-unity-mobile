@@ -188,6 +188,9 @@ namespace Ordr.Mobile.Combat
                     (effect.SourceId.StartsWith("practice-native:A08B:", StringComparison.Ordinal) ||
                      effect.SourceId.EndsWith(":TR-24:skill:4", StringComparison.Ordinal)))
                     value = Math.Max(value, effect.Amount);
+                else if (effect.Type == CombatEffectType.AttackSpeedBuff &&
+                         effect.SourceId.StartsWith("practice-form:executioner:", StringComparison.Ordinal))
+                    value = Math.Max(value, effect.Amount);
             // No claim about native cross-buff stacking. This mobile model
             // uses the strongest known effect until the original is observed.
             return value;

@@ -24,8 +24,16 @@ namespace Ordr.Mobile.Combat
             SourceModelTimeAdvancing += AdvanceSourceModelEighthTimeline;
             SourceModelTimeAdvancing += AdvanceSourceModelNinthProjectiles;
             SourceModelTimeAdvancing += AdvanceSourceModelTenthForms;
+            SourceModelTimeAdvancing += AdvanceSourceModelEleventhBonney;
             attackPipeline.ConfigurePracticeAttackOverride(rules.FormAttackOf);
-            attackPipeline.ConfigurePracticeScriptAttackDeclared(OnSourceModelScriptAttackDeclared);
+            // The registered catalog identity does not change on form
+            // override. Bonney's H0BY has a new tooltip script packet. Keep
+            // the original base callback for Chopper/Kaido native JASS paths;
+            // their attack object itself is already overridden independently.
+            attackPipeline.ConfigurePracticeScriptAttackDeclared(
+                (attacker, rawcode, target) => OnSourceModelScriptAttackDeclared(
+                    attacker, rules.SourceFormRawcodeOf(attacker) == "H0BY" ?
+                        "H0BY" : rawcode, target));
             attackPipeline.ConfigurePracticeSuccessfulBasicHit(OnSourceModelNinthSuccessfulBasicHit);
             attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {
                 // Reuse the shared cadence path for a temporary form. Its flat

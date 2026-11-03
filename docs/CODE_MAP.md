@@ -1,4 +1,10 @@
-## 2026-11-03 · 10차 변신 상태·강화 선결조건 연결 (최신)
+## 2026-11-03 · 11차 동형 변신·원본 평타 객체 교체 (최신)
+
+- `CharacterCombatRuntime.SourceModelEleventhForms.cs`는 E-01/TR-21/LI-10/LI-03의 원본 스킬 ID/소유 rawcode/비용·폼 요건을 별도로 확인하고 `SourceModelTenthForms`의 **동일 소유자 상태, 만료, 전장 리비전/제거 정리**와 `SourceModelResources` 공용 자동 시전 경로를 재사용합니다. `CharacterActiveAbilities`에 원본 SLK 변신 마나 상한 전환, `SourceModelBasicCombatRules`에 `H0BY` 독립 객체 등록을 추가했습니다.
+- `SourceModelEffects`의 `ConfigurePracticeScriptAttackDeclared`는 **보니 `H0BY`에 한해서** 별도 폼 공격 객체를 콜백으로 전달하고, **쵸파/카이도는 기존 기본 rawcode native 콜백 유지**(폼 객체 공격력 교체는 별도 규칙 적용). `SourceModelAttackSkills`는 보니 기본 `H0BX`의 확인된 A04P 경로만 실행하고, `H0BY`에는 검증되지 않은 A04P를 복제하지 않습니다. 독립 유닛 소환·조합/경제 객체 증가 없음.
+- `LI-10`은 **50 아머브레이크 스택·MP35**가 충족된 대상이 없으면 발동하지 않고, `LI-03`은 `ConfigureSourceModelMarcoFormEvidence` 없이 변신 상태/폼 전용 스킬을 만들지 않습니다. `E-02`는 원본 객체 미매핑으로 출전 차단 유지. 거대화 공속 감소, 보니 니카 확률 버프·세월관통 후속, 킹 광역 확대, 마르코 불사조 고정피해 추가분 등 근거 부족 효과는 보류. Unity Editor/Android 결과 미확인, `tests/test_source_model_eleventh_forms.py`와 `SourceModelScriptAttackSkillTests`에 회귀 기록.
+
+## 2026-11-03 · 10차 변신 상태·강화 선결조건 연결 (이전)
 
 - `CharacterCombatRuntime.SourceModelTenthForms.cs`에서 도플라밍고·로쿠규·강화 프랑키의 원본 필드 화이트리스트, 동일 유닛 상태/전장 리비전/만료/제거를 관리합니다. `TemporarySkills.PracticeFormOf`, `SourceModelEffects` 공통 시계, `SourceModelResources` 자동 시전, `SourceModelAttackSkills` 공격 선언, `CharacterActiveAbilities` 자원 원장을 공유합니다.
 - 도플라밍고 4.5초·방어력 감소7.5초·공속 간격0.03초·20% 추가 공격, 로쿠규 7초·양분1, 프랑키 장군 6초·MP150·프레스·소드(33% 추가 피해 독립 난수)·빔을 구현. 프랑키 강화 선결조건은 `ConfigureSourceModelFrankyEnhancedEligibility` 실증 공급자만 승인하며 미연결 상태에서는 불가.

@@ -39,6 +39,20 @@ namespace Ordr.Mobile.Combat
             Mana = value;
         }
 
+        // A source-model shape-change may have a different ORIGINAL SLK
+        // mana pool. This cannot be used to rewrite external verified pools.
+        internal void SetSourceModelFormManaPool(double maximum, double current)
+        {
+            if (!sourceModelAllowsZeroHealth)
+                throw new InvalidOperationException("원본 객체의 연습용 변신 자원만 변경할 수 있습니다.");
+            RequireNonNegativeFinite(maximum, nameof(maximum));
+            RequireNonNegativeFinite(current, nameof(current));
+            if (current > maximum)
+                throw new ArgumentOutOfRangeException(nameof(current));
+            MaximumMana = maximum;
+            Mana = current;
+        }
+
         public void SetHealth(double value)
         {
             RequireNonNegativeFinite(value, nameof(value));
@@ -219,7 +233,7 @@ namespace Ordr.Mobile.Combat
             // A source-approved form may include separate status/stack packets.
             // Authorization remains per-component, not a blanket permission
             // for arbitrary self-targeted tooltip skills.
-            bool supportedSelfForm = skill.Target == null &&
+            bool supportedSelfForm = (skill.Target == null || skill.Target == "self") &&
                 skill.Components.Count > 0 &&
                 skill.Components[0].Type == "transform" &&
                 specialAllowed != null && specialAllowed(skill.Components[0]);

@@ -57,6 +57,13 @@ namespace Ordr.Mobile.Combat
             if (!UsesSourceModelBasicAttacks || !characters.ContainsKey(id)) return null;
             string managed = SourceModelTenthActiveForm(id);
             if (managed != null) return managed;
+            CharacterInstance sourceActor;
+            if (characters.TryGetValue(id, out sourceActor) &&
+                SourceModelTenthFormProfile(sourceActor, "LI-03", "h08O"))
+            {
+                string marco = SourceModelEleventhMarcoForm(id);
+                if (marco != null) return marco;
+            }
             string nativeForm;
             if (sourceNativeForms.TryGetValue(id, out nativeForm))
                 return nativeForm;

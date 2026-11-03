@@ -38,6 +38,14 @@ namespace Ordr.Mobile.Combat
                  actor.Mapping.AttackSpec.UnitRawCode == "H0BL") ||
                 (actor.Catalog.Id == "TR-28" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "H08Y") ||
+                (actor.Catalog.Id == "E-01" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H0BK") ||
+                (actor.Catalog.Id == "TR-21" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H0BX") ||
+                (actor.Catalog.Id == "LI-10" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h0AI") ||
+                (actor.Catalog.Id == "LI-03" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h08O") ||
                 (actor.Catalog.Id == "TR-13" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "H08Z") ||
                 (actor.Catalog.Id == "L-32" &&
