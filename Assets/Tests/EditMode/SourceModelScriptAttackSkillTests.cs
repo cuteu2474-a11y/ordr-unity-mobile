@@ -1713,6 +1713,51 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [TestCase("L-26", "무장색의 패기", false)]
+        [TestCase("L-28", "단일 타격 스턴", false)]
+        [TestCase("L-31", "육식 - 체", false)]
+        [TestCase("TR-17", "범위 스턴 타격", false)]
+        [TestCase("I-10", "매 타격 스턴", false)]
+        [TestCase("T-05", "고속전격", false)]
+        [TestCase("MY-11", "마왕", false)]
+        [TestCase("R-17", "단일 물리 스턴", false)]
+        [TestCase("X-04", "조선공의 망치", false)]
+        [TestCase("TR-03", "범위 물리 타격", false)]
+        [TestCase("TR-27", "육식 체", false)]
+        [TestCase("T-01", "오버히트", false)]
+        [TestCase("LI-05", "2연타 마법", false)]
+        [TestCase("L-18", "사람사람열매", false)]
+        [TestCase("H-21", "돌격 연타", false)]
+        [TestCase("RN-14", "고양이 발톱", false)]
+        [TestCase("I-12", "체력 소모 범위 공격", true)]
+        [TestCase("H-14", "혈우", true)]
+        [TestCase("H-20", "잔설검", true)]
+        [TestCase("I-08", "전체체력 비례 고정피해", true)]
+        public void FifteenthTwentySourceSkillsTriggerThroughLivePracticeCombat(
+            string unitId, string skill, bool resourceActive)
+        {
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                if (resourceActive)
+                {
+                    var map = OriginalMapBaseStatCatalog.FromJson(
+                        Data("original-2323C-map-base-stats.json"),
+                        CharacterUnitCatalog.FromJson(Data("units.json")));
+                    live.Combat.ConfigureSourceModelUnitResources(
+                        SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                            Data("original-2323C-unit-object-stats.json"), map));
+                }
+                var events = live.Battle.Advance(6);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == skill), unitId + " skill must actually activate");
+                Assert.IsTrue(events.Any(e => e.SkillName == skill &&
+                    (e.Type == CharacterCombatEventType.SkillDamage && e.Amount > 0 ||
+                     e.Type == CharacterCombatEventType.StatusApplied)),
+                    unitId + " must affect real enemy HP/status, not just log a name");
+            }
+        }
+
         [Test]
         public void YorkHasSourceManaButNoInventedManaSkill()
         {

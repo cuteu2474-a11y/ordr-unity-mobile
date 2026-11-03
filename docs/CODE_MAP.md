@@ -399,3 +399,9 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `CharacterCombatRuntime.SourceModelNativeCharacters.ExecuteVegapunkSourceAttack`은 본체의 기존 MP200 사용 뒤 원본 25MP/s·3초 도감 필드가 일치할 때만 구매 위성의 재생 창을 엽니다. 공통 시계 `CharacterCombatRuntime.SourceModelEffects`, 조회 API `PracticeSatelliteManaOf/PracticeSatelliteMaximumManaOf`; 위성 생명주기·동일 전장·로스터/결제 분리는 유지.
 - 5종 위키 `alternate-form`은 `data/source-model-fourteenth-satellite-and-variant-audit.json`에 상태를 기록합니다. TR-32=기존 쵸파 H0B6 폼; 조로 염왕/베가펑크 3종은 원본 변신 트리거·rawcode 미확인. SR-01~03 독립 세라핌 객체를 위장 전환하지 않습니다. Python/Unity EditMode 테스트는 추가했으나 Unity 실행 결과 확인 전이며 `TOOLTIP_MODEL_ONLY`입니다.
 
+## 2026-11-03 · 15차 20개 고유기 실행 경로 (최신)
+
+- `data/source-model-fifteenth-20-skills.json`의 **20개 서로 다른 도감 ID/원본 객체**를 `SourceModelUnconnectedSkillCatalog`의 공격16/자동 액티브4 허용명과 대조합니다. 이미 등록한 L-28/I-10/I-08/H-14/H-20은 같은 rawcode 행에만 추가하므로 유닛별 스킬 카탈로그 중복이 생기지 않습니다. 이전 JASS 기본 공격 발동 기술은 재등록하지 않습니다.
+- `SourceModelNextThirtySkillCatalog.CanModelCompleteAttack/Active` → `SourceModelFifteenthSkillCatalog.CanModelExactSpecial`(11개 전체 필드 값 검증), 나머지 9개는 기존 엄격한 일반 패킷 검증. 공격 선언에서 `CharacterCombatRuntime.SourceModelNextThirtyAttacks.ExecuteSourceModelApprovedProfileAttacks`, 자동 액티브에서 `SourceModelResources.AutoCastApprovedSourceModelActives`→`TryCastApprovedSourceModelActive`→같은 `ApplySourceModelNextThirtySkill`을 사용합니다.
+- `CharacterCombatRuntime.SourceModelFifteenthSkills`는 보스 차등 확률·대상 종류별 HP 비례·실측 힘 조건·단일 한정 추가 마법을 **기존 HP/방어/전장/기절/둔화/자원 정산 앞에서만** 계산합니다. LI-05 단일 30만은 두 연타 반복을 피하여 정확히 한 번 추가; RN-14 둔화는 기존 공통 상태 엔진을 사용. 불명 힘 공급자=0 보정이며 원본 피해/면역·Unity C# 실행은 `TOOLTIP_MODEL_ONLY`입니다.
+

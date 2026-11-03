@@ -815,3 +815,9 @@ APK 아티팩트 이름은 `ordr-mobile-android-development-apk`, 경로는 `bui
 - [x] 확장 카탈로그 5종 교차 검사: **조로 염왕 TR-31**은 H0BT 객체 이름만 확인·전환 미검증; **쵸파 몬스터포인트 TR-32**는 이미 TR-23의 H0B6 4초 폭주로 실행되고 H093과의 관계 미검증; **베가펑크(스네이크/베어/샤크) TR-33~35**는 별도 세라핌 SR-01~03의 `h09Y/h0A1/h0A0`를 베가펑크 변신체로 오용하지 않습니다. 전환 조건·독립 획득 원본 증거가 없는 4종은 여전히 **식별만 되고 실행 불가**입니다.
 - [ ] 고유기 추가 계수·실제 영웅 능력치 공급자, 네이티브 시전/재생 위상, 위성 오라·강화/성장·세라핌 획득 연계는 미완료. 근거 `data/source-model-fourteenth-satellite-and-variant-audit.json`, 회귀 `tests/test_source_model_fourteenth_satellites.py`·Unity EditMode `SourceModelScriptAttackSkillTests`. **TOOLTIP_MODEL_ONLY**이며 Unity Editor·Android 실기·Warcraft 원작 결과는 확인하지 않았습니다.
 
+## 2026-11-03 · 15차 신규 캐릭터 고유 스킬 20개 (최신)
+
+- [x] **20명·20기술**을 원본 도감 스킬 ID와 실제 원본 유닛 rawcode별로 추가 승인: 공격 선언형 16개(`L-26 무장색의 패기`, `L-28 단일 타격 스턴`, `L-31 육식 - 체`, `TR-17 범위 스턴 타격`, `I-10 매 타격 스턴`, `T-05 고속전격`, `MY-11 마왕`, `R-17 단일 물리 스턴`, `X-04 조선공의 망치`, `TR-03 범위 물리 타격`, `TR-27 육식 체`, `T-01 오버히트`, `LI-05 2연타 마법`, `L-18 사람사람열매`, `H-21 돌격 연타`, `RN-14 고양이 발톱`)과 자동 소비형 4개(`I-12 체력 소모 범위 공격`, `H-14 혈우`, `H-20 잔설검`, `I-08 전체체력 비례 고정피해`). 기존 구현·원본 JASS 등록 콜백과 중복되는 후보는 제외했습니다.
+- [x] 새 전용 `SourceModelFifteenthSkillCatalog`가 복합 11개의 전체 툴팁 필드(중첩 맵/예외 포함)를 엄격 확인합니다. 단순 9개는 기존 `CanModelCompleteAttack`를 통과시켜 공통 전투에 연결했습니다. **보스 40% 공격 확률**, 일반·보스·광폭화별 최대/현재HP 추가 피해, 2연타와 단일 추가 마법 1회, 영웅 **실제 힘 공급자 존재 시에만** 계수 보정, 원본 MP/HP 소비, 일반 라인 기절·둔화 및 메인/스토리 분리를 공유합니다.
+- [ ] 모든 연결은 **TOOLTIP_MODEL_ONLY**입니다. 일반 스턴의 실제 저항·면역, 원본 난수 순서, 원본 특수 피해속성·발동 시간·능력치 공급자와 Unity Editor/Android 동등성은 미확인입니다. 원작 수치 변경/무료 재화·새 조합은 없습니다. 원본 목록 `data/source-model-fifteenth-20-skills.json`, 회귀 `tests/test_source_model_fifteenth_20_skills.py`와 EditMode `SourceModelScriptAttackSkillTests` 참조. 77종의 아직 미수집된 상세 프로필은 별개 미완료입니다.
+

@@ -90,7 +90,8 @@ namespace Ordr.Mobile.Combat
                 if ((skill.Trigger == "onAttack" ||
                      skill.Trigger == "onAttackWithMana") &&
                     sourceModelRules.NextScriptRoll(1000000) >=
-                    (int)Math.Round(SourceModelEighthProcChance(skill, primary, actor) * 10000,
+                    (int)Math.Round(SourceModelFifteenthProcChance(skill, primary,
+                        SourceModelEighthProcChance(skill, primary, actor)) * 10000,
                         MidpointRounding.AwayFromZero)) continue;
                 // Preserve the tooltip target metadata, but apply the same
                 // explicit MOBILE result policy as CharacterSkillEffectExecutor.
@@ -294,6 +295,7 @@ namespace Ordr.Mobile.Combat
                 SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsEighthCompositeSkill(skill) ||
+                SourceModelFifteenthSkillCatalog.IsSpecial(skill) ||
                 IsSourceModelEighthStatusApproach(skill);
             foreach (var component in skill.Components)
             {
@@ -418,7 +420,9 @@ namespace Ordr.Mobile.Combat
                         (skill.Id == "TR-26:skill:2" &&
                          component.Get("singleExtraPercent") != null &&
                          !ReferenceEquals(primary, target)) ||
-                        !SourceModelNextThirtyComponentTargets(component, primary, target))
+                        !SourceModelNextThirtyComponentTargets(component, primary, target) ||
+                        !SourceModelFifteenthComponentTargets(skill, component,
+                            primary, target))
                         continue;
                     double missingBeforeComponent =
                         target.Enemy.MaxHealth - target.Enemy.Health;
@@ -434,6 +438,8 @@ namespace Ordr.Mobile.Combat
                         skill, component, target, raw);
                     raw = SourceModelNinthDamageAdjustment(actor,
                         skill, component, target, raw);
+                    raw = SourceModelFifteenthDamageAdjustment(actor, primary,
+                        skill, component, target, raw);
                     // Rebecca's tooltip gives a per-legacy-level increment.
                     // The offline model has no native legacy-level provider:
                     // the first documented increment is the conservative
@@ -442,7 +448,8 @@ namespace Ordr.Mobile.Combat
                          skill.Id == "LI-02:skill:2") &&
                         component.Type == "physical")
                         raw += component.Number("plusLegacyLevelDamage") ?? 0;
-                    if (component.Text("basis") == "targetMaxHealth")
+                    if (component.Text("basis") == "targetMaxHealth" &&
+                        component.Number("percent").HasValue)
                         raw += target.Enemy.MaxHealth * component.Number("percent").Value / 100;
                     if (component.Get("plusTargetCurrentHealthPercent") != null &&
                         !(skill.Id == "TR-07:skill:2" &&
@@ -525,6 +532,8 @@ namespace Ordr.Mobile.Combat
                                 CharacterCombatEventType.EnemyDefeated, attackerId,
                                 target.Id, skill.Name, "연습 도감 스킬로 적 처치", actual));
                     }
+                    ApplySourceModelFifteenthPrimaryFollowup(actor, primary,
+                        skill, component, target);
                     // Ryokugyu's documented story-only fixed bonus is a
                     // separate, armor-ignoring packet after the physical hit.
                     if (composite && component.Type == "physical" &&

@@ -1,0 +1,37 @@
+{
+  "format": "ordr-source-model-fifteenth-20-skills-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceProfile": "character-skill-profiles.json",
+  "sourceBaseStats": "original-2323C-map-base-stats.json",
+  "runtimeStatus": "TOOLTIP_MODEL_ONLY",
+  "constraints": [
+    "Each candidate has a distinct source catalogId and complete tooltip packet.",
+    "Already connected native/JASS callbacks and existing skills are excluded.",
+    "Same-lane unlimited reach follows the mobile policy; area shapes remain sourced.",
+    "Hero strength is added only when a real attribute provider is connected.",
+    "Boss/stun resistance, native RNG, original damage phase and Unity/Android parity are unverified."
+  ],
+  "skills": [
+    {"catalogId": "L-26", "originalRawcode": "h03I", "skillIndex": 1, "name": "무장색의 패기", "trigger": "onAttack", "execution": "generic"},
+    {"catalogId": "L-28", "originalRawcode": "h03G", "skillIndex": 2, "name": "단일 타격 스턴", "trigger": "onAttack", "execution": "generic"},
+    {"catalogId": "L-31", "originalRawcode": "h03E", "skillIndex": 1, "name": "육식 - 체", "trigger": "onAttack", "execution": "generic"},
+    {"catalogId": "TR-17", "originalRawcode": "H095", "skillIndex": 1, "name": "범위 스턴 타격", "trigger": "onAttack", "execution": "generic"},
+    {"catalogId": "I-10", "originalRawcode": "h04G", "skillIndex": 3, "name": "매 타격 스턴", "trigger": "onEveryAttack", "execution": "generic"},
+    {"catalogId": "T-05", "originalRawcode": "h07J", "skillIndex": 0, "name": "고속전격", "trigger": "onAttack", "execution": "generic"},
+    {"catalogId": "MY-11", "originalRawcode": "h09R", "skillIndex": 0, "name": "마왕", "trigger": "onAttack", "execution": "generic"},
+    {"catalogId": "R-17", "originalRawcode": "h01S", "skillIndex": 0, "name": "단일 물리 스턴", "trigger": "onAttack", "execution": "generic"},
+    {"catalogId": "X-04", "originalRawcode": "h05O", "skillIndex": 1, "name": "조선공의 망치", "trigger": "onAttack", "execution": "generic"},
+    {"catalogId": "TR-03", "originalRawcode": "H09E", "skillIndex": 1, "name": "범위 물리 타격", "trigger": "onAttack", "execution": "exact-special"},
+    {"catalogId": "TR-27", "originalRawcode": "H05N", "skillIndex": 2, "name": "육식 체", "trigger": "onAttack", "execution": "exact-special"},
+    {"catalogId": "T-01", "originalRawcode": "h05S", "skillIndex": 0, "name": "오버히트", "trigger": "onAttack", "execution": "exact-special"},
+    {"catalogId": "LI-05", "originalRawcode": "h040", "skillIndex": 1, "name": "2연타 마법", "trigger": "onAttack", "execution": "exact-special"},
+    {"catalogId": "L-18", "originalRawcode": "h036", "skillIndex": 0, "name": "사람사람열매", "trigger": "onAttack", "execution": "exact-special"},
+    {"catalogId": "H-21", "originalRawcode": "h045", "skillIndex": 0, "name": "돌격 연타", "trigger": "onAttack", "execution": "exact-special"},
+    {"catalogId": "RN-14", "originalRawcode": "h072", "skillIndex": 0, "name": "고양이 발톱", "trigger": "onAttack", "execution": "exact-special"},
+    {"catalogId": "I-12", "originalRawcode": "h04A", "skillIndex": 0, "name": "체력 소모 범위 공격", "trigger": "activeHealth", "execution": "exact-special"},
+    {"catalogId": "H-14", "originalRawcode": "h03J", "skillIndex": 0, "name": "혈우", "trigger": "activeMana", "execution": "exact-special"},
+    {"catalogId": "H-20", "originalRawcode": "h046", "skillIndex": 0, "name": "잔설검", "trigger": "activeMana", "execution": "exact-special"},
+    {"catalogId": "I-08", "originalRawcode": "h04F", "skillIndex": 0, "name": "전체체력 비례 고정피해", "trigger": "activeMana", "execution": "exact-special"}
+  ]
+}

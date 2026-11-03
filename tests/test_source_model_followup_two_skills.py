@@ -63,11 +63,12 @@ class FollowupSourceModelSkillTests(unittest.TestCase):
         self.assertIn(("LI-01", "h05G"), entries)
         i10 = self.listing.split('new SourceModelUnconnectedSkillRow("I-10", "h04G",')[1].split(
             'new SourceModelUnconnectedSkillRow(', 1)[0]
-        self.assertIn('Array.Empty<string>(), new[] { "마나 광역 공격" }', i10)
+        self.assertIn('new[] { "매 타격 스턴" }, new[] { "마나 광역 공격" }', i10,
+                      "Batch 15 adds the exact documented every-hit skill without losing the mana active.")
         li01 = self.listing.split('new SourceModelUnconnectedSkillRow("LI-01", "h05G",')[1].split(
             'new SourceModelUnconnectedSkillRow(', 1)[0]
         self.assertIn('new[] { "핏빛 범위 공격", "광역 마법 공격" }, Array.Empty<string>()', li01)
-        for forbidden in ("직선 마법 공격", "차지 버스트", "매 타격 스턴", "단일 스턴"):
+        for forbidden in ("직선 마법 공격", "차지 버스트", "단일 스턴"):
             self.assertNotIn('new[] { "' + forbidden + '" }', i10 + li01)
 
     def test_caster_area_is_explicit_and_native_duplicate_is_excluded(self):
