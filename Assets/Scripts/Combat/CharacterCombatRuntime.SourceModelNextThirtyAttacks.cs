@@ -221,9 +221,16 @@ namespace Ordr.Mobile.Combat
         {
             string attackerId = InstanceKey(actor.Id);
             bool composite = SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(skill) ||
-                SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(skill);
+                SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(skill) ||
+                SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill);
             foreach (var component in skill.Components)
             {
+                if (SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) &&
+                    component.Type == "summonSoldier")
+                {
+                    TrySourceModelSongSoldier(actor, primary, skill, component);
+                    continue;
+                }
                 if (composite && component.Type == "selfHeal")
                 {
                     if (actor.Abilities.Resources != null)
@@ -305,7 +312,8 @@ namespace Ordr.Mobile.Combat
                     // The offline model has no native legacy-level provider:
                     // the first documented increment is the conservative
                     // mobile practice value, never a fabricated rank.
-                    if (skill.Id == "LI-02:skill:1" &&
+                    if ((skill.Id == "LI-02:skill:1" ||
+                         skill.Id == "LI-02:skill:2") &&
                         component.Type == "physical")
                         raw += component.Number("plusLegacyLevelDamage") ?? 0;
                     if (component.Text("basis") == "targetMaxHealth")

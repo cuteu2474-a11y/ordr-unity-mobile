@@ -1,4 +1,10 @@
-> **최신 기준:** 아래 「2차 복합 스킬 실행 경로」 항목이 현재 구현입니다. 그 이전 항목의 숫자는 과거 기록입니다.
+## 2026-11-03 · 3차 복합 평타 12개 실행 경로 (현재 최신)
+
+- **식별/허용:** `SourceModelUnconnectedSkillCatalog`에 기존 7명 공격 명칭 12개 추가. `SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack/CanModelThirdCompositeComponents`가 `(unitId, skill index, name, 순서, 필드)`를 완전 패킷 기준으로 검증합니다. 자동 액티브/기존 JASS 콜백과 병렬 중복을 만들지 않습니다.
+- **실행:** `CharacterCombatRuntime.SourceModelNextThirtyAttacks` → 기존 `SourceScriptTargets` 전장/반경·발동 확률 → `CharacterCombatRuntime.SourceModelCompositeEffects.SourceModelCompositeRawDamage`가 객체 기본 공격력, 기존 특수기 피해, 적 HP 비례, 주문학교별 추가 피해를 공통 HP/방어/처치로 계산합니다. `SourceModelCompositeMagicFactor`는 우타 폭발 스쿨에 2차의 `ExplosiveDamageAmplification` 실제 증폭을 적용합니다.
+- **생명주기:** 음표 병사 `TrySourceModelSongSoldier/SourceModelSongSoldiers`는 7초 기여 수치만 보관하며 실제 W3X 객체를 꾸며 내지 않습니다. 기간 만료·유닛 제거·전장 전환 때 정리합니다. `ConfigureSourceModelHeroStrengthProvider`로 진각 힘+17,500/힘의 출처를 나중에 공급할 수 있고, 없으면 기본 125만만 적용합니다. 근거 `data/source-model-third-12-composite-attacks.json` 및 신규 Python/Unity EditMode 회귀.
+
+> 아래 1·2차 섹션은 이전 시점 기록입니다.
 
 ## 2026-11-03 · 1차 복합 스킬 공통 연결부 (이전 작업)
 

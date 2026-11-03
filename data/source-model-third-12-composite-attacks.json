@@ -1,0 +1,33 @@
+{
+  "format": "ordr-source-model-third-12-composite-attacks-v1",
+  "gameVersion": "S2 2.323[C]",
+  "model": "TOOLTIP_MODEL_ONLY",
+  "source": "data/character-skill-profiles.json",
+  "newOnAttackPackets": 12,
+  "newAutomaticActivePackets": 0,
+  "skills": [
+    { "unitId": "TR-08", "rawcode": "H099", "skillId": "TR-08:skill:1", "name": "평타 광역 연계", "chancePercent": 17.5, "components": ["magical", "physical", "fixed", "movementSlow"] },
+    { "unitId": "TR-08", "rawcode": "H099", "skillId": "TR-08:skill:2", "name": "기간트 개틀링", "chancePercent": 1.25, "components": ["magical", "stun"] },
+    { "unitId": "TR-22", "rawcode": "H09A", "skillId": "TR-22:skill:1", "name": "해류 공격", "chancePercent": 6.25, "components": ["magical", "physical", "fixed", "armorBreak", "movementSlow"] },
+    { "unitId": "TR-22", "rawcode": "H09A", "skillId": "TR-22:skill:2", "name": "진각", "chancePercent": 14.25, "components": ["physical", "armorBreak"] },
+    { "unitId": "TR-29", "rawcode": "H08X", "skillId": "TR-29:skill:1", "name": "중력장", "chancePercent": 4.5, "components": ["physical", "stun", "armorBreak"] },
+    { "unitId": "TR-29", "rawcode": "H08X", "skillId": "TR-29:skill:2", "name": "중력검", "chancePercent": 15, "components": ["physical", "magical", "stun", "armorBreak"] },
+    { "unitId": "SR-03", "rawcode": "h0A0", "skillId": "SR-03:skill:1", "name": "단일 타격", "chancePercent": 12.5, "components": ["stun", "critical"] },
+    { "unitId": "H-19", "rawcode": "h07L", "skillId": "H-19:skill:1", "name": "라인 체력 비례", "chancePercent": 15, "components": ["magical"] },
+    { "unitId": "LI-02", "rawcode": "h05I", "skillId": "LI-02:skill:2", "name": "물리 연계", "chancePercent": 10, "components": ["physical", "magical"] },
+    { "unitId": "E-09", "rawcode": "h067", "skillId": "E-09:skill:2", "name": "음표 병사 연계", "chancePercent": 25, "components": ["magical", "magical", "explosive"] },
+    { "unitId": "E-09", "rawcode": "h067", "skillId": "E-09:skill:3", "name": "3연타 마법", "chancePercent": 4, "components": ["magical", "summonSoldier"] },
+    { "unitId": "E-09", "rawcode": "h067", "skillId": "E-09:skill:4", "name": "라인·보스 추가 피해", "chancePercent": 10, "components": ["magical", "magical", "explosive", "magical"] }
+  ],
+  "mobilePolicies": {
+    "onAttack": "Existing shared attacker-declaration proc roll; skill names and full ordered component shapes are allow-listed, no independent duplicate callback",
+    "basicAttackScale": "Nominal object attack power is used only for the documented basicAttackPercent, basicAttackMultiplier, and critical multiplier; the existing normal hit is not repeated",
+    "critical": "A 5.25x tooltip critical applies only an additional 4.25x nominal base to the target because the normal hit already occurred",
+    "strength": "TR-22 Jinbe's fixed 1250000 is applied; +17500 per hero strength is computed only when ConfigureSourceModelHeroStrengthProvider supplies a real nonnegative strength, otherwise deferred without an invented attribute",
+    "soldier": "E-09's secondary 25% roll records one seven-second, per-owner soldier contribution; no source-backed combat rawcode exists to spawn a real selectable soldier. The 700000 magic and 10% current-HP explosive per soldier depend on the live count. Remove on expiry, owner removal, and lane changes",
+    "explosive": "The common HP/armor ledger applies 5% maximum HP plus 6% missing HP twice to line enemies; E-09's previously registered 10% explosive amplification is consumed by explosive-school attacks using the strongest-source policy",
+    "legacy": "LI-02 physical adds only the first documented 25000 rank increment to the 600000 base; 350% magical bonus uses that modeled base, no synthetic additional ranks",
+    "mixed": "Separate magical, physical, fixed, and explosive components use existing damage and enemy-lane gates; unknown native timing, armor, immunity and final hit ordering remain unverified",
+    "parity": "Logical offline mobile combat result model, not a claim of original JASS execution equivalence"
+  }
+}

@@ -113,11 +113,113 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        private static double SourceModelCompositeRawDamage(
+        private readonly Dictionary<long, List<double>> sourceSongSoldierExpiry =
+            new Dictionary<long, List<double>>();
+        private Func<long, double?> sourceModelStrengthProvider;
+
+        // An actual hero-attribute provider may be attached later without
+        // changing any skill formula; absent data contributes ZERO scaling.
+        public void ConfigureSourceModelHeroStrengthProvider(Func<long, double?> provider)
+        {
+            sourceModelStrengthProvider = provider;
+        }
+
+        private int SourceModelSongSoldiers(long casterId)
+        {
+            List<double> expiry;
+            if (!characters.ContainsKey(casterId) ||
+                !sourceSongSoldierExpiry.TryGetValue(casterId, out expiry)) return 0;
+            expiry.RemoveAll(until => until <= Time);
+            if (expiry.Count == 0) sourceSongSoldierExpiry.Remove(casterId);
+            return expiry.Count;
+        }
+
+        public int PracticeSongSoldierCount(long casterId) =>
+            SourceModelSongSoldiers(casterId);
+
+        private void TrySourceModelSongSoldier(CharacterInstance actor,
+            SpatialCombatEnemy primary, ImportedCombatSkill skill,
+            ImportedCombatEffect component)
+        {
+            // 25% secondary roll occurs only after the parent 4% multi-hit
+            // proc. There is no confirmed soldier rawcode or attack profile:
+            // track its seven-second contribution, not a fake combat unit.
+            int threshold = (int)Math.Round(component.Number("chancePercent").Value *
+                10000, MidpointRounding.AwayFromZero);
+            if (sourceModelRules.NextScriptRoll(1000000) >= threshold) return;
+            List<double> expiry;
+            if (!sourceSongSoldierExpiry.TryGetValue(actor.Id, out expiry))
+            {
+                expiry = new List<double>();
+                sourceSongSoldierExpiry.Add(actor.Id, expiry);
+            }
+            expiry.RemoveAll(until => until <= Time);
+            expiry.Add(Time + component.Number("durationSeconds").Value);
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                InstanceKey(actor.Id), primary.Id, skill.Name,
+                "TOOLTIP_MODEL_ONLY / 7초 음표 병사 기여 수치; 실제 소환 전투 객체 미검증", 0));
+        }
+
+        private double SourceModelCompositeRawDamage(
             CharacterInstance actor, ImportedCombatSkill skill,
             ImportedCombatEffect component,
             SpatialCombatEnemy target, double multiplier)
         {
+            if (SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill))
+            {
+                double basic = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
+                if (component.Type == "critical")
+                    // The normal hit already happened in the attack pipeline;
+                    // only the 4.25x *increment* should hit again.
+                    return basic * (component.Number("multiplier").Value - 1) * multiplier;
+                if (component.Get("amountPerSoldier") != null)
+                    return component.Number("amountPerSoldier").Value *
+                        SourceModelSongSoldiers(actor.Id) * multiplier;
+                if (component.Type == "explosive")
+                {
+                    if (component.Text("basis") == "targetCurrentHealth")
+                        return target.Enemy.Health *
+                            component.Number("percentPerSoldier").Value / 100 *
+                            SourceModelSongSoldiers(actor.Id) * multiplier;
+                    return (target.Enemy.MaxHealth *
+                        component.Number("percent").Value / 100 +
+                        (target.Enemy.MaxHealth - target.Enemy.Health) *
+                        (component.Number("plusMissingHealthPercent") ?? 0) / 100) *
+                        multiplier;
+                }
+                if (component.Text("basis") == "targetCurrentHealth")
+                    return target.Enemy.Health *
+                        component.Number("percent").Value / 100 * multiplier;
+                if (component.Get("skillDamagePercent") != null &&
+                    skill.Id == "TR-22:skill:1")
+                    return skill.Components[1].Number("amount").Value *
+                        component.Number("skillDamagePercent").Value / 100 * multiplier;
+                if (component.Get("bonusPercent") != null &&
+                    skill.Id == "LI-02:skill:2")
+                    return (skill.Components[0].Number("amount").Value +
+                        skill.Components[0].Number("plusLegacyLevelDamage").Value) *
+                        component.Number("bonusPercent").Value / 100 * multiplier;
+                if (component.Get("basicAttackPercent") != null)
+                    return (basic * component.Number("basicAttackPercent").Value / 100 +
+                        (component.Number("flatAmount") ?? 0)) * multiplier;
+                if (component.Get("basicAttackMultiplier") != null)
+                    return (basic * component.Number("basicAttackMultiplier").Value +
+                        (component.Number("flatAmount") ?? 0)) * multiplier;
+                if (component.Get("strengthScalingPerPoint") != null &&
+                    sourceModelStrengthProvider != null)
+                {
+                    double? strength = sourceModelStrengthProvider(actor.Id);
+                    if (strength.HasValue && strength.Value >= 0 &&
+                        !double.IsNaN(strength.Value) &&
+                        !double.IsInfinity(strength.Value))
+                        return ((component.Number("amount") ?? 0) +
+                            strength.Value * component.Number("strengthScalingPerPoint").Value) *
+                            multiplier;
+                }
+                // TR-22 Jinbe's +17500 per strength is sourced, but the
+                // currently configured runtime has no original strength
+                // attribute. Defer scaling instead of inventing its value.
+            }
             if (component.Text("basis") == "skillDamage" &&
                 skill.Id == "SR-03:skill:0")
                 return skill.Components[0].Number("amount").Value *
@@ -146,6 +248,10 @@ namespace Ordr.Mobile.Combat
         private static double SourceModelCompositeMagicFactor(
             SpatialCombatEnemy target, string componentType)
         {
+            if (componentType == "explosive")
+                return 1 + SourceModelUnitEffects.ResolvePracticeMagicModifier(
+                    target.Enemy.Status.Snapshot(),
+                    CombatEffectType.ExplosiveDamageAmplification) / 100;
             if (componentType != "magical") return 1;
             var statuses = target.Enemy.Status.Snapshot();
             double amp = SourceModelUnitEffects.ResolvePracticeMagicModifier(

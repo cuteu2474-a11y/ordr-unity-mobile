@@ -198,6 +198,8 @@ namespace Ordr.Mobile.Combat
                 if (key != "name" && key != "trigger" && key != "chancePercent" &&
                     key != "target" && key != "radius" && key != "components")
                     return false;
+            if (IsThirdCompositeAttack(skill))
+                return CanModelThirdCompositeComponents(skill);
             return IsSecondCompositeSkill(skill) ?
                 CanModelSecondCompositeComponents(skill) : CanModelComponents(skill);
         }
@@ -283,6 +285,96 @@ namespace Ordr.Mobile.Combat
                 case "RN-04:skill:0": return skill.Name == "페인 브링어";
                 default: return false;
             }
+        }
+
+        // Third batch of twelve attack-triggered tooltip packets. Approval is
+        // tied to the owning unit, skill index, name, effect order AND field
+        // shape; an unrelated partial tooltip must never inherit this model.
+        public static bool IsThirdCompositeAttack(ImportedCombatSkill skill)
+        {
+            if (skill == null) return false;
+            switch (skill.Id)
+            {
+                case "TR-08:skill:1": return skill.Name == "평타 광역 연계";
+                case "TR-08:skill:2": return skill.Name == "기간트 개틀링";
+                case "TR-22:skill:1": return skill.Name == "해류 공격";
+                case "TR-22:skill:2": return skill.Name == "진각";
+                case "TR-29:skill:1": return skill.Name == "중력장";
+                case "TR-29:skill:2": return skill.Name == "중력검";
+                case "SR-03:skill:1": return skill.Name == "단일 타격";
+                case "H-19:skill:1": return skill.Name == "라인 체력 비례";
+                case "LI-02:skill:2": return skill.Name == "물리 연계";
+                case "E-09:skill:2": return skill.Name == "음표 병사 연계";
+                case "E-09:skill:3": return skill.Name == "3연타 마법";
+                case "E-09:skill:4": return skill.Name == "라인·보스 추가 피해";
+                default: return false;
+            }
+        }
+
+        private static bool CanModelThirdCompositeComponents(ImportedCombatSkill skill)
+        {
+            string[] fields;
+            switch (skill.Id)
+            {
+                case "TR-08:skill:1": fields = new[] { "magical|amount", "physical|basicAttackPercent,flatAmount", "fixed|basicAttackPercent,flatAmount,scope", "movementSlow|percent,durationSeconds" }; break;
+                case "TR-08:skill:2": fields = new[] { "magical|amountPerHit,hits", "stun|durationSeconds" }; break;
+                case "TR-22:skill:1": fields = new[] { "magical|amount", "physical|amount", "fixed|skillDamagePercent,scope", "armorBreak|stacks,maxStacks", "movementSlow|percent,durationSeconds" }; break;
+                case "TR-22:skill:2": fields = new[] { "physical|amount,strengthScalingPerPoint", "armorBreak|stacks,maxStacks" }; break;
+                case "TR-29:skill:1": fields = new[] { "physical|basicAttackMultiplier,flatAmount", "stun|durationSeconds", "armorBreak|stacks,maxStacks" }; break;
+                case "TR-29:skill:2": fields = new[] { "physical|basicAttackMultiplier,flatAmount", "magical|amount,scope", "stun|durationSeconds", "armorBreak|stacks,maxStacks" }; break;
+                case "SR-03:skill:1": fields = new[] { "stun|durationSeconds", "critical|multiplier" }; break;
+                case "H-19:skill:1": fields = new[] { "magical|basis,percent,onlyTargetKinds" }; break;
+                case "LI-02:skill:2": fields = new[] { "physical|amount,plusLegacyLevelDamage", "magical|bonusPercent,scope" }; break;
+                case "E-09:skill:2": fields = new[] { "magical|amountPerSoldier", "magical|amount,scope", "explosive|basis,percentPerSoldier,onlyTargetKinds" }; break;
+                case "E-09:skill:3": fields = new[] { "magical|amountPerHit,hits,multiplierRange", "summonSoldier|chancePercent,durationSeconds" }; break;
+                case "E-09:skill:4": fields = new[] { "magical|amount,multiplierRange", "magical|amount,onlyTargetKinds", "explosive|basis,percent,plusMissingHealthPercent,hits,onlyTargetKinds", "magical|amount,onlyTargetKinds" }; break;
+                default: return false;
+            }
+            if (skill.Components.Count != fields.Length) return false;
+            for (int i = 0; i < fields.Length; i++)
+            {
+                var parts = fields[i].Split('|');
+                var component = skill.Components[i];
+                if (component.Type != parts[0]) return false;
+                var keys = parts[1].Split(',');
+                if (component.Fields.Count != keys.Length + 1) return false;
+                foreach (string key in keys)
+                {
+                    if (!component.Fields.ContainsKey(key)) return false;
+                    if (key == "scope")
+                    {
+                        if (component.Text(key) != "singlePrimaryTarget") return false;
+                    }
+                    else if (key == "basis")
+                    {
+                        if (component.Text(key) != "targetCurrentHealth" &&
+                            component.Text(key) != "targetMaxHealth") return false;
+                    }
+                    else if (key == "multiplierRange")
+                    {
+                        if (!ValidSourceModelMultiplierRange(component.Get(key))) return false;
+                    }
+                    else if (key == "onlyTargetKinds")
+                    {
+                        var kinds = component.Get(key) as List<object>;
+                        if (kinds == null || kinds.Count == 0) return false;
+                        foreach (object kind in kinds)
+                            if (!(kind is string) ||
+                                ((string)kind != "line" && (string)kind != "boss" &&
+                                 (string)kind != "enraged" && (string)kind != "story"))
+                                return false;
+                    }
+                    else if (!FinitePositive(component.Number(key))) return false;
+                    if ((key == "hits" || key == "stacks" || key == "maxStacks") &&
+                        (component.Number(key).Value > 64 && key == "hits" ||
+                         component.Number(key).Value > int.MaxValue ||
+                         Math.Floor(component.Number(key).Value) !=
+                         component.Number(key).Value)) return false;
+                    if (key == "chancePercent" && component.Number(key).Value > 100)
+                        return false;
+                }
+            }
+            return true;
         }
 
         private static bool CanModelSecondCompositeComponents(ImportedCombatSkill skill)

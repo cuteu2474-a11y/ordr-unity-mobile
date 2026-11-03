@@ -841,6 +841,82 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [TestCase("TR-08", "평타 광역 연계", 17.5d)]
+        [TestCase("TR-08", "기간트 개틀링", 1.25d)]
+        [TestCase("TR-22", "해류 공격", 6.25d)]
+        [TestCase("TR-22", "진각", 14.25d)]
+        [TestCase("TR-29", "중력장", 4.5d)]
+        [TestCase("TR-29", "중력검", 15d)]
+        [TestCase("SR-03", "단일 타격", 12.5d)]
+        [TestCase("H-19", "라인 체력 비례", 15d)]
+        [TestCase("LI-02", "물리 연계", 10d)]
+        [TestCase("E-09", "음표 병사 연계", 25d)]
+        [TestCase("E-09", "3연타 마법", 4d)]
+        [TestCase("E-09", "라인·보스 추가 피해", 10d)]
+        public void ThirdBatchTwelveAttackPacketsEnterExistingCombatLedger(
+            string unitId, string name, double chance)
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require(unitId).Skills.Single(x => x.Name == name);
+            Assert.AreEqual(chance, skill.ChancePercent.Value, 1e-8);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill), name);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill), name);
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(7);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == name), name + " did not activate");
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == name && e.Amount > 0),
+                    name + " must reach the shared enemy HP ledger");
+            }
+        }
+
+        [Test]
+        public void ThirdBatchUtaSoldierContributionExpiresAndNeverBecomesAFreeUnit()
+        {
+            using (var live = Create("E-09", true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(5);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "3연타 마법" &&
+                    e.Detail.Contains("음표 병사")));
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "음표 병사 연계" && e.Amount > 0));
+                Assert.Greater(live.Combat.PracticeSongSoldierCount(live.ActorId), 0);
+                Assert.IsFalse(live.Combat.MobileUnitSnapshot().Any(u =>
+                    u.Unit.Id == "SOLDIER"), "Unknown W3X summon rawcode must not spawn a fake unit");
+                live.Rolls.Trigger = false;
+                live.Battle.Advance(8);
+                Assert.AreEqual(0, live.Combat.PracticeSongSoldierCount(live.ActorId));
+            }
+        }
+
+        [Test]
+        public void ThirdBatchJinbeAttributeScaleAppliesOnlyWhenARealProviderIsConfigured()
+        {
+            long unscaled, scaled;
+            using (var live = Create("TR-22", true, -4900, 5400))
+                unscaled = live.Battle.Advance(5)
+                    .Where(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                                e.SkillName == "진각")
+                    .Sum(e => e.Amount);
+            using (var live = Create("TR-22", true, -4900, 5400))
+            {
+                live.Combat.ConfigureSourceModelHeroStrengthProvider(id => 10d);
+                scaled = live.Battle.Advance(5)
+                    .Where(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                                e.SkillName == "진각")
+                    .Sum(e => e.Amount);
+            }
+            Assert.Greater(scaled, unscaled,
+                "Only the supplied hero strength may increase Jinbe's fixed packet");
+        }
+
         [Test]
         public void ZephyrMissingManaSkillUsesOriginal160ManaAndExistingHpDamageLedger()
         {

@@ -1393,6 +1393,9 @@ namespace Ordr.Mobile.Combat
             if (!characters.ContainsKey(instanceId))
                 throw new KeyNotFoundException("파견 대상 유닛이 없습니다.");
             CancelOriginalUnitCast(instanceId);
+            // A timed mobile song summon cannot follow its owner between
+            // mutually exclusive main and story combat lanes.
+            sourceSongSoldierExpiry.Remove(instanceId);
             if (UsesSourceModelBasicAttacks)
                 sourceModelStoryLaneRevisions[instanceId] =
                     checked(SourceModelLaneRevision(instanceId) + 1);
@@ -1642,6 +1645,7 @@ namespace Ordr.Mobile.Combat
                     attackPipeline.RemoveUnit(InstanceKey(id));
                 if (commonAttackPreview != null) commonAttackPreview.Remove(id);
                 characters.Remove(id);
+                sourceSongSoldierExpiry.Remove(id);
                 sourceModelManagedResourceRows.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
@@ -2193,6 +2197,7 @@ namespace Ordr.Mobile.Combat
             sourceRareLawReadyAt.Remove(instanceId);
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
+            sourceSongSoldierExpiry.Remove(instanceId);
             sourceModelManagedResourceRows.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
             // Native fusion removes every input as ONE logical batch. Do
