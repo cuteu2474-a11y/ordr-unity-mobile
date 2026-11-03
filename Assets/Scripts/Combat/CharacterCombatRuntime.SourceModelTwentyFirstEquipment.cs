@@ -21,10 +21,17 @@ namespace Ordr.Mobile.Combat
 
         public void ConfigureSourceModelEquippedItems(IOriginalEquippedItemWitness witness)
         {
-            if (!UsesSourceModelBasicAttacks || witness == null ||
+            ConfigureSourceModelEquippedItems(witness, null);
+        }
+
+        public void ConfigureSourceModelEquippedItems(IOriginalEquippedItemWitness receipts,
+            IOriginalEquippedInventorySnapshotWitness inventory)
+        {
+            if (!UsesSourceModelBasicAttacks ||
+                (receipts == null && inventory == null) ||
                 sourceModelEquippedItems != null || game.CurrentWave != 0 || processingStep)
                 throw new InvalidOperationException("원본 장비 증거 공급자는 전투 시작 전에 한 번만 연결합니다.");
-            sourceModelEquippedItems = new OriginalEquippedItemLedger(witness);
+            sourceModelEquippedItems = new OriginalEquippedItemLedger(receipts, inventory);
         }
 
         public void ConfigureSourceModelBulletArmadaLevel(
@@ -47,6 +54,31 @@ namespace Ordr.Mobile.Combat
                 !characters.TryGetValue(ownerId, out actor)) return false;
             return sourceModelEquippedItems.TryRecord(transactionId, ownerId,
                 originalRawcode, signedCount);
+        }
+
+        // Alternative native integration for already-equipped items at game
+        // load and later full-state native revisions. A given owner cannot
+        // use both a full snapshot and delta receipts without a shared cursor.
+        public bool TrySynchronizeSourceModelEquippedInventory(long ownerId)
+        {
+            CharacterInstance actor;
+            if (!UsesSourceModelBasicAttacks || processingStep ||
+                activeOriginalFusionSwap != null || sourceModelEquippedItems == null ||
+                !characters.TryGetValue(ownerId, out actor)) return false;
+            return sourceModelEquippedItems.TrySynchronizeFromNative(ownerId);
+        }
+
+        public int SynchronizeExistingSourceModelEquippedInventories()
+        {
+            if (!UsesSourceModelBasicAttacks || processingStep ||
+                activeOriginalFusionSwap != null || sourceModelEquippedItems == null)
+                return 0;
+            var ids = new List<long>(characters.Keys);
+            ids.Sort();
+            int updated = 0;
+            foreach (long id in ids)
+                if (sourceModelEquippedItems.TrySynchronizeFromNative(id)) updated++;
+            return updated;
         }
 
         public OriginalEquippedItemSnapshot SourceModelEquippedItemsOf(long ownerId)

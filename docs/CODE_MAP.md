@@ -448,3 +448,9 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - **전투:** `CharacterCombatRuntime.SourceModelTwentyFirstEquipment.cs`는 육식 체 3초/공통 공격당 1회/전장 리비전 정리, 독립 0.1초×30회 DoT, 공속/공격/방어 아이템 스택 조회, 유니크 방어 둔화 오라 및 **실제 A0WQ 관측 레벨**만 적용합니다. `SourceModelTwentiethSkills.cs`의 나머지 13연타·패왕색/괴물 후계자에 조건별 보너스를 추가. `SourceModelNextThirtyAttacks`에 공격 3기와 itemUpgrade 비공격 경로 분리. `SourceModelEffects.RefreshSourceModelAuras`에서 장비 방어 둔화를 전장 전체 적에 적용하며 기존 오라 제거 키를 공유합니다.
 - **근거·안전:** `SourceModelTwentiethSkillCatalog`에서 불릿 `skill:2`, `skill:4` 전체 필드를 정확히 승인. `data/original-2323C-all-unit-aura-audit.json`의 A0WQ ACac 1~4단계는 5/20/40/50%, 단위 객체 `h081`에는 선천 오라가 **없어** 입증된 원본 레벨 없이는 버프를 부여하지 않습니다. `OriginalMissionWalletRewards.ItemResourceId`는 위습만 변환. 검사 코드는 `Assets/Tests/EditMode/OriginalEquippedItemLedgerTests.cs`에 추가했지만 **미실행**입니다.
 
+## 2026-11-03 · 22차 원본 장비 전체 상태 동기화 (현재 최신)
+
+- **코어:** `OriginalEquippedItemLedger.cs`의 `IOriginalEquippedInventorySnapshotWitness.TryReadCompleteInventory(owner, out nativeRevision, out nativeStacks, out evidence)`는 원본 월드가 관찰한 **전체 보유 상태**만 받습니다. `TrySynchronizeFromNative`는 원본 rawcode 4자리·유효 개수·등급·공격 분류·중복·총합·revision·증거를 **모두 검증한 뒤 교체**합니다. 각 유닛의 delta 영수증과 전체 스냅샷은 서로 배타적이며 삭제 후에도 방어용 영수증·revision은 남깁니다.
+- **호출·UI:** `CharacterCombatRuntime.SourceModelTwentyFirstEquipment.cs`가 전투 중 유닛 생존·조합 중단 조건을 검사하고, 기존 유닛 목록 전체 초기 복원을 지원합니다. `OrdrCharacterCombatController`는 시작 전 공급자 연결→연습 시작 시 기존 유닛 동기화→원본 revision 갱신 시 수동 동기화 포트를 제공합니다. `OrdrMobileTouchPanel.DrawUnits`는 선택된 I-05의 확인된 장착과 아르마다 자격만 표시하며, 실제 증거 제공자가 없으면 동기화 버튼을 숨깁니다. 단위 원본 기술 레벨은 `IOriginalBulletArmadaLevelWitness`에서만 읽습니다.
+- **검증 경계:** `Assets/Tests/EditMode/OriginalEquippedItemLedgerTests.cs`에 전체 목록 대체·낡은 revision·불완전 원본·동일 유닛 이중 합산·오버플로 시나리오를 추가했으나 실행은 금지 상태입니다. 실제 원본 구매/드롭 공급자 없음; `data/source-model-twentysecond-inventory-synchronization.json` 참조. **Python/Unity/APK/Actions 미실행·미조회**.
+

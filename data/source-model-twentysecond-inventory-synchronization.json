@@ -1,0 +1,27 @@
+{
+  "batch": 22,
+  "date": "2026-11-03",
+  "scope": "I-05 Bullet and generic unit-owned original equipment inventory",
+  "sourceTruth": {
+    "baseline": "data/source-model-twentyfirst-bullet-equipment.json",
+    "sourceW3x": "S2 2.323[C] (no new original item/drop/rarity mapping found)",
+    "nativeInventoryProviderAvailable": false,
+    "actualEquipmentAcquisitionAvailable": false,
+    "actualArmadaLevelProviderAvailable": false
+  },
+  "implementation": [
+    "IOriginalEquippedInventorySnapshotWitness: complete authoritative item ownership, classifications, count and monotonically increasing native revision",
+    "OriginalEquippedItemLedger.TrySynchronizeFromNative: all-or-nothing replacement, duplicate/overflow/invalid-evidence rejection and stale-revision prevention",
+    "Native complete-state mode is never mixed with incremental transaction receipts per owner; removed owners retain anti-replay markers",
+    "OrdrCharacterCombatController: pre-battle full inventory hydration for existing units and explicit native revision resynchronization",
+    "OrdrMobileTouchPanel: I-05 selected unit displays confirmed Attack/AttackSpeed/Armor, Unique/Legendary totals and 15/30 Armada eligibility; sync button requires configured native witness"
+  ],
+  "limits": [
+    "No mobile shop or wisp reward is promoted to equipment without actual native rawcode ownership proof",
+    "No standalone save file is accepted as authority; reloading requires a fresh native complete-inventory observation",
+    "A0WQ levels are never inferred from eligibility or total item counts",
+    "No mixed native full snapshots and delta receipts are allowed without a common event cursor; use one mode per owner",
+    "No Unity or Python tests, APK, simulator or GitHub Actions were started or queried"
+  ],
+  "quality": "Code and EditMode regression scenarios added; not executed, TOOLTIP_MODEL_ONLY"
+}

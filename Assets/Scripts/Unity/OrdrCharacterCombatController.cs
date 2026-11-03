@@ -678,7 +678,10 @@ namespace Ordr.Mobile.Unity
         private bool usesBuiltInAutomaticUncommonWisps;
         private SourceModelBasicCombatRules sourceModelDamage;
         private IOriginalEquippedItemWitness originalEquippedItemWitness;
+        private IOriginalEquippedInventorySnapshotWitness originalEquippedInventoryWitness;
         private IOriginalBulletArmadaLevelWitness originalBulletArmadaWitness;
+        public bool HasOriginalEquippedInventorySnapshotWitness =>
+            originalEquippedInventoryWitness != null;
 
         // Integration ports for a REAL native inventory/equipment purchase,
         // not a button/tooltip or an item issued from the personal missions.
@@ -687,6 +690,19 @@ namespace Ordr.Mobile.Unity
             if (PracticeBattle != null || originalEquippedItemWitness != null || witness == null)
                 throw new InvalidOperationException("장비 증거 공급자는 연습 전투 전 한 번만 연결합니다.");
             originalEquippedItemWitness = witness;
+        }
+
+
+        // A complete, revisioned inventory is a separate native-authorized
+        // input, useful when a loaded unit owned equipment before this combat
+        // runtime existed. It never derives gear from the mobile shop UI.
+        public void ConfigureOriginalEquippedInventorySnapshotWitness(
+            IOriginalEquippedInventorySnapshotWitness witness)
+        {
+            if (PracticeBattle != null || originalEquippedInventoryWitness != null ||
+                witness == null)
+                throw new InvalidOperationException("원본 전체 장착 증거는 연습 전투 전에 한 번만 연결합니다.");
+            originalEquippedInventoryWitness = witness;
         }
 
         public void ConfigureOriginalBulletArmadaLevelWitness(
@@ -702,6 +718,13 @@ namespace Ordr.Mobile.Unity
         {
             return Combat != null && Combat.TryRecordSourceModelEquippedItem(
                 receipt, unitInstanceId, itemRawcode, signedCount);
+        }
+
+
+        public bool TrySynchronizeOriginalEquippedInventory(long unitInstanceId)
+        {
+            return Combat != null &&
+                Combat.TrySynchronizeSourceModelEquippedInventory(unitInstanceId);
         }
         private IOriginalWispRandom sessionScriptRandom;
         public SourceModelPracticeBattle PracticeBattle { get; private set; }
@@ -881,11 +904,16 @@ namespace Ordr.Mobile.Unity
             sourceModelDamage.Enable();
             Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
             Combat.ConfigureSourceModelPlayerGold(() => SharedEconomy.Wallet.Balance("gold"));
-            if (originalEquippedItemWitness != null)
-                Combat.ConfigureSourceModelEquippedItems(originalEquippedItemWitness);
+            if (originalEquippedItemWitness != null || originalEquippedInventoryWitness != null)
+                Combat.ConfigureSourceModelEquippedItems(originalEquippedItemWitness,
+                    originalEquippedInventoryWitness);
             if (originalBulletArmadaWitness != null)
                 Combat.ConfigureSourceModelBulletArmadaLevel(originalBulletArmadaWitness);
             Combat.BindExistingVerifiedAttacks();
+            // Pre-battle units may already have real equipped items; their
+            // native full inventory is imported only with a trusted witness.
+            if (originalEquippedInventoryWitness != null)
+                Combat.SynchronizeExistingSourceModelEquippedInventories();
             Combat.ConfigureSourceModelUnitResources(sourcePool);
             EnsureSoloStoryStarted(creepData.text);
             PracticeBattle = prepared;

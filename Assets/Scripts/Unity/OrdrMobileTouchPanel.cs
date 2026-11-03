@@ -1017,6 +1017,26 @@ namespace Ordr.Mobile.Unity
                             " (객체 평타 모델 가동 · 고유 스킬 미검증)",
                             OrdrMobileUiTheme.Overline);
                     }
+                    if (detail.CatalogId == "I-05" && Combat.UsesSourceModelBasicAttacks)
+                    {
+                        var equipped = Combat.SourceModelEquippedItemsOf(selectedId);
+                        GUILayout.Label("확인된 장착: 공격 " + equipped.Attack +
+                            " · 공속 " + equipped.AttackSpeed + " · 방어 " + equipped.Armor,
+                            OrdrMobileUiTheme.Overline);
+                        GUILayout.Label("유니크 " +
+                            (equipped.UniqueAttack + equipped.UniqueSpeed + equipped.UniqueArmor) +
+                            " · 전설 " +
+                            (equipped.LegendaryAttack + equipped.LegendarySpeed +
+                             equipped.LegendaryArmor) +
+                            " · 아르마다 자격 " +
+                            Combat.SourceModelBulletArmadaThresholdOf(selectedId) + "/2" +
+                            " (실제 기술 단계와 별개)", OrdrMobileUiTheme.Overline);
+                        if (controller.HasOriginalEquippedInventorySnapshotWitness &&
+                            GUILayout.Button("원본 장비 동기화", GUILayout.MinHeight(56)))
+                            notice = controller.TrySynchronizeOriginalEquippedInventory(selectedId)
+                                ? "원본 장비 보유 상태 갱신" :
+                                "변경된 원본 장비 증거가 없거나 동기화가 제한됩니다.";
+                    }
                     var resources = Combat.ResourcesOf(selectedId);
                     if (resources != null)
                     {
