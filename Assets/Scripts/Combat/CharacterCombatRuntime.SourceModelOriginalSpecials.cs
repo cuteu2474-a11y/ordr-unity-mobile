@@ -189,8 +189,9 @@ namespace Ordr.Mobile.Combat
         {
             double until;
             return UsesSourceModelBasicAttacks && enemyId != null &&
-                sourceSpecialPullHeldUntil.TryGetValue(enemyId, out until) &&
-                effectExecutor.Time < until;
+                (SourceModelTwelfthBonneyRooted(enemyId) ||
+                 (sourceSpecialPullHeldUntil.TryGetValue(enemyId, out until) &&
+                  effectExecutor.Time < until));
         }
 
         private void ExecuteSourceZoro(CharacterInstance actor,

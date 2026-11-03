@@ -1,4 +1,8 @@
-## 2026-11-03 · 11차 동형 변신·원본 평타 객체 교체 (최신)
+## 2026-11-03 · 12차 변신 후속 경로 (최신)
+
+- `SourceModelEleventhForms` 공격 선언→`SourceModelTwelfthForms` 보니40스택·스턴, 킹 화재/둔화→공통 피해·타이머·상태 원장. `SourceModelOriginalSpecials.IsSourceModelPullHeld`에 세월관통 루트, `OrdrUnitWorldPresenter` 0.6배 외형, `OrdrMobileTouchPanel` 한글 폼. 세부 내용은 문서 끝의 같은 12차 섹션에 있습니다. 원작 최종 등가성 미검증.
+
+## 2026-11-03 · 11차 동형 변신·원본 평타 객체 교체 (이전)
 
 - `CharacterCombatRuntime.SourceModelEleventhForms.cs`는 E-01/TR-21/LI-10/LI-03의 원본 스킬 ID/소유 rawcode/비용·폼 요건을 별도로 확인하고 `SourceModelTenthForms`의 **동일 소유자 상태, 만료, 전장 리비전/제거 정리**와 `SourceModelResources` 공용 자동 시전 경로를 재사용합니다. `CharacterActiveAbilities`에 원본 SLK 변신 마나 상한 전환, `SourceModelBasicCombatRules`에 `H0BY` 독립 객체 등록을 추가했습니다.
 - `SourceModelEffects`의 `ConfigurePracticeScriptAttackDeclared`는 **보니 `H0BY`에 한해서** 별도 폼 공격 객체를 콜백으로 전달하고, **쵸파/카이도는 기존 기본 rawcode native 콜백 유지**(폼 객체 공격력 교체는 별도 규칙 적용). `SourceModelAttackSkills`는 보니 기본 `H0BX`의 확인된 A04P 경로만 실행하고, `H0BY`에는 검증되지 않은 A04P를 복제하지 않습니다. 독립 유닛 소환·조합/경제 객체 증가 없음.
@@ -375,4 +379,10 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - **허용:** `SourceModelUnconnectedSkillCatalog`에 신규 8개 액티브·2개 공격 패킷 명칭을 추가했습니다. `SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill/CanModelSecondCompositeComponents`가 11개 `(unitId, skillId, name, 전체 효과)`를 검증합니다. `RN-04`는 이 카탈로그 공격 명칭에 추가하지 않습니다.
 - **실행:** `CharacterCombatRuntime.SourceModelResources` 기존 자동 시전/자원 → `SourceModelNextThirtyAttacks` 실제 상태·HP·처치 → `SourceModelCompositeEffects` 자기 회복, 계수/결손체력 추가 물리, 조건부 징베 방깎, 알비다 같은 전장 강화/소스별 강한 효과 선택. `SourceModelBasicCombatRules` 및 `SourceModelUnitEffects`가 알비다 공격력 버프를 평타에 반영. `SpecialGradeMobilePolicy`에서 레베카를 적 중심 모바일 예외 처리.
 - **중복 차단:** `CharacterCombatRuntime.SourceModelAttackSkills`의 기존 `RN-04/CCg` 17% 피해 콜백과 `SourceModelLegacyFollowups` 60초 방깎을 그대로 사용하고, 동일한 성공 발동에서 **마법 증폭 +18%만** 부착. `data/source-model-second-11-composite-skills.json`, `tests/test_source_model_second_11_composites.py`, EditMode `SourceModelScriptAttackSkillTests` 참조. 원본 패리티와 Unity/Android 구동 검증은 별개입니다.
+
+## 2026-11-03 · 12차 변신 후속 실행 코드 (최신)
+
+- `CharacterCombatRuntime.SourceModelTwelfthForms.cs`: 보니 스택40 최초 도달/대상별 중복 차단, 일반 적 이동 봉쇄·축소 상태, 스턴 광역기 15초 제한, 킹 화재 10틱/방감20과 매 공격 둔화/3초 지속 피해를 원본 도감 필드 검증 후 실행합니다. 기존 `SourceModelEleventhForms`의 실제 공격 선언에서 이를 부르고 `SourceModelSeventhSkills` 공통 피해/시간 예약/전장 리비전을 재사용합니다.
+- `SourceModelOriginalSpecials.IsSourceModelPullHeld`가 세월관통 이동 봉쇄를 기존 이동로 처리에 합치고, `OrdrUnitWorldPresenter.SyncEnemies`는 스택 달성 후 대상 스프라이트만 0.6배로 표시합니다. `OrdrMobileTouchPanel`은 `PracticeFormOf`를 한글 유닛 폼 상태로 보여 줍니다. 적 삭제·소유자 삭제 시 예약 키와 문턱 기록을 정리합니다. `tests/test_source_model_twelfth_forms.py` 및 `SourceModelScriptAttackSkillTests`가 스택·틱·조건·쵸파/카이도 회귀를 확인합니다.
+- SourceModel은 여전히 **TOOLTIP_MODEL_ONLY**이며, 원작 필드만으로 계산되지 않는 마르코 고정40%, 거대화 공속225%, 보니 추가 물리/니카 속도, 킹 불명 추가 방감10/참수 광역은 보류. E-02가 E-01의 `H0BK`를 무단 사용하지 못하도록 기존 진입 제한 유지. Unity 실행·원본 최종 실전 등가성은 별도로 검증할 과제입니다.
 

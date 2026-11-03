@@ -1001,7 +1001,15 @@ namespace Ordr.Mobile.Unity
                     var selectedId = Combat.Roster.SelectedId.Value;
                     var form = Combat.PracticeFormOf(selectedId);
                     if (!string.IsNullOrEmpty(form))
-                        GUILayout.Label("형태: " + form, OrdrMobileUiTheme.Overline);
+                    {
+                        string localized = form == "giant" ? "거대화" :
+                            form == "nika" ? "니카같은 미래" :
+                            form == "executioner" ? "처형자" :
+                            form == "phoenix" ? "불사조" :
+                            form == "human" ? "인간형" : form;
+                        GUILayout.Label("변신 상태: " + localized,
+                            OrdrMobileUiTheme.Overline);
+                    }
                     if (detail.CatalogId == "TR-30")
                     {
                         GUILayout.Label("위성 구매: " +

@@ -600,7 +600,8 @@ namespace Ordr.Mobile.Unity
                 }
                 enemy.Root.transform.position = position;
                 enemy.Root.transform.localScale = Vector3.one *
-                    Mathf.Max(1f, markerDiameterWorldUnits) * 0.57f;
+                    Mathf.Max(1f, markerDiameterWorldUnits) * 0.57f *
+                    (combat.PracticeBonneyScaleReduced(entry.Id) ? 0.60f : 1f);
                 // MaxHealth is from the live CombatEnemy, never from a
                 // display-only estimated damage or a preview attack event.
                 float ratio = Mathf.Clamp01((float)((double)entry.Health / entry.MaxHealth));

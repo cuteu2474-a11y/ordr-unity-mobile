@@ -2412,6 +2412,58 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void BonneyFortyAgeStacksTriggerBothOriginalFollowupsOncePerLiveTarget()
+        {
+            using (var live = Create("TR-21", true, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var events = live.Battle.Advance(10);
+                var unlocks = events.Where(x => x.Type ==
+                    CharacterCombatEventType.SkillActivated && x.SkillName == "세월관통")
+                    .ToList();
+                Assert.IsTrue(unlocks.Count > 0,
+                    "Two 20-stack near-death procs must unlock the 40-stack effect");
+                foreach (var unlock in unlocks)
+                {
+                    Assert.GreaterOrEqual(live.Combat.PracticeBonneyAgeStacksOf(
+                        live.ActorId, unlock.EnemyId), 40);
+                    Assert.AreEqual(1, unlocks.Count(x => x.EnemyId == unlock.EnemyId),
+                        "A threshold should fire once for a particular target");
+                }
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "세월관통" && x.Amount > 0));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "니카펀치" && x.Amount > 0));
+                Assert.IsTrue(events.Any(x => x.SkillName == "스턴 광역 마법" &&
+                    x.Type == CharacterCombatEventType.SkillDamage));
+            }
+        }
+
+        [Test]
+        public void KingFireAndSlowUseSeparateOriginalSchedulesAndTimedEffects()
+        {
+            using (var live = Create("LI-10", true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(4);
+                Assert.IsTrue(events.Any(x => x.SkillName == "단일 둔화" &&
+                    x.Type == CharacterCombatEventType.SkillDamage && x.Amount > 0),
+                    "The refreshed 300000-per-second three-second single target DoT must tick");
+                Assert.IsTrue(events.Any(x => x.SkillName == "화재" &&
+                    x.Type == CharacterCombatEventType.SkillDamage && x.Amount > 0),
+                    "The source 42500/0.27 second fire must reach the shared damage ledger");
+                Assert.IsTrue(events.Any(x => x.SkillName == "화재" &&
+                    x.Type == CharacterCombatEventType.EffectDeferred &&
+                    x.Detail.Contains("추가 방어 감소10")),
+                    "Unknown secondary -10 stacking must be reported, not silently added");
+            }
+        }
+
+        [Test]
         public void RayleighClonePulseUsesActualCombatDamageAndProcRoll()
         {
             using (var live = Create("I-03", true, -4900, 5400))

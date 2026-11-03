@@ -43,16 +43,17 @@ namespace Ordr.Mobile.Combat
         private void ForgetSourceModelEleventhActor(long id)
         {
             SourceModelEleventhForgetForm(id);
+            SourceModelTwelfthForgetOwner(id);
             string prefix = InstanceKey(id) + ":";
             var removed = new List<string>();
             foreach (var item in sourceModelBonneyAge.Keys)
                 if (item.StartsWith(prefix, StringComparison.Ordinal)) removed.Add(item);
             foreach (string key in removed) sourceModelBonneyAge.Remove(key);
+            SourceModelTwelfthPruneDefeated();
         }
 
         private void AdvanceSourceModelEleventhBonney(double seconds)
         {
-            if (sourceModelBonneyAge.Count == 0) return;
             var removed = new List<string>();
             foreach (string key in sourceModelBonneyAge.Keys)
             {
@@ -63,6 +64,7 @@ namespace Ordr.Mobile.Combat
                     !enemies.ContainsKey(key.Substring(split + 1))) removed.Add(key);
             }
             foreach (string key in removed) sourceModelBonneyAge.Remove(key);
+            SourceModelTwelfthPruneDefeated();
         }
 
         private static bool SourceModelEleventhFormHasAttack(string raw) =>
@@ -342,11 +344,23 @@ namespace Ordr.Mobile.Combat
             }
             if (SourceModelTenthFormProfile(actor, "LI-10", "h0AI") && rawcode == "h0AI")
             {
+                SourceModelTwelfthKingSlow(actor, primary);
                 if (SourceModelTenthActiveForm(actor.Id) == "executioner")
                 {
                     var execution = FindSourceSkill(actor, "참수");
+                    // The state is unlocked by ANY actual eligible target;
+                    // a different first preview target must not waste it.
+                    SpatialCombatEnemy victim = primary;
+                    if (ArmorBreakStacksOf(victim.Id) < 50)
+                        foreach (string candidate in BuildTargetCandidates(actor))
+                        {
+                            SpatialCombatEnemy eligible;
+                            if (enemies.TryGetValue(candidate, out eligible) &&
+                                eligible.Enemy.IsAlive && ArmorBreakStacksOf(candidate) >= 50)
+                            { victim = eligible; break; }
+                        }
                     if (!sourceModelKingExecutionUsed.Contains(actor.Id) &&
-                        ArmorBreakStacksOf(primary.Id) >= 50 &&
+                        ArmorBreakStacksOf(victim.Id) >= 50 &&
                         SourceModelEleventhSkill(execution, "LI-10:skill:1", "참수",
                             "verifiedCondition", 2) &&
                         execution.Number("requiredTargetArmorBreak") == 50 &&
@@ -355,12 +369,12 @@ namespace Ordr.Mobile.Combat
                         execution.Components[1].Number("stacks") == 1)
                     {
                         sourceModelKingExecutionUsed.Add(actor.Id);
-                        long amount = primary.Kind == CharacterEnemyKind.Boss ? 100000 : 10000000;
-                        ApplySourceModelFixedPrimaryPacket(InstanceKey(actor.Id), primary,
+                        long amount = victim.Kind == CharacterEnemyKind.Boss ? 100000 : 10000000;
+                        ApplySourceModelFixedPrimaryPacket(InstanceKey(actor.Id), victim,
                             amount, execution.Name);
-                        if (primary.Enemy.IsAlive)
-                            ApplySourceModelCompositeArmorBreak(actor, primary, execution,
-                                execution.Components[1], new[] { primary });
+                        if (victim.Enemy.IsAlive)
+                            ApplySourceModelCompositeArmorBreak(actor, victim, execution,
+                                execution.Components[1], new[] { victim });
                         RemoveDefeatedEnemies();
                     }
                     return;
@@ -386,6 +400,7 @@ namespace Ordr.Mobile.Combat
                             sword.Components[1], new[] { primary });
                     RemoveDefeatedEnemies();
                 }
+                SourceModelTwelfthKingFire(actor, primary);
                 return;
             }
             if (SourceModelTenthFormProfile(actor, "TR-21", "H0BX") &&
@@ -428,10 +443,13 @@ namespace Ordr.Mobile.Combat
                     int existing;
                     sourceModelBonneyAge.TryGetValue(key, out existing);
                     sourceModelBonneyAge[key] = checked(existing + (oil ? 2 : 20));
+                    SourceModelTwelfthBonneyAgeAdded(actor, victim, existing,
+                        sourceModelBonneyAge[key]);
                 }
                 if (nika && resources.Mana == 0)
                     ForgetSourceModelTenthFormState(actor.Id);
             }
+            SourceModelTwelfthBonneyStun(actor, primary);
             RemoveDefeatedEnemies();
         }
 
