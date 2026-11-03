@@ -53,11 +53,21 @@ namespace Ordr.Mobile.Combat
         }
 
         private double SourceModelSixthProcChance(ImportedCombatSkill skill,
-            SpatialCombatEnemy primary)
+            SpatialCombatEnemy primary, CharacterInstance actor)
         {
             double chance = SourceModelFifthProcChance(skill);
-            if (!SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill) ||
-                !SourceModelKindInOverride(skill, primary)) return chance;
+            if (!SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill))
+                return chance;
+            // The temporary black-Mamba form already exists in the common
+            // status engine. Read its *live* lifetime instead of inventing a
+            // second transform timer or assuming the form is permanent.
+            if (skill.Id == "TR-14:skill:2" &&
+                PracticeFormOf(actor.Id) == "blackMamba")
+                return 70; // source tooltip on-form chance
+            if (skill.Id == "TR-14:skill:3" &&
+                PracticeFormOf(actor.Id) == "blackMamba")
+                return Math.Min(100, chance * 1.2);
+            if (!SourceModelKindInOverride(skill, primary)) return chance;
             var row = ((List<object>)skill.Get("overrides"))[0] as
                 Dictionary<string, object>;
             if (skill.Id == "TR-09:skill:5")
@@ -76,6 +86,9 @@ namespace Ordr.Mobile.Combat
             if (skill.Id == "TR-09:skill:5" &&
                 SourceModelKindInOverride(skill, target))
                 raw *= 1.7; // Exact profile boss/enraged override.
+            if (skill.Id == "TR-14:skill:2" &&
+                PracticeFormOf(actor.Id) == "blackMamba")
+                raw *= 1.5;
             if (skill.Id == "TR-11:skill:1")
             {
                 if (component.Type == "physical" &&

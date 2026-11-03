@@ -18,7 +18,8 @@ namespace Ordr.Mobile.Combat
         private SourceModelSummonState SpawnSourceTemporaryActor(
             CharacterInstance owner, string skillName, string name,
             double lifetimeSeconds, string sourceRawcode,
-            bool unresolvedLootAbility = false, double spawnX = 0, double spawnY = 0)
+            bool unresolvedLootAbility = false, double spawnX = 0, double spawnY = 0,
+            bool modeledCombat = false)
         {
             if (!UsesSourceModelBasicAttacks || owner == null ||
                 !characters.ContainsKey(owner.Id) ||
@@ -27,14 +28,15 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("연습 소환수 생성 조건이 올바르지 않습니다.");
             if (sourceNextSummonId == long.MaxValue)
                 throw new OverflowException("연습 소환 ID 범위 초과");
-            bool autonomous = (sourceRawcode == "h06N" || sourceRawcode == "h085") &&
+            bool nativeAutonomous = (sourceRawcode == "h06N" || sourceRawcode == "h085") &&
                 sourceModelRules != null &&
                 sourceModelRules.SourceObjectAttack(sourceRawcode) != null;
+            bool autonomous = nativeAutonomous || modeledCombat;
             var summon = new SourceModelSummonState(++sourceNextSummonId,
                 owner.Id, skillName, name, effectExecutor.Time + lifetimeSeconds,
                 IsStoryDeployed(owner.Id), autonomous, sourceRawcode,
                 unresolvedLootAbility, spawnX, spawnY);
-            if (autonomous)
+            if (nativeAutonomous)
                 RegisterSourceIndependentAttack(SummonAttackKey(summon.Id),
                     sourceRawcode, summon.StoryLane, spawnX, spawnY, summon.ExpiresAt,
                     owner.Profile);

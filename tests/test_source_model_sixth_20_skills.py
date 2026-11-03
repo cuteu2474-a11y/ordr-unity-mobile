@@ -59,7 +59,7 @@ class SourceModelSixthBatchTests(unittest.TestCase):
 
     def test_four_core_lifecycles_are_attached(self):
         self.assertIn('CanModelSixthCompositeComponents', CATALOG)
-        self.assertIn('SourceModelSixthProcChance(skill, primary)', RUNTIME)
+        self.assertIn('SourceModelSixthProcChance(skill, primary, actor)', RUNTIME)
         self.assertIn('SourceModelSixthRawDamageAdjustment', RUNTIME)
         self.assertIn('SourceModelSixthHitCount', RUNTIME)
         self.assertIn('ScheduleSourceModelPoseidon', SIXTH)

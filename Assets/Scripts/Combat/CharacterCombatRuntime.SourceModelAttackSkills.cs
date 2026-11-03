@@ -98,6 +98,13 @@ namespace Ordr.Mobile.Combat
             if (standaloneTemporary)
             {
                 ExecuteSourceTemporaryAttack(actor, primary);
+                // TR-14's form proc and I-03's clone pulse coexist with
+                // independently approved on-hit packets. The old early return
+                // silently discarded those sixth-batch attacks on every hit.
+                if (nextThirty != null && nextThirty.CatalogId == actor.Catalog.Id)
+                    ExecuteSourceModelNextThirtyProfileAttacks(actor, primary, nextThirty);
+                if (unconnected != null && unconnected.CatalogId == actor.Catalog.Id)
+                    ExecuteSourceModelUnconnectedProfileAttacks(actor, primary, unconnected);
                 return;
             }
 

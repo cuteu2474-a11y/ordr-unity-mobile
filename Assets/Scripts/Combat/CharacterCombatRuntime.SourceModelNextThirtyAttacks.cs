@@ -73,22 +73,31 @@ namespace Ordr.Mobile.Combat
                 if (skill.Id == "TR-15:skill:1" &&
                     sourceModelPoseidonReadyAt.TryGetValue(actor.Id, out readyAt) &&
                     readyAt > Time) continue;
+                if (skill.Id == "TR-11:skill:4" &&
+                    sourceModelSeventhReadyAt.TryGetValue(actor.Id, out readyAt) &&
+                    readyAt > Time) continue;
                 if (skill.Trigger == "onAttackWithMana" &&
                     (actor.Abilities.Resources == null ||
                      actor.Abilities.Resources.Mana < skill.Number("requiredMana").Value ||
                      !actor.Abilities.Resources.CanSpend(0, skill.Number("manaCost").Value)))
                     continue;
+                if (skill.Id == "TR-16:skill:0" &&
+                    (actor.Abilities.Resources == null ||
+                     actor.Abilities.Resources.Mana < skill.Number("manaAtLeast").Value ||
+                     !actor.Abilities.Resources.CanSpend(0, skill.Number("manaCost").Value)))
+                    continue;
                 if ((skill.Trigger == "onAttack" ||
                      skill.Trigger == "onAttackWithMana") &&
                     sourceModelRules.NextScriptRoll(1000000) >=
-                    (int)Math.Round(SourceModelSixthProcChance(skill, primary) * 10000,
+                    (int)Math.Round(SourceModelSixthProcChance(skill, primary, actor) * 10000,
                         MidpointRounding.AwayFromZero)) continue;
                 // Preserve the tooltip target metadata, but apply the same
                 // explicit MOBILE result policy as CharacterSkillEffectExecutor.
                 // Explicit casterArea mobile exceptions follow the chosen
                 // enemy at unlimited reach (Redfield and Rebecca).
                 var shape = skill.Target == "single" ||
-                    skill.Target == "eachMultishotTarget" ?
+                    skill.Target == "eachMultishotTarget" ||
+                    skill.Target == "summon" ?
                     SourceScriptHitShape.Direct :
                     skill.Id == "TR-26:skill:4" && skill.Target == "line" ?
                     SourceScriptHitShape.ProjectileLine :
@@ -114,19 +123,27 @@ namespace Ordr.Mobile.Combat
                 if (targets.Count == 0) continue;
                 if (skill.Trigger == "onAttackWithMana")
                     actor.Abilities.Resources.Spend(0, skill.Number("manaCost").Value);
+                if (skill.Id == "TR-16:skill:0")
+                    actor.Abilities.Resources.Spend(0, skill.Number("manaCost").Value);
                 if (skill.Id == "E-07:skill:3")
                     sourceModelFireFistReadyAt[actor.Id] = Time +
                         skill.Number("absoluteCooldownSeconds").Value;
                 if (skill.Id == "TR-15:skill:1")
                     sourceModelPoseidonReadyAt[actor.Id] = Time +
                         skill.Number("absoluteCooldownSeconds").Value;
+                if (skill.Id == "TR-11:skill:4")
+                    sourceModelSeventhReadyAt[actor.Id] = Time +
+                        skill.Number("intervalSeconds").Value;
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, attackerId,
                     primary.Id, skill.Name,
                     "TOOLTIP_MODEL_ONLY " + catalogId +
                     " 공격 선언 / 결과·시점·난수 원본 미검증", 0));
-                ApplySourceModelNextThirtySkill(actor, primary, skill, targets,
-                    activatedThisAttack);
+                if (skill.Id == "TR-16:skill:0")
+                    ScheduleSourceModelIceAge(actor, primary, skill);
+                else
+                    ApplySourceModelNextThirtySkill(actor, primary, skill, targets,
+                        activatedThisAttack);
                 activatedThisAttack.Add(skill.Name);
             }
             if (completedModels != actor.Profile.Skills.Count)
@@ -272,9 +289,21 @@ namespace Ordr.Mobile.Combat
                 SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) ||
                 SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill) ||
                 SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill(skill) ||
-                SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill);
+                SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill) ||
+                SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill);
             foreach (var component in skill.Components)
             {
+                if (skill.Id == "TR-20:skill:0" &&
+                    component.Type == "physicalDamageOverTime")
+                {
+                    ScheduleSourceModelZoroDot(actor, primary, skill, component, targets);
+                    continue;
+                }
+                if (skill.Id == "TR-24:skill:2" && component.Type == "summon")
+                {
+                    SpawnSourceModelKobyClone(actor, primary, skill, component);
+                    continue;
+                }
                 if (skill.Id == "TR-10:skill:1" &&
                     component.Type == "additionalCast")
                 {
@@ -390,6 +419,8 @@ namespace Ordr.Mobile.Combat
                         (component.Number("amount") ??
                          component.Number("amountPerHit") ?? 0) * multiplier;
                     raw = SourceModelSixthRawDamageAdjustment(actor, primary,
+                        skill, component, target, raw);
+                    raw = SourceModelSeventhRawDamageAdjustment(actor, primary,
                         skill, component, target, raw);
                     // Rebecca's tooltip gives a per-legacy-level increment.
                     // The offline model has no native legacy-level provider:

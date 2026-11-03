@@ -188,12 +188,19 @@ namespace Ordr.Mobile.Combat
             bool fourth = IsFourthCompositeAttack(skill);
             bool fifth = IsFifthCompositeSkill(skill);
             bool sixth = IsSixthCompositeSkill(skill);
+            bool seventh = IsSeventhCompositeSkill(skill);
             if (skill == null ||
                 !(skill.Trigger == "onAttack" || skill.Trigger == "onEveryAttack" ||
+                  (seventh && skill.Id == "TR-11:skill:4" &&
+                   skill.Trigger == "attackWithPeriodicCooldown") ||
                   (fifth && skill.Id == "TR-26:skill:0" &&
                    skill.Trigger == "onAttackWithMana")) ||
                 !(skill.Target == "area" || skill.Target == "single" ||
                   skill.Target == "casterArea" ||
+                  (seventh && skill.Id == "TR-16:skill:0" &&
+                   skill.Target == "targetCircle") ||
+                  (seventh && skill.Id == "TR-24:skill:2" &&
+                   skill.Target == "summon") ||
                   (fourth && skill.Id == "D-03:skill:2" &&
                    skill.Target == null && FinitePositive(skill.Radius)) ||
                   (fifth && skill.Id == "D-03:skill:1" &&
@@ -205,7 +212,7 @@ namespace Ordr.Mobile.Combat
                   ((fourth && skill.Id == "TR-26:skill:4" ||
                     fifth && skill.Id == "TR-07:skill:1") && skill.Target == "line")) ||
                 ((skill.Target == "area" || skill.Target == "casterArea" ||
-                  skill.Target == "line") &&
+                  skill.Target == "line" || skill.Target == "targetCircle") &&
                  !FinitePositive(skill.Radius)) ||
                 ((skill.Trigger == "onAttack" || skill.Trigger == "onAttackWithMana") &&
                  (!FinitePositive(skill.ChancePercent) || skill.ChancePercent.Value > 100)) ||
@@ -230,8 +237,14 @@ namespace Ordr.Mobile.Combat
                     !(sixth && skill.Id == "TR-15:skill:1" &&
                       key == "absoluteCooldownSeconds") &&
                     !(sixth && skill.Id == "E-12:skill:5" &&
-                      key == "enhancedChancePercent"))
+                      key == "enhancedChancePercent") &&
+                    !(seventh && skill.Id == "TR-11:skill:4" &&
+                      (key == "intervalSeconds" || key == "strengthScalingPerPoint")) &&
+                    !(seventh && skill.Id == "TR-16:skill:0" &&
+                      (key == "manaAtLeast" || key == "manaCost" ||
+                       key == "castTimeSeconds")))
                     return false;
+            if (seventh) return CanModelSeventhCompositeComponents(skill);
             if (sixth) return CanModelSixthCompositeComponents(skill);
             if (fifth) return CanModelFifthCompositeComponents(skill);
             if (fourth)
@@ -266,6 +279,7 @@ namespace Ordr.Mobile.Combat
             bool second = IsSecondCompositeSkill(skill);
             bool fifth = IsFifthCompositeSkill(skill);
             bool sixth = IsSixthCompositeSkill(skill);
+            bool seventh = IsSeventhCompositeSkill(skill);
             if (skill == null ||
                 !(skill.Trigger == "activeMana" || skill.Trigger == "activeHealth") ||
                 !(skill.Target == "area" || skill.Target == "single") ||
@@ -306,6 +320,7 @@ namespace Ordr.Mobile.Combat
             if (second && skill.Id == "TR-08:skill:0" &&
                 !FinitePositive(skill.Number("singleTargetMagicalDamageMultiplier")))
                 return false;
+            if (seventh) return CanModelSeventhCompositeComponents(skill);
             if (sixth) return CanModelSixthCompositeComponents(skill);
             if (fifth) return CanModelFifthCompositeComponents(skill);
             if (second) return CanModelSecondCompositeComponents(skill);
@@ -434,6 +449,58 @@ namespace Ordr.Mobile.Combat
                 case "I-03:skill:1": return skill.Name == "기본 공격 광역 추가";
                 default: return false;
             }
+        }
+
+        // Full seventh-batch packet approval; no generic "unknown transform"
+        // or summon parser may turn an incomplete tooltip into live combat.
+        public static bool IsSeventhCompositeSkill(ImportedCombatSkill skill)
+        {
+            if (skill == null) return false;
+            switch (skill.Id)
+            {
+                case "TR-11:skill:4": return skill.Name == "화염용왕";
+                case "TR-16:skill:0": return skill.Name == "아이스 에이지";
+                case "TR-20:skill:0": return skill.Name == "1080 번뇌봉";
+                case "TR-24:skill:2": return skill.Name == "콤비네이션 어택";
+                default: return false;
+            }
+        }
+
+        private static bool CanModelSeventhCompositeComponents(ImportedCombatSkill skill)
+        {
+            string[] fields;
+            switch (skill.Id)
+            {
+                case "TR-11:skill:4": fields = new[] {
+                    "magical|amount", "physical|amount,plusBuffCountMultiplier",
+                    "fixed|amount,scope", "stun|durationSeconds,resistanceIgnorePercent" }; break;
+                case "TR-16:skill:0": fields = new[] {
+                    "magical|amount", "stun|durationSeconds" }; break;
+                case "TR-20:skill:0": fields = new[] {
+                    "magical|amount,multiplierRange",
+                    "physicalDamageOverTime|perTick,tickIntervalSeconds,totalDurationSeconds,affectedBy",
+                    "stun|durationSeconds,ignoresResistance" }; break;
+                case "TR-24:skill:2": fields = new[] {
+                    "summon|unit,durationSeconds,inheritsBaseAttack,legendaryUpgradeAffected,basicAttackExplosivePercent,explosiveRadius,singleMagicalDamagePerHit" }; break;
+                default: return false;
+            }
+            if (!ValidateExplicitCompositeShape(skill, fields)) return false;
+            if (skill.Id == "TR-11:skill:4")
+                return FinitePositive(skill.Number("intervalSeconds")) &&
+                    FinitePositive(skill.Number("strengthScalingPerPoint"));
+            if (skill.Id == "TR-16:skill:0")
+                return FinitePositive(skill.Number("manaAtLeast")) &&
+                    FinitePositive(skill.Number("manaCost")) &&
+                    FinitePositive(skill.Number("castTimeSeconds")) &&
+                    skill.Number("manaAtLeast").Value >=
+                    skill.Number("manaCost").Value;
+            if (skill.Id == "TR-20:skill:0")
+            {
+                var dot = skill.Components[1];
+                return dot.Number("tickIntervalSeconds").Value <=
+                    dot.Number("totalDurationSeconds").Value;
+            }
+            return true;
         }
 
         private static bool CanModelSixthCompositeComponents(ImportedCombatSkill skill)
@@ -671,6 +738,23 @@ namespace Ordr.Mobile.Combat
                             !names.Contains("유성소바 킥") ||
                             !names.Contains("불꽃 스펙트럼") ||
                             !names.Contains("무등샷")) return false;
+                    }
+                    else if (key == "affectedBy")
+                    {
+                        var values = component.Get(key) as List<object>;
+                        if (values == null || values.Count != 3 ||
+                            !values.Contains("초월함 업그레이드") ||
+                            !values.Contains("관통 초월함 업그레이드") ||
+                            !values.Contains("버프")) return false;
+                    }
+                    else if (key == "unit")
+                    {
+                        if (component.Text(key) != "코비 분신") return false;
+                    }
+                    else if (key == "inheritsBaseAttack" ||
+                             key == "legendaryUpgradeAffected")
+                    {
+                        if (!Equals(component.Get(key), true)) return false;
                     }
                     else if (!FinitePositive(component.Number(key))) return false;
                     if ((key == "hits" || key == "stacks" || key == "maxStacks" ||

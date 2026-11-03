@@ -49,6 +49,14 @@ namespace Ordr.Mobile.Combat
                     if (skill.Id == "TR-26:skill:0" &&
                         SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill))
                         return true;
+            // Aokiji's 12.5% Ice Age is an on-attack *mana-gated* cast.
+            // Reuse the original SLK pool; no guessed starting MP.
+            if (actor.Catalog.Id == "TR-16" &&
+                actor.Mapping.AttackSpec.UnitRawCode == "H097")
+                foreach (var skill in actor.Profile.Skills)
+                    if (skill.Id == "TR-16:skill:0" &&
+                        SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill))
+                        return true;
             SourceModelNextThirtyUnit entry;
             SourceModelUnconnectedSkillRow extra;
             IReadOnlyList<string> activeNames;

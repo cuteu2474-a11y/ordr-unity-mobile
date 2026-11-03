@@ -1109,6 +1109,56 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(40d, skill.Number("healthCost").Value);
         }
 
+        [TestCase("TR-11", "H092", "화염용왕", false)]
+        [TestCase("TR-16", "H097", "아이스 에이지", false)]
+        [TestCase("TR-20", "H09F", "1080 번뇌봉", true)]
+        [TestCase("TR-24", "H0CO", "콤비네이션 어택", false)]
+        public void SeventhBatchFourFullPacketsRequireExactOwnerAndCompositeFields(
+            string unitId, string rawcode, string name, bool active)
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require(unitId).Skills.Single(x => x.Name == name);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill));
+            Assert.IsTrue(active ? SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill) :
+                SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill));
+            SourceModelUnconnectedSkillRow row;
+            Assert.IsTrue(SourceModelUnconnectedSkillCatalog.TryGet(rawcode, out row));
+            Assert.AreEqual(unitId, row.CatalogId);
+            CollectionAssert.Contains(active ? row.PracticeActiveSkills : row.PracticeAttackSkills,
+                name);
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                "TR-18", row.PracticeActiveSkills, skill),
+                "Another character must not be able to cast this packet");
+        }
+
+        [Test]
+        public void SeventhBatchKobyCloneHasFiveSecondCombatLifeButNoFusionRosterEntry()
+        {
+            using (var live = Create("TR-24", true, -4900, 5400))
+            {
+                int before = live.Combat.CharacterCount;
+                bool observed = false;
+                for (int step = 0; step < 40; step++)
+                {
+                    live.Battle.Advance(.2);
+                    if (!live.Combat.PracticeSummonsOf(live.ActorId).Any(x =>
+                        x.SkillName == "콤비네이션 어택")) continue;
+                    observed = true;
+                    break;
+                }
+                Assert.IsTrue(observed, "The five-percent clone proc must use a live summon");
+                Assert.AreEqual(before, live.Combat.CharacterCount,
+                    "The clone must not enter the fusion-material character roster");
+                Assert.IsTrue(live.Combat.PracticeSummonsOf(live.ActorId).Any(x =>
+                    x.Name == "코비 분신" && x.HasIndependentCombat));
+                live.Rolls.Trigger = false;
+                live.Battle.Advance(6);
+                Assert.IsFalse(live.Combat.PracticeSummonsOf(live.ActorId).Any(x =>
+                    x.SkillName == "콤비네이션 어택"),
+                    "The clone cannot remain after its documented five-second lifetime");
+            }
+        }
+
         [Test]
         public void ZephyrMissingManaSkillUsesOriginal160ManaAndExistingHpDamageLedger()
         {

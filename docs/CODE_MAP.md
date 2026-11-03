@@ -1,4 +1,11 @@
-## 2026-11-03 · 6차 20개 연결 위치 (최신)
+## 2026-11-03 · 7차 특수 기술과 6차 연결 오류 수리 (최신)
+
+- `SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill/CanModelSeventhCompositeComponents`: 사보 `TR-11:skill:4`, 아오키지 `TR-16:skill:0`, 조로 `TR-20:skill:0`, 코비 `TR-24:skill:2` 정확한 ID·이름·기술 메타데이터·효과 순서 제한. `SourceModelUnconnectedSkillCatalog`에 공격 3·액티브 1 승인, 총 **공격 95 / 자동 액티브 42**.
+- `CharacterCombatRuntime.SourceModelNextThirtyAttacks`의 공격 재사용 제한·MP 문턱·차감·대상 중심 광역·자동 액티브·상태/피해 적용은 기존 원장을 재사용. `CharacterCombatRuntime.SourceModelResources`는 아오키지 `H097` 원본 MP85를 연결. `CharacterCombatRuntime.SourceModelSeventhSkills`는 0.5초 지연 아이스 에이지, 조로 0.1초×11회 DoT, 코비 기본 공격 주기별 5초 임시 전투 소환, 사보 실제 버프 수/선택적 힘 공급자 피해를 처리. 임시 소환은 `CharacterCombatRuntime.SourceModelTemporarySkills`와 공동 수명 및 전장 변경 취소를 사용, 조합 재료 미등록.
+- `CharacterCombatRuntime.SourceModelAttackSkills`에서 스네이크맨(H0B2)·레일리(h049) 독립 임시 콜백과 기존 6차 승인 공격을 **동일 공격에서 함께** 실행하도록 early return 누락 수정. `CharacterCombatRuntime.SourceModelSixthSkills`는 블랙 맘바 폼 상태가 살아 있을 때만 70%·1.5배·컬버린 상대 +20% 적용. 공통 전장 revision/분신 소멸/유닛 제거 시 콜백 제한.
+- 원본 최종 면역·영웅 힘·외부 업그레이드와 Unity Editor/Android 실기는 미검증. Python `tests/test_source_model_seventh_4_skills.py` 및 C# `SourceModelScriptAttackSkillTests`에서 스키마/수명/기존 콜백 회귀. 원본 데이터 수치 변경 없음, TOOLTIP_MODEL_ONLY 한정.
+
+## 2026-11-03 · 6차 20개 연결 위치 (이전 기록)
 
 - `SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill/CanModelSixthCompositeComponents`: 20개 스킬의 정확한 유닛 ID·이름·필드·순서 승인. `SourceModelUnconnectedSkillCatalog` 및 기존 30명 승인 목록에 추가; 이미 연결된 원본 JASS/객체 콜백보다 우선하지 않음.
 - `CharacterCombatRuntime.SourceModelNextThirtyAttacks`: 19개 공격 발동·추가 시전 40%·조건부 상디 마법(기존 객체 기절 중복 금지)·체력 액티브 공유 적용. `CharacterCombatRuntime.SourceModelSixthSkills`: 보스 발동/타격 수 분기, 버프 수, 상태별 추가 연타, 포세이돈 원본 0.25초·2.5초 지속 및 5초 발동 제한. 기존 전장 revision·상태/방어·시간 엔진 활용.
