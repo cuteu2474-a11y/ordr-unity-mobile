@@ -1,4 +1,10 @@
-## 2026-11-03 · 5차 고유 스킬 연결부 (최신)
+## 2026-11-03 · 6차 20개 연결 위치 (최신)
+
+- `SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill/CanModelSixthCompositeComponents`: 20개 스킬의 정확한 유닛 ID·이름·필드·순서 승인. `SourceModelUnconnectedSkillCatalog` 및 기존 30명 승인 목록에 추가; 이미 연결된 원본 JASS/객체 콜백보다 우선하지 않음.
+- `CharacterCombatRuntime.SourceModelNextThirtyAttacks`: 19개 공격 발동·추가 시전 40%·조건부 상디 마법(기존 객체 기절 중복 금지)·체력 액티브 공유 적용. `CharacterCombatRuntime.SourceModelSixthSkills`: 보스 발동/타격 수 분기, 버프 수, 상태별 추가 연타, 포세이돈 원본 0.25초·2.5초 지속 및 5초 발동 제한. 기존 전장 revision·상태/방어·시간 엔진 활용.
+- `tests/test_source_model_sixth_20_skills.py`와 업데이트된 `tests/test_second_thirty_tooltip_practice.py`가 승인 숫자/네이티브 중복 보호. 총 **공격 92·자동 액티브 41** 연습 허용; 강화폼·면역·원작 최종 피해/Unity/Android 실행 미검증.
+
+## 2026-11-03 · 5차 고유 스킬 연결부 (이전 기록)
 
 - **승인:** `SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill/CanModelFifthCompositeComponents`에서 8개의 소유 ID·이름·효과 필드·순서·마나 게이트 검사, 두 유닛별 허용 카탈로그 재사용. 누적 공격 **73**, 자동 액티브 **40**.
 - **경로/성장:** `CharacterCombatRuntime.SourceModelFifthSkills`는 `SourceModelPracticeBattle.RouteCorners`를 사용해 루치 람각의 최다 관통 경로 결정. `ConfigureSourceModelAccumulatedClearCount`는 실제 영구 완료 횟수를 선택적으로 공급하며 미공급=0회. 로빈은 같은 전장 최대 3명; 키자루 마나 게이트와 기존 민첩 공급자 재사용.

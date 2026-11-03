@@ -47,6 +47,7 @@ namespace Ordr.Mobile.Combat
             }
 
             int completedModels = 0;
+            var activatedThisAttack = new HashSet<string>(StringComparer.Ordinal);
             foreach (string approvedName in approvedNames)
             {
                 ImportedCombatSkill skill = null;
@@ -69,6 +70,9 @@ namespace Ordr.Mobile.Combat
                 if (skill.Id == "E-07:skill:3" &&
                     sourceModelFireFistReadyAt.TryGetValue(actor.Id, out readyAt) &&
                     readyAt > Time) continue;
+                if (skill.Id == "TR-15:skill:1" &&
+                    sourceModelPoseidonReadyAt.TryGetValue(actor.Id, out readyAt) &&
+                    readyAt > Time) continue;
                 if (skill.Trigger == "onAttackWithMana" &&
                     (actor.Abilities.Resources == null ||
                      actor.Abilities.Resources.Mana < skill.Number("requiredMana").Value ||
@@ -77,7 +81,7 @@ namespace Ordr.Mobile.Combat
                 if ((skill.Trigger == "onAttack" ||
                      skill.Trigger == "onAttackWithMana") &&
                     sourceModelRules.NextScriptRoll(1000000) >=
-                    (int)Math.Round(SourceModelFifthProcChance(skill) * 10000,
+                    (int)Math.Round(SourceModelSixthProcChance(skill, primary) * 10000,
                         MidpointRounding.AwayFromZero)) continue;
                 // Preserve the tooltip target metadata, but apply the same
                 // explicit MOBILE result policy as CharacterSkillEffectExecutor.
@@ -89,7 +93,8 @@ namespace Ordr.Mobile.Combat
                     skill.Id == "TR-26:skill:4" && skill.Target == "line" ?
                     SourceScriptHitShape.ProjectileLine :
                     skill.Target == "casterArea" &&
-                    !SpecialGradeMobilePolicy.UsesEnemyCenteredArea(catalogId) ?
+                    !SpecialGradeMobilePolicy.UsesEnemyCenteredArea(catalogId) &&
+                    skill.Id != "TR-13:skill:3" ?
                     SourceScriptHitShape.AttackerCircle : SourceScriptHitShape.Circle;
                 double lineLength = 0;
                 if (shape == SourceScriptHitShape.ProjectileLine)
@@ -112,12 +117,17 @@ namespace Ordr.Mobile.Combat
                 if (skill.Id == "E-07:skill:3")
                     sourceModelFireFistReadyAt[actor.Id] = Time +
                         skill.Number("absoluteCooldownSeconds").Value;
+                if (skill.Id == "TR-15:skill:1")
+                    sourceModelPoseidonReadyAt[actor.Id] = Time +
+                        skill.Number("absoluteCooldownSeconds").Value;
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, attackerId,
                     primary.Id, skill.Name,
                     "TOOLTIP_MODEL_ONLY " + catalogId +
                     " 공격 선언 / 결과·시점·난수 원본 미검증", 0));
-                ApplySourceModelNextThirtySkill(actor, primary, skill, targets);
+                ApplySourceModelNextThirtySkill(actor, primary, skill, targets,
+                    activatedThisAttack);
+                activatedThisAttack.Add(skill.Name);
             }
             if (completedModels != actor.Profile.Skills.Count)
                 ReportSourceModelNextThirtyDeferred(attackerId, primary.Id,
@@ -252,16 +262,47 @@ namespace Ordr.Mobile.Combat
 
         private void ApplySourceModelNextThirtySkill(CharacterInstance actor,
             SpatialCombatEnemy primary, ImportedCombatSkill skill,
-            IReadOnlyList<SpatialCombatEnemy> targets)
+            IReadOnlyList<SpatialCombatEnemy> targets,
+            ISet<string> activatedThisAttack = null,
+            bool additionalCast = false)
         {
             string attackerId = InstanceKey(actor.Id);
             bool composite = SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) ||
                 SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill) ||
-                SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill(skill);
+                SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill(skill) ||
+                SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill);
             foreach (var component in skill.Components)
             {
+                if (skill.Id == "TR-10:skill:1" &&
+                    component.Type == "additionalCast")
+                {
+                    if (!additionalCast && sourceModelRules.NextScriptRoll(1000000) <
+                        (int)(component.Number("chancePercent").Value * 10000))
+                        ApplySourceModelNextThirtySkill(actor, primary, skill,
+                            targets, activatedThisAttack, true);
+                    continue;
+                }
+                if (skill.Id == "TR-15:skill:1" &&
+                    component.Type == "magicalDamageOverTime")
+                {
+                    ScheduleSourceModelPoseidon(actor, primary, skill, component, targets);
+                    continue;
+                }
+                // Sanji's 20% native object stun is already resolved by the
+                // original-object basic attack path. Never stun twice.
+                if (skill.Id == "TR-12:skill:1" && component.Type == "stun")
+                    continue;
+                if (skill.Id == "TR-24:skill:3" && component.Type == "stun")
+                    continue; // Native object already guarantees this stun.
+                if (skill.Id == "TR-12:skill:1" &&
+                    component.Get("whenAnySkill") != null &&
+                    (activatedThisAttack == null ||
+                     !(activatedThisAttack.Contains("불꽃 스펙트럼") ||
+                       activatedThisAttack.Contains("무통 샷") ||
+                       activatedThisAttack.Contains("유성소바 킥"))))
+                    continue;
                 if (SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) &&
                     component.Type == "summonSoldier")
                 {
@@ -348,6 +389,8 @@ namespace Ordr.Mobile.Combat
                         skill, component, target, multiplier) :
                         (component.Number("amount") ??
                          component.Number("amountPerHit") ?? 0) * multiplier;
+                    raw = SourceModelSixthRawDamageAdjustment(actor, primary,
+                        skill, component, target, raw);
                     // Rebecca's tooltip gives a per-legacy-level increment.
                     // The offline model has no native legacy-level provider:
                     // the first documented increment is the conservative
@@ -386,6 +429,7 @@ namespace Ordr.Mobile.Combat
                         raw += component.Number("extraSingleAmount") ?? 0;
                     if (ReferenceEquals(primary, target))
                         raw *= 1 + (component.Number("singlePrimaryTargetExtraPercent") ?? 0) / 100;
+                    if (raw <= 0) continue;
                     // Red Hawk doubles the whole primary magic packet,
                     // including its documented max-HP component.
                     if (skill.Id == "TR-08:skill:0" &&
@@ -404,7 +448,7 @@ namespace Ordr.Mobile.Combat
                             target.Id, "대상 방어력·유형 자료 부재");
                         continue;
                     }
-                    int hits = (int)(component.Number("hits") ?? 1);
+                    int hits = SourceModelSixthHitCount(skill, component, target);
                     for (int hit = 0; hit < hits && target.Enemy.IsAlive; hit++)
                     {
                         // Fixed tooltip packets bypass the practice armor path.

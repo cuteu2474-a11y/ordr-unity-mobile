@@ -1649,6 +1649,7 @@ namespace Ordr.Mobile.Combat
                 sourceSongSoldierExpiry.Remove(id);
                 RemoveSourceModelAceFlames(id);
                 sourceModelFireFistReadyAt.Remove(id);
+                sourceModelPoseidonReadyAt.Remove(id);
                 sourceModelManagedResourceRows.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
@@ -2203,6 +2204,7 @@ namespace Ordr.Mobile.Combat
             sourceSongSoldierExpiry.Remove(instanceId);
             RemoveSourceModelAceFlames(instanceId);
             sourceModelFireFistReadyAt.Remove(instanceId);
+            sourceModelPoseidonReadyAt.Remove(instanceId);
             sourceModelManagedResourceRows.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
             // Native fusion removes every input as ONE logical batch. Do

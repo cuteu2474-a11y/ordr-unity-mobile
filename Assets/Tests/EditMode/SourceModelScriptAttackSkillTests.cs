@@ -1071,6 +1071,44 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [TestCase("TR-09", "평타 광역 추가")]
+        [TestCase("TR-09", "크리티컬")]
+        [TestCase("TR-09", "단일 스턴 타격")]
+        [TestCase("TR-10", "범위 마법타격")]
+        [TestCase("TR-11", "불꽃 주먹")]
+        [TestCase("TR-11", "넓은 주먹")]
+        [TestCase("TR-12", "검은다리")]
+        [TestCase("TR-12", "무통 샷")]
+        [TestCase("TR-13", "원형 마법 스턴")]
+        [TestCase("TR-13", "자신중심 마법 스턴")]
+        [TestCase("TR-14", "무장색 패기")]
+        [TestCase("TR-14", "컬버린")]
+        [TestCase("TR-15", "고대병기 포세이돈")]
+        [TestCase("TR-19", "저격")]
+        [TestCase("TR-19", "치명타")]
+        [TestCase("TR-24", "기본 공격 특수 피해")]
+        [TestCase("E-12", "혼합 공격")]
+        [TestCase("E-12", "혼합 스턴 타격")]
+        [TestCase("I-03", "기본 공격 광역 추가")]
+        public void SixthBatchNineteenAttackPacketsHaveExactOwnershipAndCompleteFields(
+            string unitId, string name)
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require(unitId).Skills.Single(x => x.Name == name);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill));
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill));
+        }
+
+        [Test]
+        public void SixthBatchHawkinsHealthActiveIsGatedByOriginalResources()
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require("TR-09").Skills.Single(x => x.Name == "체력 소모 연타");
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill));
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill));
+            Assert.AreEqual(40d, skill.Number("healthCost").Value);
+        }
+
         [Test]
         public void ZephyrMissingManaSkillUsesOriginal160ManaAndExistingHpDamageLedger()
         {

@@ -23,7 +23,11 @@ def supported(skill, unit_id=None):
         ('I-04', '광역 혼합 피해'), ('H-04', '거대 숲 물리'),
         ('TR-10', '마나 광역 공격'), ('L-25', '미티어 울두건'),
         ('L-25', '울두건'), ('L-20', '화이트바인'),
-        ('TR-04', '멀티샷 추가 피해')
+        ('TR-04', '멀티샷 추가 피해'),
+        ('TR-09', '평타 광역 추가'), ('TR-09', '크리티컬'),
+        ('TR-09', '단일 스턴 타격'), ('TR-09', '체력 소모 연타'),
+        ('TR-10', '범위 마법타격'),
+        ('TR-14', '무장색 패기'), ('TR-14', '컬버린')
     }:
         return True
     trigger = skill.get('trigger')
@@ -134,8 +138,8 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
                     active += 1
                 else:
                     attacks += 1
-        self.assertEqual(32, attacks)
-        self.assertEqual(12, active,
+        self.assertEqual(38, attacks)
+        self.assertEqual(13, active,
                          'First composite batch adds four active owners here')
 
     def test_legacy_source_callbacks_are_not_double_activated(self):
