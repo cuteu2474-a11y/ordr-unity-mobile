@@ -1,0 +1,51 @@
+{
+  "version": "ORDR S2 2.323[C]",
+  "batch": 28,
+  "mode": "nightmare-isekai",
+  "status": "TOOLTIP_MODEL_ONLY; source/code inspection only; Python, Unity, APK and Actions not executed",
+  "sources": [
+    "data/character-skill-profiles.json",
+    "data/original-2323C-map-base-stats.json",
+    "data/original-2323C-native-pure-passives.json",
+    "data/original-2323C-attack-skill-batch.json"
+  ],
+  "approved": [
+    {
+      "unitId": "R-02",
+      "rawcode": "h01Q",
+      "name": "거프 - 희귀",
+      "skillId": "R-02:skill:0",
+      "skill": "거프 타격",
+      "activationChancePercent": 12.5,
+      "target": "target-centered area 500",
+      "effects": [
+        "physical 12500 to all selected enemies",
+        "primary only magical 40000 and 2.5-second line stun",
+        "primary only armorBreak +1 with independent 50-percent conditional roll"
+      ],
+      "caveat": "Source tooltip percentage, not native JASS random ordering/armor/stun resistance parity"
+    },
+    {
+      "unitId": "LI-09",
+      "rawcode": "h05F",
+      "name": "크로커다일 - 제한됨",
+      "skills": [
+        { "id": "LI-09:skill:0", "name": "단일 참격", "chancePercent": 6, "magic": 800000, "multiplierRange": [1, 2], "mobileTargetPolicy": "current attacked enemy only; source target metadata absent" },
+        { "id": "LI-09:skill:1", "name": "광역 물리", "chancePercent": 10, "physical": 850000, "radius": 425, "mobileTargetPolicy": "current attacked enemy-centered area; source target metadata absent" },
+        { "id": "LI-09:skill:2", "name": "혼합 스턴", "chancePercent": 5, "magic": 200000, "physical": 1000000, "physicalMultiplierRange": [1, 1.5], "radius": 550, "normalLineStunSeconds": 2.5, "mobileTargetPolicy": "current attacked enemy-centered area; source target metadata absent" }
+      ],
+      "passiveGate": ["armorReductionAura 25", "movementSlowAura 40"],
+      "caveat": "Skills execute as tooltip-only practice damage. Source tooltip does not specify target type for these three skills."
+    }
+  ],
+  "implementation": [
+    "The full owner skill array, passives, rawcode, every effect field and effect ordering are required; partial packets are rejected.",
+    "R-02's second chance consumes one conditional RNG draw only after its primary target remains alive; no 50-percent unconditional armor break.",
+    "LI-09's null-target first attack is explicitly direct, while radius-bearing attacks use the existing current-target-centered area policy.",
+    "Shared SourceModelNextThirtyAttacks, status/armor-break, damage/defense and kill ledgers are reused. Neither unit has an already-registered w5 attack callback in SourceModelScriptAttackCatalog or SourceModelNextAttackCatalog."
+  ],
+  "notYetVerified": [
+    "Native W3A/JASS execution order, damage school/mitigation, immunity, secondary RNG and actual proc timing",
+    "Unity compilation, EditMode regression execution, Android build, installation and real gameplay"
+  ]
+}

@@ -28,6 +28,14 @@ namespace Ordr.Mobile.Combat
         // Source-tooltip-complete *practice* casts only. No inferred JASS cooldown,
         // Warcraft resistance, or non-listed mixed effects are granted.
         private static readonly SourceModelUnconnectedSkillRow[] Entries = {
+            // 28th: source-object matched, whole-tooltip packet practice only.
+            // R-02's secondary armor-break roll is separate from the proc;
+            // LI-09's null target descriptors use the documented mobile policy.
+            new SourceModelUnconnectedSkillRow("R-02", "h01Q",
+                new[] { "거프 타격" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("LI-09", "h05F",
+                new[] { "단일 참격", "광역 물리", "혼합 스턴" },
+                Array.Empty<string>()),
             // 25th: source-backed TR-05/TR-25 only. L-30 and D-06 profile
             // identities conflict with the extracted map, so are excluded.
             new SourceModelUnconnectedSkillRow("TR-05", "H096",

@@ -1,4 +1,11 @@
-## 2026-11-03 · 27차 키드 강화 패킷·잘못된 스킬 신원 실행/표시 보호 (현재 최신)
+## 2026-11-03 · 28차 공격 패킷·공통 전체 필드 게이트 (최신)
+
+- `SourceModelExactSkillPackets.Matches`: 중첩 객체/배열/스칼라의 **추가·누락·변조·순서 변경**을 거부하는 공용 비교기. 기존 25~27차 로우·키드/강화 패킷도 이 메서드로 검증합니다.
+- `SourceModelTwentyEighthSkillCatalog`: `R-02 h01Q` 거프 타격 1개, `LI-09 h05F` 제한 크로커다일 3개의 기술과 패시브를 전체 패킷 단위 승인. `SourceModelUnconnectedSkillCatalog`의 소유자/객체 허용 목록 → `SourceModelNextThirtySkillCatalog.CanModelCompleteAttack` → `CharacterCombatRuntime.SourceModelNextThirtyAttacks` 공통 엔진으로 실제 연습 적 HP에 반영합니다.
+- R-02 주 대상 방어 파괴에는 `ApplySourceModelCompositeArmorBreak`의 **별도 50% 난수** 사용, 기술 발동 확률 12.5%와 중복 계산하지 않음. LI-09의 무대상 메타데이터 중 `단일 참격`은 Direct, 반경425/550 기술은 타깃 중심 Circle로 분류. 기존 스킬·소스 JASS 콜백 중복 없음.
+- 원본 증빙 `data/source-model-twentyeighth-garp-crocodile-attacks.json`. 테스트 사례는 `Assets/Tests/EditMode/SourceModelScriptAttackSkillTests.cs`에 추가만 했고 Python·Unity·APK·CI는 실행하지 않았습니다. 원본 최종 피해·RNG·면역·타깃 자동 선택 완전 동등성 주장은 금지합니다.
+
+## 2026-11-03 · 27차 키드 강화 패킷·잘못된 스킬 신원 실행/표시 보호 (이전)
 
 - `SourceModelTwentyFifthSkillCatalog.CanModelExactKidEnhancement`: `TR-25` 기본 4스킬/패시브 전체와 **특성강화 2행 전체 필드/순서**까지 검증. `CharacterCombatRuntime.SourceModelTwentyFifthSkills`: 외부 검증 공급자(`ConfigureSourceModelKidEnhancedEligibility`)와 `PracticeKidEnhancedOf`를 통해 승인된 인스턴스에 한해서만 펑크 크래시 HP50·3틱 피해/기절, 댐드 펑크 10% 직선/폭발·적 수 보너스를 공용 자원·방어·시전예약·적중 원장에 합성. 기존 리펠 15기 추가 폭발·일반 펑크 깁슨 피해와 동시 발동하지 않음. 구매·해금 공급자는 기본 앱에 미연결.
 - `IsKnownForeignProfile`: `L-30`의 와이퍼 `샨디아의 창`, `D-06`의 사이 `파동 엘보` 도감 불일치에 한정. `CharacterCombatRuntime.TryCastActiveSkill`에서 승인 전용을 제외한 범용 폴백까지 차단하고 `OrdrMobileTouchPanel.DrawUnitDetails`에서 가짜 스킬 숫자/목록을 감춤. 기존 `SourceModelUnitEffects`의 카르가라 `A05Z/A060` 공통 처리와 네이티브 평타는 유지.

@@ -50,6 +50,14 @@ namespace Ordr.Mobile.Combat
                     "스킬 프로필 또는 유닛 ID 불일치");
                 return;
             }
+            if (SourceModelTwentyEighthSkillCatalog.IsOwner(catalogId) &&
+                !SourceModelTwentyEighthSkillCatalog.HasExactOwner(
+                    actor.Profile, catalogId))
+            {
+                ReportSourceModelNextThirtyDeferred(attackerId, primary.Id,
+                    catalogId + " 도감 전체 패킷/패시브가 원본 기록과 다름");
+                return;
+            }
 
             int completedModels = 0;
             var activatedThisAttack = new HashSet<string>(StringComparer.Ordinal);
@@ -111,6 +119,7 @@ namespace Ordr.Mobile.Combat
                 var shape = skill.Target == "single" ||
                     skill.Target == "eachMultishotTarget" ||
                     skill.Target == "summon" ||
+                    SourceModelTwentyEighthSkillCatalog.UsesPrimaryTarget(skill) ||
                     (skill.Id == "E-03:skill:5" && skill.Target == null) ?
                     SourceScriptHitShape.Direct :
                     (skill.Id == "TR-26:skill:4" ||
@@ -351,6 +360,7 @@ namespace Ordr.Mobile.Combat
         {
             string attackerId = InstanceKey(actor.Id);
             bool composite = SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(skill) ||
+                SourceModelTwentyEighthSkillCatalog.IsSpecial(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) ||
                 SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill) ||

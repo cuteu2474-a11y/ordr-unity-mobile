@@ -2197,6 +2197,76 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [TestCase("R-02", "h01Q", 1)]
+        [TestCase("LI-09", "h05F", 3)]
+        public void TwentyEighthWholeProfilesGateAllFourSourceSkills(
+            string owner, string rawcode, int count)
+        {
+            var profiles = CharacterSkillCatalog.FromJson(
+                Data("character-skill-profiles.json"));
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var profile = profiles.Require(owner);
+            Assert.AreEqual(rawcode, map.Find(owner).OriginalRawcode);
+            Assert.AreEqual(count, profile.Skills.Count);
+            Assert.IsTrue(SourceModelTwentyEighthSkillCatalog.HasExactOwner(
+                profile, owner));
+            SourceModelUnconnectedSkillRow row;
+            Assert.IsTrue(SourceModelUnconnectedSkillCatalog.TryGet(rawcode, out row));
+            Assert.AreEqual(owner, row.CatalogId);
+            Assert.AreEqual(count, row.PracticeAttackSkills.Count);
+            foreach (var skill in profile.Skills)
+            {
+                Assert.IsTrue(SourceModelTwentyEighthSkillCatalog.CanModelExact(skill));
+                Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill));
+                Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill));
+            }
+            Assert.AreEqual(owner == "R-02" ? false : true,
+                SourceModelTwentyEighthSkillCatalog.UsesPrimaryTarget(profile.Skills[0]));
+        }
+
+        [Test]
+        public void TwentyEighthTamperedFieldBlocksWholeOwnerNotJustOneProc()
+        {
+            var original = Data("character-skill-profiles.json");
+            var profiles = CharacterSkillCatalog.FromJson(original.Replace(
+                "\"name\": \"거프 타격\"", "\"name\": \"거프 가짜 타격\""));
+            Assert.IsFalse(SourceModelTwentyEighthSkillCatalog.HasExactOwner(
+                profiles.Require("R-02"), "R-02"));
+            var changed = CharacterSkillCatalog.FromJson(original.Replace(
+                "\"name\": \"혼합 스턴\"", "\"name\": \"혼합 가짜 스턴\""));
+            Assert.IsFalse(SourceModelTwentyEighthSkillCatalog.HasExactOwner(
+                changed.Require("LI-09"), "LI-09"));
+        }
+
+        [TestCase("R-02", "거프 타격")]
+        [TestCase("LI-09", "단일 참격")]
+        [TestCase("LI-09", "광역 물리")]
+        [TestCase("LI-09", "혼합 스턴")]
+        public void TwentyEighthProcPacketsHitEnemyOnlyWhenRollSucceeds(
+            string owner, string name)
+        {
+            using (var success = Create(owner, true, -4900, 5400))
+            {
+                var events = success.Battle.Advance(6);
+                Assert.IsTrue(events.Any(x => x.Type ==
+                    CharacterCombatEventType.SkillActivated && x.SkillName == name));
+                Assert.IsTrue(events.Any(x => x.Type ==
+                    CharacterCombatEventType.SkillDamage && x.SkillName == name &&
+                    x.Amount > 0));
+                if (owner == "R-02")
+                    Assert.IsTrue(events.Any(x => x.Type ==
+                        CharacterCombatEventType.ArmorBreakApplied && x.SkillName == name));
+            }
+            using (var blocked = Create(owner, false, -4900, 5400))
+            {
+                var events = blocked.Battle.Advance(6);
+                Assert.IsFalse(events.Any(x => x.Type ==
+                    CharacterCombatEventType.SkillActivated && x.SkillName == name));
+            }
+        }
+
         [Test]
         public void TwentyFifthConflictingTooltipOwnersNeverReceiveForeignSkills()
         {

@@ -94,6 +94,17 @@ namespace Ordr.Mobile.Combat
             ImportedCombatEffect component,
             IReadOnlyList<SpatialCombatEnemy> targets)
         {
+            // R-02's 50% armor-break is a second, independent roll AFTER
+            // the 12.5% attack skill activated. Spend this roll only when
+            // the owner, whole packet and primary target are still valid.
+            if (skill.Id == "R-02:skill:0")
+            {
+                if (!SourceModelTwentyEighthSkillCatalog.HasExactOwner(
+                        actor.Profile, "R-02") || !primary.Enemy.IsAlive ||
+                    !CanAttackInThisLane(actor, primary) ||
+                    sourceModelRules.NextScriptRoll(1000000) >= 500000)
+                    return;
+            }
             int added = (int)component.Number("stacks").Value;
             double? max = component.Number("max") ??
                 component.Number("maxStacks") ?? component.Number("maxArmorReduction");

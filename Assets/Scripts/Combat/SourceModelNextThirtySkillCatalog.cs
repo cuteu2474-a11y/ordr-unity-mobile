@@ -199,6 +199,8 @@ namespace Ordr.Mobile.Combat
         // unsupported. Tooltip packets are a practice model, never JASS parity.
         public static bool CanModelCompleteAttack(ImportedCombatSkill skill)
         {
+            if (SourceModelTwentyEighthSkillCatalog.IsSpecial(skill))
+                return SourceModelTwentyEighthSkillCatalog.CanModelExact(skill);
             if (SourceModelTwentyFifthSkillCatalog.IsSpecial(skill))
                 return SourceModelTwentyFifthSkillCatalog.CanModelExact(skill) &&
                     (skill.Trigger == "onAttack" ||
