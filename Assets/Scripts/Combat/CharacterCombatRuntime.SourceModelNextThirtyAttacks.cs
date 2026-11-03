@@ -432,6 +432,8 @@ namespace Ordr.Mobile.Combat
                         skill, component, target, raw);
                     raw = SourceModelEighthRawDamageAdjustment(actor, primary,
                         skill, component, target, raw);
+                    raw = SourceModelNinthDamageAdjustment(actor,
+                        skill, component, target, raw);
                     // Rebecca's tooltip gives a per-legacy-level increment.
                     // The offline model has no native legacy-level provider:
                     // the first documented increment is the conservative

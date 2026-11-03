@@ -170,6 +170,7 @@ namespace Ordr.Mobile.Combat
         private Action<string, string> verifiedAttackDeclared;
         private Action<string, string, string> verifiedScriptAttackDeclared;
         private Action<string, string, string> practiceScriptAttackDeclared;
+        private Action<string, string, string, long> practiceSuccessfulBasicHit;
         // JASS w5 uses EVENT_PLAYER_UNIT_ATTACKED, before the normal attack hit.
         // The callback only routes registered, source-checked original effects.
         public void ConfigureVerifiedAttackDeclared(Action<string, string> callback)
@@ -198,6 +199,18 @@ namespace Ordr.Mobile.Combat
             if (practiceScriptAttackDeclared != null || units.Count != 0)
                 throw new InvalidOperationException("연습 공격 스크립트는 유닛 등록 전에 한 번만 연결하세요.");
             practiceScriptAttackDeclared = modelEvent ??
+                throw new ArgumentNullException(nameof(modelEvent));
+        }
+
+        // Unlike ATTACKED, this fires only after a committed positive basic
+        // hit. Counters for successful hits must never count declarations,
+        // canceled targets, or a zero-damage attack.
+        internal void ConfigurePracticeSuccessfulBasicHit(
+            Action<string, string, string, long> modelEvent)
+        {
+            if (practiceSuccessfulBasicHit != null || units.Count != 0)
+                throw new InvalidOperationException("연습 명중 콜백은 등록 전에 한 번만 연결하세요.");
+            practiceSuccessfulBasicHit = modelEvent ??
                 throw new ArgumentNullException(nameof(modelEvent));
         }
 
@@ -534,6 +547,9 @@ namespace Ordr.Mobile.Combat
             long actual;
             if (!resolution.TryAttack(attackerInstanceId, targetId,
                 nextAttackInterval, resolved, out actual)) return false;
+            if (actual > 0 && practiceSuccessfulBasicHit != null)
+                practiceSuccessfulBasicHit(attackerInstanceId,
+                    unit.Spec.UnitRawCode, targetId, actual);
             long eventSequence = ++unit.NextEventSequence;
             var activated = new List<string>();
             foreach (var skill in unit.Spec.Skills)

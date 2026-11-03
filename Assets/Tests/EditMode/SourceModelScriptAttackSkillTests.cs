@@ -1149,6 +1149,55 @@ namespace Ordr.Mobile.Tests
                 "No unknown component may be silently activated for " + unitId + "/" + name);
         }
 
+        [TestCase("L-39", "백발백중")]
+        [TestCase("L-28", "해류 한판 업어치기")]
+        [TestCase("I-01", "기본 공격 범위 추가")]
+        [TestCase("I-06", "기본 공격 추가")]
+        [TestCase("MY-02", "오니")]
+        [TestCase("MY-02", "할퀴기")]
+        [TestCase("MY-02", "휩쓸기")]
+        [TestCase("LI-06", "확정 단일 스턴")]
+        [TestCase("SR-01", "피스톨 키스")]
+        [TestCase("SR-01", "피스톨 키스 6회 발동 보너스")]
+        public void NinthBatchTenPacketsHaveExplicitOwnerAndCompleteFields(
+            string unitId, string name)
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require(unitId).Skills.Single(x => x.Name == name);
+            Assert.IsTrue(SourceModelNinthSkillCatalog.Approved(skill),
+                "The ninth batch cannot activate an incomplete or changed source packet: " +
+                unitId + "/" + name);
+        }
+
+        [TestCase("L-39", "백발백중")]
+        [TestCase("L-28", "해류 한판 업어치기")]
+        [TestCase("I-01", "기본 공격 범위 추가")]
+        [TestCase("I-06", "기본 공격 추가")]
+        [TestCase("MY-02", "휩쓸기")]
+        [TestCase("LI-06", "확정 단일 스턴")]
+        [TestCase("SR-01", "피스톨 키스")]
+        public void NinthBatchRunsThroughRealPracticeAttackPipeline(
+            string unitId, string expectedSkill)
+        {
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(15);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.Attack),
+                    unitId + " must commit a basic attack");
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == expectedSkill),
+                    unitId + " must execute the ninth-batch skill in combat");
+            }
+        }
+
+        [Test]
+        public void NinthBatchRejectsFrankyGeneralSkillWithoutConfirmedForm()
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require("TR-28").Skills.Single(x => x.Name == "제너럴 소드");
+            Assert.IsFalse(SourceModelNinthSkillCatalog.Approved(skill));
+        }
+
         [Test]
         public void SeventhBatchKobyCloneHasFiveSecondCombatLifeButNoFusionRosterEntry()
         {

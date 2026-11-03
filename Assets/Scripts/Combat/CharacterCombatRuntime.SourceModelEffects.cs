@@ -22,8 +22,10 @@ namespace Ordr.Mobile.Combat
             sourceModelRules = rules;
             sourceModelUnitEffects = rules.UnitEffects;
             SourceModelTimeAdvancing += AdvanceSourceModelEighthTimeline;
+            SourceModelTimeAdvancing += AdvanceSourceModelNinthProjectiles;
             attackPipeline.ConfigurePracticeAttackOverride(rules.FormAttackOf);
             attackPipeline.ConfigurePracticeScriptAttackDeclared(OnSourceModelScriptAttackDeclared);
+            attackPipeline.ConfigurePracticeSuccessfulBasicHit(OnSourceModelNinthSuccessfulBasicHit);
             attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {
                 // Reuse the shared cadence path for a temporary form. Its flat
                 // interval change is distinct from percentage-based auras.

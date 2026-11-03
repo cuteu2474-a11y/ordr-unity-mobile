@@ -1,3 +1,9 @@
+## 2026-11-03 · 9차 실제 명중 카운터·다중 투사체·누적 강화 (최신)
+
+- `CombatAttackPipeline.ConfigurePracticeSuccessfulBasicHit`: 원본 `ATTACKED` 선언 경로와 분리해 **HP에 실제 피해가 들어간 확정 명중** 후 호출합니다. `CharacterCombatRuntime.SourceModelEffects`가 이 후속 콜백 및 공용 `SourceModelTimeAdvancing` 투사체 예약을 한 번 연결합니다. 공격 선언 경로는 `CharacterCombatRuntime.SourceModelAttackSkills`에서 기존 native/JASS 및 앞선 도감 스킬을 유지하며 9차만 별도 병렬 실행합니다.
+- `CharacterCombatRuntime.SourceModelNinthSkills.cs`: `SourceModelNinthSkillCatalog`가 원본 ID·rawcode·명칭·트리거·대상·효과 필드를 엄격 승인. 히바리 4회 **실명중**, 징베 7초 재사용·0.2초×10회 대상 유효성 확인, 네즈코 체력 8%와 `휩쓸기` 9%/현재체력10% 보정, 거프·빅맘 기본 공격력 비율, 알비다 보스/일반 스턴 분기, S-스네이크 8% 공속 발동 및 6회 보너스를 기존 피해/상태 엔진에 연결합니다. 프랑키의 변신 필수 `제너럴 소드`는 조건 미연결로 제외. `CharacterCombatRuntime` 제거 루틴은 예약 피해·카운터·강화 기록을 함께 정리합니다.
+- `CharacterCombatRuntime.SourceModelNextThirtyAttacks.SourceModelNinthDamageAdjustment`: 기존 공용 피해 원장에서 기본 공격력 비율 및 네즈코 대상 **현재 HP** 추가 피해를 계산; 새 전용 피해 정산기를 만들지 않습니다. `tests/test_source_model_ninth_10_skills.py` 및 Unity `SourceModelScriptAttackSkillTests`를 묶어서 확인합니다. 투사체 이동·스턴 저항·강화 지속시간·원작 최종 피해/Unity/Android 검증은 **TOOLTIP_MODEL_ONLY** 경계입니다.
+
 ## 2026-11-03 · 8차 조건형·접근형 공통 경로 (최신)
 
 - `CharacterCombatRuntime.SourceModelEighthSkills.cs`: 17개 신규 도감 기반 기능 중 조건/라운드/접근/주기 실행. 야마토 폼 첫 타격 소비, 블랙 마리아 공격 13회 카운터, 조로 선택적 힘 계수, 코비 실제 5라운드마다 최대 +42% 공속, 접근 판정의 대상별 한 번·같은 패기 배타, E-11 1.5초 주기, TR-13 카무사리 14.25초 공유 주기를 한 곳에서 처리. 원본 만료 없는 코비 상태는 `CombatEffectOrigin.Aura`로 보관.

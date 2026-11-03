@@ -1655,6 +1655,7 @@ namespace Ordr.Mobile.Combat
                 sourceModelMariaAttackCount.Remove(id);
                 sourceModelKobyRoundStacks.Remove(id);
                 ForgetSourceModelEighthActor(id);
+                ForgetSourceModelNinthActor(id);
                 sourceModelManagedResourceRows.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
@@ -2223,6 +2224,7 @@ namespace Ordr.Mobile.Combat
             sourceModelMariaAttackCount.Remove(instanceId);
             sourceModelKobyRoundStacks.Remove(instanceId);
             ForgetSourceModelEighthActor(instanceId);
+            ForgetSourceModelNinthActor(instanceId);
             sourceModelManagedResourceRows.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
             // Native fusion removes every input as ONE logical batch. Do
@@ -2893,6 +2895,7 @@ namespace Ordr.Mobile.Combat
         private void RemoveEnemyRuntimeState(string id)
         {
             ForgetSourceModelEighthEnemy(id);
+            ForgetSourceModelNinthEnemy(id);
             RemoveSourceModelAceFlamesForTarget(id);
             ForgetSourceKaidoArmorEnemy(id);
             moriaParticipation.Forget(id);

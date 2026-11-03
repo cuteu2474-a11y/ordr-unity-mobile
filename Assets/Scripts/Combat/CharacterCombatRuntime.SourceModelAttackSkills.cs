@@ -32,6 +32,7 @@ namespace Ordr.Mobile.Combat
                 rawcode, out nativeSourceUnitId);
             bool practiceBonney = rawcode == "H0BX";
             bool standaloneTemporary = IsStandaloneSourceTemporaryAttack(rawcode);
+            bool ninthOwner = SourceModelNinthSkillCatalog.HasOwner(rawcode);
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 !processingStep || game.Phase != SessionPhase.Running ||
                 (!practiceBonney &&
@@ -43,6 +44,7 @@ namespace Ordr.Mobile.Combat
                  !SourceModelBatchAttackCatalog.TryGet(rawcode, out batch) &&
                  !SourceModelNextThirtySkillCatalog.TryGet(rawcode, out nextThirty) &&
                  !SourceModelUnconnectedSkillCatalog.TryGet(rawcode, out unconnected) &&
+                 !ninthOwner &&
                  !standaloneTemporary &&
                  !specialFromJass &&
                  !nativeFromJass))
@@ -59,6 +61,9 @@ namespace Ordr.Mobile.Combat
                 !enemies.TryGetValue(primaryTargetId, out primary) ||
                 !primary.Enemy.IsAlive || !CanAttackInThisLane(actor, primary))
                 return;
+
+            if (ninthOwner)
+                ExecuteSourceModelNinthDeclaredAttack(actor, primary, rawcode);
 
             // Ulti's tooltip combines her HP-cost active with +1 HP on each
             // declared basic attack. Only source-managed practice HP is
