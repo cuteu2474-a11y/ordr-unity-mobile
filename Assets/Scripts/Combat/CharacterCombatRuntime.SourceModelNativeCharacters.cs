@@ -10,6 +10,19 @@ namespace Ordr.Mobile.Combat
     {
         private readonly Dictionary<long, string> sourceNativeForms =
             new Dictionary<long, string>();
+        private sealed class SourceChopperBurst
+        {
+            public double ExpiresAt;
+            public bool StoryLane;
+            public long LaneRevision;
+        }
+        private readonly Dictionary<long, SourceChopperBurst> sourceChopperBursts =
+            new Dictionary<long, SourceChopperBurst>();
+        // The source Byb callback does not reveal the native metamorphosis
+        // mana payment. A full pool must not create an endless 4s loop.
+        // A witnessed fall below 150 is needed before the next model burst.
+        private readonly HashSet<long> sourceChopperAwaitingManaReset =
+            new HashSet<long>();
         private readonly Dictionary<long, int> sourceKaidoLifeCounters =
             new Dictionary<long, int>();
         private readonly Dictionary<long, int> sourceKaidoAttackCounters =
@@ -135,24 +148,85 @@ namespace Ordr.Mobile.Combat
         private void ExecuteChopperSourceAttack(CharacterInstance actor,
             SpatialCombatEnemy primary)
         {
-            if (sourceNativeForms.ContainsKey(actor.Id)) return;
+            if (sourceChopperBursts.ContainsKey(actor.Id)) return;
             var resource = actor.Abilities.Resources;
             if (resource == null || resource.MaximumMana != 150) return;
+            if (resource.Mana < 150)
+                sourceChopperAwaitingManaReset.Remove(actor.Id);
             if (resource.Mana == 150)
             {
-                // Byb issues 'metamorphosis' at full mana. It DOES NOT
-                // explicitly spend mana; native ability costs are unknown.
-                // We track the requested native identity H0B6, rather than
-                // inventing a four-second buff or a new basic attack spec.
+                if (sourceChopperAwaitingManaReset.Contains(actor.Id) ||
+                    !SourceChopperHasCompleteTooltip(actor)) return;
+                // Byb requests metamorphosis at full mana; the imported
+                // tooltip records 4 seconds. This is an explicitly labelled
+                // tooltip-timed model, NOT a verified Warcraft native cost.
                 sourceModelRules.SetSourceForm(InstanceKey(actor.Id), "H0B6");
-                sourceNativeForms[actor.Id] = "쵸파 폭주형 · H0B6 (객체 평타 모델)";
+                sourceNativeForms[actor.Id] = "쵸파 폭주형 · H0B6 (4초 모델)";
+                sourceChopperBursts[actor.Id] = new SourceChopperBurst {
+                    ExpiresAt = effectExecutor.Time + 4,
+                    StoryLane = IsStoryDeployed(actor.Id),
+                    LaneRevision = SourceModelLaneRevision(actor.Id)
+                };
+                sourceChopperAwaitingManaReset.Add(actor.Id);
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
                     primary.Id, "쵸파 럼블볼 폭주",
-                    "MODEL_ONLY Byb: MP150 → H0B6 기본 공격 285001~285003 / 1.2초; 원본 변신 비용·스플래시 미검증", 0));
+                    "TOOLTIP_MODEL_ONLY Byb: MP150 → H0B6 / 4초 / 객체 공격 285001~285003·1.2초; 원본 변신 마나비용 미확인", 0));
             }
             else
                 resource.SetMana(Math.Min(150, resource.Mana + 1));
+        }
+
+        private static bool SourceChopperHasCompleteTooltip(CharacterInstance actor)
+        {
+            if (actor.Catalog.Id != "TR-23" || actor.Profile == null ||
+                actor.Profile.UnitId != "TR-23" || actor.Mapping == null ||
+                actor.Mapping.AttackSpec.UnitRawCode != "H091") return false;
+            var skill = FindSourceSkill(actor, "럼블볼 폭주");
+            return skill != null && skill.Id == "TR-23:skill:0" &&
+                skill.Trigger == "activeMana" && skill.Target == "self" &&
+                skill.Number("manaCost") == 150 && skill.Components.Count == 4 &&
+                skill.Components[0].Type == "transform" &&
+                skill.Components[0].Text("form") == "폭주" &&
+                skill.Components[0].Number("durationSeconds") == 4 &&
+                skill.Components[1].Type == "basicAttackSplash" &&
+                skill.Components[1].Number("radius") == 400 &&
+                skill.Components[2].Type == "attackSpeedReduction" &&
+                skill.Components[3].Type == "attackPowerIncrease";
+        }
+
+        private void EndSourceChopperBurst(long id, bool report)
+        {
+            if (!sourceChopperBursts.Remove(id)) return;
+            if (sourceModelRules != null &&
+                sourceModelRules.SourceFormRawcodeOf(InstanceKey(id)) == "H0B6")
+                sourceModelRules.ClearSourceForm(InstanceKey(id));
+            sourceNativeForms.Remove(id);
+            if (report && characters.ContainsKey(id))
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.StatusApplied, InstanceKey(id),
+                    InstanceKey(id), "쵸파 폭주 종료",
+                    "TOOLTIP_MODEL_ONLY 4초 만료·원래 객체 평타 복귀; 재변신 마나 소모는 원본 미확인", 0));
+        }
+
+        private void AdvanceSourceChopperBursts(double seconds)
+        {
+            if (sourceChopperBursts.Count == 0) return;
+            var ended = new List<long>();
+            foreach (var pair in sourceChopperBursts)
+            {
+                CharacterInstance actor;
+                if (characters.TryGetValue(pair.Key, out actor) &&
+                    actor.Abilities.Resources != null &&
+                    actor.Abilities.Resources.Mana < 150)
+                    sourceChopperAwaitingManaReset.Remove(pair.Key);
+                if (!characters.ContainsKey(pair.Key) ||
+                    pair.Value.ExpiresAt <= effectExecutor.Time ||
+                    pair.Value.StoryLane != IsStoryDeployed(pair.Key) ||
+                    pair.Value.LaneRevision != SourceModelLaneRevision(pair.Key))
+                    ended.Add(pair.Key);
+            }
+            foreach (long id in ended) EndSourceChopperBurst(id, true);
         }
 
         private void ExecuteVegapunkSourceAttack(CharacterInstance actor,
@@ -504,6 +578,8 @@ namespace Ordr.Mobile.Combat
 
         private void ForgetNativeSourceCharacter(long id)
         {
+            EndSourceChopperBurst(id, false);
+            sourceChopperAwaitingManaReset.Remove(id);
             if (sourceModelRules != null) sourceModelRules.ClearSourceForm(InstanceKey(id));
             sourceNativeForms.Remove(id);
             sourceKaidoLifeCounters.Remove(id);

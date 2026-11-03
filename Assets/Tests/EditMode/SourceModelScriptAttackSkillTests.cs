@@ -1473,6 +1473,69 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void ChopperTooltipBurstEndsAfterFourSecondsWithoutInventingManaPayment()
+        {
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"),
+                CharacterUnitCatalog.FromJson(Data("units.json")));
+            var resources = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                Data("original-2323C-unit-object-stats.json"), map);
+            using (var live = Create("TR-23", true, -4900, 5400,
+                withNativeAuras: true))
+            {
+                live.Combat.ConfigureSourceModelUnitResources(resources);
+                long ally = live.Combat.SpawnCharacter("C-01", 4900, -5400);
+                live.Battle.Advance(2);
+                Assert.IsNotNull(live.Combat.PracticeNativeFormOf(live.ActorId));
+                Assert.AreEqual(150, live.Combat.ResourcesOf(live.ActorId).Mana,
+                    "Byb does not prove a native mana payment; the model must not fabricate one.");
+                live.Battle.Advance(6);
+                Assert.IsNull(live.Combat.PracticeNativeFormOf(live.ActorId));
+                Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
+                Assert.IsFalse(live.Combat.UnitStatusOf(ally).Snapshot().Any(e =>
+                    e.SourceId.StartsWith("practice-aura:") &&
+                    e.Type == CombatEffectType.AttackPowerBuff && e.Amount == 40));
+                // Full mana cannot immediately make the 4-second tooltip
+                // form permanent. A source-managed drop is needed to rearm.
+                live.Battle.Advance(3);
+                Assert.IsNull(live.Combat.PracticeNativeFormOf(live.ActorId));
+            }
+        }
+
+        [Test]
+        public void ChopperBurstAndTemporaryCloneStopAtCommittedLaneChange()
+        {
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"),
+                CharacterUnitCatalog.FromJson(Data("units.json")));
+            var resources = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                Data("original-2323C-unit-object-stats.json"), map);
+            using (var live = Create("TR-23", true, -4900, 5400))
+            {
+                live.Combat.ConfigureSourceModelUnitResources(resources);
+                live.Battle.Advance(2);
+                Assert.IsNotNull(live.Combat.PracticeNativeFormOf(live.ActorId));
+                var lanes = new MutableStoryLane();
+                live.Combat.ConfigureStoryDeployment(lanes);
+                lanes.DeployedIds.Add(live.ActorId);
+                live.Combat.RefreshAfterCommittedStoryLaneChange(live.ActorId);
+                Assert.IsNull(live.Combat.PracticeNativeFormOf(live.ActorId));
+            }
+            using (var live = Create("L-21", true, -4900, 5400))
+            {
+                for (int tick = 0; tick < 100 &&
+                    live.Combat.PracticeSummonsOf(live.ActorId).Count == 0; tick++)
+                    live.Battle.Advance(.2);
+                Assert.Greater(live.Combat.PracticeSummonsOf(live.ActorId).Count, 0);
+                var lanes = new MutableStoryLane();
+                live.Combat.ConfigureStoryDeployment(lanes);
+                lanes.DeployedIds.Add(live.ActorId);
+                live.Combat.RefreshAfterCommittedStoryLaneChange(live.ActorId);
+                Assert.AreEqual(0, live.Combat.PracticeSummonsOf(live.ActorId).Count);
+            }
+        }
+
+        [Test]
         public void PinnedMapObjectAurasUseOriginalObjectIdentityAndLevel()
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
@@ -2460,6 +2523,36 @@ namespace Ordr.Mobile.Tests
                     x.Type == CharacterCombatEventType.EffectDeferred &&
                     x.Detail.Contains("추가 방어 감소10")),
                     "Unknown secondary -10 stacking must be reported, not silently added");
+            }
+        }
+
+        [Test]
+        public void BonneyAgeRootAndStacksDoNotRemainInPreviousLaneAfterDispatch()
+        {
+            using (var live = Create("TR-21", true, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var events = live.Battle.Advance(10);
+                var root = events.FirstOrDefault(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "세월관통");
+                Assert.IsNotNull(root);
+                Assert.GreaterOrEqual(live.Combat.PracticeBonneyAgeStacksOf(
+                    live.ActorId, root.EnemyId), 40);
+                Assert.IsTrue(live.Combat.IsSourceModelPullHeld(root.EnemyId));
+                var lanes = new MutableStoryLane();
+                live.Combat.ConfigureStoryDeployment(lanes);
+                lanes.DeployedIds.Add(live.ActorId);
+                live.Combat.RefreshAfterCommittedStoryLaneChange(live.ActorId);
+                Assert.AreEqual(0, live.Combat.PracticeBonneyAgeStacksOf(
+                    live.ActorId, root.EnemyId));
+                Assert.IsFalse(live.Combat.IsSourceModelPullHeld(root.EnemyId));
+                Assert.IsFalse(live.Combat.PracticeBonneyScaleReduced(root.EnemyId));
             }
         }
 

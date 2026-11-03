@@ -1,4 +1,4 @@
-## 2026-11-03 · 12차 변신 후속 경로 (최신)
+## 2026-11-03 · 12차 변신 후속 경로 (이전 · 13차는 문서 끝)
 
 - `SourceModelEleventhForms` 공격 선언→`SourceModelTwelfthForms` 보니40스택·스턴, 킹 화재/둔화→공통 피해·타이머·상태 원장. `SourceModelOriginalSpecials.IsSourceModelPullHeld`에 세월관통 루트, `OrdrUnitWorldPresenter` 0.6배 외형, `OrdrMobileTouchPanel` 한글 폼. 세부 내용은 문서 끝의 같은 12차 섹션에 있습니다. 원작 최종 등가성 미검증.
 
@@ -385,4 +385,10 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `CharacterCombatRuntime.SourceModelTwelfthForms.cs`: 보니 스택40 최초 도달/대상별 중복 차단, 일반 적 이동 봉쇄·축소 상태, 스턴 광역기 15초 제한, 킹 화재 10틱/방감20과 매 공격 둔화/3초 지속 피해를 원본 도감 필드 검증 후 실행합니다. 기존 `SourceModelEleventhForms`의 실제 공격 선언에서 이를 부르고 `SourceModelSeventhSkills` 공통 피해/시간 예약/전장 리비전을 재사용합니다.
 - `SourceModelOriginalSpecials.IsSourceModelPullHeld`가 세월관통 이동 봉쇄를 기존 이동로 처리에 합치고, `OrdrUnitWorldPresenter.SyncEnemies`는 스택 달성 후 대상 스프라이트만 0.6배로 표시합니다. `OrdrMobileTouchPanel`은 `PracticeFormOf`를 한글 유닛 폼 상태로 보여 줍니다. 적 삭제·소유자 삭제 시 예약 키와 문턱 기록을 정리합니다. `tests/test_source_model_twelfth_forms.py` 및 `SourceModelScriptAttackSkillTests`가 스택·틱·조건·쵸파/카이도 회귀를 확인합니다.
 - SourceModel은 여전히 **TOOLTIP_MODEL_ONLY**이며, 원작 필드만으로 계산되지 않는 마르코 고정40%, 거대화 공속225%, 보니 추가 물리/니카 속도, 킹 불명 추가 방감10/참수 광역은 보류. E-02가 E-01의 `H0BK`를 무단 사용하지 못하도록 기존 진입 제한 유지. Unity 실행·원본 최종 실전 등가성은 별도로 검증할 과제입니다.
+
+## 2026-11-03 · 13차 변신 생명주기 공통 정리 (최신)
+
+- `CharacterCombatRuntime.SourceModelNativeCharacters`의 `SourceChopperBurst`가 원본 프로필의 4초/MP150/반경400과 H091→H0B6를 확인해 동일 객체 폼 시각·전장 리비전을 추적합니다. `SourceModelEffects.SourceModelTimeAdvancing`에서 만료 후 `ClearSourceForm`을 통해 평타·오라·추가 스플래시가 기본형으로 돌아옵니다. 원본 JASS 비명시 마나 소비는 **추측하지 않으며** 풀 MP 즉시 재진입 방지 게이트를 둡니다.
+- `CharacterCombatRuntime.RefreshAfterCommittedStoryLaneChange`는 전장 전환 직후 `EndSourceChopperBurst`, `ForgetSourceModelEleventhActor`(보니 스택·이동 봉쇄), `RefreshSourceTemporaryActors`(시노부·슈가 등의 독립 공격자 제거)를 호출한 다음 기존 적·아군 오라를 갱신합니다. 지연 공격의 전장 리비전 차단은 그대로 유지합니다.
+- 검증 코드: `tests/test_source_model_thirteenth_form_lifecycle.py`, `Assets/Tests/EditMode/SourceModelScriptAttackSkillTests.cs`. 이 경로는 연습 모델이며 네이티브 Warcraft 변신/마나/면역의 최종 증거가 아닙니다.
 

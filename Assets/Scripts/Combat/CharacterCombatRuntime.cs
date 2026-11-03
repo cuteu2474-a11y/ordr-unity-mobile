@@ -1398,8 +1398,16 @@ namespace Ordr.Mobile.Combat
             sourceSongSoldierExpiry.Remove(instanceId);
             RemoveSourceModelAceFlames(instanceId);
             if (UsesSourceModelBasicAttacks)
+            {
                 sourceModelStoryLaneRevisions[instanceId] =
                     checked(SourceModelLaneRevision(instanceId) + 1);
+                // End effects tied to the previous combat lane immediately:
+                // no summons or lasting roots may keep attacking/holding a
+                // main-lane enemy after their owner enters a story lane.
+                EndSourceChopperBurst(instanceId, true);
+                ForgetSourceModelEleventhActor(instanceId);
+                RefreshSourceTemporaryActors();
+            }
             RefreshEnemyAuras();
         }
 
