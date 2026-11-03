@@ -1,3 +1,11 @@
+## 2026-11-03 · 4차 공격 고유기 15개 실행 경로 (현재 최신)
+
+- **명시적 허용:** `SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack/CanModelFourthCompositeComponents`에서 소유 유닛·스킬 인덱스·이름과 구성요소 필드/순서를 검사합니다. `SourceModelNextThirtySkillCatalog`(울티/스모커) + `SourceModelUnconnectedSkillCatalog`(기존 6명/신규 루치 2명·핸콕)를 합쳐 11명 15개 신규 공격만 승인했습니다. 쿠마 전설 10% 발바닥은 이미 `CharacterCombatRuntime.SourceModelOriginalSpecials.BtL`에 있으므로 재등록하지 않았습니다. 추가 공격 **66**, 자동 액티브 **39** 유지.
+- **실행/보정:** `CharacterCombatRuntime.SourceModelNextThirtyAttacks`는 대상/전장/확률 후 공통 `SourceScriptTargets`로 반경 타격 및 키자루 `ProjectileLine`을 선별합니다. `SourceModelCompositeEffects.SourceModelCompositeRawDamage`는 평타 비례·현재 HP·민첩 실수 공급자·보스/스토리 전용 마법계수를 공통 피해 정산에 전달하고, 3연타의 주 대상 +325% 별도 패킷과 에이스 적 중심 추가 단일 피해도 처리합니다. 원본 데이터 JSON은 건드리지 않습니다.
+- **시간/수명:** 에이스 `불주먹`만 4.25초 성공 발동 후 재발동 차단을 적용하며 유닛 제거 시 쿨타임 자료를 정리합니다. 퀸 `빙귀`의 타깃 필드 누락은 해당 스킬에만 적 중심 반경 예외로 허용합니다. 공격 대상과 실제 적 기본 방어 유형이 없으면 기존 차단 로직을 유지합니다. 근거 `data/source-model-fourth-15-composite-attacks.json`, `tests/test_source_model_fourth_15_attacks.py`, Unity EditMode 회귀. 원본 실행 동등성은 주장하지 않습니다.
+
+> 아래 1~3차는 이전 시점 기록입니다.
+
 ## 2026-11-03 · 3차 복합 평타 12개 실행 경로 (현재 최신)
 
 - **식별/허용:** `SourceModelUnconnectedSkillCatalog`에 기존 7명 공격 명칭 12개 추가. `SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack/CanModelThirdCompositeComponents`가 `(unitId, skill index, name, 순서, 필드)`를 완전 패킷 기준으로 검증합니다. 자동 액티브/기존 JASS 콜백과 병렬 중복을 만들지 않습니다.

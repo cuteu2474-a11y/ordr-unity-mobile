@@ -917,6 +917,80 @@ namespace Ordr.Mobile.Tests
                 "Only the supplied hero strength may increase Jinbe's fixed packet");
         }
 
+        [TestCase("L-09", "육왕건")]
+        [TestCase("L-09", "육식 Lv4")]
+        [TestCase("TR-07", "격투 스턴")]
+        [TestCase("R-42", "단일 타격·스턴")]
+        [TestCase("L-25", "울두건")]
+        [TestCase("L-20", "화이트바인")]
+        [TestCase("MY-08", "스타캐치 애로우")]
+        [TestCase("I-09", "범위 마법 스턴")]
+        [TestCase("I-09", "물리 마법 혼합")]
+        [TestCase("D-03", "빙귀")]
+        [TestCase("TR-19", "화염성")]
+        [TestCase("E-07", "적 중심 마법")]
+        [TestCase("E-07", "불주먹")]
+        [TestCase("TR-26", "팔지경")]
+        [TestCase("TR-26", "레이저")]
+        public void FourthBatchFifteenExactAttacksReachExistingDamageLedger(
+            string unitId, string name)
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require(unitId).Skills.Single(x => x.Name == name);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill), name);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill), name);
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(7);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == name), name + " must trigger an approved proc");
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == name && e.Amount > 0),
+                    name + " must decrease real practice enemy HP");
+            }
+        }
+
+        [Test]
+        public void FourthBatchFireFistWaitsForRealAbsoluteCooldown()
+        {
+            using (var live = Create("E-07", true, -4900, 5400))
+            {
+                var first = live.Battle.Advance(3);
+                Assert.AreEqual(1, first.Count(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "불주먹"),
+                    "The absolute cooldown must block repeated successful rolls");
+                var later = live.Battle.Advance(4);
+                Assert.IsTrue(later.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "불주먹"),
+                    "The same owner must rearm after 4.25 seconds");
+            }
+        }
+
+        [Test]
+        public void FourthBatchKizaruAgilityRequiresAnActualProvider()
+        {
+            long baseDamage, scaledDamage;
+            using (var live = Create("TR-26", true, -4900, 5400))
+                baseDamage = live.Battle.Advance(5)
+                    .Where(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                                e.SkillName == "팔지경")
+                    .Sum(e => e.Amount);
+            using (var live = Create("TR-26", true, -4900, 5400))
+            {
+                live.Combat.ConfigureSourceModelHeroAgilityProvider(id => 10d);
+                scaledDamage = live.Battle.Advance(5)
+                    .Where(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                                e.SkillName == "팔지경")
+                    .Sum(e => e.Amount);
+            }
+            Assert.Greater(scaledDamage, baseDamage,
+                "Only a real agility source may add Kizaru's documented 3500 per point");
+        }
+
         [Test]
         public void ZephyrMissingManaSkillUsesOriginal160ManaAndExistingHpDamageLedger()
         {

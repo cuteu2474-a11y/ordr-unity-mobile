@@ -80,8 +80,14 @@ class FollowupSourceModelSkillTests(unittest.TestCase):
                   "SpecialGradeMobilePolicy.cs").read_text(encoding="utf-8")
         self.assertIn('public const string Redfield = "LI-01"', policy)
         self.assertIn('return unitId == Marco || unitId == Redfield || unitId == "LI-02";', policy)
-        self.assertNotIn('new SourceModelUnconnectedSkillRow("L-32", "h030",\n                new[]',
-                         self.listing)
+        self.assertIn('new SourceModelUnconnectedSkillRow("L-32", "h030",\n'
+                      '                Array.Empty<string>(), new[] { "우르스스 쇼크" }',
+                      self.listing)
+        native_special = (ROOT / "Assets" / "Scripts" / "Combat" /
+                          "CharacterCombatRuntime.SourceModelOriginalSpecials.cs").read_text(
+                              encoding="utf-8")
+        self.assertIn('new SourceScriptAttackSpec("L-32", "h030", "BtL"',
+                      native_special)
         self.assertEqual(3, len(self.evidence["deferredRelatedSkills"]))
 
 

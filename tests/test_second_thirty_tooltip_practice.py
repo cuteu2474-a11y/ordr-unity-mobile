@@ -17,11 +17,12 @@ def rows():
 
 
 def supported(skill, unit_id=None):
-    # Exact first-composite-batch identity is separately validated against
-    # source profile, field whitelist, and runtime path in the new batch audit.
+    # Source-model composite batches are independently validated with exact
+    # owner/index/effect-field schema in their own tests.
     if (unit_id, skill.get('name')) in {
         ('I-04', '광역 혼합 피해'), ('H-04', '거대 숲 물리'),
-        ('TR-10', '마나 광역 공격'), ('L-25', '미티어 울두건')
+        ('TR-10', '마나 광역 공격'), ('L-25', '미티어 울두건'),
+        ('L-25', '울두건'), ('L-20', '화이트바인')
     }:
         return True
     trigger = skill.get('trigger')
@@ -132,7 +133,7 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
                     active += 1
                 else:
                     attacks += 1
-        self.assertEqual(29, attacks)
+        self.assertEqual(31, attacks)
         self.assertEqual(12, active,
                          'First composite batch adds four active owners here')
 

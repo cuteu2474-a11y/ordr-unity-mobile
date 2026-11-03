@@ -56,9 +56,9 @@ namespace Ordr.Mobile.Combat
             new SourceModelNextThirtyUnit("L-13", "h02Z", "배리어 볼", "배리어 피스트"),
             new SourceModelNextThirtyUnit("L-15", "h02X", "왼손은 수면제", "타격 스턴"),
             new SourceModelNextThirtyUnit("L-17", "h035", "패왕색의 검무"),
-            new SourceModelNextThirtyUnit("L-20", "h02V", "화이트블로우"),
+            new SourceModelNextThirtyUnit("L-20", "h02V", "화이트블로우", "화이트바인"),
             new SourceModelNextThirtyUnit("L-25", "h03S",
-                Array.Empty<string>(), new[] { "미티어 울두건" }),
+                new[] { "울두건" }, new[] { "미티어 울두건" }),
             new SourceModelNextThirtyUnit("L-33", "h03H"),
             new SourceModelNextThirtyUnit("H-02", "h03U", "보스·광폭화 함포"),
             new SourceModelNextThirtyUnit("H-04", "h03N",
@@ -184,11 +184,16 @@ namespace Ordr.Mobile.Combat
         // unsupported. Tooltip packets are a practice model, never JASS parity.
         public static bool CanModelCompleteAttack(ImportedCombatSkill skill)
         {
+            bool fourth = IsFourthCompositeAttack(skill);
             if (skill == null ||
                 !(skill.Trigger == "onAttack" || skill.Trigger == "onEveryAttack") ||
                 !(skill.Target == "area" || skill.Target == "single" ||
-                  skill.Target == "casterArea") ||
-                ((skill.Target == "area" || skill.Target == "casterArea") &&
+                  skill.Target == "casterArea" ||
+                  (fourth && skill.Id == "D-03:skill:2" &&
+                   skill.Target == null && FinitePositive(skill.Radius)) ||
+                  (fourth && skill.Id == "TR-26:skill:4" && skill.Target == "line")) ||
+                ((skill.Target == "area" || skill.Target == "casterArea" ||
+                  skill.Target == "line") &&
                  !FinitePositive(skill.Radius)) ||
                 (skill.Trigger == "onAttack" &&
                  (!FinitePositive(skill.ChancePercent) || skill.ChancePercent.Value > 100)) ||
@@ -196,8 +201,16 @@ namespace Ordr.Mobile.Combat
                 skill.Components.Count == 0) return false;
             foreach (string key in skill.OriginalFields.Keys)
                 if (key != "name" && key != "trigger" && key != "chancePercent" &&
-                    key != "target" && key != "radius" && key != "components")
+                    key != "target" && key != "radius" && key != "components" &&
+                    !(fourth && skill.Id == "E-07:skill:3" &&
+                      key == "absoluteCooldownSeconds"))
                     return false;
+            if (fourth)
+            {
+                if (skill.Id == "E-07:skill:3" &&
+                    !FinitePositive(skill.Number("absoluteCooldownSeconds"))) return false;
+                return CanModelFourthCompositeComponents(skill);
+            }
             if (IsThirdCompositeAttack(skill))
                 return CanModelThirdCompositeComponents(skill);
             return IsSecondCompositeSkill(skill) ?
@@ -311,6 +324,58 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        // Follow-on batch: previously omitted, individually source-described
+        // procs on twelve existing/identified owners. Exact skill identities
+        // remain mandatory even where a packet consists of ordinary damage.
+        public static bool IsFourthCompositeAttack(ImportedCombatSkill skill)
+        {
+            if (skill == null) return false;
+            switch (skill.Id)
+            {
+                case "L-09:skill:0": return skill.Name == "육왕건";
+                case "L-09:skill:1": return skill.Name == "육식 Lv4";
+                case "TR-07:skill:0": return skill.Name == "격투 스턴";
+                case "R-42:skill:0": return skill.Name == "단일 타격·스턴";
+                case "L-25:skill:1": return skill.Name == "울두건";
+                case "L-20:skill:1": return skill.Name == "화이트바인";
+                case "MY-08:skill:3": return skill.Name == "스타캐치 애로우";
+                case "I-09:skill:3": return skill.Name == "범위 마법 스턴";
+                case "I-09:skill:4": return skill.Name == "물리 마법 혼합";
+                case "D-03:skill:2": return skill.Name == "빙귀";
+                case "TR-19:skill:2": return skill.Name == "화염성";
+                case "E-07:skill:4": return skill.Name == "적 중심 마법";
+                case "E-07:skill:3": return skill.Name == "불주먹";
+                case "TR-26:skill:2": return skill.Name == "팔지경";
+                case "TR-26:skill:4": return skill.Name == "레이저";
+                default: return false;
+            }
+        }
+
+        private static bool CanModelFourthCompositeComponents(ImportedCombatSkill skill)
+        {
+            string[] fields;
+            switch (skill.Id)
+            {
+                case "L-09:skill:0": fields = new[] { "magical|amount", "magical|amount,multiplierRange,scope", "magical|basis,percent,onlyTargetKinds,scope" }; break;
+                case "L-09:skill:1": fields = new[] { "magical|amount", "stun|durationSeconds" }; break;
+                case "TR-07:skill:0": fields = new[] { "physical|amount", "stun|durationSeconds" }; break;
+                case "R-42:skill:0": fields = new[] { "physical|amount", "stun|durationSeconds" }; break;
+                case "L-25:skill:1": fields = new[] { "physical|basis,percent,flatAmount" }; break;
+                case "L-20:skill:1": fields = new[] { "magical|amount,multiplierRange", "armorBreak|stacks,maxArmorReduction" }; break;
+                case "MY-08:skill:3": fields = new[] { "magical|amount", "magicDamageAmplification|percent" }; break;
+                case "I-09:skill:3": fields = new[] { "magical|amount", "stun|durationSeconds", "armorBreak|stacks,maxStacks" }; break;
+                case "I-09:skill:4": fields = new[] { "physical|amountPerHit,hits", "magical|amount" }; break;
+                case "D-03:skill:2": fields = new[] { "magical|amount", "stun|durationSeconds", "armorBreak|stacks,max" }; break;
+                case "TR-19:skill:2": fields = new[] { "physical|amount,multiplierRange", "magical|amount,scope,targetKindMultiplier" }; break;
+                case "E-07:skill:4": fields = new[] { "magical|amount,extraSingleAmount" }; break;
+                case "E-07:skill:3": fields = new[] { "magical|amount" }; break;
+                case "TR-26:skill:2": fields = new[] { "magical|amountPerHit,hits,agilityScalingPerPoint", "magical|singleExtraPercent" }; break;
+                case "TR-26:skill:4": fields = new[] { "magical|amount" }; break;
+                default: return false;
+            }
+            return ValidateExplicitCompositeShape(skill, fields);
+        }
+
         private static bool CanModelThirdCompositeComponents(ImportedCombatSkill skill)
         {
             string[] fields;
@@ -330,6 +395,12 @@ namespace Ordr.Mobile.Combat
                 case "E-09:skill:4": fields = new[] { "magical|amount,multiplierRange", "magical|amount,onlyTargetKinds", "explosive|basis,percent,plusMissingHealthPercent,hits,onlyTargetKinds", "magical|amount,onlyTargetKinds" }; break;
                 default: return false;
             }
+            return ValidateExplicitCompositeShape(skill, fields);
+        }
+
+        private static bool ValidateExplicitCompositeShape(ImportedCombatSkill skill,
+            string[] fields)
+        {
             if (skill.Components.Count != fields.Length) return false;
             for (int i = 0; i < fields.Length; i++)
             {
@@ -348,7 +419,9 @@ namespace Ordr.Mobile.Combat
                     else if (key == "basis")
                     {
                         if (component.Text(key) != "targetCurrentHealth" &&
-                            component.Text(key) != "targetMaxHealth") return false;
+                            component.Text(key) != "targetMaxHealth" &&
+                            !(skill.Id == "L-25:skill:1" &&
+                              component.Text(key) == "basicAttackDamage")) return false;
                     }
                     else if (key == "multiplierRange")
                     {
@@ -364,8 +437,14 @@ namespace Ordr.Mobile.Combat
                                  (string)kind != "enraged" && (string)kind != "story"))
                                 return false;
                     }
+                    else if (key == "targetKindMultiplier")
+                    {
+                        if (!ValidSourceModelTargetKindMultiplier(component.Get(key)))
+                            return false;
+                    }
                     else if (!FinitePositive(component.Number(key))) return false;
-                    if ((key == "hits" || key == "stacks" || key == "maxStacks") &&
+                    if ((key == "hits" || key == "stacks" || key == "maxStacks" ||
+                         key == "max" || key == "maxArmorReduction") &&
                         (component.Number(key).Value > 64 && key == "hits" ||
                          component.Number(key).Value > int.MaxValue ||
                          Math.Floor(component.Number(key).Value) !=

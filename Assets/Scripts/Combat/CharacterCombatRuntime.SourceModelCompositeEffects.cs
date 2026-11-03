@@ -116,12 +116,20 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<long, List<double>> sourceSongSoldierExpiry =
             new Dictionary<long, List<double>>();
         private Func<long, double?> sourceModelStrengthProvider;
+        private Func<long, double?> sourceModelAgilityProvider;
+        private readonly Dictionary<long, double> sourceModelFireFistReadyAt =
+            new Dictionary<long, double>();
 
         // An actual hero-attribute provider may be attached later without
         // changing any skill formula; absent data contributes ZERO scaling.
         public void ConfigureSourceModelHeroStrengthProvider(Func<long, double?> provider)
         {
             sourceModelStrengthProvider = provider;
+        }
+
+        public void ConfigureSourceModelHeroAgilityProvider(Func<long, double?> provider)
+        {
+            sourceModelAgilityProvider = provider;
         }
 
         private int SourceModelSongSoldiers(long casterId)
@@ -165,9 +173,19 @@ namespace Ordr.Mobile.Combat
             ImportedCombatEffect component,
             SpatialCombatEnemy target, double multiplier)
         {
-            if (SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill))
+            if (SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) ||
+                SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill))
             {
                 double basic = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
+                // Kizaru's second component is a primary-only bonus based on
+                // the full three-hit packet; the first packet itself is not
+                // repeated by this component.
+                if (skill.Id == "TR-26:skill:2" &&
+                    component.Get("singleExtraPercent") != null)
+                    return SourceModelCompositeRawDamage(actor, skill,
+                        skill.Components[0], target, 1) *
+                        skill.Components[0].Number("hits").Value *
+                        component.Number("singleExtraPercent").Value / 100 * multiplier;
                 if (component.Type == "critical")
                     // The normal hit already happened in the attack pipeline;
                     // only the 4.25x *increment* should hit again.
@@ -216,6 +234,21 @@ namespace Ordr.Mobile.Combat
                             strength.Value * component.Number("strengthScalingPerPoint").Value) *
                             multiplier;
                 }
+                if (component.Get("agilityScalingPerPoint") != null)
+                {
+                    double agility = 0;
+                    if (sourceModelAgilityProvider != null)
+                    {
+                        double? provided = sourceModelAgilityProvider(actor.Id);
+                        if (provided.HasValue && provided.Value >= 0 &&
+                            !double.IsNaN(provided.Value) &&
+                            !double.IsInfinity(provided.Value))
+                            agility = provided.Value;
+                    }
+                    return ((component.Number("amountPerHit") ?? 0) +
+                        agility * component.Number("agilityScalingPerPoint").Value) *
+                        multiplier;
+                }
                 // TR-22 Jinbe's +17500 per strength is sourced, but the
                 // currently configured runtime has no original strength
                 // attribute. Defer scaling instead of inventing its value.
@@ -241,8 +274,19 @@ namespace Ordr.Mobile.Combat
                 }
                 return total * multiplier;
             }
-            return (component.Number("amount") ??
+            double packet = (component.Number("amount") ??
                 component.Number("amountPerHit") ?? 0) * multiplier;
+            var targetKindMultipliers = component.Get("targetKindMultiplier") as
+                Dictionary<string, object>;
+            if (targetKindMultipliers != null)
+            {
+                string kind = target.Kind == CharacterEnemyKind.Boss ? "boss" :
+                    target.Kind == CharacterEnemyKind.Story ? "story" : null;
+                object factor;
+                if (kind != null && targetKindMultipliers.TryGetValue(kind, out factor))
+                    packet *= Convert.ToDouble(factor);
+            }
+            return packet;
         }
 
         private static double SourceModelCompositeMagicFactor(

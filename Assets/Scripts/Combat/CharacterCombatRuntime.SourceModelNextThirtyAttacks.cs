@@ -63,6 +63,12 @@ namespace Ordr.Mobile.Combat
                     continue;
                 }
                 completedModels++;
+                // E-07's 4.25 s absolute cooldown is attached to the actual
+                // successful proc; a failed roll neither consumes nor renews it.
+                double readyAt;
+                if (skill.Id == "E-07:skill:3" &&
+                    sourceModelFireFistReadyAt.TryGetValue(actor.Id, out readyAt) &&
+                    readyAt > Time) continue;
                 if (skill.Trigger == "onAttack" &&
                     sourceModelRules.NextScriptRoll(1000000) >=
                     (int)Math.Round(skill.ChancePercent.Value * 10000,
@@ -73,13 +79,26 @@ namespace Ordr.Mobile.Combat
                 // enemy at unlimited reach (Redfield and Rebecca).
                 var shape = skill.Target == "single" ?
                     SourceScriptHitShape.Direct :
+                    skill.Id == "TR-26:skill:4" && skill.Target == "line" ?
+                    SourceScriptHitShape.ProjectileLine :
                     skill.Target == "casterArea" &&
                     !SpecialGradeMobilePolicy.UsesEnemyCenteredArea(catalogId) ?
                     SourceScriptHitShape.AttackerCircle : SourceScriptHitShape.Circle;
+                double lineLength = 0;
+                if (shape == SourceScriptHitShape.ProjectileLine)
+                {
+                    var position = roster.Get(actor.Id);
+                    double dx = primary.X - position.X;
+                    double dy = primary.Y - position.Y;
+                    lineLength = Math.Sqrt(dx * dx + dy * dy) + skill.Radius.Value;
+                }
                 var template = new SourceScriptHit(shape, skill.Radius ?? 0,
-                    0, 0, 1, 1, Ordr323AttackType.Spells);
+                    lineLength, 0, 1, 1, Ordr323AttackType.Spells);
                 var targets = SourceScriptTargets(actor, primary, template);
                 if (targets.Count == 0) continue;
+                if (skill.Id == "E-07:skill:3")
+                    sourceModelFireFistReadyAt[actor.Id] = Time +
+                        skill.Number("absoluteCooldownSeconds").Value;
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.SkillActivated, attackerId,
                     primary.Id, skill.Name,
@@ -222,7 +241,8 @@ namespace Ordr.Mobile.Combat
             string attackerId = InstanceKey(actor.Id);
             bool composite = SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(skill) ||
-                SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill);
+                SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) ||
+                SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill);
             foreach (var component in skill.Components)
             {
                 if (SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) &&
@@ -300,6 +320,9 @@ namespace Ordr.Mobile.Combat
                         !enemies.TryGetValue(target.Id, out current) ||
                         !ReferenceEquals(current, target) ||
                         !CanAttackInThisLane(actor, target) ||
+                        (skill.Id == "TR-26:skill:2" &&
+                         component.Get("singleExtraPercent") != null &&
+                         !ReferenceEquals(primary, target)) ||
                         !SourceModelNextThirtyComponentTargets(component, primary, target))
                         continue;
                     double missingBeforeComponent =
@@ -330,6 +353,8 @@ namespace Ordr.Mobile.Combat
                         raw += target.Enemy.MaxHealth *
                             (component.Number("extraEnragedMaxHealthPercent") ?? 0) / 100;
                     raw += component.Number("extraAmount") ?? 0;
+                    if (ReferenceEquals(primary, target))
+                        raw += component.Number("extraSingleAmount") ?? 0;
                     if (ReferenceEquals(primary, target))
                         raw *= 1 + (component.Number("singlePrimaryTargetExtraPercent") ?? 0) / 100;
                     // Red Hawk doubles the whole primary magic packet,

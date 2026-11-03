@@ -1,0 +1,35 @@
+{
+  "format": "ordr-source-model-fourth-15-composite-attacks-v1",
+  "gameVersion": "S2 2.323[C]",
+  "model": "TOOLTIP_MODEL_ONLY",
+  "source": "data/character-skill-profiles.json",
+  "newOnAttackPackets": 15,
+  "newAutomaticActivePackets": 0,
+  "skills": [
+    { "unitId": "L-09", "rawcode": "h02R", "skillId": "L-09:skill:0", "name": "육왕건", "chancePercent": 12, "components": ["magical", "magical", "magical"] },
+    { "unitId": "L-09", "rawcode": "h02R", "skillId": "L-09:skill:1", "name": "육식 Lv4", "chancePercent": 15, "components": ["magical", "stun"] },
+    { "unitId": "TR-07", "rawcode": "H08W", "skillId": "TR-07:skill:0", "name": "격투 스턴", "chancePercent": 25, "components": ["physical", "stun"] },
+    { "unitId": "R-42", "rawcode": "h01M", "skillId": "R-42:skill:0", "name": "단일 타격·스턴", "chancePercent": 10, "components": ["physical", "stun"] },
+    { "unitId": "L-25", "rawcode": "h03S", "skillId": "L-25:skill:1", "name": "울두건", "chancePercent": 15, "components": ["physical"] },
+    { "unitId": "L-20", "rawcode": "h02V", "skillId": "L-20:skill:1", "name": "화이트바인", "chancePercent": 16, "components": ["magical", "armorBreak"] },
+    { "unitId": "MY-08", "rawcode": "h08M", "skillId": "MY-08:skill:3", "name": "스타캐치 애로우", "chancePercent": 6.25, "components": ["magical", "magicDamageAmplification"] },
+    { "unitId": "I-09", "rawcode": "h04B", "skillId": "I-09:skill:3", "name": "범위 마법 스턴", "chancePercent": 10, "components": ["magical", "stun", "armorBreak"] },
+    { "unitId": "I-09", "rawcode": "h04B", "skillId": "I-09:skill:4", "name": "물리 마법 혼합", "chancePercent": 7.5, "components": ["physical", "magical"] },
+    { "unitId": "D-03", "rawcode": "h0CI", "skillId": "D-03:skill:2", "name": "빙귀", "chancePercent": 15, "components": ["magical", "stun", "armorBreak"] },
+    { "unitId": "TR-19", "rawcode": "H09B", "skillId": "TR-19:skill:2", "name": "화염성", "chancePercent": 11, "components": ["physical", "magical"] },
+    { "unitId": "E-07", "rawcode": "h059", "skillId": "E-07:skill:4", "name": "적 중심 마법", "chancePercent": 12.5, "components": ["magical"] },
+    { "unitId": "E-07", "rawcode": "h059", "skillId": "E-07:skill:3", "name": "불주먹", "chancePercent": 10, "components": ["magical"] },
+    { "unitId": "TR-26", "rawcode": "H0B5", "skillId": "TR-26:skill:2", "name": "팔지경", "chancePercent": 9, "components": ["magical", "magical"] },
+    { "unitId": "TR-26", "rawcode": "H0B5", "skillId": "TR-26:skill:4", "name": "레이저", "chancePercent": 10, "components": ["magical"] }
+  ],
+  "mobilePolicies": {
+    "noDuplicateCallbacks": "The 10-percent Kuma L-32 Paw-Paw attack is already implemented by the BtL source-script path and is intentionally excluded. Only new owner-index-name-field approved packets are added; active casts are unchanged",
+    "targetCenter": "Damage radii use selected enemy position except explicit casterArea policies; D-03 Binggui has no target field and its source radius 500 is narrowly interpreted as an enemy-centered area",
+    "line": "TR-26 laser uses actor-to-primary direction with source width radius 310, extending beyond the selected enemy by that width; precise Warcraft trajectory is not certified",
+    "absoluteCooldown": "E-07 Fire Fist rolls only while ready and locks for source 4.25 seconds only after a successful proc and live target acquisition; owner removal clears its ledger",
+    "agility": "TR-26 Yata Mirror uses base 350000 per hit and 3500 per point agility only if ConfigureSourceModelHeroAgilityProvider supplies nonnegative actual agility, otherwise zero scaling; primary receives documented 325% of total three-hit base as a separate magical packet",
+    "kindMultiplier": "TR-19 Hinotori physical AoE and magical single-primary bonus share the existing armor and target gates; boss x1.25/story x1.5 apply only to the documented magical component",
+    "damage": "Physical/magic schools, current-health-only-line primary bonus, primary extra amount, nominal basic attack percentage and capped armor break reuse shared HP, armor, and status ledgers",
+    "limits": "Native skill ordering, exact defense/immunity, Queen's omitted source target type and Kizaru precise line geometry remain unverified; the 4.25-second and attribute results are logical offline practice rules, not native engine parity"
+  }
+}

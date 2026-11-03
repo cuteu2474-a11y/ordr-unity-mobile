@@ -1646,6 +1646,7 @@ namespace Ordr.Mobile.Combat
                 if (commonAttackPreview != null) commonAttackPreview.Remove(id);
                 characters.Remove(id);
                 sourceSongSoldierExpiry.Remove(id);
+                sourceModelFireFistReadyAt.Remove(id);
                 sourceModelManagedResourceRows.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
@@ -2198,6 +2199,7 @@ namespace Ordr.Mobile.Combat
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
             sourceSongSoldierExpiry.Remove(instanceId);
+            sourceModelFireFistReadyAt.Remove(instanceId);
             sourceModelManagedResourceRows.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
             // Native fusion removes every input as ONE logical batch. Do
