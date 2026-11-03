@@ -1,0 +1,44 @@
+{
+  "format": "ordr-source-model-nineteenth-nine-skills-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sources": [
+    "data/character-skill-profiles.json",
+    "data/original-2323C-map-base-stats.json",
+    "Assets/Scripts/Combat/SourceModelBatchAttackCatalog.cs",
+    "Assets/Scripts/Combat/SourceModelFifthAttackCatalog.cs",
+    "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs"
+  ],
+  "runtimeStatus": "TOOLTIP_MODEL_ONLY_NOT_UNITY_OR_PYTHON_TESTED",
+  "newAttackCount": 9,
+  "recoveredPreviousAttackCount": 3,
+  "newAttacks": [
+    {"catalogId":"L-06","originalRawcode":"h033","skillIndex":0,"name":"핑크호넷","result":"5.5% radius333 magical100000 x3 and line-only current-HP 8.25% x3, HP recalculated per hit"},
+    {"catalogId":"L-06","originalRawcode":"h033","skillIndex":1,"name":"독구슬","result":"10% radius333 magical210000 and line-only current-HP10.5% x2, HP recalculated per hit"},
+    {"catalogId":"SR-04","originalRawcode":"h0A1","skillIndex":2,"name":"압력포 :: 베어","result":"12.5% radius500 magical200000 and magic-resistance reduction1% duration unspecified"},
+    {"catalogId":"T-04","originalRawcode":"h0CK","skillIndex":0,"name":"람각","result":"15% source target omitted, radius500 magical300000, primary line-enemy max-HP5% explosive"},
+    {"catalogId":"D-04","originalRawcode":"h048","skillIndex":1,"name":"고스트 랩","result":"12.5% radius360 explosive300000 plus independent per-cast 20% explosive500000"},
+    {"catalogId":"MY-04","originalRawcode":"h09W","skillIndex":2,"name":"섬광연무","result":"13.5% radius600 magical800000, magic-resistance reduction3%, ordinary line stun3sec"},
+    {"catalogId":"T-05","originalRawcode":"h07J","skillIndex":1,"name":"일렉트리컬 루나","result":"50% radius425 explosive100000 and +1% explosive damage taken stacking to25% while enemy lives"},
+    {"catalogId":"T-03","originalRawcode":"h07N","skillIndex":1,"name":"무기무기열매","result":"10% source target omitted, radius450 magical100000 plus70000 primary, armorBreak1 max75"},
+    {"catalogId":"SR-02","originalRawcode":"h0A3","skillIndex":1,"name":"일섬","result":"10% normal, 20% boss/enraged; radius500 magical350000, primary bonus350000 and primary armorBreak2"}
+  ],
+  "recoveredPrevious": [
+    {"catalogId":"SR-02","skillIndex":2,"name":"광역 참격","cause":"18th generic gate rejected extraChancePercent/extraChancePercentAgainst/absoluteCooldownSeconds","change":"exact approval, boss/enraged chance17%, successful-cast-only 3sec cooldown"},
+    {"catalogId":"MY-10","skillIndex":2,"name":"단령검 성불득탈참","cause":"18th header rejected original cloneDamageMultiplier","change":"strict original 0.5 clone metadata accepted; base actor full damage"},
+    {"catalogId":"MY-10","skillIndex":3,"name":"단미검 미진자항참","cause":"18th header rejected original cloneDamageMultiplier","change":"strict original 0.5 clone metadata accepted; base actor full damage"}
+  ],
+  "excludedAndDeferred": [
+    "MY-01 술식 반전 혁: S2 tooltip chance5% conflicts with 2.320 patch record10%; no unverified attack roll.",
+    "L-23 Bt8 and H-13 BrI existing JASS callback attacks: no duplicate tooltip trigger.",
+    "MY-02 휩쓸기 already in ninth-source runtime: no duplicate attack.",
+    "E-03 soul count, E-11 actual gold, I-05 attack-item inventory, Buggy crew rawcodes and Kaido/Marco native form triggers remain unavailable for a fully evidenced new cast.",
+    "Original Warcraft hit phase, defense/resistance, per-target proc order, effect stacking and clone attacks still require explicit verification."
+  ],
+  "verification": {
+    "python": "not_run_user_instruction",
+    "unity": "not_run_user_instruction",
+    "apk": "not_built_user_instruction",
+    "actions": "not_queried_user_instruction"
+  }
+}

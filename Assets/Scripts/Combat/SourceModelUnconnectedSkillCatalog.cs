@@ -43,7 +43,7 @@ namespace Ordr.Mobile.Combat
                 new[] { "무장색 패기", "기본 공격 범위 추가" },
                 new[] { "특제 대포환" }),
             new SourceModelUnconnectedSkillRow("MY-04", "h09W",
-                new[] { "비뢰신 이의 단 나선환" },
+                new[] { "비뢰신 이의 단 나선환", "섬광연무" },
                 new[] { "나선섬광초륜무후삼식" }),
             new SourceModelUnconnectedSkillRow("MY-06", "h09N",
                 Array.Empty<string>(), new[] { "이성의 창조물" }),
@@ -158,7 +158,7 @@ namespace Ordr.Mobile.Combat
             new SourceModelUnconnectedSkillRow("TR-17", "H095",
                 new[] { "범위 스턴 타격" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("T-05", "h07J",
-                new[] { "고속전격" }, Array.Empty<string>()),
+                new[] { "고속전격", "일렉트리컬 루나" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("MY-11", "h09R",
                 new[] { "마왕", "스타 플라티나" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("R-17", "h01S",
@@ -191,12 +191,12 @@ namespace Ordr.Mobile.Combat
                 new[] { "일반 포격" }, new[] { "베가펑크 지식 탑재 포격" }),
             // 18th: owners with mapped native objects and no already-modeled
             // on-attack JASS callback for these specific skill identities.
-            new SourceModelUnconnectedSkillRow("MY-01", "h09M",
-                new[] { "술식 반전 혁" }, Array.Empty<string>()),
+            // MY-01 술식 반전 혁 has a 5% vs 10% version-conflict warning
+            // in the original tooltip packet. No unverified proc is enabled.
             new SourceModelUnconnectedSkillRow("R-25", "h026",
                 new[] { "단일 스턴 타격", "현재 체력 폭발" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("SR-02", "h0A3",
-                new[] { "광역 참격" }, Array.Empty<string>()),
+                new[] { "일섬", "광역 참격" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("H-10", "h03W",
                 new[] { "기본 공격 발동형 타격" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("RN-10", "h09L",
@@ -206,6 +206,19 @@ namespace Ordr.Mobile.Combat
             new SourceModelUnconnectedSkillRow("MY-10", "h0CC",
                 new[] { "단령검 성불득탈참", "단미검 미진자항참" },
                 Array.Empty<string>()),
+            // 19th: only owner/rawcode-confirmed source-tooltip attacks.
+            // L-23 Bt8 and H-13 BrI already have a JASS callback and must
+            // never be independently rolled here.
+            new SourceModelUnconnectedSkillRow("L-06", "h033",
+                new[] { "핑크호넷", "독구슬" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("SR-04", "h0A1",
+                new[] { "압력포 :: 베어" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("T-04", "h0CK",
+                new[] { "람각" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("D-04", "h048",
+                new[] { "고스트 랩" }, Array.Empty<string>()),
+            new SourceModelUnconnectedSkillRow("T-03", "h07N",
+                new[] { "무기무기열매" }, Array.Empty<string>()),
         };
         public static readonly IReadOnlyList<SourceModelUnconnectedSkillRow> All =
             Array.AsReadOnly(Entries);

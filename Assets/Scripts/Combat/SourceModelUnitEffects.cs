@@ -254,11 +254,22 @@ namespace Ordr.Mobile.Combat
             IReadOnlyList<CombatEffect> effects, CombatEffectType type)
         {
             double strongest = 0;
+            double carrotLuna = 0;
             foreach (var effect in effects)
                 if (effect.Type == type &&
                     effect.SourceId.StartsWith("practice-tooltip:", StringComparison.Ordinal))
-                    strongest = Math.Max(strongest, effect.Amount);
-            return strongest;
+                {
+                    // This is a specifically approved +1%-per-activation
+                    // stack with a 25% ceiling, not a generic tooltip
+                    // status stacking policy for unrelated characters.
+                    if (type == CombatEffectType.ExplosiveDamageAmplification &&
+                        effect.SourceId.StartsWith("practice-tooltip:luna:",
+                            StringComparison.Ordinal))
+                        carrotLuna += effect.Amount;
+                    else
+                        strongest = Math.Max(strongest, effect.Amount);
+                }
+            return Math.Max(strongest, Math.Min(carrotLuna, 25));
         }
     }
 }

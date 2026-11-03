@@ -426,3 +426,10 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `CharacterCombatRuntime.SourceModelNextThirtyAttacks`에서 완전 승인된 `line` 기술만 `ProjectileLine`(기존 TR-26과 같은 현재 타깃 방향, 원본 투사체 길이 미검증)으로 연결. `targetCircle`은 기존 타격 대상 중심. `CharacterCombatRuntime.SourceModelEighteenthSkills`는 주 타깃 전용 추가 피해·최대/현재HP 비례·스토리 제외·원본 기본 공격력 배수를 계산하고 기존 `ApplySourceModelCompositeArmorBreak/Status` 및 HP/처치/전장 게이트로 전달함. R-25 일반 라인 폭발과 R-42 주 타깃 폭발은 일반/보스 구분을 보존함.
 - **검증 상태:** 코드를 원본 도감 프로필·mapObjects와 대조한 구현으로, Python·Unity Editor·Android·Actions는 성현 님 명시 요청 전 **실행하지 않음**. 실제 Warcraft 면역·방어·난수·광역 피격 및 출처가 없는 소환/변신 트리거는 미연결.
 
+## 2026-11-03 · 19차 소스 기준 신규 공격/승인 정정 (현재 최신)
+
+- `data/source-model-nineteenth-nine-skills.json`의 **신규 9기**는 `SourceModelUnconnectedSkillCatalog`에서 원본 소유 rawcode를 검사한 뒤, `SourceModelNextThirtySkillCatalog.CanModelCompleteAttack`의 선행 `SourceModelNineteenthSkillCatalog.CanModelExactSpecial`에서 기본 헤더·중첩 JSON 필드를 일대일 비교합니다. 레이쥬·S-베어·카쿠·페로나·베이비 5는 신규 소유자, 미나토·캐럿·S-호크는 기존 행에 스킬만 증설했습니다.
+- `CharacterCombatRuntime.SourceModelNineteenthSkills`는 S-호크의 **보스/광폭화 +10%**·광역 참격 **성공 후 3초 잠금** 장부, 페로나의 **추가 폭발 20% 단일 판정**, 레이쥬의 **각 타격 시점 현재 체력**, S-호크 일섬·베이비 5 추가 단일 피해, 캐럿 폭발 피해 증폭 **1%/회·최대25%** 상태 생성 기능을 제공합니다. `CharacterCombatRuntime.SourceModelNextThirtyAttacks`에서 공통 공격 난수·컴포넌트 반복·HP·방어·처치 처리에 연결하고, `SourceModelUnitEffects.ResolvePracticeMagicModifier`는 **캐럿 명시적 스택만** 합산하며 다른 동일효과는 기존 최강 한 개 정책을 유지합니다.
+- `SourceModelEighteenthSkillCatalog`는 요우무 2기에서 원본 분신 피해 0.5 메타데이터를 정확히 수용해 **기본 유닛 기술을 승인**합니다. 분신 생성 및 분신 공격은 미구현 그대로입니다. S-호크 광역 참격은 19차 원본 조건 게이트로 옮겼습니다. 고죠 술식 반전 혁은 버전별 확률 충돌로 `SourceModelUnconnectedSkillCatalog` 허용 목록에서 제거하며, 18차 데이터에는 보류로 남깁니다.
+- **검사:** Python/Unity/Android/Actions 미실행. `TOOLTIP_MODEL_ONLY`; 소환 rawcode·자격·불명확한 지속효과의 원작 동등성 인증 아님.
+

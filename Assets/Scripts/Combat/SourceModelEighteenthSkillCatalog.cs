@@ -55,10 +55,17 @@ namespace Ordr.Mobile.Combat
         private static bool Header(ImportedCombatSkill skill, string name,
             string target, double chance, double? radius, int components)
         {
+            // Youmu's original tooltip explicitly contains a 0.5 clone
+            // multiplier. The base actor uses full damage; temporary clone
+            // actors are not manufactured by this attack declaration.
+            bool clone = skill.Id == "MY-10:skill:2" ||
+                skill.Id == "MY-10:skill:3";
             return skill.Name == name && skill.Trigger == "onAttack" &&
                 skill.Target == target && skill.ChancePercent == chance &&
                 skill.Radius == radius && skill.Components.Count == components &&
-                skill.OriginalFields.Count == (radius.HasValue ? 6 : 5);
+                skill.OriginalFields.Count == (radius.HasValue ? 6 : 5) +
+                    (clone ? 1 : 0) &&
+                (!clone || skill.Number("cloneDamageMultiplier") == .5);
         }
 
         public static bool CanModelExactSpecial(ImportedCombatSkill skill)

@@ -6,20 +6,22 @@
     "character-skill-profiles.json",
     "original-2323C-map-base-stats.json"
   ],
-  "runtimeStatus": "TOOLTIP_MODEL_ONLY_NO_TESTS",
-  "newAttackCount": 10,
+  "runtimeStatus": "TOOLTIP_MODEL_ONLY_19TH_CORRECTIONS_NO_TESTS",
+  "newAttackCount": 9,
+  "listedAttackCount": 10,
+  "versionConflictDeferredCount": 1,
   "newActiveCount": 0,
   "skills": [
-    {"catalogId":"MY-01","rawcode":"h09M","skillIndex":1,"name":"술식 반전 혁","gate":"complete-tooltip"},
+    {"catalogId":"MY-01","rawcode":"h09M","skillIndex":1,"name":"술식 반전 혁","gate":"deferred-version-conflict-5-percent-versus-patch-10-percent","status":"not-approved"},
     {"catalogId":"R-25","rawcode":"h026","skillIndex":0,"name":"단일 스턴 타격","gate":"complete-tooltip"},
     {"catalogId":"R-25","rawcode":"h026","skillIndex":1,"name":"현재 체력 폭발","gate":"exact-special","result":"normal-line target current HP 15%"},
-    {"catalogId":"SR-02","rawcode":"h0A3","skillIndex":2,"name":"광역 참격","gate":"complete-tooltip","result":"magical 1000000 + eligible boss/enraged maximum HP 5%"},
+    {"catalogId":"SR-02","rawcode":"h0A3","skillIndex":2,"name":"광역 참격","gate":"nineteenth-exact-special","result":"magical 1000000 + eligible boss/enraged maximum HP 5%; boss/enraged proc chance plus10, absolute cooldown 3s"},
     {"catalogId":"R-42","rawcode":"h01M","skillIndex":1,"name":"매혹 계열 범위 공격","gate":"exact-special","result":"center-radius350 magical6000; only primary line current HP 10%"},
     {"catalogId":"H-10","rawcode":"h03W","skillIndex":1,"name":"기본 공격 발동형 타격","gate":"exact-special","result":"center-radius400 physical240000 and armor break one stack"},
     {"catalogId":"RN-10","rawcode":"h09L","skillIndex":0,"name":"무기화 빌드 Lv1","gate":"exact-special","result":"radius400 magical250000 range1..2; primary extra100%"},
     {"catalogId":"D-05","rawcode":"h05V","skillIndex":0,"name":"불주먹","gate":"exact-special","result":"attack-vector lane line width320 magical350000; primary plus500000"},
-    {"catalogId":"MY-10","rawcode":"h0CC","skillIndex":2,"name":"단령검 성불득탈참","gate":"exact-special","result":"attack-vector lane line width600 magical250000, movement slow50% for3sec"},
-    {"catalogId":"MY-10","rawcode":"h0CC","skillIndex":3,"name":"단미검 미진자항참","gate":"exact-special","result":"attack-vector lane line width800 physical8x basic+900000, primary non-story fixed maximum HP4%"}
+    {"catalogId":"MY-10","rawcode":"h0CC","skillIndex":2,"name":"단령검 성불득탈참","gate":"exact-special-clone-metadata-recognized-in-19th","result":"attack-vector lane line width600 magical250000, movement slow50% for3sec; original clone multiplier0.5 is recorded, clone actor not invented"},
+    {"catalogId":"MY-10","rawcode":"h0CC","skillIndex":3,"name":"단미검 미진자항참","gate":"exact-special-clone-metadata-recognized-in-19th","result":"attack-vector lane line width800 physical8x basic+900000, primary non-story fixed maximum HP4%; clone damage0.5 applies only to externally witnessed clone"}
   ],
   "duplicatePrevention": [
     "Existing BpX/Bpf/Bre/Bq3/Bqh/BsF/Btd source callbacks take precedence: no new R-26/R-31/H-11/H-16/H-18/L-29/L-33 tooltip proc.",
@@ -27,6 +29,7 @@
     "Complete tooltip skill packet and exact source owner/rawcode are required at the common attack boundary."
   ],
   "unimplemented": [
+    "MY-01 술식 반전 혁 originally listed among ten but its source tooltip marks a version conflict: 5% versus 2.320 patch note 10%. No guessed proc was admitted in 19th.",
     "Real JASS callback timing/seed and native hit order, armor/immunity/resistance, hero levels and status stacking parity.",
     "E-03 soul stack costs and upgrade formulas, E-11 gold scaling, I-05 item attributes and actual Buggy summon identities.",
     "Marco/Kaido original form activation, Sunny research acquisition, original summon navigation and Warcraft native effect semantics."

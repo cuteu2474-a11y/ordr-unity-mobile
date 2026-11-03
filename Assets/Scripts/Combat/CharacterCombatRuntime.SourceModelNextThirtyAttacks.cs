@@ -66,6 +66,7 @@ namespace Ordr.Mobile.Combat
                 completedModels++;
                 if (!SourceModelEighthAttackCondition(actor, skill)) continue;
                 if (!SourceModelSixteenthAttackCondition(actor, skill)) continue;
+                if (!SourceModelNineteenthReady(actor, skill)) continue;
                 // E-07's 4.25 s absolute cooldown is attached to the actual
                 // successful proc; a failed roll neither consumes nor renews it.
                 double readyAt;
@@ -91,9 +92,10 @@ namespace Ordr.Mobile.Combat
                 if ((skill.Trigger == "onAttack" ||
                      skill.Trigger == "onAttackWithMana") &&
                     sourceModelRules.NextScriptRoll(1000000) >=
-                    (int)Math.Round(SourceModelSixteenthProcChance(skill, primary,
-                        SourceModelFifteenthProcChance(skill, primary,
-                            SourceModelEighthProcChance(skill, primary, actor))) * 10000,
+                    (int)Math.Round(SourceModelNineteenthChance(skill, primary,
+                        SourceModelSixteenthProcChance(skill, primary,
+                            SourceModelFifteenthProcChance(skill, primary,
+                                SourceModelEighthProcChance(skill, primary, actor)))) * 10000,
                         MidpointRounding.AwayFromZero)) continue;
                 // Preserve the tooltip target metadata, but apply the same
                 // explicit MOBILE result policy as CharacterSkillEffectExecutor.
@@ -128,6 +130,7 @@ namespace Ordr.Mobile.Combat
                     SourceScriptTargets(actor, primary, template);
                 if (targets.Count == 0) continue;
                 SourceModelEighthCommitAttackCondition(actor, skill);
+                SourceModelNineteenthCommit(actor, skill);
                 if (skill.Trigger == "onAttackWithMana")
                     actor.Abilities.Resources.Spend(0, skill.Number("manaCost").Value);
                 if (skill.Id == "TR-16:skill:0")
@@ -310,12 +313,15 @@ namespace Ordr.Mobile.Combat
                 SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsEighthCompositeSkill(skill) ||
+                SourceModelNineteenthSkillCatalog.IsSpecial(skill) ||
                 SourceModelEighteenthSkillCatalog.IsSpecial(skill) ||
                 SourceModelSixteenthSkillCatalog.IsSpecial(skill) ||
                 SourceModelFifteenthSkillCatalog.IsSpecial(skill) ||
                 IsSourceModelEighthStatusApproach(skill);
             foreach (var component in skill.Components)
             {
+                if (!SourceModelNineteenthComponentProceeds(skill, component))
+                    continue;
                 if (SourceModelEighthSkipDamageComponent(skill, component))
                     continue;
                 if (skill.Id == "TR-20:skill:0" &&
@@ -376,6 +382,12 @@ namespace Ordr.Mobile.Combat
                 if (composite && component.Type == "allyAttackPowerBuff")
                 {
                     ApplySourceModelCompositeAllyPower(actor, skill, component);
+                    continue;
+                }
+                if (skill.Id == "T-05:skill:1" &&
+                    component.Type == "explosiveDamageAmplification")
+                {
+                    ApplySourceModelNineteenthLuna(actor, skill, component, targets);
                     continue;
                 }
                 if (composite && CommonSkillStatusEffects.IsTimedStatus(component.Type) &&
@@ -465,6 +477,8 @@ namespace Ordr.Mobile.Combat
                         skill, component, target, raw);
                     raw = SourceModelEighteenthRawDamageAdjustment(actor, primary,
                         skill, component, target, raw);
+                    raw = SourceModelNineteenthRawAdjustment(actor, primary,
+                        skill, component, target, raw);
                     // Rebecca's tooltip gives a per-legacy-level increment.
                     // The offline model has no native legacy-level provider:
                     // the first documented increment is the conservative
@@ -526,11 +540,13 @@ namespace Ordr.Mobile.Combat
                     int hits = SourceModelSixthHitCount(skill, component, target);
                     for (int hit = 0; hit < hits && target.Enemy.IsAlive; hit++)
                     {
+                        double hitRaw = SourceModelNineteenthRawPerHit(skill,
+                            component, target, raw);
                         // Fixed tooltip packets bypass the practice armor path.
                         // This distinction is not yet native Warcraft parity.
-                        double modeled = component.Type == "fixed" ? raw :
+                        double modeled = component.Type == "fixed" ? hitRaw :
                             Ordr323MapDamageMath.ApplyVerifiedFactors(
-                                raw, Ordr323AttackType.Spells, armor, true, true,
+                                hitRaw, Ordr323AttackType.Spells, armor, true, true,
                                 target.Enemy.Defenses.BaseArmor.Value -
                                 SourceModelUnitEffects.ResolvePracticeArmorReduction(
                                     target.Enemy.Status.Snapshot()) -
