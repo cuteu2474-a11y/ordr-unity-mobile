@@ -1,0 +1,63 @@
+{
+  "version": "ORDR S2 2.323[C]",
+  "batch": 27,
+  "mode": "nightmare-isekai",
+  "executionStatus": "TOOLTIP_MODEL_ONLY; source and code inspected; Unity, Python, Android, APK and CI not executed",
+  "sources": [
+    "data/character-skill-profiles.json",
+    "data/original-2323C-map-base-stats.json",
+    "data/original-2323C-unit-object-stats.json",
+    "data/original-2323C-native-pure-passives.json",
+    "data/original-2323C-all-unit-aura-audit.json",
+    "data/original-2323C-skill-research-queue.json"
+  ],
+  "kid": {
+    "catalogId": "TR-25",
+    "originalRawcode": "H0B4",
+    "traitCondition": "Original purchase/eligibility cost is not established; a registered, verified per-instance eligibility witness is mandatory and absent in the default app",
+    "packetGate": "All four ordinary skills, all passives, and both exact original enhancedChanges rows must match",
+    "replacementActive": {
+      "from": "펑크 깁슨",
+      "to": "펑크 크래시",
+      "healthCost": 50,
+      "castSeconds": 0.5,
+      "radius": 525,
+      "hits": 3,
+      "magicPerHit": 2000000,
+      "strengthPerPointPerHit": 60000,
+      "centerRadius": 325,
+      "centerBonusPercent": 50,
+      "stunPerHitSeconds": 2.85,
+      "unverified": "Whether the unchanged 0.5-second pre-cast from the original skill is inherited by the replacement in native JASS"
+    },
+    "replacementProc": {
+      "from": "리펠",
+      "to": "댐드 펑크",
+      "chancePercent": 10,
+      "lineRadius": 450,
+      "explosionRadius": 450,
+      "magicLine": 600000,
+      "magicExplosion": 450000,
+      "explosionBonusPerEnemyPercent": 1,
+      "oldFifteenEnemyExtraBlast": "Excluded: exists only on replaced Repel, not on enhanced Damned Punk",
+      "existingKidAreaMultiplier": "The independently modeled 0.25% enemy-count passive is retained; native arithmetic ordering is not established"
+    }
+  },
+  "identitySafety": {
+    "L-30": {
+      "original": "카르가라 - 전설",
+      "rawcode": "h03F",
+      "wrongImportedSkill": "샨디아의 창 (와이퍼)",
+      "confirmedNative": ["A05Z level1 critical 25%, x10, stun 0.4s", "A060 armor aura from original object"],
+      "state": "Native critical and aura already supported by existing common engine; imported foreign active is blocked and hidden; genuine unique script effects not proven"
+    },
+    "D-06": {
+      "original": "바제스 - 왜곡",
+      "rawcode": "h09V",
+      "wrongImportedSkill": "파동 엘보 (사이)",
+      "sourceAbilityCodes": ["A138", "A03J", "A139", "A0QH", "Avul"],
+      "state": "Foreign active is blocked and hidden; source ability effects/JASS callbacks still unidentified"
+    }
+  },
+  "verification": "Unity EditMode regression cases authored only; manual review/static diff check are not runtime verification. No original numeric/RNG/status parity claim."
+}

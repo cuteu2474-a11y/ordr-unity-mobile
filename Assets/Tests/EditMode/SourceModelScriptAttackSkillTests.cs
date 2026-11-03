@@ -2220,6 +2220,83 @@ namespace Ordr.Mobile.Tests
             SourceModelUnconnectedSkillRow unused;
             Assert.IsFalse(SourceModelUnconnectedSkillCatalog.TryGet("h03F", out unused));
             Assert.IsFalse(SourceModelUnconnectedSkillCatalog.TryGet("h09V", out unused));
+            Assert.IsTrue(SourceModelTwentyFifthSkillCatalog.IsKnownForeignProfile(
+                skills.Require("L-30")));
+            Assert.IsTrue(SourceModelTwentyFifthSkillCatalog.IsKnownForeignProfile(
+                skills.Require("D-06")));
+            using (var kalgara = Create("L-30", false))
+                Assert.AreEqual(AbilityCastResult.UnsupportedEffect,
+                    kalgara.Combat.TryCastActiveSkill(kalgara.ActorId,
+                        "L-30:skill:0", null));
+            using (var burgess = Create("D-06", false))
+                Assert.AreEqual(AbilityCastResult.UnsupportedEffect,
+                    burgess.Combat.TryCastActiveSkill(burgess.ActorId,
+                        "D-06:skill:0", null));
+        }
+
+        [Test]
+        public void KidTraitPacketMustMatchBothExactOriginalReplacements()
+        {
+            var source = Data("character-skill-profiles.json");
+            var profiles = CharacterSkillCatalog.FromJson(source);
+            Assert.IsTrue(SourceModelTwentyFifthSkillCatalog.CanModelExactKidEnhancement(
+                profiles.Require("TR-25")));
+            Assert.IsFalse(SourceModelTwentyFifthSkillCatalog.CanModelExactKidEnhancement(
+                profiles.Require("TR-05")));
+            var tampered = CharacterSkillCatalog.FromJson(source.Replace(
+                "\"stunPerHitSeconds\": 2.85", "\"stunPerHitSeconds\": 2.86"));
+            Assert.IsFalse(SourceModelTwentyFifthSkillCatalog.CanModelExactKidEnhancement(
+                tampered.Require("TR-25")), "One changed upgrade field must invalidate both swaps");
+        }
+
+        [Test]
+        public void KidEnhancedDamnedPunkRequiresTraitWitnessAndReplacesRepel()
+        {
+            using (var ordinary = Create("TR-25", true, -4900, 5400))
+            {
+                Assert.IsFalse(ordinary.Combat.PracticeKidEnhancedOf(ordinary.ActorId));
+                var previous = ordinary.Battle.Advance(6);
+                Assert.IsTrue(previous.Any(x => x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "리펠"));
+                Assert.IsFalse(previous.Any(x => x.SkillName == "댐드 펑크"));
+            }
+            using (var enhanced = Create("TR-25", true, -4900, 5400))
+            {
+                enhanced.Combat.ConfigureSourceModelKidEnhancedEligibility(
+                    id => id == enhanced.ActorId);
+                Assert.IsTrue(enhanced.Combat.PracticeKidEnhancedOf(enhanced.ActorId));
+                var events = enhanced.Battle.Advance(6);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "댐드 펑크"));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "댐드 펑크" && x.Amount > 0));
+                Assert.IsFalse(events.Any(x => x.SkillName == "리펠"));
+            }
+        }
+
+        [Test]
+        public void KidTraitActiveCostsFiftyHealthAndResolvesThreeHitsAfterWindup()
+        {
+            using (var live = Create("TR-25", false, -4900, 5400))
+            {
+                live.Combat.ConfigureCharacterResources(live.ActorId,
+                    new CharacterResources(100, 100, 0, 0));
+                live.Combat.ConfigureSourceModelKidEnhancedEligibility(
+                    id => id == live.ActorId);
+                live.Battle.Advance(2);
+                var target = live.Combat.MobileEnemySnapshot().First();
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(live.ActorId,
+                        "TR-25:skill:0", target.Id));
+                Assert.AreEqual(50, live.Combat.ResourcesOf(live.ActorId).Health);
+                var events = live.Battle.Advance(.6);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "펑크 크래시"));
+                Assert.IsTrue(events.Count(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "펑크 크래시") >= 3,
+                    "The enhanced packet is three hits, not one six-million lump");
+                Assert.IsFalse(events.Any(x => x.SkillName == "펑크 깁슨"));
+            }
         }
 
         [Test]

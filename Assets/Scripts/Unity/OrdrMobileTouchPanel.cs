@@ -1124,6 +1124,14 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("추가 스킬 없음");
             else if (detail.Profile == null)
                 GUILayout.Label("스킬 정보 준비 중");
+            else if (SourceModelTwentyFifthSkillCatalog.IsKnownForeignProfile(
+                detail.Profile))
+            {
+                // The imported tooltip belongs to Wiper/Sai, not the map's
+                // Kalgara/distorted Burgess. Do not present it as playable.
+                GUILayout.Label("원본 고유 스킬 확인 중 · 잘못된 도감 기술 제외");
+                GUILayout.Label("기본 공격 및 검증된 원본 오라/패시브만 적용");
+            }
             else
             {
                 GUILayout.Label("스킬 " + detail.SkillCount +
@@ -1136,6 +1144,10 @@ namespace Ordr.Mobile.Unity
                 }
                 if (detail.Profile.Skills.Count > skillLimit)
                     GUILayout.Label("외 " + (detail.Profile.Skills.Count - skillLimit) + "개");
+                if (detail.Unit.Id == "TR-25" &&
+                    SourceModelTwentyFifthSkillCatalog.CanModelExactKidEnhancement(
+                        detail.Profile))
+                    GUILayout.Label("특성강화: 펑크 크래시 · 댐드 펑크 (구매 자격 확인 시에만 교체)");
             }
             if (detail.Grade == "안흔함" &&
                 controller.OriginalUncommonAbilities != null)

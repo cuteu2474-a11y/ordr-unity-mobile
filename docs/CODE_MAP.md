@@ -1,4 +1,10 @@
-## 2026-11-03 · 26차 키드 기본 공격 상호 배타 분기 (현재 최신)
+## 2026-11-03 · 27차 키드 강화 패킷·잘못된 스킬 신원 실행/표시 보호 (현재 최신)
+
+- `SourceModelTwentyFifthSkillCatalog.CanModelExactKidEnhancement`: `TR-25` 기본 4스킬/패시브 전체와 **특성강화 2행 전체 필드/순서**까지 검증. `CharacterCombatRuntime.SourceModelTwentyFifthSkills`: 외부 검증 공급자(`ConfigureSourceModelKidEnhancedEligibility`)와 `PracticeKidEnhancedOf`를 통해 승인된 인스턴스에 한해서만 펑크 크래시 HP50·3틱 피해/기절, 댐드 펑크 10% 직선/폭발·적 수 보너스를 공용 자원·방어·시전예약·적중 원장에 합성. 기존 리펠 15기 추가 폭발·일반 펑크 깁슨 피해와 동시 발동하지 않음. 구매·해금 공급자는 기본 앱에 미연결.
+- `IsKnownForeignProfile`: `L-30`의 와이퍼 `샨디아의 창`, `D-06`의 사이 `파동 엘보` 도감 불일치에 한정. `CharacterCombatRuntime.TryCastActiveSkill`에서 승인 전용을 제외한 범용 폴백까지 차단하고 `OrdrMobileTouchPanel.DrawUnitDetails`에서 가짜 스킬 숫자/목록을 감춤. 기존 `SourceModelUnitEffects`의 카르가라 `A05Z/A060` 공통 처리와 네이티브 평타는 유지.
+- `SourceModelScriptAttackSkillTests`: 강화 패킷 변조 거절·자격 승인/미승인·스킬 이름 교체·HP50/3틱·타 소유자 스킬 차단 회귀 사례 추가(실행하지 않음). 출처 `data/source-model-twentyseventh-kid-enhancement-foreign-profile-audit.json`. W3A/JASS 고유 효과와 실전 결과는 여전히 불명.
+
+## 2026-11-03 · 26차 키드 기본 공격 상호 배타 분기 (이전)
 
 - `CharacterCombatRuntime.SourceModelTwentyFifthSkills`: `ExecuteSourceModelTwentyFifthAttacks`의 정확한 네 번째 프로필 35% 추첨을 **공격 선언**에서 기록하고, `CombatAttackPipeline` → 기존 `ConfigurePracticeSuccessfulBasicHit` 콜백에서 실제 평타 HP 피해가 성공한 경우에만 대상·전장·리비전 검증 후 소비합니다. 성공 시 `basicAttackAreaMagic` 4만/r215 **스플래시 건너뛰기**, 단일 `physical` 36만 + 라인 기절1.5초 적용. 원본 기본 타격 자체와 다른 캐릭터 콜백은 그대로 유지. 다음 선언·유닛 제거·파견 전환 시 추첨 폐기.
 - `SourceModelTwentyFifthSkillCatalog` 4기/패시브 전체 필드 게이트 유지, `SourceModelScriptAttackSkillTests`에 원본 ID/대체 스플래시 상호 배타·확률 강제/차단 사례 작성. `data/source-model-twentysixth-kid-basic-replacement-identity.json`에 `L-30=h03F 카르가라`, `D-06=h09V 바제스`, `R-29=h024 와이퍼`, `R-13=h01V 바제스` 소스 신원과 외부 프로필 불일치 기록. 게임/Unity/Android 검사는 **미실행**.

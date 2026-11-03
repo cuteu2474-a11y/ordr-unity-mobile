@@ -36,6 +36,36 @@ namespace Ordr.Mobile.Combat
                 }}
             };
 
+        // The only source-backed Kid trait upgrade. The entire two-row
+        // replacement packet must match; partial patches must not activate.
+        private static readonly object ExpectedKidEnhancement = OrdrJson.Parse(@"[{""type"":""replaceSkill"",""from"":""펑크 깁슨"",""to"":""펑크 크래시"",""healthCost"":50,""radius"":525,""magicalDamagePerHit"":2000000,""hits"":3,""centerRadius"":325,""centerBonusPercent"":50,""strengthScalingPerPoint"":60000,""stunPerHitSeconds"":2.85},{""type"":""replaceSkill"",""from"":""리펠"",""to"":""댐드 펑크"",""chancePercent"":10,""lineRadius"":450,""explosionRadius"":450,""magicalLineDamage"":600000,""magicalExplosionDamage"":450000,""explosionDamageBonusPerEnemyPercent"":1}]");
+
+        public static bool CanModelExactKidEnhancement(CharacterSkillProfile profile)
+        {
+            object changes;
+            return HasExactOwner(profile, "TR-25") &&
+                profile.OriginalFields.TryGetValue("enhancedChanges", out changes) &&
+                EqualJson(changes, ExpectedKidEnhancement);
+        }
+
+        // These imported tooltip names are for different source-map owners.
+        // Quarantine both their active execution and their public UI listing.
+        public static bool IsKnownForeignProfile(CharacterSkillProfile profile)
+        {
+            if (profile == null || profile.Skills.Count == 0) return false;
+            if (profile.UnitId == "L-30")
+            {
+                foreach (var skill in profile.Skills)
+                    if (skill.Name == "샨디아의 창") return true;
+            }
+            if (profile.UnitId == "D-06")
+            {
+                foreach (var skill in profile.Skills)
+                    if (skill.Name == "파동 엘보") return true;
+            }
+            return false;
+        }
+
         private static bool EqualJson(object actual, object expected)
         {
             if (actual == null || expected == null) return actual == expected;

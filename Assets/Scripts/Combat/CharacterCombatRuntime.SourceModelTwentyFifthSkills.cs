@@ -35,6 +35,30 @@ namespace Ordr.Mobile.Combat
                 new Dictionary<long, SourceModelKidBasicReplacement>();
         private readonly Dictionary<long, HashSet<string>> sourceModelKidAuraVictims =
             new Dictionary<long, HashSet<string>>();
+        // The source profile describes trait replacement, but does not state
+        // a sufficient purchase/eligibility formula. Only its verified owner
+        // may attest that a particular unit has purchased the enhancement.
+        private Func<long, bool> sourceModelKidEnhancedEligibility;
+
+        public void ConfigureSourceModelKidEnhancedEligibility(Func<long, bool> eligible)
+        {
+            if (!UsesSourceModelBasicAttacks || processingStep ||
+                pendingStepSeconds != 0 || sourceModelKidEnhancedEligibility != null)
+                throw new InvalidOperationException(
+                    "키드 특성강화 검증자는 전투 시작 전에 한 번만 연결합니다.");
+            sourceModelKidEnhancedEligibility = eligible ??
+                throw new ArgumentNullException(nameof(eligible));
+        }
+
+        public bool PracticeKidEnhancedOf(long id)
+        {
+            CharacterInstance actor;
+            return sourceModelKidEnhancedEligibility != null &&
+                characters.TryGetValue(id, out actor) &&
+                SourceModelTwentyFifthOwner(actor) &&
+                SourceModelTwentyFifthSkillCatalog.CanModelExactKidEnhancement(
+                    actor.Profile) && sourceModelKidEnhancedEligibility(id);
+        }
 
         private bool SourceModelTwentyFifthOwner(CharacterInstance actor)
         {
@@ -97,7 +121,10 @@ namespace Ordr.Mobile.Combat
                 result = AbilityCastResult.MissingTarget;
                 return true;
             }
-            double hp = skill.Number("healthCost") ?? 0;
+            bool kidEnhanced = actor.Catalog.Id == "TR-25" &&
+                PracticeKidEnhancedOf(actor.Id);
+            double hp = kidEnhanced && skill.Id == "TR-25:skill:0" ? 50 :
+                skill.Number("healthCost") ?? 0;
             double mp = skill.Number("manaCost") ?? 0;
             if (!resources.CanSpend(hp, mp))
             {
@@ -107,7 +134,8 @@ namespace Ordr.Mobile.Combat
             var shape = skill.Id == "TR-05:skill:0" ?
                 SourceScriptHitShape.AttackerCircle : SourceScriptHitShape.Circle;
             var targets = SourceScriptTargets(actor, primary, new SourceScriptHit(
-                shape, skill.Radius.Value, 0, 0, 1, 1,
+                shape, kidEnhanced && skill.Id == "TR-25:skill:0" ? 525 :
+                    skill.Radius.Value, 0, 0, 1, 1,
                 Ordr323AttackType.Spells));
             if (skill.Id != "TR-05:skill:0" && targets.Count == 0)
             {
@@ -130,8 +158,10 @@ namespace Ordr.Mobile.Combat
                 }
             resources.Spend(hp, mp);
             if (room != null) room.FollowupUsed = true;
+            string displayName = kidEnhanced && skill.Id == "TR-25:skill:0" ?
+                "펑크 크래시" : skill.Name;
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
-                InstanceKey(actor.Id), primary.Id, skill.Name,
+                InstanceKey(actor.Id), primary.Id, displayName,
                 "TOOLTIP_MODEL_ONLY / 원본 세부 시전 위상 미검증", 0));
             switch (skill.Id)
             {
@@ -167,22 +197,31 @@ namespace Ordr.Mobile.Combat
                                 !CanAttackInThisLane(actor, current)) return;
                             var hits = SourceScriptTargets(actor, current,
                                 new SourceScriptHit(SourceScriptHitShape.Circle,
-                                    skill.Radius.Value, 0, 0, 1, 1,
+                                    kidEnhanced ? 525 : skill.Radius.Value,
+                                    0, 0, 1, 1,
                                     Ordr323AttackType.Spells));
                             double raw = SourceModelTwentyFifthStrengthDamage(actor,
-                                skill.Components[0]);
+                                skill.Components[0], kidEnhanced ? 2000000 : (double?)null,
+                                kidEnhanced ? 60000 : (double?)null);
                             double factor = SourceModelTwentyFifthKidAreaFactor(hits.Count);
                             foreach (var target in hits)
                             {
                                 double x = target.X - current.X;
                                 double y = target.Y - current.Y;
                                 double bonus = x * x + y * y <=
-                                    Math.Pow(skill.Components[1].Number("centerRadius").Value, 2)
-                                    ? skill.Components[1].Number("centerExtraPercent").Value / 100 : 0;
-                                SourceModelTwentyFifthDamage(actor, target, skill,
-                                    raw * (1 + bonus) * factor, "magical");
-                                SourceModelTwentyFifthStun(actor, target, skill,
-                                    skill.Components[2].Number("durationSeconds").Value);
+                                    Math.Pow(kidEnhanced ? 325 :
+                                        skill.Components[1].Number("centerRadius").Value, 2)
+                                    ? (kidEnhanced ? 50 :
+                                        skill.Components[1].Number("centerExtraPercent").Value) / 100 : 0;
+                                int hitCount = kidEnhanced ? 3 : 1;
+                                for (int i = 0; i < hitCount; i++)
+                                {
+                                    SourceModelTwentyFifthDamage(actor, target, skill,
+                                        raw * (1 + bonus) * factor, "magical", displayName);
+                                    SourceModelTwentyFifthStun(actor, target, skill,
+                                        kidEnhanced ? 2.85 :
+                                            skill.Components[2].Number("durationSeconds").Value);
+                                }
                             }
                         });
                     break;
@@ -193,7 +232,8 @@ namespace Ordr.Mobile.Combat
         }
 
         private double SourceModelTwentyFifthStrengthDamage(CharacterInstance actor,
-            ImportedCombatEffect component)
+            ImportedCombatEffect component, double? enhancedBase = null,
+            double? enhancedScaling = null)
         {
             double strength = 0;
             if (sourceModelStrengthProvider != null)
@@ -205,8 +245,9 @@ namespace Ordr.Mobile.Combat
             }
             // Original strength only. With no witness the bonus is zero,
             // not a fabricated "typical" hero stat.
-            return component.Number("amount").Value +
-                strength * component.Number("strengthScalingPerPoint").Value;
+            return (enhancedBase ?? component.Number("amount").Value) +
+                strength * (enhancedScaling ??
+                    component.Number("strengthScalingPerPoint").Value);
         }
 
         private static double SourceModelTwentyFifthKidAreaFactor(int count) =>
@@ -214,7 +255,7 @@ namespace Ordr.Mobile.Combat
 
         private void SourceModelTwentyFifthDamage(CharacterInstance actor,
             SpatialCombatEnemy target, ImportedCombatSkill skill,
-            double raw, string school)
+            double raw, string school, string displayName = null)
         {
             if (!target.Enemy.IsAlive || raw <= 0) return;
             if (double.IsNaN(raw) || double.IsInfinity(raw) || raw >= long.MaxValue)
@@ -222,7 +263,8 @@ namespace Ordr.Mobile.Combat
             if (school == "fixed")
                 SourceModelTwentiethDamage(actor, target, skill, raw, "fixed");
             else
-                ApplySourceModelSeventhTimedHit(actor, target, skill.Name, raw, school);
+                ApplySourceModelSeventhTimedHit(actor, target,
+                    displayName ?? skill.Name, raw, school);
         }
 
         private void SourceModelTwentyFifthStun(CharacterInstance actor,
@@ -276,7 +318,14 @@ namespace Ordr.Mobile.Combat
                 // whose target died before basic damage could land.
                 sourceModelKidBasicReplacements.Remove(actor.Id);
                 if (SourceModelTwentyFifthRoll(actor.Profile.Skills[1]))
-                    SourceModelTwentyFifthKidRepel(actor, primary, actor.Profile.Skills[1]);
+                {
+                    if (PracticeKidEnhancedOf(actor.Id))
+                        SourceModelTwentySeventhKidDamnedPunk(actor, primary,
+                            actor.Profile.Skills[1]);
+                    else
+                        SourceModelTwentyFifthKidRepel(actor, primary,
+                            actor.Profile.Skills[1]);
+                }
                 if (primary.Enemy.IsAlive &&
                     SourceModelTwentyFifthRoll(actor.Profile.Skills[2]))
                     SourceModelTwentyFifthKidMagnet(actor, primary, actor.Profile.Skills[2]);
@@ -392,6 +441,34 @@ namespace Ordr.Mobile.Combat
                     SourceModelTwentyFifthDamage(actor, target, skill,
                         skill.Components[0].Number("explosionDamage").Value * factor,
                         "magical");
+        }
+
+        private void SourceModelTwentySeventhKidDamnedPunk(CharacterInstance actor,
+            SpatialCombatEnemy primary, ImportedCombatSkill skill)
+        {
+            var position = roster.Get(actor.Id);
+            double dx = primary.X - position.X;
+            double dy = primary.Y - position.Y;
+            double length = Math.Sqrt(dx * dx + dy * dy) + 450;
+            var line = SourceScriptTargets(actor, primary, new SourceScriptHit(
+                SourceScriptHitShape.ProjectileLine, 450,
+                length, 0, 1, 1, Ordr323AttackType.Spells));
+            var blast = SourceScriptTargets(actor, primary, new SourceScriptHit(
+                SourceScriptHitShape.Circle, 450, 0, 0, 1, 1,
+                Ordr323AttackType.Spells));
+            // Damned Punk replaces Repel. The old >=15 bonus explosion
+            // must not leak into this source-declared replacement packet.
+            double factor = SourceModelTwentyFifthKidAreaFactor(blast.Count);
+            double blastFactor = factor * (1 + blast.Count * .01);
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                InstanceKey(actor.Id), primary.Id, "댐드 펑크",
+                "TOOLTIP_MODEL_ONLY / 특성강화 리펠 대체 · 직선 후 폭발", 0));
+            foreach (var target in line)
+                SourceModelTwentyFifthDamage(actor, target, skill,
+                    600000 * factor, "magical", "댐드 펑크");
+            foreach (var target in blast)
+                SourceModelTwentyFifthDamage(actor, target, skill,
+                    450000 * blastFactor, "magical", "댐드 펑크");
         }
 
         private void SourceModelTwentyFifthKidMagnet(CharacterInstance actor,

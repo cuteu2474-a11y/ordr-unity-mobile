@@ -28,6 +28,8 @@
 
 ## 3. 최신 기능 상태 — 2026-11-03
 
+**27차 최신(검사 미실행):** 키드 초월 `TR-25 H0B4`의 원본 특성강화 `enhancedChanges` 2행을 기본 4스킬/패시브와 함께 완전 패킷 검증. 실제 강화 확인 공급자가 승인한 소유자만 `펑크 크래시` HP50·200만×3/내측50%·기절2.85초와 `댐드 펑크` 10%·60만 직선/45만 폭발·적 수당 폭발1%로 **기존 펑크 깁슨/리펠을 대체**. 해금 가격/조건 미확인으로 기본 앱의 강화는 비활성. 카르가라 `L-30 h03F`/왜곡 바제스 `D-06 h09V`의 잘못된 와이퍼/사이 도감 기술은 범용 시전 및 유닛 상세 UI에서도 격리(기존 카르가라 네이티브 `A05Z/A060` 기능 중복 등록 없음). `data/source-model-twentyseventh-kid-enhancement-foreign-profile-audit.json`; EditMode 사례 작성만, Unity/Python/APK/CI 실행하지 않음, `TOOLTIP_MODEL_ONLY`. **아래 26차·25차의 미구현 표현은 해당 시점 기록.**
+
 **26차 최신(검사 미실행):** 키드 초월 `TR-25 H0B4`의 원본 프로필 35% `단일 대체 공격`을 **평타 공격 선언 시 추첨 → 실제 명중 시 기존 4만 반경215 마법 부가 스플래시 대신 단일 물리36만/일반 라인 기절1.5초**로 상호 배타 실행합니다. 기본 평타 HP 피해는 유지하고 추첨 결과는 유닛·대상·전장 리비전별로 묶어 다음 선언·유닛 제거·파견 때 폐기합니다. 잘못된 도감 캐릭터 신원은 원본 `L-30 h03F=카르가라`, `D-06 h09V=왜곡 바제스`, `R-29 h024=희귀 와이퍼`, `R-13 h01V=희귀 바제스`로 재확인했으며 원본 기술 미확인 `L-30/D-06`에는 와이퍼/사이 기술을 연결하지 않습니다. 출처 `data/source-model-twentysixth-kid-basic-replacement-identity.json`. Unity/Python/Android/Actions **미실행**, `TOOLTIP_MODEL_ONLY`이고 원본 RNG·면역·최종 피해 동등성 미검증. **아래 25차의 키드 대체 공격 보류 문구는 과거 시점 기록**입니다.
 
 **25차 최신(검사 미실행):** 원본 W3X rawcode `TR-05 H096` 로우 초월의 ROOM·룸당1회 연계·인젝션 샷·수술수술 열매, `TR-25 H0B4` 키드 초월의 펑크 깁슨 0.5초 선딜·리펠 직선/폭발·자성 5회 누적/3연타, 두 캐릭터의 확인된 기본 피해 패시브와 키드 35% 둔화 오라를 원본 전체 필드 검증/공통 자원·피해·상태/타이머 원장으로 연결했습니다. **키드 35% 기본타격 교체는 구형 기본 스플래시와의 중복을 피하고자 보류**, ROOM 자가 치유 `rate:null` 미추정·원본 네이티브 아머 버프/강화/원본 저항 미검증. **중요한 소스 신원 오류:** `L-30 h03F` 원본은 **카르가라**(프로필은 와이퍼), `D-06 h09V` 원본은 **바제스**(프로필은 사이)입니다. 두 ID에 타 캐릭터 기술을 연결하지 말 것. 실제 와이퍼는 `R-29 h024`. 근거 `data/source-model-twentyfifth-law-kid-identity-audit.json`; Unity·EditMode·Android·Actions **미실행**, `TOOLTIP_MODEL_ONLY`.
@@ -95,6 +97,8 @@
 - 특정 유닛을 '완료'라고 쓰려면 **정의·대상·시각/확률·실제 HP/상태/보상 결과·생명주기·검증 환경**을 구분해 평가한다. 게임에서 실제로 되는 것과 MODEL_ONLY 시뮬레이션을 혼동하지 않는다.
 
 ## 5. 코드 작업·GitHub 운영
+
+**27차 최신 코드 인수인계:** `SourceModelTwentyFifthSkillCatalog.CanModelExactKidEnhancement/IsKnownForeignProfile`, `CharacterCombatRuntime.SourceModelTwentyFifthSkills` 실제 강화 자격 콜백·펑크 크래시 예약 3타·댐드 펑크 대체 proc, `CharacterCombatRuntime.TryCastActiveSkill` 외부 잘못된 스킬 범용 폴백 차단, `OrdrMobileTouchPanel.DrawUnitDetails` 허위 스킬 표시 격리. `data/source-model-twentyseventh-kid-enhancement-foreign-profile-audit.json` 및 네 문서의 27차 최상단 참고. **실제 실행 검증·Actions 조회 금지(명시 요청 전)**.
 
 **26차 최신 코드 인수인계:** 25차 전용 `CharacterCombatRuntime.SourceModelTwentyFifthSkills`에 키드 35% 단일 대체 공격 상태/명중 분기 추가. 공격 선언에서 네 번째 정확 원본 스킬을 35%로 추첨하고 명중 때 4만 광역 스플래시를 생략하며 물리36만+라인 기절1.5초로 교체. 소유자/표적/전장 리비전 정합성·수명 정리. 잘못된 L-30/D-06 외부 프로필은 원본 객체와 재대조 후 미연결 유지. `data/source-model-twentysixth-kid-basic-replacement-identity.json` 및 네 문서의 26차 최상단 참고. **EditMode 사례 작성만, 실제 테스트/Actions 조회 금지(명시 요청 전)**.
 

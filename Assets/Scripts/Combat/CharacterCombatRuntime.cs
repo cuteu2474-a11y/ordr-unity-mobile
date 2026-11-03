@@ -2082,6 +2082,12 @@ namespace Ordr.Mobile.Combat
             if (!characters.TryGetValue(instanceId, out caster))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
 
+            // Source-map L-30/D-06 have foreign tooltip skill records.
+            // No generic fallback may debit resources or cast their names.
+            if (UsesSourceModelBasicAttacks &&
+                SourceModelTwentyFifthSkillCatalog.IsKnownForeignProfile(caster.Profile))
+                return AbilityCastResult.UnsupportedEffect;
+
             AbilityCastResult formCast;
             int priorEvents = events.Count;
             if (TryCastSourceModelEighthKamusari(caster, skillId,
