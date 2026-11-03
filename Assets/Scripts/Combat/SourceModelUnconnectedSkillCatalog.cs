@@ -28,6 +28,14 @@ namespace Ordr.Mobile.Combat
         // Source-tooltip-complete *practice* casts only. No inferred JASS cooldown,
         // Warcraft resistance, or non-listed mixed effects are granted.
         private static readonly SourceModelUnconnectedSkillRow[] Entries = {
+            // 25th: source-backed TR-05/TR-25 only. L-30 and D-06 profile
+            // identities conflict with the extracted map, so are excluded.
+            new SourceModelUnconnectedSkillRow("TR-05", "H096",
+                new[] { "인젝션 샷", "수술수술 열매" },
+                new[] { "룸 연계 광역 공격", "룸" }),
+            new SourceModelUnconnectedSkillRow("TR-25", "H0B4",
+                new[] { "리펠", "자성 타격" },
+                new[] { "펑크 깁슨" }),
             // 24th batch: ONLY independently authorized resource actives.
             // Existing native/JASS attacks (e.g. Franky BzH) are untouched.
             new SourceModelUnconnectedSkillRow("L-01", "h02U",

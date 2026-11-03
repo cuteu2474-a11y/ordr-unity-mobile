@@ -27,6 +27,11 @@ namespace Ordr.Mobile.Combat
             CharacterInstance actor, SpatialCombatEnemy primary,
             SourceModelUnconnectedSkillRow row)
         {
+            if (row.CatalogId == "TR-05" || row.CatalogId == "TR-25")
+            {
+                ExecuteSourceModelTwentyFifthAttacks(actor, primary, row);
+                return;
+            }
             // Active-only rows must not fire phantom attack procs or spam
             // deferred skill warnings on every normal attack.
             if (row.PracticeAttackSkills.Count == 0) return;
@@ -227,6 +232,9 @@ namespace Ordr.Mobile.Combat
             foreach (var candidate in caster.Profile.Skills)
                 if (candidate.Id == skillId) { selected = candidate; break; }
             if (selected == null) return false;
+            if (SourceModelTwentyFifthSkillCatalog.IsSpecial(selected))
+                return TryCastSourceModelTwentyFifthActive(caster, selected,
+                    primaryEnemyId, out result);
             // Avoid generic fallback debit for any still-unapproved
             // resource ability on a known model character.
             if (caster.Profile.UnitId != caster.Catalog.Id ||

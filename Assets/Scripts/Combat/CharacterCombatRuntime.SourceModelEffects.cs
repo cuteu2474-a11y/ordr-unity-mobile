@@ -28,6 +28,7 @@ namespace Ordr.Mobile.Combat
             SourceModelTimeAdvancing += AdvanceSourceModelEleventhBonney;
             SourceModelTimeAdvancing += AdvanceSourceChopperBursts;
             SourceModelTimeAdvancing += AdvanceSourceIndependentMana;
+            SourceModelTimeAdvancing += AdvanceSourceModelTwentyFifthStates;
             attackPipeline.ConfigurePracticeAttackOverride(rules.FormAttackOf);
             // The registered catalog identity does not change on form
             // override. Bonney's H0BY has a new tooltip script packet. Keep
@@ -37,7 +38,10 @@ namespace Ordr.Mobile.Combat
                 (attacker, rawcode, target) => OnSourceModelScriptAttackDeclared(
                     attacker, rules.SourceFormRawcodeOf(attacker) == "H0BY" ?
                         "H0BY" : rawcode, target));
-            attackPipeline.ConfigurePracticeSuccessfulBasicHit(OnSourceModelNinthSuccessfulBasicHit);
+            attackPipeline.ConfigurePracticeSuccessfulBasicHit((attacker, rawcode, target, actual) => {
+                OnSourceModelNinthSuccessfulBasicHit(attacker, rawcode, target, actual);
+                OnSourceModelTwentyFifthSuccessfulBasicHit(attacker, rawcode, target, actual);
+            });
             attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {
                 // Reuse the shared cadence path for a temporary form. Its flat
                 // interval change is distinct from percentage-based auras.

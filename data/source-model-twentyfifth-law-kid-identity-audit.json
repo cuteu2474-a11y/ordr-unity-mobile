@@ -1,0 +1,36 @@
+{
+  "version": "ORDR S2 2.323[C]",
+  "batch": 25,
+  "mode": "nightmare-isekai",
+  "state": "TOOLTIP_MODEL_ONLY; source-model implementation, no compile/Unity/Android execution claimed",
+  "immutableSources": [
+    "data/character-skill-profiles.json",
+    "data/original-2323C-map-base-stats.json",
+    "data/original-2323C-unit-object-stats.json"
+  ],
+  "implemented": [
+    {
+      "unitId": "TR-05",
+      "originalRawcode": "H096",
+      "originalMapName": "백개의 심장을 바친 자",
+      "skillIds": ["TR-05:skill:0", "TR-05:skill:1", "TR-05:skill:2", "TR-05:skill:3"],
+      "modeled": "ROOM 135 mana/5 s, personal +30000 flat attack, allies +20%/9 s, enemy slow 45%/5 s, 250 HP area 2500000 followup at most once in that ROOM, 12.5% Injection Shot and 5% Surgery attacks, 55% basic attack splash in 415 radius after successful basic hit",
+      "boundaries": ["ROOM selfHeal.rate is null, therefore no heal", "enraged native armor buff removal lacks status type", "root uses a 100%-movement-slow status without disabling attacks; slow distribution and actual animation unverified", "actual JASS/random/armor order unverified"]
+    },
+    {
+      "unitId": "TR-25",
+      "originalRawcode": "H0B4",
+      "originalMapName": "신세대의 이단아",
+      "skillIds": ["TR-25:skill:0", "TR-25:skill:1", "TR-25:skill:2"],
+      "modeled": "Punk Gibson 40 HP + 0.5 s windup, 500 area/250 inner 50% bonus, 2.2 s line stun; Repel 10% line 300 + blast 450 + >=15 within 250 extra blast; Magnet Strike 6.5%/500 area, strength scaling only when supplied, every 5th proc 3 hits +20%; passive +50000 flat attack, 35% unlimited same-lane slow aura, 40000 magic splash in 215 radius except primary",
+      "boundaries": ["35% onEveryAttack single replacement is not added as extra damage; original basic splash replacement hook unimplemented", "enhanced Punk Crash and Damned Punk lack verified enhancement state", "strength provider defaults to zero bonus; no guessed attribute", "multiple cast ordering, blast timing and native stun resistance unverified"]
+    }
+  ],
+  "identityBlockers": [
+    {"profileId": "L-30", "skillProfileClaims": "샨디아의 창 / Wiper", "originalMapCatalogName": "카르가라", "originalRawcode": "h03F", "relatedActualWiper": "R-29 h024, rare grade", "status": "Do NOT attach skill to original L-30"},
+    {"profileId": "D-06", "skillProfileClaims": "파동 엘보 / Sai", "originalMapCatalogName": "바제스", "originalRawcode": "h09V", "relatedBurgess": "R-13 h01V, rare grade", "status": "Do NOT attach skill to original D-06"}
+  ],
+  "executionArchitecture": "Strict four-skill and passive packet equality, source owner rawcode, shared resources, same-lane target selection, existing damage/defense/status/kill engine, shared timer and scheduled attack, real-hit callback, despawn/lane change cleanup",
+  "checks": "EditMode assertions authored; Python, Unity Editor, Android, APK, CI NOT RUN per AGENTS.md",
+  "unresolved": "Original W3X-native skill identities for L-30/D-06, Kid basic replacement hook, native armor buff clearing, target resistances, actual strength witness, JASS behavioral parity"
+}

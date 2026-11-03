@@ -28,7 +28,9 @@
 
 ## 3. 최신 기능 상태 — 2026-11-03
 
-**24차 최신(검사 미실행):** 베르고 H-10 `맥시멈 스윙`, 레일리 불멸 I-03·전설 L-07 `패기발산`, 스모커 L-20 `화이트 아웃`, 검은수염 L-01 `어둠어둠 열매`, 프랑키 초월 TR-28 `라디칼 빔`의 **서로 다른 원본 액티브 6개**를 완전 필드 승인 게이트로 공통 전투 모델에 연결했습니다. 베르고 600 반경 피해·800 반경 방깎 분리, 스모커 주 대상 마법 2배·기존 유익 상태 버프만 제거, 검은수염/스모커 공격당 HP/MP 회복, 프랑키 모바일 적 방향 직선을 포함합니다. **와이퍼 L-30, 사이 D-06, 키드 TR-25, 로우 TR-05** 복합 기술은 타이밍·조건·원본 스탯 미해결로 임의 발동을 만들지 않았습니다. 근거 `data/source-model-twentyfourth-six-character-skills.json`; Unity/Android 실행과 원본 보스 기절·전체 버프/광선 궤적 동등성 **미검증**입니다.
+**25차 최신(검사 미실행):** 원본 W3X rawcode `TR-05 H096` 로우 초월의 ROOM·룸당1회 연계·인젝션 샷·수술수술 열매, `TR-25 H0B4` 키드 초월의 펑크 깁슨 0.5초 선딜·리펠 직선/폭발·자성 5회 누적/3연타, 두 캐릭터의 확인된 기본 피해 패시브와 키드 35% 둔화 오라를 원본 전체 필드 검증/공통 자원·피해·상태/타이머 원장으로 연결했습니다. **키드 35% 기본타격 교체는 구형 기본 스플래시와의 중복을 피하고자 보류**, ROOM 자가 치유 `rate:null` 미추정·원본 네이티브 아머 버프/강화/원본 저항 미검증. **중요한 소스 신원 오류:** `L-30 h03F` 원본은 **카르가라**(프로필은 와이퍼), `D-06 h09V` 원본은 **바제스**(프로필은 사이)입니다. 두 ID에 타 캐릭터 기술을 연결하지 말 것. 실제 와이퍼는 `R-29 h024`. 근거 `data/source-model-twentyfifth-law-kid-identity-audit.json`; Unity·EditMode·Android·Actions **미실행**, `TOOLTIP_MODEL_ONLY`.
+
+**24차 이전(검사 미실행):** 베르고 H-10 `맥시멈 스윙`, 레일리 불멸 I-03·전설 L-07 `패기발산`, 스모커 L-20 `화이트 아웃`, 검은수염 L-01 `어둠어둠 열매`, 프랑키 초월 TR-28 `라디칼 빔`의 **서로 다른 원본 액티브 6개**를 완전 필드 승인 게이트로 공통 전투 모델에 연결했습니다. 베르고 600 반경 피해·800 반경 방깎 분리, 스모커 주 대상 마법 2배·기존 유익 상태 버프만 제거, 검은수염/스모커 공격당 HP/MP 회복, 프랑키 모바일 적 방향 직선을 포함합니다. 근거 `data/source-model-twentyfourth-six-character-skills.json`; Unity/Android 실행과 원본 보스 기절·전체 버프/광선 궤적 동등성 **미검증**입니다.
 
 **22차 최신(검사 미실행):** 불릿 I-05의 장비 획득 원본 자료가 여전히 없어 임의 상점/아이템 지급을 만들지 않았습니다. 대신 `IOriginalEquippedInventorySnapshotWitness`로 **실제 원본 월드가 완전한 장착 목록·아이템 ID·등급·개수·단조 증가 수정 번호를 확인한 경우에만** 전투 원장의 초기 장비 복원/전체 상태 갱신을 허용합니다. 한 유닛에 전체 스냅샷과 증감 영수증을 섞어 이중 장착시키지 않으며, 잘못된 항목·중복 ID·오버플로·과거 수정 번호는 원자적으로 거부합니다. 유닛 UI는 불릿 장비와 아르마다 15/30 자격을 표시하고, 원본 공급자가 있을 때만 동기화 버튼을 제공합니다. **기본 APK에는 원본 인벤토리 공급자·실제 구매/드롭·A0WQ 레벨 공급자가 여전히 없어 장비 0·추가 보너스 비활성**입니다. 근거 `data/source-model-twentysecond-inventory-synchronization.json`. Python/Unity/APK/Actions **미실행·미조회**, TOOLTIP_MODEL_ONLY. 아래 21차는 이전 기록입니다.
 
@@ -92,7 +94,9 @@
 
 ## 5. 코드 작업·GitHub 운영
 
-**24차 최신 코드 인수인계:** `SourceModelTwentyFourthSkillCatalog` 6종 완전 필드 승인; `SourceModelNextThirtySkillCatalog` 2개·`SourceModelUnconnectedSkillCatalog` 4개 소유자 액티브 등록; `CharacterCombatRuntime.SourceModelNextThirtyAttacks` 24차 특별 대상/원본 피해·상태/직선, `SourceModelTwentyFourthSkills` 원본 평타 자원 + 적 버프 제거, `CharacterActiveAbilities` 완전 승인된 선형 시전·특수 구성 지원. 기존 BzH·Br 원본 공격 실행 및 SLK 초당 자원 재생을 중복하지 않음. 자세한 정보는 `docs/START_HERE.md`, `docs/CODE_MAP.md`, `docs/PLAYABLE_ROADMAP.md`, `docs/새채팅-인수인계.md`, `data/source-model-twentyfourth-six-character-skills.json`. 검사는 **요청받기 전 미실행**.
+**25차 최신 코드 인수인계:** `SourceModelTwentyFifthSkillCatalog` 전체 프로필·패시브 게이트, `CharacterCombatRuntime.SourceModelTwentyFifthSkills` ROOM/자력/예약 시전/명중 추가 피해 및 35% 오라, 공용 원장 재사용, `SourceModelUnconnectedSkillCatalog` 2명만 신규. 불일치 L-30·D-06 원본 신원 확인 전 실행 금지. `data/source-model-twentyfifth-law-kid-identity-audit.json`과 네 문서 첫머리 참고. **컴파일·테스트·CI 미실행**.
+
+**24차 이전 코드 인수인계:** `SourceModelTwentyFourthSkillCatalog` 6종 완전 필드 승인; `SourceModelNextThirtySkillCatalog` 2개·`SourceModelUnconnectedSkillCatalog` 4개 소유자 액티브 등록; `CharacterCombatRuntime.SourceModelNextThirtyAttacks` 24차 특별 대상/원본 피해·상태/직선, `SourceModelTwentyFourthSkills` 원본 평타 자원 + 적 버프 제거, `CharacterActiveAbilities` 완전 승인된 선형 시전·특수 구성 지원. 기존 BzH·Br 원본 공격 실행 및 SLK 초당 자원 재생을 중복하지 않음. 자세한 정보는 `data/source-model-twentyfourth-six-character-skills.json`. 검사는 **요청받기 전 미실행**.
 
 **23차 최신 코드 인수인계(2026-11-03):** `SourceModelTwentyThirdSkillCatalog`의 원본 필드 전체 동일성 게이트로 H-09 뇌영, H-07 갑판 포격, E-04 마나 고정 피해, I-06 대자재천신, RN-05 데스노트 5개를 기존 공통 실행기에 추가. 방주맥심 Br8 원본 공격은 그대로 두고 별도 뇌영만 새 허용. RN-05 데스노트는 보스/스토리 제외 및 실제 현재HP 25%. `data/source-model-twentythird-five-character-skills.json` 참고. 원본 동등성·Unity 컴파일·Android 실행 검증을 **수행하지 않았음**. 외부 장착 장비 공급자 또한 여전히 미구현.
 

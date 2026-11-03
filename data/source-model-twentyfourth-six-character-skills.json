@@ -22,8 +22,8 @@
     "Franky's independently modeled active is not a second BzH native attack proc; earlier conditional Franky General transformation remains protected."
   ],
   "remainingFourPlannedCharacters": [
-    {"unitId":"L-30","name":"와이퍼","deferred":"maximum attack-speed self buff needs native attack period/cap and duration semantics"},
-    {"unitId":"D-06","name":"사이","deferred":"onEveryHit current-health explosive and per-10000 attack damage periodic cooldown need exact shared hit/timer rules"},
+    {"unitId":"L-30","profileDescribes":"와이퍼","originalObjectName":"카르가라","originalRawcode":"h03F","deferred":"source tooltip identity mismatch, cannot attach Wiper ability to Kalgara"},
+    {"unitId":"D-06","profileDescribes":"사이","originalObjectName":"바제스","originalRawcode":"h09V","deferred":"source tooltip identity mismatch, cannot attach Sai ability to Burgess"},
     {"unitId":"TR-25","name":"키드 초월","deferred":"0.5 s cast, strength, centered bonus, magnet accumulation, line/explosion count-dependent chain"},
     {"unitId":"TR-05","name":"로우 초월","deferred":"ROOM shared 5-second state and once-per-room HP skill, unknown self-heal rate and enhanced override rules"}
   ],

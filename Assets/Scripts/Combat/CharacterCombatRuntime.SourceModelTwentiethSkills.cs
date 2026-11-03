@@ -40,11 +40,12 @@ namespace Ordr.Mobile.Combat
             long id;
             CharacterInstance actor;
             if (!long.TryParse(actorKey, out id) ||
-                !characters.TryGetValue(id, out actor) ||
-                actor.Catalog.Id != "E-03" ||
-                !SourceModelTwentiethSkillCatalog.HasExactPassive(actor.Profile, "E-03"))
+                !characters.TryGetValue(id, out actor))
                 return 0;
-            return SourceModelSoulStacksOf(id) >= 700 ? 100000 : 0;
+            double existing = actor.Catalog.Id == "E-03" &&
+                SourceModelTwentiethSkillCatalog.HasExactPassive(actor.Profile, "E-03") &&
+                SourceModelSoulStacksOf(id) >= 700 ? 100000 : 0;
+            return existing + SourceModelTwentyFifthFlatAttackPower(actor);
         }
 
         // Called both for actors already present before the practice battle

@@ -2173,6 +2173,49 @@ namespace Ordr.Mobile.Tests
                 "wrong-owner", new[] { name }, skill));
         }
 
+        [TestCase("TR-05", "H096")]
+        [TestCase("TR-25", "H0B4")]
+        public void TwentyFifthFullKitsMustMatchSourceOwnerAndAllFields(
+            string owner, string rawcode)
+        {
+            var profiles = CharacterSkillCatalog.FromJson(
+                Data("character-skill-profiles.json"));
+            var profile = profiles.Require(owner);
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var original = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            Assert.AreEqual(rawcode, original.Find(owner).OriginalRawcode);
+            Assert.IsTrue(SourceModelTwentyFifthSkillCatalog.HasExactOwner(profile, owner));
+            foreach (var skill in profile.Skills)
+            {
+                Assert.IsTrue(SourceModelTwentyFifthSkillCatalog.CanModelExact(skill), skill.Id);
+                Assert.IsTrue(skill.Trigger.StartsWith("active") ?
+                    SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill) :
+                    SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill));
+                Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                    "wrong-owner", new[] { skill.Name }, skill));
+            }
+        }
+
+        [Test]
+        public void TwentyFifthConflictingTooltipOwnersNeverReceiveForeignSkills()
+        {
+            var units = CharacterUnitCatalog.FromJson(Data("units.json"));
+            var original = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"), units);
+            var skills = CharacterSkillCatalog.FromJson(
+                Data("character-skill-profiles.json"));
+            Assert.IsTrue(original.Find("L-30").MapName.Contains("카르가라"));
+            Assert.IsTrue(original.Find("D-06").MapName.Contains("바제스"));
+            Assert.IsFalse(SourceModelTwentyFifthSkillCatalog.HasExactOwner(
+                skills.Require("L-30"), "L-30"));
+            Assert.IsFalse(SourceModelTwentyFifthSkillCatalog.HasExactOwner(
+                skills.Require("D-06"), "D-06"));
+            SourceModelUnconnectedSkillRow unused;
+            Assert.IsFalse(SourceModelUnconnectedSkillCatalog.TryGet("h03F", out unused));
+            Assert.IsFalse(SourceModelUnconnectedSkillCatalog.TryGet("h09V", out unused));
+        }
+
         [TestCase("H-10", "맥시멈 스윙")]
         [TestCase("I-03", "패기발산")]
         [TestCase("L-07", "패기발산")]

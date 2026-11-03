@@ -73,6 +73,12 @@ namespace Ordr.Mobile.Combat
                     if (skill.Id == "TR-16:skill:0" &&
                         SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill))
                         return true;
+            if ((actor.Catalog.Id == "TR-05" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H096") ||
+                (actor.Catalog.Id == "TR-25" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H0B4"))
+                return SourceModelTwentyFifthSkillCatalog.HasExactOwner(
+                    actor.Profile, actor.Catalog.Id);
             SourceModelNextThirtyUnit entry;
             SourceModelUnconnectedSkillRow extra;
             IReadOnlyList<string> activeNames;

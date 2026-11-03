@@ -1,4 +1,10 @@
-## 2026-11-03 · 24차 원본 액티브 6개 연결 구조 (현재 최신)
+## 2026-11-03 · 25차 원본 객체 ID 정합성·시전 상태/자력/오라 (현재 최신)
+
+- `SourceModelTwentyFifthSkillCatalog.cs`: 원본 맵 `TR-05 H096` / `TR-25 H0B4`의 **네 스킬 전체·패시브 전체**를 원본 JSON 구조·값 그대로 재귀 비교하여 필드 누락/추가/순서 변경을 차단. `L-30`(원본 카르가라≠프로필 와이퍼), `D-06`(원본 바제스≠프로필 사이)은 승인 목록에 없음.
+- `SourceModelUnconnectedSkillCatalog`의 두 소유자만 신규 등록 → `SourceModelNextThirtyAttacks` 전용 25차 게이트 → `CharacterCombatRuntime.SourceModelTwentyFifthSkills`에서 자원 소비/사전 방어 확인, ROOM/룸당 한 번, 키드 0.5초 예약, 리펠/자성 누적, 로우 12.5%·5% 공격을 구현. `SourceModelEffects`의 **기존 확정 명중 콜백**에 한 번만 추가 연결해 로우/키드 기본 폭발 패시브를 계산. `SourceModelTwentiethFlatAttackPower`의 기존 공유 평타 가산점에 로우 ROOM+3만·키드+5만을 합산.
+- 상태/피해는 기존 `SourceScriptTargets`·`SourceModelCompositeStatus`·`SourceModelSeventhTimedHit`·`SourceModelTwentiethDamage`·`CombatStatusEngine`/공통 적 HP 원장만 재사용. ROOM은 동일 전장·revision·시간 조건 및 사용1회 상태, 키드의 같은 전장35% 둔화 오라는 표적 셋을 추적해 유닛 제거/전장 변경 때 해제. `CharacterCombatRuntime.RemoveCharacter/RefreshAfterCommittedStoryLaneChange`에 청소 연결. 강화형과 키드 35% 기존 기본 타격 **교체**는 여전히 비활성. Unity/Android 실행 미검증.
+
+## 2026-11-03 · 24차 원본 액티브 6개 연결 구조 (이전)
 
 - **원본 승인:** `SourceModelTwentyFourthSkillCatalog`는 H-10/I-03/L-07/L-20/L-01/TR-28의 소유 ID·스킬 인덱스·대상·비용·세부 필드·구성 순서를 하나도 생략하지 않는 조건에서만 허용합니다. `SourceModelNextThirtySkillCatalog`/`SourceModelUnconnectedSkillCatalog`의 기존 등록에 액티브만 추가하고 기본 공격·BzH 스크립트 재실행은 금지합니다.
 - **실제 경로:** `CharacterCombatRuntime.SourceModelResources` 원본 SLK 자원 승인 → `CharacterCombatRuntime.SourceModelNextThirtyAttacks` 공통 액티브 시전(직선 포함) → `SourceModelCompositeEffects` 피해/버프/스택/상태 → 공통 처치. 베르고 800 반경 방깎만 별도 적 선택; 스모커 주 대상 마법 배율·적 유익 버프만 해제. `CharacterCombatRuntime.SourceModelTwentyFourthSkills`에서 검은수염·스모커 평타당 자원을 1회 적립, 원본 초당 재생은 원본 SLK 처리만 재사용합니다.

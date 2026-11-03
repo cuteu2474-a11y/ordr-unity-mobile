@@ -1407,6 +1407,7 @@ namespace Ordr.Mobile.Combat
                 // no summons or lasting roots may keep attacking/holding a
                 // main-lane enemy after their owner enters a story lane.
                 EndSourceChopperBurst(instanceId, true);
+                ForgetSourceModelTwentyFifthActor(instanceId);
                 ForgetSourceModelEleventhActor(instanceId);
                 RefreshSourceTemporaryActors();
             }
@@ -2237,6 +2238,7 @@ namespace Ordr.Mobile.Combat
             sourceModelKobyRoundStacks.Remove(instanceId);
             ForgetSourceModelEighthActor(instanceId);
             ForgetSourceModelNinthActor(instanceId);
+            ForgetSourceModelTwentyFifthActor(instanceId);
             ForgetSourceModelTwentiethActor(instanceId);
             sourceModelManagedResourceRows.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));

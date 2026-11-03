@@ -199,6 +199,10 @@ namespace Ordr.Mobile.Combat
         // unsupported. Tooltip packets are a practice model, never JASS parity.
         public static bool CanModelCompleteAttack(ImportedCombatSkill skill)
         {
+            if (SourceModelTwentyFifthSkillCatalog.IsSpecial(skill))
+                return SourceModelTwentyFifthSkillCatalog.CanModelExact(skill) &&
+                    (skill.Trigger == "onAttack" ||
+                     skill.Trigger == "onEveryAttack");
             if (SourceModelTwentyFourthSkillCatalog.IsSpecial(skill)) return false;
             if (SourceModelTwentyThirdSkillCatalog.IsSpecial(skill))
                 return SourceModelTwentyThirdSkillCatalog.CanModelExactAttack(skill);
@@ -321,6 +325,10 @@ namespace Ordr.Mobile.Combat
 
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
+            if (SourceModelTwentyFifthSkillCatalog.IsSpecial(skill))
+                return SourceModelTwentyFifthSkillCatalog.CanModelExact(skill) &&
+                    (skill.Trigger == "activeMana" ||
+                     skill.Trigger == "activeHealth");
             if (SourceModelTwentyFourthSkillCatalog.IsSpecial(skill))
                 return SourceModelTwentyFourthSkillCatalog.CanModelExactActive(skill);
             if (SourceModelTwentyThirdSkillCatalog.IsSpecial(skill))
