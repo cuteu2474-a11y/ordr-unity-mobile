@@ -821,3 +821,9 @@ APK 아티팩트 이름은 `ordr-mobile-android-development-apk`, 경로는 `bui
 - [x] 새 전용 `SourceModelFifteenthSkillCatalog`가 복합 11개의 전체 툴팁 필드(중첩 맵/예외 포함)를 엄격 확인합니다. 단순 9개는 기존 `CanModelCompleteAttack`를 통과시켜 공통 전투에 연결했습니다. **보스 40% 공격 확률**, 일반·보스·광폭화별 최대/현재HP 추가 피해, 2연타와 단일 추가 마법 1회, 영웅 **실제 힘 공급자 존재 시에만** 계수 보정, 원본 MP/HP 소비, 일반 라인 기절·둔화 및 메인/스토리 분리를 공유합니다.
 - [ ] 모든 연결은 **TOOLTIP_MODEL_ONLY**입니다. 일반 스턴의 실제 저항·면역, 원본 난수 순서, 원본 특수 피해속성·발동 시간·능력치 공급자와 Unity Editor/Android 동등성은 미확인입니다. 원작 수치 변경/무료 재화·새 조합은 없습니다. 원본 목록 `data/source-model-fifteenth-20-skills.json`, 회귀 `tests/test_source_model_fifteenth_20_skills.py`와 EditMode `SourceModelScriptAttackSkillTests` 참조. 77종의 아직 미수집된 상세 프로필은 별개 미완료입니다.
 
+## 2026-11-03 · 16차 캐릭터 고유 스킬 20개 추가 연결 (최신)
+
+- [x] **14명·고유 기술 20개 추가 모델**: 공격형 18개(아인 3연타·단일 스턴, 버기 필살타·아군 공격력33% 강화, 코알라 기와 돌려차기·단일 스턴, 써니호 일반 포격, 스코퍼가반/거프/레드필드 등 기존 캐릭터의 누락 공격기), 원본 MP 소비 액티브 2개(코알라 어인공수도 MP135, 드래곤 마나 낙뢰 MP160). 전체 목록/원본 객체 및 순번은 `data/source-model-sixteenth-20-skills.json` 참고. 동일 인물의 앞선 15차 기술은 재계산하지 않습니다.
+- [x] `SourceModelSixteenthSkillCatalog` 전체 필드 승인, 공통 공격/스킬·방어/HP/상태 원장과 15차 아인 단일 추가 타격을 재사용합니다. 일반 보스 외에 **레드필드 보스 발동 20→40%·물리 피해×2, 스코퍼가반 I-08 보스/스토리 55→13%** 같은 원본 override를 유지합니다. 코알라 `target` 필드 없는 원본 반경625 MP 기술만 별도로 허용하며, 원본에 명시된 다단 공격 횟수를 공통 자원 정산에서 실행합니다. 써니호는 기본 미연구 포격만 연결하고 연구 상태 공급자가 `true`를 확인하면 중단합니다.
+- [ ] **검사 미실행 (요청 정책):** Python·Unity EditMode·시뮬레이터·APK 실행은 성현 님의 명시적 요청이 있을 때만 실행합니다. GitHub main push로 자동 시작되는 Actions는 `in_progress` 확인만 합니다. 원작 원리/최종 피해·보스 면역·연구 획득·버기 해적단 소환 실체 및 `E-02` 원본 유닛 ID는 여전히 미확인입니다. 비비 B59/B52 범위 마법과 프랑키 BzH를 중복 발동시키지 않습니다. **TOOLTIP_MODEL_ONLY**를 실제 Unity 성공·원작 동등성으로 해석하지 않습니다.
+

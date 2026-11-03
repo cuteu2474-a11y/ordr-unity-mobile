@@ -405,3 +405,10 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `SourceModelNextThirtySkillCatalog.CanModelCompleteAttack/Active` → `SourceModelFifteenthSkillCatalog.CanModelExactSpecial`(11개 전체 필드 값 검증), 나머지 9개는 기존 엄격한 일반 패킷 검증. 공격 선언에서 `CharacterCombatRuntime.SourceModelNextThirtyAttacks.ExecuteSourceModelApprovedProfileAttacks`, 자동 액티브에서 `SourceModelResources.AutoCastApprovedSourceModelActives`→`TryCastApprovedSourceModelActive`→같은 `ApplySourceModelNextThirtySkill`을 사용합니다.
 - `CharacterCombatRuntime.SourceModelFifteenthSkills`는 보스 차등 확률·대상 종류별 HP 비례·실측 힘 조건·단일 한정 추가 마법을 **기존 HP/방어/전장/기절/둔화/자원 정산 앞에서만** 계산합니다. LI-05 단일 30만은 두 연타 반복을 피하여 정확히 한 번 추가; RN-14 둔화는 기존 공통 상태 엔진을 사용. 불명 힘 공급자=0 보정이며 원본 피해/면역·Unity C# 실행은 `TOOLTIP_MODEL_ONLY`입니다.
 
+## 2026-11-03 · 16차 기존 인물 미연결 20개 기술 (최신)
+
+- `data/source-model-sixteenth-20-skills.json`이 **14개 캐릭터/20개 신규 기술**과 고정 원본 ID·rawcode·스킬 순번을 기록합니다. `SourceModelUnconnectedSkillCatalog`는 11개 기존 행에 신규 기술명만 추가하고 `E-05/h05A`, `D-02/h03V`, `H-15/h03L` 세 새 주인만 생성합니다. E-02 미매핑, E-06 B59/B52, TR-28 BzH는 중복·오인 방지를 위해 제외합니다.
+- `SourceModelSixteenthSkillCatalog.CanModelExactSpecial`은 원본 필드·컴포넌트·값/배열/override까지 명시적으로 고정(18개 복합 기술), 나머지 2개 일반 기술은 기존 완전 패킷 승인 경로를 재사용합니다. `SourceModelNextThirtyAttacks`에서 16차 상태/복합·난수·대상 종류 처리를 먼저 추가 계산하고 공통 HP/방어/처치 및 연습 전장 규칙은 보존합니다. 3연타 아인의 기본 대상 단일 30만 보너스는 `SourceModelFifteenthPrimaryFollowup`을 공동 이용합니다.
+- `CharacterActiveAbilities.CanExecuteAllComponents`의 `D-02:skill:0` 원본 누락 `target`은 전체 스키마 일치·반경625일 때만 **정확히** 지역 액티브로 해석합니다. 공통 승인 `TryCastApprovedSourceModelActive`의 다단형 승인 경로는 소모 전 전체 컴포넌트가 허용된 경우에 한해서 원본 표기 `hits`를 수행합니다(실제 타격 시간/Warcraft 동등성 검증과 구분). 써니호 `ConfigureSourceModelSunnyKnowledgeEvidence`는 지식 획득 여부만 외부에서 전달하며 지식을 가짜로 판매하지 않습니다.
+- **성현 님 지시:** Python/Unity/Android 검사를 **명시적 요청 전에 실행하지 않습니다.** 정적 코드 검토만 수행하고 미검증은 그대로 표기합니다. 커밋→main 자동 Actions `in_progress` 확인→즉시 종료, 결과 조회 금지.
+

@@ -86,7 +86,7 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy primary, ImportedCombatSkill skill,
             ImportedCombatEffect component, SpatialCombatEnemy target)
         {
-            if (skill.Id != "LI-05:skill:1" ||
+            if ((skill.Id != "LI-05:skill:1" && skill.Id != "LI-05:skill:2") ||
                 component != skill.Components[0] ||
                 target.Id != primary.Id || !target.Enemy.IsAlive) return;
             ApplySourceModelAreaPacket(InstanceKey(actor.Id), IsStoryDeployed(actor.Id),

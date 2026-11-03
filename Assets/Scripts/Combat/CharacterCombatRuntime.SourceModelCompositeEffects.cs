@@ -267,7 +267,7 @@ namespace Ordr.Mobile.Combat
             {
                 double rawAttack = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
                 double total = rawAttack * component.Number("percent").Value / 100 +
-                    component.Number("flatAmount").Value;
+                    (component.Number("flatAmount") ?? 0);
                 var kinds = component.Get("targetKindMultiplier") as
                     Dictionary<string, object>;
                 if (kinds != null)

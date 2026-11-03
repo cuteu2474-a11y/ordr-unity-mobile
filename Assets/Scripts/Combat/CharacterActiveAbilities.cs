@@ -237,7 +237,12 @@ namespace Ordr.Mobile.Combat
                 skill.Components.Count > 0 &&
                 skill.Components[0].Type == "transform" &&
                 specialAllowed != null && specialAllowed(skill.Components[0]);
-            if (!supportedSelfForm && skill.Target != "single" &&
+            // D-02's original target is omitted but radius=625 explicitly
+            // defines an area packet. Only its exact reviewed skill may use
+            // that source-backed omission; do not broaden the generic gate.
+            bool approvedImplicitArea = skill.Id == "D-02:skill:0" &&
+                SourceModelSixteenthSkillCatalog.CanModelExactSpecial(skill);
+            if (!supportedSelfForm && !approvedImplicitArea && skill.Target != "single" &&
                 skill.Target != "area" && skill.Target != "targetCircle" &&
                 skill.Target != "casterArea")
                 return false;

@@ -65,6 +65,7 @@ namespace Ordr.Mobile.Combat
                 }
                 completedModels++;
                 if (!SourceModelEighthAttackCondition(actor, skill)) continue;
+                if (!SourceModelSixteenthAttackCondition(actor, skill)) continue;
                 // E-07's 4.25 s absolute cooldown is attached to the actual
                 // successful proc; a failed roll neither consumes nor renews it.
                 double readyAt;
@@ -90,8 +91,9 @@ namespace Ordr.Mobile.Combat
                 if ((skill.Trigger == "onAttack" ||
                      skill.Trigger == "onAttackWithMana") &&
                     sourceModelRules.NextScriptRoll(1000000) >=
-                    (int)Math.Round(SourceModelFifteenthProcChance(skill, primary,
-                        SourceModelEighthProcChance(skill, primary, actor)) * 10000,
+                    (int)Math.Round(SourceModelSixteenthProcChance(skill, primary,
+                        SourceModelFifteenthProcChance(skill, primary,
+                            SourceModelEighthProcChance(skill, primary, actor))) * 10000,
                         MidpointRounding.AwayFromZero)) continue;
                 // Preserve the tooltip target metadata, but apply the same
                 // explicit MOBILE result policy as CharacterSkillEffectExecutor.
@@ -242,7 +244,11 @@ namespace Ordr.Mobile.Combat
                 }
             }
             ImportedCombatSkill accepted;
-            result = caster.Abilities.TryCast(skillId, true, false, out accepted);
+            // Only this path's FULL source-approved packet may enter the
+            // multi-hit practice executor. The normal manual/unknown cast
+            // path still rejects unsupported time-based packets. "true"
+            // permits documented hit counts, not original Warcraft timing.
+            result = caster.Abilities.TryCast(skillId, true, true, out accepted);
             if (result != AbilityCastResult.Cast) return true;
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 InstanceKey(caster.Id), primary.Id, accepted.Name,
@@ -295,6 +301,7 @@ namespace Ordr.Mobile.Combat
                 SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsEighthCompositeSkill(skill) ||
+                SourceModelSixteenthSkillCatalog.IsSpecial(skill) ||
                 SourceModelFifteenthSkillCatalog.IsSpecial(skill) ||
                 IsSourceModelEighthStatusApproach(skill);
             foreach (var component in skill.Components)
@@ -422,6 +429,8 @@ namespace Ordr.Mobile.Combat
                          !ReferenceEquals(primary, target)) ||
                         !SourceModelNextThirtyComponentTargets(component, primary, target) ||
                         !SourceModelFifteenthComponentTargets(skill, component,
+                            primary, target) ||
+                        !SourceModelSixteenthComponentTargets(skill, component,
                             primary, target))
                         continue;
                     double missingBeforeComponent =
@@ -439,6 +448,8 @@ namespace Ordr.Mobile.Combat
                     raw = SourceModelNinthDamageAdjustment(actor,
                         skill, component, target, raw);
                     raw = SourceModelFifteenthDamageAdjustment(actor, primary,
+                        skill, component, target, raw);
+                    raw = SourceModelSixteenthDamageAdjustment(actor, primary,
                         skill, component, target, raw);
                     // Rebecca's tooltip gives a per-legacy-level increment.
                     // The offline model has no native legacy-level provider:

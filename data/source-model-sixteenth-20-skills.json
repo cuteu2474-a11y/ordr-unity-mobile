@@ -1,0 +1,45 @@
+{
+  "format": "ordr-source-model-sixteenth-20-skills-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceProfiles": "character-skill-profiles.json",
+  "sourceRawcodes": "original-2323C-map-base-stats.json",
+  "runtimeStatus": "TOOLTIP_MODEL_ONLY",
+  "attackCount": 18,
+  "activeCount": 2,
+  "skills": [
+    {"catalogId":"LI-05","rawcode":"h040","skillIndex":2,"name":"3연타 마법","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"LI-05","rawcode":"h040","skillIndex":3,"name":"단일 스턴","trigger":"onAttack","gate":"generic"},
+    {"catalogId":"E-05","rawcode":"h05A","skillIndex":0,"name":"버기 필살타","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"E-05","rawcode":"h05A","skillIndex":2,"name":"전투 아군 공격력 버프","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"D-02","rawcode":"h03V","skillIndex":0,"name":"어인공수도","trigger":"activeMana","gate":"exact-special"},
+    {"catalogId":"D-02","rawcode":"h03V","skillIndex":1,"name":"기와 돌려차기","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"D-02","rawcode":"h03V","skillIndex":2,"name":"단일 스턴","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"H-15","rawcode":"h03L","skillIndex":1,"name":"일반 포격","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"I-01","rawcode":"h04C","skillIndex":1,"name":"무장색 패기","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"I-01","rawcode":"h04C","skillIndex":3,"name":"기본 공격 범위 추가","trigger":"onEveryAttack","gate":"exact-special"},
+    {"catalogId":"I-02","rawcode":"h04D","skillIndex":0,"name":"마나 낙뢰","trigger":"activeMana","gate":"generic"},
+    {"catalogId":"LI-01","rawcode":"h05G","skillIndex":2,"name":"단일 스턴","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"LI-01","rawcode":"h05G","skillIndex":3,"name":"평타 단일 고정","trigger":"onEveryAttack","gate":"exact-special"},
+    {"catalogId":"T-02","rawcode":"h05W","skillIndex":0,"name":"공작스트링","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"T-01","rawcode":"h05S","skillIndex":1,"name":"실실열매","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"MY-04","rawcode":"h09W","skillIndex":0,"name":"비뢰신 이의 단 나선환","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"MY-11","rawcode":"h09R","skillIndex":3,"name":"스타 플라티나","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"RN-12","rawcode":"h071","skillIndex":1,"name":"천쇄참월","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"E-10","rawcode":"h05B","skillIndex":2,"name":"치명타 단일 스턴","trigger":"onAttack","gate":"exact-special"},
+    {"catalogId":"I-08","rawcode":"h04F","skillIndex":3,"name":"기본 공격 추가 고정피해","trigger":"onAttack","gate":"exact-special"}
+  ],
+  "deferred": [
+    "E-02 니카(스네이크): original rawcode mapping is unmatched. Do not borrow E-01 form object.",
+    "E-06 비비 기본 범위 마법: B59/B52 source callback already executes the 10% packet. No duplicate proc.",
+    "TR-28 프랑키: BzH and form-specific attacks are already registered. Unreviewed aY satellite branch is not a second tooltip proc.",
+    "E-05 버기 해적단 소환: source candidate identities and lifetime/damage callbacks are not fully mapped; do not create fabricated allies.",
+    "H-15 써니호 knowledge-only mana cannon: the research state and upgrade acquisition path require original evidence. The normal unupgraded branch runs until research is supplied."
+  ],
+  "limitations": [
+    "Shared source-model HP/armor/status/target/skill ledger, not original Warcraft timing or damage parity.",
+    "Critical hits in this mobile practice model add the documented multiplier increment after the basic attack.",
+    "Original boss immunity, true resistance bypass, affected target ordering and missing upgrade providers remain unverified.",
+    "No Python tests, Unity tests, APK builds or original-map parity tests were executed in this batch at the user's request."
+  ]
+}
