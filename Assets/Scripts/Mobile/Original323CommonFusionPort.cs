@@ -192,7 +192,18 @@ namespace Ordr.Mobile.Mobile
             { "TR28", "H08X", "TR-29" },
             { "ET08", "h058", "E-04" },
             { "TR09", "H099", "TR-08" },
-            { "A12C", "h0BC", "MY-12" }
+            { "A12C", "h0BC", "MY-12" },
+            // JASS CWR has exact physical materials (including LT-01),
+            // 10,000 gold, 7 wood and KING. Unlike the six PICK:A800
+            // registrations these seven have no unresolved extra condition.
+            // Mobile result-mode CHu/CHx uses the existing atomic swap.
+            { "A0Y3", "h09W", "MY-04" }, // 미나토
+            { "A0Y9", "h0A2", "MY-03" }, // 료우기 시키
+            { "A0XT", "h09N", "MY-06" }, // 부릉냐
+            { "A1AD", "h08M", "MY-08" }, // 아냐 포저
+            { "A0Y6", "h09R", "MY-11" }, // 쿠죠 죠타로
+            { "A0YK", "h0BF", "MY-02" }, // 네즈코
+            { "A10V", "h083", "MY-07" }  // 샌즈
         };
         // Original chat wrappers call BI1(GetPlayerStartLocationX/Y).
         // config: SetPlayerStartLocation(Player(0),0); DefineStartLocation(0,-3776.,4480.).
@@ -220,6 +231,16 @@ namespace Ordr.Mobile.Mobile
         public int ExecutableHiddenRecipeCount => ReviewedHidden.GetLength(0);
         public int ExecutableEternalRecipeCount => ReviewedEternal.GetLength(0);
         public int ExecutableRestrictedRecipeCount => ReviewedRestricted.GetLength(0);
+        public int ExecutableMysticRecipeCount
+        {
+            get
+            {
+                int count = 0;
+                foreach (var tier in resultGrades.Values)
+                    if (tier == "신비함") count++;
+                return count;
+            }
+        }
         public int SourceBannedUnitCount => sourceRestrictions.BannedUnitCount;
 
         internal void ConfirmObservedOriginalRound(int round)
@@ -384,12 +405,21 @@ namespace Ordr.Mobile.Mobile
                     recipe.Results[0].Rawcode != result)
                     throw new FormatException("검수된 상위 조합 결과가 바뀌었습니다: " + ability);
                 bool materials = false, wood = false, banned = false, king = false, caster = false;
+                int mysticGold = 0, mysticWood = 0, physicalTokens = 0;
+                bool mysticOrdered = true;
+                int mysticPhase = 0;
                 foreach (var condition in recipe.OrderedConditions)
                 {
                     string materialId;
                     switch (condition.Kind)
                     {
                         case "UNIT":
+                            if (grade == "신비함")
+                            {
+                                if (mysticPhase != 0) mysticOrdered = false;
+                                if (condition.Rawcode == Original323SourceMaterialRewardWorld.TokenRawcode)
+                                    physicalTokens = checked(physicalTokens + condition.Count);
+                            }
                             if (condition.Count < 1 || !mappings.TryGetValue(condition.Rawcode, out materialId))
                                 throw new FormatException("상위 조합의 원본 재료 객체가 없습니다: " + ability);
                             materials = true;
@@ -397,10 +427,22 @@ namespace Ordr.Mobile.Mobile
                                 if (native == ability) caster = true;
                             break;
                         case "GOLD":
+                            if (grade == "신비함")
+                            {
+                                if (mysticPhase != 0) mysticOrdered = false;
+                                mysticPhase = 1;
+                                mysticGold = checked(mysticGold + condition.Count);
+                            }
                             if (condition.Rawcode != "GOLD" || condition.Count < 1)
                                 throw new FormatException("상위 조합 골드 원본 조건 불일치: " + ability);
                             break;
                         case "WOOD":
+                            if (grade == "신비함")
+                            {
+                                if (mysticPhase != 1) mysticOrdered = false;
+                                mysticPhase = 2;
+                                mysticWood = checked(mysticWood + condition.Count);
+                            }
                             if (condition.Rawcode != "WOOD" || condition.Count < 1 || wood)
                                 throw new FormatException("상위 조합 목재 원본 조건 불일치: " + ability);
                             wood = true;
@@ -412,6 +454,11 @@ namespace Ordr.Mobile.Mobile
                             banned = true;
                             break;
                         case "KING":
+                            if (grade == "신비함")
+                            {
+                                if (mysticPhase != 2) mysticOrdered = false;
+                                mysticPhase = 3;
+                            }
                             if (king || condition.Rawcode != result)
                                 throw new FormatException("상위 조합 항법 대상이 다릅니다: " + ability);
                             king = true;
@@ -428,7 +475,9 @@ namespace Ordr.Mobile.Mobile
                 // Other reviewed restricted tiers retain their source WOOD.
                 if (!materials || (grade == "초월함" ? wood : !wood) ||
                     (grade == "신비함" ? banned : !banned) || !king ||
-                    ((grade == "제한됨" || grade == "신비함") && !caster))
+                    ((grade == "제한됨" || grade == "신비함") && !caster) ||
+                    (grade == "신비함" && (!mysticOrdered || mysticPhase != 3 ||
+                        mysticGold != 10000 || mysticWood != 7 || physicalTokens != 1)))
                     throw new FormatException("상위 조합 원본 시전자/필수 조건 누락: " + ability);
                 supported.Add(ability);
                 resultGrades.Add(ability, grade);

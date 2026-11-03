@@ -1069,6 +1069,10 @@ namespace Ordr.Mobile.Unity
                 OrdrMobileUiTheme.Gold);
             GUILayout.Label("신비함 유닛 조합 재료 · 실제 보유 유닛과 수량 공유",
                 OrdrMobileUiTheme.Explanation);
+            GUILayout.Label("원본 토큰 조합 14건 중 결과 매핑 13건 · " +
+                "제작 연결 " + controller.ExecutableMysticFusionCount +
+                "건 (PICK 미검증 6건 · 도감 외 유지로 포함)",
+                OrdrMobileUiTheme.Explanation);
             GUILayout.Label("위습 교환: 3개 → 특별위습 80% / 희귀위습 20%",
                 OrdrMobileUiTheme.Explanation);
             if (GUILayout.Button("행운의 토큰 사용 조합 보기", GUILayout.MinHeight(64)))
@@ -1672,7 +1676,8 @@ namespace Ordr.Mobile.Unity
                 "실제 제작만 (안흔함 " + controller.ExecutableCommonFusionCount +
                 " / 특별함 " + controller.ExecutableSpecialFusionCount +
                 " / 희귀함 " + controller.ExecutableRareFusionCount +
-                " / 전설 " + controller.ExecutableLegendaryFusionCount + "종)",
+                " / 전설 " + controller.ExecutableLegendaryFusionCount +
+                " / 신비함 " + controller.ExecutableMysticFusionCount + "종)",
                 GUILayout.MinHeight(56));
             if (onlyExecutable != fusionExecutableOnly)
             {

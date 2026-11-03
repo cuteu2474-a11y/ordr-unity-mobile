@@ -927,6 +927,7 @@ namespace Ordr.Mobile.Unity
         public int ExecutableSpecialFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableSpecialRecipeCount;
         public int ExecutableRareFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableRareRecipeCount;
         public int ExecutableLegendaryFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableLegendaryRecipeCount;
+        public int ExecutableMysticFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableMysticRecipeCount;
         public int ExecutableHiddenFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableHiddenRecipeCount;
         public int ExecutableEternalFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableEternalRecipeCount;
         public bool IsUnitPreparation => Combat != null && SharedEconomy != null &&
@@ -2249,7 +2250,8 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("신비 조합 화면을 연결할 전투 월드가 없습니다.");
             if (mysticCatalog == null) throw new ArgumentNullException(nameof(mysticCatalog));
             mysticFusionPort = new OtherworldMysticFusionPreviewPort(
-                mysticCatalog, id => Combat.IsStoryDeployed(id));
+                mysticCatalog, id => Combat.IsStoryDeployed(id), null,
+                resource => SharedEconomy.Wallet.Balance(resource));
             RebuildVerifiedFusionCatalog();
         }
 
@@ -2732,7 +2734,8 @@ namespace Ordr.Mobile.Unity
             }
             if (mysticFusionPort == null && OtherworldMysticFusions != null)
                 mysticFusionPort = new OtherworldMysticFusionPreviewPort(
-                    OtherworldMysticFusions, id => Combat.IsStoryDeployed(id));
+                    OtherworldMysticFusions, id => Combat.IsStoryDeployed(id),
+                    null, resource => SharedEconomy.Wallet.Balance(resource));
             if (originalFusionPort == null)
                 RebuildVerifiedFusionCatalog();
             else

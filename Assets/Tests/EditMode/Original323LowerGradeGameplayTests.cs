@@ -343,10 +343,10 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(154, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(161, game.Fusion.ExecutableRecipeCount);
             Assert.AreEqual(34, game.Fusion.ExecutableLegendaryRecipeCount);
             Assert.AreEqual(19, game.Fusion.ExecutableHiddenRecipeCount);
-            Assert.AreEqual(15, game.Fusion.ExecutableRestrictedRecipeCount);
+            Assert.AreEqual(22, game.Fusion.ExecutableRestrictedRecipeCount);
             Assert.AreEqual(1, game.Fusion.ExecutableEternalRecipeCount);
             Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
             var fresh = Offer(game, "A012");
@@ -1174,6 +1174,79 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(5, owner.Combat.CharacterCount);
             }
             finally { UnityEngine.Object.DestroyImmediate(root); }
+        }
+
+        [TestCase("A0Y3", "MY-04")]
+        [TestCase("A0Y9", "MY-03")]
+        [TestCase("A0XT", "MY-06")]
+        [TestCase("A1AD", "MY-08")]
+        [TestCase("A0Y6", "MY-11")]
+        [TestCase("A0YK", "MY-02")]
+        [TestCase("A10V", "MY-07")]
+        public void SevenDirectMysticSourceOrdersRequireRealTokenGoldWoodAndKing(
+            string ability, string expectedUnit)
+        {
+            var game = Create();
+            var source = game.Registry.FindByAbility(ability);
+            Assert.NotNull(source);
+            Assert.AreEqual(1, source.Results.Count);
+            string mapped;
+            Assert.IsTrue(game.Fusion.TryResolveUnit(source.Results[0].Rawcode, out mapped));
+            Assert.AreEqual(expectedUnit, mapped);
+            Assert.IsTrue(game.Fusion.CanCommitRecipe(ability));
+            StringAssert.Contains("신비함",
+                game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                    .Single(x => x.RecipeId == ability).Title);
+            Assert.AreEqual(1, source.OrderedConditions.Count(x =>
+                x.Kind == "UNIT" && x.Rawcode == "h06G" && x.Count == 1));
+            Assert.AreEqual(1, source.OrderedConditions.Count(x =>
+                x.Kind == "GOLD" && x.Count == 10000));
+            Assert.AreEqual(1, source.OrderedConditions.Count(x =>
+                x.Kind == "WOOD" && x.Count == 7));
+            Assert.AreEqual(1, source.OrderedConditions.Count(x =>
+                x.Kind == "KING" && x.Rawcode == source.Results[0].Rawcode));
+            Assert.IsFalse(source.OrderedConditions.Any(x => x.Kind == "PICK"));
+        }
+
+        [Test]
+        public void MysticMinatoRequiresPhysicalLuckyTokenAndCreatesExactUnitOnCommit()
+        {
+            var game = Create();
+            game.Combat.SpawnCharacter("RN-02", 0, 0);
+            game.Combat.SpawnCharacter("L-21", 1, 0);
+            game.Combat.SpawnCharacter("T-05", 2, 0);
+            game.Economy.Wallet.Grant(new ResourceBundle()
+                .Add("gold", 10000).Add("wood", 7));
+            Assert.IsFalse(Offer(game, "A0Y3").IsReady,
+                "A token wallet balance cannot replace the physical LT-01 material.");
+            game.Combat.SpawnCharacter("LT-01", 3, 0);
+            long beforeGold = game.Economy.Wallet.Balance("gold");
+            long beforeWood = game.Economy.Wallet.Balance("wood");
+            var ready = Offer(game, "A0Y3");
+            Assert.IsTrue(ready.IsReady);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion("A0Y3",
+                    ready.SuggestedMaterialInstances).State);
+            var remaining = game.Combat.MobileUnitSnapshot();
+            Assert.AreEqual(1, remaining.Count);
+            Assert.AreEqual("MY-04", remaining[0].Unit.Id);
+            Assert.AreEqual(-3776.0, remaining[0].Position.X);
+            Assert.AreEqual(4480.0, remaining[0].Position.Y);
+            Assert.AreEqual(beforeGold - 10000, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(beforeWood - 7, game.Economy.Wallet.Balance("wood"));
+        }
+
+        [TestCase("A19W")]
+        [TestCase("A19S")]
+        [TestCase("A19T")]
+        [TestCase("A19U")]
+        [TestCase("A19V")]
+        [TestCase("A0QG")]
+        public void PickMysticRegistrationIsNotEnabledByMatchingUnitAndTokenMaterials(
+            string ability)
+        {
+            var game = Create();
+            Assert.IsFalse(game.Fusion.CanCommitRecipe(ability));
         }
     }
 }

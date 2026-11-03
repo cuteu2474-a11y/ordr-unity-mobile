@@ -1,0 +1,1137 @@
+{
+  "format": "ordr-original-mystic-physical-token-batch33-v1",
+  "gameVersion": "S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "sourceJassSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassPath": "data/original-jass-fusion-registry.json",
+  "sourceObjectCrosswalk": "data/original-fusion-object-reconciliation.json",
+  "tokenOriginalRawcode": "h06G",
+  "tokenCatalogId": "LT-01",
+  "description": "Source CWR registration facts and conservative mobile execution classification; not a Warcraft-native playback or full callback audit.",
+  "summary": {
+    "physicalTokenFusionRegistrations": 14,
+    "sourceObjectResolvedResults": 13,
+    "previouslyExecutable": 1,
+    "newlyExecutable": 7,
+    "remainingBlockedPick": 6,
+    "remainingUncataloged": 1,
+    "totalExecutableAfterBatch": 8
+  },
+  "warnings": [
+    "Execution uses exact original ordered UNIT/GOLD/WOOD/KING, original caster ability on material source objects, fixed-i-sekai KING outcome, and the existing rollbackable runtime.",
+    "PICK:A800 is not treated as an arbitrary random unit or silently skipped.",
+    "The unlisted Hanma Yujiro source result h0C2 is not invented as a catalog entry.",
+    "JASS side effects beyond modeled source result/transaction and native Warcraft execution parity remain unaudited."
+  ],
+  "registrations": [
+    {
+      "abilityRawcode": "A19W",
+      "resultRawcode": "h09M",
+      "resultCatalogId": "MY-01",
+      "resultOriginalObjectName": "고죠 사토루 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h027",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h09M",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h06U",
+          "id": "RN-01",
+          "count": 1
+        },
+        {
+          "rawcode": "h03V",
+          "id": "D-02",
+          "count": 1
+        },
+        {
+          "rawcode": "h03Z",
+          "id": "H-17",
+          "count": 1
+        },
+        {
+          "rawcode": "h027",
+          "id": "R-24",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "id": "PS-01",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "blocked-unverified-PICK",
+      "pendingVerification": [
+        "PICK:A800 semantics and complete creation side effects are not verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-01"
+      ]
+    },
+    {
+      "abilityRawcode": "A0Y3",
+      "resultRawcode": "h09W",
+      "resultCatalogId": "MY-04",
+      "resultOriginalObjectName": "나미카제 미나토 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h06V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h042",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h07J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h09W",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h06V",
+          "id": "RN-02",
+          "count": 1
+        },
+        {
+          "rawcode": "h042",
+          "id": "L-21",
+          "count": 1
+        },
+        {
+          "rawcode": "h07J",
+          "id": "T-05",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "batch33-enabled",
+      "pendingVerification": [
+        "JASS creation callback side effects and Warcraft-native cast parity are not independently verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-02"
+      ]
+    },
+    {
+      "abilityRawcode": "A0Y9",
+      "resultRawcode": "h0A2",
+      "resultCatalogId": "MY-03",
+      "resultOriginalObjectName": "료우기 시키 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h070",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h044",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02P",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0A2",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h070",
+          "id": "RN-09",
+          "count": 1
+        },
+        {
+          "rawcode": "h03J",
+          "id": "H-14",
+          "count": 1
+        },
+        {
+          "rawcode": "h044",
+          "id": "H-05",
+          "count": 1
+        },
+        {
+          "rawcode": "h02P",
+          "id": "L-02",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "batch33-enabled",
+      "pendingVerification": [
+        "JASS creation callback side effects and Warcraft-native cast parity are not independently verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-09"
+      ]
+    },
+    {
+      "abilityRawcode": "A19U",
+      "resultRawcode": "h0AC",
+      "resultCatalogId": "MY-13",
+      "resultOriginalObjectName": "히그마 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h09Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h029",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0AC",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h06X",
+          "id": "RN-04",
+          "count": 1
+        },
+        {
+          "rawcode": "h09Z",
+          "id": "L-03",
+          "count": 1
+        },
+        {
+          "rawcode": "h029",
+          "id": "R-22",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "blocked-unverified-PICK",
+      "pendingVerification": [
+        "PICK:A800 semantics and complete creation side effects are not verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-04"
+      ]
+    },
+    {
+      "abilityRawcode": "A0XT",
+      "resultRawcode": "h09N",
+      "resultCatalogId": "MY-06",
+      "resultOriginalObjectName": "부릉냐 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h09L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h07N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h09N",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h09L",
+          "id": "RN-10",
+          "count": 1
+        },
+        {
+          "rawcode": "h033",
+          "id": "L-06",
+          "count": 1
+        },
+        {
+          "rawcode": "h07N",
+          "id": "T-03",
+          "count": 1
+        },
+        {
+          "rawcode": "h03L",
+          "id": "H-15",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "batch33-enabled",
+      "pendingVerification": [
+        "JASS creation callback side effects and Warcraft-native cast parity are not independently verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-10"
+      ]
+    },
+    {
+      "abilityRawcode": "A19S",
+      "resultRawcode": "h0A6",
+      "resultCatalogId": "MY-09",
+      "resultOriginalObjectName": "야쿠모 유카리 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h073",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h048",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h017",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0A6",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h073",
+          "id": "RN-05",
+          "count": 1
+        },
+        {
+          "rawcode": "h048",
+          "id": "D-04",
+          "count": 1
+        },
+        {
+          "rawcode": "h017",
+          "id": "S-28",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "blocked-unverified-PICK",
+      "pendingVerification": [
+        "PICK:A800 semantics and complete creation side effects are not verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-05"
+      ]
+    },
+    {
+      "abilityRawcode": "A19V",
+      "resultRawcode": "h0CC",
+      "resultCatalogId": "MY-10",
+      "resultOriginalObjectName": "콘파쿠 요우무 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h09K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0CC",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h09K",
+          "id": "RN-07",
+          "count": 1
+        },
+        {
+          "rawcode": "h03I",
+          "id": "L-26",
+          "count": 1
+        },
+        {
+          "rawcode": "h05W",
+          "id": "T-02",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "blocked-unverified-PICK",
+      "pendingVerification": [
+        "PICK:A800 semantics and complete creation side effects are not verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-07"
+      ]
+    },
+    {
+      "abilityRawcode": "A1AD",
+      "resultRawcode": "h08M",
+      "resultCatalogId": "MY-08",
+      "resultOriginalObjectName": "아냐 포저 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h06Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h037",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h055",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h08M",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h06Z",
+          "id": "RN-06",
+          "count": 1
+        },
+        {
+          "rawcode": "h037",
+          "id": "L-19",
+          "count": 1
+        },
+        {
+          "rawcode": "h055",
+          "id": "H-13",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "batch33-enabled",
+      "pendingVerification": [
+        "JASS creation callback side effects and Warcraft-native cast parity are not independently verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-06"
+      ]
+    },
+    {
+      "abilityRawcode": "A0Y6",
+      "resultRawcode": "h09R",
+      "resultCatalogId": "MY-11",
+      "resultOriginalObjectName": "쿠죠 죠타로 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h06Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h087",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h036",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h09R",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h06Y",
+          "id": "RN-11",
+          "count": 1
+        },
+        {
+          "rawcode": "h087",
+          "id": "L-35",
+          "count": 1
+        },
+        {
+          "rawcode": "h036",
+          "id": "L-18",
+          "count": 1
+        },
+        {
+          "rawcode": "h00U",
+          "id": "S-07",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "batch33-enabled",
+      "pendingVerification": [
+        "JASS creation callback side effects and Warcraft-native cast parity are not independently verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-11"
+      ]
+    },
+    {
+      "abilityRawcode": "A19T",
+      "resultRawcode": "h08I",
+      "resultCatalogId": "MY-05",
+      "resultOriginalObjectName": "쿠치키 뱌쿠야 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h071",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h08I",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h071",
+          "id": "RN-12",
+          "count": 1
+        },
+        {
+          "rawcode": "h05V",
+          "id": "D-05",
+          "count": 1
+        },
+        {
+          "rawcode": "h04H",
+          "id": "R-11",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "blocked-unverified-PICK",
+      "pendingVerification": [
+        "PICK:A800 semantics and complete creation side effects are not verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-12"
+      ]
+    },
+    {
+      "abilityRawcode": "A0YK",
+      "resultRawcode": "h0BF",
+      "resultCatalogId": "MY-02",
+      "resultOriginalObjectName": "카마도 네즈코 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h072",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02R",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0BF",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h072",
+          "id": "RN-14",
+          "count": 1
+        },
+        {
+          "rawcode": "h02R",
+          "id": "L-09",
+          "count": 1
+        },
+        {
+          "rawcode": "h03T",
+          "id": "H-03",
+          "count": 1
+        },
+        {
+          "rawcode": "h01N",
+          "id": "R-18",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "batch33-enabled",
+      "pendingVerification": [
+        "JASS creation callback side effects and Warcraft-native cast parity are not independently verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-14"
+      ]
+    },
+    {
+      "abilityRawcode": "A10V",
+      "resultRawcode": "h083",
+      "resultCatalogId": "MY-07",
+      "resultOriginalObjectName": "샌즈 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h065",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h041",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h0CK",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h083",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h065",
+          "id": "RN-03",
+          "count": 1
+        },
+        {
+          "rawcode": "h03W",
+          "id": "H-10",
+          "count": 1
+        },
+        {
+          "rawcode": "h041",
+          "id": "H-16",
+          "count": 1
+        },
+        {
+          "rawcode": "h0CK",
+          "id": "T-04",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "batch33-enabled",
+      "pendingVerification": [
+        "JASS creation callback side effects and Warcraft-native cast parity are not independently verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-03"
+      ]
+    },
+    {
+      "abilityRawcode": "A12C",
+      "resultRawcode": "h0BC",
+      "resultCatalogId": "MY-12",
+      "resultOriginalObjectName": "타츠마키 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h06W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AH",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h030",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0BC",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h06W",
+          "id": "RN-08",
+          "count": 1
+        },
+        {
+          "rawcode": "h0AH",
+          "id": "L-34",
+          "count": 1
+        },
+        {
+          "rawcode": "h030",
+          "id": "L-32",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "previously-enabled",
+      "pendingVerification": [
+        "JASS creation callback side effects and Warcraft-native cast parity are not independently verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-08"
+      ]
+    },
+    {
+      "abilityRawcode": "A0QG",
+      "resultRawcode": "h0C2",
+      "resultCatalogId": null,
+      "resultOriginalObjectName": "한마 유지로 - 신비",
+      "orderedConditions": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h06G",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 7
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0C2",
+          "count": 1
+        }
+      ],
+      "materialCatalogIds": [
+        {
+          "rawcode": "h06T",
+          "id": "RN-13",
+          "count": 1
+        },
+        {
+          "rawcode": "h02Y",
+          "id": "L-10",
+          "count": 1
+        },
+        {
+          "rawcode": "h03Y",
+          "id": "H-18",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "mobileExecutionStatus": "blocked-unverified-PICK",
+      "pendingVerification": [
+        "PICK:A800 semantics and complete creation side effects are not verified."
+      ],
+      "sourceNativeCasterCatalogIds": [
+        "RN-13"
+      ]
+    }
+  ],
+  "sourceCasterEvidence": "data/original-2323C-map-base-stats.json:catalogEntries[*].originalAbilityList"
+}

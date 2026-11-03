@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Ordr.Mobile.Combat;
+using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Mobile
 {
@@ -18,16 +20,19 @@ namespace Ordr.Mobile.Mobile
         private readonly OtherworldMysticFusionCatalog catalog;
         private readonly Func<long, bool> storyDeployed;
         private IVerifiedOtherworldMysticFusionCommit originalCommit;
+        private readonly Func<string, long> walletBalance;
 
         public bool CanCommit { get { return originalCommit != null; } }
 
         public OtherworldMysticFusionPreviewPort(OtherworldMysticFusionCatalog catalog,
             Func<long, bool> storyDeployed,
-            IVerifiedOtherworldMysticFusionCommit verifiedCommit = null)
+            IVerifiedOtherworldMysticFusionCommit verifiedCommit = null,
+            Func<string, long> sourceWalletBalance = null)
         {
             this.catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
             this.storyDeployed = storyDeployed ?? throw new ArgumentNullException(nameof(storyDeployed));
             originalCommit = verifiedCommit;
+            walletBalance = sourceWalletBalance;
         }
 
         public void AttachVerifiedCommit(IVerifiedOtherworldMysticFusionCommit commit)
@@ -98,6 +103,32 @@ namespace Ordr.Mobile.Mobile
                     }
                     if (assigned < ingredient.Count)
                         missing.Add("랜덤 등급 유닛 " + (ingredient.Count - assigned) + "기");
+                }
+                // Optional production-readiness ledger. It is read-only and
+                // never spends a token in the web-dex preview; real settlement
+                // still goes through the source JASS/atomic fusion route.
+                if (walletBalance != null)
+                {
+                    int liveTokens = 0, liveShips = 0;
+                    foreach (var unit in ownedUnits)
+                    {
+                        if (storyDeployed(unit.InstanceId)) continue;
+                        if (unit.Unit.Id == Original323SourceMaterialRewardWorld.TokenCatalogId)
+                            liveTokens++;
+                        if (unit.Unit.Id == Original323SourceCommonWispWorld.PirateShipCatalogId)
+                            liveShips++;
+                    }
+                    foreach (string special in recipe.SpecialRequirements)
+                    {
+                        if (special == "행운의토큰" && liveTokens == 0)
+                            missing.Add("행운의 토큰 실물 1기 부족");
+                        if (special == "해적선" && liveShips == 0)
+                            missing.Add("해적선 실물 1기 부족");
+                    }
+                    if (walletBalance("gold") < recipe.Gold)
+                        missing.Add("골드 " + (recipe.Gold - walletBalance("gold")) + " 부족");
+                    if (walletBalance("wood") < recipe.Lumber)
+                        missing.Add("목재 " + (recipe.Lumber - walletBalance("wood")) + " 부족");
                 }
                 // 보유 재화·토큰과 원본 소비 조건은 미검증이므로 '조합 준비 완료'로 표시하지 않음.
                 if (originalCommit == null)
