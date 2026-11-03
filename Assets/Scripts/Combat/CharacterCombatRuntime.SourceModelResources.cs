@@ -79,6 +79,13 @@ namespace Ordr.Mobile.Combat
                  actor.Mapping.AttackSpec.UnitRawCode == "H0B4"))
                 return SourceModelTwentyFifthSkillCatalog.HasExactOwner(
                     actor.Profile, actor.Catalog.Id);
+            // LI-08 spends HP on an on-attack proc, not an activeHealth cast.
+            // Provision only from its pinned SLK object and exact profile;
+            // without that source pool the proc must not run at all.
+            if (actor.Catalog.Id == "LI-08" &&
+                actor.Mapping.AttackSpec.UnitRawCode == "h07I")
+                return SourceModelTwentyNinthSkillCatalog.HasExactApprovedSubset(
+                    actor.Profile);
             SourceModelNextThirtyUnit entry;
             SourceModelUnconnectedSkillRow extra;
             IReadOnlyList<string> activeNames;

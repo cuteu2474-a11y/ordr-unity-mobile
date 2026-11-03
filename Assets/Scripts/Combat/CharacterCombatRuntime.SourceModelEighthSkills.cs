@@ -114,6 +114,8 @@ namespace Ordr.Mobile.Combat
                 {
                     if (SourceModelEighthApproachValid(skill))
                         ExecuteSourceModelEighthApproach(actor, skill);
+                    if (SourceModelTwentyNinthSkillCatalog.CanModelKatakuriApproach(skill))
+                        ExecuteSourceModelThirtiethKatakuriApproach(actor, skill);
                     if (SourceModelEighthPeriodicValid(skill))
                         ExecuteSourceModelEighthPeriodic(actor, skill);
                     if (SourceModelEighthKamusariValid(skill))

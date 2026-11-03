@@ -4,12 +4,13 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
-    // Five complete *individual* tooltip packets. The original map supplies
+    // Six attack procs plus one separately approved approach event. The original map supplies
     // the owner rawcodes, not a native spell-order/immunity certificate.
     public static class SourceModelTwentyNinthSkillCatalog
     {
         private static readonly Dictionary<string, object> Expected =
             new Dictionary<string, object>(StringComparer.Ordinal) {
+            {"LI-08:skill:0", OrdrJson.Parse(@"{""name"":""자기 가속"",""trigger"":""onAttack"",""components"":[{""type"":""selfAttackSpeedMax"",""durationSeconds"":1.5},{""type"":""physical"",""basicAttackPercent"":75,""flatAmount"":100000,""onEveryAttackWhileBuffed"":true}],""chancePercent"":15,""requiresHealthAtLeast"":35,""healthCost"":17,""radius"":415}")},
             {"LI-08:skill:1", OrdrJson.Parse(@"{""name"":""단일 타격"",""trigger"":""onAttack"",""components"":[{""type"":""physical"",""amount"":150000},{""type"":""stun"",""durationSeconds"":1.2}],""chancePercent"":20}")},
             {"LI-08:skill:2", OrdrJson.Parse(@"{""name"":""광역 마법"",""trigger"":""onAttack"",""components"":[{""type"":""magical"",""amount"":375000}],""chancePercent"":14,""radius"":500}")},
             {"L-37:skill:0", OrdrJson.Parse(@"{""name"":""중력검"",""trigger"":""onAttack"",""components"":[{""type"":""magical"",""amount"":192500},{""type"":""physical"",""basis"":""skillDamage"",""multiplier"":2.5,""scope"":""singlePrimaryTarget""},{""type"":""stun"",""durationSeconds"":2.4},{""type"":""magicResistanceReduction"",""percent"":1}],""chancePercent"":14,""target"":""area"",""radius"":450}")},
@@ -22,7 +23,6 @@ namespace Ordr.Mobile.Combat
         // record must not silently keep the approved subset alive.
         private static readonly Dictionary<string, object> Deferred =
             new Dictionary<string, object>(StringComparer.Ordinal) {
-            {"LI-08:skill:0", OrdrJson.Parse(@"{""name"":""자기 가속"",""trigger"":""onAttack"",""components"":[{""type"":""selfAttackSpeedMax"",""durationSeconds"":1.5},{""type"":""physical"",""basicAttackPercent"":75,""flatAmount"":100000,""onEveryAttackWhileBuffed"":true}],""chancePercent"":15,""requiresHealthAtLeast"":35,""healthCost"":17,""radius"":415}")},
             {"LI-08:skill:3", OrdrJson.Parse(@"{""name"":""접근 상대 강타"",""trigger"":""onEnemyEnterRange"",""components"":[{""type"":""physical"",""amount"":450000,""extraSinglePhysicalAmount"":4500000},{""type"":""armorBreak"",""stacks"":6}],""chancePercent"":20,""triggerRadius"":850,""targetRadius"":500,""overrides"":[{""targetKinds"":[""boss"",""enraged""],""chancePercent"":100}]}")},
             {"RN-06:skill:1", OrdrJson.Parse(@"{""name"":""행운의 토큰(Q)"",""trigger"":""manual"",""components"":[{""type"":""generateLuckyToken"",""amount"":1},{""type"":""generateLuckyToken"",""additional"":1,""chancePercent"":33},{""type"":""generateLumber"",""amount"":1,""chancePercent"":33}],""cooldownSeconds"":110,""castTimeSeconds"":2}")},
             {"RN-06:skill:2", OrdrJson.Parse(@"{""name"":""토큰 교환"",""trigger"":""verifiedCondition"",""components"":[{""type"":""exchange"",""costLuckyTokens"":3,""options"":[{""name"":""특별함 선택위습"",""chancePercent"":80},{""name"":""희귀함 선택위습"",""chancePercent"":20}]}],""requiredLuckyTokens"":3}")}
@@ -51,12 +51,22 @@ namespace Ordr.Mobile.Combat
                 SourceModelExactSkillPackets.Matches(skill.OriginalFields, packet);
         }
 
+        // Approach is an event skill, NOT an on-attack roll. It stays outside
+        // CanModelCompleteAttack and the normal declared-hit allow-list.
+        public static bool CanModelKatakuriApproach(ImportedCombatSkill skill)
+        {
+            object packet;
+            return skill != null && skill.Id == "LI-08:skill:3" &&
+                skill.Trigger == "onEnemyEnterRange" &&
+                Deferred.TryGetValue(skill.Id, out packet) &&
+                SourceModelExactSkillPackets.Matches(skill.OriginalFields, packet);
+        }
+
         public static bool IsOwner(string id) =>
             id == "LI-08" || id == "L-37" || id == "L-34" || id == "RN-06";
 
-        // Only these five skill positions are authorized. Katakuri's speed
-        // state and approach attack, Elizabeth's token actions, and King's
-        // additional basic-hit debuff remain separate, unimplemented packets.
+        // All source skill positions are checked, but only attack procs and
+        // the separately approved approach have runnable event paths.
         public static bool HasExactApprovedSubset(CharacterSkillProfile profile)
         {
             if (profile == null || !IsOwner(profile.UnitId)) return false;

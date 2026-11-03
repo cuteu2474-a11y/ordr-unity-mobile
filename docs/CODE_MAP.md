@@ -1,3 +1,10 @@
+## 2026-11-04 · 30차 이벤트 공격·실명중 후속·HP 공통 경로 (현재 최신)
+
+- SourceModelTwentyNinthSkillCatalog의 원본 전체 프로필 승인에 LI-08 자기 가속 스킬0을 새로 허용하고, 별도 onEnemyEnterRange 스킬3은 정확 패킷 비교만 승인. SourceModelUnconnectedSkillCatalog에는 자기 가속만 평타 확률 목록에 추가해 접근 시전을 평타로 오등록하지 않음.
+- CharacterCombatRuntime.SourceModelResources: LI-08 h07I의 원본 HP50·기본 재생1.5를 SLK-고정 자원 장부에서 제공할 때만 17 HP 소비 가능. SourceModelNextThirtyAttacks는 HP35 문턱→15% 성공 추첨→실제 소비·1.5초 최대공속 상태로 연결. CharacterCombatRuntime.SourceModelThirtiethSkills는 성공한 기본 명중에 한해 반경415 물리 기본 공격75%+10만, EighthTimeline 기존 접근 진입 이벤트에서 감지거리850/피해반경500·일반20%/보스광폭100%·방어파괴6스택을 처리.
+- CharacterCombatRuntime.SourceModelNinthSkills의 기본 명중 후킹으로 킹 45% 둔화3초·초당 마법25만 독립 타이머 연결. 후속 명중은 틱 예정시각을 보존한 채 만료시각만 연장하며 소유자/대상·전장 revision·사망 여부로 예약 효과 취소. SourceModelEleventhForms 공통 소멸·시간 정리 경로 재사용.
+- SourceModelBasicCombatRules/SourceModelUnitEffects는 카타쿠리 전용 공속 버프만 승인하며 기존 연습 공속400% 상한 재사용. CharacterCombatRuntime.SourceModelTwentiethSkills의 류마/테조로 공속과 SourceModelTwentyFirstEquipment의 불릿 A0WQ 레벨 공격력에서 지속시간0 TriggeredSkill→Aura 예외 원인을 함께 수정. 검증 근거 data/source-model-thirtieth-katakuri-king-event-effects.json, Unity EditMode 사례 작성만. TOOLTIP_MODEL_ONLY; 실행 검증 전.
+
 ## 2026-11-04 · 29차 네 유닛·5공격 원본 전 필드 게이트 (현재 최신)
 
 - SourceModelTwentyNinthSkillCatalog.cs: LI-08(h07I) 카타쿠리 2기, L-37(h031) 후지토라·L-34(h0AH) 킹·RN-06(h06Z) 엘리자베스 각 1기. 스킬 ID/순서/중첩 객체와 패시브를 전부 원본 JSON과 비교하고, 실행 불가 카타쿠리 2기·엘리자베스 2기는 신원 검증만 하며 전투 허용 목록에는 미포함.

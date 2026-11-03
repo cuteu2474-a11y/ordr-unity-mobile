@@ -172,7 +172,8 @@ namespace Ordr.Mobile.Combat
                       effect.SourceId.StartsWith("practice-form:interval:", StringComparison.Ordinal)) &&
                     !(effect.Type == CombatEffectType.AttackSpeedBuff &&
                       (effect.SourceId.StartsWith("practice-tooltip:ryuma-speed:", StringComparison.Ordinal) ||
-                       effect.SourceId.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal))))
+                       effect.SourceId.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal) ||
+                       effect.SourceId.StartsWith("practice-tooltip:katakuri-max-speed:", StringComparison.Ordinal))))
                     throw new NotSupportedException("연습의 출처가 확인되지 않은 공격 효과입니다.");
             double rawDamage = attack.RollObjectBaseDamage(random) +
                 SourceModelTemporarySkillCatalog.FlatFormPower(request.AttackerEffects);

@@ -50,7 +50,7 @@ namespace Ordr.Mobile.Tests
 
         private static Live Create(string unitId, bool trigger,
             double x = -4000, double y = 4000, bool enormousHealth = true,
-            bool withNativeAuras = false)
+            bool withNativeAuras = false, bool withSourceResources = false)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
@@ -81,6 +81,10 @@ namespace Ordr.Mobile.Tests
             shared.ApplyVerifiedStart(Original323SoloStartProfile.Create(),
                 (id, x, y) => shared.Units.Add(id, x, y), id => shared.Units.Remove(id));
             combat.Start(); rules.Enable(); combat.ConfigureSourceModelBasicAttacks(rules);
+            if (withSourceResources)
+                combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
             long actorId = combat.SpawnCharacter(unitId, x, y);
             string practice = Data("mobile-practice-battle-model.json");
             if (enormousHealth)
@@ -2350,6 +2354,81 @@ namespace Ordr.Mobile.Tests
             using (var rejected = Create(owner, false, -4900, 5400))
                 Assert.IsFalse(rejected.Battle.Advance(6).Any(x => x.Type ==
                     CharacterCombatEventType.SkillActivated && x.SkillName == name));
+        }
+
+        [Test]
+        public void ThirtiethKatakuriUsesRealSourceHPAndOnlyThenEnablesMaxSpeed()
+        {
+            var profile = CharacterSkillCatalog.FromJson(
+                Data("character-skill-profiles.json")).Require("LI-08");
+            Assert.IsTrue(SourceModelTwentyNinthSkillCatalog.HasExactApprovedSubset(profile));
+            Assert.IsTrue(SourceModelTwentyNinthSkillCatalog.CanModelExact(
+                profile.Skills[0]));
+            SourceModelUnconnectedSkillRow row;
+            Assert.IsTrue(SourceModelUnconnectedSkillCatalog.TryGet("h07I", out row));
+            Assert.IsTrue(row.PracticeAttackSkills.Contains("자기 가속"));
+            using (var live = Create("LI-08", true, -4900, 5400,
+                withSourceResources: true))
+            {
+                var changes = live.Battle.Advance(6);
+                Assert.IsTrue(changes.Any(e => e.Type ==
+                    CharacterCombatEventType.StatusApplied &&
+                    e.SkillName == "자기 가속" && e.Detail.Contains("HP 17")));
+                Assert.IsTrue(changes.Any(e => e.Type ==
+                    CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "자기 가속" && e.Amount > 0));
+            }
+            using (var noPool = Create("LI-08", true, -4900, 5400))
+            {
+                Assert.IsFalse(noPool.Battle.Advance(6).Any(e =>
+                    e.SkillName == "자기 가속" && e.Type ==
+                    CharacterCombatEventType.SkillActivated));
+            }
+        }
+
+        [Test]
+        public void ThirtiethKatakuriApproachRollsOnRangeEntryNotEachAttack()
+        {
+            var profile = CharacterSkillCatalog.FromJson(
+                Data("character-skill-profiles.json")).Require("LI-08");
+            Assert.IsTrue(SourceModelTwentyNinthSkillCatalog.CanModelKatakuriApproach(
+                profile.Skills[3]));
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(
+                profile.Skills[3]));
+            using (var live = Create("LI-08", true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(6);
+                Assert.IsTrue(events.Any(e => e.Type ==
+                    CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "접근 상대 강타"));
+                Assert.IsTrue(events.Any(e => e.Type ==
+                    CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "접근 상대 강타" && e.Amount > 0));
+                Assert.IsTrue(events.Any(e => e.Type ==
+                    CharacterCombatEventType.ArmorBreakApplied &&
+                    e.SkillName == "접근 상대 강타"));
+            }
+            using (var blocked = Create("LI-08", false, -4900, 5400))
+                Assert.IsFalse(blocked.Battle.Advance(6).Any(e => e.Type ==
+                    CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "접근 상대 강타"));
+        }
+
+        [Test]
+        public void ThirtiethKingBasicHitAppliesSeparateSlowAndMagicDot()
+        {
+            using (var live = Create("L-34", false, -4900, 5400))
+            {
+                var events = live.Battle.Advance(6);
+                Assert.IsTrue(events.Any(e => e.Type ==
+                    CharacterCombatEventType.StatusApplied &&
+                    e.SkillName == "킹 평타 둔화" && e.Detail.Contains("45%")));
+                Assert.IsTrue(events.Any(e => e.Type ==
+                    CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "킹 평타 지속 피해" && e.Amount > 0));
+                Assert.IsFalse(events.Any(e => e.Type ==
+                    CharacterCombatEventType.SkillActivated && e.SkillName == "화재"));
+            }
         }
 
         [Test]

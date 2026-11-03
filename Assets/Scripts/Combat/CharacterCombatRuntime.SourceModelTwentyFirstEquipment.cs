@@ -132,7 +132,10 @@ namespace Ordr.Mobile.Combat
                 // Original W3A A0WQ levels: 5%, 20%, 40%, 50% attack power.
                 int power = level == 1 ? 5 : level == 2 ? 20 : level == 3 ? 40 : 50;
                 status.Apply(new CombatEffect(key, CombatEffectType.AttackPowerBuff,
-                    CombatEffectOrigin.TriggeredSkill, power, 0));
+                    // Original A0WQ level is persistent until the verified
+                    // level witness changes; a zero-duration TriggeredSkill
+                    // is invalid in CombatStatusEngine.
+                    CombatEffectOrigin.Aura, power, 0));
             }
         }
 

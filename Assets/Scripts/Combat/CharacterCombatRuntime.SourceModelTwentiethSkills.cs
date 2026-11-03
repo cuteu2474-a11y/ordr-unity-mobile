@@ -62,7 +62,7 @@ namespace Ordr.Mobile.Combat
                 var status = unitStatuses[InstanceKey(actor.Id)];
                 status.RemoveSource(key);
                 status.Apply(new CombatEffect(key, CombatEffectType.AttackSpeedBuff,
-                    CombatEffectOrigin.TriggeredSkill, 25, 0));
+                    CombatEffectOrigin.Aura, 25, 0));
             }
         }
 
@@ -110,7 +110,7 @@ namespace Ordr.Mobile.Combat
                 var status = unitStatuses[InstanceKey(actor.Id)];
                 status.RemoveSource(key);
                 status.Apply(new CombatEffect(key, CombatEffectType.AttackSpeedBuff,
-                    CombatEffectOrigin.TriggeredSkill, 50, 0));
+                    CombatEffectOrigin.Aura, 50, 0));
             }
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.StatusApplied,
                 InstanceKey(actor.Id), InstanceKey(actor.Id), skill.Name,

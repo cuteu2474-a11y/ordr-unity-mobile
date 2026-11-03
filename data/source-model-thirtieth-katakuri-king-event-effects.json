@@ -1,0 +1,102 @@
+{
+  "version": "ORDR S2 2.323[C]",
+  "batch": 30,
+  "mode": "nightmare-isekai",
+  "status": "TOOLTIP_MODEL_ONLY; code and source reviewed, Python/Unity/APK/Actions not executed or queried",
+  "sources": [
+    "data/character-skill-profiles.json",
+    "data/original-2323C-map-base-stats.json",
+    "data/original-2323C-unit-object-stats.json",
+    "data/original-2323C-all-unit-aura-audit.json",
+    "data/original-2323C-native-pure-passives.json"
+  ],
+  "connected": [
+    {
+      "owner": "LI-08",
+      "rawcode": "h07I",
+      "skill": "자기 가속",
+      "original": {
+        "trigger": "onAttack",
+        "chancePercent": 15,
+        "requiresHealthAtLeast": 35,
+        "healthCost": 17,
+        "sourceUnitBalanceHealth": 50,
+        "sourceUnitBalanceHpRegeneration": 1.5,
+        "selfAttackSpeedMaxDurationSeconds": 1.5,
+        "bonusEverySuccessfulAttackWhileBuffed": {
+          "type": "physical",
+          "basicAttackPercent": 75,
+          "flatAmount": 100000,
+          "radius": 415
+        }
+      },
+      "practiceImplementation": [
+        "Exact complete skill/passive source profile and rawcode are required.",
+        "A source-SLK-backed HP pool must exist. No HP pool: no skill proc, no inferred HP.",
+        "The source condition checks HP >=35 and ability to spend 17 before rolling 15%. Only successful rolls debit 17.",
+        "The 1.5-second max-speed state uses the already configured offline attack-speed cap of 400% and is labeled as a mobile model, not a measured Warcraft cap.",
+        "Every genuine successful basic hit during that source-managed state adds one separate physical hit to enemies within 415 of its current target; it never acts on missed hits.",
+        "Per-unit state is invalidated when removed or changing battle lanes."
+      ]
+    },
+    {
+      "owner": "LI-08",
+      "rawcode": "h07I",
+      "skill": "접근 상대 강타",
+      "original": {
+        "trigger": "onEnemyEnterRange",
+        "chancePercent": 20,
+        "triggerRadius": 850,
+        "targetRadius": 500,
+        "physical": 450000,
+        "extraSinglePhysical": 4500000,
+        "armorBreakStacks": 6,
+        "bossAndEnragedOverrideChancePercent": 100
+      },
+      "practiceImplementation": [
+        "Existing EighthTimeline entry-edge tracking decides entry, exit and re-entry; this skill is not incorrectly rolled on each basic attack.",
+        "One 20% entry roll for ordinary line/story; boss and enraged use the source 100% override.",
+        "The target-centered radius 500 applies physical 450000 and armor-break +6; only the entering primary receives the listed extra 4500000 physical.",
+        "Trigger range 850 is not replaced by unlimited basic attack reach.",
+        "Map rawcode and exact full source profile gate both pathways."
+      ]
+    },
+    {
+      "owner": "L-34",
+      "rawcode": "h0AH",
+      "passive": "onBasicHitDebuff",
+      "original": {
+        "movementSlowPercent": 45,
+        "durationSeconds": 3,
+        "magicalDamagePerSecond": 250000
+      },
+      "practiceImplementation": [
+        "Only a real successful basic hit starts or refreshes the passive; skill procs and misses never apply it.",
+        "Slow is refreshed as a separate three-second target status without overwriting the existing 14.25% fire attack or its armor debuffs.",
+        "Magical 250000 ticks once per second for an initial three-second period; subsequent hits extend its expiry without resetting the running tick clock.",
+        "Owner/target identity, lane revision, death and unit removal invalidate scheduled damage."
+      ]
+    }
+  ],
+  "relatedStructuralRepair": [
+    "The shared source-model speed status consumer now explicitly accepts Katakuri's whitelisted practice speed status without allowing arbitrary unknown attacker buffs.",
+    "Tezoro and Ryuma persistent attack-speed statuses and Bullet's verified A0WQ attack-power level with duration zero now use the status engine's Aura origin instead of illegal zero-length TriggeredSkill effects."
+  ],
+  "remainingUnknown": [
+    "Maximum attack-speed native Warcraft conversion and real JASS hit timing (the existing 400-percent practice cap is used instead)",
+    "Katakuri's tooltip HP regeneration 2.85 versus source-SLK regeneration 1.5 interaction",
+    "Katakuri on-range entry boundary/RNG order and original physical damage school",
+    "King's slow/magic damage interval, refresh/stack rules and poison exclusivity",
+    "Boss native armor/status immunity, full original damage ordering, Unity compilation and Android operation",
+    "Elizabeth's lucky token acquisition/exchange remains unimplemented"
+  ],
+  "verification": {
+    "sourceReviewed": true,
+    "editModeCases": "authored only",
+    "python": "not run per user policy",
+    "unity": "not run per user policy",
+    "apk": "not built per user policy",
+    "githubActions": "not manually started or queried",
+    "originalParity": "not established"
+  }
+}

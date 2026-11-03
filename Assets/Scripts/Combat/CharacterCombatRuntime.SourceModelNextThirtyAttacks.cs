@@ -84,6 +84,12 @@ namespace Ordr.Mobile.Combat
                     continue;
                 }
                 completedModels++;
+                if (skill.Id == "LI-08:skill:0" &&
+                    (actor.Abilities.Resources == null ||
+                     actor.Abilities.Resources.Health <
+                         skill.Number("requiresHealthAtLeast").Value ||
+                     !actor.Abilities.Resources.CanSpend(
+                         skill.Number("healthCost").Value, 0))) continue;
                 if (SourceModelTwentiethSkillCatalog.IsSpecial(skill) &&
                     !SourceModelTwentiethCanActivate(actor, skill)) continue;
                 if (!SourceModelEighthAttackCondition(actor, skill)) continue;
@@ -175,7 +181,9 @@ namespace Ordr.Mobile.Combat
                     primary.Id, skill.Name,
                     "TOOLTIP_MODEL_ONLY " + catalogId +
                     " 공격 선언 / 결과·시점·난수 원본 미검증", 0));
-                if (SourceModelTwentiethSkillCatalog.IsSpecial(skill))
+                if (skill.Id == "LI-08:skill:0")
+                    ActivateSourceModelThirtiethKatakuriSpeed(actor, skill);
+                else if (SourceModelTwentiethSkillCatalog.IsSpecial(skill))
                     ApplySourceModelTwentiethSkill(actor, primary, skill, targets);
                 else if (skill.Id == "TR-16:skill:0")
                     ScheduleSourceModelIceAge(actor, primary, skill);
@@ -195,6 +203,9 @@ namespace Ordr.Mobile.Combat
                      registered.Trigger == "activeHealth") &&
                     SourceModelTwentiethSkillCatalog.CanModelExact(registered))
                     nonAttackAbilities++;
+            if (catalogId == "LI-08" &&
+                SourceModelTwentyNinthSkillCatalog.CanModelKatakuriApproach(
+                    actor.Profile.Skills[3])) nonAttackAbilities++;
             if (completedModels != actor.Profile.Skills.Count - nonAttackAbilities)
                 ReportSourceModelNextThirtyDeferred(attackerId, primary.Id,
                     catalogId + " 도감 " + actor.Profile.Skills.Count +

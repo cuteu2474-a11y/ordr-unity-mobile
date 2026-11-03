@@ -28,10 +28,10 @@ namespace Ordr.Mobile.Combat
         // Source-tooltip-complete *practice* casts only. No inferred JASS cooldown,
         // Warcraft resistance, or non-listed mixed effects are granted.
         private static readonly SourceModelUnconnectedSkillRow[] Entries = {
-            // 29th: source-identified owners; do NOT enable Katakuri's
-            // max-speed/approach, Elizabeth's token economy or King passives.
+            // 30th: Katakuri's HP-gated attack-speed state is now modeled
+            // here; his approach is driven separately by the range event.
             new SourceModelUnconnectedSkillRow("LI-08", "h07I",
-                new[] { "단일 타격", "광역 마법" }, Array.Empty<string>()),
+                new[] { "자기 가속", "단일 타격", "광역 마법" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("L-37", "h031",
                 new[] { "중력검" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("L-34", "h0AH",

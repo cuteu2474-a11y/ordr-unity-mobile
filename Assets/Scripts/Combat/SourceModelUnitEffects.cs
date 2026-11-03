@@ -193,7 +193,8 @@ namespace Ordr.Mobile.Combat
                     value = Math.Max(value, effect.Amount);
                 else if (effect.Type == CombatEffectType.AttackSpeedBuff &&
                     (effect.SourceId.StartsWith("practice-tooltip:ryuma-speed:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal)))
+                     effect.SourceId.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-tooltip:katakuri-max-speed:", StringComparison.Ordinal)))
                     value = Math.Max(value, effect.Amount);
             // No claim about native cross-buff stacking. This mobile model
             // uses the strongest known effect until the original is observed.
