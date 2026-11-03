@@ -1,0 +1,35 @@
+{
+  "version": "ORDR S2 2.323[C]",
+  "batch": 24,
+  "mode": "nightmare-isekai",
+  "status": "TOOLTIP_MODEL_ONLY / no Unity compilation, EditMode execution or Android gameplay claimed",
+  "inputProfiles": "data/character-skill-profiles.json",
+  "inputRawcodes": "data/original-2323C-map-base-stats.json",
+  "inputResources": "data/original-2323C-unit-object-stats.json",
+  "approvedActivePackets": [
+    {"unitId":"H-10","rawcode":"h03W","skillId":"H-10:skill:0","name":"맥시멈 스윙","resource":"mana 100","packet":"targetCircle 600: magic 1250000, 2.5 s line stun, armorBreak +4; separate armorReduction 18 for 5 s in targetCircle 800"},
+    {"unitId":"I-03","rawcode":"h049","skillId":"I-03:skill:0","name":"패기발산","resource":"mana 115","packet":"area 800: physical 2750000 × [1,1.5], magic 1250000, stun 3 s (boss tooltip 1 s; boss application deferred for native resistance), armorBreak +5 capped at 75"},
+    {"unitId":"L-07","rawcode":"h03A","skillId":"L-07:skill:0","name":"패기발산","resource":"mana 115","packet":"area 800: physical 1200000 × [1,1.5], magic 1000000, 3 s line stun, armorBreak +3 capped at 75"},
+    {"unitId":"L-20","rawcode":"h02V","skillId":"L-20:skill:0","name":"화이트 아웃","resource":"mana 50; native 0.5 mana/s and tooltip +0.5 mana/basic attack","packet":"area 500: magic 450000 × [1,1.5]; primary-only magic x2, clear supported positive model buffs, stun 0.5 s; area armorBreak +3 capped at 75"},
+    {"unitId":"L-01","rawcode":"h02U","skillId":"L-01:skill:0","name":"어둠어둠 열매","resource":"health 40; native 0.5 health/s and tooltip +1 health/basic attack","packet":"targetCircle 700: magic 500000 plus 1% current target health"},
+    {"unitId":"TR-28","rawcode":"H08Y","skillId":"TR-28:skill:0","name":"라디칼 빔","resource":"mana 150","packet":"line half-width 425: magic 500000; mobile cast direction follows caster-to-current-target, length target distance plus radius"}
+  ],
+  "implementation": [
+    "Full source tooltip packet header, field set, component order, source unit and skill index are required before spending resources.",
+    "SourceModelNextThirtySkillCatalog/SourceModelUnconnectedSkillCatalog share existing active casting, source SLK resources, defense and kill ledgers.",
+    "Smoker and Blackbeard per-hit resource gains are credited once at declared source-model basic attacks; original SLK per-second regeneration is not double-counted.",
+    "Vergo's armor reduction uses its separate 800-radius selection while damage and armor-break keep 600-radius selection.",
+    "Franky's independently modeled active is not a second BzH native attack proc; earlier conditional Franky General transformation remains protected."
+  ],
+  "remainingFourPlannedCharacters": [
+    {"unitId":"L-30","name":"와이퍼","deferred":"maximum attack-speed self buff needs native attack period/cap and duration semantics"},
+    {"unitId":"D-06","name":"사이","deferred":"onEveryHit current-health explosive and per-10000 attack damage periodic cooldown need exact shared hit/timer rules"},
+    {"unitId":"TR-25","name":"키드 초월","deferred":"0.5 s cast, strength, centered bonus, magnet accumulation, line/explosion count-dependent chain"},
+    {"unitId":"TR-05","name":"로우 초월","deferred":"ROOM shared 5-second state and once-per-room HP skill, unknown self-heal rate and enhanced override rules"}
+  ],
+  "unverified": [
+    "Original Warcraft stun resistance, boss stun override, native positive buffs outside mobile status ledger, original random draw ordering and defense/resistance",
+    "Franky line beam native length/trajectory (current mobile policy is a visible approximation)",
+    "Unit/skill level final parity, Unity compiler, EditMode, emulator, Android APK and physical device"
+  ]
+}

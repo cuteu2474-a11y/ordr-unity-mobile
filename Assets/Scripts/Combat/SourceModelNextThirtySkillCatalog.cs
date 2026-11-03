@@ -51,12 +51,15 @@ namespace Ordr.Mobile.Combat
         private static readonly SourceModelNextThirtyUnit[] Entries = {
             new SourceModelNextThirtyUnit("L-03", "h09Z", "전격"),
             new SourceModelNextThirtyUnit("L-04", "h02W", "바람바람 열매"),
-            new SourceModelNextThirtyUnit("L-07", "h03A", "명왕의 검술"),
+            new SourceModelNextThirtyUnit("L-07", "h03A",
+                new[] { "명왕의 검술" }, new[] { "패기발산" }),
             new SourceModelNextThirtyUnit("L-10", "h02Y"),
             new SourceModelNextThirtyUnit("L-13", "h02Z", "배리어 볼", "배리어 피스트"),
             new SourceModelNextThirtyUnit("L-15", "h02X", "왼손은 수면제", "타격 스턴"),
             new SourceModelNextThirtyUnit("L-17", "h035", "패왕색의 검무"),
-            new SourceModelNextThirtyUnit("L-20", "h02V", "화이트블로우", "화이트바인"),
+            new SourceModelNextThirtyUnit("L-20", "h02V",
+                new[] { "화이트블로우", "화이트바인" },
+                new[] { "화이트 아웃" }),
             new SourceModelNextThirtyUnit("L-25", "h03S",
                 new[] { "울두건" }, new[] { "미티어 울두건" }),
             new SourceModelNextThirtyUnit("L-33", "h03H"),
@@ -196,6 +199,7 @@ namespace Ordr.Mobile.Combat
         // unsupported. Tooltip packets are a practice model, never JASS parity.
         public static bool CanModelCompleteAttack(ImportedCombatSkill skill)
         {
+            if (SourceModelTwentyFourthSkillCatalog.IsSpecial(skill)) return false;
             if (SourceModelTwentyThirdSkillCatalog.IsSpecial(skill))
                 return SourceModelTwentyThirdSkillCatalog.CanModelExactAttack(skill);
             if (SourceModelTwentiethSkillCatalog.IsSpecial(skill))
@@ -317,6 +321,8 @@ namespace Ordr.Mobile.Combat
 
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
+            if (SourceModelTwentyFourthSkillCatalog.IsSpecial(skill))
+                return SourceModelTwentyFourthSkillCatalog.CanModelExactActive(skill);
             if (SourceModelTwentyThirdSkillCatalog.IsSpecial(skill))
                 return SourceModelTwentyThirdSkillCatalog.CanModelExactActive(skill);
             if (SourceModelTwentiethSkillCatalog.IsSpecial(skill))

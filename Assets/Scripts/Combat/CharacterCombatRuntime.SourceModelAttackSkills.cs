@@ -90,6 +90,8 @@ namespace Ordr.Mobile.Combat
                     }
             }
 
+            RestoreSourceModelTwentyFourthAttackResources(actor, rawcode);
+
             if (specialFromJass)
             {
                 if (actor.Catalog.Id == sourceSpecialUnitId)

@@ -1,3 +1,9 @@
+## 2026-11-03 · 24차 원본 액티브 6개 연결 구조 (현재 최신)
+
+- **원본 승인:** `SourceModelTwentyFourthSkillCatalog`는 H-10/I-03/L-07/L-20/L-01/TR-28의 소유 ID·스킬 인덱스·대상·비용·세부 필드·구성 순서를 하나도 생략하지 않는 조건에서만 허용합니다. `SourceModelNextThirtySkillCatalog`/`SourceModelUnconnectedSkillCatalog`의 기존 등록에 액티브만 추가하고 기본 공격·BzH 스크립트 재실행은 금지합니다.
+- **실제 경로:** `CharacterCombatRuntime.SourceModelResources` 원본 SLK 자원 승인 → `CharacterCombatRuntime.SourceModelNextThirtyAttacks` 공통 액티브 시전(직선 포함) → `SourceModelCompositeEffects` 피해/버프/스택/상태 → 공통 처치. 베르고 800 반경 방깎만 별도 적 선택; 스모커 주 대상 마법 배율·적 유익 버프만 해제. `CharacterCombatRuntime.SourceModelTwentyFourthSkills`에서 검은수염·스모커 평타당 자원을 1회 적립, 원본 초당 재생은 원본 SLK 처리만 재사용합니다.
+- **보류·검증:** 원작 보스 스턴/네이티브 버프/광선 궤적 정확성, 와이퍼·사이·키드·로우 초월 4명 미연결. 근거 `data/source-model-twentyfourth-six-character-skills.json`, 미실행 EditMode 사례 `SourceModelScriptAttackSkillTests`. Unity/Android 실행 미검증.
+
 ## 2026-11-03 · 12차 변신 후속 경로 (이전 · 13차는 문서 끝)
 
 - `SourceModelEleventhForms` 공격 선언→`SourceModelTwelfthForms` 보니40스택·스턴, 킹 화재/둔화→공통 피해·타이머·상태 원장. `SourceModelOriginalSpecials.IsSourceModelPullHeld`에 세월관통 루트, `OrdrUnitWorldPresenter` 0.6배 외형, `OrdrMobileTouchPanel` 한글 폼. 세부 내용은 문서 끝의 같은 12차 섹션에 있습니다. 원작 최종 등가성 미검증.

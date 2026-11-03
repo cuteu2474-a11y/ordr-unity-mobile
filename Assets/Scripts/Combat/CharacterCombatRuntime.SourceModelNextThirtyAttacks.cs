@@ -249,10 +249,19 @@ namespace Ordr.Mobile.Combat
                 return true;
             }
             var shape = selected.Target == "single" ?
-                SourceScriptHitShape.Direct : SourceScriptHitShape.Circle;
+                SourceScriptHitShape.Direct : selected.Target == "line" ?
+                SourceScriptHitShape.ProjectileLine : SourceScriptHitShape.Circle;
+            double length = 0;
+            if (shape == SourceScriptHitShape.ProjectileLine)
+            {
+                var position = roster.Get(caster.Id);
+                double dx = primary.X - position.X;
+                double dy = primary.Y - position.Y;
+                length = Math.Sqrt(dx * dx + dy * dy) + selected.Radius.Value;
+            }
             var targets = SourceScriptTargets(caster, primary,
                 new SourceScriptHit(shape, selected.Radius ?? 0,
-                    0, 0, 1, 1, Ordr323AttackType.Spells));
+                    length, 0, 1, 1, Ordr323AttackType.Spells));
             if (targets.Count == 0)
             {
                 result = AbilityCastResult.MissingTarget;
@@ -264,6 +273,9 @@ namespace Ordr.Mobile.Combat
                 // they do not require a damage armor type to debit resources.
                 if (component.Type == "fixed" || component.Type == "stun" ||
                     component.Type == "armorBreak" ||
+                    (SourceModelTwentyFourthSkillCatalog.IsSpecial(selected) &&
+                     (component.Type == "magicDamageMultiplier" ||
+                      component.Type == "removeTargetBuffs")) ||
                     component.Type == "selfHeal" ||
                     component.Type == "allyAttackPowerBuff" ||
                     CommonSkillStatusEffects.IsTimedStatus(component.Type)) continue;
@@ -342,6 +354,7 @@ namespace Ordr.Mobile.Combat
                 SourceModelEighteenthSkillCatalog.IsSpecial(skill) ||
                 SourceModelSixteenthSkillCatalog.IsSpecial(skill) ||
                 SourceModelFifteenthSkillCatalog.IsSpecial(skill) ||
+                SourceModelTwentyFourthSkillCatalog.IsSpecial(skill) ||
                 SourceModelTwentyThirdSkillCatalog.IsSpecial(skill) ||
                 IsSourceModelEighthStatusApproach(skill);
             foreach (var component in skill.Components)
@@ -410,6 +423,15 @@ namespace Ordr.Mobile.Combat
                     ApplySourceModelCompositeAllyPower(actor, skill, component);
                     continue;
                 }
+                if (SourceModelTwentyFourthSkillCatalog.IsSpecial(skill) &&
+                    component.Type == "magicDamageMultiplier")
+                    continue; // Applied to the original primary magic packet, below.
+                if (skill.Id == "L-20:skill:0" &&
+                    component.Type == "removeTargetBuffs")
+                {
+                    RemoveSourceModelTwentyFourthTargetBuffs(actor, primary, skill);
+                    continue;
+                }
                 if (skill.Id == "T-05:skill:1" &&
                     component.Type == "explosiveDamageAmplification")
                 {
@@ -419,8 +441,13 @@ namespace Ordr.Mobile.Combat
                 if (composite && CommonSkillStatusEffects.IsTimedStatus(component.Type) &&
                     component.Type != "stun")
                 {
+                    var statusTargets = skill.Id == "H-10:skill:0" &&
+                        component.Type == "armorReduction" ?
+                        SourceScriptTargets(actor, primary, new SourceScriptHit(
+                            SourceScriptHitShape.Circle, component.Number("radius").Value,
+                            0, 0, 1, 1, Ordr323AttackType.Spells)) : targets;
                     ApplySourceModelCompositeStatus(actor, primary, skill,
-                        component, targets);
+                        component, statusTargets);
                     continue;
                 }
                 if (composite && component.Type == "armorBreak")
@@ -551,6 +578,9 @@ namespace Ordr.Mobile.Combat
                         raw += component.Number("extraSingleAmount") ?? 0;
                     if (ReferenceEquals(primary, target))
                         raw *= 1 + (component.Number("singlePrimaryTargetExtraPercent") ?? 0) / 100;
+                    if (skill.Id == "L-20:skill:0" && component.Type == "magical" &&
+                        ReferenceEquals(primary, target))
+                        raw *= skill.Components[1].Number("multiplier").Value;
                     if (raw <= 0) continue;
                     // Red Hawk doubles the whole primary magic packet,
                     // including its documented max-HP component.

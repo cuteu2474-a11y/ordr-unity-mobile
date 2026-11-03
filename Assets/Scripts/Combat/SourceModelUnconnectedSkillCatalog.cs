@@ -28,6 +28,12 @@ namespace Ordr.Mobile.Combat
         // Source-tooltip-complete *practice* casts only. No inferred JASS cooldown,
         // Warcraft resistance, or non-listed mixed effects are granted.
         private static readonly SourceModelUnconnectedSkillRow[] Entries = {
+            // 24th batch: ONLY independently authorized resource actives.
+            // Existing native/JASS attacks (e.g. Franky BzH) are untouched.
+            new SourceModelUnconnectedSkillRow("L-01", "h02U",
+                Array.Empty<string>(), new[] { "어둠어둠 열매" }),
+            new SourceModelUnconnectedSkillRow("TR-28", "H08Y",
+                Array.Empty<string>(), new[] { "라디칼 빔" }),
             // 23rd batch: Maxim's Br8 native attack proc already runs via the
             // source-script catalog. Only Br6's separate 150-MP active is added.
             new SourceModelUnconnectedSkillRow("H-09", "h03X",
@@ -152,7 +158,8 @@ namespace Ordr.Mobile.Combat
             new SourceModelUnconnectedSkillRow("E-12", "h05C",
                 new[] { "혼합 공격", "혼합 스턴 타격" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("I-03", "h049",
-                new[] { "기본 공격 광역 추가", "범위 마법" }, Array.Empty<string>()),
+                new[] { "기본 공격 광역 추가", "범위 마법" },
+                new[] { "패기발산" }),
             new SourceModelUnconnectedSkillRow("H-20", "h046",
                 new[] { "눈보라" }, new[] { "잔설검" }),
             new SourceModelUnconnectedSkillRow("H-14", "h03J",
@@ -206,7 +213,8 @@ namespace Ordr.Mobile.Combat
             new SourceModelUnconnectedSkillRow("SR-02", "h0A3",
                 new[] { "일섬", "광역 참격" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("H-10", "h03W",
-                new[] { "기본 공격 발동형 타격" }, Array.Empty<string>()),
+                new[] { "기본 공격 발동형 타격" },
+                new[] { "맥시멈 스윙" }),
             new SourceModelUnconnectedSkillRow("RN-10", "h09L",
                 new[] { "무기화 빌드 Lv1" }, Array.Empty<string>()),
             new SourceModelUnconnectedSkillRow("D-05", "h05V",

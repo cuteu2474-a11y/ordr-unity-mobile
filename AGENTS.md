@@ -28,6 +28,8 @@
 
 ## 3. 최신 기능 상태 — 2026-11-03
 
+**24차 최신(검사 미실행):** 베르고 H-10 `맥시멈 스윙`, 레일리 불멸 I-03·전설 L-07 `패기발산`, 스모커 L-20 `화이트 아웃`, 검은수염 L-01 `어둠어둠 열매`, 프랑키 초월 TR-28 `라디칼 빔`의 **서로 다른 원본 액티브 6개**를 완전 필드 승인 게이트로 공통 전투 모델에 연결했습니다. 베르고 600 반경 피해·800 반경 방깎 분리, 스모커 주 대상 마법 2배·기존 유익 상태 버프만 제거, 검은수염/스모커 공격당 HP/MP 회복, 프랑키 모바일 적 방향 직선을 포함합니다. **와이퍼 L-30, 사이 D-06, 키드 TR-25, 로우 TR-05** 복합 기술은 타이밍·조건·원본 스탯 미해결로 임의 발동을 만들지 않았습니다. 근거 `data/source-model-twentyfourth-six-character-skills.json`; Unity/Android 실행과 원본 보스 기절·전체 버프/광선 궤적 동등성 **미검증**입니다.
+
 **22차 최신(검사 미실행):** 불릿 I-05의 장비 획득 원본 자료가 여전히 없어 임의 상점/아이템 지급을 만들지 않았습니다. 대신 `IOriginalEquippedInventorySnapshotWitness`로 **실제 원본 월드가 완전한 장착 목록·아이템 ID·등급·개수·단조 증가 수정 번호를 확인한 경우에만** 전투 원장의 초기 장비 복원/전체 상태 갱신을 허용합니다. 한 유닛에 전체 스냅샷과 증감 영수증을 섞어 이중 장착시키지 않으며, 잘못된 항목·중복 ID·오버플로·과거 수정 번호는 원자적으로 거부합니다. 유닛 UI는 불릿 장비와 아르마다 15/30 자격을 표시하고, 원본 공급자가 있을 때만 동기화 버튼을 제공합니다. **기본 APK에는 원본 인벤토리 공급자·실제 구매/드롭·A0WQ 레벨 공급자가 여전히 없어 장비 0·추가 보너스 비활성**입니다. 근거 `data/source-model-twentysecond-inventory-synchronization.json`. Python/Unity/APK/Actions **미실행·미조회**, TOOLTIP_MODEL_ONLY. 아래 21차는 이전 기록입니다.
 
 **21차 최신(검사 미실행):** `OriginalEquippedItemLedger`에 원본 장비 거래 확인 인터페이스·영수증 중복 방지·유닛별 공격/공속/방어/등급 개수·장착 해제/유닛 제거 정리를 구현했습니다. 불릿 I-05의 `육식 체` 7%/3초 기본 전투와 실제 장착 증거가 있을 때의 스택 계수·유니크/전설 추가타/방감·둔화, `유니언 아르마다` 15/30 아이템 문턱 조회 및 원본 A0WQ **실제 레벨 확인 시** 공격력 5/20/40/50%를 연결했습니다. **현재 장비 획득 이벤트 제공자와 A0WQ 원본 레벨 공급자는 없으므로 장비 0·추가 보너스 비활성**; 개인 미션 `e018` 등은 위습이지 장비가 아닙니다. `data/source-model-twentyfirst-bullet-equipment.json`과 네 문서의 21차 최신 항목 참조. Python/Unity/APK/Actions 실행/조회하지 않았으므로 **TOOLTIP_MODEL_ONLY 미검증**입니다. 아래 '20차 최신'은 21차 착수 전 시점의 기록입니다.
@@ -89,6 +91,8 @@
 - 특정 유닛을 '완료'라고 쓰려면 **정의·대상·시각/확률·실제 HP/상태/보상 결과·생명주기·검증 환경**을 구분해 평가한다. 게임에서 실제로 되는 것과 MODEL_ONLY 시뮬레이션을 혼동하지 않는다.
 
 ## 5. 코드 작업·GitHub 운영
+
+**24차 최신 코드 인수인계:** `SourceModelTwentyFourthSkillCatalog` 6종 완전 필드 승인; `SourceModelNextThirtySkillCatalog` 2개·`SourceModelUnconnectedSkillCatalog` 4개 소유자 액티브 등록; `CharacterCombatRuntime.SourceModelNextThirtyAttacks` 24차 특별 대상/원본 피해·상태/직선, `SourceModelTwentyFourthSkills` 원본 평타 자원 + 적 버프 제거, `CharacterActiveAbilities` 완전 승인된 선형 시전·특수 구성 지원. 기존 BzH·Br 원본 공격 실행 및 SLK 초당 자원 재생을 중복하지 않음. 자세한 정보는 `docs/START_HERE.md`, `docs/CODE_MAP.md`, `docs/PLAYABLE_ROADMAP.md`, `docs/새채팅-인수인계.md`, `data/source-model-twentyfourth-six-character-skills.json`. 검사는 **요청받기 전 미실행**.
 
 **23차 최신 코드 인수인계(2026-11-03):** `SourceModelTwentyThirdSkillCatalog`의 원본 필드 전체 동일성 게이트로 H-09 뇌영, H-07 갑판 포격, E-04 마나 고정 피해, I-06 대자재천신, RN-05 데스노트 5개를 기존 공통 실행기에 추가. 방주맥심 Br8 원본 공격은 그대로 두고 별도 뇌영만 새 허용. RN-05 데스노트는 보스/스토리 제외 및 실제 현재HP 25%. `data/source-model-twentythird-five-character-skills.json` 참고. 원본 동등성·Unity 컴파일·Android 실행 검증을 **수행하지 않았음**. 외부 장착 장비 공급자 또한 여전히 미구현.
 

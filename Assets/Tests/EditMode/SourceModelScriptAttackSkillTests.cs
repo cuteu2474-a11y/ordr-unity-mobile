@@ -2173,6 +2173,27 @@ namespace Ordr.Mobile.Tests
                 "wrong-owner", new[] { name }, skill));
         }
 
+        [TestCase("H-10", "맥시멈 스윙")]
+        [TestCase("I-03", "패기발산")]
+        [TestCase("L-07", "패기발산")]
+        [TestCase("L-20", "화이트 아웃")]
+        [TestCase("L-01", "어둠어둠 열매")]
+        [TestCase("TR-28", "라디칼 빔")]
+        public void TwentyFourthSourcePacketIsWholeAndOwnerScoped(
+            string id, string name)
+        {
+            var profiles = CharacterSkillCatalog.FromJson(
+                Data("character-skill-profiles.json"));
+            var skill = profiles.Require(id).Skills.Single(x => x.Name == name);
+            Assert.IsTrue(SourceModelTwentyFourthSkillCatalog.IsSpecial(skill));
+            Assert.IsTrue(SourceModelTwentyFourthSkillCatalog.CanModelExactActive(skill),
+                id + " source packet changed");
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill));
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill));
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                "wrong-owner", new[] { name }, skill));
+        }
+
         [TestCase("RN-02", "대옥 나선환")]
         [TestCase("RN-13", "비상식량")]
         [TestCase("LI-01", "광역 마법 공격")]

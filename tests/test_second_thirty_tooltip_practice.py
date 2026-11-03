@@ -28,7 +28,9 @@ def supported(skill, unit_id=None):
         ('TR-09', '단일 스턴 타격'), ('TR-09', '체력 소모 연타'),
         ('TR-10', '범위 마법타격'),
         ('TR-14', '무장색 패기'), ('TR-14', '컬버린'),
-        ('TR-18', '마환인'), ('TR-18', '미환인'), ('TR-18', '무시빙아')
+        ('TR-18', '마환인'), ('TR-18', '미환인'), ('TR-18', '무시빙아'),
+        # Batch 24 applies a separate exact full-packet gate to these actives.
+        ('L-07', '패기발산'), ('L-20', '화이트 아웃')
     }:
         return True
     trigger = skill.get('trigger')
@@ -140,8 +142,8 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
                 else:
                     attacks += 1
         self.assertEqual(41, attacks)
-        self.assertEqual(13, active,
-                         'First composite batch adds four active owners here')
+        self.assertEqual(15, active,
+                         'Batch 24 adds Rayleigh and Smoker complete actives')
 
     def test_legacy_source_callbacks_are_not_double_activated(self):
         by_id = {unit_id: names for unit_id, _, *names in self.rows}

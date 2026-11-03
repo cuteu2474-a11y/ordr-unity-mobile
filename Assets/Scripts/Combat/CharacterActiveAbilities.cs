@@ -242,7 +242,11 @@ namespace Ordr.Mobile.Combat
             // that source-backed omission; do not broaden the generic gate.
             bool approvedImplicitArea = skill.Id == "D-02:skill:0" &&
                 SourceModelSixteenthSkillCatalog.CanModelExactSpecial(skill);
-            if (!supportedSelfForm && !approvedImplicitArea && skill.Target != "single" &&
+            bool approvedTwentyFourth =
+                SourceModelTwentyFourthSkillCatalog.CanModelExactActive(skill);
+            if (!supportedSelfForm && !approvedImplicitArea &&
+                !(approvedTwentyFourth && skill.Target == "line") &&
+                skill.Target != "single" &&
                 skill.Target != "area" && skill.Target != "targetCircle" &&
                 skill.Target != "casterArea")
                 return false;
@@ -272,7 +276,10 @@ namespace Ordr.Mobile.Combat
                     if (!CommonSkillStatusEffects.TryRead(component, out kind, out amount, out duration))
                         return false;
                 }
-                else if (specialAllowed == null || !specialAllowed(component))
+                else if (!(approvedTwentyFourth &&
+                           (component.Type == "magicDamageMultiplier" ||
+                            component.Type == "removeTargetBuffs")) &&
+                         (specialAllowed == null || !specialAllowed(component)))
                     return false;
             }
             return skill.Components.Count > 0;
