@@ -749,6 +749,98 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [TestCase("E-09", "광역 노래 마법", 100d, false, 0)]
+        [TestCase("SR-03", "체력 소모 광역공격", 60d, true, 3)]
+        [TestCase("TR-08", "레드호크", 160d, false, 7)]
+        [TestCase("TR-22", "어인가라데", 100d, false, 3)]
+        [TestCase("TR-29", "씽크홀", 140d, false, 9)]
+        [TestCase("LI-06", "범위 광역 스턴", 55d, false, 10)]
+        [TestCase("MY-12", "염동 회오리", 45d, true, 10)]
+        [TestCase("MY-12", "염동 운석낙하", 75d, false, 15)]
+        public void SecondBatchEightCompositeActivesUseSharedResourceAndDefenseLedger(
+            string unitId, string name, double cost, bool health, int stacks)
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require(unitId).Skills.Single(x => x.Name == name);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(skill));
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill));
+            using (var live = Create(unitId, false, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                Assert.IsNotNull(pool);
+                Assert.GreaterOrEqual(health ? pool.MaximumHealth : pool.MaximumMana, cost);
+                live.Battle.Advance(2);
+                var target = live.Combat.MobileEnemySnapshot().First();
+                double before = health ? pool.Health : pool.Mana;
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(live.ActorId, skill.Id, target.Id), name);
+                Assert.AreEqual(before - cost, health ? pool.Health : pool.Mana, 1e-8);
+                Assert.IsTrue(live.Combat.LastEvents.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == name && e.Amount > 0), name);
+                if (stacks != 0)
+                    Assert.AreEqual(stacks, live.Combat.ArmorBreakStacksOf(target.Id), name);
+                if (unitId == "E-09")
+                    Assert.IsTrue(live.Combat.StatusOf(target.Id).Snapshot().Any(e =>
+                        e.Type == CombatEffectType.ExplosiveDamageAmplification &&
+                        e.Amount == 10), name);
+                if (unitId == "LI-06")
+                    Assert.IsTrue(live.Combat.UnitStatusOf(live.ActorId).Snapshot().Any(e =>
+                        e.Type == CombatEffectType.AttackPowerBuff &&
+                        e.Amount == 33 && e.DurationSeconds == 4.5), name);
+            }
+        }
+
+        [TestCase("H-19", "범위 마법·증폭", CombatEffectType.MagicDamageAmplification, 1d)]
+        [TestCase("LI-02", "광역 물리 둔화", CombatEffectType.MovementSlowPercent, 50d)]
+        public void SecondBatchTwoAttackProcsApplyDamageAndStatusWithoutAnActiveCast(
+            string unitId, string name, CombatEffectType type, double amount)
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require(unitId).Skills.Single(x => x.Name == name);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(skill));
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill));
+            using (var live = Create(unitId, true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(5);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == name && e.Amount > 0), name);
+                Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(enemy =>
+                    live.Combat.StatusOf(enemy.Id).Snapshot().Any(effect =>
+                        effect.Type == type && effect.Amount == amount &&
+                        effect.SourceId.StartsWith("practice-tooltip:"))), name);
+            }
+        }
+
+        [Test]
+        public void SentinelSecondBatchReusesOneNativeProcAndAddsOnlyMagicAmplification()
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require("RN-04").Skills.Single(x => x.Name == "페인 브링어");
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill));
+            Assert.IsFalse(SourceModelUnconnectedSkillCatalog.All.Any(row =>
+                row.CatalogId == "RN-04"), "Native CCg damage must not roll twice");
+            using (var live = Create("RN-04", true, -4900, 5400))
+            {
+                live.Battle.Advance(5);
+                Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(enemy =>
+                    live.Combat.StatusOf(enemy.Id).Snapshot().Any(effect =>
+                        effect.Type == CombatEffectType.MagicDamageAmplification &&
+                        effect.Amount == 18 && effect.SourceId.Contains("RN-04:skill:0"))));
+                Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(enemy =>
+                    live.Combat.StatusOf(enemy.Id).Snapshot().Any(effect =>
+                        effect.SourceId == "practice-native:A10I" &&
+                        effect.DurationSeconds == 60)),
+                    "The primary armor decrease still uses the existing 60-second native path");
+            }
+        }
+
         [Test]
         public void ZephyrMissingManaSkillUsesOriginal160ManaAndExistingHpDamageLedger()
         {
@@ -793,7 +885,7 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(SourceModelUnconnectedSkillCatalog.TryGet("h05G", out row));
             Assert.AreEqual("LI-01", row.CatalogId);
             Assert.IsTrue(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("LI-01"));
-            Assert.IsFalse(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("LI-02"));
+            Assert.IsTrue(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("LI-02"));
             CollectionAssert.AreEquivalent(
                 new[] { "핏빛 범위 공격", "광역 마법 공격" }, row.PracticeAttackSkills);
 

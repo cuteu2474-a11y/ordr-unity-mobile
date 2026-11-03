@@ -28,6 +28,8 @@
 
 ## 3. 최신 기능 상태 — 2026-11-03
 
+**2차 복합 스킬 11종 연결(최신):** `E-09/SR-03/TR-08/TR-22/TR-29/LI-06/MY-12`의 8개 액티브, `H-19/LI-02` 2개 공격 발동, `RN-04` 기존 JASS 콜백 마법증폭 보강을 공통 자원·피해·상태 경로에 연결합니다. 자동 액티브 **31→39개**, 추가 공격 패킷 **37→39개**, RN-04는 기존 17%/150만 피해 및 60초 방깎 중복 금지. 알비다 +33% 아군 강화는 평타 계산에 반영, 레베카 `casterArea`는 모바일에서만 적 중심. `data/source-model-second-11-composite-skills.json`와 네 현황 문서를 최신 기준으로 삼습니다. 원본 완전 재현/Unity·Android 실기 동작은 별도 검증 필요.
+
 **1차 복합 액티브 10종 연결(최신):** 아냐(로이드 포저), 로져(광역 혼합 피해), 브룩(마나 광역 공격), 시키(마나 광역 스턴), 에넬(뇌영), 전설 징베(어인가라데), 페이몬(슈퍼 페이몬 선풍), 히든 료쿠규(거대 숲 물리), 울티(미티어 울두건), 퀸(브라키오 붐버)을 기존 SourceModel 자동 시전·자원·HP·상태 엔진에 연결했습니다. **명시적 자동 액티브 21→31개**, 추가 공격 37개 불변. 근거 `data/source-model-first-10-composite-actives.json`, Python/Unity 회귀 참고. 도감에 지속시간이 없는 상태는 초를 창작하지 않고 적 생존 동안 유지하며 최강 동종효과를 사용합니다. `D-03` 1회 트리거 원본 조건과 일반/보스 면역, Unity/Android 실기는 미확인입니다. 아래의 21개·복합 액티브 미연결 언급은 이전 시점 기록입니다.
 
 **최신 후속:** 13명 자동 액티브 묶음 이후 `I-10 제트(h04G)`의 원본 MP160 `마나 광역 공격`과 `LI-01(h05G)`의 4% `핏빛 범위 공격`을 기존 SourceModel에 승인했습니다. 명시적 연습 자동 액티브 **21개**, 추가 공격 패킷 **37개**. `LI-01`은 모바일 전용 정책에 따라 `casterArea` 메타데이터와 달리 **공격 대상 중심 반경750**이며, 다른 캐릭터의 일반 `casterArea`는 기존 `AttackerCircle`로 유지합니다. L-16/TR-17/I-09/L-32의 원본 JASS 스킬 중복 구현을 금지합니다. 근거는 `data/source-model-followup-two-character-skills.json`, 관련 검사는 `tests/test_source_model_followup_two_skills.py`와 `SourceModelScriptAttackSkillTests.cs`. 이전의 **20/36** 기술 수치는 당시 스냅샷입니다. 여전히 **MOBILE TOOLTIP_MODEL_ONLY**, Unity·Android 실기 결과는 미확인입니다.

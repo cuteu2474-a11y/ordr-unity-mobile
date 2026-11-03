@@ -1,4 +1,6 @@
-## 2026-11-03 · 1차 복합 스킬 공통 연결부 (현재 최신)
+> **최신 기준:** 아래 「2차 복합 스킬 실행 경로」 항목이 현재 구현입니다. 그 이전 항목의 숫자는 과거 기록입니다.
+
+## 2026-11-03 · 1차 복합 스킬 공통 연결부 (이전 작업)
 
 - 허용/소유권: `SourceModelNextThirtySkillCatalog.IsFirstCompositeActive`로 10개 유닛·스킬 ID·전체 효과 구성 확인. 기존 `SourceModelNextThirtySkillCatalog`의 4명(I-04/H-04/TR-10/L-25)과 `SourceModelUnconnectedSkillCatalog`의 6명에 액티브 추가; 원본 유닛 rawcode 일치 확인은 유지합니다.
 - 실행: `CharacterCombatRuntime.SourceModelResources` 공용 자원/우선순위 → `SourceModelNextThirtyAttacks` 단일 전장·대상 중심·HP 정산 → `CharacterCombatRuntime.SourceModelCompositeEffects` 상태·스택·공격력 기준 고정 피해 → 기존 HP/처치. `SourceModelUnitEffects`는 연습 둔화/방어/마법효과의 최강치 충돌 정책 적용. 울티 평타 HP+1은 `SourceModelAttackSkills`에서 원본 자원에만 적용.
@@ -309,4 +311,10 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `OrdrCharacterCombatController.ConfigureCatalogOnlyWorld` → `SourceModelUnitEffects(..., OriginalMapObjectAuras)` → `CharacterCombatRuntime.RefreshSourceModelAuras` → `ApplySourceModelAuraGroup`: 일반 캐릭터의 `AurasFor`, 변신 시 `SourceModelBasicCombatRules.SourceFormRawcodeOf`→`AurasForObject`, 독립 객체의 `SourceIndependentAttacker.Rawcode`→`AurasForObject`를 동일 `Original323AuraCommonRules.TryResolveIdenticalAura`로 통합. 이종 코드/랭크/버프를 임의 합산하지 않으며 충돌은 `DeferredAuraGroups`에 집계합니다.
 - 캐릭터 아군·독립 공격자 아군·연습 적 수신 경로 모두 **같은 전장**에서만 원본 대상 역할을 지키되 **모바일 정책상 오라 반경을 없앴습니다**. 이전 쵸파·릴리스 전용 하드코딩과 대상 거리 판정은 제거합니다. 릴리스 `H0AB/A034/B088/-40`은 원본 객체 자료에서 로드하고 소유자 제거 이후에도 별도 위성 ID로 유지합니다. 이는 오프라인 `MODEL_ONLY`이며 실전 Warcraft 버프 인증은 아닙니다.
 - 관련 Unity EditMode: `SourceModelScriptAttackSkillTests`의 `PinnedMapObjectAuras`, `TransformedChopperRawObjectAuras`, `LilithArmorAura`, `DifferentCharacterAndSatelliteArmorAuras`, `NativeObjectAuraDoesNotLeakAcrossStoryAndMainLanes`. 원본 파일이나 새로운 보상 버튼은 Git에 넣지 않습니다.
+
+## 2026-11-03 · 2차 복합 스킬 실행 경로 (현재 최신)
+
+- **허용:** `SourceModelUnconnectedSkillCatalog`에 신규 8개 액티브·2개 공격 패킷 명칭을 추가했습니다. `SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill/CanModelSecondCompositeComponents`가 11개 `(unitId, skillId, name, 전체 효과)`를 검증합니다. `RN-04`는 이 카탈로그 공격 명칭에 추가하지 않습니다.
+- **실행:** `CharacterCombatRuntime.SourceModelResources` 기존 자동 시전/자원 → `SourceModelNextThirtyAttacks` 실제 상태·HP·처치 → `SourceModelCompositeEffects` 자기 회복, 계수/결손체력 추가 물리, 조건부 징베 방깎, 알비다 같은 전장 강화/소스별 강한 효과 선택. `SourceModelBasicCombatRules` 및 `SourceModelUnitEffects`가 알비다 공격력 버프를 평타에 반영. `SpecialGradeMobilePolicy`에서 레베카를 적 중심 모바일 예외 처리.
+- **중복 차단:** `CharacterCombatRuntime.SourceModelAttackSkills`의 기존 `RN-04/CCg` 17% 피해 콜백과 `SourceModelLegacyFollowups` 60초 방깎을 그대로 사용하고, 동일한 성공 발동에서 **마법 증폭 +18%만** 부착. `data/source-model-second-11-composite-skills.json`, `tests/test_source_model_second_11_composites.py`, EditMode `SourceModelScriptAttackSkillTests` 참조. 원본 패리티와 Unity/Android 구동 검증은 별개입니다.
 

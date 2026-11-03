@@ -1,0 +1,32 @@
+{
+  "format": "ordr-source-model-second-11-composite-skills-v1",
+  "gameVersion": "S2 2.323[C]",
+  "model": "TOOLTIP_MODEL_ONLY",
+  "source": "data/character-skill-profiles.json plus original W3X unit resource object fields",
+  "newAutomaticActivePackets": 8,
+  "newOnAttackPackets": 2,
+  "existingAttackCallbackEnriched": 1,
+  "skills": [
+    { "unitId": "E-09", "rawcode": "h067", "name": "광역 노래 마법", "trigger": "activeMana", "cost": 100, "effects": "magical, magicResistanceReduction, explosiveDamageAmplification, selfHeal" },
+    { "unitId": "SR-03", "rawcode": "h0A0", "name": "체력 소모 광역공격", "trigger": "activeHealth", "cost": 60, "effects": "physical, armorBreak, fixed(skillDamagePercent)" },
+    { "unitId": "TR-08", "rawcode": "H099", "name": "레드호크", "trigger": "activeMana", "cost": 160, "effects": "magical(primary x2), stun, armorBreak" },
+    { "unitId": "TR-22", "rawcode": "H09A", "name": "어인가라데", "trigger": "activeMana", "cost": 100, "effects": "physical, stun, armorBreak, conditionalArmorReduction" },
+    { "unitId": "TR-29", "rawcode": "H08X", "name": "씽크홀", "trigger": "activeMana", "cost": 140, "effects": "magical, movementSlow, armorBreak" },
+    { "unitId": "LI-06", "rawcode": "h08Q", "name": "범위 광역 스턴", "trigger": "activeMana", "cost": 55, "effects": "magical, missingHealthPhysical, stun, armorBreak, allyAttackPowerBuff" },
+    { "unitId": "MY-12", "rawcode": "h0BC", "name": "염동 회오리", "trigger": "activeHealth", "cost": 45, "effects": "magical, physical, armorBreak" },
+    { "unitId": "MY-12", "rawcode": "h0BC", "name": "염동 운석낙하", "trigger": "activeMana", "cost": 75, "effects": "magical, physical, armorBreak" },
+    { "unitId": "H-19", "rawcode": "h07L", "name": "범위 마법·증폭", "trigger": "onAttack", "chancePercent": 15, "effects": "magical, magicDamageAmplification" },
+    { "unitId": "LI-02", "rawcode": "h05I", "name": "광역 물리 둔화", "trigger": "onAttack", "chancePercent": 8, "effects": "physical, movementSlow" },
+    { "unitId": "RN-04", "rawcode": "h06X", "name": "페인 브링어", "trigger": "onAttack", "chancePercent": 17, "existingCallback": "SourceModelScriptAttackCatalog/CCg", "effects": "existing 1.5m Chaos hit and 60s primary -50 armor; new area +18% magical amplification" }
+  ],
+  "mobilePolicies": {
+    "targetArea": "Enemy-centered hit area; LI-02 casterArea tooltip preserved but enemy-centered at unlimited mobile reach",
+    "durationAbsent": "No invented duration: strongest same-kind status on the living enemy, except RN-04's existing 60s native faerie-fire",
+    "buffStacking": "Strongest ally attack power percent, no inferred additive stacking",
+    "jinbe": "Ten cumulative armor-break stacks, one debuff per enemy; the other Jinbe form in the same lane excludes application",
+    "missingHealth": "The physical portion uses missing health before the magical component, with its own defense calculation",
+    "legacyLevel": "LI-02 uses exactly one documented +30000 increment; no invented Warcraft legacy rank",
+    "explosive": "E-09 registers ExplosiveDamageAmplification; damage producers without an explosive school adapter remain deferred",
+    "parity": "Offline logical outcome approximation only, no claim of Warcraft native timing, immunity, RNG ordering or exact defense parity"
+  }
+}

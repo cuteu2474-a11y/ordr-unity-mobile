@@ -157,12 +157,14 @@ namespace Ordr.Mobile.Combat
                       effect.SourceId.StartsWith("practice-native:A08B:", StringComparison.Ordinal)) &&
                     !(effect.Type == CombatEffectType.AttackPowerBuff &&
                       effect.SourceId.StartsWith("practice-form:power:", StringComparison.Ordinal)) &&
+                    !(effect.Type == CombatEffectType.AttackPowerBuff &&
+                      effect.SourceId.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal)) &&
                     !(effect.Type == CombatEffectType.AttackSpeedBuff &&
                       effect.SourceId.StartsWith("practice-form:interval:", StringComparison.Ordinal)))
                     throw new NotSupportedException("연습의 출처가 확인되지 않은 공격 효과입니다.");
             double rawDamage = attack.RollObjectBaseDamage(random) +
                 SourceModelTemporarySkillCatalog.FlatFormPower(request.AttackerEffects);
-            double power = SourceModelUnitEffects.ResolveSingleAura(request.AttackerEffects, CombatEffectType.AttackPowerBuff);
+            double power = SourceModelUnitEffects.ResolvePracticeAttackPower(request.AttackerEffects);
             rawDamage *= 1 + power / 100.0;
             if (UnitEffects != null) rawDamage = UnitEffects.BeforeBasicHit(request, target, rawDamage);
             double reduction = SourceModelUnitEffects.ResolvePracticeArmorReduction(target.Status.Snapshot());

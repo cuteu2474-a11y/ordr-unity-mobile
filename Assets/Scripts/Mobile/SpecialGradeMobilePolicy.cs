@@ -41,7 +41,9 @@ namespace Ordr.Mobile.Mobile
             // must resolve around the attacked enemy. His tooltip metadata
             // still says casterArea; this is a deliberate MOBILE-only result
             // policy, not a claim about the original JASS coordinate source.
-            return unitId == Marco || unitId == Redfield;
+            // Rebecca's broad slow likewise needs to land around the chosen
+            // enemy when all mobile units have unlimited attack reach.
+            return unitId == Marco || unitId == Redfield || unitId == "LI-02";
         }
 
         // 후보는 매 시전 시점에 재구성한다. 합성·판매·파견 후에도 다시 평가한다.

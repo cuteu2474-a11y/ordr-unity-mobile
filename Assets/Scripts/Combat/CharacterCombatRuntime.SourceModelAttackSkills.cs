@@ -166,6 +166,13 @@ namespace Ordr.Mobile.Combat
             else
                 ApplySourceScriptHits(actor, primary, script, script.OnProc);
 
+            // RN-04 already resolves CCg's 17%/1.5m damage and delayed
+            // primary-target Faerie Fire in the JASS-backed callback. Only
+            // attach the tooltip's 18% area magic amplification to that same
+            // successful roll; never roll or deal the attack damage twice.
+            if (script.CatalogId == "RN-04")
+                ApplySourceModelSentinelMagicAmplification(actor, primary, script);
+
             if (script.CatalogId == "S-12")
                 ScheduleSourceModelPhoenixFire(actor, primary, script);
             AfterSourceModelLegacyProc(actor, primary, script);

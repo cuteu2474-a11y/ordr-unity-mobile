@@ -31,6 +31,10 @@ namespace Ordr.Mobile.Combat
                         type = CombatEffectType.MagicResistanceReduction; break;
                     case "magicDamageAmplification":
                         type = CombatEffectType.MagicDamageAmplification; break;
+                    case "explosiveDamageAmplification":
+                        type = CombatEffectType.ExplosiveDamageAmplification; break;
+                    case "movementSlow":
+                        type = CombatEffectType.MovementSlowPercent; break;
                     default: throw new InvalidOperationException("미승인 복합 상태효과");
                 }
             }
@@ -42,23 +46,32 @@ namespace Ordr.Mobile.Combat
                 if (!target.Enemy.IsAlive ||
                     !SourceModelNextThirtyComponentTargets(component, primary, target))
                     continue;
-                if (skill.Id == "L-28:skill:0" &&
+                if ((skill.Id == "L-28:skill:0" ||
+                     skill.Id == "TR-22:skill:0") &&
                     component.Type == "armorReduction")
                 {
-                    // Jinbe's rare debuff requires ten accumulated breaks;
-                    // it cannot be retriggered by a second cast on that enemy.
-                    var condition = component.Get("condition") as Dictionary<string, object>;
-                    object required;
-                    if (condition == null ||
-                        !condition.TryGetValue("requiredArmorBreakStacks", out required) ||
-                        ArmorBreakStacksOf(target.Id) < Convert.ToInt32(required))
+                    // Both Jinbe packets require ten accumulated breaks and
+                    // are mutually exclusive within the same battle lane.
+                    double required = component.Number("requiredArmorBreakStacks") ?? 0;
+                    if (skill.Id == "L-28:skill:0")
+                    {
+                        var condition = component.Get("condition") as Dictionary<string, object>;
+                        object value;
+                        if (condition == null ||
+                            !condition.TryGetValue("requiredArmorBreakStacks", out value))
+                            continue;
+                        required = Convert.ToDouble(value);
+                    }
+                    if (ArmorBreakStacksOf(target.Id) < required)
                         continue;
-                    bool hasTranscendentJinbe = false;
+                    string excludedAlly = skill.Id == "L-28:skill:0" ?
+                        "TR-22" : "L-28";
+                    bool hasExcludedJinbe = false;
                     foreach (var ally in characters.Values)
-                        if (ally.Catalog.Id == "TR-22" && ally.AttackReady &&
+                        if (ally.Catalog.Id == excludedAlly && ally.AttackReady &&
                             IsStoryDeployed(ally.Id) == IsStoryDeployed(actor.Id))
-                            hasTranscendentJinbe = true;
-                    if (hasTranscendentJinbe) continue;
+                            hasExcludedJinbe = true;
+                    if (hasExcludedJinbe) continue;
                     bool appliedPreviously = false;
                     foreach (var existing in target.Enemy.Status.Snapshot())
                         if (existing.SourceId == source) appliedPreviously = true;
@@ -101,9 +114,14 @@ namespace Ordr.Mobile.Combat
         }
 
         private static double SourceModelCompositeRawDamage(
-            CharacterInstance actor, ImportedCombatEffect component,
+            CharacterInstance actor, ImportedCombatSkill skill,
+            ImportedCombatEffect component,
             SpatialCombatEnemy target, double multiplier)
         {
+            if (component.Text("basis") == "skillDamage" &&
+                skill.Id == "SR-03:skill:0")
+                return skill.Components[0].Number("amount").Value *
+                    component.Number("percent").Value / 100 * multiplier;
             if (component.Text("basis") == "basicAttackDamage")
             {
                 double rawAttack = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
@@ -138,6 +156,81 @@ namespace Ordr.Mobile.Combat
             // a relative bonus for the documented reduction; do not overwrite
             // a hypothetical native base resistance or original combat rules.
             return (1 + amp / 100) * (1 + resistanceReduction / 100);
+        }
+
+        private void ApplySourceModelCompositeAllyPower(CharacterInstance actor,
+            ImportedCombatSkill skill, ImportedCombatEffect component)
+        {
+            string source = "practice-tooltip:allypower:" + actor.Id + ":" + skill.Id;
+            foreach (var ally in characters.Values)
+            {
+                if (!ally.AttackReady ||
+                    IsStoryDeployed(ally.Id) != IsStoryDeployed(actor.Id)) continue;
+                CombatStatusEngine status;
+                if (!unitStatuses.TryGetValue(InstanceKey(ally.Id), out status)) continue;
+                status.RemoveSource(source);
+                status.Apply(new CombatEffect(source,
+                    CombatEffectType.AttackPowerBuff,
+                    CombatEffectOrigin.TriggeredSkill,
+                    component.Number("percent").Value,
+                    component.Number("durationSeconds").Value));
+                events.Add(new CharacterCombatEvent(CharacterCombatEventType.StatusApplied,
+                    InstanceKey(actor.Id), InstanceKey(ally.Id), skill.Name,
+                    "TOOLTIP_MODEL_ONLY / 같은 전장 아군 평타 강화", 0));
+            }
+        }
+
+        private void ApplySourceModelSentinelMagicAmplification(CharacterInstance actor,
+            SpatialCombatEnemy primary, SourceScriptAttackSpec script)
+        {
+            if (actor.Catalog.Id != "RN-04" || actor.Profile == null ||
+                actor.Profile.UnitId != "RN-04") return;
+            ImportedCombatSkill selected = null;
+            foreach (var skill in actor.Profile.Skills)
+                if (skill.Id == "RN-04:skill:0") { selected = skill; break; }
+            if (!SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(selected) ||
+                !SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(selected)) return;
+            var targets = SourceScriptTargets(actor, primary, script.OnProc[0]);
+            if (targets.Count == 0) return;
+            // The -50 armor on the primary is already resolved via
+            // ScheduleSourceModelSentinelFaerie: adding it here would make
+            // its timed 60-second native effect incorrectly permanent.
+            ApplySourceModelCompositeStatus(actor, primary, selected,
+                selected.Components[2], targets);
+        }
+
+        // A second damage school, not an extra spell multiplier. This is
+        // resolved through the common target-defense and damage ledger.
+        private void ApplySourceModelSecondMissingHealthPhysical(
+            CharacterInstance actor, SpatialCombatEnemy target,
+            ImportedCombatSkill skill, ImportedCombatEffect component,
+            double originalMissingHealth)
+        {
+            Ordr323ArmorType armor;
+            if (!target.Enemy.Defenses.BaseArmor.HasValue ||
+                !Ordr323OriginalDamageRules.TryReadArmorType(
+                    target.Enemy.Defenses.WarcraftArmorType, out armor)) return;
+            double raw = originalMissingHealth *
+                component.Number("plusTargetMissingHealthPercentPhysical").Value / 100;
+            double modeled = Ordr323MapDamageMath.ApplyVerifiedFactors(raw,
+                Ordr323AttackType.Spells, armor, true, true,
+                target.Enemy.Defenses.BaseArmor.Value -
+                    SourceModelUnitEffects.ResolvePracticeArmorReduction(
+                        target.Enemy.Status.Snapshot()) -
+                    ArmorBreakStacksOf(target.Id), false, 0, 1);
+            if (double.IsNaN(modeled) || double.IsInfinity(modeled) ||
+                modeled >= long.MaxValue) throw new OverflowException(
+                    "복합 스킬 결손 체력 추가 피해 범위 초과");
+            long actual;
+            if (!resolution.TryApplySkillDamage(InstanceKey(actor.Id), target.Id,
+                    (long)Math.Floor(modeled), out actual)) return;
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillDamage,
+                InstanceKey(actor.Id), target.Id, skill.Name,
+                "TOOLTIP_MODEL_ONLY / 결손 체력 비례 별도 물리 피해", actual));
+            if (!target.Enemy.IsAlive)
+                events.Add(new CharacterCombatEvent(CharacterCombatEventType.EnemyDefeated,
+                    InstanceKey(actor.Id), target.Id, skill.Name,
+                    "연습 복합 스킬 추가 피해로 처치", actual));
         }
     }
 }

@@ -69,8 +69,8 @@ namespace Ordr.Mobile.Combat
                         MidpointRounding.AwayFromZero)) continue;
                 // Preserve the tooltip target metadata, but apply the same
                 // explicit MOBILE result policy as CharacterSkillEffectExecutor.
-                // Other casterArea skills remain attacker-centered; Redfield's
-                // radius 750 follows the chosen enemy even at unlimited reach.
+                // Explicit casterArea mobile exceptions follow the chosen
+                // enemy at unlimited reach (Redfield and Rebecca).
                 var shape = skill.Target == "single" ?
                     SourceScriptHitShape.Direct :
                     skill.Target == "casterArea" &&
@@ -165,6 +165,8 @@ namespace Ordr.Mobile.Combat
                 // they do not require a damage armor type to debit resources.
                 if (component.Type == "fixed" || component.Type == "stun" ||
                     component.Type == "armorBreak" ||
+                    component.Type == "selfHeal" ||
+                    component.Type == "allyAttackPowerBuff" ||
                     CommonSkillStatusEffects.IsTimedStatus(component.Type)) continue;
                 foreach (var target in targets)
                 {
@@ -218,9 +220,25 @@ namespace Ordr.Mobile.Combat
             IReadOnlyList<SpatialCombatEnemy> targets)
         {
             string attackerId = InstanceKey(actor.Id);
-            bool composite = SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(skill);
+            bool composite = SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(skill) ||
+                SourceModelNextThirtySkillCatalog.IsSecondCompositeSkill(skill);
             foreach (var component in skill.Components)
             {
+                if (composite && component.Type == "selfHeal")
+                {
+                    if (actor.Abilities.Resources != null)
+                    {
+                        var hp = actor.Abilities.Resources;
+                        hp.SetHealth(Math.Min(hp.MaximumHealth,
+                            hp.Health + component.Number("amount").Value));
+                    }
+                    continue;
+                }
+                if (composite && component.Type == "allyAttackPowerBuff")
+                {
+                    ApplySourceModelCompositeAllyPower(actor, skill, component);
+                    continue;
+                }
                 if (composite && CommonSkillStatusEffects.IsTimedStatus(component.Type) &&
                     component.Type != "stun")
                 {
@@ -277,10 +295,19 @@ namespace Ordr.Mobile.Combat
                         !CanAttackInThisLane(actor, target) ||
                         !SourceModelNextThirtyComponentTargets(component, primary, target))
                         continue;
+                    double missingBeforeComponent =
+                        target.Enemy.MaxHealth - target.Enemy.Health;
                     double raw = composite ? SourceModelCompositeRawDamage(actor,
-                        component, target, multiplier) :
+                        skill, component, target, multiplier) :
                         (component.Number("amount") ??
                          component.Number("amountPerHit") ?? 0) * multiplier;
+                    // Rebecca's tooltip gives a per-legacy-level increment.
+                    // The offline model has no native legacy-level provider:
+                    // the first documented increment is the conservative
+                    // mobile practice value, never a fabricated rank.
+                    if (skill.Id == "LI-02:skill:1" &&
+                        component.Type == "physical")
+                        raw += component.Number("plusLegacyLevelDamage") ?? 0;
                     if (component.Text("basis") == "targetMaxHealth")
                         raw += target.Enemy.MaxHealth * component.Number("percent").Value / 100;
                     raw += target.Enemy.MaxHealth *
@@ -297,6 +324,12 @@ namespace Ordr.Mobile.Combat
                     raw += component.Number("extraAmount") ?? 0;
                     if (ReferenceEquals(primary, target))
                         raw *= 1 + (component.Number("singlePrimaryTargetExtraPercent") ?? 0) / 100;
+                    // Red Hawk doubles the whole primary magic packet,
+                    // including its documented max-HP component.
+                    if (skill.Id == "TR-08:skill:0" &&
+                        component.Type == "magical" &&
+                        ReferenceEquals(primary, target))
+                        raw *= skill.Number("singleTargetMagicalDamageMultiplier").Value;
                     if (double.IsNaN(raw) || double.IsInfinity(raw) || raw >= long.MaxValue)
                         throw new OverflowException("도감 모델 원시 피해량 범위 초과");
                     Ordr323ArmorType armor = default(Ordr323ArmorType);
@@ -334,6 +367,10 @@ namespace Ordr.Mobile.Combat
                             target.Id, skill.Name,
                             "TOOLTIP_MODEL_ONLY " + component.Type +
                             " / 원작 최종 방어·면역·속성 보정 미검증", actual));
+                        if (skill.Id == "LI-06:skill:0" &&
+                            component.Type == "magical" && target.Enemy.IsAlive)
+                            ApplySourceModelSecondMissingHealthPhysical(actor,
+                                target, skill, component, missingBeforeComponent);
                         if (!target.Enemy.IsAlive)
                             events.Add(new CharacterCombatEvent(
                                 CharacterCombatEventType.EnemyDefeated, attackerId,

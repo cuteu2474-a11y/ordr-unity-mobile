@@ -239,7 +239,7 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(SpecialGradeMobilePolicy.UsesCurrentAttackTarget("S-32"));
             Assert.IsTrue(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("S-08"));
             Assert.IsTrue(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("LI-01"));
-            Assert.IsFalse(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("LI-02"));
+            Assert.IsTrue(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("LI-02"));
             Assert.IsFalse(SpecialGradeMobilePolicy.CanEnterSideBattle(true, false, true));
             Assert.IsTrue(SpecialGradeMobilePolicy.CanEnterSideBattle(true, true, true));
             Assert.IsFalse(SpecialGradeMobilePolicy.CanEnterSideBattle(true, true, false));

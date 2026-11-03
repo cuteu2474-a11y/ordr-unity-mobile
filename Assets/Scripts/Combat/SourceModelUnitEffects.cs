@@ -192,6 +192,18 @@ namespace Ordr.Mobile.Combat
             return value;
         }
 
+        internal static double ResolvePracticeAttackPower(IReadOnlyList<CombatEffect> effects)
+        {
+            double strongest = ResolveSingleAura(effects, CombatEffectType.AttackPowerBuff);
+            foreach (var effect in effects)
+                if (effect.Type == CombatEffectType.AttackPowerBuff &&
+                    effect.SourceId.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal))
+                    strongest = Math.Max(strongest, effect.Amount);
+            // Auras and temporary tooltip buffs use the strongest effect,
+            // without an unsupported assumption that their percentages add.
+            return strongest;
+        }
+
         internal static double ResolvePracticeMovementSlow(IReadOnlyList<CombatEffect> effects)
         {
             double strongest = 0;

@@ -198,7 +198,8 @@ namespace Ordr.Mobile.Combat
                 if (key != "name" && key != "trigger" && key != "chancePercent" &&
                     key != "target" && key != "radius" && key != "components")
                     return false;
-            return CanModelComponents(skill);
+            return IsSecondCompositeSkill(skill) ?
+                CanModelSecondCompositeComponents(skill) : CanModelComponents(skill);
         }
 
         // A parsable packet is not authorization. Names can be shared by
@@ -218,6 +219,7 @@ namespace Ordr.Mobile.Combat
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
             bool composite = IsFirstCompositeActive(skill);
+            bool second = IsSecondCompositeSkill(skill);
             if (skill == null ||
                 !(skill.Trigger == "activeMana" || skill.Trigger == "activeHealth") ||
                 !(skill.Target == "area" || skill.Target == "single") ||
@@ -233,7 +235,9 @@ namespace Ordr.Mobile.Combat
                     !(composite && skill.Id == "L-25:skill:0" &&
                       (key == "healthRegenPerSecond" || key == "healthRegenPerAttack")) &&
                     !(composite && skill.Id == "D-03:skill:0" &&
-                      key == "oneTimeConditionBypass"))
+                      key == "oneTimeConditionBypass") &&
+                    !(second && skill.Id == "TR-08:skill:0" &&
+                      key == "singleTargetMagicalDamageMultiplier"))
                     return false;
             foreach (string key in new[] { "cooldownSeconds", "absoluteCooldownSeconds" })
                 if (skill.Get(key) != null &&
@@ -251,8 +255,139 @@ namespace Ordr.Mobile.Combat
                     !(bypass[1] is string) || (string)bypass[1] != "enraged")
                     return false;
             }
+            if (second && skill.Id == "TR-08:skill:0" &&
+                !FinitePositive(skill.Number("singleTargetMagicalDamageMultiplier")))
+                return false;
+            if (second) return CanModelSecondCompositeComponents(skill);
             return composite ? CanModelFirstCompositeComponents(skill) :
                 CanModelComponents(skill);
+        }
+
+        // Explicit second-batch identities. RN-04 already has its own JASS
+        // attack/damage callback: only its *missing statuses* will be added.
+        public static bool IsSecondCompositeSkill(ImportedCombatSkill skill)
+        {
+            if (skill == null) return false;
+            switch (skill.Id)
+            {
+                case "E-09:skill:0": return skill.Name == "광역 노래 마법";
+                case "SR-03:skill:0": return skill.Name == "체력 소모 광역공격";
+                case "TR-08:skill:0": return skill.Name == "레드호크";
+                case "TR-22:skill:0": return skill.Name == "어인가라데";
+                case "TR-29:skill:0": return skill.Name == "씽크홀";
+                case "LI-06:skill:0": return skill.Name == "범위 광역 스턴";
+                case "MY-12:skill:1": return skill.Name == "염동 회오리";
+                case "MY-12:skill:3": return skill.Name == "염동 운석낙하";
+                case "H-19:skill:0": return skill.Name == "범위 마법·증폭";
+                case "LI-02:skill:1": return skill.Name == "광역 물리 둔화";
+                case "RN-04:skill:0": return skill.Name == "페인 브링어";
+                default: return false;
+            }
+        }
+
+        private static bool CanModelSecondCompositeComponents(ImportedCombatSkill skill)
+        {
+            string[] types;
+            switch (skill.Id)
+            {
+                case "E-09:skill:0": types = new[] { "magical", "magicResistanceReduction", "explosiveDamageAmplification", "selfHeal" }; break;
+                case "SR-03:skill:0": types = new[] { "physical", "armorBreak", "fixed" }; break;
+                case "TR-08:skill:0": types = new[] { "magical", "stun", "armorBreak" }; break;
+                case "TR-22:skill:0": types = new[] { "physical", "stun", "armorBreak", "armorReduction" }; break;
+                case "TR-29:skill:0": types = new[] { "magical", "movementSlow", "armorBreak" }; break;
+                case "LI-06:skill:0": types = new[] { "magical", "stun", "armorBreak", "allyAttackPowerBuff" }; break;
+                case "MY-12:skill:1": types = new[] { "magical", "physical", "armorBreak" }; break;
+                case "MY-12:skill:3": types = new[] { "magical", "physical", "armorBreak" }; break;
+                case "H-19:skill:0": types = new[] { "magical", "magicDamageAmplification" }; break;
+                case "LI-02:skill:1": types = new[] { "physical", "movementSlow" }; break;
+                case "RN-04:skill:0": types = new[] { "physical", "armorReduction", "magicDamageAmplification" }; break;
+                default: return false;
+            }
+            if (skill.Components.Count != types.Length) return false;
+            for (int i = 0; i < types.Length; i++)
+            {
+                var effect = skill.Components[i];
+                if (effect.Type != types[i]) return false;
+                if (effect.Type == "physical" || effect.Type == "magical" ||
+                    effect.Type == "fixed")
+                {
+                    if (ValidDamage(effect)) continue;
+                    if (skill.Id == "SR-03:skill:0" && effect.Type == "fixed" &&
+                        effect.Text("basis") == "skillDamage" &&
+                        FinitePositive(effect.Number("percent")) &&
+                        effect.Text("scope") == "singlePrimaryTarget" &&
+                        effect.Fields.Count == 4) continue;
+                    if (skill.Id == "LI-06:skill:0" && effect.Type == "magical" &&
+                        FinitePositive(effect.Number("amount")) &&
+                        FinitePositive(effect.Number("plusTargetMissingHealthPercentPhysical")) &&
+                        effect.Fields.Count == 3) continue;
+                    if (skill.Id == "LI-02:skill:1" && effect.Type == "physical" &&
+                        FinitePositive(effect.Number("amount")) &&
+                        FinitePositive(effect.Number("plusLegacyLevelDamage")) &&
+                        effect.Fields.Count == 3) continue;
+                    return false;
+                }
+                if (effect.Type == "stun")
+                {
+                    if (!FinitePositive(effect.Number("durationSeconds")) ||
+                        effect.Fields.Count != 2) return false;
+                    continue;
+                }
+                if (effect.Type == "armorBreak")
+                {
+                    if (!FinitePositive(effect.Number("stacks")) ||
+                        effect.Number("stacks").Value > int.MaxValue ||
+                        Math.Floor(effect.Number("stacks").Value) != effect.Number("stacks").Value)
+                        return false;
+                    if (effect.Fields.Count == 2) continue;
+                    if (effect.Fields.Count == 3 &&
+                        FinitePositive(effect.Number("maxStacks")) &&
+                        effect.Number("maxStacks").Value <= int.MaxValue &&
+                        Math.Floor(effect.Number("maxStacks").Value) == effect.Number("maxStacks").Value)
+                        continue;
+                    return false;
+                }
+                if (effect.Type == "selfHeal")
+                {
+                    if (effect.Fields.Count != 2 ||
+                        !FinitePositive(effect.Number("amount"))) return false;
+                    continue;
+                }
+                if (effect.Type == "allyAttackPowerBuff")
+                {
+                    if (effect.Fields.Count != 3 ||
+                        !FinitePositive(effect.Number("percent")) ||
+                        !FinitePositive(effect.Number("durationSeconds"))) return false;
+                    continue;
+                }
+                if (CommonSkillStatusEffects.IsTimedStatus(effect.Type))
+                {
+                    CombatEffectType kind;
+                    double amount, duration;
+                    if (CommonSkillStatusEffects.TryRead(effect, out kind,
+                        out amount, out duration)) continue;
+                    string field = effect.Type == "armorReduction" ? "amount" : "percent";
+                    if (!FinitePositive(effect.Number(field))) return false;
+                    if (skill.Id == "TR-22:skill:0" &&
+                        effect.Type == "armorReduction" &&
+                        effect.Fields.Count == 5 &&
+                        effect.Number("requiredArmorBreakStacks") == 10 &&
+                        effect.Get("oncePerEnemy") is bool &&
+                        (bool)effect.Get("oncePerEnemy") &&
+                        effect.Get("exclusiveWith") is List<object> &&
+                        ((List<object>)effect.Get("exclusiveWith")).Count == 1 &&
+                        (string)((List<object>)effect.Get("exclusiveWith"))[0] == "징베 전설")
+                        continue;
+                    if (skill.Id == "RN-04:skill:0" &&
+                        effect.Type == "armorReduction" &&
+                        effect.Text("scope") == "singlePrimaryTarget" &&
+                        effect.Fields.Count == 3) continue;
+                    if (effect.Fields.Count == 2) continue;
+                    return false;
+                }
+                return false;
+            }
+            return true;
         }
 
         // Explicitly reviewed tooltip models for the first composite batch.
