@@ -1,3 +1,9 @@
+## 2026-11-04 · 행운의 토큰 UI/보유 장부 단일화 (31차 · 검사 전)
+
+- `MobileOwnedRosterBrowser.cs`의 `MobileLuckyTokenInventory.Count`가 `Original323SourceMaterialRewardWorld.TokenCatalogId = LT-01` 실제 `MobileUnitSnapshot`만 계산합니다. 지갑 중복 잔액/임의 토큰 생성은 없습니다.
+- `OrdrMobileTouchPanel.DrawUnits → DrawLuckyTokenManagement`: 실보유량, 신비 조합 재료, 3개 위습 교환 원본 확률 표시. 토큰 포함 조합 바로가기 = `Tab.Fusion` + `fusionSearch="토큰"` + 읽기/미연결 제작도 보이도록 필터 초기화. 위습 탭의 토큰 중복 정보는 삭제, 원본 초월위습 쿠마 선택 기능은 유지.
+- `MobileOwnedRosterBrowserTests`에 물리 토큰 수량/0개/비어있는 목록 보호 사례 작성. 원본 Q 교환을 구현한 것이 아니므로 지급/소비 UI 비활성·원본 거래 증빙 대기. Python·Unity·APK·Actions 실행·조회하지 않음.
+
 ## 2026-11-04 · 30차 이벤트 공격·실명중 후속·HP 공통 경로 (현재 최신)
 
 - SourceModelTwentyNinthSkillCatalog의 원본 전체 프로필 승인에 LI-08 자기 가속 스킬0을 새로 허용하고, 별도 onEnemyEnterRange 스킬3은 정확 패킷 비교만 승인. SourceModelUnconnectedSkillCatalog에는 자기 가속만 평타 확률 목록에 추가해 접근 시전을 평타로 오등록하지 않음.

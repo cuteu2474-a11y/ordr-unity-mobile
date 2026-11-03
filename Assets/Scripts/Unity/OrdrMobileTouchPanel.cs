@@ -992,6 +992,7 @@ namespace Ordr.Mobile.Unity
                 return;
             }
             DrawStartingEvolutionSelection();
+            DrawLuckyTokenManagement();
             if (detail != null)
             {
                 GUILayout.BeginVertical(GUI.skin.box);
@@ -1055,6 +1056,39 @@ namespace Ordr.Mobile.Unity
                 GUILayout.EndVertical();
             }
             DrawOwnedUnitIndex();
+        }
+
+        // Lucky tokens remain LT-01 physical units in the actual roster.
+        // Do not spend them via a separate virtual currency or unverified UI.
+        private void DrawLuckyTokenManagement()
+        {
+            if (Combat == null) return;
+            int owned = MobileLuckyTokenInventory.Count(Combat.MobileUnitSnapshot());
+            GUILayout.BeginVertical(GUI.skin.box);
+            OrdrMobileUiTheme.DrawStatusRow("행운의 토큰", owned + "개",
+                OrdrMobileUiTheme.Gold);
+            GUILayout.Label("신비함 유닛 조합 재료 · 실제 보유 유닛과 수량 공유",
+                OrdrMobileUiTheme.Explanation);
+            GUILayout.Label("위습 교환: 3개 → 특별위습 80% / 희귀위습 20%",
+                OrdrMobileUiTheme.Explanation);
+            if (GUILayout.Button("행운의 토큰 사용 조합 보기", GUILayout.MinHeight(64)))
+            {
+                fusionSearch = "토큰";
+                fusionMaterialsReadyOnly = false;
+                fusionExecutableOnly = false;
+                showOnlyBookmarkedFusion = false;
+                fusionPage = 0;
+                originalJassPage = 0;
+                SelectTab(Tab.Fusion);
+            }
+            // The source 3-token Q transaction is not yet connected to the
+            // atomic unit-consumption + 80/20 Wisp payout world. A misleading
+            // enabled button would grant or spend assets without source proof.
+            OrdrMobileUiTheme.DrawStatusRow("위습 교환",
+                owned < MobileLuckyTokenInventory.WispExchangeCost
+                    ? "보유 " + owned + "/3 · 원본 거래 연결 대기"
+                    : "3개 확보 · 원본 거래 연결 대기", OrdrMobileUiTheme.Aqua);
+            GUILayout.EndVertical();
         }
 
         private void DrawStartingEvolutionSelection()
@@ -1940,9 +1974,6 @@ namespace Ordr.Mobile.Unity
             if (controller.OriginalSourceMaterialRewards != null)
             {
                 var rewards = controller.OriginalSourceMaterialRewards;
-                GUILayout.Label("행운의 토큰 " +
-                    controller.Combat.MobileUnitSnapshot().Count(x => x.Unit.Id == "LT-01") +
-                    "개 · 원본 도박/상자 결과에서만 획득");
                 if (rewards.PendingTranscendWisps > 0)
                 {
                     GUILayout.BeginVertical(GUI.skin.box);

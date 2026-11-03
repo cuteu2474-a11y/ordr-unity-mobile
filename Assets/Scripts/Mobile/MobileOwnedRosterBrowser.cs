@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ordr.Mobile.Combat;
 
 namespace Ordr.Mobile.Mobile
 {
@@ -38,6 +39,28 @@ namespace Ordr.Mobile.Mobile
                 if (current.HasValue && members[i].InstanceId == current.Value)
                     return members[(i + 1) % members.Count].InstanceId;
             return members[0].InstanceId;
+        }
+    }
+
+    // The lucky token is an actual non-combat unit in the shared roster,
+    // never an independently minted wallet currency. Both the Units screen
+    // and original fusion transactions must observe these same actors.
+    public static class MobileLuckyTokenInventory
+    {
+        public const int WispExchangeCost = 3;
+
+        public static int Count(IReadOnlyList<MobileUnitSnapshot> owned)
+        {
+            if (owned == null) throw new ArgumentNullException(nameof(owned));
+            int count = 0;
+            foreach (var entry in owned)
+            {
+                if (entry == null || entry.Unit == null)
+                    throw new ArgumentException("보유 목록에 빈 유닛이 있습니다.", nameof(owned));
+                if (entry.Unit.Id == Original323SourceMaterialRewardWorld.TokenCatalogId)
+                    count = checked(count + 1);
+            }
+            return count;
         }
     }
 

@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Combat;
 using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Tests
@@ -113,6 +114,25 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0, groups);
             Assert.AreEqual(1, pages);
             Assert.AreEqual(0, resolved);
+        }
+
+        [Test]
+        public void LuckyTokenCountReadsOnlyPhysicalRosterAndNeverVirtualWallet()
+        {
+            var sample = Sample();
+            var units = CharacterUnitCatalog.FromJson(File.ReadAllText(
+                Path.Combine(Application.dataPath, "..", "data", "units.json")));
+            var token = units.Require(Original323SourceMaterialRewardWorld.TokenCatalogId);
+            var withTokens = new[] {
+                sample[0],
+                new MobileUnitSnapshot(41, token, null, new UnitState(41, token.Id, 0, 0)),
+                new MobileUnitSnapshot(42, token, null, new UnitState(42, token.Id, 0, 0)),
+                new MobileUnitSnapshot(43, token, null, new UnitState(43, token.Id, 0, 0))
+            };
+            Assert.AreEqual(0, MobileLuckyTokenInventory.Count(sample));
+            Assert.AreEqual(3, MobileLuckyTokenInventory.Count(withTokens));
+            Assert.AreEqual(3, MobileLuckyTokenInventory.WispExchangeCost);
+            Assert.Throws<ArgumentNullException>(() => MobileLuckyTokenInventory.Count(null));
         }
 
         [Test]
