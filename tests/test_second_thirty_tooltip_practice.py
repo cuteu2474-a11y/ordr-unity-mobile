@@ -16,7 +16,14 @@ def rows():
     return [re.findall(r'"([^"]+)"', definition) for definition in definitions]
 
 
-def supported(skill):
+def supported(skill, unit_id=None):
+    # Exact first-composite-batch identity is separately validated against
+    # source profile, field whitelist, and runtime path in the new batch audit.
+    if (unit_id, skill.get('name')) in {
+        ('I-04', '광역 혼합 피해'), ('H-04', '거대 숲 물리'),
+        ('TR-10', '마나 광역 공격'), ('L-25', '미티어 울두건')
+    }:
+        return True
     trigger = skill.get('trigger')
     if trigger not in ('onAttack', 'onEveryAttack', 'activeMana', 'activeHealth'):
         return False
@@ -120,14 +127,14 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
         for unit_id, _, *names in self.rows:
             by_name = {skill['name']: skill for skill in self.profiles[unit_id]['skills']}
             for name in names:
-                self.assertTrue(supported(by_name[name]), (unit_id, name))
+                self.assertTrue(supported(by_name[name], unit_id), (unit_id, name))
                 if by_name[name]['trigger'] in ('activeMana', 'activeHealth'):
                     active += 1
                 else:
                     attacks += 1
         self.assertEqual(29, attacks)
-        self.assertEqual(8, active,
-                         'I-06 Big Mom was approved in the additional 13-active batch')
+        self.assertEqual(12, active,
+                         'First composite batch adds four active owners here')
 
     def test_legacy_source_callbacks_are_not_double_activated(self):
         by_id = {unit_id: names for unit_id, _, *names in self.rows}

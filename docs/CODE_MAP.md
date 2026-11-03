@@ -1,4 +1,10 @@
-## 2026-11-03 · 레드필드 모바일 결과 기준 보정 (현재 최신)
+## 2026-11-03 · 1차 복합 스킬 공통 연결부 (현재 최신)
+
+- 허용/소유권: `SourceModelNextThirtySkillCatalog.IsFirstCompositeActive`로 10개 유닛·스킬 ID·전체 효과 구성 확인. 기존 `SourceModelNextThirtySkillCatalog`의 4명(I-04/H-04/TR-10/L-25)과 `SourceModelUnconnectedSkillCatalog`의 6명에 액티브 추가; 원본 유닛 rawcode 일치 확인은 유지합니다.
+- 실행: `CharacterCombatRuntime.SourceModelResources` 공용 자원/우선순위 → `SourceModelNextThirtyAttacks` 단일 전장·대상 중심·HP 정산 → `CharacterCombatRuntime.SourceModelCompositeEffects` 상태·스택·공격력 기준 고정 피해 → 기존 HP/처치. `SourceModelUnitEffects`는 연습 둔화/방어/마법효과의 최강치 충돌 정책 적용. 울티 평타 HP+1은 `SourceModelAttackSkills`에서 원본 자원에만 적용.
+- 범위: 기존 원본-검증 경로의 피해 공식/JASS 이벤트는 그대로 두고, 누락 지속시간은 임의 초 단위 없이 **적 생존 동안 유지**합니다. 근거 `data/source-model-first-10-composite-actives.json`; Python/Unity 테스트·원본 불확실성은 별도 관리합니다.
+
+## 2026-11-03 · 레드필드 모바일 결과 기준 보정 (이전 작업 기록)
 
 - `Assets/Scripts/Mobile/SpecialGradeMobilePolicy.cs`: `Redfield = "LI-01"`, `UsesEnemyCenteredArea`는 기존 마르코와 레드필드를 명시적 모바일 보정 대상으로 제한. 원본 도감의 `casterArea` 자료는 변경하지 않음.
 - `CharacterCombatRuntime.SourceModelNextThirtyAttacks.ExecuteSourceModelApprovedProfileAttacks`는 `casterArea`에 대해 해당 정책이 참이면 `Circle`(공격 대상 중심), 아니면 `AttackerCircle`(시전자 중심)을 사용. `CharacterSkillEffectExecutor`의 동일 정책과 일치. 공격 대상 중심은 반경 750을 유지하며 일반 공격 도달 사거리 무제한/메인·스토리 lane 분리/기존 5% 반경700은 그대로.

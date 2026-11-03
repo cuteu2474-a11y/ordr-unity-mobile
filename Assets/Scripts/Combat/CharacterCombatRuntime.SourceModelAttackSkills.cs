@@ -60,6 +60,28 @@ namespace Ordr.Mobile.Combat
                 !primary.Enemy.IsAlive || !CanAttackInThisLane(actor, primary))
                 return;
 
+            // Ulti's tooltip combines her HP-cost active with +1 HP on each
+            // declared basic attack. Only source-managed practice HP is
+            // restored; externally supplied verified resource pools are not.
+            if (actor.Catalog.Id == "L-25" && rawcode == "h03S" &&
+                actor.Profile != null &&
+                sourceModelManagedResourceRows.ContainsKey(actor.Id) &&
+                actor.Abilities.Resources != null)
+            {
+                foreach (var ability in actor.Profile.Skills)
+                    if (ability.Name == "미티어 울두건" &&
+                        SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(ability))
+                    {
+                        double restored = ability.Number("healthRegenPerAttack") ?? 0;
+                        if (restored > 0)
+                        {
+                            var hp = actor.Abilities.Resources;
+                            hp.SetHealth(Math.Min(hp.MaximumHealth, hp.Health + restored));
+                        }
+                        break;
+                    }
+            }
+
             if (specialFromJass)
             {
                 if (actor.Catalog.Id == sourceSpecialUnitId)

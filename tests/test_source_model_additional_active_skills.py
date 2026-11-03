@@ -66,20 +66,23 @@ class AdditionalPracticeActivesTests(unittest.TestCase):
                 start = self.extra.index('new SourceModelUnconnectedSkillRow("' + uid + '", "' + raw + '"')
                 next_start = self.extra.find("new SourceModelUnconnectedSkillRow(", start + 1)
                 section = self.extra[start:next_start if next_start >= 0 else self.extra.index("};", start)]
-                self.assertIn('new[] { "' + name + '" }', section)
+                self.assertIn('"' + name + '"', section)
         self.assertIn('new SourceModelNextThirtyUnit("I-06", "h04Q",', self.next_thirty)
         self.assertIn('new[] { "대자재천신" }', self.next_thirty)
         self.assertNotIn(("I-06", "h04Q"), entries,
                          "A unit present in NextThirty must not have an unreachable parallel active.")
 
-    def test_unsupported_effect_stays_unconnected(self):
+    def test_previous_anya_deferred_skill_is_now_connected_through_composites(self):
         a = self.profiles["MY-08"]["skills"]
         unapproved = next(x for x in a if x["name"] == "로이드 포저")
         self.assertIn("movementSlow", [c["type"] for c in unapproved["components"]])
         row = self.batch["deferredComponents"][0]
         self.assertEqual(("MY-08", "로이드 포저"),
                          (row["catalogId"], row["skillName"]))
-        self.assertNotIn('new[] { "로이드 포저" }', self.extra)
+        self.assertIn('new[] { "요르 포저", "로이드 포저" }', self.extra)
+        self.assertIn('ApplySourceModelCompositeStatus', (
+            ROOT / 'Assets/Scripts/Combat/' /
+            'CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs').read_text())
 
     def test_missing_mana_cap_does_not_abort_all_265_original_resources(self):
         obj = self.objects["H0CO"]["originalObjectFields"]["balance"]

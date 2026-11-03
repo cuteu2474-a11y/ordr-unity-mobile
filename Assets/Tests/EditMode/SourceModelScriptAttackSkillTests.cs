@@ -468,7 +468,7 @@ namespace Ordr.Mobile.Tests
                 }
             }
             Assert.AreEqual(29, enabled, "Only whole attack tooltip packets are allowed");
-            Assert.AreEqual(7, activeEnabled, "Resource-gated, whole active packets only");
+            Assert.AreEqual(12, activeEnabled, "Resource-gated source and composite actives");
         }
 
         [TestCase("L-04", "바람바람 열매")]
@@ -676,13 +676,76 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives(),
                     unitId + " / " + skillName + " active cast");
                 Assert.AreEqual(0, spendsHealth ? resources.Health : resources.Mana, 1e-8);
+                if (unitId == "MY-08")
+                {
+                    // Previously approved Yor is still first, and the new
+                    // health-cost Lloyd follows on the next auto-cast frame.
+                    Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives());
+                    Assert.AreEqual(0, resources.Health, 1e-8);
+                }
                 Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives(),
-                    "No double debit or second free cast in the same combat step");
+                    "No double debit or free repeated cast");
                 var events = live.Battle.Advance(.1);
                 Assert.IsTrue(events.Any(x =>
                     x.Type == CharacterCombatEventType.SkillDamage &&
                     x.SkillName == skillName),
                     unitId + " active must reach the real shared enemy HP pipeline");
+            }
+        }
+
+        [TestCase("MY-08", "로이드 포저", 45d, true)]
+        [TestCase("I-04", "광역 혼합 피해", 150d, false)]
+        [TestCase("TR-10", "마나 광역 공격", 115d, false)]
+        [TestCase("I-09", "마나 광역 스턴", 125d, false)]
+        [TestCase("LI-07", "뇌영", 145d, false)]
+        [TestCase("L-28", "어인가라데", 85d, false)]
+        [TestCase("RN-13", "슈퍼 페이몬 선풍", 100d, false)]
+        [TestCase("H-04", "거대 숲 물리", 85d, false)]
+        [TestCase("L-25", "미티어 울두건", 35d, true)]
+        [TestCase("D-03", "브라키오 붐버", 65d, false)]
+        public void FirstTenCompositeActivesSpendSourceResourcesAndHitActualEnemies(
+            string unitId, string skillName, double cost, bool spendsHealth)
+        {
+            using (var live = Create(unitId, false, -4900, 5400))
+            {
+                var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                    .Require(unitId).Skills.Single(x => x.Name == skillName);
+                Assert.IsTrue(SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(skill));
+                Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill));
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                Assert.IsNotNull(pool, unitId);
+                Assert.AreEqual(cost,
+                    spendsHealth ? pool.MaximumHealth : pool.MaximumMana, 1e-8);
+                live.Battle.Advance(2);
+                var target = live.Combat.MobileEnemySnapshot().First();
+                Assert.AreEqual(AbilityCastResult.Cast,
+                    live.Combat.TryCastActiveSkill(live.ActorId, skill.Id, target.Id), unitId);
+                Assert.AreEqual(0, spendsHealth ? pool.Health : pool.Mana, 1e-8);
+                Assert.IsTrue(live.Combat.LastEvents.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == skillName && x.Amount > 0), unitId);
+                CombatEffectType? expectedStatus = null;
+                if (unitId == "MY-08" || unitId == "I-04")
+                    expectedStatus = CombatEffectType.MovementSlowPercent;
+                else if (unitId == "TR-10" || unitId == "I-09" || unitId == "RN-13")
+                    expectedStatus = CombatEffectType.MagicDamageAmplification;
+                else if (unitId == "LI-07")
+                    expectedStatus = CombatEffectType.MagicResistanceReduction;
+                else if (unitId == "H-04")
+                    expectedStatus = CombatEffectType.ArmorReduction;
+                if (expectedStatus.HasValue)
+                    Assert.IsTrue(live.Combat.StatusOf(target.Id).Snapshot().Any(x =>
+                        x.Type == expectedStatus.Value &&
+                        x.SourceId.StartsWith("practice-tooltip:")), unitId);
+                if (unitId == "L-25" || unitId == "D-03")
+                    Assert.AreEqual(unitId == "L-25" ? 1 : 3,
+                        live.Combat.ArmorBreakStacksOf(target.Id), unitId);
             }
         }
 
@@ -776,16 +839,17 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void UnsupportedAnyaSlowAndOtherNonAllowlistedEffectsRemainDeferred()
+        public void AnyaSlowIsExplicitlyApprovedButOtherNonAllowlistedEffectsRemainDeferred()
         {
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
             var profile = skills.Find("MY-08");
             var unverified = profile.Skills.Single(x => x.Name == "로이드 포저");
-            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(unverified));
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(unverified));
             SourceModelUnconnectedSkillRow row;
             Assert.IsTrue(SourceModelUnconnectedSkillCatalog.TryGet("h08M", out row));
-            Assert.IsFalse(SourceModelUnconnectedSkillCatalog.AllowsActive(row, "로이드 포저"));
+            Assert.IsTrue(SourceModelUnconnectedSkillCatalog.AllowsActive(row, "로이드 포저"));
             Assert.IsTrue(SourceModelUnconnectedSkillCatalog.AllowsActive(row, "요르 포저"));
+            Assert.IsFalse(SourceModelUnconnectedSkillCatalog.AllowsActive(row, "독심술"));
             Assert.AreEqual(0, row.PracticeAttackSkills.Count,
                 "Auto-cast-only data cannot create an invented attack proc.");
         }

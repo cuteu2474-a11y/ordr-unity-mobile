@@ -161,7 +161,11 @@ namespace Ordr.Mobile.Combat
             }
             foreach (var component in selected.Components)
             {
-                if (component.Type == "fixed" || component.Type == "stun") continue;
+                // Status effects and armor-break modify the target's state,
+                // they do not require a damage armor type to debit resources.
+                if (component.Type == "fixed" || component.Type == "stun" ||
+                    component.Type == "armorBreak" ||
+                    CommonSkillStatusEffects.IsTimedStatus(component.Type)) continue;
                 foreach (var target in targets)
                 {
                     if (!SourceModelNextThirtyComponentTargets(component, primary, target))
@@ -214,8 +218,22 @@ namespace Ordr.Mobile.Combat
             IReadOnlyList<SpatialCombatEnemy> targets)
         {
             string attackerId = InstanceKey(actor.Id);
+            bool composite = SourceModelNextThirtySkillCatalog.IsFirstCompositeActive(skill);
             foreach (var component in skill.Components)
             {
+                if (composite && CommonSkillStatusEffects.IsTimedStatus(component.Type) &&
+                    component.Type != "stun")
+                {
+                    ApplySourceModelCompositeStatus(actor, primary, skill,
+                        component, targets);
+                    continue;
+                }
+                if (composite && component.Type == "armorBreak")
+                {
+                    ApplySourceModelCompositeArmorBreak(actor, primary, skill,
+                        component, targets);
+                    continue;
+                }
                 if (component.Type == "stun")
                 {
                     // Native hero/boss resistance and immunity are not known.
@@ -259,8 +277,10 @@ namespace Ordr.Mobile.Combat
                         !CanAttackInThisLane(actor, target) ||
                         !SourceModelNextThirtyComponentTargets(component, primary, target))
                         continue;
-                    double raw = (component.Number("amount") ??
-                        component.Number("amountPerHit") ?? 0) * multiplier;
+                    double raw = composite ? SourceModelCompositeRawDamage(actor,
+                        component, target, multiplier) :
+                        (component.Number("amount") ??
+                         component.Number("amountPerHit") ?? 0) * multiplier;
                     if (component.Text("basis") == "targetMaxHealth")
                         raw += target.Enemy.MaxHealth * component.Number("percent").Value / 100;
                     raw += target.Enemy.MaxHealth *
@@ -299,7 +319,11 @@ namespace Ordr.Mobile.Combat
                                 raw, Ordr323AttackType.Spells, armor, true, true,
                                 target.Enemy.Defenses.BaseArmor.Value -
                                 SourceModelUnitEffects.ResolvePracticeArmorReduction(
-                                    target.Enemy.Status.Snapshot()), false, 0, 1);
+                                    target.Enemy.Status.Snapshot()) -
+                                ArmorBreakStacksOf(target.Id), false, 0, 1);
+                        if (composite)
+                            modeled *= SourceModelCompositeMagicFactor(target,
+                                component.Type);
                         if (modeled >= long.MaxValue || double.IsNaN(modeled))
                             throw new OverflowException("도감 모델 피해량 범위 초과");
                         long actual;
@@ -314,6 +338,31 @@ namespace Ordr.Mobile.Combat
                             events.Add(new CharacterCombatEvent(
                                 CharacterCombatEventType.EnemyDefeated, attackerId,
                                 target.Id, skill.Name, "연습 도감 스킬로 적 처치", actual));
+                    }
+                    // Ryokugyu's documented story-only fixed bonus is a
+                    // separate, armor-ignoring packet after the physical hit.
+                    if (composite && component.Type == "physical" &&
+                        target.Kind == CharacterEnemyKind.Story && target.Enemy.IsAlive &&
+                        component.Get("extraStoryFixedPercentOfSkill") != null)
+                    {
+                        double extra = raw *
+                            component.Number("extraStoryFixedPercentOfSkill").Value / 100;
+                        if (double.IsNaN(extra) || double.IsInfinity(extra) ||
+                            extra >= long.MaxValue) throw new OverflowException(
+                                "도감 스토리 추가 피해량 범위 초과");
+                        long actual;
+                        if (resolution.TryApplySkillDamage(attackerId, target.Id,
+                                (long)Math.Floor(extra), out actual))
+                        {
+                            events.Add(new CharacterCombatEvent(
+                                CharacterCombatEventType.SkillDamage,
+                                attackerId, target.Id, skill.Name,
+                                "TOOLTIP_MODEL_ONLY / 스토리 전용 고정 추가 피해", actual));
+                            if (!target.Enemy.IsAlive)
+                                events.Add(new CharacterCombatEvent(
+                                    CharacterCombatEventType.EnemyDefeated, attackerId,
+                                    target.Id, skill.Name, "연습 스토리 추가 피해로 처치", actual));
+                        }
                     }
                 }
             }

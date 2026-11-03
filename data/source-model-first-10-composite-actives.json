@@ -1,0 +1,36 @@
+{
+  "format": "ordr-source-model-first-10-composite-actives-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "source": [
+    "data/character-skill-profiles.json",
+    "data/original-2323C-unit-object-stats.json"
+  ],
+  "execution": "MOBILE_TOOLTIP_MODEL_ONLY",
+  "mobileEffectPolicies": {
+    "areaCenter": "attackedEnemy",
+    "missingStatusDuration": "one strongest effect per caster and skill until target dies; no invented numeric duration",
+    "magicResistanceWithoutNativeBase": "relative magical damage bonus equal to listed resistance reduction; native base resistance not synthesized",
+    "sameTypeConflict": "strongest source; source-specific recasts refresh without additive stacking",
+    "armorBreakPractice": "one armor-point reduction per stack, applying listed cap; not native A04M parity",
+    "stun": "ordinary line enemies only; boss resistance unresolved"
+  },
+  "activePackets": [
+    {"catalogId":"MY-08","rawcode":"h08M","skillName":"로이드 포저","resource":"health","cost":45},
+    {"catalogId":"I-04","rawcode":"h04J","skillName":"광역 혼합 피해","resource":"mana","cost":150},
+    {"catalogId":"TR-10","rawcode":"H09I","skillName":"마나 광역 공격","resource":"mana","cost":115},
+    {"catalogId":"I-09","rawcode":"h04B","skillName":"마나 광역 스턴","resource":"mana","cost":125},
+    {"catalogId":"LI-07","rawcode":"h05E","skillName":"뇌영","resource":"mana","cost":145},
+    {"catalogId":"L-28","rawcode":"h03G","skillName":"어인가라데","resource":"mana","cost":85},
+    {"catalogId":"RN-13","rawcode":"h06T","skillName":"슈퍼 페이몬 선풍","resource":"mana","cost":100},
+    {"catalogId":"H-04","rawcode":"h03N","skillName":"거대 숲 물리","resource":"mana","cost":85},
+    {"catalogId":"L-25","rawcode":"h03S","skillName":"미티어 울두건","resource":"health","cost":35},
+    {"catalogId":"D-03","rawcode":"h0CI","skillName":"브라키오 붐버","resource":"mana","cost":65}
+  ],
+  "deferred": [
+    "D-03 oneTimeConditionBypass is preserved as source metadata; its native one-time trigger is not asserted",
+    "L-28 exclusive-with-ascended-Jinbe checks same-lane ownership, not native skill precedence",
+    "Ulti's fixed percent uses mapped nominal basic attack power, not an invented live dice roll",
+    "Unity/Android and Warcraft native resistance/timing equivalence are not verified"
+  ]
+}

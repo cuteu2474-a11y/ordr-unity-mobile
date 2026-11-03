@@ -128,23 +128,31 @@ namespace Ordr.Mobile.Combat
                 if (targets.Count == 0) continue;
                 string primary = ChoosePreviewTarget(actor, targets);
                 if (primary == null) continue;
-                foreach (var skill in actor.Profile.Skills)
+                // Explicit approval order is the mobile auto-skill priority.
+                // A profile may list a newly connected HP active ahead of an
+                // existing MP active; connecting it must not silently change
+                // the previously selected primary automatic skill.
+                bool actorCast = false;
+                foreach (string approvedName in activeNames)
                 {
-                    bool allowed = false;
-                    foreach (var name in activeNames)
-                        if (name == skill.Name) { allowed = true; break; }
-                    if (!allowed ||
-                        !SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill))
-                        continue;
-                    double hp = skill.Number("healthCost") ?? 0;
-                    double mp = skill.Number("manaCost") ?? 0;
-                    if (!actor.Abilities.Resources.CanSpend(hp, mp)) continue;
-                    if (TryCastActiveSkill(id, skill.Id, primary) ==
-                        AbilityCastResult.Cast)
+                    foreach (var skill in actor.Profile.Skills)
                     {
-                        completed++;
-                        break;
+                        if (skill.Name != approvedName ||
+                            !SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill))
+                            continue;
+                        double hp = skill.Number("healthCost") ?? 0;
+                        double mp = skill.Number("manaCost") ?? 0;
+                        if (!actor.Abilities.Resources.CanSpend(hp, mp)) continue;
+                        if (TryCastActiveSkill(id, skill.Id, primary) ==
+                            AbilityCastResult.Cast)
+                        {
+                            completed++;
+                            actorCast = true;
+                            break;
+                        }
                     }
+                    // At most one auto-cast per actor in a frame.
+                    if (actorCast) break;
                 }
             }
             return completed;

@@ -57,10 +57,12 @@ namespace Ordr.Mobile.Combat
             new SourceModelNextThirtyUnit("L-15", "h02X", "왼손은 수면제", "타격 스턴"),
             new SourceModelNextThirtyUnit("L-17", "h035", "패왕색의 검무"),
             new SourceModelNextThirtyUnit("L-20", "h02V", "화이트블로우"),
-            new SourceModelNextThirtyUnit("L-25", "h03S"),
+            new SourceModelNextThirtyUnit("L-25", "h03S",
+                Array.Empty<string>(), new[] { "미티어 울두건" }),
             new SourceModelNextThirtyUnit("L-33", "h03H"),
             new SourceModelNextThirtyUnit("H-02", "h03U", "보스·광폭화 함포"),
-            new SourceModelNextThirtyUnit("H-04", "h03N", "숲 물리"),
+            new SourceModelNextThirtyUnit("H-04", "h03N",
+                new[] { "숲 물리" }, new[] { "거대 숲 물리" }),
             new SourceModelNextThirtyUnit("H-07", "h03R",
                 Array.Empty<string>(), new[] { "갑판 포격" }),
             new SourceModelNextThirtyUnit("H-12", "h03M", "용의 발톱"),
@@ -72,7 +74,8 @@ namespace Ordr.Mobile.Combat
                 new[] { "체력 소모 광역 공격" }),
             new SourceModelNextThirtyUnit("TR-09", "H094",
                 new[] { "광역 3연타" }, new[] { "마나 광역 공격" }),
-            new SourceModelNextThirtyUnit("TR-10", "H09I", "타격 스턴"),
+            new SourceModelNextThirtyUnit("TR-10", "H09I",
+                new[] { "타격 스턴" }, new[] { "마나 광역 공격" }),
             new SourceModelNextThirtyUnit("TR-14", "H0B2",
                 Array.Empty<string>(), new[] { "킹코브라" }),
             new SourceModelNextThirtyUnit("TR-18", "H0BD", "스턴 물리 타격"),
@@ -86,7 +89,9 @@ namespace Ordr.Mobile.Combat
             new SourceModelNextThirtyUnit("E-08", "h08R",
                 new[] { "범위 물리", "마법 광역", "단일 스턴" },
                 new[] { "마나 광역 스턴" }),
-            new SourceModelNextThirtyUnit("I-04", "h04J", "광역 물리 타격", "타격·단일 스턴"),
+            new SourceModelNextThirtyUnit("I-04", "h04J",
+                new[] { "광역 물리 타격", "타격·단일 스턴" },
+                new[] { "광역 혼합 피해" }),
             new SourceModelNextThirtyUnit("I-06", "h04Q",
                 Array.Empty<string>(), new[] { "대자재천신" }),
             new SourceModelNextThirtyUnit("I-11", "h07M")
@@ -212,6 +217,7 @@ namespace Ordr.Mobile.Combat
 
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
+            bool composite = IsFirstCompositeActive(skill);
             if (skill == null ||
                 !(skill.Trigger == "activeMana" || skill.Trigger == "activeHealth") ||
                 !(skill.Target == "area" || skill.Target == "single") ||
@@ -223,14 +229,182 @@ namespace Ordr.Mobile.Combat
                 if (key != "name" && key != "trigger" && key != "target" &&
                     key != "radius" && key != "components" &&
                     key != "manaCost" && key != "healthCost" &&
-                    key != "cooldownSeconds" && key != "absoluteCooldownSeconds")
+                    key != "cooldownSeconds" && key != "absoluteCooldownSeconds" &&
+                    !(composite && skill.Id == "L-25:skill:0" &&
+                      (key == "healthRegenPerSecond" || key == "healthRegenPerAttack")) &&
+                    !(composite && skill.Id == "D-03:skill:0" &&
+                      key == "oneTimeConditionBypass"))
                     return false;
             foreach (string key in new[] { "cooldownSeconds", "absoluteCooldownSeconds" })
                 if (skill.Get(key) != null &&
                     (!skill.Number(key).HasValue || double.IsNaN(skill.Number(key).Value) ||
                      double.IsInfinity(skill.Number(key).Value) || skill.Number(key).Value < 0))
                     return false;
-            return CanModelComponents(skill);
+            if (composite && skill.Id == "L-25:skill:0" &&
+                (!FinitePositive(skill.Number("healthRegenPerSecond")) ||
+                 !FinitePositive(skill.Number("healthRegenPerAttack")))) return false;
+            if (composite && skill.Id == "D-03:skill:0")
+            {
+                var bypass = skill.Get("oneTimeConditionBypass") as List<object>;
+                if (bypass == null || bypass.Count != 2 ||
+                    !(bypass[0] is string) || (string)bypass[0] != "boss" ||
+                    !(bypass[1] is string) || (string)bypass[1] != "enraged")
+                    return false;
+            }
+            return composite ? CanModelFirstCompositeComponents(skill) :
+                CanModelComponents(skill);
+        }
+
+        // Explicitly reviewed tooltip models for the first composite batch.
+        // The ordinary approval gate remains closed to unrelated incomplete
+        // packets; each of these still needs the owning-unit allow-list.
+        public static bool IsFirstCompositeActive(ImportedCombatSkill skill)
+        {
+            if (skill == null) return false;
+            switch (skill.Id)
+            {
+                case "MY-08:skill:1": return skill.Name == "로이드 포저";
+                case "I-04:skill:0": return skill.Name == "광역 혼합 피해";
+                case "TR-10:skill:0": return skill.Name == "마나 광역 공격";
+                case "I-09:skill:0": return skill.Name == "마나 광역 스턴";
+                case "LI-07:skill:0": return skill.Name == "뇌영";
+                case "L-28:skill:0": return skill.Name == "어인가라데";
+                case "RN-13:skill:1": return skill.Name == "슈퍼 페이몬 선풍";
+                case "H-04:skill:0": return skill.Name == "거대 숲 물리";
+                case "L-25:skill:0": return skill.Name == "미티어 울두건";
+                case "D-03:skill:0": return skill.Name == "브라키오 붐버";
+                default: return false;
+            }
+        }
+
+        private static bool CanModelFirstCompositeComponents(ImportedCombatSkill skill)
+        {
+            string[] expected;
+            switch (skill.Id)
+            {
+                case "MY-08:skill:1": expected = new[] { "magical", "movementSlow" }; break;
+                case "I-04:skill:0": expected = new[] { "magical", "physical", "movementSlow" }; break;
+                case "TR-10:skill:0": expected = new[] { "magical", "stun", "magicDamageAmplification" }; break;
+                case "I-09:skill:0": expected = new[] { "magical", "stun", "magicDamageAmplification" }; break;
+                case "LI-07:skill:0": expected = new[] { "magical", "magical", "magicResistanceReduction", "stun" }; break;
+                case "L-28:skill:0": expected = new[] { "magical", "magical", "armorReduction" }; break;
+                case "RN-13:skill:1": expected = new[] { "magical", "magicDamageAmplification" }; break;
+                case "H-04:skill:0": expected = new[] { "physical", "armorReduction" }; break;
+                case "L-25:skill:0": expected = new[] { "fixed", "armorBreak" }; break;
+                case "D-03:skill:0": expected = new[] { "physical", "magical", "armorBreak" }; break;
+                default: return false;
+            }
+            if (skill.Components.Count != expected.Length) return false;
+            for (int i = 0; i < expected.Length; i++)
+            {
+                var effect = skill.Components[i];
+                if (effect.Type != expected[i]) return false;
+                if (effect.Type == "physical" || effect.Type == "magical" ||
+                    effect.Type == "fixed")
+                {
+                    if (ValidDamage(effect)) continue;
+                    if (skill.Id == "H-04:skill:0" && effect.Type == "physical" &&
+                        FinitePositive(effect.Number("amount")) &&
+                        FinitePositive(effect.Number("extraStoryFixedPercentOfSkill")) &&
+                        ValidSourceModelMultiplierRange(effect.Get("multiplierRange")) &&
+                        effect.Fields.Count == 4) continue;
+                    if (skill.Id == "L-25:skill:0" && effect.Type == "fixed" &&
+                        effect.Text("basis") == "basicAttackDamage" &&
+                        FinitePositive(effect.Number("percent")) &&
+                        FinitePositive(effect.Number("flatAmount")) &&
+                        ValidSourceModelTargetKindMultiplier(
+                            effect.Get("targetKindMultiplier")) &&
+                        effect.Fields.Count == 5) continue;
+                    return false;
+                }
+                if (effect.Type == "stun")
+                {
+                    if (!FinitePositive(effect.Number("durationSeconds")) ||
+                        effect.Fields.Count != 2) return false;
+                    continue;
+                }
+                if (effect.Type == "armorBreak")
+                {
+                    if (!FinitePositive(effect.Number("stacks")) ||
+                        Math.Floor(effect.Number("stacks").Value) !=
+                        effect.Number("stacks").Value) return false;
+                    if (skill.Id == "L-25:skill:0" &&
+                        FinitePositive(effect.Number("maxArmorReduction")) &&
+                        Math.Floor(effect.Number("maxArmorReduction").Value) ==
+                            effect.Number("maxArmorReduction").Value &&
+                        effect.Fields.Count == 3) continue;
+                    if (skill.Id == "D-03:skill:0" &&
+                        FinitePositive(effect.Number("max")) &&
+                        Math.Floor(effect.Number("max").Value) ==
+                            effect.Number("max").Value &&
+                        effect.Fields.Count == 3) continue;
+                    return false;
+                }
+                if (CommonSkillStatusEffects.IsTimedStatus(effect.Type))
+                {
+                    CombatEffectType kind;
+                    double amount, duration;
+                    if (CommonSkillStatusEffects.TryRead(effect, out kind,
+                        out amount, out duration)) continue;
+                    // No duration in the imported tooltip: the mobile model
+                    // keeps one effect per caster/skill/target until that
+                    // enemy dies. No invented number of seconds is attached.
+                    if ((effect.Type == "magicResistanceReduction" ||
+                         effect.Type == "magicDamageAmplification") &&
+                        FinitePositive(effect.Number("percent")) &&
+                        (effect.Fields.Count == 2 ||
+                         (effect.Fields.Count == 3 &&
+                          effect.Text("target") == "hitEnemies"))) continue;
+                    if (skill.Id == "L-28:skill:0" &&
+                        effect.Type == "armorReduction" &&
+                        FinitePositive(effect.Number("amount")) &&
+                        ValidJinbeArmorReductionCondition(effect) &&
+                        effect.Fields.Count == 5) continue;
+                    return false;
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidSourceModelMultiplierRange(object value)
+        {
+            var range = value as List<object>;
+            if (range == null || range.Count != 2 ||
+                !(range[0] is double) || !(range[1] is double)) return false;
+            double minimum = (double)range[0], maximum = (double)range[1];
+            return minimum > 0 && maximum >= minimum &&
+                !double.IsNaN(maximum) && !double.IsInfinity(maximum);
+        }
+
+        private static bool ValidSourceModelTargetKindMultiplier(object value)
+        {
+            var factors = value as Dictionary<string, object>;
+            if (factors == null || factors.Count != 2 ||
+                !factors.ContainsKey("boss") || !factors.ContainsKey("story")) return false;
+            foreach (var pair in factors)
+                if (!(pair.Value is double) || (double)pair.Value <= 0 ||
+                    double.IsNaN((double)pair.Value) ||
+                    double.IsInfinity((double)pair.Value)) return false;
+            return true;
+        }
+
+        private static bool ValidJinbeArmorReductionCondition(ImportedCombatEffect effect)
+        {
+            var condition = effect.Get("condition") as Dictionary<string, object>;
+            var exclusion = effect.Get("exclusiveWith") as List<object>;
+            object minimum;
+            if (condition == null || condition.Count != 1 ||
+                !condition.TryGetValue("requiredArmorBreakStacks", out minimum) ||
+                !(minimum is double) || (double)minimum < 1 ||
+                Math.Floor((double)minimum) != (double)minimum ||
+                (double)minimum > int.MaxValue ||
+                !(effect.Get("onlyOncePerEnemy") is bool) ||
+                !(bool)effect.Get("onlyOncePerEnemy") ||
+                exclusion == null || exclusion.Count != 1 ||
+                !(exclusion[0] is string) || (string)exclusion[0] != "징베 초월")
+                return false;
+            return true;
         }
 
         private static bool CanModelComponents(ImportedCombatSkill skill)

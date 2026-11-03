@@ -198,7 +198,8 @@ namespace Ordr.Mobile.Combat
             foreach (var effect in effects)
                 if (effect.Type == CombatEffectType.MovementSlowPercent &&
                     (effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-nami:A089:", StringComparison.Ordinal)))
+                     effect.SourceId.StartsWith("practice-nami:A089:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-tooltip:", StringComparison.Ordinal)))
                     strongest = Math.Max(strongest, effect.Amount);
             // Native aura conflict rules remain unknown: strongest wins in
             // this mobile reference rather than silently stacking sources.
@@ -221,10 +222,27 @@ namespace Ordr.Mobile.Combat
                 else if (effect.Type == CombatEffectType.ArmorReduction &&
                     effect.SourceId.StartsWith("practice-kaido:armor:", StringComparison.Ordinal))
                     kaido = Math.Max(kaido, effect.Amount);
+                else if (effect.Type == CombatEffectType.ArmorReduction &&
+                    effect.SourceId.StartsWith("practice-tooltip:", StringComparison.Ordinal))
+                    kaido = Math.Max(kaido, effect.Amount);
             // This practice arithmetic is not native A04R/isr2 damage logic.
             // Native A04P + aura/Faerie Fire stacking is unverified. The
             // offline model uses the greater instead of adding fake stacks.
             return Math.Max(Math.Max(aura + faerie, bonney), kaido);
+        }
+
+        // Unspecified stacking/timing never silently adds multiple independent
+        // tooltip sources. In the mobile practice model the strongest available
+        // same-type effect is used, preserving its original percentage.
+        internal static double ResolvePracticeMagicModifier(
+            IReadOnlyList<CombatEffect> effects, CombatEffectType type)
+        {
+            double strongest = 0;
+            foreach (var effect in effects)
+                if (effect.Type == type &&
+                    effect.SourceId.StartsWith("practice-tooltip:", StringComparison.Ordinal))
+                    strongest = Math.Max(strongest, effect.Amount);
+            return strongest;
         }
     }
 }
