@@ -16,10 +16,23 @@ namespace Ordr.Mobile.Combat
             public bool FollowupUsed;
         }
 
+        // A declaration may cause other JASS/tooltip procs before the native
+        // damage resolves. Keep this decision tied to ONE attack and target:
+        // the 35% packet replaces the basic magic splash, not the native hit.
+        private sealed class SourceModelKidBasicReplacement
+        {
+            public string TargetId;
+            public long LaneRevision;
+            public bool StoryLane;
+        }
+
         private readonly Dictionary<long, SourceModelLawRoom> sourceModelLawRooms =
             new Dictionary<long, SourceModelLawRoom>();
         private readonly Dictionary<long, int> sourceModelKidMagnetCounters =
             new Dictionary<long, int>();
+        private readonly Dictionary<long, SourceModelKidBasicReplacement>
+            sourceModelKidBasicReplacements =
+                new Dictionary<long, SourceModelKidBasicReplacement>();
         private readonly Dictionary<long, HashSet<string>> sourceModelKidAuraVictims =
             new Dictionary<long, HashSet<string>>();
 
@@ -259,16 +272,24 @@ namespace Ordr.Mobile.Combat
             }
             else if (actor.Catalog.Id == "TR-25")
             {
+                // Always invalidate the preceding declaration, including one
+                // whose target died before basic damage could land.
+                sourceModelKidBasicReplacements.Remove(actor.Id);
                 if (SourceModelTwentyFifthRoll(actor.Profile.Skills[1]))
                     SourceModelTwentyFifthKidRepel(actor, primary, actor.Profile.Skills[1]);
                 if (primary.Enemy.IsAlive &&
                     SourceModelTwentyFifthRoll(actor.Profile.Skills[2]))
                     SourceModelTwentyFifthKidMagnet(actor, primary, actor.Profile.Skills[2]);
-                // The final skill REPLACES the original basic magic splash.
-                // This callback runs after that basic attack is declared:
-                // adding 360,000 here would incorrectly deal both attacks.
-                ReportSourceModelNextThirtyDeferred(InstanceKey(actor.Id),
-                    primary.Id, "키드 35% 단일 대체공격의 기본 스플래시 교체 미연결");
+                // Roll on attack declaration; apply only on a real native
+                // hit through the shared successful-hit callback below.
+                // Never append the packet to an already applied splash.
+                if (SourceModelTwentyFifthRoll(actor.Profile.Skills[3]))
+                    sourceModelKidBasicReplacements[actor.Id] =
+                        new SourceModelKidBasicReplacement {
+                            TargetId = primary.Id,
+                            LaneRevision = SourceModelLaneRevision(actor.Id),
+                            StoryLane = IsStoryDeployed(actor.Id)
+                        };
             }
         }
 
@@ -425,6 +446,33 @@ namespace Ordr.Mobile.Combat
                 !characters.TryGetValue(id, out actor) ||
                 !SourceModelTwentyFifthOwner(actor) ||
                 !enemies.TryGetValue(targetId, out primary)) return;
+            if (actor.Catalog.Id == "TR-25")
+            {
+                SourceModelKidBasicReplacement pending;
+                bool replacesSplash =
+                    sourceModelKidBasicReplacements.TryGetValue(id, out pending) &&
+                    pending.TargetId == targetId &&
+                    pending.LaneRevision == SourceModelLaneRevision(id) &&
+                    pending.StoryLane == IsStoryDeployed(id);
+                // Consume any pending decision even when it belongs to a
+                // stale target/lane. It must never leak to a later hit.
+                sourceModelKidBasicReplacements.Remove(id);
+                if (replacesSplash)
+                {
+                    var skill = actor.Profile.Skills[3];
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.SkillActivated, actorKey,
+                        targetId, skill.Name,
+                        "TOOLTIP_MODEL_ONLY / 35% 단일 대체 공격 · 기존 4만 광역 스플래시 억제", 0));
+                    // Preserve the original native basic hit. Replace ONLY
+                    // its tooltip's separate area-magic side packet.
+                    SourceModelTwentyFifthDamage(actor, primary, skill,
+                        skill.Components[0].Number("amount").Value, "physical");
+                    SourceModelTwentyFifthStun(actor, primary, skill,
+                        skill.Components[1].Number("durationSeconds").Value);
+                    return;
+                }
+            }
             var passive = actor.Catalog.Id == "TR-25" ?
                 actor.Profile.Passives[3] : actor.Profile.Passives[1];
             var targets = SourceScriptTargets(actor, primary, new SourceScriptHit(
@@ -500,6 +548,7 @@ namespace Ordr.Mobile.Combat
         {
             sourceModelLawRooms.Remove(actorId);
             sourceModelKidMagnetCounters.Remove(actorId);
+            sourceModelKidBasicReplacements.Remove(actorId);
             HashSet<string> victims;
             if (sourceModelKidAuraVictims.TryGetValue(actorId, out victims))
             {

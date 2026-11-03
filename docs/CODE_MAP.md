@@ -1,3 +1,8 @@
+## 2026-11-03 · 26차 키드 기본 공격 상호 배타 분기 (현재 최신)
+
+- `CharacterCombatRuntime.SourceModelTwentyFifthSkills`: `ExecuteSourceModelTwentyFifthAttacks`의 정확한 네 번째 프로필 35% 추첨을 **공격 선언**에서 기록하고, `CombatAttackPipeline` → 기존 `ConfigurePracticeSuccessfulBasicHit` 콜백에서 실제 평타 HP 피해가 성공한 경우에만 대상·전장·리비전 검증 후 소비합니다. 성공 시 `basicAttackAreaMagic` 4만/r215 **스플래시 건너뛰기**, 단일 `physical` 36만 + 라인 기절1.5초 적용. 원본 기본 타격 자체와 다른 캐릭터 콜백은 그대로 유지. 다음 선언·유닛 제거·파견 전환 시 추첨 폐기.
+- `SourceModelTwentyFifthSkillCatalog` 4기/패시브 전체 필드 게이트 유지, `SourceModelScriptAttackSkillTests`에 원본 ID/대체 스플래시 상호 배타·확률 강제/차단 사례 작성. `data/source-model-twentysixth-kid-basic-replacement-identity.json`에 `L-30=h03F 카르가라`, `D-06=h09V 바제스`, `R-29=h024 와이퍼`, `R-13=h01V 바제스` 소스 신원과 외부 프로필 불일치 기록. 게임/Unity/Android 검사는 **미실행**.
+
 ## 2026-11-03 · 25차 원본 객체 ID 정합성·시전 상태/자력/오라 (현재 최신)
 
 - `SourceModelTwentyFifthSkillCatalog.cs`: 원본 맵 `TR-05 H096` / `TR-25 H0B4`의 **네 스킬 전체·패시브 전체**를 원본 JSON 구조·값 그대로 재귀 비교하여 필드 누락/추가/순서 변경을 차단. `L-30`(원본 카르가라≠프로필 와이퍼), `D-06`(원본 바제스≠프로필 사이)은 승인 목록에 없음.

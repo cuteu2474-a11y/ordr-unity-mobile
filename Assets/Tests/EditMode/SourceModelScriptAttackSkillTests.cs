@@ -2207,6 +2207,12 @@ namespace Ordr.Mobile.Tests
                 Data("character-skill-profiles.json"));
             Assert.IsTrue(original.Find("L-30").MapName.Contains("카르가라"));
             Assert.IsTrue(original.Find("D-06").MapName.Contains("바제스"));
+            Assert.AreEqual("h03F", original.Find("L-30").OriginalRawcode);
+            Assert.AreEqual("h09V", original.Find("D-06").OriginalRawcode);
+            Assert.AreEqual("h024", original.Find("R-29").OriginalRawcode);
+            Assert.IsTrue(original.Find("R-29").MapName.Contains("와이퍼"));
+            Assert.IsTrue(skills.Require("L-30").Skills.Any(x => x.Name == "샨디아의 창"));
+            Assert.IsTrue(skills.Require("D-06").Skills.Any(x => x.Name == "파동 엘보"));
             Assert.IsFalse(SourceModelTwentyFifthSkillCatalog.HasExactOwner(
                 skills.Require("L-30"), "L-30"));
             Assert.IsFalse(SourceModelTwentyFifthSkillCatalog.HasExactOwner(
@@ -2214,6 +2220,40 @@ namespace Ordr.Mobile.Tests
             SourceModelUnconnectedSkillRow unused;
             Assert.IsFalse(SourceModelUnconnectedSkillCatalog.TryGet("h03F", out unused));
             Assert.IsFalse(SourceModelUnconnectedSkillCatalog.TryGet("h09V", out unused));
+        }
+
+        [Test]
+        public void KidThirtyFivePercentAttackReplacesOnlyTheBasicMagicSplash()
+        {
+            // Fully source-approved packet: native basic hit stays, the
+            // separate 40k area-magic passive is mutually exclusive with
+            // the 360k physical + 1.5s single-target stun packet.
+            var catalog = CharacterSkillCatalog.FromJson(
+                Data("character-skill-profiles.json"));
+            var profile = catalog.Require("TR-25");
+            Assert.IsTrue(SourceModelTwentyFifthSkillCatalog.HasExactOwner(
+                profile, "TR-25"));
+            Assert.AreEqual("단일 대체 공격", profile.Skills[3].Name);
+            Assert.AreEqual(true, profile.Skills[3].Get("overridesBasicMagicSplash"));
+            using (var live = Create("TR-25", true, -4900, 5400))
+            {
+                var events = live.Battle.Advance(6);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack),
+                    "The normal attack must still resolve before the replacement");
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.SkillName == "단일 대체 공격"));
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "단일 대체 공격" && x.Amount > 0));
+                Assert.IsFalse(events.Any(x => x.Type == CharacterCombatEventType.SkillDamage &&
+                    x.SkillName == "키드 · 기본 공격 부가 마법"),
+                    "A replacement must never stack with the basic magic splash");
+            }
+            using (var live = Create("TR-25", false, -4900, 5400))
+            {
+                var events = live.Battle.Advance(6);
+                Assert.IsTrue(events.Any(x => x.Type == CharacterCombatEventType.Attack));
+                Assert.IsFalse(events.Any(x => x.SkillName == "단일 대체 공격"));
+            }
         }
 
         [TestCase("H-10", "맥시멈 스윙")]

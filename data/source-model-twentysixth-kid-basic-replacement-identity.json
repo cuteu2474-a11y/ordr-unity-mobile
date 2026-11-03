@@ -1,0 +1,29 @@
+{
+  "version": "ORDR S2 2.323[C]",
+  "batch": 26,
+  "mode": "nightmare-isekai",
+  "state": "TOOLTIP_MODEL_ONLY; source data/engine logic inspected; no Unity, Python, Android, APK or CI execution",
+  "sources": [
+    "data/character-skill-profiles.json",
+    "data/original-2323C-map-base-stats.json",
+    "data/original-2323C-unit-object-stats.json",
+    "data/source-model-twentyfifth-law-kid-identity-audit.json"
+  ],
+  "kid": {
+    "unitId": "TR-25",
+    "originalRawcode": "H0B4",
+    "approvedFullSkill": "TR-25:skill:3",
+    "trigger": "onEveryAttack",
+    "chancePercent": 35,
+    "effect": "360000 single physical damage and 1.5 seconds line-target stun",
+    "replaces": "basicAttackAreaMagic 40000 radius215, exceptPrimaryTarget",
+    "doesNotReplace": "the original native basic attack HP damage",
+    "execution": "Decide on declared attack; bind decision to owner+target+lane revision; only consume on successful native hit; skip the magic-splash branch when replacement succeeds; clear at next declaration, despawn and lane transition",
+    "restrictions": "Exact four-skill/passive gate; shared original-derived damage/defense and status engines; no guessed native immunity or RNG order"
+  },
+  "identity": {
+    "L-30": {"originalRawcode":"h03F", "originalMapName":"카르가라 - 전설", "untrustedImportedProfileSkill":"샨디아의 창 (와이퍼)", "relatedOriginalWiper":{"unitId":"R-29", "rawcode":"h024", "name":"와이퍼 - 희귀"}, "decision":"Block foreign skill; source-backed Kalgara abilities not yet identified"},
+    "D-06": {"originalRawcode":"h09V", "originalMapName":"바제스 - 왜곡", "untrustedImportedProfileSkill":"파동 엘보 (사이)", "relatedOriginalBurgess":{"unitId":"R-13", "rawcode":"h01V", "name":"바제스 - 희귀"}, "decision":"Block foreign skill; source-backed distorted Burgess abilities not yet identified"}
+  },
+  "verification": "EditMode regression assertions authored but NOT run; original W3X JASS/random/native resistance parity remains unverified"
+}
