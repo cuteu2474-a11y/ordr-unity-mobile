@@ -1112,6 +1112,37 @@ namespace Ordr.Mobile.Unity
         public Original323SourceMaterialRewardWorld OriginalSourceMaterialRewards
         { get; private set; }
 
+        public Original323LuckyTokenService LuckyTokens { get; private set; }
+        public bool CanExchangeLuckyTokens => LuckyTokens != null &&
+            LuckyTokens.CanExchange && runGate.CanAdvance && !IsUnitPreparation;
+
+        public ManualActionResult RequestLuckyTokenWispExchange()
+        {
+            if (LuckyTokens == null)
+                return ManualActionResult.Unavailable("행운의 토큰 경제 월드");
+            if (!runGate.CanAdvance || IsUnitPreparation)
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "전투 진행 중에만 행운의 토큰을 교환할 수 있습니다.");
+            try
+            {
+                string wispId;
+                string reason;
+                if (!LuckyTokens.TryExchangeThree(out wispId, out reason))
+                    return new ManualActionResult(ManualActionState.Rejected, reason);
+                return new ManualActionResult(ManualActionState.Succeeded,
+                    "행운의 토큰 3개 사용 · " +
+                    (wispId == WispResourceIds.Special
+                        ? "특별함 선택위습" : "희귀함 선택위습") + " 1개 지급");
+            }
+            catch (Exception error)
+            {
+                Debug.LogException(error);
+                RecordSessionIssue("행운의 토큰 교환 실패", error.Message);
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "토큰 교환 실패 · 원본 보유 상태를 확인해 주세요.");
+            }
+        }
+
         public void ConfigureVerifiedOriginalSourceMaterialEvents(
             IOriginal323SourceMaterialEventWitness sourceEvents)
         {
@@ -2711,6 +2742,20 @@ namespace Ordr.Mobile.Unity
                 AttachOriginalHelperCow();
             if (originalHelperCowAreaWorld != null)
                 AttachOriginalHelperCowArea();
+
+            // Physical LT-01 actors are consumed by the same transactional
+            // staging as original fusion. The deferred automatic Wisp service
+            // settles the result only after the wallet/unit commit.
+            if (MapBaseStats != null && Units != null)
+            {
+                LuckyTokens = new Original323LuckyTokenService(
+                    Combat, SharedEconomy, Units, MapBaseStats,
+                    originalSharedScriptRandom == null ? sharedMobileWispRandom :
+                        originalSharedScriptRandom.ForPurpose(
+                            Original323ScriptRandomPurpose.OtherOriginalScriptCall),
+                    id => Wisps != null && Wisps.CanAutomaticallyResolve(id));
+                LuckyTokens.PostCommitObserverFailed += Debug.LogException;
+            }
         }
 
         // 원작 피해 공식 없이도 캐릭터 소환·선택·배치·웨이브 월드를 구성할 수 있다.
@@ -3151,6 +3196,17 @@ namespace Ordr.Mobile.Unity
                 return;
             }
             TryFinishOriginal323Evolution();
+            if (Combat.PendingSimulationSeconds == 0)
+            {
+                try { LuckyTokens?.AdvanceAutoElizabethQ(); }
+                catch (Exception ex)
+                {
+                    runGate.SetManualPause(true);
+                    RecordSessionIssue("엘리자베스 토큰 스킬 중단", ex.Message);
+                    Debug.LogException(ex);
+                    return;
+                }
+            }
             if (PracticeBattle != null &&
                 Combat.Game.Phase == SessionPhase.Running &&
                 Combat.PendingSimulationSeconds == 0)

@@ -269,6 +269,32 @@ namespace Ordr.Mobile.Combat
             return ticket;
         }
 
+        // Reuse the already rollback-capable native fusion staging for a
+        // batch of physical noncombat materials (e.g. three lucky tokens).
+        // A failed wallet/RNG transaction leaves ALL original instance IDs
+        // and their timers untouched until the caller commits this ticket.
+        public OriginalFusionUnitSwap BeginOriginalUnitRemovalBatch(
+            IReadOnlyList<long> instanceIds)
+        {
+            if (activeOriginalFusionSwap != null || processingStep ||
+                pendingStepSeconds != 0 || game.Phase != SessionPhase.Running ||
+                instanceIds == null || instanceIds.Count == 0)
+                throw new InvalidOperationException("현재 재료 유닛 일괄 제거를 시작할 수 없습니다.");
+            var unique = new HashSet<long>();
+            var ids = new List<long>();
+            foreach (long id in instanceIds)
+            {
+                if (id <= 0 || !unique.Add(id) ||
+                    !characters.ContainsKey(id) || IsStoryDeployed(id))
+                    throw new InvalidOperationException(
+                        "원본 재료 인스턴스가 중복·파견·제거되었습니다.");
+                ids.Add(id);
+            }
+            var ticket = new OriginalFusionUnitSwap(this, ids, true);
+            activeOriginalFusionSwap = ticket;
+            return ticket;
+        }
+
         private void BlockExternalMutationDuringOriginalFusion()
         {
             if (activeOriginalFusionSwap != null &&

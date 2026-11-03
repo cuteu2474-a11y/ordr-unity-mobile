@@ -1,0 +1,68 @@
+{
+  "version": "S2 2.323[C]",
+  "phase": "32",
+  "mode": "nightmare-otherworld",
+  "grade": "TOOLTIP_MODEL_ONLY",
+  "owner": {
+    "catalogId": "RN-06",
+    "originalRawcode": "h06Z",
+    "manualSourceSkill": "행운의 토큰(Q)",
+    "mobilePolicy": "auto after owner present; require exact approved source profile",
+    "castTimeSeconds": 2,
+    "cooldownSeconds": 110,
+    "baseTokenCount": 1,
+    "bonusTokenChancePercent": 33,
+    "bonusTokenCount": 1,
+    "lumberChancePercent": 33,
+    "lumberReward": 1
+  },
+  "token": {
+    "catalogId": "LT-01",
+    "originalRawcode": "h06G",
+    "storage": "physical combat/UnitRoster actor, never wallet balance",
+    "generation": "at caster's current mobile coordinate",
+    "otherAwardFunctions": [
+      "CJK",
+      "CJM",
+      "CGk",
+      "CCk",
+      "CKJ"
+    ],
+    "otherAwardsRequire": "IOriginal323SourceMaterialEventWitness parent settlement proof"
+  },
+  "exchange": {
+    "costPhysicalTokens": 3,
+    "options": [
+      {
+        "resource": "wisp:e016",
+        "name": "특별함 선택위습",
+        "chancePercent": 80
+      },
+      {
+        "resource": "wisp:e019",
+        "name": "희귀함 선택위습",
+        "chancePercent": 20
+      }
+    ],
+    "preconditions": "both automatic pools supported",
+    "ledger": "OriginalFusionUnitSwap staged unit removal + EconomyWallet TryGrantOnce and RestoreState + deferred MobileWispService",
+    "ui": "Units tab one-tap exchange; no duplicate Wisp tab count"
+  },
+  "fusion": {
+    "source": "original-jass-mystic-candidate-reconciliation.json",
+    "currentPolicy": "existing runnable unit recipes retain LT-01 material; unverified PICK/KING and other candidates stay unauthorized"
+  },
+  "knownLimits": [
+    "Native Warcraft BFi sequence is not replicated without a witnessed original script stream; native stream cannot be rolled back.",
+    "Manual Warcraft Q was made automatic for mobile and original cast-order/timing is unverified.",
+    "Token spawn coordinate uses live owner position, not witnessed original drop.",
+    "Do not fabricate parent gambling/chest payouts."
+  ],
+  "verification": {
+    "unityEditMode": "cases authored; NOT run",
+    "python": "NOT run",
+    "apk": "NOT built",
+    "githubActions": "only push trigger start will be observed; do not wait for result",
+    "nativeParity": "not established"
+  }
+}

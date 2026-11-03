@@ -1081,13 +1081,20 @@ namespace Ordr.Mobile.Unity
                 originalJassPage = 0;
                 SelectTab(Tab.Fusion);
             }
-            // The source 3-token Q transaction is not yet connected to the
-            // atomic unit-consumption + 80/20 Wisp payout world. A misleading
-            // enabled button would grant or spend assets without source proof.
             OrdrMobileUiTheme.DrawStatusRow("위습 교환",
                 owned < MobileLuckyTokenInventory.WispExchangeCost
-                    ? "보유 " + owned + "/3 · 원본 거래 연결 대기"
-                    : "3개 확보 · 원본 거래 연결 대기", OrdrMobileUiTheme.Aqua);
+                    ? "보유 " + owned + "/3 · 토큰 부족"
+                    : controller.CanExchangeLuckyTokens
+                        ? "교환 가능 · 특별 80% / 희귀 20%"
+                        : "보상 풀 미연결 또는 전투 일시중지",
+                OrdrMobileUiTheme.Aqua);
+            bool previouslyEnabled = GUI.enabled;
+            GUI.enabled = previouslyEnabled && controller.CanExchangeLuckyTokens;
+            if (GUILayout.Button("행운의 토큰 3개 교환",
+                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
+                RunWispDirect("행운의 토큰 위습 교환",
+                    () => controller.RequestLuckyTokenWispExchange());
+            GUI.enabled = previouslyEnabled;
             GUILayout.EndVertical();
         }
 

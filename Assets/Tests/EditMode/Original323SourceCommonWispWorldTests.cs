@@ -384,4 +384,125 @@ namespace Ordr.Mobile.Tests
             Assert.Throws<ArgumentException>(() => source.ConfirmedCountForOriginal("h060"));
         }
     }
+
+    // Source Q model tests are intentionally authored but NOT executed until
+    // the user requests a test run.
+    public sealed class Original323LuckyTokenServiceTests
+    {
+        private sealed class Rolls : IOriginalWispRandom
+        {
+            private readonly Queue<int> values = new Queue<int>();
+            public int Calls { get; private set; }
+            public Rolls(params int[] sequence)
+            { foreach (int value in sequence) values.Enqueue(value); }
+            public int NextInclusive(int minimum, int maximum)
+            {
+                Calls++;
+                int value = values.Dequeue();
+                Assert.That(value, Is.InRange(minimum, maximum));
+                return value;
+            }
+        }
+
+        private sealed class World
+        {
+            public CharacterCombatRuntime Combat;
+            public SharedEconomySession Economy;
+            public Original323LuckyTokenService Tokens;
+            public Rolls Random;
+        }
+
+        private static string Source(string file) => File.ReadAllText(
+            Path.Combine(Application.dataPath, "..", "data", file));
+
+        private static World Create(params int[] rolls)
+        {
+            var units = CharacterUnitCatalog.FromJson(Source("units.json"));
+            var skills = CharacterSkillCatalog.FromJson(Source("character-skill-profiles.json"));
+            var original = OriginalMapBaseStatCatalog.FromJson(
+                Source("original-2323C-map-base-stats.json"), units);
+            var reject = new RejectUnverifiedDamageFormula();
+            var combat = new CharacterCombatRuntime(units, skills, reject, reject,
+                new SeededNonOriginalProcRandom(84));
+            var shared = new SharedEconomySession(new EconomyWallet(), combat.Roster);
+            shared.ApplyVerifiedStart(Original323SoloStartProfile.Create(),
+                (id, x, y) => shared.Units.Add(id, x, y),
+                id => shared.Units.Remove(id));
+            combat.Start();
+            combat.BeginWave(1);
+            var random = new Rolls(rolls);
+            var tokens = new Original323LuckyTokenService(combat, shared, units,
+                original, random, id => id == WispResourceIds.Special ||
+                    id == WispResourceIds.Rare);
+            return new World { Combat = combat, Economy = shared,
+                Tokens = tokens, Random = random };
+        }
+
+        [Test]
+        public void ElizabethQRequiresFullCastAndGrantsPhysicalBonusAndWoodOnce()
+        {
+            var game = Create(20, 30);
+            game.Combat.SpawnCharacter("RN-06", 125, 250);
+            long woodBefore = game.Economy.Wallet.Balance("wood");
+            game.Tokens.AdvanceAutoElizabethQ(); // auto-order starts a 2s cast
+            Assert.AreEqual(0, game.Tokens.OwnedTokenCount);
+            game.Combat.Step(2.01);
+            game.Tokens.AdvanceAutoElizabethQ();
+            Assert.AreEqual(2, game.Tokens.OwnedTokenCount);
+            Assert.AreEqual(woodBefore + 1, game.Economy.Wallet.Balance("wood"));
+            game.Tokens.AdvanceAutoElizabethQ();
+            Assert.AreEqual(2, game.Tokens.OwnedTokenCount);
+            Assert.AreEqual(2, game.Random.Calls);
+        }
+
+        [TestCase(80, WispResourceIds.Special)]
+        [TestCase(81, WispResourceIds.Rare)]
+        public void ExchangeConsumesExactlyThreePhysicalUnitsAndCreditsCorrectWisp(
+            int draw, string expected)
+        {
+            var game = Create(draw);
+            for (int i = 0; i < 3; i++)
+                game.Combat.SpawnCharacter("LT-01", i, i);
+            string payout, reason;
+            Assert.IsTrue(game.Tokens.TryExchangeThree(out payout, out reason), reason);
+            Assert.AreEqual(expected, payout);
+            Assert.AreEqual(0, game.Tokens.OwnedTokenCount);
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(expected));
+            Assert.AreEqual(1, game.Random.Calls);
+            Assert.IsFalse(game.Tokens.TryExchangeThree(out payout, out reason));
+            Assert.AreEqual(1, game.Random.Calls);
+        }
+
+        [Test]
+        public void ExchangeShortageDoesNotConsumeOrRoll()
+        {
+            var game = Create();
+            game.Combat.SpawnCharacter("LT-01", 0, 0);
+            game.Combat.SpawnCharacter("LT-01", 1, 1);
+            string payout, reason;
+            Assert.IsFalse(game.Tokens.TryExchangeThree(out payout, out reason));
+            Assert.AreEqual(2, game.Tokens.OwnedTokenCount);
+            Assert.AreEqual(0, game.Random.Calls);
+        }
+
+        [Test]
+        public void PostCommitWalletObserverExceptionCannotRefundAlreadyPaidTokens()
+        {
+            var game = Create(25);
+            for (int i = 0; i < 3; i++)
+                game.Combat.SpawnCharacter("LT-01", i, i);
+            int observers = 0;
+            game.Tokens.PostCommitObserverFailed += error => observers++;
+            game.Economy.Wallet.Granted += reward => {
+                if (reward.Get(WispResourceIds.Special) > 0)
+                    throw new InvalidOperationException("simulated downstream observer");
+            };
+            string payout, reason;
+            Assert.IsTrue(game.Tokens.TryExchangeThree(out payout, out reason));
+            Assert.AreEqual(WispResourceIds.Special, payout);
+            Assert.AreEqual(0, game.Tokens.OwnedTokenCount);
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(WispResourceIds.Special));
+            Assert.AreEqual(1, observers);
+        }
+    }
 }

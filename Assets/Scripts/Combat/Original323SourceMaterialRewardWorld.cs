@@ -199,4 +199,249 @@ namespace Ordr.Mobile.Combat
             finally { inFlight = false; }
         }
     }
+
+    // Source tooltip-model Q + Q token exchange on the same live, physical
+    // roster as CWR UNIT fusion. This is a mobile result-equivalent policy:
+    // Warcraft's native spell order/seed and rare-pool execution are not claimed.
+    public sealed class Original323LuckyTokenService
+    {
+        private sealed class ElizabethCast
+        {
+            public double NextStartAt;
+            public double FinishAt;
+            public bool Casting;
+        }
+
+        public const string ElizabethCatalogId = "RN-06";
+        public const string ElizabethRawcode = "h06Z";
+        public const int ExchangeCost = 3;
+        public const int SpecialChancePercent = 80;
+        public const double CastSeconds = 2;
+        public const double CooldownSeconds = 110;
+        private readonly CharacterCombatRuntime combat;
+        private readonly SharedEconomySession economy;
+        private readonly IOriginalWispRandom random;
+        private readonly Func<string, bool> canResolveWisp;
+        private readonly Dictionary<long, ElizabethCast> casts =
+            new Dictionary<long, ElizabethCast>();
+        private readonly string receiptPrefix =
+            "original323:elizabeth-lucky-token:" + Guid.NewGuid().ToString("N") + ":";
+        private long sequence;
+        private bool processing;
+        public event Action<Exception> PostCommitObserverFailed;
+
+        public Original323LuckyTokenService(CharacterCombatRuntime combat,
+            SharedEconomySession economy, CharacterUnitCatalog units,
+            OriginalMapBaseStatCatalog originalObjects,
+            IOriginalWispRandom sharedScriptRandom,
+            Func<string, bool> canAutomaticallyResolveWisp)
+        {
+            this.combat = combat ?? throw new ArgumentNullException(nameof(combat));
+            this.economy = economy ?? throw new ArgumentNullException(nameof(economy));
+            random = sharedScriptRandom ?? throw new ArgumentNullException(nameof(sharedScriptRandom));
+            canResolveWisp = canAutomaticallyResolveWisp ??
+                throw new ArgumentNullException(nameof(canAutomaticallyResolveWisp));
+            if (!ReferenceEquals(combat.Roster, economy.Units) ||
+                units == null || originalObjects == null ||
+                originalObjects.SourceW3xSha256 != OriginalCommonSaleRules.OriginalMapSha256 ||
+                GameSession.ModeId != "nightmare-otherworld")
+                throw new ArgumentException("원본 토큰 경제와 현재 공유 유닛 장부가 다릅니다.");
+            var elizabeth = units.Find(ElizabethCatalogId);
+            var sourceOwner = originalObjects.Find(ElizabethCatalogId);
+            var token = units.Find(Original323SourceMaterialRewardWorld.TokenCatalogId);
+            var sourceToken = originalObjects.Find(Original323SourceMaterialRewardWorld.TokenCatalogId);
+            if (elizabeth == null || sourceOwner == null ||
+                sourceOwner.OriginalRawcode != ElizabethRawcode ||
+                token == null || token.Grade != "재료" ||
+                sourceToken == null ||
+                sourceToken.OriginalRawcode != Original323SourceMaterialRewardWorld.TokenRawcode ||
+                sourceToken.MappingStatus != "verified-source-unit-gambling-reward" ||
+                sourceToken.Attack1 != null)
+                throw new ArgumentException("엘리자베스 또는 행운의 토큰 원본 객체 매핑 불일치");
+        }
+
+        private bool Ready => !processing && economy.HasStarted &&
+            combat.Game.Phase == SessionPhase.Running &&
+            combat.PendingSimulationSeconds == 0 &&
+            GameSession.ModeId == "nightmare-otherworld";
+
+        public int OwnedTokenCount
+        {
+            get
+            {
+                int count = 0;
+                foreach (var unit in combat.MobileUnitSnapshot())
+                    if (unit.Unit.Id == Original323SourceMaterialRewardWorld.TokenCatalogId &&
+                        !combat.IsStoryDeployed(unit.InstanceId)) count++;
+                return count;
+            }
+        }
+
+        public bool CanExchange => Ready && OwnedTokenCount >= ExchangeCost &&
+            canResolveWisp(WispResourceIds.Special) &&
+            canResolveWisp(WispResourceIds.Rare);
+
+        // Q is automatically activated on mobile; a 2-second cast must
+        // complete while its exact source-profile owner is still on the roster.
+        // Cooldown starts on cast order. No phantom token wallet is created.
+        public void AdvanceAutoElizabethQ()
+        {
+            if (!Ready) return;
+            var live = new HashSet<long>();
+            foreach (var unit in combat.MobileUnitSnapshot())
+            {
+                if (unit.Unit.Id != ElizabethCatalogId ||
+                    combat.IsStoryDeployed(unit.InstanceId) ||
+                    !SourceModelTwentyNinthSkillCatalog.HasExactApprovedSubset(combat.ProfileOf(unit.InstanceId)))
+                    continue;
+                live.Add(unit.InstanceId);
+                ElizabethCast state;
+                if (!casts.TryGetValue(unit.InstanceId, out state))
+                {
+                    state = new ElizabethCast();
+                    casts.Add(unit.InstanceId, state);
+                }
+                if (state.Casting)
+                {
+                    if (combat.Time >= state.FinishAt)
+                    {
+                        AwardElizabethCast(unit);
+                        state.Casting = false;
+                    }
+                }
+                else if (combat.Time >= state.NextStartAt)
+                {
+                    state.Casting = true;
+                    state.FinishAt = combat.Time + CastSeconds;
+                    state.NextStartAt = combat.Time + CooldownSeconds;
+                }
+            }
+            var missing = new List<long>();
+            foreach (long id in casts.Keys)
+                if (!live.Contains(id)) missing.Add(id);
+            foreach (long id in missing) casts.Remove(id);
+        }
+
+        private void AwardElizabethCast(MobileUnitSnapshot owner)
+        {
+            processing = true;
+            var spawned = new List<long>();
+            var checkpointRandom = random as IOriginal323RollbackWispRandom;
+            int checkpoint = checkpointRandom == null ? -1 : checkpointRandom.CaptureCheckpoint();
+            long next = checked(sequence + 1);
+            string receipt = receiptPrefix + "q:" + next;
+            try
+            {
+                // Two independent 33% source rolls: bonus token and wood.
+                bool extraToken = random.NextInclusive(1, 100) <= 33;
+                bool extraWood = random.NextInclusive(1, 100) <= 33;
+                int count = extraToken ? 2 : 1;
+                for (int i = 0; i < count; i++)
+                    spawned.Add(combat.SpawnVerifiedOriginalPositionCharacter(
+                        Original323SourceMaterialRewardWorld.TokenCatalogId,
+                        combat.Roster.Get(owner.InstanceId).X,
+                        combat.Roster.Get(owner.InstanceId).Y));
+                var grant = new ResourceBundle();
+                if (extraWood) grant.Add("wood", 1);
+                try { economy.Wallet.TryGrantOnce(receipt, grant); }
+                catch (Exception observer)
+                {
+                    if (!economy.Wallet.HasCompletedTransaction(receipt)) throw;
+                    PostCommitObserverFailed?.Invoke(observer);
+                }
+                sequence = next;
+            }
+            catch
+            {
+                if (!economy.Wallet.HasCompletedTransaction(receipt))
+                {
+                    for (int i = spawned.Count - 1; i >= 0; i--)
+                        combat.RollbackUncommittedSpawn(spawned[i]);
+                    if (checkpointRandom != null)
+                        checkpointRandom.RestoreCheckpoint(checkpoint);
+                }
+                throw;
+            }
+            finally { processing = false; }
+        }
+
+        // Consumes three real LT-01 instances, never a separate token
+        // currency. Both source reward pools must be operational before
+        // removing units. The deferred Wisp service drains the granted
+        // balance only after this whole unit transaction commits.
+        public bool TryExchangeThree(out string rewardedWisp, out string reason)
+        {
+            rewardedWisp = null;
+            reason = null;
+            if (!Ready)
+            {
+                reason = "전투 정산 또는 원본 세션이 준비되지 않았습니다.";
+                return false;
+            }
+            if (!canResolveWisp(WispResourceIds.Special) ||
+                !canResolveWisp(WispResourceIds.Rare))
+            {
+                reason = "특별함·희귀함 위습의 원본 보상 풀이 모두 연결되지 않았습니다.";
+                return false;
+            }
+            var materialIds = new List<long>(ExchangeCost);
+            foreach (var unit in combat.MobileUnitSnapshot())
+                if (unit.Unit.Id == Original323SourceMaterialRewardWorld.TokenCatalogId &&
+                    !combat.IsStoryDeployed(unit.InstanceId))
+                {
+                    materialIds.Add(unit.InstanceId);
+                    if (materialIds.Count == ExchangeCost) break;
+                }
+            if (materialIds.Count != ExchangeCost)
+            {
+                reason = "행운의 토큰 3개가 필요합니다.";
+                return false;
+            }
+
+            processing = true;
+            var checkpointRandom = random as IOriginal323RollbackWispRandom;
+            int checkpoint = checkpointRandom == null ? -1 : checkpointRandom.CaptureCheckpoint();
+            var beforeWallet = economy.Wallet.CaptureState();
+            long next = checked(sequence + 1);
+            string receipt = receiptPrefix + "exchange:" + next;
+            bool consumed = false;
+            try
+            {
+                using (var removal = combat.BeginOriginalUnitRemovalBatch(materialIds))
+                {
+                    string result = random.NextInclusive(1, 100) <= SpecialChancePercent
+                        ? WispResourceIds.Special : WispResourceIds.Rare;
+                    try
+                    {
+                        if (!economy.Wallet.TryGrantOnce(receipt,
+                                new ResourceBundle().Add(result, 1)))
+                            throw new InvalidOperationException("이미 처리된 토큰 교환 요청입니다.");
+                    }
+                    catch (Exception observer)
+                    {
+                        if (!economy.Wallet.HasCompletedTransaction(receipt)) throw;
+                        PostCommitObserverFailed?.Invoke(observer);
+                    }
+                    removal.Commit();
+                    consumed = true;
+                    rewardedWisp = result;
+                    sequence = next;
+                    return true;
+                }
+            }
+            catch
+            {
+                if (!consumed)
+                {
+                    // The staged batch never deleted source units before its
+                    // Commit; reverse speculative Wisp balance/receipt together.
+                    economy.Wallet.RestoreState(beforeWallet);
+                    if (checkpointRandom != null)
+                        checkpointRandom.RestoreCheckpoint(checkpoint);
+                }
+                throw;
+            }
+            finally { processing = false; }
+        }
+    }
 }
