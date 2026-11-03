@@ -143,6 +143,8 @@ namespace Ordr.Mobile.Combat
                 CombatEffectOrigin.TriggeredSkill,
                 form.AttackIntervalReduction, form.Duration));
             sourceFormNames[id] = form.Name;
+            if (skill.Id == "TR-18:skill:0")
+                sourceModelYamatoOpeningReady.Add(id);
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.StatusApplied, actorId, actorId,
                 skill.Name, "MODEL_ONLY 변신 " + form.Name +

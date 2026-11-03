@@ -1,3 +1,10 @@
+## 2026-11-03 · 8차 조건형·접근형 공통 경로 (최신)
+
+- `CharacterCombatRuntime.SourceModelEighthSkills.cs`: 17개 신규 도감 기반 기능 중 조건/라운드/접근/주기 실행. 야마토 폼 첫 타격 소비, 블랙 마리아 공격 13회 카운터, 조로 선택적 힘 계수, 코비 실제 5라운드마다 최대 +42% 공속, 접근 판정의 대상별 한 번·같은 패기 배타, E-11 1.5초 주기, TR-13 카무사리 14.25초 공유 주기를 한 곳에서 처리. 원본 만료 없는 코비 상태는 `CombatEffectOrigin.Aura`로 보관.
+- `SourceModelNextThirtySkillCatalog.IsEighthCompositeSkill/CanModelEighthCompositeComponents`: 새 공격 8종의 ID/이름/필드 완전 검증. 기존 일반 허용 2종(I-03/I-07)은 `SourceModelUnconnectedSkillCatalog`만 확장. 모든 공격은 `CharacterCombatRuntime.SourceModelNextThirtyAttacks → SourceModelCompositeEffects → CombatStatusEngine/CombatResolution` 재사용. `SourceModelUnitEffects.ResolvePracticeAttackSpeed`는 코비 영구 버프 수치를 기존 가속 정책으로 반영합니다.
+- `CharacterCombatRuntime.SourceModelEffects`는 공용 전투 시계 이벤트에 신규 주기/접근 모델을 한 번 등록합니다. `SourceModelPracticeBattle.BeginRound`가 실제 라운드 시작에만 누적 버프를 호출합니다. `CharacterCombatRuntime.TryCastActiveSkill/SourceModelResources`는 샹크스의 실제 SLK MP35를 사용하고 개별 기술 쿨타임과 주기 타이머를 공유합니다. 유닛 제거/적 제거 시 카운터·대상 표식/예약키 정리, 기존 JASS/native 콜백 우선순위 유지.
+- 근거: `data/character-skill-profiles.json`과 W3X `data/original-2323C-unit-object-stats.json`. 회귀 `tests/test_source_model_eighth_17_skills.py`. 원본 피격 순서·특수 면역·폼 최고 속도·Unity Editor/Android 실행은 미검증이며 **TOOLTIP_MODEL_ONLY**입니다.
+
 ## 2026-11-03 · 7차 특수 기술과 6차 연결 오류 수리 (최신)
 
 - `SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill/CanModelSeventhCompositeComponents`: 사보 `TR-11:skill:4`, 아오키지 `TR-16:skill:0`, 조로 `TR-20:skill:0`, 코비 `TR-24:skill:2` 정확한 ID·이름·기술 메타데이터·효과 순서 제한. `SourceModelUnconnectedSkillCatalog`에 공격 3·액티브 1 승인, 총 **공격 95 / 자동 액티브 42**.

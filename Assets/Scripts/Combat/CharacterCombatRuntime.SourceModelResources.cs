@@ -32,6 +32,8 @@ namespace Ordr.Mobile.Combat
             // already validates the complete transform packet.
             if ((actor.Catalog.Id == "TR-18" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "H0BD") ||
+                (actor.Catalog.Id == "TR-13" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H08Z") ||
                 (actor.Catalog.Id == "L-32" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "h030") ||
                 (actor.Catalog.Id == "TR-23" &&

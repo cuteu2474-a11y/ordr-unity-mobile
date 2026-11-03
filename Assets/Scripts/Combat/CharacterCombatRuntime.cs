@@ -1651,6 +1651,10 @@ namespace Ordr.Mobile.Combat
                 sourceModelFireFistReadyAt.Remove(id);
                 sourceModelPoseidonReadyAt.Remove(id);
                 sourceModelSeventhReadyAt.Remove(id);
+                sourceModelYamatoOpeningReady.Remove(id);
+                sourceModelMariaAttackCount.Remove(id);
+                sourceModelKobyRoundStacks.Remove(id);
+                ForgetSourceModelEighthActor(id);
                 sourceModelManagedResourceRows.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
@@ -2066,6 +2070,14 @@ namespace Ordr.Mobile.Combat
 
             AbilityCastResult formCast;
             int priorEvents = events.Count;
+            if (TryCastSourceModelEighthKamusari(caster, skillId,
+                    primaryEnemyId, out formCast))
+            {
+                if (!processingStep)
+                    for (int index = priorEvents; index < events.Count; index++)
+                        pendingCommandEvents.Add(events[index]);
+                return formCast;
+            }
             if (TryCastSourceForm(caster, skillId, out formCast))
             {
                 if (!processingStep)
@@ -2207,6 +2219,10 @@ namespace Ordr.Mobile.Combat
             sourceModelFireFistReadyAt.Remove(instanceId);
             sourceModelPoseidonReadyAt.Remove(instanceId);
             sourceModelSeventhReadyAt.Remove(instanceId);
+            sourceModelYamatoOpeningReady.Remove(instanceId);
+            sourceModelMariaAttackCount.Remove(instanceId);
+            sourceModelKobyRoundStacks.Remove(instanceId);
+            ForgetSourceModelEighthActor(instanceId);
             sourceModelManagedResourceRows.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
             // Native fusion removes every input as ONE logical batch. Do
@@ -2876,6 +2892,7 @@ namespace Ordr.Mobile.Combat
 
         private void RemoveEnemyRuntimeState(string id)
         {
+            ForgetSourceModelEighthEnemy(id);
             RemoveSourceModelAceFlamesForTarget(id);
             ForgetSourceKaidoArmorEnemy(id);
             moriaParticipation.Forget(id);

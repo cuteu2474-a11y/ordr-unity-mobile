@@ -21,6 +21,7 @@ namespace Ordr.Mobile.Combat
         {
             sourceModelRules = rules;
             sourceModelUnitEffects = rules.UnitEffects;
+            SourceModelTimeAdvancing += AdvanceSourceModelEighthTimeline;
             attackPipeline.ConfigurePracticeAttackOverride(rules.FormAttackOf);
             attackPipeline.ConfigurePracticeScriptAttackDeclared(OnSourceModelScriptAttackDeclared);
             attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {

@@ -79,7 +79,8 @@ namespace Ordr.Mobile.Combat
                 new[] { "타격 스턴", "범위 마법타격" }, new[] { "마나 광역 공격" }),
             new SourceModelNextThirtyUnit("TR-14", "H0B2",
                 new[] { "무장색 패기", "컬버린" }, new[] { "킹코브라" }),
-            new SourceModelNextThirtyUnit("TR-18", "H0BD", "스턴 물리 타격"),
+            new SourceModelNextThirtyUnit("TR-18", "H0BD",
+                "스턴 물리 타격", "마환인", "미환인", "무시빙아"),
             new SourceModelNextThirtyUnit("TR-23", "H091"),
             new SourceModelNextThirtyUnit("TR-30", "H0AA"),
             new SourceModelNextThirtyUnit("E-01", "H0BK",
@@ -189,8 +190,12 @@ namespace Ordr.Mobile.Combat
             bool fifth = IsFifthCompositeSkill(skill);
             bool sixth = IsSixthCompositeSkill(skill);
             bool seventh = IsSeventhCompositeSkill(skill);
+            bool eighth = IsEighthCompositeSkill(skill);
             if (skill == null ||
                 !(skill.Trigger == "onAttack" || skill.Trigger == "onEveryAttack" ||
+                  (eighth && (skill.Trigger == "onAttackWithCondition" ||
+                              skill.Trigger == "firstAttackAfterTransform" ||
+                              skill.Trigger == "everyNthAttack")) ||
                   (seventh && skill.Id == "TR-11:skill:4" &&
                    skill.Trigger == "attackWithPeriodicCooldown") ||
                   (fifth && skill.Id == "TR-26:skill:0" &&
@@ -201,6 +206,8 @@ namespace Ordr.Mobile.Combat
                    skill.Target == "targetCircle") ||
                   (seventh && skill.Id == "TR-24:skill:2" &&
                    skill.Target == "summon") ||
+                  (eighth && skill.Id == "D-01:skill:1" &&
+                   skill.Target == null) ||
                   (fourth && skill.Id == "D-03:skill:2" &&
                    skill.Target == null && FinitePositive(skill.Radius)) ||
                   (fifth && skill.Id == "D-03:skill:1" &&
@@ -217,6 +224,7 @@ namespace Ordr.Mobile.Combat
                 ((skill.Trigger == "onAttack" || skill.Trigger == "onAttackWithMana") &&
                  (!FinitePositive(skill.ChancePercent) || skill.ChancePercent.Value > 100)) ||
                 (skill.Trigger == "onEveryAttack" && skill.ChancePercent.HasValue) ||
+                (eighth && skill.Trigger != "onAttack" && skill.ChancePercent.HasValue) ||
                 skill.Components.Count == 0) return false;
             foreach (string key in skill.OriginalFields.Keys)
                 if (key != "name" && key != "trigger" && key != "chancePercent" &&
@@ -242,8 +250,15 @@ namespace Ordr.Mobile.Combat
                       (key == "intervalSeconds" || key == "strengthScalingPerPoint")) &&
                     !(seventh && skill.Id == "TR-16:skill:0" &&
                       (key == "manaAtLeast" || key == "manaCost" ||
-                       key == "castTimeSeconds")))
+                       key == "castTimeSeconds")) &&
+                    !(eighth && skill.Id == "TR-18:skill:4" &&
+                      key == "requires") &&
+                    !(eighth && skill.Id == "D-01:skill:1" &&
+                      key == "everyAttacks") &&
+                    !(eighth && skill.Id == "TR-18:skill:2" &&
+                      key == "overrides"))
                     return false;
+            if (eighth) return CanModelEighthCompositeComponents(skill);
             if (seventh) return CanModelSeventhCompositeComponents(skill);
             if (sixth) return CanModelSixthCompositeComponents(skill);
             if (fifth) return CanModelFifthCompositeComponents(skill);
@@ -464,6 +479,78 @@ namespace Ordr.Mobile.Combat
                 case "TR-24:skill:2": return skill.Name == "콤비네이션 어택";
                 default: return false;
             }
+        }
+
+        // The eighth group is exact-profile and complete-packet gated. It
+        // never approves an unrelated native object proc or partial tooltip.
+        public static bool IsEighthCompositeSkill(ImportedCombatSkill skill)
+        {
+            if (skill == null) return false;
+            switch (skill.Id)
+            {
+                case "TR-20:skill:1": return skill.Name == "사자의 노래 Lv.2";
+                case "TR-20:skill:3": return skill.Name == "삼도류 - 극 호랑이 사냥";
+                case "TR-18:skill:4": return skill.Name == "미환인";
+                case "TR-18:skill:5": return skill.Name == "무시빙아";
+                case "TR-18:skill:2": return skill.Name == "마환인";
+                case "D-01:skill:1": return skill.Name == "13타 고정피해";
+                case "H-20:skill:1": return skill.Name == "눈보라";
+                case "H-14:skill:1": return skill.Name == "흉포한 검술";
+                default: return false;
+            }
+        }
+
+        private static bool CanModelEighthCompositeComponents(ImportedCombatSkill skill)
+        {
+            string[] fields;
+            switch (skill.Id)
+            {
+                case "TR-20:skill:1": fields = new[] {
+                    "physical|amount,multiplierRange",
+                    "singleTargetPhysicalBonus|percent", "stun|durationSeconds,scope",
+                    "strengthScaling|aoePerStrength,singlePerStrength" }; break;
+                case "TR-20:skill:3": fields = new[] {
+                    "physical|amount", "stun|durationSeconds",
+                    "strengthScaling|percentPerStrength,appliesTo" }; break;
+                case "TR-18:skill:4": fields = new[] {
+                    "magical|basicAttackPercent,flatAmount,extraSingleTargetPercent" }; break;
+                case "TR-18:skill:2": fields = new[] {
+                    "fixed|basicAttackPercent,flatAmount,maxBonusByTargetSlowPercent" }; break;
+                case "TR-18:skill:5": fields = new[] {
+                    "magical|amount,multiplierRange",
+                    "physical|amountPerHit,hits,multiplierRange",
+                    "stun|durationSeconds,ignoresResistance" }; break;
+                case "D-01:skill:1": fields = new[] {
+                    "fixed|amount,basicAttackMultiplier,plusTargetMaxHealthPercent" }; break;
+                case "H-20:skill:1": fields = new[] {
+                    "magical|amount,extraSingleMultiplierRange" }; break;
+                case "H-14:skill:1": fields = new[] {
+                    "magical|amount,extraLineMaxHealthPercent" }; break;
+                default: return false;
+            }
+            if (!ValidateExplicitCompositeShape(skill, fields)) return false;
+            if (skill.Id == "D-01:skill:1")
+                return skill.Number("everyAttacks") == 13;
+            if (skill.Id == "TR-18:skill:2")
+            {
+                var overrides = skill.Get("overrides") as List<object>;
+                if (overrides == null || overrides.Count != 2) return false;
+                var slow = overrides[0] as Dictionary<string, object>;
+                var form = overrides[1] as Dictionary<string, object>;
+                return slow != null && slow.Count == 2 &&
+                    Equals(slow["state"], "enemyMaxSlow") &&
+                    Equals(slow["chancePercent"], 33d) &&
+                    form != null && form.Count == 2 &&
+                    Equals(form["form"], "beast") &&
+                    Equals(form["guaranteedEveryAttack"], true);
+            }
+            if (skill.Id == "TR-18:skill:4")
+                return Equals(skill.Get("requires"), "speedOrTransformation");
+            if (skill.Id == "TR-20:skill:1")
+                return skill.Components[2].Text("scope") == "single";
+            if (skill.Id == "TR-20:skill:3")
+                return skill.Components[2].Text("appliesTo") == "삼도류 스킬";
+            return true;
         }
 
         private static bool CanModelSeventhCompositeComponents(ImportedCombatSkill skill)
@@ -688,7 +775,14 @@ namespace Ordr.Mobile.Combat
                     if (!component.Fields.ContainsKey(key)) return false;
                     if (key == "scope")
                     {
-                        if (component.Text(key) != "singlePrimaryTarget") return false;
+                        if (component.Text(key) != "singlePrimaryTarget" &&
+                            !(skill.Id == "TR-20:skill:1" &&
+                              component.Text(key) == "single")) return false;
+                    }
+                    else if (key == "appliesTo")
+                    {
+                        if (skill.Id != "TR-20:skill:3" ||
+                            component.Text(key) != "삼도류 스킬") return false;
                     }
                     else if (key == "basis")
                     {
@@ -709,6 +803,11 @@ namespace Ordr.Mobile.Combat
                     else if (key == "multiplierRange")
                     {
                         if (!ValidSourceModelMultiplierRange(component.Get(key))) return false;
+                    }
+                    else if (key == "extraSingleMultiplierRange")
+                    {
+                        if (!ValidSourceModelMultiplierRange(component.Get(key)))
+                            return false;
                     }
                     else if (key == "onlyTargetKinds")
                     {

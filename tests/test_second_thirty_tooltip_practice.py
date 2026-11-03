@@ -27,7 +27,8 @@ def supported(skill, unit_id=None):
         ('TR-09', '평타 광역 추가'), ('TR-09', '크리티컬'),
         ('TR-09', '단일 스턴 타격'), ('TR-09', '체력 소모 연타'),
         ('TR-10', '범위 마법타격'),
-        ('TR-14', '무장색 패기'), ('TR-14', '컬버린')
+        ('TR-14', '무장색 패기'), ('TR-14', '컬버린'),
+        ('TR-18', '마환인'), ('TR-18', '미환인'), ('TR-18', '무시빙아')
     }:
         return True
     trigger = skill.get('trigger')
@@ -138,7 +139,7 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
                     active += 1
                 else:
                     attacks += 1
-        self.assertEqual(38, attacks)
+        self.assertEqual(41, attacks)
         self.assertEqual(13, active,
                          'First composite batch adds four active owners here')
 

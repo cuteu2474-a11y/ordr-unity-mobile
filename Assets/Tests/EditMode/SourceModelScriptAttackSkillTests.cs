@@ -1131,6 +1131,24 @@ namespace Ordr.Mobile.Tests
                 "Another character must not be able to cast this packet");
         }
 
+        [TestCase("TR-20", "사자의 노래 Lv.2")]
+        [TestCase("TR-20", "삼도류 - 극 호랑이 사냥")]
+        [TestCase("TR-18", "마환인")]
+        [TestCase("TR-18", "미환인")]
+        [TestCase("TR-18", "무시빙아")]
+        [TestCase("D-01", "13타 고정피해")]
+        [TestCase("H-20", "눈보라")]
+        [TestCase("H-14", "흉포한 검술")]
+        public void EighthBatchEightCompositeAttacksNeedExactCompleteTooltipPacket(
+            string unitId, string name)
+        {
+            var skill = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"))
+                .Require(unitId).Skills.Single(x => x.Name == name);
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.IsEighthCompositeSkill(skill));
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill),
+                "No unknown component may be silently activated for " + unitId + "/" + name);
+        }
+
         [Test]
         public void SeventhBatchKobyCloneHasFiveSecondCombatLifeButNoFusionRosterEntry()
         {

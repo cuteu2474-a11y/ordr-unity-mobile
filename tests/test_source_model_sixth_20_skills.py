@@ -11,6 +11,7 @@ CATALOG = (COMBAT / 'SourceModelNextThirtySkillCatalog.cs').read_text()
 UNCONNECTED = (COMBAT / 'SourceModelUnconnectedSkillCatalog.cs').read_text()
 RUNTIME = (COMBAT / 'CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs').read_text()
 SIXTH = (COMBAT / 'CharacterCombatRuntime.SourceModelSixthSkills.cs').read_text()
+EIGHTH = (COMBAT / 'CharacterCombatRuntime.SourceModelEighthSkills.cs').read_text()
 PROFILES = {p['unitId']: p for p in json.loads(
     (ROOT / 'data/character-skill-profiles.json').read_text())['profiles']}
 STATUS = {p['catalogId']: p for p in json.loads(
@@ -59,7 +60,8 @@ class SourceModelSixthBatchTests(unittest.TestCase):
 
     def test_four_core_lifecycles_are_attached(self):
         self.assertIn('CanModelSixthCompositeComponents', CATALOG)
-        self.assertIn('SourceModelSixthProcChance(skill, primary, actor)', RUNTIME)
+        self.assertIn('SourceModelEighthProcChance(skill, primary, actor)', RUNTIME)
+        self.assertIn('SourceModelSixthProcChance(skill, primary, actor)', EIGHTH)
         self.assertIn('SourceModelSixthRawDamageAdjustment', RUNTIME)
         self.assertIn('SourceModelSixthHitCount', RUNTIME)
         self.assertIn('ScheduleSourceModelPoseidon', SIXTH)

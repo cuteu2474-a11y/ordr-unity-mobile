@@ -262,6 +262,7 @@ namespace Ordr.Mobile.Combat
                 economy.Wallet.Grant(new ResourceBundle().Add(WispResourceIds.Random, catalog.RoundWisps));
                 RoundWispsAwarded += catalog.RoundWisps;
             }
+            combat.OnSourceModelPracticeRoundStarted(wave);
             roundStarted?.Invoke();
         }
         public IReadOnlyList<CharacterCombatEvent> Advance(double deltaSeconds)

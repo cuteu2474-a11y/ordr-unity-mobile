@@ -64,6 +64,7 @@ namespace Ordr.Mobile.Combat
                     continue;
                 }
                 completedModels++;
+                if (!SourceModelEighthAttackCondition(actor, skill)) continue;
                 // E-07's 4.25 s absolute cooldown is attached to the actual
                 // successful proc; a failed roll neither consumes nor renews it.
                 double readyAt;
@@ -89,7 +90,7 @@ namespace Ordr.Mobile.Combat
                 if ((skill.Trigger == "onAttack" ||
                      skill.Trigger == "onAttackWithMana") &&
                     sourceModelRules.NextScriptRoll(1000000) >=
-                    (int)Math.Round(SourceModelSixthProcChance(skill, primary, actor) * 10000,
+                    (int)Math.Round(SourceModelEighthProcChance(skill, primary, actor) * 10000,
                         MidpointRounding.AwayFromZero)) continue;
                 // Preserve the tooltip target metadata, but apply the same
                 // explicit MOBILE result policy as CharacterSkillEffectExecutor.
@@ -121,6 +122,7 @@ namespace Ordr.Mobile.Combat
                     SourceModelRobinMultishotTargets(actor, primary) :
                     SourceScriptTargets(actor, primary, template);
                 if (targets.Count == 0) continue;
+                SourceModelEighthCommitAttackCondition(actor, skill);
                 if (skill.Trigger == "onAttackWithMana")
                     actor.Abilities.Resources.Spend(0, skill.Number("manaCost").Value);
                 if (skill.Id == "TR-16:skill:0")
@@ -290,9 +292,13 @@ namespace Ordr.Mobile.Combat
                 SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill) ||
                 SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsSixthCompositeSkill(skill) ||
-                SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill);
+                SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill) ||
+                SourceModelNextThirtySkillCatalog.IsEighthCompositeSkill(skill) ||
+                IsSourceModelEighthStatusApproach(skill);
             foreach (var component in skill.Components)
             {
+                if (SourceModelEighthSkipDamageComponent(skill, component))
+                    continue;
                 if (skill.Id == "TR-20:skill:0" &&
                     component.Type == "physicalDamageOverTime")
                 {
@@ -374,6 +380,8 @@ namespace Ordr.Mobile.Combat
                     {
                         if (target.Kind != CharacterEnemyKind.Line ||
                             !target.Enemy.IsAlive ||
+                            (skill.Id == "TR-20:skill:1" &&
+                             !ReferenceEquals(primary, target)) ||
                             !SourceModelNextThirtyComponentTargets(
                                 component, primary, target)) continue;
                         string source = "practice-tooltip-stun:" + attackerId +
@@ -421,6 +429,8 @@ namespace Ordr.Mobile.Combat
                     raw = SourceModelSixthRawDamageAdjustment(actor, primary,
                         skill, component, target, raw);
                     raw = SourceModelSeventhRawDamageAdjustment(actor, primary,
+                        skill, component, target, raw);
+                    raw = SourceModelEighthRawDamageAdjustment(actor, primary,
                         skill, component, target, raw);
                     // Rebecca's tooltip gives a per-legacy-level increment.
                     // The offline model has no native legacy-level provider:

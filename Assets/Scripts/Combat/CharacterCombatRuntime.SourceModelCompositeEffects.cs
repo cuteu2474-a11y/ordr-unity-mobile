@@ -176,7 +176,8 @@ namespace Ordr.Mobile.Combat
             if (SourceModelNextThirtySkillCatalog.IsThirdCompositeAttack(skill) ||
                 SourceModelNextThirtySkillCatalog.IsFourthCompositeAttack(skill) ||
                 SourceModelNextThirtySkillCatalog.IsFifthCompositeSkill(skill) ||
-                SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill))
+                SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill) ||
+                SourceModelNextThirtySkillCatalog.IsEighthCompositeSkill(skill))
             {
                 double basic = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
                 // Kizaru's second component is a primary-only bonus based on
