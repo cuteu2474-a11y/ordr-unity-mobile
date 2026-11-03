@@ -1,0 +1,68 @@
+{
+  "version": "ORDR S2 2.323[C]",
+  "batch": 17,
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "verification": "TOOLTIP_MODEL_ONLY; no Python, Unity, Android or Warcraft tests were run",
+  "newlyConnected": [
+    {
+      "catalogId": "H-15",
+      "rawcode": "h03L",
+      "skillId": "H-15:skill:0",
+      "name": "베가펑크 지식 탑재 포격",
+      "trigger": "activeMana",
+      "manaCost": 100,
+      "radius": 600,
+      "magicalDamage": 1850000,
+      "stunSeconds": 3,
+      "gate": "verified external Vegapunk-knowledge state; absent/false does not unlock the active"
+    }
+  ],
+  "newEvidenceGatedPaths": [
+    {
+      "catalogId": "TR-30",
+      "name": "릴리스 민첩·아틀라스 힘 계수",
+      "gate": "ConfigureSourceModelSatelliteAttributeEvidence(ownerId, satelliteRawcode, attribute)",
+      "effects": [
+        "H0AB mana: base physical 2200000 plus agility*22000/r500",
+        "H0AB mana: primary fixed maxHP*(0.002*agility)",
+        "H0AE mana: per-target fixed 2000000 plus maxHP*(0.001*strength)/r625",
+        "H0AE on-hit: 400000 plus strength*4000 when the 15% spell procs"
+      ],
+      "missingEvidence": "real native satellite strength/agility provider"
+    },
+    {
+      "catalogId": "E-05",
+      "name": "버기 해적단 원본 생성 결과 이식 포트",
+      "gate": "verified identity callback AND original witnessed candidate, rawcode and coordinates",
+      "candidateNames": ["파견 해적", "파견 해군", "이완코브", "거인족"],
+      "lifetimesSeconds": [3, 3, 4, 4],
+      "effects": ["shared autonomous source-object basic attacks", "shared summon expiration and owner cleanup"],
+      "missingEvidence": "original candidate rawcodes and selection/creation callback; no default automatic crew creation"
+    },
+    {
+      "catalogId": "I-11",
+      "name": "카이도 외부 네이티브 변신 결과 수용",
+      "gate": "verified actual h07M/h0AD morph callback",
+      "effects": ["same unit and inventory identity", "source object attack/form switching", "attack/life counter preservation"],
+      "missingEvidence": "native morph command/state adapter; no fabricated initial transformation"
+    }
+  ],
+  "alreadyImplementedNotDuplicated": [
+    "TR-23 Chopper 4-second H0B6 morph and return",
+    "LI-03 Marco human/phoenix sourced attack packets behind observed form",
+    "L-21 Shinobu h085 autonomous clone and timed lifecycle",
+    "L-19 Sugar h06N/h06P creations and approximate suicide packet",
+    "TR-30 satellite purchase/basic attacks/mana expenditure",
+    "I-11 Kaido original-mapped branches and counters"
+  ],
+  "deferred": [
+    "E-05 crew rawcode mapping and original probability/order: cannot auto-summon without witnesses",
+    "H-15 player acquisition path for Vegapunk knowledge; no free unlock",
+    "LI-03 Marco transformation trigger not source-identified",
+    "TR-23 original native metamorphosis mana consumption not proven",
+    "I-11 B05F/A0PS native morph and final damage immunity",
+    "L-19 A07D native explosion timing, L-21 native firebolt immunity",
+    "TR-30 ability-stat source values, satellite skill effects and real mobile runtime",
+    "E-05 manual permanent aura upgrade native effect and original cost"
+  ]
+}

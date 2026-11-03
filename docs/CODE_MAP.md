@@ -412,3 +412,10 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `CharacterActiveAbilities.CanExecuteAllComponents`의 `D-02:skill:0` 원본 누락 `target`은 전체 스키마 일치·반경625일 때만 **정확히** 지역 액티브로 해석합니다. 공통 승인 `TryCastApprovedSourceModelActive`의 다단형 승인 경로는 소모 전 전체 컴포넌트가 허용된 경우에 한해서 원본 표기 `hits`를 수행합니다(실제 타격 시간/Warcraft 동등성 검증과 구분). 써니호 `ConfigureSourceModelSunnyKnowledgeEvidence`는 지식 획득 여부만 외부에서 전달하며 지식을 가짜로 판매하지 않습니다.
 - **성현 님 지시:** Python/Unity/Android 검사를 **명시적 요청 전에 실행하지 않습니다.** 정적 코드 검토만 수행하고 미검증은 그대로 표기합니다. 커밋→main 자동 Actions `in_progress` 확인→즉시 종료, 결과 조회 금지.
 
+## 2026-11-03 · 17차 근거형 소환·변신·위성 계수 연결 (현재 최신)
+
+- `SourceModelUnconnectedSkillCatalog` H-15 행의 지식 포격 액티브를 `SourceModelResources` 자동 시전/`SourceModelNextThirtyAttacks.TryCastSourceModelUnconnectedActive`의 **지식 증거 게이트**로 연결. `CharacterCombatRuntime.SourceModelSixteenthSkills.SourceModelSunnyHasVerifiedKnowledge`가 확인된 상태에 한해 일반 포격을 중단하고 MP100 액티브를 실행함. 원본 연구 구매는 생성하지 않음.
+- `CharacterCombatRuntime.SourceModelSeventeenthSpecials`의 `ConfigureSourceModelSatelliteAttributeEvidence` → `SourceModelIndependentAttacks.TryAutoCastSourceSatelliteMana/CompleteSourceIndependentHit` → 원래 대상 HP/방어/처치 원장. 릴리스 민첩 계수와 아틀라스 힘 계수를 공급받은 경우에만 적용; 미공급 시 기존 flat 유지. 본체·위성 생명주기/마나 재생 정책은 변경하지 않음.
+- 같은 17차 파일의 `ConfigureSourceModelBuggyCrewIdentityEvidence`/`TrySpawnWitnessedSourceBuggyCrew`는 외부 확인 원본 rawcode·생성 좌표/추첨 결과와 원본 도감 4개 후보·3/4초 수명을 검증하고, `SourceModelTemporarySkills.SpawnSourceTemporaryActor`의 원본 공격 객체 검사 후 **독립 공격자 등록/만료/제거**를 재사용. `ConfigureSourceModelKaidoNativeMorphEvidence`/`TryApplyWitnessedSourceKaidoForm`은 실제 h07M/h0AD 관측 결과만 적용하며 원래 인스턴스를 유지. 기본 엔진은 후보를 임의 추첨하거나 변신시키지 않음. 이 포트들에는 현재 기본 게임 이벤트 공급자가 없음.
+- 근거/보류 `data/source-model-seventeenth-specials.json`. 새 연결은 Unity/Android·원본 난수/보스 면역 동등성 **미검증**이며 Python·Unity·Actions 결과 조회는 요청 전 실행하지 않음.
+

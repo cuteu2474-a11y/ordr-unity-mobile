@@ -188,7 +188,7 @@ namespace Ordr.Mobile.Combat
             new SourceModelUnconnectedSkillRow("D-02", "h03V",
                 new[] { "기와 돌려차기", "단일 스턴" }, new[] { "어인공수도" }),
             new SourceModelUnconnectedSkillRow("H-15", "h03L",
-                new[] { "일반 포격" }, Array.Empty<string>()),
+                new[] { "일반 포격" }, new[] { "베가펑크 지식 탑재 포격" }),
         };
         public static readonly IReadOnlyList<SourceModelUnconnectedSkillRow> All =
             Array.AsReadOnly(Entries);

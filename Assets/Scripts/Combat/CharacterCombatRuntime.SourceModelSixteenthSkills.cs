@@ -24,8 +24,16 @@ namespace Ordr.Mobile.Combat
             ImportedCombatSkill skill)
         {
             if (skill.Id != "H-15:skill:1") return true;
-            return sourceModelSunnyKnowledgeEvidence == null ||
-                sourceModelSunnyKnowledgeEvidence(actor.Id) != true;
+            return !SourceModelSunnyHasVerifiedKnowledge(actor.Id);
+        }
+
+        private bool SourceModelSunnyHasVerifiedKnowledge(long instanceId)
+        {
+            // A missing provider is not proof that research was purchased.
+            // When witnessed, the original normal shot is replaced by the
+            // MP100 knowledge shot through the shared active-resource path.
+            return sourceModelSunnyKnowledgeEvidence != null &&
+                sourceModelSunnyKnowledgeEvidence(instanceId) == true;
         }
 
         private static double SourceModelSixteenthProcChance(ImportedCombatSkill skill,

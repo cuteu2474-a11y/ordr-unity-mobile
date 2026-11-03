@@ -179,6 +179,13 @@ namespace Ordr.Mobile.Combat
             string skillId, string primaryEnemyId, out AbilityCastResult result)
         {
             result = AbilityCastResult.UnsupportedEffect;
+            if (caster != null && caster.Catalog.Id == "H-15" &&
+                skillId == "H-15:skill:0" &&
+                !SourceModelSunnyHasVerifiedKnowledge(caster.Id))
+            {
+                result = AbilityCastResult.MissingOrUnsupportedRequirement;
+                return true;
+            }
             SourceModelUnconnectedSkillRow row;
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 caster.Mapping == null || caster.Profile == null ||

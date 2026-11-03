@@ -31,12 +31,16 @@ namespace Ordr.Mobile.Combat
             bool nativeAutonomous = (sourceRawcode == "h06N" || sourceRawcode == "h085") &&
                 sourceModelRules != null &&
                 sourceModelRules.SourceObjectAttack(sourceRawcode) != null;
-            bool autonomous = nativeAutonomous || modeledCombat;
+            // Additional verified summons can use the same lifecycle. Never
+            // advertise independent combat without a mapped source attack.
+            bool autonomous = (nativeAutonomous || modeledCombat) &&
+                sourceModelRules != null &&
+                sourceModelRules.SourceObjectAttack(sourceRawcode) != null;
             var summon = new SourceModelSummonState(++sourceNextSummonId,
                 owner.Id, skillName, name, effectExecutor.Time + lifetimeSeconds,
                 IsStoryDeployed(owner.Id), autonomous, sourceRawcode,
                 unresolvedLootAbility, spawnX, spawnY);
-            if (nativeAutonomous)
+            if (autonomous)
                 RegisterSourceIndependentAttack(SummonAttackKey(summon.Id),
                     sourceRawcode, summon.StoryLane, spawnX, spawnY, summon.ExpiresAt,
                     owner.Profile);

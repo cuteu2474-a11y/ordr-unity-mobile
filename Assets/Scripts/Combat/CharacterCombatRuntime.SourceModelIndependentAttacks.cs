@@ -334,16 +334,60 @@ namespace Ordr.Mobile.Combat
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 actor.Key, primary.Id, name,
                 "TOOLTIP_MODEL_ONLY 원본 위성 MP " + cost + " 소비 / " +
-                "미공급 영웅 능력치 계수 제외", 0));
+                "원본 능력치 계수는 증거 공급 시만 적용", 0));
             if (lilith)
-                ApplySourceModelAreaPacket(actor.Key, actor.StoryLane, primary,
-                    radius, 2200000, Ordr323AttackType.Spells, name);
+            {
+                double agility;
+                bool supplied = TrySourceModelSatelliteAttribute(actor,
+                    "agility", out agility);
+                double damage = 2200000 + (supplied ? 22000 * agility : 0);
+                if (!double.IsNaN(damage) && !double.IsInfinity(damage))
+                    ApplySourceModelAreaPacket(actor.Key, actor.StoryLane, primary,
+                        radius, damage, Ordr323AttackType.Spells, name);
+                long fixedAmount;
+                if (supplied && primary.Enemy.IsAlive &&
+                    SourceModelSafeFixedAmount(primary.Enemy.MaxHealth *
+                        (.002 * agility), out fixedAmount))
+                    ApplySourceModelFixedPrimaryPacket(actor.Key, primary,
+                        fixedAmount, name + " · 민첩 단일 고정 피해");
+                if (!supplied)
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                        actor.Key, primary.Id, name,
+                        "민첩 미공급: 원본 22000/포인트·최대HP 0.2%/포인트 보류", 0));
+            }
             else
-                ApplySourceModelFixedAreaPacket(actor, primary, radius, 2000000, name);
-            events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
-                actor.Key, primary.Id, name,
-                lilith ? "민첩 22000/포인트 및 대상 최대HP×0.2%/민첩 미공급" :
-                         "힘 1포인트당 대상 최대HP×0.1% 미공급", 0));
+            {
+                double strength;
+                bool supplied = TrySourceModelSatelliteAttribute(actor,
+                    "strength", out strength);
+                ApplySourceModelSatelliteFixedArea(actor, primary,
+                    radius, 2000000, supplied ? strength : 0, name);
+                if (!supplied)
+                    events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                        actor.Key, primary.Id, name,
+                        "힘 미공급: 원본 대상 최대HP 0.1%/포인트 보류", 0));
+            }
+        }
+
+        private void ApplySourceModelSatelliteFixedArea(
+            SourceIndependentAttacker actor, SpatialCombatEnemy center,
+            double radius, double flat, double strength, string name)
+        {
+            var targets = new List<SpatialCombatEnemy>();
+            foreach (var enemy in enemies.Values)
+            {
+                double dx = enemy.X - center.X, dy = enemy.Y - center.Y;
+                if (CanSourceIndependentAttack(actor, enemy) &&
+                    dx * dx + dy * dy <= radius * radius) targets.Add(enemy);
+            }
+            targets.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
+            foreach (var target in targets)
+            {
+                long damage;
+                if (SourceModelSafeFixedAmount(flat +
+                    target.Enemy.MaxHealth * (.001 * strength), out damage))
+                    ApplySourceModelFixedPrimaryPacket(actor.Key, target, damage, name);
+            }
         }
 
         private void CompleteSourceIndependentHit(SourceIndependentAttacker actor,
@@ -470,8 +514,15 @@ namespace Ordr.Mobile.Combat
                     if (haste.Components[1].Type == "magical" &&
                         haste.Components[1].Number("amount") == 400000 &&
                         haste.Components[1].Number("strengthScalingPerPoint") == 4000)
-                        ApplySourceModelAreaPacket(actor.Key, actor.StoryLane, primary,
-                            0, 400000, Ordr323AttackType.Spells, haste.Name);
+                    {
+                        double strength;
+                        bool supplied = TrySourceModelSatelliteAttribute(actor,
+                            "strength", out strength);
+                        double raw = 400000 + (supplied ? 4000 * strength : 0);
+                        if (!double.IsNaN(raw) && !double.IsInfinity(raw))
+                            ApplySourceModelAreaPacket(actor.Key, actor.StoryLane, primary,
+                                0, raw, Ordr323AttackType.Spells, haste.Name);
+                    }
                 }
             }
         }
