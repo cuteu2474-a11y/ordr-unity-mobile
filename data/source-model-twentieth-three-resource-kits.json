@@ -1,0 +1,70 @@
+{
+  "batch": 20,
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "profileSource": "data/character-skill-profiles.json",
+  "objectSources": [
+    "data/original-2323C-map-base-stats.json",
+    "data/original-2323C-unit-object-stats.json"
+  ],
+  "executionMode": "TOOLTIP_MODEL_ONLY",
+  "characters": [
+    {
+      "unitId": "E-03",
+      "name": "류마",
+      "rawcode": "h0CJ",
+      "modelled": [
+        "E-03:skill:0",
+        "E-03:skill:1",
+        "E-03:skill:2",
+        "E-03:skill:3",
+        "E-03:skill:4",
+        "E-03:skill:5",
+        "E-03:skill:6"
+      ],
+      "sourceState": "actor-specific soul stack ledger: +1 at 10% declared attack, +2 at 20% after 15% magic proc with 5-second cooldown",
+      "thresholds": [
+        { "stacks": 100, "effect": "unlock the 8.5% 참룡도 attack" },
+        { "stacks": 400, "effect": "permanent +50% attack speed in source model" },
+        { "stacks": 700, "effect": "+100000 flat pre-defense basic attack damage in source model" }
+      ],
+      "limits": "Critical uses nominal object attack power; original dice/critical timing and native resistance not established"
+    },
+    {
+      "unitId": "E-11",
+      "name": "테조로",
+      "rawcode": "h06A",
+      "modelled": [
+        "E-11:skill:0",
+        "E-11:skill:1",
+        "E-11:skill:2",
+        "E-11:skill:3"
+      ],
+      "sourceState": "reads real SharedEconomy.Wallet gold at cast time, capped at 250000; 1.5-second periodic attacks trigger a two-occurrence follow-up",
+      "limits": "No duplicated periodic dispatcher; native Warcraft target defenses, stun resistance and hit phase remain unverified"
+    },
+    {
+      "unitId": "I-05",
+      "name": "불릿",
+      "rawcode": "h081",
+      "modelled": [
+        "I-05:skill:0",
+        "I-05:skill:1",
+        "I-05:skill:3"
+      ],
+      "blocked": [
+        "I-05:skill:2",
+        "I-05:skill:4",
+        "attack/speed/armor equipped-item stack bonuses",
+        "unique/legendary all-items conditional DoT, additional hit and status"
+      ],
+      "sourceState": "zero-equipped-item base packets only: no artificial item count, equipment reward or invented acquisition"
+    }
+  ],
+  "verification": {
+    "python": "not run by user request",
+    "unityEditor": "not run by user request",
+    "android": "not run by user request",
+    "githubActions": "not manually run or queried by user request",
+    "originalParity": "not asserted"
+  }
+}

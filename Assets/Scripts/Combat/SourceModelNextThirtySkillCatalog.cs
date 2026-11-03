@@ -85,15 +85,25 @@ namespace Ordr.Mobile.Combat
             new SourceModelNextThirtyUnit("TR-30", "H0AA"),
             new SourceModelNextThirtyUnit("E-01", "H0BK",
                 new[] { "혼합 광역 타격" }, new[] { "마나 광역기" }),
+            new SourceModelNextThirtyUnit("E-03", "h0CJ",
+                new[] { "영혼 고정 타격", "영혼 마법 타격", "혼 스택 마법 타격",
+                    "영혼 획득", "참룡도" },
+                new[] { "마나 공격" }),
             new SourceModelNextThirtyUnit("E-04", "h058",
                 new[] { "매 타격 추가 마법", "범위 마법 타격", "연속 범위 타격", "확정 스턴" },
                 new[] { "마나 고정 피해" }),
             new SourceModelNextThirtyUnit("E-08", "h08R",
                 new[] { "범위 물리", "마법 광역", "단일 스턴" },
                 new[] { "마나 광역 스턴" }),
+            new SourceModelNextThirtyUnit("E-11", "h06A",
+                new[] { "공격 발동 마법 타격" },
+                new[] { "골드 연계 체력 소모 공격" }),
             new SourceModelNextThirtyUnit("I-04", "h04J",
                 new[] { "광역 물리 타격", "타격·단일 스턴" },
                 new[] { "광역 혼합 피해" }),
+            new SourceModelNextThirtyUnit("I-05", "h081",
+                new[] { "패왕색 패기", "괴물의 후계자" },
+                new[] { "데어 슈테르크슈테 스트라이크" }),
             new SourceModelNextThirtyUnit("I-06", "h04Q",
                 Array.Empty<string>(), new[] { "대자재천신" }),
             new SourceModelNextThirtyUnit("I-11", "h07M")
@@ -186,6 +196,8 @@ namespace Ordr.Mobile.Combat
         // unsupported. Tooltip packets are a practice model, never JASS parity.
         public static bool CanModelCompleteAttack(ImportedCombatSkill skill)
         {
+            if (SourceModelTwentiethSkillCatalog.IsSpecial(skill))
+                return SourceModelTwentiethSkillCatalog.CanModelAttack(skill);
             if (SourceModelNineteenthSkillCatalog.IsSpecial(skill))
                 return SourceModelNineteenthSkillCatalog.CanModelExactSpecial(skill);
             if (SourceModelEighteenthSkillCatalog.IsSpecial(skill))
@@ -303,6 +315,8 @@ namespace Ordr.Mobile.Combat
 
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
+            if (SourceModelTwentiethSkillCatalog.IsSpecial(skill))
+                return SourceModelTwentiethSkillCatalog.CanModelActive(skill);
             if (SourceModelSixteenthSkillCatalog.IsSpecial(skill))
                 return (skill.Trigger == "activeMana" ||
                     skill.Trigger == "activeHealth") &&

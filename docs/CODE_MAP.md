@@ -433,3 +433,11 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `SourceModelEighteenthSkillCatalog`는 요우무 2기에서 원본 분신 피해 0.5 메타데이터를 정확히 수용해 **기본 유닛 기술을 승인**합니다. 분신 생성 및 분신 공격은 미구현 그대로입니다. S-호크 광역 참격은 19차 원본 조건 게이트로 옮겼습니다. 고죠 술식 반전 혁은 버전별 확률 충돌로 `SourceModelUnconnectedSkillCatalog` 허용 목록에서 제거하며, 18차 데이터에는 보류로 남깁니다.
 - **검사:** Python/Unity/Android/Actions 미실행. `TOOLTIP_MODEL_ONLY`; 소환 rawcode·자격·불명확한 지속효과의 원작 동등성 인증 아님.
 
+## 2026-11-03 · 20차 자원 상태 3종 전투 연결 (현재 최신)
+
+- **원본 소유자 식별:** `E-03`은 **류마/h0CJ**, `E-11`은 **테조로/h06A**, `I-05`는 **불릿/h081**. 이름이 비슷한 폼/다른 rawcode를 혼용하지 않음. 스킬별 자세한 활성/보류 명부는 `data/source-model-twentieth-three-resource-kits.json`.
+- **허용 게이트:** `SourceModelNextThirtySkillCatalog`에서 세 주인의 명시된 공격 8개/MP·HP 액티브 3개만 승인. `SourceModelTwentiethSkillCatalog`가 전체 툴팁 JSON 필드와 류마·테조로 패시브 스키마를 일대일 고정. 류마 `afterBasicDamageThreshold`와 테조로 `periodic/counter`는 기존 자동 공격 명부와 중복하지 않는 별도 이벤트에서 발동. 불릿의 2개 강화/변신 기술은 장비 진위/특수형 발동 조건 미구현으로 차단.
+- **런타임:** `CharacterCombatRuntime.SourceModelTwentiethSkills`에서 류마 유닛별 영혼/5초 보너스 쿨타임·100/400/700 문턱·유닛 제거 정리, 테조로 주기 발동 2회 계수와 실제 공유 골드(상한25만), 불릿 0장비 기본 피해/치명·기절을 계산. 공통 `CharacterCombatRuntime.SourceModelNextThirtyAttacks`, `SourceModelEighthSkills`, `SourceModelNinthSkills` 콜백/마나·체력 사용/피해·처치 기록을 재사용하고 신규 주기 콜백은 등록하지 않음.
+- **공격력/공속:** `SourceModelBasicCombatRules.ConfigurePracticeFlatAttackPower`에서 류마 700스택의 **고정 +100,000**을 실제 평타 원시 피해에만 더함(공격력 퍼센트 버프로 오해하지 않음). `SourceModelUnitEffects.ResolvePracticeAttackSpeed`는 류마400스택 +50%·테조로 상시 +25%만 출처가 확인된 영구 상태로 수용. `OrdrCharacterCombatController.BeginPracticeBattle`에서 현재 `SharedEconomy.Wallet`의 읽기 전용 골드를 전투에 공급하며 무료 지급·독립 장부는 없음.
+- **제약:** 불릿의 장비/아이템 획득을 검증된 인벤토리/전투 공급자로 먼저 연결해야 스택 보너스/유니크·전설 효과를 열 수 있음. 현재 3개 기술은 아이템 미장착 기본 패킷만. Python/Unity/Android/Actions 검사 **미실행**, 전체 `TOOLTIP_MODEL_ONLY`.
+

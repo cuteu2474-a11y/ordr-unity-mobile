@@ -854,6 +854,7 @@ namespace Ordr.Mobile.Unity
                 originalResources.text, MapBaseStats);
             sourceModelDamage.Enable();
             Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
+            Combat.ConfigureSourceModelPlayerGold(() => SharedEconomy.Wallet.Balance("gold"));
             Combat.BindExistingVerifiedAttacks();
             Combat.ConfigureSourceModelUnitResources(sourcePool);
             EnsureSoloStoryStarted(creepData.text);

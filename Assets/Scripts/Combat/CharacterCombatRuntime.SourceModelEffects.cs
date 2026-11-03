@@ -21,6 +21,7 @@ namespace Ordr.Mobile.Combat
         {
             sourceModelRules = rules;
             sourceModelUnitEffects = rules.UnitEffects;
+            rules.ConfigurePracticeFlatAttackPower(SourceModelTwentiethFlatAttackPower);
             SourceModelTimeAdvancing += AdvanceSourceModelEighthTimeline;
             SourceModelTimeAdvancing += AdvanceSourceModelNinthProjectiles;
             SourceModelTimeAdvancing += AdvanceSourceModelTenthForms;

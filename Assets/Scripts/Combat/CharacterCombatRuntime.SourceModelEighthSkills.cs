@@ -215,6 +215,7 @@ namespace Ordr.Mobile.Combat
         private static bool SourceModelEighthPeriodicValid(ImportedCombatSkill skill)
         {
             if (skill.Id != "E-11:skill:2" || skill.Name != "곤 인페르노" ||
+                !SourceModelTwentiethSkillCatalog.CanModelExact(skill) ||
                 skill.Trigger != "periodic" || skill.PeriodSeconds != 1.5 ||
                 skill.Radius != 325 || skill.Target != "area" ||
                 skill.Components.Count != 3 || skill.ChancePercent.HasValue)
@@ -261,7 +262,8 @@ namespace Ordr.Mobile.Combat
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 InstanceKey(actor.Id), primary.Id, skill.Name,
                 "TOOLTIP_MODEL_ONLY / 1.5초 주기 기술", 0));
-            ApplySourceModelNextThirtySkill(actor, primary, skill, targets);
+            ApplySourceModelTwentiethSkill(actor, primary, skill, targets);
+            SourceModelTwentiethAfterPeriodic(actor, primary, skill);
         }
 
         private static bool SourceModelEighthKamusariValid(ImportedCombatSkill skill)

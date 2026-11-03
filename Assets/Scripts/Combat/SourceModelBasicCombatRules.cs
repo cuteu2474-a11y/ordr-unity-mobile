@@ -22,6 +22,13 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, string> formRawcodes =
             new Dictionary<string, string>(StringComparer.Ordinal);
         private readonly Dictionary<string, double> fractions = new Dictionary<string, double>();
+        private Func<string, double> sourceModelFlatAttackPower;
+        internal void ConfigurePracticeFlatAttackPower(Func<string, double> source)
+        {
+            if (sourceModelFlatAttackPower != null || source == null)
+                throw new InvalidOperationException("연습 공격력 추가 공급자는 한 번만 연결 가능합니다.");
+            sourceModelFlatAttackPower = source;
+        }
         public bool Enabled { get; private set; }
         public SourceModelUnitEffects UnitEffects { get; private set; }
         public void ConfigureUnitEffects(SourceModelUnitEffects effects)
@@ -162,10 +169,20 @@ namespace Ordr.Mobile.Combat
                     !(effect.Type == CombatEffectType.AttackPowerBuff &&
                       effect.SourceId.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal)) &&
                     !(effect.Type == CombatEffectType.AttackSpeedBuff &&
-                      effect.SourceId.StartsWith("practice-form:interval:", StringComparison.Ordinal)))
+                      effect.SourceId.StartsWith("practice-form:interval:", StringComparison.Ordinal)) &&
+                    !(effect.Type == CombatEffectType.AttackSpeedBuff &&
+                      (effect.SourceId.StartsWith("practice-tooltip:ryuma-speed:", StringComparison.Ordinal) ||
+                       effect.SourceId.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal))))
                     throw new NotSupportedException("연습의 출처가 확인되지 않은 공격 효과입니다.");
             double rawDamage = attack.RollObjectBaseDamage(random) +
                 SourceModelTemporarySkillCatalog.FlatFormPower(request.AttackerEffects);
+            if (sourceModelFlatAttackPower != null)
+            {
+                double flat = sourceModelFlatAttackPower(request.UnitInstanceId);
+                if (flat < 0 || double.IsNaN(flat) || double.IsInfinity(flat))
+                    throw new NotSupportedException("연습 공격력 증가량이 올바르지 않습니다.");
+                rawDamage += flat;
+            }
             double power = SourceModelUnitEffects.ResolvePracticeAttackPower(request.AttackerEffects);
             rawDamage *= 1 + power / 100.0;
             if (UnitEffects != null) rawDamage = UnitEffects.BeforeBasicHit(request, target, rawDamage);

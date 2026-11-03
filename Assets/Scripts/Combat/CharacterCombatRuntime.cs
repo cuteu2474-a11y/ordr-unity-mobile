@@ -63,6 +63,8 @@ namespace Ordr.Mobile.Combat
             UsesSourceModelBasicAttacks = true;
             verifiedAttackProvider = practice;
             ConfigureSourceModelUnitEffects(practice);
+            foreach (var actor in characters.Values)
+                SourceModelTwentiethAttachPassives(actor);
         }
 
         public sealed class OriginalFusionUnitSwap : IDisposable
@@ -1640,6 +1642,7 @@ namespace Ordr.Mobile.Combat
                 // Only the optional source-model profile attaches base HP/MP.
                 // Verified/retail sessions never receive inferred resources.
                 ProvisionSourceModelResources(characters[id]);
+                SourceModelTwentiethAttachPassives(characters[id]);
                 if (!characters[id].AttackReady && commonAttackPreview != null)
                     commonAttackPreview.TryTrack(id, catalogUnitId, scheduler.Time);
                 // Stage is not a combat tick. Recomputing enemy auras here
@@ -1664,6 +1667,7 @@ namespace Ordr.Mobile.Combat
                 sourceModelKobyRoundStacks.Remove(id);
                 ForgetSourceModelEighthActor(id);
                 ForgetSourceModelNinthActor(id);
+                ForgetSourceModelTwentiethActor(id);
                 sourceModelManagedResourceRows.Remove(id);
                 unitStatuses.Remove(InstanceKey(id));
                 roster.Remove(id);
@@ -2233,6 +2237,7 @@ namespace Ordr.Mobile.Combat
             sourceModelKobyRoundStacks.Remove(instanceId);
             ForgetSourceModelEighthActor(instanceId);
             ForgetSourceModelNinthActor(instanceId);
+            ForgetSourceModelTwentiethActor(instanceId);
             sourceModelManagedResourceRows.Remove(instanceId);
             unitStatuses.Remove(InstanceKey(instanceId));
             // Native fusion removes every input as ONE logical batch. Do

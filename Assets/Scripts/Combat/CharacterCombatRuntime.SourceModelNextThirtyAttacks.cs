@@ -64,6 +64,8 @@ namespace Ordr.Mobile.Combat
                     continue;
                 }
                 completedModels++;
+                if (SourceModelTwentiethSkillCatalog.IsSpecial(skill) &&
+                    !SourceModelTwentiethCanActivate(actor, skill)) continue;
                 if (!SourceModelEighthAttackCondition(actor, skill)) continue;
                 if (!SourceModelSixteenthAttackCondition(actor, skill)) continue;
                 if (!SourceModelNineteenthReady(actor, skill)) continue;
@@ -103,7 +105,8 @@ namespace Ordr.Mobile.Combat
                 // enemy at unlimited reach (Redfield and Rebecca).
                 var shape = skill.Target == "single" ||
                     skill.Target == "eachMultishotTarget" ||
-                    skill.Target == "summon" ?
+                    skill.Target == "summon" ||
+                    (skill.Id == "E-03:skill:5" && skill.Target == null) ?
                     SourceScriptHitShape.Direct :
                     (skill.Id == "TR-26:skill:4" ||
                      SourceModelEighteenthSkillCatalog.IsSpecial(skill)) &&
@@ -111,7 +114,8 @@ namespace Ordr.Mobile.Combat
                     SourceScriptHitShape.ProjectileLine :
                     skill.Target == "casterArea" &&
                     !SpecialGradeMobilePolicy.UsesEnemyCenteredArea(catalogId) &&
-                    skill.Id != "TR-13:skill:3" ?
+                    skill.Id != "TR-13:skill:3" &&
+                    skill.Id != "I-05:skill:1" ?
                     SourceScriptHitShape.AttackerCircle : SourceScriptHitShape.Circle;
                 double lineLength = 0;
                 if (shape == SourceScriptHitShape.ProjectileLine)
@@ -149,7 +153,9 @@ namespace Ordr.Mobile.Combat
                     primary.Id, skill.Name,
                     "TOOLTIP_MODEL_ONLY " + catalogId +
                     " 공격 선언 / 결과·시점·난수 원본 미검증", 0));
-                if (skill.Id == "TR-16:skill:0")
+                if (SourceModelTwentiethSkillCatalog.IsSpecial(skill))
+                    ApplySourceModelTwentiethSkill(actor, primary, skill, targets);
+                else if (skill.Id == "TR-16:skill:0")
                     ScheduleSourceModelIceAge(actor, primary, skill);
                 else
                     ApplySourceModelNextThirtySkill(actor, primary, skill, targets,
@@ -217,6 +223,12 @@ namespace Ordr.Mobile.Combat
                     caster.Catalog.Id, approvedNames, selected))
                 return selected.Trigger == "activeMana" ||
                     selected.Trigger == "activeHealth";
+            if (SourceModelTwentiethSkillCatalog.IsSpecial(selected) &&
+                !SourceModelTwentiethCanActivate(caster, selected))
+            {
+                result = AbilityCastResult.MissingOrUnsupportedRequirement;
+                return true;
+            }
             SpatialCombatEnemy primary;
             if (string.IsNullOrWhiteSpace(primaryEnemyId) ||
                 !enemies.TryGetValue(primaryEnemyId, out primary) ||
@@ -265,7 +277,9 @@ namespace Ordr.Mobile.Combat
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 InstanceKey(caster.Id), primary.Id, accepted.Name,
                 "TOOLTIP_MODEL_ONLY / 원본 타격·면역 미검증", 0));
-            if (accepted.Id == "E-07:skill:0")
+            if (SourceModelTwentiethSkillCatalog.IsSpecial(accepted))
+                ApplySourceModelTwentiethSkill(caster, primary, accepted, targets);
+            else if (accepted.Id == "E-07:skill:0")
                 SourceModelAceDelayedUltimate(caster, primary, accepted, targets);
             else
                 ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);

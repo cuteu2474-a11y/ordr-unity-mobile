@@ -324,6 +324,7 @@ namespace Ordr.Mobile.Combat
         private void OnSourceModelNinthSuccessfulBasicHit(string actorKey,
             string rawcode, string targetId, long actual)
         {
+            SourceModelTwentiethAfterBasicHit(actorKey, rawcode, targetId, actual);
             if (!UsesSourceModelBasicAttacks || !processingStep || actual <= 0 ||
                 rawcode != "h0CM") return;
             long id;
