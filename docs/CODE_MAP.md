@@ -433,11 +433,18 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `SourceModelEighteenthSkillCatalog`는 요우무 2기에서 원본 분신 피해 0.5 메타데이터를 정확히 수용해 **기본 유닛 기술을 승인**합니다. 분신 생성 및 분신 공격은 미구현 그대로입니다. S-호크 광역 참격은 19차 원본 조건 게이트로 옮겼습니다. 고죠 술식 반전 혁은 버전별 확률 충돌로 `SourceModelUnconnectedSkillCatalog` 허용 목록에서 제거하며, 18차 데이터에는 보류로 남깁니다.
 - **검사:** Python/Unity/Android/Actions 미실행. `TOOLTIP_MODEL_ONLY`; 소환 rawcode·자격·불명확한 지속효과의 원작 동등성 인증 아님.
 
-## 2026-11-03 · 20차 자원 상태 3종 전투 연결 (현재 최신)
+## 2026-11-03 · 20차 자원 상태 3종 전투 연결 (21차 이전 기록)
 
 - **원본 소유자 식별:** `E-03`은 **류마/h0CJ**, `E-11`은 **테조로/h06A**, `I-05`는 **불릿/h081**. 이름이 비슷한 폼/다른 rawcode를 혼용하지 않음. 스킬별 자세한 활성/보류 명부는 `data/source-model-twentieth-three-resource-kits.json`.
 - **허용 게이트:** `SourceModelNextThirtySkillCatalog`에서 세 주인의 명시된 공격 8개/MP·HP 액티브 3개만 승인. `SourceModelTwentiethSkillCatalog`가 전체 툴팁 JSON 필드와 류마·테조로 패시브 스키마를 일대일 고정. 류마 `afterBasicDamageThreshold`와 테조로 `periodic/counter`는 기존 자동 공격 명부와 중복하지 않는 별도 이벤트에서 발동. 불릿의 2개 강화/변신 기술은 장비 진위/특수형 발동 조건 미구현으로 차단.
 - **런타임:** `CharacterCombatRuntime.SourceModelTwentiethSkills`에서 류마 유닛별 영혼/5초 보너스 쿨타임·100/400/700 문턱·유닛 제거 정리, 테조로 주기 발동 2회 계수와 실제 공유 골드(상한25만), 불릿 0장비 기본 피해/치명·기절을 계산. 공통 `CharacterCombatRuntime.SourceModelNextThirtyAttacks`, `SourceModelEighthSkills`, `SourceModelNinthSkills` 콜백/마나·체력 사용/피해·처치 기록을 재사용하고 신규 주기 콜백은 등록하지 않음.
 - **공격력/공속:** `SourceModelBasicCombatRules.ConfigurePracticeFlatAttackPower`에서 류마 700스택의 **고정 +100,000**을 실제 평타 원시 피해에만 더함(공격력 퍼센트 버프로 오해하지 않음). `SourceModelUnitEffects.ResolvePracticeAttackSpeed`는 류마400스택 +50%·테조로 상시 +25%만 출처가 확인된 영구 상태로 수용. `OrdrCharacterCombatController.BeginPracticeBattle`에서 현재 `SharedEconomy.Wallet`의 읽기 전용 골드를 전투에 공급하며 무료 지급·독립 장부는 없음.
 - **제약:** 불릿의 장비/아이템 획득을 검증된 인벤토리/전투 공급자로 먼저 연결해야 스택 보너스/유니크·전설 효과를 열 수 있음. 현재 3개 기술은 아이템 미장착 기본 패킷만. Python/Unity/Android/Actions 검사 **미실행**, 전체 `TOOLTIP_MODEL_ONLY`.
+
+## 2026-11-03 · 21차 불릿 장착 장부/조건 기술 (현재 최신)
+
+- **장비 도메인:** `Assets/Scripts/Combat/OriginalEquippedItemLedger.cs` → `IOriginalEquippedItemWitness`로 실제 장착/해제 결과 증명 → 1회 영수증과 원본 item rawcode+주인+속성+등급 검증 → `OriginalEquippedItemSnapshot`. 확인 실패/중복/부족 수량은 상태 변경 없음. 소유 유닛 제거 시 장비 상태 삭제, 사용된 영수증은 그대로 유지.
+- **Unity 입력 포트:** `OrdrCharacterCombatController.ConfigureOriginalEquippedItemWitness`, `TryRecordOriginalEquippedItemReceipt`, `ConfigureOriginalBulletArmadaLevelWitness`. 기본 포트는 **미설정**입니다. `BeginPracticeBattle`에서 외부 공급자가 있을 때만 `Combat.ConfigureSourceModelEquippedItems`/`ConfigureSourceModelBulletArmadaLevel`로 연결합니다. 아직 실전 아이템 구매·드롭은 이 포트에 이어지지 않았습니다.
+- **전투:** `CharacterCombatRuntime.SourceModelTwentyFirstEquipment.cs`는 육식 체 3초/공통 공격당 1회/전장 리비전 정리, 독립 0.1초×30회 DoT, 공속/공격/방어 아이템 스택 조회, 유니크 방어 둔화 오라 및 **실제 A0WQ 관측 레벨**만 적용합니다. `SourceModelTwentiethSkills.cs`의 나머지 13연타·패왕색/괴물 후계자에 조건별 보너스를 추가. `SourceModelNextThirtyAttacks`에 공격 3기와 itemUpgrade 비공격 경로 분리. `SourceModelEffects.RefreshSourceModelAuras`에서 장비 방어 둔화를 전장 전체 적에 적용하며 기존 오라 제거 키를 공유합니다.
+- **근거·안전:** `SourceModelTwentiethSkillCatalog`에서 불릿 `skill:2`, `skill:4` 전체 필드를 정확히 승인. `data/original-2323C-all-unit-aura-audit.json`의 A0WQ ACac 1~4단계는 5/20/40/50%, 단위 객체 `h081`에는 선천 오라가 **없어** 입증된 원본 레벨 없이는 버프를 부여하지 않습니다. `OriginalMissionWalletRewards.ItemResourceId`는 위습만 변환. 검사 코드는 `Assets/Tests/EditMode/OriginalEquippedItemLedgerTests.cs`에 추가했지만 **미실행**입니다.
 

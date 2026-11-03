@@ -677,6 +677,32 @@ namespace Ordr.Mobile.Unity
         private Original323CommonFusionPort commonSourceFusion;
         private bool usesBuiltInAutomaticUncommonWisps;
         private SourceModelBasicCombatRules sourceModelDamage;
+        private IOriginalEquippedItemWitness originalEquippedItemWitness;
+        private IOriginalBulletArmadaLevelWitness originalBulletArmadaWitness;
+
+        // Integration ports for a REAL native inventory/equipment purchase,
+        // not a button/tooltip or an item issued from the personal missions.
+        public void ConfigureOriginalEquippedItemWitness(IOriginalEquippedItemWitness witness)
+        {
+            if (PracticeBattle != null || originalEquippedItemWitness != null || witness == null)
+                throw new InvalidOperationException("장비 증거 공급자는 연습 전투 전 한 번만 연결합니다.");
+            originalEquippedItemWitness = witness;
+        }
+
+        public void ConfigureOriginalBulletArmadaLevelWitness(
+            IOriginalBulletArmadaLevelWitness witness)
+        {
+            if (PracticeBattle != null || originalBulletArmadaWitness != null || witness == null)
+                throw new InvalidOperationException("아르마다 증거 공급자는 연습 전투 전 한 번만 연결합니다.");
+            originalBulletArmadaWitness = witness;
+        }
+
+        public bool TryRecordOriginalEquippedItemReceipt(string receipt,
+            long unitInstanceId, string itemRawcode, int signedCount)
+        {
+            return Combat != null && Combat.TryRecordSourceModelEquippedItem(
+                receipt, unitInstanceId, itemRawcode, signedCount);
+        }
         private IOriginalWispRandom sessionScriptRandom;
         public SourceModelPracticeBattle PracticeBattle { get; private set; }
         public Original323CreepPracticeWorld PracticeCreeps { get; private set; }
@@ -855,6 +881,10 @@ namespace Ordr.Mobile.Unity
             sourceModelDamage.Enable();
             Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
             Combat.ConfigureSourceModelPlayerGold(() => SharedEconomy.Wallet.Balance("gold"));
+            if (originalEquippedItemWitness != null)
+                Combat.ConfigureSourceModelEquippedItems(originalEquippedItemWitness);
+            if (originalBulletArmadaWitness != null)
+                Combat.ConfigureSourceModelBulletArmadaLevel(originalBulletArmadaWitness);
             Combat.BindExistingVerifiedAttacks();
             Combat.ConfigureSourceModelUnitResources(sourcePool);
             EnsureSoloStoryStarted(creepData.text);

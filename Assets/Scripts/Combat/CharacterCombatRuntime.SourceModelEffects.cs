@@ -189,6 +189,8 @@ namespace Ordr.Mobile.Combat
                     ApplySourceModelAuraGroup(ordered, null, enemy, CombatEffectType.MovementSlowPercent);
                 }
             }
+            RefreshSourceModelBulletArmorAuras();
+            RefreshSourceModelBulletArmada();
             RefreshSourceKaidoArmorLanes();
         }
 

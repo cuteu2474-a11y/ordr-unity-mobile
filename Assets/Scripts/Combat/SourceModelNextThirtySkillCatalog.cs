@@ -102,7 +102,7 @@ namespace Ordr.Mobile.Combat
                 new[] { "광역 물리 타격", "타격·단일 스턴" },
                 new[] { "광역 혼합 피해" }),
             new SourceModelNextThirtyUnit("I-05", "h081",
-                new[] { "패왕색 패기", "괴물의 후계자" },
+                new[] { "패왕색 패기", "육식 체", "괴물의 후계자" },
                 new[] { "데어 슈테르크슈테 스트라이크" }),
             new SourceModelNextThirtyUnit("I-06", "h04Q",
                 Array.Empty<string>(), new[] { "대자재천신" }),

@@ -1,0 +1,39 @@
+{
+  "batch": 21,
+  "date": "2026-11-03",
+  "unit": { "catalogId": "I-05", "name": "불릿", "rawcode": "h081" },
+  "profile": "data/character-skill-profiles.json / I-05, five tooltip skills",
+  "originalAbility": {
+    "rawcode": "A0WQ",
+    "evidence": "data/original-2323C-all-unit-aura-audit.json / abilityRawcode A0WQ, source war3map.w3a, ACac",
+    "witnessedLevelsRequired": true,
+    "attackPowerPercentByLevel": [5, 20, 40, 50],
+    "caution": "Tooltip thresholds 15/30 are only reported as eligibility; no unsupported conversion to A0WQ level. Original h081 objectAuraCodes is empty, so A0WQ must be witnessed as a dynamic ability level."
+  },
+  "connectedSkills": [
+    "I-05:skill:0: attack stacks 5% initial/1% each repeat; unique-all timed 50000 x30; legendary-all maxHP 10% and stun3",
+    "I-05:skill:1: attack stack +1% per stack, unique boss/story bonus, legendary chance to repeat 50%",
+    "I-05:skill:2: 7% proc 3-second stance; each real attack in stance magical30000+2500/speed stack; armorBreak1; unique/legendary speed bonuses",
+    "I-05:skill:3: unique armor slow aura20% and legendary armor basic-damage>=600000 bonus fixed50%",
+    "I-05:skill:4: exact tooltip gate, witnessed item-count threshold state, and observed native A0WQ levels 1..4"
+  ],
+  "ledger": {
+    "source": "Assets/Scripts/Combat/OriginalEquippedItemLedger.cs",
+    "trust": "IOriginalEquippedItemWitness authenticates a completed native equipment transaction, raw item ID, owner, stat class and rarity; immutable one-time receipt",
+    "attach": "OrdrCharacterCombatController.ConfigureOriginalEquippedItemWitness before BeginPracticeBattle; TryRecordOriginalEquippedItemReceipt only after a real native operation",
+    "currentNativeProvider": "ABSENT - none registered by default; all equipment counts remain zero",
+    "currentArmadaLevelProvider": "ABSENT - cannot infer levels from item count; A0WQ attack aura not granted without witness",
+    "invalidSources": [
+      "Personal mission item e018/e0IX/e017/e019 means wisps, not equipment",
+      "VerifiedShopSession offers only ResourceBundle and has no original raw-equipment identity",
+      "Any label/tooltip/display-only equipment, fabricated starting items or free loot"
+    ]
+  },
+  "quality": "TOOLTIP_MODEL_ONLY; no Python, Unity Editor, simulator, APK or GitHub Actions checks executed",
+  "remaining": [
+    "Provide a genuine original rawcode -> category/rarity witness and concrete native purchase/loot event connector",
+    "Provide authoritative A0WQ actual native level observations for the Bullet instance",
+    "Persistent equipment save/restore and native inventory migration not present",
+    "Warcraft damage/defense/stack rounding, RNG ordering, boss resistances and Android behavior unverified"
+  ]
+}

@@ -176,6 +176,18 @@ namespace Ordr.Mobile.Combat
                         Part(skill, 0, "physical", "amount", 250000d,
                             "plusTargetCurrentHealthPercent", 2d,
                             "damageBonusPercentPerAttackItemStack", 1d);
+                case "I-05:skill:2":
+                    return Header(skill, "육식 체", "onAttack", "area", 7,
+                        325, 3, "uniqueSpeedItemBonus",
+                        SkillDict("fixedDamagePerStack", 10000d,
+                            "armorBreakStacks", 2d), "legendarySpeedItemBonus",
+                        SkillDict("radius", 450d, "magicalFlatDamage", 50000d,
+                            "magicalPerStack", 4500d)) &&
+                        Part(skill, 0, "selfTransform", "durationSeconds", 3d) &&
+                        Part(skill, 1, "magical", "amountPerHit", 30000d,
+                            "plusAttackSpeedItemStackMultiplier", 2500d,
+                            "whenBuffActive", true) &&
+                        Part(skill, 2, "armorBreak", "stacks", 1d);
                 case "I-05:skill:3":
                     return Header(skill, "괴물의 후계자", "onEveryAttack", "area", null,
                         400, 3, "uniqueArmorItemBonus",
@@ -185,6 +197,11 @@ namespace Ordr.Mobile.Combat
                         Part(skill, 0, "physical", "basicAttackPercent", 100d) &&
                         Part(skill, 1, "critical", "multiplier", 4d, "chancePercent", 15d) &&
                         Part(skill, 2, "stun", "durationSeconds", 2d, "chancePercent", 15d);
+                case "I-05:skill:4":
+                    return Header(skill, "유니언 아르마다", "itemUpgrade", null,
+                        null, null, 1, "requiredUnitCount", 1d) &&
+                        Part(skill, 0, "skillLevelByItemCount",
+                            "uniqueThreshold", 15d, "legendaryThreshold", 30d);
             }
             return false;
         }

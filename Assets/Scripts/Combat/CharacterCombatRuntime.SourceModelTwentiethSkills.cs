@@ -168,6 +168,8 @@ namespace Ordr.Mobile.Combat
             double multiplier = 1;
             if (actor.Catalog.Id == "E-11")
                 multiplier = 1 + sourceModelRules.NextScriptRoll(1000000) / 2000000.0;
+            var bulletItems = actor.Catalog.Id == "I-05" ?
+                SourceModelEquippedItemsOf(actor.Id) : null;
 
             // E-03:skill:5 has no target packet; its sole effect is a stack.
             if (skill.Id == "E-03:skill:5")
@@ -255,22 +257,50 @@ namespace Ordr.Mobile.Combat
                                 target.Enemy.MaxHealth * .20, "magical");
                         break;
                     case "I-05:skill:0":
-                        // An upgrade cannot be inferred from the tooltip.
-                        // The live mobile world currently has no equipped-
-                        // item ledger, so only the original zero-item packet
-                        // runs; unique/legendary bonuses remain unavailable.
                         SourceModelTwentiethDamage(actor, target, skill,
-                            1500000, "physical");
+                            1500000 * (1 + bulletItems.Attack * .05), "physical");
                         for (int hit = 0; hit < 12 && target.Enemy.IsAlive; hit++)
                             SourceModelTwentiethDamage(actor, target, skill,
-                                100000, "physical");
+                                100000 * (1 + bulletItems.Attack * .01), "physical");
                         SourceModelTwentiethStun(actor, target, skill, 1);
+                        if (bulletItems.AllUnique)
+                            ScheduleSourceModelBulletUniqueStrike(actor, target, skill);
+                        if (bulletItems.AllLegendary)
+                        {
+                            SourceModelTwentiethDamage(actor, target, skill,
+                                target.Enemy.MaxHealth * .10, "physical");
+                            SourceModelTwentiethStun(actor, target, skill, 3, true);
+                        }
                         break;
                     case "I-05:skill:1":
                         if (target.Kind == CharacterEnemyKind.Boss ||
-                            target.Kind == CharacterEnemyKind.Story) break;
-                        SourceModelTwentiethDamage(actor, target, skill,
-                            250000 + target.Enemy.Health * .02, "physical");
+                            target.Kind == CharacterEnemyKind.Story)
+                        {
+                            if (bulletItems.HasUnique)
+                            {
+                                double bonus = 250000 + target.Enemy.Health * .01;
+                                SourceModelTwentiethDamage(actor, target, skill,
+                                    bonus, "physical");
+                                if (bulletItems.HasLegendary &&
+                                    SourceModelTwentiethChance(sourceModelRules, 50))
+                                    SourceModelTwentiethDamage(actor, target, skill,
+                                        bonus, "physical");
+                            }
+                            break;
+                        }
+                        double conq = (250000 + target.Enemy.Health * .02) *
+                            (1 + bulletItems.Attack * .01);
+                        SourceModelTwentiethDamage(actor, target, skill, conq, "physical");
+                        if (bulletItems.HasLegendary &&
+                            SourceModelTwentiethChance(sourceModelRules, 50))
+                            SourceModelTwentiethDamage(actor, target, skill, conq,
+                                "physical");
+                        break;
+                    case "I-05:skill:2":
+                        // The 7% roll refreshes a three-second stance. The
+                        // per-attack stance packet runs once AFTER the rolls.
+                        if (ReferenceEquals(primary, target))
+                            ActivateSourceModelBulletRokushiki(actor, skill);
                         break;
                     case "I-05:skill:3":
                         double basic = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
@@ -332,8 +362,13 @@ namespace Ordr.Mobile.Combat
         private void SourceModelTwentiethAfterBasicHit(string actorKey,
             string rawcode, string targetId, long actual)
         {
-            if (!UsesSourceModelBasicAttacks || !processingStep || actual < 120000 ||
-                rawcode != "h0CJ") return;
+            if (!UsesSourceModelBasicAttacks || !processingStep) return;
+            if (rawcode == "h081")
+            {
+                SourceModelBulletAfterConfirmedBasicHit(actorKey, targetId, actual);
+                return;
+            }
+            if (actual < 120000 || rawcode != "h0CJ") return;
             long id;
             CharacterInstance actor;
             SpatialCombatEnemy primary;
@@ -362,6 +397,7 @@ namespace Ordr.Mobile.Combat
             sourceModelTwentiethSoulStacks.Remove(actorId);
             sourceModelTwentiethSoulBonusReadyAt.Remove(actorId);
             sourceModelTwentiethTezoroPeriodCount.Remove(actorId);
+            ForgetSourceModelTwentyFirstEquipment(actorId);
         }
     }
 }

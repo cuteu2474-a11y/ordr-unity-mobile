@@ -162,7 +162,18 @@ namespace Ordr.Mobile.Combat
                         activatedThisAttack);
                 activatedThisAttack.Add(skill.Name);
             }
-            if (completedModels != actor.Profile.Skills.Count)
+            // ItemUpgrade is a separately observed passive level, never an
+            // independent basic-attack proc or a deferred combat hit.
+            if (catalogId == "I-05")
+                ApplySourceModelBulletRokushikiAttack(actor, primary);
+            int nonAttackAbilities = 0;
+            foreach (var registered in actor.Profile.Skills)
+                if ((registered.Trigger == "itemUpgrade" ||
+                     registered.Trigger == "activeMana" ||
+                     registered.Trigger == "activeHealth") &&
+                    SourceModelTwentiethSkillCatalog.CanModelExact(registered))
+                    nonAttackAbilities++;
+            if (completedModels != actor.Profile.Skills.Count - nonAttackAbilities)
                 ReportSourceModelNextThirtyDeferred(attackerId, primary.Id,
                     catalogId + " 도감 " + actor.Profile.Skills.Count +
                     "개 중 안전한 연습 타격 " + completedModels +
