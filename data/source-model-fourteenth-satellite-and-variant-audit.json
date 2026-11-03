@@ -1,0 +1,63 @@
+{
+  "format": "ordr-source-model-fourteenth-satellite-variant-audit-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceFiles": [
+    "character-skill-profiles.json",
+    "original-2323C-map-base-stats.json",
+    "wiki-unit-catalog-extension.json"
+  ],
+  "executionStatus": "TOOLTIP_MODEL_ONLY; no Warcraft-native parity or Unity Android result",
+  "satelliteMana": [
+    {
+      "rawcode": "H0AB",
+      "name": "릴리스",
+      "maximumMana": 90,
+      "nativeManaRegeneration": 0,
+      "activeSkill": "릴리스 마나 공격",
+      "manaCost": 90,
+      "radius": 500,
+      "flatDamage": 2200000,
+      "damageSchool": "physical",
+      "blockedComponents": ["agilityScalingPerPoint=22000", "singlePrimaryTarget maximumHP 0.2% per agility"]
+    },
+    {
+      "rawcode": "H0AE",
+      "name": "아틀라스",
+      "maximumMana": 110,
+      "nativeManaRegeneration": 0,
+      "activeSkill": "아틀라스 마나 공격",
+      "manaCost": 110,
+      "radius": 625,
+      "flatDamage": 2000000,
+      "damageSchool": "fixed",
+      "blockedComponents": ["target maximumHP 0.1% per strength"]
+    },
+    {
+      "rawcode": "H0AM",
+      "name": "요크",
+      "maximumMana": 100,
+      "nativeManaRegeneration": 0,
+      "activeSkill": null,
+      "manaCost": null,
+      "radius": null,
+      "flatDamage": null,
+      "blockedComponents": ["No satelliteActiveMana entry; cannot invent a cast"]
+    }
+  ],
+  "vegapunkMainCast": {
+    "actorCatalogId": "TR-30",
+    "originalRawcode": "H0AA",
+    "manaCost": 200,
+    "satelliteManaRegenerationPerSecond": 25,
+    "regenerationDurationSeconds": 3,
+    "modelPolicy": "on successful main active cast, refill only owned satellite pools, capped at original maximum; never generate unsourced passive regen"
+  },
+  "alternateForms": [
+    {"catalogId": "TR-31", "parent": "TR-20", "name": "조로 염왕", "confirmedMapObjectName": "염왕", "candidateMapRawcode": "H0BT", "originalFormRawcode": null, "result": "IDENTITY_ONLY", "blocker": "No proven parent-to-form trigger and identity mapping"},
+    {"catalogId": "TR-32", "parent": "TR-23", "name": "쵸파 몬스터포인트", "confirmedMapObjectName": "몬스터포인트", "candidateMapRawcode": "H093", "originalFormRawcode": "H0B6", "result": "EXISTING_PARENT_FORM", "blocker": "Already modeled as TR-23 H0B6 timed burst; H093 relation still unproven"},
+    {"catalogId": "TR-33", "parent": "TR-30", "name": "베가펑크(스네이크)", "confirmedMapObjectName": "S-스네이크", "candidateMapRawcode": "h09Y", "originalFormRawcode": null, "result": "IDENTITY_ONLY", "blocker": "h09Y is independently catalogued as SR-01; no Vegapunk transform/acquisition proof"},
+    {"catalogId": "TR-34", "parent": "TR-30", "name": "베가펑크(베어)", "confirmedMapObjectName": "S-베어", "candidateMapRawcode": "h0A1", "originalFormRawcode": null, "result": "IDENTITY_ONLY", "blocker": "h0A1 is independently catalogued as SR-02; no Vegapunk transform/acquisition proof"},
+    {"catalogId": "TR-35", "parent": "TR-30", "name": "베가펑크(샤크)", "confirmedMapObjectName": "S-샤크", "candidateMapRawcode": "h0A0", "originalFormRawcode": null, "result": "IDENTITY_ONLY", "blocker": "h0A0 is independently catalogued as SR-03; no Vegapunk transform/acquisition proof"}
+  ]
+}

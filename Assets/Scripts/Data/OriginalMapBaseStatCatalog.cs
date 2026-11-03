@@ -186,12 +186,28 @@ namespace Ordr.Mobile.Data
         }
     }
 
+    // UnitBalance.slk-derived map object baseline. Independent actors use
+    // this for mana; it never certifies Warcraft-native ability behavior.
+    public sealed class OriginalMapObjectResources
+    {
+        public double MaximumMana { get; private set; }
+        public double ManaRegeneration { get; private set; }
+
+        internal OriginalMapObjectResources(double mana, double regeneration)
+        {
+            MaximumMana = mana;
+            ManaRegeneration = regeneration;
+        }
+    }
+
     public sealed class OriginalMapBaseStatCatalog
     {
         private readonly Dictionary<string, OriginalMapCharacterBasics> entries =
             new Dictionary<string, OriginalMapCharacterBasics>(StringComparer.Ordinal);
         private readonly Dictionary<string, OriginalMapBasicAttack> objectAttacks =
             new Dictionary<string, OriginalMapBasicAttack>(StringComparer.Ordinal);
+        private readonly Dictionary<string, OriginalMapObjectResources> objectResources =
+            new Dictionary<string, OriginalMapObjectResources>(StringComparer.Ordinal);
 
         public string SourceW3xSha256 { get; private set; }
         public int Count { get { return entries.Count; } }
@@ -211,6 +227,13 @@ namespace Ordr.Mobile.Data
             OriginalMapBasicAttack attack;
             return rawcode != null && objectAttacks.TryGetValue(rawcode, out attack)
                 ? attack : null;
+        }
+
+        public OriginalMapObjectResources FindMapObjectResources(string rawcode)
+        {
+            OriginalMapObjectResources resource;
+            return rawcode != null && objectResources.TryGetValue(rawcode, out resource)
+                ? resource : null;
         }
 
         public static OriginalMapBaseStatCatalog FromJson(string json, CharacterUnitCatalog units)
@@ -235,6 +258,18 @@ namespace Ordr.Mobile.Data
                         throw new FormatException("원본 객체 공격 코드 중복/오류: " + rawcode);
                     result.objectAttacks.Add(rawcode, new OriginalMapBasicAttack(
                         OrdrJson.Object(sourceAttack, "attack1"), rawcode));
+                    object baseline = OrdrJson.Value(row, "baseStats");
+                    if (baseline != null)
+                    {
+                        var stats = OrdrJson.Object(baseline, "map object baseStats");
+                        double? mana = OrdrJson.Number(stats, "mana");
+                        double? regen = OrdrJson.Number(stats, "manaRegeneration");
+                        if (mana.HasValue && regen.HasValue &&
+                            mana.Value >= 0 && regen.Value >= 0 &&
+                            !double.IsInfinity(mana.Value) && !double.IsInfinity(regen.Value))
+                            result.objectResources.Add(rawcode,
+                                new OriginalMapObjectResources(mana.Value, regen.Value));
+                    }
                 }
             foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "catalogEntries"), "catalogEntries"))
             {

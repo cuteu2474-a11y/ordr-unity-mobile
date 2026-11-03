@@ -1675,6 +1675,104 @@ namespace Ordr.Mobile.Tests
             }
         }
 
+        [TestCase("H0AB", 90d, "릴리스 마나 공격", 2200000d)]
+        [TestCase("H0AE", 110d, "아틀라스 마나 공격", 2000000d)]
+        public void PurchasedSatelliteUsesPinnedManaAndExecutesOneIndependentActive(
+            string rawcode, double maximum, string skill, double amount)
+        {
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"),
+                CharacterUnitCatalog.FromJson(Data("units.json")));
+            Assert.AreEqual(maximum, map.FindMapObjectResources(rawcode).MaximumMana);
+            Assert.AreEqual(0, map.FindMapObjectResources(rawcode).ManaRegeneration);
+            using (var live = Create("TR-30", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle()
+                    .Add(OriginalMissionWalletRewards.TraitPointsId, 2).Add("wood", 7));
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, rawcode, wallet));
+                var satellite = live.Combat.PracticeSatellites().Single();
+                Assert.AreEqual(maximum,
+                    live.Combat.PracticeSatelliteMaximumManaOf(satellite.Id).Value);
+                Assert.AreEqual(maximum,
+                    live.Combat.PracticeSatelliteManaOf(satellite.Id).Value);
+                var actions = live.Battle.Advance(3);
+                Assert.AreEqual(1, actions.Count(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated && e.SkillName == skill),
+                    "An SLK pool with no mana regeneration funds exactly one active.");
+                Assert.IsTrue(actions.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == skill && e.Amount > 0));
+                Assert.AreEqual(0, live.Combat.PracticeSatelliteManaOf(satellite.Id).Value);
+                actions = live.Battle.Advance(3);
+                Assert.IsFalse(actions.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated && e.SkillName == skill));
+                Assert.AreEqual(0, live.Combat.PracticeSatelliteManaOf(satellite.Id).Value);
+            }
+        }
+
+        [Test]
+        public void YorkHasSourceManaButNoInventedManaSkill()
+        {
+            using (var live = Create("TR-30", false, -4900, 5400))
+            {
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle().Add(
+                    OriginalMissionWalletRewards.TraitPointsId, 4));
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AM", wallet));
+                long id = live.Combat.PracticeSatellites().Single().Id;
+                Assert.AreEqual(100, live.Combat.PracticeSatelliteManaOf(id).Value);
+                var events = live.Battle.Advance(3);
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.Attack &&
+                    e.ActorId == "practice-satellite:" + id));
+                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.ActorId == "practice-satellite:" + id));
+                Assert.AreEqual(100, live.Combat.PracticeSatelliteManaOf(id).Value);
+            }
+        }
+
+        [Test]
+        public void VegapunkMainCastRegeneratesOnlyPurchasedSatellitesForThreeSeconds()
+        {
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Data("original-2323C-map-base-stats.json"),
+                CharacterUnitCatalog.FromJson(Data("units.json")));
+            var resources = SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                Data("original-2323C-unit-object-stats.json"), map);
+            using (var live = Create("TR-30", false, -4900, 5400))
+            {
+                live.Combat.ConfigureSourceModelUnitResources(resources);
+                var wallet = new EconomyWallet();
+                live.Combat.ConfigureOtamaWoodWallet(wallet);
+                wallet.Grant(new ResourceBundle().Add(
+                    OriginalMissionWalletRewards.TraitPointsId, 2).Add("wood", 7));
+                Assert.IsTrue(live.Combat.TryAcquirePracticeSatellite(
+                    live.ActorId, "H0AB", wallet));
+                long id = live.Combat.PracticeSatellites().Single().Id;
+                var events = live.Battle.Advance(8);
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "베가펑크 마나 공격"));
+                Assert.IsTrue(events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "릴리스 마나 공격"));
+                double regenerated = live.Combat.PracticeSatelliteManaOf(id).Value;
+                Assert.Greater(regenerated, 0,
+                    "Only a witnessed Vegapunk main cast may regenerate satellite mana.");
+                Assert.LessOrEqual(regenerated, 75,
+                    "25 mana/s for three seconds, capped by the pinned 90 MP pool.");
+                live.Combat.RemoveCharacter(live.ActorId);
+                Assert.AreEqual(regenerated, live.Combat.PracticeSatelliteManaOf(id).Value, .001,
+                    "Owned satellites and their mana must survive creator removal.");
+                live.Battle.Advance(2);
+                Assert.AreEqual(regenerated, live.Combat.PracticeSatelliteManaOf(id).Value, .001);
+            }
+        }
+
         [Test]
         public void SourceStoryRewardsCanUnlockActualVegapunkPurchaseWithoutFakeCurrency()
         {

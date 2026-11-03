@@ -808,3 +808,10 @@ APK 아티팩트 이름은 `ordr-mobile-android-development-apk`, 경로는 `bui
 - 스토리 파견/귀환을 확정하는 즉시 쵸파 변신, 보니의 기존 전장 `40스택·이동 봉쇄·축소` 상태, 시노부 등 기한부 독립 분신 공격을 정리합니다. 기존 전장 리비전·소환 등록/해제·오라 갱신 경로를 사용합니다. 신규 유닛/재화/보상은 생성하지 않습니다.
 - `tests/test_source_model_thirteenth_form_lifecycle.py`와 `SourceModelScriptAttackSkillTests`에 시간 만료·동일 유닛·오라 해제·원본 마나 보존·전장 이탈 회귀를 추가했습니다. 로컬 Python 통합 검사 **325건 중 324통과·1건 건너뜀**, `git diff --check` 정상. **TOOLTIP_MODEL_ONLY**이며 원본 네이티브 변신 비용·정확한 마나 재충전, Unity Editor·Android 실행은 아직 확인되지 않았습니다.
 
+## 2026-11-03 · 14차 베가펑크 위성 마나 기술·5개 변신체 식별 (최신)
+
+- [x] **릴리스 H0AB** 원본 객체 마나90/자연 재생0, `마나 공격` MP90·반경500 물리220만; **아틀라스 H0AE** 마나110/자연 재생0, MP110·반경625 고정200만을 구매된 위성의 독립 기본 공격 뒤 공용 피해·처치 정산에 연결했습니다. 위성은 조합 로스터에 포함되지 않고, 공격자 소멸 뒤에도 보유 마나/전투 상태를 유지합니다. **요크 H0AM** 원본 마나100은 관리하되 `satelliteActiveMana` 기술이 없어 가짜 주문을 만들지 않습니다.
+- [x] 베가펑크 본체 `마나 공격`의 기존 MP200 소비와 원본 도감의 **위성 마나 재생 25/초×3초**를 공통 시간 경로에 연결했습니다. 위성 MP는 `original-2323C-map-base-stats.json`의 원본 객체에서 읽으며 상한을 넘지 않고, 원래 자연 재생0을 임의 증가시키지 않습니다. 힘·민첩 수치 공급자가 없는 `릴리스 2.2만×민첩/대상 최대HP0.2%×민첩`, `아틀라스 대상 최대HP0.1%×힘` 추가분은 이벤트로 보류합니다.
+- [x] 확장 카탈로그 5종 교차 검사: **조로 염왕 TR-31**은 H0BT 객체 이름만 확인·전환 미검증; **쵸파 몬스터포인트 TR-32**는 이미 TR-23의 H0B6 4초 폭주로 실행되고 H093과의 관계 미검증; **베가펑크(스네이크/베어/샤크) TR-33~35**는 별도 세라핌 SR-01~03의 `h09Y/h0A1/h0A0`를 베가펑크 변신체로 오용하지 않습니다. 전환 조건·독립 획득 원본 증거가 없는 4종은 여전히 **식별만 되고 실행 불가**입니다.
+- [ ] 고유기 추가 계수·실제 영웅 능력치 공급자, 네이티브 시전/재생 위상, 위성 오라·강화/성장·세라핌 획득 연계는 미완료. 근거 `data/source-model-fourteenth-satellite-and-variant-audit.json`, 회귀 `tests/test_source_model_fourteenth_satellites.py`·Unity EditMode `SourceModelScriptAttackSkillTests`. **TOOLTIP_MODEL_ONLY**이며 Unity Editor·Android 실기·Warcraft 원작 결과는 확인하지 않았습니다.
+

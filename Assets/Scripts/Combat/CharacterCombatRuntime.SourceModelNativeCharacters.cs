@@ -243,6 +243,14 @@ namespace Ordr.Mobile.Combat
             string actorKey = InstanceKey(actor.Id), enemyId = primary.Id;
             bool lane = IsStoryDeployed(actor.Id);
             long revision = SourceModelLaneRevision(actor.Id);
+            var regenSkill = FindProfileSkill(actor.Profile, "베가펑크 마나 공격");
+            if (regenSkill != null && regenSkill.Trigger == "activeMana" &&
+                regenSkill.Number("manaCost") == 200 &&
+                regenSkill.Components.Count == 4 &&
+                regenSkill.Components[3].Type == "satelliteManaRegeneration" &&
+                regenSkill.Components[3].Number("perSecond") == 25 &&
+                regenSkill.Components[3].Number("durationSeconds") == 3)
+                StartSourceSatelliteManaRegeneration(actor.Id, 25, 3);
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, actorKey, enemyId,
                 "베가펑크 마나 공격",

@@ -18,6 +18,12 @@ namespace Ordr.Mobile.Combat
             public double? ExpiresAt;
             public bool Blocked;
             public CharacterSkillProfile SkillProfile;
+            public double MaximumMana;
+            public double Mana;
+            public double SourceManaRegenPerSecond;
+            public double SatelliteRegenBeginsAt;
+            public double SatelliteRegenEndsAt;
+            public double SatelliteRegenPerSecond;
         }
 
         private readonly Dictionary<string, SourceIndependentAttacker> sourceIndependentAttackers =
@@ -43,10 +49,62 @@ namespace Ordr.Mobile.Combat
                 Array.Empty<CombatSkillSpec>(), SourceModelBasicCombatRules.Evidence),
                 attack.IntervalSeconds);
             unitStatuses.Add(key, new CombatStatusEngine());
+            var resources = sourceModelRules.SourceObjectResources(rawcode);
+            // Map object SLK is the only starting mana source. Summons without
+            // a documented mana action cannot gain an invented active spell.
+            double maximumMana = resources == null ? 0 : resources.MaximumMana;
             sourceIndependentAttackers.Add(key, new SourceIndependentAttacker {
                 Key = key, Rawcode = rawcode, StoryLane = storyLane,
-                X = x, Y = y, ExpiresAt = expiresAt, SkillProfile = skillProfile
+                X = x, Y = y, ExpiresAt = expiresAt, SkillProfile = skillProfile,
+                MaximumMana = maximumMana, Mana = maximumMana,
+                SourceManaRegenPerSecond = resources == null ? 0 : resources.ManaRegeneration
             });
+        }
+
+        public double? PracticeSatelliteManaOf(long id)
+        {
+            SourceIndependentAttacker actor;
+            return UsesSourceModelBasicAttacks &&
+                sourceIndependentAttackers.TryGetValue(SatelliteAttackKey(id), out actor)
+                ? (double?)actor.Mana : null;
+        }
+
+        public double? PracticeSatelliteMaximumManaOf(long id)
+        {
+            SourceIndependentAttacker actor;
+            return UsesSourceModelBasicAttacks &&
+                sourceIndependentAttackers.TryGetValue(SatelliteAttackKey(id), out actor)
+                ? (double?)actor.MaximumMana : null;
+        }
+
+        private void AdvanceSourceIndependentMana(double elapsed)
+        {
+            if (elapsed <= 0) return;
+            double before = effectExecutor.Time, after = before + elapsed;
+            foreach (var actor in sourceIndependentAttackers.Values)
+            {
+                if (actor.MaximumMana <= 0) continue;
+                double added = actor.SourceManaRegenPerSecond * elapsed;
+                double bonusTime = Math.Max(0, Math.Min(after, actor.SatelliteRegenEndsAt) -
+                    Math.Max(before, actor.SatelliteRegenBeginsAt));
+                added += actor.SatelliteRegenPerSecond * bonusTime;
+                actor.Mana = Math.Min(actor.MaximumMana, actor.Mana + added);
+            }
+        }
+
+        private void StartSourceSatelliteManaRegeneration(long creatorId,
+            double perSecond, double duration)
+        {
+            foreach (var satellite in sourceSatellites)
+            {
+                if (satellite.CreatorId != creatorId) continue;
+                SourceIndependentAttacker actor;
+                if (!sourceIndependentAttackers.TryGetValue(
+                    SatelliteAttackKey(satellite.Id), out actor)) continue;
+                actor.SatelliteRegenBeginsAt = effectExecutor.Time;
+                actor.SatelliteRegenEndsAt = effectExecutor.Time + duration;
+                actor.SatelliteRegenPerSecond = perSecond;
+            }
         }
 
         private void UnregisterSourceIndependentAttack(string key)
@@ -130,7 +188,10 @@ namespace Ordr.Mobile.Combat
                     key, hit.TargetId, null, "MODEL_ONLY " + actor.Rawcode + " 기본 공격", hit.ActualDamage));
                 SpatialCombatEnemy victim;
                 if (enemies.TryGetValue(hit.TargetId, out victim))
+                {
                     CompleteSourceIndependentHit(actor, victim);
+                    TryAutoCastSourceSatelliteMana(actor, victim);
+                }
                 if (enemies.TryGetValue(hit.TargetId, out victim) && !victim.Enemy.IsAlive)
                     events.Add(new CharacterCombatEvent(CharacterCombatEventType.EnemyDefeated,
                         key, hit.TargetId, null, "MODEL_ONLY 독립 공격 처치", 0));
@@ -213,6 +274,76 @@ namespace Ordr.Mobile.Combat
             if (!target.Enemy.IsAlive)
                 events.Add(new CharacterCombatEvent(CharacterCombatEventType.EnemyDefeated,
                     attackerId, target.Id, skill, "모델 고정 피해 처치", actual));
+        }
+
+        private void ApplySourceModelFixedAreaPacket(SourceIndependentAttacker actor,
+            SpatialCombatEnemy center, double radius, long damage, string skill)
+        {
+            var targets = new List<SpatialCombatEnemy>();
+            foreach (var target in enemies.Values)
+            {
+                if (!CanSourceIndependentAttack(actor, target)) continue;
+                double dx = target.X - center.X, dy = target.Y - center.Y;
+                if (dx * dx + dy * dy <= radius * radius) targets.Add(target);
+            }
+            targets.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
+            foreach (var target in targets)
+                ApplySourceModelFixedPrimaryPacket(actor.Key, target, damage, skill);
+        }
+
+        // A purchased satellite is not a character and cannot use the roster
+        // mana auto-caster. Gate its independent action on pinned SLK mana and
+        // complete tooltip fields; do not synthesize hero STR/AGI scaling.
+        private void TryAutoCastSourceSatelliteMana(SourceIndependentAttacker actor,
+            SpatialCombatEnemy primary)
+        {
+            if (!primary.Enemy.IsAlive || actor.MaximumMana <= 0) return;
+            bool lilith = actor.Rawcode == "H0AB";
+            if (!lilith && actor.Rawcode != "H0AE") return; // York has no documented mana spell.
+            string name = lilith ? "릴리스 마나 공격" : "아틀라스 마나 공격";
+            var skill = FindProfileSkill(actor.SkillProfile, name);
+            double cost = lilith ? 90 : 110;
+            double radius = lilith ? 500 : 625;
+            if (skill == null || skill.Trigger != "satelliteActiveMana" ||
+                skill.Number("manaCost") != cost || skill.Radius != radius ||
+                skill.Target != "area" || actor.Mana < cost ||
+                actor.MaximumMana != cost ||
+                (lilith ? skill.Components.Count != 2 : skill.Components.Count != 1)) return;
+
+            if (lilith)
+            {
+                var physical = skill.Components[0];
+                var scaled = skill.Components[1];
+                if (physical.Type != "physical" ||
+                    physical.Number("amount") != 2200000 ||
+                    physical.Number("agilityScalingPerPoint") != 22000 ||
+                    scaled.Type != "fixed" ||
+                    scaled.Text("basis") != "targetMaxHealth" ||
+                    scaled.Number("percentPerAgility") != .2 ||
+                    scaled.Text("scope") != "singlePrimaryTarget") return;
+            }
+            else
+            {
+                var fixedHit = skill.Components[0];
+                if (fixedHit.Type != "fixed" ||
+                    fixedHit.Number("amount") != 2000000 ||
+                    fixedHit.Number("plusTargetMaxHealthPercentPerStrength") != .1) return;
+            }
+
+            actor.Mana -= cost;
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
+                actor.Key, primary.Id, name,
+                "TOOLTIP_MODEL_ONLY 원본 위성 MP " + cost + " 소비 / " +
+                "미공급 영웅 능력치 계수 제외", 0));
+            if (lilith)
+                ApplySourceModelAreaPacket(actor.Key, actor.StoryLane, primary,
+                    radius, 2200000, Ordr323AttackType.Spells, name);
+            else
+                ApplySourceModelFixedAreaPacket(actor, primary, radius, 2000000, name);
+            events.Add(new CharacterCombatEvent(CharacterCombatEventType.EffectDeferred,
+                actor.Key, primary.Id, name,
+                lilith ? "민첩 22000/포인트 및 대상 최대HP×0.2%/민첩 미공급" :
+                         "힘 1포인트당 대상 최대HP×0.1% 미공급", 0));
         }
 
         private void CompleteSourceIndependentHit(SourceIndependentAttacker actor,

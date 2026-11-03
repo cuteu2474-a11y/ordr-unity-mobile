@@ -392,3 +392,10 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `CharacterCombatRuntime.RefreshAfterCommittedStoryLaneChange`는 전장 전환 직후 `EndSourceChopperBurst`, `ForgetSourceModelEleventhActor`(보니 스택·이동 봉쇄), `RefreshSourceTemporaryActors`(시노부·슈가 등의 독립 공격자 제거)를 호출한 다음 기존 적·아군 오라를 갱신합니다. 지연 공격의 전장 리비전 차단은 그대로 유지합니다.
 - 검증 코드: `tests/test_source_model_thirteenth_form_lifecycle.py`, `Assets/Tests/EditMode/SourceModelScriptAttackSkillTests.cs`. 이 경로는 연습 모델이며 네이티브 Warcraft 변신/마나/면역의 최종 증거가 아닙니다.
 
+## 2026-11-03 · 14차 독립 위성 자원·액티브 재사용 경로 (최신)
+
+- `OriginalMapBaseStatCatalog.FindMapObjectResources` → `SourceModelBasicCombatRules.SourceObjectResources`: 고정 W3X `mapObjects[].baseStats.mana/manaRegeneration`을 독립 객체 원본 자원 원장으로 제공. 캐릭터/위성 rawcode 구분, 비정상 값 미승인.
+- `CharacterCombatRuntime.SourceModelIndependentAttacks`: `RegisterSourceIndependentAttack`에서 원본 위성 MP를 초기화, `AdvanceSourceIndependentMana`에서 원본 자연 재생+본체 3초 보너스를 실제 지난 시간 구간만 가산·상한 제한. `ExecuteReadySourceIndependentAttacks` 성공한 평타 후 `TryAutoCastSourceSatelliteMana`로 릴리스 H0AB·아틀라스 H0AE의 필드 전체를 승인하여 **별도 자원 차감→반경 피해→공용 실제 HP/처치 기록**. 요크 H0AM은 자동 마나 기술 미등록, 영웅 힘·민첩 원본 미공급 계수는 명시 보류.
+- `CharacterCombatRuntime.SourceModelNativeCharacters.ExecuteVegapunkSourceAttack`은 본체의 기존 MP200 사용 뒤 원본 25MP/s·3초 도감 필드가 일치할 때만 구매 위성의 재생 창을 엽니다. 공통 시계 `CharacterCombatRuntime.SourceModelEffects`, 조회 API `PracticeSatelliteManaOf/PracticeSatelliteMaximumManaOf`; 위성 생명주기·동일 전장·로스터/결제 분리는 유지.
+- 5종 위키 `alternate-form`은 `data/source-model-fourteenth-satellite-and-variant-audit.json`에 상태를 기록합니다. TR-32=기존 쵸파 H0B6 폼; 조로 염왕/베가펑크 3종은 원본 변신 트리거·rawcode 미확인. SR-01~03 독립 세라핌 객체를 위장 전환하지 않습니다. Python/Unity EditMode 테스트는 추가했으나 Unity 실행 결과 확인 전이며 `TOOLTIP_MODEL_ONLY`입니다.
+

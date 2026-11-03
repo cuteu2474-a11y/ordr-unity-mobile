@@ -62,6 +62,8 @@ namespace Ordr.Mobile.Combat
             return rawcode != null && independentAttacks.TryGetValue(rawcode, out attack)
                 ? attack : null;
         }
+        internal OriginalMapObjectResources SourceObjectResources(string rawcode) =>
+            objects.FindMapObjectResources(rawcode);
         internal long RollSourceObjectAttackPower(string rawcode)
         {
             OriginalMapCommonNativeAttackEvidence evidence;
