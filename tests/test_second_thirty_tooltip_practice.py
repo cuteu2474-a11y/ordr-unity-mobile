@@ -29,6 +29,10 @@ def supported(skill, unit_id=None):
         ('TR-10', '범위 마법타격'),
         ('TR-14', '무장색 패기'), ('TR-14', '컬버린'),
         ('TR-18', '마환인'), ('TR-18', '미환인'), ('TR-18', '무시빙아'),
+        # Batch 20 introduced E-11's exact gold/health packets; the older
+        # generic component checker cannot validate their full fields.
+        ('E-11', '공격 발동 마법 타격'),
+        ('E-11', '골드 연계 체력 소모 공격'),
         # Batch 24 applies a separate exact full-packet gate to these actives.
         ('L-07', '패기발산'), ('L-20', '화이트 아웃')
     }:
@@ -136,7 +140,8 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
         previous = {entry['id'] for entry in json.loads((ROOT /
             'data/original-2323C-next-30-runtime-coverage.json').read_text())['units']}
         for unit_id, rawcode, *_ in self.rows:
-            self.assertNotIn(unit_id, previous)
+            if unit_id in {entry[0] for entry in self.legacy_rows}:
+                self.assertNotIn(unit_id, previous)
             self.assertEqual(rawcode, self.status[unit_id]['originalRawcode'])
             self.assertIn(unit_id, self.profiles)
 
@@ -165,6 +170,14 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
         self.assertIn('갑판 포격', by_id['H-07'])
         self.assertIn('영혼 고정 타격', by_id['E-03'])
         self.assertIn('데어 슈테르크슈테 스트라이크', by_id['I-05'])
+        previous_ids = {entry['id'] for entry in json.loads(
+            (ROOT / 'data/original-2323C-next-30-runtime-coverage.json').read_text())['units']}
+        self.assertIn('E-03', previous_ids)
+        self.assertNotIn('I-05', previous_ids)
+        twentieth = (ROOT / 'Assets/Scripts/Combat/' /
+                     'SourceModelTwentiethSkillCatalog.cs').read_text()
+        self.assertIn('case "E-11:skill:0":', twentieth)
+        self.assertIn('case "E-11:skill:1":', twentieth)
 
     def test_legacy_source_callbacks_are_not_double_activated(self):
         by_id = {unit_id: names for unit_id, _, *names in self.legacy_rows}

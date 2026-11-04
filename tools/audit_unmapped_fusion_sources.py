@@ -14,29 +14,43 @@ def build(data):
     inventory = json.loads((data / "original-fusion-unconnected-review.json").read_text())
     reconciliation = json.loads((data / "original-fusion-object-reconciliation.json").read_text())
     registry = json.loads((data / "original-jass-fusion-registry.json").read_text())
-    source_by_ability = {r["abilityRawcode"]: r for r in registry["registrations"]}
     if (inventory["sourceW3xSha256"] != reconciliation["sourceW3xSha256"] or
             inventory["sourceW3xSha256"] != registry["sourceSha256"]):
         raise ValueError("Original map fingerprints do not match")
     objects = {r["rawcode"]: r for r in reconciliation["entries"]}
+    # H08T is an abstract source UNIT bucket with a separately audited group
+    # of real alternatives, not an independently spawned map object.
+    material_groups = json.loads((data / "original-2323C-owned-material-fusions.json").read_text())
+    grouped_rawcodes = set(material_groups["materialGroups"])
+    # Audit every real source-only UNIT role, including a later executable
+    # outcome. Deriving this solely from *blocked* recipes hides h0C2 after
+    # A0QG's mobile-result permission was added.
     grouped = {}
-    for blocked in inventory["blocked"]:
-        for rawcode in blocked["unmappedUnitRawcodes"]:
-            row = grouped.setdefault(rawcode, dict(ingredient=[], result=[], abilities=[],
-                                                   otherReasons=set()))
-            ability = blocked["abilityRawcode"]
-            source = source_by_ability[ability]
-            if any(c["kind"] == "UNIT" and c["rawcode"] == rawcode
-                   for c in source["conditions"]):
-                row["ingredient"].append(ability)
-            if any(c["kind"] == "UNIT" and c["rawcode"] == rawcode
-                   for c in source["results"]):
-                row["result"].append(ability)
-            if ability not in row["ingredient"] and ability not in row["result"]:
-                raise ValueError("Unmapped object lacks actual UNIT role: " + rawcode)
-            row["abilities"].append(ability)
-            row["otherReasons"].update(x for x in blocked["reasonCodes"]
-                                       if x != "unmapped-original-unit")
+    for source in registry["registrations"]:
+        if source["abilityRawcode"] == "TEST":
+            continue
+        for role, instructions in (("ingredient", source["conditions"]),
+                                   ("result", source["results"])):
+            for instruction in instructions:
+                if instruction["kind"] != "UNIT":
+                    continue
+                rawcode = instruction["rawcode"]
+                if (rawcode not in objects or rawcode in grouped_rawcodes or
+                        objects[rawcode].get("catalogUnitId") is not None):
+                    continue
+                row = grouped.setdefault(rawcode, dict(ingredient=[], result=[], abilities=[],
+                                                       otherReasons=set()))
+                ability = source["abilityRawcode"]
+                row[role].append(ability)
+                if ability not in row["abilities"]:
+                    row["abilities"].append(ability)
+    blocked_by_ability = {row["abilityRawcode"]: row for row in inventory["blocked"]}
+    for rawcode, row in grouped.items():
+        for ability in row["abilities"]:
+            blocked = blocked_by_ability.get(ability)
+            if blocked is not None:
+                row["otherReasons"].update(x for x in blocked["reasonCodes"]
+                                           if x != "unmapped-original-unit")
     entries = []
     for rawcode in sorted(grouped):
         original = objects[rawcode]
@@ -52,10 +66,12 @@ def build(data):
             "resultRecipes": sorted(row["result"]),
             "affectedRecipes": sorted(row["abilities"]),
             "otherBlockingReasons": sorted(row["otherReasons"]),
-            "acquisitionStatus": ("source-wisp-rare-draw-retained-no-spawn"
+            "acquisitionStatus": ("source-CWR-mobile-result-enabled-native-callback-unverified"
+                                  if rawcode == "h0C2" else
+                                  "source-wisp-rare-draw-retained-no-spawn"
                                   if rawcode == "h060"
                                   else "no-verified-gameplay-acquisition"),
-            "requiredNextEvidence": ("verified-result-catalog-and-spawn-effects"
+            "requiredNextEvidence": ("source-native-CWR-result-callback-and-gameplay-parity"
                                      if rawcode == "h0C2" else
                                      "verified-pirate-ship-catalog-combat-and-pending-wisp-transaction"
                                      if rawcode == "h060" else
@@ -65,7 +81,7 @@ def build(data):
         "format": "ordr-source-only-fusion-materials-v1",
         "sourceW3xSha256": reconciliation["sourceW3xSha256"],
         "executionSource": inventory["executionSource"],
-        "policy": "nightmare-otherworld; object names are display evidence only, never permission to consume or create units",
+        "policy": "nightmare-otherworld; W3X object names alone never grant crafting or acquisition; executable mobile CWR recipes require independent source-transaction approval",
         "summary": {
             "blockedRecipeCount": inventory["summary"]["blockedRecipes"],
             "unmappedRecipeCount": inventory["summary"]["blockedByReason"]["unmapped-original-unit"],

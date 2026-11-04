@@ -2,10 +2,10 @@
   "format": "ordr-source-only-fusion-materials-v1",
   "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
   "executionSource": "Assets/Scripts/Mobile/Original323CommonFusionPort.cs",
-  "policy": "nightmare-otherworld; object names are display evidence only, never permission to consume or create units",
+  "policy": "nightmare-otherworld; W3X object names alone never grant crafting or acquisition; executable mobile CWR recipes require independent source-transaction approval",
   "summary": {
-    "blockedRecipeCount": 111,
-    "unmappedRecipeCount": 4,
+    "blockedRecipeCount": 98,
+    "unmappedRecipeCount": 3,
     "distinctSourceOnlyObjects": 3,
     "sourceOnlyRoleOccurrences": 4
   },
@@ -58,12 +58,9 @@
       "affectedRecipes": [
         "A0QG"
       ],
-      "otherBlockingReasons": [
-        "special-target-or-pick",
-        "top-tier-route-or-callback-audit"
-      ],
-      "acquisitionStatus": "no-verified-gameplay-acquisition",
-      "requiredNextEvidence": "verified-result-catalog-and-spawn-effects"
+      "otherBlockingReasons": [],
+      "acquisitionStatus": "source-CWR-mobile-result-enabled-native-callback-unverified",
+      "requiredNextEvidence": "source-native-CWR-result-callback-and-gameplay-parity"
     }
   ]
 }
