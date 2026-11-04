@@ -87,11 +87,24 @@ class SourceModelSeventhBatchTests(unittest.TestCase):
         self.assertIn('AttackSpec.BasicAttack.IntervalSeconds', SEVENTH)
         self.assertIn('basicAttackExplosivePercent', SEVENTH)
         self.assertIn('singleMagicalDamagePerHit', SEVENTH)
+        # Source-backed summons and source-unmapped combat-only clones are
+        # distinct runtime paths. Koby's timed hits remain combat-capable
+        # without registering a nonexistent native object attack.
         self.assertIn('bool modeledCombat = false', TEMPORARY)
-        self.assertIn('bool autonomous = (nativeAutonomous || modeledCombat) &&', TEMPORARY)
+        self.assertIn('primary.X, primary.Y, true);', SEVENTH)
+        self.assertRegex(
+            TEMPORARY,
+            r'bool\s+autonomous\s*=\s*modeledCombat\s*\|\|\s*\(nativeAutonomous')
         self.assertIn('sourceModelRules.SourceObjectAttack(sourceRawcode) != null;', TEMPORARY)
-        self.assertIn('if (autonomous)', TEMPORARY)
-        self.assertIn('RegisterSourceIndependentAttack(SummonAttackKey(summon.Id)', TEMPORARY)
+        self.assertIn('sourceModelRules.SourceObjectAttack(sourceRawcode) != null);', TEMPORARY)
+        self.assertRegex(
+            TEMPORARY,
+            r'if\s*\(autonomous\s*&&\s*sourceRawcode\s*!=\s*null\)\s*'
+            r'RegisterSourceIndependentAttack\(SummonAttackKey\(summon.Id\)')
+        # The clone stays out of the fusion roster even though its scheduled
+        # temporary combat hits can be reported as independent attacks.
+        self.assertIn('if (!exists) return;', SEVENTH)
+        self.assertIn('CanFinishSourceModelDelayedAttack(actor.Id, lane, revision)', SEVENTH)
 
     def test_standalone_transform_and_clone_do_not_hide_prior_sixth_skills(self):
         self.assertIn('ExecuteSourceTemporaryAttack(actor, primary)', DISPATCH)
