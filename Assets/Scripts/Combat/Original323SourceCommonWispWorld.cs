@@ -154,7 +154,10 @@ namespace Ordr.Mobile.Combat
             var ship = units.Find(PirateShipCatalogId);
             var sourceShip = originalObjects.Find(PirateShipCatalogId);
             if (originalObjects.SourceW3xSha256 != OriginalCommonSaleRules.OriginalMapSha256 ||
-                ship == null || ship.Name != "해적선" || ship.Grade != "해적선" ||
+                ship == null || ship.Name != "해적선" ||
+                // The wiki extension reclassifies the exact same source ship
+                // as Hidden; source identity and W3X damage stay unchanged.
+                (ship.Grade != "해적선" && ship.Grade != "히든") ||
                 sourceShip == null ||
                 sourceShip.MappingStatus != "verified-source-wisp-pirate-ship" ||
                 sourceShip.OriginalRawcode != PirateShipRawcode ||

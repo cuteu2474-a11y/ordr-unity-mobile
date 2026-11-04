@@ -209,8 +209,9 @@ namespace Ordr.Mobile.Tests
             var preview = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
                 .Single(x => x.RecipeId == ability);
             Assert.IsTrue(preview.IsReady, string.Join(";", preview.MissingMaterials));
-            Assert.AreEqual(ManualActionState.Succeeded,
-                game.Fusion.ConfirmFusion(ability, preview.SuggestedMaterialInstances).State);
+            var committed = game.Fusion.ConfirmFusion(ability, preview.SuggestedMaterialInstances);
+            Assert.AreEqual(ManualActionState.Succeeded, committed.State,
+                committed.Message);
             Assert.AreEqual(resultId, game.Combat.MobileUnitSnapshot().Single().Unit.Id);
             Assert.AreEqual(resultRawcode, game.Map.Find(resultId).OriginalRawcode);
             // A new award queue after restore cannot resurrect a consumed ship.
@@ -258,6 +259,9 @@ namespace Ordr.Mobile.Tests
             long wood = recipe.OrderedConditions.Where(c => c.Kind == "WOOD").Sum(c => (long)c.Count);
             long traits = recipe.OrderedConditions.Where(c => c.Kind == "SKPT").Sum(c => (long)c.Count);
             long greenBlood = recipe.OrderedConditions.Where(c => c.Kind == "GREN").Sum(c => (long)c.Count);
+            // Source PICK:A800 needs a separate real random-grade candidate.
+            if (recipe.OrderedConditions.Any(c => c.Kind == "PICK"))
+                originalIds.Add(game.Combat.SpawnCharacter("RN-01", 100, 200));
             var funds = new ResourceBundle();
             if (gold > 0) funds.Add("gold", gold);
             if (wood > 0) funds.Add("wood", wood);
@@ -450,7 +454,7 @@ namespace Ordr.Mobile.Tests
                 game.Fusion.ConfirmFusion(redfield, offer.SuggestedMaterialInstances).State);
             CollectionAssert.AreEquivalent(before,
                 game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray());
-            Assert.AreEqual(5000, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(5060, game.Economy.Wallet.Balance("gold"));
             Assert.AreEqual(5, game.Economy.Wallet.Balance("wood"));
         }
 
@@ -466,7 +470,10 @@ namespace Ordr.Mobile.Tests
                 StringAssert.Contains("조합 아님", preview.Title);
                 Assert.IsFalse(preview.IsReady);
             }
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR30"));
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("TR30"));
+            Assert.IsFalse(game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "TR30").IsReady,
+                "Unowned h0AN cannot become a free material.");
             foreach (string ability in new[] {
                 "A007", "IM01", "IM04", "ET04", "ET07", "ET12", "SPH3" })
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
@@ -503,7 +510,7 @@ namespace Ordr.Mobile.Tests
                 game.Fusion.ConfirmFusion(ability, insufficient.SuggestedMaterialInstances).State);
             CollectionAssert.AreEquivalent(before,
                 game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray());
-            Assert.AreEqual(5000, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(5060, game.Economy.Wallet.Balance("gold"));
             Assert.AreEqual(5, game.Economy.Wallet.Balance("wood"));
             Assert.AreEqual(3, game.Economy.Wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
 
@@ -520,7 +527,7 @@ namespace Ordr.Mobile.Tests
                 game.Fusion.ConfirmFusion(ability, ready.SuggestedMaterialInstances).State);
             CollectionAssert.AreEquivalent(before,
                 game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray());
-            Assert.AreEqual(5000, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(5060, game.Economy.Wallet.Balance("gold"));
             Assert.AreEqual(5, game.Economy.Wallet.Balance("wood"));
 
             game.Economy.Wallet.Grant(new ResourceBundle()

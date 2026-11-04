@@ -259,7 +259,8 @@ namespace Ordr.Mobile.Combat
                                 bool ship = rawcode == Original323SourceCommonWispWorld.PirateShipRawcode;
                                 if (ship
                                     ? (catalogId != Original323SourceCommonWispWorld.PirateShipCatalogId ||
-                                        candidate.Unit.Grade != "해적선")
+                                        (candidate.Unit.Grade != "해적선" &&
+                                         candidate.Unit.Grade != "히든"))
                                     : candidate.Unit.Grade != "흔함")
                                     throw new InvalidOperationException("원본 위습 소환 결과 등급/객체 불일치");
                             }

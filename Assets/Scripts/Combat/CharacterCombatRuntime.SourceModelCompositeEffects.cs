@@ -246,15 +246,26 @@ namespace Ordr.Mobile.Combat
                         SourceModelSongSoldiers(actor.Id) * multiplier;
                 if (component.Type == "explosive")
                 {
+                    // Flat source explosives and percent-based source
+                    // explosives require different packet semantics.
                     if (component.Text("basis") == "targetCurrentHealth")
-                        return target.Enemy.Health *
-                            component.Number("percentPerSoldier").Value / 100 *
-                            SourceModelSongSoldiers(actor.Id) * multiplier;
-                    return (target.Enemy.MaxHealth *
-                        component.Number("percent").Value / 100 +
-                        (target.Enemy.MaxHealth - target.Enemy.Health) *
-                        (component.Number("plusMissingHealthPercent") ?? 0) / 100) *
-                        multiplier;
+                    {
+                        if (component.Number("percentPerSoldier").HasValue)
+                            return target.Enemy.Health *
+                                component.Number("percentPerSoldier").Value / 100 *
+                                SourceModelSongSoldiers(actor.Id) * multiplier;
+                        if (component.Number("percent").HasValue)
+                            return target.Enemy.Health *
+                                component.Number("percent").Value / 100 * multiplier;
+                    }
+                    if (component.Text("basis") == "targetMaxHealth")
+                        return (target.Enemy.MaxHealth *
+                            (component.Number("percent") ?? 0) / 100 +
+                            (target.Enemy.MaxHealth - target.Enemy.Health) *
+                            (component.Number("plusMissingHealthPercent") ?? 0) / 100) *
+                            multiplier;
+                    // Flat explosives such as TR-07's 900000 use the
+                    // existing common packet amount instead of null percent.
                 }
                 if (component.Text("basis") == "targetCurrentHealth")
                     return target.Enemy.Health *

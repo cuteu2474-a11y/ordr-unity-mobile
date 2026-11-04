@@ -349,7 +349,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(241, game.Fusion.ExecutableRecipeCount);
             Assert.AreEqual(39, game.Fusion.ExecutableLegendaryRecipeCount);
             Assert.AreEqual(22, game.Fusion.ExecutableHiddenRecipeCount);
-            Assert.AreEqual(63, game.Fusion.ExecutableRestrictedRecipeCount);
+            Assert.AreEqual(76, game.Fusion.ExecutableRestrictedRecipeCount);
             Assert.AreEqual(1, game.Fusion.ExecutableEternalRecipeCount);
             Assert.IsTrue(game.Fusion.CanCommitRecipe("A1A0"));
             var fresh = Offer(game, "A012");
@@ -386,7 +386,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(ManualActionState.Rejected,
                 game.Fusion.ConfirmFusion("A03D", ready.SuggestedMaterialInstances).State);
             Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("A00O"));
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("A00O"));
             Assert.IsTrue(game.Fusion.CanCommitRecipe("A01S"));
         }
 
@@ -582,9 +582,13 @@ namespace Ordr.Mobile.Tests
             foreach (string ability in new[] { "YY01", "YY15", "YY20", "A00O", "A025",
                 "ET02", "A19Z", "A1A1", "A1A0" })
             {
-                Assert.IsFalse(game.Fusion.CanCommitRecipe(ability), ability);
-                Assert.AreEqual(ManualActionState.NotImplemented,
+                // Newly source-registered outcomes may be selectable, but
+                // none may fabricate an actor without original materials.
+                bool executable = game.Fusion.CanCommitRecipe(ability);
+                Assert.AreEqual(executable ? ManualActionState.Rejected :
+                    ManualActionState.NotImplemented,
                     game.Fusion.ConfirmFusion(ability, new long[0]).State, ability);
+                if (executable) Assert.IsFalse(Offer(game, ability).IsReady, ability);
             }
             Assert.AreEqual(0, game.Combat.CharacterCount);
             Assert.AreEqual(60, game.Economy.Wallet.Balance("gold"));
@@ -839,8 +843,10 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual("R-06", result.Unit.Id);
             Assert.AreEqual(11, result.Position.X);
             Assert.AreEqual(22, result.Position.Y);
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("ET02"));
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("A1A0"));
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("ET02"));
+            Assert.IsFalse(Offer(game, "A1A0").IsReady);
+            Assert.IsFalse(Offer(game, "ET02").IsReady);
         }
 
         [TestCase("A0RP", "LI-05", false)]
@@ -918,12 +924,12 @@ namespace Ordr.Mobile.Tests
                 Assert.IsTrue(game.Fusion.CanSatisfy(banCondition, ability, out reason));
                 Assert.IsNull(reason);
             }
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("IM01"),
-                "Unimplemented helper-unit callbacks must stay locked.");
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("ET04"),
-                "Unimplemented player-state callbacks must stay locked.");
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A6"),
-                "RMAX alone must not unlock unreviewed helper creation.");
+            foreach (var enabled in new[] { "IM01", "ET04", "A1A6" })
+            {
+                Assert.IsTrue(game.Fusion.CanCommitRecipe(enabled));
+                Assert.IsFalse(Offer(game, enabled).IsReady,
+                    "Registering a recipe cannot bypass material and round gates.");
+            }
             var source = new Original323FusionVerifiedRestrictions(game.Combat.Game);
             int round;
             Assert.IsFalse(source.TryGetOriginalRoundCounter(out round));
@@ -986,8 +992,9 @@ namespace Ordr.Mobile.Tests
             string id;
             Assert.IsTrue(game.Fusion.TryResolveUnit("h04S", out id));
             Assert.AreEqual("KM-01", id);
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR06"),
-                "Unreviewed helper-unit callbacks remain locked.");
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("TR06"));
+            Assert.IsFalse(Offer(game, "TR06").IsReady,
+                "A source-earned Kuma alone does not create a free transcend recipe.");
         }
 
         [TestCase("TR01")]
@@ -1102,8 +1109,9 @@ namespace Ordr.Mobile.Tests
             string id;
             Assert.IsTrue(game.Fusion.TryResolveUnit("h06G", out id));
             Assert.AreEqual("LT-01", id);
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("A0QG"),
-                "PICK/extra callbacks remain locked until source verification.");
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("A0QG"));
+            Assert.IsFalse(Offer(game, "A0QG").IsReady,
+                "A source-backed PICK recipe still needs a distinct live RN actor.");
         }
 
         [Test]
@@ -1126,7 +1134,7 @@ namespace Ordr.Mobile.Tests
                 var ship = owner.Combat.MobileUnitSnapshot().Single();
                 Assert.AreEqual("PS-01", ship.Unit.Id);
                 Assert.AreEqual("해적선", ship.Unit.Name);
-                Assert.AreEqual("해적선", ship.Unit.Grade);
+                Assert.AreEqual("히든", ship.Unit.Grade);
                 Assert.AreEqual("h060", owner.MapBaseStats.Find("PS-01").OriginalRawcode);
                 Assert.AreEqual(1, owner.Combat.CharacterCount);
                 Assert.AreEqual(0, owner.Combat.Game.CurrentWave);

@@ -75,10 +75,13 @@ namespace Ordr.Mobile.Tests
                 Assert.IsNotNull(awake);
                 awake.Invoke(c, null); // EditMode inactive GameObject, no gameplay tick.
                 Assert.IsNotNull(c.Units);
-                Assert.AreEqual(277, c.Units.Count);
+                Assert.AreEqual(287, c.Units.Count);
                 Assert.IsTrue(c.enabled, "A full current catalog must not disable the controller during Awake.");
                 Assert.AreEqual(c.Units.Count, c.UnitDefinitions.Count);
-                Assert.AreEqual(c.Units.Count, c.MapBaseStats.Count);
+                // The wiki adds ten source-unverified display identities;
+                // source W3X map-stat rows remain pinned to 277.
+                Assert.AreEqual(277, c.MapBaseStats.Count);
+                Assert.AreEqual(10, c.Units.Count - c.MapBaseStats.Count);
                 Assert.IsNotNull(c.Skills);
                 Assert.IsNotNull(c.OriginalMonsterSpawnIdentities);
                 Assert.IsNotNull(c.OriginalMonsterObjectAbilities);

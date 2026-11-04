@@ -154,6 +154,11 @@ namespace Ordr.Mobile.Combat
                 return;
             }
 
+            // Native/temporary/form-only attacks can declare independent
+            // effects above without having a legacy script. Do not fall into
+            // a null SourceScriptAttackSpec after those callbacks.
+            if (script == null) return;
+
             // JASS Btd (Cracker) uses Bcb every attacked event, THEN rolls
             // its separate e04X/area branch. Do not reverse this ordering.
             ApplySourceScriptHits(actor, primary, script, script.Always);

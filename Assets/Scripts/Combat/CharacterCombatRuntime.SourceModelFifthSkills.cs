@@ -34,7 +34,12 @@ namespace Ordr.Mobile.Combat
 
         private double SourceModelFifthProcChance(ImportedCombatSkill skill)
         {
-            double chance = skill.ChancePercent.Value;
+            // Guaranteed on-every-attack and conditional packets do not
+            // declare chancePercent. The onAttack model is validated at
+            // dispatch, so an absent chance there must never create a proc.
+            double chance = skill.ChancePercent ??
+                (skill.Trigger == "onAttack" || skill.Trigger == "onAttackWithMana"
+                    ? 0d : 100d);
             if (skill.Id == "TR-07:skill:1" || skill.Id == "TR-07:skill:3")
                 chance = Math.Min(skill.Number("maxProcChancePercent") ?? 100,
                     chance + SourceModelLucciClears() * .0025);

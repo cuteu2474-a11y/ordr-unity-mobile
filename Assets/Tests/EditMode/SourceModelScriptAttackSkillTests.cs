@@ -2278,7 +2278,7 @@ namespace Ordr.Mobile.Tests
             }
         }
 
-        [TestCase("LI-08", "h07I", 4, 2)]
+        [TestCase("LI-08", "h07I", 4, 3)]
         [TestCase("L-37", "h031", 1, 1)]
         [TestCase("L-34", "h0AH", 1, 1)]
         [TestCase("RN-06", "h06Z", 3, 1)]
@@ -2725,9 +2725,8 @@ namespace Ordr.Mobile.Tests
         [TestCase("TR-30", "TR-30:skill:0", "베가펑크 마나 공격")]
         [TestCase("I-11", "I-11:skill:0", "체력 소모 광역 공격")]
         [TestCase("TR-09", "TR-09:skill:0", "체력 소모 연타")]
-        [TestCase("I-04", "I-04:skill:0", "광역 혼합 피해")]
-        [TestCase("L-07", "L-07:skill:0", "패기발산")]
-        [TestCase("I-06", "I-06:skill:0", "대자재천신")]
+        // I-04/L-07/I-06 have gained approved source-model actives.
+        // Keep the negative test limited to genuinely deferred packets.
         public void SecondThirtyUnapprovedActiveSkillCannotSpendThroughGenericFallback(
             string unitId, string skillId, string skillName)
         {
