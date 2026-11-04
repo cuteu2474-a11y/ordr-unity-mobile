@@ -2847,6 +2847,10 @@ namespace Ordr.Mobile.Unity
 
         private void OnCommittedOriginalFusion(long resultId, string catalogId, string rawcode)
         {
+            // The transaction is committed before this observer fires. Attach
+            // native fusion-only passives even when personal missions are off.
+            Combat?.TryAttachSourceModelNativeResearchOnFusion(resultId,
+                catalogId, rawcode);
             if (PersonalMissions == null || MapBaseStats == null) return;
             var result = MapBaseStats.Find(catalogId);
             if (result == null || result.OriginalRawcode != rawcode) return;

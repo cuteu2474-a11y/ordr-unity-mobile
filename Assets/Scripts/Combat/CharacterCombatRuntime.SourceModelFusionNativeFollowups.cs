@@ -19,6 +19,163 @@ namespace Ordr.Mobile.Combat
         private long sourceModelUtaSongSoldierSequence;
         private readonly Dictionary<long, List<string>> sourceModelUtaSongSoldierKeys =
             new Dictionary<long, List<string>>();
+        // B6m rotates two per-player Group handles. GroupClear/transfer does
+        // not destroy the underlying h04O units or extend their 7s lifetime.
+        private readonly HashSet<string> sourceModelUtaSongActive =
+            new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<string> sourceModelUtaSongPending =
+            new HashSet<string>(StringComparer.Ordinal);
+        private readonly Dictionary<long, double> sourceModelRogerInfernoReadyAt =
+            new Dictionary<long, double>();
+
+        private bool TryResolveSourceModelRogerInfernoTarget(long actorId,
+            out CharacterInstance actor, out SpatialCombatEnemy chosen)
+        {
+            actor = null;
+            chosen = null;
+            if (!UsesSourceModelBasicAttacks ||
+                SourceModelFusionNativeBalance(
+                    Original323FusionNativeFollowupLedger.RogerHelperId) < 1 ||
+                SourceModelFusionNativeBalance(
+                    Original323SourceNativeActionKeys.UnlockResource(actorId)) < 1 ||
+                !characters.TryGetValue(actorId, out actor) ||
+                actor.Catalog.Id != "I-04") return false;
+            var ordered = new List<SpatialCombatEnemy>(enemies.Values);
+            ordered.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
+            foreach (var enemy in ordered)
+            {
+                if (!enemy.Enemy.IsAlive || !CanAttackInThisLane(actor, enemy) ||
+                    (enemy.Kind != CharacterEnemyKind.Boss &&
+                     enemy.Kind != CharacterEnemyKind.Story)) continue;
+                // Boss first in the main lane; story buildings only in the
+                // separate story lane. Both match native Bdi/A904 intent.
+                chosen = enemy;
+                return true;
+            }
+            return false;
+        }
+
+        public bool CanCastSourceModelRogerInferno(long actorId)
+        {
+            CharacterInstance actor;
+            SpatialCombatEnemy target;
+            if (game.Phase != SessionPhase.Running || processingStep ||
+                pendingStepSeconds != 0 ||
+                !TryResolveSourceModelRogerInfernoTarget(actorId, out actor, out target))
+                return false;
+            double until;
+            return !sourceModelRogerInfernoReadyAt.TryGetValue(actorId, out until) ||
+                CombatScheduler.HasReached(Time, until);
+        }
+
+        public bool TryCastSourceModelRogerInferno(long actorId)
+        {
+            if (!CanCastSourceModelRogerInferno(actorId)) return false;
+            CharacterInstance actor;
+            SpatialCombatEnemy target;
+            if (!TryResolveSourceModelRogerInfernoTarget(actorId,
+                out actor, out target)) return false;
+            // A202 (AHtb) cooldown=150, zero mana. No automatic cast: this
+            // separate UI action is the source-confirmed B8Z trait upgrade.
+            sourceModelRogerInfernoReadyAt[actorId] = Time + 150;
+            string actorKey = InstanceKey(actorId);
+            bool lane = IsStoryDeployed(actorId);
+            long laneRevision = SourceModelLaneRevision(actorId);
+            double centerX = target.X, centerY = target.Y;
+            string targetId = target.Id;
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated, actorKey, targetId,
+                "로저 · 인페르노",
+                "MODEL_ONLY B8c/A202/A14V: 원본 150초 쿨다운, 보스/스토리 한정, 2.2초 공격 준비", 0));
+            effectExecutor.SchedulePracticeSourceAttack(actorKey,
+                "practice-native:IM01:A14V:stun", .01, () =>
+                {
+                    if (!CanFinishSourceModelDelayedAttack(actorId, lane, laneRevision))
+                        return;
+                    foreach (var enemy in enemies.Values)
+                    {
+                        if (!enemy.Enemy.IsAlive ||
+                            !CanAttackInThisLane(actor, enemy)) continue;
+                        double dx = enemy.X - centerX, dy = enemy.Y - centerY;
+                        if (dx * dx + dy * dy > 800 * 800) continue;
+                        double duration = enemy.Kind == CharacterEnemyKind.Boss ||
+                            enemy.Kind == CharacterEnemyKind.Story ? 1 : 2;
+                        string source = "practice-native:IM01:A14V:" + actorId;
+                        enemy.Enemy.Status.RemoveSource(source);
+                        enemy.Enemy.Status.Apply(new CombatEffect(source,
+                            CombatEffectType.Stun, CombatEffectOrigin.TriggeredSkill,
+                            1, duration));
+                    }
+                    // A202's own AHtb primary effect lasts 3 seconds.
+                    SpatialCombatEnemy primary;
+                    if (enemies.TryGetValue(targetId, out primary) &&
+                        primary.Enemy.IsAlive && CanAttackInThisLane(actor, primary))
+                    {
+                        string source = "practice-native:IM01:A202:" + actorId;
+                        primary.Enemy.Status.RemoveSource(source);
+                        primary.Enemy.Status.Apply(new CombatEffect(source,
+                            CombatEffectType.Stun, CombatEffectOrigin.TriggeredSkill,
+                            1, 3));
+                    }
+                });
+            effectExecutor.SchedulePracticeSourceAttack(actorKey,
+                "practice-native:IM01:A14V:impact", 2.2, () =>
+                {
+                    if (!CanFinishSourceModelDelayedAttack(actorId, lane, laneRevision))
+                        return;
+                    // Bcc samples a real random multiplier in [1,2] once,
+                    // then sends one CHAOS/NORMAL 800-area packet.
+                    double multiplier = 1 +
+                        sourceModelRules.NextScriptRoll(1000000) / 1000000.0;
+                    ApplySourceModelAreaPacket(actorKey, lane, target, 800,
+                        4000000 * multiplier, Ordr323AttackType.Chaos,
+                        "로저 · 인페르노 광역");
+                    SpatialCombatEnemy primary;
+                    if (!enemies.TryGetValue(targetId, out primary) ||
+                        !primary.Enemy.IsAlive ||
+                        !CanAttackInThisLane(actor, primary)) return;
+                    if (primary.Kind != CharacterEnemyKind.Boss &&
+                        primary.Kind != CharacterEnemyKind.Story) return;
+                    // Native B8c: boss = 40% CURRENT HP; story = 25% MAX HP.
+                    // Apply through existing damage/death accounting; final
+                    // native universal mitigation is still unverified.
+                    double percent = primary.Kind == CharacterEnemyKind.Boss ?
+                        primary.Enemy.Health * .40 : primary.Enemy.MaxHealth * .25;
+                    long amount = (long)Math.Min(long.MaxValue - 1,
+                        Math.Floor(Math.Max(0, percent)));
+                    ApplySourceModelFixedPrimaryPacket(actorKey, primary, amount,
+                        "로저 · 인페르노 추가 타격 (CHAOS/UNIVERSAL 모델)");
+                });
+            return true;
+        }
+
+        public bool TryAttachSourceModelNativeResearchOnFusion(long resultId,
+            string catalogId, string rawcode)
+        {
+            if (!UsesSourceModelBasicAttacks ||
+                SourceModelFusionNativeBalance("source:native-research:R00R") < 1)
+                return false;
+            // Original B7z/BwB/B3R/B6Y add A11B only at fusion time.
+            bool eligible =
+                (catalogId == "E-03" && rawcode == "h0CJ") ||
+                (catalogId == "LI-04" && rawcode == "h084") ||
+                (catalogId == "E-08" && rawcode == "h08R") ||
+                (catalogId == "TR-18" && rawcode == "H0BD"); // B3R Yamato, NOT TR-19 Usopp.
+            CharacterInstance actor;
+            if (!eligible || !characters.TryGetValue(resultId, out actor) ||
+                actor.Catalog.Id != catalogId) return false;
+            CombatStatusEngine status;
+            if (!unitStatuses.TryGetValue(InstanceKey(resultId), out status)) return false;
+            string source = "practice-native:R00R:A11B:" + resultId;
+            status.RemoveSource(source);
+            status.Apply(new CombatEffect(source, CombatEffectType.MovementSpeedBuff,
+                CombatEffectOrigin.Aura, 3, 0));
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.StatusApplied, InstanceKey(resultId),
+                InstanceKey(resultId), "연구 · 인내의 오라",
+                "MODEL_ONLY R00R/A11B: 원본 이동속도 +3%; 모바일 순간 배치에는 이동시간 환산 없음", 0));
+            return true;
+        }
 
         public void ConfigureSourceModelFusionNativeReceipts(Func<string, long> balance)
         {
@@ -154,10 +311,13 @@ namespace Ordr.Mobile.Combat
                 sourceModelUtaSongSoldierKeys.Add(actor.Id, keys);
             }
             keys.Add(key);
+            sourceModelUtaSongPending.Add(key);
             effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id), key,
                 lifetime, () =>
                 {
                     UnregisterSourceIndependentAttack(key);
+                    sourceModelUtaSongActive.Remove(key);
+                    sourceModelUtaSongPending.Remove(key);
                     List<string> active;
                     if (sourceModelUtaSongSoldierKeys.TryGetValue(actor.Id, out active))
                     {
@@ -175,8 +335,8 @@ namespace Ordr.Mobile.Combat
 
         // JASS B6m swaps the active/pending song groups once every 60s.
         // h04O is an independent attacker, NOT a playable roster character.
-        // Original active/pending group mutation remains unmodeled; this
-        // counter records the proven native timer only.
+        // Both logical groups are now tracked; group membership does not
+        // control attack or lifetime without a source-confirmed effect.
         public long PracticeUtaNativeSongRotations => sourceModelUtaSongRotations;
 
         private void AdvanceSourceModelFusionNativeFollowups(double elapsed)
@@ -195,10 +355,16 @@ namespace Ordr.Mobile.Combat
                     sourceModelUtaSongElapsed -= fullCycles * 60;
                     sourceModelUtaSongRotations = checked(
                         sourceModelUtaSongRotations + fullCycles);
+                    // Original B6m clears the old active group, transfers the
+                    // pending group, then clears/swaps handle identities.
+                    sourceModelUtaSongActive.Clear();
+                    if (fullCycles == 1)
+                        sourceModelUtaSongActive.UnionWith(sourceModelUtaSongPending);
+                    sourceModelUtaSongPending.Clear();
                     events.Add(new CharacterCombatEvent(
                         CharacterCombatEventType.SkillActivated, null, null,
                         "우타 · 노래 그룹 교대",
-                        "MODEL_ONLY B6m: 60초 그룹 회전; h04O 공격 객체 연결 / 원본 그룹 소속 교체 미검증",
+                        "MODEL_ONLY B6m: 60초 활성/대기 그룹 교체; h04O 생성·공격·만료는 별도 유지",
                         fullCycles));
                 }
             }
@@ -285,11 +451,16 @@ namespace Ordr.Mobile.Combat
         private void ForgetSourceModelFusionNativeActor(long actorId)
         {
             sourceModelFusionSharkScheduled.Remove(actorId);
+            sourceModelRogerInfernoReadyAt.Remove(actorId);
             List<string> keys;
             if (sourceModelUtaSongSoldierKeys.TryGetValue(actorId, out keys))
             {
                 foreach (string key in keys)
+                {
+                    sourceModelUtaSongActive.Remove(key);
+                    sourceModelUtaSongPending.Remove(key);
                     UnregisterSourceIndependentAttack(key);
+                }
                 sourceModelUtaSongSoldierKeys.Remove(actorId);
             }
             sourceSongSoldierExpiry.Remove(actorId);

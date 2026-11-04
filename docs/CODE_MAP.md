@@ -1,4 +1,11 @@
-## 2026-11-04 · 48차 JASS 참격·자기 버프·h04O 독립 유닛 (실행 검사 전)
+## 2026-11-04 · 49차 네이티브 트리거→지갑→전투 후속 (실행 검사 전)
+
+- `Original323SourceDedicatedSkillPort.cs`: 오타마 보유 기반 `CH8/R00R` 원자 연구 영수증, 로저 I-04의 `B8Z/A202` 특성포인트 4점 원자 해금, `B8c` 대상 한정 수동 시전 UI를 기존 전용 스킬 영역에 묶음. 아이템 3종은 신규 효과 없음.
+- `OrdrCharacterCombatController.OnCommittedOriginalFusion` → `CharacterCombatRuntime.SourceModelFusionNativeFollowups.TryAttachSourceModelNativeResearchOnFusion`: *확정된* 조합 결과에만 A11B **이동속도 +3%** 오라 상태 부착, 원본 `AOae` DataB1=.03. `CombatStatusEngine.MovementSpeedBuff`를 공격속도 효과와 별도로 추가. 이미 조합한 유닛에는 소급 부여하지 않습니다.
+- `CharacterCombatRuntime.SourceModelFusionNativeFollowups`: A202 해금 영수증·로저 소유·원본 유닛 타입·현재 보스/스토리·150초 쿨다운 확인, A14V 기절/2.2초 후 카오스 광역과 체력 비례 타격을 공통 전투 정산에 예약. 우타 `B6m`의 활성·대기 그룹 두 집합을 실제 교체하고 소환/소멸 정리. [원본 근거와 미완](../data/original-2323C-native-events-batch49.json).
+- 미연결: 실제 이동속도 소비자, 오타마 실제 지역 트리거, 로저 원본 면역·정확한 universal 물리 방어/재개 쿨다운, 우타 나머지 소환 경로, 테조로 d8, S-샤크 UnitPointValue. **CWR 240/266, 로컬 실행 검사 전**.
+
+## 2026-11-04 · 48차 JASS 참격·자기 버프·h04O 독립 유닛 (해당 차수 기록)
 
 - `SourceModelNextThirtySkillCatalog.cs`·`CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs`·`CharacterCombatRuntime.SourceModelCompositeEffects.cs`: 로저 I-04:skill:1 원본 B8g 8.5% 공격 승인, 원본 800,000×[0.8..1.5] 범위/단일 타격 공통 난수, 주 타깃 99% 감속. `CharacterCombatRuntime.SourceModelTwentyFourthSkills.cs`와 `CombatStatusEngine.RemoveSourceEffect`를 재사용해 **양성 버프만 타입별 제거**(A0JS)합니다.
 - `CharacterCombatRuntime.SourceModelAttackSkills.cs`·`CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs`: 테조로 h06A/B8V 공격 선언에서 A11L 프로스트 아머 자기 +1.5 상태를 중복 없이 기록; 실제 아군 방어력/피격 최종 계산은 미지원. `SourceModelBasicCombatRules.cs`의 원본 공격 객체 허가에 **h04O** 추가, 우타 `E-09:skill:3` 4%+25% 성공 시 7초 독립 공격 유닛을 기존 scheduler/공격/방어/처치 체계에 등록하고 수명 만료·캐스터 삭제 시 해제합니다. 60초 B6m 그룹 실물 소속 이동은 미구현.

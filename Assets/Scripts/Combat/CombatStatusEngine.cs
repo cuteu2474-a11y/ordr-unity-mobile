@@ -24,7 +24,9 @@ namespace Ordr.Mobile.Combat
         // Bonney B4C/B4D Bd2(A04P) is NOT A04M ArmorBreakStack.
         OriginalA04PLevelIncrease,
         // Source-map A11L/AUfa: permanent defensive buff on Tezoro himself.
-        ArmorBuff
+        ArmorBuff,
+        // R00R/A11B AOae DataB1=.03: movement speed, NOT attack speed.
+        MovementSpeedBuff
     }
 
     public enum CombatEffectOrigin

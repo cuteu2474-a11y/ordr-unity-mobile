@@ -1,0 +1,45 @@
+{
+  "batch": 49,
+  "date": "2026-11-04",
+  "sourceVersion": "ORDR S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "status": "code changed; no Python, Unity, Android, APK, or end-to-end tests executed",
+  "affected": [
+    {
+      "original": "CH8, region enters h05P; SetPlayerTechResearchedSwap(R00R,1)",
+      "jassLine": 48471,
+      "mobile": "Owned Otama X-05 presents an explicit one-time manual research-registration action; shared-wallet transaction source:native-event:CH8:h05P grants source:native-research:R00R once without unit/currency/item consumption.",
+      "limitation": "Manual touch-screen substitute for native region entry, not identical automatic region geometry. No retroactive grants to already-fused characters."
+    },
+    {
+      "original": "B7z ET04 Ryuma, BwB Shinobu, B6Y Oden, B3R TR19 Yamato; if R00R researched then UnitAddAbility(A11B)",
+      "jassLines": [35948, 21192, 34644, 30778],
+      "sourceAbility": "AbilityData.slk: A11B AOae, DataA1=0, DataB1=0.03, radius1, self: +3% MOVEMENT speed",
+      "mobile": "After successful fusion commit, attach an A11B permanent movement-only status to exact source actor mappings E-03/h0CJ, LI-04/h084, E-08/h08R, TR-18/H0BD. The actor is not granted attack speed.",
+      "limitation": "Source-model status only; roster uses immediate placement, not distance/time-based movement. B3R additional Bjp guard remains unresolved."
+    },
+    {
+      "original": "B8Z grants A202 and removes A11E for 4 trait points; B8c casts A14V dreadlordinferno targeting boss Bdi or story A904",
+      "jassLines": [36775, 36784, 36855],
+      "sourceAbility": "AbilityData.slk A202/AHtb: 150s cooldown, 3s primary stun; A14V/AUin: radius800, 2s normal or 1s hero stun",
+      "mobile": "Per-owned-Roger one-time, atomic 4 trait point debit and permanent A202 receipt; manual combat action targets current live boss/story in same lane and enforces 150s cooldown; shared scheduled status at 0.01s and 2.2s delayed 800-radius CHAOS area damage (4m times one [1..2] roll) plus boss 40% current HP / story 25% max HP packet.",
+      "limitation": "Enemy selection is a deterministic mobile policy. Native target immunity, differential universal reduction and save/restore of in-flight cooldowns not end-to-end verified."
+    },
+    {
+      "original": "B6m timer once per 60s: GroupClear(active), transfer pending to active, GroupClear(pending), swap group handles; B6s creates h04O in pending group",
+      "jassLines": [34892, 35002],
+      "mobile": "Two actual runtime membership sets store h04O keys. The 60s rotation clears/transfers membership without incorrectly destroying registered independent attackers; death/expiry removes from both sets.",
+      "limitation": "Additional B6s call sites, native h04O health/regeneration and group side effects remain incomplete."
+    }
+  ],
+  "stillOpen": [
+    "Tesoro B8S/d8 scripted burst and UnitUserData progression; native character-damage receiver and armor-defense application",
+    "S-Shark CEN UnitPointValue/CEO native eligibility and extra buff conditions",
+    "Uta additional B6s skill dispatch sites and native soldier HP degeneration",
+    "Original Bjp Yamato exclusion, Warcraft path-speed consumption and native status immunity",
+    "Source item AI00, AI01, AI02 effects (deliberately empty shells)",
+    "CWR 240/266, TR30, RDUN 14 remain unchanged"
+  ],
+  "sourceArtifactsNotPublished": ["war3map.j", "war3map.w3x", "AbilityData.slk"]
+}
