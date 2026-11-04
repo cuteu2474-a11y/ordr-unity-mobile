@@ -1,4 +1,4 @@
-"""Evidence-only coverage of the full 286 identity catalog."""
+"""Evidence-only coverage of the full 287 identity catalog."""
 import json
 import sys
 import unittest
@@ -20,23 +20,24 @@ class CharacterRuntimeCoverageTests(unittest.TestCase):
         )]
         cls.current = build(*cls.inputs)
 
-    def test_full_286_registry_and_source_inherited_forms(self):
+    def test_full_287_registry_and_source_inherited_forms(self):
         s = self.current["summary"]
-        self.assertEqual(286, s["catalogIdentities"])
+        self.assertEqual(287, s["catalogIdentities"])
         self.assertEqual(277, s["sourceCatalogIdentities"])
-        self.assertEqual(9, s["wikiExtensionIdentities"])
-        self.assertEqual(281, s["independentRosterIdentities"])
+        self.assertEqual(10, s["wikiExtensionIdentities"])
+        self.assertEqual(282, s["independentRosterIdentities"])
         self.assertEqual(5, s["alternateCombatForms"])
         self.assertEqual(274, s["sourceObjectBasicAttackModels"])
         self.assertEqual(200, s["sourceTooltips"])
         self.assertEqual(5, s["formInheritedTooltips"])
-        self.assertEqual(81, s["identitiesWithoutOwnOrInheritedTooltip"])
+        self.assertEqual(82, s["identitiesWithoutOwnOrInheritedTooltip"])
         self.assertEqual(0, s["fullyOriginalCombatVerified"])
         self.assertEqual(44, s["byGrade"]["희귀함"])
         self.assertEqual(41, s["byGrade"]["전설"])
         self.assertEqual(36, s["byGrade"]["초월함"])
         self.assertEqual(23, s["byGrade"]["히든"])
         self.assertEqual(14, s["byGrade"]["신비함"])
+        self.assertEqual(2, s["byGrade"]["재료"])
 
     def test_original_battle_model_is_not_inflated_into_complete_skills(self):
         rows = {row["id"]: row for row in self.current["entries"]}
@@ -49,6 +50,7 @@ class CharacterRuntimeCoverageTests(unittest.TestCase):
         self.assertEqual("히든", ship["grade"])
         self.assertEqual("h060", ship["sourceRawcode"])
         self.assertFalse(rows["R-44"]["sourceBasicAttackModel"])
+        self.assertFalse(rows["SM-01"]["sourceBasicAttackModel"])
         self.assertFalse(rows["L-40"]["sourceBasicAttackModel"])
         self.assertFalse(rows["L-41"]["sourceBasicAttackModel"])
         for unit in ("TR-31", "TR-32", "TR-33", "TR-34", "TR-35"):

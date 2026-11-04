@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
@@ -98,6 +99,9 @@ namespace Ordr.Mobile.Combat
     // purchases, gift boxes, native item costs, or an unobserved random roll.
     public sealed class Original323SourceMaterialRewardWorld
     {
+        public const string SeraphimMaterialRawcode = "h0AN";
+        public const string SeraphimMaterialCatalogId = "SM-01";
+        public const string SeraphimMaterialMapName = "세라핌 등급 유닛";
         public const string KumaRawcode = "h04S";
         public const string KumaCatalogId = "KM-01";
         public const string TokenRawcode = "h06G";
@@ -111,6 +115,7 @@ namespace Ordr.Mobile.Combat
         private readonly CharacterCombatRuntime combat;
         private readonly SharedEconomySession economy;
         private readonly IOriginal323SourceMaterialEventWitness witness;
+        private readonly Original323CwrAcquisitionRoutes cwrAcquisitions;
         private bool inFlight;
         private long nextChoice;
         private readonly string choiceReceiptPrefix =
@@ -119,7 +124,8 @@ namespace Ordr.Mobile.Combat
         public Original323SourceMaterialRewardWorld(CharacterCombatRuntime world,
             SharedEconomySession session, CharacterUnitCatalog units,
             OriginalMapBaseStatCatalog originalObjects,
-            IOriginal323SourceMaterialEventWitness verifiedSource)
+            IOriginal323SourceMaterialEventWitness verifiedSource,
+            OriginalJassFusionCatalog originalRegistrations = null)
         {
             combat = world ?? throw new ArgumentNullException(nameof(world));
             economy = session ?? throw new ArgumentNullException(nameof(session));
@@ -135,6 +141,19 @@ namespace Ordr.Mobile.Combat
             RequireIdentity(units, originalObjects,
                 TokenCatalogId, TokenRawcode, "재료",
                 "verified-source-unit-gambling-reward");
+            if (originalRegistrations != null)
+            {
+                var seraphim = units.Find(SeraphimMaterialCatalogId);
+                if (seraphim == null || seraphim.Grade != "재료" ||
+                    seraphim.CatalogEntryKind != "support-object" ||
+                    seraphim.OriginalSourceRawcode != SeraphimMaterialRawcode ||
+                    originalObjects.Find(SeraphimMaterialCatalogId) != null ||
+                    !originalObjects.HasNoncombatMapObject(
+                        SeraphimMaterialRawcode, SeraphimMaterialMapName))
+                    throw new ArgumentException("원본 베가펑크 특수 재료 객체 신원이 다릅니다.");
+                cwrAcquisitions = new Original323CwrAcquisitionRoutes(
+                    originalRegistrations, units, originalObjects);
+            }
         }
 
         private static void RequireIdentity(CharacterUnitCatalog units,
@@ -157,6 +176,86 @@ namespace Ordr.Mobile.Combat
         }
 
         public long PendingTranscendWisps => economy.Wallet.Balance(PendingStoryWispResource);
+
+        // A successful, fully settled CJM random draw owns exactly one of the
+        // 14 source A800/RDUN actors. It cannot be a manual IS01..IS14 craft,
+        // and the default practice game never fakes the gambling transaction.
+        public bool TryRecordObservedOtherworldRandomUnit(string eventId,
+            string resultRawcode, out long actorId)
+        {
+            actorId = 0;
+            string catalogId;
+            if (cwrAcquisitions == null ||
+                !cwrAcquisitions.TryResolveRandomOnlyAward(resultRawcode, out catalogId))
+                return false;
+            // CJM failure pays the lucky token, CJM success pays a random
+            // actor. A repeated parent event can never pay both branches.
+            if (economy.Wallet.HasCompletedTransaction(
+                    "original323:luck-token:CJM:" + eventId)) return false;
+            return TryRecordOneWitnessedNoncombatOrRandomAward(eventId,
+                "CJM", resultRawcode, catalogId,
+                "original323:otherworld-rdun:CJM:", out actorId);
+        }
+
+        // The h0AN W3X object is a distinct non-attacker, not any Seraphim
+        // fighter. Only a witness confirming its ORIGINAL parent reward may
+        // furnish the real TR30 material; source function is never guessed.
+        public bool TryRecordObservedSeraphimMaterial(string eventId,
+            string originalFunction, out long actorId)
+        {
+            actorId = 0;
+            if (cwrAcquisitions == null || string.IsNullOrWhiteSpace(originalFunction)) return false;
+            return TryRecordOneWitnessedNoncombatOrRandomAward(eventId,
+                originalFunction, SeraphimMaterialRawcode,
+                SeraphimMaterialCatalogId, "original323:seraphim-material:",
+                out actorId);
+        }
+
+        private bool TryRecordOneWitnessedNoncombatOrRandomAward(string eventId,
+            string function, string sourceRawcode, string catalogId,
+            string receiptPrefix, out long actorId)
+        {
+            actorId = 0;
+            if (!Ready() || string.IsNullOrWhiteSpace(eventId)) return false;
+            string receipt = receiptPrefix + eventId;
+            if (economy.Wallet.HasCompletedTransaction(receipt)) return false;
+            string evidence;
+            if (!witness.TryConfirmSettledOriginalEvent(eventId, function,
+                    sourceRawcode, 1, out evidence) ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(evidence))
+                return false;
+            inFlight = true;
+            long spawned = 0;
+            try
+            {
+                spawned = combat.SpawnVerifiedOriginalPositionCharacter(catalogId,
+                    SourceStartX, SourceStartY);
+                // No fabricated gold, lumber, items, or second random roll.
+                // The source witness has already settled the parent cost.
+                try
+                {
+                    if (!economy.Wallet.TryGrantOnce(receipt,
+                            new ResourceBundle()))
+                    {
+                        combat.RollbackUncommittedSpawn(spawned);
+                        return false;
+                    }
+                }
+                catch
+                {
+                    if (!economy.Wallet.HasCompletedTransaction(receipt))
+                    {
+                        combat.RollbackUncommittedSpawn(spawned);
+                        throw;
+                    }
+                    // Post-commit notification failed: the actor and receipt
+                    // remain committed and may not be granted again.
+                }
+                actorId = spawned;
+                return true;
+            }
+            finally { inFlight = false; }
+        }
 
         // CQB grants one e01A after a source-observed story-boss clear. The
         // witness MUST also confirm 10000 GOLD, 4 WOOD and two YR rewards were
@@ -243,6 +342,8 @@ namespace Ordr.Mobile.Combat
                 return false;
             string receipt = "original323:luck-token:" + function + ":" + eventId;
             if (economy.Wallet.HasCompletedTransaction(receipt)) return false;
+            if (function == "CJM" && economy.Wallet.HasCompletedTransaction(
+                    "original323:otherworld-rdun:CJM:" + eventId)) return false;
             string evidence;
             if (!witness.TryConfirmSettledOriginalEvent(eventId, function,
                     TokenRawcode, confirmedTokenCount, out evidence) ||

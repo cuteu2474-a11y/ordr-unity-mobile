@@ -1,0 +1,85 @@
+{
+  "format": "ordr-2323C-remaining-cwr-routes-batch56-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceRegistry": "data/original-jass-fusion-registry.json",
+  "summary": {
+    "registeredRecordsIncludingDeveloperTest": 266,
+    "executableMaterialCraftsBefore": 240,
+    "executableMaterialCraftsAfter": 241,
+    "routedExistingAcquisitions": 9,
+    "routedObservedOtherworldRandomOutcomes": 14,
+    "guidanceOnlyRecords": 2,
+    "developerOnlyRecords": 1,
+    "all26Classified": true,
+    "all26DirectlyCraftable": false,
+    "all26AutomaticallyAcquirable": false,
+    "defaultOriginalOtherworldGamblingProducerConnected": false,
+    "sourceSeraphimMaterialAutoGrantConnected": false,
+    "actualRuntimeTestsExecuted": false
+  },
+  "sourceRoutes": {
+    "existingRareWispSpecialOnePercent": [
+      { "ability": "SP01", "rawcode": "h05H", "catalogId": "X-01" },
+      { "ability": "SP02", "rawcode": "h08N", "catalogId": "X-02" },
+      { "ability": "SP03", "rawcode": "h05Q", "catalogId": "X-03" },
+      { "ability": "SP04", "rawcode": "h05O", "catalogId": "X-04" },
+      { "ability": "SP05", "rawcode": "h05P", "catalogId": "X-05" },
+      { "ability": "SP06", "rawcode": "h05R", "catalogId": "X-06" },
+      { "ability": "SP07", "rawcode": "h09T", "catalogId": "X-07" },
+      { "ability": "SP08", "rawcode": "h0BG", "catalogId": "X-08" }
+    ],
+    "existingPirateShipWispChance": {
+      "ability": "YY26",
+      "rawcode": "h060",
+      "catalogId": "PS-01",
+      "chancePer10000": 24,
+      "behavior": "random-Wisp outcome; not a free recipe"
+    },
+    "guidanceOnly": {
+      "ability": "UU01",
+      "rawcode": "h05X",
+      "catalogId": "R-43",
+      "behavior": "UPUN hints only; no material payment or extra grant"
+    },
+    "observedCjmRandomOnly": [
+      { "ability": "IS01", "rawcode": "h06U", "catalogId": "RN-01" },
+      { "ability": "IS02", "rawcode": "h06V", "catalogId": "RN-02" },
+      { "ability": "IS03", "rawcode": "h065", "catalogId": "RN-03" },
+      { "ability": "IS04", "rawcode": "h06X", "catalogId": "RN-04" },
+      { "ability": "IS05", "rawcode": "h073", "catalogId": "RN-05" },
+      { "ability": "IS06", "rawcode": "h06Z", "catalogId": "RN-06" },
+      { "ability": "IS07", "rawcode": "h09K", "catalogId": "RN-07" },
+      { "ability": "IS08", "rawcode": "h06W", "catalogId": "RN-08" },
+      { "ability": "IS09", "rawcode": "h070", "catalogId": "RN-09" },
+      { "ability": "IS10", "rawcode": "h09L", "catalogId": "RN-10" },
+      { "ability": "IS11", "rawcode": "h06Y", "catalogId": "RN-11" },
+      { "ability": "IS12", "rawcode": "h071", "catalogId": "RN-12" },
+      { "ability": "IS13", "rawcode": "h06T", "catalogId": "RN-13" },
+      { "ability": "IS14", "rawcode": "h072", "catalogId": "RN-14" }
+    ],
+    "witnessedSeraphimMaterialRecipe": {
+      "ability": "TR30",
+      "resultRawcode": "H0AA",
+      "resultCatalogId": "TR-30",
+      "requiredSourceOnlyRawcode": "h0AN",
+      "requiredSourceOnlyCatalogId": "SM-01",
+      "sourceMapObjectName": "세라핌 등급 유닛",
+      "model": "one physical source-owned noncombat h0AN material plus all CWR UNIT/UBAN/KING conditions; atomic original-material swap; no counterfeit generic Seraphim"
+    },
+    "developerOnly": "TEST"
+  },
+  "integration": [
+    "Original323CwrAcquisitionRoutes validates all 24 non-crafting source registration identities, conditions and grade mappings.",
+    "Original323SourceMaterialRewardWorld.TryRecordObservedOtherworldRandomUnit requires an original CJM success with source witness certifying the full parent transaction; one durable event receipt creates one physical RN actor.",
+    "Original323SourceMaterialRewardWorld.TryRecordObservedSeraphimMaterial accepts only a trusted settled h0AN event and creates one source-only support object; no default reward is fabricated.",
+    "Original323CommonFusionPort allows TR30 result creation only when the exact SM-01 source material and other registered UNIT ingredients are physically owned; existing atomic rollback is reused.",
+    "OriginalWispCombatRewardWorld and Original323SourceCommonWispWorld remain the source for SP01..SP08 and YY26 rather than duplicate CWR crafting."
+  ],
+  "deferred": [
+    "Default native CJM gambling purchase, success-roll state, charge stock, full purchase settlement and creep-3 charging still require a source-backed runtime producer; witness APIs alone do not make the 14 results automatically earnable.",
+    "The original parent creation event for h0AN has not been identified. Only an externally witnessed source reward can produce this material; do not substitute any SR-01..SR-04 Seraphim fighter.",
+    "The 24 acquisition/guide records must not increment the executable material-craft count, and the source developer TEST record must not be enabled.",
+    "AI00, AI01 and AI02 remain item shells; Unity/Android/NUnit/Python runtime checks were not run by instruction."
+  ]
+}

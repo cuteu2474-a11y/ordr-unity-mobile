@@ -3,7 +3,7 @@
   "gameVersion": "S2 2.323[C]",
   "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
   "baseCatalogEntries": 277,
-  "expectedMergedEntries": 286,
+  "expectedMergedEntries": 287,
   "appliesTo": "runtime catalog overlay after pinned 277-object W3X imports; non-authoritative for combat",
   "warning": "Alternate forms are not independent crafting/roster items. An extension identity alone never authorizes gameplay; source-CWR execution and source attack binding require separate guarded runtime approval. Unverified native skills are never invented.",
   "reclassifications": [
@@ -16,6 +16,28 @@
     }
   ],
   "entries": [
+    {
+      "id": "SM-01",
+      "grade": "재료",
+      "gradeOrder": 2,
+      "name": "세라핌 등급 유닛",
+      "catalogEvidenceOrigin": "original-W3X-2.323C-noncombat-object",
+      "catalogEntryKind": "support-object",
+      "roleTags": [],
+      "roleTagsStatus": "source-only-not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown",
+      "wikiSourceUrl": null,
+      "originalSourceRawcode": "h0AN",
+      "sourceMappingStatus": "original-source-noncombat-object-name-confirmed; witnessed-acquisition-only",
+      "gameplayStatus": "identity-only-no-new-execution-authority"
+    },
     {
       "id": "R-44",
       "grade": "희귀함",

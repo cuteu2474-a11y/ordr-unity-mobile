@@ -15,6 +15,17 @@ namespace Ordr.Mobile.Tests
     // roster/wallet transactions starting with owned source materials.
     public sealed class Original323OwnedMaterialFusionTests
     {
+        private sealed class SettledSourceWitness : IOriginal323SourceMaterialEventWitness
+        {
+            public readonly HashSet<string> Confirmed = new HashSet<string>(StringComparer.Ordinal);
+            public bool TryConfirmSettledOriginalEvent(string eventId, string function,
+                string resultRawcode, int awardedCount, out string nativeEvidence)
+            {
+                nativeEvidence = "observed-war3map.j:parent-purchase-story-settlement";
+                return Confirmed.Contains(eventId + ":" + function + ":" +
+                    resultRawcode + ":" + awardedCount);
+            }
+        }
         private sealed class Live
         {
             public CharacterCombatRuntime Combat;
@@ -56,6 +67,103 @@ namespace Ordr.Mobile.Tests
             return game.Registry.All.Where(r => game.Fusion.CanCommitRecipe(r.AbilityRawcode) &&
                     !r.OrderedConditions.Any(c => c.Kind == "RMAX"))
                 .Select(r => r.AbilityRawcode).ToArray();
+        }
+
+        [Test]
+        public void AllTwentyFourNonCraftRegistrationsAreRoutedWithoutFreeCrafting()
+        {
+            var game = Create();
+            var routes = new Original323CwrAcquisitionRoutes(
+                game.Registry, game.Units, game.Map);
+            Assert.AreEqual(24, routes.NonCraftRegistrationCount);
+            Assert.AreEqual(24, game.Fusion.ClassifiedNonCraftRegistrationCount);
+            Assert.AreEqual(14, routes.RandomOnlyRegistrationCount);
+            Assert.AreEqual(8, routes.RareWispSpecialRegistrationCount);
+            Assert.AreEqual(2, routes.GuidanceOnlyRegistrationCount);
+            for (int i = 1; i <= 14; i++)
+            {
+                var source = game.Registry.FindByAbility("IS" + i.ToString("D2"));
+                string id;
+                Assert.IsTrue(routes.TryResolveRandomOnlyAward(
+                    source.Results[0].Rawcode, out id));
+                Assert.AreEqual("RN-" + i.ToString("D2"), id);
+                Assert.IsFalse(game.Fusion.CanCommitRecipe(source.AbilityRawcode));
+            }
+            for (int i = 1; i <= 8; i++)
+                Assert.IsFalse(game.Fusion.CanCommitRecipe("SP" + i.ToString("D2")));
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("UU01"));
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("YY26"));
+            Assert.IsNull(game.Registry.FindByAbility("TEST"));
+            Assert.AreEqual(241, game.Fusion.ExecutableRecipeCount);
+        }
+
+        [Test]
+        public void WitnessedOtherworldRandomUnitsUseAllFourteenRdunResultsWithoutReroll()
+        {
+            var game = Create();
+            var witness = new SettledSourceWitness();
+            var rewards = new Original323SourceMaterialRewardWorld(
+                game.Combat, game.Economy, game.Units, game.Map, witness,
+                game.Registry);
+            long id;
+            Assert.IsFalse(rewards.TryRecordObservedOtherworldRandomUnit(
+                "otherworld-1", "h06U", out id));
+            Assert.IsFalse(rewards.TryRecordObservedOtherworldRandomUnit(
+                "otherworld-1", "h0AN", out id));
+            for (int i = 1; i <= 14; i++)
+            {
+                string eventId = "otherworld-" + i;
+                string raw = game.Registry.FindByAbility("IS" + i.ToString("D2"))
+                    .Results[0].Rawcode;
+                witness.Confirmed.Add(eventId + ":CJM:" + raw + ":1");
+                Assert.IsTrue(rewards.TryRecordObservedOtherworldRandomUnit(eventId,
+                    raw, out id));
+                Assert.AreEqual("RN-" + i.ToString("D2"), game.Combat.Roster.Get(id).UnitId);
+                Assert.IsFalse(rewards.TryRecordObservedOtherworldRandomUnit(eventId,
+                    raw, out id), "One settled event may never roll another result.");
+            }
+            Assert.AreEqual(14, game.Combat.CharacterCount);
+            witness.Confirmed.Add("otherworld-1:CJM:h06G:1");
+            IReadOnlyList<long> duplicateBranch;
+            Assert.IsFalse(rewards.TryRecordObservedTokenAward(
+                "otherworld-1", "CJM", 1, out duplicateBranch),
+                "One CJM purchase cannot grant both its success and failure payouts.");
+        }
+
+        [Test]
+        public void WitnessedH0anIsConsumedOnceByVegapunkFusion()
+        {
+            var game = Create();
+            var witness = new SettledSourceWitness();
+            var rewards = new Original323SourceMaterialRewardWorld(
+                game.Combat, game.Economy, game.Units, game.Map, witness,
+                game.Registry);
+            long id;
+            Assert.IsFalse(rewards.TryRecordObservedSeraphimMaterial(
+                "seraphim-1", "source-confirmed", out id));
+            witness.Confirmed.Add("seraphim-1:source-confirmed:h0AN:1");
+            Assert.IsTrue(rewards.TryRecordObservedSeraphimMaterial(
+                "seraphim-1", "source-confirmed", out id));
+            Assert.AreEqual("SM-01", game.Combat.Roster.Get(id).UnitId);
+            Assert.IsFalse(rewards.TryRecordObservedSeraphimMaterial(
+                "seraphim-1", "source-confirmed", out id));
+            var recipe = game.Registry.FindByAbility("TR30");
+            foreach (var material in recipe.RequiredUnitRawcodes())
+            {
+                if (material.Key == "h0AN") continue;
+                string catalogId;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out catalogId));
+                for (int i = 0; i < material.Value; i++)
+                    game.Combat.SpawnCharacter(catalogId, 100, 200);
+            }
+            var offer = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "TR30");
+            Assert.IsTrue(offer.IsReady, string.Join(";", offer.MissingMaterials));
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion("TR30", offer.SuggestedMaterialInstances).State);
+            Assert.AreEqual("TR-30", game.Combat.MobileUnitSnapshot().Single().Unit.Id);
+            Assert.IsFalse(game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "TR30").IsReady);
         }
 
         [TestCase("A02Q", "L-35", "h087")]
@@ -195,7 +303,7 @@ namespace Ordr.Mobile.Tests
         // source result actor. Their separate JASS post-creation callbacks are
         // deliberately NOT represented as fully verified mobile behavior.
         [Test]
-        public void TwentyTwoTranscendMobileResultsAreSourceMappedAndVegaPunkRemainsLocked()
+        public void TranscendMobileResultsAreSourceMappedAndVegaPunkRequiresRealH0AN()
         {
             var game = Create();
             var newlyEnabled = new[] {
@@ -203,7 +311,7 @@ namespace Ordr.Mobile.Tests
                 "TR11", "TR12", "TR13", "TR14", "TR15", "TR16", "TR17",
                 "TR18", "TR19", "TR20", "TR22", "TR24", "TR25", "TR26", "TR29"
             };
-            Assert.AreEqual(22, game.Fusion.ExecutableMobileOutcomeTranscendCount);
+            Assert.AreEqual(23, game.Fusion.ExecutableMobileOutcomeTranscendCount);
             Assert.AreEqual(22, newlyEnabled.Distinct(StringComparer.Ordinal).Count());
             foreach (var ability in newlyEnabled)
             {
@@ -229,8 +337,14 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual("초월함", game.Units.Require(resultId).Grade, ability);
                 Assert.IsNotNull(game.Map.Find(resultId), ability);
             }
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR30"),
-                "VegaPunk still needs a verified h0AN material identity.");
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("TR30"));
+            Assert.IsTrue(game.Fusion.TryResolveUnit("h0AN", out var seraphimMaterial));
+            Assert.AreEqual("SM-01", seraphimMaterial);
+            Assert.IsNull(game.Map.Find(seraphimMaterial),
+                "h0AN is a W3X-only, non-attacking source material.");
+            Assert.IsFalse(game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "TR30").IsReady,
+                "Registering the recipe must not fabricate the missing material.");
         }
 
         // Batch 39: source-linked mobile crafting outcomes only. These
@@ -279,11 +393,11 @@ namespace Ordr.Mobile.Tests
                 Assert.IsTrue(offer.Title.Contains("모바일 제작"), ability);
                 Assert.IsTrue(offer.OriginalMaterialsAndCost.Contains("원본 부가효과 미검증"), ability);
             }
-            // Result-only recipes now commit the source follow-up receipts;
-            // TR30 still lacks a proven h0AN source actor.
+            // Result-only recipes retain audited source follow-up receipts;
+            // TR30 has no free h0AN, but may use a source-confirmed actor.
             foreach (var approved in new[] { "A007", "IM01", "IM04", "ET04", "ET12" })
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(approved), approved);
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR30"));
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("TR30"));
         }
 
         [Test]
@@ -292,7 +406,7 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             var aOsf = new[] { "A19Z", "A1A1", "A1A0" };
             Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeAOsfCount);
-            Assert.AreEqual(240, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(241, game.Fusion.ExecutableRecipeCount);
             foreach (var ability in aOsf)
             {
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);

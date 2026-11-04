@@ -55,12 +55,14 @@ namespace Ordr.Mobile.Tests
             catalog.ApplyWikiExtension(Data("wiki-unit-catalog-extension.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
             var definitions = UnitImplementationRegistry.Combine(catalog, skills, null);
-            Assert.AreEqual(286, definitions.Count);
+            Assert.AreEqual(287, definitions.Count);
             Assert.AreEqual(200, definitions.DetailedProfiles);
             Assert.AreEqual(554, definitions.CollectedSkills);
             Assert.AreEqual(295, definitions.CollectedPassives);
             Assert.AreEqual("히든", definitions.Require("PS-01").Grade);
             Assert.AreEqual("희귀함", definitions.Require("R-44").Grade);
+            Assert.AreEqual("재료", definitions.Require("SM-01").Grade);
+            Assert.IsNull(definitions.Require("SM-01").Profile);
             Assert.AreEqual("전설", definitions.Require("L-40").Grade);
             Assert.AreEqual("신비함", definitions.Require("MY-14").Grade);
             foreach (string form in new[] { "TR-31", "TR-32", "TR-33", "TR-34", "TR-35" })

@@ -324,7 +324,7 @@ namespace Ordr.Mobile.Mobile
                 return "희귀 위습 1% 특수 결과 풀 (기존 자동 위습 거래 경로)";
             if (ability.StartsWith("IS", StringComparison.Ordinal) &&
                 int.TryParse(ability.Substring(2), out index) && index >= 1 && index <= 14)
-                return "RDUN:A800 원본 이세계 랜덤 결과 등록 (획득 이벤트 미연결)";
+                return "RDUN:A800 이세계 랜덤 결과 · CJM 실제 성공 정산 증거가 있을 때만 지급 (기본 도박 실행 미연결)";
             return null;
         }
 

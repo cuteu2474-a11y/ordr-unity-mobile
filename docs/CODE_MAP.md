@@ -683,3 +683,10 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 
 
 
+## 56차 · 비제작 CWR 경로 24건과 베가펑크 실물 재료
+
+- `Assets/Scripts/Mobile/Original323CwrAcquisitionRoutes.cs`: CWR `RDUN` 14 / `SPEC` 8 / `UPUN` 2개의 등록·원본 객체 일치 검증. 원본 `TEST`는 카탈로그 로더에서 제외합니다.
+- `Assets/Scripts/Combat/Original323SourceMaterialRewardWorld.cs`: 외부 원본 정산 witness와 연결한 `CJM` 성공 시 실물 RN 14종 지급, 외부 원본 `h0AN` 보상 시 SM-01 비전투 재료 지급. 각각 영수증 저장·중복 방지·출처 미확인 시 지급 거부. **기본 이벤트 공급자 미연결**.
+- `Assets/Scripts/Mobile/Original323CommonFusionPort.cs`: 베가펑크 `TR30` 원본 `h0AN`을 실제 보유·소비 가능한 지원 유닛으로 조회하고 기존 원자 조합. 결과 제작 240→241, 비제작 24는 제작 수에 포함하지 않습니다. `Assets/Scripts/Unity/OrdrCharacterCombatController.cs`는 원본 witness API 두 개를 제공합니다.
+- [56차 전체 26건 분류·남은 블로커](../data/original-2323C-cwr-last26-batch56.json). Unity/Android/NUnit/Python 실행 미검증. AI00/AI01/AI02 빈껍질 유지.
+

@@ -66,7 +66,7 @@ namespace Ordr.Mobile.Tests
                 Data("original-unit-rawcode-label-links.json"), units, registry);
             var preview = OriginalFusionObjectPreviewCatalog.FromJson(
                 Data("original-fusion-object-reconciliation.json"), registry, units);
-            // Match app load order: source evidence/labels before 286-row overlay.
+            // Match app load order: source evidence/labels before 287-row overlay.
             if (includeSourceOnlyWikiUnits)
                 units.ApplyWikiExtension(Data("wiki-unit-catalog-extension.json"));
             var reject = new RejectUnverifiedDamageFormula();
@@ -346,7 +346,7 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsTrue(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsTrue(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(240, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(241, game.Fusion.ExecutableRecipeCount);
             Assert.AreEqual(39, game.Fusion.ExecutableLegendaryRecipeCount);
             Assert.AreEqual(22, game.Fusion.ExecutableHiddenRecipeCount);
             Assert.AreEqual(63, game.Fusion.ExecutableRestrictedRecipeCount);

@@ -245,7 +245,8 @@ namespace Ordr.Mobile.Mobile
         // (TR07만 UPUN 표시 포함) 재료를 실제 원자 소비하고 원본 결과 객체를
         // 생성한다. 원본 제작 후 네이티브 CH8/BI2 별도 부가효과는 아직
         // 인증되지 않았다. 이 배열은 완전한 원본 콜백 패리티가 아니다.
-        // TR30은 h0AN 재료 객체 신원이 미확인되어 실행 차단한다.
+        // TR30 requires a source-witnessed h0AN actor; its W3X name alone
+        // never grants an arbitrary Seraphim or free fusion material.
         private static readonly string[,] MobileOutcomeTranscend = {
             { "TR02", "H098", "TR-04" }, // 로빈
             { "TR03", "H05N", "TR-27" }, // 타시기
@@ -269,6 +270,7 @@ namespace Ordr.Mobile.Mobile
             { "TR25", "H0B4", "TR-25" }, // 키드
             { "TR26", "H096", "TR-05" }, // 트라팔가 로우
             { "TR29", "H0CO", "TR-24" }, // 코비
+            { "TR30", "H0AA", "TR-30" }, // 베가펑크 · h0AN 실제 재료
         };
 
         // Batch 45: source-declared follow-up receipts join the same wallet
@@ -359,6 +361,7 @@ namespace Ordr.Mobile.Mobile
         private readonly IOriginalFusionPort fallback;
         private readonly OriginalJassKnownConditions verifiedConditions;
         private readonly Original323FusionVerifiedRestrictions sourceRestrictions;
+        private readonly Original323CwrAcquisitionRoutes acquisitionRoutes;
         private readonly Dictionary<string, string> mappings = new Dictionary<string, string>();
         private readonly HashSet<string> supported = new HashSet<string>();
         private readonly Dictionary<string, string> resultGrades = new Dictionary<string, string>();
@@ -367,6 +370,8 @@ namespace Ordr.Mobile.Mobile
         public event Action<Exception> ObserverFailed;
         public bool CanCommit => true;
         public int ExecutableRecipeCount => supported.Count;
+        public int ClassifiedNonCraftRegistrationCount =>
+            acquisitionRoutes.NonCraftRegistrationCount;
         public int ExecutableCommonRecipeCount => Reviewed.GetLength(0);
         public int ExecutableSpecialRecipeCount => ReviewedSpecial.GetLength(0) + MobileOutcomeAOsfSpecial.GetLength(0);
         public int ExecutableRareRecipeCount => ReviewedRare.GetLength(0) + MobileOutcomeAOsfRare.GetLength(0);
@@ -453,6 +458,8 @@ namespace Ordr.Mobile.Mobile
             Bind(units, "R-43", "h05X", "희귀함");
             Bind(units, Original323AncientShipStoryRewardPort.MaterialCatalogId,
                 Original323AncientShipStoryRewardPort.MaterialRawcode, "희귀함");
+            Bind(units, Original323SourceMaterialRewardWorld.SeraphimMaterialCatalogId,
+                Original323SourceMaterialRewardWorld.SeraphimMaterialRawcode, "재료");
             // Original CSI 1% Rare-Wisp special pool includes h0BG. This
             // VERIFIED identity is for resolving an actual Wisp result only:
             // it does not grant SP08 fusion execution or approve A0YE
@@ -482,6 +489,10 @@ namespace Ordr.Mobile.Mobile
             RegisterRestricted(units, registrations, MobileOutcomeGreenBloodSeraphim, true);
             RegisterRestricted(units, registrations, MobileOutcomeChanges, true);
             RegisterRestricted(units, registrations, MobileOutcomeDistorted, true);
+            // Fail loading if any of the 24 source-only acquisition/guide
+            // registrations is accidentally turned into a paid CWR recipe.
+            acquisitionRoutes = new Original323CwrAcquisitionRoutes(
+                registrations, units, objects);
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
             planner.SetVerifiedObjectMap(this);
@@ -552,7 +563,7 @@ namespace Ordr.Mobile.Mobile
                         throw new FormatException("검수하지 않은 등급의 조합 재료입니다.");
                     hasMaterials = true;
                     var sourceMaterial = objects.Find(id);
-                    if (sourceMaterial == null && !IsSourceOnlyAncientShip(id,
+                    if (sourceMaterial == null && !IsSourceOnlySupportMaterial(id,
                             instruction.Rawcode))
                         throw new FormatException("하위 조합 재료의 원본 객체가 없습니다.");
                     if (sourceMaterial != null)
@@ -601,8 +612,18 @@ namespace Ordr.Mobile.Mobile
                 objects.SourceW3xSha256 == OriginalCommonSaleRules.OriginalMapSha256 &&
                 objects.HasNoncombatMapObject(rawcode,
                     Original323AncientShipStoryRewardPort.OriginalMapName);
+            bool sourceOnlySeraphimMaterial =
+                id == Original323SourceMaterialRewardWorld.SeraphimMaterialCatalogId &&
+                rawcode == Original323SourceMaterialRewardWorld.SeraphimMaterialRawcode &&
+                grade == "재료" && row == null &&
+                unit.CatalogEntryKind == "support-object" &&
+                unit.OriginalSourceRawcode == rawcode &&
+                objects.SourceW3xSha256 == OriginalCommonSaleRules.OriginalMapSha256 &&
+                objects.HasNoncombatMapObject(rawcode,
+                    Original323SourceMaterialRewardWorld.SeraphimMaterialMapName);
             if (unit.Grade != grade ||
                 (!sourceOnlyYujiro && !sourceOnlyAncientShip &&
+                 !sourceOnlySeraphimMaterial &&
                     (row == null || row.OriginalRawcode != rawcode)))
                 throw new FormatException("검수한 원본 객체가 다릅니다: " + id);
             string already;
@@ -617,6 +638,13 @@ namespace Ordr.Mobile.Mobile
         {
             return id == Original323AncientShipStoryRewardPort.MaterialCatalogId &&
                 rawcode == Original323AncientShipStoryRewardPort.MaterialRawcode;
+        }
+
+        private static bool IsSourceOnlySupportMaterial(string id, string rawcode)
+        {
+            return IsSourceOnlyAncientShip(id, rawcode) ||
+                (id == Original323SourceMaterialRewardWorld.SeraphimMaterialCatalogId &&
+                 rawcode == Original323SourceMaterialRewardWorld.SeraphimMaterialRawcode);
         }
 
         private void RegisterRestricted(CharacterUnitCatalog units,
@@ -708,7 +736,7 @@ namespace Ordr.Mobile.Mobile
                             if (grade == "세라핌") seraphimMaterial = condition.Rawcode;
                             var originalMaterial = objects.Find(materialId);
                             if (originalMaterial == null &&
-                                !IsSourceOnlyAncientShip(materialId, condition.Rawcode))
+                                !IsSourceOnlySupportMaterial(materialId, condition.Rawcode))
                                 throw new FormatException("원본 상위 조합 재료 객체 누락: " + ability);
                             if (originalMaterial != null)
                                 foreach (string native in originalMaterial.OriginalAbilityRawcodes)

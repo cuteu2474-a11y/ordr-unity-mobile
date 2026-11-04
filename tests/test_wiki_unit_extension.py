@@ -22,10 +22,10 @@ class WikiUnitExtensionTests(unittest.TestCase):
         base = {row["id"]: row for row in self.base["entries"]}
         extra = {row["id"]: row for row in self.extension["entries"]}
         self.assertEqual(277, len(base))
-        self.assertEqual(9, len(extra))
-        self.assertEqual(9, len(self.extension["entries"]))
+        self.assertEqual(10, len(extra))
+        self.assertEqual(10, len(self.extension["entries"]))
         self.assertFalse(set(base) & set(extra))
-        self.assertEqual(286, self.extension["expectedMergedEntries"])
+        self.assertEqual(287, self.extension["expectedMergedEntries"])
         counts = Counter(row["grade"] for row in self.base["entries"])
         counts["해적선"] -= 1
         counts["히든"] += 1
@@ -34,7 +34,8 @@ class WikiUnitExtensionTests(unittest.TestCase):
                           "신비함": 14, "히든": 23, "해적선": 0},
                          {key: counts[key] for key in
                           ("희귀함", "전설", "초월함", "신비함", "히든", "해적선")})
-        self.assertEqual(286, sum(counts.values()))
+        self.assertEqual(287, sum(counts.values()))
+        self.assertEqual(2, counts["재료"])
 
     def test_forms_are_not_independent_fusion_results(self):
         base = {row["id"]: row for row in self.base["entries"]}
@@ -53,7 +54,8 @@ class WikiUnitExtensionTests(unittest.TestCase):
     def test_source_identity_never_grants_fusion_permission(self):
         items = {row["id"]: row for row in self.extension["entries"]}
         raw = {row["rawcode"]: row for row in self.reconciliation["entries"]}
-        for unit_id, source in (("R-44", "h05Y"), ("MY-14", "h0C2")):
+        for unit_id, source in (("R-44", "h05Y"), ("MY-14", "h0C2"),
+                                ("SM-01", "h0AN")):
             self.assertEqual(source, items[unit_id]["originalSourceRawcode"])
             self.assertIsNone(raw[source]["catalogUnitId"])
             self.assertFalse(raw[source]["approvedForMaterialConsumption"])

@@ -1207,7 +1207,8 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException(
                     "원본 재료 보상은 실제 전투 월드 준비 후 한 번만 연결하세요.");
             OriginalSourceMaterialRewards = new Original323SourceMaterialRewardWorld(
-                Combat, SharedEconomy, Units, MapBaseStats, sourceEvents);
+                Combat, SharedEconomy, Units, MapBaseStats, sourceEvents,
+                OriginalJassFusions);
         }
 
         public bool TryRecordObservedStoryTranscendWisp(string sourceEventId)
@@ -1223,6 +1224,28 @@ namespace Ordr.Mobile.Unity
             return OriginalSourceMaterialRewards != null &&
                 OriginalSourceMaterialRewards.TryRecordObservedTokenAward(
                     sourceEventId, originalFunction, originalCount, out actorIds);
+        }
+
+        // Source-confirmed CJM success: one real A800/RDUN random actor.
+        // Neither this API nor CWR grants a free manual IS01..IS14 craft.
+        public bool TryRecordObservedOtherworldRandomUnit(string sourceEventId,
+            string resultRawcode, out long actorId)
+        {
+            actorId = 0;
+            return OriginalSourceMaterialRewards != null &&
+                OriginalSourceMaterialRewards.TryRecordObservedOtherworldRandomUnit(
+                    sourceEventId, resultRawcode, out actorId);
+        }
+
+        // The caller must be a trusted original callback/replay bridge whose
+        // event attests the source h0AN parent reward and any original costs.
+        public bool TryRecordObservedSeraphimMaterial(string sourceEventId,
+            string originalFunction, out long actorId)
+        {
+            actorId = 0;
+            return OriginalSourceMaterialRewards != null &&
+                OriginalSourceMaterialRewards.TryRecordObservedSeraphimMaterial(
+                    sourceEventId, originalFunction, out actorId);
         }
 
         // User explicitly selects Kuma from one already source-confirmed
@@ -2505,7 +2528,7 @@ namespace Ordr.Mobile.Unity
                     OriginalUnitRawcodes);
                 // Source map stats remain the pinned 277 original entries.
                 // Additional forms/support identities have no invented stats.
-                if (Units.Count != 286 || Skills.CharacterCount != 200 ||
+                if (Units.Count != 287 || Skills.CharacterCount != 200 ||
                     UnitDefinitions.Count != Units.Count ||
                     (MapBaseStats != null && MapBaseStats.Count != pinnedSourceCatalogCount))
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");

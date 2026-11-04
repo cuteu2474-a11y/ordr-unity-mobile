@@ -105,7 +105,7 @@ def build(base, extension, status, profiles, source_stats, fusion):
         "format": "ordr-character-runtime-coverage-v1",
         "gameVersion": base["gameVersion"],
         "sourceW3xSha256": SOURCE_SHA,
-        "warning": "Catalog addressability, attack-only MODEL_ONLY and actual Warcraft parity are separate states; 286 is NOT a finished combat unit count.",
+        "warning": "Catalog addressability, attack-only MODEL_ONLY and actual Warcraft parity are separate states; 287 is NOT a finished combat unit count.",
         "summary": {
             "catalogIdentities": len(rows),
             "sourceCatalogIdentities": len(original),
