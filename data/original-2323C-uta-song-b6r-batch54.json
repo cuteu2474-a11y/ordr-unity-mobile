@@ -1,0 +1,31 @@
+{
+  "batch": 54,
+  "date": "2026-11-04",
+  "status": "code-only; execution deferred by user",
+  "originalMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "originalJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "jassEvidence": {
+    "B6m": "line 34892: 60s group copy and handle swap without killing members",
+    "B6o": "line 34917: attackonce orders and visual/sound sequences for living soldier units",
+    "B6r": "line 34966: live JC count, 0.02+0.67s, area radius400 550000 per soldier, Bdl-eligible primary 10% current HP per soldier with JD correction, primary 1550000; unlock after 0.03s",
+    "B6s": "line 35002: h04O spawned into JC group",
+    "B6t": "line 35009: mana+2, 25% normal/100% transformed and UnitUserData guard",
+    "B7X": "line 35584: B7U attack callback registered on h067 and h0AF"
+  },
+  "implemented": [
+    "h0AF transformed declaration now reaches shared B7U/B6t/B6r, without catalog ID mutation",
+    "living h04O count includes both logical group sets before and after 60s handle swap",
+    "snapshot group count and enemy position, then 0.69s delayed radius400 550000 per soldier common damage packet",
+    "remaining primary receives 1550000 normal/universal and ordinary line proxy gets current-HP-based melee/universal packet using spawn JD level",
+    "existing seven-second soldier lifespan, independent 0.33s attacks and damage/death accounting unchanged",
+    "NUnit arithmetic cases written but not executed"
+  ],
+  "remaining": [
+    "Native Bdl checks A902/A911/A903/A904 ability levels; only ordinary line proxy modeled, other enemy classes deferred",
+    "B6o attackonce targeting, audio and particles unmodeled; do not double-count independent soldier basic hits",
+    "Original Warcraft immunities, RNG order, native universal final damage and live timing unverified",
+    "S-Shark +1.75 allied armor has no incoming ally damage pipeline",
+    "AI00/AI01/AI02 intentionally remain fusion-only item shells"
+  ],
+  "fusionCoverage": "240/266 unchanged"
+}

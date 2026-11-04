@@ -209,6 +209,20 @@ namespace Ordr.Mobile.Combat
             double primaryBossMaxHealthPercent = 0,
             double primaryEnragedMaxHealthPercent = 0)
         {
+            ApplySourceModelAreaPacketAt(attackerId, storyLane, center,
+                center.X, center.Y, radius, rawDamage, attackType, skillName,
+                primaryBossMaxHealthPercent, primaryEnragedMaxHealthPercent);
+        }
+
+        // Delayed native effects may capture a location while the target
+        // continues to move. This overload preserves the original location
+        // without changing the existing packet's armor/HP/kill accounting.
+        private void ApplySourceModelAreaPacketAt(string attackerId, bool storyLane,
+            SpatialCombatEnemy center, double centerX, double centerY,
+            double radius, double rawDamage, Ordr323AttackType attackType,
+            string skillName, double primaryBossMaxHealthPercent = 0,
+            double primaryEnragedMaxHealthPercent = 0)
+        {
             if (radius < 0 || rawDamage < 0 || double.IsNaN(rawDamage) ||
                 double.IsInfinity(rawDamage)) throw new ArgumentOutOfRangeException(nameof(rawDamage));
             var targets = new List<SpatialCombatEnemy>();
@@ -220,7 +234,7 @@ namespace Ordr.Mobile.Combat
                     target.Kind != CharacterEnemyKind.Line &&
                     target.Kind != CharacterEnemyKind.Boss &&
                     target.Kind != CharacterEnemyKind.Enraged)) continue;
-                double dx = target.X - center.X, dy = target.Y - center.Y;
+                double dx = target.X - centerX, dy = target.Y - centerY;
                 if (dx * dx + dy * dy <= radius * radius) targets.Add(target);
             }
             targets.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));

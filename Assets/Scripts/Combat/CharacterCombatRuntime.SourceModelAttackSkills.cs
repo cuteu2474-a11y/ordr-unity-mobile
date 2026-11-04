@@ -31,12 +31,16 @@ namespace Ordr.Mobile.Combat
             bool nativeFromJass = SourceModelNativeCharacterRules.TryGetNativeAttack(
                 rawcode, out nativeSourceUnitId);
             bool practiceBonney = rawcode == "H0BX" || rawcode == "H0BY";
+            // B7X registers B7U for both native Uta forms. The transformed
+            // h0AF has no separate tooltip catalog row, but still declares
+            // the same HP/MP and B6r native callback on every attack.
+            bool nativeUtaForm = rawcode == "h0AF";
             bool eleventhFormOwner = SourceModelEleventhFormHasAttack(rawcode);
             bool standaloneTemporary = IsStandaloneSourceTemporaryAttack(rawcode);
             bool ninthOwner = SourceModelNinthSkillCatalog.HasOwner(rawcode);
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 !processingStep || game.Phase != SessionPhase.Running ||
-                (!practiceBonney && !eleventhFormOwner &&
+                (!nativeUtaForm && !practiceBonney && !eleventhFormOwner &&
                  !SourceModelScriptAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelNextAttackCatalog.TryGet(rawcode, out script) &&
                  !SourceModelThirdAttackCatalog.TryGet(rawcode, out script) &&
@@ -67,7 +71,7 @@ namespace Ordr.Mobile.Combat
             // B8V is an ATTACK-DECLARED self-buff, not a successful-hit
             // proc. It must run even when Tezoro's 12% spell does not roll.
             ApplySourceModelFusionTesoroFrostArmor(actor, rawcode, primary);
-            ApplySourceModelUtaNativeAttackResources(actor);
+            ApplySourceModelUtaNativeAttackResources(actor, rawcode, primary);
 
             if (ninthOwner)
                 ExecuteSourceModelNinthDeclaredAttack(actor, primary, rawcode);

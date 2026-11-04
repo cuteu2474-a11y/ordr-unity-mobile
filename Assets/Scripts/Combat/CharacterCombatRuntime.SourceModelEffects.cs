@@ -36,9 +36,11 @@ namespace Ordr.Mobile.Combat
             // the original base callback for Chopper/Kaido native JASS paths;
             // their attack object itself is already overridden independently.
             attackPipeline.ConfigurePracticeScriptAttackDeclared(
-                (attacker, rawcode, target) => OnSourceModelScriptAttackDeclared(
-                    attacker, rules.SourceFormRawcodeOf(attacker) == "H0BY" ?
-                        "H0BY" : rawcode, target));
+                (attacker, rawcode, target) => {
+                    string form = rules.SourceFormRawcodeOf(attacker);
+                    OnSourceModelScriptAttackDeclared(attacker,
+                        form == "H0BY" || form == "h0AF" ? form : rawcode, target);
+                });
             attackPipeline.ConfigurePracticeSuccessfulBasicHit((attacker, rawcode, target, actual) => {
                 OnSourceModelNinthSuccessfulBasicHit(attacker, rawcode, target, actual);
                 OnSourceModelTwentyFifthSuccessfulBasicHit(attacker, rawcode, target, actual);

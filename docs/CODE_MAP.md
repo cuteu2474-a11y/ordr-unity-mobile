@@ -1,3 +1,9 @@
+## 2026-11-04 · 54차 우타 B6r 그룹 피해/변신형 선언
+
+- `CharacterCombatRuntime.SourceModelFusionNativeFollowups`: `SourceModelUtaB6rRules` 수치·조건, 성공한 B6t의 생존 JC 병사 수/당시 표적 좌표 스냅샷, .69초 뒤 반경400/대상별 Bdl·JD/155만 타격에 공통 HP·처치 정산 재사용. B6m 전후 살아 있는 두 그룹을 합산합니다.
+- `CharacterCombatRuntime.SourceModelEffects`/`SourceModelAttackSkills`: h0AF 실제 폼 rawcode의 공격 선언을 B7U/B6t/B6r에 전달. `SourceModelIndependentAttacks`는 위치 고정형 영역 패킷만 추가. `Original323UtaSharkBatch53Tests`의 수치·조건 NUnit 작성(미실행).
+- 남은 작업: B6o attackonce 사운드/연출, 원본 Bdl 능력 판정, 아군 피격 방어식. [근거](../data/original-2323C-uta-song-b6r-batch54.json).
+
 ## 2026-11-04 · 53차 공통 버프 필터·우타 폼/자원 연결
 
 - `SourceModelBasicCombatRules`/`SourceModelUnitEffects`: S-샤크·불릿 실제 기본 공격력 보정, 방어·이동속도 원본 상태 허용, h0AF 공격 객체 승인.

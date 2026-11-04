@@ -53,5 +53,30 @@ namespace Ordr.Mobile.Tests
             Assert.AreNotEqual(Original323SourceNativeActionKeys.UtaUnlockResource(15),
                 Original323SourceNativeActionKeys.UtaUnlockResource(16));
         }
+
+        [Test]
+        public void UtaB6rSnapshotsLivingGroupAndUsesOriginalAreaPacket()
+        {
+            Assert.AreEqual(.69, SourceModelUtaB6rRules.WindupSeconds, 0.00001);
+            Assert.AreEqual(400, SourceModelUtaB6rRules.AreaRadius);
+            Assert.AreEqual(0, SourceModelUtaB6rRules.AreaDamage(0));
+            Assert.AreEqual(1100000, SourceModelUtaB6rRules.AreaDamage(2));
+            Assert.AreEqual(1550000, SourceModelUtaB6rRules.FinalPrimaryDamage);
+            Assert.Throws<System.ArgumentOutOfRangeException>(() =>
+                SourceModelUtaB6rRules.AreaDamage(-1));
+        }
+
+        [Test]
+        public void UtaB6rPrimaryHealthDamageRequiresSourceBdlEligibility()
+        {
+            // JD level 21 on a new normal line corresponds to factor 1.0.
+            double correction = Ordr323MapDamageMath.ScriptHealthProportionalCorrection(21);
+            Assert.AreEqual(200000, SourceModelUtaB6rRules.ConditionalPrimaryDamage(
+                2, 1000000, correction, true), .001);
+            Assert.AreEqual(0, SourceModelUtaB6rRules.ConditionalPrimaryDamage(
+                2, 1000000, correction, false));
+            Assert.AreEqual(0, SourceModelUtaB6rRules.ConditionalPrimaryDamage(
+                0, 1000000, correction, true));
+        }
     }
 }

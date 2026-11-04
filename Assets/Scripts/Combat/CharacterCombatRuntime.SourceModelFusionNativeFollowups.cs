@@ -6,6 +6,33 @@ using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
+    // B6r constants from the pinned native JASS. The Bdl eligibility bit
+    // is deliberately supplied by the caller; it is not inferred from HP.
+    public static class SourceModelUtaB6rRules
+    {
+        public const double WindupSeconds = .69;
+        public const double AreaRadius = 400;
+        public const double AreaDamagePerSoldier = 550000;
+        public const double FinalPrimaryDamage = 1550000;
+
+        public static double AreaDamage(int livingSoldiers)
+        {
+            if (livingSoldiers < 0) throw new ArgumentOutOfRangeException(nameof(livingSoldiers));
+            return livingSoldiers * AreaDamagePerSoldier;
+        }
+
+        public static double ConditionalPrimaryDamage(int livingSoldiers,
+            double currentHealth, double sourceJdCorrection, bool bdlEligible)
+        {
+            if (livingSoldiers < 0 || currentHealth < 0 ||
+                double.IsNaN(currentHealth) || double.IsInfinity(currentHealth) ||
+                sourceJdCorrection < 0 || double.IsNaN(sourceJdCorrection) ||
+                double.IsInfinity(sourceJdCorrection))
+                throw new ArgumentOutOfRangeException(nameof(currentHealth));
+            return bdlEligible ? currentHealth * .1 * livingSoldiers * sourceJdCorrection : 0;
+        }
+    }
+
     public sealed partial class CharacterCombatRuntime
     {
         // Bvg, B8Y, B8G and CEN create a non-attacking h04V support object.
@@ -551,13 +578,81 @@ namespace Ordr.Mobile.Combat
                 !CombatScheduler.HasReached(Time, until);
         }
 
-        // JASS B7U is an attack-declared callback on both source forms.
-        // B6r's follow-up damage/sound/group enumeration is still separate;
-        // this models only the confirmed HP debit and B6t +2 MP gate.
-        private void ApplySourceModelUtaNativeAttackResources(CharacterInstance actor)
+        // JC is the group B6r enumerates. B6m transfers JC into the other
+        // handle before swapping, so BOTH sets remain eligible on either side
+        // of a 60-second rotation. The underlying h04O unit must still live.
+        private int SourceModelUtaCurrentSongGroupCount()
+        {
+            var live = new HashSet<string>(sourceModelUtaSongActive,
+                StringComparer.Ordinal);
+            live.UnionWith(sourceModelUtaSongPending);
+            int count = 0;
+            foreach (string key in live)
+                if (sourceIndependentAttackers.ContainsKey(key)) count++;
+            return count;
+        }
+
+        // B6r snapshots the living JC count at declaration, waits .02+.67,
+        // hits every same-lane enemy within 400 of the original target, then
+        // adds its conditional primary hit and unconditional 1,550,000 hit.
+        // Soldier autonomous attacks stay separate; an attackonce order must
+        // never add a second invented basic hit to their 0.33s scheduler.
+        private void ScheduleSourceModelUtaSongGroupFollowup(
+            CharacterInstance actor, SpatialCombatEnemy primary, int songCount)
+        {
+            if (songCount <= 0) return;
+            long id = actor.Id;
+            string attacker = InstanceKey(id);
+            string targetId = primary.Id;
+            bool storyLane = IsStoryDeployed(id);
+            long revision = SourceModelLaneRevision(id);
+            // Keep the original target-position snapshot if it dies or moves
+            // during the .69s warmup. The native BiZ uses this location.
+            SpatialCombatEnemy center = primary;
+            double centerX = primary.X, centerY = primary.Y;
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated, attacker, targetId,
+                "우타 · 음표 병사 합창",
+                "MODEL_ONLY B6r: 생존 음표 " + songCount +
+                "기, 0.69초 뒤 대상 지점 반경 400 추가 타격", 0));
+            effectExecutor.SchedulePracticeSourceAttack(attacker,
+                "practice-native:ET07:B6r", SourceModelUtaB6rRules.WindupSeconds, () =>
+                {
+                    if (!CanFinishSourceModelDelayedAttack(id,
+                            storyLane, revision)) return;
+                    ApplySourceModelAreaPacketAt(attacker, storyLane, center,
+                        centerX, centerY, SourceModelUtaB6rRules.AreaRadius,
+                        SourceModelUtaB6rRules.AreaDamage(songCount),
+                        Ordr323AttackType.Spells, "우타 · 음표 병사 합창");
+                    SpatialCombatEnemy living;
+                    if (!enemies.TryGetValue(targetId, out living) ||
+                        !living.Enemy.IsAlive ||
+                        !CanAttackInThisLane(actor, living)) return;
+                    // Bdl = no A902/A911/A903/A904. The practice world
+                    // only has a line-enemy proxy for those native abilities;
+                    // do not invent eligibility for boss/story/enraged units.
+                    if (living.Kind == CharacterEnemyKind.Line)
+                        ApplySourceModelAreaPacket(attacker, storyLane,
+                            living, 0, SourceModelUtaB6rRules.ConditionalPrimaryDamage(
+                                songCount, living.Enemy.Health,
+                                SourceModelNativeTesoroCorrection(living), true),
+                            Ordr323AttackType.Melee,
+                            "우타 · 음표 병사 대상 체력 추가 타격");
+                    if (living.Enemy.IsAlive)
+                        ApplySourceModelAreaPacket(attacker, storyLane,
+                            living, 0, SourceModelUtaB6rRules.FinalPrimaryDamage,
+                            Ordr323AttackType.Spells,
+                            "우타 · 음표 병사 마무리 타격");
+                });
+        }
+
+        // JASS B7U/B6t is attack-declared on both h067 and h0AF.
+        private void ApplySourceModelUtaNativeAttackResources(
+            CharacterInstance actor, string rawcode, SpatialCombatEnemy primary)
         {
             if (actor.Catalog.Id != "E-09" || actor.Mapping == null ||
                 actor.Mapping.AttackSpec.UnitRawCode != "h067" ||
+                (rawcode != "h067" && rawcode != "h0AF") ||
                 SourceModelFusionNativeBalance(
                     Original323FusionNativeFollowupLedger.UtaSongId) <= 0 ||
                 !sourceModelManagedResourceRows.ContainsKey(actor.Id) ||
@@ -573,10 +668,13 @@ namespace Ordr.Mobile.Combat
                 !CombatScheduler.HasReached(Time, gate)) return;
             if (sourceModelRules.NextScriptRoll(100) >= chance) return;
             pool.SetMana(Math.Min(pool.MaximumMana, pool.Mana + 2));
-            // Native B6r releases the UnitUserData guard after .02 sec for
-            // an empty group, or .67+.03 sec following its song-group hit.
+            int songCount = sourceModelUtaIntroStarted.Count == 0 ? 0 :
+                SourceModelUtaCurrentSongGroupCount();
+            ScheduleSourceModelUtaSongGroupFollowup(actor, primary, songCount);
+            // Native B6r releases UnitUserData after .02 with no group,
+            // otherwise after .02+.67+.03. The .69s impact is independent.
             sourceModelUtaManaGateUntil[actor.Id] = Time +
-                (sourceModelUtaSongActive.Count > 0 ? .72 : .02);
+                (songCount > 0 ? .72 : .02);
         }
 
         private void AdvanceSourceModelUtaNativeCycles()
