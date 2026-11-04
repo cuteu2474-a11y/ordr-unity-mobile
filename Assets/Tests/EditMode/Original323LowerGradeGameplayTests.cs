@@ -1160,7 +1160,9 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(13, owner.ExecutableCommonFusionCount);
                 Assert.AreEqual(33, owner.ExecutableSpecialFusionCount);
                 Assert.AreEqual(42, owner.ExecutableRareFusionCount);
-                Assert.AreEqual(34, owner.ExecutableLegendaryFusionCount);
+                // 34 source-reviewed recipes plus five explicitly gated
+                // outcome-only recipes; none bypass their original costs.
+                Assert.AreEqual(39, owner.ExecutableLegendaryFusionCount);
                 Assert.AreEqual(19, owner.ExecutableHiddenFusionCount);
                 Assert.AreEqual(1, owner.ExecutableEternalFusionCount);
                 Assert.AreEqual(ManualActionState.Succeeded, owner.RequestCommonWispBatch(5).State);

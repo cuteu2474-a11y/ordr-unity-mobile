@@ -131,8 +131,8 @@ namespace Ordr.Mobile.Combat
         private static readonly HashSet<string> DamageFields = new HashSet<string>(
             StringComparer.Ordinal) { "type", "amount", "multiplierRange",
             "amountPerHit", "hits", "basis", "percent", "scope", "onlyTargetKinds",
-            "plusTargetMaxHealthPercent", "plusTargetMissingHealthPercent",
-            "extraTargetMaxHealthPercent", "extraBossMaxHealthPercent",
+            "plusTargetCurrentHealthPercent", "plusTargetMaxHealthPercent",
+            "plusTargetMissingHealthPercent", "extraTargetMaxHealthPercent", "extraBossMaxHealthPercent",
             "extraEnragedMaxHealthPercent", "extraAmount",
             "singlePrimaryTargetExtraPercent" };
 
@@ -159,8 +159,8 @@ namespace Ordr.Mobile.Combat
             if (!hasBasis && effect.Get("percent") != null) return false;
             bool extra = false;
             foreach (string key in new[] {
-                "plusTargetMaxHealthPercent", "plusTargetMissingHealthPercent",
-                "extraTargetMaxHealthPercent", "extraBossMaxHealthPercent",
+                "plusTargetCurrentHealthPercent", "plusTargetMaxHealthPercent",
+                "plusTargetMissingHealthPercent", "extraTargetMaxHealthPercent", "extraBossMaxHealthPercent",
                 "extraEnragedMaxHealthPercent", "extraAmount" })
             {
                 if (effect.Get(key) == null) continue;

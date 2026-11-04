@@ -2158,6 +2158,30 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void I07CurrentHealthBonusUsesOnlyPositiveSourceVerifiedPercent()
+        {
+            var source = Data("character-skill-profiles.json");
+            var valid = CharacterSkillCatalog.FromJson(source)
+                .Require("I-07").Skills.Single(x => x.Name == "마법 타격");
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(valid));
+            // The imported 5% attack proc includes 400000 flat magic and
+            // 2% of the target's CURRENT HP. Never authorize zero/negative
+            // percent or a malformed model via a generic field whitelist.
+            const string recorded = "\"plusTargetCurrentHealthPercent\": 2\n";
+            StringAssert.Contains(recorded, source);
+            foreach (string invalid in new[] { "0", "-2" })
+            {
+                var changed = source.Replace(recorded,
+                    "\"plusTargetCurrentHealthPercent\": " + invalid + "\n");
+                Assert.AreNotEqual(source, changed);
+                var attack = CharacterSkillCatalog.FromJson(changed)
+                    .Require("I-07").Skills.Single(x => x.Name == "마법 타격");
+                Assert.IsFalse(SourceModelNextThirtySkillCatalog
+                    .CanModelCompleteAttack(attack), invalid);
+            }
+        }
+
+        [Test]
         public void NewAttackPacketsAreIndependentAndSourceProfilesStayComplete()
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
