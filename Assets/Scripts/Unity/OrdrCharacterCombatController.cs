@@ -2901,6 +2901,8 @@ namespace Ordr.Mobile.Unity
             // native fusion-only passives even when personal missions are off.
             Combat?.TryAttachSourceModelNativeResearchOnFusion(resultId,
                 catalogId, rawcode);
+            Combat?.RecordSourceModelKobyFusionRound(resultId,
+                catalogId, rawcode);
             if (PersonalMissions == null || MapBaseStats == null) return;
             var result = MapBaseStats.Find(catalogId);
             if (result == null || result.OriginalRawcode != rawcode) return;

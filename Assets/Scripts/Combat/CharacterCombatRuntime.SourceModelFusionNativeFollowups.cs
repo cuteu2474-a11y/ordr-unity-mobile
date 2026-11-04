@@ -268,6 +268,32 @@ namespace Ordr.Mobile.Combat
                 nativeLevel);
         }
 
+        // This is the actual current unit-status consumer for native armor
+        // buffs. Enemy->ally attack creation is still absent, so expose the
+        // observed armor, not a fabricated claim that HP damage was reduced.
+        public double? PracticeAllyEffectiveArmorOf(long actorId)
+        {
+            CharacterInstance actor;
+            CombatStatusEngine status;
+            if (!UsesSourceModelBasicAttacks ||
+                !characters.TryGetValue(actorId, out actor) ||
+                !unitStatuses.TryGetValue(InstanceKey(actorId), out status) ||
+                sourceModelNativePointValues == null) return null;
+            var source = sourceModelNativePointValues.Find(actor.Catalog.Id);
+            if (source == null || !source.BaseArmor.HasValue) return null;
+            return source.BaseArmor.Value +
+                SourceModelUnitEffects.ResolvePracticeAllyArmorBuff(status.Snapshot());
+        }
+
+        public double? PracticeAllyNativeArmorBuffOf(long actorId)
+        {
+            CombatStatusEngine status;
+            return UsesSourceModelBasicAttacks &&
+                unitStatuses.TryGetValue(InstanceKey(actorId), out status) ?
+                (double?)SourceModelUnitEffects.ResolvePracticeAllyArmorBuff(
+                    status.Snapshot()) : null;
+        }
+
         private void ApplySourceModelFusionNativeHelperSlow(
             CharacterInstance actor, SpatialCombatEnemy primary,
             ImportedCombatSkill skill, ImportedCombatEffect component,
@@ -338,8 +364,9 @@ namespace Ordr.Mobile.Combat
 
         // B8V: If the caster lacks B07O, Tezoro orders a helper to cast
         // A11L/AUfa *on Tezoro himself*. Native DataA1=+1.5 defense and
-        // duration=0 (aura-like permanent state). This source-model status
-        // is not a fabricated enemy->unit damage simulation.
+        // duration=0 (aura-like permanent state). Do not invent an expiry:
+        // a future explicit dispel can remove the status, and only then may
+        // another attack recast A11L/increment native user-data again.
         private void ApplySourceModelFusionTesoroFrostArmor(
             CharacterInstance actor, string rawcode, SpatialCombatEnemy primary)
         {
@@ -387,14 +414,14 @@ namespace Ordr.Mobile.Combat
             bool story = IsStoryDeployed(actor.Id);
             long laneRevision = SourceModelLaneRevision(actor.Id);
             string targetId = primary.Id;
+            // B8S stores target location in E9 at declaration. The .45s
+            // later area pulse still happens if that original target dies
+            // or moves; only the target-specific follow-up needs it alive.
+            double centerX = primary.X, centerY = primary.Y;
             effectExecutor.SchedulePracticeSourceAttack(caster,
                 "practice-native:ET12:B8S", .45, () =>
                 {
                     if (!CanFinishSourceModelDelayedAttack(actor.Id, story, laneRevision))
-                        return;
-                    SpatialCombatEnemy center;
-                    if (!enemies.TryGetValue(targetId, out center) ||
-                        !center.Enemy.IsAlive || !CanAttackInThisLane(actor, center))
                         return;
                     double radius = third ? 325 : 425;
                     var victims = new List<SpatialCombatEnemy>();
@@ -402,7 +429,7 @@ namespace Ordr.Mobile.Combat
                     {
                         if (!enemy.Enemy.IsAlive || !CanAttackInThisLane(actor, enemy))
                             continue;
-                        double dx = enemy.X - center.X, dy = enemy.Y - center.Y;
+                        double dx = enemy.X - centerX, dy = enemy.Y - centerY;
                         if (dx * dx + dy * dy <= radius * radius)
                             victims.Add(enemy);
                     }
@@ -439,7 +466,9 @@ namespace Ordr.Mobile.Combat
                                 Ordr323AttackType.Siege, name);
                         }
                     }
-                    if (center.Enemy.IsAlive && CanAttackInThisLane(actor, center))
+                    SpatialCombatEnemy center;
+                    if (enemies.TryGetValue(targetId, out center) &&
+                        center.Enemy.IsAlive && CanAttackInThisLane(actor, center))
                         ApplySourceModelAreaPacket(caster, story, center, 0,
                             center.Enemy.MaxHealth * (third ? .14 : .18) *
                                 SourceModelNativeTesoroCorrection(center),
@@ -581,15 +610,16 @@ namespace Ordr.Mobile.Combat
         // JC is the group B6r enumerates. B6m transfers JC into the other
         // handle before swapping, so BOTH sets remain eligible on either side
         // of a 60-second rotation. The underlying h04O unit must still live.
-        private int SourceModelUtaCurrentSongGroupCount()
+        private List<string> SourceModelUtaCurrentSongGroup()
         {
             var live = new HashSet<string>(sourceModelUtaSongActive,
                 StringComparer.Ordinal);
             live.UnionWith(sourceModelUtaSongPending);
-            int count = 0;
+            var keys = new List<string>();
             foreach (string key in live)
-                if (sourceIndependentAttackers.ContainsKey(key)) count++;
-            return count;
+                if (sourceIndependentAttackers.ContainsKey(key)) keys.Add(key);
+            keys.Sort(StringComparer.Ordinal);
+            return keys;
         }
 
         // B6r snapshots the living JC count at declaration, waits .02+.67,
@@ -598,8 +628,10 @@ namespace Ordr.Mobile.Combat
         // Soldier autonomous attacks stay separate; an attackonce order must
         // never add a second invented basic hit to their 0.33s scheduler.
         private void ScheduleSourceModelUtaSongGroupFollowup(
-            CharacterInstance actor, SpatialCombatEnemy primary, int songCount)
+            CharacterInstance actor, SpatialCombatEnemy primary,
+            IReadOnlyList<string> songKeys)
         {
+            int songCount = songKeys.Count;
             if (songCount <= 0) return;
             long id = actor.Id;
             string attacker = InstanceKey(id);
@@ -615,6 +647,17 @@ namespace Ordr.Mobile.Combat
                 "우타 · 음표 병사 합창",
                 "MODEL_ONLY B6r: 생존 음표 " + songCount +
                 "기, 0.69초 뒤 대상 지점 반경 400 추가 타격", 0));
+            // Native B6r/B6o issues attackonce to each living soldier after
+            // .02s. It changes their next real target, not their attack
+            // count, cooldown, or independent seven-second expiry.
+            effectExecutor.SchedulePracticeSourceAttack(attacker,
+                "practice-native:ET07:B6o", .02, () =>
+                {
+                    if (!CanFinishSourceModelDelayedAttack(id,
+                            storyLane, revision)) return;
+                    foreach (string key in songKeys)
+                        OrderSourceIndependentAttackOnce(key, targetId);
+                });
             effectExecutor.SchedulePracticeSourceAttack(attacker,
                 "practice-native:ET07:B6r", SourceModelUtaB6rRules.WindupSeconds, () =>
                 {
@@ -668,13 +711,13 @@ namespace Ordr.Mobile.Combat
                 !CombatScheduler.HasReached(Time, gate)) return;
             if (sourceModelRules.NextScriptRoll(100) >= chance) return;
             pool.SetMana(Math.Min(pool.MaximumMana, pool.Mana + 2));
-            int songCount = sourceModelUtaIntroStarted.Count == 0 ? 0 :
-                SourceModelUtaCurrentSongGroupCount();
-            ScheduleSourceModelUtaSongGroupFollowup(actor, primary, songCount);
+            var songKeys = sourceModelUtaIntroStarted.Count == 0 ?
+                new List<string>() : SourceModelUtaCurrentSongGroup();
+            ScheduleSourceModelUtaSongGroupFollowup(actor, primary, songKeys);
             // Native B6r releases UnitUserData after .02 with no group,
             // otherwise after .02+.67+.03. The .69s impact is independent.
             sourceModelUtaManaGateUntil[actor.Id] = Time +
-                (songCount > 0 ? .72 : .02);
+                (songKeys.Count > 0 ? .72 : .02);
         }
 
         private void AdvanceSourceModelUtaNativeCycles()

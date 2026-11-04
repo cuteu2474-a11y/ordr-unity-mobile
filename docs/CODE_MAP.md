@@ -1,3 +1,9 @@
+## 2026-11-04 · 55차 네이티브 후속과 방어 상태 소비자
+
+- `CharacterCombatRuntime.SourceModelEighthSkills`/`OrdrCharacterCombatController.OnCommittedOriginalFusion`: H0CO 조합 확정 시 X3 기록 → B4R 5라운드 조건/최대 6단계 → 기존 TR-24 공속 효과. `CharacterCombatRuntime`는 유닛 제거·원자 조합 정리 시 기록을 제거합니다.
+- `CharacterCombatRuntime.SourceModelIndependentAttacks`/`SourceModelFusionNativeFollowups`: B6o attackonce를 독립 유닛의 다음 타격 타깃 지정으로 재사용; B6r 0.69초 피해·기존 7초/0.33초 유지. B8S는 0.45초 지연의 고정 좌표 영역 조회로 수정.
+- `SourceModelUnitEffects`/`CharacterCombatRuntime.SourceModelFusionNativeFollowups`/`OrdrMobileTouchPanel`: A0N1/A11L 최강 원본 방어 버프·기본 방어·피격 중간 계산·유닛 상세 상태 표시. **실제 적→아군 HP 피격 공급자는 없음**. [55차 근거](../data/original-2323C-native-followups-batch55.json), `Original323UtaSharkBatch53Tests` 작성만.
+
 ## 2026-11-04 · 54차 우타 B6r 그룹 피해/변신형 선언
 
 - `CharacterCombatRuntime.SourceModelFusionNativeFollowups`: `SourceModelUtaB6rRules` 수치·조건, 성공한 B6t의 생존 JC 병사 수/당시 표적 좌표 스냅샷, .69초 뒤 반경400/대상별 Bdl·JD/155만 타격에 공통 HP·처치 정산 재사용. B6m 전후 살아 있는 두 그룹을 합산합니다.

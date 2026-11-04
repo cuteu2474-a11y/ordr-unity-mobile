@@ -1,0 +1,36 @@
+{
+  "batch": 55,
+  "date": "2026-11-04",
+  "status": "source-to-code mapping; no test or APK execution",
+  "source": {
+    "mapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+    "jassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+    "kobyB4J": "31919: TR29 H0CO result invokes ck once then changes player LL by -10",
+    "kobyB4R": "32061: ck watches saved X3, raises A1CU one level when X3-saved>4, caps at ability level six; 0.03s initial and 1s polling",
+    "kobyB4W": "32130: ck trigger registered for H0CO",
+    "utaB6o": "34917: living JC group member receives attackonce order on captured enemy and animations/sounds; no new instantaneous damage packet",
+    "utaB6r": "34966: 0.02s B6o order then 0.67s delayed group-weighted damage; separate 0.03s guard reset",
+    "tesoroB8V": "36700: if B07O absent order A11L on self, increment unit user data and trigger d8/B8S; no verified automatic buff expiration",
+    "tesoroB8S": "36563: E9 target location captured at attack declaration; .05+.4s later primary location pulse; target-specific extra damage requires living primary",
+    "sharkCEP": "43265: A0N1/innerfire applied to caster and up to two eligible nearby allies; existing +55% attack and +1.75 armor for 20.5 seconds"
+  },
+  "implemented": [
+    "Koby TR-24/H0CO fusion observer anchors X3 at actual committed fusion wave; upgrades each five later waves rather than at global multiples of five; six-level cap and duplicate receipt guard",
+    "Koby watcher/level state removed with actor sale and restored roster initialized conservatively on first observed wave",
+    "Uta B6o retargets the next normal h04O autonomous attack once, without a synthetic extra hit, altering its 0.33-second cooldown or extending its seven-second life",
+    "Tesoro B8S gold pulse uses target location captured at declaration and still damages remaining nearby enemies when the original target dies or moves",
+    "Tesoro B07O status remains permanent until a real removal event; absent status is recast on attack and native count resumes, without fictional TTL",
+    "Shared native character-armor reader uses strongest supported A0N1/A11L state, ignores unrelated sources, exposes effective source map base armor, and provides armor-only damage stage for future incoming-hit producer",
+    "Owned-unit touch UI displays current native defensive state explicitly as pending incoming ally damage integration",
+    "NUnit regression cases authored, not run"
+  ],
+  "deferred": [
+    "Actual enemy-to-ally attack producer and HP damage consumer do not yet exist; armor status is not claimed to reduce actual incoming ally HP in playable rounds",
+    "Warcraft exact B07O purge/removal trigger absent; no arbitrary timed expiration, free dispel button or self-buff recast loop added",
+    "Koby native A1CU ability level vs tooltip 7% each upgrade remains a mobile model, not verified Warcraft attack-speed stacking",
+    "Uta B6o sound, visual FX and native order queue/animation omitted; autonomous targeting result only",
+    "Warcraft native target immunities, exact RNG, damage quantization, collision, real device experience remain unverified",
+    "AI00/AI01/AI02 stay read-only fusion shells"
+  ],
+  "fusionCoverage": "240/266 unchanged"
+}

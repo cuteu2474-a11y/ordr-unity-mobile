@@ -4,6 +4,18 @@ using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
+    // Native B4R: ck starts at the Koby fusion's current X3 wave and
+    // increments A1CU once only after X3 - savedWave > 4 (cap level six).
+    public static class SourceModelKobyRoundRules
+    {
+        public const int OriginalRoundsPerLevel = 5;
+        public const int MaximumLevels = 6;
+        public static bool CanAdvance(int currentWave, int savedWave, int level) =>
+            currentWave >= 1 && savedWave >= 0 &&
+            currentWave - savedWave >= OriginalRoundsPerLevel &&
+            level >= 0 && level < MaximumLevels;
+    }
+
     public sealed partial class CharacterCombatRuntime
     {
         // This is a tooltip-only battlefield model, not a claim about native
@@ -14,6 +26,24 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, int>();
         private readonly Dictionary<long, int> sourceModelKobyRoundStacks =
             new Dictionary<long, int>();
+        private readonly Dictionary<long, int> sourceModelKobyLastUpgradeWave =
+            new Dictionary<long, int>();
+
+        // Only a completed CWR TR29/H0CO fusion can anchor the native ck
+        // watcher. A Koby already present in a restored roster is initialized
+        // conservatively on its first observed wave, not backdated to wave 0.
+        public bool RecordSourceModelKobyFusionRound(long actorId,
+            string catalogId, string rawcode)
+        {
+            CharacterInstance actor;
+            if (!UsesSourceModelBasicAttacks || catalogId != "TR-24" ||
+                rawcode != "H0CO" || !characters.TryGetValue(actorId, out actor) ||
+                actor.Catalog.Id != catalogId || actor.Mapping == null ||
+                actor.Mapping.AttackSpec.UnitRawCode != rawcode ||
+                sourceModelKobyLastUpgradeWave.ContainsKey(actorId)) return false;
+            sourceModelKobyLastUpgradeWave.Add(actorId, Math.Max(0, game.CurrentWave));
+            return true;
+        }
         private readonly HashSet<string> sourceModelEighthWithinApproach =
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<string> sourceModelEighthApproachRolled =
@@ -512,12 +542,13 @@ namespace Ordr.Mobile.Combat
                 value => value.EndsWith(suffix, StringComparison.Ordinal));
         }
 
-        // The wave director, not the attack callback, owns the five-round
-        // cadence. Duration 0 in the existing status engine means persistent;
-        // replacement uses the same source key and never stacks duplicates.
+        // B4R watches the global X3 wave once a second, but increments only
+        // when the fusion-specific saved round is five waves behind. Use the
+        // wave director's same crossing (no timer polling), including fusion
+        // at wave 4 -> first gain at wave 9, NOT the global wave 5.
         internal void OnSourceModelPracticeRoundStarted(int wave)
         {
-            if (!UsesSourceModelBasicAttacks || wave <= 0 || wave % 5 != 0)
+            if (!UsesSourceModelBasicAttacks || wave <= 0)
                 return;
             foreach (var actor in characters.Values)
             {
@@ -538,12 +569,21 @@ namespace Ordr.Mobile.Combat
                         candidate.Components[0].Number("maxLevels") == 6)
                         skill = candidate;
                 if (skill == null) continue;
+                int savedWave;
+                if (!sourceModelKobyLastUpgradeWave.TryGetValue(actor.Id,
+                        out savedWave))
+                {
+                    sourceModelKobyLastUpgradeWave.Add(actor.Id, wave);
+                    continue;
+                }
                 int previous;
                 sourceModelKobyRoundStacks.TryGetValue(actor.Id, out previous);
+                if (!SourceModelKobyRoundRules.CanAdvance(wave,
+                        savedWave, previous)) continue;
                 int next = Math.Min((int)skill.Components[0].Number("maxLevels").Value,
                     previous + 1);
-                if (next == previous) continue;
                 sourceModelKobyRoundStacks[actor.Id] = next;
+                sourceModelKobyLastUpgradeWave[actor.Id] = wave;
                 string actorKey = InstanceKey(actor.Id);
                 string source = "practice-tooltip:" + actorKey + ":TR-24:skill:4";
                 var status = unitStatuses[actorKey];
@@ -553,7 +593,8 @@ namespace Ordr.Mobile.Combat
                     next * skill.Components[0].Number("percentPerLevel").Value, 0));
                 events.Add(new CharacterCombatEvent(CharacterCombatEventType.StatusApplied,
                     actorKey, actorKey, skill.Name,
-                    "TOOLTIP_MODEL_ONLY / " + wave + "라운드 · 공격속도 " +
+                    "MODEL_ONLY B4J/B4R/A1CU / 조합 후 " +
+                    (wave - savedWave) + "라운드 · 공격속도 " +
                     (next * 7) + "% (" + next + "/6)", 0));
             }
         }

@@ -24,6 +24,9 @@ namespace Ordr.Mobile.Combat
             public double SatelliteRegenBeginsAt;
             public double SatelliteRegenEndsAt;
             public double SatelliteRegenPerSecond;
+            // Native B6o's attackonce command selects the next basic hit
+            // target; it must never create an additional free damage packet.
+            public string AttackOnceTargetId;
         }
 
         private readonly Dictionary<string, SourceIndependentAttacker> sourceIndependentAttackers =
@@ -124,9 +127,34 @@ namespace Ordr.Mobile.Combat
                 enemy.Kind == CharacterEnemyKind.Enraged;
         }
 
+        private bool OrderSourceIndependentAttackOnce(string key, string targetId)
+        {
+            SourceIndependentAttacker actor;
+            SpatialCombatEnemy target;
+            if (!sourceIndependentAttackers.TryGetValue(key, out actor) ||
+                actor.Blocked || !enemies.TryGetValue(targetId, out target) ||
+                !CanSourceIndependentAttack(actor, target)) return false;
+            actor.AttackOnceTargetId = targetId;
+            return true;
+        }
+
         private List<TargetCandidate> SourceIndependentTargets(SourceIndependentAttacker actor)
         {
             var candidates = new List<TargetCandidate>();
+            if (actor.AttackOnceTargetId != null)
+            {
+                SpatialCombatEnemy ordered;
+                if (enemies.TryGetValue(actor.AttackOnceTargetId, out ordered) &&
+                    CanSourceIndependentAttack(actor, ordered))
+                {
+                    double dx = ordered.X - actor.X, dy = ordered.Y - actor.Y;
+                    return new List<TargetCandidate> {
+                        new TargetCandidate(ordered.Id, dx * dx + dy * dy,
+                            ordered.PathProgress, true)
+                    };
+                }
+                actor.AttackOnceTargetId = null;
+            }
             foreach (var enemy in enemies.Values)
             {
                 if (!CanSourceIndependentAttack(actor, enemy)) continue;
@@ -184,6 +212,9 @@ namespace Ordr.Mobile.Combat
                     continue;
                 }
                 fired++;
+                // One normal scheduled hit fulfils B6o's order; the h04O
+                // continues its existing 0.33s autonomous cadence afterward.
+                actor.AttackOnceTargetId = null;
                 events.Add(new CharacterCombatEvent(CharacterCombatEventType.Attack,
                     key, hit.TargetId, null, "MODEL_ONLY " + actor.Rawcode + " 기본 공격", hit.ActualDamage));
                 SpatialCombatEnemy victim;

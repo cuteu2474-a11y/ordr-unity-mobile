@@ -215,6 +215,34 @@ namespace Ordr.Mobile.Combat
             return strongest;
         }
 
+        // Warcraft B02D (Inner Fire) and B07O (Frost Armor) are beneficial
+        // armor states. Multiple casters of the same buff must not multiply
+        // armor indefinitely. Until original cross-buff stacking is proven,
+        // the common incoming-armor model uses the strongest observed buff.
+        public static double ResolvePracticeAllyArmorBuff(IReadOnlyList<CombatEffect> effects)
+        {
+            if (effects == null) throw new ArgumentNullException(nameof(effects));
+            double strongest = 0;
+            foreach (var effect in effects)
+                if (effect.Type == CombatEffectType.ArmorBuff &&
+                    (effect.SourceId.StartsWith("practice-native:SPH3:A0N1:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-native:ET12:A11L:", StringComparison.Ordinal)))
+                    strongest = Math.Max(strongest, effect.Amount);
+            return strongest;
+        }
+
+        // Shared armor-only stage for a future observed enemy->ally hit.
+        // It deliberately does not consume HP or assume a missing attacker,
+        // attack type, enemy spell, or Warcraft-native damage immunity.
+        public static double PreviewPracticeAllyArmorStage(double rawDamage,
+            double baseArmor, IReadOnlyList<CombatEffect> effects)
+        {
+            if (rawDamage < 0 || double.IsNaN(rawDamage) || double.IsInfinity(rawDamage))
+                throw new ArgumentOutOfRangeException(nameof(rawDamage));
+            return rawDamage * Ordr323MapDamageMath.ArmorDamageMultiplier(
+                baseArmor + ResolvePracticeAllyArmorBuff(effects));
+        }
+
         internal static double ResolvePracticeMovementSlow(IReadOnlyList<CombatEffect> effects)
         {
             double strongest = 0;

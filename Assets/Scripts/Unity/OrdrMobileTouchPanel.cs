@@ -1048,6 +1048,17 @@ namespace Ordr.Mobile.Unity
                             "/" + resources.MaximumMana.ToString("0.#"),
                             OrdrMobileUiTheme.Overline);
                     }
+                    if (Combat.UsesSourceModelBasicAttacks)
+                    {
+                        var nativeArmor = Combat.PracticeAllyNativeArmorBuffOf(selectedId);
+                        var effectiveArmor = Combat.PracticeAllyEffectiveArmorOf(selectedId);
+                        if (nativeArmor.HasValue && nativeArmor.Value > 0 &&
+                            effectiveArmor.HasValue)
+                            GUILayout.Label("원본 방어 상태 +" +
+                                nativeArmor.Value.ToString("0.##") +
+                                " · 현재 방어 " + effectiveArmor.Value.ToString("0.##") +
+                                " (아군 피격 계산 연결 전)", OrdrMobileUiTheme.Overline);
+                    }
                 }
                 if (GUILayout.Button("스킬·공격 정보", GUILayout.MinHeight(56)))
                 {

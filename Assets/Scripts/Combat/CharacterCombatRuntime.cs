@@ -1694,6 +1694,7 @@ namespace Ordr.Mobile.Combat
                 sourceModelYamatoOpeningReady.Remove(id);
                 sourceModelMariaAttackCount.Remove(id);
                 sourceModelKobyRoundStacks.Remove(id);
+                sourceModelKobyLastUpgradeWave.Remove(id);
                 ForgetSourceModelEighthActor(id);
                 ForgetSourceModelNinthActor(id);
                 ForgetSourceModelTwentiethActor(id);
@@ -2270,6 +2271,7 @@ namespace Ordr.Mobile.Combat
             sourceModelYamatoOpeningReady.Remove(instanceId);
             sourceModelMariaAttackCount.Remove(instanceId);
             sourceModelKobyRoundStacks.Remove(instanceId);
+            sourceModelKobyLastUpgradeWave.Remove(instanceId);
             ForgetSourceModelEighthActor(instanceId);
             ForgetSourceModelNinthActor(instanceId);
             ForgetSourceModelTwentyFifthActor(instanceId);

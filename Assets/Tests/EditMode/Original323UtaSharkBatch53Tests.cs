@@ -78,5 +78,33 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0, SourceModelUtaB6rRules.ConditionalPrimaryDamage(
                 0, 1000000, correction, true));
         }
+
+        [Test]
+        public void KobyNativeCkFollowsFusionWaveRatherThanGlobalMultiplesOfFive()
+        {
+            Assert.IsFalse(SourceModelKobyRoundRules.CanAdvance(5, 4, 0));
+            Assert.IsTrue(SourceModelKobyRoundRules.CanAdvance(9, 4, 0));
+            Assert.IsFalse(SourceModelKobyRoundRules.CanAdvance(10, 9, 1));
+            Assert.IsTrue(SourceModelKobyRoundRules.CanAdvance(14, 9, 1));
+            Assert.IsFalse(SourceModelKobyRoundRules.CanAdvance(35, 4, 6));
+        }
+
+        [Test]
+        public void SharkAndTesoroArmorBuffsUseStrongestNativeEffectWithoutDuplication()
+        {
+            var effects = new[] {
+                new CombatEffect("practice-native:SPH3:A0N1:11",
+                    CombatEffectType.ArmorBuff, CombatEffectOrigin.TriggeredSkill, 1.75, 20.5),
+                new CombatEffect("practice-native:SPH3:A0N1:12",
+                    CombatEffectType.ArmorBuff, CombatEffectOrigin.TriggeredSkill, 1.75, 20.5),
+                new CombatEffect("practice-native:ET12:A11L:13",
+                    CombatEffectType.ArmorBuff, CombatEffectOrigin.Aura, 1.5, 0),
+                new CombatEffect("practice-native:unknown:14",
+                    CombatEffectType.ArmorBuff, CombatEffectOrigin.Aura, 900, 0)
+            };
+            Assert.AreEqual(1.75, SourceModelUnitEffects.ResolvePracticeAllyArmorBuff(effects));
+            Assert.AreEqual(100000 * Ordr323MapDamageMath.ArmorDamageMultiplier(11.75),
+                SourceModelUnitEffects.PreviewPracticeAllyArmorStage(100000, 10, effects), .001);
+        }
     }
 }
