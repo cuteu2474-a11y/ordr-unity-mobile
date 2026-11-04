@@ -29,6 +29,7 @@ namespace Ordr.Mobile.Combat
             SourceModelTimeAdvancing += AdvanceSourceChopperBursts;
             SourceModelTimeAdvancing += AdvanceSourceIndependentMana;
             SourceModelTimeAdvancing += AdvanceSourceModelTwentyFifthStates;
+            SourceModelTimeAdvancing += AdvanceSourceModelFusionNativeFollowups;
             attackPipeline.ConfigurePracticeAttackOverride(rules.FormAttackOf);
             // The registered catalog identity does not change on form
             // override. Bonney's H0BY has a new tooltip script packet. Keep

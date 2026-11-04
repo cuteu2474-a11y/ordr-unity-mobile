@@ -395,6 +395,7 @@ namespace Ordr.Mobile.Combat
 
         private void ForgetSourceModelTwentiethActor(long actorId)
         {
+            ForgetSourceModelFusionNativeActor(actorId);
             sourceModelTwentiethSoulStacks.Remove(actorId);
             sourceModelTwentiethSoulBonusReadyAt.Remove(actorId);
             sourceModelTwentiethTezoroPeriodCount.Remove(actorId);

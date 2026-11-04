@@ -1,0 +1,32 @@
+{
+  "batch": 47,
+  "date": "2026-11-04",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "extractedAbilityDataSlkSha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda",
+  "codeCraftableFusionCount": 240,
+  "originalCwrRegistrations": 266,
+  "nativeSupportAbilities": [
+    { "fusion": "A007", "character": "레베카", "receipt": "source:native-fusion:A007:helper", "dummy": "h04V", "ability": "A0HZ", "base": "Aslo", "movementFraction": 0.6, "normalDurationSeconds": 2.5, "heroDurationSeconds": 1.25, "wiring": "LI-02:skill:1 movementSlow -> battle enemy status; original Bvc on 850-radius native attack proc" },
+    { "fusion": "IM01", "character": "로저", "receipt": "source:native-fusion:IM01:helper", "dummy": "h04V", "abilities": ["A14V", "A0MH", "A0JS"], "wiring": "I-04:skill:0 -> A0MH movementSlow enemy status only; A14V inferno and A0JS purge remain separate" },
+    { "fusion": "ET12", "character": "테조로", "receipt": "source:native-fusion:ET12:helper", "dummy": "h04V", "abilities": ["A170", "A11L"], "wiring": "existing E-11:skill:0/1 tooltip stuns 2.4s, no duplicate native application; A11L frost armor unconnected" },
+    { "fusion": "SPH3", "character": "S-샤크", "receipt": "source:native-fusion:SPH3:cen", "dummy": "h04V", "ability": "A0N1", "base": "Ainf", "damageFactor": 0.55, "buffId": "B02D", "buffDurationSeconds": 20.5, "recastIntervalSeconds": 19.7, "initialDelaySeconds": 0.41, "targetPolicy": "self plus up to two randomly chosen same-lane allies within 450", "wiring": "timed AttackPowerBuff status and basic-attack modifier", "unverified": "source CEO UnitPointValue >100 filter; Ainf DataD1=1.75 field mapping, original buff replacement and innerfire order timing" }
+  ],
+  "otherFollowups": [
+    { "fusion": "IM04", "character": "드래곤", "source": "B99 LL[player] += 20; line monster JD ability level", "wiring": "stored line explosion percentage consumed by source-model explosive packets against line enemies; native JD parity unverified" },
+    { "fusion": "ET07", "character": "우타", "source": "B7W 60s repeating timer, B6m active/pending group rotation", "wiring": "combat-clock rotation count; original h04O soldier group remains unconnected" },
+    { "fusion": "ET04", "character": "류마", "source": "B7z per-player once and R00R conditional A11B", "wiring": "once-per-player fusion already enforced; conditional tech R00R -> A11B not wired" }
+  ],
+  "extractedAbilityRows": {
+    "A0MH": { "base": "Aslo", "dataA1": 2.0, "dur1": 3.25, "heroDur1": 1.62, "buff": "Bslo" },
+    "A14V": { "base": "AUin", "dur1": 2.0, "heroDur1": 1.0, "area1": 800 },
+    "A0JS": { "base": "Aprg", "dur1": 1.0, "dataA1": 5.0 },
+    "A170": { "base": "AUin", "dur1": 2.4, "heroDur1": 0.48, "area1": 625 },
+    "A11L": { "base": "AUfa", "dataA1": 1.5, "buff": "B07O" },
+    "A11B": { "base": "AOae", "dataB1": 0.03, "area1": 1.0, "buff": "B07N" },
+    "A0N1": { "base": "Ainf", "dataA1": 0.55, "dataD1": 1.75, "dur1": 20.5, "buff": "B02D" }
+  },
+  "itemsUnchanged": ["AI00", "AI01", "AI02"],
+  "verification": "CODE_ONLY_NOT_EXECUTED",
+  "pending": ["original-runtime target and timing parity", "R00R research witness", "Roger A14V/A0JS and Tesoro A11L cast hooks", "Uta h04O song soldiers", "S-Shark original UnitPointValue eligibility", "TR30 h0AN and RDUN 14", "Android/Unity integration tests by user request only"]
+}

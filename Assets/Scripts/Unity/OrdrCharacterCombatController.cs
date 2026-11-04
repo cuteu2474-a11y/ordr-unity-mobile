@@ -907,6 +907,8 @@ namespace Ordr.Mobile.Unity
             sourceModelDamage.Enable();
             Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
             Combat.ConfigureSourceModelPlayerGold(() => SharedEconomy.Wallet.Balance("gold"));
+            Combat.ConfigureSourceModelFusionNativeReceipts(
+                id => SharedEconomy.Wallet.Balance(id));
             if (originalEquippedItemWitness != null || originalEquippedInventoryWitness != null)
                 Combat.ConfigureSourceModelEquippedItems(originalEquippedItemWitness,
                     originalEquippedInventoryWitness);

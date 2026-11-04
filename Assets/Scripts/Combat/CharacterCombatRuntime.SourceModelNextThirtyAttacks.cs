@@ -491,6 +491,9 @@ namespace Ordr.Mobile.Combat
                             0, 0, 1, 1, Ordr323AttackType.Spells)) : targets;
                     ApplySourceModelCompositeStatus(actor, primary, skill,
                         component, statusTargets);
+                    if (component.Type == "movementSlow")
+                        ApplySourceModelFusionNativeHelperSlow(actor, primary,
+                            skill, component, statusTargets);
                     continue;
                 }
                 if (composite && component.Type == "armorBreak")

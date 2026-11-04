@@ -314,13 +314,21 @@ namespace Ordr.Mobile.Combat
             return packet;
         }
 
-        private static double SourceModelCompositeMagicFactor(
+        private double SourceModelCompositeMagicFactor(
             SpatialCombatEnemy target, string componentType)
         {
             if (componentType == "explosive")
-                return 1 + SourceModelUnitEffects.ResolvePracticeMagicModifier(
+            {
+                double localAmplification = SourceModelUnitEffects.ResolvePracticeMagicModifier(
                     target.Enemy.Status.Snapshot(),
-                    CombatEffectType.ExplosiveDamageAmplification) / 100;
+                    CombatEffectType.ExplosiveDamageAmplification);
+                // JASS B99 adds 20 to LL[player] for every Dragon fusion.
+                // The line model consumes that saved value only on line-zone
+                // explosive packets, not on boss/story/ordinary magic hits.
+                double lineAmplification = target.Kind == CharacterEnemyKind.Line
+                    ? SourceModelFusionLineExplosionBonus() : 0;
+                return 1 + (localAmplification + lineAmplification) / 100;
+            }
             if (componentType != "magical") return 1;
             var statuses = target.Enemy.Status.Snapshot();
             double amp = SourceModelUnitEffects.ResolvePracticeMagicModifier(

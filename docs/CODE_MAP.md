@@ -1,3 +1,9 @@
+## 2026-11-04 · 47차 네이티브 조합 후속 전투 소비자 (실행 검사 전)
+
+- `CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs`: 유닛 생성/공유 지갑 커밋을 건드리지 않고 `source:native-fusion:*` 원장만 읽습니다. A0HZ/레베카, A0MH/로저 이동 둔화는 해당 원본 스킬 패킷에서 별도 출처 상태로 기록, 중복 효과 합산 대신 기존 최강 감속 보정을 사용합니다. S-샤크의 지속형 A0N1은 전투 시계에 따라 본인+2명에게 **20.5초 +55% 공격력**을 최대 19.7초 간격으로 갱신합니다. 우타 B6m의 60초 회전 수만 추적하고 실물 병사는 만들지 않습니다.
+- `CharacterCombatRuntime.SourceModelCompositeEffects.cs`: 드래곤 B99에서 영속 누적된 라인 폭발 피해 +20%씩을 **라인 적의 explosive 도감 모델**에만 가산. `OrdrCharacterCombatController`가 공유 경제 지갑 조회를 SourceModel 전투에 주입하며 `SourceModelUnitEffects`는 A0N1/도우미 둔화 출처를 인정합니다. 기존 테조로 2.4초 스턴을 중복 시전하지 않습니다.
+- [47차 원본 W3X·JASS·AbilityData.slk 근거/잔여 미완](../data/original-2323C-native-ability-followups-batch47.json). 원본 오브젝트 파일을 공개 저장소에 업로드하지 않았습니다. 아이템 AI00/AI01/AI02 빈껍질 유지, CWR 240/266 유지. 로컬 테스트는 요청 전 실행하지 않습니다.
+
 ## 2026-11-04 · 46차 원본 조합 아이템 빈껍질 (검증 전)
 
 - `Original323FusionSourceItemLedger.cs`: `Original323FusionItemShell`(원본 rawcode·표시명·조합 역할·사용 효과 미구현), 읽기 전용 `ItemShells`, `FindShell`, `OwnedShellCount`를 공통 원장에 추가. `WalletId`와 외부 영수증 입력은 같은 허가표로 검사합니다. 기존 원자 조합 결제/보상, 저장 복원을 변경하지 않았습니다.
@@ -620,4 +626,5 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `SourceModelUnconnectedSkillCatalog` 신규 소유자 `H-09/h03X`(액티브만), `RN-05/h073`(평타만) 등록. **H-09 기본 Br8 JASS 공격 콜백은 기존 그대로** 사용하며 중복 주사위가 없습니다. 기존 `H-07/h03R`, `E-04/h058`, `I-06/h04Q` next-thirty 소유자/액티브 명단은 재사용합니다.
 - `CharacterCombatRuntime.SourceModelNextThirtyAttacks`는 신규 액티브를 기존 자원/선택 대상/상태/HP·처치 공통 실행기로 전달합니다. RN-05 데스노트는 *피격 당시 현재 HP* 25%를 읽고 보스/스토리를 제외합니다. `SourceModelSixthHitCount` 기존 원본 `hits=6` 횟수 처리를 I-06에서 재사용합니다. 출처 없는 원본 방어/저항·지속 효과 타이밍/면역을 보장하지 않습니다.
 - EditMode 승인 사례만 작성하고 실행하지 않았습니다. 상세: `data/source-model-twentythird-five-character-skills.json`. Python/Unity/Android/APK/Actions 전부 미실행·미조회.
+
 

@@ -206,7 +206,8 @@ namespace Ordr.Mobile.Combat
             double strongest = ResolveSingleAura(effects, CombatEffectType.AttackPowerBuff);
             foreach (var effect in effects)
                 if (effect.Type == CombatEffectType.AttackPowerBuff &&
-                    effect.SourceId.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal))
+                    (effect.SourceId.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-native:SPH3:A0N1:", StringComparison.Ordinal)))
                     strongest = Math.Max(strongest, effect.Amount);
             // Auras and temporary tooltip buffs use the strongest effect,
             // without an unsupported assumption that their percentages add.
@@ -220,6 +221,7 @@ namespace Ordr.Mobile.Combat
                 if (effect.Type == CombatEffectType.MovementSlowPercent &&
                     (effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal) ||
                      effect.SourceId.StartsWith("practice-nami:A089:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-native:fusion-helper:", StringComparison.Ordinal) ||
                      effect.SourceId.StartsWith("practice-tooltip:", StringComparison.Ordinal)))
                     strongest = Math.Max(strongest, effect.Amount);
             // Native aura conflict rules remain unknown: strongest wins in
