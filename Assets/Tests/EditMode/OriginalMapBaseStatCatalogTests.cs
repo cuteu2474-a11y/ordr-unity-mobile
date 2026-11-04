@@ -69,6 +69,32 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void DiceOnlyMapObjectDoesNotInventUnobservedDamage()
+        {
+            var units = CharacterUnitCatalog.FromJson(UnitFixture);
+            string diceOnly = Luffy.Replace(
+                "\"minimumBaseDamage\":29,\"maximumBaseDamage\":31,",
+                "\"baseDamagePlus\":28,\"diceCount\":1,\"diceSides\":3,");
+            var catalog = OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + diceOnly + "," + Unmatched + "]}", units);
+            var attack = catalog.Find("C-01").Attack1;
+            Assert.IsNull(attack.MinimumBaseDamage);
+            Assert.IsNull(attack.MaximumBaseDamage);
+            Assert.AreEqual(28, attack.BaseDamagePlus);
+            Assert.AreEqual(1, attack.DiceCount);
+            Assert.AreEqual(3, attack.DiceSides);
+            Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + diceOnly.Replace("\"diceSides\":3", "\"diceSides\":0") +
+                "," + Unmatched + "]}", units));
+            string contradictory = Luffy.Replace(
+                "\"attackCooldownSeconds\":1.02,",
+                "\"baseDamagePlus\":27,\"diceCount\":1,\"diceSides\":3," +
+                "\"attackCooldownSeconds\":1.02,");
+            Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + contradictory + "," + Unmatched + "]}", units));
+        }
+
+        [Test]
         public void OriginalMapAbilitiesPreserveOrderButRejectInvalidOrDuplicateCodes()
         {
             var units = CharacterUnitCatalog.FromJson(UnitFixture);

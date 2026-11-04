@@ -69,7 +69,11 @@ namespace Ordr.Mobile.Tests
             Assert.IsFalse(port.CanCommit);
             foreach (var offer in offers)
                 Assert.IsTrue(offer.OriginalMaterialsAndCost.Contains(
-                    "원본 제작 거래 미연결"));
+                    "원본 제작 거래 미연결") ||
+                    offer.OriginalMaterialsAndCost.Contains(
+                        "원본 별도 획득 경로"),
+                    "Distinguish ordinary unconnected fusion from native " +
+                    "reward routes without approving either transaction.");
         }
 
         [Test]

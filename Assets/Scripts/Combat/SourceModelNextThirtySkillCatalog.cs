@@ -225,6 +225,7 @@ namespace Ordr.Mobile.Combat
                 return (skill.Trigger == "onAttack" ||
                     skill.Trigger == "onEveryAttack") &&
                     SourceModelFifteenthSkillCatalog.CanModelExactSpecial(skill);
+            bool third = IsThirdCompositeAttack(skill);
             bool fourth = IsFourthCompositeAttack(skill);
             bool fifth = IsFifthCompositeSkill(skill);
             bool sixth = IsSixthCompositeSkill(skill);
@@ -268,6 +269,11 @@ namespace Ordr.Mobile.Combat
             foreach (string key in skill.OriginalFields.Keys)
                 if (key != "name" && key != "trigger" && key != "chancePercent" &&
                     key != "target" && key != "radius" && key != "components" &&
+                    !(third && skill.Id == "TR-08:skill:2" &&
+                      (key == "durationSeconds" ||
+                       key == "absoluteCooldownSeconds")) &&
+                    !(third && skill.Id == "LI-02:skill:2" &&
+                      key == "overrides") &&
                     !(fourth && skill.Id == "E-07:skill:3" &&
                       key == "absoluteCooldownSeconds") &&
                     !(fifth && skill.Id == "TR-07:skill:2" && key == "overrides") &&
@@ -307,8 +313,28 @@ namespace Ordr.Mobile.Combat
                     !FinitePositive(skill.Number("absoluteCooldownSeconds"))) return false;
                 return CanModelFourthCompositeComponents(skill);
             }
-            if (IsThirdCompositeAttack(skill))
+            if (third)
+            {
+                // Strictly require the recorded source conditions; other
+                // arbitrary tooltip keys never authorize an attack packet.
+                if (skill.Id == "TR-08:skill:2" &&
+                    (skill.Number("durationSeconds") != 2 ||
+                     skill.Number("absoluteCooldownSeconds") != 1.75))
+                    return false;
+                if (skill.Id == "LI-02:skill:2")
+                {
+                    var overrides = skill.Get("overrides") as List<object>;
+                    if (overrides == null || overrides.Count != 1) return false;
+                    var option = overrides[0] as Dictionary<string, object>;
+                    var kinds = option != null && option.ContainsKey("targetKinds")
+                        ? option["targetKinds"] as List<object> : null;
+                    if (option == null || option.Count != 2 ||
+                        kinds == null || kinds.Count != 2 ||
+                        !kinds.Contains("boss") || !kinds.Contains("enraged") ||
+                        !Equals(option["chancePercent"], 20d)) return false;
+                }
                 return CanModelThirdCompositeComponents(skill);
+            }
             return IsSecondCompositeSkill(skill) ?
                 CanModelSecondCompositeComponents(skill) : CanModelComponents(skill);
         }

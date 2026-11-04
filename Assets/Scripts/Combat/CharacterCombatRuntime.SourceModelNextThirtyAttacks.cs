@@ -7,6 +7,9 @@ namespace Ordr.Mobile.Combat
 {
     public sealed partial class CharacterCombatRuntime
     {
+        private readonly Dictionary<long, double> sourceModelGatlingReadyAt =
+            new Dictionary<long, double>();
+
         // This is an explicitly incomplete tooltip-derived OFFLINE model for
         // the next thirty units. It never enters the original-verified attack
         // path. Attribute scaling, native dummies, mana/health transformations,
@@ -104,6 +107,9 @@ namespace Ordr.Mobile.Combat
                 if (skill.Id == "TR-15:skill:1" &&
                     sourceModelPoseidonReadyAt.TryGetValue(actor.Id, out readyAt) &&
                     readyAt > Time) continue;
+                if (skill.Id == "TR-08:skill:2" &&
+                    sourceModelGatlingReadyAt.TryGetValue(actor.Id, out readyAt) &&
+                    readyAt > Time) continue;
                 if (skill.Id == "TR-11:skill:4" &&
                     sourceModelSeventhReadyAt.TryGetValue(actor.Id, out readyAt) &&
                     readyAt > Time) continue;
@@ -117,13 +123,24 @@ namespace Ordr.Mobile.Combat
                      actor.Abilities.Resources.Mana < skill.Number("manaAtLeast").Value ||
                      !actor.Abilities.Resources.CanSpend(0, skill.Number("manaCost").Value)))
                     continue;
+                double procChance = SourceModelNineteenthChance(skill, primary,
+                    SourceModelSixteenthProcChance(skill, primary,
+                        SourceModelFifteenthProcChance(skill, primary,
+                            SourceModelEighthProcChance(skill, primary, actor))));
+                // Rebecca's complete source packet has a 20% proc chance only
+                // for boss/enraged enemies; retain the 10% normal chance.
+                if (skill.Id == "LI-02:skill:2" &&
+                    (primary.Kind == CharacterEnemyKind.Boss ||
+                     primary.Kind == CharacterEnemyKind.Enraged))
+                {
+                    var options = skill.Get("overrides") as List<object>;
+                    var option = options[0] as Dictionary<string, object>;
+                    procChance = (double)option["chancePercent"];
+                }
                 if ((skill.Trigger == "onAttack" ||
                      skill.Trigger == "onAttackWithMana") &&
                     sourceModelRules.NextScriptRoll(1000000) >=
-                    (int)Math.Round(SourceModelNineteenthChance(skill, primary,
-                        SourceModelSixteenthProcChance(skill, primary,
-                            SourceModelFifteenthProcChance(skill, primary,
-                                SourceModelEighthProcChance(skill, primary, actor)))) * 10000,
+                    (int)Math.Round(procChance * 10000,
                         MidpointRounding.AwayFromZero)) continue;
                 // Preserve the tooltip target metadata, but apply the same
                 // explicit MOBILE result policy as CharacterSkillEffectExecutor.
@@ -172,6 +189,9 @@ namespace Ordr.Mobile.Combat
                         skill.Number("absoluteCooldownSeconds").Value;
                 if (skill.Id == "TR-15:skill:1")
                     sourceModelPoseidonReadyAt[actor.Id] = Time +
+                        skill.Number("absoluteCooldownSeconds").Value;
+                if (skill.Id == "TR-08:skill:2")
+                    sourceModelGatlingReadyAt[actor.Id] = Time +
                         skill.Number("absoluteCooldownSeconds").Value;
                 if (skill.Id == "TR-11:skill:4")
                     sourceModelSeventhReadyAt[actor.Id] = Time +

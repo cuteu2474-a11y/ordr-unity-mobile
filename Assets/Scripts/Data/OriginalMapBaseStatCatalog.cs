@@ -54,13 +54,16 @@ namespace Ordr.Mobile.Data
                 (AttackCooldownSeconds.HasValue && AttackCooldownSeconds.Value <= 0))
                 throw new FormatException(id + ": 잘못된 원본 공격력/공격 주기");
             bool anyDiceField = BaseDamagePlus.HasValue || DiceCount.HasValue || DiceSides.HasValue;
+            // Keep unknown source damage as null, even when its raw dice
+            // were extracted. Never fabricate missing min/max bounds.
+            // Fully observed values must still match the original dice.
             if (anyDiceField &&
                 (!BaseDamagePlus.HasValue || !DiceCount.HasValue || !DiceSides.HasValue ||
-                 DiceSides.Value < 1 || !MinimumBaseDamage.HasValue ||
-                 !MaximumBaseDamage.HasValue ||
-                 MinimumBaseDamage.Value != BaseDamagePlus.Value + DiceCount.Value ||
-                 MaximumBaseDamage.Value != BaseDamagePlus.Value +
-                     (long)DiceCount.Value * DiceSides.Value))
+                 DiceSides.Value < 1 ||
+                 (MinimumBaseDamage.HasValue &&
+                  (MinimumBaseDamage.Value != BaseDamagePlus.Value + DiceCount.Value ||
+                   MaximumBaseDamage.Value != BaseDamagePlus.Value +
+                       (long)DiceCount.Value * DiceSides.Value))))
                 throw new FormatException(id + ": 원본 공격 주사위와 최소·최대 피해량이 불일치합니다.");
         }
     }

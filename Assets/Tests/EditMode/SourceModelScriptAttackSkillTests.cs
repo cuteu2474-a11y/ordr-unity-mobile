@@ -442,8 +442,8 @@ namespace Ordr.Mobile.Tests
                 OrdrJson.Value(firstThirty, "units"), "units")
                 .Select(x => OrdrJson.RequiredString(OrdrJson.Object(x, "unit"), "id")));
             var profiles = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
-            Assert.AreEqual(30, SourceModelNextThirtySkillCatalog.All.Count);
-            Assert.AreEqual(30, SourceModelNextThirtySkillCatalog.All
+            Assert.AreEqual(33, SourceModelNextThirtySkillCatalog.All.Count);
+            Assert.AreEqual(33, SourceModelNextThirtySkillCatalog.All
                 .Select(x => x.CatalogId).Distinct().Count());
             int enabled = 0, activeEnabled = 0;
             foreach (var row in SourceModelNextThirtySkillCatalog.All)
@@ -471,8 +471,8 @@ namespace Ordr.Mobile.Tests
                     activeEnabled++;
                 }
             }
-            Assert.AreEqual(29, enabled, "Only whole attack tooltip packets are allowed");
-            Assert.AreEqual(12, activeEnabled, "Resource-gated source and composite actives");
+            Assert.AreEqual(51, enabled, "Only whole attack tooltip packets are allowed");
+            Assert.AreEqual(18, activeEnabled, "Resource-gated source and composite actives");
         }
 
         [TestCase("L-04", "바람바람 열매")]
@@ -1276,7 +1276,8 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("LI-01"));
             Assert.IsTrue(SpecialGradeMobilePolicy.UsesEnemyCenteredArea("LI-02"));
             CollectionAssert.AreEquivalent(
-                new[] { "핏빛 범위 공격", "광역 마법 공격" }, row.PracticeAttackSkills);
+                new[] { "핏빛 범위 공격", "광역 마법 공격",
+                    "단일 스턴", "평타 단일 고정" }, row.PracticeAttackSkills);
 
             using (var near = Create("LI-01", true, -4900, 5400))
             {
@@ -1331,8 +1332,10 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(SourceModelUnconnectedSkillCatalog.AllowsActive(row, "로이드 포저"));
             Assert.IsTrue(SourceModelUnconnectedSkillCatalog.AllowsActive(row, "요르 포저"));
             Assert.IsFalse(SourceModelUnconnectedSkillCatalog.AllowsActive(row, "독심술"));
-            Assert.AreEqual(0, row.PracticeAttackSkills.Count,
-                "Auto-cast-only data cannot create an invented attack proc.");
+            CollectionAssert.AreEqual(new[] { "스타캐치 애로우" },
+                row.PracticeAttackSkills,
+                "Only the explicitly approved source attack is allowed; " +
+                "unrelated active effects cannot create extra procs.");
         }
 
         [Test]
