@@ -27,6 +27,10 @@ namespace Ordr.Mobile.Combat
             new HashSet<string>(StringComparer.Ordinal);
         private readonly Dictionary<long, double> sourceModelRogerInfernoReadyAt =
             new Dictionary<long, double>();
+        // Native B8V increases the unit user-data only on a missing B07O
+        // frost-armor buff. Keep that trigger separate from the 12% d7 roll.
+        private readonly Dictionary<long, int> sourceModelTesoroFrostCounts =
+            new Dictionary<long, int>();
 
         private bool TryResolveSourceModelRogerInfernoTarget(long actorId,
             out CharacterInstance actor, out SpatialCombatEnemy chosen)
@@ -267,7 +271,7 @@ namespace Ordr.Mobile.Combat
         // duration=0 (aura-like permanent state). This source-model status
         // is not a fabricated enemy->unit damage simulation.
         private void ApplySourceModelFusionTesoroFrostArmor(
-            CharacterInstance actor, string rawcode)
+            CharacterInstance actor, string rawcode, SpatialCombatEnemy primary)
         {
             if (rawcode != "h06A" || actor.Catalog.Id != "E-11" ||
                 SourceModelFusionNativeBalance(
@@ -287,6 +291,88 @@ namespace Ordr.Mobile.Combat
                 CharacterCombatEventType.StatusApplied, InstanceKey(actor.Id),
                 InstanceKey(actor.Id), "테조로 · 프로스트 아머",
                 "MODEL_ONLY B8V/A11L/B07O: 자기 방어력 +1.5 영속 효과; 피격 방어 적용·원본 버프 표시는 추후 연결", 0));
+            ScheduleSourceModelTesoroGoldImpact(actor, primary);
+        }
+
+        // B8V -> d8/B8S: gold is READ (not spent) from the one shared wallet
+        // at the attack declaration. B8L(gold) = min(gold,250000)^2/250000.
+        // Branch 1/2 is a 425-radius impact after .05+.4 seconds; branch 0
+        // is selected only at native user data >=3 and has a 325-radius hit.
+        private void ScheduleSourceModelTesoroGoldImpact(
+            CharacterInstance actor, SpatialCombatEnemy primary)
+        {
+            if (sourceModelTwentiethPlayerGold == null) return;
+            long gold = sourceModelTwentiethPlayerGold();
+            if (gold < 0) throw new InvalidOperationException("공유 골드가 음수입니다.");
+            double capped = Math.Min(gold, 250000);
+            double goldPower = capped * capped / 250000.0;
+            int used;
+            sourceModelTesoroFrostCounts.TryGetValue(actor.Id, out used);
+            used = Math.Min(3, used + 1);
+            bool third = used >= 3;
+            sourceModelTesoroFrostCounts[actor.Id] = third ? 0 : used;
+            if (!third) sourceModelRules.NextScriptRoll(2); // B8S branch 1/2: same damage.
+
+            string caster = InstanceKey(actor.Id);
+            bool story = IsStoryDeployed(actor.Id);
+            long laneRevision = SourceModelLaneRevision(actor.Id);
+            string targetId = primary.Id;
+            effectExecutor.SchedulePracticeSourceAttack(caster,
+                "practice-native:ET12:B8S", .45, () =>
+                {
+                    if (!CanFinishSourceModelDelayedAttack(actor.Id, story, laneRevision))
+                        return;
+                    SpatialCombatEnemy center;
+                    if (!enemies.TryGetValue(targetId, out center) ||
+                        !center.Enemy.IsAlive || !CanAttackInThisLane(actor, center))
+                        return;
+                    double radius = third ? 325 : 425;
+                    var victims = new List<SpatialCombatEnemy>();
+                    foreach (var enemy in enemies.Values)
+                    {
+                        if (!enemy.Enemy.IsAlive || !CanAttackInThisLane(actor, enemy))
+                            continue;
+                        double dx = enemy.X - center.X, dy = enemy.Y - center.Y;
+                        if (dx * dx + dy * dy <= radius * radius)
+                            victims.Add(enemy);
+                    }
+                    victims.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
+                    string name = "테조로 · 황금 충격";
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.SkillActivated, caster,
+                        targetId, name,
+                        "MODEL_ONLY B8S/B8L: 공격 시 골드 상한250000, 0.45초 지연·" +
+                        radius + " 범위, 재화 차감 없음", 0));
+                    foreach (var victim in victims)
+                    {
+                        // JD target ability level is not yet provided by the
+                        // mobile monster catalog. Its native factor defaults
+                        // to the zero-level .79 until evidence is available.
+                        const double nativeZeroLevelFactor = .79;
+                        double normalMultiplier = 1 +
+                            sourceModelRules.NextScriptRoll(500001) / 1000000.0;
+                        ApplySourceModelAreaPacket(caster, story, victim, 0,
+                            (third ? 160000 : 400000) * normalMultiplier,
+                            Ordr323AttackType.Spells, name);
+                        if (!victim.Enemy.IsAlive) continue;
+                        ApplySourceModelAreaPacket(caster, story, victim, 0,
+                            goldPower * nativeZeroLevelFactor * 1.5,
+                            Ordr323AttackType.Siege, name);
+                        if (!third && victim.Enemy.IsAlive)
+                        {
+                            double missing = Math.Max(0,
+                                victim.Enemy.MaxHealth - victim.Enemy.Health);
+                            ApplySourceModelAreaPacket(caster, story, victim, 0,
+                                missing * .01 * .45 * goldPower / 25000.0 *
+                                    nativeZeroLevelFactor,
+                                Ordr323AttackType.Siege, name);
+                        }
+                    }
+                    if (center.Enemy.IsAlive && CanAttackInThisLane(actor, center))
+                        ApplySourceModelAreaPacket(caster, story, center, 0,
+                            center.Enemy.MaxHealth * (third ? .14 : .18) * .79,
+                            Ordr323AttackType.Siege, name + " · 주 대상");
+                });
         }
 
         // B6s creates physical h04O with source-object 38001 base damage,
@@ -452,6 +538,7 @@ namespace Ordr.Mobile.Combat
         {
             sourceModelFusionSharkScheduled.Remove(actorId);
             sourceModelRogerInfernoReadyAt.Remove(actorId);
+            sourceModelTesoroFrostCounts.Remove(actorId);
             List<string> keys;
             if (sourceModelUtaSongSoldierKeys.TryGetValue(actorId, out keys))
             {

@@ -168,8 +168,24 @@ namespace Ordr.Mobile.Combat
                 10000, MidpointRounding.AwayFromZero);
             if (sourceModelRules.NextScriptRoll(1000000) >= threshold) return;
             double lifetime = component.Number("durationSeconds").Value;
-            if (!RegisterSourceModelUtaSongSoldier(actor, primary, lifetime))
-                return;
+            AddSourceModelUtaSongSoldier(actor, primary, lifetime, skill.Name);
+        }
+
+        // The source B68 path (the 10% line/boss attack) makes an additional
+        // 25% B6s roll after its two impacts. The B7E three-hit path already
+        // uses the summonSoldier component above; never double-roll that one.
+        private void TrySourceModelUtaGoldSongFollowup(CharacterInstance actor,
+            SpatialCombatEnemy primary, ImportedCombatSkill skill)
+        {
+            if (skill.Id != "E-09:skill:4" || actor.Catalog.Id != "E-09" ||
+                sourceModelRules.NextScriptRoll(100) >= 25) return;
+            AddSourceModelUtaSongSoldier(actor, primary, 7, skill.Name);
+        }
+
+        private void AddSourceModelUtaSongSoldier(CharacterInstance actor,
+            SpatialCombatEnemy primary, double lifetime, string sourceSkill)
+        {
+            if (!RegisterSourceModelUtaSongSoldier(actor, primary, lifetime)) return;
             List<double> expiry;
             if (!sourceSongSoldierExpiry.TryGetValue(actor.Id, out expiry))
             {
@@ -179,7 +195,7 @@ namespace Ordr.Mobile.Combat
             expiry.RemoveAll(until => until <= Time);
             expiry.Add(Time + lifetime);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
-                InstanceKey(actor.Id), primary.Id, skill.Name,
+                InstanceKey(actor.Id), primary.Id, sourceSkill,
                 "MODEL_ONLY B6s/h04O 독립 공격 객체 + 7초 음표 병사 기여; 원본 위치·HP 재생 만료 조건 미검증", 0));
         }
 

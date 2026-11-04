@@ -1,4 +1,12 @@
-## 2026-11-04 · 49차 네이티브 트리거→지갑→전투 후속 (실행 검사 전)
+## 2026-11-04 · 50차 저장된 클리어 수 → 루치 전투 → 종료 UI
+
+- `SourceModelPracticeBattle.cs`: 최종 보스 처치 여부를 포함한 `IsFullGameClear`, 65R 종료를 `65라운드 클리어`로 표시; 보스 미처치 때 마지막 빈 몬스터 상태를 승리로 취급하지 않습니다.
+- `OrdrCharacterCombatController.cs`: `PlayerPrefs` 키 `ordr.nightmare-isekai.full-clears.v1`에서 누적 횟수 복원, 성공적인 65R 전체 승리에만 한 번 기록. `Combat.ConfigureSourceModelAccumulatedClearCount(() => AccumulatedClearCount)`로 루치 TR-07 공통 계산에 연결.
+- `OrdrMainSceneShell.cs`: 시작/결과 화면에 `누적 클리어 N회`; 기존 중복 지역변수 선언 제거. 별도 연결 상태 모드 UI 없음.
+- `CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs`: 테조로 A11L의 **최초 B07O 미보유 공격**을 B8S 지연 공격까지 연결, 공유 골드 공급자·공통 타격 스케줄·적 HP/처치 경로 사용. `CharacterCombatRuntime.SourceModelCompositeEffects/SourceModelNextThirtyAttacks.cs`: 우타 B68 성공 뒤 25% 병사 생성을 기존 독립 h04O 원장에 통합. [50차 JASS 근거](../data/original-2323C-native-combat-clears-batch50.json).
+- 제한: CWR **240/266** 및 아이템 빈껍질 AI00/AI01/AI02 변동 없음. 로컬 실행 검사/컴파일 미실시. S-샤크 PointValue, 테조로 JD/네이티브 방어, 우타 B61 별도 출현은 후속 구현.
+
+## 2026-11-04 · 49차 네이티브 트리거→지갑→전투 후속 (이전 차수 기록)
 
 - `Original323SourceDedicatedSkillPort.cs`: 오타마 보유 기반 `CH8/R00R` 원자 연구 영수증, 로저 I-04의 `B8Z/A202` 특성포인트 4점 원자 해금, `B8c` 대상 한정 수동 시전 UI를 기존 전용 스킬 영역에 묶음. 아이템 3종은 신규 효과 없음.
 - `OrdrCharacterCombatController.OnCommittedOriginalFusion` → `CharacterCombatRuntime.SourceModelFusionNativeFollowups.TryAttachSourceModelNativeResearchOnFusion`: *확정된* 조합 결과에만 A11B **이동속도 +3%** 오라 상태 부착, 원본 `AOae` DataB1=.03. `CombatStatusEngine.MovementSpeedBuff`를 공격속도 효과와 별도로 추가. 이미 조합한 유닛에는 소급 부여하지 않습니다.

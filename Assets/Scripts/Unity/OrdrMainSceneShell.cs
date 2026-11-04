@@ -99,7 +99,6 @@ namespace Ordr.Mobile.Unity
                     GUI.Label(noticeBox, controller.EvolutionNotice, noticeStyle);
                 }
 
-                var combat = controller == null ? null : controller.Combat;
                 // Render the story in its own smaller HUD battlefield. The
                 // world camera remains on the main fight; the static story
                 // building must not be shown as a travelling wave monster.
@@ -165,11 +164,12 @@ namespace Ordr.Mobile.Unity
                     GUI.Box(panel, GUIContent.none);
                     var resultStyle = new GUIStyle(GUI.skin.label) {
                         fontSize = Mathf.RoundToInt(17f * scale), alignment = TextAnchor.MiddleCenter };
-                    GUI.Label(new Rect(panel.x + 8f, panel.y + 8f, panel.width - 16f, 46f * scale),
-                        controller.SoloStory != null && controller.SoloStory.LostByStory
+                    string result = controller.SoloStory != null && controller.SoloStory.LostByStory
                             ? controller.SoloStory.LastNotice :
                         controller.PracticeBattle == null ? combat.Game.Phase.ToString() :
-                            controller.PracticeBattle.ResultMessage, resultStyle);
+                            controller.PracticeBattle.ResultMessage;
+                    GUI.Label(new Rect(panel.x + 8f, panel.y + 8f, panel.width - 16f, 46f * scale),
+                        result + "\n누적 클리어 " + controller.AccumulatedClearCount + "회", resultStyle);
                     var restart = new Rect(panel.x + 8f, panel.yMax - 56f * scale,
                         panel.width - 16f, 48f * scale);
                     if (GUI.Button(restart, confirmNewGame ? "확인 · 시작화면으로" : "새 게임"))
@@ -201,6 +201,9 @@ namespace Ordr.Mobile.Unity
                 alignment = TextAnchor.MiddleCenter };
             GUI.Label(new Rect(panel.x, panel.y + 92f * scale, width, 28f * scale),
                 "악몽 · 이세계", subtitle);
+            GUI.Label(new Rect(panel.x, panel.y + 120f * scale, width, 22f * scale),
+                "누적 클리어 " + (controller == null ? 0 : controller.AccumulatedClearCount) +
+                "회", subtitle);
             bool previous = GUI.enabled;
             GUI.enabled = previous && controller != null && controller.Units != null;
             if (GUI.Button(new Rect(panel.x + 40f * scale, panel.y + 142f * scale,

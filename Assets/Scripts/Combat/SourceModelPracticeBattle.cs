@@ -203,6 +203,12 @@ namespace Ordr.Mobile.Combat
         public IReadOnlyList<CombatPathPoint> RouteCorners => catalog.RouteCorners;
         public int LastRound => catalog.LastRound;
         public int EnemyLimit => catalog.EnemyLimit;
+        public bool IsFullGameClear => Started && LastRound == 65 &&
+            combat.Game.Phase == SessionPhase.Won &&
+            combat.Game.CurrentWave == 65 && combat.Game.AliveEnemies == 0 &&
+            waves.RemainingSpawns == 0 &&
+            waves.CurrentProgress.BossPlanned > 0 &&
+            waves.CurrentProgress.AllBossesDefeated;
 
         public SourceModelPracticeBattle(CharacterCombatRuntime world, CombatWaveDirector director,
             SharedEconomySession shared, SourceModelPracticeCatalog model,
@@ -294,7 +300,12 @@ namespace Ordr.Mobile.Combat
             int wave = combat.Game.CurrentWave;
             if (wave == catalog.LastRound && waves.RemainingSpawns == 0 && combat.Game.AliveEnemies == 0)
             {
-                Finish(true, catalog.LastRound + "라운드 연습 완료");
+                if (waves.CurrentProgress.BossPlanned > 0 &&
+                    !waves.CurrentProgress.AllBossesDefeated)
+                    Finish(false, "마지막 보스를 처치하지 못했습니다.");
+                else
+                    Finish(true, catalog.LastRound == 65 ? "65라운드 클리어" :
+                        catalog.LastRound + "라운드 연습 완료");
                 return true;
             }
             if (SecondsRemaining > 0 || waves.RemainingSpawns != 0) return false;

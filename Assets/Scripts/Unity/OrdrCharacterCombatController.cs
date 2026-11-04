@@ -728,6 +728,55 @@ namespace Ordr.Mobile.Unity
         }
         private IOriginalWispRandom sessionScriptRandom;
         public SourceModelPracticeBattle PracticeBattle { get; private set; }
+        // The completed 65-round game count is shared by subsequent runs on
+        // this installation. Round/mission/story clears never increment it.
+        private const string AccumulatedClearPrefsKey = "ordr.nightmare-isekai.full-clears.v1";
+        private bool accumulatedClearsLoaded;
+        private int accumulatedClears;
+        private bool fullClearRecordedForSession;
+
+        public int AccumulatedClearCount
+        {
+            get
+            {
+                if (!accumulatedClearsLoaded)
+                {
+                    accumulatedClears = Math.Max(0,
+                        PlayerPrefs.GetInt(AccumulatedClearPrefsKey, 0));
+                    accumulatedClearsLoaded = true;
+                }
+                return accumulatedClears;
+            }
+        }
+
+        private void RecordFullGameClearOnce()
+        {
+            if (fullClearRecordedForSession || PracticeBattle == null ||
+                !PracticeBattle.IsFullGameClear)
+                return;
+            int previous = AccumulatedClearCount;
+            if (previous == int.MaxValue)
+            {
+                fullClearRecordedForSession = true;
+                return;
+            }
+            // Commit before marking this session. A failed platform write is
+            // reported, never silently counted or retried in a tight GUI loop.
+            try
+            {
+                PlayerPrefs.SetInt(AccumulatedClearPrefsKey, previous + 1);
+                PlayerPrefs.Save();
+                accumulatedClears = previous + 1;
+                fullClearRecordedForSession = true;
+                RecordSessionIssue("누적 클리어", accumulatedClears + "회 기록");
+            }
+            catch (Exception error)
+            {
+                Debug.LogException(error);
+                RecordSessionIssue("누적 클리어 저장 실패", error.Message);
+                fullClearRecordedForSession = true;
+            }
+        }
         public Original323CreepPracticeWorld PracticeCreeps { get; private set; }
         public Original323StoryBuildingPracticeWorld PracticeStoryBuildings { get; private set; }
         public Original323StoryBuildingCatalog StoryBuildingCatalog { get; private set; }
@@ -907,6 +956,7 @@ namespace Ordr.Mobile.Unity
             sourceModelDamage.Enable();
             Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
             Combat.ConfigureSourceModelPlayerGold(() => SharedEconomy.Wallet.Balance("gold"));
+            Combat.ConfigureSourceModelAccumulatedClearCount(() => AccumulatedClearCount);
             Combat.ConfigureSourceModelFusionNativeReceipts(
                 id => SharedEconomy.Wallet.Balance(id));
             if (originalEquippedItemWitness != null || originalEquippedInventoryWitness != null)
@@ -3124,6 +3174,7 @@ namespace Ordr.Mobile.Unity
             if (Combat == null) return;
             if (Combat.Game.Phase != Ordr.Mobile.Core.SessionPhase.Running)
             {
+                RecordFullGameClearOnce();
                 PersonalMissions?.OnGameFinished();
                 UnitDecompositions?.Advance(0); // Cancel source casts after game end.
                 return;
@@ -3169,6 +3220,9 @@ namespace Ordr.Mobile.Unity
                 Debug.LogException(ex);
                 return;
             }
+            // The last enemy can die during Advance itself. Record once at
+            // the transition, before the result panel is next rendered.
+            RecordFullGameClearOnce();
             if (observedMonsterPositions != null && Combat.PendingSimulationSeconds == 0)
             {
                 try { observedMonsterPositions.ApplyAtCurrentCombatTime(Combat); }

@@ -190,6 +190,8 @@ namespace Ordr.Mobile.Combat
                 else
                     ApplySourceModelNextThirtySkill(actor, primary, skill, targets,
                         activatedThisAttack);
+                if (skill.Id == "E-09:skill:4")
+                    TrySourceModelUtaGoldSongFollowup(actor, primary, skill);
                 activatedThisAttack.Add(skill.Name);
             }
             // ItemUpgrade is a separately observed passive level, never an

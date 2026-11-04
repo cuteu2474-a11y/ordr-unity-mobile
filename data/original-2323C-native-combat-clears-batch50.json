@@ -1,0 +1,32 @@
+{
+  "batch": 50,
+  "date": "2026-11-04",
+  "source": "Local original S2 2.323[C] war3map.j, B8L/B8S/B8V/B68/B7E/B6s and CEN/CEP; original source is not committed",
+  "fullGameClearCounter": {
+    "storage": "Unity PlayerPrefs: ordr.nightmare-isekai.full-clears.v1",
+    "incrementOn": "65-wave victory with no remaining spawns, no living enemies and the final boss defeated",
+    "neverIncrementOn": ["10-round win", "20-round win", "story building destroyed", "mission finished", "loss", "result panel redraw"],
+    "idempotence": "One controller session can commit at most once, even across Update calls",
+    "consumers": ["Start/result UI: 누적 클리어 N회", "Lucci TR-07 proc and Shigan damage scaling, existing 300-clear skill cap"],
+    "scope": "Persistent on this game installation; no account or cross-device synchronization"
+  },
+  "tesoro": {
+    "actor": "E-11/h06A",
+    "trigger": "B8V attack declared while B07O frost armor is absent",
+    "preexisting": "A11L self frost armor +1.5 status",
+    "added": "B8S 0.45-second scheduled gold-dependent area packet through shared HP/armor/death pipeline",
+    "gold": "Read wallet once, do not consume; B8L=min(gold,250000)^2/250000",
+    "branch12": "425 radius, normal 400000 x [1,1.5], siege gold power x .79 x 1.5, missing-HP siege and primary +18% max HP x .79",
+    "branch0": "325 radius if native user-data counter reaches 3, normal 160000 x [1,1.5], siege gold power x .79 x 1.5 and primary +14% max HP x .79",
+    "limitations": "Target JD ability levels not supplied, so zero-level .79 assumed; Bcb random multiplier and universal mitigation not native-exact; incoming ally damage not modeled"
+  },
+  "uta": {
+    "actor": "E-09",
+    "existing": "B7E 4% three-hit path has a modeled 25% B6s/h04O soldier",
+    "added": "B68 10% line/boss-hit path follows success with separate 25% B6s/h04O summon roll",
+    "wiring": "Reuse 7-second h04O independent attacks, source groups, expiry and soldier count",
+    "limitations": "B6x/B61 independent creation path and native animation/timing unmodeled"
+  },
+  "unchanged": ["Nightmare/Isekai fixed game rules", "240/266 source-enabled CWR fusions", "AI00/AI01/AI02 read-only fusion item shells without effects", "No user-facing online/offline mode labels"],
+  "notVerified": ["Unity compilation, Python/Editor tests or Android/APK execution require explicit user request", "S-Shark CEN/CEP PointValue and Ji ally filter", "Full source JD/damage parity and Roger cooldown persistence", "Server/account leaderboards"]
+}
