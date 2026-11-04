@@ -20,7 +20,8 @@ def supported(skill, unit_id=None):
     # Source-model composite batches are independently validated with exact
     # owner/index/effect-field schema in their own tests.
     if (unit_id, skill.get('name')) in {
-        ('I-04', '광역 혼합 피해'), ('H-04', '거대 숲 물리'),
+        ('I-04', '광역 혼합 피해'), ('I-04', '범위 참격'),
+        ('H-04', '거대 숲 물리'),
         ('TR-10', '마나 광역 공격'), ('L-25', '미티어 울두건'),
         ('L-25', '울두건'), ('L-20', '화이트바인'),
         ('TR-04', '멀티샷 추가 피해'),
@@ -155,9 +156,22 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
                     active += 1
                 else:
                     attacks += 1
-        self.assertEqual(41, attacks)
+        self.assertEqual(43, attacks,
+                         'Two conditional/form attack packets were added after the original count')
         self.assertEqual(15, active,
                          'Batch 24 adds Rayleigh and Smoker complete actives')
+
+    def test_roger_area_slash_requires_the_source_composite_shape(self):
+        skill = next(s for s in self.profiles['I-04']['skills']
+                     if s['name'] == '범위 참격')
+        self.assertEqual(['physical', 'physicalBonusPercent', 'movementSlow'],
+                         [part['type'] for part in skill['components']])
+        self.assertTrue(supported(skill, 'I-04'))
+        catalog = SOURCE.read_text()
+        self.assertIn('case "I-04:skill:1": return skill.Name == "범위 참격";', catalog)
+        self.assertIn('"physicalBonusPercent|percent,scope", '
+                      '"movementSlow|percent,durationSeconds,scope"', catalog)
+        self.assertIn('ValidateExplicitCompositeShape(skill, fields)', catalog)
 
     def test_later_three_owners_require_specialized_exact_packet_gates(self):
         catalog = SOURCE.read_text()
