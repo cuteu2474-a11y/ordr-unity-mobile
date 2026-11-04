@@ -8,6 +8,7 @@ namespace Ordr.Mobile.Mobile
     // A special condition is executable ONLY when its original ability,
     // kind, rawcode and exact count match this allowlist. This is not an
     // free item inventory or unknown transformation-count simulator.
+    // Batch 43 adds only source-receipted ITEM AI01/AI02 wallet debits.
     public sealed class Original323FusionSpecialWalletCost
     {
         public string ResourceId { get; }
@@ -74,11 +75,14 @@ namespace Ordr.Mobile.Mobile
             foreach (var instruction in recipe.OrderedConditions)
             {
                 string resource, label;
-                if (TryResolve(ability, instruction, out resource, out label))
+                if (TryResolve(ability, instruction, out resource, out label) ||
+                    Original323FusionSourceItemLedger.TryResolve(
+                        ability, instruction, out resource, out label))
                     costs.Add(new Original323FusionSpecialWalletCost(resource, label,
                         instruction.Count));
-                else if (instruction.Kind == "SKPT" || instruction.Kind == "GREN")
-                    throw new FormatException("원본 특수 소비 비용 미승인: " + ability);
+                else if (instruction.Kind == "SKPT" || instruction.Kind == "GREN" ||
+                         instruction.Kind == "ITEM")
+                    throw new FormatException("원본 특수·아이템 소비 비용 미승인: " + ability);
             }
             return costs.Count == 0 ? null : costs.AsReadOnly();
         }

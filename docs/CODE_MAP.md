@@ -1,3 +1,10 @@
+## 2026-11-04 · 43차 CWR ITEM 재고 증명·거래 엔진 (실행 검사 전)
+
+- `Assets/Scripts/Mobile/Original323FusionSourceItemLedger.cs`: A011/AI02·ET02/AI01 원본 ITEM 정확 승인, `source:item:AI02`/`source:item:AI01` 지갑 식별·보유 조건, `IOriginal323FusionItemReceiptWitness`가 실제 플레이어 획득을 증명하는 고유 지급 영수증/저장/중복 지급 방지. **라이브 지급 생산자는 아직 없음**.
+- `Assets/Scripts/Mobile/Original323FusionSpecialWalletCosts.cs`+ `Original323CommonFusionPort.cs`: 유닛/골드/목재와 ITEM을 기존 원자 거래로 차감·롤백. 마르코 2 UNIT+AI02+5000G+5W, 니카 H08T(두 루피 실제 형태 중 1)+UNIT 3+AI01+5W. 미리보기 잔액·부족 메시지, 직전 상태 재검사.
+- `Assets/Tests/EditMode/Original323OwnedMaterialFusionTests.cs`: 2종 비용·H08T 그룹·실물 부족/오래된 아이템 미리보기·중복 영수증·저장 복원·다른 조합 비회귀 테스트를 **작성만**, 미실행.
+- [원본 근거·미연결35건](../data/original-2323C-source-item-fusions-batch43.json). 원본 아이템 획득 경로를 연결하기 전까지 코드 실행 허가 231/266과 실제 플레이 도달 가능 건수는 다릅니다.
+
 ## 2026-11-04 · 42차 CHCT/IFCT 횟수 공유 지갑 연동 (실행 검사 전)
 
 - `Assets/Scripts/Mobile/Original323FusionCountLedger.cs` — CWR 화이트리스트 변화 A0K2/A0K3/A0K4/A0K6/A0K7(원본 CHCT×1), 왜곡 IF01~IF06(원본 IFCT×3)의 정확한 조건을 승인합니다. `fusion:change-created`와 `fusion:distorted-created`는 **누적 성공 조합 수**를 보존하며, 미리보기 조건 평가와 원자 지갑 지급(+1)에 동일한 장부를 사용합니다.

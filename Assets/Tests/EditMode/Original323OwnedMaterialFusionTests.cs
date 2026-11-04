@@ -63,7 +63,10 @@ namespace Ordr.Mobile.Tests
             foreach (var material in recipe.RequiredUnitRawcodes())
             {
                 string catalogId;
-                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out catalogId), ability);
+                if (material.Key == "H08T" && ability == "ET02")
+                    catalogId = "TR-08"; // exact CHy/BH0 Luffy group member
+                else
+                    Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out catalogId), ability);
                 for (int i = 0; i < material.Value; i++)
                     originalIds.Add(game.Combat.SpawnCharacter(catalogId, 100, 200));
             }
@@ -76,6 +79,10 @@ namespace Ordr.Mobile.Tests
             if (wood > 0) funds.Add("wood", wood);
             if (traits > 0) funds.Add(OriginalMissionWalletRewards.TraitPointsId, traits);
             if (greenBlood > 0) funds.Add(Original323StoryMobileProgression.GreenBloodUseResourceId, greenBlood);
+            foreach (var item in recipe.OrderedConditions.Where(c => c.Kind == "ITEM"))
+                funds.Add(Original323FusionSourceItemLedger.WalletId(item.Rawcode), item.Count);
+            // Only this isolated fixture may inject verified source inventory.
+            // The live game requires TryRecordOriginalItemPickup and a witness.
             game.Economy.Wallet.Grant(funds);
             var offer = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
                 .Single(r => r.RecipeId == ability);
@@ -101,6 +108,9 @@ namespace Ordr.Mobile.Tests
                 game.Economy.Wallet.Balance(Original323FusionCountLedger.ChangeUseId));
             Assert.AreEqual(recipe.OrderedConditions.Any(x => x.Kind == "IFCT") ? 1 : 0,
                 game.Economy.Wallet.Balance(Original323FusionCountLedger.ImmortalUseId));
+            foreach (var item in recipe.OrderedConditions.Where(c => c.Kind == "ITEM"))
+                Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                    Original323FusionSourceItemLedger.WalletId(item.Rawcode)));
             Assert.AreEqual(ManualActionState.Rejected,
                 game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State);
             Assert.AreEqual(1, game.Combat.CharacterCount);
@@ -164,7 +174,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(abilities.Length, abilities.Distinct(StringComparer.Ordinal).Count());
             Assert.AreEqual(4, game.Fusion.ExecutableMobileOutcomeLegendaryCount);
             Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeHiddenCount);
-            Assert.AreEqual(16, game.Fusion.ExecutableMobileOutcomeUpperTierCount); // + 41차 알비다 SKPT4
+            Assert.AreEqual(18, game.Fusion.ExecutableMobileOutcomeUpperTierCount); // + 41차 알비다, 43차 ITEM 2
             foreach (var ability in abilities)
             {
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
@@ -208,7 +218,7 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             var aOsf = new[] { "A19Z", "A1A1", "A1A0" };
             Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeAOsfCount);
-            Assert.AreEqual(229, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(231, game.Fusion.ExecutableRecipeCount);
             foreach (var ability in aOsf)
             {
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
@@ -573,6 +583,121 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
         }
 
+        private sealed class SourceItemWitness : IOriginal323FusionItemReceiptWitness
+        {
+            public bool Approved;
+            public bool TryConfirmPlayerItemReceipt(string receiptId,
+                string originalItemRawcode, int awardedCount, out string nativeEvidence)
+            {
+                nativeEvidence = "original-2323C-native-item-event";
+                return Approved && receiptId == "verified-pickup" &&
+                    (originalItemRawcode == "AI01" || originalItemRawcode == "AI02") &&
+                    awardedCount == 1;
+            }
+        }
+
+        [Test]
+        public void Batch43MarcoAndNikaAreItemGatedAndNoItemIsGrantedAtStart()
+        {
+            var game = Create();
+            Assert.AreEqual(2, game.Fusion.ExecutableMobileSourceItemRecipeCount);
+            foreach (var entry in new[] { new { Ability = "A011", Raw = "AI02" },
+                                          new { Ability = "ET02", Raw = "AI01" } })
+            {
+                Assert.IsTrue(game.Fusion.CanCommitRecipe(entry.Ability), entry.Ability);
+                var item = game.Registry.FindByAbility(entry.Ability).OrderedConditions
+                    .Single(x => x.Kind == "ITEM");
+                Assert.AreEqual(entry.Raw, item.Rawcode);
+                Assert.AreEqual(1, item.Count);
+                Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                    Original323FusionSourceItemLedger.WalletId(entry.Raw)));
+                var preview = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                    .Single(x => x.RecipeId == entry.Ability);
+                Assert.IsFalse(preview.IsReady);
+                StringAssert.Contains("원본 아이템", preview.OriginalMaterialsAndCost);
+            }
+        }
+
+        [Test]
+        public void Batch43ItemReceiptRequiresWitnessAndCannotBeReplayedAfterSaveRestore()
+        {
+            var game = Create();
+            var witness = new SourceItemWitness();
+            Assert.IsFalse(game.Fusion.TryRecordOriginalItemPickup(
+                witness, "verified-pickup", "AI01", 1));
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                Original323FusionSourceItemLedger.WalletId("AI01")));
+            witness.Approved = true;
+            Assert.IsTrue(game.Fusion.TryRecordOriginalItemPickup(
+                witness, "verified-pickup", "AI01", 1));
+            Assert.IsFalse(game.Fusion.TryRecordOriginalItemPickup(
+                witness, "verified-pickup", "AI01", 1));
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(
+                Original323FusionSourceItemLedger.WalletId("AI01")));
+            var saved = game.Economy.Wallet.CaptureState();
+            var restored = new EconomyWallet();
+            restored.RestoreState(saved);
+            Assert.IsFalse(Original323FusionSourceItemLedger.TryRecordSourcePickup(
+                restored, witness, "verified-pickup", "AI01", 1));
+            Assert.AreEqual(1, restored.Balance(
+                Original323FusionSourceItemLedger.WalletId("AI01")));
+        }
+
+        [Test]
+        public void Batch43MissingItemRejectsMarcoWithGoldWoodAndUnitsUnchanged()
+        {
+            var game = Create();
+            var recipe = game.Registry.FindByAbility("A011");
+            foreach (var material in recipe.RequiredUnitRawcodes())
+            {
+                string id;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id));
+                game.Combat.SpawnCharacter(id, 5, 10);
+            }
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("gold", 5000).Add("wood", 5));
+            var before = game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray();
+            var offer = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "A011");
+            Assert.IsFalse(offer.IsReady);
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("A011", offer.SuggestedMaterialInstances).State);
+            CollectionAssert.AreEquivalent(before,
+                game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray());
+            Assert.AreEqual(5060, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(5, game.Economy.Wallet.Balance("wood"));
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                Original323FusionSourceItemLedger.WalletId("AI02")));
+        }
+
+        [Test]
+        public void Batch43SpentItemAfterPreviewCannotConsumeNikaMaterialsOrWood()
+        {
+            var game = Create();
+            var recipe = game.Registry.FindByAbility("ET02");
+            foreach (var material in recipe.RequiredUnitRawcodes())
+            {
+                string id;
+                if (material.Key == "H08T") id = "TR-14";
+                else Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id));
+                for (int i = 0; i < material.Value; i++)
+                    game.Combat.SpawnCharacter(id, 4, 8);
+            }
+            string itemId = Original323FusionSourceItemLedger.WalletId("AI01");
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", 5).Add(itemId, 1));
+            var offer = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "ET02");
+            Assert.IsTrue(offer.IsReady, string.Join("; ", offer.MissingMaterials));
+            Assert.IsTrue(game.Economy.Wallet.TryExchange(
+                new ResourceBundle().Add(itemId, 1), new ResourceBundle()));
+            var before = game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray();
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("ET02", offer.SuggestedMaterialInstances).State);
+            CollectionAssert.AreEquivalent(before,
+                game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray());
+            Assert.AreEqual(5, game.Economy.Wallet.Balance("wood"));
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(itemId));
+        }
+
         [TestCase("TR-08")]
         [TestCase("TR-14")]
         public void LuffyMaterialBucketAcceptsEitherRealFormWithoutChangingResultIdentity(string id)
@@ -590,12 +715,12 @@ namespace Ordr.Mobile.Tests
             CollectionAssert.AreEqual(new[] { actor }, ready.MaterialBindings.Single(m => m.Rawcode == "H08T").InstanceIds);
             string resolved;
             Assert.IsFalse(game.Fusion.TryResolveUnit("H08T", out resolved));
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("ET02"), "The original ITEM gate is still required.");
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("ET02"), "The source ITEM gate must remain payable, not free.");
             Assert.AreEqual(1, game.Combat.CharacterCount);
             var preview = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot()).Single(r => r.RecipeId == "ET02");
             Assert.IsFalse(preview.IsReady);
             Assert.IsFalse(preview.MissingMaterials.Any(m => m.Contains("H08T")),
-                "A source-backed owned material group is resolved even while ITEM/creation effects stay locked.");
+                "A source-backed owned material group is resolved even while the item is missing.");
         }
         [Test]
         public void BothLuffyFormsDoNotSatisfyOrConsumeTheSameOneUnitBucketTwice()

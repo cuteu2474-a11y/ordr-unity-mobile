@@ -279,6 +279,10 @@ namespace Ordr.Mobile.Mobile
         // in the SAME atomic source-material wallet transaction.
         private static readonly string[,] MobileOutcomeUpperTiers = {
             { "A18P", "h08Q", "LI-06" }, // 알비다, SKPT 4, gold 5000/wood 5
+            // Batch 43: exact ITEM:AI02/AI01 checked against witnessed item
+            // receipts in the shared wallet; no synthetic item allocation.
+            { "A011", "h08O", "LI-03" }, // 마르코, ITEM AI02
+            { "ET02", "H0BK", "E-01" }, // 니카, ITEM AI01, H08T real Luffy form bucket
             { "A0S0", "h07I", "LI-08" }, // 카타쿠리, gold 30000/wood 5
             { "A0UH", "h084", "LI-04" }, // 시노부, gold 5000/wood 5
             { "A1A5", "h05E", "LI-07" }, // 에넬, gold 5000/wood 5
@@ -364,6 +368,13 @@ namespace Ordr.Mobile.Mobile
             MobileOutcomeTranscend.GetLength(0) + MobileOutcomeUpperTiers.GetLength(0);
         public int ExecutableMobileOutcomeTranscendCount => MobileOutcomeTranscend.GetLength(0);
         public int ExecutableMobileOutcomeUpperTierCount => MobileOutcomeUpperTiers.GetLength(0);
+        public int ExecutableMobileSourceItemRecipeCount => 2;
+        public bool TryRecordOriginalItemPickup(IOriginal323FusionItemReceiptWitness witness,
+            string receiptId, string originalItemRawcode, int count)
+        {
+            return Original323FusionSourceItemLedger.TryRecordSourcePickup(
+                economy.Wallet, witness, receiptId, originalItemRawcode, count);
+        }
         public int ExecutableMobileGreenBloodSeraphimCount => MobileOutcomeGreenBloodSeraphim.GetLength(0);
         public int ExecutableMobileOutcomeChangesCount => MobileOutcomeChanges.GetLength(0);
         public int ExecutableMobileOutcomeDistortedCount => MobileOutcomeDistorted.GetLength(0);
@@ -600,7 +611,7 @@ namespace Ordr.Mobile.Mobile
                     recipe.Results[0].Kind != "UNIT" || recipe.Results[0].Count != 1 ||
                     recipe.Results[0].Rawcode != result)
                     throw new FormatException("검수된 상위 조합 결과가 바뀌었습니다: " + ability);
-                bool materials = false, wood = false, banned = false, king = false, caster = false, greenBlood = false, specialCounter = false;
+                bool materials = false, wood = false, banned = false, king = false, caster = false, greenBlood = false, specialCounter = false, sourceItem = false, luffyGroup = false;
                 string seraphimMaterial = null;
                 int materialCount = 0;
                 int mysticGold = 0, mysticWood = 0, physicalTokens = 0, mysticPicks = 0;
@@ -616,6 +627,7 @@ namespace Ordr.Mobile.Mobile
                         condition.Kind != "WOOD" &&
                         !Original323FusionSpecialWalletCosts.IsApproved(ability, condition) &&
                         !Original323FusionCountLedger.IsApproved(ability, condition) &&
+                        !Original323FusionSourceItemLedger.IsApproved(ability, condition) &&
                         !(ability == "A1A6" && condition.Kind == "RMAX" &&
                           condition.Rawcode == "h05G" && condition.Count == 40))
                         throw new FormatException("모바일 결과 조합의 미승인 추가 조건: " +
@@ -642,6 +654,22 @@ namespace Ordr.Mobile.Mobile
                                 mysticMaterialOrder.Add(condition.Rawcode + ":" + condition.Count);
                                 if (condition.Rawcode == Original323SourceMaterialRewardWorld.TokenRawcode)
                                     physicalTokens = checked(physicalTokens + condition.Count);
+                            }
+                            // Source CHy/BH0 group: either of the two genuine
+                            // Luffy forms satisfies ET02's one H08T slot.
+                            // This is NOT another new actor/rawcode alias.
+                            if (ability == "ET02" && condition.Rawcode == "H08T" &&
+                                condition.Count == 1 && !luffyGroup)
+                            {
+                                var realGroup = new Original323FusionMaterialGroups(objects);
+                                IReadOnlyList<string> luffys;
+                                if (!realGroup.TryGetMaterialGroup("H08T", out luffys) ||
+                                    luffys.Count != 2)
+                                    throw new FormatException("원본 루피 형태 재료 분류 불일치");
+                                luffyGroup = true;
+                                materials = true;
+                                materialCount = checked(materialCount + 1);
+                                break;
                             }
                             if (condition.Count < 1 || !mappings.TryGetValue(condition.Rawcode, out materialId))
                                 throw new FormatException("상위 조합의 원본 재료 객체가 없습니다: " + ability);
@@ -679,6 +707,12 @@ namespace Ordr.Mobile.Mobile
                             if (!Original323FusionSpecialWalletCosts.IsApproved(ability, condition))
                                 throw new FormatException("원본 특성 포인트 소비 조건 불일치: " + ability);
                             if (condition.Kind == "GREN") greenBlood = true;
+                            break;
+                        case "ITEM":
+                            if (sourceItem ||
+                                !Original323FusionSourceItemLedger.IsApproved(ability, condition))
+                                throw new FormatException("원본 아이템 조합 비용 불일치: " + ability);
+                            sourceItem = true;
                             break;
                         case "CHCT":
                         case "IFCT":
@@ -729,6 +763,21 @@ namespace Ordr.Mobile.Mobile
                         transformation.ReplacementRawcode != result ||
                         transformation.ExecuteOriginalCENAfterTransformation)
                         throw new FormatException("세라핌 원본 그린블러드 교체 조건 불일치: " + ability);
+                }
+                else if (sourceItem)
+                {
+                    // A011 costs AI02+UNIT2+gold5000+wood5 with UBAN/KING.
+                    // ET02 costs AI01+H08T(Luffy form)+UNIT3+wood5 and
+                    // has NO UBAN/KING in the original CWR registration.
+                    if (!materials || specialCounter || greenBlood || !wood ||
+                        outcomeWood != 5 || materialCount != (ability == "ET02" ? 4 : 2) ||
+                        (ability == "A011" &&
+                            (grade != "제한됨" || !banned || !king ||
+                             luffyGroup || outcomeGold != 5000)) ||
+                        (ability == "ET02" &&
+                            (grade != "영원한" || banned || king || !luffyGroup ||
+                             outcomeGold != 0)))
+                        throw new FormatException("원본 ITEM 조합 재료·비용 불일치: " + ability);
                 }
                 else if (grade == "변화" || grade == "왜곡됨")
                 {
@@ -819,6 +868,9 @@ namespace Ordr.Mobile.Mobile
                     instruction.Count + ", 보유 " + available + ")";
                 return enough;
             }
+            if (instruction.Kind == "ITEM")
+                return Original323FusionSourceItemLedger.CanSpend(
+                    economy.Wallet, ability, instruction, out reason);
             if (instruction.Kind == "CHCT" || instruction.Kind == "IFCT")
                 return Original323FusionCountLedger.CanCreate(
                     economy.Wallet, ability, instruction, out reason);
@@ -861,6 +913,10 @@ namespace Ordr.Mobile.Mobile
                             offer.RecipeId, condition, out walletId, out label))
                             costs.Add(label + " " + economy.Wallet.Balance(walletId) +
                                 "/" + condition.Count + " 사용");
+                        if (Original323FusionSourceItemLedger.TryResolve(
+                            offer.RecipeId, condition, out walletId, out label))
+                            costs.Add(label + " " + condition.Count +
+                                " (보유 " + economy.Wallet.Balance(walletId) + ")");
                     }
                 result.Add(new MobileFusionPreview(offer.RecipeId, ready.ResultName + " · " + resultGrades[offer.RecipeId] +
                     (IsMobileOutcomeOnly(offer.RecipeId) ? " · 모바일 제작" : ""),
@@ -895,10 +951,11 @@ namespace Ordr.Mobile.Mobile
                 foreach (long id in ready.SuggestedMaterialIds)
                     if (!exact.Remove(id)) return Reject("확인한 재료와 현재 재료가 다릅니다.");
                 double resultX = HiddenResultX, resultY = HiddenResultY;
-                if (resultGrades[ability] == "세라핌" || resultGrades[ability] == "변화")
+                if (resultGrades[ability] == "세라핌" || resultGrades[ability] == "변화" || ability == "A011")
                 {
-                    // Green Blood and Change both replace their single exact
-                    // owned target actor at its current battlefield position.
+                    // Green Blood and Change replace the exact target actor; the
+                    // ITEM Marco mobile outcome uses its first material's
+                    // existing position (native cast policy remains unverified).
                     var greenBloodTarget = new HashSet<long>(ready.SuggestedMaterialIds);
                     foreach (var row in owned)
                         if (greenBloodTarget.Contains(row.InstanceId))
