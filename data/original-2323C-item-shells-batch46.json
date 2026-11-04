@@ -1,0 +1,20 @@
+{
+  "batch": 46,
+  "date": "2026-11-04",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "itemShells": [
+    { "rawcode": "AI00", "currentFusionUse": "ET07 Uta ingredient", "createdBy": "ET02 Nika / B7w", "nativeUseEffect": "deferred" },
+    { "rawcode": "AI01", "currentFusionUse": "ET02 Nika ingredient", "createdBy": "ET07 Uta / B7W", "nativeUseEffect": "deferred" },
+    { "rawcode": "AI02", "currentFusionUse": "A011 Marco ingredient", "createdBy": "A011 Marco / Bwm", "nativeUseEffect": "deferred" }
+  ],
+  "presentation": "Unit tab, read-only count and craft role; no use button or invented icons",
+  "storage": "Existing source:item:AI00, AI01, AI02 EconomyWallet values; live fusion payment and generated item receipts share those same counts",
+  "acquisition": "No automatic item grants at game start. Native fused-unit item awards from batch45 remain, independent external item pickups require a validated receipt witness.",
+  "future": [
+    "Original item object name and portrait/icon assets",
+    "Original use or equip effect, slot ownership and duration",
+    "Verified world item pickup and drop producers",
+    "Inventory slots and unit-specific attachment if the original requires them"
+  ],
+  "verification": "Only code and NUnit cases written; no local Python/Unity/Android/APK run by user instruction."
+}

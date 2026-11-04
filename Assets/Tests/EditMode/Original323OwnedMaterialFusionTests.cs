@@ -733,6 +733,43 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void Batch46ThreeItemShellsShareActualFusionWalletWithoutDummyEffects()
+        {
+            var game = Create();
+            var shells = Original323FusionSourceItemLedger.ItemShells;
+            CollectionAssert.AreEqual(new[] { "AI00", "AI01", "AI02" },
+                shells.Select(x => x.Rawcode).ToArray());
+            foreach (var item in shells)
+            {
+                Assert.IsFalse(item.HasImplementedUseEffect, item.Rawcode);
+                Assert.IsNotEmpty(item.DisplayName);
+                Assert.IsNotEmpty(item.OriginalFusionUse);
+                Assert.AreEqual(0, Original323FusionSourceItemLedger.OwnedShellCount(
+                    game.Economy.Wallet, item.Rawcode));
+                Assert.AreSame(item,
+                    Original323FusionSourceItemLedger.FindShell(item.Rawcode));
+            }
+            Assert.IsNull(Original323FusionSourceItemLedger.FindShell("FAKE"));
+            Assert.AreEqual(0, Original323FusionSourceItemLedger.OwnedShellCount(
+                game.Economy.Wallet, "FAKE"));
+            var wallet = game.Economy.Wallet;
+            wallet.Grant(new ResourceBundle()
+                .Add(Original323FusionSourceItemLedger.WalletId("AI00"), 2));
+            Assert.AreEqual(2, Original323FusionSourceItemLedger.OwnedShellCount(
+                wallet, "AI00"));
+            var saved = wallet.CaptureState();
+            var restored = new EconomyWallet();
+            restored.RestoreState(saved);
+            Assert.AreEqual(2, Original323FusionSourceItemLedger.OwnedShellCount(
+                restored, "AI00"));
+            Assert.IsTrue(restored.TryExchange(new ResourceBundle()
+                .Add(Original323FusionSourceItemLedger.WalletId("AI00"), 1),
+                new ResourceBundle()));
+            Assert.AreEqual(1, Original323FusionSourceItemLedger.OwnedShellCount(
+                restored, "AI00"));
+        }
+
+        [Test]
         public void Batch43ItemReceiptRequiresWitnessAndCannotBeReplayedAfterSaveRestore()
         {
             var game = Create();

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Ordr.Mobile.Combat;
 using Ordr.Mobile.Core;
 
@@ -18,18 +19,56 @@ namespace Ordr.Mobile.Mobile
             int awardedCount, out string nativeEvidence);
     }
 
+    // Temporary inventory presentation only. It does not grant an item,
+    // define a usable spell, alter combat stats, or invent a loot producer.
+    // Actual source item object effects can replace these shells later.
+    public sealed class Original323FusionItemShell
+    {
+        public string Rawcode { get; }
+        public string DisplayName { get; }
+        public string OriginalFusionUse { get; }
+        public bool HasImplementedUseEffect => false;
+
+        internal Original323FusionItemShell(string rawcode, string use)
+        {
+            Rawcode = rawcode;
+            DisplayName = "원본 아이템 " + rawcode;
+            OriginalFusionUse = use;
+        }
+    }
+
     public static class Original323FusionSourceItemLedger
     {
         public const string MarcoItemRawcode = "AI02";
         public const string NikaItemRawcode = "AI01";
         public const string UtaItemRawcode = "AI00";
         public const string ItemWalletPrefix = "source:item:";
+        private static readonly IReadOnlyList<Original323FusionItemShell> itemShells =
+            Array.AsReadOnly(new[] {
+                new Original323FusionItemShell(UtaItemRawcode, "우타(영원) 조합 재료"),
+                new Original323FusionItemShell(NikaItemRawcode, "니카(영원) 조합 재료"),
+                new Original323FusionItemShell(MarcoItemRawcode, "마르코(제한) 조합 재료")
+            });
+
+        public static IReadOnlyList<Original323FusionItemShell> ItemShells => itemShells;
+
+        public static Original323FusionItemShell FindShell(string originalItemRawcode)
+        {
+            foreach (var item in itemShells)
+                if (item.Rawcode == originalItemRawcode) return item;
+            return null;
+        }
+
+        public static long OwnedShellCount(EconomyWallet wallet, string originalItemRawcode)
+        {
+            if (wallet == null) throw new ArgumentNullException(nameof(wallet));
+            if (FindShell(originalItemRawcode) == null) return 0;
+            return wallet.Balance(WalletId(originalItemRawcode));
+        }
 
         public static string WalletId(string originalItemRawcode)
         {
-            if (originalItemRawcode != MarcoItemRawcode &&
-                originalItemRawcode != NikaItemRawcode &&
-                originalItemRawcode != UtaItemRawcode)
+            if (FindShell(originalItemRawcode) == null)
                 throw new ArgumentException("원본 조합에 등록되지 않은 아이템", nameof(originalItemRawcode));
             return ItemWalletPrefix + originalItemRawcode;
         }
@@ -88,9 +127,7 @@ namespace Ordr.Mobile.Mobile
             if (wallet == null) throw new ArgumentNullException(nameof(wallet));
             if (witness == null || string.IsNullOrWhiteSpace(receiptId) ||
                 receiptId.Length > 160 || count <= 0 || count > 100 ||
-                (originalItemRawcode != MarcoItemRawcode &&
-                 originalItemRawcode != NikaItemRawcode &&
-                 originalItemRawcode != UtaItemRawcode)) return false;
+                FindShell(originalItemRawcode) == null) return false;
             string receipt = "original323:item-pickup:" + receiptId;
             if (wallet.HasCompletedTransaction(receipt)) return false;
             string evidence;

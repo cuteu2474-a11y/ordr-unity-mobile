@@ -1,3 +1,9 @@
+## 2026-11-04 · 46차 원본 조합 아이템 빈껍질 (검증 전)
+
+- `Original323FusionSourceItemLedger.cs`: `Original323FusionItemShell`(원본 rawcode·표시명·조합 역할·사용 효과 미구현), 읽기 전용 `ItemShells`, `FindShell`, `OwnedShellCount`를 공통 원장에 추가. `WalletId`와 외부 영수증 입력은 같은 허가표로 검사합니다. 기존 원자 조합 결제/보상, 저장 복원을 변경하지 않았습니다.
+- `OrdrMobileTouchPanel.DrawOriginalFusionItemShells()`: 유닛 탭의 행운의 토큰 아래에 AI00·AI01·AI02의 **보유 개수와 조합 용도만** 표시. 사용/장착 버튼은 만들지 않습니다. `Original323OwnedMaterialFusionTests.Batch46ThreeItemShellsShareActualFusionWalletWithoutDummyEffects`는 저장·복원/소비 연결 확인 사례(작성만, 실행 전).
+- 이후 작업: 원본 아이템 별 이미지, 실제 획득 이벤트, 장착/소모 효과·원본 슬롯이 확인될 때 빈껍질을 대체. [46차 자료](../data/original-2323C-item-shells-batch46.json).
+
 ## 2026-11-04 · 45차 원본 후속 함수 기록·원자 제작 구조 (실행 검사 전)
 
 - `Original323CommonFusionPort.cs`: `MobileOutcomeUpperTiers`에 A007/IM01/IM04/ET04/ET07/ET12, `MobileOutcomeGreenBloodSeraphim`에 SPH3 추가. 기존 정확 원본 UNIT/골드/목재/ITEM/GREN 조건 확인 → 결과 유닛 swap → **결제와 후속 영속 기록을 동일 TryExchange** → swap.Commit 순서입니다. 예외 시 지갑과 생성 결과를 함께 복구합니다.

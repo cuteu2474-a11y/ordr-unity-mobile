@@ -993,6 +993,7 @@ namespace Ordr.Mobile.Unity
             }
             DrawStartingEvolutionSelection();
             DrawLuckyTokenManagement();
+            DrawOriginalFusionItemShells();
             if (detail != null)
             {
                 GUILayout.BeginVertical(GUI.skin.box);
@@ -1099,6 +1100,29 @@ namespace Ordr.Mobile.Unity
                 RunWispDirect("행운의 토큰 위습 교환",
                     () => controller.RequestLuckyTokenWispExchange());
             GUI.enabled = previouslyEnabled;
+            GUILayout.EndVertical();
+        }
+
+        // AI00/AI01/AI02 are deliberately non-interactive shells until
+        // the native item abilities and inventory-slot visuals are modeled.
+        // Their counts come from the SAME wallet consumed by CWR fusion.
+        private void DrawOriginalFusionItemShells()
+        {
+            if (controller.SharedEconomy == null) return;
+            var wallet = controller.SharedEconomy.Wallet;
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label("원본 조합 아이템", OrdrMobileUiTheme.Subheading);
+            GUILayout.Label("아이템 효과는 추후 구현 · 조합 재료/보유 수량만 연결",
+                OrdrMobileUiTheme.Explanation);
+            foreach (var item in Original323FusionSourceItemLedger.ItemShells)
+            {
+                long count = Original323FusionSourceItemLedger.OwnedShellCount(
+                    wallet, item.Rawcode);
+                OrdrMobileUiTheme.DrawStatusRow(item.DisplayName,
+                    count + "개", OrdrMobileUiTheme.Gold);
+                GUILayout.Label(item.OriginalFusionUse,
+                    OrdrMobileUiTheme.Explanation);
+            }
             GUILayout.EndVertical();
         }
 
