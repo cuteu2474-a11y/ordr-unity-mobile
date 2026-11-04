@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Ordr.Mobile.Combat;
 using Ordr.Mobile.Mobile;
 using Ordr.Mobile.Unity;
 using UnityEngine;
