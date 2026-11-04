@@ -43,6 +43,27 @@ jobs:
             exit 1
           fi
 
+      - name: Unity 테스트용 디스크 여유 확보
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Unity 테스트용 디스크 공간 확인
+        run: |
+          set -euo pipefail
+          df -h /
+          available_kb=$(df -Pk / | awk 'NR==2 {print $4}')
+          if [ "$available_kb" -lt 12582912 ]; then
+            echo "::error::Unity Docker 이미지 실행 전 여유 공간이 12GiB 미만입니다."
+            exit 1
+          fi
+
       - name: Unity 6 EditMode 테스트
         id: tests
         uses: game-ci/unity-test-runner@v4.3.2
