@@ -47,7 +47,7 @@ namespace Ordr.Mobile.Combat
             foreach (var row in attacks.All) byRawcode.Add(row.Rawcode, row);
             // Only explicit source-backed form/summon identities can join the
             // practice attacker path. Unlisted map objects stay ineligible.
-            foreach (string raw in new[] { "H0B6", "h0AD", "H0AB", "H0AE", "H0AM", "h06N", "h085", "h0A9", "h0C2", "H0BY", "h04O" })
+            foreach (string raw in new[] { "H0B6", "h0AD", "H0AB", "H0AE", "H0AM", "h06N", "h085", "h0A9", "h0C2", "H0BY", "h04O", "h0AF" })
             {
                 var attack = objects.FindMapObjectAttack(raw);
                 if (attack == null || !attack.BaseDamagePlus.HasValue ||
@@ -71,6 +71,38 @@ namespace Ordr.Mobile.Combat
         }
         internal OriginalMapObjectResources SourceObjectResources(string rawcode) =>
             objects.FindMapObjectResources(rawcode);
+
+        // Shared native self/ally bonuses may reach the basic resolver from
+        // several producers. Keep a narrow, source-and-type allowlist so an
+        // unknown status cannot turn a formerly verified practice attack into
+        // unbounded or mislabeled damage.
+        public static bool AllowsPracticeAttackerEffect(CombatEffect effect)
+        {
+            if (effect == null || string.IsNullOrEmpty(effect.SourceId)) return false;
+            string source = effect.SourceId;
+            return ((effect.Type == CombatEffectType.AttackPowerBuff ||
+                     effect.Type == CombatEffectType.AttackSpeedBuff) &&
+                    source.StartsWith("practice-aura:", StringComparison.Ordinal)) ||
+                (effect.Type == CombatEffectType.AttackSpeedBuff &&
+                 (source.StartsWith("practice-native:A08B:", StringComparison.Ordinal) ||
+                  source.StartsWith("practice-form:interval:", StringComparison.Ordinal) ||
+                  source.StartsWith("practice-tooltip:ryuma-speed:", StringComparison.Ordinal) ||
+                  source.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal) ||
+                  source.StartsWith("practice-tooltip:katakuri-max-speed:", StringComparison.Ordinal))) ||
+                (effect.Type == CombatEffectType.AttackPowerBuff &&
+                 (source.StartsWith("practice-form:power:", StringComparison.Ordinal) ||
+                  source.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal) ||
+                  source.StartsWith("practice-native:SPH3:A0N1:", StringComparison.Ordinal) ||
+                  source.StartsWith("practice-tooltip:armada:A0WQ:", StringComparison.Ordinal))) ||
+                // Defensive/position-only statuses are still passed in the
+                // attacker's full snapshot. They have no attack multiplier,
+                // but must not permanently disable ordinary attacks.
+                (effect.Type == CombatEffectType.ArmorBuff &&
+                 (source.StartsWith("practice-native:SPH3:A0N1:", StringComparison.Ordinal) ||
+                  source.StartsWith("practice-native:ET12:A11L:", StringComparison.Ordinal))) ||
+                (effect.Type == CombatEffectType.MovementSpeedBuff &&
+                 source.StartsWith("practice-native:R00R:A11B:", StringComparison.Ordinal));
+        }
         internal long RollSourceObjectAttackPower(string rawcode)
         {
             OriginalMapCommonNativeAttackEvidence evidence;
@@ -160,21 +192,7 @@ namespace Ordr.Mobile.Combat
                 !Ordr323OriginalDamageRules.TryReadArmorType(target.Defenses.WarcraftArmorType, out armor))
                 throw new NotSupportedException("출처가 있는 공격·적 방어 자료가 필요합니다.");
             foreach (var effect in request.AttackerEffects)
-                if (!((effect.Type == CombatEffectType.AttackPowerBuff ||
-                       effect.Type == CombatEffectType.AttackSpeedBuff) &&
-                      effect.SourceId.StartsWith("practice-aura:", StringComparison.Ordinal)) &&
-                    !(effect.Type == CombatEffectType.AttackSpeedBuff &&
-                      effect.SourceId.StartsWith("practice-native:A08B:", StringComparison.Ordinal)) &&
-                    !(effect.Type == CombatEffectType.AttackPowerBuff &&
-                      effect.SourceId.StartsWith("practice-form:power:", StringComparison.Ordinal)) &&
-                    !(effect.Type == CombatEffectType.AttackPowerBuff &&
-                      effect.SourceId.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal)) &&
-                    !(effect.Type == CombatEffectType.AttackSpeedBuff &&
-                      effect.SourceId.StartsWith("practice-form:interval:", StringComparison.Ordinal)) &&
-                    !(effect.Type == CombatEffectType.AttackSpeedBuff &&
-                      (effect.SourceId.StartsWith("practice-tooltip:ryuma-speed:", StringComparison.Ordinal) ||
-                       effect.SourceId.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal) ||
-                       effect.SourceId.StartsWith("practice-tooltip:katakuri-max-speed:", StringComparison.Ordinal))))
+                if (!AllowsPracticeAttackerEffect(effect))
                     throw new NotSupportedException("연습의 출처가 확인되지 않은 공격 효과입니다.");
             double rawDamage = attack.RollObjectBaseDamage(random) +
                 SourceModelTemporarySkillCatalog.FlatFormPower(request.AttackerEffects);

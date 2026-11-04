@@ -1,3 +1,10 @@
+## 2026-11-04 · 53차 공통 버프 필터·우타 폼/자원 연결
+
+- `SourceModelBasicCombatRules`/`SourceModelUnitEffects`: S-샤크·불릿 실제 기본 공격력 보정, 방어·이동속도 원본 상태 허용, h0AF 공격 객체 승인.
+- `CharacterCombatRuntime.SourceModelFusionNativeFollowups`/`SourceModelResources`/`SourceModelAttackSkills`/`CharacterCombatRuntime`: B7U HP/MP 이벤트, B61 체력 임계/50% 변신/3초 휴식·기존 병사 소환, 동일 actor/attack pipeline.
+- `Original323SourceDedicatedSkillPort`: B6n 특성포인트 4점 원자 소비, 유닛별 영수증·전용 버튼. `Original323UtaSharkBatch53Tests`: 출처별 방어·공격 타입 및 영수증 식별자 검사 작성만.
+- 미완: B6r 세부 피해·병사 후속 명령, 아군 피격 피해식, AI00/AI01/AI02 실제 사용. [근거](../data/original-2323C-uta-shark-batch53.json). CWR 240/266.
+
 ## 2026-11-04 · 52차 라인 폭발 증감 공통 장부
 
 - `Original323FusionNativeFollowupLedger.cs`: `TR05` 루치 +10%, `TR29` 코비 -10%의 조합 영수증. `SignedLineExplosionAdjustment`는 별도로 저장된 드래곤/루치/코비 수량에서 순 보정을 계산합니다. 코비 패널티를 음수 지갑 잔액으로 저장하지 않습니다.

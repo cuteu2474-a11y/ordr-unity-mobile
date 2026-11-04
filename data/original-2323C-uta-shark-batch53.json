@@ -1,0 +1,37 @@
+{
+  "batch": 53,
+  "date": "2026-11-04",
+  "status": "code-only; integration execution deferred by user",
+  "source": "original Warcraft III 2.323[C] war3map.j and pinned W3X SLK unit attack/resource rows",
+  "nativeJass": {
+    "utaAttack": "B7U: h067/h0AF attacks cost 1 HP while current HP > 10; B6t triggers +2 mana at base 25% or transformed 100% with UnitUserData cooldown",
+    "utaStage": "B7W -> B63 -> B61 -> B6y/B6x -> B6s; B61 starts after 0.5s, checks HP <=10, 50% metamorphosis if A0D2 level >=2, otherwise restores HP150 and sleeps three seconds",
+    "utaTrait": "B6n: four PLAYER_STATE_RESOURCE_FOOD_USED points upgrade A0D2 and A0D3 to level two; this port records a per-actor trait receipt",
+    "utaSummon": "B6s: h04O independent attacking song soldier; existing batch51 summon and seven-second lifetime reused",
+    "shark": "CEN/CEP A0N1: +55% attack power and +1.75 armor for 20.5 seconds, self and up to two eligible nearby allies"
+  },
+  "mappedObjects": {
+    "uta": "h067",
+    "utaTransformed": "h0AF",
+    "songSoldier": "h04O"
+  },
+  "implemented": [
+    "Allow h0AF form's original map attack object without changing E-09 catalog identity",
+    "Provision source HP/mana for B7U even without a separate auto-cast active",
+    "Attack-declared HP -1 and mana +2 with source chance and short gate; do not repeat other already-connected attack spells",
+    "After a manually started world-singer event, watch B61's HP threshold and either switch forms on unlocked 50% roll or pause ordinary attacks for three seconds; restore 150 HP",
+    "Four-point atomic durable trait unlock via shared wallet and mobile dedicated-skills UI",
+    "Whitelist native S-Shark offense plus its defensive status in basic-attack resolution; defensive status does not calculate allied incoming damage",
+    "Whitelist related Tezoro native armor and R00R research movement status in full attacker snapshot",
+    "Accept existing verified Bullet A0WQ attack buff source and apply its percentage in shared attack-power aggregation"
+  ],
+  "notYetSupported": [
+    "Original B61 600x0.02 visual/watch loop and metamorphosis/cast choreography: reduced to health-threshold observer",
+    "B6r's song-group attackonce orders, group-multiplied area packet and sound phases",
+    "S-Shark +1.75 armor reducing allied incoming damage (no ally-hit defense pipeline yet)",
+    "Original Warcraft native resource costs beyond pinned source-model ability pools",
+    "AI00/AI01/AI02 item independent use effects: intentionally retain existing owned-item shells",
+    "Real engine integration and Android APK: not executed by user instruction"
+  ],
+  "productionCoverage": "CWR 240/266 unchanged"
+}

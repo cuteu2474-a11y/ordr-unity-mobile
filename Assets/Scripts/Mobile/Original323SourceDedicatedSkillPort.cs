@@ -15,9 +15,13 @@ namespace Ordr.Mobile.Mobile
         public const string RogerUnlockResourcePrefix = "source:native-trait:A202:";
         public const string RogerUnlockActionPrefix = "source-native:roger:unlock:";
         public const string RogerCastActionPrefix = "source-native:roger:cast:";
+        public const string UtaUnlockResourcePrefix = "source:native-trait:A0D2:";
+        public const string UtaUnlockActionPrefix = "source-native:uta:unlock:";
         public static string UnlockResource(long id) => RogerUnlockResourcePrefix + id;
         public static string UnlockAction(long id) => RogerUnlockActionPrefix + id;
         public static string CastAction(long id) => RogerCastActionPrefix + id;
+        public static string UtaUnlockResource(long id) => UtaUnlockResourcePrefix + id;
+        public static string UtaUnlockAction(long id) => UtaUnlockActionPrefix + id;
     }
 
     public sealed class Original323SourceDedicatedSkillPort : IOriginalDedicatedSkillPort
@@ -64,6 +68,18 @@ namespace Ordr.Mobile.Mobile
                             "원본 B8Z / 특성포인트 4점 영구 소모 · 유닛당 1회",
                             true, combat.Game.Phase == SessionPhase.Running &&
                             wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) >= 4));
+                }
+                if (unit.Unit.Id == "E-09" &&
+                    wallet.Balance(Original323FusionNativeFollowupLedger.UtaSongId) > 0 &&
+                    wallet.Balance(Original323SourceNativeActionKeys.UtaUnlockResource(
+                        unit.InstanceId)) == 0)
+                {
+                    actions.Add(new MobileDedicatedSkillOffer(
+                        Original323SourceNativeActionKeys.UtaUnlockAction(unit.InstanceId),
+                        "우타 · 신세계 변신 해금",
+                        "원본 B6n/A0D2 · 특성포인트 4점 영구 소모 · 유닛당 1회",
+                        true, combat.Game.Phase == SessionPhase.Running &&
+                        wallet.Balance(SourceModelNativeCharacterRules.TraitPointsResourceId) >= 4));
                 }
             }
             if (ownsOtama &&
@@ -163,6 +179,34 @@ namespace Ordr.Mobile.Mobile
                 }
                 return new ManualActionResult(ManualActionState.Rejected,
                     "해당 로저를 보유하지 않았거나 원본 해금 조건이 맞지 않습니다.");
+            }
+            if (skillId.StartsWith(Original323SourceNativeActionKeys.UtaUnlockActionPrefix,
+                    StringComparison.Ordinal))
+            {
+                if (!combat.UsesSourceModelBasicAttacks ||
+                    combat.Game.Phase != SessionPhase.Running ||
+                    wallet.Balance(Original323FusionNativeFollowupLedger.UtaSongId) < 1)
+                    return new ManualActionResult(ManualActionState.Rejected,
+                        "우타의 신세계 변신 해금 조건을 확인해 주세요.");
+                foreach (var unit in combat.MobileUnitSnapshot())
+                {
+                    if (unit.Unit.Id != "E-09" ||
+                        skillId != Original323SourceNativeActionKeys.UtaUnlockAction(
+                            unit.InstanceId)) continue;
+                    bool success = wallet.TryExchangeOnce(
+                        skillId,
+                        new ResourceBundle().Add(
+                            SourceModelNativeCharacterRules.TraitPointsResourceId, 4),
+                        new ResourceBundle().Add(
+                            Original323SourceNativeActionKeys.UtaUnlockResource(
+                                unit.InstanceId), 1));
+                    return new ManualActionResult(
+                        success ? ManualActionState.Succeeded : ManualActionState.Rejected,
+                        success ? "우타 신세계 변신 해금 · 특성포인트 4 차감" :
+                            "특성포인트가 부족하거나 이미 해금한 우타입니다.");
+                }
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "해당 우타를 보유하고 있지 않습니다.");
             }
             if (!skillId.StartsWith("vegapunk-satellite:", StringComparison.Ordinal))
                 return otama.Execute(skillId);

@@ -2675,7 +2675,8 @@ namespace Ordr.Mobile.Combat
                 if (fired >= budget) break;
                 CharacterInstance unit = characters[id];
                 if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
-                    unit.Mapping == null || SourceFormIsCasting(id)) continue;
+                    unit.Mapping == null || SourceFormIsCasting(id) ||
+                    (UsesSourceModelBasicAttacks && IsSourceModelUtaSleeping(id))) continue;
                 var at = attackPipeline.NextAttackAt(InstanceKey(id));
                 if (!at.HasValue ||
                     !CombatScheduler.HasReached(scheduler.Time, at.Value)) continue;

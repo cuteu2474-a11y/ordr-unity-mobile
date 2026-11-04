@@ -55,7 +55,12 @@ namespace Ordr.Mobile.Combat
                 (actor.Catalog.Id == "TR-30" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "H0AA") ||
                 (actor.Catalog.Id == "I-11" &&
-                 actor.Mapping.AttackSpec.UnitRawCode == "h07M"))
+                 actor.Mapping.AttackSpec.UnitRawCode == "h07M") ||
+                // B7U spends one HP per declared attack and B6t grants
+                // mana. Those native events require h067's pinned SLK pool
+                // even if the separate tooltip active is not auto-castable.
+                (actor.Catalog.Id == "E-09" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h067"))
                 return true;
             // TR-26 has a documented mana-gated on-attack packet rather
             // than an activeMana skill; its original SLK pool is still needed.

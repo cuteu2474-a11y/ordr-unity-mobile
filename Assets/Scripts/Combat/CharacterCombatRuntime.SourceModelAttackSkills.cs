@@ -67,6 +67,7 @@ namespace Ordr.Mobile.Combat
             // B8V is an ATTACK-DECLARED self-buff, not a successful-hit
             // proc. It must run even when Tezoro's 12% spell does not roll.
             ApplySourceModelFusionTesoroFrostArmor(actor, rawcode, primary);
+            ApplySourceModelUtaNativeAttackResources(actor);
 
             if (ninthOwner)
                 ExecuteSourceModelNinthDeclaredAttack(actor, primary, rawcode);

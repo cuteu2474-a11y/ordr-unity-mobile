@@ -207,7 +207,8 @@ namespace Ordr.Mobile.Combat
             foreach (var effect in effects)
                 if (effect.Type == CombatEffectType.AttackPowerBuff &&
                     (effect.SourceId.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-native:SPH3:A0N1:", StringComparison.Ordinal)))
+                     effect.SourceId.StartsWith("practice-native:SPH3:A0N1:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-tooltip:armada:A0WQ:", StringComparison.Ordinal)))
                     strongest = Math.Max(strongest, effect.Amount);
             // Auras and temporary tooltip buffs use the strongest effect,
             // without an unsupported assumption that their percentages add.

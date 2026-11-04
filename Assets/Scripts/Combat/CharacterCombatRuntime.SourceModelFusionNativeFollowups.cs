@@ -36,6 +36,14 @@ namespace Ordr.Mobile.Combat
             new Dictionary<string, int>(StringComparer.Ordinal);
         private readonly HashSet<long> sourceModelUtaIntroStarted =
             new HashSet<long>();
+        // B7U/B6t and B61 run on the SAME E-09 actor (h067/h0AF).
+        // Their per-actor watches and transient gates must not survive sale.
+        private readonly Dictionary<long, double> sourceModelUtaCycleReadyAt =
+            new Dictionary<long, double>();
+        private readonly Dictionary<long, double> sourceModelUtaSleepUntil =
+            new Dictionary<long, double>();
+        private readonly Dictionary<long, double> sourceModelUtaManaGateUntil =
+            new Dictionary<long, double>();
 
         private bool TryResolveSourceModelRogerInfernoTarget(long actorId,
             out CharacterInstance actor, out SpatialCombatEnemy chosen)
@@ -483,6 +491,8 @@ namespace Ordr.Mobile.Combat
             bool isStory = IsStoryDeployed(actorId);
             long laneRevision = SourceModelLaneRevision(actorId);
             sourceModelUtaIntroStarted.Add(actorId);
+            // Native B61 starts watching after its 0.5-second first beat.
+            sourceModelUtaCycleReadyAt[actorId] = Time + .5;
             string caster = InstanceKey(actorId);
 
             // B6x first stage runs BiZ within 800 units and B6w deals
@@ -534,9 +544,113 @@ namespace Ordr.Mobile.Combat
         // control attack or lifetime without a source-confirmed effect.
         public long PracticeUtaNativeSongRotations => sourceModelUtaSongRotations;
 
+        private bool IsSourceModelUtaSleeping(long actorId)
+        {
+            double until;
+            return sourceModelUtaSleepUntil.TryGetValue(actorId, out until) &&
+                !CombatScheduler.HasReached(Time, until);
+        }
+
+        // JASS B7U is an attack-declared callback on both source forms.
+        // B6r's follow-up damage/sound/group enumeration is still separate;
+        // this models only the confirmed HP debit and B6t +2 MP gate.
+        private void ApplySourceModelUtaNativeAttackResources(CharacterInstance actor)
+        {
+            if (actor.Catalog.Id != "E-09" || actor.Mapping == null ||
+                actor.Mapping.AttackSpec.UnitRawCode != "h067" ||
+                SourceModelFusionNativeBalance(
+                    Original323FusionNativeFollowupLedger.UtaSongId) <= 0 ||
+                !sourceModelManagedResourceRows.ContainsKey(actor.Id) ||
+                actor.Abilities.Resources == null) return;
+            var pool = actor.Abilities.Resources;
+            if (pool.Health <= 10) return;
+            pool.SetHealth(pool.Health - 1);
+            bool transformed = sourceModelRules.SourceFormRawcodeOf(
+                InstanceKey(actor.Id)) == "h0AF";
+            int chance = transformed ? 100 : 25;
+            double gate;
+            if (sourceModelUtaManaGateUntil.TryGetValue(actor.Id, out gate) &&
+                !CombatScheduler.HasReached(Time, gate)) return;
+            if (sourceModelRules.NextScriptRoll(100) >= chance) return;
+            pool.SetMana(Math.Min(pool.MaximumMana, pool.Mana + 2));
+            // Native B6r releases the UnitUserData guard after .02 sec for
+            // an empty group, or .67+.03 sec following its song-group hit.
+            sourceModelUtaManaGateUntil[actor.Id] = Time +
+                (sourceModelUtaSongActive.Count > 0 ? .72 : .02);
+        }
+
+        private void AdvanceSourceModelUtaNativeCycles()
+        {
+            if (sourceModelUtaCycleReadyAt.Count == 0) return;
+            var ids = new List<long>(sourceModelUtaCycleReadyAt.Keys);
+            ids.Sort();
+            foreach (long id in ids)
+            {
+                double readyAt;
+                if (!sourceModelUtaCycleReadyAt.TryGetValue(id, out readyAt) ||
+                    !CombatScheduler.HasReached(Time, readyAt)) continue;
+                CharacterInstance actor;
+                if (!characters.TryGetValue(id, out actor) || !actor.AttackReady ||
+                    actor.Catalog.Id != "E-09")
+                {
+                    sourceModelUtaCycleReadyAt.Remove(id);
+                    sourceModelUtaSleepUntil.Remove(id);
+                    continue;
+                }
+                var pool = actor.Abilities.Resources;
+                if (!sourceModelManagedResourceRows.ContainsKey(id) || pool == null)
+                    continue;
+                double sleepUntil;
+                if (sourceModelUtaSleepUntil.TryGetValue(id, out sleepUntil))
+                {
+                    if (!CombatScheduler.HasReached(Time, sleepUntil)) continue;
+                    sourceModelUtaSleepUntil.Remove(id);
+                }
+                // B61's 600 x .02 second performance-watch refresh is
+                // compressed to a health-threshold observer. Visual particle
+                // objects are not independent combat units.
+                if (pool.Health > 10)
+                {
+                    sourceModelUtaCycleReadyAt[id] = Time + .02;
+                    continue;
+                }
+                pool.SetHealth(Math.Min(150, pool.MaximumHealth));
+                bool unlocked = SourceModelFusionNativeBalance(
+                    Original323SourceNativeActionKeys.UtaUnlockResource(id)) > 0;
+                bool transform = unlocked && sourceModelRules.NextScriptRoll(2) == 0;
+                string actorKey = InstanceKey(id);
+                if (transform)
+                {
+                    bool wasTransformed =
+                        sourceModelRules.SourceFormRawcodeOf(actorKey) == "h0AF";
+                    if (wasTransformed) sourceModelRules.ClearSourceForm(actorKey);
+                    else sourceModelRules.SetSourceForm(actorKey, "h0AF");
+                    sourceModelUtaCycleReadyAt[id] = Time + .02;
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.SkillActivated, actorKey, actorKey,
+                        "우타 · 신세계 변신",
+                        wasTransformed ? "MODEL_ONLY B61/A0D2: 원래 모습으로 복귀 · HP 150" :
+                            "MODEL_ONLY B61/A0D2: h0AF 변신 · HP 150 / B6t 마나 회복 확률 100%",
+                        0));
+                }
+                else
+                {
+                    // Native B61 casts sleep and resumes after three seconds.
+                    // Do not apply an enemy-facing stun or forge damage.
+                    sourceModelUtaSleepUntil[id] = Time + 3;
+                    sourceModelUtaCycleReadyAt[id] = Time + 3;
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.StatusApplied, actorKey, actorKey,
+                        "우타 · 휴식",
+                        "MODEL_ONLY B61: HP 150 회복 · 3초간 기본 공격 대기", 0));
+                }
+            }
+        }
+
         private void AdvanceSourceModelFusionNativeFollowups(double elapsed)
         {
             if (sourceModelFusionNativeReceipt == null || elapsed <= 0) return;
+            AdvanceSourceModelUtaNativeCycles();
             if (SourceModelFusionNativeBalance(
                     Original323FusionNativeFollowupLedger.UtaSongId) > 0)
             {
@@ -671,6 +785,12 @@ namespace Ordr.Mobile.Combat
             sourceModelRogerInfernoReadyAt.Remove(actorId);
             sourceModelTesoroFrostCounts.Remove(actorId);
             sourceModelUtaIntroStarted.Remove(actorId);
+            sourceModelUtaCycleReadyAt.Remove(actorId);
+            sourceModelUtaSleepUntil.Remove(actorId);
+            sourceModelUtaManaGateUntil.Remove(actorId);
+            if (sourceModelRules != null &&
+                sourceModelRules.SourceFormRawcodeOf(InstanceKey(actorId)) == "h0AF")
+                sourceModelRules.ClearSourceForm(InstanceKey(actorId));
             List<string> keys;
             if (sourceModelUtaSongSoldierKeys.TryGetValue(actorId, out keys))
             {
