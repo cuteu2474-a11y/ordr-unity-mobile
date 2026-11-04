@@ -24,3 +24,4 @@ namespace Ordr.Mobile.Tests
             Assert.IsNotNull(OrdrBattlefieldArt.EvolutionSprite);
         }
     }
+}

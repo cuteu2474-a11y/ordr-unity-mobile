@@ -75,3 +75,4 @@ namespace Ordr.Mobile.Combat
                 Ordr323MapDamageMath.ScriptHealthProportionalCorrection(sourceAbilityLevel);
         }
     }
+}
