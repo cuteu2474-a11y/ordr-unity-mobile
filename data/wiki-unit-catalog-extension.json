@@ -5,7 +5,7 @@
   "baseCatalogEntries": 277,
   "expectedMergedEntries": 286,
   "appliesTo": "runtime catalog overlay after pinned 277-object W3X imports; non-authoritative for combat",
-  "warning": "Alternate forms are not independent crafting/roster items. Functional support units have no invented skill execution. No new summon, fusion, combat or reward authority.",
+  "warning": "Alternate forms are not independent crafting/roster items. An extension identity alone never authorizes gameplay; source-CWR execution and source attack binding require separate guarded runtime approval. Unverified native skills are never invented.",
   "reclassifications": [
     {
       "id": "PS-01",
@@ -216,8 +216,8 @@
       "damageSchoolHintsStatus": "unknown",
       "wikiSourceUrl": "https://tmo.gg/g/ord/wiki/한마 유지로 - 신비함",
       "originalSourceRawcode": "h0C2",
-      "sourceMappingStatus": "original-source-object-name-confirmed; not combat approved",
-      "gameplayStatus": "identity-only-no-new-execution-authority"
+      "sourceMappingStatus": "original-source-object-name-and-CWR-result-confirmed; native callback unverified",
+      "gameplayStatus": "source-CWR-mobile-result-enabled; W3X-basic-attack-only; native-skill-callback-unverified"
     }
   ]
 }

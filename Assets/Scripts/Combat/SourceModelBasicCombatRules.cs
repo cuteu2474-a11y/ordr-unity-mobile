@@ -118,8 +118,9 @@ namespace Ordr.Mobile.Combat
             binding = null;
             if (!Enabled || unit == null) return false;
             // Hanma is an ORIGINAL W3X CWR A0QG fusion result omitted from
-            // the older 277-entry web catalog. This is an attack-only
-            // practice model: it never makes A0QG fusion conditions executable.
+            // the older 277-entry source-linked catalog. Attack-only practice
+            // evidence is independent of the separately guarded CWR/mobile
+            // fusion permit and never certifies its native skill callbacks.
             if (unit.Id == "MY-14" && unit.CatalogEntryKind == "fusion-result" &&
                 unit.OriginalSourceRawcode == "h0C2")
             {

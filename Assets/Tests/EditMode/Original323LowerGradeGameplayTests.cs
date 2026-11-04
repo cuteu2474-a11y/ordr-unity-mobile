@@ -56,11 +56,19 @@ namespace Ordr.Mobile.Tests
         }
         private static string Data(string name) => File.ReadAllText(
             Path.Combine(Application.dataPath, "..", "data", name));
-        private static Live Create()
+        private static Live Create(bool includeSourceOnlyWikiUnits = true)
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
             var map = OriginalMapBaseStatCatalog.FromJson(Data("original-2323C-map-base-stats.json"), units);
+            var registry = OriginalJassFusionCatalog.FromJson(Data("original-jass-fusion-registry.json"));
+            var labels = OriginalUnitRawcodeLabelCatalog.FromJson(
+                Data("original-unit-rawcode-label-links.json"), units, registry);
+            var preview = OriginalFusionObjectPreviewCatalog.FromJson(
+                Data("original-fusion-object-reconciliation.json"), registry, units);
+            // Match app load order: source evidence/labels before 286-row overlay.
+            if (includeSourceOnlyWikiUnits)
+                units.ApplyWikiExtension(Data("wiki-unit-catalog-extension.json"));
             var reject = new RejectUnverifiedDamageFormula();
             var world = new CharacterCombatRuntime(units, skills, reject, reject,
                 new SeededNonOriginalProcRandom(2323));
@@ -68,11 +76,6 @@ namespace Ordr.Mobile.Tests
             shared.ApplyVerifiedStart(Original323SoloStartProfile.Create(),
                 (id, x, y) => shared.Units.Add(id, x, y), id => shared.Units.Remove(id));
             world.Start();
-            var registry = OriginalJassFusionCatalog.FromJson(Data("original-jass-fusion-registry.json"));
-            var labels = OriginalUnitRawcodeLabelCatalog.FromJson(
-                Data("original-unit-rawcode-label-links.json"), units, registry);
-            var preview = OriginalFusionObjectPreviewCatalog.FromJson(
-                Data("original-fusion-object-reconciliation.json"), registry, units);
             var fallback = new OriginalJassReadOnlyFusionPort(registry, preview, id => world.IsStoryDeployed(id));
             return new Live { Combat = world, Economy = shared, Map = map, Registry = registry,
                 Fusion = new Original323CommonFusionPort(world, shared, units, map, registry, labels,
@@ -1328,14 +1331,81 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void UncataloguedYujiroPickRemainsBlockedAndCannotSpendAnything()
+        public void RegradedPirateShipStillMatchesItsExactOriginalHiddenMaterialIdentity()
         {
+            // The runtime overlay calls PS-01 "히든", while original
+            // h060 source data still uses the separate "해적선" grade.
             var game = Create();
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("A0QG"));
-            var before = game.Combat.MobileUnitSnapshot();
-            Assert.AreEqual(ManualActionState.NotImplemented,
-                game.Fusion.ConfirmFusion("A0QG", new long[0]).State);
-            Assert.AreEqual(before.Count, game.Combat.MobileUnitSnapshot().Count);
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("YY04"));
+            string shipId;
+            Assert.IsTrue(game.Fusion.TryResolveUnit("h060", out shipId));
+            Assert.AreEqual("PS-01", shipId);
+        }
+
+        [Test]
+        public void YujiroWithoutTheSourceVerifiedOverlayFailsClosedBeforeGameplay()
+        {
+            // Production also rejects missing extension data at startup;
+            // no source-only result can execute under an incomplete catalog.
+            Assert.Throws<KeyNotFoundException>(() => Create(false));
+        }
+
+        [Test]
+        public void YujiroSourceOnlyResultRequiresItsOwnAdditionalRandomUnit()
+        {
+            var game = Create(true);
+            var recipe = game.Registry.FindByAbility("A0QG");
+            Assert.AreEqual("h0C2", recipe.Results.Single().Rawcode);
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("A0QG"));
+            Assert.AreEqual(14, game.Fusion.ExecutableMysticRecipeCount);
+            Assert.AreEqual(1, recipe.OrderedConditions.Count(x =>
+                x.Kind == "PICK" && x.Rawcode == "A800" && x.Count == 1));
+            var attack = game.Map.FindMapObjectAttack("h0C2");
+            Assert.NotNull(attack);
+            Assert.AreEqual(152501.0, attack.MinimumBaseDamage);
+            Assert.AreEqual(152504.0, attack.MaximumBaseDamage);
+            Assert.AreEqual(0.71, attack.AttackCooldownSeconds);
+            Assert.AreEqual(0.26, attack.AttackPointSeconds);
+
+            int index = 0;
+            long fixedCaster = 0;
+            long token = 0;
+            foreach (var need in recipe.OrderedConditions.Where(x => x.Kind == "UNIT"))
+            {
+                string id;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(need.Rawcode, out id));
+                long instance = game.Combat.SpawnCharacter(id, index++, 0);
+                if (need.Rawcode == "h06T") fixedCaster = instance;
+                if (need.Rawcode == "h06G") token = instance;
+            }
+            game.Economy.Wallet.Grant(new ResourceBundle()
+                .Add("gold", 10000).Add("wood", 7));
+            var noRandom = Offer(game, "A0QG");
+            Assert.IsFalse(noRandom.IsReady);
+            CollectionAssert.Contains(noRandom.SuggestedMaterialInstances, fixedCaster);
+            Assert.IsTrue(noRandom.MissingMaterials.Any(x =>
+                x.Contains("PICK 랜덤전용 후보 부족")));
+
+            // The named RN-13/A0QG caster already occupies a fixed UNIT slot.
+            // A second A800-bearing RN-12 must be distinct.
+            long extraRandom = game.Combat.SpawnCharacter("RN-12", index++, 0);
+            var ready = Offer(game, "A0QG");
+            Assert.IsTrue(ready.IsReady, string.Join(", ", ready.MissingMaterials));
+            Assert.AreEqual(5, ready.SuggestedMaterialInstances.Count);
+            CollectionAssert.Contains(ready.SuggestedMaterialInstances, fixedCaster);
+            CollectionAssert.Contains(ready.SuggestedMaterialInstances, extraRandom);
+            CollectionAssert.Contains(ready.SuggestedMaterialInstances, token);
+            long gold = game.Economy.Wallet.Balance("gold");
+            long wood = game.Economy.Wallet.Balance("wood");
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion("A0QG", ready.SuggestedMaterialInstances).State);
+            var after = game.Combat.MobileUnitSnapshot();
+            Assert.AreEqual(1, after.Count);
+            Assert.AreEqual("MY-14", after[0].Unit.Id);
+            Assert.AreEqual(-3776.0, after[0].Position.X);
+            Assert.AreEqual(4480.0, after[0].Position.Y);
+            Assert.AreEqual(gold - 10000, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(wood - 7, game.Economy.Wallet.Balance("wood"));
         }
 
     }

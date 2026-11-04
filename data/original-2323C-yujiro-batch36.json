@@ -1,0 +1,110 @@
+{
+  "format": "ordr-original-mystic-yujiro-source-cwr-mobile-outcome-batch36-v1",
+  "sourceVersion": "ORDR S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceFiles": [
+    "data/original-jass-fusion-registry.json",
+    "data/original-2323C-map-base-stats.json",
+    "data/original-2323C-mystic-pick-batch34.json",
+    "data/wiki-unit-catalog-extension.json",
+    "Assets/Scripts/Combat/SourceModelBasicCombatRules.cs"
+  ],
+  "result": {
+    "abilityRawcode": "A0QG",
+    "resultRawcode": "h0C2",
+    "catalogOverlayId": "MY-14",
+    "mapObjectName": "한마 유지로 - 신비",
+    "catalogKind": "fusion-result",
+    "grade": "신비함",
+    "catalogBaseCount": 277,
+    "catalogWithOverlayCount": 286,
+    "mapAttack": {
+      "attackCooldownSeconds": 0.71,
+      "baseDamagePlus": 152500,
+      "diceCount": 1,
+      "diceSides": 4,
+      "originalRange": 1000,
+      "originalAttackType": "hero",
+      "originalWeaponType": "instant",
+      "attackPointSeconds": 0.26,
+      "minimumBaseDamage": 152501,
+      "maximumBaseDamage": 152504
+    },
+    "originalAbilityList": [
+      "A909",
+      "A13I",
+      "A0S1",
+      "A0QN",
+      "A0QJ",
+      "A0IJ",
+      "A0QU",
+      "Avul"
+    ],
+    "skillExecutionStatus": "not-verified-do-not-invent-native-effects"
+  },
+  "sourceCwr": {
+    "firstCondition": {
+      "kind": "PICK",
+      "rawcode": "A800",
+      "count": 1
+    },
+    "fixedUnitMaterials": [
+      {
+        "rawcode": "h06T",
+        "id": "RN-13",
+        "count": 1
+      },
+      {
+        "rawcode": "h02Y",
+        "id": "L-10",
+        "count": 1
+      },
+      {
+        "rawcode": "h03Y",
+        "id": "H-18",
+        "count": 1
+      },
+      {
+        "rawcode": "h06G",
+        "id": "LT-01",
+        "count": 1
+      }
+    ],
+    "caster": "RN-13/h06T",
+    "gold": 10000,
+    "wood": 7,
+    "kingResult": "h0C2",
+    "physicalLuckyToken": "LT-01/h06G"
+  },
+  "mobileInterpretation": {
+    "status": "SOURCE_STRUCTURE_MATCHED_MOBILE_OUTCOME_NATIVE_PICK_UNVERIFIED",
+    "additionalRandomMaterial": "ONE_SEPARATE_A800_BEARING_RN_01_TO_14",
+    "inferenceBasis": "A0QG shares the six CWR PICK:A800-leading registrations; all 14 original A800 owners are RN. Five sibling registrations also match external published 2.323 any-random recipe evidence, but Hanma itself has NO separately verified public any-random consumption description.",
+    "selectionRules": [
+      "Reserve every named UNIT instance first, including RN-13 caster",
+      "Choose a distinct eligible A800-bearing random-only owned unit",
+      "Exclude deployed story characters and duplicate IDs",
+      "Require one physical LT-01 and never spend a token wallet alias",
+      "Deduct gold 10000 and wood 7 from shared economy",
+      "Preserve original KING:h0C2 result binding and exact spawn coordinates",
+      "Rollback entire unit swap and wallet on failure"
+    ],
+    "sourceOnlyGuard": "Require MY-14 overlay fusion-result identity with originalSourceRawcode h0C2, pinned W3X sha, and exact original map-object attack fields",
+    "resultModel": "Existing Original323CommonFusionPort atomic swap + SourceModelBasicCombatRules h0C2 base attack",
+    "executableMysticResultsAfterChange": 14
+  },
+  "unresolved": [
+    "Original compiled BGI PICK removal/check/transform semantics and any implicit side effects",
+    "Original CHu/CHx/BGI callback parity for this result",
+    "Original Yujiro native skill effects/procs and aura math; object ability IDs are identities only",
+    "Unity runtime/APK device verification and full-game regression tests not performed"
+  ],
+  "testsWrittenOnly": [
+    "Yujiro fails closed without MY-14 overlay",
+    "Named RN-13 cannot double as separate A800 random material",
+    "Physical LT-01 plus gold 10000 and wood 7 required",
+    "5 distinct material instances consumed and MY-14 spawned atomically",
+    "Pinned h0C2 base damage range and attack timing"
+  ]
+}

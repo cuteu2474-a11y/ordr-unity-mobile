@@ -207,23 +207,27 @@ namespace Ordr.Mobile.Mobile
             // Source CWR PICK:A800 plus published 2.323 any-random material:
             // mobile outcome-matched consumption of an ADDITIONAL random-only
             // instance, never the named caster. Native BGI callback parity is
-            // still unverified; A0QG/Yujiro stays blocked.
+            // still unverified. A0QG/Yujiro is W3X source-linked through
+            // the existing MY-14 overlay, not through the older 277 rows.
             { "A19W", "h09M", "MY-01" }, // 고죠 사토루
             { "A19U", "h0AC", "MY-13" }, // 히그마
             { "A19S", "h0A6", "MY-09" }, // 야쿠모 유카리
             { "A19V", "h0CC", "MY-10" }, // 콘파쿠 요우무
-            { "A19T", "h08I", "MY-05" }  // 쿠치키 뱌쿠야
+            { "A19T", "h08I", "MY-05" }, // 쿠치키 뱌쿠야
+            { "A0QG", "h0C2", "MY-14" }  // 한마 유지로 (W3X source-only result)
         };
-        // Only these five source-and-dex-correlated PICK outcomes are allowed
-        // through the mobile atomic unit swap. This does not approve other PICK
-        // registrations or assert Warcraft-native callback equivalence.
+        // Five source/dex-correlated results plus the W3X-identified Hanma
+        // result use the same mobile atomic swap. For Hanma the extra A800
+        // material is a source-structure inference, not published dex evidence;
+        // no native callback equivalence is asserted.
         private static readonly Dictionary<string, string> MobileMysticPickInputOrder =
             new Dictionary<string, string>(StringComparer.Ordinal) {
                 { "A19W", "h06U:1,h03V:1,h03Z:1,h027:1,h060:1,h06G:1" },
                 { "A19U", "h06X:1,h09Z:1,h029:1,h06G:1" },
                 { "A19S", "h073:1,h048:1,h017:1,h06G:1" },
                 { "A19V", "h09K:1,h03I:1,h05W:1,h06G:1" },
-                { "A19T", "h071:1,h05V:1,h04H:1,h06G:1" }
+                { "A19T", "h071:1,h05V:1,h04H:1,h06G:1" },
+                { "A0QG", "h06T:1,h02Y:1,h03Y:1,h06G:1" }
             };
         // Original chat wrappers call BI1(GetPlayerStartLocationX/Y).
         // config: SetPlayerStartLocation(Player(0),0); DefineStartLocation(0,-3776.,4480.).
@@ -336,8 +340,8 @@ namespace Ordr.Mobile.Mobile
             var materialGroups = new Original323FusionMaterialGroups(objects);
             planner.SetVerifiedMaterialGroups(materialGroups);
             // The 14 A800-bearing RN source objects back the separate random
-            // material. Five source/dex-matched Mystic results use the mobile
-            // atomic swap; source-native BGI callback parity is not asserted.
+            // material. Six registered Mystic outcomes use the mobile atomic
+            // swap; source-native BGI callback parity is not asserted.
             var pickCandidates = new Original323MysticPickCandidatePreview(objects, units);
             planner.SetPickMaterialPreview(pickCandidates);
             var ownedPreview = fallback as OriginalJassReadOnlyFusionPort;
@@ -378,10 +382,18 @@ namespace Ordr.Mobile.Mobile
                         // as h060. Permit only that audited identity/recipe.
                         (resultGrade == "히든" && ability == "YY04" &&
                             instruction.Rawcode == "h035" && id == "L-17" && grade == "전설") ||
+                        // The 286-entry runtime overlay regrades PS-01
+                        // from its original "해적선" display category to
+                        // "히든". Authorize only the same verified h060
+                        // object in either catalogue view, never arbitrary
+                        // additional Hidden-grade materials.
                         (resultGrade == "히든" &&
                             instruction.Rawcode == Original323SourceCommonWispWorld.PirateShipRawcode &&
                             id == Original323SourceCommonWispWorld.PirateShipCatalogId &&
-                            grade == "해적선") ||
+                            (grade == "해적선" || grade == "히든") &&
+                            objects.Find(id) != null &&
+                            objects.Find(id).OriginalRawcode ==
+                                Original323SourceCommonWispWorld.PirateShipRawcode) ||
                         (resultGrade == "영원한" && (grade == "흔함" || grade == "안흔함" ||
                             grade == "특별함" || grade == "희귀함" || grade == "전설" ||
                             grade == "히든" || grade == "변화" || grade == "제한됨"));
@@ -403,8 +415,31 @@ namespace Ordr.Mobile.Mobile
         private void Bind(CharacterUnitCatalog units, string id, string rawcode, string grade)
         {
             var row = objects.Find(id);
-            if (units.Require(id).Grade != grade || row == null || row.OriginalRawcode != rawcode)
-                throw new FormatException("검수한 하위 등급 원본 객체가 다릅니다: " + id);
+            var unit = units.Require(id);
+            // The pinned 277 source-catalogue entries predate W3X-only MY-14.
+            // Its wiki overlay is identity evidence, but not an execution
+            // permit by itself. Require the exact original result rawcode,
+            // source fingerprint and existing W3X attack object before allowing
+            // the original CWR registration to pass the normal condition audit.
+            bool sourceOnlyYujiro = id == "MY-14" && rawcode == "h0C2" &&
+                grade == "신비함" && row == null &&
+                unit.CatalogEntryKind == "fusion-result" &&
+                unit.OriginalSourceRawcode == rawcode &&
+                objects.SourceW3xSha256 == OriginalCommonSaleRules.OriginalMapSha256;
+            if (sourceOnlyYujiro)
+            {
+                var attack = objects.FindMapObjectAttack(rawcode);
+                sourceOnlyYujiro = attack != null &&
+                    attack.BaseDamagePlus == 152500 &&
+                    attack.DiceCount == 1 && attack.DiceSides == 4 &&
+                    attack.MinimumBaseDamage == 152501 &&
+                    attack.MaximumBaseDamage == 152504 &&
+                    attack.AttackCooldownSeconds == 0.71 &&
+                    attack.AttackPointSeconds == 0.26;
+            }
+            if (unit.Grade != grade ||
+                (!sourceOnlyYujiro && (row == null || row.OriginalRawcode != rawcode)))
+                throw new FormatException("검수한 원본 객체가 다릅니다: " + id);
             string already;
             if (mappings.TryGetValue(rawcode, out already))
             {
@@ -441,8 +476,8 @@ namespace Ordr.Mobile.Mobile
                     switch (condition.Kind)
                     {
                         case "PICK":
-                            // The five cross-matched source/dex recipes have
-                            // PICK:A800 x1 BEFORE the named UNIT inputs. A800
+                            // Six source CWR recipes have PICK:A800 x1 before
+                            // named UNIT inputs (five dex-matched). A800
                             // exists only on the 14 RN objects in this source.
                             if (grade != "신비함" ||
                                 !MobileMysticPickInputOrder.ContainsKey(ability) ||
