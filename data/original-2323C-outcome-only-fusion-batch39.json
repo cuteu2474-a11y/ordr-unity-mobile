@@ -1,0 +1,1471 @@
+{
+  "format": "ordr-outcome-only-recipe-batch39-v1",
+  "gameVersion": "ORDR S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "baseCommit": "de79d82118255f552743ffe6c6d1150dd1201666",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceRegistry": "data/original-jass-fusion-registry.json",
+  "sourceObjects": "data/original-2323C-map-base-stats.json",
+  "previousBatch": "data/original-2323C-transcend-outcomes-batch38.json",
+  "summary": {
+    "totalCwr": 266,
+    "executableBefore": 189,
+    "newlyEnabledMobileOutcomes": 21,
+    "executableAfter": 210,
+    "remainingLocked": 56,
+    "newLegendary": 4,
+    "newHidden": 3,
+    "newRestricted": 4,
+    "newImmortal": 7,
+    "newEternal": 3,
+    "sourceCallbackParityVerified": 0,
+    "sourceMappedMaterialAndBaseAttackResults": 21
+  },
+  "scope": [
+    "원본 CWR의 UNIT 재료와 GOLD/WOOD 비용을 원자 교환으로 소비하여 원본 결과 유닛 1기를 생성하는 모바일 결과 구현입니다.",
+    "원본 CWR UPUN은 표시에만, UBAN/KING은 이세계 기존 제한 판단에 사용합니다.",
+    "별도 네이티브 CH8/BI2 후속 콜백·추가 생성·상태 변경은 원본 동등성 확인 대상이며 이번 묶음의 완성 범위가 아닙니다.",
+    "원본에서 게임 상태 변화를 유발하는 별도 콜백이 이미 확인된 5건은 조합 자체를 계속 잠급니다.",
+    "고대의 배 h05Y/베가펑크 h0AN 미매핑 조합은 계속 잠급니다.",
+    "Python/Unity/Android/APK 실제 검사 미실행, 작성한 NUnit은 아직 미실행입니다."
+  ],
+  "newlyEnabled": [
+    {
+      "abilityRawcode": "A00O",
+      "resultRawcode": "h02P",
+      "resultCatalogId": "L-02",
+      "resultName": "나미",
+      "grade": "전설",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1,
+          "unitCatalogId": "R-19"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1,
+          "unitCatalogId": "R-18"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05K",
+          "count": 1,
+          "unitCatalogId": "R-41"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08V",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05A",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 3,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.66,
+        "baseDamagePlus": 27500,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 1000,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.39,
+        "minimumBaseDamage": 27501,
+        "maximumBaseDamage": 27502
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "A025",
+      "resultRawcode": "h035",
+      "resultCatalogId": "L-17",
+      "resultName": "샹크스",
+      "grade": "전설",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h029",
+          "count": 1,
+          "unitCatalogId": "R-22"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01S",
+          "count": 1,
+          "unitCatalogId": "R-17"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1,
+          "unitCatalogId": "R-21"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03U",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08Z",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04F",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h067",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 3,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.66,
+        "baseDamagePlus": 32500,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 1050,
+        "originalAttackType": "hero",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.11,
+        "minimumBaseDamage": 32501,
+        "maximumBaseDamage": 32503
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "A0UG",
+      "resultRawcode": "h042",
+      "resultCatalogId": "L-21",
+      "resultName": "시노부",
+      "grade": "전설",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h025",
+          "count": 1,
+          "unitCatalogId": "R-07"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h021",
+          "count": 1,
+          "unitCatalogId": "R-03"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02J",
+          "count": 1,
+          "unitCatalogId": "R-40"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h084",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08R",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 3,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.7,
+        "baseDamagePlus": 21500,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 675,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.385,
+        "minimumBaseDamage": 21501,
+        "maximumBaseDamage": 21502
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "A02G",
+      "resultRawcode": "h03B",
+      "resultCatalogId": "L-38",
+      "resultName": "흰수염",
+      "grade": "전설",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02E",
+          "count": 1,
+          "unitCatalogId": "R-34"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h022",
+          "count": 1,
+          "unitCatalogId": "R-08"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02J",
+          "count": 1,
+          "unitCatalogId": "R-40"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H090",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04A",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 3,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.74,
+        "baseDamagePlus": 35000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 675,
+        "originalAttackType": "hero",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.36,
+        "minimumBaseDamage": 35001,
+        "maximumBaseDamage": 35002
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "YY01",
+      "resultRawcode": "h03X",
+      "resultCatalogId": "H-09",
+      "resultName": "방주맥심",
+      "grade": "히든",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h024",
+          "count": 1,
+          "unitCatalogId": "R-29"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02C",
+          "count": 1,
+          "unitCatalogId": "R-30"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01C",
+          "count": 1,
+          "unitCatalogId": "S-02"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1,
+          "unitCatalogId": "PS-01"
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05E",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.64,
+        "baseDamagePlus": 20000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 700,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.17,
+        "minimumBaseDamage": 20001,
+        "maximumBaseDamage": 20002
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "YY15",
+      "resultRawcode": "h03Z",
+      "resultCatalogId": "H-17",
+      "resultName": "아카이누",
+      "grade": "히든",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01P",
+          "count": 1,
+          "unitCatalogId": "R-27"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01T",
+          "count": 1,
+          "unitCatalogId": "R-15"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01B",
+          "count": 1,
+          "unitCatalogId": "S-31"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h012",
+          "count": 1,
+          "unitCatalogId": "S-15"
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H095",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05F",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.75,
+        "baseDamagePlus": 36000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 625,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.14,
+        "minimumBaseDamage": 36001,
+        "maximumBaseDamage": 36002
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "YY20",
+      "resultRawcode": "h041",
+      "resultCatalogId": "H-16",
+      "resultName": "아오키지",
+      "grade": "히든",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02B",
+          "count": 1,
+          "unitCatalogId": "R-26"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02E",
+          "count": 1,
+          "unitCatalogId": "R-34"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Y",
+          "count": 1,
+          "unitCatalogId": "R-10"
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H097",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.79,
+        "baseDamagePlus": 34500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 500,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.39,
+        "minimumBaseDamage": 34501,
+        "maximumBaseDamage": 34501
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "A0S0",
+      "resultRawcode": "h07I",
+      "resultCatalogId": "LI-08",
+      "resultName": "카타쿠리",
+      "grade": "제한됨",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03H",
+          "count": 1,
+          "unitCatalogId": "L-33"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1,
+          "unitCatalogId": "R-21"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01X",
+          "count": 1,
+          "unitCatalogId": "R-06"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01C",
+          "count": 1,
+          "unitCatalogId": "S-02"
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 30000,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h07I",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h07I",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 30000,
+      "sourceWood": 5,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.61,
+        "baseDamagePlus": 42500,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 700,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.42,
+        "minimumBaseDamage": 42501,
+        "maximumBaseDamage": 42502
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "A0UH",
+      "resultRawcode": "h084",
+      "resultCatalogId": "LI-04",
+      "resultName": "시노부",
+      "grade": "제한됨",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h042",
+          "count": 1,
+          "unitCatalogId": "L-21"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h032",
+          "count": 1,
+          "unitCatalogId": "L-36"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1,
+          "unitCatalogId": "PS-01"
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h084",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h084",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 5000,
+      "sourceWood": 5,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.67,
+        "baseDamagePlus": 33333,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 675,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.36,
+        "minimumBaseDamage": 33334,
+        "maximumBaseDamage": 33335
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "A1A5",
+      "resultRawcode": "h05E",
+      "resultCatalogId": "LI-07",
+      "resultName": "에넬",
+      "grade": "제한됨",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03X",
+          "count": 1,
+          "unitCatalogId": "H-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h038",
+          "count": 1,
+          "unitCatalogId": "L-22"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00P",
+          "count": 1,
+          "unitCatalogId": "S-03"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1,
+          "unitCatalogId": "PS-01"
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05E",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05E",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 5000,
+      "sourceWood": 5,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.75,
+        "baseDamagePlus": 100000,
+        "diceCount": 1,
+        "diceSides": 4,
+        "originalRange": 850,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.41,
+        "minimumBaseDamage": 100001,
+        "maximumBaseDamage": 100004
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "A02O",
+      "resultRawcode": "h05F",
+      "resultCatalogId": "LI-09",
+      "resultName": "크로커다일",
+      "grade": "제한됨",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02H",
+          "count": 1,
+          "unitCatalogId": "R-38"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05W",
+          "count": 1,
+          "unitCatalogId": "T-02"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03Z",
+          "count": 1,
+          "unitCatalogId": "H-17"
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h057",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05F",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05F",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 5000,
+      "sourceWood": 5,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.56,
+        "baseDamagePlus": 32500,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 700,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.3,
+        "minimumBaseDamage": 32501,
+        "maximumBaseDamage": 32502
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "IM05",
+      "resultRawcode": "h04Q",
+      "resultCatalogId": "I-06",
+      "resultName": "빅맘",
+      "grade": "불멸의",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h033",
+          "count": 1,
+          "unitCatalogId": "L-06"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03H",
+          "count": 1,
+          "unitCatalogId": "L-33"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03S",
+          "count": 1,
+          "unitCatalogId": "L-25"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04Q",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04Q",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 10,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 1.15,
+        "baseDamagePlus": 242500,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 875,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.4,
+        "minimumBaseDamage": 242501,
+        "maximumBaseDamage": 242502
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "IM06",
+      "resultRawcode": "h04E",
+      "resultCatalogId": "I-07",
+      "resultName": "센고쿠",
+      "grade": "불멸의",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h036",
+          "count": 1,
+          "unitCatalogId": "L-18"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h033",
+          "count": 1,
+          "unitCatalogId": "L-06"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02R",
+          "count": 1,
+          "unitCatalogId": "L-09"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04E",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04E",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 10,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.7,
+        "baseDamagePlus": 77500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 600,
+        "originalAttackType": "hero",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.37,
+        "minimumBaseDamage": 77501,
+        "maximumBaseDamage": 77501
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "IM07",
+      "resultRawcode": "h04F",
+      "resultCatalogId": "I-08",
+      "resultName": "스코퍼가반",
+      "grade": "불멸의",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h035",
+          "count": 1,
+          "unitCatalogId": "L-17"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02S",
+          "count": 1,
+          "unitCatalogId": "L-27"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h033",
+          "count": 1,
+          "unitCatalogId": "L-06"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04F",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04F",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 10,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.24,
+        "baseDamagePlus": 327500,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 600,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.1,
+        "minimumBaseDamage": 327501,
+        "maximumBaseDamage": 327503
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "IM08",
+      "resultRawcode": "h049",
+      "resultCatalogId": "I-03",
+      "resultName": "레일리",
+      "grade": "불멸의",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03A",
+          "count": 1,
+          "unitCatalogId": "L-07"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Y",
+          "count": 1,
+          "unitCatalogId": "L-10"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h032",
+          "count": 1,
+          "unitCatalogId": "L-36"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h049",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h049",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 10,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.58,
+        "baseDamagePlus": 72500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 625,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.27,
+        "minimumBaseDamage": 72501,
+        "maximumBaseDamage": 72501
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "IM09",
+      "resultRawcode": "h04A",
+      "resultCatalogId": "I-12",
+      "resultName": "흰수염",
+      "grade": "불멸의",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03B",
+          "count": 1,
+          "unitCatalogId": "L-38"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Z",
+          "count": 1,
+          "unitCatalogId": "L-13"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02T",
+          "count": 1,
+          "unitCatalogId": "L-11"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04A",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04A",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 10,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.73,
+        "baseDamagePlus": 42500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 675,
+        "originalAttackType": "hero",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.27,
+        "minimumBaseDamage": 42501,
+        "maximumBaseDamage": 42501
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "IM11",
+      "resultRawcode": "h07M",
+      "resultCatalogId": "I-11",
+      "resultName": "카이도",
+      "grade": "불멸의",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02N",
+          "count": 1,
+          "unitCatalogId": "L-12"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02W",
+          "count": 1,
+          "unitCatalogId": "L-04"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AH",
+          "count": 1,
+          "unitCatalogId": "L-34"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h07M",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h07M",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 10,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 1.41,
+        "baseDamagePlus": 325000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 800,
+        "originalAttackType": "hero",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.47,
+        "minimumBaseDamage": 325001,
+        "maximumBaseDamage": 325001
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "IM12",
+      "resultRawcode": "h081",
+      "resultCatalogId": "I-05",
+      "resultName": "불릿",
+      "grade": "불멸의",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h039",
+          "count": 1,
+          "unitCatalogId": "L-23"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02V",
+          "count": 1,
+          "unitCatalogId": "L-20"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02U",
+          "count": 1,
+          "unitCatalogId": "L-01"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h081",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h081",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 10,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 1.2,
+        "baseDamagePlus": 260000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 600,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.47,
+        "minimumBaseDamage": 260001,
+        "maximumBaseDamage": 260001
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "ET05",
+      "resultRawcode": "h05A",
+      "resultCatalogId": "E-05",
+      "resultName": "버기",
+      "grade": "영원한",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02P",
+          "count": 1,
+          "unitCatalogId": "L-02"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03Y",
+          "count": 1,
+          "unitCatalogId": "H-18"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h029",
+          "count": 1,
+          "unitCatalogId": "R-22"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Z",
+          "count": 1,
+          "unitCatalogId": "R-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1,
+          "unitCatalogId": "S-11"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h014",
+          "count": 1,
+          "unitCatalogId": "S-12"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h010",
+          "count": 1,
+          "unitCatalogId": "S-17"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05A",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05A",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 5,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.82,
+        "baseDamagePlus": 27500,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 625,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.17,
+        "minimumBaseDamage": 27501,
+        "maximumBaseDamage": 27501
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "ET06",
+      "resultRawcode": "h05C",
+      "resultCatalogId": "E-12",
+      "resultName": "핸콕",
+      "grade": "영원한",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h032",
+          "count": 1,
+          "unitCatalogId": "L-36"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h047",
+          "count": 1,
+          "unitCatalogId": "H-22"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01X",
+          "count": 1,
+          "unitCatalogId": "R-06"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Y",
+          "count": 1,
+          "unitCatalogId": "R-10"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h018",
+          "count": 1,
+          "unitCatalogId": "S-23"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05C",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05C",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 5,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.74,
+        "baseDamagePlus": 35000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 650,
+        "originalAttackType": "hero",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.42,
+        "minimumBaseDamage": 35001,
+        "maximumBaseDamage": 35001
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    },
+    {
+      "abilityRawcode": "ET10",
+      "resultRawcode": "h08R",
+      "resultCatalogId": "E-08",
+      "resultName": "오뎅",
+      "grade": "영원한",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h087",
+          "count": 1,
+          "unitCatalogId": "L-35"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h042",
+          "count": 1,
+          "unitCatalogId": "L-21"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h046",
+          "count": 1,
+          "unitCatalogId": "H-20"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h022",
+          "count": 1,
+          "unitCatalogId": "R-08"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h08R",
+          "count": 1,
+          "unitCatalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h08R",
+          "count": 1,
+          "unitCatalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 5,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.64,
+        "baseDamagePlus": 70000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "originalRange": 675,
+        "originalAttackType": "hero",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.385,
+        "minimumBaseDamage": 70001,
+        "maximumBaseDamage": 70001
+      },
+      "originalCallbackKnownExtraEffects": null,
+      "absenceOfKnownExtraEffectsNotProof": true,
+      "nativePostCreationCallbacksVerified": false,
+      "mobileBehavior": "owned-source-UNIT-atomic-swap-for-one-original-result-actor"
+    }
+  ],
+  "excludedStillLocked": [
+    {
+      "ability": "A007",
+      "reason": "원본 Bvg 영구 helper 유닛 생성 미구현"
+    },
+    {
+      "ability": "IM01",
+      "reason": "원본 B8Y 고유 능력이 있는 helper 유닛 생성 미구현"
+    },
+    {
+      "ability": "IM04",
+      "reason": "원본 B99 선형 폭발 20% 상태 미구현"
+    },
+    {
+      "ability": "ET04",
+      "reason": "원본 B7z 1인 1개 플래그·조건부 능력 미구현"
+    },
+    {
+      "ability": "ET12",
+      "reason": "원본 B8I/B8G 추가 상태 처리 미구현"
+    },
+    {
+      "ability": "A02Q",
+      "reason": "고대의 배 h05Y 유닛 매핑 부재"
+    },
+    {
+      "ability": "A10A",
+      "reason": "고대의 배 h05Y 유닛 매핑 부재"
+    },
+    {
+      "ability": "TR30",
+      "reason": "h0AN 원본 재료 신원 부재"
+    }
+  ],
+  "registryArchiveTextSha256": "1daece775feb1e3e320cc8587d55e9a889b71d545621048294ec3a5ef78dae44"
+}

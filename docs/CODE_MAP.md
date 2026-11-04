@@ -1,3 +1,9 @@
+## 2026-11-04 · 39차 CWR 모바일 결과 제작 21건 (실행 검사 전)
+
+- **출처:** data/original-2323C-outcome-only-fusion-batch39.json은 원본 CWR 21건 전부의 재료·원본 비용·단일 결과·원본 기본 공격 객체 및 잠금 8건 근거를 기록. 전설 4 + 히든 3 + 제한 4 + 불멸 7 + 영원 3 = **21건**.
+- **공통 코드:** Original323CommonFusionPort.cs에 MobileOutcomeLegendary / MobileOutcomeHidden / MobileOutcomeUpperTiers를 추가. 하위 RegisterReviewed는 원본 UNIT/WOOD/UPUN 조건 및 전설 시전 능력과 히든 해적선 h060 실물 재료를 확인합니다. 상위 RegisterRestricted는 기존 UNIT/GOLD/WOOD/UBAN/KING/UPUN 검사, 원본 수치 고정(제한 5목재/5천골드·카타쿠리 3만골드, 불멸 10목재, 영원 5목재)을 통과한 결과만 모바일 실행 허가. 실제 소비·롤백·결과 유닛 생성을 기존 원자 거래에서 재사용합니다.
+- **차단·회귀:** A007/IM01/IM04/ET04/ET12는 알려진 원본 추가 동작 미연결, A02Q/A10A는 h05Y 원본 재료 미매핑, TR30은 h0AN 미매핑으로 차단. 21건도 원본 네이티브 후속 콜백 완전 검증 아님. Original323OwnedMaterialFusionTests.cs에는 목록/매핑 검증과 목재 부족 시 원자 거부 사례를 추가했고, 기존 전체 실행 조합 소비 회귀에 자동 포함됩니다. NUnit/Python/Unity/APK 실행 검사는 하지 않았습니다.
+
 ## 2026-11-04 · 38차 초월함 22건 결과 제작 경로 (실행 검사 전)
 
 - **소스:** data/original-2323C-transcend-outcomes-batch38.json에 신규 초월함 22건의 재료 rawcode·카탈로그 ID·결과 rawcode·원본 기본 공격 및 미검증 후속 콜백 상태를 기록. 전체 CWR 266건 중 코드 제작 허가 **189건**, 잔여 잠금 **77건**.

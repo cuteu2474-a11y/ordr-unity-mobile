@@ -136,6 +136,84 @@ namespace Ordr.Mobile.Tests
                 "VegaPunk still needs a verified h0AN material identity.");
         }
 
+        // Batch 39: source-linked mobile crafting outcomes only. These
+        // records do not claim parity for the original native callbacks.
+        [Test]
+        public void TwentyOneAdditionalMobileOutcomesKeepSourceResultsAndDeferredEffectsLocked()
+        {
+            var game = Create();
+            var abilities = new[] {
+                "A00O", "A025", "A0UG", "A02G",
+                "YY01", "YY15", "YY20",
+                "A0S0", "A0UH", "A1A5", "A02O",
+                "IM05", "IM06", "IM07", "IM08", "IM09", "IM11", "IM12",
+                "ET05", "ET06", "ET10"
+            };
+            Assert.AreEqual(21, abilities.Length);
+            Assert.AreEqual(abilities.Length, abilities.Distinct(StringComparer.Ordinal).Count());
+            Assert.AreEqual(4, game.Fusion.ExecutableMobileOutcomeLegendaryCount);
+            Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeHiddenCount);
+            Assert.AreEqual(14, game.Fusion.ExecutableMobileOutcomeUpperTierCount);
+            foreach (var ability in abilities)
+            {
+                Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
+                var recipe = game.Registry.FindByAbility(ability);
+                Assert.IsNotNull(recipe, ability);
+                Assert.AreEqual(1, recipe.Results.Count, ability);
+                Assert.AreEqual("UNIT", recipe.Results[0].Kind, ability);
+                Assert.AreEqual(1, recipe.Results[0].Count, ability);
+                Assert.IsTrue(recipe.OrderedConditions.All(c =>
+                    c.Kind == "UNIT" || c.Kind == "GOLD" || c.Kind == "WOOD" ||
+                    c.Kind == "UPUN" || c.Kind == "UBAN" || c.Kind == "KING"), ability);
+                Assert.IsTrue(recipe.RequiredUnitRawcodes().Any(), ability);
+                foreach (var input in recipe.RequiredUnitRawcodes())
+                {
+                    string catalogId;
+                    Assert.IsTrue(game.Fusion.TryResolveUnit(input.Key, out catalogId),
+                        ability + "/" + input.Key);
+                    Assert.IsNotNull(game.Map.Find(catalogId), ability + "/" + input.Key);
+                }
+                string resultId;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(recipe.Results[0].Rawcode, out resultId),
+                    ability + "/" + recipe.Results[0].Rawcode);
+                Assert.IsNotNull(game.Map.Find(resultId), ability + "/" + resultId);
+                var offer = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                    .Single(x => x.RecipeId == ability);
+                Assert.IsTrue(offer.Title.Contains("모바일 제작"), ability);
+                Assert.IsTrue(offer.OriginalMaterialsAndCost.Contains("원본 부가효과 미검증"), ability);
+            }
+            // Known native gameplay side effects and unresolved ingredient
+            // identities remain blocked rather than silently discarded.
+            foreach (var blocked in new[] {
+                "A007", "IM01", "IM04", "ET04", "ET12",
+                "A02Q", "A10A", "TR30"
+            })
+                Assert.IsFalse(game.Fusion.CanCommitRecipe(blocked), blocked);
+        }
+
+        [Test]
+        public void Batch39HighTierFusionNeverConsumesMaterialsWhenWoodIsMissing()
+        {
+            var game = Create();
+            var recipe = game.Registry.FindByAbility("IM05");
+            foreach (var input in recipe.RequiredUnitRawcodes())
+            {
+                string catalogId;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(input.Key, out catalogId));
+                for (int i = 0; i < input.Value; i++)
+                    game.Combat.SpawnCharacter(catalogId, 10, 20);
+            }
+            var before = game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray();
+            var offer = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "IM05");
+            Assert.IsFalse(offer.IsReady, "IM05 requires 10 source wood.");
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("IM05", offer.SuggestedMaterialInstances).State);
+            CollectionAssert.AreEquivalent(before,
+                game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray());
+            Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
+        }
+
         [TestCase("TR-08")]
         [TestCase("TR-14")]
         public void LuffyMaterialBucketAcceptsEitherRealFormWithoutChangingResultIdentity(string id)

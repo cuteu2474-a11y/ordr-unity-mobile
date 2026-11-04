@@ -144,6 +144,19 @@ namespace Ordr.Mobile.Mobile
             // for h02T; A02D has the regular AHwe caster/material swap.
             { "A02D", "h02T", "L-11" },
         };
+        // Batch 39 mobile result-only recipes: source UNIT/WOOD/UPUN.
+        // Additional JASS creation callbacks have not been certified.
+        private static readonly string[,] MobileOutcomeLegendary = {
+            { "A00O", "h02P", "L-02" }, // 나미
+            { "A025", "h035", "L-17" }, // 샹크스
+            { "A0UG", "h042", "L-21" }, // 시노부
+            { "A02G", "h03B", "L-38" }  // 흰수염
+        };
+        private static readonly string[,] MobileOutcomeHidden = {
+            { "YY01", "h03X", "H-09" }, // 방주맥심
+            { "YY15", "h03Z", "H-17" }, // 아카이누
+            { "YY20", "h041", "H-16" }  // 아오키지
+        };
         private static readonly string[,] ReviewedHidden = {
             { "YY02", "h044", "H-05" }, { "YY03", "h03W", "H-10" },
             { "YY05", "h03T", "H-03" }, { "YY06", "h03N", "H-04" },
@@ -246,6 +259,27 @@ namespace Ordr.Mobile.Mobile
             { "TR29", "H0CO", "TR-24" }, // 코비
         };
 
+        // Batch 39: only source-mapped, simple UNIT/GOLD/WOOD/UPUN/UBAN/KING
+        // cases with no IDENTIFIED deferred gameplay side effect. This is
+        // mobile material->actor outcome parity, not native callback parity.
+        // Keep A007/IM01/IM04/ET04/ET12 locked for KNOWN additional effects.
+        // Keep A10A (ancient ship h05Y) locked for missing object identity.
+        private static readonly string[,] MobileOutcomeUpperTiers = {
+            { "A0S0", "h07I", "LI-08" }, // 카타쿠리, gold 30000/wood 5
+            { "A0UH", "h084", "LI-04" }, // 시노부, gold 5000/wood 5
+            { "A1A5", "h05E", "LI-07" }, // 에넬, gold 5000/wood 5
+            { "A02O", "h05F", "LI-09" }, // 크로커다일, UPUN marker
+            { "IM05", "h04Q", "I-06" }, // 빅맘, wood 10
+            { "IM06", "h04E", "I-07" }, // 센고쿠
+            { "IM07", "h04F", "I-08" }, // 스코퍼가반
+            { "IM08", "h049", "I-03" }, // 레일리
+            { "IM09", "h04A", "I-12" }, // 흰수염
+            { "IM11", "h07M", "I-11" }, // 카이도
+            { "IM12", "h081", "I-05" }, // 불릿
+            { "ET05", "h05A", "E-05" }, // 버기, wood 5
+            { "ET06", "h05C", "E-12" }, // 핸콕
+            { "ET10", "h08R", "E-08" }  // 오뎅
+        };
         // Five source/dex-correlated results plus the W3X-identified Hanma
         // result use the same mobile atomic swap. For Hanma the extra A800
         // material is a source-structure inference, not published dex evidence;
@@ -281,12 +315,15 @@ namespace Ordr.Mobile.Mobile
         public int ExecutableCommonRecipeCount => Reviewed.GetLength(0);
         public int ExecutableSpecialRecipeCount => ReviewedSpecial.GetLength(0);
         public int ExecutableRareRecipeCount => ReviewedRare.GetLength(0);
-        public int ExecutableLegendaryRecipeCount => ReviewedLegendary.GetLength(0);
-        public int ExecutableHiddenRecipeCount => ReviewedHidden.GetLength(0);
+        public int ExecutableLegendaryRecipeCount => ReviewedLegendary.GetLength(0) + MobileOutcomeLegendary.GetLength(0);
+        public int ExecutableHiddenRecipeCount => ReviewedHidden.GetLength(0) + MobileOutcomeHidden.GetLength(0);
         public int ExecutableEternalRecipeCount => ReviewedEternal.GetLength(0);
         public int ExecutableRestrictedRecipeCount => ReviewedRestricted.GetLength(0) +
-            MobileOutcomeTranscend.GetLength(0);
+            MobileOutcomeTranscend.GetLength(0) + MobileOutcomeUpperTiers.GetLength(0);
         public int ExecutableMobileOutcomeTranscendCount => MobileOutcomeTranscend.GetLength(0);
+        public int ExecutableMobileOutcomeUpperTierCount => MobileOutcomeUpperTiers.GetLength(0);
+        public int ExecutableMobileOutcomeLegendaryCount => MobileOutcomeLegendary.GetLength(0);
+        public int ExecutableMobileOutcomeHiddenCount => MobileOutcomeHidden.GetLength(0);
         public int ExecutableMysticRecipeCount
         {
             get
@@ -359,7 +396,9 @@ namespace Ordr.Mobile.Mobile
             Bind(units, "X-07", "h09T", "특수함");
             Bind(units, SpecialGradeMobilePolicy.Gaimon, "h0BG", "특수함");
             RegisterReviewed(units, registrations, ReviewedLegendary, "전설");
+            RegisterReviewed(units, registrations, MobileOutcomeLegendary, "전설", true);
             RegisterReviewed(units, registrations, ReviewedHidden, "히든");
+            RegisterReviewed(units, registrations, MobileOutcomeHidden, "히든", true);
             // These higher-grade ingredients are already present in the
             // catalog; binding is verified by original object rawcode.
             Bind(units, "LI-09", "h05F", "제한됨");
@@ -367,6 +406,7 @@ namespace Ordr.Mobile.Mobile
             RegisterReviewed(units, registrations, ReviewedEternal, "영원한");
             RegisterRestricted(units, registrations, ReviewedRestricted, false);
             RegisterRestricted(units, registrations, MobileOutcomeTranscend, true);
+            RegisterRestricted(units, registrations, MobileOutcomeUpperTiers, true);
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
             planner.SetVerifiedObjectMap(this);
@@ -383,7 +423,7 @@ namespace Ordr.Mobile.Mobile
         }
 
         private void RegisterReviewed(CharacterUnitCatalog units, OriginalJassFusionCatalog registrations,
-            string[,] reviewed, string resultGrade)
+            string[,] reviewed, string resultGrade, bool mobileOutcomeOnly = false)
         {
             for (int i = 0; i < reviewed.GetLength(0); i++)
                 Bind(units, reviewed[i, 2], reviewed[i, 1], resultGrade);
@@ -398,6 +438,9 @@ namespace Ordr.Mobile.Mobile
                 bool hasMaterials = false, hasCaster = false, hasWood = false;
                 foreach (var instruction in recipe.OrderedConditions)
                 {
+                    if (mobileOutcomeOnly && instruction.Kind != "UNIT" &&
+                        instruction.Kind != "WOOD" && instruction.Kind != "UPUN")
+                        throw new FormatException("모바일 결과 조합의 미검수 조건: " + ability);
                     if (instruction.Kind == "UPUN") continue;
                     if (instruction.Kind == "WOOD" &&
                         (resultGrade == "전설" || resultGrade == "영원한") &&
@@ -440,7 +483,8 @@ namespace Ordr.Mobile.Mobile
                 bool requiresWood = resultGrade == "전설" || resultGrade == "영원한";
                 if (!hasMaterials || (!chatRecipe && !hasCaster) || (requiresWood && !hasWood))
                     throw new FormatException("원본 조합 시전자 또는 검수한 목재 비용 누락");
-                supported.Add(ability);
+                if (!supported.Add(ability))
+                    throw new FormatException("조합 실행 중복 등록: " + ability);
                 resultGrades.Add(ability, resultGrade);
             }
         }
@@ -493,8 +537,9 @@ namespace Ordr.Mobile.Mobile
                 string grade = units.Require(id).Grade;
                 if (grade != "제한됨" && grade != "불멸의" && grade != "영원한" && grade != "초월함" && grade != "신비함")
                     throw new FormatException("상위 조합 결과 등급 불일치: " + ability);
-                if (mobileOutcomeOnly && grade != "초월함")
-                    throw new FormatException("모바일 결과 조합은 초월함만 연결합니다: " + ability);
+                if (mobileOutcomeOnly && grade != "초월함" && grade != "제한됨" &&
+                    grade != "불멸의" && grade != "영원한")
+                    throw new FormatException("모바일 결과 조합의 결과 등급 불일치: " + ability);
                 Bind(units, id, result, grade);
                 var recipe = registrations.FindByAbility(ability);
                 if (recipe == null || recipe.Results.Count != 1 ||
@@ -503,6 +548,7 @@ namespace Ordr.Mobile.Mobile
                     throw new FormatException("검수된 상위 조합 결과가 바뀌었습니다: " + ability);
                 bool materials = false, wood = false, banned = false, king = false, caster = false;
                 int mysticGold = 0, mysticWood = 0, physicalTokens = 0, mysticPicks = 0;
+                int outcomeGold = 0, outcomeWood = 0;
                 bool mysticOrdered = true;
                 int mysticPhase = 0;
                 var mysticMaterialOrder = new List<string>();
@@ -510,7 +556,8 @@ namespace Ordr.Mobile.Mobile
                 {
                     if (mobileOutcomeOnly && condition.Kind != "UNIT" &&
                         condition.Kind != "UPUN" && condition.Kind != "UBAN" &&
-                        condition.Kind != "KING")
+                        condition.Kind != "KING" && condition.Kind != "GOLD" &&
+                        condition.Kind != "WOOD")
                         throw new FormatException("모바일 결과 조합의 미승인 추가 조건: " +
                             ability + "/" + condition.Kind);
                     string materialId;
@@ -551,6 +598,7 @@ namespace Ordr.Mobile.Mobile
                             }
                             if (condition.Rawcode != "GOLD" || condition.Count < 1)
                                 throw new FormatException("상위 조합 골드 원본 조건 불일치: " + ability);
+                            outcomeGold = checked(outcomeGold + condition.Count);
                             break;
                         case "WOOD":
                             if (grade == "신비함")
@@ -562,6 +610,7 @@ namespace Ordr.Mobile.Mobile
                             if (condition.Rawcode != "WOOD" || condition.Count < 1 || wood)
                                 throw new FormatException("상위 조합 목재 원본 조건 불일치: " + ability);
                             wood = true;
+                            outcomeWood = checked(outcomeWood + condition.Count);
                             break;
                         case "UPUN": break; // display/upgrade recommendation only
                         case "UBAN":
@@ -600,15 +649,29 @@ namespace Ordr.Mobile.Mobile
                         mysticGold != 10000 || mysticWood != 7 || physicalTokens != 1 ||
                         mysticPicks != (MobileMysticPickInputOrder.ContainsKey(ability) ? 1 : 0))))
                     throw new FormatException("상위 조합 원본 시전자/필수 조건 누락: " + ability);
+                if (mobileOutcomeOnly)
+                {
+                    int expectedGold = grade == "제한됨" ? (ability == "A0S0" ? 30000 : 5000) : 0;
+                    int expectedWood = grade == "불멸의" ? 10 :
+                        (grade == "제한됨" || grade == "영원한" ? 5 : 0);
+                    if (outcomeGold != expectedGold || outcomeWood != expectedWood)
+                        throw new FormatException("모바일 결과 조합의 원본 비용 불일치: " + ability);
+                }
                 if (!supported.Add(ability))
                     throw new FormatException("중복 조합 실행 등록: " + ability);
                 resultGrades.Add(ability, grade);
             }
         }
-        private static bool IsMobileOutcomeTranscend(string ability)
+        private static bool IsMobileOutcomeOnly(string ability)
         {
             for (int i = 0; i < MobileOutcomeTranscend.GetLength(0); i++)
                 if (MobileOutcomeTranscend[i, 0] == ability) return true;
+            for (int i = 0; i < MobileOutcomeUpperTiers.GetLength(0); i++)
+                if (MobileOutcomeUpperTiers[i, 0] == ability) return true;
+            for (int i = 0; i < MobileOutcomeLegendary.GetLength(0); i++)
+                if (MobileOutcomeLegendary[i, 0] == ability) return true;
+            for (int i = 0; i < MobileOutcomeHidden.GetLength(0); i++)
+                if (MobileOutcomeHidden[i, 0] == ability) return true;
             return false;
         }
         public bool TryResolveUnit(string rawcode, out string id)
@@ -658,10 +721,10 @@ namespace Ordr.Mobile.Mobile
                 if (ready.LumberCost > 0)
                     costs.Add("목재 " + ready.LumberCost + " (보유 " + economy.Wallet.Balance("wood") + ")");
                 result.Add(new MobileFusionPreview(offer.RecipeId, ready.ResultName + " · " + resultGrades[offer.RecipeId] +
-                    (IsMobileOutcomeTranscend(offer.RecipeId) ? " · 모바일 제작" : ""),
+                    (IsMobileOutcomeOnly(offer.RecipeId) ? " · 모바일 제작" : ""),
                     string.Join(" + ", parts) + (costs.Count > 0
                         ? " · " + string.Join(" · ", costs) : " · 추가 재화 없음") +
-                    (IsMobileOutcomeTranscend(offer.RecipeId)
+                    (IsMobileOutcomeOnly(offer.RecipeId)
                         ? " · 원본 부가효과 미검증" : ""),
                     ready.SuggestedMaterialIds, missing, allUnitsOwned));
             }
@@ -738,7 +801,7 @@ namespace Ordr.Mobile.Mobile
                     try { observer(created, ready.ResultUnitId, ready.ResultRawcode); }
                     catch (Exception error) { try { ObserverFailed?.Invoke(error); } catch { } }
             return new ManualActionResult(ManualActionState.Succeeded, ready.ResultName +
-                (IsMobileOutcomeTranscend(ability)
+                (IsMobileOutcomeOnly(ability)
                     ? " 모바일 조합 완료 · 원본 부가효과 미검증" : " 조합 완료"));
         }
         private int SourceBalance(string id) => (int)Math.Min(int.MaxValue, economy.Wallet.Balance(id));
