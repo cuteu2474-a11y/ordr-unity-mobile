@@ -1051,7 +1051,12 @@ namespace Ordr.Mobile.Mobile
                     foreach (var row in owned)
                     {
                         if (!materials.Contains(row.InstanceId)) continue;
-                        foreach (string native in objects.Find(row.Unit.Id).OriginalAbilityRawcodes)
+                        var sourceObject = objects.Find(row.Unit.Id);
+                        // Source-only support actors (for example h05Y/h0AN)
+                        // are legitimate materials but have no combat-stat
+                        // row or native cast ability.
+                        if (sourceObject == null) continue;
+                        foreach (string native in sourceObject.OriginalAbilityRawcodes)
                             if (native == ability) { caster = row; break; }
                         if (caster != null) break;
                     }

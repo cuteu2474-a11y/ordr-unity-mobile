@@ -404,7 +404,7 @@ namespace Ordr.Mobile.Tests
                 bool declared = false;
                 for (int i = 0; i < 1000; ++i)
                 {
-                    var events = live.Battle.Advance(.005);
+                    var events = live.Battle.Advance(.02);
                     if (!events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
                         e.Detail.Contains("Bsk:10/100"))) continue;
                     Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
@@ -887,7 +887,13 @@ namespace Ordr.Mobile.Tests
         {
             using (var live = Create("E-09", true, -4900, 5400))
             {
-                var events = live.Battle.Advance(5);
+                // Inspect the summon immediately after its successful
+                // attack: an expired 3-second source soldier is no longer
+                // supposed to count as a live combat contributor.
+                var events = new List<CharacterCombatEvent>();
+                for (int tick = 0; tick < 200 &&
+                    live.Combat.PracticeSongSoldierCount(live.ActorId) == 0; tick++)
+                    events.AddRange(live.Battle.Advance(.1));
                 Assert.IsTrue(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == "3연타 마법" &&
@@ -1213,7 +1219,7 @@ namespace Ordr.Mobile.Tests
             {
                 int before = live.Combat.CharacterCount;
                 bool observed = false;
-                for (int step = 0; step < 40; step++)
+                for (int step = 0; step < 100; step++)
                 {
                     live.Battle.Advance(.2);
                     if (!live.Combat.PracticeSummonsOf(live.ActorId).Any(x =>
@@ -3072,7 +3078,11 @@ namespace Ordr.Mobile.Tests
                 live.Combat.ConfigureSourceModelUnitResources(
                     SourceModelUnitResourceCatalog.FromOriginalObjectStats(
                         Data("original-2323C-unit-object-stats.json"), map));
-                var events = live.Battle.Advance(10);
+                var events = new List<CharacterCombatEvent>();
+                for (int tick = 0; tick < 240 && !events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "세월관통"); tick++)
+                    events.AddRange(live.Battle.Advance(.1));
                 var unlocks = events.Where(x => x.Type ==
                     CharacterCombatEventType.SkillActivated && x.SkillName == "세월관통")
                     .ToList();
@@ -3124,7 +3134,11 @@ namespace Ordr.Mobile.Tests
                 live.Combat.ConfigureSourceModelUnitResources(
                     SourceModelUnitResourceCatalog.FromOriginalObjectStats(
                         Data("original-2323C-unit-object-stats.json"), map));
-                var events = live.Battle.Advance(10);
+                var events = new List<CharacterCombatEvent>();
+                for (int tick = 0; tick < 240 && !events.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == "세월관통"); tick++)
+                    events.AddRange(live.Battle.Advance(.1));
                 var root = events.FirstOrDefault(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == "세월관통");

@@ -38,21 +38,34 @@ namespace Ordr.Mobile.Combat
             bool eleventhFormOwner = SourceModelEleventhFormHasAttack(rawcode);
             bool standaloneTemporary = IsStandaloneSourceTemporaryAttack(rawcode);
             bool ninthOwner = SourceModelNinthSkillCatalog.HasOwner(rawcode);
+            // Always discover every relevant catalogue. A previous OR chain
+            // stopped at the first source callback and never reached separate
+            // approved tooltip packets (notably TR-03/TR-17/TR-27).
+            bool hasLegacyScript =
+                SourceModelScriptAttackCatalog.TryGet(rawcode, out script) ||
+                SourceModelNextAttackCatalog.TryGet(rawcode, out script) ||
+                SourceModelThirdAttackCatalog.TryGet(rawcode, out script) ||
+                SourceModelFourthAttackCatalog.TryGet(rawcode, out script) ||
+                SourceModelFifthAttackCatalog.TryGet(rawcode, out script);
+            bool hasBatch = SourceModelBatchAttackCatalog.TryGet(rawcode, out batch);
+            bool hasNext = SourceModelNextThirtySkillCatalog.TryGet(
+                rawcode, out nextThirty);
+            bool hasUnconnected = SourceModelUnconnectedSkillCatalog.TryGet(
+                rawcode, out unconnected);
+            // An already modeled JASS script must not also roll an
+            // independent tooltip skill for the same source attack.
+            if (hasLegacyScript)
+            {
+                nextThirty = null;
+                unconnected = null;
+                hasNext = hasUnconnected = false;
+            }
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
                 !processingStep || game.Phase != SessionPhase.Running ||
                 (!nativeUtaForm && !practiceBonney && !eleventhFormOwner &&
-                 !SourceModelScriptAttackCatalog.TryGet(rawcode, out script) &&
-                 !SourceModelNextAttackCatalog.TryGet(rawcode, out script) &&
-                 !SourceModelThirdAttackCatalog.TryGet(rawcode, out script) &&
-                 !SourceModelFourthAttackCatalog.TryGet(rawcode, out script) &&
-                 !SourceModelFifthAttackCatalog.TryGet(rawcode, out script) &&
-                 !SourceModelBatchAttackCatalog.TryGet(rawcode, out batch) &&
-                 !SourceModelNextThirtySkillCatalog.TryGet(rawcode, out nextThirty) &&
-                 !SourceModelUnconnectedSkillCatalog.TryGet(rawcode, out unconnected) &&
-                 !ninthOwner &&
-                 !standaloneTemporary &&
-                 !specialFromJass &&
-                 !nativeFromJass))
+                 !hasLegacyScript && !hasBatch && !hasNext &&
+                 !hasUnconnected && !ninthOwner && !standaloneTemporary &&
+                 !specialFromJass && !nativeFromJass))
                 return;
 
             long id;
@@ -136,13 +149,15 @@ namespace Ordr.Mobile.Combat
 
             if (batch != null)
             {
-                // A registered JASS batch and a separately modeled tooltip
-                // packet may coexist for the same owner. Do not swallow the
-                // latter merely because the batch callback was registered first.
                 if (batch.CatalogId == actor.Catalog.Id)
                     ExecuteSourceModelBatchAttack(actor, primary, batch);
-                if (unconnected != null && unconnected.CatalogId == actor.Catalog.Id)
-                    ExecuteSourceModelUnconnectedProfileAttacks(actor, primary, unconnected);
+                // Original JASS batch hits and explicitly approved tooltip
+                // skills are independent effects of the SAME attack event.
+                // Never replace the native batch with the tooltip packet.
+                if (unconnected != null &&
+                    unconnected.CatalogId == actor.Catalog.Id)
+                    ExecuteSourceModelUnconnectedProfileAttacks(actor, primary,
+                        unconnected);
                 return;
             }
 

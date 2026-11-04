@@ -224,14 +224,28 @@ namespace Ordr.Mobile.Combat
                 var definitions = form == null
                     ? sourceModelUnitEffects.AurasFor(characters[id].Catalog.Id)
                     : sourceModelUnitEffects.AurasForObject(form);
+                // One original actor may carry two overlapping aura
+                // abilities of the SAME effect/strength (Chopper's A0OK
+                // and A0OL). They provide one effective buff, not two
+                // independent contributors or a false multi-owner conflict.
+                var owned = new List<Original323AuraContribution>();
+                double? strength = null;
+                bool equalStrength = true;
                 foreach (var aura in definitions)
                 {
                     if (aura.Type != type || !sourceModelUnitEffects.IsSupportedAura(aura)) continue;
                     if (recipientIsAlly && !aura.AllowsAllyRole(ally.HasValue && id == ally.Value)) continue;
                     first = first ?? aura;
-                    contributions.Add(new Original323AuraContribution(aura.AbilityRawcode,
+                    if (strength.HasValue && Math.Abs(strength.Value - aura.Amount) > .000001)
+                        equalStrength = false;
+                    strength = strength ?? aura.Amount;
+                    owned.Add(new Original323AuraContribution(aura.AbilityRawcode,
                         aura.BuffRawcode, aura.Level, aura.Amount, aura.Type));
                 }
+                if (equalStrength && owned.Count > 1)
+                    contributions.Add(owned[0]);
+                else
+                    contributions.AddRange(owned);
             }
             foreach (var independent in sourceIndependentAttackers.Values)
             {

@@ -282,8 +282,9 @@ namespace Ordr.Mobile.Combat
             foreach (var candidate in caster.Profile.Skills)
                 if (candidate.Id == skillId) { selected = candidate; break; }
             if (selected == null) return false;
-            // A known model owner must not fall through to the generic
-            // resource ledger when a tooltip active is not approved.
+            // Preserve the latest main owner-bound active-skill authorization.
+            // Never permit a known source-model unit to debit a resource
+            // through another unit's or an unapproved tooltip packet.
             if (!SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
                     caster.Catalog.Id, approvedNames, selected))
             {
@@ -361,7 +362,14 @@ namespace Ordr.Mobile.Combat
             // multi-hit practice executor. The normal manual/unknown cast
             // path still rejects unsupported time-based packets. "true"
             // permits documented hit counts, not original Warcraft timing.
-            result = caster.Abilities.TryCast(skillId, true, true, out accepted);
+            // The full, owner-bound tooltip packet was already validated.
+            // Authorize only components belonging to that selected packet;
+            // unknown skills cannot borrow this exception at the UI gate.
+            result = caster.Abilities.TryCast(skillId, true, true, component => {
+                foreach (var permitted in selected.Components)
+                    if (Object.ReferenceEquals(permitted, component)) return true;
+                return false;
+            }, out accepted);
             if (result != AbilityCastResult.Cast) return true;
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 InstanceKey(caster.Id), primary.Id, accepted.Name,

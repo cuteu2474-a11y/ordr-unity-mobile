@@ -279,7 +279,10 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(ManualActionState.Succeeded,
                 game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State);
             var result = game.Combat.MobileUnitSnapshot().Single();
-            Assert.AreEqual(recipe.Results[0].Rawcode, game.Map.Find(result.Unit.Id).OriginalRawcode);
+            var sourceObject = game.Map.Find(result.Unit.Id);
+            Assert.AreEqual(recipe.Results[0].Rawcode, sourceObject != null ?
+                sourceObject.OriginalRawcode : result.Unit.OriginalSourceRawcode,
+                "A wiki-linked source result may exist without a forged map-stat row.");
             Assert.IsFalse(originalIds.Contains(result.InstanceId));
             var basic = new SourceModelBasicCombatRules(game.Map, new SeededNonOriginalProcRandom(1));
             basic.Enable();

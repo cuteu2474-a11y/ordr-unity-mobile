@@ -267,13 +267,16 @@ namespace Ordr.Mobile.Combat
                 {
                     int count;
                     int? limit;
-                    if (!CommonSkillStatusEffects.TryReadArmorBreak(component, out count, out limit)) return false;
+                    if (!CommonSkillStatusEffects.TryReadArmorBreak(component, out count, out limit) &&
+                        (specialAllowed == null || !specialAllowed(component)))
+                        return false;
                 }
                 else if (CommonSkillStatusEffects.IsTimedStatus(component.Type))
                 {
                     CombatEffectType kind;
                     double amount, duration;
-                    if (!CommonSkillStatusEffects.TryRead(component, out kind, out amount, out duration))
+                    if (!CommonSkillStatusEffects.TryRead(component, out kind, out amount, out duration) &&
+                        (specialAllowed == null || !specialAllowed(component)))
                         return false;
                 }
                 else if (!(approvedTwentyFourth &&

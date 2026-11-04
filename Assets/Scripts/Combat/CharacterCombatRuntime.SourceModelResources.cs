@@ -146,8 +146,11 @@ namespace Ordr.Mobile.Combat
             if (maximumPerFrame < 1 || maximumPerFrame > 256)
                 throw new ArgumentOutOfRangeException(nameof(maximumPerFrame));
             if (!UsesSourceModelBasicAttacks || game.Phase != Ordr.Mobile.Core.SessionPhase.Running ||
-                processingStep || pendingStepSeconds != 0 ||
-                sourceModelResourceCatalog == null) return 0;
+                processingStep || pendingStepSeconds != 0) return 0;
+            // A unit with independently verified external CharacterResources
+            // may auto-cast an explicitly approved source skill even when
+            // no global source-object resource catalogue was installed.
+            // Individual actors without resource states still remain blocked.
 
             var ids = new List<long>(characters.Keys);
             ids.Sort();

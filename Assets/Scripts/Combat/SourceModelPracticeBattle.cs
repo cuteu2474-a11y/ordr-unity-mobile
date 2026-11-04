@@ -227,13 +227,16 @@ namespace Ordr.Mobile.Combat
             // Validate every selected source identity before mutating the session.
             for (int wave = 1; wave <= catalog.LastRound; wave++)
                 plans.Add(catalog.BuildPracticePlan(wave, originalSpawns));
-            world.ConfigureSourceModelRouteCorners(catalog.RouteCorners);
+            // Route corners are a validated part of the catalog, but may only
+            // be installed after the host enables the source-model runtime.
+            // Preparation constructs this object before that transition.
         }
         public void Start()
         {
             if (Started || !economy.HasStarted || combat.Game.Phase != SessionPhase.Running ||
                 combat.Game.CurrentWave != 0 || !combat.UsesSourceModelBasicAttacks)
                 throw new InvalidOperationException("유닛 준비 상태에서 연습 전투를 시작하세요.");
+            combat.ConfigureSourceModelRouteCorners(catalog.RouteCorners);
             waves.VerifiedMonsterDefeated += RewardActualDeath;
             combat.SourceModelTimeAdvancing += MoveLivingMonsters;
             Started = true;
