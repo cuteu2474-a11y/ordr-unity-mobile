@@ -183,3 +183,5 @@
 
 **캐릭터 이미지 후속(코드 반영·실행 검사 전):** `OrdrCharacterPortraits`는 도감 ID별 개인용 `Resources` PNG를 우선 표시하고, 없으면 실제 플레이 중 `https://ordr.kr/images/{원본도감코드}.png`에서 필요한 사진만 최대 3건 병렬 요청해 Android 앱 내부에 캐싱합니다. 전장에 이미 생성된 유닛도 다운로드 후 해당 SpriteRenderer만 교체하고, 보유 유닛/상세 UI는 사진이 없으면 기존 등급 사각 아이콘을 보여줍니다. `tools/import_private_portraits.py`와 Android 빌드 목록은 9장 고정에서 전 등급 유닛 ID의 임의 부분 묶음으로 확대했고, 원본 PNG는 **공개 GitHub에 넣지 않습니다**. 인터넷/원본 사진 부재 시 기존 그림을 유지하며, 이미지의 원작 저작권은 이전과 동일하게 존중합니다. 전투·획득·조합 규칙 미변경. Unity/Android/APK/Python 실행 검사는 성현 님 요청 전 실시하지 않습니다. [개인용 사진 빌드 안내](docs/PRIVATE_PORTRAIT_BUILD.md).
 
+**이미지 기능 Actions 실패 원인·수정(실행 검사 전):** [Actions #41796865729](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41796865729)의 Python 회귀 검사는 성공했고 Unity EditMode에서 `OrdrCharacterPortraits.cs(93,55)`의 `CS1069 UnityWebRequestModule` 참조 누락으로 컴파일이 중단됐습니다. `Packages/manifest.json`에 Unity 6 빌트인 `com.unity.modules.unitywebrequest` 및 같은 사진 로더의 `com.unity.modules.imageconversion`을 함께 등록하고, 미설정 재발 방지용 Python 테스트 코드만 추가했습니다. Unity/Android/Python 검사는 성현 님 요청 전 실행하지 않으며, 완료 여부는 다음 Actions 결과 확인 전까지 **미검증**입니다.
+

@@ -8,6 +8,9 @@
 
 네트워크 없이 처음부터 초상화를 쓰고 싶은 **개인용 APK**는 다음 방법으로
 사진을 앱 안에 미리 넣을 수 있습니다. 미리 넣은 사진이 다운로드 사진보다 우선합니다.
+Unity 6의 사진 다운로드·PNG 디코딩에 필요한 내장 모듈
+`com.unity.modules.unitywebrequest` 및 `com.unity.modules.imageconversion`은
+`Packages/manifest.json`에 명시되어 있습니다.
 
 ## 개인 기기용 APK 생성
 
