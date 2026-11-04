@@ -54,9 +54,26 @@ class PrivatePortraitInjectionTests(unittest.TestCase):
         self.assertFalse((self.root / "unwanted.png").exists())
         self.assertEqual(destinations, PORTRAITS.inject(self.bundle, self.repo))
 
-    def test_missing_image_does_not_partially_inject(self):
+    def test_partial_catalog_bundle_is_allowed_without_fabricating_missing_images(self):
         self.write_zip(omit=4)
-        with self.assertRaises(KeyError):
+        destinations = PORTRAITS.inject(self.bundle, self.repo)
+        self.assertEqual(8, len(destinations))
+        self.assertFalse((self.repo / PORTRAITS.RESOURCE_PATH / "C-04.png").exists())
+
+    def test_high_grade_catalog_images_and_hyphenated_names(self):
+        with zipfile.ZipFile(self.bundle, "w") as archive:
+            archive.writestr("TR24.png", tiny_png())
+            archive.writestr("E-09.png", tiny_png())
+            archive.writestr("../../../outside.png", tiny_png())
+        destinations = PORTRAITS.inject(self.bundle, self.repo)
+        self.assertEqual({"TR-24.png", "E-09.png"}, {path.name for path in destinations})
+        self.assertFalse((self.root / "outside.png").exists())
+
+    def test_duplicate_character_images_rejected_before_writing(self):
+        with zipfile.ZipFile(self.bundle, "w") as archive:
+            archive.writestr("C1.png", tiny_png())
+            archive.writestr("C-01.png", tiny_png())
+        with self.assertRaises(ValueError):
             PORTRAITS.inject(self.bundle, self.repo)
         self.assertFalse((self.repo / PORTRAITS.RESOURCE_PATH).exists())
 

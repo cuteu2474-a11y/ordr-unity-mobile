@@ -1567,8 +1567,11 @@ namespace Ordr.Mobile.Unity
         private static void DrawCharacterPortrait(string unitId, float size)
         {
             Sprite portrait = OrdrCharacterPortraits.Find(unitId);
+            if (portrait == null)
+                portrait = OrdrBattlefieldArt.UnitSprite(unitId);
             if (portrait != null)
-                GUILayout.Box(portrait.texture, GUILayout.Width(size), GUILayout.Height(size));
+                GUILayout.Box(portrait.texture, GUILayout.Width(size),
+                    GUILayout.Height(size));
         }
 
         private void DrawPager(int page, int pages, Action<int> changePage)

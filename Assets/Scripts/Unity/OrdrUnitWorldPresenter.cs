@@ -845,6 +845,22 @@ namespace Ordr.Mobile.Unity
                         ? basic.Attack1.OriginalWeaponType : null;
                     visuals.Add(entry.InstanceId, visual);
                 }
+                // Remote portraits load after the unit was first placed. Switch
+                // the existing SpriteRenderer in place instead of recreating
+                // the unit, its selection frame, or its attack effects.
+                if (!visual.HasPortrait)
+                {
+                    Sprite loaded = OrdrCharacterPortraits.Find(entry.Unit.Id);
+                    if (loaded != null)
+                    {
+                        visual.Icon.sprite = loaded;
+                        visual.HasPortrait = true;
+                        float longestSide = Mathf.Max(loaded.bounds.size.x,
+                            loaded.bounds.size.y);
+                        if (longestSide > 0f)
+                            visual.Icon.transform.localScale = Vector3.one / longestSide;
+                    }
+                }
 
                 bool isSelected = combat.Roster.SelectedId.HasValue &&
                     combat.Roster.SelectedId.Value == entry.InstanceId;

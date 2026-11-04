@@ -403,8 +403,8 @@
 
 ## 선택적 비공개 도감 초상화
 
-- `tools/import_private_portraits.py`: 저장소 **밖**에 보관한 C1~C9 PNG/ZIP을 검증해 Git 무시 경로 `Assets/Resources/CharacterPortraits/`에 C-01~C-09 이름으로 복사합니다.
-- `Assets/Editor/OrdrPrivateCharacterPortraitImporter.cs`: 로컬 PNG를 Unity Sprite로 설정합니다. `Assets/Scripts/Unity/OrdrCharacterPortraits.cs`가 읽기 전용 캐시를 제공하며, `OrdrUnitWorldPresenter`와 `OrdrMobileTouchPanel`이 동일한 유닛 ID로 표시합니다.
+- `tools/import_private_portraits.py`: 저장소 **밖**에 보관한 도감 ID PNG/ZIP 전체 등급을 검증해 Git 무시 경로 `Assets/Resources/CharacterPortraits/`에 유닛 ID로 복사합니다(일부만 가능).
+- `Assets/Editor/OrdrPrivateCharacterPortraitImporter.cs`: 로컬 PNG를 Unity Sprite로 설정합니다. `OrdrCharacterPortraits`는 개인용 리소스를 우선 사용하고, 없으면 HTTPS 원본 도감 사진을 게임 중 필요한 순서대로 다운로드·기기 캐싱합니다. `OrdrUnitWorldPresenter`는 늦게 로드된 사진으로 전장 아이콘을 갱신하고 `OrdrMobileTouchPanel`은 상세 사진/기본 사각형 대체 그림을 표시합니다.
 - 공개 GitHub의 CI에는 이미지가 없어서 기존 원형 마커가 표시됩니다. 개인용 이미지 포함 APK는 [비공개 로컬 빌드](PRIVATE_PORTRAIT_BUILD.md)만 해당합니다. 전투 데이터와 도감 기술 실행 로직에는 영향을 주지 않습니다.
 
 ## 최신 — 원본 결과 기반 변신·소환 모델

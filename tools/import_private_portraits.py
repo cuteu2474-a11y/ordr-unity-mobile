@@ -6,15 +6,29 @@ PNGs as Sprite assets via OrdrPrivateCharacterPortraitImporter before building.
 """
 
 import argparse
+import json
+import re
 import struct
 import sys
 import zipfile
 from pathlib import Path
 
-PORTRAIT_IDS = tuple(f"C-{number:02d}" for number in range(1, 10))
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 RESOURCE_PATH = Path("Assets/Resources/CharacterPortraits")
 MAX_FILE_SIZE = 4 * 1024 * 1024
+IMAGE_NAME = re.compile(r"^([A-Z]{1,3})-?(\d{1,2})\.png$")
+
+
+def catalog_image_names() -> dict[str, str]:
+    """Map image basenames (C1 / TR24) to stable catalog IDs (C-01 / TR-24)."""
+    root = Path(__file__).resolve().parents[1]
+    lookup = {}
+    for filename in ("data/units.json", "data/wiki-unit-catalog-extension.json"):
+        for entry in json.loads((root / filename).read_text(encoding="utf-8"))["entries"]:
+            unit_id = entry["id"]
+            prefix, number = unit_id.split("-")
+            lookup[f"{prefix}{int(number)}"] = unit_id
+    return lookup
 
 
 def validate_png(data: bytes, name: str) -> None:
@@ -30,18 +44,39 @@ def validate_png(data: bytes, name: str) -> None:
 
 
 def read_portraits(source: Path) -> dict[str, bytes]:
-    """Read only explicit C1..C9 entries; never extract ZIP paths."""
+    """Read any known catalog images without extracting arbitrary ZIP paths."""
+    names = catalog_image_names()
+    images = {}
     if source.is_dir():
-        images = {
-            unit_id: (source / f"C{number}.png").read_bytes()
-            for number, unit_id in enumerate(PORTRAIT_IDS, start=1)
-        }
+        entries = ((path.name, path.read_bytes()) for path in source.iterdir()
+                   if path.is_file() and not path.is_symlink() and path.suffix == ".png")
+        for filename, data in entries:
+            match = IMAGE_NAME.fullmatch(filename)
+            if match is None:
+                continue
+            unit_id = names.get(f"{match.group(1)}{int(match.group(2))}")
+            if unit_id is None:
+                continue
+            if unit_id in images:
+                raise ValueError(f"Duplicate portrait ID: {unit_id}")
+            images[unit_id] = data
     else:
         with zipfile.ZipFile(source) as archive:
-            images = {
-                unit_id: archive.read(f"C{number}.png")
-                for number, unit_id in enumerate(PORTRAIT_IDS, start=1)
-            }
+            for item in archive.infolist():
+                # Only filenames at the ZIP root; never expand archive paths.
+                if item.is_dir() or "/" in item.filename or "\\" in item.filename:
+                    continue
+                match = IMAGE_NAME.fullmatch(item.filename)
+                if match is None:
+                    continue
+                unit_id = names.get(f"{match.group(1)}{int(match.group(2))}")
+                if unit_id is None:
+                    continue
+                if unit_id in images:
+                    raise ValueError(f"Duplicate portrait ID: {unit_id}")
+                images[unit_id] = archive.read(item)
+    if not images:
+        raise ValueError("No known catalog portrait PNG files found")
     for unit_id, image in images.items():
         validate_png(image, unit_id)
     return images
@@ -55,7 +90,7 @@ def inject(source: Path, project_root: Path) -> list[Path]:
     ignore_file = project_root / ".gitignore"
     if not ignore_file.is_file() or "Assets/Resources/CharacterPortraits/" not in ignore_file.read_text():
         raise ValueError("Public repo must ignore Assets/Resources/CharacterPortraits/ first")
-    images = read_portraits(source)  # Fail before writing if even one asset is missing.
+    images = read_portraits(source)  # Validate the entire supplied batch first.
     target = project_root / RESOURCE_PATH
     target.mkdir(parents=True, exist_ok=True)
     destinations = []

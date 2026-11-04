@@ -29,8 +29,8 @@ namespace Ordr.Mobile.Editor
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(scene) == null)
                 throw new BuildFailedException("ORDR 기본 게임 씬이 없습니다: " + scene);
             OrdrCharacterDataSync.EnsureRequiredRuntimeResources();
-            // Public builds have no private portraits. If local portraits are
-            // installed, do not silently ship a partly populated/private APK.
+            // Public builds have no bundled private portraits. Personal builds
+            // may include any validated subset of the full character catalog.
             string[] privatePortraits = PrivatePortraitAssetPaths();
             foreach (string path in privatePortraits)
                 if (AssetDatabase.LoadAssetAtPath<Sprite>(path) == null)
@@ -51,6 +51,9 @@ namespace Ordr.Mobile.Editor
             PlayerSettings.Android.buildApkPerCpuArchitecture = false;
             PlayerSettings.Android.splitApplicationBinary = false;
             PlayerSettings.Android.useCustomKeystore = false;
+            // Public APKs may fetch portraits over HTTPS; no other gameplay
+            // feature depends on this permission being auto-inferred.
+            PlayerSettings.Android.forceInternetPermission = true;
             EditorUserBuildSettings.buildAppBundle = false;
             EditorUserBuildSettings.exportAsGoogleAndroidProject = false;
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.AutoRotation;
@@ -90,14 +93,19 @@ namespace Ordr.Mobile.Editor
                 Directory.GetFiles(directory, "*.png").Length == 0)
                 return new string[0];
 
-            string[] expected = Enumerable.Range(1, 9)
-                .Select(n => root + "C-" + n.ToString("00", CultureInfo.InvariantCulture) + ".png")
-                .ToArray();
-            string[] missing = expected.Where(path => !File.Exists(
-                Path.Combine(directory, Path.GetFileName(path)))).ToArray();
-            if (missing.Length > 0)
-                throw new BuildFailedException("개인용 도감 사진 9장 중 누락: " + string.Join(", ", missing));
-            return expected;
+            string[] filenames = Directory.GetFiles(directory, "*.png");
+            string[] paths = filenames.Select(filename => root + Path.GetFileName(filename))
+                .OrderBy(path => path, StringComparer.Ordinal).ToArray();
+            foreach (string path in paths)
+            {
+                string id = Path.GetFileNameWithoutExtension(path);
+                int separator = id.IndexOf('-');
+                if (separator < 1 || separator > 3 || separator != id.Length - 3 ||
+                    !id.Substring(0, separator).All(ch => ch >= 'A' && ch <= 'Z') ||
+                    !id.Substring(separator + 1).All(ch => ch >= '0' && ch <= '9'))
+                    throw new BuildFailedException("잘못된 개인용 도감 이미지 이름: " + path);
+            }
+            return paths;
         }
 
         private static void WriteRuntimeDataBuildManifest(BuildReport report, string path,
