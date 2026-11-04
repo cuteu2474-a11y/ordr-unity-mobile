@@ -42,6 +42,9 @@ namespace Ordr.Mobile.Tests
             var registry = OriginalJassFusionCatalog.FromJson(Data("original-jass-fusion-registry.json"));
             var labels = OriginalUnitRawcodeLabelCatalog.FromJson(Data("original-unit-rawcode-label-links.json"), units, registry);
             var preview = OriginalFusionObjectPreviewCatalog.FromJson(Data("original-fusion-object-reconciliation.json"), registry, units);
+            // Production loads the pinned original source data, then the
+            // source-only wiki overlay containing the stage-nine h05Y ship.
+            units.ApplyWikiExtension(Data("wiki-unit-catalog-extension.json"));
             var fallback = new OriginalJassReadOnlyFusionPort(registry, preview, id => combat.IsStoryDeployed(id));
             return new Live { Combat = combat, Economy = economy, Units = units, Map = map,
                 Registry = registry, Labels = labels,
@@ -53,6 +56,79 @@ namespace Ordr.Mobile.Tests
             return game.Registry.All.Where(r => game.Fusion.CanCommitRecipe(r.AbilityRawcode) &&
                     !r.OrderedConditions.Any(c => c.Kind == "RMAX"))
                 .Select(r => r.AbilityRawcode).ToArray();
+        }
+
+        [TestCase("A02Q", "L-35", "h087")]
+        [TestCase("A10A", "LI-10", "h0AI")]
+        public void StageNineAncientShipIsOneRealConsumableFusionMaterial(
+            string ability, string resultId, string resultRawcode)
+        {
+            var game = Create();
+            var source = new Original323AncientShipStoryRewardPort(
+                game.Combat, game.Economy, game.Units, game.Map);
+            var progression = new Original323StoryMobileProgression(game.Economy.Wallet);
+            progression.ConnectStoryMaterialEffects(source);
+            var awards = new Original323StoryNativeRewardQueue();
+            awards.RecordCommittedClear(9);
+            Assert.AreEqual(3, awards.ApplyPending(progression)); // research, h05Y, trait
+            Assert.AreEqual(0, awards.PendingCount);
+            Assert.IsTrue(game.Economy.Wallet.HasCompletedTransaction(
+                Original323AncientShipStoryRewardPort.StageNineReceipt));
+            Assert.AreEqual(1, game.Combat.MobileUnitSnapshot().Count(x =>
+                x.Unit.Id == Original323AncientShipStoryRewardPort.MaterialCatalogId));
+
+            var recipe = game.Registry.FindByAbility(ability);
+            CollectionAssert.Contains(recipe.RequiredUnitRawcodes().Keys, "h05Y");
+            Assert.IsTrue(game.Fusion.CanCommitRecipe(ability));
+            string mapped;
+            Assert.IsTrue(game.Fusion.TryResolveUnit("h05Y", out mapped));
+            Assert.AreEqual("R-44", mapped);
+            foreach (var material in recipe.RequiredUnitRawcodes())
+            {
+                if (material.Key == "h05Y") continue;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out mapped));
+                for (int i = 0; i < material.Value; i++)
+                    game.Combat.SpawnCharacter(mapped, 17, 29);
+            }
+            var gold = recipe.OrderedConditions.Where(x => x.Kind == "GOLD")
+                .Sum(x => x.Count);
+            var wood = recipe.OrderedConditions.Where(x => x.Kind == "WOOD")
+                .Sum(x => x.Count);
+            var costs = new ResourceBundle();
+            if (gold > 0) costs.Add("gold", gold);
+            if (wood > 0) costs.Add("wood", wood);
+            game.Economy.Wallet.Grant(costs);
+            var preview = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == ability);
+            Assert.IsTrue(preview.IsReady, string.Join(";", preview.MissingMaterials));
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion(ability, preview.SuggestedMaterialInstances).State);
+            Assert.AreEqual(resultId, game.Combat.MobileUnitSnapshot().Single().Unit.Id);
+            Assert.AreEqual(resultRawcode, game.Map.Find(resultId).OriginalRawcode);
+            // A new award queue after restore cannot resurrect a consumed ship.
+            var replay = new Original323StoryNativeRewardQueue();
+            replay.RecordCommittedClear(9);
+            var secondProgression = new Original323StoryMobileProgression(game.Economy.Wallet);
+            secondProgression.ConnectStoryMaterialEffects(source);
+            Assert.AreEqual(3, replay.ApplyPending(secondProgression));
+            Assert.AreEqual(0, game.Combat.MobileUnitSnapshot().Count(x => x.Unit.Id == "R-44"));
+            Assert.AreEqual(1, game.Combat.CharacterCount);
+        }
+
+        [Test]
+        public void AncientShipDoesNotSpawnForUncommittedOrMismatchedStoryAwards()
+        {
+            var game = Create();
+            var source = new Original323AncientShipStoryRewardPort(
+                game.Combat, game.Economy, game.Units, game.Map);
+            Assert.IsFalse(source.TryApplySourceNativeReward(null));
+            var queue = new Original323StoryNativeRewardQueue();
+            queue.RecordCommittedClear(8);
+            Assert.AreEqual(0, queue.Awards.Count(x =>
+                x.Kind == Original323StoryNativeRewardKind.AncientShip));
+            Assert.AreEqual(0, game.Combat.MobileUnitSnapshot().Count(x => x.Unit.Id == "R-44"));
+            Assert.IsFalse(game.Economy.Wallet.HasCompletedTransaction(
+                Original323AncientShipStoryRewardPort.StageNineReceipt));
         }
         [TestCaseSource(nameof(ExecutableRecipes))]
         public void OwnedMaterialsBecomeExactlyOneRealResultWithExactCosts(string ability)
@@ -172,9 +248,9 @@ namespace Ordr.Mobile.Tests
             };
             Assert.AreEqual(21, abilities.Length);
             Assert.AreEqual(abilities.Length, abilities.Distinct(StringComparer.Ordinal).Count());
-            Assert.AreEqual(4, game.Fusion.ExecutableMobileOutcomeLegendaryCount);
+            Assert.AreEqual(5, game.Fusion.ExecutableMobileOutcomeLegendaryCount);
             Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeHiddenCount);
-            Assert.AreEqual(18, game.Fusion.ExecutableMobileOutcomeUpperTierCount); // + 41차 알비다, 43차 ITEM 2
+            Assert.AreEqual(19, game.Fusion.ExecutableMobileOutcomeUpperTierCount); // + 44차 고대의 배 킹
             foreach (var ability in abilities)
             {
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
@@ -207,7 +283,7 @@ namespace Ordr.Mobile.Tests
             // identities remain blocked rather than silently discarded.
             foreach (var blocked in new[] {
                 "A007", "IM01", "IM04", "ET04", "ET12",
-                "A02Q", "A10A", "TR30"
+                "TR30"
             })
                 Assert.IsFalse(game.Fusion.CanCommitRecipe(blocked), blocked);
         }
@@ -218,7 +294,7 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             var aOsf = new[] { "A19Z", "A1A1", "A1A0" };
             Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeAOsfCount);
-            Assert.AreEqual(231, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(233, game.Fusion.ExecutableRecipeCount);
             foreach (var ability in aOsf)
             {
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
@@ -278,8 +354,8 @@ namespace Ordr.Mobile.Tests
                 StringAssert.Contains("조합 아님", preview.Title);
                 Assert.IsFalse(preview.IsReady);
             }
-            foreach (string ability in new[] { "A02Q", "A10A", "TR30",
-                "A007", "A011", "IM01", "IM04", "ET04", "ET07", "ET12" })
+            foreach (string ability in new[] { "TR30",
+                "A007", "IM01", "IM04", "ET04", "ET07", "ET12" })
                 Assert.IsFalse(game.Fusion.CanCommitRecipe(ability), ability);
         }
 

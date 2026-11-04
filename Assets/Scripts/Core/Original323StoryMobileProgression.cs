@@ -16,6 +16,7 @@ namespace Ordr.Mobile.Core
         private readonly HashSet<string> research =
             new HashSet<string>(StringComparer.Ordinal);
         private IOriginal323StoryNativeRewardPort externalEffects;
+        private IOriginal323StoryNativeRewardPort storyMaterialEffects;
         private IOriginal323StoryTraitSelection traitSelection;
         private readonly EconomyWallet sharedWallet;
         private bool traitPointsAlreadySettled;
@@ -51,6 +52,15 @@ namespace Ordr.Mobile.Core
                 throw new ArgumentException("자기 자신을 보상 처리기에 연결할 수 없습니다.");
         }
 
+        // The built-in stage-nine support actor is a separate native effect.
+        // An optional external replay adapter cannot create a second copy.
+        public void ConnectStoryMaterialEffects(IOriginal323StoryNativeRewardPort port)
+        {
+            if (storyMaterialEffects != null || port == null || ReferenceEquals(port, this))
+                throw new InvalidOperationException("스토리 재료 월드를 중복/잘못 연결했습니다.");
+            storyMaterialEffects = port;
+        }
+
         private static bool KnownResearch(int stage, string rawcode) =>
             (stage == 5 && rawcode == "R01N") ||
             (stage == 8 && rawcode == "R01O") ||
@@ -63,6 +73,13 @@ namespace Ordr.Mobile.Core
             if (award == null || string.IsNullOrWhiteSpace(award.Receipt))
                 return false;
             if (applied.Contains(award.Receipt)) return true;
+            if (award.Kind == Original323StoryNativeRewardKind.AncientShip &&
+                storyMaterialEffects != null)
+            {
+                if (!storyMaterialEffects.TryApplySourceNativeReward(award)) return false;
+                applied.Add(award.Receipt);
+                return true;
+            }
             if (award.Kind == Original323StoryNativeRewardKind.Research &&
                 award.Amount == 1 &&
                 KnownResearch(award.Stage, award.OriginalRawcode))

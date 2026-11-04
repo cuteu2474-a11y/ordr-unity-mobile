@@ -1,0 +1,73 @@
+{
+  "format": "ordr-batch44-stage-nine-ancient-ship-material-fusions-v1",
+  "gameVersion": "ORDR S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceRegistry": "data/original-jass-fusion-registry.json",
+  "sourceMapObjects": "data/original-2323C-map-base-stats.json",
+  "sourceNativeStoryQueue": "Assets/Scripts/Combat/Original323StoryNativeRewardQueue.cs",
+  "previousBatch": "data/original-2323C-source-item-fusions-batch43.json",
+  "summary": {
+    "cwrTotal": 266,
+    "executableBefore": 231,
+    "newlyExecutable": 2,
+    "executableAfter": 233,
+    "remainingNonExecutable": 33,
+    "sourceMaterialAcquisitionRoute": "stage-nine committed story clear -> one physical R-44/h05Y roster actor",
+    "localPythonUnityAndroidApkExecuted": false
+  },
+  "rules": [
+    "스토리 9단계 원본 보상 큐가 AncientShip h05Y x1를 실제 클리어 이후에만 발생시키며, 이 결과를 공유 전장 보유 유닛 R-44 실물 한 기로 정산합니다.",
+    "W3X의 h05Y '고대의 배 - 희귀'는 공격 없는 지원 객체이고 위키 확장 R-44에 정확히 대응합니다. 전투 공격력, 스킬, 드롭 확률을 추정하지 않습니다.",
+    "영수증 story:native:9:AncientShip:h05Y를 공유 지갑에 지속 기록하며, 중복 스토리 정산/재로딩 때 이미 소비된 고대의 배가 재생성되지 않게 합니다.",
+    "A02Q 토키: 원본 UNIT h01R/h05Y/h02F, WOOD 5, UPUN 표기를 보존합니다.",
+    "A10A 킹: 원본 UNIT h0AH/h02U/h05Y, GOLD 5000, WOOD 5, UBAN/KING 조건을 보존합니다.",
+    "조합은 실제 R-44 보유 유닛을 예약·제거하고 공통 UNIT/GOLD/WOOD 원자 지갑 거래와 결과 유닛 생성을 재사용합니다. 고대의 배 보상은 무료 조합 재료 선택 UI나 합성 가상 재화가 아닙니다.",
+    "고대의 배 원본 소환 좌표·JASS 추가 부가효과는 미검증이므로 모바일 플레이어 시작 위치를 사용하며 모바일 결과 모델로 표시합니다.",
+    "NUnit 테스트는 작성만 했으며 성현 님의 요청 전 로컬 실행·APK 생성은 하지 않습니다."
+  ],
+  "newlyExecutable": [
+    {
+      "abilityRawcode": "A02Q",
+      "resultRawcode": "h087",
+      "resultCatalogId": "L-35",
+      "resultName": "토키",
+      "sourceConditions": ["UNIT:h01R:1", "UNIT:h05Y:1", "UNIT:h02F:1", "WOOD:WOOD:5", "UPUN:H0BD:1", "UPUN:h08R:1"],
+      "ancientShipSource": "stage-nine story native reward",
+      "mobileOutcomeOnly": true
+    },
+    {
+      "abilityRawcode": "A10A",
+      "resultRawcode": "h0AI",
+      "resultCatalogId": "LI-10",
+      "resultName": "킹",
+      "sourceConditions": ["UNIT:h0AH:1", "UNIT:h02U:1", "UNIT:h05Y:1", "GOLD:GOLD:5000", "WOOD:WOOD:5", "UBAN:h0AI:1", "KING:h0AI:1"],
+      "ancientShipSource": "stage-nine story native reward",
+      "mobileOutcomeOnly": true
+    }
+  ],
+  "remaining33ByLane": {
+    "source-presentation-not-a-craft": 1,
+    "blocked-source-only-material": 1,
+    "already-connected-noncraft-wisp-outcome": 1,
+    "already-connected-noncraft-wisp-pool": 8,
+    "blocked-green-blood-condition": 1,
+    "blocked-known-native-post-effect": 6,
+    "blocked-native-rdun-acquisition": 14,
+    "development-only-not-retail": 1
+  },
+  "stillBlocked": [
+    "TR30:h0AN unknown acquired material",
+    "SPH3:CEN post-effect",
+    "A007/IM01/IM04/ET04/ET07/ET12 known post-effects",
+    "IS01..IS14:RDUN native acquisition",
+    "UU01:display only; SP01..SP08 and YY26:separate Wisp rewards; TEST:developer only"
+  ],
+  "unverified": [
+    "Original Warcraft ancient-ship creation coordinates and native extra callbacks",
+    "Unity compilation and EditMode execution",
+    "Android/APK end-to-end story-nine reward and fusion",
+    "AI01/AI02 live item suppliers, remaining native RDUN/CEN sources"
+  ]
+}

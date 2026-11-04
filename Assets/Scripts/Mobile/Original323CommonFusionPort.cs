@@ -161,7 +161,8 @@ namespace Ordr.Mobile.Mobile
             { "A00O", "h02P", "L-02" }, // 나미
             { "A025", "h035", "L-17" }, // 샹크스
             { "A0UG", "h042", "L-21" }, // 시노부
-            { "A02G", "h03B", "L-38" }  // 흰수염
+            { "A02G", "h03B", "L-38" }, // 흰수염
+            { "A02Q", "h087", "L-35" }  // 토키 · 9단계 고대의 배 실물 필요
         };
         private static readonly string[,] MobileOutcomeHidden = {
             { "YY01", "h03X", "H-09" }, // 방주맥심
@@ -274,7 +275,8 @@ namespace Ordr.Mobile.Mobile
         // cases with no IDENTIFIED deferred gameplay side effect. This is
         // mobile material->actor outcome parity, not native callback parity.
         // Keep A007/IM01/IM04/ET04/ET12 locked for KNOWN additional effects.
-        // Keep A10A (ancient ship h05Y) locked for missing object identity.
+        // Stage-nine story rewards now supply one non-attacking h05Y ship;
+        // both affected recipes consume the actual owned source actor.
         // Batch 41: the SKPT:4 Alvida gate uses real mission/story trait points
         // in the SAME atomic source-material wallet transaction.
         private static readonly string[,] MobileOutcomeUpperTiers = {
@@ -288,6 +290,7 @@ namespace Ordr.Mobile.Mobile
             { "A1A5", "h05E", "LI-07" }, // 에넬, gold 5000/wood 5
             { "A02O", "h05F", "LI-09" }, // 크로커다일, UPUN marker
             { "A1A6", "h05G", "LI-01" }, // 레드필드, source RMAX h05G/40
+            { "A10A", "h0AI", "LI-10" }, // 킹, stage-nine h05Y material
             { "IM05", "h04Q", "I-06" }, // 빅맘, wood 10
             { "IM06", "h04E", "I-07" }, // 센고쿠
             { "IM07", "h04F", "I-08" }, // 스코퍼가반
@@ -442,6 +445,8 @@ namespace Ordr.Mobile.Mobile
             // Unique W3X name+grade identity. UU01 is a presentation tag,
             // NOT an authorized free Rare Rayleigh acquisition.
             Bind(units, "R-43", "h05X", "희귀함");
+            Bind(units, Original323AncientShipStoryRewardPort.MaterialCatalogId,
+                Original323AncientShipStoryRewardPort.MaterialRawcode, "희귀함");
             // Original CSI 1% Rare-Wisp special pool includes h0BG. This
             // VERIFIED identity is for resolving an actual Wisp result only:
             // it does not grant SP08 fusion execution or approve A0YE
@@ -540,8 +545,13 @@ namespace Ordr.Mobile.Mobile
                     if (!permitted)
                         throw new FormatException("검수하지 않은 등급의 조합 재료입니다.");
                     hasMaterials = true;
-                    foreach (var nativeAbility in objects.Find(id).OriginalAbilityRawcodes)
-                        if (nativeAbility == ability) hasCaster = true;
+                    var sourceMaterial = objects.Find(id);
+                    if (sourceMaterial == null && !IsSourceOnlyAncientShip(id,
+                            instruction.Rawcode))
+                        throw new FormatException("하위 조합 재료의 원본 객체가 없습니다.");
+                    if (sourceMaterial != null)
+                        foreach (var nativeAbility in sourceMaterial.OriginalAbilityRawcodes)
+                            if (nativeAbility == ability) hasCaster = true;
                 }
                 bool chatRecipe = resultGrade == "히든" || resultGrade == "영원한";
                 bool requiresWood = resultGrade == "전설" || resultGrade == "영원한";
@@ -578,8 +588,16 @@ namespace Ordr.Mobile.Mobile
                     attack.AttackCooldownSeconds == 0.71 &&
                     attack.AttackPointSeconds == 0.26;
             }
+            bool sourceOnlyAncientShip = IsSourceOnlyAncientShip(id, rawcode) &&
+                grade == "희귀함" && row == null &&
+                unit.CatalogEntryKind == "support-object" &&
+                unit.OriginalSourceRawcode == rawcode &&
+                objects.SourceW3xSha256 == OriginalCommonSaleRules.OriginalMapSha256 &&
+                objects.HasNoncombatMapObject(rawcode,
+                    Original323AncientShipStoryRewardPort.OriginalMapName);
             if (unit.Grade != grade ||
-                (!sourceOnlyYujiro && (row == null || row.OriginalRawcode != rawcode)))
+                (!sourceOnlyYujiro && !sourceOnlyAncientShip &&
+                    (row == null || row.OriginalRawcode != rawcode)))
                 throw new FormatException("검수한 원본 객체가 다릅니다: " + id);
             string already;
             if (mappings.TryGetValue(rawcode, out already))
@@ -587,6 +605,12 @@ namespace Ordr.Mobile.Mobile
                 if (already != id) throw new FormatException("원본 객체 ID 충돌: " + rawcode);
             }
             else mappings.Add(rawcode, id);
+        }
+
+        private static bool IsSourceOnlyAncientShip(string id, string rawcode)
+        {
+            return id == Original323AncientShipStoryRewardPort.MaterialCatalogId &&
+                rawcode == Original323AncientShipStoryRewardPort.MaterialRawcode;
         }
 
         private void RegisterRestricted(CharacterUnitCatalog units,
@@ -676,8 +700,13 @@ namespace Ordr.Mobile.Mobile
                             materials = true;
                             materialCount = checked(materialCount + condition.Count);
                             if (grade == "세라핌") seraphimMaterial = condition.Rawcode;
-                            foreach (string native in objects.Find(materialId).OriginalAbilityRawcodes)
-                                if (native == ability) caster = true;
+                            var originalMaterial = objects.Find(materialId);
+                            if (originalMaterial == null &&
+                                !IsSourceOnlyAncientShip(materialId, condition.Rawcode))
+                                throw new FormatException("원본 상위 조합 재료 객체 누락: " + ability);
+                            if (originalMaterial != null)
+                                foreach (string native in originalMaterial.OriginalAbilityRawcodes)
+                                    if (native == ability) caster = true;
                             break;
                         case "GOLD":
                             if (grade == "신비함")

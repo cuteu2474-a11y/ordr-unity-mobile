@@ -14,6 +14,85 @@ namespace Ordr.Mobile.Combat
             string rewardedRawcode, int awardedCount, out string nativeEvidence);
     }
 
+    // Stage 9's source queue already records a committed story-building clear.
+    // Turn that entitlement into one physical CWR UNIT material, not a free
+    // shop entry, currency token or attacker with invented combat statistics.
+    public sealed class Original323AncientShipStoryRewardPort :
+        IOriginal323StoryNativeRewardPort
+    {
+        public const string MaterialCatalogId = "R-44";
+        public const string MaterialRawcode = "h05Y";
+        public const string OriginalMapName = "고대의 배 - 희귀";
+        public const string StageNineReceipt = "story:native:9:AncientShip:h05Y";
+        private readonly CharacterCombatRuntime combat;
+        private readonly SharedEconomySession economy;
+        private bool inFlight;
+
+        public Original323AncientShipStoryRewardPort(CharacterCombatRuntime world,
+            SharedEconomySession session, CharacterUnitCatalog units,
+            OriginalMapBaseStatCatalog source)
+        {
+            combat = world ?? throw new ArgumentNullException(nameof(world));
+            economy = session ?? throw new ArgumentNullException(nameof(session));
+            var material = units == null ? null : units.Find(MaterialCatalogId);
+            if (!ReferenceEquals(world.Roster, session.Units) ||
+                source == null ||
+                source.SourceW3xSha256 != OriginalCommonSaleRules.OriginalMapSha256 ||
+                material == null || material.Grade != "희귀함" ||
+                material.CatalogEntryKind != "support-object" ||
+                material.OriginalSourceRawcode != MaterialRawcode ||
+                source.Find(MaterialCatalogId) != null ||
+                !source.HasNoncombatMapObject(MaterialRawcode, OriginalMapName) ||
+                GameSession.ModeId != "nightmare-otherworld")
+                throw new ArgumentException("9단계 고대의 배 원본 객체 신원이 다릅니다.");
+        }
+
+        public bool TryApplySourceNativeReward(Original323StoryNativeReward award)
+        {
+            if (inFlight || award == null ||
+                award.Kind != Original323StoryNativeRewardKind.AncientShip ||
+                award.Stage != 9 || award.Amount != 1 ||
+                award.OriginalRawcode != MaterialRawcode ||
+                award.Receipt != StageNineReceipt ||
+                !economy.HasStarted || combat.Game.Phase != SessionPhase.Running)
+                return false;
+            // The durable receipt also covers an already consumed ship after
+            // a saved session is restored. Never re-create the material when
+            // a player has legitimately used it for a fusion.
+            if (economy.Wallet.HasCompletedTransaction(award.Receipt)) return true;
+            inFlight = true;
+            long created = 0;
+            try
+            {
+                // The source callback's exact spawn coordinates have not
+                // been verified. This is the game's standard mobile player
+                // start position, not a claim about Warcraft's placement.
+                created = combat.SpawnVerifiedOriginalPositionCharacter(
+                    MaterialCatalogId,
+                    Original323SourceMaterialRewardWorld.SourceStartX,
+                    Original323SourceMaterialRewardWorld.SourceStartY);
+                try
+                {
+                    if (!economy.Wallet.TryGrantOnce(award.Receipt,
+                            new ResourceBundle()))
+                    {
+                        combat.RollbackUncommittedSpawn(created);
+                        return false;
+                    }
+                }
+                catch
+                {
+                    if (economy.Wallet.HasCompletedTransaction(award.Receipt))
+                        return true; // post-commit observer failure
+                    combat.RollbackUncommittedSpawn(created);
+                    throw;
+                }
+                return true;
+            }
+            finally { inFlight = false; }
+        }
+    }
+
     // Converts source-confirmed noncombat awards into the SAME runtime roster
     // used for CWR UNIT materials. Does not invent story victories, shop
     // purchases, gift boxes, native item costs, or an unobserved random roll.

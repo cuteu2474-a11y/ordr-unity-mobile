@@ -1,3 +1,8 @@
+## 2026-11-04 · 44차 고대의 배 소스 재료→실물 조합 경로 (실행 검사 전)
+
+- `Original323StoryNativeRewardQueue`의 9단계 `h05Y×1`을 `Original323StoryMobileProgression.ConnectStoryMaterialEffects` → `Original323AncientShipStoryRewardPort` → 실제 `CharacterCombatRuntime` 보유 객체로 연결. `OrdrCharacterCombatController` 실전 생성 순서에 연결, 공유 지갑 영수증으로 재시도/복원 중복 지급 차단.
+- `OriginalMapBaseStatCatalog.HasNoncombatMapObject`는 W3X 원본 mapObjects의 공격 없는 객체 이름을 검증합니다. `Original323CommonFusionPort`는 위키 확장 R-44/h05Y만 이 별도 게이트로 인식하고 토키 A02Q·킹 A10A의 원본 재료/가격을 확인한 뒤 기존 UNIT/지갑 원자 교환을 재사용합니다.
+- `Original323OwnedMaterialFusionTests`에 실제 스토리 영수증 지급→실물 R-44 소비→결과 유닛→재지급 방지 사례를 작성했으나 실행하지 않았습니다. [44차 근거](../data/original-2323C-ancient-ship-story-fusions-batch44.json). 원본 지급 좌표와 부가 콜백은 미인증.
 ## 2026-11-04 · 43차 CWR ITEM 재고 증명·거래 엔진 (실행 검사 전)
 
 - `Assets/Scripts/Mobile/Original323FusionSourceItemLedger.cs`: A011/AI02·ET02/AI01 원본 ITEM 정확 승인, `source:item:AI02`/`source:item:AI01` 지갑 식별·보유 조건, `IOriginal323FusionItemReceiptWitness`가 실제 플레이어 획득을 증명하는 고유 지급 영수증/저장/중복 지급 방지. **라이브 지급 생산자는 아직 없음**.
@@ -602,3 +607,4 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `SourceModelUnconnectedSkillCatalog` 신규 소유자 `H-09/h03X`(액티브만), `RN-05/h073`(평타만) 등록. **H-09 기본 Br8 JASS 공격 콜백은 기존 그대로** 사용하며 중복 주사위가 없습니다. 기존 `H-07/h03R`, `E-04/h058`, `I-06/h04Q` next-thirty 소유자/액티브 명단은 재사용합니다.
 - `CharacterCombatRuntime.SourceModelNextThirtyAttacks`는 신규 액티브를 기존 자원/선택 대상/상태/HP·처치 공통 실행기로 전달합니다. RN-05 데스노트는 *피격 당시 현재 HP* 25%를 읽고 보스/스토리를 제외합니다. `SourceModelSixthHitCount` 기존 원본 `hits=6` 횟수 처리를 I-06에서 재사용합니다. 출처 없는 원본 방어/저항·지속 효과 타이밍/면역을 보장하지 않습니다.
 - EditMode 승인 사례만 작성하고 실행하지 않았습니다. 상세: `data/source-model-twentythird-five-character-skills.json`. Python/Unity/Android/APK/Actions 전부 미실행·미조회.
+

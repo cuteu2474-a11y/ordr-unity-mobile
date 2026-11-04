@@ -344,14 +344,14 @@ namespace Ordr.Mobile.Tests
                 game.Fusion.ConfirmFusion("A012", offer.SuggestedMaterialInstances).State);
             Assert.AreEqual(3, game.Combat.CharacterCount);
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("A19Z"));
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(161, game.Fusion.ExecutableRecipeCount);
-            Assert.AreEqual(34, game.Fusion.ExecutableLegendaryRecipeCount);
-            Assert.AreEqual(19, game.Fusion.ExecutableHiddenRecipeCount);
-            Assert.AreEqual(22, game.Fusion.ExecutableRestrictedRecipeCount);
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("A19Z"));
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("A1A1"));
+            Assert.AreEqual(233, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(39, game.Fusion.ExecutableLegendaryRecipeCount);
+            Assert.AreEqual(22, game.Fusion.ExecutableHiddenRecipeCount);
+            Assert.AreEqual(63, game.Fusion.ExecutableRestrictedRecipeCount);
             Assert.AreEqual(1, game.Fusion.ExecutableEternalRecipeCount);
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("A1A0"));
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("A1A0"));
             var fresh = Offer(game, "A012");
             Assert.AreEqual(ManualActionState.Succeeded,
                 game.Fusion.ConfirmFusion("A012", fresh.SuggestedMaterialInstances).State);

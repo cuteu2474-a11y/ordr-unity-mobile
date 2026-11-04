@@ -850,6 +850,9 @@ namespace Ordr.Mobile.Unity
                     SharedEconomy.Wallet);
                 try
                 {
+                    progression.ConnectStoryMaterialEffects(
+                        new Original323AncientShipStoryRewardPort(Combat,
+                            SharedEconomy, Units, MapBaseStats));
                     if (originalStoryNativeAwards != null)
                         progression.ConnectAdditionalNativeEffects(originalStoryNativeAwards);
                     scenario.ConfigureNativeAwardPort(progression);

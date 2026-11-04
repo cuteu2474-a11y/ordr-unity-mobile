@@ -206,6 +206,10 @@ namespace Ordr.Mobile.Data
             new Dictionary<string, OriginalMapCharacterBasics>(StringComparer.Ordinal);
         private readonly Dictionary<string, OriginalMapBasicAttack> objectAttacks =
             new Dictionary<string, OriginalMapBasicAttack>(StringComparer.Ordinal);
+        // Source-only support objects still have a real W3X identity even
+        // when they have no weapon and no entry in the 277-character table.
+        private readonly Dictionary<string, string> noncombatObjectNames =
+            new Dictionary<string, string>(StringComparer.Ordinal);
         private readonly Dictionary<string, OriginalMapObjectResources> objectResources =
             new Dictionary<string, OriginalMapObjectResources>(StringComparer.Ordinal);
 
@@ -227,6 +231,14 @@ namespace Ordr.Mobile.Data
             OriginalMapBasicAttack attack;
             return rawcode != null && objectAttacks.TryGetValue(rawcode, out attack)
                 ? attack : null;
+        }
+
+        public bool HasNoncombatMapObject(string rawcode, string sourceMapName)
+        {
+            string verifiedName;
+            return rawcode != null && sourceMapName != null &&
+                noncombatObjectNames.TryGetValue(rawcode, out verifiedName) &&
+                verifiedName == sourceMapName;
         }
 
         public OriginalMapObjectResources FindMapObjectResources(string rawcode)
@@ -253,7 +265,15 @@ namespace Ordr.Mobile.Data
                     var row = OrdrJson.Object(raw, "map object");
                     string rawcode = OrdrJson.RequiredString(row, "rawcode");
                     object sourceAttack = OrdrJson.Value(row, "attack1");
-                    if (sourceAttack == null) continue;
+                    if (sourceAttack == null)
+                    {
+                        if (rawcode.Length != 4 ||
+                            result.noncombatObjectNames.ContainsKey(rawcode))
+                            throw new FormatException("원본 비전투 객체 ID 중복/오류: " + rawcode);
+                        result.noncombatObjectNames.Add(rawcode,
+                            OrdrJson.RequiredString(row, "mapName"));
+                        continue;
+                    }
                     if (rawcode.Length != 4 || result.objectAttacks.ContainsKey(rawcode))
                         throw new FormatException("원본 객체 공격 코드 중복/오류: " + rawcode);
                     result.objectAttacks.Add(rawcode, new OriginalMapBasicAttack(
