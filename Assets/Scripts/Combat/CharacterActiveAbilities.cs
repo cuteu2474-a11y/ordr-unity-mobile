@@ -83,7 +83,7 @@ namespace Ordr.Mobile.Combat
 
         // Only source-backed practice regeneration uses this method. No
         // wall-clock catch-up or resources regenerated on UI redraws.
-        internal void RegenerateSourceModel(double healthPerSecond,
+        public void RegenerateSourceModel(double healthPerSecond,
             double manaPerSecond, double elapsed)
         {
             RequireNonNegativeFinite(healthPerSecond, nameof(healthPerSecond));
