@@ -10,7 +10,8 @@
 사진을 앱 안에 미리 넣을 수 있습니다. 미리 넣은 사진이 다운로드 사진보다 우선합니다.
 Unity 6의 사진 다운로드·PNG 디코딩에 필요한 내장 모듈
 `com.unity.modules.unitywebrequest` 및 `com.unity.modules.imageconversion`은
-`Packages/manifest.json`에 명시되어 있습니다.
+`Packages/manifest.json`에 명시되어 있습니다. 게임 상태·빌드 정보의
+`JsonUtility`가 사용하는 `com.unity.modules.jsonserialize`도 함께 명시합니다.
 
 ## 개인 기기용 APK 생성
 

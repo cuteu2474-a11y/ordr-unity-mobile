@@ -185,3 +185,5 @@
 
 **이미지 기능 Actions 실패 원인·수정(실행 검사 전):** [Actions #41796865729](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41796865729)의 Python 회귀 검사는 성공했고 Unity EditMode에서 `OrdrCharacterPortraits.cs(93,55)`의 `CS1069 UnityWebRequestModule` 참조 누락으로 컴파일이 중단됐습니다. `Packages/manifest.json`에 Unity 6 빌트인 `com.unity.modules.unitywebrequest` 및 같은 사진 로더의 `com.unity.modules.imageconversion`을 함께 등록하고, 미설정 재발 방지용 Python 테스트 코드만 추가했습니다. Unity/Android/Python 검사는 성현 님 요청 전 실행하지 않으며, 완료 여부는 다음 Actions 결과 확인 전까지 **미검증**입니다.
 
+**추가 정적 전수 조사(실행 검사 전):** Unity 런타임/에디터/테스트 C# **397개 파일** 구조 점검에서 중괄호 불균형은 발견하지 않았습니다. 전체 API 사용 경로를 확인해 `JsonUtility`가 Android 빌드 명세 및 여러 EditMode 테스트에서 쓰이지만 Unity 6 `com.unity.modules.jsonserialize`이 패키지 명세에서 빠진 것을 추가 발견해 등록했습니다. 관련 패키지 검사는 전체 `Assets/**/*.cs`의 UnityWebRequest·ImageConversion·JsonUtility·IMGUI 참조를 대상으로 넓혔습니다. 새 Actions 실패 로그는 실행 ID가 별도로 확인되지 않아 조회하지 못했으며, 이번 추가 결함과 새 실패의 인과관계는 **미확인**입니다. Python/Unity/Android 실행 검사는 시행하지 않았습니다.
+
