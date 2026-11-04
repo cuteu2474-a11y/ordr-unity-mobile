@@ -1012,14 +1012,14 @@ namespace Ordr.Mobile.Unity
                         GUILayout.Label("변신 상태: " + localized,
                             OrdrMobileUiTheme.Overline);
                     }
-                    if (detail.CatalogId == "TR-30")
+                    if (detail.Unit.Id == "TR-30")
                     {
                         GUILayout.Label("위성 구매: " +
                             Combat.PracticeSatellites().Count + "/3" +
                             " (객체 평타 모델 가동 · 고유 스킬 미검증)",
                             OrdrMobileUiTheme.Overline);
                     }
-                    if (detail.CatalogId == "I-05" && Combat.UsesSourceModelBasicAttacks)
+                    if (detail.Unit.Id == "I-05" && Combat.UsesSourceModelBasicAttacks)
                     {
                         var equipped = Combat.SourceModelEquippedItemsOf(selectedId);
                         GUILayout.Label("확인된 장착: 공격 " + equipped.Attack +
