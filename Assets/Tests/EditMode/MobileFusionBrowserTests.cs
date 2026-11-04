@@ -79,6 +79,29 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void OwnedUnitFilterIncludesLockedRecipesWithoutGrantingCraftPermission()
+        {
+            var sourceLockedButOwned = new MobileFusionPreview(
+                "TR02", "로빈 초월", "원본 항법 제한 · 콜백 미검증",
+                new long[] { 91, 92 },
+                new[] { "원본 제작 거래 미연결" }, true);
+            var sourceLockedAndMissing = new MobileFusionPreview(
+                "TR03", "타시기 초월", "원본 항법 제한 · 콜백 미검증",
+                new long[] { 93 },
+                new[] { "조합 재료 1기 부족", "원본 제작 거래 미연결" }, false);
+            int matches, pages, current;
+            var filtered = MobileFusionBrowser.Select(
+                new[] { sourceLockedButOwned, sourceLockedAndMissing },
+                "", true, 0, 8, out matches, out pages, out current);
+            Assert.AreEqual(1, matches);
+            Assert.AreSame(sourceLockedButOwned, filtered[0]);
+            Assert.IsTrue(sourceLockedButOwned.HasAllUnitMaterials);
+            Assert.IsFalse(sourceLockedButOwned.IsReady,
+                "보유 유닛 충족과 제작 승인 상태는 절대 같은 의미가 아닙니다.");
+            Assert.IsFalse(sourceLockedAndMissing.HasAllUnitMaterials);
+        }
+
+        [Test]
         public void EmptyResultsAndInvalidPageSizesAreHandledSafely()
         {
             var offers = new[] { Offer("R1", "나미", "우솝") };

@@ -53,6 +53,9 @@ namespace Ordr.Mobile.Mobile
         public IReadOnlyList<long> SuggestedMaterialInstances { get; private set; }
         public IReadOnlyList<string> MissingMaterials { get; private set; }
         public bool IsReady { get { return MissingMaterials.Count == 0; } }
+        // Unit ownership is separate from execution authorisation, cost and
+        // callback parity. A locked recipe can have all its physical units.
+        public bool HasAllUnitMaterials { get; private set; }
 
         // 보유 유닛 기반 재료 강조만 보조한다. 소비/성공 판정은 원작 서비스가 한다.
         public MobileFusionPreview(string recipeId, string title,
@@ -61,7 +64,7 @@ namespace Ordr.Mobile.Mobile
 
         public MobileFusionPreview(string recipeId, string title,
             string originalMaterialsAndCost, IEnumerable<long> materialIds,
-            IEnumerable<string> missingMaterials)
+            IEnumerable<string> missingMaterials, bool? allUnitMaterialsOwned = null)
         {
             if (string.IsNullOrWhiteSpace(recipeId) || string.IsNullOrWhiteSpace(title) ||
                 string.IsNullOrWhiteSpace(originalMaterialsAndCost))
@@ -88,6 +91,7 @@ namespace Ordr.Mobile.Mobile
             OriginalMaterialsAndCost = originalMaterialsAndCost;
             SuggestedMaterialInstances = materials.AsReadOnly();
             MissingMaterials = missing.AsReadOnly();
+            HasAllUnitMaterials = allUnitMaterialsOwned ?? (missing.Count == 0);
         }
     }
 

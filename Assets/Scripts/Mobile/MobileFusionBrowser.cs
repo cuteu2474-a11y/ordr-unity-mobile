@@ -21,7 +21,7 @@ namespace Ordr.Mobile.Mobile
             {
                 if (recipe == null)
                     throw new ArgumentException("조합식 목록에 빈 항목이 있습니다.", nameof(all));
-                if (materialsReadyOnly && !recipe.IsReady) continue;
+                if (materialsReadyOnly && !recipe.HasAllUnitMaterials) continue;
                 if (needle.Length > 0 &&
                     !Contains(recipe.Title, needle) &&
                     !Contains(recipe.RecipeId, needle) &&

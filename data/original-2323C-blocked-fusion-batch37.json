@@ -1,0 +1,4517 @@
+{
+  "format": "ordr-remaining-cwr-batch37-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceRegistry": "data/original-jass-fusion-registry.json",
+  "baselineHead": "ed9e4f549761004ded22c5572d077d22445bb3f4",
+  "mode": "nightmare-otherworld",
+  "summary": {
+    "sourceCwrRegistrations": 266,
+    "executablyConnectedBeforeBatch": 167,
+    "remainingRegistrations": 99,
+    "remainingPlainUnitGoldWoodOnly": 0,
+    "remainingMappedInputs": 98,
+    "remainingUnmappedInputs": 1,
+    "remainingWithKnownCallbackGap": 99,
+    "byConditionKinds": {
+      "UNIT+UPUN": 6,
+      "UPUN": 2,
+      "UNIT+WOOD+UPUN": 5,
+      "UNIT+WOOD+CHCT+UPUN": 3,
+      "UNIT+WOOD+CHCT": 2,
+      "SPEC": 8,
+      "UNIT+IFCT": 3,
+      "UNIT+IFCT+UPUN": 3,
+      "UNIT+GREN+UPUN": 4,
+      "UNIT+GOLD+WOOD+UBAN+KING": 5,
+      "UNIT+ITEM+GOLD+WOOD+UBAN+KING": 1,
+      "UNIT+GOLD+WOOD+SKPT+UBAN+KING": 1,
+      "UNIT+GOLD+WOOD+UPUN+UBAN+KING": 1,
+      "UNIT+GOLD+WOOD+RMAX+UBAN+KING": 1,
+      "UNIT+UBAN+KING": 22,
+      "UNIT+UPUN+UBAN+KING": 1,
+      "UNIT+WOOD+UBAN+KING": 14,
+      "UNIT+ITEM+WOOD": 1,
+      "UNIT+ITEM+WOOD+KING": 1,
+      "RDUN": 14,
+      "ITEM+GOLD": 1
+    }
+  },
+  "rules": [
+    "조건이 매핑된 것과 실제 소비·원본 CH8/BI2 후속효과가 구현된 것은 별개입니다.",
+    "이세계 모드 UBAN과 기존 KING 검사는 보유 상태만 허용합니다. 원본 조합 실행 승인 근거는 아닙니다.",
+    "UPUN은 원본 표시 표식이며 추가 유닛 소비로 취급하지 않습니다.",
+    "원본 효과가 미검증된 99개에는 자동 제작 권한을 부여하지 않습니다.",
+    "TEST는 원본 개발용 등록으로 본편 제작 승인을 하지 않습니다.",
+    "Python/Unity/Android 빌드·플레이 검증 미실행. 코드 작업의 기초 진단 스냅샷입니다."
+  ],
+  "remaining": [
+    {
+      "abilityRawcode": "A19Z",
+      "resultRawcode": "h01F",
+      "resultCatalogId": "S-14",
+      "resultName": "스모커",
+      "grade": "특별함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h009",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00E",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h006",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h01Q",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h01Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02F",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A1A1",
+      "resultRawcode": "h012",
+      "resultCatalogId": "S-15",
+      "resultName": "스쿼드",
+      "grade": "특별함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h001",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h021",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02B",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02E",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A1A0",
+      "resultRawcode": "h01N",
+      "resultCatalogId": "R-18",
+      "resultName": "브룩 음악가",
+      "grade": "희귀함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00R",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03F",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0CM",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02P",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02Q",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "UU01",
+      "resultRawcode": "h05X",
+      "resultCatalogId": "R-43",
+      "resultName": "실버즈 레일리",
+      "grade": "희귀함",
+      "orderedConditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h03A",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h07L",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h047",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08S",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A00O",
+      "resultRawcode": "h02P",
+      "resultCatalogId": "L-02",
+      "resultName": "나미",
+      "grade": "전설",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05K",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08V",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05A",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 3,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A025",
+      "resultRawcode": "h035",
+      "resultCatalogId": "L-17",
+      "resultName": "샹크스",
+      "grade": "전설",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h029",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03U",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08Z",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04F",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h067",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 3,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A0UG",
+      "resultRawcode": "h042",
+      "resultCatalogId": "L-21",
+      "resultName": "시노부",
+      "grade": "전설",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h025",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h021",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02J",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h084",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08R",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 3,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A02Q",
+      "resultRawcode": "h087",
+      "resultCatalogId": "L-35",
+      "resultName": "토키",
+      "grade": "전설",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01R",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02F",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0BD",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08R",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A02G",
+      "resultRawcode": "h03B",
+      "resultCatalogId": "L-38",
+      "resultName": "흰수염",
+      "grade": "전설",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02E",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h022",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02J",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 3
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H090",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h04A",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 3,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "YY01",
+      "resultRawcode": "h03X",
+      "resultCatalogId": "H-09",
+      "resultName": "방주맥심",
+      "grade": "히든",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h024",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05E",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "YY15",
+      "resultRawcode": "h03Z",
+      "resultCatalogId": "H-17",
+      "resultName": "아카이누",
+      "grade": "히든",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01P",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h012",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H095",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05F",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "YY20",
+      "resultRawcode": "h041",
+      "resultCatalogId": "H-16",
+      "resultName": "아오키지",
+      "grade": "히든",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02E",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Y",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H097",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "YY26",
+      "resultRawcode": "h060",
+      "resultCatalogId": "PS-01",
+      "resultName": "해적선",
+      "grade": "해적선",
+      "orderedConditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h03P",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03L",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03R",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03X",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03U",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03Q",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A0K2",
+      "resultRawcode": "h05S",
+      "resultCatalogId": "T-01",
+      "resultName": "도플라밍고",
+      "grade": "변화",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01L",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09E",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05I",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "CHCT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A0K3",
+      "resultRawcode": "h07N",
+      "resultCatalogId": "T-03",
+      "resultName": "베이비 5",
+      "grade": "변화",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02M",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09E",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08Y",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "CHCT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A0K4",
+      "resultRawcode": "h05W",
+      "resultCatalogId": "T-02",
+      "resultName": "비비",
+      "grade": "변화",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h057",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05F",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "CHCT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A0K6",
+      "resultRawcode": "h0CK",
+      "resultCatalogId": "T-04",
+      "resultName": "카쿠",
+      "grade": "변화",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h023",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "CHCT"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A0K7",
+      "resultRawcode": "h07J",
+      "resultCatalogId": "T-05",
+      "resultName": "캐럿",
+      "grade": "변화",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h07L",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "CHCT"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SP01",
+      "resultRawcode": "h05H",
+      "resultCatalogId": "X-01",
+      "resultName": "모건",
+      "grade": "특수함",
+      "orderedConditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "SPEC"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SP02",
+      "resultRawcode": "h08N",
+      "resultCatalogId": "X-02",
+      "resultName": "베티",
+      "grade": "특수함",
+      "orderedConditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "SPEC"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SP03",
+      "resultRawcode": "h05Q",
+      "resultCatalogId": "X-03",
+      "resultName": "블고리",
+      "grade": "특수함",
+      "orderedConditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "SPEC"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SP04",
+      "resultRawcode": "h05O",
+      "resultCatalogId": "X-04",
+      "resultName": "아이스버그",
+      "grade": "특수함",
+      "orderedConditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "SPEC"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SP05",
+      "resultRawcode": "h05P",
+      "resultCatalogId": "X-05",
+      "resultName": "오타마",
+      "grade": "특수함",
+      "orderedConditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "SPEC"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SP06",
+      "resultRawcode": "h05R",
+      "resultCatalogId": "X-06",
+      "resultName": "페루",
+      "grade": "특수함",
+      "orderedConditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "SPEC"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SP07",
+      "resultRawcode": "h09T",
+      "resultCatalogId": "X-07",
+      "resultName": "폭시",
+      "grade": "특수함",
+      "orderedConditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "SPEC"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SP08",
+      "resultRawcode": "h0BG",
+      "resultCatalogId": "X-08",
+      "resultName": "가이몬",
+      "grade": "특수함",
+      "orderedConditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "SPEC"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IF01",
+      "resultRawcode": "h03V",
+      "resultCatalogId": "D-02",
+      "resultName": "코알라",
+      "grade": "왜곡됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00O",
+          "count": 1
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "IFCT"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IF02",
+      "resultRawcode": "h048",
+      "resultCatalogId": "D-04",
+      "resultName": "페로나",
+      "grade": "왜곡됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h010",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h058",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "IFCT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IF03",
+      "resultRawcode": "h0CI",
+      "resultCatalogId": "D-03",
+      "resultName": "퀸",
+      "grade": "왜곡됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AH",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00L",
+          "count": 1
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "IFCT"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IF04",
+      "resultRawcode": "h04U",
+      "resultCatalogId": "D-01",
+      "resultName": "블랙마리아",
+      "grade": "왜곡됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "IFCT"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IF05",
+      "resultRawcode": "h09V",
+      "resultCatalogId": "D-06",
+      "resultName": "바제스",
+      "grade": "왜곡됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03M",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00F",
+          "count": 1
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H092",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "IFCT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IF06",
+      "resultRawcode": "h05V",
+      "resultCatalogId": "D-05",
+      "resultName": "포트거스.D.에이스",
+      "grade": "왜곡됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02O",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h012",
+          "count": 1
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h059",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "IFCT",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SPH1",
+      "resultRawcode": "h09Y",
+      "resultCatalogId": "SR-01",
+      "resultName": "S-스네이크",
+      "grade": "세라핌",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h032",
+          "count": 1
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GREN",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SPH2",
+      "resultRawcode": "h0A3",
+      "resultCatalogId": "SR-02",
+      "resultName": "S-호크",
+      "grade": "세라핌",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h043",
+          "count": 1
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GREN",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SPH3",
+      "resultRawcode": "h0A0",
+      "resultCatalogId": "SR-03",
+      "resultName": "S-샤크",
+      "grade": "세라핌",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03G",
+          "count": 1
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GREN",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "SPH4",
+      "resultRawcode": "h0A1",
+      "resultCatalogId": "SR-04",
+      "resultName": "S-베어",
+      "grade": "세라핌",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h030",
+          "count": 1
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GREN",
+        "UPUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A007",
+      "resultRawcode": "h05I",
+      "resultCatalogId": "LI-02",
+      "resultName": "레베카",
+      "grade": "제한됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h037",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05S",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05I",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05I",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GOLD",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 5000,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": {
+        "ability": "A007",
+        "reason": "Bvg creates a persistent helper unit"
+      },
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A011",
+      "resultRawcode": "h08O",
+      "resultCatalogId": "LI-03",
+      "resultName": "마르코",
+      "grade": "제한됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03K",
+          "count": 1
+        },
+        {
+          "kind": "ITEM",
+          "rawcode": "AI02",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h08O",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h08O",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "ITEM",
+        "GOLD",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 5000,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A0S0",
+      "resultRawcode": "h07I",
+      "resultCatalogId": "LI-08",
+      "resultName": "카타쿠리",
+      "grade": "제한됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01C",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 30000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h07I",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h07I",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GOLD",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 30000,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A0UH",
+      "resultRawcode": "h084",
+      "resultCatalogId": "LI-04",
+      "resultName": "시노부",
+      "grade": "제한됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h042",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h032",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h084",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h084",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GOLD",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 5000,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A18P",
+      "resultRawcode": "h08Q",
+      "resultCatalogId": "LI-06",
+      "resultName": "알비다",
+      "grade": "제한됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "SKPT",
+          "rawcode": "SKPT",
+          "count": 4
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h08Q",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h08Q",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GOLD",
+        "WOOD",
+        "SKPT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 5000,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A1A5",
+      "resultRawcode": "h05E",
+      "resultCatalogId": "LI-07",
+      "resultName": "에넬",
+      "grade": "제한됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h038",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h060",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05E",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05E",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GOLD",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 5000,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A02O",
+      "resultRawcode": "h05F",
+      "resultCatalogId": "LI-09",
+      "resultName": "크로커다일",
+      "grade": "제한됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03Z",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h057",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05F",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05F",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GOLD",
+        "WOOD",
+        "UPUN",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 5000,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A10A",
+      "resultRawcode": "h0AI",
+      "resultCatalogId": "LI-10",
+      "resultName": "킹",
+      "grade": "제한됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AH",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05Y",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h0AI",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0AI",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GOLD",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 5000,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "A1A6",
+      "resultRawcode": "h05G",
+      "resultCatalogId": "LI-01",
+      "resultName": "레드필드",
+      "grade": "제한됨",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03O",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "RMAX",
+          "rawcode": "h05G",
+          "count": 40
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05G",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05G",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "GOLD",
+        "WOOD",
+        "RMAX",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 5000,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR02",
+      "resultRawcode": "H098",
+      "resultCatalogId": "TR-04",
+      "resultName": "로빈",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02R",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00O",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H098",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H098",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR03",
+      "resultRawcode": "H05N",
+      "resultCatalogId": "TR-27",
+      "resultName": "타시기",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03E",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h038",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01F",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00E",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H05N",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H05N",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR04",
+      "resultRawcode": "H09E",
+      "resultCatalogId": "TR-03",
+      "resultName": "도플라밍고",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h05S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h07N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h027",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09E",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09E",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR05",
+      "resultRawcode": "H08W",
+      "resultCatalogId": "TR-07",
+      "resultName": "루치",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02R",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03M",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H08W",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H08W",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR06",
+      "resultRawcode": "H09F",
+      "resultCatalogId": "TR-20",
+      "resultName": "조로",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h043",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09F",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09F",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR07",
+      "resultRawcode": "H0B2",
+      "resultCatalogId": "TR-14",
+      "resultName": "스네이크맨",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0BK",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0B2",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0B2",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UPUN",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR08",
+      "resultRawcode": "H090",
+      "resultCatalogId": "TR-01",
+      "resultName": "검은수염",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H090",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H090",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR11",
+      "resultRawcode": "H0B5",
+      "resultCatalogId": "TR-26",
+      "resultName": "키자루",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h031",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01R",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h011",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h016",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0B5",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0B5",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR12",
+      "resultRawcode": "H09I",
+      "resultCatalogId": "TR-10",
+      "resultName": "브룩",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Q",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h044",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05K",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09I",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09I",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR13",
+      "resultRawcode": "H092",
+      "resultCatalogId": "TR-11",
+      "resultName": "사보",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h09V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H092",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H092",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR14",
+      "resultRawcode": "H09H",
+      "resultCatalogId": "TR-12",
+      "resultName": "상디",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h034",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09H",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09H",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR15",
+      "resultRawcode": "H08Z",
+      "resultCatalogId": "TR-13",
+      "resultName": "샹크스",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h043",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H08Z",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H08Z",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR16",
+      "resultRawcode": "H08U",
+      "resultCatalogId": "TR-15",
+      "resultName": "시라호시",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03R",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H08U",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H08U",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR17",
+      "resultRawcode": "H0BL",
+      "resultCatalogId": "TR-06",
+      "resultName": "료쿠규",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h031",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0BL",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0BL",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR18",
+      "resultRawcode": "H095",
+      "resultCatalogId": "TR-17",
+      "resultName": "아카이누",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0CM",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H095",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H095",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR19",
+      "resultRawcode": "H0BD",
+      "resultCatalogId": "TR-18",
+      "resultName": "야마토",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h087",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01M",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00P",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0BD",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0BD",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR20",
+      "resultRawcode": "H09B",
+      "resultCatalogId": "TR-19",
+      "resultName": "우솝",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03F",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h037",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09B",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09B",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR22",
+      "resultRawcode": "H09A",
+      "resultCatalogId": "TR-22",
+      "resultName": "징베",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03G",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Q",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09A",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09A",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR24",
+      "resultRawcode": "H097",
+      "resultCatalogId": "TR-16",
+      "resultName": "아오키지",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h041",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00E",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H097",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H097",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR25",
+      "resultRawcode": "H0B4",
+      "resultCatalogId": "TR-25",
+      "resultName": "키드",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h09Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h045",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02L",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0B4",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0B4",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR26",
+      "resultRawcode": "H096",
+      "resultCatalogId": "TR-05",
+      "resultName": "트라팔가 로우",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h038",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00C",
+          "count": 2
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H096",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H096",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR29",
+      "resultRawcode": "H0CO",
+      "resultCatalogId": "TR-24",
+      "resultName": "코비",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03E",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h0CM",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Q",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01I",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0CO",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0CO",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TR30",
+      "resultRawcode": "H0AA",
+      "resultCatalogId": "TR-30",
+      "resultName": "베가펑크",
+      "grade": "초월함",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AN",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h055",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01R",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0AA",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0AA",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": false,
+      "unmappedRawcodes": [
+        "h0AN"
+      ],
+      "conditionKinds": [
+        "UNIT",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IM01",
+      "resultRawcode": "h04J",
+      "resultCatalogId": "I-04",
+      "resultName": "로져",
+      "grade": "불멸의",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02O",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h036",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02V",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04J",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04J",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": {
+        "ability": "IM01",
+        "reason": "B8Y creates a persistent helper unit with abilities"
+      },
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IM04",
+      "resultRawcode": "h04D",
+      "resultCatalogId": "I-02",
+      "resultName": "드래곤",
+      "grade": "불멸의",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h030",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h09Z",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04D",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04D",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": {
+        "ability": "IM04",
+        "reason": "B99 grants +20% line explosion state"
+      },
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IM05",
+      "resultRawcode": "h04Q",
+      "resultCatalogId": "I-06",
+      "resultName": "빅맘",
+      "grade": "불멸의",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03H",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03S",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04Q",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04Q",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IM06",
+      "resultRawcode": "h04E",
+      "resultCatalogId": "I-07",
+      "resultName": "센고쿠",
+      "grade": "불멸의",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h036",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02R",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04E",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04E",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IM07",
+      "resultRawcode": "h04F",
+      "resultCatalogId": "I-08",
+      "resultName": "스코퍼가반",
+      "grade": "불멸의",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02S",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h033",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04F",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04F",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IM08",
+      "resultRawcode": "h049",
+      "resultCatalogId": "I-03",
+      "resultName": "레일리",
+      "grade": "불멸의",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03A",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h032",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h049",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h049",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IM09",
+      "resultRawcode": "h04A",
+      "resultCatalogId": "I-12",
+      "resultName": "흰수염",
+      "grade": "불멸의",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03B",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02T",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04A",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04A",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IM11",
+      "resultRawcode": "h07M",
+      "resultCatalogId": "I-11",
+      "resultName": "카이도",
+      "grade": "불멸의",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02W",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AH",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h07M",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h07M",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IM12",
+      "resultRawcode": "h081",
+      "resultCatalogId": "I-05",
+      "resultName": "불릿",
+      "grade": "불멸의",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h039",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02V",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02U",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h081",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h081",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 10,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "ET02",
+      "resultRawcode": "H0BK",
+      "resultCatalogId": "E-01",
+      "resultName": "니카(루피)",
+      "grade": "영원한",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "H08T",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02D",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00K",
+          "count": 1
+        },
+        {
+          "kind": "ITEM",
+          "rawcode": "AI01",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "ITEM",
+        "WOOD"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit",
+      "verifiedMaterialGroups": [
+        {
+          "rawcode": "H08T",
+          "catalogUnitIds": [
+            "TR-08",
+            "TR-14"
+          ],
+          "source": "Original323FusionMaterialGroups"
+        }
+      ]
+    },
+    {
+      "abilityRawcode": "ET04",
+      "resultRawcode": "h0CJ",
+      "resultCatalogId": "E-03",
+      "resultName": "류마",
+      "grade": "영원한",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03C",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03J",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h044",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h0CJ",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0CJ",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": {
+        "ability": "ET04",
+        "reason": "B7z enforces one-per-player, sets flags and conditional ability"
+      },
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "ET05",
+      "resultRawcode": "h05A",
+      "resultCatalogId": "E-05",
+      "resultName": "버기",
+      "grade": "영원한",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02P",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h029",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Z",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h014",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h010",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05A",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05A",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "ET06",
+      "resultRawcode": "h05C",
+      "resultCatalogId": "E-12",
+      "resultName": "핸콕",
+      "grade": "영원한",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h032",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h047",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Y",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h018",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05C",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05C",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "ET07",
+      "resultRawcode": "h067",
+      "resultCatalogId": "E-09",
+      "resultName": "우타",
+      "grade": "영원한",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h035",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03O",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05X",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h003",
+          "count": 1
+        },
+        {
+          "kind": "ITEM",
+          "rawcode": "AI00",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h067",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "ITEM",
+        "WOOD",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": {
+        "ability": "ET07",
+        "reason": "B7W adds an item, changes player-state and starts a timer"
+      },
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "ET10",
+      "resultRawcode": "h08R",
+      "resultCatalogId": "E-08",
+      "resultName": "오뎅",
+      "grade": "영원한",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h087",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h042",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h046",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h022",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h08R",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h08R",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "ET12",
+      "resultRawcode": "h06A",
+      "resultCatalogId": "E-11",
+      "resultName": "테조로",
+      "grade": "영원한",
+      "orderedConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03F",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h055",
+          "count": 1
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03N",
+          "count": 1
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h06A",
+          "count": 1
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h06A",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "UNIT",
+        "WOOD",
+        "UBAN",
+        "KING"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 5,
+      "knownDeferredSideEffect": {
+        "ability": "ET12",
+        "reason": "B8I invokes extra B8G state handler"
+      },
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS01",
+      "resultRawcode": "h06U",
+      "resultCatalogId": "RN-01",
+      "resultName": "K",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS02",
+      "resultRawcode": "h06V",
+      "resultCatalogId": "RN-02",
+      "resultName": "나루토",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS03",
+      "resultRawcode": "h065",
+      "resultCatalogId": "RN-03",
+      "resultName": "메구밍",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS04",
+      "resultRawcode": "h06X",
+      "resultCatalogId": "RN-04",
+      "resultName": "센토 이스즈",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS05",
+      "resultRawcode": "h073",
+      "resultCatalogId": "RN-05",
+      "resultName": "야가미 라이토",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS06",
+      "resultRawcode": "h06Z",
+      "resultCatalogId": "RN-06",
+      "resultName": "엘리자베스",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS07",
+      "resultRawcode": "h09K",
+      "resultCatalogId": "RN-07",
+      "resultName": "옌",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS08",
+      "resultRawcode": "h06W",
+      "resultCatalogId": "RN-08",
+      "resultName": "요츠바",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS09",
+      "resultRawcode": "h070",
+      "resultCatalogId": "RN-09",
+      "resultName": "이사야마 요미",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS10",
+      "resultRawcode": "h09L",
+      "resultCatalogId": "RN-10",
+      "resultName": "이치의 율자",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS11",
+      "resultRawcode": "h06Y",
+      "resultCatalogId": "RN-11",
+      "resultName": "토우마",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS12",
+      "resultRawcode": "h071",
+      "resultCatalogId": "RN-12",
+      "resultName": "이치고",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS13",
+      "resultRawcode": "h06T",
+      "resultCatalogId": "RN-13",
+      "resultName": "페이몬",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "IS14",
+      "resultRawcode": "h072",
+      "resultCatalogId": "RN-14",
+      "resultName": "하네카와 츠바사",
+      "grade": "랜덤",
+      "orderedConditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "RDUN"
+      ],
+      "registeredGold": 0,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    },
+    {
+      "abilityRawcode": "TEST",
+      "resultRawcode": "h0BC",
+      "resultCatalogId": "MY-12",
+      "resultName": "타츠마키",
+      "grade": "신비함",
+      "orderedConditions": [
+        {
+          "kind": "ITEM",
+          "rawcode": "cnob",
+          "count": 1
+        },
+        {
+          "kind": "ITEM",
+          "rawcode": "brac",
+          "count": 1
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000
+        }
+      ],
+      "physicalUnitsMapped": true,
+      "unmappedRawcodes": [],
+      "conditionKinds": [
+        "ITEM",
+        "GOLD"
+      ],
+      "registeredGold": 10000,
+      "registeredWood": 0,
+      "knownDeferredSideEffect": null,
+      "execution": "blocked-pending-original-native-callback-and-side-effects-audit"
+    }
+  ]
+}

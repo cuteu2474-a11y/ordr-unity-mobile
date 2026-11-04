@@ -595,6 +595,9 @@ namespace Ordr.Mobile.Mobile
                 if (!CanCommitRecipe(offer.RecipeId)) { result.Add(offer); continue; }
                 var ready = planner.Assess(offer.RecipeId, owned, SourceBalance("gold"), SourceBalance("wood"));
                 var missing = new List<string>(ready.BlockingReasons);
+                bool allUnitsOwned = true;
+                foreach (var material in ready.Materials)
+                    if (material.MissingCount > 0) allUnitsOwned = false;
                 if (!economy.HasStarted || combat.Game.Phase != SessionPhase.Running)
                     missing.Add("먼저 유닛 준비 또는 게임을 시작해 주세요.");
                 var parts = new List<string>();
@@ -609,7 +612,7 @@ namespace Ordr.Mobile.Mobile
                 result.Add(new MobileFusionPreview(offer.RecipeId, ready.ResultName + " · " + resultGrades[offer.RecipeId],
                     string.Join(" + ", parts) + (costs.Count > 0
                         ? " · " + string.Join(" · ", costs) : " · 추가 재화 없음"),
-                    ready.SuggestedMaterialIds, missing));
+                    ready.SuggestedMaterialIds, missing, allUnitsOwned));
             }
             return result.AsReadOnly();
         }

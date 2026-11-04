@@ -90,6 +90,8 @@ namespace Ordr.Mobile.Tests
                 offer.SuggestedMaterialInstances);
             Assert.IsFalse(offer.IsReady,
                 "읽기 전용 재료가 모두 있어도 미승인 거래는 제작 준비로 표시하지 않습니다.");
+            Assert.IsTrue(offer.HasAllUnitMaterials,
+                "원본 제작 권한은 잠겨도 보유 UNIT 재료는 별도로 확인합니다.");
             Assert.AreEqual(1, offer.MissingMaterials.Count,
                 "실제 재료 부족 없이 제작 미승인 사유만 남아야 합니다.");
             Assert.AreEqual(ManualActionState.NotImplemented,
@@ -112,6 +114,8 @@ namespace Ordr.Mobile.Tests
                 Unit(units, 30, "C-01"), Unit(units, 31, "C-08")
             }, "A00D");
             Assert.IsFalse(offer.IsReady);
+            Assert.IsFalse(offer.HasAllUnitMaterials,
+                "스토리 파견 재료는 조합에서 보유로 세지 않습니다.");
             Assert.IsTrue(offer.MissingMaterials.Count > 0);
             Assert.AreEqual("KM-01", names.Find("h04S").CatalogUnitId,
                 "쿠마 객체 매핑과 실제 획득 경로의 구현은 별개입니다.");

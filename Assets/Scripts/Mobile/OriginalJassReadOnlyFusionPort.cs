@@ -149,6 +149,8 @@ namespace Ordr.Mobile.Mobile
                 var requirements = new Dictionary<string, int>(StringComparer.Ordinal);
                 var order = new List<string>();
                 int gold = 0, wood = 0, specials = 0;
+                bool allUnitsOwned = true;
+                var conditionDescriptions = new List<string>();
                 foreach (var instruction in recipe.OrderedConditions)
                 {
                     if (instruction.Kind == "UNIT")
@@ -169,7 +171,12 @@ namespace Ordr.Mobile.Mobile
                         instruction.Rawcode == "WOOD")
                         wood = checked(wood + instruction.Count);
                     else
+                    {
                         specials++;
+                        string label = ExplainSpecialCondition(instruction);
+                        if (!conditionDescriptions.Contains(label))
+                            conditionDescriptions.Add(label);
+                    }
                 }
 
                 foreach (string rawcode in order)
@@ -209,6 +216,7 @@ namespace Ordr.Mobile.Mobile
                     descriptions.Add(title + " x" + required);
                     if (!mapped)
                     {
+                        allUnitsOwned = false;
                         missing.Add(title + " [" + rawcode +
                             "] (원본 객체는 확인됐지만 획득·보유 구현 미검증) x" +
                             required);
@@ -225,7 +233,10 @@ namespace Ordr.Mobile.Mobile
                             assigned++;
                         }
                     if (assigned < required)
+                    {
+                        allUnitsOwned = false;
                         missing.Add(title + " " + (required - assigned) + "기 부족");
+                    }
                 }
 
                 // A800 is present on the 14 source random-only objects. Show
@@ -239,7 +250,11 @@ namespace Ordr.Mobile.Mobile
                     string pickTitle;
                     if (!pickMaterialPreview.TryPreview(instruction, owned,
                             storyDeployed, used, out candidates, out pickTitle))
+                    {
+                        allUnitsOwned = false;
+                        missing.Add("PICK:A800 별도 랜덤 재료의 실물 보유를 확인할 수 없습니다.");
                         continue;
+                    }
                     descriptions.Add(pickTitle + " x" + instruction.Count +
                         " (검토용·실제 소비 미승인)");
                     int assigned = 0;
@@ -250,8 +265,11 @@ namespace Ordr.Mobile.Mobile
                         assigned++;
                     }
                     if (assigned < instruction.Count)
+                    {
+                        allUnitsOwned = false;
                         missing.Add("PICK용 별도 랜덤 유닛 " +
                             (instruction.Count - assigned) + "기 부족");
+                    }
                     missing.Add("PICK:A800 원본 선택·소비 콜백 미검증 (제작 차단)");
                 }
 
@@ -272,15 +290,40 @@ namespace Ordr.Mobile.Mobile
                 string summary = (descriptions.Count == 0
                     ? "원본 UNIT 재료 없음" : string.Join(" + ", descriptions.ToArray())) +
                     " | 등록 GOLD " + gold + " / WOOD " + wood +
-                    " | 특수 조건 " + specials + "개 별도 검증 필요" +
+                    " | 특수 조건 " + specials + "개" +
+                    (conditionDescriptions.Count > 0
+                        ? " (" + string.Join(" · ", conditionDescriptions.ToArray()) + ")" : "") +
                     " | 원본 제작 거래 미연결";
                 result.Add(new MobileFusionPreview(recipe.AbilityRawcode,
                     titleResult + " (원본 등록식 · 미승인)",
-                    summary, chosen, missing));
+                    summary, chosen, missing, allUnitsOwned));
             }
             result.Sort((a, b) =>
                 string.CompareOrdinal(a.Title, b.Title));
             return result.AsReadOnly();
+        }
+
+        // Original CWR kind names are interpreted for information only.
+        // Even UBAN/KING/UPUN, whose checks are known for Isekai, do not
+        // prove the recipe's CH8/BI2 callback is side-effect-free.
+        private static string ExplainSpecialCondition(OriginalJassFusionInstruction condition)
+        {
+            switch (condition.Kind)
+            {
+                case "UPUN": return "선택 표시 (소비 없음)";
+                case "UBAN": return "밴 조건 (이세계 비활성)";
+                case "KING": return "항법·상위 조합 제한";
+                case "RMAX": return "원본 라운드 상한 " + condition.Count;
+                case "PICK": return "별도 랜덤 재료 (원본 소비 미검증)";
+                case "ITEM": return "아이템 " + condition.Rawcode + " ×" + condition.Count;
+                case "IFCT": return "불멸 제작 상태·횟수";
+                case "CHCT": return "선택/변화 횟수";
+                case "RDUN": return "원본 라운드·특수 상태";
+                case "SKPT": return "특성 포인트";
+                case "GREN": return "그린블러드 상태";
+                case "SPEC": return "특수 캐릭터 조건";
+                default: return condition.Kind + ":" + condition.Rawcode + " ×" + condition.Count;
+            }
         }
 
         public ManualActionResult ConfirmFusion(string recipeId,

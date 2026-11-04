@@ -1656,7 +1656,7 @@ namespace Ordr.Mobile.Unity
             }
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(fusionMaterialsReadyOnly ?
-                "재료 확보만 ✓" : "모든 조합", GUILayout.MinHeight(60)))
+                "유닛 재료 확보 ✓" : "모든 조합", GUILayout.MinHeight(60)))
             {
                 fusionMaterialsReadyOnly = !fusionMaterialsReadyOnly;
                 fusionPage = 0;
@@ -1726,8 +1726,9 @@ namespace Ordr.Mobile.Unity
             foreach (var offer in visibleOffers)
             {
                 bool executable = controller.ManualActions.CanExecuteFusionRecipe(offer.RecipeId);
-                string status = !offer.IsReady ? "부족 재료 " + offer.MissingMaterials.Count + "종" :
-                    executable ? "재료 준비 · 제작 가능" : "재료 준비 · 제작 연결 대기";
+                string status = !offer.HasAllUnitMaterials ? "유닛 재료 미확보" :
+                    !executable ? "유닛 재료 확보 · 원본 제작 미승인" :
+                    offer.IsReady ? "재료 준비 · 제작 가능" : "제작 조건·재화 확인 필요";
                 bool expanded = expandedRecipeId == offer.RecipeId;
                 GUILayout.BeginHorizontal();
                 bool previousEnabled = GUI.enabled;
@@ -1770,7 +1771,7 @@ namespace Ordr.Mobile.Unity
                     }
                     GUILayout.Label(offer.OriginalMaterialsAndCost);
                     if (offer.MissingMaterials.Count != 0)
-                        GUILayout.Label("미확보: " + string.Join(", ", ToStringArray(offer.MissingMaterials)));
+                        GUILayout.Label("부족/미승인: " + string.Join(", ", ToStringArray(offer.MissingMaterials)));
                     else
                         GUILayout.Label("재료 확보");
                     if (controller.OriginalJassFusions != null &&

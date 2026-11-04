@@ -119,12 +119,15 @@ namespace Ordr.Mobile.Mobile
             foreach (var assessment in list)
             {
                 var missing = new List<string>(assessment.BlockingReasons);
+                bool allUnitsOwned = true;
+                foreach (var material in assessment.Materials)
+                    if (material.MissingCount > 0) allUnitsOwned = false;
                 if (!CanCommitRecipe(assessment.AbilityRawcode))
                     missing.Add("이 원본 조합의 안전한 제작 거래는 아직 미연결입니다.");
                 previews.Add(new MobileFusionPreview(assessment.AbilityRawcode,
                     assessment.ResultName + " (원본 JASS)",
                     BuildMaterialSummary(assessment),
-                    assessment.SuggestedMaterialIds, missing));
+                    assessment.SuggestedMaterialIds, missing, allUnitsOwned));
             }
             return previews.AsReadOnly();
         }

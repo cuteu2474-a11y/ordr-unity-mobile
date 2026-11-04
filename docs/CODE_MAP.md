@@ -1,3 +1,9 @@
+## 2026-11-04 · 37차 CWR 잔여 99건 리뷰·조합 UI 상태 분리 (코드 반영 / 검사 전)
+
+- **원본 등록식 진단:** `data/original-2323C-blocked-fusion-batch37.json`에 기존 167/266건 실행 범위에서 제외된 99건의 원본 조건 순서·결과·재화 비용·매핑 누락·별도 콜백 차단을 기록. UNIT/GOLD/WOOD 전용 미연결식은 0건이며 각 추가 조건을 임의 통과시키지 않습니다.
+- **실물 재료/제작 권한 분리:** `MobileManualInteraction.MobileFusionPreview.HasAllUnitMaterials`는 소유 유닛 부족 여부만 나타내고 `IsReady`와 실행 권한은 그대로 독립합니다. `OriginalJassReadOnlyFusionPort`는 잠긴 레시피의 원본 추가 조건과 실제 재료 상태를 보여주되 트랜잭션은 잠급니다. `Original323CommonFusionPort`, `OriginalJassFusionPort`, `OtherworldMysticFusionPreviewPort`도 기존 보유 재료 평가를 같은 표시로 전달합니다.
+- **UI/테스트:** `MobileFusionBrowser`의 재료 필터가 비승인 조합을 숨기지 않고, `OrdrMobileTouchPanel`은 재료 미확보/제작 미승인/제작 가능을 구분합니다. EditMode 사례 추가·보강만 했으며 Python/Unity/APK 실행 검사 없음. 기존 원자 거래·재화/스킬 수치 변경 없음.
+
 ## 2026-11-04 · 36차 한마 유지로 원본 객체·신비 조합 14/14 연결 (코드 반영 / 실행 검사 전)
 
 - [x] 원본 CWR `A0QG → h0C2`와 W3X 실유닛 객체 `한마 유지로 - 신비` 및 기존 위키 확장 `MY-14`를 대조했습니다. 기존 277개 기본 카탈로그와 독립된 확장 286개 구조는 유지합니다. [36차 소스 근거](../data/original-2323C-yujiro-batch36.json).

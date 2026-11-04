@@ -104,6 +104,13 @@ namespace Ordr.Mobile.Mobile
                     if (assigned < ingredient.Count)
                         missing.Add("랜덤 등급 유닛 " + (ingredient.Count - assigned) + "기");
                 }
+                bool allUnitsOwned = missing.Count == 0;
+                // Without an observed inventory, token/ship requirements are
+                // unknown; do not mark those physical materials as present.
+                if (walletBalance == null)
+                    foreach (string special in recipe.SpecialRequirements)
+                        if (special == "행운의토큰" || special == "해적선")
+                            allUnitsOwned = false;
                 // Optional production-readiness ledger. It is read-only and
                 // never spends a token in the web-dex preview; real settlement
                 // still goes through the source JASS/atomic fusion route.
@@ -121,9 +128,15 @@ namespace Ordr.Mobile.Mobile
                     foreach (string special in recipe.SpecialRequirements)
                     {
                         if (special == "행운의토큰" && liveTokens == 0)
+                        {
+                            allUnitsOwned = false;
                             missing.Add("행운의 토큰 실물 1기 부족");
+                        }
                         if (special == "해적선" && liveShips == 0)
+                        {
+                            allUnitsOwned = false;
                             missing.Add("해적선 실물 1기 부족");
+                        }
                     }
                     if (walletBalance("gold") < recipe.Gold)
                         missing.Add("골드 " + (recipe.Gold - walletBalance("gold")) + " 부족");
@@ -140,7 +153,7 @@ namespace Ordr.Mobile.Mobile
                     " | " + recipe.Gold + "골드 / 목재 " + recipe.Lumber +
                     " / " + string.Join(" + ", new List<string>(recipe.SpecialRequirements).ToArray());
                 result.Add(new MobileFusionPreview(recipe.ResultUnitId, recipe.ResultName,
-                    summary, selected, missing));
+                    summary, selected, missing, allUnitsOwned));
             }
             result.Sort((a, b) => string.CompareOrdinal(a.RecipeId, b.RecipeId));
             return result.AsReadOnly();
