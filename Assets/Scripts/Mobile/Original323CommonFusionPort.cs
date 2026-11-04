@@ -295,6 +295,24 @@ namespace Ordr.Mobile.Mobile
             { "ET06", "h05C", "E-12" }, // 핸콕
             { "ET10", "h08R", "E-08" }  // 오뎅
         };
+        // Batch 42: source CWR CHCT×1/WOOD10 and IFCT×3 output lists.
+        // The mobile quota counts successful crafts in the shared saved wallet.
+        // Native counter mutation parity remains a separate source audit.
+        private static readonly string[,] MobileOutcomeChanges = {
+            { "A0K2", "h05S", "T-01" }, // 도플라밍고
+            { "A0K3", "h07N", "T-03" }, // 베이비 5
+            { "A0K4", "h05W", "T-02" }, // 비비
+            { "A0K6", "h0CK", "T-04" }, // 카쿠
+            { "A0K7", "h07J", "T-05" }  // 캐럿
+        };
+        private static readonly string[,] MobileOutcomeDistorted = {
+            { "IF01", "h03V", "D-02" }, // 코알라
+            { "IF02", "h048", "D-04" }, // 페로나
+            { "IF03", "h0CI", "D-03" }, // 퀸
+            { "IF04", "h04U", "D-01" }, // 블랙마리아
+            { "IF05", "h09V", "D-06" }, // 바제스
+            { "IF06", "h05V", "D-05" }  // 에이스
+        };
         // Egghead clear grants a single A13A Green Blood cast in the source.
         // Three exact replacements have no CEN after-effect; SPH3 does and
         // stays locked until that source post-hook has a real mobile handler.
@@ -347,6 +365,8 @@ namespace Ordr.Mobile.Mobile
         public int ExecutableMobileOutcomeTranscendCount => MobileOutcomeTranscend.GetLength(0);
         public int ExecutableMobileOutcomeUpperTierCount => MobileOutcomeUpperTiers.GetLength(0);
         public int ExecutableMobileGreenBloodSeraphimCount => MobileOutcomeGreenBloodSeraphim.GetLength(0);
+        public int ExecutableMobileOutcomeChangesCount => MobileOutcomeChanges.GetLength(0);
+        public int ExecutableMobileOutcomeDistortedCount => MobileOutcomeDistorted.GetLength(0);
         public int ExecutableMobileOutcomeLegendaryCount => MobileOutcomeLegendary.GetLength(0);
         public int ExecutableMobileOutcomeHiddenCount => MobileOutcomeHidden.GetLength(0);
         public int ExecutableMobileOutcomeAOsfCount => MobileOutcomeAOsfSpecial.GetLength(0) + MobileOutcomeAOsfRare.GetLength(0);
@@ -438,6 +458,8 @@ namespace Ordr.Mobile.Mobile
             RegisterRestricted(units, registrations, MobileOutcomeTranscend, true);
             RegisterRestricted(units, registrations, MobileOutcomeUpperTiers, true);
             RegisterRestricted(units, registrations, MobileOutcomeGreenBloodSeraphim, true);
+            RegisterRestricted(units, registrations, MobileOutcomeChanges, true);
+            RegisterRestricted(units, registrations, MobileOutcomeDistorted, true);
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
             planner.SetVerifiedObjectMap(this);
@@ -566,10 +588,11 @@ namespace Ordr.Mobile.Mobile
                 string result = reviewed[i, 1];
                 string id = reviewed[i, 2];
                 string grade = units.Require(id).Grade;
-                if (grade != "제한됨" && grade != "불멸의" && grade != "영원한" && grade != "초월함" && grade != "신비함" && grade != "세라핌")
+                if (grade != "제한됨" && grade != "불멸의" && grade != "영원한" && grade != "초월함" && grade != "신비함" && grade != "세라핌" && grade != "변화" && grade != "왜곡됨")
                     throw new FormatException("상위 조합 결과 등급 불일치: " + ability);
                 if (mobileOutcomeOnly && grade != "초월함" && grade != "제한됨" &&
-                    grade != "불멸의" && grade != "영원한" && grade != "세라핌")
+                    grade != "불멸의" && grade != "영원한" && grade != "세라핌" &&
+                    grade != "변화" && grade != "왜곡됨")
                     throw new FormatException("모바일 결과 조합의 결과 등급 불일치: " + ability);
                 Bind(units, id, result, grade);
                 var recipe = registrations.FindByAbility(ability);
@@ -577,7 +600,7 @@ namespace Ordr.Mobile.Mobile
                     recipe.Results[0].Kind != "UNIT" || recipe.Results[0].Count != 1 ||
                     recipe.Results[0].Rawcode != result)
                     throw new FormatException("검수된 상위 조합 결과가 바뀌었습니다: " + ability);
-                bool materials = false, wood = false, banned = false, king = false, caster = false, greenBlood = false;
+                bool materials = false, wood = false, banned = false, king = false, caster = false, greenBlood = false, specialCounter = false;
                 string seraphimMaterial = null;
                 int materialCount = 0;
                 int mysticGold = 0, mysticWood = 0, physicalTokens = 0, mysticPicks = 0;
@@ -592,6 +615,7 @@ namespace Ordr.Mobile.Mobile
                         condition.Kind != "KING" && condition.Kind != "GOLD" &&
                         condition.Kind != "WOOD" &&
                         !Original323FusionSpecialWalletCosts.IsApproved(ability, condition) &&
+                        !Original323FusionCountLedger.IsApproved(ability, condition) &&
                         !(ability == "A1A6" && condition.Kind == "RMAX" &&
                           condition.Rawcode == "h05G" && condition.Count == 40))
                         throw new FormatException("모바일 결과 조합의 미승인 추가 조건: " +
@@ -656,6 +680,13 @@ namespace Ordr.Mobile.Mobile
                                 throw new FormatException("원본 특성 포인트 소비 조건 불일치: " + ability);
                             if (condition.Kind == "GREN") greenBlood = true;
                             break;
+                        case "CHCT":
+                        case "IFCT":
+                            if (specialCounter ||
+                                !Original323FusionCountLedger.IsApproved(ability, condition))
+                                throw new FormatException("원본 변화/왜곡 횟수 조건이 다릅니다: " + ability);
+                            specialCounter = true;
+                            break;
                         case "UPUN": break; // display/upgrade recommendation only
                         case "UBAN":
                             if (banned || condition.Rawcode != result)
@@ -699,6 +730,18 @@ namespace Ordr.Mobile.Mobile
                         transformation.ExecuteOriginalCENAfterTransformation)
                         throw new FormatException("세라핌 원본 그린블러드 교체 조건 불일치: " + ability);
                 }
+                else if (grade == "변화" || grade == "왜곡됨")
+                {
+                    // Exactly one audited CHCT/IFCT condition, matched to
+                    // the right outcome grade. No KING, ban, or fake item cost.
+                    if (!materials || !specialCounter || banned || king || greenBlood ||
+                        outcomeGold != 0 ||
+                        (grade == "변화" &&
+                            (!wood || outcomeWood != 10 || materialCount != 1)) ||
+                        (grade == "왜곡됨" &&
+                            (wood || outcomeWood != 0 || materialCount < 3)))
+                        throw new FormatException("원본 변화/왜곡 조합 비용·재료 불일치: " + ability);
+                }
                 else
                 {
                     // The seven reviewed TR registrations have NO GOLD/WOOD cost.
@@ -714,7 +757,7 @@ namespace Ordr.Mobile.Mobile
                 if (mobileOutcomeOnly)
                 {
                     int expectedGold = grade == "제한됨" ? (ability == "A0S0" ? 30000 : 5000) : 0;
-                    int expectedWood = grade == "불멸의" ? 10 :
+                    int expectedWood = (grade == "불멸의" || grade == "변화") ? 10 :
                         (grade == "제한됨" || grade == "영원한" ? 5 : 0);
                     if (outcomeGold != expectedGold || outcomeWood != expectedWood)
                         throw new FormatException("모바일 결과 조합의 원본 비용 불일치: " + ability);
@@ -736,6 +779,10 @@ namespace Ordr.Mobile.Mobile
                 if (MobileOutcomeUpperTiers[i, 0] == ability) return true;
             for (int i = 0; i < MobileOutcomeGreenBloodSeraphim.GetLength(0); i++)
                 if (MobileOutcomeGreenBloodSeraphim[i, 0] == ability) return true;
+            for (int i = 0; i < MobileOutcomeChanges.GetLength(0); i++)
+                if (MobileOutcomeChanges[i, 0] == ability) return true;
+            for (int i = 0; i < MobileOutcomeDistorted.GetLength(0); i++)
+                if (MobileOutcomeDistorted[i, 0] == ability) return true;
             for (int i = 0; i < MobileOutcomeLegendary.GetLength(0); i++)
                 if (MobileOutcomeLegendary[i, 0] == ability) return true;
             for (int i = 0; i < MobileOutcomeHidden.GetLength(0); i++)
@@ -772,6 +819,9 @@ namespace Ordr.Mobile.Mobile
                     instruction.Count + ", 보유 " + available + ")";
                 return enough;
             }
+            if (instruction.Kind == "CHCT" || instruction.Kind == "IFCT")
+                return Original323FusionCountLedger.CanCreate(
+                    economy.Wallet, ability, instruction, out reason);
             return verifiedConditions.CanSatisfy(instruction, ability, out reason);
         }
         public bool CanCommitRecipe(string id) => id != null && supported.Contains(id);
@@ -807,13 +857,19 @@ namespace Ordr.Mobile.Mobile
                             offer.RecipeId, condition, out walletId, out label))
                             costs.Add(label + " " + condition.Count + " (보유 " +
                                 economy.Wallet.Balance(walletId) + ")");
+                        if (Original323FusionCountLedger.TryResolve(
+                            offer.RecipeId, condition, out walletId, out label))
+                            costs.Add(label + " " + economy.Wallet.Balance(walletId) +
+                                "/" + condition.Count + " 사용");
                     }
                 result.Add(new MobileFusionPreview(offer.RecipeId, ready.ResultName + " · " + resultGrades[offer.RecipeId] +
                     (IsMobileOutcomeOnly(offer.RecipeId) ? " · 모바일 제작" : ""),
                     string.Join(" + ", parts) + (costs.Count > 0
                         ? " · " + string.Join(" · ", costs) : " · 추가 재화 없음") +
                     (IsMobileOutcomeOnly(offer.RecipeId)
-                        ? " · 원본 부가효과 미검증" : ""),
+                        ? " · 원본 부가효과 미검증" : "") +
+                    (Original323FusionCountLedger.IsCounterFusion(offer.RecipeId)
+                        ? " · 횟수 한도는 모바일 모델" : ""),
                     ready.SuggestedMaterialIds, missing, allUnitsOwned));
             }
             return result.AsReadOnly();
@@ -839,10 +895,10 @@ namespace Ordr.Mobile.Mobile
                 foreach (long id in ready.SuggestedMaterialIds)
                     if (!exact.Remove(id)) return Reject("확인한 재료와 현재 재료가 다릅니다.");
                 double resultX = HiddenResultX, resultY = HiddenResultY;
-                if (resultGrades[ability] == "세라핌")
+                if (resultGrades[ability] == "세라핌" || resultGrades[ability] == "변화")
                 {
-                    // A13A is cast ON the supplied source unit, not from
-                    // a material actor possessing an SPH fusion ability.
+                    // Green Blood and Change both replace their single exact
+                    // owned target actor at its current battlefield position.
                     var greenBloodTarget = new HashSet<long>(ready.SuggestedMaterialIds);
                     foreach (var row in owned)
                         if (greenBloodTarget.Contains(row.InstanceId))
@@ -853,7 +909,8 @@ namespace Ordr.Mobile.Mobile
                         }
                 }
                 else if (resultGrades[ability] != "히든" && resultGrades[ability] != "영원한" &&
-                    resultGrades[ability] != "불멸의" && resultGrades[ability] != "초월함" && resultGrades[ability] != "신비함")
+                    resultGrades[ability] != "불멸의" && resultGrades[ability] != "초월함" &&
+                    resultGrades[ability] != "신비함" && resultGrades[ability] != "왜곡됨")
                 {
                     // CT1 uses the exact material actor owning the cast ability.
                     MobileUnitSnapshot caster = null;
@@ -871,11 +928,13 @@ namespace Ordr.Mobile.Mobile
                 }
                 var specialCosts = Original323FusionSpecialWalletCosts.BuildApprovedCosts(
                     ability, originalRegistrations.FindByAbility(ability));
+                var usageReward = Original323FusionCountLedger.BuildUsageReward(
+                    ability, originalRegistrations.FindByAbility(ability));
                 using (var swap = combat.BeginOriginalFusionUnitSwap(ready.SuggestedMaterialIds,
                     ready.ResultUnitId, resultX, resultY))
                 {
                     created = swap.ResultInstanceId;
-                    if (ready.GoldCost == 0 && ready.LumberCost == 0 && specialCosts == null) swap.Commit();
+                    if (ready.GoldCost == 0 && ready.LumberCost == 0 && specialCosts == null && usageReward == null) swap.Commit();
                     else
                     {
                         var beforeWallet = economy.Wallet.CaptureState();
@@ -887,7 +946,7 @@ namespace Ordr.Mobile.Mobile
                             if (specialCosts != null)
                                 foreach (var special in specialCosts)
                                     cost.Add(special.ResourceId, special.Count);
-                            if (!economy.Wallet.TryExchange(cost, new ResourceBundle()))
+                            if (!economy.Wallet.TryExchange(cost, usageReward ?? new ResourceBundle()))
                                 throw new InvalidOperationException("조합 비용이 변경됐습니다.");
                             swap.Commit();
                         }

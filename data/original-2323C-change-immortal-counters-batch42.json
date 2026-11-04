@@ -1,0 +1,728 @@
+{
+  "format": "ordr-batch42-change-immortal-mobile-counter-v1",
+  "gameVersion": "ORDR S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "baseCommit": "e6c001c0c2e0e3e18c066908e51a755900ebc418",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceRegistry": "data/original-jass-fusion-registry.json",
+  "priorBatch": "data/original-2323C-special-wallet-fusions-batch41.json",
+  "summary": {
+    "cwrTotal": 266,
+    "executableBefore": 218,
+    "newlyExecutable": 11,
+    "executableAfter": 229,
+    "remainingNonExecutable": 37,
+    "changeRecipes": 5,
+    "distortedRecipes": 6,
+    "pythonUnityAndroidApkExecuted": false,
+    "nativeCounterSemanticsVerified": false
+  },
+  "mobileRule": {
+    "nature": "explicit-mobile-outcome-model; exact original JASS count source not extracted",
+    "CHCT": {
+      "walletId": "fusion:change-created",
+      "initialUsed": 0,
+      "requiredThresholdFromCWR": 1,
+      "allowWhileUsedLessThan": 1,
+      "onSuccessfulCraft": "+1 in same transaction",
+      "scope": "shared per player session / saved wallet"
+    },
+    "IFCT": {
+      "walletId": "fusion:distorted-created",
+      "initialUsed": 0,
+      "requiredThresholdFromCWR": 3,
+      "allowWhileUsedLessThan": 3,
+      "onSuccessfulCraft": "+1 in same transaction",
+      "scope": "shared per player session / saved wallet"
+    },
+    "atomicity": "BeginOriginalFusionUnitSwap, wallet.TryExchange consumes resource costs and writes count increment, swap.Commit, wallet.RestoreState on failure",
+    "sourceUncertainty": "Source CWR CHCT×1/IFCT×3 is confirmed. A native JASS callback showing actual counter increment, debit, limit, and reset semantics has NOT been recovered; the < threshold interpretation and success increment are mobile decisions, not verified equivalence."
+  },
+  "newlyExecutable": [
+    {
+      "abilityRawcode": "A0K2",
+      "resultRawcode": "h05S",
+      "resultCatalogId": "T-01",
+      "resultName": "도플라밍고",
+      "grade": "변화",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01L",
+          "count": 1,
+          "catalogId": "R-04"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09E",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05I",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:change-created",
+      "counterCeiling": 1
+    },
+    {
+      "abilityRawcode": "A0K3",
+      "resultRawcode": "h07N",
+      "resultCatalogId": "T-03",
+      "resultName": "베이비 5",
+      "grade": "변화",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02M",
+          "count": 1,
+          "catalogId": "R-16"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09E",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08Y",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:change-created",
+      "counterCeiling": 1
+    },
+    {
+      "abilityRawcode": "A0K4",
+      "resultRawcode": "h05W",
+      "resultCatalogId": "T-02",
+      "resultName": "비비",
+      "grade": "변화",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1,
+          "catalogId": "R-19"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h057",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05F",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:change-created",
+      "counterCeiling": 1
+    },
+    {
+      "abilityRawcode": "A0K6",
+      "resultRawcode": "h0CK",
+      "resultCatalogId": "T-04",
+      "resultName": "카쿠",
+      "grade": "변화",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h023",
+          "count": 1,
+          "catalogId": "R-36"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:change-created",
+      "counterCeiling": 1
+    },
+    {
+      "abilityRawcode": "A0K7",
+      "resultRawcode": "h07J",
+      "resultCatalogId": "T-05",
+      "resultName": "캐럿",
+      "grade": "변화",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h07L",
+          "count": 1,
+          "catalogId": "H-19"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:change-created",
+      "counterCeiling": 1
+    },
+    {
+      "abilityRawcode": "IF01",
+      "resultRawcode": "h03V",
+      "resultCatalogId": "D-02",
+      "resultName": "코알라",
+      "grade": "왜곡됨",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03G",
+          "count": 1,
+          "catalogId": "L-28"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1,
+          "catalogId": "R-19"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00O",
+          "count": 1,
+          "catalogId": "U-01"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:distorted-created",
+      "counterCeiling": 3
+    },
+    {
+      "abilityRawcode": "IF02",
+      "resultRawcode": "h048",
+      "resultCatalogId": "D-04",
+      "resultName": "페로나",
+      "grade": "왜곡됨",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02N",
+          "count": 1,
+          "catalogId": "L-12"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1,
+          "catalogId": "R-11"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h010",
+          "count": 1,
+          "catalogId": "S-17"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00N",
+          "count": 1,
+          "catalogId": "U-07"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00J",
+          "count": 1,
+          "catalogId": "U-10"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h058",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:distorted-created",
+      "counterCeiling": 3
+    },
+    {
+      "abilityRawcode": "IF03",
+      "resultRawcode": "h0CI",
+      "resultCatalogId": "D-03",
+      "resultName": "퀸",
+      "grade": "왜곡됨",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AH",
+          "count": 1,
+          "catalogId": "L-34"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1,
+          "catalogId": "R-21"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00L",
+          "count": 1,
+          "catalogId": "U-11"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:distorted-created",
+      "counterCeiling": 3
+    },
+    {
+      "abilityRawcode": "IF04",
+      "resultRawcode": "h04U",
+      "resultCatalogId": "D-01",
+      "resultName": "블랙마리아",
+      "grade": "왜곡됨",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02X",
+          "count": 1,
+          "catalogId": "L-15"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1,
+          "catalogId": "R-18"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00S",
+          "count": 1,
+          "catalogId": "S-04"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:distorted-created",
+      "counterCeiling": 3
+    },
+    {
+      "abilityRawcode": "IF05",
+      "resultRawcode": "h09V",
+      "resultCatalogId": "D-06",
+      "resultName": "바제스",
+      "grade": "왜곡됨",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03M",
+          "count": 1,
+          "catalogId": "H-12"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01V",
+          "count": 1,
+          "catalogId": "R-13"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00A",
+          "count": 1,
+          "catalogId": "U-13"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00F",
+          "count": 1,
+          "catalogId": "U-12"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H092",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:distorted-created",
+      "counterCeiling": 3
+    },
+    {
+      "abilityRawcode": "IF06",
+      "resultRawcode": "h05V",
+      "resultCatalogId": "D-05",
+      "resultName": "포트거스.D.에이스",
+      "grade": "왜곡됨",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02O",
+          "count": 1,
+          "catalogId": "L-24"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Z",
+          "count": 1,
+          "catalogId": "R-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h012",
+          "count": 1,
+          "catalogId": "S-15"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h059",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true,
+      "counterWalletId": "fusion:distorted-created",
+      "counterCeiling": 3
+    }
+  ],
+  "remaining37ByLane": {
+    "source-presentation-not-a-craft": 1,
+    "blocked-source-only-material": 3,
+    "already-connected-noncraft-wisp-outcome": 1,
+    "already-connected-noncraft-wisp-pool": 8,
+    "blocked-green-blood-condition": 1,
+    "blocked-known-native-post-effect": 6,
+    "blocked-item-atomic-payment": 2,
+    "blocked-native-rdun-acquisition": 14,
+    "development-only-not-retail": 1
+  },
+  "remaining37": [
+    {
+      "abilityRawcode": "UU01",
+      "resultName": "실버즈 레일리",
+      "lane": "source-presentation-not-a-craft",
+      "reason": "UPUN 표시만 있고 UNIT·재화 재료가 없는 레일리 표기; 획득 이벤트 신원 미확인"
+    },
+    {
+      "abilityRawcode": "A02Q",
+      "resultName": "토키",
+      "lane": "blocked-source-only-material",
+      "reason": "h05Y 고대의 배 R-44는 W3X 비전투 지원 객체 및 위키 확장 식별됨. 검증된 게임 내 획득·보유/원자 소비 경로가 없음"
+    },
+    {
+      "abilityRawcode": "YY26",
+      "resultName": "해적선",
+      "lane": "already-connected-noncraft-wisp-outcome",
+      "reason": "원본 랜덤 위습 24/10000 해적선 추첨과 실물 PS-01 생성은 기존 SourceCommonWispWorld에서 처리"
+    },
+    {
+      "abilityRawcode": "SP01",
+      "resultName": "모건",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP02",
+      "resultName": "베티",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP03",
+      "resultName": "블고리",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP04",
+      "resultName": "아이스버그",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP05",
+      "resultName": "오타마",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP06",
+      "resultName": "페루",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP07",
+      "resultName": "폭시",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP08",
+      "resultName": "가이몬",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SPH3",
+      "resultName": "S-샤크",
+      "lane": "blocked-green-blood-condition",
+      "reason": "그린블러드 A13A 1회 지급/원자 소비 공통 기능은 연결됐으나 h03G→h0A0 원본 CEN 후속효과 처리 미구현"
+    },
+    {
+      "abilityRawcode": "A007",
+      "resultName": "레베카",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 Bvg: 지속 보조 유닛 생성"
+    },
+    {
+      "abilityRawcode": "A011",
+      "resultName": "마르코",
+      "lane": "blocked-item-atomic-payment",
+      "reason": "원본 아이템 비용/재고 실물 제거·지급 롤백 미연결"
+    },
+    {
+      "abilityRawcode": "A10A",
+      "resultName": "킹",
+      "lane": "blocked-source-only-material",
+      "reason": "h05Y 고대의 배 R-44는 W3X 비전투 지원 객체 및 위키 확장 식별됨. 검증된 게임 내 획득·보유/원자 소비 경로가 없음"
+    },
+    {
+      "abilityRawcode": "TR30",
+      "resultName": "베가펑크",
+      "lane": "blocked-source-only-material",
+      "reason": "h0AN W3X 객체 이름 '세라핌 등급 유닛', 카탈로그 실물 재료·획득 경로 미확인"
+    },
+    {
+      "abilityRawcode": "IM01",
+      "resultName": "로져",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B8Y: 능력이 부착된 지속 보조 유닛 생성"
+    },
+    {
+      "abilityRawcode": "IM04",
+      "resultName": "드래곤",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B99: 직선 폭발 +20% 영구 상태"
+    },
+    {
+      "abilityRawcode": "ET02",
+      "resultName": "니카(루피)",
+      "lane": "blocked-item-atomic-payment",
+      "reason": "원본 아이템 비용/재고 실물 제거·지급 롤백 미연결"
+    },
+    {
+      "abilityRawcode": "ET04",
+      "resultName": "류마",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B7z: 플레이어 1회 제한·플래그·조건부 능력"
+    },
+    {
+      "abilityRawcode": "ET07",
+      "resultName": "우타",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B7W: 추가 아이템·플레이어 상태·타이머"
+    },
+    {
+      "abilityRawcode": "ET12",
+      "resultName": "테조로",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B8I/B8G: 제작 후 상태 갱신"
+    },
+    {
+      "abilityRawcode": "IS01",
+      "resultName": "K",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS02",
+      "resultName": "나루토",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS03",
+      "resultName": "메구밍",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS04",
+      "resultName": "센토 이스즈",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS05",
+      "resultName": "야가미 라이토",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS06",
+      "resultName": "엘리자베스",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS07",
+      "resultName": "옌",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS08",
+      "resultName": "요츠바",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS09",
+      "resultName": "이사야마 요미",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS10",
+      "resultName": "이치의 율자",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS11",
+      "resultName": "토우마",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS12",
+      "resultName": "이치고",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS13",
+      "resultName": "페이몬",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS14",
+      "resultName": "하네카와 츠바사",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "TEST",
+      "resultName": "타츠마키",
+      "lane": "development-only-not-retail",
+      "reason": "TEST 디버그 등록식: cnob/brac 아이템과 GOLD 10000. 원본 일반 제작 메뉴에 노출/무료 취득 금지"
+    }
+  ]
+}

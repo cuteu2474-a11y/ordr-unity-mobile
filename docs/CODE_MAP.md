@@ -1,3 +1,10 @@
+## 2026-11-04 · 42차 CHCT/IFCT 횟수 공유 지갑 연동 (실행 검사 전)
+
+- `Assets/Scripts/Mobile/Original323FusionCountLedger.cs` — CWR 화이트리스트 변화 A0K2/A0K3/A0K4/A0K6/A0K7(원본 CHCT×1), 왜곡 IF01~IF06(원본 IFCT×3)의 정확한 조건을 승인합니다. `fusion:change-created`와 `fusion:distorted-created`는 **누적 성공 조합 수**를 보존하며, 미리보기 조건 평가와 원자 지갑 지급(+1)에 동일한 장부를 사용합니다.
+- `Assets/Scripts/Mobile/Original323CommonFusionPort.cs` — 원본 결과·재료·WOOD×10/IFCT 태그 검증 → 제작 범위 **218→229/266**. 실물 유닛 예약, 공유 지갑 목재 차감·카운터 성공 기록, 실패 원복, UI 횟수·차단 사유 표시까지 기존 실행 경로를 재사용합니다.
+- `Assets/Tests/EditMode/Original323OwnedMaterialFusionTests.cs` — 11건 원본 승인/객체 매핑, 변화 공유 횟수 1회, 왜곡 3회, 목재 부족 시 비소모, 지갑 캡처/복구 회귀를 **작성만** 했습니다(실행하지 않음).
+- [42차 원본 정리·잔여 37건](../data/original-2323C-change-immortal-counters-batch42.json). **원본 카운터의 갱신/초기화 네이티브 JASS는 미확인**입니다. 현재 횟수 한도 해석은 모바일 결과 모델 추론이며 원본 동등성 인증이 아닙니다.
+
 ## 2026-11-04 · 41차 특수 소비 원자 엔진·스토리 보상 연결 (실행 검사 전)
 
 - `Assets/Scripts/Mobile/Original323FusionSpecialWalletCosts.cs` — 능력+BGI 종류+rawcode+개수를 정확히 승인하는 재사용 특수 지갑 비용 표. `A18P SKPT 4 → trait-points`, `SPH1/2/4 GREN 1 → story:green-blood:A13A`. ITEM/IFCT/CHCT 및 SPH3를 무료 통과시키지 않음.

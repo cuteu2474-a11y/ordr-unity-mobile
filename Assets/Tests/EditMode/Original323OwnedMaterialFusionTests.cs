@@ -97,6 +97,10 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0, game.Economy.Wallet.Balance("wood"));
             Assert.AreEqual(0, game.Economy.Wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
             Assert.AreEqual(0, game.Economy.Wallet.Balance(Original323StoryMobileProgression.GreenBloodUseResourceId));
+            Assert.AreEqual(recipe.OrderedConditions.Any(x => x.Kind == "CHCT") ? 1 : 0,
+                game.Economy.Wallet.Balance(Original323FusionCountLedger.ChangeUseId));
+            Assert.AreEqual(recipe.OrderedConditions.Any(x => x.Kind == "IFCT") ? 1 : 0,
+                game.Economy.Wallet.Balance(Original323FusionCountLedger.ImmortalUseId));
             Assert.AreEqual(ManualActionState.Rejected,
                 game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State);
             Assert.AreEqual(1, game.Combat.CharacterCount);
@@ -204,7 +208,7 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             var aOsf = new[] { "A19Z", "A1A1", "A1A0" };
             Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeAOsfCount);
-            Assert.AreEqual(218, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(229, game.Fusion.ExecutableRecipeCount);
             foreach (var ability in aOsf)
             {
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
@@ -400,6 +404,150 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(ManualActionState.Rejected,
                 game.Fusion.ConfirmFusion("SPH2", blocked.SuggestedMaterialInstances).State);
             Assert.AreEqual(2, game.Combat.CharacterCount);
+        }
+
+        [Test]
+        public void Batch42AllFiveChangesAndSixDistortedOutcomesUseExactSourceCounterTags()
+        {
+            var game = Create();
+            var changes = new[] { "A0K2", "A0K3", "A0K4", "A0K6", "A0K7" };
+            var distorted = new[] { "IF01", "IF02", "IF03", "IF04", "IF05", "IF06" };
+            Assert.AreEqual(5, game.Fusion.ExecutableMobileOutcomeChangesCount);
+            Assert.AreEqual(6, game.Fusion.ExecutableMobileOutcomeDistortedCount);
+            foreach (var ability in changes.Concat(distorted))
+            {
+                Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
+                var recipe = game.Registry.FindByAbility(ability);
+                var counter = recipe.OrderedConditions.Single(x =>
+                    x.Kind == "CHCT" || x.Kind == "IFCT");
+                Assert.AreEqual(changes.Contains(ability) ? "CHCT" : "IFCT", counter.Kind);
+                Assert.AreEqual(counter.Kind, counter.Rawcode);
+                Assert.AreEqual(changes.Contains(ability) ? 1 : 3, counter.Count);
+                Assert.IsTrue(recipe.RequiredUnitRawcodes().Any(), ability);
+                foreach (var material in recipe.RequiredUnitRawcodes())
+                {
+                    string id;
+                    Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id), ability);
+                    Assert.IsNotNull(game.Map.Find(id));
+                }
+                string output;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(recipe.Results.Single().Rawcode, out output));
+                Assert.AreEqual(changes.Contains(ability) ? "변화" : "왜곡됨",
+                    game.Units.Require(output).Grade);
+                Assert.AreEqual(changes.Contains(ability) ? 10 : 0,
+                    recipe.OrderedConditions.Where(x => x.Kind == "WOOD").Sum(x => x.Count));
+            }
+        }
+
+        [Test]
+        public void Batch42ChangeConsumesOneSharedSlotAndSecondChangeIsBlockedWithoutSpending()
+        {
+            var game = Create();
+            foreach (var ability in new[] { "A0K2", "A0K3" })
+            {
+                var recipe = game.Registry.FindByAbility(ability);
+                foreach (var material in recipe.RequiredUnitRawcodes())
+                {
+                    string id;
+                    Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id));
+                    for (int i = 0; i < material.Value; i++)
+                        game.Combat.SpawnCharacter(id, 12, 34);
+                }
+            }
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", 20));
+            var first = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "A0K2");
+            Assert.IsTrue(first.IsReady, string.Join("; ", first.MissingMaterials));
+            StringAssert.Contains("변화 제작 횟수 0/1", first.OriginalMaterialsAndCost);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion("A0K2", first.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(Original323FusionCountLedger.ChangeUseId));
+            Assert.AreEqual(10, game.Economy.Wallet.Balance("wood"));
+            var next = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "A0K3");
+            Assert.IsFalse(next.IsReady);
+            StringAssert.Contains("변화 제작 횟수 1/1", next.OriginalMaterialsAndCost);
+            var before = game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray();
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("A0K3", next.SuggestedMaterialInstances).State);
+            CollectionAssert.AreEquivalent(before,
+                game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray());
+            Assert.AreEqual(10, game.Economy.Wallet.Balance("wood"));
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(Original323FusionCountLedger.ChangeUseId));
+        }
+
+        [Test]
+        public void Batch42DistortedAllowsThreeSuccessfulCraftsThenRejectsFourth()
+        {
+            var game = Create();
+            const string ability = "IF01";
+            var recipe = game.Registry.FindByAbility(ability);
+            for (int turn = 0; turn < 4; turn++)
+            {
+                foreach (var material in recipe.RequiredUnitRawcodes())
+                {
+                    string id;
+                    Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id));
+                    for (int i = 0; i < material.Value; i++)
+                        game.Combat.SpawnCharacter(id, turn * 10, turn * 20);
+                }
+                var offer = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                    .Single(x => x.RecipeId == ability);
+                if (turn < 3)
+                {
+                    Assert.IsTrue(offer.IsReady, string.Join("; ", offer.MissingMaterials));
+                    Assert.AreEqual(ManualActionState.Succeeded,
+                        game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State);
+                    Assert.AreEqual(turn + 1,
+                        game.Economy.Wallet.Balance(Original323FusionCountLedger.ImmortalUseId));
+                }
+                else
+                {
+                    Assert.IsFalse(offer.IsReady);
+                    StringAssert.Contains("왜곡 제작 횟수 3/3", offer.OriginalMaterialsAndCost);
+                    var before = game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray();
+                    Assert.AreEqual(ManualActionState.Rejected,
+                        game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State);
+                    CollectionAssert.AreEquivalent(before,
+                        game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray());
+                    Assert.AreEqual(3,
+                        game.Economy.Wallet.Balance(Original323FusionCountLedger.ImmortalUseId));
+                }
+            }
+            var stored = game.Economy.Wallet.CaptureState();
+            var restored = new EconomyWallet();
+            restored.RestoreState(stored);
+            Assert.AreEqual(3, restored.Balance(Original323FusionCountLedger.ImmortalUseId));
+            Assert.AreEqual(0, restored.Balance(Original323FusionCountLedger.ChangeUseId));
+        }
+
+        [Test]
+        public void Batch42MissingWoodNeverConsumesChangeSlotOrMaterials()
+        {
+            var game = Create();
+            var recipe = game.Registry.FindByAbility("A0K7");
+            foreach (var material in recipe.RequiredUnitRawcodes())
+            {
+                string id;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id));
+                game.Combat.SpawnCharacter(id, 2, 4);
+            }
+            var before = game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray();
+            var preview = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "A0K7");
+            Assert.IsFalse(preview.IsReady);
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion("A0K7", preview.SuggestedMaterialInstances).State);
+            CollectionAssert.AreEquivalent(before,
+                game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray());
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(Original323FusionCountLedger.ChangeUseId));
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("wood", 10));
+            var ready = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == "A0K7");
+            Assert.IsTrue(ready.IsReady);
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion("A0K7", ready.SuggestedMaterialInstances).State);
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(Original323FusionCountLedger.ChangeUseId));
         }
 
         [Test]
