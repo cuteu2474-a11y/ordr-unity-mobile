@@ -1600,7 +1600,7 @@ namespace Ordr.Mobile.Tests
                 Assert.IsFalse(live.Combat.MobileEnemySnapshot().Any(enemy =>
                     live.Combat.StatusOf(enemy.Id).Snapshot().Any(effect =>
                         effect.Type == CombatEffectType.ArmorReduction &&
-                        effect.SourceId.StartsWith("practice-aura:")));
+                        effect.SourceId.StartsWith("practice-aura:"))));
                 live.Combat.RemoveCharacter(live.ActorId);
                 live.Battle.Advance(.1);
                 Assert.IsTrue(live.Combat.MobileEnemySnapshot().Any(enemy =>
