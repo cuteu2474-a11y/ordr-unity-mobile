@@ -1,5 +1,6 @@
 using System;
 using Ordr.Mobile.Core;
+using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
