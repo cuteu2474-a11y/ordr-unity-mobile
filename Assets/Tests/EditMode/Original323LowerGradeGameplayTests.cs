@@ -346,7 +346,7 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == replacement));
             Assert.IsTrue(game.Fusion.CanCommitRecipe("A19Z"));
             Assert.IsTrue(game.Fusion.CanCommitRecipe("A1A1"));
-            Assert.AreEqual(233, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(240, game.Fusion.ExecutableRecipeCount);
             Assert.AreEqual(39, game.Fusion.ExecutableLegendaryRecipeCount);
             Assert.AreEqual(22, game.Fusion.ExecutableHiddenRecipeCount);
             Assert.AreEqual(63, game.Fusion.ExecutableRestrictedRecipeCount);

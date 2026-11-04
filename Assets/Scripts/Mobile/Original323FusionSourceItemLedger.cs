@@ -4,7 +4,9 @@ using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Mobile
 {
-    // Original CWR ITEM conditions for Marco A011/AI02 and Nika ET02/AI01.
+    // Original CWR ITEM conditions for Marco A011/AI02, Nika ET02/AI01,
+    // and Uta ET07/AI00. The 96201e80 JASS creates those inventory items
+    // on successful A011, ET02, and ET07 respectively.
     // These are original inventory item rawcodes, never a free recipe unlock.
     // Native item acquisition has no verified source producer in this port:
     // only a witnessed, unique inventory receipt may credit the saved wallet.
@@ -20,12 +22,14 @@ namespace Ordr.Mobile.Mobile
     {
         public const string MarcoItemRawcode = "AI02";
         public const string NikaItemRawcode = "AI01";
+        public const string UtaItemRawcode = "AI00";
         public const string ItemWalletPrefix = "source:item:";
 
         public static string WalletId(string originalItemRawcode)
         {
             if (originalItemRawcode != MarcoItemRawcode &&
-                originalItemRawcode != NikaItemRawcode)
+                originalItemRawcode != NikaItemRawcode &&
+                originalItemRawcode != UtaItemRawcode)
                 throw new ArgumentException("원본 조합에 등록되지 않은 아이템", nameof(originalItemRawcode));
             return ItemWalletPrefix + originalItemRawcode;
         }
@@ -38,11 +42,14 @@ namespace Ordr.Mobile.Mobile
             if (condition == null || condition.Kind != "ITEM" || condition.Count != 1)
                 return false;
             if ((ability == "A011" && condition.Rawcode == MarcoItemRawcode) ||
-                (ability == "ET02" && condition.Rawcode == NikaItemRawcode))
+                (ability == "ET02" && condition.Rawcode == NikaItemRawcode) ||
+                (ability == "ET07" && condition.Rawcode == UtaItemRawcode))
             {
                 walletId = WalletId(condition.Rawcode);
                 displayName = condition.Rawcode == MarcoItemRawcode ?
-                    "마르코 원본 아이템(AI02)" : "니카 원본 아이템(AI01)";
+                    "마르코 원본 아이템(AI02)" :
+                    condition.Rawcode == NikaItemRawcode ?
+                    "니카 원본 아이템(AI01)" : "우타 원본 아이템(AI00)";
                 return true;
             }
             return false;
@@ -82,7 +89,8 @@ namespace Ordr.Mobile.Mobile
             if (witness == null || string.IsNullOrWhiteSpace(receiptId) ||
                 receiptId.Length > 160 || count <= 0 || count > 100 ||
                 (originalItemRawcode != MarcoItemRawcode &&
-                 originalItemRawcode != NikaItemRawcode)) return false;
+                 originalItemRawcode != NikaItemRawcode &&
+                 originalItemRawcode != UtaItemRawcode)) return false;
             string receipt = "original323:item-pickup:" + receiptId;
             if (wallet.HasCompletedTransaction(receipt)) return false;
             string evidence;

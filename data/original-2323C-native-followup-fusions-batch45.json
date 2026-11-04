@@ -1,0 +1,86 @@
+{
+  "batch": 45,
+  "date": "2026-11-04",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceFile": "original user-provided war3map.j, held outside public repository",
+  "previousExecutable": 233,
+  "mobileOutcomeExecutable": 240,
+  "totalSourceRegistrations": 266,
+  "remainingUnconnected": 26,
+  "nativeOutcomeAndReceiptConnections": [
+    {
+      "ability": "A007",
+      "name": "Rebecca",
+      "resultRawcode": "h05I",
+      "jass": "Bvg",
+      "sourceBehavior": "create one player-owned h04V helper at start location with A0HZ",
+      "mobile": "source result craft and persistent unique helper receipt",
+      "remainingParity": "helper h04V actual actor and A0HZ combat action"
+    },
+    {
+      "ability": "IM01",
+      "name": "Roger",
+      "resultRawcode": "h04J",
+      "jass": "B8Y",
+      "sourceBehavior": "create one player-owned h04V helper with A14V/A0MH/A0JS",
+      "mobile": "source result craft and persistent unique helper receipt",
+      "remainingParity": "helper h04V actual actor and its three abilities"
+    },
+    {
+      "ability": "IM04",
+      "name": "Dragon",
+      "resultRawcode": "h04D",
+      "jass": "B99",
+      "sourceBehavior": "LL[player]+=20, affecting line enemy JD ability level",
+      "mobile": "source result and cumulative +20 saved explosion parameter",
+      "remainingParity": "enemy spawn JD level adapter and native formula"
+    },
+    {
+      "ability": "ET04",
+      "name": "Ryuma",
+      "resultRawcode": "h0CJ",
+      "jass": "B7z",
+      "sourceBehavior": "only once per player, du[player]=true; grant A11B if tech R00R already researched; reset dv[player] to zero",
+      "mobile": "source result and persisted once-only guard in preview and commit",
+      "remainingParity": "tech R00R conditional A11B ability and samurai stack integration"
+    },
+    {
+      "ability": "ET07",
+      "name": "Uta",
+      "resultRawcode": "h067",
+      "jass": "B7W / B6m",
+      "sourceBehavior": "consume required AI00, grant AI01 in slot 0, create two groups and start repeating 60-second group swap",
+      "mobile": "source result, AI00 debit, AI01 credit and persistent song receipt in one swap/wallet transaction",
+      "remainingParity": "native timed song group swap and inventory-slot presentation"
+    },
+    {
+      "ability": "ET12",
+      "name": "Tesoro",
+      "resultRawcode": "h06A",
+      "jass": "B8I / B8G",
+      "sourceBehavior": "create one player-owned h04V helper with A170 and A11L",
+      "mobile": "source result craft and persistent unique helper receipt",
+      "remainingParity": "helper h04V real actor and attached abilities"
+    },
+    {
+      "ability": "SPH3",
+      "name": "S-Shark",
+      "resultRawcode": "h0A0",
+      "jass": "CEN / CEP",
+      "sourceBehavior": "green-blood replacement h03G -> h0A0, h04V helper A0N1; near up to two allies within 450, innerfire repeated after 19.7 seconds",
+      "mobile": "source result, single green-blood use and persistent CEN receipt in one transaction",
+      "remainingParity": "CEN helper selection, attack buff values, 19.7-second repeat"
+    }
+  ],
+  "additionalSourceItemReturns": [
+    { "ability": "A011", "jass": "Bwm", "spent": "AI02", "granted": "AI02" },
+    { "ability": "ET02", "jass": "B7w", "spent": "AI01", "granted": "AI00" },
+    { "ability": "ET07", "jass": "B7W", "spent": "AI00", "granted": "AI01" }
+  ],
+  "stillBlocked": {
+    "TR30": "Native h0AN ingredient has no proven owned actor/acquisition path; never substitute arbitrary Seraphim actors",
+    "RDUN": 14,
+    "otherNonCraftOrWispRegistrations": 11
+  },
+  "verification": "Code and NUnit cases written; no local Python, Unity, Android or APK execution by user request. GitHub Actions results are not checked after the run starts."
+}

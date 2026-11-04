@@ -26,7 +26,7 @@ namespace Ordr.Mobile.Mobile
     public static class Original323FusionSpecialWalletCosts
     {
         private static readonly HashSet<string> GreenBloodMobileResults =
-            new HashSet<string>(StringComparer.Ordinal) { "SPH1", "SPH2", "SPH4" };
+            new HashSet<string>(StringComparer.Ordinal) { "SPH1", "SPH2", "SPH3", "SPH4" };
         public static bool IsApproved(string ability, OriginalJassFusionInstruction condition)
         {
             string resource, label;
@@ -50,8 +50,8 @@ namespace Ordr.Mobile.Mobile
                 return true;
             }
             // Source CKe: Egghead stage 14 grants exactly one A13A cast.
-            // A13A's h032/h043/h030 replacements have no CEN post-hook.
-            // The h03G -> h0A0 branch (SPH3) remains locked pending CEN.
+            // A13A replaces all four eligible actors. SPH3's CEN callback
+            // needs its extra recorded source state; it is not native parity.
             if (GreenBloodMobileResults.Contains(ability) &&
                 condition.Kind == "GREN" && condition.Rawcode == "GREN" &&
                 condition.Count == 1)

@@ -271,15 +271,15 @@ namespace Ordr.Mobile.Mobile
             { "TR29", "H0CO", "TR-24" }, // 코비
         };
 
-        // Batch 39: only source-mapped, simple UNIT/GOLD/WOOD/UPUN/UBAN/KING
-        // cases with no IDENTIFIED deferred gameplay side effect. This is
-        // mobile material->actor outcome parity, not native callback parity.
-        // Keep A007/IM01/IM04/ET04/ET12 locked for KNOWN additional effects.
+        // Batch 45: source-declared follow-up receipts join the same wallet
+        // transaction as the material swap. Original h04V dummy abilities,
+        // CEN aura, and timers still need combat adapters; mobile outcome only.
         // Stage-nine story rewards now supply one non-attacking h05Y ship;
         // both affected recipes consume the actual owned source actor.
         // Batch 41: the SKPT:4 Alvida gate uses real mission/story trait points
         // in the SAME atomic source-material wallet transaction.
         private static readonly string[,] MobileOutcomeUpperTiers = {
+            { "A007", "h05I", "LI-02" }, // 레베카, Bvg first-time helper
             { "A18P", "h08Q", "LI-06" }, // 알비다, SKPT 4, gold 5000/wood 5
             // Batch 43: exact ITEM:AI02/AI01 checked against witnessed item
             // receipts in the shared wallet; no synthetic item allocation.
@@ -291,6 +291,8 @@ namespace Ordr.Mobile.Mobile
             { "A02O", "h05F", "LI-09" }, // 크로커다일, UPUN marker
             { "A1A6", "h05G", "LI-01" }, // 레드필드, source RMAX h05G/40
             { "A10A", "h0AI", "LI-10" }, // 킹, stage-nine h05Y material
+            { "IM01", "h04J", "I-04" }, // 로저, B8Y first-time helper
+            { "IM04", "h04D", "I-02" }, // 드래곤, B99 line explosion +20
             { "IM05", "h04Q", "I-06" }, // 빅맘, wood 10
             { "IM06", "h04E", "I-07" }, // 센고쿠
             { "IM07", "h04F", "I-08" }, // 스코퍼가반
@@ -298,8 +300,11 @@ namespace Ordr.Mobile.Mobile
             { "IM09", "h04A", "I-12" }, // 흰수염
             { "IM11", "h07M", "I-11" }, // 카이도
             { "IM12", "h081", "I-05" }, // 불릿
+            { "ET04", "h0CJ", "E-03" }, // 류마, B7z once-per-player
             { "ET05", "h05A", "E-05" }, // 버기, wood 5
             { "ET06", "h05C", "E-12" }, // 핸콕
+            { "ET07", "h067", "E-09" }, // 우타, ITEM AI00 -> AI01
+            { "ET12", "h06A", "E-11" }, // 테조로, B8G helper
             { "ET10", "h08R", "E-08" }  // 오뎅
         };
         // Batch 42: source CWR CHCT×1/WOOD10 and IFCT×3 output lists.
@@ -321,11 +326,12 @@ namespace Ordr.Mobile.Mobile
             { "IF06", "h05V", "D-05" }  // 에이스
         };
         // Egghead clear grants a single A13A Green Blood cast in the source.
-        // Three exact replacements have no CEN after-effect; SPH3 does and
-        // stays locked until that source post-hook has a real mobile handler.
+        // SPH3 also has a CEN post-hook; source callback state is now
+        // transacted, but the native buff/dummy remains mobile-only.
         private static readonly string[,] MobileOutcomeGreenBloodSeraphim = {
             { "SPH1", "h09Y", "SR-01" },
             { "SPH2", "h0A3", "SR-02" },
+            { "SPH3", "h0A0", "SR-03" },
             { "SPH4", "h0A1", "SR-04" }
         };
         // Five source/dex-correlated results plus the W3X-identified Hanma
@@ -371,7 +377,7 @@ namespace Ordr.Mobile.Mobile
             MobileOutcomeTranscend.GetLength(0) + MobileOutcomeUpperTiers.GetLength(0);
         public int ExecutableMobileOutcomeTranscendCount => MobileOutcomeTranscend.GetLength(0);
         public int ExecutableMobileOutcomeUpperTierCount => MobileOutcomeUpperTiers.GetLength(0);
-        public int ExecutableMobileSourceItemRecipeCount => 2;
+        public int ExecutableMobileSourceItemRecipeCount => 3;
         public bool TryRecordOriginalItemPickup(IOriginal323FusionItemReceiptWitness witness,
             string receiptId, string originalItemRawcode, int count)
         {
@@ -790,21 +796,26 @@ namespace Ordr.Mobile.Mobile
                             true, false, false, out transformation) ||
                         transformation.Kind != Original323GreenBloodActionKind.Transform ||
                         transformation.ReplacementRawcode != result ||
-                        transformation.ExecuteOriginalCENAfterTransformation)
+                        (transformation.ExecuteOriginalCENAfterTransformation !=
+                            (ability == "SPH3")))
                         throw new FormatException("세라핌 원본 그린블러드 교체 조건 불일치: " + ability);
                 }
                 else if (sourceItem)
                 {
                     // A011 costs AI02+UNIT2+gold5000+wood5 with UBAN/KING.
-                    // ET02 costs AI01+H08T(Luffy form)+UNIT3+wood5 and
-                    // has NO UBAN/KING in the original CWR registration.
+                    // ET02 costs AI01+H08T(Luffy form)+UNIT3+wood5.
+                    // ET07 costs AI00+six units+wood5+KING, no UBAN.
                     if (!materials || specialCounter || greenBlood || !wood ||
-                        outcomeWood != 5 || materialCount != (ability == "ET02" ? 4 : 2) ||
+                        outcomeWood != 5 || materialCount !=
+                            (ability == "ET02" ? 4 : ability == "ET07" ? 6 : 2) ||
                         (ability == "A011" &&
                             (grade != "제한됨" || !banned || !king ||
                              luffyGroup || outcomeGold != 5000)) ||
                         (ability == "ET02" &&
                             (grade != "영원한" || banned || king || !luffyGroup ||
+                             outcomeGold != 0)) ||
+                        (ability == "ET07" &&
+                            (grade != "영원한" || banned || !king || luffyGroup ||
                              outcomeGold != 0)))
                         throw new FormatException("원본 ITEM 조합 재료·비용 불일치: " + ability);
                 }
@@ -915,6 +926,10 @@ namespace Ordr.Mobile.Mobile
                 if (!CanCommitRecipe(offer.RecipeId)) { result.Add(offer); continue; }
                 var ready = planner.Assess(offer.RecipeId, owned, SourceBalance("gold"), SourceBalance("wood"));
                 var missing = new List<string>(ready.BlockingReasons);
+                string nativeReason;
+                if (!Original323FusionNativeFollowupLedger.CanCraft(
+                    economy.Wallet, offer.RecipeId, out nativeReason))
+                    missing.Add(nativeReason);
                 bool allUnitsOwned = true;
                 foreach (var material in ready.Materials)
                     if (material.MissingCount > 0) allUnitsOwned = false;
@@ -965,6 +980,10 @@ namespace Ordr.Mobile.Mobile
             if (!CanCommitRecipe(ability)) return fallback.ConfirmFusion(ability, selected);
             if (busy || !economy.HasStarted || combat.Game.Phase != SessionPhase.Running)
                 return Reject("현재 조합할 수 없습니다.");
+            string nativeBlock;
+            if (!Original323FusionNativeFollowupLedger.CanCraft(
+                economy.Wallet, ability, out nativeBlock))
+                return Reject(nativeBlock);
             busy = true;
             long created;
             JassFusionReadiness ready;
@@ -1016,11 +1035,21 @@ namespace Ordr.Mobile.Mobile
                     ability, originalRegistrations.FindByAbility(ability));
                 var usageReward = Original323FusionCountLedger.BuildUsageReward(
                     ability, originalRegistrations.FindByAbility(ability));
+                var nativeReward = Original323FusionNativeFollowupLedger.BuildReward(
+                    economy.Wallet, ability);
+                var combinedReward = new ResourceBundle();
+                if (usageReward != null)
+                    foreach (var entry in usageReward.Entries)
+                        combinedReward.Add(entry.Key, entry.Value);
+                if (nativeReward != null)
+                    foreach (var entry in nativeReward.Entries)
+                        combinedReward.Add(entry.Key, entry.Value);
                 using (var swap = combat.BeginOriginalFusionUnitSwap(ready.SuggestedMaterialIds,
                     ready.ResultUnitId, resultX, resultY))
                 {
                     created = swap.ResultInstanceId;
-                    if (ready.GoldCost == 0 && ready.LumberCost == 0 && specialCosts == null && usageReward == null) swap.Commit();
+                    if (ready.GoldCost == 0 && ready.LumberCost == 0 && specialCosts == null &&
+                        usageReward == null && nativeReward == null) swap.Commit();
                     else
                     {
                         var beforeWallet = economy.Wallet.CaptureState();
@@ -1032,7 +1061,10 @@ namespace Ordr.Mobile.Mobile
                             if (specialCosts != null)
                                 foreach (var special in specialCosts)
                                     cost.Add(special.ResourceId, special.Count);
-                            if (!economy.Wallet.TryExchange(cost, usageReward ?? new ResourceBundle()))
+                            if (!Original323FusionNativeFollowupLedger.CanCraft(
+                                economy.Wallet, ability, out nativeBlock))
+                                throw new InvalidOperationException(nativeBlock);
+                            if (!economy.Wallet.TryExchange(cost, combinedReward))
                                 throw new InvalidOperationException("조합 비용이 변경됐습니다.");
                             swap.Commit();
                         }

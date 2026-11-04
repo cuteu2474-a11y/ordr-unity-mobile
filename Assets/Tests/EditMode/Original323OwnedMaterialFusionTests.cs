@@ -185,7 +185,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(recipe.OrderedConditions.Any(x => x.Kind == "IFCT") ? 1 : 0,
                 game.Economy.Wallet.Balance(Original323FusionCountLedger.ImmortalUseId));
             foreach (var item in recipe.OrderedConditions.Where(c => c.Kind == "ITEM"))
-                Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                Assert.AreEqual(ability == "A011" ? 1 : 0, game.Economy.Wallet.Balance(
                     Original323FusionSourceItemLedger.WalletId(item.Rawcode)));
             Assert.AreEqual(ManualActionState.Rejected,
                 game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State);
@@ -250,7 +250,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(abilities.Length, abilities.Distinct(StringComparer.Ordinal).Count());
             Assert.AreEqual(5, game.Fusion.ExecutableMobileOutcomeLegendaryCount);
             Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeHiddenCount);
-            Assert.AreEqual(19, game.Fusion.ExecutableMobileOutcomeUpperTierCount); // + 44차 고대의 배 킹
+            Assert.AreEqual(25, game.Fusion.ExecutableMobileOutcomeUpperTierCount);
             foreach (var ability in abilities)
             {
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
@@ -279,13 +279,11 @@ namespace Ordr.Mobile.Tests
                 Assert.IsTrue(offer.Title.Contains("모바일 제작"), ability);
                 Assert.IsTrue(offer.OriginalMaterialsAndCost.Contains("원본 부가효과 미검증"), ability);
             }
-            // Known native gameplay side effects and unresolved ingredient
-            // identities remain blocked rather than silently discarded.
-            foreach (var blocked in new[] {
-                "A007", "IM01", "IM04", "ET04", "ET12",
-                "TR30"
-            })
-                Assert.IsFalse(game.Fusion.CanCommitRecipe(blocked), blocked);
+            // Result-only recipes now commit the source follow-up receipts;
+            // TR30 still lacks a proven h0AN source actor.
+            foreach (var approved in new[] { "A007", "IM01", "IM04", "ET04", "ET12" })
+                Assert.IsTrue(game.Fusion.CanCommitRecipe(approved), approved);
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR30"));
         }
 
         [Test]
@@ -294,7 +292,7 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             var aOsf = new[] { "A19Z", "A1A1", "A1A0" };
             Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeAOsfCount);
-            Assert.AreEqual(233, game.Fusion.ExecutableRecipeCount);
+            Assert.AreEqual(240, game.Fusion.ExecutableRecipeCount);
             foreach (var ability in aOsf)
             {
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
@@ -354,9 +352,10 @@ namespace Ordr.Mobile.Tests
                 StringAssert.Contains("조합 아님", preview.Title);
                 Assert.IsFalse(preview.IsReady);
             }
-            foreach (string ability in new[] { "TR30",
-                "A007", "IM01", "IM04", "ET04", "ET07", "ET12" })
-                Assert.IsFalse(game.Fusion.CanCommitRecipe(ability), ability);
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR30"));
+            foreach (string ability in new[] {
+                "A007", "IM01", "IM04", "ET04", "ET07", "ET12", "SPH3" })
+                Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
         }
 
         [Test]
@@ -449,9 +448,9 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(recipe.Results.Single().Rawcode, plan.ReplacementRawcode);
                 Assert.IsFalse(plan.ExecuteOriginalCENAfterTransformation);
             }
-            Assert.AreEqual(3, game.Fusion.ExecutableMobileGreenBloodSeraphimCount);
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("SPH3"),
-                "h03G requires native CEN following its transformation.");
+            Assert.AreEqual(4, game.Fusion.ExecutableMobileGreenBloodSeraphimCount);
+            Assert.IsTrue(game.Fusion.CanCommitRecipe("SPH3"),
+                "The h03G native CEN receipt is transacted; buff parity is still pending.");
         }
 
         [Test]
@@ -667,7 +666,8 @@ namespace Ordr.Mobile.Tests
             {
                 nativeEvidence = "original-2323C-native-item-event";
                 return Approved && receiptId == "verified-pickup" &&
-                    (originalItemRawcode == "AI01" || originalItemRawcode == "AI02") &&
+                    (originalItemRawcode == "AI00" || originalItemRawcode == "AI01" ||
+                     originalItemRawcode == "AI02") &&
                     awardedCount == 1;
             }
         }
@@ -676,7 +676,7 @@ namespace Ordr.Mobile.Tests
         public void Batch43MarcoAndNikaAreItemGatedAndNoItemIsGrantedAtStart()
         {
             var game = Create();
-            Assert.AreEqual(2, game.Fusion.ExecutableMobileSourceItemRecipeCount);
+            Assert.AreEqual(3, game.Fusion.ExecutableMobileSourceItemRecipeCount);
             foreach (var entry in new[] { new { Ability = "A011", Raw = "AI02" },
                                           new { Ability = "ET02", Raw = "AI01" } })
             {
@@ -692,6 +692,44 @@ namespace Ordr.Mobile.Tests
                 Assert.IsFalse(preview.IsReady);
                 StringAssert.Contains("원본 아이템", preview.OriginalMaterialsAndCost);
             }
+        }
+
+        [Test]
+        public void Batch45OriginalJassItemChainAndFollowupReceiptsAreSourceBound()
+        {
+            var game = Create();
+            foreach (var item in new[] { new { Ability = "A011", Input = "AI02", Output = "AI02" },
+                                         new { Ability = "ET02", Input = "AI01", Output = "AI00" },
+                                         new { Ability = "ET07", Input = "AI00", Output = "AI01" } })
+            {
+                Assert.IsTrue(game.Fusion.CanCommitRecipe(item.Ability));
+                var condition = game.Registry.FindByAbility(item.Ability).OrderedConditions
+                    .Single(x => x.Kind == "ITEM");
+                Assert.AreEqual(item.Input, condition.Rawcode);
+                var nativeReward = Original323FusionNativeFollowupLedger.BuildReward(
+                    game.Economy.Wallet, item.Ability);
+                Assert.AreEqual(1, nativeReward.Get(
+                    Original323FusionSourceItemLedger.WalletId(item.Output)));
+                Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                    Original323FusionSourceItemLedger.WalletId(item.Output)));
+            }
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                Original323FusionNativeFollowupLedger.RyumaOnceId));
+            var once = Original323FusionNativeFollowupLedger.BuildReward(
+                game.Economy.Wallet, "ET04");
+            game.Economy.Wallet.Grant(once);
+            string reason;
+            Assert.IsFalse(Original323FusionNativeFollowupLedger.CanCraft(
+                game.Economy.Wallet, "ET04", out reason));
+            StringAssert.Contains("한 번", reason);
+            var saved = game.Economy.Wallet.CaptureState();
+            var restored = new EconomyWallet();
+            restored.RestoreState(saved);
+            Assert.IsFalse(Original323FusionNativeFollowupLedger.CanCraft(
+                restored, "ET04", out reason));
+            Assert.AreEqual(20, Original323FusionNativeFollowupLedger.BuildReward(
+                restored, "IM04").Get(
+                    Original323FusionNativeFollowupLedger.DragonLineExplosionBonusId));
         }
 
         [Test]

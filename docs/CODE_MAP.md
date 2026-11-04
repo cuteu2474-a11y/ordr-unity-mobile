@@ -1,3 +1,10 @@
+## 2026-11-04 · 45차 원본 후속 함수 기록·원자 제작 구조 (실행 검사 전)
+
+- `Original323CommonFusionPort.cs`: `MobileOutcomeUpperTiers`에 A007/IM01/IM04/ET04/ET07/ET12, `MobileOutcomeGreenBloodSeraphim`에 SPH3 추가. 기존 정확 원본 UNIT/골드/목재/ITEM/GREN 조건 확인 → 결과 유닛 swap → **결제와 후속 영속 기록을 동일 TryExchange** → swap.Commit 순서입니다. 예외 시 지갑과 생성 결과를 함께 복구합니다.
+- `Original323FusionNativeFollowupLedger.cs`: JASS Bvg/B8Y/B99/B7z/B7W/B8G/B8I/CEN과 Bwm/B7w를 근거로 원본 후속 상태 키를 반환합니다. ET04 재제작 금지 키를 미리보기와 최종 확정에서 조회합니다. 상태 키는 **실제 원본 헬퍼·버프·주기 시뮬레이션과 동등하지 않으며** 추가 전투 소비자가 필요합니다.
+- `Original323FusionSourceItemLedger.cs`: 외부 실제 획득 영수증 AI00 추가, 기존 AI01/AI02 유지. 원본 성공 제작이 자체 지급하는 AI02(A011), AI00(ET02), AI01(ET07)은 `BuildReward`로 원자 지급합니다. `Original323FusionSpecialWalletCosts.cs`는 SPH3의 정확 GREN×1 허용. `Original323OwnedMaterialFusionTests.cs`·`Original323LowerGradeGameplayTests.cs` 수량·원본 아이템 체인·류마 영속성 사례 갱신(미실행).
+- 남은 원본 후속 실제 소비 어댑터: **h04V 서포터 능력**, **드래곤 JD**, **류마 R00R 조건부 A11B**, **우타 60초**, **S-샤크 CEN**. `TR30:h0AN`은 아직 실제 소유/획득 경로가 없어 임의 세라핌으로 대체하지 않습니다. [45차 근거](../data/original-2323C-native-followup-fusions-batch45.json).
+
 ## 2026-11-04 · 44차 고대의 배 소스 재료→실물 조합 경로 (실행 검사 전)
 
 - `Original323StoryNativeRewardQueue`의 9단계 `h05Y×1`을 `Original323StoryMobileProgression.ConnectStoryMaterialEffects` → `Original323AncientShipStoryRewardPort` → 실제 `CharacterCombatRuntime` 보유 객체로 연결. `OrdrCharacterCombatController` 실전 생성 순서에 연결, 공유 지갑 영수증으로 재시도/복원 중복 지급 차단.
