@@ -1083,9 +1083,12 @@ namespace Ordr.Mobile.Mobile
                 foreach (Action<long, string, string> observer in FusionCommitted.GetInvocationList())
                     try { observer(created, ready.ResultUnitId, ready.ResultRawcode); }
                     catch (Exception error) { try { ObserverFailed?.Invoke(error); } catch { } }
+            string nativeLineEffect = ability == "TR05" ? " · 라인 폭발 피해 보정 +10%" :
+                ability == "TR29" ? " · 라인 폭발 피해 보정 -10%" : "";
             return new ManualActionResult(ManualActionState.Succeeded, ready.ResultName +
                 (IsMobileOutcomeOnly(ability)
-                    ? " 모바일 조합 완료 · 원본 부가효과 미검증" : " 조합 완료"));
+                    ? " 모바일 조합 완료 · 원본 부가효과 미검증" : " 조합 완료") +
+                nativeLineEffect);
         }
         private int SourceBalance(string id) => (int)Math.Min(int.MaxValue, economy.Wallet.Balance(id));
         private static ManualActionResult Reject(string text)

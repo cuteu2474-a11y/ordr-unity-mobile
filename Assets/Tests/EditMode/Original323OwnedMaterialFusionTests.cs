@@ -733,6 +733,45 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void Batch52LucciAndKobyUseSignedDurableLineReceipts()
+        {
+            var wallet = new EconomyWallet();
+            Assert.AreEqual(0, Original323FusionNativeFollowupLedger
+                .SignedLineExplosionAdjustment(wallet.Balance));
+
+            // B4J's -10 cannot be credited as a negative resource; its
+            // independent positive penalty receipt must survive save/load.
+            var koby = Original323FusionNativeFollowupLedger.BuildReward(wallet, "TR29");
+            Assert.AreEqual(10, koby.Get(
+                Original323FusionNativeFollowupLedger.KobyLineExplosionPenaltyId));
+            wallet.Grant(koby);
+            Assert.AreEqual(-10, Original323FusionNativeFollowupLedger
+                .SignedLineExplosionAdjustment(wallet.Balance));
+
+            // B2F +10 cancels Koby; B99 +20 stacks on top. Multiple
+            // Lucci acquisitions add another +10, never replacing state.
+            var lucci = Original323FusionNativeFollowupLedger.BuildReward(wallet, "TR05");
+            Assert.AreEqual(10, lucci.Get(
+                Original323FusionNativeFollowupLedger.LucciLineExplosionBonusId));
+            wallet.Grant(lucci);
+            Assert.AreEqual(0, Original323FusionNativeFollowupLedger
+                .SignedLineExplosionAdjustment(wallet.Balance));
+            wallet.Grant(Original323FusionNativeFollowupLedger.BuildReward(wallet, "IM04"));
+            wallet.Grant(Original323FusionNativeFollowupLedger.BuildReward(wallet, "TR05"));
+            Assert.AreEqual(30, Original323FusionNativeFollowupLedger
+                .SignedLineExplosionAdjustment(wallet.Balance));
+
+            var restored = new EconomyWallet();
+            restored.RestoreState(wallet.CaptureState());
+            Assert.AreEqual(30, Original323FusionNativeFollowupLedger
+                .SignedLineExplosionAdjustment(restored.Balance));
+            Assert.AreEqual(20, restored.Balance(
+                Original323FusionNativeFollowupLedger.LucciLineExplosionBonusId));
+            Assert.AreEqual(10, restored.Balance(
+                Original323FusionNativeFollowupLedger.KobyLineExplosionPenaltyId));
+        }
+
+        [Test]
         public void Batch46ThreeItemShellsShareActualFusionWalletWithoutDummyEffects()
         {
             var game = Create();

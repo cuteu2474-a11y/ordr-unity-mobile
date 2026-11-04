@@ -1,3 +1,10 @@
+## 2026-11-04 · 52차 라인 폭발 증감 공통 장부
+
+- `Original323FusionNativeFollowupLedger.cs`: `TR05` 루치 +10%, `TR29` 코비 -10%의 조합 영수증. `SignedLineExplosionAdjustment`는 별도로 저장된 드래곤/루치/코비 수량에서 순 보정을 계산합니다. 코비 패널티를 음수 지갑 잔액으로 저장하지 않습니다.
+- `CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs`: 순 보정이 테조로의 새로운 라인/보스 적 `A11S` 생성 시점에 반영됩니다. 생성 후 바뀐 LL은 기존 적에게 소급 적용되지 않습니다.
+- `CharacterCombatRuntime.SourceModelCompositeEffects.cs`: 라인 폭발 피해의 공통 보정 경로를 사용하되 배율은 0 이상. `Original323CommonFusionPort.cs`: 실제 조합 확정 알림에 ±10% 표시. `Original323OwnedMaterialFusionTests.cs`: 두 영수증 부호·누적·저장 복원 회귀 사례 작성(미실행).
+- [원본 근거 및 남은 누락](../data/original-2323C-line-explosion-followups-batch52.json): B2F/B4J 대사 트리거·코비 ck·CH8/A11S 외 다른 피해 원리는 모바일 모델에 한정됩니다. **실행 검사는 하지 않았습니다.**
+
 ## 2026-11-04 · 51차 원본 점수·금화 보정·우타 공연
 
 - `data/original-2323C-map-base-stats.json`, `OriginalMapBaseStatCatalog.cs`: `UnitData.slk` `points`를 도감 275종에 연결, 미확정 점수는 nullable로 유지. `CharacterCombatRuntime.cs`에서 이미 구성한 원본 도감 공급자를 공유합니다.
@@ -654,5 +661,6 @@ APK 검증은 기존 워크플로에서 `build/Android`의 APK·패킹 증빙을
 - `SourceModelUnconnectedSkillCatalog` 신규 소유자 `H-09/h03X`(액티브만), `RN-05/h073`(평타만) 등록. **H-09 기본 Br8 JASS 공격 콜백은 기존 그대로** 사용하며 중복 주사위가 없습니다. 기존 `H-07/h03R`, `E-04/h058`, `I-06/h04Q` next-thirty 소유자/액티브 명단은 재사용합니다.
 - `CharacterCombatRuntime.SourceModelNextThirtyAttacks`는 신규 액티브를 기존 자원/선택 대상/상태/HP·처치 공통 실행기로 전달합니다. RN-05 데스노트는 *피격 당시 현재 HP* 25%를 읽고 보스/스토리를 제외합니다. `SourceModelSixthHitCount` 기존 원본 `hits=6` 횟수 처리를 I-06에서 재사용합니다. 출처 없는 원본 방어/저항·지속 효과 타이밍/면역을 보장하지 않습니다.
 - EditMode 승인 사례만 작성하고 실행하지 않았습니다. 상세: `data/source-model-twentythird-five-character-skills.json`. Python/Unity/Android/APK/Actions 전부 미실행·미조회.
+
 
 

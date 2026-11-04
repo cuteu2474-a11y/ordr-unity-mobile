@@ -199,14 +199,17 @@ namespace Ordr.Mobile.Combat
 
         private double SourceModelFusionLineExplosionBonus()
         {
-            return SourceModelFusionNativeBalance(
-                Original323FusionNativeFollowupLedger.DragonLineExplosionBonusId);
+            // The native LL player variable is shared by Dragon (+20),
+            // Lucci (+10) and Koby (-10). Every producer commits its own
+            // durable positive receipt, then consumers derive the net value.
+            return Original323FusionNativeFollowupLedger
+                .SignedLineExplosionAdjustment(SourceModelFusionNativeBalance);
         }
 
-        // LL[player] starts at 21 (JASS initialisation 4738) and B99 adds
-        // +20 per Dragon fusion. Bvi/CVX/CVY COPY LL into the new unit's
-        // A11S, so a later Dragon fusion must NOT retroactively boost an
-        // already spawned monster. CVZ sets enraged A11S to exactly 1.
+        // LL[player] starts at 21 (JASS initialisation 4738), and fusion
+        // follow-ups B99/B2F/B4J modify it. Bvi/CVX/CVY COPY LL into the
+        // new unit's A11S, so a later fusion must NOT retroactively boost
+        // or weaken an already spawned monster. CVZ sets enraged A11S to 1.
         private void RecordSourceModelNativeTesoroSpawnA11S(
             string enemyId, CharacterEnemyKind kind)
         {

@@ -1,0 +1,51 @@
+{
+  "batch": 52,
+  "date": "2026-11-04",
+  "state": "code-written-not-runtime-tested",
+  "originalJass": "source_materials/war3map.j",
+  "originalLineState": {
+    "initialValue": 21,
+    "lineAndBossSpawnA11S": "Bvi/CVX/CVY snapshot LL[player] at the enemy creation time; previous enemies are not retroactively changed",
+    "enragedSpawnA11S": 1,
+    "sources": [
+      {
+        "character": "드래곤 불멸",
+        "fusionAbility": "IM04",
+        "trigger": "B99",
+        "lineExplosionDeltaPercent": 20,
+        "receipt": "source:native-fusion:IM04:line-explosion-percent",
+        "status": "existing-batch45-and-batch51"
+      },
+      {
+        "character": "로브 루치 초월",
+        "fusionAbility": "TR05",
+        "trigger": "B2F",
+        "lineExplosionDeltaPercent": 10,
+        "receipt": "source:native-fusion:TR05:line-explosion-percent",
+        "status": "connected-in-batch52"
+      },
+      {
+        "character": "코비 초월",
+        "fusionAbility": "TR29",
+        "trigger": "B4J",
+        "lineExplosionDeltaPercent": -10,
+        "receipt": "source:native-fusion:TR29:line-explosion-penalty-percent",
+        "status": "connected-in-batch52"
+      }
+    ]
+  },
+  "mobileImplementation": [
+    "The existing atomic fusion transaction commits one positive receipt for each native follow-up and rolls it back on fusion failure, including Koby's magnitude as a separate penalty receipt.",
+    "SignedLineExplosionAdjustment derives the net line bonus from three persisted receipts; no unbounded negative resource balance is used.",
+    "The same net bonus feeds the existing line-zone explosive consumer and the existing per-enemy A11S snapshot used by Tesoro's native gold strike.",
+    "The line explosive practice multiplier is floored at zero to prevent signed stacking from becoming accidental enemy healing.",
+    "A fusion confirmation message shows Lucci's +10% or Koby's -10% adjustment."
+  ],
+  "knownLimitations": [
+    "The original B2F and B4J are chat-triggered; the mobile implementation applies their LL delta automatically at the confirmed fusion result as with Dragon.",
+    "Koby's B4J also executes ck; that additional original side effect is not claimed as implemented.",
+    "CH8 region-entered Perona h04H/Aokiji h04A, story/castle global modifiers and AI20 item effects on LL remain unimplemented pending matching lifecycle and identity; CH8 h04A maps to the current I-12 Whitebeard catalog and needs explicit source reconciliation.",
+    "S-Shark's armor status still has no allied incoming-damage pipe; Uta's B61 600-tick and transform/item path remain incomplete; AI00/AI01/AI02 are item shells only.",
+    "No Python, Unity, Android, APK or EditMode test run was performed for this batch. The NUnit regression case was written only."
+  ]
+}

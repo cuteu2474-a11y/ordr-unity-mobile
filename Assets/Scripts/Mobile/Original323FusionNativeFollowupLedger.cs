@@ -13,6 +13,14 @@ namespace Ordr.Mobile.Mobile
         public const string RyumaOnceId = "source:native-fusion:ET04:once";
         public const string DragonLineExplosionBonusId =
             "source:native-fusion:IM04:line-explosion-percent";
+        // B2F (Lucci) raises LL[player] by 10 while B4J (Koby)
+        // lowers it by 10. The positive debit-free receipts are kept
+        // separately: ResourceBundle deliberately does not accept negative
+        // rewards, and the signed value is derived by every consumer.
+        public const string LucciLineExplosionBonusId =
+            "source:native-fusion:TR05:line-explosion-percent";
+        public const string KobyLineExplosionPenaltyId =
+            "source:native-fusion:TR29:line-explosion-penalty-percent";
         public const string RebeccaHelperId = "source:native-fusion:A007:helper";
         public const string RogerHelperId = "source:native-fusion:IM01:helper";
         public const string TesoroHelperId = "source:native-fusion:ET12:helper";
@@ -59,6 +67,13 @@ namespace Ordr.Mobile.Mobile
                 // B99 adds 20 per success; never replace the prior value.
                 case "IM04":
                     return result.Add(DragonLineExplosionBonusId, 20);
+                // B2F / B4J are one-time native acquisition effects. Apply
+                // their player-state delta at the committed mobile fusion,
+                // without depending on native text-chat command callbacks.
+                case "TR05":
+                    return result.Add(LucciLineExplosionBonusId, 10);
+                case "TR29":
+                    return result.Add(KobyLineExplosionPenaltyId, 10);
                 case "ET04":
                     return result.Add(RyumaOnceId, 1);
                 case "ET12":
@@ -70,6 +85,16 @@ namespace Ordr.Mobile.Mobile
                 default:
                     return null;
             }
+        }
+
+        public static double SignedLineExplosionAdjustment(
+            Func<string, long> receiptBalance)
+        {
+            if (receiptBalance == null)
+                throw new ArgumentNullException(nameof(receiptBalance));
+            return (double)Math.Max(0, receiptBalance(DragonLineExplosionBonusId)) +
+                Math.Max(0, receiptBalance(LucciLineExplosionBonusId)) -
+                Math.Max(0, receiptBalance(KobyLineExplosionPenaltyId));
         }
     }
 }
