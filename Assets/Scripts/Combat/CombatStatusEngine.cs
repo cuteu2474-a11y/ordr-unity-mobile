@@ -22,7 +22,9 @@ namespace Ordr.Mobile.Combat
         HealthRegeneration,
         // Append to preserve numeric values of older effect types.
         // Bonney B4C/B4D Bd2(A04P) is NOT A04M ArmorBreakStack.
-        OriginalA04PLevelIncrease
+        OriginalA04PLevelIncrease,
+        // Source-map A11L/AUfa: permanent defensive buff on Tezoro himself.
+        ArmorBuff
     }
 
     public enum CombatEffectOrigin
@@ -172,6 +174,16 @@ namespace Ordr.Mobile.Combat
         {
             if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException(nameof(sourceId));
             if (effects.RemoveAll(item => item.Effect.SourceId == sourceId) > 0)
+                Revision = checked(Revision + 1);
+        }
+
+        // Dispel must remove only a beneficial *effect*, not unrelated
+        // negative effects that happen to share the Warcraft source ID.
+        public void RemoveSourceEffect(string sourceId, CombatEffectType type)
+        {
+            if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException(nameof(sourceId));
+            if (effects.RemoveAll(item => item.Effect.SourceId == sourceId &&
+                item.Effect.Type == type) > 0)
                 Revision = checked(Revision + 1);
         }
 

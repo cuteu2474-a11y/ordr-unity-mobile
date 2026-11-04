@@ -14,22 +14,32 @@ namespace Ordr.Mobile.Combat
         {
             if (skill.Id != "L-20:skill:0" || !primary.Enemy.IsAlive)
                 return;
+            RemoveSourceModelPositiveEnemyBuffs(actor, primary, skill.Name,
+                "TOOLTIP_MODEL_ONLY");
+        }
+
+        private void RemoveSourceModelPositiveEnemyBuffs(
+            CharacterInstance actor, SpatialCombatEnemy primary,
+            string skillName, string evidence)
+        {
+            if (!primary.Enemy.IsAlive) return;
             var status = primary.Enemy.Status;
             int removed = 0;
             foreach (var existing in status.Snapshot())
             {
                 if (existing.Type != CombatEffectType.AttackSpeedBuff &&
                     existing.Type != CombatEffectType.AttackPowerBuff &&
-                    existing.Type != CombatEffectType.HealthRegeneration)
+                    existing.Type != CombatEffectType.HealthRegeneration &&
+                    existing.Type != CombatEffectType.ArmorBuff)
                     continue;
-                status.RemoveSource(existing.SourceId);
+                status.RemoveSourceEffect(existing.SourceId, existing.Type);
                 removed++;
             }
             if (removed > 0)
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.StatusApplied,
-                    InstanceKey(actor.Id), primary.Id, skill.Name,
-                    "TOOLTIP_MODEL_ONLY / 기본 버프 해제 " + removed +
+                    InstanceKey(actor.Id), primary.Id, skillName,
+                    evidence + " / 기본 버프 해제 " + removed +
                     "종; 네이티브 버프 데이터 미연결", 0));
         }
 

@@ -102,7 +102,7 @@ namespace Ordr.Mobile.Combat
                 new[] { "공격 발동 마법 타격" },
                 new[] { "골드 연계 체력 소모 공격" }),
             new SourceModelNextThirtyUnit("I-04", "h04J",
-                new[] { "광역 물리 타격", "타격·단일 스턴" },
+                new[] { "범위 참격", "광역 물리 타격", "타격·단일 스턴" },
                 new[] { "광역 혼합 피해" }),
             new SourceModelNextThirtyUnit("I-05", "h081",
                 new[] { "패왕색 패기", "육식 체", "괴물의 후계자" },
@@ -442,6 +442,7 @@ namespace Ordr.Mobile.Combat
                 case "E-09:skill:2": return skill.Name == "음표 병사 연계";
                 case "E-09:skill:3": return skill.Name == "3연타 마법";
                 case "E-09:skill:4": return skill.Name == "라인·보스 추가 피해";
+                case "I-04:skill:1": return skill.Name == "범위 참격";
                 default: return false;
             }
         }
@@ -811,6 +812,7 @@ namespace Ordr.Mobile.Combat
                 case "E-09:skill:2": fields = new[] { "magical|amountPerSoldier", "magical|amount,scope", "explosive|basis,percentPerSoldier,onlyTargetKinds" }; break;
                 case "E-09:skill:3": fields = new[] { "magical|amountPerHit,hits,multiplierRange", "summonSoldier|chancePercent,durationSeconds" }; break;
                 case "E-09:skill:4": fields = new[] { "magical|amount,multiplierRange", "magical|amount,onlyTargetKinds", "explosive|basis,percent,plusMissingHealthPercent,hits,onlyTargetKinds", "magical|amount,onlyTargetKinds" }; break;
+                case "I-04:skill:1": fields = new[] { "physical|amount,multiplierRange", "physicalBonusPercent|percent,scope", "movementSlow|percent,durationSeconds,scope" }; break;
                 default: return false;
             }
             return ValidateExplicitCompositeShape(skill, fields);

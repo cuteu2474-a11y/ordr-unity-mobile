@@ -1,3 +1,9 @@
+## 2026-11-04 · 48차 JASS 참격·자기 버프·h04O 독립 유닛 (실행 검사 전)
+
+- `SourceModelNextThirtySkillCatalog.cs`·`CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs`·`CharacterCombatRuntime.SourceModelCompositeEffects.cs`: 로저 I-04:skill:1 원본 B8g 8.5% 공격 승인, 원본 800,000×[0.8..1.5] 범위/단일 타격 공통 난수, 주 타깃 99% 감속. `CharacterCombatRuntime.SourceModelTwentyFourthSkills.cs`와 `CombatStatusEngine.RemoveSourceEffect`를 재사용해 **양성 버프만 타입별 제거**(A0JS)합니다.
+- `CharacterCombatRuntime.SourceModelAttackSkills.cs`·`CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs`: 테조로 h06A/B8V 공격 선언에서 A11L 프로스트 아머 자기 +1.5 상태를 중복 없이 기록; 실제 아군 방어력/피격 최종 계산은 미지원. `SourceModelBasicCombatRules.cs`의 원본 공격 객체 허가에 **h04O** 추가, 우타 `E-09:skill:3` 4%+25% 성공 시 7초 독립 공격 유닛을 기존 scheduler/공격/방어/처치 체계에 등록하고 수명 만료·캐스터 삭제 시 해제합니다. 60초 B6m 그룹 실물 소속 이동은 미구현.
+- [48차 원본 JASS/W3X 근거·잔여 미완](../data/original-2323C-native-combat-batch48.json). 원본 맵 비공개, CWR 240/266 변동 없음, AI00/AI01/AI02는 유닛 탭의 읽기 전용 빈껍질. Python/Unity/Android/APK 실제 검사 미실행. main 푸시 뒤 Actions 시작만 확인, 결과는 조회하지 않습니다.
+
 ## 2026-11-04 · 47차 네이티브 조합 후속 전투 소비자 (실행 검사 전)
 
 - `CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs`: 유닛 생성/공유 지갑 커밋을 건드리지 않고 `source:native-fusion:*` 원장만 읽습니다. A0HZ/레베카, A0MH/로저 이동 둔화는 해당 원본 스킬 패킷에서 별도 출처 상태로 기록, 중복 효과 합산 대신 기존 최강 감속 보정을 사용합니다. S-샤크의 지속형 A0N1은 전투 시계에 따라 본인+2명에게 **20.5초 +55% 공격력**을 최대 19.7초 간격으로 갱신합니다. 우타 B6m의 60초 회전 수만 추적하고 실물 병사는 만들지 않습니다.

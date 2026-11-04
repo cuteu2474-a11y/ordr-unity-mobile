@@ -395,6 +395,12 @@ namespace Ordr.Mobile.Combat
                 SourceModelTwentyFourthSkillCatalog.IsSpecial(skill) ||
                 SourceModelTwentyThirdSkillCatalog.IsSpecial(skill) ||
                 IsSourceModelEighthStatusApproach(skill);
+            // Roger's B8g proc produces one 0.8..1.5 slice shared by the
+            // 600-radius packet and its single-target 100% bonus. A second
+            // draw would make the two parts of the same slash disagree.
+            double rogerSlashMultiplier = skill.Id == "I-04:skill:1" ?
+                Ordr323MapDamageMath.ScriptDamageBeforeDefense(1, .8, 1.5,
+                    sourceModelRules.NextScriptRoll(1000000) / 1000000.0) : 1;
             foreach (var component in skill.Components)
             {
                 if (skill.Id == "L-34:skill:0")
@@ -530,7 +536,9 @@ namespace Ordr.Mobile.Combat
 
                 double multiplier = 1;
                 var range = component.Get("multiplierRange") as List<object>;
-                if (range != null)
+                if (skill.Id == "I-04:skill:1")
+                    multiplier = rogerSlashMultiplier;
+                else if (range != null)
                 {
                     double minimum = (double)range[0];
                     double maximum = (double)range[1];
@@ -711,6 +719,8 @@ namespace Ordr.Mobile.Combat
                     }
                 }
             }
+            if (skill.Id == "I-04:skill:1")
+                ApplySourceModelFusionRogerPurge(actor, primary, skill);
             // E-07's independent onSkillActivated passive is activated only
             // by its three documented fire skills, never by every Ace proc.
             if (skill.Id == "E-07:skill:2" || skill.Id == "E-07:skill:3")

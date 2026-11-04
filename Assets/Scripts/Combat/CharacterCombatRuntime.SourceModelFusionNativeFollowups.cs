@@ -16,6 +16,9 @@ namespace Ordr.Mobile.Combat
             new HashSet<long>();
         private double sourceModelUtaSongElapsed;
         private long sourceModelUtaSongRotations;
+        private long sourceModelUtaSongSoldierSequence;
+        private readonly Dictionary<long, List<string>> sourceModelUtaSongSoldierKeys =
+            new Dictionary<long, List<string>>();
 
         public void ConfigureSourceModelFusionNativeReceipts(Func<string, long> balance)
         {
@@ -86,9 +89,94 @@ namespace Ordr.Mobile.Combat
             }
         }
 
+        // B8g orders h04V/A0JS (Aprg) on the attacked unit once Roger's
+        // 8.5% slash has occurred. Only beneficial states represented by
+        // our shared status engine are dispellable. The 99%/1s primary slow
+        // is already handled by I-04:skill:1's tooltip component.
+        private void ApplySourceModelFusionRogerPurge(
+            CharacterInstance actor, SpatialCombatEnemy primary,
+            ImportedCombatSkill skill)
+        {
+            if (actor.Catalog.Id != "I-04" || skill.Id != "I-04:skill:1" ||
+                SourceModelFusionNativeBalance(
+                    Original323FusionNativeFollowupLedger.RogerHelperId) <= 0 ||
+                !primary.Enemy.IsAlive) return;
+            RemoveSourceModelPositiveEnemyBuffs(actor, primary, skill.Name,
+                "MODEL_ONLY B8g/A0JS 원본 보조 퍼지");
+        }
+
+        // B8V: If the caster lacks B07O, Tezoro orders a helper to cast
+        // A11L/AUfa *on Tezoro himself*. Native DataA1=+1.5 defense and
+        // duration=0 (aura-like permanent state). This source-model status
+        // is not a fabricated enemy->unit damage simulation.
+        private void ApplySourceModelFusionTesoroFrostArmor(
+            CharacterInstance actor, string rawcode)
+        {
+            if (rawcode != "h06A" || actor.Catalog.Id != "E-11" ||
+                SourceModelFusionNativeBalance(
+                    Original323FusionNativeFollowupLedger.TesoroHelperId) <= 0)
+                return;
+            CombatStatusEngine status;
+            if (!unitStatuses.TryGetValue(InstanceKey(actor.Id), out status)) return;
+            string source = "practice-native:ET12:A11L:" + actor.Id;
+            foreach (var existing in status.Snapshot())
+                if (existing.SourceId == source &&
+                    existing.Type == CombatEffectType.ArmorBuff)
+                    return;
+            status.RemoveSource(source);
+            status.Apply(new CombatEffect(source, CombatEffectType.ArmorBuff,
+                CombatEffectOrigin.Aura, 1.5, 0));
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.StatusApplied, InstanceKey(actor.Id),
+                InstanceKey(actor.Id), "테조로 · 프로스트 아머",
+                "MODEL_ONLY B8V/A11L/B07O: 자기 방어력 +1.5 영속 효과; 피격 방어 적용·원본 버프 표시는 추후 연결", 0));
+        }
+
+        // B6s creates physical h04O with source-object 38001 base damage,
+        // 0.33s cooldown and 0.32s attack point. Unlike a roster character,
+        // its autonomous attacks use the common attack/death/armor pipeline.
+        private bool RegisterSourceModelUtaSongSoldier(
+            CharacterInstance actor, SpatialCombatEnemy primary, double lifetime)
+        {
+            if (actor.Catalog.Id != "E-09" ||
+                SourceModelFusionNativeBalance(
+                    Original323FusionNativeFollowupLedger.UtaSongId) <= 0)
+                return false;
+            long sequence = checked(++sourceModelUtaSongSoldierSequence);
+            string key = "practice-uta-song:" + sequence;
+            var position = roster.Get(actor.Id);
+            RegisterSourceIndependentAttack(key, "h04O", IsStoryDeployed(actor.Id),
+                position.X, position.Y, Time + lifetime);
+            List<string> keys;
+            if (!sourceModelUtaSongSoldierKeys.TryGetValue(actor.Id, out keys))
+            {
+                keys = new List<string>();
+                sourceModelUtaSongSoldierKeys.Add(actor.Id, keys);
+            }
+            keys.Add(key);
+            effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id), key,
+                lifetime, () =>
+                {
+                    UnregisterSourceIndependentAttack(key);
+                    List<string> active;
+                    if (sourceModelUtaSongSoldierKeys.TryGetValue(actor.Id, out active))
+                    {
+                        active.Remove(key);
+                        if (active.Count == 0)
+                            sourceModelUtaSongSoldierKeys.Remove(actor.Id);
+                    }
+                });
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
+                primary.Id, "우타 · 음표 병사",
+                "MODEL_ONLY B6s/h04O: 원본 공격 주사위·0.33초 주기 적용, 7초 생존/캐스터 근처 배치 모바일 모델", 0));
+            return true;
+        }
+
         // JASS B6m swaps the active/pending song groups once every 60s.
-        // The original h04O song objects have not been mapped as playable
-        // combat characters: expose the *rotation*, not imaginary soldiers.
+        // h04O is an independent attacker, NOT a playable roster character.
+        // Original active/pending group mutation remains unmodeled; this
+        // counter records the proven native timer only.
         public long PracticeUtaNativeSongRotations => sourceModelUtaSongRotations;
 
         private void AdvanceSourceModelFusionNativeFollowups(double elapsed)
@@ -110,7 +198,7 @@ namespace Ordr.Mobile.Combat
                     events.Add(new CharacterCombatEvent(
                         CharacterCombatEventType.SkillActivated, null, null,
                         "우타 · 노래 그룹 교대",
-                        "MODEL_ONLY B6m: 60초 그룹 회전; 원본 h04O 음표 병사 객체 미연결",
+                        "MODEL_ONLY B6m: 60초 그룹 회전; h04O 공격 객체 연결 / 원본 그룹 소속 교체 미검증",
                         fullCycles));
                 }
             }
@@ -197,6 +285,14 @@ namespace Ordr.Mobile.Combat
         private void ForgetSourceModelFusionNativeActor(long actorId)
         {
             sourceModelFusionSharkScheduled.Remove(actorId);
+            List<string> keys;
+            if (sourceModelUtaSongSoldierKeys.TryGetValue(actorId, out keys))
+            {
+                foreach (string key in keys)
+                    UnregisterSourceIndependentAttack(key);
+                sourceModelUtaSongSoldierKeys.Remove(actorId);
+            }
+            sourceSongSoldierExpiry.Remove(actorId);
         }
     }
 }

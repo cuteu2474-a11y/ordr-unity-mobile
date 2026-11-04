@@ -161,11 +161,15 @@ namespace Ordr.Mobile.Combat
             ImportedCombatEffect component)
         {
             // 25% secondary roll occurs only after the parent 4% multi-hit
-            // proc. There is no confirmed soldier rawcode or attack profile:
-            // track its seven-second contribution, not a fake combat unit.
+            // proc. Source B6s creates h04O, whose W3X dice/cooldown are
+            // independently pinned. The 7-second expiry is still tooltip-
+            // modeled rather than simulation of its negative HP regeneration.
             int threshold = (int)Math.Round(component.Number("chancePercent").Value *
                 10000, MidpointRounding.AwayFromZero);
             if (sourceModelRules.NextScriptRoll(1000000) >= threshold) return;
+            double lifetime = component.Number("durationSeconds").Value;
+            if (!RegisterSourceModelUtaSongSoldier(actor, primary, lifetime))
+                return;
             List<double> expiry;
             if (!sourceSongSoldierExpiry.TryGetValue(actor.Id, out expiry))
             {
@@ -173,10 +177,10 @@ namespace Ordr.Mobile.Combat
                 sourceSongSoldierExpiry.Add(actor.Id, expiry);
             }
             expiry.RemoveAll(until => until <= Time);
-            expiry.Add(Time + component.Number("durationSeconds").Value);
+            expiry.Add(Time + lifetime);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
                 InstanceKey(actor.Id), primary.Id, skill.Name,
-                "TOOLTIP_MODEL_ONLY / 7초 음표 병사 기여 수치; 실제 소환 전투 객체 미검증", 0));
+                "MODEL_ONLY B6s/h04O 독립 공격 객체 + 7초 음표 병사 기여; 원본 위치·HP 재생 만료 조건 미검증", 0));
         }
 
         private double SourceModelCompositeRawDamage(
@@ -212,6 +216,10 @@ namespace Ordr.Mobile.Combat
                     // 192500 damage. Native post-armor ordering is unknown.
                     return skill.Components[0].Number("amount").Value *
                         component.Number("multiplier").Value * multiplier;
+                if (skill.Id == "I-04:skill:1" &&
+                    component.Type == "physicalBonusPercent")
+                    return skill.Components[0].Number("amount").Value *
+                        component.Number("percent").Value / 100 * multiplier;
                 if (skill.Id == "TR-04:skill:3" &&
                     component.Text("basis") == "basicAttackDamage")
                     return basic * component.Number("multiplier").Value * multiplier;

@@ -1,0 +1,66 @@
+{
+  "batch": 48,
+  "date": "2026-11-04",
+  "sourceVersion": "ORDR S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "codeStatus": "implemented, not locally executed or verified",
+  "scope": "source-model offline battle only, no retail parity claim",
+  "changes": [
+    {
+      "owner": "I-04 Roger",
+      "originalFunction": "B8g",
+      "originalOnAttackProc": "BFi(1,1000)<=85",
+      "ability": "A0JS/Aprg",
+      "rawcode": "h04J",
+      "effect": "One roll of BFj(0.8,1.5)*800000 physical on primary plus a 600-radius physical packet of the same base amount; issue purge on primary",
+      "mobileWiring": "I-04:skill:1 exact tooltip gate, shared proc multiplier, primary bonus packet, common positive-effect-only dispel; tooltip 99%/1s slow kept on primary",
+      "limitations": "JASS chaos/normal physical defense, purge native buff coverage, native random order and client targets not verified"
+    },
+    {
+      "owner": "E-11 Tesoro",
+      "originalFunction": "B8V",
+      "originalCondition": "Every h06A attack declared while B07O missing",
+      "ability": "A11L/AUfa/B07O",
+      "sourceDataA1": 1.5,
+      "mobileWiring": "Apply ArmorBuff +1.5 with aura duration 0 to caster status, only if original ET12 fusion helper receipt exists",
+      "limitations": "Enemy-to-character damage and armor reduction math not connected; native UnitUserData+d8 branch also outstanding"
+    },
+    {
+      "owner": "E-09 Uta",
+      "originalFunction": "B6s",
+      "rawcode": "h04O",
+      "mapName": "!0808_UtaSoldier",
+      "originalMapObject": {
+        "baseDamagePlus": 38000,
+        "diceCount": 1,
+        "diceSides": 1,
+        "attackCooldownSeconds": 0.33,
+        "attackPointSeconds": 0.32,
+        "hitPoints": 7,
+        "healthRegeneration": -1
+      },
+      "mobileWiring": "E-09:skill:3 4% attack proc -> 25% summon roll -> source h04O autonomous attack through common attack, armor and kill pipeline; 7s tooltip lifetime; independent cleanup on timer or owner removal",
+      "limitations": "Actual original B6s has three call sites, random spawn offset, negative HP-regeneration lifetime and B6m 60s group swap need future source event integration; no fake playable roster unit"
+    },
+    {
+      "owner": "L-20 Smoker and I-04 Roger",
+      "mobileWiring": "Shared positive-effect-only dispel for attack power, attack speed, health regeneration and armor; remove precise type to avoid accidentally deleting negative status with same source"
+    }
+  ],
+  "deferred": [
+    "I-04 Roger B8c A14V inferno: requires A202 active cast and A11E trait state; no such witnessed action exists in mobile engine",
+    "ET04 Ryuma R00R technology: awarded on h05P CH8 entering-region event; requires real event producer before A11B attack-speed effect",
+    "E-09 Uta exact 60-second B6m group migration and all original B6s call sites",
+    "E-11 Tesoro native UnitUserData and d8 accumulation plus enemy-to-character defense resolution",
+    "S-Shark original UnitPointValue friend eligibility and extra Inner Fire defense bonus",
+    "TR30 h0AN and RDUN 14 acquisition paths",
+    "Original Warcraft final defense, RNG ordering, pathing, visual summon and Android/Unity integration tests"
+  ],
+  "userConstraints": {
+    "itemShells": ["AI00", "AI01", "AI02"],
+    "itemEffectsImplemented": false,
+    "fusionOutcomesConnected": "240/266 unchanged",
+    "localPythonUnityAndroidApkTestsRun": false
+  }
+}
