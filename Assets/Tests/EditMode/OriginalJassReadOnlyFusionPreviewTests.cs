@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using NUnit.Framework;
 using UnityEngine;
 using Ordr.Mobile.Core;
@@ -143,6 +145,89 @@ namespace Ordr.Mobile.Tests
                     asset.text.Replace(registrations.SourceSha256,
                         new string('0', 64)),
                     registrations, units));
+        }
+
+        private static OriginalMapBaseStatCatalog SourceObjects(CharacterUnitCatalog units)
+        {
+            return OriginalMapBaseStatCatalog.FromJson(File.ReadAllText(
+                Path.Combine(Application.dataPath, "..", "data",
+                    "original-2323C-map-base-stats.json")), units);
+        }
+
+        [Test]
+        public void OriginalSixPickRegistrationsUseA800OwnedOnlyByFourteenRandomObjects()
+        {
+            var registrations = Registrations();
+            int picks = 0;
+            foreach (var recipe in registrations.All)
+                foreach (var entry in recipe.OrderedConditions)
+                    if (entry.Kind == "PICK")
+                    {
+                        picks++;
+                        Assert.AreEqual("A800", entry.Rawcode);
+                        Assert.AreEqual(1, entry.Count);
+                    }
+            Assert.AreEqual(6, picks);
+            // Construction audits the original object ability lists, not web
+            // assumptions about what the JASS picker ultimately consumes.
+            var units = Units();
+            var source = SourceObjects(units);
+            Assert.DoesNotThrow(() =>
+                new Original323MysticPickCandidatePreview(source, units));
+        }
+
+        [Test]
+        public void PickCandidatePreviewReservesNamedRandomCasterAndStoryDispatch()
+        {
+            var units = Units();
+            var preview = new Original323MysticPickCandidatePreview(
+                SourceObjects(units), units);
+            OriginalJassFusionInstruction pick = null;
+            foreach (var condition in Registrations().FindByAbility("A19W").OrderedConditions)
+                if (condition.Kind == "PICK") pick = condition;
+            Assert.NotNull(pick);
+            var owned = new[]
+            {
+                Unit(units, 100, "RN-01"), // fixed ingredient of A19W
+                Unit(units, 101, "RN-02"), // dispatched from main battlefield
+                Unit(units, 102, "C-01"),  // no original A800
+                Unit(units, 103, "RN-03"), // only free A800-bearing candidate
+                Unit(units, 104, "RN-04")
+            };
+            var used = new HashSet<long> { 100, 104 };
+            IReadOnlyList<long> candidates;
+            string label;
+            Assert.IsTrue(preview.TryPreview(pick, owned, id => id == 101,
+                used, out candidates, out label));
+            CollectionAssert.AreEqual(new long[] { 103 }, candidates);
+            StringAssert.Contains("A800", label);
+            Assert.AreEqual(2, used.Count, "A preview must never mutate a paid-material reservation.");
+
+            // Even with the source-known extra actor, A19W remains read-only.
+            var registration = Registrations();
+            var sourcePreview = new OriginalJassReadOnlyFusionPort(
+                registration, Names(registration, units), id => false);
+            Assert.IsFalse(sourcePreview.CanCommit);
+            Assert.AreEqual(ManualActionState.NotImplemented,
+                sourcePreview.ConfirmFusion("A19W", candidates).State);
+        }
+
+        [Test]
+        public void PickPreviewNeverReusesAReservedActorOrAnUnavailableSourceCondition()
+        {
+            var units = Units();
+            var source = new Original323MysticPickCandidatePreview(SourceObjects(units), units);
+            OriginalJassFusionInstruction pick = null;
+            foreach (var condition in Registrations().FindByAbility("A19W").OrderedConditions)
+                if (condition.Kind == "PICK") pick = condition;
+            IReadOnlyList<long> candidate;
+            string title;
+            Assert.IsTrue(source.TryPreview(pick, new[] { Unit(units, 5, "RN-01") },
+                id => false, new HashSet<long> { 5 }, out candidate, out title));
+            Assert.AreEqual(0, candidate.Count,
+                "The fixed A19W caster cannot also be paid as its PICK slot.");
+            Assert.IsFalse(source.TryPreview(null, new MobileUnitSnapshot[0],
+                id => false, new HashSet<long>(), out candidate, out title));
         }
     }
 }

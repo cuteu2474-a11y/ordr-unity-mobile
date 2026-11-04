@@ -93,6 +93,7 @@ namespace Ordr.Mobile.Mobile
         private IVerifiedUnitRawcodeMap liveObjects;
         private CharacterUnitCatalog liveUnits;
         private IOriginalJassFusionMaterialGroups liveGroups;
+        private IOriginalJassPickMaterialPreview pickMaterialPreview;
         public bool CanCommit { get { return false; } }
 
         public OriginalJassReadOnlyFusionPort(OriginalJassFusionCatalog registrations,
@@ -107,11 +108,13 @@ namespace Ordr.Mobile.Mobile
         // Actual owned source objects can be shown even when their acquisition
         // route is unfinished. This is a preview; CanCommit remains false.
         internal void ConfigureOwnedMaterialPreview(IVerifiedUnitRawcodeMap objects,
-            CharacterUnitCatalog units, IOriginalJassFusionMaterialGroups groups)
+            CharacterUnitCatalog units, IOriginalJassFusionMaterialGroups groups,
+            IOriginalJassPickMaterialPreview sourcePickPreview = null)
         {
             liveObjects = objects ?? throw new ArgumentNullException(nameof(objects));
             liveUnits = units ?? throw new ArgumentNullException(nameof(units));
             liveGroups = groups ?? throw new ArgumentNullException(nameof(groups));
+            pickMaterialPreview = sourcePickPreview;
         }
 
         public IReadOnlyList<MobileFusionPreview> AvailableRecipes(
@@ -223,6 +226,33 @@ namespace Ordr.Mobile.Mobile
                         }
                     if (assigned < required)
                         missing.Add(title + " " + (required - assigned) + "기 부족");
+                }
+
+                // A800 is present on the 14 source random-only objects. Show
+                // possible additional PICK actors only AFTER assigning all fixed
+                // UNIT materials; this preview never grants JASS consume rights.
+                foreach (var instruction in recipe.OrderedConditions)
+                {
+                    if (instruction.Kind != "PICK" || pickMaterialPreview == null)
+                        continue;
+                    IReadOnlyList<long> candidates;
+                    string pickTitle;
+                    if (!pickMaterialPreview.TryPreview(instruction, owned,
+                            storyDeployed, used, out candidates, out pickTitle))
+                        continue;
+                    descriptions.Add(pickTitle + " x" + instruction.Count +
+                        " (검토용·실제 소비 미승인)");
+                    int assigned = 0;
+                    foreach (long id in candidates)
+                    {
+                        if (!used.Add(id)) continue;
+                        chosen.Add(id);
+                        assigned++;
+                    }
+                    if (assigned < instruction.Count)
+                        missing.Add("PICK용 별도 랜덤 유닛 " +
+                            (instruction.Count - assigned) + "기 부족");
+                    missing.Add("PICK:A800 원본 선택·소비 콜백 미검증 (제작 차단)");
                 }
 
                 // Unapproved recipes must never look ready just because all

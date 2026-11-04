@@ -1,0 +1,475 @@
+{
+  "format": "ordr-original-mystic-pick-a800-preview-evidence-v1",
+  "sourceVersion": "ORDR S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceCwr": "data/original-jass-fusion-registry.json",
+  "sourceObjects": "data/original-2323C-map-base-stats.json",
+  "sourceCrosswalk": "data/original-2323C-mystic-source-batch33.json",
+  "webDex": "data/otherworld-2323C-mystic-web-recipes.json",
+  "summary": {
+    "nativePickRegistrations": 6,
+    "nativePickAbility": "A800",
+    "sourceA800Owners": 14,
+    "sourceA800OwnersAllRandom": true,
+    "webDexPickMatches": 5,
+    "uncataloguedResultCount": 1,
+    "newlyExecutable": 0
+  },
+  "interpretation": "The 6 source CWR PICK:A800 conditions and 14 random-only owners of the A800 native object ability structurally correlate with the 5 published any-random Mystic ingredients; candidate selection is a PREVIEW only.",
+  "notVerified": [
+    "BGI PICK evaluation in the original compiled JASS runtime",
+    "Whether the matched A800-bearing actor is removed, only checked, or transformed",
+    "Exact ordering and all callback side effects after the original CHu/CHx fusion",
+    "Hanma Yujiro h0C2 public catalog identity and all gameplay skills"
+  ],
+  "sourceA800Owners": [
+    {
+      "catalogUnitId": "RN-01",
+      "originalRawcode": "h06U",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A19W",
+        "A0XX",
+        "A0YI",
+        "A0YH",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-02",
+      "originalRawcode": "h06V",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A0Y3",
+        "A0Y1",
+        "A0Y4",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-03",
+      "originalRawcode": "h065",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A0YN",
+        "Avul",
+        "A10V"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-04",
+      "originalRawcode": "h06X",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A19U",
+        "A0Y5",
+        "A0YR",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-05",
+      "originalRawcode": "h073",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A19S",
+        "A0Y7",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-06",
+      "originalRawcode": "h06Z",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A1AD",
+        "A0YJ",
+        "A0YO",
+        "A0YT",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-07",
+      "originalRawcode": "h09K",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A19V",
+        "A0Y8",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-08",
+      "originalRawcode": "h06W",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A12C",
+        "A0YY",
+        "A0YP",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-09",
+      "originalRawcode": "h070",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A0Y9",
+        "A0YX",
+        "A0YL",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-10",
+      "originalRawcode": "h09L",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A0XT",
+        "A0YA",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-11",
+      "originalRawcode": "h06Y",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A0Y6",
+        "A0YM",
+        "A0YW",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-12",
+      "originalRawcode": "h071",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A0Z0",
+        "A0Z4",
+        "A19T",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-13",
+      "originalRawcode": "h06T",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A0YB",
+        "A0YC",
+        "A0QG",
+        "Avul"
+      ]
+    },
+    {
+      "catalogUnitId": "RN-14",
+      "originalRawcode": "h072",
+      "grade": "랜덤",
+      "originalAbilityList": [
+        "A800",
+        "A0YK",
+        "A0YG",
+        "A0YV",
+        "Avul"
+      ]
+    }
+  ],
+  "sourcePickRegistrations": [
+    {
+      "abilityRawcode": "A19W",
+      "resultRawcode": "h09M",
+      "resultCatalogId": "MY-01",
+      "resultOriginalObjectName": "고죠 사토루 - 신비",
+      "nativePickCondition": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "nativeCasterSourceUnitIds": [
+        "RN-01"
+      ],
+      "fixedUnitMaterials": [
+        {
+          "rawcode": "h06U",
+          "id": "RN-01",
+          "count": 1
+        },
+        {
+          "rawcode": "h03V",
+          "id": "D-02",
+          "count": 1
+        },
+        {
+          "rawcode": "h03Z",
+          "id": "H-17",
+          "count": 1
+        },
+        {
+          "rawcode": "h027",
+          "id": "R-24",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "id": "PS-01",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "wood": 7,
+      "webAnyRandomCount": 1,
+      "webSpecialRequirements": [
+        "해적선",
+        "행운의토큰"
+      ],
+      "executionStatus": "blocked-unverified-PICK-consumption"
+    },
+    {
+      "abilityRawcode": "A19U",
+      "resultRawcode": "h0AC",
+      "resultCatalogId": "MY-13",
+      "resultOriginalObjectName": "히그마 - 신비",
+      "nativePickCondition": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "nativeCasterSourceUnitIds": [
+        "RN-04"
+      ],
+      "fixedUnitMaterials": [
+        {
+          "rawcode": "h06X",
+          "id": "RN-04",
+          "count": 1
+        },
+        {
+          "rawcode": "h09Z",
+          "id": "L-03",
+          "count": 1
+        },
+        {
+          "rawcode": "h029",
+          "id": "R-22",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "wood": 7,
+      "webAnyRandomCount": 1,
+      "webSpecialRequirements": [
+        "행운의토큰"
+      ],
+      "executionStatus": "blocked-unverified-PICK-consumption"
+    },
+    {
+      "abilityRawcode": "A19S",
+      "resultRawcode": "h0A6",
+      "resultCatalogId": "MY-09",
+      "resultOriginalObjectName": "야쿠모 유카리 - 신비",
+      "nativePickCondition": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "nativeCasterSourceUnitIds": [
+        "RN-05"
+      ],
+      "fixedUnitMaterials": [
+        {
+          "rawcode": "h073",
+          "id": "RN-05",
+          "count": 1
+        },
+        {
+          "rawcode": "h048",
+          "id": "D-04",
+          "count": 1
+        },
+        {
+          "rawcode": "h017",
+          "id": "S-28",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "wood": 7,
+      "webAnyRandomCount": 1,
+      "webSpecialRequirements": [
+        "행운의토큰"
+      ],
+      "executionStatus": "blocked-unverified-PICK-consumption"
+    },
+    {
+      "abilityRawcode": "A19V",
+      "resultRawcode": "h0CC",
+      "resultCatalogId": "MY-10",
+      "resultOriginalObjectName": "콘파쿠 요우무 - 신비",
+      "nativePickCondition": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "nativeCasterSourceUnitIds": [
+        "RN-07"
+      ],
+      "fixedUnitMaterials": [
+        {
+          "rawcode": "h09K",
+          "id": "RN-07",
+          "count": 1
+        },
+        {
+          "rawcode": "h03I",
+          "id": "L-26",
+          "count": 1
+        },
+        {
+          "rawcode": "h05W",
+          "id": "T-02",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "wood": 7,
+      "webAnyRandomCount": 1,
+      "webSpecialRequirements": [
+        "행운의토큰"
+      ],
+      "executionStatus": "blocked-unverified-PICK-consumption"
+    },
+    {
+      "abilityRawcode": "A19T",
+      "resultRawcode": "h08I",
+      "resultCatalogId": "MY-05",
+      "resultOriginalObjectName": "쿠치키 뱌쿠야 - 신비",
+      "nativePickCondition": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "nativeCasterSourceUnitIds": [
+        "RN-12"
+      ],
+      "fixedUnitMaterials": [
+        {
+          "rawcode": "h071",
+          "id": "RN-12",
+          "count": 1
+        },
+        {
+          "rawcode": "h05V",
+          "id": "D-05",
+          "count": 1
+        },
+        {
+          "rawcode": "h04H",
+          "id": "R-11",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "wood": 7,
+      "webAnyRandomCount": 1,
+      "webSpecialRequirements": [
+        "행운의토큰"
+      ],
+      "executionStatus": "blocked-unverified-PICK-consumption"
+    },
+    {
+      "abilityRawcode": "A0QG",
+      "resultRawcode": "h0C2",
+      "resultCatalogId": null,
+      "resultOriginalObjectName": "한마 유지로 - 신비",
+      "nativePickCondition": [
+        {
+          "kind": "PICK",
+          "rawcode": "A800",
+          "count": 1
+        }
+      ],
+      "nativeCasterSourceUnitIds": [
+        "RN-13"
+      ],
+      "fixedUnitMaterials": [
+        {
+          "rawcode": "h06T",
+          "id": "RN-13",
+          "count": 1
+        },
+        {
+          "rawcode": "h02Y",
+          "id": "L-10",
+          "count": 1
+        },
+        {
+          "rawcode": "h03Y",
+          "id": "H-18",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "id": "LT-01",
+          "count": 1
+        }
+      ],
+      "gold": 10000,
+      "wood": 7,
+      "webAnyRandomCount": null,
+      "webSpecialRequirements": null,
+      "executionStatus": "blocked-unverified-PICK-consumption"
+    }
+  ]
+}

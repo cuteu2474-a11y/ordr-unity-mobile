@@ -1248,5 +1248,26 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             Assert.IsFalse(game.Fusion.CanCommitRecipe(ability));
         }
+
+        [Test]
+        public void SourceMysticPickShowsOneExtraRandomActorWithoutAuthorizingCrafting()
+        {
+            var game = Create();
+            long namedCaster = game.Combat.SpawnCharacter("RN-01", 0, 0);
+            long additionalRandom = game.Combat.SpawnCharacter("RN-02", 1, 0);
+            var offer = Offer(game, "A19W");
+            CollectionAssert.AreEquivalent(new long[] { namedCaster, additionalRandom },
+                offer.SuggestedMaterialInstances,
+                "A800 preview cannot reuse the named RN-01 caster as its extra slot.");
+            StringAssert.Contains("A800", offer.OriginalMaterialsAndCost);
+            Assert.IsFalse(offer.IsReady, "PICK native removal and creation remain unverified.");
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("A19W"));
+
+            var oneRandom = Create();
+            oneRandom.Combat.SpawnCharacter("RN-01", 0, 0);
+            var missing = Offer(oneRandom, "A19W");
+            Assert.IsTrue(missing.MissingMaterials.Any(x =>
+                x.Contains("PICK용 별도 랜덤 유닛 1기 부족")));
+        }
     }
 }

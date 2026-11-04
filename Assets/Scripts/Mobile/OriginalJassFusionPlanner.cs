@@ -92,6 +92,7 @@ namespace Ordr.Mobile.Mobile
         private IOriginalJassSpecialConditionEvaluator specialRules;
         private IVerifiedUnitRawcodeMap verifiedObjectMap;
         private IOriginalJassFusionMaterialGroups verifiedMaterialGroups;
+        private IOriginalJassPickMaterialPreview pickMaterialPreview;
 
         public OriginalJassFusionPlanner(OriginalJassFusionCatalog original,
             OriginalUnitRawcodeLabelCatalog labels, Func<long, bool> storyDeployed,
@@ -122,6 +123,11 @@ namespace Ordr.Mobile.Mobile
         public void SetVerifiedMaterialGroups(IOriginalJassFusionMaterialGroups groups)
         {
             verifiedMaterialGroups = groups;
+        }
+
+        public void SetPickMaterialPreview(IOriginalJassPickMaterialPreview sourceBackedPreview)
+        {
+            pickMaterialPreview = sourceBackedPreview;
         }
 
         public int RegistrationCount { get { return original.Count; } }
@@ -170,6 +176,7 @@ namespace Ordr.Mobile.Mobile
             int gold = 0, lumber = 0;
             var needed = new Dictionary<string, int>(StringComparer.Ordinal);
             var neededOrder = new List<string>();
+            var pendingPicks = new List<OriginalJassFusionInstruction>();
             foreach (var condition in recipe.OrderedConditions)
             {
                 if (condition.Kind == "UNIT")
@@ -188,6 +195,7 @@ namespace Ordr.Mobile.Mobile
                     lumber = checked(lumber + condition.Count);
                 else
                 {
+                    if (condition.Kind == "PICK") pendingPicks.Add(condition);
                     string reason = null;
                     // UPUN appears as a special presentation/operation tag in CHV/CHX.
                     // Even when a handler approves it, original post-commit behavior
@@ -267,6 +275,39 @@ namespace Ordr.Mobile.Mobile
                     ingredientName, required, owned));
                 if (owned < required)
                     reasons.Add("재료 부족: " + rawcode + " " + (required - owned) + "기");
+            }
+
+            // PICK is listed BEFORE the fixed UNIT inputs in source CWR, but
+            // a preview must reserve the fixed materials first to avoid counting
+            // a named random-only caster twice. This does not authorize PICK:
+            // the special condition evaluator still blocks native consumption.
+            foreach (var pick in pendingPicks)
+            {
+                IReadOnlyList<long> candidates;
+                string title;
+                if (pickMaterialPreview == null ||
+                    !pickMaterialPreview.TryPreview(pick, ownedUnits, deployed,
+                        selectedOnce, out candidates, out title))
+                {
+                    reasons.Add("PICK 원본 A800 후보 목록 미연결: " + pick.Rawcode);
+                    continue;
+                }
+                var bound = new List<long>();
+                foreach (long id in candidates)
+                {
+                    if (!selectedOnce.Add(id))
+                    {
+                        reasons.Add("PICK 후보와 기존 재료가 중복됩니다: " + id);
+                        continue;
+                    }
+                    selected.Add(id);
+                    bound.Add(id);
+                }
+                bindings.Add(new JassFusionMaterialBinding("PICK:" + pick.Rawcode, bound));
+                materials.Add(new JassFusionMaterial("PICK:" + pick.Rawcode,
+                    null, title, pick.Count, bound.Count));
+                if (bound.Count < pick.Count)
+                    reasons.Add("PICK 랜덤전용 후보 부족: " + (pick.Count - bound.Count) + "기");
             }
 
             if (!verifiedGold.HasValue)

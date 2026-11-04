@@ -315,8 +315,14 @@ namespace Ordr.Mobile.Mobile
             planner.SetVerifiedObjectMap(this);
             var materialGroups = new Original323FusionMaterialGroups(objects);
             planner.SetVerifiedMaterialGroups(materialGroups);
+            // The 14 A800-bearing RN source objects are known, but BGI PICK's
+            // exact consume callback remains unverified: candidate selection
+            // improves previews without approving any of the six recipes.
+            var pickCandidates = new Original323MysticPickCandidatePreview(objects, units);
+            planner.SetPickMaterialPreview(pickCandidates);
             var ownedPreview = fallback as OriginalJassReadOnlyFusionPort;
-            ownedPreview?.ConfigureOwnedMaterialPreview(this, units, materialGroups);
+            ownedPreview?.ConfigureOwnedMaterialPreview(this, units,
+                materialGroups, pickCandidates);
         }
 
         private void RegisterReviewed(CharacterUnitCatalog units, OriginalJassFusionCatalog registrations,
