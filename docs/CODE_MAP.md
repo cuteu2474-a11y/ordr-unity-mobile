@@ -1,3 +1,9 @@
+## 2026-11-04 · 38차 초월함 22건 결과 제작 경로 (실행 검사 전)
+
+- **소스:** data/original-2323C-transcend-outcomes-batch38.json에 신규 초월함 22건의 재료 rawcode·카탈로그 ID·결과 rawcode·원본 기본 공격 및 미검증 후속 콜백 상태를 기록. 전체 CWR 266건 중 코드 제작 허가 **189건**, 잔여 잠금 **77건**.
+- **거래 엔진:** Assets/Scripts/Mobile/Original323CommonFusionPort.cs의 MobileOutcomeTranscend 22종과 RegisterRestricted(모바일 결과 전용)은 원본 결과 초월함, UNIT/UPUN/UBAN/KING 조건, 실물 재료 및 KING/밴 대상 동일성을 검수한 뒤 기존 OriginalJassFusionPlanner→ConfirmFusion의 원자 소비/결과 유닛 생성/실패 차단을 재사용. 기존 제한/불멸/영원/신비 거래 변경 없음.
+- **범위:** 결과 초월 유닛 생성은 모바일에 연결했지만 원본 CH8/BI2 제작 후 별도 네이티브 부가효과는 인증되지 않음. UI/성공 메시지에 미검증을 표시하고 TR30은 미확인 h0AN으로 잠금 유지. Assets/Tests/EditMode/Original323OwnedMaterialFusionTests.cs에 신규 22건 목록/결과 신원 가드를 추가. 기존 전체 실행식 동적 원자 거래 검사가 22건을 포함하지만 실제 테스트 실행은 하지 않음.
+
 ## 2026-11-04 · 37차 CWR 잔여 99건 리뷰·조합 UI 상태 분리 (코드 반영 / 검사 전)
 
 - **원본 등록식 진단:** `data/original-2323C-blocked-fusion-batch37.json`에 기존 167/266건 실행 범위에서 제외된 99건의 원본 조건 순서·결과·재화 비용·매핑 누락·별도 콜백 차단을 기록. UNIT/GOLD/WOOD 전용 미연결식은 0건이며 각 추가 조건을 임의 통과시키지 않습니다.

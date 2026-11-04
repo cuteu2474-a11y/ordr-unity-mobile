@@ -216,6 +216,36 @@ namespace Ordr.Mobile.Mobile
             { "A19T", "h08I", "MY-05" }, // 쿠치키 뱌쿠야
             { "A0QG", "h0C2", "MY-14" }  // 한마 유지로 (W3X source-only result)
         };
+        // 38차 모바일 결과 모델: 22개의 초월함 원본 CWR UNIT/UBAN/KING
+        // (TR07만 UPUN 표시 포함) 재료를 실제 원자 소비하고 원본 결과 객체를
+        // 생성한다. 원본 제작 후 네이티브 CH8/BI2 별도 부가효과는 아직
+        // 인증되지 않았다. 이 배열은 완전한 원본 콜백 패리티가 아니다.
+        // TR30은 h0AN 재료 객체 신원이 미확인되어 실행 차단한다.
+        private static readonly string[,] MobileOutcomeTranscend = {
+            { "TR02", "H098", "TR-04" }, // 로빈
+            { "TR03", "H05N", "TR-27" }, // 타시기
+            { "TR04", "H09E", "TR-03" }, // 도플라밍고
+            { "TR05", "H08W", "TR-07" }, // 루치
+            { "TR06", "H09F", "TR-20" }, // 조로
+            { "TR07", "H0B2", "TR-14" }, // 스네이크맨
+            { "TR08", "H090", "TR-01" }, // 검은수염
+            { "TR11", "H0B5", "TR-26" }, // 키자루
+            { "TR12", "H09I", "TR-10" }, // 브룩
+            { "TR13", "H092", "TR-11" }, // 사보
+            { "TR14", "H09H", "TR-12" }, // 상디
+            { "TR15", "H08Z", "TR-13" }, // 샹크스
+            { "TR16", "H08U", "TR-15" }, // 시라호시
+            { "TR17", "H0BL", "TR-06" }, // 료쿠규
+            { "TR18", "H095", "TR-17" }, // 아카이누
+            { "TR19", "H0BD", "TR-18" }, // 야마토
+            { "TR20", "H09B", "TR-19" }, // 우솝
+            { "TR22", "H09A", "TR-22" }, // 징베
+            { "TR24", "H097", "TR-16" }, // 아오키지
+            { "TR25", "H0B4", "TR-25" }, // 키드
+            { "TR26", "H096", "TR-05" }, // 트라팔가 로우
+            { "TR29", "H0CO", "TR-24" }, // 코비
+        };
+
         // Five source/dex-correlated results plus the W3X-identified Hanma
         // result use the same mobile atomic swap. For Hanma the extra A800
         // material is a source-structure inference, not published dex evidence;
@@ -254,7 +284,9 @@ namespace Ordr.Mobile.Mobile
         public int ExecutableLegendaryRecipeCount => ReviewedLegendary.GetLength(0);
         public int ExecutableHiddenRecipeCount => ReviewedHidden.GetLength(0);
         public int ExecutableEternalRecipeCount => ReviewedEternal.GetLength(0);
-        public int ExecutableRestrictedRecipeCount => ReviewedRestricted.GetLength(0);
+        public int ExecutableRestrictedRecipeCount => ReviewedRestricted.GetLength(0) +
+            MobileOutcomeTranscend.GetLength(0);
+        public int ExecutableMobileOutcomeTranscendCount => MobileOutcomeTranscend.GetLength(0);
         public int ExecutableMysticRecipeCount
         {
             get
@@ -333,7 +365,8 @@ namespace Ordr.Mobile.Mobile
             Bind(units, "LI-09", "h05F", "제한됨");
             Bind(units, "T-02", "h05W", "변화");
             RegisterReviewed(units, registrations, ReviewedEternal, "영원한");
-            RegisterRestricted(units, registrations);
+            RegisterRestricted(units, registrations, ReviewedRestricted, false);
+            RegisterRestricted(units, registrations, MobileOutcomeTranscend, true);
             planner = new OriginalJassFusionPlanner(registrations, labels,
                 id => combat.IsStoryDeployed(id), this, units);
             planner.SetVerifiedObjectMap(this);
@@ -449,16 +482,19 @@ namespace Ordr.Mobile.Mobile
         }
 
         private void RegisterRestricted(CharacterUnitCatalog units,
-            OriginalJassFusionCatalog registrations)
+            OriginalJassFusionCatalog registrations, string[,] reviewed,
+            bool mobileOutcomeOnly)
         {
-            for (int i = 0; i < ReviewedRestricted.GetLength(0); i++)
+            for (int i = 0; i < reviewed.GetLength(0); i++)
             {
-                string ability = ReviewedRestricted[i, 0];
-                string result = ReviewedRestricted[i, 1];
-                string id = ReviewedRestricted[i, 2];
+                string ability = reviewed[i, 0];
+                string result = reviewed[i, 1];
+                string id = reviewed[i, 2];
                 string grade = units.Require(id).Grade;
                 if (grade != "제한됨" && grade != "불멸의" && grade != "영원한" && grade != "초월함" && grade != "신비함")
                     throw new FormatException("상위 조합 결과 등급 불일치: " + ability);
+                if (mobileOutcomeOnly && grade != "초월함")
+                    throw new FormatException("모바일 결과 조합은 초월함만 연결합니다: " + ability);
                 Bind(units, id, result, grade);
                 var recipe = registrations.FindByAbility(ability);
                 if (recipe == null || recipe.Results.Count != 1 ||
@@ -472,6 +508,11 @@ namespace Ordr.Mobile.Mobile
                 var mysticMaterialOrder = new List<string>();
                 foreach (var condition in recipe.OrderedConditions)
                 {
+                    if (mobileOutcomeOnly && condition.Kind != "UNIT" &&
+                        condition.Kind != "UPUN" && condition.Kind != "UBAN" &&
+                        condition.Kind != "KING")
+                        throw new FormatException("모바일 결과 조합의 미승인 추가 조건: " +
+                            ability + "/" + condition.Kind);
                     string materialId;
                     switch (condition.Kind)
                     {
@@ -559,9 +600,16 @@ namespace Ordr.Mobile.Mobile
                         mysticGold != 10000 || mysticWood != 7 || physicalTokens != 1 ||
                         mysticPicks != (MobileMysticPickInputOrder.ContainsKey(ability) ? 1 : 0))))
                     throw new FormatException("상위 조합 원본 시전자/필수 조건 누락: " + ability);
-                supported.Add(ability);
+                if (!supported.Add(ability))
+                    throw new FormatException("중복 조합 실행 등록: " + ability);
                 resultGrades.Add(ability, grade);
             }
+        }
+        private static bool IsMobileOutcomeTranscend(string ability)
+        {
+            for (int i = 0; i < MobileOutcomeTranscend.GetLength(0); i++)
+                if (MobileOutcomeTranscend[i, 0] == ability) return true;
+            return false;
         }
         public bool TryResolveUnit(string rawcode, out string id)
         { return mappings.TryGetValue(rawcode ?? "", out id); }
@@ -609,9 +657,12 @@ namespace Ordr.Mobile.Mobile
                     costs.Add("골드 " + ready.GoldCost + " (보유 " + economy.Wallet.Balance("gold") + ")");
                 if (ready.LumberCost > 0)
                     costs.Add("목재 " + ready.LumberCost + " (보유 " + economy.Wallet.Balance("wood") + ")");
-                result.Add(new MobileFusionPreview(offer.RecipeId, ready.ResultName + " · " + resultGrades[offer.RecipeId],
+                result.Add(new MobileFusionPreview(offer.RecipeId, ready.ResultName + " · " + resultGrades[offer.RecipeId] +
+                    (IsMobileOutcomeTranscend(offer.RecipeId) ? " · 모바일 제작" : ""),
                     string.Join(" + ", parts) + (costs.Count > 0
-                        ? " · " + string.Join(" · ", costs) : " · 추가 재화 없음"),
+                        ? " · " + string.Join(" · ", costs) : " · 추가 재화 없음") +
+                    (IsMobileOutcomeTranscend(offer.RecipeId)
+                        ? " · 원본 부가효과 미검증" : ""),
                     ready.SuggestedMaterialIds, missing, allUnitsOwned));
             }
             return result.AsReadOnly();
@@ -686,7 +737,9 @@ namespace Ordr.Mobile.Mobile
                 foreach (Action<long, string, string> observer in FusionCommitted.GetInvocationList())
                     try { observer(created, ready.ResultUnitId, ready.ResultRawcode); }
                     catch (Exception error) { try { ObserverFailed?.Invoke(error); } catch { } }
-            return new ManualActionResult(ManualActionState.Succeeded, ready.ResultName + " 조합 완료");
+            return new ManualActionResult(ManualActionState.Succeeded, ready.ResultName +
+                (IsMobileOutcomeTranscend(ability)
+                    ? " 모바일 조합 완료 · 원본 부가효과 미검증" : " 조합 완료"));
         }
         private int SourceBalance(string id) => (int)Math.Min(int.MaxValue, economy.Wallet.Balance(id));
         private static ManualActionResult Reject(string text)

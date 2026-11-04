@@ -1,0 +1,1493 @@
+{
+  "format": "ordr-transcend-mobile-outcomes-batch38-v1",
+  "gameVersion": "ORDR S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceRegistry": "data/original-jass-fusion-registry.json",
+  "sourceObjects": "data/original-2323C-map-base-stats.json",
+  "baseCommit": "33bcd2374e797ac3360b9a8c1dfae0e1ef0cdcb4",
+  "summary": {
+    "totalCwr": 266,
+    "previouslyExecutable": 167,
+    "newExecutableMobileResults": 22,
+    "totalExecutableMobileResults": 189,
+    "remainingLocked": 77,
+    "sourceTranscendRegistrations": 30,
+    "transcendMobileResultsPreviouslyEnabled": 7,
+    "transcendMobileResultsAfterBatch": 29,
+    "sourceTranscendStillLocked": 1,
+    "verifiedMaterialAndResultIdentityCount": 22,
+    "verifiedNativePostCallbackCount": 0
+  },
+  "scope": [
+    "기존 원자 거래로 CWR 원본 UNIT 재료를 정확히 제거하고 동일 원본 결과 rawcode를 지닌 1개 캐릭터를 생성합니다.",
+    "초월함 CWR UBAN은 이세계에서 원본 밴 추첨이 비활성입니다. KING은 기존 확인된 최상위 상태 조건을 그대로 평가합니다.",
+    "TR07 UPUN은 원본 CH5/CHi 표시 마커이며 추가 재화·유닛 소비로 만들지 않습니다.",
+    "제작 후 원본 JASS CH8/BI2의 네이티브 부가효과는 본 묶음에서 직접 검증되지 않았고 실행 완료로 주장하지 않습니다.",
+    "TR30 베가펑크 초월은 h0AN 재료의 검증된 획득/객체 연결이 없어 계속 잠깁니다.",
+    "Python/Unity/Android/APK 실행 검사 및 원본 실측은 수행하지 않았습니다."
+  ],
+  "previouslyEnabledTranscends": [
+    "TR01",
+    "TR09",
+    "TR10",
+    "TR21",
+    "TR23",
+    "TR27",
+    "TR28"
+  ],
+  "newlyEnabled": [
+    {
+      "abilityRawcode": "TR02",
+      "resultRawcode": "H098",
+      "resultCatalogId": "TR-04",
+      "resultName": "로빈",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02X",
+          "count": 1,
+          "catalogId": "L-15"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02R",
+          "count": 1,
+          "catalogId": "L-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01A",
+          "count": 1,
+          "catalogId": "S-29"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00O",
+          "count": 1,
+          "catalogId": "U-01"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H098",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H098",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.71,
+        "baseDamagePlus": 33333,
+        "diceCount": 1,
+        "diceSides": 4,
+        "originalRange": 825,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.17,
+        "minimumBaseDamage": 33334,
+        "maximumBaseDamage": 33337
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR03",
+      "resultRawcode": "H05N",
+      "resultCatalogId": "TR-27",
+      "resultName": "타시기",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03E",
+          "count": 1,
+          "catalogId": "L-31"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h038",
+          "count": 1,
+          "catalogId": "L-22"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01F",
+          "count": 1,
+          "catalogId": "S-14"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00E",
+          "count": 1,
+          "catalogId": "U-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H05N",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H05N",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.88,
+        "baseDamagePlus": 8850,
+        "diceCount": 2,
+        "diceSides": 6,
+        "originalRange": 625,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.275,
+        "minimumBaseDamage": 8852,
+        "maximumBaseDamage": 8862
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR04",
+      "resultRawcode": "H09E",
+      "resultCatalogId": "TR-03",
+      "resultName": "도플라밍고",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h05S",
+          "count": 1,
+          "catalogId": "T-01"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h07N",
+          "count": 1,
+          "catalogId": "T-03"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03W",
+          "count": 1,
+          "catalogId": "H-10"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h027",
+          "count": 1,
+          "catalogId": "R-24"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00N",
+          "count": 1,
+          "catalogId": "U-07"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09E",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09E",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.62,
+        "baseDamagePlus": 26250,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 615,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.34,
+        "minimumBaseDamage": 26251,
+        "maximumBaseDamage": 26252
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR05",
+      "resultRawcode": "H08W",
+      "resultCatalogId": "TR-07",
+      "resultName": "루치",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02R",
+          "count": 1,
+          "catalogId": "L-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03M",
+          "count": 1,
+          "catalogId": "H-12"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00S",
+          "count": 1,
+          "catalogId": "S-04"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H08W",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H08W",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.54,
+        "baseDamagePlus": 32500,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.3,
+        "minimumBaseDamage": 32501,
+        "maximumBaseDamage": 32503
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR06",
+      "resultRawcode": "H09F",
+      "resultCatalogId": "TR-20",
+      "resultName": "조로",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02S",
+          "count": 1,
+          "catalogId": "L-27"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h043",
+          "count": 1,
+          "catalogId": "H-01"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01W",
+          "count": 1,
+          "catalogId": "R-12"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00J",
+          "count": 1,
+          "catalogId": "U-10"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09F",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09F",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.67,
+        "baseDamagePlus": 50000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 575,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.485,
+        "minimumBaseDamage": 50001,
+        "maximumBaseDamage": 50003
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR07",
+      "resultRawcode": "H0B2",
+      "resultCatalogId": "TR-14",
+      "resultName": "스네이크맨",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Y",
+          "count": 1,
+          "catalogId": "L-10"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03U",
+          "count": 1,
+          "catalogId": "H-02"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05L",
+          "count": 1,
+          "catalogId": "R-20"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00K",
+          "count": 1,
+          "catalogId": "U-05"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0BK",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0B2",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0B2",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.48,
+        "baseDamagePlus": 30000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 835,
+        "originalAttackType": "hero",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.21,
+        "minimumBaseDamage": 30001,
+        "maximumBaseDamage": 30003
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR08",
+      "resultRawcode": "H090",
+      "resultCatalogId": "TR-01",
+      "resultName": "검은수염",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02U",
+          "count": 1,
+          "catalogId": "L-01"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03B",
+          "count": 1,
+          "catalogId": "L-38"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h016",
+          "count": 1,
+          "catalogId": "S-10"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H090",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H090",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.61,
+        "baseDamagePlus": 15000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 725,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.29,
+        "minimumBaseDamage": 15001,
+        "maximumBaseDamage": 15003
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR11",
+      "resultRawcode": "H0B5",
+      "resultCatalogId": "TR-26",
+      "resultName": "키자루",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h031",
+          "count": 1,
+          "catalogId": "L-37"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03A",
+          "count": 1,
+          "catalogId": "L-07"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01R",
+          "count": 1,
+          "catalogId": "R-39"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h011",
+          "count": 1,
+          "catalogId": "S-16"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h016",
+          "count": 1,
+          "catalogId": "S-10"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0B5",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0B5",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.64,
+        "baseDamagePlus": 43000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 900,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.41,
+        "minimumBaseDamage": 43001,
+        "maximumBaseDamage": 43003
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR12",
+      "resultRawcode": "H09I",
+      "resultCatalogId": "TR-10",
+      "resultName": "브룩",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Q",
+          "count": 1,
+          "catalogId": "L-05"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h044",
+          "count": 1,
+          "catalogId": "H-05"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05K",
+          "count": 1,
+          "catalogId": "R-41"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00B",
+          "count": 1,
+          "catalogId": "S-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09I",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09I",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.61,
+        "baseDamagePlus": 14500,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.12,
+        "minimumBaseDamage": 14501,
+        "maximumBaseDamage": 14503
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR13",
+      "resultRawcode": "H092",
+      "resultCatalogId": "TR-11",
+      "resultName": "사보",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h09V",
+          "count": 1,
+          "catalogId": "D-06"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02T",
+          "count": 1,
+          "catalogId": "L-11"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H092",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H092",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.79,
+        "baseDamagePlus": 35000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.41,
+        "minimumBaseDamage": 35001,
+        "maximumBaseDamage": 35002
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR14",
+      "resultRawcode": "H09H",
+      "resultCatalogId": "TR-12",
+      "resultName": "상디",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h034",
+          "count": 1,
+          "catalogId": "L-16"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03H",
+          "count": 1,
+          "catalogId": "L-33"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00P",
+          "count": 1,
+          "catalogId": "S-03"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09H",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09H",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.46,
+        "baseDamagePlus": 38000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 650,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.32,
+        "minimumBaseDamage": 38001,
+        "maximumBaseDamage": 38003
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR15",
+      "resultRawcode": "H08Z",
+      "resultCatalogId": "TR-13",
+      "resultName": "샹크스",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h035",
+          "count": 1,
+          "catalogId": "L-17"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h043",
+          "count": 1,
+          "catalogId": "H-01"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02D",
+          "count": 1,
+          "catalogId": "R-37"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1,
+          "catalogId": "S-07"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H08Z",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H08Z",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.6,
+        "baseDamagePlus": 50000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 1050,
+        "originalAttackType": "hero",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.17,
+        "minimumBaseDamage": 50001,
+        "maximumBaseDamage": 50003
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR16",
+      "resultRawcode": "H08U",
+      "resultCatalogId": "TR-15",
+      "resultName": "시라호시",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03G",
+          "count": 1,
+          "catalogId": "L-28"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03R",
+          "count": 1,
+          "catalogId": "H-07"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1,
+          "catalogId": "R-19"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H08U",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H08U",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.7,
+        "baseDamagePlus": 40000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 825,
+        "originalAttackType": "normal",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.21,
+        "minimumBaseDamage": 40001,
+        "maximumBaseDamage": 40002
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR17",
+      "resultRawcode": "H0BL",
+      "resultCatalogId": "TR-06",
+      "resultName": "료쿠규",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03N",
+          "count": 1,
+          "catalogId": "H-04"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h031",
+          "count": 1,
+          "catalogId": "L-37"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1,
+          "catalogId": "S-07"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0BL",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0BL",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.84,
+        "baseDamagePlus": 105000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 650,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.35,
+        "minimumBaseDamage": 105001,
+        "maximumBaseDamage": 105002
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR18",
+      "resultRawcode": "H095",
+      "resultCatalogId": "TR-17",
+      "resultName": "아카이누",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0CM",
+          "count": 1,
+          "catalogId": "L-39"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03Z",
+          "count": 1,
+          "catalogId": "H-17"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01J",
+          "count": 1,
+          "catalogId": "S-19"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H095",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H095",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.73,
+        "baseDamagePlus": 42525,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 625,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.29,
+        "minimumBaseDamage": 42526,
+        "maximumBaseDamage": 42528
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR19",
+      "resultRawcode": "H0BD",
+      "resultCatalogId": "TR-18",
+      "resultName": "야마토",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03S",
+          "count": 1,
+          "catalogId": "L-25"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h087",
+          "count": 1,
+          "catalogId": "L-35"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01M",
+          "count": 1,
+          "catalogId": "R-42"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00P",
+          "count": 1,
+          "catalogId": "S-03"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01J",
+          "count": 1,
+          "catalogId": "S-19"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0BD",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0BD",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.99,
+        "baseDamagePlus": 25000,
+        "diceCount": 2,
+        "diceSides": 6,
+        "originalRange": 700,
+        "originalAttackType": "hero",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.325,
+        "minimumBaseDamage": 25002,
+        "maximumBaseDamage": 25012
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR20",
+      "resultRawcode": "H09B",
+      "resultCatalogId": "TR-19",
+      "resultName": "우솝",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03F",
+          "count": 1,
+          "catalogId": "L-30"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h037",
+          "count": 1,
+          "catalogId": "L-19"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01S",
+          "count": 1,
+          "catalogId": "R-17"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00J",
+          "count": 1,
+          "catalogId": "U-10"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09B",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09B",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.52,
+        "baseDamagePlus": 23000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 1050,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.18,
+        "minimumBaseDamage": 23001,
+        "maximumBaseDamage": 23003
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR22",
+      "resultRawcode": "H09A",
+      "resultCatalogId": "TR-22",
+      "resultName": "징베",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03G",
+          "count": 1,
+          "catalogId": "L-28"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Q",
+          "count": 1,
+          "catalogId": "L-05"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01J",
+          "count": 1,
+          "catalogId": "S-19"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H09A",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H09A",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.89,
+        "baseDamagePlus": 75000,
+        "diceCount": 1,
+        "diceSides": 2,
+        "originalRange": 625,
+        "originalAttackType": "siege",
+        "originalWeaponType": "msplash",
+        "attackPointSeconds": 0.3,
+        "minimumBaseDamage": 75001,
+        "maximumBaseDamage": 75002
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR24",
+      "resultRawcode": "H097",
+      "resultCatalogId": "TR-16",
+      "resultName": "아오키지",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03I",
+          "count": 1,
+          "catalogId": "L-26"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h041",
+          "count": 1,
+          "catalogId": "H-16"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00S",
+          "count": 1,
+          "catalogId": "S-04"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00E",
+          "count": 1,
+          "catalogId": "U-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H097",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H097",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.69,
+        "baseDamagePlus": 37500,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.5,
+        "minimumBaseDamage": 37501,
+        "maximumBaseDamage": 37503
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR25",
+      "resultRawcode": "H0B4",
+      "resultCatalogId": "TR-25",
+      "resultName": "키드",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h09Z",
+          "count": 1,
+          "catalogId": "L-03"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h045",
+          "count": 1,
+          "catalogId": "H-21"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02L",
+          "count": 1,
+          "catalogId": "R-05"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00U",
+          "count": 1,
+          "catalogId": "S-07"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00Y",
+          "count": 1,
+          "catalogId": "S-30"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0B4",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0B4",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.99,
+        "baseDamagePlus": 37000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 1000,
+        "originalAttackType": "siege",
+        "originalWeaponType": "missile",
+        "attackPointSeconds": 0.5,
+        "minimumBaseDamage": 37001,
+        "maximumBaseDamage": 37003
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR26",
+      "resultRawcode": "H096",
+      "resultCatalogId": "TR-05",
+      "resultName": "트라팔가 로우",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03C",
+          "count": 1,
+          "catalogId": "L-08"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h038",
+          "count": 1,
+          "catalogId": "L-22"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00C",
+          "count": 2,
+          "catalogId": "U-02"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H096",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H096",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.64,
+        "baseDamagePlus": 25000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 700,
+        "originalAttackType": "pierce",
+        "originalWeaponType": "instant",
+        "attackPointSeconds": 0.3,
+        "minimumBaseDamage": 25001,
+        "maximumBaseDamage": 25003
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    },
+    {
+      "abilityRawcode": "TR29",
+      "resultRawcode": "H0CO",
+      "resultCatalogId": "TR-24",
+      "resultName": "코비",
+      "sourceConditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03E",
+          "count": 1,
+          "catalogId": "L-31"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h0CM",
+          "count": 1,
+          "catalogId": "L-39"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Q",
+          "count": 1,
+          "catalogId": "R-02"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01I",
+          "count": 1,
+          "catalogId": "S-33"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0CO",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0CO",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceGold": 0,
+      "sourceWood": 0,
+      "sourceBaseAttack": {
+        "attackCooldownSeconds": 0.71,
+        "baseDamagePlus": 43000,
+        "diceCount": 1,
+        "diceSides": 3,
+        "originalRange": 600,
+        "originalAttackType": "normal",
+        "originalWeaponType": "normal",
+        "attackPointSeconds": 0.5,
+        "minimumBaseDamage": 43001,
+        "maximumBaseDamage": 43003
+      },
+      "mobileTransaction": "existing-atomic-owned-UNIT-swap",
+      "nativeCallbackAfterEffectsVerified": false,
+      "executionScope": "mobile-base-result-only"
+    }
+  ],
+  "lockedTranscend": {
+    "abilityRawcode": "TR30",
+    "resultRawcode": "H0AA",
+    "name": "베가펑크",
+    "missingUnitRawcode": "h0AN",
+    "reason": "source ingredient identity unverified; do not substitute a free unit or skip payment"
+  }
+}

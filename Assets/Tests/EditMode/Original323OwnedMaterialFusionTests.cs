@@ -94,6 +94,48 @@ namespace Ordr.Mobile.Tests
                 game.Fusion.ConfirmFusion(ability, offer.SuggestedMaterialInstances).State);
             Assert.AreEqual(1, game.Combat.CharacterCount);
         }
+        // Batch 38: these CWR records are permitted to craft the verified
+        // source result actor. Their separate JASS post-creation callbacks are
+        // deliberately NOT represented as fully verified mobile behavior.
+        [Test]
+        public void TwentyTwoTranscendMobileResultsAreSourceMappedAndVegaPunkRemainsLocked()
+        {
+            var game = Create();
+            var newlyEnabled = new[] {
+                "TR02", "TR03", "TR04", "TR05", "TR06", "TR07", "TR08",
+                "TR11", "TR12", "TR13", "TR14", "TR15", "TR16", "TR17",
+                "TR18", "TR19", "TR20", "TR22", "TR24", "TR25", "TR26", "TR29"
+            };
+            Assert.AreEqual(22, game.Fusion.ExecutableMobileOutcomeTranscendCount);
+            Assert.AreEqual(22, newlyEnabled.Distinct(StringComparer.Ordinal).Count());
+            foreach (var ability in newlyEnabled)
+            {
+                Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
+                var recipe = game.Registry.FindByAbility(ability);
+                Assert.IsNotNull(recipe, ability);
+                Assert.AreEqual(1, recipe.Results.Count, ability);
+                Assert.AreEqual("UNIT", recipe.Results[0].Kind, ability);
+                Assert.AreEqual(1, recipe.Results[0].Count, ability);
+                Assert.IsTrue(recipe.OrderedConditions.All(c =>
+                    c.Kind == "UNIT" || c.Kind == "UPUN" ||
+                    c.Kind == "UBAN" || c.Kind == "KING"), ability);
+                Assert.IsTrue(recipe.RequiredUnitRawcodes().Any(), ability);
+                foreach (var material in recipe.RequiredUnitRawcodes())
+                {
+                    string id;
+                    Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id),
+                        ability + "/" + material.Key);
+                    Assert.IsNotNull(game.Map.Find(id), ability + "/" + material.Key);
+                }
+                string resultId;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(recipe.Results[0].Rawcode, out resultId), ability);
+                Assert.AreEqual("초월함", game.Units.Require(resultId).Grade, ability);
+                Assert.IsNotNull(game.Map.Find(resultId), ability);
+            }
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("TR30"),
+                "VegaPunk still needs a verified h0AN material identity.");
+        }
+
         [TestCase("TR-08")]
         [TestCase("TR-14")]
         public void LuffyMaterialBucketAcceptsEitherRealFormWithoutChangingResultIdentity(string id)
