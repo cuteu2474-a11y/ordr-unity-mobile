@@ -203,8 +203,28 @@ namespace Ordr.Mobile.Mobile
             { "A1AD", "h08M", "MY-08" }, // 아냐 포저
             { "A0Y6", "h09R", "MY-11" }, // 쿠죠 죠타로
             { "A0YK", "h0BF", "MY-02" }, // 네즈코
-            { "A10V", "h083", "MY-07" }  // 샌즈
+            { "A10V", "h083", "MY-07" }, // 샌즈
+            // Source CWR PICK:A800 plus published 2.323 any-random material:
+            // mobile outcome-matched consumption of an ADDITIONAL random-only
+            // instance, never the named caster. Native BGI callback parity is
+            // still unverified; A0QG/Yujiro stays blocked.
+            { "A19W", "h09M", "MY-01" }, // 고죠 사토루
+            { "A19U", "h0AC", "MY-13" }, // 히그마
+            { "A19S", "h0A6", "MY-09" }, // 야쿠모 유카리
+            { "A19V", "h0CC", "MY-10" }, // 콘파쿠 요우무
+            { "A19T", "h08I", "MY-05" }  // 쿠치키 뱌쿠야
         };
+        // Only these five source-and-dex-correlated PICK outcomes are allowed
+        // through the mobile atomic unit swap. This does not approve other PICK
+        // registrations or assert Warcraft-native callback equivalence.
+        private static readonly Dictionary<string, string> MobileMysticPickInputOrder =
+            new Dictionary<string, string>(StringComparer.Ordinal) {
+                { "A19W", "h06U:1,h03V:1,h03Z:1,h027:1,h060:1,h06G:1" },
+                { "A19U", "h06X:1,h09Z:1,h029:1,h06G:1" },
+                { "A19S", "h073:1,h048:1,h017:1,h06G:1" },
+                { "A19V", "h09K:1,h03I:1,h05W:1,h06G:1" },
+                { "A19T", "h071:1,h05V:1,h04H:1,h06G:1" }
+            };
         // Original chat wrappers call BI1(GetPlayerStartLocationX/Y).
         // config: SetPlayerStartLocation(Player(0),0); DefineStartLocation(0,-3776.,4480.).
         private const double HiddenResultX = -3776.0;
@@ -315,9 +335,9 @@ namespace Ordr.Mobile.Mobile
             planner.SetVerifiedObjectMap(this);
             var materialGroups = new Original323FusionMaterialGroups(objects);
             planner.SetVerifiedMaterialGroups(materialGroups);
-            // The 14 A800-bearing RN source objects are known, but BGI PICK's
-            // exact consume callback remains unverified: candidate selection
-            // improves previews without approving any of the six recipes.
+            // The 14 A800-bearing RN source objects back the separate random
+            // material. Five source/dex-matched Mystic results use the mobile
+            // atomic swap; source-native BGI callback parity is not asserted.
             var pickCandidates = new Original323MysticPickCandidatePreview(objects, units);
             planner.SetPickMaterialPreview(pickCandidates);
             var ownedPreview = fallback as OriginalJassReadOnlyFusionPort;
@@ -411,18 +431,32 @@ namespace Ordr.Mobile.Mobile
                     recipe.Results[0].Rawcode != result)
                     throw new FormatException("검수된 상위 조합 결과가 바뀌었습니다: " + ability);
                 bool materials = false, wood = false, banned = false, king = false, caster = false;
-                int mysticGold = 0, mysticWood = 0, physicalTokens = 0;
+                int mysticGold = 0, mysticWood = 0, physicalTokens = 0, mysticPicks = 0;
                 bool mysticOrdered = true;
                 int mysticPhase = 0;
+                var mysticMaterialOrder = new List<string>();
                 foreach (var condition in recipe.OrderedConditions)
                 {
                     string materialId;
                     switch (condition.Kind)
                     {
+                        case "PICK":
+                            // The five cross-matched source/dex recipes have
+                            // PICK:A800 x1 BEFORE the named UNIT inputs. A800
+                            // exists only on the 14 RN objects in this source.
+                            if (grade != "신비함" ||
+                                !MobileMysticPickInputOrder.ContainsKey(ability) ||
+                                condition.Rawcode != Original323MysticPickCandidatePreview.NativeRandomAbility ||
+                                condition.Count != 1 || mysticPicks != 0 ||
+                                mysticPhase != 0 || materials)
+                                throw new FormatException("신비함 추가 랜덤 재료 조건이 변경됐습니다: " + ability);
+                            mysticPicks = 1;
+                            break;
                         case "UNIT":
                             if (grade == "신비함")
                             {
                                 if (mysticPhase != 0) mysticOrdered = false;
+                                mysticMaterialOrder.Add(condition.Rawcode + ":" + condition.Count);
                                 if (condition.Rawcode == Original323SourceMaterialRewardWorld.TokenRawcode)
                                     physicalTokens = checked(physicalTokens + condition.Count);
                             }
@@ -477,13 +511,18 @@ namespace Ordr.Mobile.Mobile
                             throw new FormatException("상위 조합의 미검수 조건: " + ability + "/" + condition.Kind);
                     }
                 }
+                string expectedPickInputs;
+                if (MobileMysticPickInputOrder.TryGetValue(ability, out expectedPickInputs) &&
+                    string.Join(",", mysticMaterialOrder.ToArray()) != expectedPickInputs)
+                    throw new FormatException("신비 PICK 조합의 원본 고정 재료 순서가 변경됐습니다: " + ability);
                 // The seven reviewed TR registrations have NO GOLD/WOOD cost.
                 // Other reviewed restricted tiers retain their source WOOD.
                 if (!materials || (grade == "초월함" ? wood : !wood) ||
                     (grade == "신비함" ? banned : !banned) || !king ||
                     ((grade == "제한됨" || grade == "신비함") && !caster) ||
                     (grade == "신비함" && (!mysticOrdered || mysticPhase != 3 ||
-                        mysticGold != 10000 || mysticWood != 7 || physicalTokens != 1)))
+                        mysticGold != 10000 || mysticWood != 7 || physicalTokens != 1 ||
+                        mysticPicks != (MobileMysticPickInputOrder.ContainsKey(ability) ? 1 : 0))))
                     throw new FormatException("상위 조합 원본 시전자/필수 조건 누락: " + ability);
                 supported.Add(ability);
                 resultGrades.Add(ability, grade);
@@ -497,6 +536,17 @@ namespace Ordr.Mobile.Mobile
             {
                 reason = "실행 검수를 통과하지 않은 원본 조합입니다.";
                 return false;
+            }
+            if (instruction.Kind == "PICK")
+            {
+                // The locked live planner still must supply a distinct
+                // A800-bearing RN instance; this approves only the mobile
+                // model's known extra-ingredient interpretation.
+                bool approved = MobileMysticPickInputOrder.ContainsKey(ability) &&
+                    instruction.Rawcode == Original323MysticPickCandidatePreview.NativeRandomAbility &&
+                    instruction.Count == 1;
+                reason = approved ? null : "원본 PICK 소비 결과 미확인";
+                return approved;
             }
             return verifiedConditions.CanSatisfy(instruction, ability, out reason);
         }

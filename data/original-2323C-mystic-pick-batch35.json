@@ -1,0 +1,253 @@
+{
+  "format": "ordr-original-mystic-mobile-result-pick-atomic-bridge-v1",
+  "sourceVersion": "ORDR S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceCrosswalk": "data/original-2323C-mystic-pick-batch34.json",
+  "sourceRegistrations": "data/original-jass-fusion-registry.json",
+  "sourceNativeUnitObjectList": "data/original-2323C-map-base-stats.json",
+  "publishedDex": "data/otherworld-2323C-mystic-web-recipes.json",
+  "executionClassification": "MOBILE_RESULT_MATCHED_NOT_NATIVE_CALLBACK_VERIFIED",
+  "reasoning": "CWR BGI PICK:A800 x1 appears before named UNIT inputs in five exact CWR registrations. Source W3X has A800 on exactly RN-01..RN-14. The 2.323 published dex independently lists one extra any-random material in these five results. To realize the documented mobile result, consume exactly one additional free A800-bearing RN instance along with all ordered original fixed UNIT inputs, physical LT-01, 10000 gold, 7 wood, and approved fixed Isekai KING. The native JASS BGI PICK callback and its side effects are NOT independently verified.",
+  "summary": {
+    "sourcePhysicalTokenMysticRegistrations": 14,
+    "sourceResolvedMysticResults": 13,
+    "enabledBefore": 8,
+    "enabledNow": 13,
+    "newlyMobileResultMatched": 5,
+    "remainingBlocked": 1,
+    "sourceA800Owners": 14
+  },
+  "implementedResults": [
+    {
+      "abilityRawcode": "A19W",
+      "resultCatalogId": "MY-01",
+      "resultOriginalRawcode": "h09M",
+      "resultOriginalObjectName": "고죠 사토루 - 신비",
+      "sourceCasterCatalogId": "RN-01",
+      "sourceOrderedFixedInputs": [
+        {
+          "rawcode": "h06U",
+          "catalogUnitId": "RN-01",
+          "count": 1
+        },
+        {
+          "rawcode": "h03V",
+          "catalogUnitId": "D-02",
+          "count": 1
+        },
+        {
+          "rawcode": "h03Z",
+          "catalogUnitId": "H-17",
+          "count": 1
+        },
+        {
+          "rawcode": "h027",
+          "catalogUnitId": "R-24",
+          "count": 1
+        },
+        {
+          "rawcode": "h060",
+          "catalogUnitId": "PS-01",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "catalogUnitId": "LT-01",
+          "count": 1
+        }
+      ],
+      "additionalMaterial": {
+        "kind": "PICK",
+        "nativeAbilityRawcode": "A800",
+        "count": 1,
+        "requiredCatalogGrade": "랜덤",
+        "mustBeDifferentInstanceFromFixedInputs": true,
+        "storyDeployedExcluded": true
+      },
+      "gold": 10000,
+      "wood": 7,
+      "modeRestriction": "Isekai KING fixed source condition",
+      "mobileStatus": "enabled-modelled-original-result"
+    },
+    {
+      "abilityRawcode": "A19U",
+      "resultCatalogId": "MY-13",
+      "resultOriginalRawcode": "h0AC",
+      "resultOriginalObjectName": "히그마 - 신비",
+      "sourceCasterCatalogId": "RN-04",
+      "sourceOrderedFixedInputs": [
+        {
+          "rawcode": "h06X",
+          "catalogUnitId": "RN-04",
+          "count": 1
+        },
+        {
+          "rawcode": "h09Z",
+          "catalogUnitId": "L-03",
+          "count": 1
+        },
+        {
+          "rawcode": "h029",
+          "catalogUnitId": "R-22",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "catalogUnitId": "LT-01",
+          "count": 1
+        }
+      ],
+      "additionalMaterial": {
+        "kind": "PICK",
+        "nativeAbilityRawcode": "A800",
+        "count": 1,
+        "requiredCatalogGrade": "랜덤",
+        "mustBeDifferentInstanceFromFixedInputs": true,
+        "storyDeployedExcluded": true
+      },
+      "gold": 10000,
+      "wood": 7,
+      "modeRestriction": "Isekai KING fixed source condition",
+      "mobileStatus": "enabled-modelled-original-result"
+    },
+    {
+      "abilityRawcode": "A19S",
+      "resultCatalogId": "MY-09",
+      "resultOriginalRawcode": "h0A6",
+      "resultOriginalObjectName": "야쿠모 유카리 - 신비",
+      "sourceCasterCatalogId": "RN-05",
+      "sourceOrderedFixedInputs": [
+        {
+          "rawcode": "h073",
+          "catalogUnitId": "RN-05",
+          "count": 1
+        },
+        {
+          "rawcode": "h048",
+          "catalogUnitId": "D-04",
+          "count": 1
+        },
+        {
+          "rawcode": "h017",
+          "catalogUnitId": "S-28",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "catalogUnitId": "LT-01",
+          "count": 1
+        }
+      ],
+      "additionalMaterial": {
+        "kind": "PICK",
+        "nativeAbilityRawcode": "A800",
+        "count": 1,
+        "requiredCatalogGrade": "랜덤",
+        "mustBeDifferentInstanceFromFixedInputs": true,
+        "storyDeployedExcluded": true
+      },
+      "gold": 10000,
+      "wood": 7,
+      "modeRestriction": "Isekai KING fixed source condition",
+      "mobileStatus": "enabled-modelled-original-result"
+    },
+    {
+      "abilityRawcode": "A19V",
+      "resultCatalogId": "MY-10",
+      "resultOriginalRawcode": "h0CC",
+      "resultOriginalObjectName": "콘파쿠 요우무 - 신비",
+      "sourceCasterCatalogId": "RN-07",
+      "sourceOrderedFixedInputs": [
+        {
+          "rawcode": "h09K",
+          "catalogUnitId": "RN-07",
+          "count": 1
+        },
+        {
+          "rawcode": "h03I",
+          "catalogUnitId": "L-26",
+          "count": 1
+        },
+        {
+          "rawcode": "h05W",
+          "catalogUnitId": "T-02",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "catalogUnitId": "LT-01",
+          "count": 1
+        }
+      ],
+      "additionalMaterial": {
+        "kind": "PICK",
+        "nativeAbilityRawcode": "A800",
+        "count": 1,
+        "requiredCatalogGrade": "랜덤",
+        "mustBeDifferentInstanceFromFixedInputs": true,
+        "storyDeployedExcluded": true
+      },
+      "gold": 10000,
+      "wood": 7,
+      "modeRestriction": "Isekai KING fixed source condition",
+      "mobileStatus": "enabled-modelled-original-result"
+    },
+    {
+      "abilityRawcode": "A19T",
+      "resultCatalogId": "MY-05",
+      "resultOriginalRawcode": "h08I",
+      "resultOriginalObjectName": "쿠치키 뱌쿠야 - 신비",
+      "sourceCasterCatalogId": "RN-12",
+      "sourceOrderedFixedInputs": [
+        {
+          "rawcode": "h071",
+          "catalogUnitId": "RN-12",
+          "count": 1
+        },
+        {
+          "rawcode": "h05V",
+          "catalogUnitId": "D-05",
+          "count": 1
+        },
+        {
+          "rawcode": "h04H",
+          "catalogUnitId": "R-11",
+          "count": 1
+        },
+        {
+          "rawcode": "h06G",
+          "catalogUnitId": "LT-01",
+          "count": 1
+        }
+      ],
+      "additionalMaterial": {
+        "kind": "PICK",
+        "nativeAbilityRawcode": "A800",
+        "count": 1,
+        "requiredCatalogGrade": "랜덤",
+        "mustBeDifferentInstanceFromFixedInputs": true,
+        "storyDeployedExcluded": true
+      },
+      "gold": 10000,
+      "wood": 7,
+      "modeRestriction": "Isekai KING fixed source condition",
+      "mobileStatus": "enabled-modelled-original-result"
+    }
+  ],
+  "unapproved": [
+    {
+      "abilityRawcode": "A0QG",
+      "resultOriginalRawcode": "h0C2",
+      "originalObjectName": "한마 유지로 - 신비",
+      "reason": "No catalog result or published any-random correspondence; source-native BGI PICK result semantics unverified."
+    }
+  ],
+  "unverified": [
+    "Original JASS BGI PICK actual evaluation, removal order and side effects",
+    "Native Warcraft cast animation/actor location/result placement outside existing mobile policy",
+    "Original full CHu/CHx result creation callbacks and buffs/sounds beyond mobile roster/unit swap",
+    "Unity compiler/EditMode and Android actual gameplay (tests authored but not executed per user instruction)"
+  ],
+  "atomicity": "Existing CharacterCombatRuntime.BeginOriginalFusionUnitSwap plus shared EconomyWallet state capture/rollback; source candidate selection reserves named fixed actors and story deployment before the additional random."
+}

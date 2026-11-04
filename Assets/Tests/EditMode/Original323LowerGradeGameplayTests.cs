@@ -1236,38 +1236,107 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(beforeWood - 7, game.Economy.Wallet.Balance("wood"));
         }
 
-        [TestCase("A19W")]
-        [TestCase("A19S")]
-        [TestCase("A19T")]
-        [TestCase("A19U")]
-        [TestCase("A19V")]
-        [TestCase("A0QG")]
-        public void PickMysticRegistrationIsNotEnabledByMatchingUnitAndTokenMaterials(
-            string ability)
+        [TestCase("A19W", "MY-01")]
+        [TestCase("A19U", "MY-13")]
+        [TestCase("A19S", "MY-09")]
+        [TestCase("A19V", "MY-10")]
+        [TestCase("A19T", "MY-05")]
+        public void FiveCorrelatedPickMysticOrdersRequireOneSeparateA800RandomUnit(
+            string ability, string resultId)
         {
             var game = Create();
-            Assert.IsFalse(game.Fusion.CanCommitRecipe(ability));
+            var source = game.Registry.FindByAbility(ability);
+            Assert.AreEqual(1, source.OrderedConditions.Count(x =>
+                x.Kind == "PICK" && x.Rawcode == "A800" && x.Count == 1));
+            Assert.AreEqual("PICK", source.OrderedConditions[0].Kind);
+            Assert.AreEqual(1, source.OrderedConditions.Count(x =>
+                x.Kind == "UNIT" && x.Rawcode == "h06G" && x.Count == 1));
+            Assert.AreEqual(1, source.OrderedConditions.Count(x =>
+                x.Kind == "GOLD" && x.Count == 10000));
+            Assert.AreEqual(1, source.OrderedConditions.Count(x =>
+                x.Kind == "WOOD" && x.Count == 7));
+            Assert.AreEqual(1, source.OrderedConditions.Count(x =>
+                x.Kind == "KING" && x.Rawcode == source.Results[0].Rawcode));
+            string mapped;
+            Assert.IsTrue(game.Fusion.TryResolveUnit(source.Results[0].Rawcode, out mapped));
+            Assert.AreEqual(resultId, mapped);
+            Assert.IsTrue(game.Fusion.CanCommitRecipe(ability));
+        }
+
+        [TestCase("A19W", "MY-01")]
+        [TestCase("A19U", "MY-13")]
+        [TestCase("A19S", "MY-09")]
+        [TestCase("A19V", "MY-10")]
+        [TestCase("A19T", "MY-05")]
+        public void CorrelatedPickMysticConsumesExactRandomAndTokenAtomically(
+            string ability, string resultId)
+        {
+            var game = Create();
+            var source = game.Registry.FindByAbility(ability);
+            int sequence = 0;
+            int fixedCount = 0;
+            foreach (var need in source.OrderedConditions.Where(x => x.Kind == "UNIT"))
+            {
+                string catalogId;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(need.Rawcode, out catalogId));
+                for (int i = 0; i < need.Count; i++)
+                {
+                    game.Combat.SpawnCharacter(catalogId, sequence++, 0);
+                    fixedCount++;
+                }
+            }
+            // RN-13 is source A800-bearing but is not a fixed caster or
+            // other fixed ingredient in these five public dex recipes.
+            long extra = game.Combat.SpawnCharacter("RN-13", sequence++, 0);
+            game.Economy.Wallet.Grant(new ResourceBundle()
+                .Add("gold", 10000).Add("wood", 7));
+            var ready = Offer(game, ability);
+            Assert.IsTrue(ready.IsReady, string.Join(", ", ready.MissingMaterials));
+            Assert.AreEqual(fixedCount + 1, ready.SuggestedMaterialInstances.Count);
+            CollectionAssert.Contains(ready.SuggestedMaterialInstances, extra);
+            long gold = game.Economy.Wallet.Balance("gold");
+            long wood = game.Economy.Wallet.Balance("wood");
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.ConfirmFusion(ability, ready.SuggestedMaterialInstances).State);
+            var after = game.Combat.MobileUnitSnapshot();
+            Assert.AreEqual(1, after.Count);
+            Assert.AreEqual(resultId, after[0].Unit.Id);
+            Assert.AreEqual(-3776.0, after[0].Position.X);
+            Assert.AreEqual(4480.0, after[0].Position.Y);
+            Assert.AreEqual(gold - 10000, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(wood - 7, game.Economy.Wallet.Balance("wood"));
         }
 
         [Test]
-        public void SourceMysticPickShowsOneExtraRandomActorWithoutAuthorizingCrafting()
+        public void PickMysticReservesNamedCasterAndNeverTreatsItAsExtraMaterial()
         {
             var game = Create();
             long namedCaster = game.Combat.SpawnCharacter("RN-01", 0, 0);
             long additionalRandom = game.Combat.SpawnCharacter("RN-02", 1, 0);
             var offer = Offer(game, "A19W");
             CollectionAssert.AreEquivalent(new long[] { namedCaster, additionalRandom },
-                offer.SuggestedMaterialInstances,
-                "A800 preview cannot reuse the named RN-01 caster as its extra slot.");
+                offer.SuggestedMaterialInstances);
             StringAssert.Contains("A800", offer.OriginalMaterialsAndCost);
-            Assert.IsFalse(offer.IsReady, "PICK native removal and creation remain unverified.");
-            Assert.IsFalse(game.Fusion.CanCommitRecipe("A19W"));
+            Assert.IsFalse(offer.IsReady, "Other fixed materials and currency are still missing.");
 
             var oneRandom = Create();
             oneRandom.Combat.SpawnCharacter("RN-01", 0, 0);
             var missing = Offer(oneRandom, "A19W");
             Assert.IsTrue(missing.MissingMaterials.Any(x =>
-                x.Contains("PICK용 별도 랜덤 유닛 1기 부족")));
+                x.Contains("PICK 랜덤전용 후보 부족")));
+            Assert.AreEqual(1, missing.SuggestedMaterialInstances.Count);
         }
+
+        [Test]
+        public void UncataloguedYujiroPickRemainsBlockedAndCannotSpendAnything()
+        {
+            var game = Create();
+            Assert.IsFalse(game.Fusion.CanCommitRecipe("A0QG"));
+            var before = game.Combat.MobileUnitSnapshot();
+            Assert.AreEqual(ManualActionState.NotImplemented,
+                game.Fusion.ConfirmFusion("A0QG", new long[0]).State);
+            Assert.AreEqual(before.Count, game.Combat.MobileUnitSnapshot().Count);
+        }
+
     }
 }
