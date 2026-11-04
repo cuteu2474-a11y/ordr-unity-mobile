@@ -83,6 +83,22 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(28, attack.BaseDamagePlus);
             Assert.AreEqual(1, attack.DiceCount);
             Assert.AreEqual(3, attack.DiceSides);
+
+            // h0AJ source object: dice exist, but the base damage and
+            // minimum/maximum have not been extracted. They must remain null.
+            string h0ajShape = diceOnly.Replace("\"baseDamagePlus\":28,", "");
+            var source = OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + h0ajShape + "," + Unmatched + "]}", units)
+                .Find("C-01").Attack1;
+            Assert.IsNull(source.BaseDamagePlus);
+            Assert.IsNull(source.MinimumBaseDamage);
+            Assert.IsNull(source.MaximumBaseDamage);
+            Assert.AreEqual(1, source.DiceCount);
+            Assert.AreEqual(3, source.DiceSides);
+            // A lone count or an impossible die size is still malformed.
+            Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
+                MapHeader + h0ajShape.Replace("\"diceSides\":3,", "") +
+                "," + Unmatched + "]}", units));
             Assert.Throws<FormatException>(() => OriginalMapBaseStatCatalog.FromJson(
                 MapHeader + diceOnly.Replace("\"diceSides\":3", "\"diceSides\":0") +
                 "," + Unmatched + "]}", units));

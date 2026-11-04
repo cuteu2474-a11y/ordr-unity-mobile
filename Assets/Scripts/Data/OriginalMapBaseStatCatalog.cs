@@ -58,10 +58,17 @@ namespace Ordr.Mobile.Data
             // were extracted. Never fabricate missing min/max bounds.
             // Fully observed values must still match the original dice.
             if (anyDiceField &&
-                (!BaseDamagePlus.HasValue || !DiceCount.HasValue || !DiceSides.HasValue ||
-                 DiceSides.Value < 1 ||
+                // Original h0AJ contains only diceCount/diceSides, while its
+                // baseDamagePlus and damage bounds are unknown. Preserve those
+                // partial raw fields without inventing attack power.
+                (DiceCount.HasValue != DiceSides.HasValue ||
+                 (DiceSides.HasValue && DiceSides.Value < 1) ||
+                 (BaseDamagePlus.HasValue &&
+                  (!DiceCount.HasValue || !DiceSides.HasValue)) ||
                  (MinimumBaseDamage.HasValue &&
-                  (MinimumBaseDamage.Value != BaseDamagePlus.Value + DiceCount.Value ||
+                  (!BaseDamagePlus.HasValue || !DiceCount.HasValue ||
+                   !DiceSides.HasValue ||
+                   MinimumBaseDamage.Value != BaseDamagePlus.Value + DiceCount.Value ||
                    MaximumBaseDamage.Value != BaseDamagePlus.Value +
                        (long)DiceCount.Value * DiceSides.Value))))
                 throw new FormatException(id + ": 원본 공격 주사위와 최소·최대 피해량이 불일치합니다.");

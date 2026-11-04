@@ -448,7 +448,11 @@ namespace Ordr.Mobile.Tests
             int enabled = 0, activeEnabled = 0;
             foreach (var row in SourceModelNextThirtySkillCatalog.All)
             {
-                Assert.IsFalse(previous.Contains(row.CatalogId), "Previous batch: " + row.CatalogId);
+                // E-03 was intentionally extended after its initial callback
+                // coverage; no other older-batch unit may overlap this list.
+                if (previous.Contains(row.CatalogId))
+                    Assert.AreEqual("E-03", row.CatalogId,
+                        "Unexpected owner already covered by the first batch: " + row.CatalogId);
                 Assert.AreEqual(actual[row.CatalogId], row.Rawcode);
                 SourceModelNextThirtyUnit matched;
                 Assert.IsTrue(SourceModelNextThirtySkillCatalog.TryGet(row.Rawcode, out matched));
