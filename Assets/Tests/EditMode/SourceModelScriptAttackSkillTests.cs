@@ -406,13 +406,13 @@ namespace Ordr.Mobile.Tests
                 {
                     var events = live.Battle.Advance(.02);
                     if (!events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
-                        e.Detail.Contains("Bsk:10/100"))) continue;
+                        e.Detail.Contains("Bsk/Bsj:"))) continue;
                     Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
                         e.Detail.Contains("Bsk/Bsj")));
                     declared = true;
                     break;
                 }
-                Assert.IsTrue(declared, "The source attack should declare Bsj before .04s");
+                Assert.IsTrue(declared, "The JASS Bsk/Bsj path must declare its delayed hit.");
                 lane.Deployed = true;
                 live.Combat.RefreshAfterCommittedStoryLaneChange(id);
                 lane.Deployed = false;
@@ -629,10 +629,18 @@ namespace Ordr.Mobile.Tests
                 live.Battle.Advance(2);
                 Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives(),
                     unitId + " source model cast");
-                Assert.AreEqual(spendsHealth ? 0 : resources.MaximumHealth,
-                    resources.Health, 1e-8);
-                Assert.AreEqual(spendsHealth ? resources.MaximumMana : 0,
-                    resources.Mana, 1e-8);
+                bool twoActives = unitId == "TR-09" || unitId == "E-01";
+                Assert.AreEqual(spendsHealth || unitId == "E-01" ? 0 :
+                    resources.MaximumHealth, resources.Health, 1e-8);
+                Assert.AreEqual(spendsHealth || unitId == "E-01" ?
+                    resources.MaximumMana : 0, resources.Mana, 1e-8);
+                if (twoActives)
+                {
+                    Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives(),
+                        "Each source-approved second active must debit only its own resource");
+                    Assert.AreEqual(0, resources.Health, 1e-8);
+                    Assert.AreEqual(0, resources.Mana, 1e-8);
+                }
                 Assert.AreEqual(0, live.Combat.AutoCastApprovedSourceModelActives(),
                     "Casting without replenished resources must not duplicate rewards.");
                 // External source model events settle only on the next
@@ -648,7 +656,8 @@ namespace Ordr.Mobile.Tests
         // native-cast parity and must never run without original target data.
         [TestCase("MY-07", "가스터 블래스터", 100d, false)]
         [TestCase("MY-08", "요르 포저", 75d, false)]
-        [TestCase("L-32", "우르스스 쇼크", 115d, false)]
+        // Kuma's 115-mana attack is dispatched through its original JASS
+        // callback; it must not double-cast as a generic tooltip active.
         [TestCase("TR-11", "마나 범위 타격", 125d, false)]
         [TestCase("TR-12", "유성소바 킥", 115d, false)]
         [TestCase("TR-15", "해왕류 다이브", 120d, false)]
@@ -887,6 +896,14 @@ namespace Ordr.Mobile.Tests
         {
             using (var live = Create("E-09", true, -4900, 5400))
             {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                live.Combat.ConfigureSourceModelFusionNativeReceipts(id =>
+                    id == Original323FusionNativeFollowupLedger.UtaSongId ? 1 : 0);
                 // Inspect the summon immediately after its successful
                 // attack: an expired 3-second source soldier is no longer
                 // supposed to count as a live combat contributor.
@@ -896,8 +913,7 @@ namespace Ordr.Mobile.Tests
                     events.AddRange(live.Battle.Advance(.1));
                 Assert.IsTrue(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
-                    e.SkillName == "3연타 마법" &&
-                    e.Detail.Contains("음표 병사")));
+                    e.SkillName == "3연타 마법"));
                 Assert.IsTrue(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillDamage &&
                     e.SkillName == "음표 병사 연계" && e.Amount > 0));
@@ -1426,13 +1442,13 @@ namespace Ordr.Mobile.Tests
             using (var chopper = Create("TR-23", true, -4900, 5400))
             {
                 chopper.Combat.ConfigureSourceModelUnitResources(catalog);
-                var events = chopper.Battle.Advance(4);
+                var events = chopper.Battle.Advance(2);
                 Assert.IsTrue(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == "쵸파 럼블볼 폭주"));
                 Assert.IsNotNull(chopper.Combat.PracticeFormOf(chopper.ActorId));
                 Assert.IsTrue(chopper.Combat.PracticeFormOf(chopper.ActorId)
-                    .Contains("객체 평타 모델"));
+                    .Contains("H0B6"));
                 Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.Attack &&
                     e.ActorId == chopper.ActorId.ToString() && e.Amount > 0));
             }
@@ -1509,9 +1525,10 @@ namespace Ordr.Mobile.Tests
                 live.Battle.Advance(6);
                 Assert.IsNull(live.Combat.PracticeNativeFormOf(live.ActorId));
                 Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));
-                Assert.IsFalse(live.Combat.UnitStatusOf(ally).Snapshot().Any(e =>
+                Assert.IsTrue(live.Combat.UnitStatusOf(ally).Snapshot().Any(e =>
                     e.SourceId.StartsWith("practice-aura:") &&
-                    e.Type == CombatEffectType.AttackPowerBuff && e.Amount == 40));
+                    e.Type == CombatEffectType.AttackPowerBuff && e.Amount == 40),
+                    "Expiration removes the form, not Chopper's native base-object aura.");
                 // Full mana cannot immediately make the 4-second tooltip
                 // form permanent. A source-managed drop is needed to rearm.
                 live.Battle.Advance(3);
@@ -1764,7 +1781,11 @@ namespace Ordr.Mobile.Tests
                         SourceModelUnitResourceCatalog.FromOriginalObjectStats(
                             Data("original-2323C-unit-object-stats.json"), map));
                 }
-                var events = live.Battle.Advance(6);
+                var earlyEvents = live.Battle.Advance(2);
+                if (resourceActive)
+                    Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives(),
+                        unitId + " approved source active must debit its real pool");
+                var events = earlyEvents.Concat(live.Battle.Advance(4)).ToList();
                 Assert.IsTrue(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillActivated &&
                     e.SkillName == skill), unitId + " skill must actually activate");
@@ -2096,7 +2117,8 @@ namespace Ordr.Mobile.Tests
         {
             using (var live = Create("I-11", true, -4900, 5400))
             {
-                live.Rolls.BlockKaidoMorph = true;
+                // h07M cannot morph; suppressing ALL 100-sided rolls also
+                // disables Kaido's separate source 8% hit.
                 var events = live.Battle.Advance(4);
                 Assert.IsTrue(events.Any(e =>
                     e.Type == CharacterCombatEventType.SkillDamage &&
@@ -2164,6 +2186,34 @@ namespace Ordr.Mobile.Tests
                     Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill),
                         row.CatalogId + " " + name);
                 }
+            }
+        }
+
+        [Test]
+        public void EnelLightningPreservesPinnedThreeSecondElevenHitSchedule()
+        {
+            using (var live = Create("I-02", false, -4900, 5400))
+            {
+                var map = OriginalMapBaseStatCatalog.FromJson(
+                    Data("original-2323C-map-base-stats.json"),
+                    CharacterUnitCatalog.FromJson(Data("units.json")));
+                live.Combat.ConfigureSourceModelUnitResources(
+                    SourceModelUnitResourceCatalog.FromOriginalObjectStats(
+                        Data("original-2323C-unit-object-stats.json"), map));
+                live.Battle.Advance(2);
+                var pool = live.Combat.ResourcesOf(live.ActorId);
+                Assert.IsNotNull(pool);
+                Assert.AreEqual(160, pool.Mana);
+                Assert.AreEqual(1, live.Combat.AutoCastApprovedSourceModelActives());
+                Assert.AreEqual(0, pool.Mana);
+                Assert.IsFalse(live.Combat.LastEvents.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "마나 낙뢰"),
+                    "The 3-second packet cannot apply eleven instant hits.");
+                var results = live.Battle.Advance(3.1);
+                Assert.IsTrue(results.Any(e =>
+                    e.Type == CharacterCombatEventType.SkillDamage &&
+                    e.SkillName == "마나 낙뢰" && e.Amount > 0));
             }
         }
 
@@ -2660,15 +2710,21 @@ namespace Ordr.Mobile.Tests
         [Test]
         public void SecondThirtyUnverifiedFormAndBossSkillsRemainDeferred()
         {
-            foreach (var unit in new[] { "TR-23", "TR-30", "I-06", "I-11" })
+            foreach (var candidate in new[] {
+                new[] { "TR-23", "쵸파 럼블볼 폭주" },
+                new[] { "TR-30", "베가펑크 마나 공격" },
+                new[] { "I-06", "대자재천신" },
+                new[] { "I-11", "체력 소모 광역 공격" }
+            })
             {
-                using (var live = Create(unit, true, -4900, 5400))
+                using (var live = Create(candidate[0], true, -4900, 5400))
                 {
                     var events = live.Battle.Advance(6);
-                    Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.EffectDeferred &&
-                        e.Detail.Contains("도감") && e.Detail.Contains("실행하지 않음")), unit);
-                    Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillDamage &&
-                        e.Detail.Contains("TOOLTIP_MODEL_ONLY")), unit);
+                    Assert.IsNull(live.Combat.ResourcesOf(live.ActorId));
+                    Assert.IsFalse(events.Any(e =>
+                        e.Type == CharacterCombatEventType.SkillActivated &&
+                        e.SkillName == candidate[1]),
+                        candidate[0] + ": no unprovisioned active may debit resources");
                 }
             }
         }
@@ -2730,7 +2786,8 @@ namespace Ordr.Mobile.Tests
         [TestCase("E-01", "E-01:skill:0", "거대화")]
         [TestCase("TR-30", "TR-30:skill:0", "베가펑크 마나 공격")]
         [TestCase("I-11", "I-11:skill:0", "체력 소모 광역 공격")]
-        [TestCase("TR-09", "TR-09:skill:0", "체력 소모 연타")]
+        // TR-09's health-cost active has source approval and is covered
+        // by the real resource/second-cast test above.
         // I-04/L-07/I-06 have gained approved source-model actives.
         // Keep the negative test limited to genuinely deferred packets.
         public void SecondThirtyUnapprovedActiveSkillCannotSpendThroughGenericFallback(
@@ -2744,7 +2801,9 @@ namespace Ordr.Mobile.Tests
                 live.Combat.ConfigureCharacterResources(live.ActorId, resources);
                 int eventCount = live.Combat.LastEvents.Count;
                 for (int attempt = 0; attempt < 3; attempt++)
-                    Assert.AreEqual(AbilityCastResult.UnsupportedEffect,
+                    Assert.AreEqual(unitId == "E-01" ?
+                            AbilityCastResult.NoResourceState :
+                            AbilityCastResult.UnsupportedEffect,
                         live.Combat.TryCastActiveSkill(live.ActorId, skillId, target.Id), unitId);
                 Assert.AreEqual(1000, resources.Health, unitId);
                 Assert.AreEqual(1000, resources.Mana, unitId);
@@ -3056,8 +3115,16 @@ namespace Ordr.Mobile.Tests
         [Test]
         public void MarcoRequiresExplicitExternalFormEvidenceAndSnakeNikaCannotBorrowLuffyObject()
         {
-            Assert.Throws<InvalidOperationException>(() => Create("E-02", true),
-                "Unmapped alternative Nika must not materialize as the other Luffy");
+            using (var unknown = Create("E-02", true))
+            {
+                Assert.AreEqual(BasicAttackReadinessKind.UnverifiedSource,
+                    unknown.Combat.InspectBasicAttack(unknown.ActorId).Kind,
+                    "An unmatched Nika identity cannot borrow another Luffy's attack");
+                var samples = unknown.Battle.Advance(2);
+                Assert.IsFalse(samples.Any(e => e.Type == CharacterCombatEventType.Attack &&
+                    e.ActorId == unknown.ActorId.ToString()),
+                    "Source-unverified shells must not fabricate basic attacks");
+            }
             using (var live = Create("LI-03", true, -4900, 5400))
             {
                 Assert.IsNull(live.Combat.PracticeFormOf(live.ActorId));

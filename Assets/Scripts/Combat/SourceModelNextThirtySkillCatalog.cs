@@ -355,6 +355,26 @@ namespace Ordr.Mobile.Combat
 
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
+            // Enel's separately documented eleven-hit mana lightning packet
+            // carries a three-second duration at the skill level. Preserve
+            // that duration and reject any divergent imported source shape.
+            if (skill != null && skill.Id == "I-02:skill:0")
+            {
+                if (skill.Name != "마나 낙뢰" ||
+                    skill.Trigger != "activeMana" || skill.Target != "area" ||
+                    skill.Radius != 425 || skill.Number("manaCost") != 160 ||
+                    skill.Number("durationSeconds") != 3 ||
+                    skill.OriginalFields.Count != 7 ||
+                    skill.Components.Count != 1 ||
+                    skill.Components[0].Type != "magical" ||
+                    skill.Components[0].Number("amountPerHit") != 300000 ||
+                    skill.Components[0].Number("hits") != 11)
+                    return false;
+                var lightningRange = skill.Components[0].Get("multiplierRange") as List<object>;
+                return lightningRange != null && lightningRange.Count == 2 &&
+                    Equals(lightningRange[0], 1d) && Equals(lightningRange[1], 2d) &&
+                    CanModelComponents(skill);
+            }
             if (SourceModelTwentyFifthSkillCatalog.IsSpecial(skill))
                 return SourceModelTwentyFifthSkillCatalog.CanModelExact(skill) &&
                     (skill.Trigger == "activeMana" ||

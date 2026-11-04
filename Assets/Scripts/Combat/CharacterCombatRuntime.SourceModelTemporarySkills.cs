@@ -33,14 +33,18 @@ namespace Ordr.Mobile.Combat
                 sourceModelRules.SourceObjectAttack(sourceRawcode) != null;
             // Additional verified summons can use the same lifecycle. Never
             // advertise independent combat without a mapped source attack.
-            bool autonomous = (nativeAutonomous || modeledCombat) &&
-                sourceModelRules != null &&
-                sourceModelRules.SourceObjectAttack(sourceRawcode) != null;
+            // For Koby's explicitly modeled clone, timed independent hits
+            // are already scheduled by its source skill handler. A missing
+            // rawcode cannot register an ordinary source-object attacker,
+            // but must not make the modeled clone appear noncombatant.
+            bool autonomous = modeledCombat ||
+                (nativeAutonomous && sourceModelRules != null &&
+                 sourceModelRules.SourceObjectAttack(sourceRawcode) != null);
             var summon = new SourceModelSummonState(++sourceNextSummonId,
                 owner.Id, skillName, name, effectExecutor.Time + lifetimeSeconds,
                 IsStoryDeployed(owner.Id), autonomous, sourceRawcode,
                 unresolvedLootAbility, spawnX, spawnY);
-            if (autonomous)
+            if (autonomous && sourceRawcode != null)
                 RegisterSourceIndependentAttack(SummonAttackKey(summon.Id),
                     sourceRawcode, summon.StoryLane, spawnX, spawnY, summon.ExpiresAt,
                     owner.Profile);

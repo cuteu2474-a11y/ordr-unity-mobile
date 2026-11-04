@@ -378,6 +378,8 @@ namespace Ordr.Mobile.Combat
                 ApplySourceModelTwentiethSkill(caster, primary, accepted, targets);
             else if (accepted.Id == "E-07:skill:0")
                 SourceModelAceDelayedUltimate(caster, primary, accepted, targets);
+            else if (accepted.Id == "I-02:skill:0")
+                ScheduleSourceModelLightningVolley(caster, accepted, targets);
             else
                 ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);
             RemoveDefeatedEnemies();
@@ -407,6 +409,39 @@ namespace Ordr.Mobile.Combat
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.EffectDeferred, actorId, enemyId,
                 "다음 30명 스킬", "MODEL_ONLY 보류: " + reason, 0));
+        }
+
+        private void ScheduleSourceModelLightningVolley(
+            CharacterInstance actor, ImportedCombatSkill skill,
+            IReadOnlyList<SpatialCombatEnemy> targets)
+        {
+            // MODEL_ONLY: keep the pinned eleven-hit / three-second packet,
+            // without inventing an instantaneous eleven-hit nuke. Hits
+            // remain subject to live enemy, lane, armor and death checks.
+            var component = skill.Components[0];
+            int hits = (int)component.Number("hits").Value;
+            double duration = skill.Number("durationSeconds").Value;
+            bool story = IsStoryDeployed(actor.Id);
+            long laneRevision = SourceModelLaneRevision(actor.Id);
+            foreach (var target in targets)
+            {
+                var victim = target;
+                for (int hit = 1; hit <= hits; hit++)
+                    effectExecutor.SchedulePracticeSourceAttack(
+                        InstanceKey(actor.Id), victim.Id,
+                        duration * hit / hits, () => {
+                            SpatialCombatEnemy current;
+                            if (!CanFinishSourceModelDelayedAttack(
+                                    actor.Id, story, laneRevision) ||
+                                !enemies.TryGetValue(victim.Id, out current) ||
+                                !Object.ReferenceEquals(current, victim)) return;
+                            double scale = Ordr323MapDamageMath.ScriptDamageBeforeDefense(
+                                1, 1, 2,
+                                sourceModelRules.NextScriptRoll(1000000) / 1000000.0);
+                            ApplySourceModelSeventhTimedHit(actor, victim,
+                                skill.Name, 300000 * scale, "magical");
+                        });
+            }
         }
 
         private void ApplySourceModelNextThirtySkill(CharacterInstance actor,

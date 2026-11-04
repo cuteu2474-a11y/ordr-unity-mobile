@@ -1159,7 +1159,7 @@ namespace Ordr.Mobile.Tests
                 Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
                 Assert.AreEqual(13, owner.ExecutableCommonFusionCount);
                 Assert.AreEqual(33, owner.ExecutableSpecialFusionCount);
-                Assert.AreEqual(41, owner.ExecutableRareFusionCount);
+                Assert.AreEqual(42, owner.ExecutableRareFusionCount);
                 Assert.AreEqual(34, owner.ExecutableLegendaryFusionCount);
                 Assert.AreEqual(19, owner.ExecutableHiddenFusionCount);
                 Assert.AreEqual(1, owner.ExecutableEternalFusionCount);
