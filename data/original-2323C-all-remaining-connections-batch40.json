@@ -1,0 +1,2094 @@
+{
+  "format": "ordr-batch40-all-remaining-source-route-reconciliation-v1",
+  "gameVersion": "ORDR S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "baseCommit": "c2ba47e0c1a393b68ed6dd5173f274702d674a07",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceRegistry": "data/original-jass-fusion-registry.json",
+  "sourceMap": "data/original-2323C-map-base-stats.json",
+  "priorBatch": "data/original-2323C-outcome-only-fusion-batch39.json",
+  "summary": {
+    "totalCwr": 266,
+    "executableBefore": 210,
+    "newlyExecutableMobileOutcomes": 4,
+    "executableAfter": 214,
+    "remainingNonExecutableCwr": 52,
+    "alreadyConnectedNonCraftAcquisitions": 9,
+    "sourcePresentationWithoutCraft": 1,
+    "unknownNativeRandomAcquisitions": 14,
+    "developmentOnly": 1,
+    "otherCraftConditionsOrMaterialBlocked": 27,
+    "allRemainingReviewed": 56,
+    "originalNativePostCallbacksFullyVerified": 0
+  },
+  "laneCounts": {
+    "newly-executable-mobile-outcome": 4,
+    "source-presentation-not-a-craft": 1,
+    "blocked-source-only-material": 3,
+    "already-connected-noncraft-wisp-outcome": 1,
+    "blocked-transformation-counter": 5,
+    "already-connected-noncraft-wisp-pool": 8,
+    "blocked-immortal-counter": 6,
+    "blocked-green-blood-condition": 4,
+    "blocked-known-native-post-effect": 6,
+    "blocked-item-atomic-payment": 2,
+    "blocked-trait-point-payment": 1,
+    "blocked-native-rdun-acquisition": 14,
+    "development-only-not-retail": 1
+  },
+  "scope": [
+    "CWR 56개를 통째로 다뤘지만 CWR는 제작+표시+획득 분기가 혼합된 등록 목록입니다. 소모 없는 CWR를 공짜 제작으로 등록하지 않습니다.",
+    "4개 신규 제작은 원본 실물 재료·원본 비용/결과를 기존 원자 교환으로 연결한 모바일 결과 모델이며, 새 AOsf의 네이티브 후속효과는 원본 동등성을 선언하지 않습니다.",
+    "A1A6 RMAX는 출처가 승인한 실제 시작 라운드 증거가 현재 세션에 있을 때만 통과합니다. 연습/에디터/UI 라운드 표시는 근거가 아닙니다.",
+    "9개 기연결 위습 획득 분기는 독립된 경로이며 214개 실제 제작 허가에 중복 합산하지 않습니다.",
+    "미검증 ITEM/SKPT/CHCT/IFCT/GREN 상태를 공짜 통과시키지 않고 보유 원자/상태 장부 구현 후 연결합니다.",
+    "NUnit 테스트 코드는 추가되었지만 Python/Unity/Android/APK 테스트 실행은 성현 님 별도 요청 전까지 하지 않았습니다."
+  ],
+  "remaining56": [
+    {
+      "abilityRawcode": "A19Z",
+      "resultRawcode": "h01F",
+      "resultCatalogId": "S-14",
+      "resultName": "스모커",
+      "grade": "특별함",
+      "lane": "newly-executable-mobile-outcome",
+      "reason": "실물 UNIT 정확 소비→원본 결과 1기 생성. AOsf 원본 네이티브 후속동작은 미검증",
+      "followup": "원본 AOsf 원어빌리티 콜백·별도 효과 비교",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h009",
+          "count": 1,
+          "catalogId": "C-08"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00E",
+          "count": 1,
+          "catalogId": "U-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h006",
+          "count": 1,
+          "catalogId": "C-09"
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h01Q",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h01Y",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h01S",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02F",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A1A1",
+      "resultRawcode": "h012",
+      "resultCatalogId": "S-15",
+      "resultName": "스쿼드",
+      "grade": "특별함",
+      "lane": "newly-executable-mobile-outcome",
+      "reason": "실물 UNIT 정확 소비→원본 결과 1기 생성. AOsf 원본 네이티브 후속동작은 미검증",
+      "followup": "원본 AOsf 원어빌리티 콜백·별도 효과 비교",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00G",
+          "count": 1,
+          "catalogId": "U-08"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00L",
+          "count": 1,
+          "catalogId": "U-11"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h001",
+          "count": 1,
+          "catalogId": "C-03"
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h021",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02B",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02E",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A1A0",
+      "resultRawcode": "h01N",
+      "resultCatalogId": "R-18",
+      "resultName": "브룩 음악가",
+      "grade": "희귀함",
+      "lane": "newly-executable-mobile-outcome",
+      "reason": "실물 UNIT 정확 소비→원본 결과 1기 생성. AOsf 원본 네이티브 후속동작은 미검증",
+      "followup": "원본 AOsf 원어빌리티 콜백·별도 효과 비교",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h00D",
+          "count": 1,
+          "catalogId": "U-03"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00B",
+          "count": 1,
+          "catalogId": "S-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00R",
+          "count": 1,
+          "catalogId": "S-06"
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03F",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h0CM",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02P",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h02Q",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "UU01",
+      "resultRawcode": "h05X",
+      "resultCatalogId": "R-43",
+      "resultName": "실버즈 레일리",
+      "grade": "희귀함",
+      "lane": "source-presentation-not-a-craft",
+      "reason": "UPUN 표시만 있고 UNIT·재화 재료가 없는 레일리 표기; 획득 이벤트 신원 미확인",
+      "followup": "원본 보상/획득 트리거 확인",
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h03A",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h07L",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h047",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08S",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A02Q",
+      "resultRawcode": "h087",
+      "resultCatalogId": "L-35",
+      "resultName": "토키",
+      "grade": "전설",
+      "lane": "blocked-source-only-material",
+      "reason": "h05Y 고대의 배 R-44는 W3X 비전투 지원 객체 및 위키 확장 식별됨. 검증된 게임 내 획득·보유/원자 소비 경로가 없음",
+      "followup": "고대의 배의 원본 획득 이벤트·인스턴스 장부 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01R",
+          "count": 1,
+          "catalogId": "R-39"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05Y",
+          "count": 1,
+          "catalogId": "R-44 (source-only support)"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02F",
+          "count": 1,
+          "catalogId": "R-33"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0BD",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h08R",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "YY26",
+      "resultRawcode": "h060",
+      "resultCatalogId": "PS-01",
+      "resultName": "해적선",
+      "grade": "해적선",
+      "lane": "already-connected-noncraft-wisp-outcome",
+      "reason": "원본 랜덤 위습 24/10000 해적선 추첨과 실물 PS-01 생성은 기존 SourceCommonWispWorld에서 처리",
+      "followup": "원본 원위습 추첨 발생 시 경로 확인",
+      "conditions": [
+        {
+          "kind": "UPUN",
+          "rawcode": "h03P",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03L",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03R",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03X",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03U",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h03Q",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A0K2",
+      "resultRawcode": "h05S",
+      "resultCatalogId": "T-01",
+      "resultName": "도플라밍고",
+      "grade": "변화",
+      "lane": "blocked-transformation-counter",
+      "reason": "CHCT 선택/변화 횟수 상태 및 소모·되돌림 원본 근거 미연결",
+      "followup": "원본 변화 횟수 공통 장부·소비 후 효과 구현",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01L",
+          "count": 1,
+          "catalogId": "R-04"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09E",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05I",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A0K3",
+      "resultRawcode": "h07N",
+      "resultCatalogId": "T-03",
+      "resultName": "베이비 5",
+      "grade": "변화",
+      "lane": "blocked-transformation-counter",
+      "reason": "CHCT 선택/변화 횟수 상태 및 소모·되돌림 원본 근거 미연결",
+      "followup": "원본 변화 횟수 공통 장부·소비 후 효과 구현",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02M",
+          "count": 1,
+          "catalogId": "R-16"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H09E",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H08Y",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A0K4",
+      "resultRawcode": "h05W",
+      "resultCatalogId": "T-02",
+      "resultName": "비비",
+      "grade": "변화",
+      "lane": "blocked-transformation-counter",
+      "reason": "CHCT 선택/변화 횟수 상태 및 소모·되돌림 원본 근거 미연결",
+      "followup": "원본 변화 횟수 공통 장부·소비 후 효과 구현",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1,
+          "catalogId": "R-19"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h057",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h05F",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A0K6",
+      "resultRawcode": "h0CK",
+      "resultCatalogId": "T-04",
+      "resultName": "카쿠",
+      "grade": "변화",
+      "lane": "blocked-transformation-counter",
+      "reason": "CHCT 선택/변화 횟수 상태 및 소모·되돌림 원본 근거 미연결",
+      "followup": "원본 변화 횟수 공통 장부·소비 후 효과 구현",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h023",
+          "count": 1,
+          "catalogId": "R-36"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A0K7",
+      "resultRawcode": "h07J",
+      "resultCatalogId": "T-05",
+      "resultName": "캐럿",
+      "grade": "변화",
+      "lane": "blocked-transformation-counter",
+      "reason": "CHCT 선택/변화 횟수 상태 및 소모·되돌림 원본 근거 미연결",
+      "followup": "원본 변화 횟수 공통 장부·소비 후 효과 구현",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h07L",
+          "count": 1,
+          "catalogId": "H-19"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "CHCT",
+          "rawcode": "CHCT",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SP01",
+      "resultRawcode": "h05H",
+      "resultCatalogId": "X-01",
+      "resultName": "모건",
+      "grade": "특수함",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님",
+      "followup": "위습 보상과 CWR 표시 연동 완료 여부 실기 확인",
+      "conditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SP02",
+      "resultRawcode": "h08N",
+      "resultCatalogId": "X-02",
+      "resultName": "베티",
+      "grade": "특수함",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님",
+      "followup": "위습 보상과 CWR 표시 연동 완료 여부 실기 확인",
+      "conditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SP03",
+      "resultRawcode": "h05Q",
+      "resultCatalogId": "X-03",
+      "resultName": "블고리",
+      "grade": "특수함",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님",
+      "followup": "위습 보상과 CWR 표시 연동 완료 여부 실기 확인",
+      "conditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SP04",
+      "resultRawcode": "h05O",
+      "resultCatalogId": "X-04",
+      "resultName": "아이스버그",
+      "grade": "특수함",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님",
+      "followup": "위습 보상과 CWR 표시 연동 완료 여부 실기 확인",
+      "conditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SP05",
+      "resultRawcode": "h05P",
+      "resultCatalogId": "X-05",
+      "resultName": "오타마",
+      "grade": "특수함",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님",
+      "followup": "위습 보상과 CWR 표시 연동 완료 여부 실기 확인",
+      "conditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": false
+    },
+    {
+      "abilityRawcode": "SP06",
+      "resultRawcode": "h05R",
+      "resultCatalogId": "X-06",
+      "resultName": "페루",
+      "grade": "특수함",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님",
+      "followup": "위습 보상과 CWR 표시 연동 완료 여부 실기 확인",
+      "conditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SP07",
+      "resultRawcode": "h09T",
+      "resultCatalogId": "X-07",
+      "resultName": "폭시",
+      "grade": "특수함",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님",
+      "followup": "위습 보상과 CWR 표시 연동 완료 여부 실기 확인",
+      "conditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SP08",
+      "resultRawcode": "h0BG",
+      "resultCatalogId": "X-08",
+      "resultName": "가이몬",
+      "grade": "특수함",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님",
+      "followup": "위습 보상과 CWR 표시 연동 완료 여부 실기 확인",
+      "conditions": [
+        {
+          "kind": "SPEC",
+          "rawcode": "A801",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IF01",
+      "resultRawcode": "h03V",
+      "resultCatalogId": "D-02",
+      "resultName": "코알라",
+      "grade": "왜곡됨",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결",
+      "followup": "원본 불멸 카운터·거래 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03G",
+          "count": 1,
+          "catalogId": "L-28"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01O",
+          "count": 1,
+          "catalogId": "R-19"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00O",
+          "count": 1,
+          "catalogId": "U-01"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IF02",
+      "resultRawcode": "h048",
+      "resultCatalogId": "D-04",
+      "resultName": "페로나",
+      "grade": "왜곡됨",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결",
+      "followup": "원본 불멸 카운터·거래 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02N",
+          "count": 1,
+          "catalogId": "L-12"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1,
+          "catalogId": "R-11"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h010",
+          "count": 1,
+          "catalogId": "S-17"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00N",
+          "count": 1,
+          "catalogId": "U-07"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00J",
+          "count": 1,
+          "catalogId": "U-10"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h058",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IF03",
+      "resultRawcode": "h0CI",
+      "resultCatalogId": "D-03",
+      "resultName": "퀸",
+      "grade": "왜곡됨",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결",
+      "followup": "원본 불멸 카운터·거래 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AH",
+          "count": 1,
+          "catalogId": "L-34"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02I",
+          "count": 1,
+          "catalogId": "R-21"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00L",
+          "count": 1,
+          "catalogId": "U-11"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IF04",
+      "resultRawcode": "h04U",
+      "resultCatalogId": "D-01",
+      "resultName": "블랙마리아",
+      "grade": "왜곡됨",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결",
+      "followup": "원본 불멸 카운터·거래 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02X",
+          "count": 1,
+          "catalogId": "L-15"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1,
+          "catalogId": "R-18"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00S",
+          "count": 1,
+          "catalogId": "S-04"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IF05",
+      "resultRawcode": "h09V",
+      "resultCatalogId": "D-06",
+      "resultName": "바제스",
+      "grade": "왜곡됨",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결",
+      "followup": "원본 불멸 카운터·거래 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03M",
+          "count": 1,
+          "catalogId": "H-12"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01V",
+          "count": 1,
+          "catalogId": "R-13"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00A",
+          "count": 1,
+          "catalogId": "U-13"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00F",
+          "count": 1,
+          "catalogId": "U-12"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H092",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IF06",
+      "resultRawcode": "h05V",
+      "resultCatalogId": "D-05",
+      "resultName": "포트거스.D.에이스",
+      "grade": "왜곡됨",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결",
+      "followup": "원본 불멸 카운터·거래 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02O",
+          "count": 1,
+          "catalogId": "L-24"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01Z",
+          "count": 1,
+          "catalogId": "R-09"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h012",
+          "count": 1,
+          "catalogId": "S-15"
+        },
+        {
+          "kind": "IFCT",
+          "rawcode": "IFCT",
+          "count": 3,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "h059",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SPH1",
+      "resultRawcode": "h09Y",
+      "resultCatalogId": "SR-01",
+      "resultName": "S-스네이크",
+      "grade": "세라핌",
+      "lane": "blocked-green-blood-condition",
+      "reason": "GREN 그린블러드 상태·비용·원본 제작 트리거 미연결",
+      "followup": "그린블러드 상태 검증 및 세라핌 원자 획득 연계",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h032",
+          "count": 1,
+          "catalogId": "L-36"
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SPH2",
+      "resultRawcode": "h0A3",
+      "resultCatalogId": "SR-02",
+      "resultName": "S-호크",
+      "grade": "세라핌",
+      "lane": "blocked-green-blood-condition",
+      "reason": "GREN 그린블러드 상태·비용·원본 제작 트리거 미연결",
+      "followup": "그린블러드 상태 검증 및 세라핌 원자 획득 연계",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h043",
+          "count": 1,
+          "catalogId": "H-01"
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SPH3",
+      "resultRawcode": "h0A0",
+      "resultCatalogId": "SR-03",
+      "resultName": "S-샤크",
+      "grade": "세라핌",
+      "lane": "blocked-green-blood-condition",
+      "reason": "GREN 그린블러드 상태·비용·원본 제작 트리거 미연결",
+      "followup": "그린블러드 상태 검증 및 세라핌 원자 획득 연계",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03G",
+          "count": 1,
+          "catalogId": "L-28"
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "SPH4",
+      "resultRawcode": "h0A1",
+      "resultCatalogId": "SR-04",
+      "resultName": "S-베어",
+      "grade": "세라핌",
+      "lane": "blocked-green-blood-condition",
+      "reason": "GREN 그린블러드 상태·비용·원본 제작 트리거 미연결",
+      "followup": "그린블러드 상태 검증 및 세라핌 원자 획득 연계",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h030",
+          "count": 1,
+          "catalogId": "L-32"
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A007",
+      "resultRawcode": "h05I",
+      "resultCatalogId": "LI-02",
+      "resultName": "레베카",
+      "grade": "제한됨",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 Bvg: 지속 보조 유닛 생성",
+      "followup": "원본 추가 효과를 원자 트랜잭션/롤백에 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03T",
+          "count": 1,
+          "catalogId": "H-03"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h037",
+          "count": 1,
+          "catalogId": "L-19"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05S",
+          "count": 1,
+          "catalogId": "T-01"
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000,
+          "catalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05I",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05I",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": {
+        "ability": "A007",
+        "reason": "Bvg creates a persistent helper unit"
+      },
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A011",
+      "resultRawcode": "h08O",
+      "resultCatalogId": "LI-03",
+      "resultName": "마르코",
+      "grade": "제한됨",
+      "lane": "blocked-item-atomic-payment",
+      "reason": "원본 아이템 비용/재고 실물 제거·지급 롤백 미연결",
+      "followup": "원본 AI00/AI01/AI02 아이템 로스터·원자 소비/추가 지급 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02T",
+          "count": 1,
+          "catalogId": "L-11"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03K",
+          "count": 1,
+          "catalogId": "L-29"
+        },
+        {
+          "kind": "ITEM",
+          "rawcode": "AI02",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000,
+          "catalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h08O",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h08O",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A18P",
+      "resultRawcode": "h08Q",
+      "resultCatalogId": "LI-06",
+      "resultName": "알비다",
+      "grade": "제한됨",
+      "lane": "blocked-trait-point-payment",
+      "reason": "SKPT 특성 포인트 상태/감액 및 공유 거래 롤백 미연결",
+      "followup": "원본 특성 포인트 장부/잔액 검증·원자 감액",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02X",
+          "count": 1,
+          "catalogId": "L-15"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02H",
+          "count": 1,
+          "catalogId": "R-38"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1,
+          "catalogId": "R-11"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1,
+          "catalogId": "S-11"
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000,
+          "catalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        },
+        {
+          "kind": "SKPT",
+          "rawcode": "SKPT",
+          "count": 4,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h08Q",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h08Q",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A10A",
+      "resultRawcode": "h0AI",
+      "resultCatalogId": "LI-10",
+      "resultName": "킹",
+      "grade": "제한됨",
+      "lane": "blocked-source-only-material",
+      "reason": "h05Y 고대의 배 R-44는 W3X 비전투 지원 객체 및 위키 확장 식별됨. 검증된 게임 내 획득·보유/원자 소비 경로가 없음",
+      "followup": "고대의 배의 원본 획득 이벤트·인스턴스 장부 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AH",
+          "count": 1,
+          "catalogId": "L-34"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02U",
+          "count": 1,
+          "catalogId": "L-01"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05Y",
+          "count": 1,
+          "catalogId": "R-44 (source-only support)"
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000,
+          "catalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h0AI",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0AI",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "A1A6",
+      "resultRawcode": "h05G",
+      "resultCatalogId": "LI-01",
+      "resultName": "레드필드",
+      "grade": "제한됨",
+      "lane": "newly-executable-mobile-outcome",
+      "reason": "검증된 40라운드 이하 원본 라운드 시작 증거 필요. GOLD 5000/WOOD 5/RMAX 40 원자 검사",
+      "followup": "실제 소스 승인 라운드에서 제작·비용 회귀 검증",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03K",
+          "count": 1,
+          "catalogId": "L-29"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02Z",
+          "count": 1,
+          "catalogId": "L-13"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03O",
+          "count": 1,
+          "catalogId": "H-11"
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000,
+          "catalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        },
+        {
+          "kind": "RMAX",
+          "rawcode": "h05G",
+          "count": 40,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h05G",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h05G",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "TR30",
+      "resultRawcode": "H0AA",
+      "resultCatalogId": "TR-30",
+      "resultName": "베가펑크",
+      "grade": "초월함",
+      "lane": "blocked-source-only-material",
+      "reason": "h0AN W3X 객체 이름 '세라핌 등급 유닛', 카탈로그 실물 재료·획득 경로 미확인",
+      "followup": "원본 세라핌 획득/선택 객체·유닛 보유 매핑 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h0AN",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h055",
+          "count": 1,
+          "catalogId": "H-13"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01R",
+          "count": 1,
+          "catalogId": "R-39"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04S",
+          "count": 1,
+          "catalogId": "KM-01"
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "H0AA",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "H0AA",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IM01",
+      "resultRawcode": "h04J",
+      "resultCatalogId": "I-04",
+      "resultName": "로져",
+      "grade": "불멸의",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B8Y: 능력이 부착된 지속 보조 유닛 생성",
+      "followup": "원본 추가 효과를 원자 트랜잭션/롤백에 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02O",
+          "count": 1,
+          "catalogId": "L-24"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h036",
+          "count": 1,
+          "catalogId": "L-18"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02V",
+          "count": 1,
+          "catalogId": "L-20"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04J",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04J",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": {
+        "ability": "IM01",
+        "reason": "B8Y creates a persistent helper unit with abilities"
+      },
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IM04",
+      "resultRawcode": "h04D",
+      "resultCatalogId": "I-02",
+      "resultName": "드래곤",
+      "grade": "불멸의",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B99: 직선 폭발 +20% 영구 상태",
+      "followup": "원본 추가 효과를 원자 트랜잭션/롤백에 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02W",
+          "count": 1,
+          "catalogId": "L-04"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h030",
+          "count": 1,
+          "catalogId": "L-32"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h09Z",
+          "count": 1,
+          "catalogId": "L-03"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 10,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h04D",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h04D",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": {
+        "ability": "IM04",
+        "reason": "B99 grants +20% line explosion state"
+      },
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "ET02",
+      "resultRawcode": "H0BK",
+      "resultCatalogId": "E-01",
+      "resultName": "니카(루피)",
+      "grade": "영원한",
+      "lane": "blocked-item-atomic-payment",
+      "reason": "원본 아이템 비용/재고 실물 제거·지급 롤백 미연결",
+      "followup": "원본 AI00/AI01/AI02 아이템 로스터·원자 소비/추가 지급 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "H08T",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03C",
+          "count": 1,
+          "catalogId": "L-08"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02D",
+          "count": 1,
+          "catalogId": "R-37"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h00K",
+          "count": 1,
+          "catalogId": "U-05"
+        },
+        {
+          "kind": "ITEM",
+          "rawcode": "AI01",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "ET04",
+      "resultRawcode": "h0CJ",
+      "resultCatalogId": "E-03",
+      "resultName": "류마",
+      "grade": "영원한",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B7z: 플레이어 1회 제한·플래그·조건부 능력",
+      "followup": "원본 추가 효과를 원자 트랜잭션/롤백에 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03C",
+          "count": 1,
+          "catalogId": "L-08"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03J",
+          "count": 1,
+          "catalogId": "H-14"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h044",
+          "count": 1,
+          "catalogId": "H-05"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h0CJ",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h0CJ",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": {
+        "ability": "ET04",
+        "reason": "B7z enforces one-per-player, sets flags and conditional ability"
+      },
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "ET07",
+      "resultRawcode": "h067",
+      "resultCatalogId": "E-09",
+      "resultName": "우타",
+      "grade": "영원한",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B7W: 추가 아이템·플레이어 상태·타이머",
+      "followup": "원본 추가 효과를 원자 트랜잭션/롤백에 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h035",
+          "count": 1,
+          "catalogId": "L-17"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02N",
+          "count": 1,
+          "catalogId": "L-12"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03O",
+          "count": 1,
+          "catalogId": "H-11"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h05X",
+          "count": 1,
+          "catalogId": "R-43"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h01N",
+          "count": 1,
+          "catalogId": "R-18"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h003",
+          "count": 1,
+          "catalogId": "C-01"
+        },
+        {
+          "kind": "ITEM",
+          "rawcode": "AI00",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h067",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": {
+        "ability": "ET07",
+        "reason": "B7W adds an item, changes player-state and starts a timer"
+      },
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "ET12",
+      "resultRawcode": "h06A",
+      "resultCatalogId": "E-11",
+      "resultName": "테조로",
+      "grade": "영원한",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B8I/B8G: 제작 후 상태 갱신",
+      "followup": "원본 추가 효과를 원자 트랜잭션/롤백에 연결",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h03F",
+          "count": 1,
+          "catalogId": "L-30"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h055",
+          "count": 1,
+          "catalogId": "H-13"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h03N",
+          "count": 1,
+          "catalogId": "H-04"
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h06A",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h06A",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": {
+        "ability": "ET12",
+        "reason": "B8I invokes extra B8G state handler"
+      },
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS01",
+      "resultRawcode": "h06U",
+      "resultCatalogId": "RN-01",
+      "resultName": "K",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS02",
+      "resultRawcode": "h06V",
+      "resultCatalogId": "RN-02",
+      "resultName": "나루토",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS03",
+      "resultRawcode": "h065",
+      "resultCatalogId": "RN-03",
+      "resultName": "메구밍",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS04",
+      "resultRawcode": "h06X",
+      "resultCatalogId": "RN-04",
+      "resultName": "센토 이스즈",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS05",
+      "resultRawcode": "h073",
+      "resultCatalogId": "RN-05",
+      "resultName": "야가미 라이토",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS06",
+      "resultRawcode": "h06Z",
+      "resultCatalogId": "RN-06",
+      "resultName": "엘리자베스",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS07",
+      "resultRawcode": "h09K",
+      "resultCatalogId": "RN-07",
+      "resultName": "옌",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS08",
+      "resultRawcode": "h06W",
+      "resultCatalogId": "RN-08",
+      "resultName": "요츠바",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS09",
+      "resultRawcode": "h070",
+      "resultCatalogId": "RN-09",
+      "resultName": "이사야마 요미",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS10",
+      "resultRawcode": "h09L",
+      "resultCatalogId": "RN-10",
+      "resultName": "이치의 율자",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS11",
+      "resultRawcode": "h06Y",
+      "resultCatalogId": "RN-11",
+      "resultName": "토우마",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS12",
+      "resultRawcode": "h071",
+      "resultCatalogId": "RN-12",
+      "resultName": "이치고",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS13",
+      "resultRawcode": "h06T",
+      "resultCatalogId": "RN-13",
+      "resultName": "페이몬",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "IS14",
+      "resultRawcode": "h072",
+      "resultCatalogId": "RN-14",
+      "resultName": "하네카와 츠바사",
+      "grade": "랜덤",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결",
+      "followup": "A800 원본 획득/롤러·실제 로스터 지급 공통 엔진 연결",
+      "conditions": [
+        {
+          "kind": "RDUN",
+          "rawcode": "A800",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    },
+    {
+      "abilityRawcode": "TEST",
+      "resultRawcode": "h0BC",
+      "resultCatalogId": "MY-12",
+      "resultName": "타츠마키",
+      "grade": "신비함",
+      "lane": "development-only-not-retail",
+      "reason": "TEST 디버그 등록식: cnob/brac 아이템과 GOLD 10000. 원본 일반 제작 메뉴에 노출/무료 취득 금지",
+      "followup": "개발 전용 진입 조건 또는 제외 규칙 확정",
+      "conditions": [
+        {
+          "kind": "ITEM",
+          "rawcode": "cnob",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "ITEM",
+          "rawcode": "brac",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 10000,
+          "catalogId": null
+        }
+      ],
+      "knownOriginalSideEffect": null,
+      "sourceAttackPresent": true
+    }
+  ]
+}

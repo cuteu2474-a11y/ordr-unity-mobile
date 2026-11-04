@@ -275,7 +275,10 @@ namespace Ordr.Mobile.Mobile
 
                 // Unapproved recipes must never look ready just because all
                 // listed units happen to be owned.
-                missing.Add("원본 제작 거래 미연결: 추가 조건/생성 효과 검수 필요");
+                string sourceRoute = ExplainNonCraftSourceRoute(recipe.AbilityRawcode);
+                missing.Add(sourceRoute == null
+                    ? "원본 제작 거래 미연결: 추가 조건/생성 효과 검수 필요"
+                    : "일반 조합 버튼 대상 아님: " + sourceRoute);
                 var resultObject = recipe.Results.Count == 1 &&
                     recipe.Results[0].Kind == "UNIT" &&
                     recipe.Results[0].Count == 1
@@ -293,14 +296,36 @@ namespace Ordr.Mobile.Mobile
                     " | 특수 조건 " + specials + "개" +
                     (conditionDescriptions.Count > 0
                         ? " (" + string.Join(" · ", conditionDescriptions.ToArray()) + ")" : "") +
-                    " | 원본 제작 거래 미연결";
+                    (sourceRoute == null ? " | 원본 제작 거래 미연결" :
+                        " | 원본 별도 획득 경로: " + sourceRoute);
                 result.Add(new MobileFusionPreview(recipe.AbilityRawcode,
-                    titleResult + " (원본 등록식 · 미승인)",
+                    titleResult + (sourceRoute == null
+                        ? " (원본 등록식 · 미승인)" : " (원본 획득 분기 · 조합 아님)"),
                     summary, chosen, missing, allUnitsOwned));
             }
             result.Sort((a, b) =>
                 string.CompareOrdinal(a.Title, b.Title));
             return result.AsReadOnly();
+        }
+
+        // CWR describes result presentation and acquisition branches as well
+        // as paid material-fusion transactions. Do not sell the source pool
+        // entries as zero-material recipes or double-spawn their unit rewards.
+        private static string ExplainNonCraftSourceRoute(string ability)
+        {
+            if (ability == "YY26")
+                return "랜덤 위습의 원본 24/10000 해적선 결과 (기존 위습 소환 경로)";
+            if (ability == "UU01")
+                return "희귀 레일리 선택 표시 전용 (원본 획득 이벤트 별도 확인 필요)";
+            if (ability == null || ability.Length != 4) return null;
+            int index;
+            if (ability.StartsWith("SP", StringComparison.Ordinal) &&
+                int.TryParse(ability.Substring(2), out index) && index >= 1 && index <= 8)
+                return "희귀 위습 1% 특수 결과 풀 (기존 자동 위습 거래 경로)";
+            if (ability.StartsWith("IS", StringComparison.Ordinal) &&
+                int.TryParse(ability.Substring(2), out index) && index >= 1 && index <= 14)
+                return "RDUN:A800 원본 이세계 랜덤 결과 등록 (획득 이벤트 미연결)";
+            return null;
         }
 
         // Original CWR kind names are interpreted for information only.

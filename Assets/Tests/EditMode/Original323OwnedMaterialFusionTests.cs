@@ -50,7 +50,8 @@ namespace Ordr.Mobile.Tests
         public static IEnumerable<string> ExecutableRecipes()
         {
             var game = Create();
-            return game.Registry.All.Where(r => game.Fusion.CanCommitRecipe(r.AbilityRawcode))
+            return game.Registry.All.Where(r => game.Fusion.CanCommitRecipe(r.AbilityRawcode) &&
+                    !r.OrderedConditions.Any(c => c.Kind == "RMAX"))
                 .Select(r => r.AbilityRawcode).ToArray();
         }
         [TestCaseSource(nameof(ExecutableRecipes))]
@@ -153,7 +154,7 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(abilities.Length, abilities.Distinct(StringComparer.Ordinal).Count());
             Assert.AreEqual(4, game.Fusion.ExecutableMobileOutcomeLegendaryCount);
             Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeHiddenCount);
-            Assert.AreEqual(14, game.Fusion.ExecutableMobileOutcomeUpperTierCount);
+            Assert.AreEqual(15, game.Fusion.ExecutableMobileOutcomeUpperTierCount); // 39차 14종 + 40차 레드필드
             foreach (var ability in abilities)
             {
                 Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
@@ -189,6 +190,77 @@ namespace Ordr.Mobile.Tests
                 "A02Q", "A10A", "TR30"
             })
                 Assert.IsFalse(game.Fusion.CanCommitRecipe(blocked), blocked);
+        }
+
+        [Test]
+        public void Batch40AOsfMobileResultsAndRoundGatedRedfieldPreserveSourceCosts()
+        {
+            var game = Create();
+            var aOsf = new[] { "A19Z", "A1A1", "A1A0" };
+            Assert.AreEqual(3, game.Fusion.ExecutableMobileOutcomeAOsfCount);
+            Assert.AreEqual(214, game.Fusion.ExecutableRecipeCount);
+            foreach (var ability in aOsf)
+            {
+                Assert.IsTrue(game.Fusion.CanCommitRecipe(ability), ability);
+                var recipe = game.Registry.FindByAbility(ability);
+                Assert.IsTrue(recipe.RequiredUnitRawcodes().Any(), ability);
+                Assert.IsTrue(recipe.OrderedConditions.All(c =>
+                    c.Kind == "UNIT" || c.Kind == "UPUN"), ability);
+                bool hasCaster = false;
+                foreach (var material in recipe.RequiredUnitRawcodes())
+                {
+                    string id;
+                    Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id), ability);
+                    foreach (var originalAbility in game.Map.Find(id).OriginalAbilityRawcodes)
+                        if (originalAbility == ability) hasCaster = true;
+                }
+                Assert.IsTrue(hasCaster, ability);
+                var preview = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                    .Single(r => r.RecipeId == ability);
+                StringAssert.Contains("모바일 제작", preview.Title);
+            }
+            const string redfield = "A1A6";
+            Assert.IsTrue(game.Fusion.CanCommitRecipe(redfield));
+            var redfieldRecipe = game.Registry.FindByAbility(redfield);
+            var limit = redfieldRecipe.OrderedConditions.Single(c => c.Kind == "RMAX");
+            Assert.AreEqual("h05G", limit.Rawcode);
+            Assert.AreEqual(40, limit.Count);
+            foreach (var material in redfieldRecipe.RequiredUnitRawcodes())
+            {
+                string id;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out id));
+                for (int i = 0; i < material.Value; i++)
+                    game.Combat.SpawnCharacter(id, 1, 2);
+            }
+            game.Economy.Wallet.Grant(new ResourceBundle().Add("gold", 5000).Add("wood", 5));
+            var before = game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray();
+            var offer = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(r => r.RecipeId == redfield);
+            Assert.IsFalse(offer.IsReady,
+                "RMAX cannot be satisfied without an independently observed source round.");
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.ConfirmFusion(redfield, offer.SuggestedMaterialInstances).State);
+            CollectionAssert.AreEquivalent(before,
+                game.Combat.MobileUnitSnapshot().Select(x => x.InstanceId).ToArray());
+            Assert.AreEqual(5000, game.Economy.Wallet.Balance("gold"));
+            Assert.AreEqual(5, game.Economy.Wallet.Balance("wood"));
+        }
+
+        [Test]
+        public void Batch40NonCraftSourceResultsNeverBecomeFreeFusionButtons()
+        {
+            var game = Create();
+            foreach (string ability in new[] { "UU01", "YY26", "SP01", "SP08", "IS01", "IS14" })
+            {
+                Assert.IsFalse(game.Fusion.CanCommitRecipe(ability), ability);
+                var preview = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                    .Single(x => x.RecipeId == ability);
+                StringAssert.Contains("조합 아님", preview.Title);
+                Assert.IsFalse(preview.IsReady);
+            }
+            foreach (string ability in new[] { "A02Q", "A10A", "TR30",
+                "A007", "A011", "A18P", "IM01", "IM04", "ET04", "ET07", "ET12" })
+                Assert.IsFalse(game.Fusion.CanCommitRecipe(ability), ability);
         }
 
         [Test]

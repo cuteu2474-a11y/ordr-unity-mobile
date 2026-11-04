@@ -1,3 +1,9 @@
+## 2026-11-04 · 40차 조합 획득 경로 분리 및 4건 실제 제작 (검사 전)
+
+- **제작 실행:** `Assets/Scripts/Mobile/Original323CommonFusionPort.cs`에 `MobileOutcomeAOsfSpecial` 2종, `MobileOutcomeAOsfRare` 1종과 상위 `A1A6`을 추가했습니다. 원본 CWR 정확 재료/조건을 읽어 기존 원자 유닛 소비·공유지갑 롤백·결과 단일 생성을 재사용합니다. A1A6의 `RMAX:h05G ×40`은 `Original323FusionVerifiedRestrictions.ConfirmObservedOriginalRound` 경로의 승인된 1~40R에서만 확인됩니다. 소스 미확인 AOsf 후속효과는 UI에 모바일 제작/미검증을 표시합니다. 코드 제작 허가 **214/266**.
+- **획득과 제작 분리:** `Assets/Scripts/Mobile/OriginalJassReadOnlyFusionPort.cs`는 `SP01~08`(기연결 희귀위습 1% 특수 보상), `YY26`(기연결 랜덤위습 해적선 24/10000), `UU01`(표시 전용), `IS01~14`(RDUN 미연결)을 **일반 조합이 아님**으로 표기합니다. UI 노출은 지급·실행 권한을 부여하지 않습니다.
+- **남은 52건:** [40차 상세 분류 JSON](../data/original-2323C-all-remaining-connections-batch40.json)에서 각 원본 조건·카탈로그 식별·잠금 근거·다음 연결점을 확인하세요. 실제 제작으로 남은 27건은 `CHCT/IFCT/GREN/ITEM/SKPT` 원자 상태/소비, 추가 helper·영구 상태, 고대의 배 h05Y/세라핌 등급 객체 h0AN 획득 증거가 필요합니다. 테스트 코드는 작성했지만 실제 실행은 하지 않았습니다.
+
 ## 2026-11-04 · 39차 CWR 모바일 결과 제작 21건 (실행 검사 전)
 
 - **출처:** data/original-2323C-outcome-only-fusion-batch39.json은 원본 CWR 21건 전부의 재료·원본 비용·단일 결과·원본 기본 공격 객체 및 잠금 8건 근거를 기록. 전설 4 + 히든 3 + 제한 4 + 불멸 7 + 영원 3 = **21건**.

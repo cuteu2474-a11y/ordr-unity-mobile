@@ -9,7 +9,8 @@ namespace Ordr.Mobile.Mobile
     // Executable scope reviewed against CWR/CH5/CHu/CHx/CHy/CT1/CT2.
     // Reviewed recipes use original UNIT/GOLD/WOOD costs and UPUN
     // presentation markers. CH5/CHi register no UPUN check/payment callback.
-    // AOsf-based casts (two Special, one Rare) remain pending a native-cast audit.
+    // AOsf-based casts (two Special, one Rare) use an explicitly labelled
+    // mobile result-only swap. The native AOsf callback is NOT parity-approved.
     // Legendary entries with additional creation handlers or unmapped materials stay locked.
     // Reviewed Hidden/ET01 chat recipes use the player-zero start position, not a caster.
     public sealed class Original323CommonFusionPort : IOriginalFusionPort,
@@ -62,6 +63,16 @@ namespace Ordr.Mobile.Mobile
             { "A0N8", "h00V", "S-27" },
             { "A01P", "h011", "S-16" },
             { "A029", "h010", "S-17" },
+        };
+        // Batch 40: all three AOsf registrations have a source caster
+        // (h009, h00G, h00D) and mapped UNIT materials. This mobile
+        // atomic result swap does not certify the original native callback.
+        private static readonly string[,] MobileOutcomeAOsfSpecial = {
+            { "A19Z", "h01F", "S-14" }, // 스모커
+            { "A1A1", "h012", "S-15" }  // 스쿼드
+        };
+        private static readonly string[,] MobileOutcomeAOsfRare = {
+            { "A1A0", "h01N", "R-18" } // 브룩 음악가
         };
         private static readonly string[,] ReviewedRare = {
             { "A0XP", "h09X", "R-01" },
@@ -269,6 +280,7 @@ namespace Ordr.Mobile.Mobile
             { "A0UH", "h084", "LI-04" }, // 시노부, gold 5000/wood 5
             { "A1A5", "h05E", "LI-07" }, // 에넬, gold 5000/wood 5
             { "A02O", "h05F", "LI-09" }, // 크로커다일, UPUN marker
+            { "A1A6", "h05G", "LI-01" }, // 레드필드, source RMAX h05G/40
             { "IM05", "h04Q", "I-06" }, // 빅맘, wood 10
             { "IM06", "h04E", "I-07" }, // 센고쿠
             { "IM07", "h04F", "I-08" }, // 스코퍼가반
@@ -313,8 +325,8 @@ namespace Ordr.Mobile.Mobile
         public bool CanCommit => true;
         public int ExecutableRecipeCount => supported.Count;
         public int ExecutableCommonRecipeCount => Reviewed.GetLength(0);
-        public int ExecutableSpecialRecipeCount => ReviewedSpecial.GetLength(0);
-        public int ExecutableRareRecipeCount => ReviewedRare.GetLength(0);
+        public int ExecutableSpecialRecipeCount => ReviewedSpecial.GetLength(0) + MobileOutcomeAOsfSpecial.GetLength(0);
+        public int ExecutableRareRecipeCount => ReviewedRare.GetLength(0) + MobileOutcomeAOsfRare.GetLength(0);
         public int ExecutableLegendaryRecipeCount => ReviewedLegendary.GetLength(0) + MobileOutcomeLegendary.GetLength(0);
         public int ExecutableHiddenRecipeCount => ReviewedHidden.GetLength(0) + MobileOutcomeHidden.GetLength(0);
         public int ExecutableEternalRecipeCount => ReviewedEternal.GetLength(0);
@@ -324,6 +336,7 @@ namespace Ordr.Mobile.Mobile
         public int ExecutableMobileOutcomeUpperTierCount => MobileOutcomeUpperTiers.GetLength(0);
         public int ExecutableMobileOutcomeLegendaryCount => MobileOutcomeLegendary.GetLength(0);
         public int ExecutableMobileOutcomeHiddenCount => MobileOutcomeHidden.GetLength(0);
+        public int ExecutableMobileOutcomeAOsfCount => MobileOutcomeAOsfSpecial.GetLength(0) + MobileOutcomeAOsfRare.GetLength(0);
         public int ExecutableMysticRecipeCount
         {
             get
@@ -372,12 +385,15 @@ namespace Ordr.Mobile.Mobile
             Bind(units, "U-14", "h00H", "안흔함"); // original zombie material, not a free acquisition
             RegisterReviewed(units, registrations, Reviewed, "안흔함");
             RegisterReviewed(units, registrations, ReviewedSpecial, "특별함");
-            // These source objects can be acquired by CSC's 33-unit Special
-            // Wisp pool. Mapping them does not authorize their AOsf fusion.
+            RegisterReviewed(units, registrations, MobileOutcomeAOsfSpecial, "특별함", true);
+            // These source objects can also be acquired by CSC's Special
+            // Wisp pool. Batch 40 separately authorizes only the mobile
+            // source-material->result path, not native AOsf parity.
             Bind(units, "S-14", "h01F", "특별함");
             Bind(units, "S-15", "h012", "특별함");
             RegisterReviewed(units, registrations, ReviewedRare, "희귀함");
-            Bind(units, "R-18", "h01N", "희귀함"); // material identity; A1A0 remains locked
+            RegisterReviewed(units, registrations, MobileOutcomeAOsfRare, "희귀함", true);
+            Bind(units, "R-18", "h01N", "희귀함"); // A1A0 mobile result identity
             // Unique W3X name+grade identity. UU01 is a presentation tag,
             // NOT an authorized free Rare Rayleigh acquisition.
             Bind(units, "R-43", "h05X", "희귀함");
@@ -557,7 +573,9 @@ namespace Ordr.Mobile.Mobile
                     if (mobileOutcomeOnly && condition.Kind != "UNIT" &&
                         condition.Kind != "UPUN" && condition.Kind != "UBAN" &&
                         condition.Kind != "KING" && condition.Kind != "GOLD" &&
-                        condition.Kind != "WOOD")
+                        condition.Kind != "WOOD" &&
+                        !(ability == "A1A6" && condition.Kind == "RMAX" &&
+                          condition.Rawcode == "h05G" && condition.Count == 40))
                         throw new FormatException("모바일 결과 조합의 미승인 추가 조건: " +
                             ability + "/" + condition.Kind);
                     string materialId;
@@ -664,6 +682,10 @@ namespace Ordr.Mobile.Mobile
         }
         private static bool IsMobileOutcomeOnly(string ability)
         {
+            for (int i = 0; i < MobileOutcomeAOsfSpecial.GetLength(0); i++)
+                if (MobileOutcomeAOsfSpecial[i, 0] == ability) return true;
+            for (int i = 0; i < MobileOutcomeAOsfRare.GetLength(0); i++)
+                if (MobileOutcomeAOsfRare[i, 0] == ability) return true;
             for (int i = 0; i < MobileOutcomeTranscend.GetLength(0); i++)
                 if (MobileOutcomeTranscend[i, 0] == ability) return true;
             for (int i = 0; i < MobileOutcomeUpperTiers.GetLength(0); i++)
