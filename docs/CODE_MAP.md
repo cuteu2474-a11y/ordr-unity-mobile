@@ -1,3 +1,11 @@
+## 2026-11-04 · 41차 특수 소비 원자 엔진·스토리 보상 연결 (실행 검사 전)
+
+- `Assets/Scripts/Mobile/Original323FusionSpecialWalletCosts.cs` — 능력+BGI 종류+rawcode+개수를 정확히 승인하는 재사용 특수 지갑 비용 표. `A18P SKPT 4 → trait-points`, `SPH1/2/4 GREN 1 → story:green-blood:A13A`. ITEM/IFCT/CHCT 및 SPH3를 무료 통과시키지 않음.
+- `Assets/Scripts/Core/Original323StoryMobileProgression.cs` — Egghead 원본 완료 14단계 `GreenBloodSkill A13A ×1`을 공유 지갑 영수증으로 1회 정산. 이미 외부 네이티브 월드가 실제 주문을 적용했다면 지갑 토큰을 **중복 지급하지 않음**.
+- `Assets/Scripts/Mobile/Original323CommonFusionPort.cs` — 원본 상태 검수 등록식 A18P·SPH1/2/4, 원본 CKe의 대상↔결과 매핑/CEN 후속 여부 확인, 그린블러드 대상 좌표 보존, UI 비용 잔액·부족 사유, UNIT/GOLD/WOOD/SKPT/GREN 전체 1회 원자 교환·롤백.
+- `Assets/Tests/EditMode/Original323OwnedMaterialFusionTests.cs` — 신규 4건 일반 제작 시나리오, 특성 포인트 부족·오래된 미리보기 재검사, Egghead 영수증 중복 방지, 세라핌 1회 권한·좌표·SPH3 잠금 회귀 **작성만**, 실행하지 않음.
+- [근거·잔여 48건](../data/original-2323C-special-wallet-fusions-batch41.json): 제작 허가 **218/266**. 모바일 결과 규칙이며 원본 CEN/다른 타깃 주문·최종 스킬/실기 패리티는 미검증.
+
 ## 2026-11-04 · 40차 조합 획득 경로 분리 및 4건 실제 제작 (검사 전)
 
 - **제작 실행:** `Assets/Scripts/Mobile/Original323CommonFusionPort.cs`에 `MobileOutcomeAOsfSpecial` 2종, `MobileOutcomeAOsfRare` 1종과 상위 `A1A6`을 추가했습니다. 원본 CWR 정확 재료/조건을 읽어 기존 원자 유닛 소비·공유지갑 롤백·결과 단일 생성을 재사용합니다. A1A6의 `RMAX:h05G ×40`은 `Original323FusionVerifiedRestrictions.ConfirmObservedOriginalRound` 경로의 승인된 1~40R에서만 확인됩니다. 소스 미확인 AOsf 후속효과는 UI에 모바일 제작/미검증을 표시합니다. 코드 제작 허가 **214/266**.

@@ -1,0 +1,480 @@
+{
+  "format": "ordr-batch41-source-backed-conditional-wallet-fusions-v1",
+  "gameVersion": "ORDR S2 2.323[C]",
+  "mode": "nightmare-otherworld",
+  "baseCommit": "ab7d847e047c5d888b4a178f8bdd1c0f33cbc99c",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "priorBatch": "data/original-2323C-all-remaining-connections-batch40.json",
+  "summary": {
+    "cwrTotal": 266,
+    "executableBefore": 214,
+    "newlyExecutable": 4,
+    "executableAfter": 218,
+    "remainingNonExecutable": 48,
+    "alreadyConnectedNonCraftWispAcquisitions": 9,
+    "sourceNativeFollowupParityVerified": 0,
+    "pythonUnityAndroidRun": false
+  },
+  "rules": [
+    "A18P는 원본 SKPT 4를 스토리·개인미션 지급 trait-points 공유 지갑에서 실제 차감한다. UNIT 4종·gold5000·wood5·UBAN/KING 고정 조건을 모두 유지한다.",
+    "SPH1/SPH2/SPH4는 Egghead 14단계 CWR 보상 A13A 1회 사용권이 실제 공유 지갑에 보상 영수증으로 확정된 경우에만 대상 UNIT 실물 1기를 CKe 원본 객체에 교체한다.",
+    "SPH3 h03G→h0A0은 원본 CEN 후속 콜백 의무가 있으므로 잠금 유지. 다른 A13A 강화 대상 또한 별도 실행기가 필요하다.",
+    "모든 조합은 골드·목재·특수 비용·유닛의 단일 논리 트랜잭션이며 실패 시 지갑/유닛을 원상복구한다.",
+    "모바일 결과 모델의 비용/결과 연결이지 Warcraft 원본 콜백·스킬/면역·Unity 실기 완전 패리티 인증은 아니다.",
+    "검사 사례 코드만 작성. 사용자가 요청하기 전 Python·Unity·Android/APK 실행 검사는 실시하지 않는다."
+  ],
+  "newlyExecutable": [
+    {
+      "abilityRawcode": "SPH1",
+      "resultRawcode": "h09Y",
+      "resultCatalogId": "SR-01",
+      "resultName": "S-스네이크",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h032",
+          "count": 1,
+          "catalogId": "L-36"
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true
+    },
+    {
+      "abilityRawcode": "SPH2",
+      "resultRawcode": "h0A3",
+      "resultCatalogId": "SR-02",
+      "resultName": "S-호크",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h043",
+          "count": 1,
+          "catalogId": "H-01"
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true
+    },
+    {
+      "abilityRawcode": "SPH4",
+      "resultRawcode": "h0A1",
+      "resultCatalogId": "SR-04",
+      "resultName": "S-베어",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h030",
+          "count": 1,
+          "catalogId": "L-32"
+        },
+        {
+          "kind": "GREN",
+          "rawcode": "GREN",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "UPUN",
+          "rawcode": "H0AA",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true
+    },
+    {
+      "abilityRawcode": "A18P",
+      "resultRawcode": "h08Q",
+      "resultCatalogId": "LI-06",
+      "resultName": "알비다",
+      "conditions": [
+        {
+          "kind": "UNIT",
+          "rawcode": "h02X",
+          "count": 1,
+          "catalogId": "L-15"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h02H",
+          "count": 1,
+          "catalogId": "R-38"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h04H",
+          "count": 1,
+          "catalogId": "R-11"
+        },
+        {
+          "kind": "UNIT",
+          "rawcode": "h015",
+          "count": 1,
+          "catalogId": "S-11"
+        },
+        {
+          "kind": "GOLD",
+          "rawcode": "GOLD",
+          "count": 5000,
+          "catalogId": null
+        },
+        {
+          "kind": "WOOD",
+          "rawcode": "WOOD",
+          "count": 5,
+          "catalogId": null
+        },
+        {
+          "kind": "SKPT",
+          "rawcode": "SKPT",
+          "count": 4,
+          "catalogId": null
+        },
+        {
+          "kind": "UBAN",
+          "rawcode": "h08Q",
+          "count": 1,
+          "catalogId": null
+        },
+        {
+          "kind": "KING",
+          "rawcode": "h08Q",
+          "count": 1,
+          "catalogId": null
+        }
+      ],
+      "sourceAttackPresent": true,
+      "mobileOutcomeOnly": true
+    }
+  ],
+  "remaining48ByLane": {
+    "source-presentation-not-a-craft": 1,
+    "blocked-source-only-material": 3,
+    "already-connected-noncraft-wisp-outcome": 1,
+    "blocked-transformation-counter": 5,
+    "already-connected-noncraft-wisp-pool": 8,
+    "blocked-immortal-counter": 6,
+    "blocked-green-blood-condition": 1,
+    "blocked-known-native-post-effect": 6,
+    "blocked-item-atomic-payment": 2,
+    "blocked-native-rdun-acquisition": 14,
+    "development-only-not-retail": 1
+  },
+  "remaining48": [
+    {
+      "abilityRawcode": "UU01",
+      "resultName": "실버즈 레일리",
+      "lane": "source-presentation-not-a-craft",
+      "reason": "UPUN 표시만 있고 UNIT·재화 재료가 없는 레일리 표기; 획득 이벤트 신원 미확인"
+    },
+    {
+      "abilityRawcode": "A02Q",
+      "resultName": "토키",
+      "lane": "blocked-source-only-material",
+      "reason": "h05Y 고대의 배 R-44는 W3X 비전투 지원 객체 및 위키 확장 식별됨. 검증된 게임 내 획득·보유/원자 소비 경로가 없음"
+    },
+    {
+      "abilityRawcode": "YY26",
+      "resultName": "해적선",
+      "lane": "already-connected-noncraft-wisp-outcome",
+      "reason": "원본 랜덤 위습 24/10000 해적선 추첨과 실물 PS-01 생성은 기존 SourceCommonWispWorld에서 처리"
+    },
+    {
+      "abilityRawcode": "A0K2",
+      "resultName": "도플라밍고",
+      "lane": "blocked-transformation-counter",
+      "reason": "CHCT 선택/변화 횟수 상태 및 소모·되돌림 원본 근거 미연결"
+    },
+    {
+      "abilityRawcode": "A0K3",
+      "resultName": "베이비 5",
+      "lane": "blocked-transformation-counter",
+      "reason": "CHCT 선택/변화 횟수 상태 및 소모·되돌림 원본 근거 미연결"
+    },
+    {
+      "abilityRawcode": "A0K4",
+      "resultName": "비비",
+      "lane": "blocked-transformation-counter",
+      "reason": "CHCT 선택/변화 횟수 상태 및 소모·되돌림 원본 근거 미연결"
+    },
+    {
+      "abilityRawcode": "A0K6",
+      "resultName": "카쿠",
+      "lane": "blocked-transformation-counter",
+      "reason": "CHCT 선택/변화 횟수 상태 및 소모·되돌림 원본 근거 미연결"
+    },
+    {
+      "abilityRawcode": "A0K7",
+      "resultName": "캐럿",
+      "lane": "blocked-transformation-counter",
+      "reason": "CHCT 선택/변화 횟수 상태 및 소모·되돌림 원본 근거 미연결"
+    },
+    {
+      "abilityRawcode": "SP01",
+      "resultName": "모건",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP02",
+      "resultName": "베티",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP03",
+      "resultName": "블고리",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP04",
+      "resultName": "아이스버그",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP05",
+      "resultName": "오타마",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP06",
+      "resultName": "페루",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP07",
+      "resultName": "폭시",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "SP08",
+      "resultName": "가이몬",
+      "lane": "already-connected-noncraft-wisp-pool",
+      "reason": "e019 희귀 위습 1% 특수 분기에서 원본 8개 객체의 무작위 선택. CWR SPEC은 무료 조합 아님"
+    },
+    {
+      "abilityRawcode": "IF01",
+      "resultName": "코알라",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결"
+    },
+    {
+      "abilityRawcode": "IF02",
+      "resultName": "페로나",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결"
+    },
+    {
+      "abilityRawcode": "IF03",
+      "resultName": "퀸",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결"
+    },
+    {
+      "abilityRawcode": "IF04",
+      "resultName": "블랙마리아",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결"
+    },
+    {
+      "abilityRawcode": "IF05",
+      "resultName": "바제스",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결"
+    },
+    {
+      "abilityRawcode": "IF06",
+      "resultName": "포트거스.D.에이스",
+      "lane": "blocked-immortal-counter",
+      "reason": "IFCT 불멸 제작 상태·횟수/진행 제한 미연결"
+    },
+    {
+      "abilityRawcode": "SPH3",
+      "resultName": "S-샤크",
+      "lane": "blocked-green-blood-condition",
+      "reason": "그린블러드 A13A 1회 지급/원자 소비 공통 기능은 연결됐으나 h03G→h0A0 원본 CEN 후속효과 처리 미구현"
+    },
+    {
+      "abilityRawcode": "A007",
+      "resultName": "레베카",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 Bvg: 지속 보조 유닛 생성"
+    },
+    {
+      "abilityRawcode": "A011",
+      "resultName": "마르코",
+      "lane": "blocked-item-atomic-payment",
+      "reason": "원본 아이템 비용/재고 실물 제거·지급 롤백 미연결"
+    },
+    {
+      "abilityRawcode": "A10A",
+      "resultName": "킹",
+      "lane": "blocked-source-only-material",
+      "reason": "h05Y 고대의 배 R-44는 W3X 비전투 지원 객체 및 위키 확장 식별됨. 검증된 게임 내 획득·보유/원자 소비 경로가 없음"
+    },
+    {
+      "abilityRawcode": "TR30",
+      "resultName": "베가펑크",
+      "lane": "blocked-source-only-material",
+      "reason": "h0AN W3X 객체 이름 '세라핌 등급 유닛', 카탈로그 실물 재료·획득 경로 미확인"
+    },
+    {
+      "abilityRawcode": "IM01",
+      "resultName": "로져",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B8Y: 능력이 부착된 지속 보조 유닛 생성"
+    },
+    {
+      "abilityRawcode": "IM04",
+      "resultName": "드래곤",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B99: 직선 폭발 +20% 영구 상태"
+    },
+    {
+      "abilityRawcode": "ET02",
+      "resultName": "니카(루피)",
+      "lane": "blocked-item-atomic-payment",
+      "reason": "원본 아이템 비용/재고 실물 제거·지급 롤백 미연결"
+    },
+    {
+      "abilityRawcode": "ET04",
+      "resultName": "류마",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B7z: 플레이어 1회 제한·플래그·조건부 능력"
+    },
+    {
+      "abilityRawcode": "ET07",
+      "resultName": "우타",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B7W: 추가 아이템·플레이어 상태·타이머"
+    },
+    {
+      "abilityRawcode": "ET12",
+      "resultName": "테조로",
+      "lane": "blocked-known-native-post-effect",
+      "reason": "원본 B8I/B8G: 제작 후 상태 갱신"
+    },
+    {
+      "abilityRawcode": "IS01",
+      "resultName": "K",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS02",
+      "resultName": "나루토",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS03",
+      "resultName": "메구밍",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS04",
+      "resultName": "센토 이스즈",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS05",
+      "resultName": "야가미 라이토",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS06",
+      "resultName": "엘리자베스",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS07",
+      "resultName": "옌",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS08",
+      "resultName": "요츠바",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS09",
+      "resultName": "이사야마 요미",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS10",
+      "resultName": "이치의 율자",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS11",
+      "resultName": "토우마",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS12",
+      "resultName": "이치고",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS13",
+      "resultName": "페이몬",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "IS14",
+      "resultName": "하네카와 츠바사",
+      "lane": "blocked-native-rdun-acquisition",
+      "reason": "RDUN:A800 원본 랜덤 전용 이세계 결과. 원본 대상·상태·확률·지급 경로 미연결"
+    },
+    {
+      "abilityRawcode": "TEST",
+      "resultName": "타츠마키",
+      "lane": "development-only-not-retail",
+      "reason": "TEST 디버그 등록식: cnob/brac 아이템과 GOLD 10000. 원본 일반 제작 메뉴에 노출/무료 취득 금지"
+    }
+  ]
+}

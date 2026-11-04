@@ -10,6 +10,7 @@ namespace Ordr.Mobile.Core
     public sealed class Original323StoryMobileProgression :
         IOriginal323StoryNativeRewardPort
     {
+        public const string GreenBloodUseResourceId = "story:green-blood:A13A";
         private readonly HashSet<string> applied =
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<string> research =
@@ -102,6 +103,37 @@ namespace Ordr.Mobile.Core
                 }
                 TraitPoints = checked(TraitPoints + originalPoints);
                 traitPointsAlreadySettled = true;
+                applied.Add(award.Receipt);
+                return true;
+            }
+            if (award.Kind == Original323StoryNativeRewardKind.GreenBloodSkill &&
+                award.Stage == 14 && award.OriginalRawcode == "A13A" &&
+                award.Amount == 1)
+            {
+                // If a native actor already applied the real one-use spell,
+                // do not mint a second mobile casting entitlement.
+                if (externalEffects != null &&
+                    externalEffects.TryApplySourceNativeReward(award))
+                {
+                    applied.Add(award.Receipt);
+                    return true;
+                }
+                if (sharedWallet == null) return false;
+                // Mobile result model for the exact three CKe replacement
+                // branches without a CEN hook. This token is consumed as
+                // GREN in the same wallet exchange as the target-unit swap.
+                try
+                {
+                    if (!sharedWallet.TryGrantOnce(award.Receipt,
+                        new ResourceBundle().Add(GreenBloodUseResourceId, 1)) &&
+                        !sharedWallet.HasCompletedTransaction(award.Receipt))
+                        return false;
+                }
+                catch
+                {
+                    if (!sharedWallet.HasCompletedTransaction(award.Receipt))
+                        throw;
+                }
                 applied.Add(award.Receipt);
                 return true;
             }
