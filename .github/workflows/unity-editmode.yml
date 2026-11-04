@@ -1,6 +1,7 @@
 name: Unity EditMode 검증 (main 자동 + 수동)
 
 # main 브랜치에 반영된 변경사항을 자동 검증하고 수동 실행도 허용한다.
+# APK 재제작 요청: EditMode 검증 통과 시 Android 개발용 APK를 생성한다.
 # 진행 중인 작업은 자동 취소하지 않는다.
 on:
   push:
