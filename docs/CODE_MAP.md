@@ -1,3 +1,10 @@
+## 2026-11-04 · 51차 원본 점수·금화 보정·우타 공연
+
+- `data/original-2323C-map-base-stats.json`, `OriginalMapBaseStatCatalog.cs`: `UnitData.slk` `points`를 도감 275종에 연결, 미확정 점수는 nullable로 유지. `CharacterCombatRuntime.cs`에서 이미 구성한 원본 도감 공급자를 공유합니다.
+- `CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs`: S-샤크 `CEO` 점수/거리/아군 필터와 시전 타이밍, A0N1 공격·방어 상태; 테조로 B8S의 JD=A11S 보정(일반 라인/보스 초기 LL=21 + 드래곤 보너스); 우타 명령어 원본 B7W→B61→B6x 명시 실행 1회, 800 범위 피해와 h04O 소환.
+- `CharacterCombatRuntime.SourceModelCompositeEffects.cs`, `OrdrMobileTouchPanel.cs`: 우타 기존 음표 병사 기록·독립 공격·만료 재사용, E-09 유닛 상세의 세계의 가희 버튼.
+- 51차 JASS·SLK 식별과 모델 한계: [`original-2323C-native-combat-batch51.json`](../data/original-2323C-native-combat-batch51.json). **실행 검사는 사용자 요청 전 미실시**.
+
 ## 2026-11-04 · 50차 저장된 클리어 수 → 루치 전투 → 종료 UI
 
 - `SourceModelPracticeBattle.cs`: 최종 보스 처치 여부를 포함한 `IsFullGameClear`, 65R 종료를 `65라운드 클리어`로 표시; 보스 미처치 때 마지막 빈 몬스터 상태를 승리로 취급하지 않습니다.

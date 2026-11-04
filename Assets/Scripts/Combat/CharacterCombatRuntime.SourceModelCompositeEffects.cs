@@ -183,9 +183,11 @@ namespace Ordr.Mobile.Combat
         }
 
         private void AddSourceModelUtaSongSoldier(CharacterInstance actor,
-            SpatialCombatEnemy primary, double lifetime, string sourceSkill)
+            SpatialCombatEnemy primary, double lifetime, string sourceSkill,
+            double? spawnX = null, double? spawnY = null)
         {
-            if (!RegisterSourceModelUtaSongSoldier(actor, primary, lifetime)) return;
+            if (!RegisterSourceModelUtaSongSoldier(actor, primary, lifetime,
+                    spawnX, spawnY)) return;
             List<double> expiry;
             if (!sourceSongSoldierExpiry.TryGetValue(actor.Id, out expiry))
             {
@@ -195,7 +197,7 @@ namespace Ordr.Mobile.Combat
             expiry.RemoveAll(until => until <= Time);
             expiry.Add(Time + lifetime);
             events.Add(new CharacterCombatEvent(CharacterCombatEventType.SkillActivated,
-                InstanceKey(actor.Id), primary.Id, sourceSkill,
+                InstanceKey(actor.Id), primary == null ? null : primary.Id, sourceSkill,
                 "MODEL_ONLY B6s/h04O 독립 공격 객체 + 7초 음표 병사 기여; 원본 위치·HP 재생 만료 조건 미검증", 0));
         }
 

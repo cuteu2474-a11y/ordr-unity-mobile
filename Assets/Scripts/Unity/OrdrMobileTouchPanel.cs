@@ -1260,6 +1260,27 @@ namespace Ordr.Mobile.Unity
             {
                 GUILayout.Label("기본 공격 정보 없음");
             }
+            if (detail.Unit.Id == "E-09" && Combat != null)
+            {
+                // B7W's chat-only "세계의가희" is represented as a
+                // deliberate one-shot action, never an on-attack proc.
+                foreach (var unit in Combat.MobileUnitSnapshot())
+                {
+                    if (unit.Unit.Id != "E-09") continue;
+                    bool ready = Combat.CanStartSourceModelUtaIntro(unit.InstanceId);
+                    bool previousEnabled = GUI.enabled;
+                    GUI.enabled = previousEnabled && ready;
+                    if (GUILayout.Button("우타 · 세계의 가희" +
+                        " (" + unit.InstanceId + ")",
+                        OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
+                        notice = Combat.TryStartSourceModelUtaIntro(unit.InstanceId)
+                            ? "세계의 가희 공연 시작" : "공연 실행 조건을 확인해 주세요.";
+                    GUI.enabled = previousEnabled;
+                    if (!ready)
+                        GUILayout.Label("해당 유닛 공연 진행 완료 또는 현재 이용 불가",
+                            OrdrMobileUiTheme.Explanation);
+                }
+            }
             GUILayout.EndVertical();
         }
 

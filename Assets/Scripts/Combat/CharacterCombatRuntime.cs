@@ -1455,6 +1455,8 @@ namespace Ordr.Mobile.Combat
         {
             if (commonAttackPreview != null)
                 throw new InvalidOperationException("흔함 공격 미리보기는 한 번만 연결할 수 있습니다.");
+            sourceModelNativePointValues = map ??
+                throw new ArgumentNullException(nameof(map));
             commonAttackPreview = new OriginalMapCommonAttackPreview(map);
             foreach (var unit in characters.Values)
                 if (!unit.AttackReady)
@@ -2350,6 +2352,7 @@ namespace Ordr.Mobile.Combat
                 kind == CharacterEnemyKind.Enraged;
             resolution.Spawn(enemy, partOfWave);
             enemies.Add(enemyId, spatial);
+            RecordSourceModelNativeTesoroSpawnA11S(enemyId, kind);
             statuses.Add(enemyId, enemy.Status);
             armorBreakStacks.Add(enemyId, 0);
             provenA04MStacks.Add(enemyId, 0);
@@ -2950,6 +2953,7 @@ namespace Ordr.Mobile.Combat
             sourceSpecialPullHeldUntil.Remove(id);
             effectExecutor.CancelTarget(id);
             enemies.Remove(id);
+            sourceModelNativeTesoroSpawnA11S.Remove(id);
             statuses.Remove(id);
             armorBreakStacks.Remove(id);
             provenA04MStacks.Remove(id);

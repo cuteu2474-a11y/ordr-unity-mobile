@@ -12,6 +12,7 @@ namespace Ordr.Mobile.Combat
         // The receipt is committed by the fusion transaction, NOT by this
         // combat observer. Never grant/consume source items in this layer.
         private Func<string, long> sourceModelFusionNativeReceipt;
+        private OriginalMapBaseStatCatalog sourceModelNativePointValues;
         private readonly HashSet<long> sourceModelFusionSharkScheduled =
             new HashSet<long>();
         private double sourceModelUtaSongElapsed;
@@ -31,6 +32,10 @@ namespace Ordr.Mobile.Combat
         // frost-armor buff. Keep that trigger separate from the 12% d7 roll.
         private readonly Dictionary<long, int> sourceModelTesoroFrostCounts =
             new Dictionary<long, int>();
+        private readonly Dictionary<string, int> sourceModelNativeTesoroSpawnA11S =
+            new Dictionary<string, int>(StringComparer.Ordinal);
+        private readonly HashSet<long> sourceModelUtaIntroStarted =
+            new HashSet<long>();
 
         private bool TryResolveSourceModelRogerInfernoTarget(long actorId,
             out CharacterInstance actor, out SpatialCombatEnemy chosen)
@@ -198,6 +203,33 @@ namespace Ordr.Mobile.Combat
                 Original323FusionNativeFollowupLedger.DragonLineExplosionBonusId);
         }
 
+        // LL[player] starts at 21 (JASS initialisation 4738) and B99 adds
+        // +20 per Dragon fusion. Bvi/CVX/CVY COPY LL into the new unit's
+        // A11S, so a later Dragon fusion must NOT retroactively boost an
+        // already spawned monster. CVZ sets enraged A11S to exactly 1.
+        private void RecordSourceModelNativeTesoroSpawnA11S(
+            string enemyId, CharacterEnemyKind kind)
+        {
+            if (kind == CharacterEnemyKind.Enraged)
+                sourceModelNativeTesoroSpawnA11S[enemyId] = 1;
+            else if (kind == CharacterEnemyKind.Line ||
+                kind == CharacterEnemyKind.Boss)
+            {
+                double initialLevel = 21 + SourceModelFusionLineExplosionBonus();
+                sourceModelNativeTesoroSpawnA11S[enemyId] =
+                    (int)Math.Min(int.MaxValue, Math.Max(0, initialLevel));
+            }
+        }
+
+        private double SourceModelNativeTesoroCorrection(SpatialCombatEnemy enemy)
+        {
+            int nativeLevel;
+            sourceModelNativeTesoroSpawnA11S.TryGetValue(enemy.Id,
+                out nativeLevel);
+            return Ordr323MapDamageMath.ScriptHealthProportionalCorrection(
+                nativeLevel);
+        }
+
         private void ApplySourceModelFusionNativeHelperSlow(
             CharacterInstance actor, SpatialCombatEnemy primary,
             ImportedCombatSkill skill, ImportedCombatEffect component,
@@ -345,10 +377,11 @@ namespace Ordr.Mobile.Combat
                         radius + " 범위, 재화 차감 없음", 0));
                     foreach (var victim in victims)
                     {
-                        // JD target ability level is not yet provided by the
-                        // mobile monster catalog. Its native factor defaults
-                        // to the zero-level .79 until evidence is available.
-                        const double nativeZeroLevelFactor = .79;
+                        // The ordinary line/boss spawn writes the current
+                        // LL level into JD=A11S; snapshot that factor per
+                        // victim, not once at the center or a hard-coded 0.
+                        double nativeFactor =
+                            SourceModelNativeTesoroCorrection(victim);
                         double normalMultiplier = 1 +
                             sourceModelRules.NextScriptRoll(500001) / 1000000.0;
                         ApplySourceModelAreaPacket(caster, story, victim, 0,
@@ -356,7 +389,7 @@ namespace Ordr.Mobile.Combat
                             Ordr323AttackType.Spells, name);
                         if (!victim.Enemy.IsAlive) continue;
                         ApplySourceModelAreaPacket(caster, story, victim, 0,
-                            goldPower * nativeZeroLevelFactor * 1.5,
+                            goldPower * nativeFactor * 1.5,
                             Ordr323AttackType.Siege, name);
                         if (!third && victim.Enemy.IsAlive)
                         {
@@ -364,13 +397,14 @@ namespace Ordr.Mobile.Combat
                                 victim.Enemy.MaxHealth - victim.Enemy.Health);
                             ApplySourceModelAreaPacket(caster, story, victim, 0,
                                 missing * .01 * .45 * goldPower / 25000.0 *
-                                    nativeZeroLevelFactor,
+                                    nativeFactor,
                                 Ordr323AttackType.Siege, name);
                         }
                     }
                     if (center.Enemy.IsAlive && CanAttackInThisLane(actor, center))
                         ApplySourceModelAreaPacket(caster, story, center, 0,
-                            center.Enemy.MaxHealth * (third ? .14 : .18) * .79,
+                            center.Enemy.MaxHealth * (third ? .14 : .18) *
+                                SourceModelNativeTesoroCorrection(center),
                             Ordr323AttackType.Siege, name + " · 주 대상");
                 });
         }
@@ -379,7 +413,8 @@ namespace Ordr.Mobile.Combat
         // 0.33s cooldown and 0.32s attack point. Unlike a roster character,
         // its autonomous attacks use the common attack/death/armor pipeline.
         private bool RegisterSourceModelUtaSongSoldier(
-            CharacterInstance actor, SpatialCombatEnemy primary, double lifetime)
+            CharacterInstance actor, SpatialCombatEnemy primary, double lifetime,
+            double? spawnX = null, double? spawnY = null)
         {
             if (actor.Catalog.Id != "E-09" ||
                 SourceModelFusionNativeBalance(
@@ -389,7 +424,7 @@ namespace Ordr.Mobile.Combat
             string key = "practice-uta-song:" + sequence;
             var position = roster.Get(actor.Id);
             RegisterSourceIndependentAttack(key, "h04O", IsStoryDeployed(actor.Id),
-                position.X, position.Y, Time + lifetime);
+                spawnX ?? position.X, spawnY ?? position.Y, Time + lifetime);
             List<string> keys;
             if (!sourceModelUtaSongSoldierKeys.TryGetValue(actor.Id, out keys))
             {
@@ -414,8 +449,79 @@ namespace Ordr.Mobile.Combat
                 });
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
-                primary.Id, "우타 · 음표 병사",
+                primary == null ? null : primary.Id, "우타 · 음표 병사",
                 "MODEL_ONLY B6s/h04O: 원본 공격 주사위·0.33초 주기 적용, 7초 생존/캐스터 근처 배치 모바일 모델", 0));
+            return true;
+        }
+
+        // B7W's "세계의가희" / "u-ta et" chat trigger starts B63 -> B61
+        // -> B6y -> B6x. It is NOT a generic E-09 on-attack proc. Expose a
+        // one-shot unit action so the touch UI can express this native event
+        // without introducing a text-chat subsystem.
+        public bool CanStartSourceModelUtaIntro(long actorId)
+        {
+            CharacterInstance actor;
+            return UsesSourceModelBasicAttacks &&
+                game.Phase == SessionPhase.Running && !processingStep &&
+                pendingStepSeconds == 0 &&
+                SourceModelFusionNativeBalance(
+                    Original323FusionNativeFollowupLedger.UtaSongId) > 0 &&
+                !sourceModelUtaIntroStarted.Contains(actorId) &&
+                characters.TryGetValue(actorId, out actor) &&
+                actor.AttackReady && actor.Catalog.Id == "E-09";
+        }
+
+        public bool TryStartSourceModelUtaIntro(long actorId)
+        {
+            if (!CanStartSourceModelUtaIntro(actorId)) return false;
+            CharacterInstance actor = characters[actorId];
+            var position = roster.Get(actorId);
+            double centerX = position.X, centerY = position.Y;
+            bool isStory = IsStoryDeployed(actorId);
+            long laneRevision = SourceModelLaneRevision(actorId);
+            sourceModelUtaIntroStarted.Add(actorId);
+            string caster = InstanceKey(actorId);
+
+            // B6x first stage runs BiZ within 800 units and B6w deals
+            // 1,500,000 * random [1,1.5] NORMAL/UNIVERSAL to each enemy.
+            var victims = new List<SpatialCombatEnemy>();
+            foreach (var enemy in enemies.Values)
+            {
+                if (!enemy.Enemy.IsAlive || !CanAttackInThisLane(actor, enemy))
+                    continue;
+                double dx = enemy.X - centerX, dy = enemy.Y - centerY;
+                if (dx * dx + dy * dy <= 800 * 800)
+                    victims.Add(enemy);
+            }
+            victims.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
+            foreach (var enemy in victims)
+            {
+                double multiplier = 1 +
+                    sourceModelRules.NextScriptRoll(500001) / 1000000.0;
+                ApplySourceModelAreaPacket(caster, isStory, enemy, 0,
+                    1500000 * multiplier, Ordr323AttackType.Spells,
+                    "우타 · 세계의 가희 (B6x)");
+            }
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated, caster, null,
+                "우타 · 세계의 가희",
+                "MODEL_ONLY B7W/B63/B61/B6x: 수동 1회 시작, 800 범위 첫 충격, 약 1초 뒤 음표 병사", 0));
+
+            // Original .4 + (.2 * 3) spectacle before B6s. Preserve the
+            // native 100..150 polar offset and existing song-soldier lifetime.
+            effectExecutor.SchedulePracticeSourceAttack(caster,
+                "practice-native:ET09:B6x:intro-soldier", 1, () =>
+                {
+                    if (!CanFinishSourceModelDelayedAttack(actorId,
+                            isStory, laneRevision)) return;
+                    double radius = 100 + sourceModelRules.NextScriptRoll(500001) /
+                        10000.0;
+                    double angle = sourceModelRules.NextScriptRoll(360000) *
+                        Math.PI / 180000.0;
+                    AddSourceModelUtaSongSoldier(actor, null, 7,
+                        "우타 · 세계의 가희", centerX + radius * Math.Cos(angle),
+                        centerY + radius * Math.Sin(angle));
+                });
             return true;
         }
 
@@ -462,9 +568,9 @@ namespace Ordr.Mobile.Combat
             {
                 if (!actor.AttackReady || actor.Catalog.Id != "SR-03" ||
                     !sourceModelFusionSharkScheduled.Add(actor.Id)) continue;
-                // CEN/CEP: .21s warmup, then two .1s innerfire target orders.
-                // B02D lasts 20.5s; CEP restarts 19.7s after each cycle.
-                ScheduleSourceModelFusionSharkInnerFire(actor.Id, .41);
+                // CEN/CEP: .21s first cast, .1s between ally casts.
+                // The full cycle restarts after the last two orders +19.7s.
+                ScheduleSourceModelFusionSharkInnerFire(actor.Id, .21);
             }
         }
 
@@ -484,10 +590,9 @@ namespace Ordr.Mobile.Combat
                         !actor.AttackReady || actor.Catalog.Id != "SR-03")
                         return;
 
-                    // CEN casts on the shark itself and selects up to two
-                    // other allies in a 450-radius group. UnitPointValue/CEO
-                    // restrictions need an original point-value witness;
-                    // this practice target policy accepts deployed allies.
+                    // CEO's native filter is Ji[owner] &&
+                    // GetUnitPointValue(ally)>100. The mobile player owns
+                    // its active roster; unknown UnitData points fail closed.
                     ApplySourceModelFusionSharkInnerFire(actorId, actorId);
                     var candidates = new List<long>();
                     var position = roster.Get(actorId);
@@ -496,6 +601,10 @@ namespace Ordr.Mobile.Combat
                         if (ally.Id == actorId || !ally.AttackReady ||
                             IsStoryDeployed(ally.Id) != IsStoryDeployed(actorId))
                             continue;
+                        var point = sourceModelNativePointValues == null ? null :
+                            sourceModelNativePointValues.Find(ally.Catalog.Id);
+                        if (point == null || !point.UnitPointValue.HasValue ||
+                            point.UnitPointValue.Value <= 100) continue;
                         var other = roster.Get(ally.Id);
                         double dx = position.X - other.X;
                         double dy = position.Y - other.Y;
@@ -508,9 +617,25 @@ namespace Ordr.Mobile.Combat
                         int index = sourceModelRules.NextScriptRoll(candidates.Count);
                         long targetId = candidates[index];
                         candidates.RemoveAt(index);
-                        ApplySourceModelFusionSharkInnerFire(actorId, targetId);
+                        double orderDelay = (selected + 1) * .1;
+                        bool isStory = IsStoryDeployed(actorId);
+                        long revision = SourceModelLaneRevision(actorId);
+                        effectExecutor.SchedulePracticeSourceAttack(casterId,
+                            "practice-native:SPH3:A0N1:ally", orderDelay, () =>
+                            {
+                                CharacterInstance caster;
+                                CharacterInstance target;
+                                if (!CanFinishSourceModelDelayedAttack(actorId,
+                                        isStory, revision) ||
+                                    !characters.TryGetValue(actorId, out caster) ||
+                                    !caster.AttackReady ||
+                                    !characters.TryGetValue(targetId, out target) ||
+                                    !target.AttackReady ||
+                                    IsStoryDeployed(targetId) != isStory) return;
+                                ApplySourceModelFusionSharkInnerFire(actorId, targetId);
+                            });
                     }
-                    ScheduleSourceModelFusionSharkInnerFire(actorId, 19.7);
+                    ScheduleSourceModelFusionSharkInnerFire(actorId, 19.9);
                 });
         }
 
@@ -521,16 +646,19 @@ namespace Ordr.Mobile.Combat
             if (!unitStatuses.TryGetValue(InstanceKey(allyId), out status)) return;
             string source = "practice-native:SPH3:A0N1:" + casterId;
             status.RemoveSource(source);
-            // A0N1/Ainf: damage bonus DataA1=.55, B02D duration 20.5s.
-            // DataD1=1.75 is kept out of damage/armor math until the native
-            // Inner Fire field mapping and ally armor handling are proved.
+            // A0N1/Ainf: DataA1=.55 damage and DataD1=1.75 armor;
+            // both use B02D's 20.5-second lifespan. The armor status is
+            // recorded without fabricating an unmodeled ally-hit pipeline.
             status.Apply(new CombatEffect(source,
                 CombatEffectType.AttackPowerBuff,
                 CombatEffectOrigin.TriggeredSkill, 55, 20.5));
+            status.Apply(new CombatEffect(source,
+                CombatEffectType.ArmorBuff,
+                CombatEffectOrigin.TriggeredSkill, 1.75, 20.5));
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.StatusApplied, InstanceKey(casterId),
                 InstanceKey(allyId), "S-샤크 · 내면의 불꽃",
-                "MODEL_ONLY CEN/CEP + A0N1: 20.5초 공격력 +55%, 최대 아군 2기/19.7초",
+                "MODEL_ONLY CEN/CEP + A0N1: 20.5초 공격력 +55%·방어 +1.75, 원본 점수>100 아군 최대 2기",
                 0));
         }
 
@@ -539,6 +667,7 @@ namespace Ordr.Mobile.Combat
             sourceModelFusionSharkScheduled.Remove(actorId);
             sourceModelRogerInfernoReadyAt.Remove(actorId);
             sourceModelTesoroFrostCounts.Remove(actorId);
+            sourceModelUtaIntroStarted.Remove(actorId);
             List<string> keys;
             if (sourceModelUtaSongSoldierKeys.TryGetValue(actorId, out keys))
             {

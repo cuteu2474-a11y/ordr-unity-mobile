@@ -79,6 +79,9 @@ namespace Ordr.Mobile.Data
         public OriginalMapBasicAttack Attack2 { get; private set; }
         public double? BaseArmor { get; private set; }
         public double? BaseHitPoints { get; private set; }
+        // UnitData.slk `points` (the native GetUnitPointValue predicate),
+        // independent of level, rarity and attack damage.
+        public int? UnitPointValue { get; private set; }
         public bool CombatParityVerified { get { return false; } }
 
         internal OriginalMapCharacterBasics(Dictionary<string, object> source,
@@ -90,6 +93,15 @@ namespace Ordr.Mobile.Data
                 unit.Grade != OrdrJson.RequiredString(source, "grade"))
                 throw new FormatException(UnitId + ": 원본 맵 링크와 도감 정보가 다릅니다.");
             OriginalRawcode = OrdrJson.String(source, "originalRawcode");
+            double? pointValue = OrdrJson.Number(source, "originalUnitPointValue");
+            if (pointValue.HasValue)
+            {
+                if (pointValue.Value < 0 || pointValue.Value > int.MaxValue ||
+                    Math.Floor(pointValue.Value) != pointValue.Value ||
+                    OriginalRawcode == null)
+                    throw new FormatException(UnitId + ": 원본 점수 값이 유효하지 않습니다.");
+                UnitPointValue = (int)pointValue.Value;
+            }
             MapName = OrdrJson.String(source, "sourceMapName");
             MappingStatus = OrdrJson.RequiredString(source, "mappingStatus");
             AlternateRawcodes = new List<string>().AsReadOnly();

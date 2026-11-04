@@ -6,7 +6,8 @@
     "Units\\UnitWeapons.slk": "b5be254f57b34f56dd991043e8c2a4936d7bd1f54fce213b201316971ac65ca5",
     "Units\\UnitBalance.slk": "f7f26217d8097b9791723feb02d9181277d9afb1947dc0a3bf553ce590ab3af5",
     "Units\\UnitAbilities.slk": "fbd47be22d1482d63df15d70d7a8fa38f7f26b288443a5d74aa056104aef139d",
-    "Units\\CampaignUnitStrings.txt": "3e16625f147113e5e4c58a4ad1a58a8b259eeccba57e638db6f9e21cd0cf1a10"
+    "Units\\CampaignUnitStrings.txt": "3e16625f147113e5e4c58a4ad1a58a8b259eeccba57e638db6f9e21cd0cf1a10",
+    "Units\\UnitData.slk": "841a3bf714cecbf075d9b31d5bb1e14a38bbd6473a0e880ef342aaef562f1b23"
   },
   "purpose": "All original unit object stats and conservatively linked catalog basics",
   "importantLimits": [
@@ -66,7 +67,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A09G,A00D,A012,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 1
     },
     {
       "catalogId": "C-02",
@@ -99,7 +101,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A09G,A00W,A032,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 2
     },
     {
       "catalogId": "C-03",
@@ -132,7 +135,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A09G,A006,A015,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 3
     },
     {
       "catalogId": "C-04",
@@ -165,7 +169,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A09G,A00V,A01H,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 4
     },
     {
       "catalogId": "C-05",
@@ -198,7 +203,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A09G,A01B,A00P,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 5
     },
     {
       "catalogId": "C-06",
@@ -231,7 +237,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A09G,A02I,A00E,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 6
     },
     {
       "catalogId": "C-07",
@@ -264,7 +271,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A09G,A00L,A018,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 7
     },
     {
       "catalogId": "C-08",
@@ -297,7 +305,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A09G,A0N5,A01L,A19Z,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 8
     },
     {
       "catalogId": "C-09",
@@ -330,7 +339,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A09G,A0N7,A01R,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 9
     },
     {
       "catalogId": "U-01",
@@ -363,7 +373,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A07M,A03E,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-02",
@@ -396,7 +407,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A01X,A017,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-03",
@@ -429,7 +441,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A07P,A00K,A019,A1A0,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-04",
@@ -462,7 +475,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A07I,A024,A01A,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-05",
@@ -495,7 +509,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A07R,A00S,A01E,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-06",
@@ -528,7 +543,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A00Z,A01I,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-07",
@@ -561,7 +577,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A01D,A01K,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-08",
@@ -594,7 +611,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0B8,A00B,A014,A1A1,Avul,A0JE",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-09",
@@ -627,7 +645,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A07Q,A0B8,A02B,A01C,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-10",
@@ -660,7 +679,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A030,A01N,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-11",
@@ -693,7 +713,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A02Y,A01Q,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-12",
@@ -726,7 +747,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A07S,A0B8,A0N8,A01P,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-13",
@@ -759,7 +781,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0JE,A0B8,A07I,A0NA,A01O,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "U-14",
@@ -792,7 +815,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A029,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 70
     },
     {
       "catalogId": "S-01",
@@ -825,7 +849,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A083,A0JE,A07Y,A0BA,Avul,A0XP",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-02",
@@ -858,7 +883,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EJ,A0JE,A07Y,Avul,A039",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-03",
@@ -891,7 +917,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A088,A0ND,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-04",
@@ -924,7 +951,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A08A,Avul,A0NC",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-05",
@@ -957,7 +985,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A08B,A02Z,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-06",
@@ -990,7 +1019,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A08C,A00C,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-07",
@@ -1023,7 +1053,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A08J,A0QI,Avul,A00F",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-08",
@@ -1056,7 +1087,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A08M,A00I,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-09",
@@ -1089,7 +1121,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A028,A016,Avul,A087",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-10",
@@ -1122,7 +1155,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A08N,Avul,A013,A0IO",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-11",
@@ -1155,7 +1189,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EB,A0EC,A0JE,A07Y,A03B,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-12",
@@ -1188,7 +1223,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A08P,A008,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-13",
@@ -1221,7 +1257,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0ED,A0JE,A07Y,A0BA,A0NF,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-14",
@@ -1254,7 +1291,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A08F,A02W,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-15",
@@ -1287,7 +1325,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EE,A0JE,A07Y,A0BA,A02A,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-16",
@@ -1320,7 +1359,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EF,A0JE,A07Y,A0BA,A03G,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-17",
@@ -1353,7 +1393,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A080,A01V,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-18",
@@ -1386,7 +1427,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A084,A0NB,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-19",
@@ -1419,7 +1461,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0ER,A0BA,A00R,A01F,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-20",
@@ -1452,7 +1495,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A01W,A0JE,A07Y,A0EG,A0BA,A00Q,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-21",
@@ -1485,7 +1529,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JV,A0EH,A0JE,A07Y,A0BA,A01J,A00X,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-22",
@@ -1518,7 +1563,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0E7,A0JE,A07Y,A0BA,A02R,A02T,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-23",
@@ -1551,7 +1597,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EF,A0JE,A07Y,A0BA,A02K,A01M,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-24",
@@ -1584,7 +1631,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EI,A0BA,A0JE,A07Y,A02J,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-25",
@@ -1617,7 +1665,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0EM,A0BA,A010,A02M,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-26",
@@ -1650,7 +1699,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EO,A0JE,A07Y,A0BA,A02L,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-27",
@@ -1683,7 +1733,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EK,A0JE,A07Y,A0BA,A02F,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-28",
@@ -1716,7 +1767,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0E9,A0EA,A0JE,A07Y,A0BA,A02V,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-29",
@@ -1749,7 +1801,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A08E,A02N,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-30",
@@ -1782,7 +1835,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0BA,A08H,A00U,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-31",
@@ -1815,7 +1869,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0JE,A07Y,A0EL,A0BA,A02S,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-32",
@@ -1848,7 +1903,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EP,A0EQ,A0JE,A07Y,A0BA,A00A,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "S-33",
@@ -1881,7 +1937,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0ET,A0JE,A07Y,A0BA,A0N6,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 80
     },
     {
       "catalogId": "X-01",
@@ -1914,7 +1971,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A801,A055,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 102
     },
     {
       "catalogId": "X-02",
@@ -1947,7 +2005,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A801,A0DQ,A0LL,A0LK,A0LJ,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 102
     },
     {
       "catalogId": "X-03",
@@ -1980,7 +2039,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A801,A0LM,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 102
     },
     {
       "catalogId": "X-04",
@@ -2013,7 +2073,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A801,A0DI,A0LP,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 102
     },
     {
       "catalogId": "X-05",
@@ -2035,7 +2096,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A801,A0OV,A0LQ,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 102
     },
     {
       "catalogId": "X-06",
@@ -2068,7 +2130,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A801,A0LR,A0LS,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 102
     },
     {
       "catalogId": "X-07",
@@ -2101,7 +2164,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A12T,A12U,A801,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 102
     },
     {
       "catalogId": "X-08",
@@ -2134,7 +2198,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0DD,A0DH,A801,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 102
     },
     {
       "catalogId": "R-01",
@@ -2167,7 +2232,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A132,A05W,A108,A07Y,A0B9,A0QZ,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-02",
@@ -2200,7 +2266,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0F9,A0FA,A03H,A07Y,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-03",
@@ -2233,7 +2300,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A056,A0B9,A036,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-04",
@@ -2266,7 +2334,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0K2,A057,A07Y,A058,A0B9,A009,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-05",
@@ -2299,7 +2368,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A05A,A05B,A05C,A0B9,Avul,A02H",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-06",
@@ -2332,7 +2402,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A05H,A0B9,Avul,A03D",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-07",
@@ -2365,7 +2436,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0UG,A07Y,A0FB,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-08",
@@ -2398,7 +2470,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0AQ,A0FD,A0B9,A00N,A02D,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-09",
@@ -2431,7 +2504,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0FF,A0B9,A00G,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-10",
@@ -2464,7 +2538,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0FH,A07Y,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-11",
@@ -2497,7 +2572,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0F4,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-12",
@@ -2530,7 +2606,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0FI,A0FJ,A07Y,A0B9,A00J,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-13",
@@ -2563,7 +2640,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0NG,A0FL,A07Y,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-14",
@@ -2596,7 +2674,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0FM,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-15",
@@ -2629,7 +2708,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0FN,A12F,A0B9,A0NE,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-16",
@@ -2662,7 +2742,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0K3,A07Y,A0FP,A0B9,Avul,A1CC",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-17",
@@ -2695,7 +2776,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A038,A0FQ,A07Y,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-18",
@@ -2728,7 +2810,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0FT,A07Y,A0FS,A0B9,A03C,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-19",
@@ -2761,7 +2844,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0FU,A0K4,A07Y,A0FV,A0B9,A00O,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-20",
@@ -2794,7 +2878,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0FW,A0JV,A07Y,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-21",
@@ -2827,7 +2912,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0FX,A0B9,A01U,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-22",
@@ -2860,7 +2946,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EY,A07Y,A03Y,A0B9,A025,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-23",
@@ -2893,7 +2980,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0B9,A002,A027,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-24",
@@ -2926,7 +3014,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0B9,A022,A03F,A0NI,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-25",
@@ -2959,7 +3048,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0B9,A03Q,Avul,A01T",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-26",
@@ -2992,7 +3082,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0B9,A023,Avul,A0RP",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-27",
@@ -3025,7 +3116,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A00M,A07Y,A0B9,A02E,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-28",
@@ -3058,7 +3150,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A0DS,A0B9,A00T,A01G,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-29",
@@ -3091,7 +3184,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A02X,A07Y,A0B9,A03P,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-30",
@@ -3124,7 +3218,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A113,A07Y,A0B9,A026,A038,A03K,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-31",
@@ -3157,7 +3252,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A00Y,A0JV,A07Y,A0B9,A03I,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-32",
@@ -3190,7 +3286,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0F0,A07Y,A0B9,A02C,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-33",
@@ -3223,7 +3320,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EV,A07Y,A0B9,A0NH,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-34",
@@ -3256,7 +3354,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0F3,A07Y,A0B9,A02G,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-35",
@@ -3289,7 +3388,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0EX,A0EW,A07Y,A0EN,A0B9,A037,A005,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-36",
@@ -3322,7 +3422,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0F5,A0K6,A0F6,A0F7,A07Y,A0B9,Avul,A02P",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-37",
@@ -3355,7 +3456,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0XS,A03U,A03S,A03T,A07Y,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-38",
@@ -3388,7 +3490,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A03W,A03V,A0B9,A02O,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-39",
@@ -3421,7 +3524,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A02Q,A07Y,A053,A052,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-40",
@@ -3454,7 +3558,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A03X,A0B9,A00H,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-41",
@@ -3487,7 +3592,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A03R,A0B9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-42",
@@ -3520,7 +3626,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A03Y,A03Z,A0B9,Avul,A0N9",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "R-43",
@@ -3553,7 +3660,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07Y,A01S,A0F8,A17T,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 90
     },
     {
       "catalogId": "L-01",
@@ -3586,7 +3694,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A09Y,A09Z,A0A0,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-02",
@@ -3619,7 +3728,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A0AK,A0AM,A0AL,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-03",
@@ -3652,7 +3762,8 @@
         "movementSpeed": 415
       },
       "originalAbilityList": "Avul,A0AG,A0AH,A0AI,A0AJ,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-04",
@@ -3685,7 +3796,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A09L,A09K,A09J,A09M,A09N,A09O,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-05",
@@ -3718,7 +3830,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A0AD,A0AE,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-06",
@@ -3751,7 +3864,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A090,A091,A092,A093,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-07",
@@ -3784,7 +3898,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A06O,A0TB,A06Q,A06R,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-08",
@@ -3817,7 +3932,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A05N,A05O,A05P,A05Q,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 111
     },
     {
       "catalogId": "L-09",
@@ -3850,7 +3966,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A0AB,A0AC,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-10",
@@ -3883,7 +4000,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A09U,A09V,A09W,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-11",
@@ -3916,7 +4034,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A011,Avul,A0A3,A0A4,A0A5,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-12",
@@ -3949,7 +4068,8 @@
         "movementSpeed": 360
       },
       "originalAbilityList": "Avul,A0AS,A0AT,A065,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-13",
@@ -3982,7 +4102,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A09D,A09F,A09E,A09H,A09I,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 112
     },
     {
       "catalogId": "L-14",
@@ -4015,7 +4136,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A114,Avul,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-15",
@@ -4048,7 +4170,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A18P,A0DU,A09S,Avul,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-16",
@@ -4081,7 +4204,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A08Z,A0JT,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-17",
@@ -4114,7 +4238,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A076,A077,A078,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 117
     },
     {
       "catalogId": "L-18",
@@ -4147,7 +4272,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A072,A073,A074,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-19",
@@ -4180,7 +4306,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A070,A071,A06Z,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-20",
@@ -4213,7 +4340,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A06W,A06X,A06Y,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-21",
@@ -4246,7 +4374,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0UH,Avul,A07A,A07B,A07F,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-22",
@@ -4279,7 +4408,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A08U,A08V,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-23",
@@ -4312,7 +4442,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A06T,A0MQ,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 114
     },
     {
       "catalogId": "L-24",
@@ -4345,7 +4476,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A0AO,A0AN,A0AP,A0AQ,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-25",
@@ -4378,7 +4510,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A06D,A06E,A06F,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-26",
@@ -4411,7 +4544,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A06A,Avul,A06B,A06C,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-27",
@@ -4444,7 +4578,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A0A7,A0A8,A0A9,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-28",
@@ -4477,7 +4612,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A063,Avul,A064,A067,A066,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 113
     },
     {
       "catalogId": "L-29",
@@ -4510,7 +4646,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A1A6,Avul,A0CU,A0CV,A0CW,A0WF,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-30",
@@ -4543,7 +4680,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A08G,Avul,A05Z,A060,A062,A061,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 116
     },
     {
       "catalogId": "L-31",
@@ -4576,7 +4714,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A05I,A05J,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-32",
@@ -4609,7 +4748,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A098,A099,A09A,A09B,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 115
     },
     {
       "catalogId": "L-33",
@@ -4642,7 +4782,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0S0,Avul,A08W,A08X,A08Y,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-34",
@@ -4675,7 +4816,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A10A,A132,A05T,Avul,A05U,A05W,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-35",
@@ -4708,7 +4850,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A06L,A06M,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 119
     },
     {
       "catalogId": "L-36",
@@ -4741,7 +4884,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A094,Avul,A09T,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 118
     },
     {
       "catalogId": "L-37",
@@ -4774,7 +4918,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A05K,Avul,A05L,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-38",
@@ -4807,7 +4952,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0AQ,Avul,A06G,A06I,A06H,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "L-39",
@@ -4840,7 +4986,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A0HI,A0HJ,A0HK,A0HR,A0HL,A912",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-01",
@@ -4876,7 +5023,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "YY17"
-      ]
+      ],
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-02",
@@ -4909,7 +5057,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0BC,A0BD,A0BE,A0BF,A07N,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-03",
@@ -4942,7 +5091,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A007,A07N,Avul,A0G3,A0G4",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-04",
@@ -4975,7 +5125,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07N,Avul,A0GG,A0GH,A0GI,A0GJ",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-05",
@@ -5008,7 +5159,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0C7,A07N,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-06",
@@ -5041,7 +5193,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0C0,A0C1,A0C2,A07N,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-07",
@@ -5074,7 +5227,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0DV,A0DW,A12K,A07N,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-08",
@@ -5107,7 +5261,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0BP,A0BO,A0BQ,A07N,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-09",
@@ -5140,7 +5295,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A1A5,A0BG,A0BH,A07H,A07N,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-10",
@@ -5173,7 +5329,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07N,Avul,A0GQ,A0GR,A0GS",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-11",
@@ -5206,7 +5363,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0DG,A0DF,A07N,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-12",
@@ -5242,7 +5400,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "YY11"
-      ]
+      ],
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-13",
@@ -5275,7 +5434,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A07N,A0GO,A0GP",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-14",
@@ -5311,7 +5471,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "YY14"
-      ]
+      ],
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-15",
@@ -5347,7 +5508,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "YY12"
-      ]
+      ],
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-16",
@@ -5380,7 +5542,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07N,Avul,A0G8,A0G9,A0GB",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-17",
@@ -5413,7 +5576,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0YQ,A07N,Avul,A0GC,A0GD",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-18",
@@ -5449,7 +5613,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "YY16"
-      ]
+      ],
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-19",
@@ -5482,7 +5647,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0K7,Avul,A07N,A0G2,A0G0",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-20",
@@ -5515,7 +5681,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07N,Avul,A0FY,A0FZ",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-21",
@@ -5548,7 +5715,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A07N,Avul,A0H3,A0H4,A0H5",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "H-22",
@@ -5581,7 +5749,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0DZ,A0E0,A0E1,A07N,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "T-01",
@@ -5614,7 +5783,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A10R,A0QW,A0QX,A0QY,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 103
     },
     {
       "catalogId": "T-02",
@@ -5647,7 +5817,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A10R,A0R6,A0R7,A0R8,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 103
     },
     {
       "catalogId": "T-03",
@@ -5680,7 +5851,8 @@
         "movementSpeed": 375
       },
       "originalAbilityList": "A10R,A0CR,A0R0,A0R1,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 103
     },
     {
       "catalogId": "T-04",
@@ -5713,7 +5885,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A10R,A1BF,Avul,A0GP,A0TX",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 103
     },
     {
       "catalogId": "T-05",
@@ -5746,7 +5919,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A10R,A0RD,A0RE,A0RF,A0RG,A0RH,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 103
     },
     {
       "catalogId": "LI-01",
@@ -5779,7 +5953,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A907,A0G5,A0GM,A0W7,A0GK,A0CZ,A1AV,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 110
     },
     {
       "catalogId": "LI-02",
@@ -5812,7 +5987,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A907,A0TD,A0TA,A0TC,A0TE,A0TF,A0TG,A0TH,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 110
     },
     {
       "catalogId": "LI-03",
@@ -5851,7 +6027,8 @@
       ],
       "sourceJassFusionAbilityRawcodes": [
         "A011"
-      ]
+      ],
+      "originalUnitPointValue": 108
     },
     {
       "catalogId": "LI-04",
@@ -5884,7 +6061,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A907,A0ZE,A05D,A0UT,A0UB,A0UA,A0UJ,A0U9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 110
     },
     {
       "catalogId": "LI-05",
@@ -5917,7 +6095,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A907,A130,A0IC,A0ID,A0IE,A0IF,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 110
     },
     {
       "catalogId": "LI-06",
@@ -5950,7 +6129,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A907,Avul,A0MR,A0MV,A0MW,A0MX,A0MY,A0MZ",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 110
     },
     {
       "catalogId": "LI-07",
@@ -5983,7 +6163,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A907,A19R,A19Q,A0E5,A0E6,A0U4,A0NT,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 110
     },
     {
       "catalogId": "LI-08",
@@ -6016,7 +6197,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0VR,A0RM,A0RO,A0RQ,A1AQ,A907,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 109
     },
     {
       "catalogId": "LI-09",
@@ -6049,7 +6231,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A907,A02U,A031,A04L,Avul,A004,A003,A041",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 110
     },
     {
       "catalogId": "LI-10",
@@ -6082,7 +6265,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A907,A0SA,A0S3,A0S4,A0S5,A0S6,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 110
     },
     {
       "catalogId": "D-01",
@@ -6115,7 +6299,8 @@
         "movementSpeed": 470
       },
       "originalAbilityList": "A0QH,Avul,A0RK,A09R,A0T5,A0T8,A0T9",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "D-02",
@@ -6148,7 +6333,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0QH,A0DJ,A0DK,A0DL,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "D-03",
@@ -6181,7 +6367,8 @@
         "movementSpeed": 470
       },
       "originalAbilityList": "A0QH,Avul,A0H6,A0H7,A0H8",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "D-04",
@@ -6220,7 +6407,8 @@
       ],
       "sourceJassFusionAbilityRawcodes": [
         "IF02"
-      ]
+      ],
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "D-05",
@@ -6253,7 +6441,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0QH,A13J,A14K,A0R9,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "D-06",
@@ -6286,7 +6475,8 @@
         "movementSpeed": 500
       },
       "originalAbilityList": "A138,A03J,A139,A0QH,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "TR-01",
@@ -6322,7 +6512,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR08"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-02",
@@ -6358,7 +6549,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR01"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-03",
@@ -6394,7 +6586,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR04"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-04",
@@ -6430,7 +6623,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR02"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-05",
@@ -6466,7 +6660,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR26"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-06",
@@ -6502,7 +6697,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR17"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-07",
@@ -6538,7 +6734,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR05"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-08",
@@ -6574,7 +6771,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR09"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-09",
@@ -6610,7 +6808,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR10"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-10",
@@ -6646,7 +6845,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR12"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-11",
@@ -6682,7 +6882,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR13"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-12",
@@ -6718,7 +6919,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR14"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-13",
@@ -6754,7 +6956,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR15"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-14",
@@ -6790,7 +6993,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR07"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-15",
@@ -6826,7 +7030,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR16"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-16",
@@ -6862,7 +7067,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR24"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-17",
@@ -6898,7 +7104,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR18"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-18",
@@ -6934,7 +7141,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR19"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-19",
@@ -6970,7 +7178,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR20"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-20",
@@ -7006,7 +7215,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR06"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-21",
@@ -7042,7 +7252,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR21"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-22",
@@ -7078,7 +7289,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR22"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-23",
@@ -7114,7 +7326,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR23"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-24",
@@ -7150,7 +7363,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR29"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-25",
@@ -7186,7 +7400,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR25"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-26",
@@ -7222,7 +7437,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR11"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-27",
@@ -7258,7 +7474,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR03"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-28",
@@ -7294,7 +7511,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR27"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-29",
@@ -7330,7 +7548,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR28"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "TR-30",
@@ -7366,7 +7585,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "TR30"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "E-01",
@@ -7402,7 +7622,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "ET02"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "E-02",
@@ -7455,7 +7676,8 @@
       ],
       "sourceJassFusionAbilityRawcodes": [
         "ET04"
-      ]
+      ],
+      "originalUnitPointValue": 161
     },
     {
       "catalogId": "E-04",
@@ -7491,7 +7713,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "ET08"
-      ]
+      ],
+      "originalUnitPointValue": 161
     },
     {
       "catalogId": "E-05",
@@ -7524,7 +7747,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A906,A0N2,A0N3,A0N4,A0NJ,A0NK,A0NL,Avul,A0BT",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 161
     },
     {
       "catalogId": "E-06",
@@ -7560,7 +7784,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "ET01"
-      ]
+      ],
+      "originalUnitPointValue": 161
     },
     {
       "catalogId": "E-07",
@@ -7596,7 +7821,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "ET11"
-      ]
+      ],
+      "originalUnitPointValue": 161
     },
     {
       "catalogId": "E-08",
@@ -7632,7 +7858,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "ET10"
-      ]
+      ],
+      "originalUnitPointValue": 161
     },
     {
       "catalogId": "E-09",
@@ -7671,7 +7898,8 @@
       ],
       "sourceJassFusionAbilityRawcodes": [
         "ET07"
-      ]
+      ],
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "E-10",
@@ -7707,7 +7935,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "ET09"
-      ]
+      ],
+      "originalUnitPointValue": 161
     },
     {
       "catalogId": "E-11",
@@ -7743,7 +7972,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "ET12"
-      ]
+      ],
+      "originalUnitPointValue": 161
     },
     {
       "catalogId": "E-12",
@@ -7779,7 +8009,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "ET06"
-      ]
+      ],
+      "originalUnitPointValue": 161
     },
     {
       "catalogId": "I-01",
@@ -7815,7 +8046,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "IM03"
-      ]
+      ],
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "I-02",
@@ -7851,7 +8083,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "IM04"
-      ]
+      ],
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "I-03",
@@ -7887,7 +8120,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "IM08"
-      ]
+      ],
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "I-04",
@@ -7923,7 +8157,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "IM01"
-      ]
+      ],
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "I-05",
@@ -7959,7 +8194,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "IM12"
-      ]
+      ],
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "I-06",
@@ -7992,7 +8228,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A905,A116,A0RV,A0RW,A0RX,A0RY,A0RZ,AInv,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 131
     },
     {
       "catalogId": "I-07",
@@ -8031,7 +8268,8 @@
       ],
       "sourceJassFusionAbilityRawcodes": [
         "IM06"
-      ]
+      ],
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "I-08",
@@ -8064,7 +8302,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A905,Avul,A0IG,A0IH,A0IM,A0IN,A0IQ,A0IR,A0IL,A0IP",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "I-09",
@@ -8100,7 +8339,8 @@
       "combatParityVerified": false,
       "sourceJassFusionAbilityRawcodes": [
         "IM02"
-      ]
+      ],
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "I-10",
@@ -8133,7 +8373,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A905,Avul,A0QP,A0QQ,A0QR,A0QS,A0QT,A11C",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "I-11",
@@ -8173,7 +8414,8 @@
       ],
       "sourceJassFusionAbilityRawcodes": [
         "IM11"
-      ]
+      ],
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "I-12",
@@ -8206,7 +8448,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A905,A0AQ,A0SB,A0SC,A0SD,A0SE,A0SF,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 151
     },
     {
       "catalogId": "SR-01",
@@ -8239,7 +8482,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A13S,A13M,A06J,A13K,A13C,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 118
     },
     {
       "catalogId": "SR-02",
@@ -8272,7 +8516,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A13W,A13X,A13U,A13K,A13C,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 101
     },
     {
       "catalogId": "SR-03",
@@ -8305,7 +8550,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A147,A146,A145,A13K,A13C,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 113
     },
     {
       "catalogId": "SR-04",
@@ -8338,7 +8584,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A098,A099,A140,A13Z,A143,A13K,A13C,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 115
     },
     {
       "catalogId": "RN-01",
@@ -8371,7 +8618,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A19W,A0XX,A0YI,A0YH,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-02",
@@ -8404,7 +8652,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A0Y3,A0Y1,A0Y4,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-03",
@@ -8437,7 +8686,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A0YN,Avul,A10V",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-04",
@@ -8470,7 +8720,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A19U,A0Y5,A0YR,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-05",
@@ -8503,7 +8754,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A19S,A0Y7,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-06",
@@ -8536,7 +8788,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A1AD,A0YJ,A0YO,A0YT,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-07",
@@ -8569,7 +8822,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A19V,A0Y8,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-08",
@@ -8602,7 +8856,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A12C,A0YY,A0YP,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-09",
@@ -8635,7 +8890,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A0Y9,A0YX,A0YL,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-10",
@@ -8668,7 +8924,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A0XT,A0YA,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-11",
@@ -8701,7 +8958,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A0Y6,A0YM,A0YW,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-12",
@@ -8734,7 +8992,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A0Z0,A0Z4,A19T,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-13",
@@ -8767,7 +9026,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A0YB,A0YC,A0QG,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "RN-14",
@@ -8800,7 +9060,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A800,A0YK,A0YG,A0YV,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 180
     },
     {
       "catalogId": "MY-01",
@@ -8833,7 +9094,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,Avul,A13I,A0ZS,A0ZU,A0ZV,A0ZW",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "MY-02",
@@ -8866,7 +9128,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A0X1,A0X2,A0X3,A0X6",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "MY-03",
@@ -8899,7 +9162,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A0VZ,A0W1,A0W2,A0W3",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "MY-04",
@@ -8932,7 +9196,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,Avul,A0VT,A0VU,A0VX,A13I,A0VY,A0VW",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "MY-05",
@@ -8965,7 +9230,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,Avul,A0W9,A0WA,A0WC,A0WD,A0WB",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "MY-06",
@@ -8998,7 +9264,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A0XK,A0XL,A0XM,A0XN",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 182
     },
     {
       "catalogId": "MY-07",
@@ -9031,7 +9298,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A0X8,A0X9,A0XA,A0XC,A0XB,AInv",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "MY-08",
@@ -9064,7 +9332,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A10K,A10J,A10M,A10N,A10O",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "MY-09",
@@ -9097,7 +9366,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A0Z8,A0Z9,A0ZA,A0ZB",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "MY-10",
@@ -9130,7 +9400,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A0ZI,A0ZH,A0ZK,A0ZJ,A0ZD,A0ZM",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "MY-11",
@@ -9163,7 +9434,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A0XD,A0XE,A0XF,A0XJ,A0XG",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "MY-12",
@@ -9196,7 +9468,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A0WW,A0WX,A0WZ,A0WY",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 183
     },
     {
       "catalogId": "MY-13",
@@ -9229,7 +9502,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A909,A13I,Avul,A0XU,A0XR,A0XQ,A0XV",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 181
     },
     {
       "catalogId": "PS-01",
@@ -9262,7 +9536,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "A0BB,A0JE,Avul",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 60
     },
     {
       "catalogId": "KM-01",
@@ -9284,7 +9559,8 @@
         "movementSpeed": 522
       },
       "originalAbilityList": "Avul,A07O",
-      "combatParityVerified": false
+      "combatParityVerified": false,
+      "originalUnitPointValue": 99
     },
     {
       "catalogId": "LT-01",

@@ -1,0 +1,33 @@
+{
+  "format": "ordr-native-combat-batch51-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceMapSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceUnitDataSlkSha256": "841a3bf714cecbf075d9b31d5bb1e14a38bbd6473a0e880ef342aaef562f1b23",
+  "sourceAbilityDataSlkSha256": "23e9eb93d805a63cc76bfb617189331aef1e40c0c0ec69860bd7399a3bef2eda",
+  "status": "code-implemented-in-main-working-tree-not-executed",
+  "features": [
+    {
+      "name": "S-Shark native Inner Fire targets and armor",
+      "jass": ["CEN", "CEO", "CEP"],
+      "objects": ["Units\\UnitData.slk:points", "Units\\AbilityData.slk:A0N1/Ainf"],
+      "behavior": "0.21s self cast, 0.1s between up to two other same-player allies within 450, allies must have unit point value >100, repeated after 19.7s; attack power +55% and armor +1.75 last 20.5s",
+      "pointCoverage": "275/276 mapped original catalog rawcodes; LT-01 lucky token source rawcode is not an original UnitData.slk row and has no invented value",
+      "limitation": "armor status is stored but incoming allied damage/defense model is not implemented"
+    },
+    {
+      "name": "Tesoro B8S native A11S factor",
+      "jass": ["B8V", "B8S", "B8Q", "B8R", "B99", "Bvi", "CVX", "CVY"],
+      "behavior": "LL[player] begins at level 21; standard line/boss spawn copies its then-current level into A11S, while enraged CVZ sets exactly level 1; Dragon fusion increases LL by 20 for future spawns, NOT existing enemies; use per-target spawn snapshot in gold and percent-HP packets",
+      "limitation": "other LL research/trait mutations, live ability changes, berserk and story A11S levels, native armor/UNIVERSAL postprocessing are not yet modeled; source frost-armor buff removal/stacking is unresolved"
+    },
+    {
+      "name": "Uta B7W/B63/B61/B6x introduction",
+      "jass": ["B7W", "B63", "B61", "B6y", "B6x", "B6w", "B6s"],
+      "behavior": "the original only starts the sequence through a special text command, not a generic attack roll; mobile E-09 unit-details button initiates once per instance, applies the 800-radius 1500000 x [1,1.5] packet, then creates one h04O near caster after ~1s through the existing independent soldier combat and expiration paths",
+      "limitation": "special chat command mapped to explicit unit action; original B61 respawn/HP/transform 600-tick semantics and first-use item event are not replicated; h04O 7s expiry is the existing tooltip-model approximation"
+    }
+  ],
+  "preserved": ["AI00/AI01/AI02 item effects remain empty shells", "240/266 CWR combinations", "nightmare-isekai fixed mode", "65-round local accumulated clears", "no Python/Unity/Android/APK test execution by user instruction"],
+  "next": ["live native A11S levels for story, berserk and other LL upgrades", "ally incoming-hit armor consumption", "frost-armor loss and Tesoro third-cycle trigger", "unresolved TR30/RDUN combinations and remaining unit skill callbacks"]
+}
