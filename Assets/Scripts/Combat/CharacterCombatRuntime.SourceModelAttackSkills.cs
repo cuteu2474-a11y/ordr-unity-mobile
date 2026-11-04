@@ -136,7 +136,13 @@ namespace Ordr.Mobile.Combat
 
             if (batch != null)
             {
-                ExecuteSourceModelBatchAttack(actor, primary, batch);
+                // A registered JASS batch and a separately modeled tooltip
+                // packet may coexist for the same owner. Do not swallow the
+                // latter merely because the batch callback was registered first.
+                if (batch.CatalogId == actor.Catalog.Id)
+                    ExecuteSourceModelBatchAttack(actor, primary, batch);
+                if (unconnected != null && unconnected.CatalogId == actor.Catalog.Id)
+                    ExecuteSourceModelUnconnectedProfileAttacks(actor, primary, unconnected);
                 return;
             }
 

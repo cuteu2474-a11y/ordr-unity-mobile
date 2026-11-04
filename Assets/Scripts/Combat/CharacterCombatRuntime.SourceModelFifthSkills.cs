@@ -14,7 +14,7 @@ namespace Ordr.Mobile.Combat
         // determines Rankyaku's direction. Keep story/main lanes separate.
         public void ConfigureSourceModelRouteCorners(IReadOnlyList<CombatPathPoint> corners)
         {
-            if (!UsesSourceModelBasicAttacks || corners == null || corners.Count < 2)
+            if (corners == null || corners.Count < 2)
                 throw new ArgumentException("연습 라인 경로가 필요합니다.", nameof(corners));
             sourceModelRouteCorners = new List<CombatPathPoint>(corners).AsReadOnly();
         }

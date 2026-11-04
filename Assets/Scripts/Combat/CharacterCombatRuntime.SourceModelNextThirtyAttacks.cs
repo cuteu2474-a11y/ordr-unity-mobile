@@ -282,6 +282,14 @@ namespace Ordr.Mobile.Combat
             foreach (var candidate in caster.Profile.Skills)
                 if (candidate.Id == skillId) { selected = candidate; break; }
             if (selected == null) return false;
+            // A known model owner must not fall through to the generic
+            // resource ledger when a tooltip active is not approved.
+            if (!SourceModelNextThirtySkillCatalog.CanCastApprovedActive(
+                    caster.Catalog.Id, approvedNames, selected))
+            {
+                result = AbilityCastResult.UnsupportedEffect;
+                return true;
+            }
             if (SourceModelTwentyFifthSkillCatalog.IsSpecial(selected))
                 return TryCastSourceModelTwentyFifthActive(caster, selected,
                     primaryEnemyId, out result);
