@@ -196,10 +196,10 @@ namespace Ordr.Mobile.Combat
                 // The source condition is FIFTY accumulated armor breaks,
                 // not a guessed armor debuff duration or defense percentage.
                 bool eligible = false;
-                foreach (string candidate in BuildTargetCandidates(actor))
+                foreach (var candidate in BuildTargetCandidates(actor))
                 {
                     SpatialCombatEnemy victim;
-                    if (enemies.TryGetValue(candidate, out victim) &&
+                    if (enemies.TryGetValue(candidate.Id, out victim) &&
                         victim.Enemy.IsAlive && ArmorBreakStacksOf(victim.Id) >= 50)
                         eligible = true;
                 }
@@ -358,11 +358,11 @@ namespace Ordr.Mobile.Combat
                     // a different first preview target must not waste it.
                     SpatialCombatEnemy victim = primary;
                     if (ArmorBreakStacksOf(victim.Id) < 50)
-                        foreach (string candidate in BuildTargetCandidates(actor))
+                        foreach (var candidate in BuildTargetCandidates(actor))
                         {
                             SpatialCombatEnemy eligible;
-                            if (enemies.TryGetValue(candidate, out eligible) &&
-                                eligible.Enemy.IsAlive && ArmorBreakStacksOf(candidate) >= 50)
+                            if (enemies.TryGetValue(candidate.Id, out eligible) &&
+                                eligible.Enemy.IsAlive && ArmorBreakStacksOf(candidate.Id) >= 50)
                             { victim = eligible; break; }
                         }
                     if (!sourceModelKingExecutionUsed.Contains(actor.Id) &&
