@@ -59,8 +59,10 @@ class FourteenthSatelliteTests(unittest.TestCase):
         self.assertIn("actor.Mana -= cost", INDEPENDENT)
         self.assertIn("actor.MaximumMana != cost", INDEPENDENT)
         self.assertIn('actor.Rawcode != "H0AE"', INDEPENDENT)
-        self.assertIn("ApplySourceModelFixedAreaPacket(actor, primary, radius, 2000000, name)",
-                      INDEPENDENT)
+        self.assertIn('TrySourceModelSatelliteAttribute(actor,', INDEPENDENT)
+        self.assertIn('"strength", out strength)', INDEPENDENT)
+        self.assertIn('ApplySourceModelSatelliteFixedArea(actor, primary,', INDEPENDENT)
+        self.assertIn('target.Enemy.MaxHealth * (.001 * strength)', INDEPENDENT)
         self.assertIn("actual", INDEPENDENT)  # Real HP ledger, not cosmetic event only.
 
     def test_five_variants_remain_distinct_from_independent_seraphim(self):

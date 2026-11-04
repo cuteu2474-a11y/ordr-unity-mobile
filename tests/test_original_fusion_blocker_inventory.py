@@ -22,14 +22,14 @@ class FusionBlockerInventoryTests(unittest.TestCase):
     def test_all_265_source_recipes_are_recounted_from_real_csharp_arrays(self):
         self.assertEqual(build(self.data, self.port), self.inventory)
         summary = self.inventory['summary']
-        self.assertEqual((265, 154, 111), (summary['sourceRecipesExcludingTest'],
+        self.assertEqual((265, 167, 98), (summary['sourceRecipesExcludingTest'],
                                          summary['liveExecutableRecipes'],
                                          summary['blockedRecipes']))
         self.assertEqual({'Reviewed': 13, 'ReviewedSpecial': 31, 'ReviewedRare': 41,
                           'ReviewedLegendary': 34, 'ReviewedHidden': 19,
-                          'ReviewedEternal': 1, 'ReviewedRestricted': 15},
+                          'ReviewedEternal': 1, 'ReviewedRestricted': 28},
                          summary['liveExecutableByGrade'])
-        self.assertEqual(111, len({r['abilityRawcode'] for r in self.inventory['blocked']}))
+        self.assertEqual(98, len({r['abilityRawcode'] for r in self.inventory['blocked']}))
 
     def test_grouped_reasons_preserve_source_costs_and_unknown_materials(self):
         for row in self.inventory['blocked']:
@@ -59,6 +59,9 @@ class FusionBlockerInventoryTests(unittest.TestCase):
         self.assertNotIn('ET01', blocked)
         for ability in ('A0RP', 'IM02', 'IM03', 'IM10', 'ET09', 'ET11'):
             self.assertNotIn(ability, blocked)
+        for ability in ('A0Y3', 'A0Y9', 'A0XT', 'A1AD', 'A0Y6', 'A0YK', 'A10V',
+                        'A19W', 'A19U', 'A19S', 'A19V', 'A19T', 'A0QG'):
+            self.assertNotIn(ability, blocked)
 
     def test_unverified_entries_do_not_turn_into_free_unit_rewards(self):
         for ability in ('UU01', 'YY26'):
@@ -77,11 +80,22 @@ class FusionBlockerInventoryTests(unittest.TestCase):
                               restricted.group(1))
         expected = [(r['ability'], r['result'], r['catalogId'])
                     for r in evidence['reviewedExecutable']]
-        self.assertEqual(expected, declared)
+        self.assertEqual(expected, declared[:len(expected)],
+                         'Native callback-reviewed recipes stay pinned in their original order')
+        expanded = declared[len(expected):]
+        self.assertEqual([
+            ('A0Y3', 'h09W', 'MY-04'), ('A0Y9', 'h0A2', 'MY-03'),
+            ('A0XT', 'h09N', 'MY-06'), ('A1AD', 'h08M', 'MY-08'),
+            ('A0Y6', 'h09R', 'MY-11'), ('A0YK', 'h0BF', 'MY-02'),
+            ('A10V', 'h083', 'MY-07'), ('A19W', 'h09M', 'MY-01'),
+            ('A19U', 'h0AC', 'MY-13'), ('A19S', 'h0A6', 'MY-09'),
+            ('A19V', 'h0CC', 'MY-10'), ('A19T', 'h08I', 'MY-05'),
+            ('A0QG', 'h0C2', 'MY-14')], expanded,
+            'The 13 mobile-result Mystic recipes require separate source/result gates')
         objects = {r['originalRawcode']: r for r in json.loads((self.data /
             'original-2323C-map-base-stats.json').read_text())['catalogEntries']
                    if r.get('originalRawcode')}
-        for ability, rawcode, catalog_id in declared:
+        for ability, rawcode, catalog_id in expected:
             self.assertEqual(objects[rawcode]['catalogId'], catalog_id)
             registration = self.source[ability]
             self.assertEqual(registration['results'], [dict(kind='UNIT', rawcode=rawcode, count=1)])
@@ -96,6 +110,31 @@ class FusionBlockerInventoryTests(unittest.TestCase):
                     continue
                 self.assertEqual([rawcode], [c['rawcode'] for c in registration['conditions']
                                              if c['kind'] == kind])
+        mystic_evidence = json.loads((self.data / 'original-2323C-mystic-pick-batch35.json').read_text())
+        self.assertEqual('MOBILE_RESULT_MATCHED_NOT_NATIVE_CALLBACK_VERIFIED',
+                         mystic_evidence['executionClassification'])
+        documented_pick = {row['abilityRawcode'] for row in mystic_evidence['implementedResults']}
+        self.assertTrue({'A19W', 'A19U', 'A19S', 'A19V', 'A19T'} <= documented_pick)
+        for ability, rawcode, catalog_id in expanded:
+            reg = self.source[ability]
+            self.assertEqual(reg['results'], [dict(kind='UNIT', rawcode=rawcode, count=1)])
+            kinds = {condition['kind'] for condition in reg['conditions']}
+            self.assertTrue({'UNIT', 'GOLD', 'WOOD', 'KING'} <= kinds)
+            self.assertTrue(kinds <= {'UNIT', 'GOLD', 'WOOD', 'KING', 'PICK'})
+            self.assertEqual(10000, sum(c['count'] for c in reg['conditions']
+                                        if c['kind'] == 'GOLD'))
+            self.assertEqual(7, sum(c['count'] for c in reg['conditions']
+                                    if c['kind'] == 'WOOD'))
+            if ability in documented_pick or ability == 'A0QG':
+                self.assertEqual([('A800', 1)], [(c['rawcode'], c['count'])
+                                                 for c in reg['conditions'] if c['kind'] == 'PICK'])
+            else:
+                self.assertNotIn('PICK', kinds)
+            if rawcode in objects:
+                self.assertEqual(objects[rawcode]['catalogId'], catalog_id)
+            else:
+                self.assertEqual(('A0QG', 'h0C2', 'MY-14'),
+                                 (ability, rawcode, catalog_id))
         self.assertIn('verifiedConditions.CanSatisfy', code)
         self.assertIn('sourceRestrictions.ConfirmObservedOriginalRound', code)
         self.assertIn('BeginOriginalFusionUnitSwap', code)

@@ -88,7 +88,8 @@ class SourceModelSeventhBatchTests(unittest.TestCase):
         self.assertIn('basicAttackExplosivePercent', SEVENTH)
         self.assertIn('singleMagicalDamagePerHit', SEVENTH)
         self.assertIn('bool modeledCombat = false', TEMPORARY)
-        self.assertIn('bool autonomous = nativeAutonomous || modeledCombat', TEMPORARY)
+        self.assertIn('bool autonomous = (nativeAutonomous || modeledCombat) &&', TEMPORARY)
+        self.assertIn('sourceModelRules.SourceObjectAttack(sourceRawcode) != null;', TEMPORARY)
         self.assertIn('if (nativeAutonomous)', TEMPORARY)
 
     def test_standalone_transform_and_clone_do_not_hide_prior_sixth_skills(self):

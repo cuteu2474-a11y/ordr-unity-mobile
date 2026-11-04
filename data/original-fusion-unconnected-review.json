@@ -13,8 +13,8 @@
   ],
   "summary": {
     "sourceRecipesExcludingTest": 265,
-    "liveExecutableRecipes": 154,
-    "blockedRecipes": 111,
+    "liveExecutableRecipes": 167,
+    "blockedRecipes": 98,
     "liveExecutableByGrade": {
       "Reviewed": 13,
       "ReviewedSpecial": 31,
@@ -22,7 +22,7 @@
       "ReviewedLegendary": 34,
       "ReviewedHidden": 19,
       "ReviewedEternal": 1,
-      "ReviewedRestricted": 15
+      "ReviewedRestricted": 28
     },
     "blockedByReason": {
       "chat-player-state-effect": 1,
@@ -32,11 +32,10 @@
       "no-unit-payment-in-registration": 24,
       "round-state": 15,
       "special-native-result": 8,
-      "special-target-or-pick": 6,
-      "top-tier-route-or-callback-audit": 60,
+      "top-tier-route-or-callback-audit": 47,
       "trait-counter": 12,
       "transformation-effect": 4,
-      "unmapped-original-unit": 4
+      "unmapped-original-unit": 3
     }
   },
   "blocked": [
@@ -2021,294 +2020,6 @@
         "creation-followup-CH8",
         "no-unit-payment-in-registration",
         "round-state"
-      ]
-    },
-    {
-      "abilityRawcode": "A19W",
-      "resultRawcodes": [
-        "h09M"
-      ],
-      "resultNames": [
-        "고죠 사토루 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "PICK",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "special-target-or-pick",
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A0Y3",
-      "resultRawcodes": [
-        "h09W"
-      ],
-      "resultNames": [
-        "나미카제 미나토 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A0Y9",
-      "resultRawcodes": [
-        "h0A2"
-      ],
-      "resultNames": [
-        "료우기 시키 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A19U",
-      "resultRawcodes": [
-        "h0AC"
-      ],
-      "resultNames": [
-        "히그마 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "PICK",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "special-target-or-pick",
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A0XT",
-      "resultRawcodes": [
-        "h09N"
-      ],
-      "resultNames": [
-        "부릉냐 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A19S",
-      "resultRawcodes": [
-        "h0A6"
-      ],
-      "resultNames": [
-        "야쿠모 유카리 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "PICK",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "special-target-or-pick",
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A19V",
-      "resultRawcodes": [
-        "h0CC"
-      ],
-      "resultNames": [
-        "콘파쿠 요우무 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "PICK",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "special-target-or-pick",
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A1AD",
-      "resultRawcodes": [
-        "h08M"
-      ],
-      "resultNames": [
-        "아냐 포저 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A0Y6",
-      "resultRawcodes": [
-        "h09R"
-      ],
-      "resultNames": [
-        "쿠죠 죠타로 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A19T",
-      "resultRawcodes": [
-        "h08I"
-      ],
-      "resultNames": [
-        "쿠치키 뱌쿠야 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "PICK",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "special-target-or-pick",
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A0YK",
-      "resultRawcodes": [
-        "h0BF"
-      ],
-      "resultNames": [
-        "카마도 네즈코 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A10V",
-      "resultRawcodes": [
-        "h083"
-      ],
-      "resultNames": [
-        "샌즈 - 신비"
-      ],
-      "unmappedUnitRawcodes": [],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "top-tier-route-or-callback-audit"
-      ]
-    },
-    {
-      "abilityRawcode": "A0QG",
-      "resultRawcodes": [
-        "h0C2"
-      ],
-      "resultNames": [
-        "한마 유지로 - 신비"
-      ],
-      "unmappedUnitRawcodes": [
-        "h0C2"
-      ],
-      "originalConditionKinds": [
-        "GOLD",
-        "KING",
-        "PICK",
-        "UNIT",
-        "WOOD"
-      ],
-      "sourceGoldCost": 10000,
-      "sourceWoodCost": 7,
-      "reasonCodes": [
-        "special-target-or-pick",
-        "top-tier-route-or-callback-audit",
-        "unmapped-original-unit"
       ]
     }
   ]

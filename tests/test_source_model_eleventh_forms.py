@@ -36,7 +36,8 @@ class EleventhSourceFormTests(unittest.TestCase):
         self.assertIn('resource.SetSourceModelFormManaPool(100, 100)', FORMS)
         self.assertIn('previous.Form == "nika"', TEN)
         self.assertIn('ClearSourceForm(InstanceKey(id))', TEN)
-        self.assertIn('rules.SourceFormRawcodeOf(attacker) == "H0BY"', EFFECTS)
+        self.assertIn('string form = rules.SourceFormRawcodeOf(attacker)', EFFECTS)
+        self.assertIn('form == "H0BY" || form == "h0AF" ? form : rawcode', EFFECTS)
         self.assertIn('rawcode == "H0BX"', ATTACK)
 
     def test_king_requires_actual_stacks_and_spends_exact_mana(self):

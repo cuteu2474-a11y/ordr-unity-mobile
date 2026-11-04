@@ -48,7 +48,9 @@ class NinthTenSkillModelTests(unittest.TestCase):
         model = (COMBAT / "CharacterCombatRuntime.SourceModelNinthSkills.cs").read_text()
         effects = (COMBAT / "CharacterCombatRuntime.SourceModelEffects.cs").read_text()
         self.assertIn("AdvanceSourceModelNinthProjectiles", effects)
-        self.assertIn("ConfigurePracticeSuccessfulBasicHit(OnSourceModelNinthSuccessfulBasicHit)", effects)
+        self.assertIn('ConfigurePracticeSuccessfulBasicHit((attacker, rawcode, target, actual) => {', effects)
+        self.assertIn('OnSourceModelNinthSuccessfulBasicHit(attacker, rawcode, target, actual)', effects)
+        self.assertIn('OnSourceModelTwentyFifthSuccessfulBasicHit(attacker, rawcode, target, actual)', effects)
         self.assertIn('sourceModelNinthDue[key] = Time + skill.Number("absoluteCooldownSeconds").Value', model)
         self.assertIn("sourceModelNinthProjectiles.RemoveAt(i)", model)
 

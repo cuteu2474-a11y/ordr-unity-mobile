@@ -47,9 +47,16 @@ class WikiUnitExtensionTests(unittest.TestCase):
         self.assertTrue(all(base[row["variantOfUnitId"]]["grade"] == row["grade"]
                             for row in forms))
         self.assertTrue(all(row["gameRawCode"] is None and
-                            row["attackPower"] is None and
-                            row["gameplayStatus"] == "identity-only-no-new-execution-authority"
+                            row["attackPower"] is None
                             for row in self.extension["entries"]))
+        self.assertTrue(all(row["gameplayStatus"] ==
+                            "identity-only-no-new-execution-authority"
+                            for row in self.extension["entries"] if row["id"] != "MY-14"))
+        # MY-14 was subsequently allowed by the separately reviewed source-CWR
+        # result route. Overlay identity alone still cannot grant that permission.
+        my14 = next(r for r in self.extension["entries"] if r["id"] == "MY-14")
+        self.assertIn("source-CWR-mobile-result-enabled", my14["gameplayStatus"])
+        self.assertIn("native-skill-callback-unverified", my14["gameplayStatus"])
 
     def test_source_identity_never_grants_fusion_permission(self):
         items = {row["id"]: row for row in self.extension["entries"]}

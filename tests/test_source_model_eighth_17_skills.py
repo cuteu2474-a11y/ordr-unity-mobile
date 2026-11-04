@@ -87,7 +87,10 @@ class SourceModelEighthSkillsTests(unittest.TestCase):
 
     def test_koby_five_wave_stacking_and_shanks_shared_cadence(self):
         self.assertIn('combat.OnSourceModelPracticeRoundStarted(wave)', PRACTICE)
-        self.assertIn('wave % 5 != 0', EIGHTH)
+        self.assertIn('SourceModelKobyRoundRules.CanAdvance(wave,', EIGHTH)
+        self.assertIn('sourceModelKobyLastUpgradeWave.Add(actor.Id, wave)', EIGHTH)
+        self.assertIn('sourceModelKobyLastUpgradeWave[actor.Id] = wave', EIGHTH)
+        self.assertIn('currentWave - savedWave >= OriginalRoundsPerLevel', EIGHTH)
         self.assertIn('previous + 1', EIGHTH)
         self.assertIn('CombatEffectType.AttackSpeedBuff', EIGHTH)
         self.assertIn('next * skill.Components[0].Number("percentPerLevel").Value', EIGHTH)

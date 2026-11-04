@@ -115,15 +115,24 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rows = rows()
+        # The original reviewed thirty-unit batch is still pinned. Three
+        # later source-model owner rows were appended without replacing it.
+        cls.added_owner_ids = {'H-07', 'E-03', 'I-05'}
+        cls.legacy_rows = [entry for entry in cls.rows
+                           if entry[0] not in cls.added_owner_ids]
         cls.status = {entry['catalogId']: entry for entry in json.loads(
             (ROOT / 'data/unit-runtime-status.json').read_text())['entries']}
         cls.profiles = {entry['unitId']: entry for entry in json.loads(
             (ROOT / 'data/character-skill-profiles.json').read_text())['profiles']}
 
     def test_exact_thirty_distinct_original_object_identities(self):
-        self.assertEqual(30, len(self.rows))
-        self.assertEqual(30, len({entry[0] for entry in self.rows}))
-        self.assertEqual(30, len({entry[1] for entry in self.rows}))
+        self.assertEqual(30, len(self.legacy_rows))
+        self.assertEqual(33, len(self.rows))
+        self.assertEqual(33, len({entry[0] for entry in self.rows}))
+        self.assertEqual(33, len({entry[1] for entry in self.rows}))
+        self.assertEqual(self.added_owner_ids,
+                         {entry[0] for entry in self.rows} -
+                         {entry[0] for entry in self.legacy_rows})
         previous = {entry['id'] for entry in json.loads((ROOT /
             'data/original-2323C-next-30-runtime-coverage.json').read_text())['units']}
         for unit_id, rawcode, *_ in self.rows:
@@ -133,7 +142,7 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
 
     def test_approved_packets_are_whole_and_source_declared(self):
         attacks = active = 0
-        for unit_id, _, *names in self.rows:
+        for unit_id, _, *names in self.legacy_rows:
             by_name = {skill['name']: skill for skill in self.profiles[unit_id]['skills']}
             for name in names:
                 self.assertTrue(supported(by_name[name], unit_id), (unit_id, name))
@@ -145,8 +154,20 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
         self.assertEqual(15, active,
                          'Batch 24 adds Rayleigh and Smoker complete actives')
 
-    def test_legacy_source_callbacks_are_not_double_activated(self):
+    def test_later_three_owners_require_specialized_exact_packet_gates(self):
+        catalog = SOURCE.read_text()
+        self.assertIn('SourceModelTwentiethSkillCatalog.CanModelAttack(skill)', catalog)
+        self.assertIn('SourceModelTwentiethSkillCatalog.CanModelActive(skill)', catalog)
+        self.assertIn('SourceModelTwentyThirdSkillCatalog.CanModelExactAttack(skill)', catalog)
+        self.assertIn('SourceModelTwentyThirdSkillCatalog.CanModelExactActive(skill)', catalog)
         by_id = {unit_id: names for unit_id, _, *names in self.rows}
+        self.assertEqual({'H-07', 'E-03', 'I-05'}, self.added_owner_ids)
+        self.assertIn('갑판 포격', by_id['H-07'])
+        self.assertIn('영혼 고정 타격', by_id['E-03'])
+        self.assertIn('데어 슈테르크슈테 스트라이크', by_id['I-05'])
+
+    def test_legacy_source_callbacks_are_not_double_activated(self):
+        by_id = {unit_id: names for unit_id, _, *names in self.legacy_rows}
         self.assertEqual([], by_id['L-33'])
         self.assertEqual([], by_id['H-16'])
         runtime = (ROOT / 'Assets/Scripts/Combat/'
@@ -155,14 +176,14 @@ class SecondThirtyTooltipPracticeTests(unittest.TestCase):
                         runtime.index('if (nextThirty != null)'))
 
     def test_unresolved_form_or_summon_skills_are_never_auto_approved(self):
-        by_id = {unit_id: names for unit_id, _, *names in self.rows}
+        by_id = {unit_id: names for unit_id, _, *names in self.legacy_rows}
         for unit_id in ('TR-23', 'TR-30', 'I-11'):
             self.assertEqual([], by_id[unit_id])
         self.assertEqual(['대자재천신'], by_id['I-06'],
                          'Big Mom has one complete sourced health-cost packet, not a form or summon')
 
     def test_same_named_complete_packets_have_distinct_unit_permissions(self):
-        by_id = {unit_id: names for unit_id, _, *names in self.rows}
+        by_id = {unit_id: names for unit_id, _, *names in self.legacy_rows}
         name = '체력 소모 광역 공격'
         for unit_id in ('TR-04', 'I-11'):
             skill = next(s for s in self.profiles[unit_id]['skills'] if s['name'] == name)

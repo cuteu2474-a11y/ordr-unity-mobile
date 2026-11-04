@@ -67,9 +67,12 @@ class FollowupSourceModelSkillTests(unittest.TestCase):
                       "Batch 15 adds the exact documented every-hit skill without losing the mana active.")
         li01 = self.listing.split('new SourceModelUnconnectedSkillRow("LI-01", "h05G",')[1].split(
             'new SourceModelUnconnectedSkillRow(', 1)[0]
-        self.assertIn('new[] { "핏빛 범위 공격", "광역 마법 공격" }, Array.Empty<string>()', li01)
+        self.assertIn('new[] { "핏빛 범위 공격", "광역 마법 공격", "단일 스턴",', li01)
+        self.assertIn('"평타 단일 고정" }, Array.Empty<string>()', li01)
         for forbidden in ("직선 마법 공격", "차지 버스트", "단일 스턴"):
-            self.assertNotIn('new[] { "' + forbidden + '" }', i10 + li01)
+            self.assertNotIn('new[] { "' + forbidden + '" }', i10)
+        self.assertNotIn('"직선 마법 공격"', li01)
+        self.assertNotIn('"차지 버스트"', li01)
 
     def test_caster_area_is_explicit_and_native_duplicate_is_excluded(self):
         self.assertIn('skill.Target == "casterArea"', self.parser)

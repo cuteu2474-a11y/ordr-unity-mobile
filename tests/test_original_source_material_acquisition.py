@@ -91,16 +91,20 @@ class OriginalSourceMaterialAcquisitionTests(unittest.TestCase):
         self.assertNotIn('case "CJC"', source)
 
     def test_object_linking_reduces_only_blocker_reason_not_craft_permissions(self):
-        self.assertEqual(154, self.blocked["summary"]["liveExecutableRecipes"])
-        self.assertEqual(111, self.blocked["summary"]["blockedRecipes"])
-        self.assertEqual(4, self.blocked["summary"]["blockedByReason"]["unmapped-original-unit"])
+        self.assertEqual(167, self.blocked["summary"]["liveExecutableRecipes"])
+        self.assertEqual(98, self.blocked["summary"]["blockedRecipes"])
+        self.assertEqual(3, self.blocked["summary"]["blockedByReason"]["unmapped-original-unit"])
         source_only = read("original-fusion-source-only-materials.json")
         self.assertEqual(3, source_only["summary"]["distinctSourceOnlyObjects"])
         self.assertEqual({"h05Y", "h0AN", "h0C2"},
                          {x["rawcode"] for x in source_only["entries"]})
         csharp = (ROOT / "Assets/Scripts/Mobile/Original323CommonFusionPort.cs").read_text()
-        self.assertNotIn('{ "TR06",', csharp)
-        self.assertNotIn('{ "A0QG",', csharp)
+        # The exact mobile-result outcomes are distinct from the old reviewed
+        # native callback group. Source objects never imply free acquisition.
+        reviewed = csharp.split('string[,] ReviewedRestricted = {', 1)[1].split('\n        };', 1)[0]
+        self.assertNotIn('{ "TR06",', reviewed)
+        self.assertIn('{ "A0QG", "h0C2", "MY-14" }', reviewed)
+        self.assertIn('{ "TR06", "H09F", "TR-20" }', csharp)
 
 
 if __name__ == "__main__":
