@@ -66,8 +66,12 @@ class OriginalSourceMaterialAcquisitionTests(unittest.TestCase):
         self.assertIn('Original323BossRoundRules.TrustedRuntimeEvidence', source)
         # Both observed and practice rewards now use the same atomic chooser.
         # Check that transaction boundary, not the old facade property name.
+        preflight = source.split('private bool CanCommitChoice(', 1)[1].split(
+            'private bool TryCommitChoice(', 1)[0]
         chooser = source.split('private bool TryCommitChoice(', 1)[1]
         commit = chooser.split('private void Rollback(', 1)[0]
+        select = source.split('public bool TryChoose(string earnedWispResource,', 1)[1].split(
+            '// Original CRM', 1)[0]
         self.assertIn('return Ready() &&', source.split(
             'public bool TryChooseKuma(out long resultId)', 1)[1].split(
             'public bool TryChooseRewardBox', 1)[0])
@@ -76,9 +80,16 @@ class OriginalSourceMaterialAcquisitionTests(unittest.TestCase):
                      'earnedWispResource != Original323SourceMaterialRewardWorld.PendingStoryWispResource',
                      'earnedWispResource != Original323SoloStoryScenario.PracticeTranscendWisp',
                      'economy.Wallet.Balance(earnedWispResource) < 1'):
-            self.assertIn(gate, commit)
-        self.assertLess(commit.index('economy.Wallet.Balance(earnedWispResource) < 1'),
+            self.assertIn(gate, preflight)
+        self.assertIn('if (!CanCommitChoice(earnedWispResource, additionalCosts))', commit)
+        self.assertIn('if (!CanCommitChoice(earnedWispResource, new ResourceBundle()))', select)
+        # The shared eligibility gate runs before RNG and before any real actor spawn.
+        self.assertLess(select.index('CanCommitChoice(earnedWispResource, new ResourceBundle())'),
+                        select.index('rollInclusive(BoxGoldMin, BoxGoldMax)'))
+        self.assertLess(commit.index('CanCommitChoice(earnedWispResource, additionalCosts)'),
                         commit.index('SpawnVerifiedOriginalPositionCharacter'))
+        self.assertIn('pendingBoxGold', select)
+        self.assertIn('pendingBoxWood', select)
         self.assertIn('new ResourceBundle().Add(earnedWispResource, 1)', commit)
         self.assertIn('TryExchangeOnce(receipt, costs, rewards)', commit)
         self.assertIn('Rollback(spawned);', commit)
