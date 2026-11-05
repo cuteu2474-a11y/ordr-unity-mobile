@@ -1163,7 +1163,7 @@ namespace Ordr.Mobile.Tests
                 // 34 source-reviewed recipes plus five explicitly gated
                 // outcome-only recipes; none bypass their original costs.
                 Assert.AreEqual(39, owner.ExecutableLegendaryFusionCount);
-                Assert.AreEqual(19, owner.ExecutableHiddenFusionCount);
+                Assert.AreEqual(22, owner.ExecutableHiddenFusionCount);
                 Assert.AreEqual(1, owner.ExecutableEternalFusionCount);
                 Assert.AreEqual(ManualActionState.Succeeded, owner.RequestCommonWispBatch(5).State);
                 Assert.AreEqual(5, owner.Combat.CharacterCount);

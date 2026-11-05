@@ -702,7 +702,8 @@ namespace Ordr.Mobile.Combat
                             (component.Number("extraEnragedMaxHealthPercent") ?? 0) / 100;
                     raw += component.Number("extraAmount") ?? 0;
                     if (ReferenceEquals(primary, target))
-                        raw += component.Number("extraSingleAmount") ?? 0;
+                        raw += (component.Number("extraSingleAmount") ?? 0) +
+                            (component.Number("singleExtraAmount") ?? 0);
                     if (ReferenceEquals(primary, target))
                         raw *= 1 + (component.Number("singlePrimaryTargetExtraPercent") ?? 0) / 100;
                     if (skill.Id == "L-20:skill:0" && component.Type == "magical" &&

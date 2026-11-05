@@ -2204,6 +2204,15 @@ namespace Ordr.Mobile.Tests
                     Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill),
                         row.CatalogId + " " + name);
                 }
+                // I-03 primary-target bonus is now modeled. Clone proc parity
+                // remains unverified and is not asserted by this test.
+                if (row.CatalogId == "I-03")
+                {
+                    var magic = skills.Find("I-03").Skills.Single(x => x.Name == "범위 마법");
+                    Assert.AreEqual(200000d, magic.Components[0].Number("singleExtraAmount"));
+                    Assert.AreEqual(true, magic.Get("alsoUsedByClones"));
+                    Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(magic));
+                }
                 foreach (string name in row.PracticeActiveSkills)
                 {
                     var skill = skills.Find(row.CatalogId).Skills.Single(x => x.Name == name);

@@ -133,7 +133,7 @@ namespace Ordr.Mobile.Combat
             "amountPerHit", "hits", "basis", "percent", "scope", "onlyTargetKinds",
             "plusTargetCurrentHealthPercent", "plusTargetMaxHealthPercent",
             "plusTargetMissingHealthPercent", "extraTargetMaxHealthPercent", "extraBossMaxHealthPercent",
-            "extraEnragedMaxHealthPercent", "extraAmount",
+            "extraEnragedMaxHealthPercent", "extraAmount", "singleExtraAmount",
             "singlePrimaryTargetExtraPercent" };
 
         private static bool FinitePositive(double? number) =>
@@ -161,7 +161,7 @@ namespace Ordr.Mobile.Combat
             foreach (string key in new[] {
                 "plusTargetCurrentHealthPercent", "plusTargetMaxHealthPercent",
                 "plusTargetMissingHealthPercent", "extraTargetMaxHealthPercent", "extraBossMaxHealthPercent",
-                "extraEnragedMaxHealthPercent", "extraAmount" })
+                "extraEnragedMaxHealthPercent", "extraAmount", "singleExtraAmount" })
             {
                 if (effect.Get(key) == null) continue;
                 if (!FinitePositive(effect.Number(key))) return false;
@@ -301,7 +301,10 @@ namespace Ordr.Mobile.Combat
                     !(eighth && skill.Id == "D-01:skill:1" &&
                       key == "everyAttacks") &&
                     !(eighth && skill.Id == "TR-18:skill:2" &&
-                      key == "overrides"))
+                      key == "overrides") &&
+                    !(skill.Id == "I-03:skill:3" && key == "alsoUsedByClones" &&
+                      skill.Get("alsoUsedByClones") is bool &&
+                      (bool)skill.Get("alsoUsedByClones")))
                     return false;
             if (eighth) return CanModelEighthCompositeComponents(skill);
             if (seventh) return CanModelSeventhCompositeComponents(skill);
