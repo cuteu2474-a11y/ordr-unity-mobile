@@ -46,7 +46,8 @@ namespace Ordr.Mobile.Combat
                 SourceModelNextAttackCatalog.TryGet(rawcode, out script) ||
                 SourceModelThirdAttackCatalog.TryGet(rawcode, out script) ||
                 SourceModelFourthAttackCatalog.TryGet(rawcode, out script) ||
-                SourceModelFifthAttackCatalog.TryGet(rawcode, out script);
+                SourceModelFifthAttackCatalog.TryGet(rawcode, out script) ||
+                SourceModelSixthAttackCatalog.TryGet(rawcode, out script);
             bool hasBatch = SourceModelBatchAttackCatalog.TryGet(rawcode, out batch);
             bool hasNext = SourceModelNextThirtySkillCatalog.TryGet(
                 rawcode, out nextThirty);
@@ -180,10 +181,32 @@ namespace Ordr.Mobile.Combat
             // a null SourceScriptAttackSpec after those callbacks.
             if (script == null) return;
 
+            // Bq9 uses a different native shield/buff branch against boss
+            // markers and unshielded enraged targets. Until the buff state
+            // is represented, never misapply its 16% damage branch there.
+            if (script.CatalogId == "H-17" &&
+                (primary.Kind == CharacterEnemyKind.Boss ||
+                 primary.Kind == CharacterEnemyKind.Enraged))
+                return;
+
             // JASS Btd (Cracker) uses Bcb every attacked event, THEN rolls
             // its separate e04X/area branch. Do not reverse this ordering.
             ApplySourceScriptHits(actor, primary, script, script.Always);
-            int roll = sourceModelRules.NextScriptRoll(script.RollSides) + 1;
+            // CEm has a deterministic 50000 direct hit, with no second
+            // proc roll. Do not consume an invented RNG draw on each attack.
+            if (script.OnProc.Count == 0 && script.RollSides == 1 &&
+                string.IsNullOrEmpty(script.DeferredNativeEffect)) return;
+            // BpZ makes an independent 10% Blizzard roll BEFORE its 12%
+            // direct-hit roll. Blizzard's object damage is not yet verified,
+            // so preserve the branch and report the unmodeled native cast.
+            if (script.CatalogId == "R-27" &&
+                sourceModelRules.NextScriptRoll(100) < 10)
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.EffectDeferred, attackerId,
+                    primaryTargetId, actor.Catalog.Name + " 블리자드",
+                    "MODEL_ONLY BpZ 첫 번째 10% ABlz 보조 주문 피해 미연결", 0));
+            int roll = script.RollSides == 1 ? 1 :
+                sourceModelRules.NextScriptRoll(script.RollSides) + 1;
             // Independent clone proc, after the already-registered Bt2 roll:
             // retaining that order avoids changing its historical RNG draw.
             if (rawcode == "h042") ExecuteSourceTimedClone(actor, primary);
@@ -348,6 +371,10 @@ namespace Ordr.Mobile.Combat
                 var targets = SourceScriptTargets(actor, primary, hit, pinnedX, pinnedY);
                 foreach (var target in targets)
                 {
+                    // Bq9's story-only bonus must not splash to a normal
+                    // enemy that happens to stand inside its 500-radius AoE.
+                    if (hit.StoryOnly && target.Kind != CharacterEnemyKind.Story)
+                        continue;
                     Ordr323ArmorType armor;
                     if (!target.Enemy.Defenses.BaseArmor.HasValue ||
                         !Ordr323OriginalDamageRules.TryReadArmorType(
@@ -361,8 +388,19 @@ namespace Ordr.Mobile.Combat
                     }
                     double uniform = hit.Minimum == hit.Maximum ? 0 :
                         sourceModelRules.NextScriptRoll(1000000) / 1000000.0;
+                    // CCE selects ONE damage operand by the enemy marker,
+                    // it does not add the boss/enraged percentage to 35000.
+                    double raw = hit.Damage;
+                    if (target.Kind == CharacterEnemyKind.Boss &&
+                        hit.BossCurrentHealthPercent > 0)
+                        raw = target.Enemy.Health *
+                            hit.BossCurrentHealthPercent / 100.0;
+                    else if (target.Kind == CharacterEnemyKind.Enraged &&
+                             hit.EnragedMaxHealthPercent > 0)
+                        raw = target.Enemy.MaxHealth *
+                            hit.EnragedMaxHealthPercent / 100.0;
                     double sourceDamage = Ordr323MapDamageMath.ScriptDamageBeforeDefense(
-                        hit.Damage, hit.Minimum, hit.Maximum, uniform);
+                        raw, hit.Minimum, hit.Maximum, uniform);
                     // Consistent with the existing practice basic-damage
                     // reference model. Damage type / armor bypass / native
                     // immunity still need original Warcraft comparison.

@@ -17,13 +17,24 @@ namespace Ordr.Mobile.Combat
         public double Minimum { get; private set; }
         public double Maximum { get; private set; }
         public Ordr323AttackType Attack { get; private set; }
+        // JASS Bcb uses target HP at damage time for some attacks. These
+        // alternative branches are source-callback inputs, not extra hits.
+        public double BossCurrentHealthPercent { get; private set; }
+        public double EnragedMaxHealthPercent { get; private set; }
+        public bool StoryOnly { get; private set; }
 
         internal SourceScriptHit(SourceScriptHitShape shape, double radius,
             double length, double damage, double minimum, double maximum,
-            Ordr323AttackType attack)
+            Ordr323AttackType attack,
+            double bossCurrentHealthPercent = 0,
+            double enragedMaxHealthPercent = 0,
+            bool storyOnly = false)
         {
             Shape = shape; Radius = radius; Length = length; Damage = damage;
             Minimum = minimum; Maximum = maximum; Attack = attack;
+            BossCurrentHealthPercent = bossCurrentHealthPercent;
+            EnragedMaxHealthPercent = enragedMaxHealthPercent;
+            StoryOnly = storyOnly;
         }
     }
 

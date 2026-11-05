@@ -6,7 +6,7 @@
 
 ## 먼저 할 순서
 
-기본 우선순위는 캐릭터 고유 기능입니다. **C01·C02 원본 명세/전투 코드 연결 완료(실행 검증 전) → C03 기술 공백 확정 → C04 묶음 구현**을 권장합니다. 돈 도박 졸업 구매 **M01/M02는 이번 묶음에서 연결**했고 실제 기기·원본 초기 재고/난수 동등성 확인은 Q02로 남깁니다. 유닛 도박은 **M03 → M04**, 전체 저장은 **S01 → S02 → S03**으로 진행합니다.
+기본 우선순위는 캐릭터 고유 기능입니다. **C01·C02 원본 명세/전투 코드 연결 완료(실행 검증 전) → C03 누락 콜백 분류 진행(5개 피해 경로 연결) → C04 남은 기술 효과 일괄 구현**을 권장합니다. 돈 도박 졸업 구매 **M01/M02는 이번 묶음에서 연결**했고 실제 기기·원본 초기 재고/난수 동등성 확인은 Q02로 남깁니다. 유닛 도박은 **M03 → M04**, 전체 저장은 **S01 → S02 → S03**으로 진행합니다.
 
 원본 근거가 없는 항목은 추측해 활성화하지 않고 필요한 함수·객체·조건을 특정합니다. 그 항목이 막혀도 근거가 있는 다른 작업은 진행합니다. 테스트·Unity·APK 실행과 Actions 조회는 [작업 규칙](../AGENTS.md)에 따라 명시적 요청 시 수행합니다.
 
@@ -28,9 +28,11 @@ C01 잔여 한계: 원본 첫 레벨 STR 객체값이 없어 B0G 보너스는 �
 |---|---|---|---|
 | **C01 · 코드 연결 / 검증 전** | 시라호시 16레벨 A0L1: 5% 해왕류 소환과 이후 25% 강화타, 24레벨 A0KZ: 포세이돈 335만+결손 HP 6% → 450만+8%. 기존 평타 12%/4% 스킬은 중복 실행 없이 유지. 20레벨 A0RU 기존 성장 계산 재사용. 20레벨 A0RU 성장 계산은 재사용 | `Original323HeroLevelRules.cs`, `Original323StoryNativeRewardQueue.cs`, `Original323SourceDedicatedSkillPort.cs`, `original-2323C-hero-level-growth-evidence.json` | 특성 미구매/레벨 미달에는 기본 효과 유지. 구매한 H08U/H0C1만 해당 단계 효과 적용. 폼 변경·재호출로 중복 강화 없음. 포인트 구매 UI와 XP 계산을 다시 만들지 않음 |
 | **C02 · 코드 연결 / 검증 전** | 그린블러드 A134/Aimp는 원본 SLK에서 피해·사거리·시전 값 없는 표식 능력으로 확인. A13C 공속 30%와 CKd/CKc 최초 0.03초 후 광역 피해만 유효. 지연 좌표·전장 분리·대상 순서 개선 | `Original323StoryGreenBloodRules.cs`, `CharacterCombatRuntime.StoryGreenBlood.cs`, 원본 CKb/CKc/CKd/CKe와 능력 객체 | 원본 발동 조건을 확보한 효과만 실행. 기존 변환·순간 피해를 재발동시키지 않음. 부적합/이미 강화된 대상은 사용권 비소모, 지정한 실물 한 기만 처리 |
-| **C03 · 조사/명세** | 현재 C# 기준으로 유닛별 ‘어떤 기술의 어느 효과가 빠졌는지’ 확정 | `CharacterCombatRuntime.SourceModel*.cs`, `SourceModel*SkillCatalog`, `OriginalEquippedItemLedger.cs`, `unit-runtime-status.json`, 원본 JASS/SLK/W3A | 각 누락 행에 유닛 ID·rawcode·기술명·출처 함수/필드·기존 처리기·빠진 효과·미확인 입력 기록. 툴팁 개수나 클래스 이름의 Unconnected만으로 미구현 판정하지 않음 |
-| **C04 · 구현, C03 뒤** | C03에서 근거가 확정된 누락 기술을 공통 원인별로 묶어 연결 | 기존 공격 선언/명중 처리, `CharacterActiveAbilities`, `CombatStatusEngine`, 공통 피해·자원 처리 | 발동 → 정확한 비용/쿨타임 → 올바른 대상 → HP/상태 변경 → 종료까지 연결. JASS와 도감 기술의 이중 추첨·이중 피해 없음. 미확인 수치/장비 공급자는 보류 |
+| **C03 · 1차 콜백 분류 / 잔여 조사** | 현재 C# 기준으로 유닛별 ‘어떤 기술의 어느 효과가 빠졌는지’ 확정 | `CharacterCombatRuntime.SourceModel*.cs`, `SourceModel*SkillCatalog`, `OriginalEquippedItemLedger.cs`, `unit-runtime-status.json`, 원본 JASS/SLK/W3A | 각 누락 행에 유닛 ID·rawcode·기술명·출처 함수/필드·기존 처리기·빠진 효과·미확인 입력 기록. 툴팁 개수나 클래스 이름의 Unconnected만으로 미구현 판정하지 않음 |
+| **C04 · 5개 JASS 피해 경로 연결 / 나머지 구현 중** | C03에서 근거가 확정된 누락 기술을 공통 원인별로 묶어 연결 | 기존 공격 선언/명중 처리, `CharacterActiveAbilities`, `CombatStatusEngine`, 공통 피해·자원 처리 | 발동 → 정확한 비용/쿨타임 → 올바른 대상 → HP/상태 변경 → 종료까지 연결. JASS와 도감 기술의 이중 추첨·이중 피해 없음. 미확인 수치/장비 공급자는 보류 |
 | **C05 · 조사 후 보완** | C01~C04에서 바뀐 폼·분신·위성·예약 공격의 생명주기 연결 누락 점검 | `SourceModelTemporarySkills`, `SourceModelIndependentAttacks`, 기존 소유자/전장 리비전 정리 | 판매·조합·사망·복귀·파견 변경 뒤 지연 타격/오라가 남지 않음. 소환수 피해는 살아 있는 실제 소유자에게 귀속. 이미 있는 공통 수명 처리는 재작성하지 않음 |
+
+C03/C04 추가 연결: `SourceModelSixthAttackCatalog`의 X-01·R-15·R-27·R-40·H-17 5건은 원본 JASS에서 확인한 피해만 실행합니다. [감사 목록](../data/original-2323C-c03-callback-audit.json)에 독립 보조 주문과 아직 빠진 다단계 콜백 27건을 구분해 두었습니다. R-27 10% 블리자드와 H-17 보스·광폭화 전용 버프은 미구현입니다. 기존 예약 타격 큐의 소유자/전장 리비전 보호를 재사용하며 실행 결과는 미검증입니다.
 
 C03 결과는 원본 감사/실행 범위 자료에 기록하고 이 문서에 유닛 전체 이력을 복사하지 않습니다. 실제 C# 지원 내보내기는 실행 허가가 있을 때 갱신합니다. JSON `--verify`만 통과한 것을 최신 C# 지원 전체 확인으로 보고하지 않습니다.
 

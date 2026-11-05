@@ -1,0 +1,207 @@
+{
+  "gameVersion": "S2 2.323[C]",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "scope": "source-model practice battle only; no original/WC3 parity claim",
+  "date": "2026-11-05",
+  "connected": [
+    {
+      "catalogId": "X-01",
+      "rawcode": "h05H",
+      "jassCallback": "CCE",
+      "sourceHit": "11%: 35000 normal / boss 0.9% current HP / enraged 4.5% max HP; CHAOS universal",
+      "remaining": "boss/enraged native markers and final resistance unverified"
+    },
+    {
+      "catalogId": "R-15",
+      "rawcode": "h01T",
+      "jassCallback": "BpC",
+      "sourceHit": "each attack: target-position AoE radius400, 1500 damage, delayed .42s; NORMAL universal",
+      "remaining": "native AoE target enumeration/defense exactness unverified"
+    },
+    {
+      "catalogId": "R-27",
+      "rawcode": "h01P",
+      "jassCallback": "BpZ",
+      "sourceHit": "independent 12% direct 10000, NORMAL universal",
+      "remaining": "independent preceding 10% native Blizzard: original roll preserved, actual native damage deferred"
+    },
+    {
+      "catalogId": "R-40",
+      "rawcode": "h02J",
+      "jassCallback": "Bp1",
+      "sourceHit": "10% target-location AoE radius400, 6000 x 1..1.5, NORMAL universal",
+      "remaining": "visual dummy e021 unmodeled; native defense exactness unverified"
+    },
+    {
+      "catalogId": "H-17",
+      "rawcode": "h03Z",
+      "jassCallback": "Bq9",
+      "sourceHit": "line/story only: independent 16% -> direct 250000 + radius500 AoE 100000; story(A904) additional direct 375000; NORMAL universal",
+      "remaining": "boss/enraged shield branch, native buffs/firebolt and final resistance not modeled; damage withheld from those kinds"
+    }
+  ],
+  "remainingCallbacksRequiringNativeOrMultiStepJass": [
+    {
+      "catalogId": "S-06",
+      "name": "루치",
+      "rawcode": "h00R",
+      "jassCallback": "Bnw"
+    },
+    {
+      "catalogId": "S-07",
+      "name": "루피 기어세컨드",
+      "rawcode": "h00U",
+      "jassCallback": "Bny"
+    },
+    {
+      "catalogId": "R-01",
+      "name": "X-드레이크",
+      "rawcode": "h09X",
+      "jassCallback": "BoS"
+    },
+    {
+      "catalogId": "R-04",
+      "name": "도플라밍고",
+      "rawcode": "h01L",
+      "jassCallback": "Boe"
+    },
+    {
+      "catalogId": "R-06",
+      "name": "루피 기어써드",
+      "rawcode": "h01X",
+      "jassCallback": "Boo"
+    },
+    {
+      "catalogId": "R-08",
+      "name": "마르코 불사조",
+      "rawcode": "h022",
+      "jassCallback": "Bou"
+    },
+    {
+      "catalogId": "R-09",
+      "name": "마젤란",
+      "rawcode": "h01Z",
+      "jassCallback": "Bow"
+    },
+    {
+      "catalogId": "R-10",
+      "name": "모몬가",
+      "rawcode": "h01Y",
+      "jassCallback": "Bo2"
+    },
+    {
+      "catalogId": "R-16",
+      "name": "베이비 5",
+      "rawcode": "h02M",
+      "jassCallback": "BpI"
+    },
+    {
+      "catalogId": "R-22",
+      "name": "샹크스",
+      "rawcode": "h029",
+      "jassCallback": "BpO"
+    },
+    {
+      "catalogId": "R-24",
+      "name": "슈가",
+      "rawcode": "h027",
+      "jassCallback": "BpT"
+    },
+    {
+      "catalogId": "R-29",
+      "name": "와이퍼",
+      "rawcode": "h024",
+      "jassCallback": "Bpb"
+    },
+    {
+      "catalogId": "R-32",
+      "name": "제프",
+      "rawcode": "h02G",
+      "jassCallback": "Bph"
+    },
+    {
+      "catalogId": "R-33",
+      "name": "조로 현상금 사냥꾼",
+      "rawcode": "h02F",
+      "jassCallback": "Bpm"
+    },
+    {
+      "catalogId": "R-34",
+      "name": "죠즈",
+      "rawcode": "h02E",
+      "jassCallback": "Bpp"
+    },
+    {
+      "catalogId": "R-36",
+      "name": "카쿠",
+      "rawcode": "h023",
+      "jassCallback": "Bpv"
+    },
+    {
+      "catalogId": "R-39",
+      "name": "키자루",
+      "rawcode": "h01R",
+      "jassCallback": "Bpz"
+    },
+    {
+      "catalogId": "L-02",
+      "name": "나미",
+      "rawcode": "h02P",
+      "jassCallback": "BsU"
+    },
+    {
+      "catalogId": "L-05",
+      "name": "라분",
+      "rawcode": "h02Q",
+      "jassCallback": "Bsf"
+    },
+    {
+      "catalogId": "L-11",
+      "name": "마르코 환수종",
+      "rawcode": "h02T",
+      "jassCallback": "Bsp"
+    },
+    {
+      "catalogId": "L-12",
+      "name": "모리아",
+      "rawcode": "h02N",
+      "jassCallback": "BsL"
+    },
+    {
+      "catalogId": "L-36",
+      "name": "핸콕",
+      "rawcode": "h032",
+      "jassCallback": "BtV"
+    },
+    {
+      "catalogId": "H-01",
+      "name": "검호",
+      "rawcode": "h043",
+      "jassCallback": "BrW"
+    },
+    {
+      "catalogId": "D-06",
+      "name": "바제스",
+      "rawcode": "h09V",
+      "jassCallback": "CD0"
+    },
+    {
+      "catalogId": "TR-01",
+      "name": "검은수염",
+      "rawcode": "H090",
+      "jassCallback": "Bz1"
+    },
+    {
+      "catalogId": "MY-01",
+      "name": "고죠 사토루",
+      "rawcode": "h09M",
+      "jassCallback": "CGd"
+    }
+  ],
+  "caveats": [
+    "Rawcode callback presence alone is NOT proof a missing skill. Other registered tooltip/native/special paths were excluded from this subset.",
+    "Do not register independent tooltip equivalents for these callbacks; legacy source-code precedence suppresses duplicate proc damage.",
+    "No Unity, Python, NUnit or APK execution was requested or performed in this batch.",
+    "MY-02 has an existing independent NinthSkills implementation; excluded from this catalog to prevent duplicate 50000 scripted damage."
+  ]
+}
