@@ -1153,7 +1153,9 @@ namespace Ordr.Mobile.Tests
                 typeof(OrdrCharacterCombatController).GetMethod("Awake",
                     BindingFlags.NonPublic | BindingFlags.Instance).Invoke(owner, null);
                 owner.ConfigureRandomWispResourceRng(new Rolls(
-                    10000, 0, 10000, 1, 2, 10000, 3, 10000, 4, 5, 10000, 6));
+                    // Five Wisp rolls plus the source's automatic initial
+                    // evolution roll on the first Update frame.
+                    10000, 0, 10000, 1, 2, 10000, 3, 10000, 4, 5, 10000, 6, 0));
                 owner.BeginUnitPreparation();
                 Assert.IsTrue(owner.IsUnitPreparation);
                 Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
@@ -1172,6 +1174,10 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(0, owner.Combat.Game.CurrentWave);
                 typeof(OrdrCharacterCombatController).GetMethod("Update",
                     BindingFlags.NonPublic | BindingFlags.Instance).Invoke(owner, null);
+                Assert.IsTrue(owner.EvolutionProgress.IsActivated,
+                    "The first active frame automatically consumes the source evolution draw.");
+                Assert.AreEqual(6, owner.Combat.CharacterCount,
+                    "Five Wisp recruits plus one initial uncommon evolution.");
                 Assert.AreEqual(0, owner.Combat.Time);
                 // The first story building is present even before wave 1.
                 // No practice battle ticks and no wave-counter mutations.
@@ -1184,7 +1190,7 @@ namespace Ordr.Mobile.Tests
                 string blocked;
                 Assert.IsFalse(owner.CanBeginVerifiedFirstWave(out blocked));
                 Assert.Throws<InvalidOperationException>(() => owner.BeginVerifiedFirstWave());
-                Assert.AreEqual(5, owner.Combat.CharacterCount);
+                Assert.AreEqual(6, owner.Combat.CharacterCount);
             }
             finally { UnityEngine.Object.DestroyImmediate(root); }
         }

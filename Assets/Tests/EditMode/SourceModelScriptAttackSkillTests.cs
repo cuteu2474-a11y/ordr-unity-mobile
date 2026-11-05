@@ -2182,6 +2182,22 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void SunnyKnowledgeShotNeedsExactSourceCondition()
+        {
+            var original = Data("character-skill-profiles.json");
+            var expected = CharacterSkillCatalog.FromJson(original)
+                .Require("H-15").Skills.Single(x => x.Name == "베가펑크 지식 탑재 포격");
+            Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(expected));
+            const string witness = "\"requires\": \"vegapunkKnowledge\"";
+            StringAssert.Contains(witness, original);
+            var changed = original.Replace(witness, "\"requires\": \"noVegapunkKnowledge\"");
+            Assert.AreNotEqual(original, changed);
+            var invalid = CharacterSkillCatalog.FromJson(changed)
+                .Require("H-15").Skills.Single(x => x.Name == "베가펑크 지식 탑재 포격");
+            Assert.IsFalse(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(invalid));
+        }
+
+        [Test]
         public void NewAttackPacketsAreIndependentAndSourceProfilesStayComplete()
         {
             var units = CharacterUnitCatalog.FromJson(Data("units.json"));
@@ -2190,6 +2206,7 @@ namespace Ordr.Mobile.Tests
                 Data("original-2323C-map-base-stats.json"), units);
             Assert.GreaterOrEqual(SourceModelUnconnectedSkillCatalog.ApprovedAttackPacketCount, 30);
             var seen = new HashSet<string>();
+            var unsupported = new List<string>();
             foreach (var row in SourceModelUnconnectedSkillCatalog.All)
             {
                 Assert.IsTrue(seen.Add(row.Rawcode));
@@ -2201,8 +2218,8 @@ namespace Ordr.Mobile.Tests
                 foreach (string name in row.PracticeAttackSkills)
                 {
                     var skill = skills.Find(row.CatalogId).Skills.Single(x => x.Name == name);
-                    Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill),
-                        row.CatalogId + " " + name);
+                    if (!SourceModelNextThirtySkillCatalog.CanModelCompleteAttack(skill))
+                        unsupported.Add(row.CatalogId + " attack " + name);
                 }
                 // I-03 primary-target bonus is now modeled. Clone proc parity
                 // remains unverified and is not asserted by this test.
@@ -2216,10 +2233,13 @@ namespace Ordr.Mobile.Tests
                 foreach (string name in row.PracticeActiveSkills)
                 {
                     var skill = skills.Find(row.CatalogId).Skills.Single(x => x.Name == name);
-                    Assert.IsTrue(SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill),
-                        row.CatalogId + " " + name);
+                    if (!SourceModelNextThirtySkillCatalog.CanModelCompleteActive(skill))
+                        unsupported.Add(row.CatalogId + " active " + name);
                 }
             }
+            Assert.IsEmpty(unsupported,
+                "Every approved source-profile packet must pass the complete-model gate: " +
+                string.Join("; ", unsupported));
         }
 
         [Test]

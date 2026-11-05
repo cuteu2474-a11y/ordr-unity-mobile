@@ -358,6 +358,26 @@ namespace Ordr.Mobile.Combat
 
         public static bool CanModelCompleteActive(ImportedCombatSkill skill)
         {
+            // Sunny's source-conditional 100-MP salvo has a registered knowledge
+            // witness at the cast boundary. Accept only its exact imported
+            // packet; an unverified "requires" on another skill stays blocked.
+            if (skill != null && skill.Id == "H-15:skill:0")
+            {
+                return skill.Name == "베가펑크 지식 탑재 포격" &&
+                    skill.Trigger == "activeMana" && skill.Target == "area" &&
+                    skill.Radius == 600 && skill.Number("manaCost") == 100 &&
+                    !skill.ChancePercent.HasValue &&
+                    skill.OriginalFields.Count == 7 &&
+                    Equals(skill.Get("requires"), "vegapunkKnowledge") &&
+                    skill.Components.Count == 2 &&
+                    skill.Components[0].Fields.Count == 2 &&
+                    skill.Components[0].Type == "magical" &&
+                    skill.Components[0].Number("amount") == 1850000 &&
+                    skill.Components[1].Fields.Count == 2 &&
+                    skill.Components[1].Type == "stun" &&
+                    skill.Components[1].Number("durationSeconds") == 3 &&
+                    CanModelComponents(skill);
+            }
             // Enel's separately documented eleven-hit mana lightning packet
             // carries a three-second duration at the skill level. Preserve
             // that duration and reject any divergent imported source shape.
