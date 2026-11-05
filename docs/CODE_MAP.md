@@ -46,7 +46,7 @@ flowchart TD
 | [Original323StoryMobileProgression.cs](../Assets/Scripts/Core/Original323StoryMobileProgression.cs) | 재화·특성·연구·모바일 경험치 및 외부 원본 보상 월드 연결 |
 | [Original323SourceMaterialRewardWorld.cs](../Assets/Scripts/Combat/Original323SourceMaterialRewardWorld.cs) | 고대의 배·원본 사건 재료·초월위습 선택. Original323KumaWispChoiceWorld는 기존 이름을 유지하며 여러 선택지 처리 |
 | Original323KumaWispChoiceWorld.TryChoose / TryChooseBoxItem | 재화 꾸러미·쿠마·레일리+해적선과 고유 아이템 선택을 기존 지갑/로스터 거래로 처리. 영구 획득 플래그는 재료 소비 뒤에도 유지 |
-| [Original323MobileStoryHeroExperienceWorld](../Assets/Scripts/Combat/Original323StoryNativeRewardQueue.cs), [Original323HeroLevelRules.cs](../Assets/Scripts/Combat/Original323HeroLevelRules.cs) | 13·14단계 XP 영수증·원본 H*** + A07O 자격, 58개 폼의 24레벨 임계값/정수 성장치와 시라호시 특성 조건을 읽기 전용 계산. 4포인트 실제 발동/그 외 XP 사건 연결은 별도 |
+| [Original323MobileStoryHeroExperienceWorld](../Assets/Scripts/Combat/Original323StoryNativeRewardQueue.cs), [Original323HeroLevelRules.cs](../Assets/Scripts/Combat/Original323HeroLevelRules.cs) | 13·14단계 XP·원본 H*** + A07O 자격, 58개 폼/24레벨 성장. 같은 보상 파일의 Original323ShirahoshiTraitPurchase가 Bz6 4포인트 원자 차감/영수증을 처리하고 성장 판독에 연결. XP바는 OrdrMobileTouchPanel에서 표시, 특수 능력 실전 발동은 별도 |
 | [CharacterCombatRuntime.StoryGreenBlood.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.StoryGreenBlood.cs), [Original323StoryGreenBloodRules.cs](../Assets/Scripts/Combat/Original323StoryGreenBloodRules.cs) | 직접 선택한 실물 유닛의 변환/강화. 같은 종류 여러 기 중 선택 개체만 처리 |
 | Original323FusionSourceItemLedger, Original323StoryNativeRewardQueue | 고유 아이템 잔액·영구 획득 기록과 단계별 영수증. 커밋 후 알림 예외로 재지급하지 않음 |
 

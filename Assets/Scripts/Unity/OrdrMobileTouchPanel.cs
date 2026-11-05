@@ -1106,15 +1106,7 @@ namespace Ordr.Mobile.Unity
                         "  ·  MP " + resources.Mana.ToString("0.#") +
                         "/" + resources.MaximumMana.ToString("0.#"),
                         OrdrMobileUiTheme.Overline);
-                if (controller.StoryHeroExperience != null)
-                {
-                    long storyXp = controller.StoryHeroExperience.ExperienceOf(
-                        Combat.Roster.SelectedId.Value);
-                    if (storyXp > 0)
-                        GUILayout.Label("스토리 획득 경험치 +" + storyXp +
-                            " (모바일 경험치 장부 · 레벨 효과 별도)",
-                            OrdrMobileUiTheme.Overline);
-                }
+                DrawSelectedHeroProgress(Combat.Roster.SelectedId.Value);
                 var form = Combat.PracticeFormOf(Combat.Roster.SelectedId.Value);
                 if (!string.IsNullOrEmpty(form))
                 {
@@ -1180,6 +1172,91 @@ namespace Ordr.Mobile.Unity
                 GUILayout.EndVertical();
             }
             GUILayout.EndVertical();
+        }
+
+        // Use the same live XP/trait state as the attack and mana resolvers.
+        // Non-hero units never receive fabricated levels or upgrade effects.
+        private void DrawSelectedHeroProgress(long instanceId)
+        {
+            var experience = controller.StoryHeroExperience;
+            var hero = experience == null ? null : experience.LevelStateOf(instanceId);
+            if (hero == null) return;
+
+            OrdrMobileUiTheme.DrawStatusRow("영웅 레벨",
+                "Lv." + hero.Level + " / " + Original323HeroLevelRules.MaximumLevel,
+                OrdrMobileUiTheme.Gold);
+            long completed = Original323HeroLevelRules.TotalExperienceForLevel(hero.Level);
+            if (hero.Level < Original323HeroLevelRules.MaximumLevel)
+            {
+                long next = Original323HeroLevelRules.TotalExperienceForLevel(hero.Level + 1);
+                float ratio = (float)Math.Max(0d, Math.Min(1d,
+                    (double)(hero.Experience - completed) / (next - completed)));
+                GUILayout.Label("경험치  " + (hero.Experience - completed).ToString("N0") +
+                    " / " + (next - completed).ToString("N0") + " XP",
+                    OrdrMobileUiTheme.Overline);
+                Rect bar = GUILayoutUtility.GetRect(10f, 16f, GUILayout.ExpandWidth(true));
+                if (Event.current.type == EventType.Repaint)
+                {
+                    Color savedColor = GUI.color;
+                    GUI.color = new Color(0.13f, 0.19f, 0.3f, 1f);
+                    GUI.DrawTexture(bar, Texture2D.whiteTexture);
+                    GUI.color = OrdrMobileUiTheme.Gold;
+                    GUI.DrawTexture(new Rect(bar.x, bar.y,
+                        bar.width * ratio, bar.height), Texture2D.whiteTexture);
+                    GUI.color = savedColor;
+                }
+                GUILayout.Label("다음 레벨까지 " +
+                    hero.ExperienceToNextLevel.ToString("N0") + " XP",
+                    OrdrMobileUiTheme.Overline);
+            }
+            else
+                GUILayout.Label("최대 레벨 · 누적 " +
+                    hero.Experience.ToString("N0") + " XP", OrdrMobileUiTheme.Overline);
+
+            GUILayout.Label("레벨 성장  힘 +" + hero.AddedStrength +
+                " · 민첩 +" + hero.AddedAgility +
+                " · 지능 +" + hero.AddedIntelligence,
+                OrdrMobileUiTheme.Overline);
+            DrawSelectedTraitUpgrade(instanceId);
+        }
+
+        private void DrawSelectedTraitUpgrade(long instanceId)
+        {
+            var trait = controller.ShirahoshiTrait;
+            if (trait == null) return;
+            if (!trait.IsEligible(instanceId))
+            {
+                GUILayout.Label("특성강화: 이 유닛의 원본 구매 효과는 아직 연결되지 않았습니다.",
+                    OrdrMobileUiTheme.Overline);
+                return;
+            }
+            long balance = controller.SharedEconomy.Wallet.Balance(
+                OriginalMissionWalletRewards.TraitPointsId);
+            bool activated = trait.HasActivated(instanceId);
+            OrdrMobileUiTheme.DrawStatusRow("시라호시 4포인트 특성",
+                activated ? "해금 완료 · 레벨 16/20/24 효과 적용" :
+                    "특성포인트 " + balance + "개 보유 / " +
+                    Original323ShirahoshiTraitPurchase.PointCost + "개 필요",
+                OrdrMobileUiTheme.Aqua);
+            if (activated) return;
+            bool previous = GUI.enabled;
+            GUI.enabled = previous && trait.CanPurchase(instanceId);
+            bool pressed = GUILayout.Button("특성강화 · 4포인트 사용",
+                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(60));
+            GUI.enabled = previous;
+            if (pressed)
+            {
+                try
+                {
+                    notice = trait.TryPurchase(instanceId)
+                        ? "시라호시 특성강화 완료 · 레벨 16/20/24 효과 활성화"
+                        : "특성포인트 또는 원본 영웅 자격을 다시 확인해 주세요.";
+                }
+                catch (InvalidOperationException error)
+                {
+                    notice = "특성강화 실패 · " + error.Message;
+                }
+            }
         }
 
         private void DrawOptionalUnitManagement()
@@ -1336,6 +1413,8 @@ namespace Ordr.Mobile.Unity
             GUILayout.BeginVertical(GUI.skin.box);
             DrawCharacterPortrait(detail.Unit.Id, 112f);
             GUILayout.Label(detail.DisplayName + " · " + detail.Grade);
+            if (Combat != null && Combat.Roster.SelectedId.HasValue)
+                DrawSelectedHeroProgress(Combat.Roster.SelectedId.Value);
             if (controller.PracticeBattle != null)
             {
                 var native = controller.MapBaseStats.Find(detail.Unit.Id);
@@ -1987,7 +2066,7 @@ namespace Ordr.Mobile.Unity
                 scenario.HighestDestroyedStage >= 13)
                 OrdrMobileUiTheme.DrawStatusRow("스토리 영웅 경험치",
                     "13·14단계 격파 시 원본 A07O 영웅 그룹에 +300 XP" +
-                    " · 레벨·스탯 반영 별도",
+                    " · 영웅 레벨/스탯에 반영",
                     OrdrMobileUiTheme.Aqua);
             if (!string.IsNullOrEmpty(scenario.LastUniqueItemAward))
                 OrdrMobileUiTheme.DrawStatusRow("스토리 고유 아이템",

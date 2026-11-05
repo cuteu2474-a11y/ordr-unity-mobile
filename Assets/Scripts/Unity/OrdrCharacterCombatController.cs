@@ -785,6 +785,7 @@ namespace Ordr.Mobile.Unity
         public Original323StoryMobileProgression StoryProgression { get; private set; }
         private Original323KumaWispChoiceWorld practiceStoryKumaChoice;
         public Original323MobileStoryHeroExperienceWorld StoryHeroExperience { get; private set; }
+        public Original323ShirahoshiTraitPurchase ShirahoshiTrait { get; private set; }
         public long PendingPracticeStoryTranscendWisps =>
             SoloStory != null && SoloStory.HighestDestroyedStage >= 10 &&
             SharedEconomy != null
@@ -917,9 +918,14 @@ namespace Ordr.Mobile.Unity
                             SharedEconomy, Units, MapBaseStats));
                     var heroExperience = new Original323MobileStoryHeroExperienceWorld(
                         Combat, SharedEconomy, MapBaseStats);
+                    var shirahoshiTrait = new Original323ShirahoshiTraitPurchase(
+                        SharedEconomy.Wallet, heroExperience.LevelStateOf);
+                    heroExperience.ConnectOriginalShirahoshiFourPointTraitWitness(
+                        shirahoshiTrait.HasActivated);
                     progression.ConnectMobileHeroExperience(heroExperience);
                     Combat.ConfigureSourceHeroLevelProgression(heroExperience);
                     StoryHeroExperience = heroExperience;
+                    ShirahoshiTrait = shirahoshiTrait;
                     if (originalStoryNativeAwards != null)
                         progression.ConnectAdditionalNativeEffects(originalStoryNativeAwards);
                     scenario.ConfigureNativeAwardPort(progression);

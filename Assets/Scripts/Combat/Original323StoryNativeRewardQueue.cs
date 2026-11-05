@@ -239,4 +239,56 @@ namespace Ordr.Mobile.Combat
             return true;
         }
     }
+ 
+    // Original Bz6: only a real Shirahoshi hero can spend four shared
+    // trait points to enable Bz7. The wallet receipt is the durable witness;
+    // possession of four unspent points must never activate the trait.
+    public sealed class Original323ShirahoshiTraitPurchase
+    {
+        public const int PointCost = 4;
+        private const string ReceiptPrefix = "story:trait:Bz6:actor:";
+        private readonly EconomyWallet wallet;
+        private readonly Func<long, Original323HeroLevelState> liveHeroLevel;
+
+        public Original323ShirahoshiTraitPurchase(EconomyWallet sharedWallet,
+            Func<long, Original323HeroLevelState> ownedHeroState)
+        {
+            wallet = sharedWallet ?? throw new ArgumentNullException(nameof(sharedWallet));
+            liveHeroLevel = ownedHeroState ?? throw new ArgumentNullException(nameof(ownedHeroState));
+        }
+
+        public bool HasActivated(long instanceId) =>
+            instanceId > 0 && wallet.HasCompletedTransaction(ReceiptPrefix + instanceId);
+
+        public bool IsEligible(long instanceId)
+        {
+            if (instanceId <= 0) return false;
+            var state = liveHeroLevel(instanceId);
+            return state != null &&
+                (state.SourceRawcode == "H08U" || state.SourceRawcode == "H0C1");
+        }
+
+        public bool CanPurchase(long instanceId) =>
+            IsEligible(instanceId) && !HasActivated(instanceId) &&
+            wallet.Balance(OriginalMissionWalletRewards.TraitPointsId) >= PointCost;
+
+        // Atomic debit + one-use receipt; the existing hero-level read-through
+        // immediately applies the 16/20/24 milestones without double-granting.
+        public bool TryPurchase(long instanceId)
+        {
+            if (!CanPurchase(instanceId)) return false;
+            var cost = new ResourceBundle().Add(
+                OriginalMissionWalletRewards.TraitPointsId, PointCost);
+            string receipt = ReceiptPrefix + instanceId;
+            try
+            {
+                return wallet.TryExchangeOnce(receipt, cost, new ResourceBundle());
+            }
+            catch
+            {
+                if (wallet.HasCompletedTransaction(receipt)) return true;
+                throw;
+            }
+        }
+    }
 }

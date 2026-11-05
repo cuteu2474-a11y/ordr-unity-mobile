@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using Ordr.Mobile.Combat;
+using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Tests
 {
@@ -57,6 +58,65 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(2, Original323HeroLevelRules.Evaluate("H0C1",
                 Original323HeroLevelRules.TotalExperienceForLevel(24), true)
                 .ShirahoshiA0KZLevel);
+        }
+
+        [Test]
+        public void ShirahoshiTraitUsesSharedFourPointsOnlyOnceAndActivatesGrowth()
+        {
+            var wallet = new EconomyWallet();
+            wallet.Grant(new ResourceBundle().Add(
+                OriginalMissionWalletRewards.TraitPointsId, 6));
+            Original323ShirahoshiTraitPurchase trait = null;
+            long xp = Original323HeroLevelRules.TotalExperienceForLevel(20);
+            trait = new Original323ShirahoshiTraitPurchase(wallet,
+                instanceId => instanceId == 7
+                    ? Original323HeroLevelRules.Evaluate("H08U", xp,
+                        trait != null && trait.HasActivated(instanceId))
+                    : instanceId == 8
+                        ? Original323HeroLevelRules.Evaluate("H08T", xp)
+                        : null);
+
+            Assert.IsTrue(trait.IsEligible(7));
+            Assert.IsFalse(trait.IsEligible(8));
+            Assert.IsFalse(trait.TryPurchase(8));
+            Assert.IsFalse(trait.TryPurchase(9));
+            Assert.IsFalse(trait.HasActivated(7));
+            Assert.AreEqual(1, Original323HeroLevelRules.Evaluate("H08U", xp)
+                .ShirahoshiA0RULevel);
+
+            Assert.IsTrue(trait.TryPurchase(7));
+            Assert.IsTrue(trait.HasActivated(7));
+            Assert.AreEqual(2,
+                Original323HeroLevelRules.Evaluate("H08U", xp, trait.HasActivated(7))
+                    .ShirahoshiA0RULevel);
+            Assert.AreEqual(2, wallet.Balance(
+                OriginalMissionWalletRewards.TraitPointsId));
+            Assert.IsFalse(trait.TryPurchase(7));
+            Assert.AreEqual(2, wallet.Balance(
+                OriginalMissionWalletRewards.TraitPointsId));
+            var restored = new EconomyWallet();
+            restored.RestoreState(wallet.CaptureState());
+            var reloaded = new Original323ShirahoshiTraitPurchase(restored,
+                id => id == 7 ? Original323HeroLevelRules.Evaluate("H0C1", xp) : null);
+            Assert.IsTrue(reloaded.HasActivated(7));
+            Assert.IsFalse(reloaded.TryPurchase(7));
+            Assert.AreEqual(2, restored.Balance(
+                OriginalMissionWalletRewards.TraitPointsId));
+        }
+
+        [Test]
+        public void ShirahoshiTraitRejectsInsufficientPointsWithoutReceipt()
+        {
+            var wallet = new EconomyWallet();
+            wallet.Grant(new ResourceBundle().Add(
+                OriginalMissionWalletRewards.TraitPointsId, 3));
+            var trait = new Original323ShirahoshiTraitPurchase(wallet,
+                id => id == 5 ? Original323HeroLevelRules.Evaluate("H0C1", 0) : null);
+            Assert.IsFalse(trait.CanPurchase(5));
+            Assert.IsFalse(trait.TryPurchase(5));
+            Assert.IsFalse(trait.HasActivated(5));
+            Assert.AreEqual(3, wallet.Balance(
+                OriginalMissionWalletRewards.TraitPointsId));
         }
 
         [Test]
