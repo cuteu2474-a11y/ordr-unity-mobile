@@ -1141,6 +1141,59 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void StoryTenBoxChoiceCreatesSourceBoxAndSpendsOneWisp()
+        {
+            var game = Create();
+            var choices = new Original323KumaWispChoiceWorld(
+                game.Combat, game.Economy, game.Units, game.Map);
+            Assert.IsTrue(game.Economy.Wallet.TryGrantOnce("practice:story:box",
+                new ResourceBundle().Add(
+                    Original323SoloStoryScenario.PracticeTranscendWisp, 1)));
+            int before = game.Combat.MobileUnitSnapshot().Count;
+            IReadOnlyList<long> actors;
+            Assert.IsTrue(choices.TryChoose(
+                Original323SoloStoryScenario.PracticeTranscendWisp,
+                Original323TranscendWispOutcome.RewardBox, out actors));
+            Assert.AreEqual(1, actors.Count);
+            Assert.AreEqual(before + 1, game.Combat.MobileUnitSnapshot().Count);
+            Assert.AreEqual("TW-01", game.Combat.MobileUnitSnapshot()
+                .Single(x => x.InstanceId == actors[0]).Unit.Id);
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                Original323SoloStoryScenario.PracticeTranscendWisp));
+            Assert.IsFalse(choices.TryChoose(
+                Original323SoloStoryScenario.PracticeTranscendWisp,
+                Original323TranscendWispOutcome.Kuma, out actors));
+        }
+
+        [Test]
+        public void StoryTenRayleighShipChoiceSpawnsTwoForExactlyOneWisp()
+        {
+            var game = Create();
+            var choices = new Original323KumaWispChoiceWorld(
+                game.Combat, game.Economy, game.Units, game.Map);
+            Assert.IsTrue(game.Economy.Wallet.TryGrantOnce("practice:story:ship",
+                new ResourceBundle().Add(
+                    Original323SoloStoryScenario.PracticeTranscendWisp, 1)));
+            int before = game.Combat.MobileUnitSnapshot().Count;
+            IReadOnlyList<long> actors;
+            Assert.IsTrue(choices.TryChoose(
+                Original323SoloStoryScenario.PracticeTranscendWisp,
+                Original323TranscendWispOutcome.RayleighAndShip, out actors));
+            Assert.AreEqual(2, actors.Count);
+            Assert.AreNotEqual(actors[0], actors[1]);
+            Assert.AreEqual(before + 2, game.Combat.MobileUnitSnapshot().Count);
+            Assert.AreEqual("R-43", game.Combat.MobileUnitSnapshot()
+                .Single(x => x.InstanceId == actors[0]).Unit.Id);
+            Assert.AreEqual("PS-01", game.Combat.MobileUnitSnapshot()
+                .Single(x => x.InstanceId == actors[1]).Unit.Id);
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                Original323SoloStoryScenario.PracticeTranscendWisp));
+            Assert.IsFalse(choices.TryChoose(
+                Original323SoloStoryScenario.PracticeTranscendWisp,
+                Original323TranscendWispOutcome.RewardBox, out actors));
+        }
+
+        [Test]
         public void StageThirteenAndFourteenExperienceAccruesPerOwnedCombatActorOnly()
         {
             var game = Create();

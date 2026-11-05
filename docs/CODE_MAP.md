@@ -1,3 +1,9 @@
+## 2026-11-05 · 64차 초월위습 3방향 원본 소환
+
+- `Original323KumaWispChoiceWorld.TryChoose`: 이름은 기존 호출부 호환을 위해 유지하되 B6/CSM 보상 상자, B7/CSN 쿠마, B8/CSO 레일리·해적선 쌍을 모두 처리. 1 토큰=1 분기; 실물 생성 후 영수증 정산, 실패 전부 롤백.
+- `Original323SourceMaterialRewardWorld` 및 `OrdrCharacterCombatController.RequestOriginalTranscend*Choice`: 원본 관측 e01A와 모델 격파 e01A의 별도 지갑에서 같은 선택 결과.
+- `OrdrMobileTouchPanel.DrawOriginalTranscendWispChoiceButtons`: 스토리/위습 공용 세 선택 버튼. `wiki-unit-catalog-extension.json` TW-01은 원본 비전투 객체 h0BR. 효과 능력 A149/A0KA는 미연결이며 별도 네이티브 검증 전 사용 기능을 만들지 않음.
+
 ## 2026-11-05 · 63차 스토리 보상 실제 선택·경험치 장부
 
 - `Original323KumaWispChoiceWorld`: 원본 CQB e01A/10단계 모델 획득을 별도 지갑으로 보존하며 원본 KM-01 동일성 검증→유닛 임시 생성→1회 지갑 차감→실물 확정/롤백. 중복 출처 정산 마커 사용.

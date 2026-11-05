@@ -22,19 +22,19 @@ class WikiUnitExtensionTests(unittest.TestCase):
         base = {row["id"]: row for row in self.base["entries"]}
         extra = {row["id"]: row for row in self.extension["entries"]}
         self.assertEqual(277, len(base))
-        self.assertEqual(10, len(extra))
-        self.assertEqual(10, len(self.extension["entries"]))
+        self.assertEqual(11, len(extra))
+        self.assertEqual(11, len(self.extension["entries"]))
         self.assertFalse(set(base) & set(extra))
-        self.assertEqual(287, self.extension["expectedMergedEntries"])
+        self.assertEqual(288, self.extension["expectedMergedEntries"])
         counts = Counter(row["grade"] for row in self.base["entries"])
         counts["해적선"] -= 1
         counts["히든"] += 1
         counts.update(row["grade"] for row in extra.values())
-        self.assertEqual({"희귀함": 44, "전설": 41, "초월함": 36,
+        self.assertEqual({"희귀함": 44, "전설": 41, "초월함": 37,
                           "신비함": 14, "히든": 23, "해적선": 0},
                          {key: counts[key] for key in
                           ("희귀함", "전설", "초월함", "신비함", "히든", "해적선")})
-        self.assertEqual(287, sum(counts.values()))
+        self.assertEqual(288, sum(counts.values()))
         self.assertEqual(2, counts["재료"])
 
     def test_forms_are_not_independent_fusion_results(self):
@@ -51,7 +51,7 @@ class WikiUnitExtensionTests(unittest.TestCase):
                             for row in self.extension["entries"]))
         self.assertTrue(all(row["gameplayStatus"] ==
                             "identity-only-no-new-execution-authority"
-                            for row in self.extension["entries"] if row["id"] != "MY-14"))
+                            for row in self.extension["entries"] if row["id"] not in ("MY-14", "TW-01")))
         # MY-14 was subsequently allowed by the separately reviewed source-CWR
         # result route. Overlay identity alone still cannot grant that permission.
         my14 = next(r for r in self.extension["entries"] if r["id"] == "MY-14")
@@ -66,6 +66,8 @@ class WikiUnitExtensionTests(unittest.TestCase):
             self.assertEqual(source, items[unit_id]["originalSourceRawcode"])
             self.assertIsNone(raw[source]["catalogUnitId"])
             self.assertFalse(raw[source]["approvedForMaterialConsumption"])
+        self.assertEqual("h0BR", items["TW-01"]["originalSourceRawcode"])
+        self.assertEqual("support-object", items["TW-01"]["catalogEntryKind"])
         self.assertEqual("PS-01", self.extension["reclassifications"][0]["id"])
         self.assertEqual("히든", self.extension["reclassifications"][0]["grade"])
         self.assertEqual("해적선", self.extension["reclassifications"][0]["expectedGrade"])

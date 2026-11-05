@@ -1268,9 +1268,28 @@ namespace Ordr.Mobile.Unity
                     sourceEventId, originalFunction, out actorId);
         }
 
-        // User explicitly selects Kuma from one already source-confirmed
-        // story transcendence Wisp. This does not choose for the player.
+        // The original e01A has three mutually exclusive B6/B7/B8 outcomes.
+        // Source-observed and solo-story tokens retain separate receipts.
+        public ManualActionResult RequestOriginalTranscendRewardBoxChoice()
+        {
+            return RequestOriginalTranscendWispChoice(
+                Original323TranscendWispOutcome.RewardBox);
+        }
+
         public ManualActionResult RequestOriginalTranscendKumaChoice()
+        {
+            return RequestOriginalTranscendWispChoice(
+                Original323TranscendWispOutcome.Kuma);
+        }
+
+        public ManualActionResult RequestOriginalTranscendRayleighShipChoice()
+        {
+            return RequestOriginalTranscendWispChoice(
+                Original323TranscendWispOutcome.RayleighAndShip);
+        }
+
+        private ManualActionResult RequestOriginalTranscendWispChoice(
+            Original323TranscendWispOutcome outcome)
         {
             if (!runGate.CanAdvance || IsUnitPreparation)
                 return new ManualActionResult(ManualActionState.Rejected,
@@ -1278,27 +1297,54 @@ namespace Ordr.Mobile.Unity
             if (PendingAllStoryTranscendWisps < 1)
                 return new ManualActionResult(ManualActionState.Rejected,
                     "획득한 스토리 초월위습이 없습니다.");
-            long actorId;
+            IReadOnlyList<long> actorIds = Array.Empty<long>();
             try
             {
-                // The source-confirmed e01A and the earned solo practice
-                // entitlement remain separate wallet keys and receipts.
-                // Both consume exactly one token into one physical Kuma.
+                bool succeeded;
                 if (OriginalSourceMaterialRewards != null &&
                     OriginalSourceMaterialRewards.PendingTranscendWisps > 0)
                 {
-                    if (!OriginalSourceMaterialRewards.TryChooseKuma(out actorId))
-                        return new ManualActionResult(ManualActionState.Rejected,
-                            "원본 초월위습 선택을 완료할 수 없습니다.");
+                    switch (outcome)
+                    {
+                        case Original323TranscendWispOutcome.RewardBox:
+                            succeeded = OriginalSourceMaterialRewards.TryChooseRewardBox(out actorIds);
+                            break;
+                        case Original323TranscendWispOutcome.Kuma:
+                            long kumaActor;
+                            succeeded = OriginalSourceMaterialRewards.TryChooseKuma(out kumaActor);
+                            if (succeeded) actorIds = new[] { kumaActor };
+                            break;
+                        case Original323TranscendWispOutcome.RayleighAndShip:
+                            succeeded = OriginalSourceMaterialRewards.TryChooseRayleighAndShip(out actorIds);
+                            break;
+                        default:
+                            succeeded = false;
+                            break;
+                    }
                 }
-                else if (practiceStoryKumaChoice == null ||
-                    !practiceStoryKumaChoice.TryChooseKuma(
-                        Original323SoloStoryScenario.PracticeTranscendWisp,
-                        out actorId))
+                else
+                    succeeded = practiceStoryKumaChoice != null &&
+                        practiceStoryKumaChoice.TryChoose(
+                            Original323SoloStoryScenario.PracticeTranscendWisp,
+                            outcome, out actorIds);
+                if (!succeeded)
                     return new ManualActionResult(ManualActionState.Rejected,
-                        "10단계 격파 보상 초월위습을 사용할 수 없습니다.");
-                return new ManualActionResult(ManualActionState.Succeeded,
-                    "스토리 초월위습 1개 사용 · 바솔로뮤 쿠마 실제 유닛 획득");
+                        "초월위습을 선택하지 못했습니다. 재료와 유닛 상태를 확인해 주세요.");
+
+                string message;
+                switch (outcome)
+                {
+                    case Original323TranscendWispOutcome.RewardBox:
+                        message = "스토리 초월위습 1개 사용 · 꾸러미 상자 - 초월 1기 획득";
+                        break;
+                    case Original323TranscendWispOutcome.Kuma:
+                        message = "스토리 초월위습 1개 사용 · 바솔로뮤 쿠마 1기 획득";
+                        break;
+                    default:
+                        message = "스토리 초월위습 1개 사용 · 실버즈 레일리 + 해적선 2기 획득";
+                        break;
+                }
+                return new ManualActionResult(ManualActionState.Succeeded, message);
             }
             catch (Exception error)
             {
@@ -2566,7 +2612,7 @@ namespace Ordr.Mobile.Unity
                     OriginalUnitRawcodes);
                 // Source map stats remain the pinned 277 original entries.
                 // Additional forms/support identities have no invented stats.
-                if (Units.Count != 287 || Skills.CharacterCount != 200 ||
+                if (Units.Count != 288 || Skills.CharacterCount != 200 ||
                     UnitDefinitions.Count != Units.Count ||
                     (MapBaseStats != null && MapBaseStats.Count != pinnedSourceCatalogCount))
                     throw new FormatException("2.323[C] 캐릭터 데이터 등록 수가 기대값과 다릅니다.");

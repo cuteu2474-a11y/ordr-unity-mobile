@@ -1851,6 +1851,28 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndHorizontal();
         }
 
+        // Both Story and Wisp menus expose the same three verified e01A
+        // results. A click is the player's choice; never auto-select.
+        private void DrawOriginalTranscendWispChoiceButtons()
+        {
+            GUILayout.Label("초월위습 1개로 보상 하나 선택",
+                OrdrMobileUiTheme.Explanation);
+            if (GUILayout.Button("① 꾸러미 상자 - 초월",
+                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
+                RunWispDirect("스토리 초월위습 · 꾸러미 상자",
+                    () => controller.RequestOriginalTranscendRewardBoxChoice());
+            if (GUILayout.Button("② 바솔로뮤 쿠마",
+                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
+                RunWispDirect("스토리 초월위습 · 쿠마",
+                    () => controller.RequestOriginalTranscendKumaChoice());
+            if (GUILayout.Button("③ 실버즈 레일리 + 해적선",
+                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
+                RunWispDirect("스토리 초월위습 · 레일리·해적선",
+                    () => controller.RequestOriginalTranscendRayleighShipChoice());
+            GUILayout.Label("①은 원본 꾸러미 상자 유닛 지급입니다. 상자 능력의 세부 교환 효과는 미검증입니다.",
+                OrdrMobileUiTheme.Explanation);
+        }
+
         private void DrawStory()
         {
             var scenario = controller.SoloStory;
@@ -1942,10 +1964,7 @@ namespace Ordr.Mobile.Unity
                 OrdrMobileUiTheme.DrawStatusRow("10단계 초월위습",
                     "남은 선택 " + controller.PendingAllStoryTranscendWisps + "회",
                     OrdrMobileUiTheme.Gold);
-                if (GUILayout.Button("초월위습 → 쿠마 획득",
-                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(62)))
-                    RunWispDirect("스토리 초월위습 · 쿠마",
-                        () => controller.RequestOriginalTranscendKumaChoice());
+                DrawOriginalTranscendWispChoiceButtons();
             }
             if (controller.SharedEconomy != null &&
                 controller.SharedEconomy.Wallet.Balance(
@@ -2594,12 +2613,9 @@ namespace Ordr.Mobile.Unity
                 if (controller.PendingPracticeStoryTranscendWisps > 0)
                     GUILayout.Label("10단계 격파 보상 " +
                         controller.PendingPracticeStoryTranscendWisps +
-                        "개 · 선택하면 실제 쿠마 유닛이 생성됩니다.",
+                        "개 · 아래 원본 세 선택지 중 하나를 선택하세요.",
                         OrdrMobileUiTheme.Explanation);
-                if (GUILayout.Button("초월위습 1개 → 바솔로뮤 쿠마 선택",
-                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
-                    RunWispDirect("스토리 초월위습 · 쿠마",
-                        () => controller.RequestOriginalTranscendKumaChoice());
+                DrawOriginalTranscendWispChoiceButtons();
                 GUILayout.EndVertical();
             }
 

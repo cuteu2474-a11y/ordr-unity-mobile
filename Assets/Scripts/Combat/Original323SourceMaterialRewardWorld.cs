@@ -102,6 +102,13 @@ namespace Ordr.Mobile.Combat
         public const string SeraphimMaterialRawcode = "h0AN";
         public const string SeraphimMaterialCatalogId = "SM-01";
         public const string SeraphimMaterialMapName = "세라핌 등급 유닛";
+        public const string RewardBoxRawcode = "h0BR";
+        public const string RewardBoxCatalogId = "TW-01";
+        public const string RewardBoxMapName = "꾸러미 상자 - 초월";
+        public const string RayleighRawcode = "h05X";
+        public const string RayleighCatalogId = "R-43";
+        public const string PirateShipRawcode = "h060";
+        public const string PirateShipCatalogId = "PS-01";
         public const string KumaRawcode = "h04S";
         public const string KumaCatalogId = "KM-01";
         public const string TokenRawcode = "h06G";
@@ -306,6 +313,22 @@ namespace Ordr.Mobile.Combat
             resultId = 0;
             return Ready() &&
                 kumaChoice.TryChooseKuma(PendingStoryWispResource, out resultId);
+        }
+
+        public bool TryChooseRewardBox(out IReadOnlyList<long> resultIds)
+        {
+            resultIds = Array.Empty<long>();
+            return Ready() && kumaChoice.TryChoose(
+                PendingStoryWispResource, Original323TranscendWispOutcome.RewardBox,
+                out resultIds);
+        }
+
+        public bool TryChooseRayleighAndShip(out IReadOnlyList<long> resultIds)
+        {
+            resultIds = Array.Empty<long>();
+            return Ready() && kumaChoice.TryChoose(
+                PendingStoryWispResource, Original323TranscendWispOutcome.RayleighAndShip,
+                out resultIds);
         }
 
         // CJK = high-grade unit gamble fail; CJM = otherworld unit gamble
@@ -608,16 +631,21 @@ namespace Ordr.Mobile.Combat
         }
     }
 
-    // A single, receipt-backed target-spawn transaction consumes either
-    // a witnessed CQB e01A or an explicitly earned mobile story-stage token.
-    // The two award SOURCES stay separate; choice, rollback and identity
-    // validation are shared and never create a free Kuma.
+    // The original e01A enters exactly one of B6/CSM, B7/CSN or B8/CSO.
+    // The mobile choice is one atomic roster+wallet transaction per Wisp.
+    public enum Original323TranscendWispOutcome
+    {
+        RewardBox,       // CSM: h0BR, "꾸러미 상자 - 초월"
+        Kuma,            // CSN: h04S
+        RayleighAndShip  // CSO: h05X + h060
+    }
+
     public sealed class Original323KumaWispChoiceWorld
     {
         private readonly CharacterCombatRuntime combat;
         private readonly SharedEconomySession economy;
         private readonly string receiptNamespace =
-            "original323:kuma-choice:" + Guid.NewGuid().ToString("N") + ":";
+            "original323:transcend-choice:" + Guid.NewGuid().ToString("N") + ":";
         private long sequence;
         private bool processing;
 
@@ -627,64 +655,128 @@ namespace Ordr.Mobile.Combat
         {
             combat = world ?? throw new ArgumentNullException(nameof(world));
             economy = session ?? throw new ArgumentNullException(nameof(session));
-            var kuma = units == null ? null : units.Find(
-                Original323SourceMaterialRewardWorld.KumaCatalogId);
-            var source = objects == null ? null : objects.Find(
-                Original323SourceMaterialRewardWorld.KumaCatalogId);
-            if (!ReferenceEquals(combat.Roster, economy.Units) ||
-                objects == null || objects.SourceW3xSha256 != OriginalCommonSaleRules.OriginalMapSha256 ||
-                kuma == null || kuma.Grade != "초월함" ||
-                source == null ||
-                source.OriginalRawcode != Original323SourceMaterialRewardWorld.KumaRawcode ||
-                source.MappingStatus != "verified-source-story-transcend-choice" ||
-                source.Attack1 != null ||
+            if (units == null || objects == null ||
+                !ReferenceEquals(combat.Roster, economy.Units) ||
+                objects.SourceW3xSha256 != OriginalCommonSaleRules.OriginalMapSha256 ||
                 GameSession.ModeId != "nightmare-otherworld")
-                throw new ArgumentException("초월위습 쿠마 원본 객체 신원이 일치하지 않습니다.");
+                throw new ArgumentException("초월위습 원본 월드·도감 불일치");
+
+            var kuma = units.Find(Original323SourceMaterialRewardWorld.KumaCatalogId);
+            var kumaSource = objects.Find(Original323SourceMaterialRewardWorld.KumaCatalogId);
+            if (kuma == null || kuma.Grade != "초월함" ||
+                kumaSource == null ||
+                kumaSource.OriginalRawcode != Original323SourceMaterialRewardWorld.KumaRawcode ||
+                kumaSource.MappingStatus != "verified-source-story-transcend-choice" ||
+                kumaSource.Attack1 != null)
+                throw new ArgumentException("CSN/B7 쿠마 객체 원본과 불일치");
+
+            var box = units.Find(Original323SourceMaterialRewardWorld.RewardBoxCatalogId);
+            if (box == null || box.CatalogEntryKind != "support-object" ||
+                box.OriginalSourceRawcode != Original323SourceMaterialRewardWorld.RewardBoxRawcode ||
+                !objects.HasNoncombatMapObject(
+                    Original323SourceMaterialRewardWorld.RewardBoxRawcode,
+                    Original323SourceMaterialRewardWorld.RewardBoxMapName))
+                throw new ArgumentException("CSM/B6 초월 꾸러미 상자 원본과 불일치");
+
+            var rayleigh = units.Find(Original323SourceMaterialRewardWorld.RayleighCatalogId);
+            var rayleighSource = objects.Find(Original323SourceMaterialRewardWorld.RayleighCatalogId);
+            var ship = units.Find(Original323SourceMaterialRewardWorld.PirateShipCatalogId);
+            var shipSource = objects.Find(Original323SourceMaterialRewardWorld.PirateShipCatalogId);
+            if (rayleigh == null || rayleigh.Name != "실버즈 레일리" ||
+                rayleighSource == null ||
+                rayleighSource.OriginalRawcode != Original323SourceMaterialRewardWorld.RayleighRawcode ||
+                ship == null || (ship.Grade != "히든" && ship.Grade != "해적선") ||
+                shipSource == null ||
+                shipSource.OriginalRawcode != Original323SourceMaterialRewardWorld.PirateShipRawcode ||
+                shipSource.MappingStatus != "verified-source-wisp-pirate-ship")
+                throw new ArgumentException("CSO/B8 레일리·해적선 원본과 불일치");
         }
 
         public bool TryChooseKuma(string earnedWispResource, out long actorId)
         {
             actorId = 0;
+            IReadOnlyList<long> actors;
+            if (!TryChoose(earnedWispResource, Original323TranscendWispOutcome.Kuma,
+                    out actors) || actors.Count != 1)
+                return false;
+            actorId = actors[0];
+            return true;
+        }
+
+        public bool TryChoose(string earnedWispResource,
+            Original323TranscendWispOutcome outcome, out IReadOnlyList<long> actorIds)
+        {
+            actorIds = Array.Empty<long>();
             if (processing || !economy.HasStarted ||
                 combat.Game.Phase != SessionPhase.Running ||
+                GameSession.ModeId != "nightmare-otherworld" ||
                 (earnedWispResource != Original323SourceMaterialRewardWorld.PendingStoryWispResource &&
                  earnedWispResource != Original323SoloStoryScenario.PracticeTranscendWisp) ||
-                economy.Wallet.Balance(earnedWispResource) < 1)
+                economy.Wallet.Balance(earnedWispResource) < 1 ||
+                !Enum.IsDefined(typeof(Original323TranscendWispOutcome), outcome))
                 return false;
+
+            string[] results;
+            switch (outcome)
+            {
+                case Original323TranscendWispOutcome.RewardBox:
+                    results = new[] { Original323SourceMaterialRewardWorld.RewardBoxCatalogId };
+                    break;
+                case Original323TranscendWispOutcome.Kuma:
+                    results = new[] { Original323SourceMaterialRewardWorld.KumaCatalogId };
+                    break;
+                case Original323TranscendWispOutcome.RayleighAndShip:
+                    results = new[] {
+                        Original323SourceMaterialRewardWorld.RayleighCatalogId,
+                        Original323SourceMaterialRewardWorld.PirateShipCatalogId
+                    };
+                    break;
+                default:
+                    return false;
+            }
             processing = true;
-            long spawned = 0;
+            var spawned = new List<long>(results.Length);
             long next = checked(sequence + 1);
             string receipt = receiptNamespace + next;
             try
             {
-                spawned = combat.SpawnVerifiedOriginalPositionCharacter(
-                    Original323SourceMaterialRewardWorld.KumaCatalogId,
-                    Original323SourceMaterialRewardWorld.SourceStartX,
-                    Original323SourceMaterialRewardWorld.SourceStartY);
+                // Never spend the Wisp before both source objects exist.
+                // A failure on the second ship/hero spawn removes the first.
+                foreach (string catalogId in results)
+                    spawned.Add(combat.SpawnVerifiedOriginalPositionCharacter(
+                        catalogId,
+                        Original323SourceMaterialRewardWorld.SourceStartX,
+                        Original323SourceMaterialRewardWorld.SourceStartY));
                 if (!economy.Wallet.TryExchangeOnce(receipt,
                     new ResourceBundle().Add(earnedWispResource, 1),
                     new ResourceBundle()))
                 {
-                    combat.RollbackUncommittedSpawn(spawned);
+                    Rollback(spawned);
                     return false;
                 }
                 sequence = next;
-                actorId = spawned;
+                actorIds = spawned.AsReadOnly();
                 return true;
             }
             catch
             {
-                if (!economy.Wallet.HasCompletedTransaction(receipt) && spawned != 0)
-                    combat.RollbackUncommittedSpawn(spawned);
-                else if (economy.Wallet.HasCompletedTransaction(receipt))
+                // Post-commit observer errors cannot resurrect a spent Wisp.
+                if (economy.Wallet.HasCompletedTransaction(receipt))
                 {
                     sequence = next;
-                    actorId = spawned;
-                    return spawned != 0;
+                    actorIds = spawned.AsReadOnly();
+                    return spawned.Count == results.Length;
                 }
+                Rollback(spawned);
                 throw;
             }
             finally { processing = false; }
+        }
+
+        private void Rollback(IReadOnlyList<long> actorIds)
+        {
+            for (int i = actorIds.Count - 1; i >= 0; i--)
+                combat.RollbackUncommittedSpawn(actorIds[i]);
         }
     }
 }

@@ -61,7 +61,66 @@
     "resultUnitRawcode": "h04S",
     "count": 1,
     "creationPosition": "player start location, -3776/4480 for player zero",
-    "choice": "manual mobile player decision, never automatic"
+    "choice": "manual mobile player decision, never automatic",
+    "choices": [
+      {
+        "option": 1,
+        "function": "CSM",
+        "rect": "B6",
+        "inputUnitRawcode": "e01A",
+        "resultUnitRawcodes": [
+          "h0BR"
+        ],
+        "resultCatalogIds": [
+          "TW-01"
+        ],
+        "resultNames": [
+          "꾸러미 상자 - 초월"
+        ],
+        "sourceObjectAbilities": [
+          "A149",
+          "A0KA",
+          "Avul"
+        ],
+        "verifiedOutcome": "spawn source box actor; native item/ability activation not yet reconstructed",
+        "consumesWispCount": 1
+      },
+      {
+        "option": 2,
+        "function": "CSN",
+        "rect": "B7",
+        "inputUnitRawcode": "e01A",
+        "resultUnitRawcodes": [
+          "h04S"
+        ],
+        "resultCatalogIds": [
+          "KM-01"
+        ],
+        "resultNames": [
+          "바솔로뮤 쿠마"
+        ],
+        "consumesWispCount": 1
+      },
+      {
+        "option": 3,
+        "function": "CSO",
+        "rect": "B8",
+        "inputUnitRawcode": "e01A",
+        "resultUnitRawcodes": [
+          "h05X",
+          "h060"
+        ],
+        "resultCatalogIds": [
+          "R-43",
+          "PS-01"
+        ],
+        "resultNames": [
+          "실버즈 레일리",
+          "해적선"
+        ],
+        "consumesWispCount": 1
+      }
+    ]
   },
   "tokenSources": [
     {
@@ -122,13 +181,20 @@
     "parentSourceEventAutomaticallyEmittedByDefaultGame": false,
     "materialRolesReusableInCwr": true,
     "newCraftableRecipes": 0,
-    "extraTopTierConditionsStillLocked": true
+    "extraTopTierConditionsStillLocked": true,
+    "transcendChoiceActorsImplemented": [
+      "CSM/h0BR",
+      "CSN/h04S",
+      "CSO/h05X+h060"
+    ],
+    "rewardBoxAbilityEffectsUnverified": true
   },
   "caveats": [
     "Do not treat W3X UnitBalance stock costs of the token actors as acquisition prices.",
     "Do not create Kuma before a source-confirmed CQB reward and explicit CSN choice.",
     "Do not grant luck tokens for money gambling CJB/CJC.",
     "Do not apply mutated-mode bans to nightmare-otherworld.",
-    "Mobile reward bridge is not a complete story boss/advanced unit-gambling implementation."
+    "Mobile reward bridge is not a complete story boss/advanced unit-gambling implementation.",
+    "CSM/B6 h0BR is a source-confirmed reward-box actor; A149/A0KA native ability outcomes must be separately audited before mobile resource or random-unit exchange."
   ]
 }

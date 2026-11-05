@@ -129,6 +129,8 @@ namespace Ordr.Mobile.Data
                        unit.CatalogEntryKind == "support-object") ||
                       (unit.Id == "SM-01" && unit.OriginalSourceRawcode == "h0AN" &&
                        unit.CatalogEntryKind == "support-object") ||
+                      (unit.Id == "TW-01" && unit.OriginalSourceRawcode == "h0BR" &&
+                       unit.CatalogEntryKind == "support-object") ||
                       (unit.Id == "TR-32" && unit.OriginalSourceRawcode == "H0B6" &&
                        unit.CatalogEntryKind == "alternate-form")))
                     throw new FormatException("원본 객체 출처를 확인하지 않은 위키 ID: " + unit.Id);

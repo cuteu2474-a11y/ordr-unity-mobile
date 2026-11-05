@@ -3,7 +3,7 @@
   "gameVersion": "S2 2.323[C]",
   "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
   "baseCatalogEntries": 277,
-  "expectedMergedEntries": 287,
+  "expectedMergedEntries": 288,
   "appliesTo": "runtime catalog overlay after pinned 277-object W3X imports; non-authoritative for combat",
   "warning": "Alternate forms are not independent crafting/roster items. An extension identity alone never authorizes gameplay; source-CWR execution and source attack binding require separate guarded runtime approval. Unverified native skills are never invented.",
   "reclassifications": [
@@ -240,6 +240,28 @@
       "originalSourceRawcode": "h0C2",
       "sourceMappingStatus": "original-source-object-name-and-CWR-result-confirmed; native callback unverified",
       "gameplayStatus": "source-CWR-mobile-result-enabled; W3X-basic-attack-only; native-skill-callback-unverified"
+    },
+    {
+      "id": "TW-01",
+      "grade": "초월함",
+      "gradeOrder": 21,
+      "name": "꾸러미 상자 - 초월",
+      "catalogEvidenceOrigin": "original-W3X-2.323C-JASS-CSM-B6-and-noncombat-object",
+      "catalogEntryKind": "support-object",
+      "roleTags": [],
+      "roleTagsStatus": "source-only-not-collected",
+      "detailUrl": null,
+      "gameRawCode": null,
+      "attackPower": null,
+      "attackIntervalSeconds": null,
+      "attackRange": null,
+      "skillSpecsStatus": "not-collected",
+      "damageSchoolHints": [],
+      "damageSchoolHintsStatus": "unknown",
+      "wikiSourceUrl": null,
+      "originalSourceRawcode": "h0BR",
+      "sourceMappingStatus": "original JASS CSM creates h0BR; W3X map object 꾸러미 상자 - 초월",
+      "gameplayStatus": "verified-choice-actor-only; ability A149/A0KA effects not yet verified"
     }
   ]
 }
