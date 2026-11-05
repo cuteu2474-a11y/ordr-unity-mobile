@@ -30,7 +30,8 @@ ZIP에는 APK, `.build.json` 패킹 증빙, `.apk.sha256` 체크섬, `.verificat
 
 | 조건 | 동작 |
 |---|---|
-| main push | Python 회귀 → Unity 라이선스 확인 → Unity EditMode |
+| main push(코드·데이터·설정 변경 포함) | Python 회귀 → Unity 라이선스 확인 → Unity EditMode |
+| 문서만 바뀐 main push | 자동 검사 생략(`docs/**`, Markdown·MDX). 코드·데이터와 함께 바뀌면 실행 |
 | 수동 실행, build_apk=false | 위 검사만 실행 |
 | push 커밋 메시지에 `[apk-preview]` | 위 검사가 성공하면 APK 제작·검증·첨부 |
 | 수동 실행, build_apk=true | 위 검사가 성공하면 APK 제작·검증·첨부 |
