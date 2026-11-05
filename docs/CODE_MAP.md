@@ -22,7 +22,7 @@ flowchart TD
 | 작업 영역 | 먼저 열 파일 | 재사용할 역할 |
 |---|---|---|
 | **시작·세션** | [OrdrCharacterCombatController.cs](../Assets/Scripts/Unity/OrdrCharacterCombatController.cs), [OrdrMainSceneShell.cs](../Assets/Scripts/Unity/OrdrMainSceneShell.cs) | 원본 데이터·공통 서비스 연결, 시작/정지/재시작 및 동일 세션 유지 |
-| **메뉴·입력·전장 UI** | [OrdrMobileTouchPanel.cs](../Assets/Scripts/Unity/OrdrMobileTouchPanel.cs), [OrdrMobileUiTheme.cs](../Assets/Scripts/Unity/OrdrMobileUiTheme.cs), [OrdrUnitWorldPresenter.cs](../Assets/Scripts/Unity/OrdrUnitWorldPresenter.cs) | 큰 버튼·가로 레이아웃·원본 좌표와 표시 좌표 구분 |
+| **메뉴·입력·전장 UI** | [OrdrMobileTouchPanel.cs](../Assets/Scripts/Unity/OrdrMobileTouchPanel.cs), [OrdrMobileUiTheme.cs](../Assets/Scripts/Unity/OrdrMobileUiTheme.cs), [OrdrUnitWorldPresenter.cs](../Assets/Scripts/Unity/OrdrUnitWorldPresenter.cs), [MobileOwnedUnitFormation.cs](../Assets/Scripts/Unity/MobileOwnedUnitFormation.cs) | 큰 버튼·가로 레이아웃·전장 초상화/페이지 배치·원본 좌표와 표시 좌표 구분 |
 | **원본 유닛 객체** | [CharacterUnitCatalog.cs](../Assets/Scripts/Data/CharacterUnitCatalog.cs), [OriginalMapBaseStatCatalog.cs](../Assets/Scripts/Data/OriginalMapBaseStatCatalog.cs) | 프로젝트 ID와 `rawcode`, 원본 객체/능력 데이터 연결 |
 | **공통 전투** | [CharacterCombatRuntime.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.cs), CombatAttackPipeline, CombatScheduler, CombatResolution | 대상·공격 선언/명중·피해·상태·사망의 공통 정산 |
 | **특수/자동 기술** | [CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs), [CharacterCombatRuntime.SourceModelBulkAutoSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs), [SourceModelSixthAttackCatalog.cs](../Assets/Scripts/Combat/SourceModelSixthAttackCatalog.cs) | 도감 기반 모델·원본 JASS 콜백을 별도 근거와 승인 범위로 처리. 네이티브 효과 중복 실행 금지 |
@@ -61,7 +61,7 @@ flowchart TD
 - 스토리·미션·도움소: [스토리](스토리-시스템.md) · [개인미션](개인미션-시스템.md) · [도움소](도움소-시스템.md)
 - 모드·항법·전투 공통: [악몽·이세계·항법](악몽-이세계-항법-시스템.md) · [라운드·몬스터](라운드-몬스터-시스템.md) · [전투·스킬 공통 엔진](전투-공통엔진.md)
 - 개별 캐릭터의 원본 기술과 과거 모델 구분: [캐릭터 기술·전투 연결](캐릭터-기술-원본과-전투연결.md) · [기본 기술·네이티브 패시브](원본-기본기술-네이티브-패시브.md) · [20명 원본 JASS 분석](원본-캐릭터-기술-추출표.md) · [관측형 스킬 시전·타격](원본-관측형-스킬-시전-타격.md) · [원본 오라·전투 연결](원본-오라-전투연결.md)
-- 원본 전투 계산: [피해·방어·마법 저항](원본-피해-방어-마법저항-근거.md) · [캐릭터별 방깎·마방깎 JASS](원본-발동형-방어감소-기술사건.md)
+- 원본 전투 계산: [피해·방어·마법 저항](원본-피해-방어-마법저항-근거.md) · [캐릭터별 방깎·마방깎 JASS](원본-발동형-방깎-마방깎.md)
 - 작업/완료 기준: [개발 작업](PLAYABLE_ROADMAP.md)
 - 원본 추출 파일: [데이터 안내](../data/README.md) · `data/original-2323C-*.json`
 - 검사/빌드: `Assets/Tests/EditMode/`, `tests/`, `tools/build_character_runtime_coverage.py`, [실행 안내](unity-editmode-test.md)

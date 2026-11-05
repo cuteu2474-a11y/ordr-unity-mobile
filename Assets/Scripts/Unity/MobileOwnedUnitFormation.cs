@@ -73,6 +73,15 @@ namespace Ordr.Mobile.Unity
         public int Pages { get; private set; }
         public int Start { get { return Page * Capacity; } }
 
+        // 160px versus the former 40px on a full-sized cell: four times the
+        // visible portrait width, constrained by smaller battlefield viewports.
+        public static float PortraitDiameterPixels(Rect cell, float scale)
+        {
+            if (cell.width <= 0f || cell.height <= 0f || scale <= 0f)
+                throw new ArgumentOutOfRangeException(nameof(cell));
+            return Mathf.Min(160f * scale, cell.height * .85f, cell.width * .88f);
+        }
+
         public static MobileOwnedFormationLayout Calculate(Rect battle, float scale,
             int groupCount, int requestedPage)
         {
@@ -84,17 +93,19 @@ namespace Ordr.Mobile.Unity
                 battle.width - inset * 2f, battle.height - 71f * scale);
             if (content.width <= 0 || content.height <= 0)
                 throw new ArgumentOutOfRangeException(nameof(battle));
-            // A compact, near-square battlefield tile is easier to scan and tap
-            // than the former wide horizontal name badge. Pagination adapts to
-            // the smaller phone battlefield without changing combat positions.
-            int columns = Mathf.Clamp(Mathf.FloorToInt((content.width + gap) / (80f * scale + gap)), 1, 3);
-            int maxRows = Mathf.Clamp(Mathf.FloorToInt((content.height + gap) / (72f * scale + gap)), 1, 3);
+            // Larger portrait-led cards take priority over fitting many tiny
+            // groups per page. Pagination preserves access to every unit.
+            const float preferredCellSize = 188f;
+            int columns = Mathf.Clamp(Mathf.FloorToInt(
+                (content.width + gap) / (preferredCellSize * scale + gap)), 1, 3);
+            int maxRows = Mathf.Clamp(Mathf.FloorToInt(
+                (content.height + gap) / (preferredCellSize * scale + gap)), 1, 2);
             int capacity = columns * maxRows;
             int pages = groupCount == 0 ? 1 : (groupCount - 1) / capacity + 1;
             int page = Mathf.Clamp(requestedPage, 0, pages - 1);
             int count = Math.Min(capacity, groupCount - page * capacity);
             int rows = count == 0 ? 0 : (count - 1) / columns + 1;
-            float side = Mathf.Min(94f * scale,
+            float side = Mathf.Min(preferredCellSize * scale,
                 (content.width - gap * (columns - 1)) / columns,
                 (content.height - gap * Math.Max(0, rows - 1)) / Math.Max(1, rows));
             float width = side, height = side;

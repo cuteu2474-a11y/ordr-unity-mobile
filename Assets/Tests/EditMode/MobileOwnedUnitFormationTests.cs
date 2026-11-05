@@ -101,6 +101,26 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void PortraitsAreFourTimesLargerOnRoomyBattlefieldsAndRemainInsideCells()
+        {
+            var battle = new Rect(0f, 0f, 460f, 300f);
+            var layout = MobileOwnedFormationLayout.Calculate(battle, 1f, 10, 0);
+            Assert.AreEqual(2, layout.Capacity);
+            Assert.Greater(layout.Pages, 1, "Larger cards paginate instead of overlapping.");
+            foreach (var cell in layout.Cells)
+            {
+                Assert.AreEqual(188f, cell.width, .01f);
+                float portrait = MobileOwnedFormationLayout.PortraitDiameterPixels(cell, 1f);
+                Assert.AreEqual(160f, portrait, 1f);
+                Assert.LessOrEqual(portrait, cell.width);
+                Assert.LessOrEqual(portrait, cell.height);
+            }
+            var narrow = new Rect(0f, 0f, 110f, 85f);
+            float small = MobileOwnedFormationLayout.PortraitDiameterPixels(narrow, 1f);
+            Assert.LessOrEqual(small, narrow.height);
+        }
+
+        [Test]
         public void EmptyOrShrinkingRosterClampsItsPageWithoutInventingCharacters()
         {
             var area = new Rect(200, 80, 320, 210);

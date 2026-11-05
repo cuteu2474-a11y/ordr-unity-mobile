@@ -49,29 +49,55 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void SevenOriginalFacilityPagesHaveDistinctDecorativeBanners()
+        public void FacilityNavigationKeepsDistinctAccentColorsWithoutDecorativeIntroductions()
         {
             var panel = typeof(OrdrMobileTouchPanel);
             var tabType = panel.GetNestedType("Tab", BindingFlags.NonPublic);
-            var visualType = panel.GetNestedType("FacilityVisual", BindingFlags.NonPublic);
-            var find = panel.GetMethod("TryGetFacilityVisual",
+            var tint = panel.GetMethod("GetFacilityTabTint",
                 BindingFlags.Static | BindingFlags.NonPublic);
-            Assert.IsNotNull(visualType);
-            Assert.IsNotNull(find);
-            var names = new[] {
+            Assert.IsNotNull(tint);
+            Assert.IsNull(panel.GetNestedType("FacilityVisual", BindingFlags.NonPublic),
+                "Decorative facility slogans and banner metadata must stay removed.");
+            var tabs = new[] {
                 "Gambling", "UpgradeOne", "UpgradeTwo", "Helper",
                 "Missions", "Research", "LogPose",
             };
-            foreach (string name in names)
+            var colors = new HashSet<Color>();
+            foreach (string name in tabs)
             {
-                var arguments = new[] { Enum.Parse(tabType, name),
-                    Activator.CreateInstance(visualType) };
-                Assert.IsTrue((bool)find.Invoke(null, arguments), name);
-                Assert.IsNotNull(arguments[1]);
+                Color color = (Color)tint.Invoke(null,
+                    new[] { Enum.Parse(tabType, name) });
+                Assert.IsTrue(colors.Add(color), name);
             }
-            var unrelated = new[] { Enum.Parse(tabType, "Fusion"),
-                Activator.CreateInstance(visualType) };
-            Assert.IsFalse((bool)find.Invoke(null, unrelated));
+        }
+
+        [Test]
+        public void GamblingTapExecutesOnceWhileHoldingOnlyRevealsOfferRules()
+        {
+            var gesture = new MobileLongPressGesture();
+            var origin = new Vector2(150f, 240f);
+            gesture.Begin("regular", 10f, origin);
+            Assert.AreEqual(MobileLongPressResult.Tap,
+                gesture.Complete("regular", 10.3f));
+            gesture.Begin("regular", 20f, origin);
+            Assert.AreEqual(MobileLongPressResult.Hold,
+                gesture.Complete("regular", 20.6f));
+            gesture.Begin("regular", 30f, origin);
+            Assert.AreEqual(MobileLongPressResult.None,
+                gesture.Complete("high", 30.8f),
+                "A different offer must not consume another offer's press.");
+            gesture.Cancel();
+            gesture.Begin("regular", 40f, origin);
+            Assert.IsFalse(gesture.Move("regular", new Vector2(157f, 244f)));
+            Assert.IsTrue(gesture.Move("regular", new Vector2(180f, 244f)));
+            Assert.AreEqual(MobileLongPressResult.None,
+                gesture.Complete("regular", 41f),
+                "Dragging must never spend gold or open descriptions.");
+            gesture.Begin("regular", 50f, origin);
+            gesture.Cancel();
+            Assert.AreEqual(MobileLongPressResult.Tap,
+                gesture.Complete("regular", 50.1f),
+                "Keyboard activation keeps the existing single-action behavior.");
         }
 
         [Test]

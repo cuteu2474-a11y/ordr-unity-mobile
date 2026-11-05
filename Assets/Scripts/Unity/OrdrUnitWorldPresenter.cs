@@ -1098,13 +1098,14 @@ namespace Ordr.Mobile.Unity
                 Rect cell = formationLayout.Cells[i];
                 // Character art lives above the caption inside the square tile.
                 Vector2 icon = new Vector2(cell.center.x,
-                    cell.y + cell.height * .29f);
+                    cell.y + cell.height * .425f);
                 Vector3 position = worldCamera.ScreenToWorldPoint(new Vector3(icon.x,
                     Screen.height - icon.y, worldCamera.WorldToScreenPoint(Vector3.zero).z));
                 position.z = 0f;
-                // Up to ~70% larger than the old 23px portrait. Cap within
-                // each square so the bottom text/grade remains unobstructed.
-                float portraitPixels = Mathf.Min(40f * scale, cell.height * .55f);
+                // Four times the former 40px portrait on full-sized cells.
+                // The formation layout keeps the caption unobstructed.
+                float portraitPixels = MobileOwnedFormationLayout.PortraitDiameterPixels(
+                    cell, scale);
                 float size = portraitPixels * worldCamera.orthographicSize * 2f /
                     Mathf.Max(1f, worldCamera.pixelHeight);
                 long representative = group.Contains(selected) ? selected.Value : group.InstanceIds[0];
@@ -1155,8 +1156,8 @@ namespace Ordr.Mobile.Unity
                     // The marker/attack pulse occupies the top of the square;
                     // draw the label only in its lower part so IMGUI does not
                     // cover the in-world character image.
-                    var label = new Rect(cell.x, cell.y + cell.height * .57f,
-                        cell.width, cell.height * .43f);
+                    var label = new Rect(cell.x, cell.y + cell.height * .85f,
+                        cell.width, cell.height * .15f);
                     GUI.Box(label, GUIContent.none, chosen ? OrdrMobileUiTheme.SelectedTab : GUI.skin.box);
                     var text = new Rect(label.x + 3f * scale, label.y + 1f * scale,
                         label.width - 6f * scale, label.height - 13f * scale);

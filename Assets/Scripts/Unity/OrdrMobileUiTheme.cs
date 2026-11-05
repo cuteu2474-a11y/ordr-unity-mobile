@@ -20,7 +20,6 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle subheading;
         private static GUIStyle skillButton;
         private static GUIStyle explanation;
-        private static GUIStyle facilityHeading;
         private static GUIStyle facilityBadge;
         private static GUIStyle researchNumber;
         private static GUIStyle researchName;
@@ -34,6 +33,9 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle wispCountCaption;
         private static GUIStyle wispCountValue;
         private static GUIStyle statusValue;
+        private static GUIStyle scoreCardCaption;
+        private static GUIStyle scoreCardValue;
+        private static GUIStyle scoreCardFooter;
 
         internal static GUIStyle SelectedTab { get { return selectedTab; } }
         internal static GUIStyle PrimaryButton { get { return primaryButton; } }
@@ -148,9 +150,6 @@ namespace Ordr.Mobile.Unity
             explanation.fontStyle = FontStyle.Normal;
             explanation.wordWrap = true;
             explanation.normal.textColor = new Color(0.92f,0.97f,1f,1f);
-            facilityHeading = new GUIStyle(sectionTitle);
-            facilityHeading.fontSize = 27;
-            facilityHeading.normal.textColor = Color.white;
             facilityBadge = new GUIStyle(overline);
             facilityBadge.fontSize = 14;
             facilityBadge.alignment = TextAnchor.MiddleRight;
@@ -209,6 +208,15 @@ namespace Ordr.Mobile.Unity
             statusValue.fontSize = 21;
             statusValue.fontStyle = FontStyle.Bold;
             statusValue.normal.textColor = Color.white;
+            scoreCardCaption = new GUIStyle(accordionMeta);
+            scoreCardCaption.fontSize = 15;
+            scoreCardCaption.alignment = TextAnchor.MiddleCenter;
+            scoreCardCaption.normal.textColor = Muted;
+            scoreCardValue = new GUIStyle(statusValue);
+            scoreCardValue.fontSize = 30;
+            scoreCardValue.alignment = TextAnchor.MiddleCenter;
+            scoreCardFooter = new GUIStyle(scoreCardCaption);
+            scoreCardFooter.fontSize = 12;
             themedSkin.toggle = new GUIStyle(source.toggle);
             themedSkin.toggle.fontSize = 18;
             themedSkin.toggle.wordWrap = true;
@@ -285,24 +293,32 @@ namespace Ordr.Mobile.Unity
                     new Color(1f,1f,1f,.85f));
         }
 
-        // Source-backed facility pages share one game-like visual language.
-        // These plates cannot purchase, mutate resources or claim progress.
-        internal static void DrawFacilityBanner(Rect area, string eyebrow,
-            string title, string description, string counter, Color tint)
+        // Large, read-only battle metrics without a decorative section title.
+        internal static void DrawScoreHeroCard(string label, string value,
+            string footer, Color tint, float height = 112f)
         {
-            GUI.Box(area, GUIContent.none, Panel);
-            Stroke(new Rect(area.x+4f,area.y+10f,4f,area.height-20f),tint);
-            Stroke(new Rect(area.x+17f,area.y+35f,
-                Mathf.Max(0f,area.width-34f),1f),new Color(tint.r,tint.g,tint.b,.4f));
-            Stroke(new Rect(area.xMax-39f,area.y+52f,17f,2f),tint);
-            Stroke(new Rect(area.xMax-31f,area.y+45f,2f,16f),tint);
-            float textWidth = Mathf.Max(60f,area.width-48f);
-            GUI.Label(new Rect(area.x+18f,area.y+10f,
-                Mathf.Max(50f,textWidth-110f),22f),eyebrow,Overline);
-            GUI.Label(new Rect(area.xMax-114f,area.y+9f,96f,23f),counter,
-                facilityBadge);
-            GUI.Label(new Rect(area.x+18f,area.y+43f,textWidth,40f),title,
-                facilityHeading);
+            Rect area = GUILayoutUtility.GetRect(0f, height,
+                GUILayout.ExpandWidth(true));
+            GUI.Box(area, GUIContent.none, accordionClosed);
+            if (Event.current.type != EventType.Repaint) return;
+            Stroke(new Rect(area.x + 8f, area.y + 6f,
+                Mathf.Max(0f, area.width - 16f), 3f), tint);
+            GUI.Label(new Rect(area.x + 5f, area.y + 15f,
+                area.width - 10f, 22f), label, scoreCardCaption);
+            Color previous = scoreCardValue.normal.textColor;
+            scoreCardValue.normal.textColor = tint;
+            int font = scoreCardValue.fontSize;
+            var content = new GUIContent(value);
+            while (scoreCardValue.fontSize > 18 &&
+                scoreCardValue.CalcSize(content).x > area.width - 12f)
+                scoreCardValue.fontSize--;
+            GUI.Label(new Rect(area.x + 5f, area.y + 37f,
+                area.width - 10f, 43f), content, scoreCardValue);
+            scoreCardValue.fontSize = font;
+            scoreCardValue.normal.textColor = previous;
+            if (!string.IsNullOrEmpty(footer))
+                GUI.Label(new Rect(area.x + 5f, area.yMax - 27f,
+                    area.width - 10f, 20f), footer, scoreCardFooter);
         }
 
         // Read-only game data uses the same compact card language as actions.
@@ -366,15 +382,47 @@ namespace Ordr.Mobile.Unity
             return pressed;
         }
 
-        // A tappable operation row: one press is the action, never an expansion.
-        // The caller owns eligibility, resource checks and the transaction.
+        // Ordinary rows act on a single tap. Gambling rows distinguish a
+        // short tap from a hold without changing their shared presentation.
         internal static bool DrawActionRow(string title, string meta,
             Color tint, float height = 72f, bool countBadge = false)
         {
             Rect area = GUILayoutUtility.GetRect(0f, height,
                 GUILayout.ExpandWidth(true));
             bool pressed = GUI.Button(area, GUIContent.none, accordionClosed);
-            if (Event.current.type != EventType.Repaint) return pressed;
+            if (Event.current.type == EventType.Repaint)
+                DrawActionRowFace(area, title, meta, tint, countBadge);
+            return pressed;
+        }
+
+        internal static MobileLongPressResult DrawHoldActionRow(string key,
+            string title, string meta, Color tint, MobileLongPressGesture gesture,
+            float height = 72f)
+        {
+            Rect area = GUILayoutUtility.GetRect(0f, height,
+                GUILayout.ExpandWidth(true));
+            Event input = Event.current;
+            EventType inputType = input.type;
+            if (inputType == EventType.MouseDown && input.button == 0 &&
+                GUI.enabled && area.Contains(input.mousePosition))
+                gesture.Begin(key, Time.unscaledTime, input.mousePosition);
+            if (inputType == EventType.MouseDrag && input.button == 0 &&
+                gesture.Move(key, input.mousePosition))
+                GUIUtility.hotControl = 0;
+            bool pressed = GUI.Button(area, GUIContent.none, accordionClosed);
+            MobileLongPressResult result = MobileLongPressResult.None;
+            if (pressed)
+                result = gesture.Complete(key, Time.unscaledTime);
+            else if (inputType == EventType.MouseUp && gesture.IsTracking(key))
+                gesture.Cancel();
+            if (Event.current.type == EventType.Repaint)
+                DrawActionRowFace(area, title, meta, tint, false);
+            return result;
+        }
+
+        private static void DrawActionRowFace(Rect area, string title,
+            string meta, Color tint, bool countBadge)
+        {
             Stroke(new Rect(area.x+5f,area.y+12f,4f,
                 Mathf.Max(0f,area.height-24f)),tint);
             GUI.Label(new Rect(area.x+14f,area.y+10f,34f,area.height-20f),
@@ -392,7 +440,6 @@ namespace Ordr.Mobile.Unity
                 else GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
                     metaWidth,area.height-18f),meta,accordionMeta);
             }
-            return pressed;
         }
 
         // Keep quantities legible even when a zero-balance action is disabled.
