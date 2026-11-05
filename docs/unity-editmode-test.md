@@ -16,9 +16,15 @@ ZIP에는 APK, `.build.json` 패킹 증빙, `.apk.sha256` 체크섬, `.verificat
 
 게임 진행은 오프라인을 목표로 합니다. 캐릭터 사진 다운로드에는 인터넷을 사용하며, 사진이 없으면 대체 그림을 표시합니다.
 
-## Unity에서 실행
+## Unity에서 실행 (Windows)
 
-저장소 전체를 Unity Hub에서 열고 기본 씬을 실행합니다. `data/`는 Editor의 `OrdrCharacterDataSync`가 Resources로 가져옵니다. 캐시를 수동 편집하지 않습니다. Android 빌드에는 해당 Unity 버전의 Android Build Support가 필요합니다.
+1. Unity Hub를 설치하고 **Unity 6.3 LTS (6000.3.26f1)** 에디터를 설치합니다. APK를 직접 제작할 경우 해당 버전의 **Android Build Support**도 설치합니다.
+2. GitHub의 `cuteu2474-a11y/ordr-unity-mobile` 저장소에서 **main 전체**를 내려받아 압축을 풀거나 복제합니다.
+3. Unity Hub에서 **Add project from disk**를 선택하고 `Assets`, `Packages`, `ProjectSettings`, `data`가 들어 있는 **저장소 최상위 폴더**를 지정합니다. `Assets`만 선택하지 않습니다.
+4. 에디터에서 `Assets/Scenes/MainGame.unity`를 연 뒤 **Play**로 개발 버전을 확인합니다.
+5. 도감·전투 데이터가 보이지 않으면 상단 **ORDR → 캐릭터 데이터 · 위키 확장 · 스킬 동기화** 메뉴를 실행합니다.
+
+`data/`는 Editor의 `OrdrCharacterDataSync`가 `Assets/Resources/OrdrData/`로 자동 동기화합니다. 생성된 캐시를 직접 수정하거나 커밋하지 않습니다. Unity에서 실행했다고 해서 전체 라운드·APK·실기 검증까지 통과한 것은 아닙니다.
 
 ## GitHub 검사와 제작 조건
 
