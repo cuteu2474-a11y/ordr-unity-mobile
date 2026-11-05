@@ -100,7 +100,7 @@ namespace Ordr.Mobile.Combat
             // This is the standalone practice definition of 'delete', not
             // an invented spell packet. Native immunity is not asserted.
             long actual;
-            long remaining = (long)Math.Ceiling(primary.Enemy.Health);
+            long remaining = primary.Enemy.Health;
             if (remaining <= 0 ||
                 !resolution.TryApplySkillDamage(InstanceKey(actor.Id),
                     primary.Id, remaining, out actual)) return;

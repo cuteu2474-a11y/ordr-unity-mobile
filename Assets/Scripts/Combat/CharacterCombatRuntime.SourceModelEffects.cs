@@ -288,17 +288,17 @@ namespace Ordr.Mobile.Combat
                     // Sans's source-defined 30-bone evolution replaces
                     // the corresponding base auras; it does not stack a
                     // second speculative 15-armor or 10%-slow aura.
-                    double amount = !recipientIsAlly &&
+                    double contributionAmount = !recipientIsAlly &&
                         characters[id].Catalog.Id == "MY-07" &&
                         characters[id].Mapping != null &&
                         characters[id].Mapping.AttackSpec.UnitRawCode == "h083"
                         ? BulkSansEnhancedAuraAmount(characters[id], aura.Type,
                             aura.Amount) : aura.Amount;
-                    if (strength.HasValue && Math.Abs(strength.Value - amount) > .000001)
+                    if (strength.HasValue && Math.Abs(strength.Value - contributionAmount) > .000001)
                         equalStrength = false;
-                    strength = strength ?? amount;
+                    strength = strength ?? contributionAmount;
                     owned.Add(new Original323AuraContribution(aura.AbilityRawcode,
-                        aura.BuffRawcode, aura.Level, amount, aura.Type));
+                        aura.BuffRawcode, aura.Level, contributionAmount, aura.Type));
                 }
                 if (equalStrength && owned.Count > 1)
                     contributions.Add(owned[0]);

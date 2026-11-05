@@ -12,7 +12,7 @@
 | 해당 APK의 검사 | Unity EditMode 2,161/2,161 통과. 필수 데이터 패킹·CRC·해시·ARM64/ARMv7·v2 서명 검증 통과 |
 | 최신 main 코드 | 조합·위습·졸업 도박소와 13+26개 도감 자동 효과 경로·원본 콜백 5건 등이 연결돼 있습니다. 일부 기술은 발동 경로만 연결된 상태이며 전체 통합 검증 대기 |
 | 이전 도구 수정 검사 | Windows·Python 3.12: 340건 중 337건 통과·3건 건너뜀, 실패/오류 없음. 현황 JSON·생성 유닛 표 일치 검사 통과 |
-| 최근 실패 원인 | 2026-11-05 실행 386번은 Unity 진입 전 Python 342건 중 검증 코드 1건 실패(위습 자격 검사를 공통 함수로 추출한 뒤 테스트의 고정 위치 가정 불일치). 공통 자격 검사와 RNG/실물 생성 선후관계를 검증하도록 테스트 수정, 새 통합 검증 대기 |
+| 최근 실패 원인 | 실행 [#410](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/42055670170)은 Python·라이선스·디스크 검사 통과 후 C# 컴파일 두 건(`Math.Ceiling(long)`의 오버로드 모호성, 오라 `amount` 변수명 충돌)으로 중단. 건강값 `long`을 직접 사용하고 오라 기여값을 별도 변수로 구분하도록 수정했으며 **수정 후 Unity·APK 검증은 대기** |
 | 휴대폰 검증 | 설치·터치 조작·발열/성능·65R 전체 플레이 미확인 |
 
 [APK 실행·다운로드](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41941260044) · [수정 전 실패 기록](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41994323743). ZIP은 11월 19일 10:01 만료 예정입니다. 다운로드 절차와 파일 구성은 [실행과 APK](unity-editmode-test.md)에 있습니다.
