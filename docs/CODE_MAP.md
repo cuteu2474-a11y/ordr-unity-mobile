@@ -1,3 +1,10 @@
+## 2026-11-05 · 61차 유닛 목록·선택·원본 조합 재료 탐색
+
+- MobileOwnedRosterBrowser.Group: 보유 실물 기반 등급 필터, MobileFusionBrowser.GradePriority 재사용한 높은 등급 순 안정 정렬; 판매·분해 판정·인스턴스 불변.
+- MobileFusionBrowser.FilterBySourceMaterial: 원본 JASS OriginalJassFusionCatalog.FindByAbility의 UNIT rawcode 조건으로만 제작식 탐색; 제작 권한을 주거나 자원 소모를 하지 않음.
+- OrdrMobileTouchPanel.DrawUnits: 선택 유닛 카드, 초상화가 포함된 등급순 목록, 명시적 인스턴스 선택, 진화체·토큰·원본 아이템 접이식 영역. OwnedUnitsForFrame은 한 프레임 안의 OnGUI 다중 이벤트 스냅샷만 재사용하며 실제 거래 뒤 무효화.
+- MobileOwnedRosterBrowserTests 및 MobileFusionBrowserTests: 등급/페이지/복사본 선택 불변성 및 원본 UNIT 재료 탐색 회귀 코드. 로컬 실행 검사 없이 코드 반영, Actions 실행 결과 미확인.
+
 ## 2026-11-05 · 60차 유틸보드/Actions 경로
 
 - `Assets/Scripts/Mobile/MobileOriginalChatScoreboard.cs`의 `MobileOriginalUtilityBoard.Capture`: 보유 유닛 ID + 스킬 카탈로그 + 원본 합성 오라로 읽기 전용 4개 잠재 스펙 집계. 동종 중복 오라와 한 기술의 복수 감속 단계 제거. 전투/지갑/실제 디버프 상태 미변경.

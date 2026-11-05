@@ -114,7 +114,7 @@ namespace Ordr.Mobile.Mobile
             OwnedRosterFilter filter, Func<MobileUnitSnapshot, bool> canSell,
             int requestedPage, int pageSize,
             out int unitCount, out int groupCount,
-            out int pageCount, out int resolvedPage)
+            out int pageCount, out int resolvedPage, string gradeFilter = null)
         {
             if (owned == null) throw new ArgumentNullException(nameof(owned));
             if (canSell == null) throw new ArgumentNullException(nameof(canSell));
@@ -132,6 +132,8 @@ namespace Ordr.Mobile.Mobile
                 if (filter == OwnedRosterFilter.Saleable && !canSell(entry)) continue;
                 if (filter == OwnedRosterFilter.Decomposable &&
                     !Original323UnitDecompositionService.Supports(entry.Unit.Id)) continue;
+                if (!string.IsNullOrEmpty(gradeFilter) &&
+                    !string.Equals(entry.Unit.Grade, gradeFilter, StringComparison.Ordinal)) continue;
                 unitCount++;
                 List<MobileUnitSnapshot> members;
                 if (!byId.TryGetValue(entry.Unit.Id, out members))
@@ -142,6 +144,19 @@ namespace Ordr.Mobile.Mobile
                 }
                 members.Add(entry);
             }
+            // Shared grade rank with fusion recipes. Unit name and stable
+            // catalog ID keep groups predictable when new units are acquired.
+            sourceGroups.Sort((left, right) =>
+            {
+                int rank = MobileFusionBrowser.GradePriority(right[0].Unit.Grade)
+                    .CompareTo(MobileFusionBrowser.GradePriority(left[0].Unit.Grade));
+                if (rank != 0) return rank;
+                int name = string.Compare(left[0].Unit.Name, right[0].Unit.Name,
+                    StringComparison.Ordinal);
+                return name != 0 ? name :
+                    string.Compare(left[0].Unit.Id, right[0].Unit.Id,
+                        StringComparison.Ordinal);
+            });
             groupCount = sourceGroups.Count;
             pageCount = Math.Max(1, (groupCount + pageSize - 1) / pageSize);
             resolvedPage = Math.Max(0, Math.Min(requestedPage, pageCount - 1));

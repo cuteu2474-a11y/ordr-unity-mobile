@@ -42,7 +42,7 @@ namespace Ordr.Mobile.Mobile
 
         // UI-only ordering. Special grades are presented above regular grades;
         // original fusion prerequisites, prices and outcomes are unchanged.
-        private static int GradePriority(string grade)
+        public static int GradePriority(string grade)
         {
             switch (grade)
             {
@@ -65,6 +65,35 @@ namespace Ordr.Mobile.Mobile
                 default: return 0;
             }
         }
+        // Exact UNIT rawcode only; name matching can accidentally include a
+        // different character or a recipe whose title merely mentions it.
+        // Read-only navigation never grants crafting authority.
+        public static IReadOnlyList<MobileFusionPreview> FilterBySourceMaterial(
+            IReadOnlyList<MobileFusionPreview> offers,
+            OriginalJassFusionCatalog original, string materialRawcode)
+        {
+            if (offers == null) throw new ArgumentNullException(nameof(offers));
+            if (original == null) throw new ArgumentNullException(nameof(original));
+            if (string.IsNullOrWhiteSpace(materialRawcode) ||
+                materialRawcode.Length != 4)
+                throw new ArgumentException("원본 재료 객체 ID는 네 글자여야 합니다.", nameof(materialRawcode));
+            var result = new List<MobileFusionPreview>();
+            foreach (var offer in offers)
+            {
+                if (offer == null)
+                    throw new ArgumentException("조합식 목록에 빈 항목이 있습니다.", nameof(offers));
+                var registration = original.FindByAbility(offer.RecipeId);
+                if (registration == null) continue;
+                foreach (var input in registration.OrderedConditions)
+                    if (input.Kind == "UNIT" && input.Rawcode == materialRawcode)
+                    {
+                        result.Add(offer);
+                        break;
+                    }
+            }
+            return result.AsReadOnly();
+        }
+
         public static IReadOnlyList<MobileFusionPreview> Select(
             IReadOnlyList<MobileFusionPreview> all, string search,
             bool materialsReadyOnly, int requestedPage, int pageSize,

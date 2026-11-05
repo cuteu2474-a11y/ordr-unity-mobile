@@ -60,6 +60,17 @@ namespace Ordr.Mobile.Unity
         private bool showOriginalAudit;
         private readonly Dictionary<Tab, Vector2> tabScrollPositions = new Dictionary<Tab, Vector2>();
         private int ownedPage;
+        private int ownedFrameSnapshotAt = -1;
+        private CharacterCombatRuntime ownedFrameCombat;
+        private IReadOnlyList<MobileUnitSnapshot> ownedFrameSnapshot;
+        private string ownedGradeFilter;
+        private bool showOwnedGradeFilters;
+        private bool showSelectedUnitExtras;
+        private bool showEvolutionManagement;
+        private bool showLuckyTokenManagement;
+        private bool showOriginalItemManagement;
+        private string fusionMaterialRawcode;
+        private string fusionMaterialName;
         private OwnedRosterFilter ownedFilter = OwnedRosterFilter.All;
         private bool showRoundHistory;
         private readonly List<long> pendingBatchSales = new List<long>();
@@ -397,7 +408,15 @@ namespace Ordr.Mobile.Unity
             if (GUILayout.Button(title, style,
                 GUILayout.MinHeight(OrdrMobileUiTheme.ComfortableTapHeight),
                 GUILayout.ExpandWidth(true)))
+            {
+                if (tab == Tab.Fusion)
+                {
+                    // Opening the ordinary fusion tab is not a material jump.
+                    fusionMaterialRawcode = null;
+                    fusionMaterialName = null;
+                }
                 SelectTab(tab, true);
+            }
             if (Event.current.type == EventType.Repaint)
             {
                 FacilityVisual facility;
@@ -1023,8 +1042,7 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("유닛 정보를 불러오는 중입니다.");
                 return;
             }
-            GUILayout.Label("보유 유닛", OrdrMobileUiTheme.Subheading);
-            // Keep details in sync with the current live roster selection.
+            // A real roster selection is the only source of unit detail.
             if (Combat == null || !Combat.Roster.SelectedId.HasValue)
             {
                 selectedCatalogUnitId = null;
@@ -1047,7 +1065,7 @@ namespace Ordr.Mobile.Unity
             var detail = definitions.Find(selectedCatalogUnitId);
             if (showUnitDetails && detail != null)
             {
-                if (GUILayout.Button("목록으로", GUILayout.MinHeight(56)))
+                if (GUILayout.Button("유닛 목록으로", GUILayout.MinHeight(60)))
                 {
                     showUnitDetails = false;
                     scroll = Vector2.zero;
@@ -1055,83 +1073,148 @@ namespace Ordr.Mobile.Unity
                 DrawUnitDetails(detail);
                 return;
             }
-            DrawStartingEvolutionSelection();
-            DrawLuckyTokenManagement();
-            DrawOriginalFusionItemShells();
-            if (detail != null)
+
+            // The selected character and inventory are the everyday workflow.
+            // Evolution, tokens and source item shells are still available
+            // below in collapsible management sections, without new tabs.
+            GUILayout.Label("유닛 관리", OrdrMobileUiTheme.Subheading);
+            if (detail != null) DrawSelectedUnitCard(detail);
+            DrawOwnedUnitIndex();
+            DrawOptionalUnitManagement();
+        }
+
+        private void DrawSelectedUnitCard(UnitImplementationDefinition detail)
+        {
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.BeginHorizontal();
+            DrawCharacterPortrait(detail.Unit.Id, 72f);
+            GUILayout.BeginVertical();
+            OrdrMobileUiTheme.DrawStatusRow("선택 유닛",
+                detail.DisplayName + " · " + detail.Grade, OrdrMobileUiTheme.Gold);
+            if (Combat != null && Combat.Roster.SelectedId.HasValue)
             {
-                GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label("선택: " + detail.DisplayName, OrdrMobileUiTheme.Subheading);
-                if (Combat.Roster.SelectedId.HasValue)
+                var resources = Combat.ResourcesOf(Combat.Roster.SelectedId.Value);
+                if (resources != null)
+                    GUILayout.Label("HP " + resources.Health.ToString("0.#") +
+                        "/" + resources.MaximumHealth.ToString("0.#") +
+                        "  ·  MP " + resources.Mana.ToString("0.#") +
+                        "/" + resources.MaximumMana.ToString("0.#"),
+                        OrdrMobileUiTheme.Overline);
+                var form = Combat.PracticeFormOf(Combat.Roster.SelectedId.Value);
+                if (!string.IsNullOrEmpty(form))
                 {
-                    var selectedId = Combat.Roster.SelectedId.Value;
-                    var form = Combat.PracticeFormOf(selectedId);
-                    if (!string.IsNullOrEmpty(form))
-                    {
-                        string localized = form == "giant" ? "거대화" :
-                            form == "nika" ? "니카같은 미래" :
-                            form == "executioner" ? "처형자" :
-                            form == "phoenix" ? "불사조" :
-                            form == "human" ? "인간형" : form;
-                        GUILayout.Label("변신 상태: " + localized,
-                            OrdrMobileUiTheme.Overline);
-                    }
-                    if (detail.Unit.Id == "TR-30")
-                    {
-                        GUILayout.Label("위성 구매: " +
-                            Combat.PracticeSatellites().Count + "/3" +
-                            " (객체 평타 모델 가동 · 고유 스킬 미검증)",
-                            OrdrMobileUiTheme.Overline);
-                    }
-                    if (detail.Unit.Id == "I-05" && Combat.UsesSourceModelBasicAttacks)
-                    {
-                        var equipped = Combat.SourceModelEquippedItemsOf(selectedId);
-                        GUILayout.Label("확인된 장착: 공격 " + equipped.Attack +
-                            " · 공속 " + equipped.AttackSpeed + " · 방어 " + equipped.Armor,
-                            OrdrMobileUiTheme.Overline);
-                        GUILayout.Label("유니크 " +
-                            (equipped.UniqueAttack + equipped.UniqueSpeed + equipped.UniqueArmor) +
-                            " · 전설 " +
-                            (equipped.LegendaryAttack + equipped.LegendarySpeed +
-                             equipped.LegendaryArmor) +
-                            " · 아르마다 자격 " +
-                            Combat.SourceModelBulletArmadaThresholdOf(selectedId) + "/2" +
-                            " (실제 기술 단계와 별개)", OrdrMobileUiTheme.Overline);
-                        if (controller.HasOriginalEquippedInventorySnapshotWitness &&
-                            GUILayout.Button("원본 장비 동기화", GUILayout.MinHeight(56)))
-                            notice = controller.TrySynchronizeOriginalEquippedInventory(selectedId)
-                                ? "원본 장비 보유 상태 갱신" :
-                                "변경된 원본 장비 증거가 없거나 동기화가 제한됩니다.";
-                    }
-                    var resources = Combat.ResourcesOf(selectedId);
-                    if (resources != null)
-                    {
-                        GUILayout.Label("HP " + resources.Health.ToString("0.#") +
-                            "/" + resources.MaximumHealth.ToString("0.#") +
-                            "  ·  MP " + resources.Mana.ToString("0.#") +
-                            "/" + resources.MaximumMana.ToString("0.#"),
-                            OrdrMobileUiTheme.Overline);
-                    }
-                    if (Combat.UsesSourceModelBasicAttacks)
-                    {
-                        var nativeArmor = Combat.PracticeAllyNativeArmorBuffOf(selectedId);
-                        var effectiveArmor = Combat.PracticeAllyEffectiveArmorOf(selectedId);
-                        if (nativeArmor.HasValue && nativeArmor.Value > 0 &&
-                            effectiveArmor.HasValue)
-                            GUILayout.Label("원본 방어 상태 +" +
-                                nativeArmor.Value.ToString("0.##") +
-                                " · 현재 방어 " + effectiveArmor.Value.ToString("0.##") +
-                                " (아군 피격 계산 연결 전)", OrdrMobileUiTheme.Overline);
-                    }
+                    string localized = form == "giant" ? "거대화" :
+                        form == "nika" ? "니카같은 미래" :
+                        form == "executioner" ? "처형자" :
+                        form == "phoenix" ? "불사조" :
+                        form == "human" ? "인간형" : form;
+                    GUILayout.Label("변신 상태: " + localized, OrdrMobileUiTheme.Overline);
                 }
-                if (GUILayout.Button("스킬·공격 정보", GUILayout.MinHeight(56)))
+            }
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("스킬·공격 정보", GUILayout.MinHeight(60)))
+            {
+                showUnitDetails = true;
+                scroll = Vector2.zero;
+            }
+            if (GUILayout.Button("전장 위치", GUILayout.MinHeight(60)) &&
+                Combat != null && Combat.Roster.SelectedId.HasValue)
+            {
+                var presenter = controller.GetComponent<OrdrUnitWorldPresenter>();
+                if (presenter != null)
+                    presenter.ShowOwnedUnit(Combat.Roster.SelectedId.Value);
+            }
+            GUILayout.EndHorizontal();
+
+            if (OrdrMobileUiTheme.DrawAccordionHeader("선택 유닛 세부 상태",
+                detail.Grade, showSelectedUnitExtras, OrdrMobileUiTheme.Aqua))
+                showSelectedUnitExtras = !showSelectedUnitExtras;
+            if (showSelectedUnitExtras && Combat != null &&
+                Combat.Roster.SelectedId.HasValue)
+            {
+                long selectedId = Combat.Roster.SelectedId.Value;
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                if (detail.Unit.Id == "TR-30")
+                    GUILayout.Label("위성 구매: " + Combat.PracticeSatellites().Count +
+                        "/3 (객체 평타 모델 가동 · 고유 스킬 미검증)",
+                        OrdrMobileUiTheme.Overline);
+                if (detail.Unit.Id == "I-05" && Combat.UsesSourceModelBasicAttacks)
                 {
-                    showUnitDetails = true;
-                    scroll = Vector2.zero;
+                    var equipped = Combat.SourceModelEquippedItemsOf(selectedId);
+                    GUILayout.Label("확인된 장착: 공격 " + equipped.Attack +
+                        " · 공속 " + equipped.AttackSpeed + " · 방어 " + equipped.Armor,
+                        OrdrMobileUiTheme.Overline);
+                    GUILayout.Label("유니크 " +
+                        (equipped.UniqueAttack + equipped.UniqueSpeed + equipped.UniqueArmor) +
+                        " · 전설 " +
+                        (equipped.LegendaryAttack + equipped.LegendarySpeed +
+                         equipped.LegendaryArmor) +
+                        " · 아르마다 자격 " +
+                        Combat.SourceModelBulletArmadaThresholdOf(selectedId) + "/2" +
+                        " (실제 기술 단계와 별개)", OrdrMobileUiTheme.Overline);
+                    if (controller.HasOriginalEquippedInventorySnapshotWitness &&
+                        GUILayout.Button("원본 장비 동기화", GUILayout.MinHeight(56)))
+                        notice = controller.TrySynchronizeOriginalEquippedInventory(selectedId)
+                            ? "원본 장비 보유 상태 갱신" :
+                            "변경된 원본 장비 증거가 없거나 동기화가 제한됩니다.";
+                }
+                if (Combat.UsesSourceModelBasicAttacks)
+                {
+                    var nativeArmor = Combat.PracticeAllyNativeArmorBuffOf(selectedId);
+                    var effectiveArmor = Combat.PracticeAllyEffectiveArmorOf(selectedId);
+                    if (nativeArmor.HasValue && nativeArmor.Value > 0 &&
+                        effectiveArmor.HasValue)
+                        GUILayout.Label("원본 방어 상태 +" +
+                            nativeArmor.Value.ToString("0.##") +
+                            " · 현재 방어 " + effectiveArmor.Value.ToString("0.##") +
+                            " (아군 피격 계산 연결 전)", OrdrMobileUiTheme.Overline);
                 }
                 GUILayout.EndVertical();
             }
-            DrawOwnedUnitIndex();
+            GUILayout.EndVertical();
+        }
+
+        private void DrawOptionalUnitManagement()
+        {
+            GUILayout.Space(8f);
+            GUILayout.Label("기타 유닛 관리", OrdrMobileUiTheme.Subheading);
+            var evolution = controller.EvolutionProgress;
+            string evolutionStatus = evolution == null ? "상태 없음" :
+                evolution.IsReleased ? "해방 완료" :
+                evolution.IsActivated ? "해방 진행 중" : "자동 활성화 대기";
+            if (OrdrMobileUiTheme.DrawAccordionHeader("진화체",
+                evolutionStatus, showEvolutionManagement, OrdrMobileUiTheme.Gold))
+                showEvolutionManagement = !showEvolutionManagement;
+            if (showEvolutionManagement)
+            {
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                DrawStartingEvolutionSelection();
+                GUILayout.EndVertical();
+            }
+
+            int tokenCount = Combat == null ? 0 :
+                MobileLuckyTokenInventory.Count(OwnedUnitsForFrame());
+            if (OrdrMobileUiTheme.DrawAccordionHeader("행운의 토큰",
+                tokenCount + "개", showLuckyTokenManagement, OrdrMobileUiTheme.Gold))
+                showLuckyTokenManagement = !showLuckyTokenManagement;
+            if (showLuckyTokenManagement)
+            {
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                DrawLuckyTokenManagement();
+                GUILayout.EndVertical();
+            }
+
+            if (OrdrMobileUiTheme.DrawAccordionHeader("원본 조합 아이템",
+                "보유 수량·재료", showOriginalItemManagement, OrdrMobileUiTheme.Aqua))
+                showOriginalItemManagement = !showOriginalItemManagement;
+            if (showOriginalItemManagement)
+            {
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                DrawOriginalFusionItemShells();
+                GUILayout.EndVertical();
+            }
         }
 
         // Lucky tokens remain LT-01 physical units in the actual roster.
@@ -1154,6 +1237,8 @@ namespace Ordr.Mobile.Unity
             if (GUILayout.Button("행운의 토큰 사용 조합 보기", GUILayout.MinHeight(64)))
             {
                 fusionSearch = "토큰";
+                fusionMaterialRawcode = null;
+                fusionMaterialName = null;
                 fusionListCategory = FusionListCategory.All;
                 fusionMaterialsReadyOnly = false;
                 fusionExecutableOnly = false;
@@ -1404,6 +1489,77 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
         }
 
+        // OnGUI handles more than one event per rendered frame. Keep each
+        // frame's read-only roster stable without caching past gameplay ticks.
+        private IReadOnlyList<MobileUnitSnapshot> OwnedUnitsForFrame()
+        {
+            var runtime = Combat;
+            if (runtime == null) return Array.Empty<MobileUnitSnapshot>();
+            if (ownedFrameSnapshotAt != Time.frameCount ||
+                !ReferenceEquals(ownedFrameCombat, runtime) ||
+                ownedFrameSnapshot == null)
+            {
+                ownedFrameSnapshot = runtime.MobileUnitSnapshot();
+                ownedFrameCombat = runtime;
+                ownedFrameSnapshotAt = Time.frameCount;
+            }
+            return ownedFrameSnapshot;
+        }
+
+        private void DrawOwnedGradePicker(IReadOnlyList<MobileUnitSnapshot> owned)
+        {
+            var totals = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (var unit in owned)
+            {
+                int previous;
+                totals.TryGetValue(unit.Unit.Grade, out previous);
+                totals[unit.Unit.Grade] = previous + 1;
+            }
+            var grades = new List<string>(totals.Keys);
+            grades.Sort((a, b) =>
+            {
+                int rank = MobileFusionBrowser.GradePriority(b)
+                    .CompareTo(MobileFusionBrowser.GradePriority(a));
+                return rank != 0 ? rank : string.Compare(a, b, StringComparison.Ordinal);
+            });
+            string currentGrade = string.IsNullOrEmpty(ownedGradeFilter)
+                ? "전체 등급" : ownedGradeFilter;
+            if (GUILayout.Button("등급별 보기 · " + currentGrade +
+                (showOwnedGradeFilters ? " ▲" : " ▼"), GUILayout.MinHeight(56)))
+                showOwnedGradeFilters = !showOwnedGradeFilters;
+            if (!showOwnedGradeFilters) return;
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            if (GUILayout.Button(string.IsNullOrEmpty(ownedGradeFilter)
+                ? "전체 등급 ✓" : "전체 등급", GUILayout.MinHeight(54)))
+            {
+                ownedGradeFilter = null;
+                ownedPage = 0;
+                expandedOwnedGroupId = null;
+                showOwnedGradeFilters = false;
+            }
+            foreach (string grade in grades)
+            {
+                string label = grade + " · " + totals[grade] + "기" +
+                    (ownedGradeFilter == grade ? " ✓" : "");
+                if (!GUILayout.Button(label, GUILayout.MinHeight(54))) continue;
+                ownedGradeFilter = ownedGradeFilter == grade ? null : grade;
+                ownedPage = 0;
+                expandedOwnedGroupId = null;
+                showOwnedGradeFilters = false;
+            }
+            GUILayout.EndVertical();
+        }
+
+        private void PruneStaleBatchSaleSelection(IReadOnlyList<MobileUnitSnapshot> owned)
+        {
+            if (pendingBatchSales.Count == 0) return;
+            var alive = new HashSet<long>();
+            foreach (var unit in owned) alive.Add(unit.InstanceId);
+            int before = pendingBatchSales.Count;
+            pendingBatchSales.RemoveAll(id => !alive.Contains(id));
+            if (before != pendingBatchSales.Count) confirmBatchSale = false;
+        }
+
         private void DrawOwnedUnitIndex()
         {
             if (Combat == null)
@@ -1411,7 +1567,8 @@ namespace Ordr.Mobile.Unity
                 GUILayout.Label("월드가 시작되면 보유 유닛이 표시됩니다.");
                 return;
             }
-            var owned = Combat.MobileUnitSnapshot();
+            var owned = OwnedUnitsForFrame();
+            PruneStaleBatchSaleSelection(owned);
             OrdrMobileUiTheme.DrawStatusRow("보유 유닛", owned.Count + "기", OrdrMobileUiTheme.Aqua);
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("전체" + (ownedFilter == OwnedRosterFilter.All ? " ✓" : ""), GUILayout.MinHeight(56)))
@@ -1421,11 +1578,13 @@ namespace Ordr.Mobile.Unity
             if (GUILayout.Button("분해 가능" + (ownedFilter == OwnedRosterFilter.Decomposable ? " ✓" : ""), GUILayout.MinHeight(56)))
             { ownedFilter = OwnedRosterFilter.Decomposable; ownedPage = 0; expandedOwnedGroupId = null; }
             GUILayout.EndHorizontal();
+            DrawOwnedGradePicker(owned);
 
             int unitCount, groupCount, pages, resolved;
             var displayed = MobileOwnedRosterBrowser.Group(owned, ownedFilter,
                 x => controller.LowerGradeSales != null && controller.LowerGradeSales.CanSell(x),
-                ownedPage, 8, out unitCount, out groupCount, out pages, out resolved);
+                ownedPage, 8, out unitCount, out groupCount, out pages, out resolved,
+                ownedGradeFilter);
             ownedPage = resolved;
             GUILayout.Label(groupCount + "종 · " + unitCount + "기", OrdrMobileUiTheme.Subheading);
             if (groupCount == 0) GUILayout.Label("해당 유닛이 없습니다.");
@@ -1441,17 +1600,28 @@ namespace Ordr.Mobile.Unity
                 if (presenter != null) presenter.ShowAllOwnedUnits();
             }
 
+            string previousGrade = null;
             foreach (var group in displayed)
             {
+                if (previousGrade != group.Grade)
+                {
+                    previousGrade = group.Grade;
+                    GUILayout.Label(group.Grade + " · 높은 등급순",
+                        OrdrMobileUiTheme.Subheading);
+                }
                 bool isSelected = group.Contains(Combat.Roster.SelectedId);
                 bool open = expandedOwnedGroupId == group.UnitId;
                 string meta = group.Grade + " · " + group.Count + "기" +
                     (isSelected ? " · #" + Combat.Roster.SelectedId.Value + " 선택" : "");
                 GUILayout.BeginHorizontal();
+                DrawCharacterPortrait(group.UnitId, 58f);
                 if (OrdrMobileUiTheme.DrawActionRow(group.Name + " ×" + group.Count,
                     meta, OrdrMobileUiTheme.Aqua, 72f))
                 {
-                    long next = group.NextSelectable(Combat.Roster.SelectedId);
+                    // The grouped card selects a representative; the
+                    // instance list below selects a precise copy.
+                    long next = isSelected ? Combat.Roster.SelectedId.Value :
+                        group.Members[0].InstanceId;
                     Combat.Roster.Select(next);
                     selectedCatalogUnitId = group.UnitId;
                     notice = group.Name + " #" + next + " 선택";
@@ -1478,15 +1648,24 @@ namespace Ordr.Mobile.Unity
                     if (presenter != null) presenter.ShowOwnedUnit(isSelected
                         ? Combat.Roster.SelectedId.Value : group.Members[0].InstanceId);
                 }
-                if (GUILayout.Button("조합 찾기", GUILayout.MinHeight(58)))
+                if (GUILayout.Button("재료 사용 조합", GUILayout.MinHeight(58)))
                 {
-                    SelectTab(Tab.Fusion);
-                    fusionSearch = group.Name;
-                    fusionListCategory = FusionListCategory.All;
-                    showOnlyBookmarkedFusion = false;
-                    fusionPage = 0;
-                    fusionMaterialsReadyOnly = false;
-                    fusionExecutableOnly = true;
+                    string rawcode = group.Members[0].Unit.OriginalSourceRawcode;
+                    if (controller.OriginalJassFusions == null ||
+                        string.IsNullOrEmpty(rawcode) || rawcode.Length != 4)
+                        notice = "해당 유닛의 원본 조합 재료 코드가 확인되지 않았습니다.";
+                    else
+                    {
+                        fusionMaterialRawcode = rawcode;
+                        fusionMaterialName = group.Name;
+                        fusionSearch = "";
+                        fusionListCategory = FusionListCategory.All;
+                        showOnlyBookmarkedFusion = false;
+                        fusionPage = 0;
+                        fusionMaterialsReadyOnly = false;
+                        fusionExecutableOnly = false;
+                        SelectTab(Tab.Fusion);
+                    }
                 }
                 GUILayout.EndHorizontal();
 
@@ -1523,7 +1702,7 @@ namespace Ordr.Mobile.Unity
                     }
                     if (!expanded) continue;
                     GUILayout.BeginVertical(GUI.skin.box);
-                DrawCharacterPortrait(entry.Unit.Id, 62f);
+                    DrawCharacterPortrait(entry.Unit.Id, 62f);
                 // All nine original common objects have A09G. Never display
                 // A0JE/Avul as manual abilities; the transaction rechecks
                 // exact original rawcode and ownership under its world lock.
@@ -1580,7 +1759,7 @@ namespace Ordr.Mobile.Unity
                         }
                     }
                 }
-                DrawUnitConfirmations(entry.InstanceId);
+                    DrawUnitConfirmations(entry.InstanceId);
                     GUILayout.EndVertical();
                 }
                 if (group.Count > 1)
@@ -1808,6 +1987,19 @@ namespace Ordr.Mobile.Unity
             if (fusionListCategory == FusionListCategory.NearReady)
                 GUILayout.Label("즉시 조합 가능 또는 흔함 유닛만 부족 · 결과 등급 높은 순 · 같은 등급은 부족한 수 적은 순",
                     OrdrMobileUiTheme.Overline);
+            if (!string.IsNullOrEmpty(fusionMaterialRawcode))
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("재료 사용 조합 · " + fusionMaterialName,
+                    OrdrMobileUiTheme.Subheading);
+                if (GUILayout.Button("재료 필터 해제", GUILayout.MinHeight(54)))
+                {
+                    fusionMaterialRawcode = null;
+                    fusionMaterialName = null;
+                    fusionPage = 0;
+                }
+                GUILayout.EndHorizontal();
+            }
             GUILayout.BeginVertical(GUI.skin.box);
             string query = GUILayout.TextField(fusionSearch, GUILayout.MinHeight(56));
             if (!string.Equals(query, fusionSearch, StringComparison.Ordinal))
@@ -1830,6 +2022,8 @@ namespace Ordr.Mobile.Unity
             {
                 fusionSearch = "";
                 fusionMaterialsReadyOnly = false;
+                fusionMaterialRawcode = null;
+                fusionMaterialName = null;
                 fusionPage = 0;
                 originalJassPage = 0;
                 scroll = Vector2.zero;
@@ -1881,6 +2075,10 @@ namespace Ordr.Mobile.Unity
                         executableOffers.Add(offer);
                 browsedOffers = executableOffers.AsReadOnly();
             }
+            if (!string.IsNullOrEmpty(fusionMaterialRawcode) &&
+                controller.OriginalJassFusions != null)
+                browsedOffers = MobileFusionBrowser.FilterBySourceMaterial(
+                    browsedOffers, controller.OriginalJassFusions, fusionMaterialRawcode);
             if (showOnlyBookmarkedFusion)
                 browsedOffers = fusionBookmarks.Filter(browsedOffers);
             var visibleOffers = MobileFusionBrowser.Select(browsedOffers,
@@ -2637,6 +2835,8 @@ namespace Ordr.Mobile.Unity
 
         private void ShowResult(ManualActionResult result)
         {
+            if (result.State == ManualActionState.Succeeded)
+                ownedFrameSnapshotAt = -1;
             notice = result.State == ManualActionState.Succeeded
                 ? "실행 완료: " + result.Message : "실행 안 됨: " + result.Message;
         }

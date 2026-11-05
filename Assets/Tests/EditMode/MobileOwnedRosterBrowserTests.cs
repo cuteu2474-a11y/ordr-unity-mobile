@@ -79,12 +79,18 @@ namespace Ordr.Mobile.Tests
                 out units, out groups, out pages, out resolved);
             Assert.AreEqual(4, units);
             Assert.AreEqual(3, groups);
-            Assert.AreEqual(2, shown[0].Count);
-            Assert.AreEqual(12L, shown[0].NextSelectable(null));
-            Assert.AreEqual(16L, shown[0].NextSelectable(12));
-            Assert.AreEqual(12L, shown[0].NextSelectable(16));
-            Assert.IsTrue(shown[0].Contains(16));
-            Assert.IsFalse(shown[0].Contains(13));
+            Assert.AreEqual("특별함", shown[0].Grade,
+                "소유 시점과 무관하게 높은 등급이 먼저 나와야 합니다.");
+            MobileOwnedUnitGroup common = null;
+            foreach (var group in shown)
+                if (group.UnitId == "C-01") common = group;
+            Assert.IsNotNull(common);
+            Assert.AreEqual(2, common.Count);
+            Assert.AreEqual(12L, common.NextSelectable(null));
+            Assert.AreEqual(16L, common.NextSelectable(12));
+            Assert.AreEqual(12L, common.NextSelectable(16));
+            Assert.IsTrue(common.Contains(16));
+            Assert.IsFalse(common.Contains(13));
         }
 
         [Test]
@@ -114,6 +120,26 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0, groups);
             Assert.AreEqual(1, pages);
             Assert.AreEqual(0, resolved);
+        }
+
+        [Test]
+        public void GradeFilterRunsBeforeGroupPaginationAndUsesSharedFusionRank()
+        {
+            var original = Sample();
+            var repeated = new[] { original[0], original[1], original[2],
+                new MobileUnitSnapshot(16, original[0].Unit, null,
+                    new UnitState(16, "C-01", 0, 0)) };
+            int units, groups, pages, resolved;
+            var commons = MobileOwnedRosterBrowser.Group(repeated,
+                OwnedRosterFilter.All, x => true, 0, 8,
+                out units, out groups, out pages, out resolved, "흔함");
+            Assert.AreEqual(3, units);
+            Assert.AreEqual(2, groups);
+            Assert.AreEqual(2, commons[0].Count);
+            Assert.IsTrue(MobileFusionBrowser.GradePriority("초월함") >
+                MobileFusionBrowser.GradePriority("전설"));
+            Assert.IsTrue(MobileFusionBrowser.GradePriority("전설") >
+                MobileFusionBrowser.GradePriority("흔함"));
         }
 
         [Test]

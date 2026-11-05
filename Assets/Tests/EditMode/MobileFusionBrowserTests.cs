@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEngine;
 using NUnit.Framework;
 using Ordr.Mobile.Mobile;
 
@@ -60,6 +63,30 @@ namespace Ordr.Mobile.Tests
             var byId = MobileFusionBrowser.Select(offers, "my-01",
                 false, 0, 8, out matches, out pages, out current);
             Assert.AreSame(offers[0], byId[0]);
+        }
+
+        [Test]
+        public void OwnedMaterialJumpUsesOriginalUnitConditionsNotTextLabels()
+        {
+            var original = OriginalJassFusionCatalog.FromJson(File.ReadAllText(
+                Path.Combine(Application.dataPath, "..", "data",
+                    "original-jass-fusion-registry.json")));
+            var withUnit = original.All.First(x =>
+                x.OrderedConditions.Any(c => c.Kind == "UNIT"));
+            var material = withUnit.OrderedConditions.First(c => c.Kind == "UNIT").Rawcode;
+            var withoutUnit = original.All.First(x =>
+                !x.OrderedConditions.Any(c =>
+                    c.Kind == "UNIT" && c.Rawcode == material));
+            var actual = Offer(withUnit.AbilityRawcode, "연관된 제작식", "재료");
+            var misleading = Offer(withoutUnit.AbilityRawcode,
+                "제목에 이름이 있어도 원본 재료가 아닌 제작식", "재료");
+            var found = MobileFusionBrowser.FilterBySourceMaterial(
+                new[] { misleading, actual }, original, material);
+            Assert.AreEqual(1, found.Count);
+            Assert.AreSame(actual, found[0]);
+            Assert.Throws<ArgumentException>(() =>
+                MobileFusionBrowser.FilterBySourceMaterial(
+                    new[] { actual }, original, "INVALID"));
         }
 
         [Test]
