@@ -861,6 +861,7 @@ namespace Ordr.Mobile.Unity
                     enemyId, settledEventId, originalStoryClearWitness);
         }
         public SourceModelRegularMoneyGambling PracticeMoneyGambling { get; private set; }
+        public SourceModelMoneyGamblingDesk PracticeMoneyGamblingDesk { get; private set; }
 
         // Source-confirmed creep placement and unit eligibility are not yet known.
         // Call only for an explicitly requested object-base practice encounter.
@@ -993,6 +994,8 @@ namespace Ordr.Mobile.Unity
             Combat.ConfigureSourceModelUnitResources(sourcePool);
             EnsureSoloStoryStarted(creepData.text);
             PracticeBattle = prepared;
+            if (PracticeMoneyGamblingDesk != null)
+                prepared.MoneyGamblingBossDefeated = PracticeMoneyGamblingDesk.RecordDefeatedSourceBoss;
             PracticeCreeps = new Original323CreepPracticeWorld(Combat, creepCatalog);
             PracticeBattle.Start();
             var presenter = GetComponent<OrdrUnitWorldPresenter>();
@@ -2833,11 +2836,12 @@ namespace Ordr.Mobile.Unity
             sessionScriptRandom = sharedMobileWispRandom;
             if (sourceModelDamage != null && originalEconomyPort == null)
             {
-                PracticeMoneyGambling = new SourceModelRegularMoneyGambling(
+                PracticeMoneyGamblingDesk = new SourceModelMoneyGamblingDesk(
                     SharedEconomy.Wallet, Combat.Game, sharedMobileWispRandom,
                     () => Combat.Time, () => runGate.CanAdvance);
-                PracticeMoneyGambling.PostCommitObserverFailed += Debug.LogException;
-                originalEconomyPort = PracticeMoneyGambling;
+                PracticeMoneyGamblingDesk.PostCommitObserverFailed += Debug.LogException;
+                PracticeMoneyGambling = PracticeMoneyGamblingDesk.Regular;
+                originalEconomyPort = PracticeMoneyGamblingDesk;
             }
             RandomWispExchange = new OriginalRandomWispResourceExchange(
                 SharedEconomy.Wallet, world.Game, sharedMobileWispRandom);

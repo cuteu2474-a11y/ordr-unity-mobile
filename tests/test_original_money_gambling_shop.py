@@ -35,6 +35,20 @@ class OriginalMoneyShopTests(unittest.TestCase):
             self.assertEqual(old['sourceFunction'], new['callback'])
             self.assertEqual(old['bodySha256'], new['callbackSha256'])
 
+    def test_unlock_and_graduation_are_explicit_source_events(self):
+        data = json.loads((ROOT / 'data/original-2323C-money-gambling-shop.json').read_text())
+        unlock, graduation = data['highTierUnlock'], data['graduation']
+        self.assertEqual(('o01V', 'CIK', 'CIJ', 'R009'),
+                         (unlock['bossRawcode'], unlock['deathCallback'],
+                          unlock['researchCallback'], unlock['research']))
+        self.assertEqual(('h08C', 'R01M', 5, 10000, 1),
+                         (graduation['replacementShop'], graduation['research'],
+                          graduation['addedWoodPurchaseRights'],
+                          graduation['woodPurchaseGoldCost'], graduation['woodPerPurchase']))
+        self.assertEqual(['h06F', 'H0AZ'], graduation['moneyOffersRemoved'])
+        self.assertEqual({'CIK', 'CIJ', 'CJC', 'CI8'},
+                         set(data['progressionCallbackHashes']))
+
     def test_runtime_values_match_the_map_profile(self):
         data = json.loads((ROOT / 'data/original-2323C-money-gambling-shop.json').read_text())
         regular = data['entries'][0]

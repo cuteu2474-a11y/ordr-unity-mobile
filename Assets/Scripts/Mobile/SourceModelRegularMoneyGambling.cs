@@ -27,19 +27,41 @@ namespace Ordr.Mobile.Mobile
         private bool processing;
         private int? pendingFirst;
         private int? pendingSecond;
+        private readonly Original323MoneyGamblingTier tier;
+        private readonly Func<bool> unlocked;
+        private long returned;
+        private long purchases;
+        private readonly List<string> recentResults = new List<string>();
+        public IReadOnlyList<string> RecentResults => recentResults.AsReadOnly();
+        public int Price => IsHighGrade ? 500 : GoldCost;
+        public int Capacity => IsHighGrade ? 7 : MaximumStock;
+        public int RefillSeconds => IsHighGrade ? 9 : RestockSeconds;
+        public bool IsHighGrade => tier == Original323MoneyGamblingTier.HighGrade;
+        public bool IsUnlocked => unlocked();
+        public bool Graduated => wallet.Balance(SourceModelMoneyGamblingDesk.GraduatedResource) > 0;
+        public string Title => IsHighGrade ? "고급 돈 도박" : "일반 돈 도박";
+        public string OfferKey => IsHighGrade ? SourceModelMoneyGamblingDesk.HighOfferId : OfferId;
+        public long NetGold => checked(GoldReturned - PurchaseCount * Price);
         public event Action<Exception> PostCommitObserverFailed;
-        public long PurchaseCount { get; private set; }
-        public long GoldReturned { get; private set; }
+        public long PurchaseCount => IsHighGrade ? wallet.Balance(SourceModelMoneyGamblingDesk.HighCountResource) : purchases;
+        public long GoldReturned => IsHighGrade ? wallet.Balance(SourceModelMoneyGamblingDesk.HighReturnResource) : returned;
 
         public SourceModelRegularMoneyGambling(EconomyWallet sharedWallet,
             GameSession session, IOriginalWispRandom sharedScriptRandom,
-            Func<double> logicalClock, Func<bool> interactionGate)
+            Func<double> logicalClock, Func<bool> interactionGate,
+            Original323MoneyGamblingTier moneyTier = Original323MoneyGamblingTier.Regular,
+            Func<bool> unlockGate = null)
         {
             wallet = sharedWallet ?? throw new ArgumentNullException(nameof(sharedWallet));
             game = session ?? throw new ArgumentNullException(nameof(session));
             random = sharedScriptRandom ?? throw new ArgumentNullException(nameof(sharedScriptRandom));
             clock = logicalClock ?? throw new ArgumentNullException(nameof(logicalClock));
             canInteract = interactionGate ?? throw new ArgumentNullException(nameof(interactionGate));
+            if (!Enum.IsDefined(typeof(Original323MoneyGamblingTier), moneyTier))
+                throw new ArgumentOutOfRangeException(nameof(moneyTier));
+            tier = moneyTier;
+            unlocked = unlockGate ?? (() => !IsHighGrade);
+            stock = Capacity;
             receiptPrefix = "practice-money:" + Guid.NewGuid().ToString("N") + ":";
         }
 
@@ -57,10 +79,10 @@ namespace Ordr.Mobile.Mobile
             lastClock = now;
             if (nextRestock.HasValue && now >= nextRestock.Value)
             {
-                double cycles = Math.Floor((now - nextRestock.Value) / RestockSeconds) + 1;
-                int added = (int)Math.Min(MaximumStock - stock, cycles);
+                double cycles = Math.Floor((now - nextRestock.Value) / RefillSeconds) + 1;
+                int added = (int)Math.Min(Capacity - stock, cycles);
                 stock += added;
-                nextRestock = stock == MaximumStock ? (double?)null : nextRestock.Value + added * RestockSeconds;
+                nextRestock = stock == Capacity ? (double?)null : nextRestock.Value + added * RefillSeconds;
             }
             return now;
         }
@@ -68,19 +90,24 @@ namespace Ordr.Mobile.Mobile
         public IReadOnlyList<MobileManualOffer> AvailableOffers(ManualEconomyCategory category)
         {
             if (category != ManualEconomyCategory.Gambling) return Array.Empty<MobileManualOffer>();
-            return new[] { new MobileManualOffer(OfferId, "일반 돈 도박", "10골드 · 75%: 10~50골드 / 25%: 3~5골드 반환" +
-                " · 재고 " + Stock + "/3 · 11초마다 1회 충전 (연습 논리 시간)") };
+            return new[] { new MobileManualOffer(OfferKey, Title,
+                (IsHighGrade ? "500골드 · 70%: 500~4500 / 30%: 300~400골드 반환" :
+                    "10골드 · 75%: 10~50 / 25%: 3~5골드 반환") +
+                " · 재고 " + Stock + "/" + Capacity + " · " + RefillSeconds + "초마다 1회 충전" +
+                (Graduated ? " · 돈 도박 졸업" : !IsUnlocked ? " · 아론 보스 처치 후 해금" : "")) };
         }
 
         public ManualActionResult Confirm(ManualEconomyCategory category, string offerId)
         {
-            if (category != ManualEconomyCategory.Gambling || offerId != OfferId)
+            if (category != ManualEconomyCategory.Gambling || offerId != OfferKey)
                 return new ManualActionResult(ManualActionState.Rejected, "실행 가능한 일반 돈 도박을 선택해 주세요.");
             if (processing || game.Phase != SessionPhase.Running || !canInteract())
                 return new ManualActionResult(ManualActionState.Rejected, "진행 중인 게임에서 일시정지를 해제한 뒤 실행해 주세요.");
+            if (Graduated) return new ManualActionResult(ManualActionState.Rejected, "돈 도박을 졸업했습니다.");
+            if (!IsUnlocked) return new ManualActionResult(ManualActionState.Rejected, "아론 보스를 처치하면 고급 돈 도박이 열립니다.");
             double now = RefreshStock();
-            if (stock == 0 || wallet.Balance("gold") < GoldCost)
-                return new ManualActionResult(ManualActionState.Rejected, stock == 0 ? "도박소 재고 충전을 기다려 주세요." : "10골드가 필요합니다.");
+            if (stock == 0 || wallet.Balance("gold") < Price)
+                return new ManualActionResult(ManualActionState.Rejected, stock == 0 ? "도박소 재고 충전을 기다려 주세요." : Price + "골드가 필요합니다.");
             processing = true;
             try
             {
@@ -94,7 +121,7 @@ namespace Ordr.Mobile.Mobile
                 }
                 bool high;
                 int minimum, maximum;
-                Original323MoneyGamblingRules.TryGetAmountBounds(Original323MoneyGamblingTier.Regular,
+                Original323MoneyGamblingRules.TryGetAmountBounds(tier,
                     pendingFirst.Value, out high, out minimum, out maximum);
                 if (!pendingSecond.HasValue)
                 {
@@ -107,12 +134,22 @@ namespace Ordr.Mobile.Mobile
                 long nextCount = checked(PurchaseCount + 1);
                 long nextTotal = checked(GoldReturned + amount);
                 string receipt = receiptPrefix + nextSequence;
+                var rewards = new ResourceBundle().Add("gold", amount);
+                if (IsHighGrade)
+                {
+                    rewards.Add(SourceModelMoneyGamblingDesk.HighReturnResource, amount)
+                        .Add(SourceModelMoneyGamblingDesk.HighCountResource, 1);
+                    if (nextTotal >= SourceModelMoneyGamblingDesk.GraduationGold)
+                        rewards.Add(SourceModelMoneyGamblingDesk.GraduatedResource, 1)
+                            .Add("source:native-research:R01M", 1)
+                            .Add(SourceModelMoneyGamblingDesk.WoodRightsResource, 5);
+                }
                 Exception observerFailure = null;
                 bool committed;
                 try
                 {
                     committed = wallet.TryExchangeOnce(receipt,
-                        new ResourceBundle().Add("gold", GoldCost), new ResourceBundle().Add("gold", amount));
+                        new ResourceBundle().Add("gold", Price), rewards);
                 }
                 catch (Exception error)
                 {
@@ -125,16 +162,19 @@ namespace Ordr.Mobile.Mobile
                 if (!committed)
                     return new ManualActionResult(ManualActionState.Rejected, "현재 잔액에서 거래를 완료할 수 없습니다.");
                 sequence = nextSequence;
-                PurchaseCount = nextCount;
-                GoldReturned = nextTotal;
-                if (stock == MaximumStock) nextRestock = now + RestockSeconds;
+                purchases = nextCount;
+                returned = nextTotal;
+                if (stock == Capacity) nextRestock = now + RefillSeconds;
                 stock--;
                 pendingFirst = pendingSecond = null;
                 if (observerFailure != null)
                     try { PostCommitObserverFailed?.Invoke(observerFailure); } catch { }
-                return new ManualActionResult(ManualActionState.Succeeded,
-                    "일반 돈 도박 · 10골드 사용 / " + amount + "골드 반환 (순증감 " +
-                    (amount - GoldCost).ToString("+0;-0;0") + ")");
+                string result = Title + " · " + Price + "골드 사용 / " + amount +
+                    "골드 반환 (순증감 " + (amount - Price).ToString("+0;-0;0") + ")" +
+                    (Graduated ? " · 졸업! 목재 구매 기회 +5" : "");
+                recentResults.Insert(0, result);
+                if (recentResults.Count > 6) recentResults.RemoveAt(6);
+                return new ManualActionResult(ManualActionState.Succeeded, result);
             }
             finally { processing = false; }
         }

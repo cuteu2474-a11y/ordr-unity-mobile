@@ -88,6 +88,7 @@ namespace Ordr.Mobile.Unity
         private bool confirmBatchSale;
         private readonly MobileWispActionJournal wispActions = new MobileWispActionJournal();
         private bool showWispHistory;
+        private bool showMoneyGamblingHistory;
         private MobileTreasureGachaResult lastTreasureResult;
         private int lastTreasureRound;
         private long? pendingCommonSaleId;
@@ -3072,10 +3073,38 @@ namespace Ordr.Mobile.Unity
             {
                 var shop = controller.PracticeMoneyGambling;
                 OrdrMobileUiTheme.DrawStatusRow("일반 돈 도박",
-                    shop.Stock + "/3회", OrdrMobileUiTheme.Gold);
-                if (shop.Stock < SourceModelRegularMoneyGambling.MaximumStock)
+                    shop.Graduated ? "졸업" : shop.Stock + "/3회", OrdrMobileUiTheme.Gold);
+                if (!shop.Graduated && shop.Stock < SourceModelRegularMoneyGambling.MaximumStock)
                     GUILayout.Label("다음 충전 " +
                         Math.Ceiling(shop.SecondsUntilRestock) + "초");
+                GUILayout.Label("10골드 · 75%: 10~50골드 / 25%: 3~5골드 반환");
+                DrawMoneyGamblingRecord(shop);
+                var desk = controller.PracticeMoneyGamblingDesk;
+                if (desk != null)
+                {
+                    var high = desk.High;
+                    OrdrMobileUiTheme.DrawStatusRow("고급 돈 도박",
+                        desk.Graduated ? "졸업" : !high.IsUnlocked ? "아론 처치 후 해금" :
+                            high.Stock + "/" + high.Capacity + "회",
+                        OrdrMobileUiTheme.Gold);
+                    GUILayout.Label("500골드 · 70%: 500~4500골드 / 30%: 300~400골드 반환");
+                    if (!desk.Graduated && high.IsUnlocked && high.Stock < high.Capacity)
+                        GUILayout.Label("고급 다음 충전 " + Math.Ceiling(high.SecondsUntilRestock) + "초");
+                    GUILayout.Label("고급 누적 반환 " + high.GoldReturned + " / 35000골드 · 도달 시 졸업");
+                    DrawMoneyGamblingRecord(high);
+                    if (desk.Graduated)
+                        GUILayout.Label("돈 도박 종료 · 졸업 상점 목재 구매 기회 " + desk.WoodRights + "회");
+                    if (OrdrMobileUiTheme.DrawAccordionHeader("돈 도박 결과 기록",
+                        "일반·고급 각각 최근 6회", showMoneyGamblingHistory, OrdrMobileUiTheme.Gold))
+                        showMoneyGamblingHistory = !showMoneyGamblingHistory;
+                    if (showMoneyGamblingHistory)
+                    {
+                        foreach (string result in shop.RecentResults) GUILayout.Label(result);
+                        foreach (string result in high.RecentResults) GUILayout.Label(result);
+                        if (shop.RecentResults.Count + high.RecentResults.Count == 0)
+                            GUILayout.Label("아직 실행한 돈 도박이 없습니다.");
+                    }
+                }
             }
 
             // Selection is one tap, but real currency spending still confirms.
@@ -3130,6 +3159,15 @@ namespace Ordr.Mobile.Unity
                     notice = "구매 확인";
                 }
             }
+        }
+
+        private static void DrawMoneyGamblingRecord(SourceModelRegularMoneyGambling shop)
+        {
+            GUILayout.Label(shop.PurchaseCount + "회 · 사용 " +
+                checked(shop.PurchaseCount * shop.Price) + "골드 · 반환 " +
+                shop.GoldReturned + "골드 · 손익 " + shop.NetGold.ToString("+0;-0;0"));
+            if (shop.RecentResults.Count > 0)
+                GUILayout.Label("최근 결과 · " + shop.RecentResults[0]);
         }
 
         private void RefreshCurrent()

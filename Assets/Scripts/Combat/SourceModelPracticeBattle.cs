@@ -187,6 +187,7 @@ namespace Ordr.Mobile.Combat
         private int roundStartingDefeated;
         private long roundStartingGold;
         private int roundStartingBossScore;
+        internal Action<string, string> MoneyGamblingBossDefeated;
         private readonly List<SourceModelPracticeRoundResult> history = new List<SourceModelPracticeRoundResult>();
         public IReadOnlyList<SourceModelPracticeRoundResult> RoundHistory => history.AsReadOnly();
         public bool Started { get; private set; }
@@ -368,6 +369,8 @@ namespace Ordr.Mobile.Combat
             if (!rewarded.Add(id)) return;
             string defeatedBossRawcode;
             int bossPoints;
+            if (waves.TryGetDefeatedBossRawcode(spawnWave, id, out defeatedBossRawcode))
+                MoneyGamblingBossDefeated?.Invoke(id, defeatedBossRawcode);
             // Bdf credits points only for actual 55/60/65 boss deaths. The
             // simulated round clock is explicit model time, not a live witness.
             if (spawnWave == combat.Game.CurrentWave &&
@@ -408,6 +411,7 @@ namespace Ordr.Mobile.Combat
         {
             waves.VerifiedMonsterDefeated -= RewardActualDeath;
             combat.SourceModelTimeAdvancing -= MoveLivingMonsters;
+            MoneyGamblingBossDefeated = null;
         }
     }
 }

@@ -182,6 +182,102 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0, shop.Random.Ranges.Count);
         }
 
+        private static void Unlock(SourceModelMoneyGamblingDesk desk, string rawcode = "o01V")
+        {
+            typeof(SourceModelMoneyGamblingDesk).GetMethod("RecordDefeatedSourceBoss",
+                BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(desk, new object[] { "boss-arlong", rawcode });
+        }
+
+        [TestCase(30, 300)]
+        [TestCase(31, 500)]
+        [TestCase(100, 4500)]
+        public void HighGradeUsesArlongUnlockAndOriginalTwoDraws(int first, int amount)
+        {
+            var wallet = new EconomyWallet();
+            var game = new GameSession(); game.Start();
+            wallet.Grant(new ResourceBundle().Add("gold", 1000));
+            var rolls = new Rolls(first, amount);
+            var desk = new SourceModelMoneyGamblingDesk(wallet, game, rolls, () => 0, () => true);
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.HighOfferId).State);
+            Assert.AreEqual(0, rolls.Ranges.Count);
+            Unlock(desk, "o00I");
+            Assert.IsFalse(desk.High.IsUnlocked);
+            Unlock(desk);
+            Unlock(desk);
+            Assert.AreEqual(1, wallet.Balance(SourceModelMoneyGamblingDesk.UnlockResource));
+            Assert.AreEqual(ManualActionState.Succeeded, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.HighOfferId).State);
+            Assert.AreEqual(500 + amount, wallet.Balance("gold"));
+            Assert.AreEqual(amount, desk.High.GoldReturned);
+            Assert.AreEqual(1, desk.High.PurchaseCount);
+            Assert.AreEqual(amount - 500, desk.High.NetGold);
+            Assert.AreEqual(6, desk.High.Stock);
+            Assert.AreEqual(9, desk.High.SecondsUntilRestock);
+            CollectionAssert.AreEqual(new[] { "1..100", first > 30 ? "500..4500" : "300..400" },
+                rolls.Ranges);
+        }
+
+        [TestCase(30500, 100, 4500, 35000)]
+        [TestCase(34999, 30, 400, 35399)]
+        public void GraduationCommitsFullLastPayoutAndFivePaidWoodRights(
+            int priorReturn, int branch, int amount, int total)
+        {
+            var wallet = new EconomyWallet();
+            var game = new GameSession(); game.Start();
+            wallet.Grant(new ResourceBundle().Add("gold", 50000)
+                .Add(SourceModelMoneyGamblingDesk.HighReturnResource, priorReturn));
+            var desk = new SourceModelMoneyGamblingDesk(wallet, game, new Rolls(branch, amount),
+                () => 0, () => true);
+            Unlock(desk);
+            // A post-commit display exception cannot undo graduation or replay it.
+            wallet.Granted += _ => { throw new InvalidOperationException("TEST_ONLY observer"); };
+            Assert.AreEqual(ManualActionState.Succeeded, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.HighOfferId).State);
+            Assert.IsTrue(desk.Graduated);
+            Assert.AreEqual(total, desk.High.GoldReturned);
+            Assert.AreEqual(49500 + amount, wallet.Balance("gold"));
+            Assert.AreEqual(5, desk.WoodRights);
+            Assert.AreEqual(1, wallet.Balance("source:native-research:R01M"));
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelRegularMoneyGambling.OfferId).State);
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.HighOfferId).State);
+            Assert.AreEqual(ManualActionState.Succeeded, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.WoodOfferId).State);
+            Assert.AreEqual(4, desk.WoodRights);
+            Assert.AreEqual(1, wallet.Balance("wood"));
+            var restored = new EconomyWallet(); restored.RestoreState(wallet.CaptureState());
+            var next = new SourceModelMoneyGamblingDesk(restored, game, new Rolls(), () => 0, () => true);
+            Assert.IsTrue(next.Graduated);
+            Assert.AreEqual(total, next.High.GoldReturned);
+            Assert.AreEqual(1, next.High.PurchaseCount);
+            Assert.AreEqual(4, next.WoodRights);
+        }
+
+        [Test]
+        public void PausedHighGradeAndUnpaidWoodNeverConsumeRandomOrRights()
+        {
+            var wallet = new EconomyWallet();
+            var game = new GameSession(); game.Start();
+            var rolls = new Rolls();
+            bool paused = true;
+            var desk = new SourceModelMoneyGamblingDesk(wallet, game, rolls, () => 0, () => !paused);
+            Unlock(desk);
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.HighOfferId).State);
+            paused = false;
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.HighOfferId).State);
+            wallet.Grant(new ResourceBundle().Add(SourceModelMoneyGamblingDesk.GraduatedResource, 1)
+                .Add(SourceModelMoneyGamblingDesk.WoodRightsResource, 5));
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.WoodOfferId).State);
+            Assert.AreEqual(5, desk.WoodRights);
+            Assert.AreEqual(0, rolls.Ranges.Count);
+        }
+
         [Test]
         public void DefaultPreparationRoutesManualConfirmationToSameWalletWithoutFakeMissionProgress()
         {

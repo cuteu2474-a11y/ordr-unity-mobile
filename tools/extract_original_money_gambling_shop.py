@@ -74,18 +74,43 @@ def extract(map_path):
         })
     if 'set kN[JG]=kN[JG]+EK' not in source or 'if kN[JG]>=35000 then' not in source:
         raise ValueError('High-tier lifetime cap changed')
+    bodies = {name: re.search(r'^function ' + name + r' takes .*?^endfunction$',
+                              source, re.M | re.S).group(0)
+              for name in ('CIK', 'CIJ', 'CJC', 'CI8')}
+    if ('call BDB($6F303156,function CIK)' not in source or
+            'call CIJ(JG)' not in bodies['CIK'] or
+            'call SetPlayerTechResearched(Player(JG),$52303039,1)' not in bodies['CIJ'] or
+            'set i5[JG]=i5[JG]+5' not in bodies['CJC'] or
+            'set i6[JG]=CreateUnit(Player(JG),$68303843,EN,JS,bj_UNIT_FACING)' not in bodies['CJC'] or
+            'call SetPlayerTechResearched(Player(JG),$5230314D,1)' not in bodies['CJC'] or
+            'PLAYER_STATE_RESOURCE_LUMBER)+1)' not in bodies['CI8'] or
+            int(balance['h0AK']['goldcost']) != 10000 or
+            names['h08C']['Sellunits'] != 'h0AL,H0B0'):
+        raise ValueError('Money shop unlock/graduation source changed')
     return {
         'format': 'ordr-original-2323C-money-shop-v1', 'sourceW3xSha256': MAP_SHA,
         'sourceJassSha256': JASS_SHA, 'sourceUnitBalanceSha256': BALANCE_SHA,
         'sourceUnitStringsSha256': sha(names_bytes), 'initialShopRawcode': 'h062',
         'entries': entries, 'highTierGrossReturnGraduation': 35000,
+        'highTierUnlock': {'bossRawcode': 'o01V', 'bossName': '아론',
+                          'deathCallback': 'CIK', 'researchCallback': 'CIJ',
+                          'research': 'R009'},
+        'graduation': {'replacementShop': 'h08C', 'research': 'R01M',
+                       'moneyOffersRemoved': ['h06F', 'H0AZ'],
+                       'addedWoodPurchaseRights': 5, 'woodPurchaseRawcode': 'h0AK',
+                       'woodPurchaseGoldCost': 10000, 'woodPerPurchase': 1,
+                       'additionalShopOffers': ['h0AL', 'H0B0']},
+        'progressionCallbackHashes': {name: sha(body.encode('utf-8'))
+                                     for name, body in bodies.items()},
         'retailParityVerified': False, 'nativeStockInitializationVerified': False,
         'limits': [
             'Costs/stock object overrides and payout callbacks verified from the original map.',
             'Missing base fields are not reported as observed zero overrides.',
-            'Practice regular-money shop uses logical-time stock with an initially full shelf.',
+            'Practice regular/high money shops use logical-time stock with initially full shelves.',
             'Native stock initial amount/refill timing and the shared Warcraft RNG remain unverified.',
-            'High-grade purchase requires R009 and graduation effects; it is not enabled.',
+            'Practice high-grade unlock follows an actual modeled o01V boss death; no free R009 unlock.',
+            'Graduation stops both money offers, records R01M and five paid wood-purchase rights.',
+            'Graduation h0AL trait-point and H0B0 rare-unit shop offers remain separate follow-up work.',
             'Money gambling is not unit gambling and must not increment unit-gambling missions.',
         ],
     }
@@ -98,7 +123,7 @@ def main():
                         default=Path('data/original-2323C-money-gambling-shop.json'))
     args = parser.parse_args()
     args.output.write_text(json.dumps(extract(args.w3x), ensure_ascii=False, indent=2) + '\n',
-                           encoding='utf-8')
+                           encoding='utf-8', newline='\n')
 
 
 if __name__ == '__main__':
