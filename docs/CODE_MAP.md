@@ -27,7 +27,7 @@ flowchart TD
 | **공통 전투** | [CharacterCombatRuntime.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.cs), CombatAttackPipeline, CombatScheduler, CombatResolution | 대상·공격 선언/명중·피해·상태·사망의 공통 정산 |
 | **특수/자동 기술** | [CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs), [CharacterCombatRuntime.SourceModelBulkAutoSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs), [SourceModelSixthAttackCatalog.cs](../Assets/Scripts/Combat/SourceModelSixthAttackCatalog.cs) | 도감 기반 모델·원본 JASS 콜백을 별도 근거와 승인 범위로 처리. 네이티브 효과 중복 실행 금지 |
 | **오라·자원·소환수** | CombatStatusEngine, SourceModelResources, SourceModelIndependentAttacks, SourceModelTemporarySkills | 지속시간·MP/HP·소유자 변경·전장 리비전·독립 소환 생명주기 |
-| **라운드·몬스터** | [SourceModelPracticeBattle.cs](../Assets/Scripts/Combat/SourceModelPracticeBattle.cs), [CombatWaveDirector.cs](../Assets/Scripts/Combat/CombatWaveDirector.cs) | 웨이브·적 이동·피해/보상·종료와 논리 시간 |
+| **라운드·몬스터** | [SourceModelPracticeBattle.cs](../Assets/Scripts/Combat/SourceModelPracticeBattle.cs), [CombatWaveDirector.cs](../Assets/Scripts/Combat/CombatWaveDirector.cs) | 웨이브·적 이동·피해/보상·종료와 논리 시간. [원본 규칙·독립 연습 모델 구분](라운드-몬스터-시스템.md) |
 | **지갑·실물 거래** | [SharedEconomySession.cs](../Assets/Scripts/Core/SharedEconomySession.cs), [EconomyTransactions.cs](../Assets/Scripts/Core/EconomyTransactions.cs), UnitRoster | 비용·보상·영수증·되돌리기, 여러 기능이 사용하는 한 지갑 |
 | **조합** | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs), [OriginalJassFusionPlanner.cs](../Assets/Scripts/Mobile/OriginalJassFusionPlanner.cs), [OriginalJassFusionAtomicCoordinator.cs](../Assets/Scripts/Mobile/OriginalJassFusionAtomicCoordinator.cs) | 원본 조건·재료 후보·확정 시 재검사·실물 교체 |
 | **위습** | [MobileWispService.cs](../Assets/Scripts/Core/MobileWispService.cs), [Original323MobileWispOutcomeWorld.cs](../Assets/Scripts/Combat/Original323MobileWispOutcomeWorld.cs), [OriginalWispCombatRewardWorld.cs](../Assets/Scripts/Combat/OriginalWispCombatRewardWorld.cs) | 원본 보상 풀·실물 생성·보류 결과·실패 롤백 |
@@ -57,7 +57,7 @@ flowchart TD
 - 수동 조작·가시성: [화면·조작](화면-조작-시스템.md)
 - 조합·위습·돈 도박: [조합](조합-시스템.md) · [조합 거래 기술 근거](조합-거래-기술근거.md) · [위습](위습-시스템.md) · [경제·도박](경제-도박-시스템.md)
 - 스토리·미션·도움소: [스토리](스토리-시스템.md) · [개인미션](개인미션-시스템.md) · [도움소](도움소-시스템.md)
-- 모드·항법·전투 공통: [악몽·이세계·항법](악몽-이세계-항법-시스템.md) · [전투·스킬 공통 엔진](전투-공통엔진.md)
+- 모드·항법·전투 공통: [악몽·이세계·항법](악몽-이세계-항법-시스템.md) · [라운드·몬스터](라운드-몬스터-시스템.md) · [전투·스킬 공통 엔진](전투-공통엔진.md)
 - 개별 캐릭터의 원본 기술과 과거 모델 구분: [캐릭터 기술·전투 연결](캐릭터-기술-원본과-전투연결.md) · [20명 원본 JASS 분석](다음-20명-원본-JASS-능력-분석.md) · [전유닛 오라 감사](전유닛-공통오라-규칙조사-20261025.md)
 - 원본 전투 계산: [피해·방어·마법 저항](원본-피해-방어-마법저항-근거.md) · [캐릭터별 방깎·마방깎 JASS](원본-2323C-캐릭터방깎마방깎-연결.md)
 - 작업/완료 기준: [개발 작업](PLAYABLE_ROADMAP.md)
