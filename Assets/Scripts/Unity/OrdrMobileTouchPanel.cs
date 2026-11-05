@@ -81,6 +81,7 @@ namespace Ordr.Mobile.Unity
         private Vector2 dashboardScroll;
         private readonly MobilePanelScrollGesture panelScrollGesture = new MobilePanelScrollGesture();
         private readonly MobileLongPressGesture gamblingPressGesture = new MobileLongPressGesture();
+        private readonly MobileLongPressGesture upgradePressGesture = new MobileLongPressGesture();
         private string expandedGamblingOfferId;
         private Rect panelScrollViewport;
         private float panelScrollMaximum;
@@ -634,33 +635,129 @@ namespace Ordr.Mobile.Unity
         private void DrawPlayerBuildingResearch(string buildingRawcode)
         {
             var original = Original323PlayerBuildingResearchCatalog.ForBuilding(buildingRawcode);
-            OrdrMobileUiTheme.DrawStatusRow("연구 목록",
-                original.Count + "종 · 구매 준비 중", OrdrMobileUiTheme.Gold);
-            GUILayout.Space(8f);
-            Color tint = buildingRawcode == Original323PlayerBuildingResearchCatalog.ResearchBuilding
-                ? new Color(.44f,.88f,.96f) : new Color(1f,.73f,.39f);
-            for (int i = 0; i < original.Count; i++)
+            if (buildingRawcode == Original323PlayerBuildingResearchCatalog.ResearchBuilding)
             {
-                var research = original[i];
-                string key = buildingRawcode + ":" + research.Rawcode;
-                bool expanded = expandedResearchCodes.Contains(key);
-                if (OrdrMobileUiTheme.DrawAccordionHeader(
-                    (i + 1).ToString("00") + "  " + research.Name,
-                    "최대 " + research.MaximumLevel + "단계", expanded, tint))
+                // The separate laboratory has no verified purchase port yet.
+                // Its four tooltips stay informational, never fake-purchasable.
+                for (int i = 0; i < original.Count; i++)
                 {
-                    if (expanded) expandedResearchCodes.Remove(key);
-                    else expandedResearchCodes.Add(key);
-                    expanded = !expanded;
+                    var research = original[i];
+                    string key = buildingRawcode + ":" + research.Rawcode;
+                    bool expanded = expandedResearchCodes.Contains(key);
+                    if (OrdrMobileUiTheme.DrawAccordionHeader(research.Name,
+                        research.EffectSummary, expanded, new Color(.44f, .88f, .96f)))
+                    {
+                        if (expanded) expandedResearchCodes.Remove(key);
+                        else expandedResearchCodes.Add(key);
+                        expanded = !expanded;
+                    }
+                    if (!expanded) continue;
+                    GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                    Rect plate = GUILayoutUtility.GetRect(0f, 138f, GUILayout.ExpandWidth(true));
+                    OrdrMobileUiTheme.DrawResearchPlate(plate, i + 1, research.Name,
+                        research.EffectSummary, research.MaximumLevel,
+                        new Color(.44f, .88f, .96f));
+                    GUILayout.EndVertical();
                 }
-                if (!expanded) continue;
+                return;
+            }
+
+            var service = controller != null ? controller.PlayerBuildingUpgrades : null;
+            var tint = buildingRawcode == Original323PlayerBuildingResearchCatalog.FirstUpgradeBuilding
+                ? new Color(1f, .68f, .36f) : new Color(1f, .81f, .47f);
+            foreach (var upgrade in original)
+            {
+                var quote = service != null ? service.Quote(upgrade.Rawcode) : null;
+                string level = quote == null ? "0" : quote.Level.ToString();
+                string caption = level + "/" + upgrade.MaximumLevel + " · " +
+                    UpgradeStatusText(quote);
+                string key = "upgrade:" + upgrade.Rawcode;
+                MobileLongPressResult press = OrdrMobileUiTheme.DrawHoldActionRow(
+                    key, upgrade.Name, caption, tint, upgradePressGesture, 76f);
+                if (press == MobileLongPressResult.Tap)
+                {
+                    if (service == null)
+                        notice = "강화소 연결이 필요합니다.";
+                    else
+                    {
+                        try
+                        {
+                            var result = service.Purchase(upgrade.Rawcode);
+                            notice = result == Original323UpgradePurchaseStatus.Succeeded
+                                ? upgrade.Name + " " + service.LevelOf(upgrade.Rawcode) + "단계"
+                                : UpgradeFailureText(result);
+                        }
+                        catch (Exception error)
+                        {
+                            notice = "강화 실패: " + error.Message;
+                        }
+                    }
+                }
+                else if (press == MobileLongPressResult.Hold)
+                {
+                    if (expandedResearchCodes.Contains(key)) expandedResearchCodes.Remove(key);
+                    else expandedResearchCodes.Add(key);
+                }
+                // Long-press is the ONLY place for verbose cost/effect descriptions.
+                if (!expandedResearchCodes.Contains(key)) continue;
                 GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                Rect plate = GUILayoutUtility.GetRect(0f, 138f,
-                    GUILayout.ExpandWidth(true));
-                OrdrMobileUiTheme.DrawResearchPlate(plate, i + 1, research.Name,
-                    string.IsNullOrEmpty(research.EffectSummary)
-                        ? "원본 등급 연구 · 실제 효과 연결 예정" : research.EffectSummary,
-                    research.MaximumLevel, tint);
+                if (quote == null || quote.NextStep == null)
+                    GUILayout.Label("다음 단계의 원본 비용·효과 자료 없음");
+                else
+                {
+                    GUILayout.Label("필요: " + UpgradePriceText(quote.NextStep.Cost));
+                    GUILayout.Label(quote.NextStep.EffectSummary);
+                    if (quote.CooldownRemaining > 0)
+                        GUILayout.Label("대기 " +
+                            Math.Ceiling(quote.CooldownRemaining).ToString("0") + "초");
+                }
                 GUILayout.EndVertical();
+            }
+        }
+
+        private static string UpgradePriceText(ResourceBundle cost)
+        {
+            var parts = new List<string>();
+            foreach (var entry in cost.Entries)
+                parts.Add(entry.Key + " " + entry.Value);
+            return string.Join(" · ", parts.ToArray());
+        }
+
+        private static string UpgradeStatusText(Original323UpgradeQuote quote)
+        {
+            if (quote == null) return "미연결";
+            switch (quote.Status)
+            {
+                case Original323UpgradePurchaseStatus.Succeeded: return "강화";
+                case Original323UpgradePurchaseStatus.MaximumLevel: return "최대";
+                case Original323UpgradePurchaseStatus.SourceMissing: return "원본 수치 미확인";
+                case Original323UpgradePurchaseStatus.WorldMissing: return "전투 효과 미연결";
+                case Original323UpgradePurchaseStatus.NotRunning: return "대기";
+                case Original323UpgradePurchaseStatus.Cooldown: return "재사용 대기";
+                case Original323UpgradePurchaseStatus.InsufficientResources: return "재화 부족";
+                default: return "강화 불가";
+            }
+        }
+
+        private static string UpgradeFailureText(Original323UpgradePurchaseStatus status)
+        {
+            switch (status)
+            {
+                case Original323UpgradePurchaseStatus.SourceMissing:
+                    return "원본 단계별 비용·효과 자료가 아직 없습니다.";
+                case Original323UpgradePurchaseStatus.WorldMissing:
+                    return "원본 강화 전투 효과가 연결되지 않았습니다.";
+                case Original323UpgradePurchaseStatus.InsufficientResources:
+                    return "강화에 필요한 재화가 부족합니다.";
+                case Original323UpgradePurchaseStatus.MaximumLevel:
+                    return "최대 강화 단계입니다.";
+                case Original323UpgradePurchaseStatus.NotRunning:
+                    return "전투 세션 시작 후 사용할 수 있습니다.";
+                case Original323UpgradePurchaseStatus.Cooldown:
+                    return "강화 대기 시간이 남았습니다.";
+                case Original323UpgradePurchaseStatus.EffectRejected:
+                    return "강화 효과가 적용되지 않아 비용을 복구했습니다.";
+                default: return "강화를 진행하지 못했습니다.";
             }
         }
 

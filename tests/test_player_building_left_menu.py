@@ -28,7 +28,7 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         for title in ("점수판", "위습", "유닛", "조합", "스토리", "상점"):
             self.assertIn(f'"{title}"', left)
 
-    def test_unimplemented_research_has_original_catalog_but_no_fake_purchase(self):
+    def test_upgrade_shops_use_real_transactions_and_research_is_still_safe(self):
         panel = PANEL.read_text(encoding="utf-8")
         catalog = CATALOG.read_text(encoding="utf-8")
         self.assertIn("case Tab.UpgradeOne: DrawPlayerBuildingResearch(", panel)
@@ -36,8 +36,12 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("case Tab.Research: DrawPlayerBuildingResearch(", panel)
         page = panel.split("private void DrawPlayerBuildingResearch(", 1)[1].split(
             "private void DrawOriginalChatScoreboard(", 1)[0]
-        self.assertIn("구매 준비 중", page)
-        self.assertNotIn("GUILayout.Button(", page)
+        self.assertIn("PlayerBuildingUpgrades", page)
+        self.assertIn("service.Purchase(upgrade.Rawcode)", page)
+        self.assertIn("DrawHoldActionRow(", page)
+        self.assertIn("Original323UpgradePurchaseStatus.SourceMissing", page)
+        self.assertIn("if (buildingRawcode == Original323PlayerBuildingResearchCatalog.ResearchBuilding)", page)
+        self.assertNotIn("구매 준비 중", page)
         for code in ("h06Q", "h06R", "h06S"):
             self.assertIn(code, catalog)
         for upgrade in ("R00F", "R01V", "Rhfc"):

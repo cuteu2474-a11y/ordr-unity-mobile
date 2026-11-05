@@ -1221,6 +1221,23 @@ namespace Ordr.Mobile.Unity
             DedicatedSkills.Configure(originalWorld);
         }
         public SharedEconomySession SharedEconomy { get; private set; }
+        public Original323PlayerUpgradeSession PlayerBuildingUpgrades { get; private set; }
+        private IReadOnlyList<Original323VerifiedUpgradeStep> verifiedUpgradeSteps;
+        private IOriginal323VerifiedUpgradeWorld verifiedUpgradeWorld;
+
+        // Supply every level's exact W3X cost/effect witness before runtime init.
+        // An absent witness never turns a decorative upgrade card into a purchase.
+        public void ConfigureOriginal323VerifiedPlayerUpgrades(
+            IEnumerable<Original323VerifiedUpgradeStep> sourceSteps,
+            IOriginal323VerifiedUpgradeWorld effectWorld)
+        {
+            if (Combat != null) throw new InvalidOperationException(
+                "강화소 원본 강화 단계는 전투 구성 전에 연결하세요.");
+            if (sourceSteps == null || effectWorld == null)
+                throw new ArgumentNullException("원본 강화 비용/효과 연결이 필요합니다.");
+            verifiedUpgradeSteps = new List<Original323VerifiedUpgradeStep>(sourceSteps);
+            verifiedUpgradeWorld = effectWorld;
+        }
         private Original323CommonWispRecruitmentService commonWispRecruitment;
         private IOriginal323CommonWispRecruitmentAvailability commonWispAvailability;
         private bool commonWispUsesBuiltInSource;
@@ -2870,6 +2887,9 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            PlayerBuildingUpgrades = new Original323PlayerUpgradeSession(
+                SharedEconomy.Wallet, Combat.Game, () => Combat.Time,
+                verifiedUpgradeSteps, verifiedUpgradeWorld);
             if (Combat.UsesSourceModelBasicAttacks)
                 Combat.ConfigureSourceModelGiftWallet(SharedEconomy.Wallet);
             VerifiedWaveDirector.VerifiedMonsterDefeated += OnVerifiedMonsterDefeated;
