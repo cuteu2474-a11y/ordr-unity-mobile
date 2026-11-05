@@ -30,6 +30,7 @@ flowchart TD
 | 전투 | [CharacterCombatRuntime.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.cs), CombatAttackPipeline, CombatScheduler, CombatResolution | 공격 선언/명중·대상·HP·사망의 공통 정산 |
 | 모델 스킬 | CharacterCombatRuntime.SourceModel*.cs, SourceModel*SkillCatalog | 승인된 원본/도감 패킷 실행. 같은 기술의 JASS와 툴팁 중복 실행 방지 |
 | 자동 기술 추가 모델 | [CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs) | 명시적 유닛+rawcode 범위의 도감 자동 13효과, 확률·절대 대기시간·지속 피해·후속기·주기 시계. 원본 검증 경로와 구별 |
+| 자동 기술 추가 묶음 | [CharacterCombatRuntime.SourceModelBulkAutoSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs) | 후보 26건의 선언 공격·성공 명중·조건부 자원 소비·후속 기술·주기 타격. 일부 효과는 부분 연결이고 검증 전 |
 | C03 콜백 추가분 | [SourceModelSixthAttackCatalog.cs](../Assets/Scripts/Combat/SourceModelSixthAttackCatalog.cs), [CharacterCombatRuntime.SourceModelAttackSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs) | 원본 공격 콜백 5개 피해 원자/확률 분리, HP비례 선택·지연 공격 공통 큐. 원본 보조 주문 미확정분은 연기 |
 | 자원·폼·소환 | SourceModelUnitResourceCatalog, SourceModelResources, SourceModelTemporarySkills, SourceModelIndependentAttacks | HP/MP·재생·폼·소환 수명·소유자·전장 변경 정리 |
 | 상태·오라 | CombatStatusEngine, SourceModelUnitEffects, Original323AuraCommonRules | 상태 적용/만료·원본 정체성·중첩 경계. 아군 방어 상태와 실제 피격 공급은 별개 |

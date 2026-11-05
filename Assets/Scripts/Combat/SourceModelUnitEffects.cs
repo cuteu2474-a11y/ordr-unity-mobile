@@ -194,7 +194,8 @@ namespace Ordr.Mobile.Combat
                 else if (effect.Type == CombatEffectType.AttackSpeedBuff &&
                     (effect.SourceId.StartsWith("practice-tooltip:ryuma-speed:", StringComparison.Ordinal) ||
                      effect.SourceId.StartsWith("practice-tooltip:tezoro-speed:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-tooltip:katakuri-max-speed:", StringComparison.Ordinal)))
+                     effect.SourceId.StartsWith("practice-tooltip:katakuri-max-speed:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-tooltip:bulk:", StringComparison.Ordinal)))
                     value = Math.Max(value, effect.Amount);
             // No claim about native cross-buff stacking. This mobile model
             // uses the strongest known effect until the original is observed.
@@ -208,7 +209,8 @@ namespace Ordr.Mobile.Combat
                 if (effect.Type == CombatEffectType.AttackPowerBuff &&
                     (effect.SourceId.StartsWith("practice-tooltip:allypower:", StringComparison.Ordinal) ||
                      effect.SourceId.StartsWith("practice-native:SPH3:A0N1:", StringComparison.Ordinal) ||
-                     effect.SourceId.StartsWith("practice-tooltip:armada:A0WQ:", StringComparison.Ordinal)))
+                     effect.SourceId.StartsWith("practice-tooltip:armada:A0WQ:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-tooltip:bulk:", StringComparison.Ordinal)))
                     strongest = Math.Max(strongest, effect.Amount);
             // Auras and temporary tooltip buffs use the strongest effect,
             // without an unsupported assumption that their percentages add.

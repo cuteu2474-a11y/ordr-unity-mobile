@@ -20,6 +20,7 @@ namespace Ordr.Mobile.Combat
                 if (key.StartsWith(prefix, StringComparison.Ordinal))
                     expired.Add(key);
             foreach (var key in expired) additionalAutoReadyAt.Remove(key);
+            ForgetBulkAutomaticSkills(instanceId);
         }
 
         private static bool HasAdditionalAutomaticAttack(string rawcode)
@@ -27,7 +28,7 @@ namespace Ordr.Mobile.Combat
             return rawcode == "h04A" || rawcode == "h0A2" ||
                    rawcode == "h058" || rawcode == "h06V" ||
                    rawcode == "h048" || rawcode == "h0A6" ||
-                   rawcode == "h0CC";
+                   rawcode == "h0CC" || HasBulkAutomaticOwner(rawcode);
         }
 
         private static bool IsAdditionalAutoOwner(string catalogId, string rawcode)
@@ -116,6 +117,7 @@ namespace Ordr.Mobile.Combat
         private void ExecuteAdditionalAutomaticAttack(CharacterInstance actor,
             SpatialCombatEnemy primary, string rawcode)
         {
+            ExecuteBulkAutoAttack(actor, primary, rawcode);
             if (!IsAdditionalAutoOwner(actor.Catalog.Id, rawcode)) return;
             if (actor.Catalog.Id == "I-12")
             {
@@ -343,6 +345,7 @@ namespace Ordr.Mobile.Combat
         private void ExecuteAdditionalAutoFollowup(CharacterInstance actor,
             SpatialCombatEnemy primary, ImportedCombatSkill activated)
         {
+            ExecuteBulkAutoAfterSkill(actor, primary, activated);
             if (actor.Profile == null || activated == null) return;
             if (actor.Catalog.Id == "L-24" &&
                 activated.Id == "L-24:skill:0")
@@ -496,6 +499,7 @@ namespace Ordr.Mobile.Combat
                         sourceModelRules.NextScriptRoll(1000000) / 1000000.0);
                     AdditionalAutoDamage(actor, targets, skill.Name,
                         damage.Number("amount").Value * scale, "magical");
+                    ExecuteBulkAutoAfterSkill(actor, primary, skill);
                 }
             }
             return count;

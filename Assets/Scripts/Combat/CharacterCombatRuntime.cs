@@ -2578,6 +2578,10 @@ namespace Ordr.Mobile.Combat
                 // A separately verified periodic skill may target an enemy
                 // whose native basic-attack armor has not been established.
                 if (BuildTargetCandidates(unit).Count == 0) continue;
+                double? bulkAdditional = NextBulkAutoPeriodicAt(unit);
+                if (bulkAdditional.HasValue &&
+                    (!next.HasValue || bulkAdditional.Value < next.Value))
+                    next = bulkAdditional.Value;
                 double? additional = NextAdditionalAutoPeriodicAt(unit);
                 if (additional.HasValue &&
                     (!next.HasValue || additional.Value < next.Value))
@@ -2793,6 +2797,7 @@ namespace Ordr.Mobile.Combat
                 }
             }
             processed += ExecuteAdditionalAutoPeriodic(budget - processed);
+            processed += ExecuteBulkAutoPeriodic(budget - processed);
             RemoveDefeatedEnemies();
             return processed;
         }
