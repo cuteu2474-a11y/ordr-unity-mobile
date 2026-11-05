@@ -82,8 +82,6 @@ namespace Ordr.Mobile.Unity
         private bool showEvolutionManagement;
         private bool showLuckyTokenManagement;
         private bool showOriginalItemManagement;
-        private string fusionMaterialRawcode;
-        private string fusionMaterialName;
         private OwnedRosterFilter ownedFilter = OwnedRosterFilter.All;
         private bool showRoundHistory;
         private readonly List<long> pendingBatchSales = new List<long>();
@@ -422,12 +420,6 @@ namespace Ordr.Mobile.Unity
                 GUILayout.MinHeight(OrdrMobileUiTheme.ComfortableTapHeight),
                 GUILayout.ExpandWidth(true)))
             {
-                if (tab == Tab.Fusion)
-                {
-                    // Opening the ordinary fusion tab is not a material jump.
-                    fusionMaterialRawcode = null;
-                    fusionMaterialName = null;
-                }
                 SelectTab(tab, true);
             }
             if (Event.current.type == EventType.Repaint)
@@ -1135,20 +1127,11 @@ namespace Ordr.Mobile.Unity
             }
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
             if (GUILayout.Button("스킬·공격 정보", GUILayout.MinHeight(60)))
             {
                 showUnitDetails = true;
                 scroll = Vector2.zero;
             }
-            if (GUILayout.Button("전장 위치", GUILayout.MinHeight(60)) &&
-                Combat != null && Combat.Roster.SelectedId.HasValue)
-            {
-                var presenter = controller.GetComponent<OrdrUnitWorldPresenter>();
-                if (presenter != null)
-                    presenter.ShowOwnedUnit(Combat.Roster.SelectedId.Value);
-            }
-            GUILayout.EndHorizontal();
 
             if (OrdrMobileUiTheme.DrawAccordionHeader("선택 유닛 세부 상태",
                 detail.Grade, showSelectedUnitExtras, OrdrMobileUiTheme.Aqua))
@@ -1259,8 +1242,6 @@ namespace Ordr.Mobile.Unity
             if (GUILayout.Button("행운의 토큰 사용 조합 보기", GUILayout.MinHeight(64)))
             {
                 fusionSearch = "토큰";
-                fusionMaterialRawcode = null;
-                fusionMaterialName = null;
                 fusionListCategory = FusionListCategory.All;
                 fusionMaterialsReadyOnly = false;
                 fusionExecutableOnly = false;
@@ -1663,33 +1644,6 @@ namespace Ordr.Mobile.Unity
                 if (!open) continue;
 
                 GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("전장 위치", GUILayout.MinHeight(58)))
-                {
-                    var presenter = controller.GetComponent<OrdrUnitWorldPresenter>();
-                    if (presenter != null) presenter.ShowOwnedUnit(isSelected
-                        ? Combat.Roster.SelectedId.Value : group.Members[0].InstanceId);
-                }
-                if (GUILayout.Button("재료 사용 조합", GUILayout.MinHeight(58)))
-                {
-                    string rawcode = group.Members[0].Unit.OriginalSourceRawcode;
-                    if (controller.OriginalJassFusions == null ||
-                        string.IsNullOrEmpty(rawcode) || rawcode.Length != 4)
-                        notice = "해당 유닛의 원본 조합 재료 코드가 확인되지 않았습니다.";
-                    else
-                    {
-                        fusionMaterialRawcode = rawcode;
-                        fusionMaterialName = group.Name;
-                        fusionSearch = "";
-                        fusionListCategory = FusionListCategory.All;
-                        showOnlyBookmarkedFusion = false;
-                        fusionPage = 0;
-                        fusionMaterialsReadyOnly = false;
-                        fusionExecutableOnly = false;
-                        SelectTab(Tab.Fusion);
-                    }
-                }
-                GUILayout.EndHorizontal();
 
                 int memberPages = Math.Max(1, (group.Count + 7) / 8);
                 expandedOwnedGroupPage = Math.Max(0, Math.Min(expandedOwnedGroupPage, memberPages - 1));
@@ -2367,19 +2321,6 @@ namespace Ordr.Mobile.Unity
             if (fusionListCategory == FusionListCategory.NearReady)
                 GUILayout.Label("즉시 조합 가능 또는 흔함 유닛만 부족 · 결과 등급 높은 순 · 같은 등급은 부족한 수 적은 순",
                     OrdrMobileUiTheme.Overline);
-            if (!string.IsNullOrEmpty(fusionMaterialRawcode))
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("재료 사용 조합 · " + fusionMaterialName,
-                    OrdrMobileUiTheme.Subheading);
-                if (GUILayout.Button("재료 필터 해제", GUILayout.MinHeight(54)))
-                {
-                    fusionMaterialRawcode = null;
-                    fusionMaterialName = null;
-                    fusionPage = 0;
-                }
-                GUILayout.EndHorizontal();
-            }
             GUILayout.BeginVertical(GUI.skin.box);
             string query = GUILayout.TextField(fusionSearch, GUILayout.MinHeight(56));
             if (!string.Equals(query, fusionSearch, StringComparison.Ordinal))
@@ -2402,8 +2343,6 @@ namespace Ordr.Mobile.Unity
             {
                 fusionSearch = "";
                 fusionMaterialsReadyOnly = false;
-                fusionMaterialRawcode = null;
-                fusionMaterialName = null;
                 fusionPage = 0;
                 originalJassPage = 0;
                 scroll = Vector2.zero;
@@ -2455,10 +2394,6 @@ namespace Ordr.Mobile.Unity
                         executableOffers.Add(offer);
                 browsedOffers = executableOffers.AsReadOnly();
             }
-            if (!string.IsNullOrEmpty(fusionMaterialRawcode) &&
-                controller.OriginalJassFusions != null)
-                browsedOffers = MobileFusionBrowser.FilterBySourceMaterial(
-                    browsedOffers, controller.OriginalJassFusions, fusionMaterialRawcode);
             if (showOnlyBookmarkedFusion)
                 browsedOffers = fusionBookmarks.Filter(browsedOffers);
             var visibleOffers = MobileFusionBrowser.Select(browsedOffers,
