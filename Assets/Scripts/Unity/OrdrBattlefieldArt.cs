@@ -12,6 +12,9 @@ namespace Ordr.Mobile.Unity
         private static Sprite gradeFrame;
         private static Sprite enemy;
         private static Sprite boss;
+        private static Sprite enemyHalo;
+        private static Sprite skillRing;
+        private static Sprite skillSpark;
         private static Sprite evolution;
         private static Sprite pathFill;
         private static Sprite pathCircle;
@@ -30,6 +33,35 @@ namespace Ordr.Mobile.Unity
             if (isBoss) return boss ?? (boss = MakeSprite(HazardTexture(true), 80));
             return enemy ?? (enemy = MakeSprite(HazardTexture(false), 80));
         }
+        public static Sprite EnemyHaloSprite =>
+            enemyHalo ?? (enemyHalo = MakeSprite(MakeTexture(96, 96, (x, y) =>
+            {
+                float dx = x - 47.5f, dy = y - 47.5f;
+                float radius = Mathf.Sqrt(dx * dx + dy * dy);
+                if (radius > 46f || radius < 40f) return Color.clear;
+                return new Color(1f, 1f, 1f, Mathf.Clamp01((46f - radius) / 2f));
+            }), 96));
+        public static Sprite SkillRingSprite =>
+            skillRing ?? (skillRing = MakeSprite(MakeTexture(96, 96, (x, y) =>
+            {
+                float dx = x - 47.5f, dy = y - 47.5f;
+                float radius = Mathf.Sqrt(dx * dx + dy * dy);
+                bool rune = (Mathf.Abs(dx) < 2f || Mathf.Abs(dy) < 2f) &&
+                    radius >= 25f && radius <= 36f;
+                if (!rune && (radius < 33f || radius > 43f)) return Color.clear;
+                return new Color(1f, 1f, 1f, rune ? .85f :
+                    Mathf.Clamp01(Mathf.Min(radius - 33f, 43f - radius) * .72f));
+            }), 96));
+        public static Sprite SkillSparkSprite =>
+            skillSpark ?? (skillSpark = MakeSprite(MakeTexture(96, 96, (x, y) =>
+            {
+                float dx = Mathf.Abs(x - 47.5f), dy = Mathf.Abs(y - 47.5f);
+                float star = Mathf.Min(dx * .16f + dy, dy * .16f + dx);
+                float core = Mathf.Sqrt(dx * dx + dy * dy);
+                if (core > 42f || star > 8f) return Color.clear;
+                return new Color(1f, 1f, 1f,
+                    Mathf.Clamp01((8f - star) / 4f) * Mathf.Clamp01((42f - core) / 9f));
+            }), 96));
         public static Sprite EvolutionSprite =>
             evolution ?? (evolution = MakeSprite(EvolutionTexture(), 80));
         public static Sprite PathFillSprite =>
@@ -191,17 +223,40 @@ namespace Ordr.Mobile.Unity
 
         private static Texture2D HazardTexture(bool isBoss)
         {
+            // Legible even at phone-scale: a red-eyed hostile and a distinct
+            // crowned boss. These authored symbols need no external assets.
             return MakeTexture(80, 80, (x, y) =>
             {
-                float dx = Mathf.Abs(x - 39.5f), dy = Mathf.Abs(y - 39.5f);
-                float manhattan = dx * .87f + dy;
-                if (manhattan > 38f) return Color.clear;
-                if (manhattan > 32f) return new Color(1f, .89f, .70f, 1f);
-                Color dark = isBoss ? new Color(.40f, .15f, .25f) :
-                    new Color(.25f, .17f, .18f);
-                if (dy < 5f && dx < 19f) return Color.white;
-                if (dy > 11f && dx < 4f) return new Color(1f, .84f, .70f);
-                return dark;
+                float dx = x - 39.5f, dy = y - 39.5f;
+                float ax = Mathf.Abs(dx);
+                float radius = Mathf.Sqrt(dx * dx + dy * dy);
+                if (radius > 38f) return Color.clear;
+                if (radius >= 33f)
+                    return isBoss ? new Color(1f, .75f, .23f, 1f)
+                        : new Color(1f, .37f, .33f, 1f);
+                bool eyes = (Mathf.Abs(ax - 10f) < 4f) && dy > 1f && dy < 10f;
+                bool mouth = ax < 13f && dy < -12f && dy > -17f;
+                if (isBoss)
+                {
+                    bool crown = dy > 14f && dy < 28f &&
+                        (ax < 22f && (dy < 19f || ax < 8f ||
+                         Mathf.Abs(ax - 19f) < (28f - dy) * .65f));
+                    bool shield = ax * .84f + Mathf.Abs(dy + 7f) < 29f;
+                    if (crown) return new Color(1f, .85f, .29f, 1f);
+                    if (eyes) return new Color(1f, .95f, .45f, 1f);
+                    if (mouth) return new Color(.96f, .79f, .77f, 1f);
+                    return shield ? new Color(.32f, .14f, .36f, 1f)
+                        : new Color(.12f, .08f, .20f, 1f);
+                }
+                bool horns = ax > 13f && ax < 29f && dy > 9f &&
+                    dy < 26f - (ax - 13f) * .55f;
+                bool head = dx * dx / (25f * 25f) +
+                    (dy + 3f) * (dy + 3f) / (27f * 27f) < 1f;
+                if (horns) return new Color(1f, .58f, .35f, 1f);
+                if (eyes) return new Color(1f, .96f, .72f, 1f);
+                if (mouth) return new Color(.16f, .09f, .14f, 1f);
+                return head ? new Color(.56f, .13f, .19f, 1f)
+                    : new Color(.16f, .08f, .13f, 1f);
             });
         }
 

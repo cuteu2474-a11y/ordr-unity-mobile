@@ -216,6 +216,36 @@ namespace Ordr.Mobile.Unity
             return true;
         }
 
+        // Maximum half-height that fits the ENTIRE orthographic viewport inside
+        // a fixed authored board. Zooming out must never expose the void beyond it.
+        public static float MaximumContainedHalfHeight(Rect worldBounds, float aspect)
+        {
+            if (!Finite(worldBounds.xMin) || !Finite(worldBounds.yMin) ||
+                !Finite(worldBounds.width) || !Finite(worldBounds.height) ||
+                !Finite(aspect) || worldBounds.width <= 0f ||
+                worldBounds.height <= 0f || aspect <= 0f) return 0f;
+            return Mathf.Min(worldBounds.height * .5f,
+                worldBounds.width / (2f * aspect));
+        }
+
+        public static bool TryClampToWorldBounds(Vector2 requestedCenter,
+            float halfHeight, float viewportAspect, Rect worldBounds,
+            out Vector2 clampedCenter)
+        {
+            clampedCenter = requestedCenter;
+            float maximum = MaximumContainedHalfHeight(worldBounds, viewportAspect);
+            if (!Finite(requestedCenter.x) || !Finite(requestedCenter.y) ||
+                !Finite(halfHeight) || halfHeight <= 0f ||
+                maximum <= 0f || halfHeight > maximum + 0.001f) return false;
+            float halfWidth = halfHeight * viewportAspect;
+            clampedCenter = new Vector2(
+                Mathf.Clamp(requestedCenter.x, worldBounds.xMin + halfWidth,
+                    worldBounds.xMax - halfWidth),
+                Mathf.Clamp(requestedCenter.y, worldBounds.yMin + halfHeight,
+                    worldBounds.yMax - halfHeight));
+            return true;
+        }
+
         private static bool Finite(float value)
         {
             return !float.IsNaN(value) && !float.IsInfinity(value);

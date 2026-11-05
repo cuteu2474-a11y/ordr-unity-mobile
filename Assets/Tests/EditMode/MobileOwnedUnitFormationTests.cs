@@ -111,5 +111,41 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1, single.Cells.Length);
             Assert.AreEqual(area.center.x, single.Cells[0].center.x, .01f);
         }
+        [Test]
+        public void CameraMovementAndZoomNeverExposeOutsideTheFixedBattlefield()
+        {
+            var board = new Rect(-100f, -60f, 200f, 120f);
+            Assert.AreEqual(60f, MobileBattlefieldCameraNavigation
+                .MaximumContainedHalfHeight(board, 1.5f), .001f);
+            Assert.AreEqual(50f, MobileBattlefieldCameraNavigation
+                .MaximumContainedHalfHeight(board, 2f), .001f);
+            Vector2 center;
+            Assert.IsTrue(MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
+                new Vector2(999f, 999f), 30f, 1.5f, board, out center));
+            Assert.AreEqual(55f, center.x, .001f);
+            Assert.AreEqual(30f, center.y, .001f);
+            Assert.IsTrue(MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
+                new Vector2(-999f, -999f), 30f, 1.5f, board, out center));
+            Assert.AreEqual(-55f, center.x, .001f);
+            Assert.AreEqual(-30f, center.y, .001f);
+            Assert.IsTrue(MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
+                new Vector2(40f, -20f), 60f, 1.5f, board, out center));
+            Assert.AreEqual(Vector2.zero, center);
+            Assert.IsFalse(MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
+                Vector2.zero, 61f, 1.5f, board, out center));
+        }
+
+        [Test]
+        public void CameraMathRejectsInvalidBoardWithoutChangingCombatState()
+        {
+            var invalid = new Rect(0f, 0f, 0f, 20f);
+            Assert.AreEqual(0f, MobileBattlefieldCameraNavigation
+                .MaximumContainedHalfHeight(invalid, 1.3f));
+            Vector2 center;
+            Assert.IsFalse(MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
+                new Vector2(3f, 4f), 10f, 1.3f, invalid, out center));
+            Assert.AreEqual(new Vector2(3f, 4f), center);
+        }
+
     }
 }

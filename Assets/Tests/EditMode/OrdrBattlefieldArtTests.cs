@@ -21,6 +21,13 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(1f, OrdrBattlefieldArt.UnitSprite("C-01").bounds.size.x, 0.0001f);
             Assert.IsNotNull(OrdrBattlefieldArt.GradeFrame);
             Assert.IsNotNull(OrdrBattlefieldArt.EnemySprite(true));
+            Assert.AreNotSame(OrdrBattlefieldArt.EnemySprite(true),
+                OrdrBattlefieldArt.EnemySprite(false));
+            Assert.IsNotNull(OrdrBattlefieldArt.EnemyHaloSprite);
+            Assert.IsNotNull(OrdrBattlefieldArt.SkillRingSprite);
+            Assert.IsNotNull(OrdrBattlefieldArt.SkillSparkSprite);
+            Assert.AreSame(OrdrBattlefieldArt.SkillRingSprite,
+                OrdrBattlefieldArt.SkillRingSprite);
             Assert.IsNotNull(OrdrBattlefieldArt.EvolutionSprite);
         }
     }

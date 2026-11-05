@@ -1,3 +1,10 @@
+## 2026-11-05 · 월드 표시/카메라 경계/전투 가독성
+
+- `Assets/Scripts/Unity/MobileMapSkillLayout.cs`: `MobileBattlefieldCameraNavigation.MaximumContainedHalfHeight/TryClampToWorldBounds`로 유효 월드 배경 안에 전체 카메라 뷰포트가 들어가는 순수 표시 계산을 제공합니다. 전투/원본 이동 좌표를 바꾸지 않습니다.
+- `Assets/Scripts/Unity/OrdrUnitWorldPresenter.cs`: 월드 배경을 한 번 프레이밍한 뒤 고정하고, 준비 단계의 9개 원본 소환 위치+전투 시작 시 실물 `RouteCorners` 전체 보기로 범위를 재설정합니다. 팬/핀치/휠·타일 40px 초상화·일반/보스 몬스터 확장 표시·투사체 잔상·시전/명중 이펙트 풀이 여기 있습니다.
+- `Assets/Scripts/Unity/OrdrBattlefieldArt.cs`: 원본 이미지와 별개로 절차 생성하는 적/보스 상징, 외곽선 원, 스킬 링/불꽃 스프라이트. 새 비공개 에셋을 공개 저장소에 넣지 않습니다.
+- 검사 코드: `Assets/Tests/EditMode/MobileOwnedUnitFormationTests.cs`의 카메라 경계/줌 한계, `OrdrBattlefieldArtTests.cs`의 스프라이트 캐시/일반·보스 구분. **EditMode 실제 실행·APK 실기 미확인.**
+
 ## 2026-11-04 · 55차 네이티브 후속과 방어 상태 소비자
 
 - `CharacterCombatRuntime.SourceModelEighthSkills`/`OrdrCharacterCombatController.OnCommittedOriginalFusion`: H0CO 조합 확정 시 X3 기록 → B4R 5라운드 조건/최대 6단계 → 기존 TR-24 공속 효과. `CharacterCombatRuntime`는 유닛 제거·원자 조합 정리 시 기록을 제거합니다.

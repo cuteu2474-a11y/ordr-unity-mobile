@@ -14,12 +14,14 @@ namespace Ordr.Mobile.Unity
     {
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private Camera worldCamera;
-        [SerializeField] private float markerDiameterWorldUnits = 44f;
+        [SerializeField] private float markerDiameterWorldUnits = 52f;
         [SerializeField] private float selectionTapRadiusPixels = 48f;
         [SerializeField] private float refreshIntervalSeconds = 0.12f;
-        [SerializeField] private float attackFlashDurationSeconds = 0.18f;
-        [SerializeField] private float attackCueDurationSeconds = 0.22f;
-        [SerializeField] private int maximumSimultaneousAttackCues = 48;
+        [SerializeField] private float attackFlashDurationSeconds = 0.28f;
+        [SerializeField] private float attackCueDurationSeconds = 0.34f;
+        [SerializeField] private float skillCueDurationSeconds = 0.52f;
+        [SerializeField] private int maximumSimultaneousAttackCues = 64;
+        [SerializeField] private int maximumSimultaneousSkillCues = 40;
 
         private sealed class Visual
         {
@@ -39,6 +41,7 @@ namespace Ordr.Mobile.Unity
         {
             public GameObject Root;
             public SpriteRenderer Icon;
+            public SpriteRenderer Halo;
             public SpriteRenderer HealthBarBack;
             public SpriteRenderer HealthBarFill;
             public Color BaseColor;
@@ -50,11 +53,22 @@ namespace Ordr.Mobile.Unity
             public GameObject Root;
             public SpriteRenderer Body;
             public SpriteRenderer Impact;
+            public SpriteRenderer Trail;
             public BasicAttackCueKind Kind;
             public Vector3 From;
             public Vector3 To;
             public Color Tint;
             public float StartedAt;
+        }
+
+        private sealed class SkillCueVisual
+        {
+            public GameObject Root;
+            public SpriteRenderer Ring;
+            public SpriteRenderer Spark;
+            public Color Tint;
+            public float StartedAt;
+            public bool IsCast;
         }
 
         private sealed class LastEnemyPosition
@@ -69,6 +83,7 @@ namespace Ordr.Mobile.Unity
         private readonly Dictionary<string, LastEnemyPosition> recentEnemyPositions =
             new Dictionary<string, LastEnemyPosition>(StringComparer.Ordinal);
         private readonly List<AttackCueVisual> attackCues = new List<AttackCueVisual>();
+        private readonly List<SkillCueVisual> skillCues = new List<SkillCueVisual>();
         private readonly List<Vector2> framePoints = new List<Vector2>();
         private IReadOnlyList<MobileOwnedUnitGroup> formationGroups = new List<MobileOwnedUnitGroup>();
         private MobileOwnedFormationLayout formationLayout;
@@ -80,6 +95,7 @@ namespace Ordr.Mobile.Unity
         private SpriteRenderer evolutionIcon;
         private bool cameraFramed;
         private float initialCameraHalfHeight;
+        private Rect fixedBoardBounds;
         private bool pointerBeganOverMap;
         private bool pointerDragged;
         private bool multitouchGestureUsed;
@@ -146,6 +162,7 @@ namespace Ordr.Mobile.Unity
             UpdateAttackFlashes();
             UpdateEnemyFlashes();
             UpdateAttackCues();
+            UpdateSkillCues();
             var shell = GetComponent<OrdrMainSceneShell>();
             if (shell != null && shell.IsStartScreenVisible) return;
             HandleCameraNavigation();
@@ -164,17 +181,6 @@ namespace Ordr.Mobile.Unity
                 MobileMapSkillLayout.UiScale(safe, Screen.dpi));
             Rect target = layout.MainCameraViewport(Screen.width, Screen.height);
             if (worldCamera.rect != target) worldCamera.rect = target;
-            if (battlefieldBoard != null)
-            {
-                float visibleHeight = worldCamera.orthographicSize * 2f;
-                float visibleWidth = visibleHeight * layout.Battle.width /
-                    Mathf.Max(1f, layout.Battle.height);
-                Vector3 cameraPosition = worldCamera.transform.position;
-                battlefieldBoard.transform.position = new Vector3(
-                    cameraPosition.x, cameraPosition.y, 0f);
-                battlefieldBoard.transform.localScale = new Vector3(
-                    visibleWidth, visibleHeight, 1f);
-            }
             Vector2 center;
             float halfHeight;
             // Set the opening camera ONCE. A defense player's view must not
@@ -187,7 +193,37 @@ namespace Ordr.Mobile.Unity
                 worldCamera.transform.position = desired;
                 worldCamera.orthographicSize = halfHeight;
                 initialCameraHalfHeight = halfHeight;
+                float aspect = layout.Battle.width / layout.Battle.height;
+                fixedBoardBounds = new Rect(center.x - halfHeight * aspect,
+                    center.y - halfHeight, halfHeight * aspect * 2f, halfHeight * 2f);
                 cameraFramed = true;
+            }
+            if (cameraFramed)
+            {
+                // Anchor the art to the real battlefield, not the moving camera.
+                // Resizing, pinching and panning must never reveal the empty
+                // camera clear color outside the fixed board.
+                float aspect = layout.Battle.width / layout.Battle.height;
+                float limit = MobileBattlefieldCameraNavigation.MaximumContainedHalfHeight(
+                    fixedBoardBounds, aspect);
+                if (limit > 0f)
+                {
+                    worldCamera.orthographicSize = Mathf.Min(
+                        worldCamera.orthographicSize, limit);
+                    Vector2 clamped;
+                    if (MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
+                        worldCamera.transform.position, worldCamera.orthographicSize,
+                        aspect, fixedBoardBounds, out clamped))
+                        worldCamera.transform.position = new Vector3(clamped.x, clamped.y,
+                            worldCamera.transform.position.z);
+                }
+                if (battlefieldBoard != null)
+                {
+                    battlefieldBoard.transform.position = new Vector3(
+                        fixedBoardBounds.center.x, fixedBoardBounds.center.y, 0f);
+                    battlefieldBoard.transform.localScale = new Vector3(
+                        fixedBoardBounds.width, fixedBoardBounds.height, 1f);
+                }
             }
             ApplyCenteredFormation(layout);
         }
@@ -215,7 +251,13 @@ namespace Ordr.Mobile.Unity
             Vector3 position = worldCamera.transform.position;
             if (MobileBattlefieldCameraNavigation.TryPan(position, deltaPixels,
                 worldCamera.orthographicSize, layout.Battle.height, out result))
-                worldCamera.transform.position = new Vector3(result.x, result.y, position.z);
+            {
+                Vector2 clamped;
+                if (MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
+                    result, worldCamera.orthographicSize,
+                    layout.Battle.width / layout.Battle.height, fixedBoardBounds, out clamped))
+                    worldCamera.transform.position = new Vector3(clamped.x, clamped.y, position.z);
+            }
         }
 
         private void ApplyZoom(float factor, Vector2 screenAnchor,
@@ -226,13 +268,20 @@ namespace Ordr.Mobile.Unity
             Vector3 position = worldCamera.transform.position;
             Vector2 viewportCenter = new Vector2(layout.Battle.center.x,
                 Screen.height - layout.Battle.center.y);
-            float minimum = Mathf.Max(40f, initialCameraHalfHeight * 0.4f);
-            float maximum = Mathf.Max(minimum, initialCameraHalfHeight * 3f);
+            float maximum = MobileBattlefieldCameraNavigation.MaximumContainedHalfHeight(
+                fixedBoardBounds, layout.Battle.width / layout.Battle.height);
+            if (maximum <= 0f) return;
+            float minimum = Mathf.Min(maximum,
+                Mathf.Max(40f, initialCameraHalfHeight * 0.4f));
             if (!MobileBattlefieldCameraNavigation.TryZoom(position,
                 worldCamera.orthographicSize, screenAnchor - viewportCenter,
                 layout.Battle.height, factor, minimum, maximum, out center, out size))
                 return;
-            worldCamera.transform.position = new Vector3(center.x, center.y, position.z);
+            Vector2 clamped;
+            if (!MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
+                center, size, layout.Battle.width / layout.Battle.height,
+                fixedBoardBounds, out clamped)) return;
+            worldCamera.transform.position = new Vector3(clamped.x, clamped.y, position.z);
             worldCamera.orthographicSize = size;
         }
 
@@ -412,6 +461,9 @@ namespace Ordr.Mobile.Unity
             worldCamera.transform.position = new Vector3(center.x, center.y, old.z);
             worldCamera.orthographicSize = halfHeight;
             initialCameraHalfHeight = halfHeight;
+            float aspect = layout.Battle.width / layout.Battle.height;
+            fixedBoardBounds = new Rect(center.x - halfHeight * aspect,
+                center.y - halfHeight, halfHeight * aspect * 2f, halfHeight * 2f);
             cameraFramed = true;
             return true;
         }
@@ -445,6 +497,13 @@ namespace Ordr.Mobile.Unity
         private void CollectMainBattlefieldPositions()
         {
             framePoints.Clear();
+            // Reserve the original nine summon slots from the opening view,
+            // even before the first wave. The map must not freeze to a tiny
+            // empty center and later place the real route outside its bounds.
+            for (int i = 0; i < 9; i++)
+                framePoints.Add(new Vector2(
+                    (float)Original323SourceCommonWispWorld.OriginalCommonSpawnX(i),
+                    (float)Original323SourceCommonWispWorld.OriginalCommonSpawnY));
             if (controller != null && controller.PracticeBattle != null)
                 foreach (var point in controller.PracticeBattle.RouteCorners)
                     framePoints.Add(new Vector2((float)point.X, (float)point.Y));
@@ -476,9 +535,19 @@ namespace Ordr.Mobile.Unity
             {
                 // Only ACTUAL resolved impact/status events flash a victim.
                 EnemyVisual hit;
-                if (!string.IsNullOrEmpty(combatEvent.EnemyId) &&
-                    enemyVisuals.TryGetValue(combatEvent.EnemyId, out hit))
-                    hit.HitAt = Time.unscaledTime;
+                if (!string.IsNullOrEmpty(combatEvent.EnemyId))
+                {
+                    if (enemyVisuals.TryGetValue(combatEvent.EnemyId, out hit))
+                        hit.HitAt = Time.unscaledTime;
+                    Vector3 impact;
+                    if (TryFindEnemyPosition(combatEvent.EnemyId, out impact))
+                        SpawnSkillCue(impact,
+                            combatEvent.Type == CharacterCombatEventType.ArmorBreakApplied
+                                ? new Color(1f, .38f, .32f, .95f)
+                                : combatEvent.Type == CharacterCombatEventType.StatusApplied
+                                    ? new Color(.36f, .90f, 1f, .94f)
+                                    : new Color(.83f, .52f, 1f, .98f), false);
+                }
                 return;
             }
             if (combatEvent.Type != CharacterCombatEventType.Attack &&
@@ -510,7 +579,13 @@ namespace Ordr.Mobile.Unity
                     : new Color(1f, 0.88f, 0.3f, 0.8f);
             // A confirmed cast is not proof of HP damage. The actual impact
             // arrives as SkillDamage/StatusApplied/ArmorBreakApplied.
-            if (visual.IsSkillFlash) return;
+            if (visual.IsSkillFlash)
+            {
+                // Casting is a visible event, never an invented damage hit.
+                SpawnSkillCue(visual.Root.transform.position,
+                    new Color(.76f, .45f, 1f, .97f), true);
+                return;
+            }
 
             Vector3 target;
             if (!string.IsNullOrEmpty(combatEvent.EnemyId) &&
@@ -576,9 +651,17 @@ namespace Ordr.Mobile.Unity
                     enemy.Root = new GameObject("ORDR Enemy " + entry.Id);
                     enemy.Root.transform.SetParent(transform, false);
                     enemy.Icon = enemy.Root.AddComponent<SpriteRenderer>();
-                    enemy.Icon.sprite = OrdrBattlefieldArt.EnemySprite(
-                        entry.Kind == CharacterEnemyKind.Boss);
+                    bool isBoss = entry.Kind == CharacterEnemyKind.Boss;
+                    enemy.Icon.sprite = OrdrBattlefieldArt.EnemySprite(isBoss);
                     enemy.Icon.sortingOrder = 7;
+                    var halo = new GameObject("Enemy visibility outline");
+                    halo.transform.SetParent(enemy.Root.transform, false);
+                    enemy.Halo = halo.AddComponent<SpriteRenderer>();
+                    enemy.Halo.sprite = OrdrBattlefieldArt.EnemyHaloSprite;
+                    enemy.Halo.color = isBoss ? new Color(1f, .75f, .26f, .88f)
+                        : new Color(1f, .42f, .40f, .74f);
+                    enemy.Halo.sortingOrder = 6;
+                    halo.transform.localScale = Vector3.one * 1.28f;
                     var barBack = new GameObject("HP background");
                     barBack.transform.SetParent(enemy.Root.transform, false);
                     enemy.HealthBarBack = barBack.AddComponent<SpriteRenderer>();
@@ -592,15 +675,15 @@ namespace Ordr.Mobile.Unity
                     enemy.HealthBarFill = barFill.AddComponent<SpriteRenderer>();
                     enemy.HealthBarFill.sprite = healthBarSprite;
                     enemy.HealthBarFill.sortingOrder = 12;
-                    enemy.BaseColor = entry.Kind == CharacterEnemyKind.Boss
-                        ? new Color(1f, 0.34f, 0.23f, 1f)
-                        : new Color(0.90f, 0.36f, 0.37f, 1f);
+                    enemy.BaseColor = Color.white;
                     enemy.Icon.color = enemy.BaseColor;
                     enemyVisuals.Add(entry.Id, enemy);
                 }
                 enemy.Root.transform.position = position;
+                bool boss = entry.Kind == CharacterEnemyKind.Boss;
                 enemy.Root.transform.localScale = Vector3.one *
-                    Mathf.Max(1f, markerDiameterWorldUnits) * 0.57f *
+                    Mathf.Max(1f, markerDiameterWorldUnits) *
+                    (boss ? 1.32f : 1.03f) *
                     (combat.PracticeBonneyScaleReduced(entry.Id) ? 0.60f : 1f);
                 // MaxHealth is from the live CombatEnemy, never from a
                 // display-only estimated damage or a preview attack event.
@@ -661,8 +744,8 @@ namespace Ordr.Mobile.Unity
                     enemy.Icon.color = enemy.BaseColor;
                     continue;
                 }
-                enemy.Icon.color = Color.Lerp(Color.white, enemy.BaseColor,
-                    Mathf.Clamp01(progress));
+                enemy.Icon.color = Color.Lerp(new Color(1f, .63f, .28f, 1f),
+                    enemy.BaseColor, Mathf.Clamp01(progress));
             }
         }
 
@@ -690,8 +773,13 @@ namespace Ordr.Mobile.Unity
             var impact = new GameObject("Impact");
             impact.transform.SetParent(created.Root.transform, false);
             created.Impact = impact.AddComponent<SpriteRenderer>();
-            created.Impact.sprite = markerSprite;
-            created.Impact.sortingOrder = 17;
+            created.Impact.sprite = OrdrBattlefieldArt.SkillSparkSprite;
+            created.Impact.sortingOrder = 19;
+            var trail = new GameObject("Visible projectile trail");
+            trail.transform.SetParent(created.Root.transform, false);
+            created.Trail = trail.AddComponent<SpriteRenderer>();
+            created.Trail.sprite = healthBarSprite;
+            created.Trail.sortingOrder = 18;
             attackCues.Add(created);
             return created;
         }
@@ -742,30 +830,114 @@ namespace Ordr.Mobile.Unity
                 cue.Body.transform.position = cue.To;
                 cue.Body.transform.rotation = Quaternion.Euler(0f, 0f, 40f);
                 cue.Body.transform.localScale = new Vector3(
-                    size * (0.52f + 0.25f * progress),
-                    size * 0.075f * fade, 1f);
+                    size * (0.80f + 0.38f * progress),
+                    size * 0.13f * fade, 1f);
                 cue.Body.enabled = true;
-                cue.Impact.enabled = false;
+                cue.Impact.enabled = true;
+                cue.Impact.transform.position = cue.To;
+                cue.Impact.transform.localScale = Vector3.one * size *
+                    Mathf.Lerp(.18f, .56f, progress);
+                cue.Impact.color = tint;
+                cue.Trail.enabled = false;
                 return;
             }
 
             float flight = Mathf.Clamp01(progress / 0.72f);
             cue.Body.transform.position = Vector3.Lerp(cue.From, cue.To, flight);
-            float dot = cue.Kind == BasicAttackCueKind.Magic ? 0.21f : 0.13f;
+            float dot = cue.Kind == BasicAttackCueKind.Magic ? .34f : .25f;
             cue.Body.transform.localScale = Vector3.one * (size * dot);
             cue.Body.enabled = flight < 1f;
+            Vector3 direction = cue.Body.transform.position - cue.From;
+            float distance = direction.magnitude;
+            cue.Trail.enabled = flight < 1f && distance > 1f;
+            if (cue.Trail.enabled)
+            {
+                cue.Trail.transform.position = cue.From + direction * .5f;
+                cue.Trail.transform.rotation = Quaternion.Euler(0f, 0f,
+                    Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+                cue.Trail.transform.localScale = new Vector3(distance, size * .085f, 1f);
+                cue.Trail.color = tint;
+            }
             cue.Impact.enabled = progress >= 0.72f;
             if (cue.Impact.enabled)
             {
                 float hit = (progress - 0.72f) / 0.28f;
                 cue.Impact.transform.position = cue.To;
                 cue.Impact.transform.localScale = Vector3.one * size *
-                    Mathf.Lerp(0.16f, cue.Kind == BasicAttackCueKind.Magic ? 0.80f : 0.44f,
+                    Mathf.Lerp(0.26f, cue.Kind == BasicAttackCueKind.Magic ? 1.26f : 0.88f,
                         hit);
                 var color = tint;
                 color.a *= 1f - hit;
                 cue.Impact.color = color;
             }
+        }
+
+        private SkillCueVisual GetAvailableSkillCue()
+        {
+            foreach (var existing in skillCues)
+                if (!existing.Root.activeSelf) return existing;
+            if (skillCues.Count >= Mathf.Clamp(maximumSimultaneousSkillCues, 1, 96))
+            {
+                SkillCueVisual oldest = skillCues[0];
+                foreach (var cue in skillCues)
+                    if (cue.StartedAt < oldest.StartedAt) oldest = cue;
+                return oldest;
+            }
+            var created = new SkillCueVisual();
+            created.Root = new GameObject("ORDR Skill Visibility Cue");
+            created.Root.transform.SetParent(transform, false);
+            created.Ring = created.Root.AddComponent<SpriteRenderer>();
+            created.Ring.sprite = OrdrBattlefieldArt.SkillRingSprite;
+            created.Ring.sortingOrder = 21;
+            var spark = new GameObject("Skill impact spark");
+            spark.transform.SetParent(created.Root.transform, false);
+            created.Spark = spark.AddComponent<SpriteRenderer>();
+            created.Spark.sprite = OrdrBattlefieldArt.SkillSparkSprite;
+            created.Spark.sortingOrder = 22;
+            skillCues.Add(created);
+            return created;
+        }
+
+        private void SpawnSkillCue(Vector3 worldPosition, Color tint, bool isCast)
+        {
+            var cue = GetAvailableSkillCue();
+            cue.Root.SetActive(true);
+            cue.Root.transform.position = worldPosition;
+            cue.StartedAt = Time.unscaledTime;
+            cue.Tint = tint;
+            cue.IsCast = isCast;
+            UpdateSkillCue(cue, 0f);
+        }
+
+        private void UpdateSkillCues()
+        {
+            float duration = Mathf.Max(.10f, skillCueDurationSeconds);
+            foreach (var cue in skillCues)
+            {
+                if (!cue.Root.activeSelf) continue;
+                float progress = (Time.unscaledTime - cue.StartedAt) / duration;
+                if (progress >= 1f)
+                {
+                    cue.Root.SetActive(false);
+                    continue;
+                }
+                UpdateSkillCue(cue, Mathf.Clamp01(progress));
+            }
+        }
+
+        private void UpdateSkillCue(SkillCueVisual cue, float progress)
+        {
+            float size = Mathf.Max(1f, markerDiameterWorldUnits);
+            var color = cue.Tint;
+            color.a *= 1f - progress;
+            cue.Ring.color = color;
+            cue.Ring.transform.localScale = Vector3.one * size *
+                Mathf.Lerp(cue.IsCast ? .9f : .65f, cue.IsCast ? 1.9f : 2.3f, progress);
+            cue.Spark.color = new Color(1f, .94f, 1f, color.a * .85f);
+            cue.Spark.transform.localScale = Vector3.one * size *
+                Mathf.Lerp(cue.IsCast ? .34f : .50f, cue.IsCast ? .62f : 1.13f, progress);
+            cue.Spark.transform.rotation = Quaternion.Euler(0f, 0f,
+                progress * (cue.IsCast ? 90f : -75f));
         }
 
         private void CreateSharedMarker()
@@ -926,11 +1098,14 @@ namespace Ordr.Mobile.Unity
                 Rect cell = formationLayout.Cells[i];
                 // Character art lives above the caption inside the square tile.
                 Vector2 icon = new Vector2(cell.center.x,
-                    cell.y + Mathf.Min(29f * scale, cell.height * .34f));
+                    cell.y + cell.height * .29f);
                 Vector3 position = worldCamera.ScreenToWorldPoint(new Vector3(icon.x,
                     Screen.height - icon.y, worldCamera.WorldToScreenPoint(Vector3.zero).z));
                 position.z = 0f;
-                float size = 23f * scale * worldCamera.orthographicSize * 2f /
+                // Up to ~70% larger than the old 23px portrait. Cap within
+                // each square so the bottom text/grade remains unobstructed.
+                float portraitPixels = Mathf.Min(40f * scale, cell.height * .55f);
+                float size = portraitPixels * worldCamera.orthographicSize * 2f /
                     Mathf.Max(1f, worldCamera.pixelHeight);
                 long representative = group.Contains(selected) ? selected.Value : group.InstanceIds[0];
                 foreach (long id in group.InstanceIds)
@@ -980,8 +1155,8 @@ namespace Ordr.Mobile.Unity
                     // The marker/attack pulse occupies the top of the square;
                     // draw the label only in its lower part so IMGUI does not
                     // cover the in-world character image.
-                    var label = new Rect(cell.x, cell.y + cell.height * .53f,
-                        cell.width, cell.height * .47f);
+                    var label = new Rect(cell.x, cell.y + cell.height * .57f,
+                        cell.width, cell.height * .43f);
                     GUI.Box(label, GUIContent.none, chosen ? OrdrMobileUiTheme.SelectedTab : GUI.skin.box);
                     var text = new Rect(label.x + 3f * scale, label.y + 1f * scale,
                         label.width - 6f * scale, label.height - 13f * scale);
@@ -1152,6 +1327,9 @@ namespace Ordr.Mobile.Unity
             foreach (var cue in attackCues)
                 if (cue.Root != null) Destroy(cue.Root);
             attackCues.Clear();
+            foreach (var item in skillCues)
+                if (item.Root != null) Destroy(item.Root);
+            skillCues.Clear();
             if (evolutionMarker != null) Destroy(evolutionMarker);
             if (battlefieldBoard != null) Destroy(battlefieldBoard.gameObject);
             if (monsterPath != null) monsterPath.Clear();
