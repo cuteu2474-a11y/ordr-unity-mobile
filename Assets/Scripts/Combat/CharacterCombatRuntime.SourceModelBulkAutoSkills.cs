@@ -448,7 +448,8 @@ namespace Ordr.Mobile.Combat
             }
             else if (owner == "I-08")
             {
-                BulkTryGabanManaStrike(actor, primary);
+                // An activeMana spell belongs to the shared active caster.
+                // On-attack procs must not consume the same pinned MP.
                 BulkRunAttackSkill(actor, primary, "I-08:skill:1");
                 BulkRunAttackSkill(actor, primary, "I-08:skill:2");
                 BulkRunAttackSkill(actor, primary, "I-08:skill:5");
@@ -1109,39 +1110,6 @@ namespace Ordr.Mobile.Combat
                 primary.Id, skill.Name,
                 "TOOLTIP_MODEL_ONLY HP75 소모 / " +
                 (earnGold ? "금 1500" : "나무 1"), 0));
-        }
-
-        private void BulkTryGabanManaStrike(CharacterInstance actor,
-            SpatialCombatEnemy primary)
-        {
-            var skill = AdditionalAutoSkill(actor, "I-08:skill:0");
-            if (skill == null || skill.Trigger != "activeMana" ||
-                skill.Number("manaCost") != 45 ||
-                skill.Components.Count != 1 ||
-                skill.Components[0].Type != "fixed" ||
-                skill.Components[0].Text("basis") != "targetMaxHealth") return;
-            var proportions = skill.Components[0].Get("percentByTargetKind")
-                as Dictionary<string, object>;
-            if (proportions == null ||
-                OrdrJson.Number(proportions, "line") != 50 ||
-                OrdrJson.Number(proportions, "boss") != 10 ||
-                OrdrJson.Number(proportions, "story") != 5) return;
-            double fraction;
-            switch (primary.Kind)
-            {
-                case CharacterEnemyKind.Line: fraction = .5; break;
-                case CharacterEnemyKind.Boss: fraction = .1; break;
-                case CharacterEnemyKind.Story: fraction = .05; break;
-                default: return; // Enraged has no pinned separate entry.
-            }
-            ProvisionSourceModelAuraRecipientResources(actor);
-            var pool = actor.Abilities.Resources;
-            if (pool == null || !pool.CanSpend(0, 45)) return;
-            // This mobile automatic active spends the source h04F mana once;
-            // source JASS cast timing and immunity are not asserted.
-            pool.Spend(0, 45);
-            BulkDamage(actor, primary, skill,
-                primary.Enemy.MaxHealth * fraction, "fixed");
         }
 
         private void BulkActivateAnyaFamilyPhoto(CharacterInstance actor,

@@ -1857,7 +1857,7 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void SourceStoryRewardsCanUnlockActualVegapunkPurchaseWithoutFakeCurrency()
+        public void StoryRewardsNeverMintTraitPointsAndEarnedPointsUnlockVegapunkPurchase()
         {
             using (var live = Create("TR-30", false, -4900, 5400))
             {
@@ -1873,8 +1873,18 @@ namespace Ordr.Mobile.Tests
                 queue.RecordCommittedClear(8);
                 queue.RecordCommittedClear(9);
                 Assert.AreEqual(4, queue.ApplyPending(story)); // 2 research, 2 BdL
+                Assert.AreEqual(0, wallet.Balance(
+                    OriginalMissionWalletRewards.TraitPointsId),
+                    "Story gambling charges must not become trait points.");
                 Assert.AreEqual(2, wallet.Balance(
-                    OriginalMissionWalletRewards.TraitPointsId));
+                    Original323OtherworldGamblingRules.ChargesResource));
+                Assert.IsFalse(port.AvailableSkills().First(x =>
+                    x.Id == SourceModelNativeCharacterRules.SatelliteActionId("H0AB"))
+                    .CanExecute);
+                // Real trait points (such as mission earnings) use the same
+                // shared wallet, not a fabricated story currency conversion.
+                wallet.Grant(new ResourceBundle().Add(
+                    OriginalMissionWalletRewards.TraitPointsId, 2));
                 Assert.IsTrue(port.AvailableSkills().First(x =>
                     x.Id == SourceModelNativeCharacterRules.SatelliteActionId("H0AB"))
                     .CanExecute);
@@ -1884,6 +1894,9 @@ namespace Ordr.Mobile.Tests
                     OriginalMissionWalletRewards.TraitPointsId));
                 Assert.AreEqual(0, wallet.Balance("wood"));
                 Assert.AreEqual(1, live.Combat.PracticeSatellites().Count);
+                Assert.AreEqual(2, wallet.Balance(
+                    Original323OtherworldGamblingRules.ChargesResource),
+                    "Satellite purchase must not spend story gambling charges.");
                 Assert.AreEqual(0, queue.ApplyPending(story));
                 Assert.AreEqual(0, wallet.Balance(
                     OriginalMissionWalletRewards.TraitPointsId));

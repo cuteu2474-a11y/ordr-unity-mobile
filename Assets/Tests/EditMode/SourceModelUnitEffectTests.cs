@@ -168,14 +168,18 @@ namespace Ordr.Mobile.Tests
                 game.Combat.SpawnCharacter("X-01", -4000, 4000);
                 var events = game.Battle.Advance(.6);
                 plain = events.First(e => e.Type == CharacterCombatEventType.Attack).Amount;
-                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated));
+                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == game.Rules.UnitEffects.PassiveFor(
+                        game.Map.Find("X-01").OriginalRawcode).Name));
             }
             using (var game = Create(true, true))
             {
                 game.Combat.SpawnCharacter("X-01", -4000, 4000);
                 var events = game.Battle.Advance(.6);
                 critical = events.First(e => e.Type == CharacterCombatEventType.Attack).Amount;
-                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated));
+                Assert.IsTrue(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == game.Rules.UnitEffects.PassiveFor(
+                        game.Map.Find("X-01").OriginalRawcode).Name));
             }
             Assert.Greater(critical, plain);
             using (var game = Create(true, true))
@@ -268,7 +272,9 @@ namespace Ordr.Mobile.Tests
                 game.Combat.SpawnCharacter("X-01", -4000, 4000);
                 var events = game.Battle.Advance(.6);
                 ordinary = events.First(e => e.Type == CharacterCombatEventType.Attack).Amount;
-                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated));
+                Assert.IsFalse(events.Any(e => e.Type == CharacterCombatEventType.SkillActivated &&
+                    e.SkillName == game.Rules.UnitEffects.PassiveFor(
+                        game.Map.Find("X-01").OriginalRawcode).Name));
                 Assert.IsFalse(game.Combat.MobileEnemySnapshot().Any(e => game.Combat.StatusOf(e.Id).IsStunned()));
             }
             using (var game = Create(true, true))

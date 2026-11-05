@@ -12,7 +12,7 @@
 | 해당 APK의 검사 | Unity EditMode 2,161/2,161 통과. 필수 데이터 패킹·CRC·해시·ARM64/ARMv7·v2 서명 검증 통과 |
 | 최신 main 코드 | 조합·위습·졸업 도박소와 13+26개 도감 자동 효과 경로·원본 콜백 5건 등이 연결돼 있습니다. 일부 기술은 발동 경로만 연결된 상태이며 전체 통합 검증 대기 |
 | 이전 도구 수정 검사 | Windows·Python 3.12: 340건 중 337건 통과·3건 건너뜀, 실패/오류 없음. 현황 JSON·생성 유닛 표 일치 검사 통과 |
-| 최근 실패 원인 | 실행 [#410](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/42055670170)은 Python·라이선스·디스크 검사 통과 후 C# 컴파일 두 건(`Math.Ceiling(long)`의 오버로드 모호성, 오라 `amount` 변수명 충돌)으로 중단. 건강값 `long`을 직접 사용하고 오라 기여값을 별도 변수로 구분하도록 수정했으며 **수정 후 Unity·APK 검증은 대기** |
+| 최근 실패·이번 수정 | 실행 [#42057808399](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/42057808399)에서 C# 컴파일을 통과하고 Unity EditMode 2,234건 중 2,227건 통과·7건 실패해 APK 단계가 건너뛰어졌습니다. 원인: 해적선 분류 표기 불일치(3건), 가반 I-08 `activeMana`의 평타 중 선소모(1건), 스토리 `BdL` 충전을 특성포인트로 잘못 기대한 검사(1건), 모건 치명타 이외 기술을 함께 판정한 검사(2건). 해당 경로와 검사를 함께 수정했으며 **새 Unity·APK 검증 결과는 아직 확인되지 않았습니다.** |
 | 휴대폰 검증 | 설치·터치 조작·발열/성능·65R 전체 플레이 미확인 |
 
 [APK 실행·다운로드](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41941260044) · [수정 전 실패 기록](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41994323743). ZIP은 11월 19일 10:01 만료 예정입니다. 다운로드 절차와 파일 구성은 [실행과 APK](unity-editmode-test.md)에 있습니다.

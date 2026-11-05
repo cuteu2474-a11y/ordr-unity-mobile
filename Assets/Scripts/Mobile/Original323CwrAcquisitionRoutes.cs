@@ -83,7 +83,10 @@ namespace Ordr.Mobile.Mobile
             RequireGuidance(source, "YY26", "h060", 6);
             if (units.Require("R-43").Grade != "희귀함" ||
                 objects.Find("R-43")?.OriginalRawcode != "h05X" ||
-                units.Require(Original323SourceCommonWispWorld.PirateShipCatalogId).Grade != "히든" ||
+                // The original h060 catalog uses "해적선"; a wiki extension
+                // may classify the same object as "히든".
+                (units.Require(Original323SourceCommonWispWorld.PirateShipCatalogId).Grade != "해적선" &&
+                 units.Require(Original323SourceCommonWispWorld.PirateShipCatalogId).Grade != "히든") ||
                 objects.Find(Original323SourceCommonWispWorld.PirateShipCatalogId)?.OriginalRawcode != "h060")
                 throw new FormatException("레일리/해적선 표기 원본 객체 불일치");
         }
