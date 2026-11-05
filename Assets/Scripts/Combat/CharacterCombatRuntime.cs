@@ -2270,6 +2270,7 @@ namespace Ordr.Mobile.Combat
             sourceModelFireFistReadyAt.Remove(instanceId);
             sourceModelPoseidonReadyAt.Remove(instanceId);
             sourceModelSeventhReadyAt.Remove(instanceId);
+            ForgetAdditionalAutomaticSkills(instanceId);
             sourceModelYamatoOpeningReady.Remove(instanceId);
             sourceModelMariaAttackCount.Remove(instanceId);
             sourceModelKobyRoundStacks.Remove(instanceId);
@@ -2577,6 +2578,10 @@ namespace Ordr.Mobile.Combat
                 // A separately verified periodic skill may target an enemy
                 // whose native basic-attack armor has not been established.
                 if (BuildTargetCandidates(unit).Count == 0) continue;
+                double? additional = NextAdditionalAutoPeriodicAt(unit);
+                if (additional.HasValue &&
+                    (!next.HasValue || additional.Value < next.Value))
+                    next = additional.Value;
                 foreach (var entry in unit.Mapping.ActivatedSkills)
                 {
                     if (entry.Value.Trigger != "periodic") continue;
@@ -2787,6 +2792,7 @@ namespace Ordr.Mobile.Combat
                     }
                 }
             }
+            processed += ExecuteAdditionalAutoPeriodic(budget - processed);
             RemoveDefeatedEnemies();
             return processed;
         }

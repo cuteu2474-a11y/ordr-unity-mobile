@@ -53,6 +53,7 @@ namespace Ordr.Mobile.Combat
                 rawcode, out nextThirty);
             bool hasUnconnected = SourceModelUnconnectedSkillCatalog.TryGet(
                 rawcode, out unconnected);
+            bool hasAdditionalAuto = HasAdditionalAutomaticAttack(rawcode);
             // An already modeled JASS script must not also roll an
             // independent tooltip skill for the same source attack.
             if (hasLegacyScript)
@@ -66,7 +67,7 @@ namespace Ordr.Mobile.Combat
                 (!nativeUtaForm && !practiceBonney && !eleventhFormOwner &&
                  !hasLegacyScript && !hasBatch && !hasNext &&
                  !hasUnconnected && !ninthOwner && !standaloneTemporary &&
-                 !specialFromJass && !nativeFromJass))
+                 !specialFromJass && !nativeFromJass && !hasAdditionalAuto))
                 return;
 
             long id;
@@ -81,6 +82,11 @@ namespace Ordr.Mobile.Combat
                 !enemies.TryGetValue(primaryTargetId, out primary) ||
                 !primary.Enemy.IsAlive || !CanAttackInThisLane(actor, primary))
                 return;
+
+            // Independent model-only tooltip packets may coexist with an
+            // original script/native basic hit. Their explicit owner ID and
+            // rawcode gates prevent foreign-profile and duplicate rolls.
+            ExecuteAdditionalAutomaticAttack(actor, primary, rawcode);
 
             // B8V is an ATTACK-DECLARED self-buff, not a successful-hit
             // proc. It must run even when Tezoro's 12% spell does not roll.

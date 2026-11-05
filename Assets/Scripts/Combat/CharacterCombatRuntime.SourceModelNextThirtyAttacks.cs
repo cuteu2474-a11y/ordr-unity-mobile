@@ -212,6 +212,9 @@ namespace Ordr.Mobile.Combat
                         activatedThisAttack);
                 if (skill.Id == "E-09:skill:4")
                     TrySourceModelUtaGoldSongFollowup(actor, primary, skill);
+                // Source-model after-skill packets are triggered only by
+                // a successfully resolved parent proc, never every attack.
+                ExecuteAdditionalAutoFollowup(actor, primary, skill);
                 activatedThisAttack.Add(skill.Name);
             }
             // ItemUpgrade is a separately observed passive level, never an
