@@ -1045,6 +1045,57 @@ namespace Ordr.Mobile.Unity
             EnsureSoloStoryStarted();
         }
 
+        // One explicit grade button = one actual Brook consumed. The combat
+        // runtime owns the bone ledger and removes the same roster instance
+        // used by fusion, sales, summons and the battlefield.
+        public ManualActionResult RequestSansBoneFeeding(long sansInstanceId,
+            string brookCatalogId)
+        {
+            if (Combat == null || !Combat.UsesSourceModelBasicAttacks ||
+                Combat.Game.Phase != SessionPhase.Running)
+                return ManualActionResult.Unavailable("샌즈 체력본충");
+            if (brookCatalogId != "U-03" && brookCatalogId != "R-18")
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "브룩 안흔함 또는 희귀함을 선택해 주세요.");
+            try
+            {
+                if (Combat.Roster.SelectedId != sansInstanceId ||
+                    Combat.Roster.Get(sansInstanceId).UnitId != "MY-07")
+                    return new ManualActionResult(ManualActionState.Rejected,
+                        "먹이를 줄 샌즈를 먼저 선택해 주세요.");
+                bool storyLane = Combat.IsStoryDeployed(sansInstanceId);
+                long candidate = -1;
+                foreach (var unit in Combat.MobileUnitSnapshot())
+                    if (unit.Unit.Id == brookCatalogId &&
+                        Combat.IsStoryDeployed(unit.InstanceId) == storyLane &&
+                        (candidate < 0 || unit.InstanceId < candidate))
+                        candidate = unit.InstanceId;
+                if (candidate < 0)
+                    return new ManualActionResult(ManualActionState.Rejected,
+                        "같은 전장에 해당 브룩이 없습니다.");
+                int before = Combat.SourceModelSansBonesOf(sansInstanceId);
+                if (!Combat.TryActivateSourceModelSansBoneQ(
+                        sansInstanceId, candidate))
+                    return new ManualActionResult(ManualActionState.Rejected,
+                        "브룩 소모 조건을 충족하지 못했습니다.");
+                int after = Combat.SourceModelSansBonesOf(sansInstanceId);
+                string grade = brookCatalogId == "U-03" ? "안흔함" : "희귀함";
+                return new ManualActionResult(ManualActionState.Succeeded,
+                    "브룩 " + grade + " 1기 소모 · 뼈 " + before + " → " + after +
+                    (before < 30 && after >= 30 ? " · 샌즈 강화!" : ""));
+            }
+            catch (InvalidOperationException error)
+            {
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "체력본충 실패 · " + error.Message);
+            }
+            catch (KeyNotFoundException)
+            {
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "브룩 또는 샌즈가 이미 다른 거래에 사용됐습니다.");
+            }
+        }
+
         public ManualActionResult RequestLowerGradeSale(long instanceId)
         {
             if (Combat == null || LowerGradeSales == null)

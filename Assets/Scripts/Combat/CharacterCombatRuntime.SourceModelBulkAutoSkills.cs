@@ -41,9 +41,9 @@ namespace Ordr.Mobile.Combat
             bulkGiftWallet = wallet ?? throw new ArgumentNullException(nameof(wallet));
         }
 
-        // UI/command entry point for the tooltip's explicit Brook-targeted Q.
-        // The source profile gives no cooldown or Brook-consumption rule: do
-        // not invent either one, and never repeatedly fire this from Step().
+        // UI/command entry point for the explicitly Brook-consuming Q.
+        // The player confirms the cost by tapping a grade-specific feed
+        // button. No unknown cooldown/automatic repetition is synthesized.
         public bool TryActivateSourceModelSansBoneQ(long sansInstanceId,
             long brookInstanceId)
         {
@@ -74,6 +74,11 @@ namespace Ordr.Mobile.Combat
             if (gain <= 0) return false;
             int current;
             bulkSansBones.TryGetValue(sansInstanceId, out current);
+            // Spend the actual owned Brook first. RemoveCharacter is also
+            // used by fusion/sales and cancels its combat, aura, summon and
+            // roster lifetime. If the spend is blocked, no bone is credited.
+            // No additional wallet or cloned inventory state is involved.
+            RemoveCharacter(brookInstanceId);
             // Never wrap the ledger and accidentally deactivate upgrades.
             bulkSansBones[sansInstanceId] =
                 current > int.MaxValue - gain ? int.MaxValue : current + gain;

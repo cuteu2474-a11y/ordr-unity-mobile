@@ -1114,6 +1114,10 @@ namespace Ordr.Mobile.Unity
             }
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
+            if (detail.Unit.Id == "MY-07" && Combat != null &&
+                Combat.UsesSourceModelBasicAttacks &&
+                Combat.Roster.SelectedId.HasValue)
+                DrawSansBoneFeedingPanel(Combat.Roster.SelectedId.Value);
             if (GUILayout.Button("스킬·공격 정보", GUILayout.MinHeight(60)))
             {
                 showUnitDetails = true;
@@ -1164,6 +1168,76 @@ namespace Ordr.Mobile.Unity
                             " (아군 피격 계산 연결 전)", OrdrMobileUiTheme.Overline);
                 }
                 GUILayout.EndVertical();
+            }
+            GUILayout.EndVertical();
+        }
+
+        // Selected Sans only: two large explicit consumption actions, not a
+        // background auto-cast that could silently eat fusion materials.
+        private void DrawSansBoneFeedingPanel(long sansInstanceId)
+        {
+            int bones = Combat.SourceModelSansBonesOf(sansInstanceId);
+            bool enhanced = bones >= 30;
+            int uncommon = 0, rare = 0;
+            bool storyLane = Combat.IsStoryDeployed(sansInstanceId);
+            foreach (var unit in OwnedUnitsForFrame())
+            {
+                if (Combat.IsStoryDeployed(unit.InstanceId) != storyLane) continue;
+                if (unit.Unit.Id == "U-03") uncommon++;
+                else if (unit.Unit.Id == "R-18") rare++;
+            }
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label("체력본충(Q) · 브룩 먹이기", OrdrMobileUiTheme.Subheading);
+            OrdrMobileUiTheme.DrawStatusRow("샌즈 뼈",
+                bones + "개" + (enhanced ? " · 강화 완료" : " / 30개"),
+                enhanced ? OrdrMobileUiTheme.Gold : OrdrMobileUiTheme.Aqua);
+            Rect bar = GUILayoutUtility.GetRect(10f, 14f, GUILayout.ExpandWidth(true));
+            if (Event.current.type == EventType.Repaint)
+            {
+                Color previousColor = GUI.color;
+                GUI.color = new Color(.13f, .19f, .30f, 1f);
+                GUI.DrawTexture(bar, Texture2D.whiteTexture);
+                GUI.color = enhanced ? OrdrMobileUiTheme.Gold : OrdrMobileUiTheme.Aqua;
+                GUI.DrawTexture(new Rect(bar.x, bar.y,
+                    bar.width * Mathf.Clamp01(bones / 30f), bar.height),
+                    Texture2D.whiteTexture);
+                GUI.color = previousColor;
+            }
+            GUILayout.Label(enhanced ?
+                "강화 상태 · 심판자 해금 · 강화 가스터 적용" :
+                "뼈 30개 달성 시 강화 · 뼈 5개마다 단단한 뼈 추가 시전",
+                OrdrMobileUiTheme.Overline);
+            GUILayout.BeginHorizontal();
+            DrawSansBrookFeedingOption(sansInstanceId, "U-03",
+                "브룩 · 안흔함", 2, uncommon);
+            DrawSansBrookFeedingOption(sansInstanceId, "R-18",
+                "브룩 · 희귀함", 12, rare);
+            GUILayout.EndHorizontal();
+            GUILayout.Label("누르면 해당 브룩 1기가 즉시 소모됩니다. 별도 확인창은 없습니다.",
+                OrdrMobileUiTheme.Overline);
+            GUILayout.EndVertical();
+        }
+
+        private void DrawSansBrookFeedingOption(long sansInstanceId,
+            string brookId, string label, int boneGain, int available)
+        {
+            GUILayout.BeginVertical(GUI.skin.box, GUILayout.ExpandWidth(true),
+                GUILayout.MinWidth(0f));
+            DrawCharacterPortrait(brookId, 54f);
+            GUILayout.Label(label, OrdrMobileUiTheme.Overline);
+            GUILayout.Label("보유 " + available + "기", OrdrMobileUiTheme.Overline);
+            bool enabled = GUI.enabled;
+            GUI.enabled = enabled && available > 0 &&
+                Combat.Game.Phase == SessionPhase.Running;
+            bool clicked = GUILayout.Button("먹이기 · 뼈 +" + boneGain,
+                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64f));
+            GUI.enabled = enabled;
+            if (clicked)
+            {
+                ShowResult(controller.RequestSansBoneFeeding(sansInstanceId, brookId));
+                // A consumed Brook must disappear from every owned-unit view
+                // during the same input frame, not a stale cached roster page.
+                ownedFrameSnapshotAt = -1;
             }
             GUILayout.EndVertical();
         }
@@ -1411,7 +1485,11 @@ namespace Ordr.Mobile.Unity
             DrawCharacterPortrait(detail.Unit.Id, 112f);
             GUILayout.Label(detail.DisplayName + " · " + detail.Grade);
             if (Combat != null && Combat.Roster.SelectedId.HasValue)
+            {
                 DrawSelectedHeroProgress(Combat.Roster.SelectedId.Value);
+                if (detail.Unit.Id == "MY-07" && Combat.UsesSourceModelBasicAttacks)
+                    DrawSansBoneFeedingPanel(Combat.Roster.SelectedId.Value);
+            }
             if (controller.PracticeBattle != null)
             {
                 var native = controller.MapBaseStats.Find(detail.Unit.Id);
