@@ -278,6 +278,127 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(0, rolls.Ranges.Count);
         }
 
+        private sealed class RareShopStub : IOriginal323GraduatedRareShopWorld
+        {
+            public int Started;
+            public int RolledBack;
+            public int Committed;
+            public bool RefuseSpawn;
+            public IOriginal323GraduatedRareShopTransaction Begin()
+            {
+                Started++;
+                return new Purchase(this);
+            }
+
+            private sealed class Purchase : IOriginal323GraduatedRareShopTransaction
+            {
+                private readonly RareShopStub owner;
+                private bool completed;
+                public Purchase(RareShopStub test) { owner = test; }
+                public bool TrySpawn(out long instanceId, out string sourceRawcode,
+                    out string displayName)
+                {
+                    instanceId = owner.RefuseSpawn ? 0 : 12345;
+                    sourceRawcode = owner.RefuseSpawn ? null : "h09X";
+                    displayName = owner.RefuseSpawn ? null : "X-드레이크";
+                    return !owner.RefuseSpawn;
+                }
+                public void Commit() { completed = true; owner.Committed++; }
+                public void Dispose() { if (!completed) owner.RolledBack++; }
+            }
+        }
+
+        [Test]
+        public void GraduatedTraitPurchaseDebitsOneSharedPointAndRefillsAfterSourceHour()
+        {
+            var wallet = new EconomyWallet();
+            var game = new GameSession(); game.Start();
+            double time = 0;
+            wallet.Grant(new ResourceBundle()
+                .Add(SourceModelMoneyGamblingDesk.GraduatedResource, 1)
+                .Add("gold", 30000));
+            var rolls = new Rolls();
+            var desk = new SourceModelMoneyGamblingDesk(wallet, game, rolls,
+                () => time, () => true);
+            var offers = desk.AvailableOffers(ManualEconomyCategory.Gambling);
+            CollectionAssert.AreEquivalent(new[] {
+                SourceModelMoneyGamblingDesk.WoodOfferId,
+                SourceModelMoneyGamblingDesk.TraitOfferId,
+                SourceModelMoneyGamblingDesk.RareOfferId
+            }, offers.Select(x => x.Id));
+            Assert.AreEqual(ManualActionState.Succeeded, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.TraitOfferId).State);
+            Assert.AreEqual(15000, wallet.Balance("gold"));
+            Assert.AreEqual(1, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
+            Assert.AreEqual(0, desk.TraitStock);
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.TraitOfferId).State);
+            time = 3599;
+            Assert.AreEqual(0, desk.TraitStock);
+            time = 3600;
+            Assert.AreEqual(1, desk.TraitStock);
+            Assert.AreEqual(ManualActionState.Succeeded, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.TraitOfferId).State);
+            Assert.AreEqual(0, wallet.Balance("gold"));
+            Assert.AreEqual(2, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
+            Assert.AreEqual(0, rolls.Ranges.Count);
+        }
+
+        [Test]
+        public void GraduatedTraitPurchaseCannotDuplicateUnderPostCommitObserverFailure()
+        {
+            var wallet = new EconomyWallet();
+            var game = new GameSession(); game.Start();
+            wallet.Grant(new ResourceBundle()
+                .Add(SourceModelMoneyGamblingDesk.GraduatedResource, 1).Add("gold", 15000));
+            var desk = new SourceModelMoneyGamblingDesk(wallet, game, new Rolls(),
+                () => 0, () => true);
+            Exception seen = null;
+            desk.PostCommitObserverFailed += error => seen = error;
+            wallet.Granted += _ => { throw new InvalidOperationException("TEST_ONLY observer"); };
+            Assert.AreEqual(ManualActionState.Succeeded, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.TraitOfferId).State);
+            Assert.IsNotNull(seen);
+            Assert.AreEqual(1, wallet.Balance(OriginalMissionWalletRewards.TraitPointsId));
+            Assert.AreEqual(0, wallet.Balance("gold"));
+            Assert.AreEqual(0, desk.TraitStock);
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.TraitOfferId).State);
+        }
+
+        [Test]
+        public void GraduatedRarePurchaseRequiresStageFiveResearchAndIsOneTimeAtomic()
+        {
+            var wallet = new EconomyWallet();
+            var game = new GameSession(); game.Start();
+            wallet.Grant(new ResourceBundle()
+                .Add(SourceModelMoneyGamblingDesk.GraduatedResource, 1).Add("gold", 10000));
+            var desk = new SourceModelMoneyGamblingDesk(wallet, game, new Rolls(),
+                () => 0, () => true);
+            bool research = false;
+            var spawned = new RareShopStub();
+            desk.ConfigureRareReward(spawned, () => research);
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.RareOfferId).State);
+            Assert.AreEqual(0, spawned.Started);
+            research = true;
+            spawned.RefuseSpawn = true;
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.RareOfferId).State);
+            Assert.AreEqual(1, spawned.RolledBack);
+            Assert.AreEqual(10000, wallet.Balance("gold"));
+            spawned.RefuseSpawn = false;
+            Assert.AreEqual(ManualActionState.Succeeded, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.RareOfferId).State);
+            Assert.AreEqual(5000, wallet.Balance("gold"));
+            Assert.AreEqual(1, wallet.Balance(SourceModelMoneyGamblingDesk.RarePurchasedResource));
+            Assert.AreEqual(1, spawned.Committed);
+            Assert.AreEqual(ManualActionState.Rejected, desk.Confirm(
+                ManualEconomyCategory.Gambling, SourceModelMoneyGamblingDesk.RareOfferId).State);
+            Assert.AreEqual(2, spawned.Started);
+            Assert.AreEqual(0, desk.RareStock);
+        }
+
         [Test]
         public void DefaultPreparationRoutesManualConfirmationToSameWalletWithoutFakeMissionProgress()
         {

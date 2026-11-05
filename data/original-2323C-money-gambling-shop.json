@@ -81,13 +81,96 @@
     "additionalShopOffers": [
       "h0AL",
       "H0B0"
-    ]
+    ],
+    "verifiedOffers": {
+      "traitPoint": {
+        "rawcode": "h0AL",
+        "name": "특성 포인트 구매",
+        "callback": "CI7",
+        "goldCost": 15000,
+        "pointAmount": 1,
+        "stockMaximum": 1,
+        "stockRegenSeconds": 3600,
+        "sharedOriginalResource": "PLAYER_STATE_RESOURCE_FOOD_USED"
+      },
+      "rareUnit": {
+        "rawcode": "H0B0",
+        "name": "고급 유닛 생성",
+        "callback": "CJF",
+        "goldCost": 5000,
+        "requiredResearch": "R01N",
+        "purchaseLimit": 1,
+        "stockMaximum": 1,
+        "stockRegenSeconds": 3600,
+        "rareBranchPercent": 99,
+        "rarePool": [
+          "h09X",
+          "h01Q",
+          "h025",
+          "h01L",
+          "h022",
+          "h021",
+          "h020",
+          "h01Z",
+          "h01Y",
+          "h01X",
+          "h01W",
+          "h01V",
+          "h01U",
+          "h01T",
+          "h02M",
+          "h01S",
+          "h01R",
+          "h01M",
+          "h01N",
+          "h01O",
+          "h05L",
+          "h01P",
+          "h02I",
+          "h029",
+          "h028",
+          "h027",
+          "h026",
+          "h02A",
+          "h024",
+          "h02C",
+          "h02D",
+          "h02G",
+          "h02F",
+          "h02E",
+          "h04H",
+          "h023",
+          "h02B",
+          "h02H",
+          "h02J",
+          "h02K",
+          "h02L",
+          "h05K",
+          "h05X"
+        ],
+        "specialBranchPercent": 1,
+        "specialPool": [
+          "h05H",
+          "h08N",
+          "h05Q",
+          "h05O",
+          "h05P",
+          "h05R",
+          "h09T"
+        ],
+        "rareBonusAbility": "A0YE",
+        "rareBonusExcept": "h05X"
+      }
+    }
   },
   "progressionCallbackHashes": {
     "CIK": "49cd5a249a1c4f9909eaaf4fe10066dde615f3123e2b417527522a8a6a03db48",
     "CIJ": "c170e552dbc7b527a7b41dbedc9d38d2f9fbdf76803e43fff0d1ae3e4fbd53be",
     "CJC": "4d3b0717fe350f15001d582f8d8c93d07c96a46ded0cf8543053758023adf095",
-    "CI8": "1c089ee5c8f083afa252b60df3f711167c849fcc47298196bb4e1ecc8aac13ec"
+    "CI8": "1c089ee5c8f083afa252b60df3f711167c849fcc47298196bb4e1ecc8aac13ec",
+    "CI7": "fbf507968cf294449650f95bde7eb9c10d9ff514927a1a0771e1f29bf536d255",
+    "CJF": "98ff8e1f2332696df9d67db9913cd0c363a03d070906c2feb3aeedf7487d084f",
+    "CJE": "ef314e059b0eb167f1c13e9e5d0bd5907f008c628ddcbfd12cb769a3d500258a"
   },
   "retailParityVerified": false,
   "nativeStockInitializationVerified": false,
@@ -98,7 +181,7 @@
     "Native stock initial amount/refill timing and the shared Warcraft RNG remain unverified.",
     "Practice high-grade unlock follows an actual modeled o01V boss death; no free R009 unlock.",
     "Graduation stops both money offers, records R01M and five paid wood-purchase rights.",
-    "Graduation h0AL trait-point and H0B0 rare-unit shop offers remain separate follow-up work.",
+    "Graduated h0AL trait points credit the shared wallet; H0B0 CJE/CJF provides one rare/special actor after R01N.",
     "Money gambling is not unit gambling and must not increment unit-gambling missions."
   ]
 }

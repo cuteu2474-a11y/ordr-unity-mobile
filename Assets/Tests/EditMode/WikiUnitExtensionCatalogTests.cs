@@ -55,7 +55,7 @@ namespace Ordr.Mobile.Tests
             catalog.ApplyWikiExtension(Data("wiki-unit-catalog-extension.json"));
             var skills = CharacterSkillCatalog.FromJson(Data("character-skill-profiles.json"));
             var definitions = UnitImplementationRegistry.Combine(catalog, skills, null);
-            Assert.AreEqual(287, definitions.Count);
+            Assert.AreEqual(288, definitions.Count);
             Assert.AreEqual(200, definitions.DetailedProfiles);
             Assert.AreEqual(554, definitions.CollectedSkills);
             Assert.AreEqual(295, definitions.CollectedPassives);

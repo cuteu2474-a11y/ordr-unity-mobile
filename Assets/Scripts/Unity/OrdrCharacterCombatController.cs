@@ -2959,6 +2959,21 @@ namespace Ordr.Mobile.Unity
                             new OriginalWispCombatRewardWorld(Combat, map,
                                 roller, roller), true);
                     }
+                    if (PracticeMoneyGamblingDesk != null)
+                    {
+                        // The graduated CJF pool is different from e019:
+                        // 43 rare units including h05X and 7 specials.
+                        var shopBonus = (IOriginalWispDeferredBonusPort)
+                            (deferredWispAbilities ??
+                             new Original323WispDeferredAbilityRegistry(Combat));
+                        PracticeMoneyGamblingDesk.ConfigureRareReward(
+                            new Original323GraduatedRareShopWorld(
+                                Combat, Units, MapBaseStats, map,
+                                sessionScriptRandom, new MobileUniformWispRandom(),
+                                shopBonus),
+                            () => StoryProgression != null &&
+                                StoryProgression.HasResearch("R01N"));
+                    }
                     usesBuiltInAutomaticUncommonWisps = true;
                 }
             }
@@ -3081,10 +3096,18 @@ namespace Ordr.Mobile.Unity
             if (PersonalMissions == null || MapBaseStats == null) return;
             var result = MapBaseStats.Find(catalogId);
             if (result == null || result.OriginalRawcode != rawcode) return;
-            // Native result identity is authoritative; hero type and Q7's
-            // separate highest-tier condition still need their actual source.
+            // Native result identity is committed and its original rawcode
+            // matches the pinned object. The original top-tier category is
+            // 초월/불멸/영원/제한/신비; this drives Q014/Q015 instead of
+            // silently dropping every verified top-tier fusion event.
+            var unit = Units == null ? null : Units.Find(catalogId);
+            bool highest = unit != null && !unit.IsAlternateForm &&
+                (unit.Grade == "초월함" || unit.Grade == "불멸의" ||
+                 unit.Grade == "영원한" || unit.Grade == "제한됨" ||
+                 unit.Grade == "신비함");
+            // Hero identity (Q007) remains independent of this category.
             PersonalMissions.RecordFusion("fusion-result:" + resultId, rawcode,
-                false, result.OriginalAbilityRawcodes, false);
+                false, result.OriginalAbilityRawcodes, highest);
         }
 
         // 지갑 저장 이력까지 복원한 뒤 전투 자동 시전을 시작해야 한다.

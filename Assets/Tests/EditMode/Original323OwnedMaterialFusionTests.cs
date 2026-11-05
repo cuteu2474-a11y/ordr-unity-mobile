@@ -1334,8 +1334,8 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             string sourceHero = game.Units.All.First(x =>
                 x.CatalogEntryKind != "support-object" &&
-                !x.IsAlternateForm && game.Map.Find(x.Id) != null &&
-                game.Map.Find(x.Id).Attack1 != null).Id;
+                game.Map.Find(x.Id) != null &&
+                Original323MobileStoryHeroExperienceWorld.IsSourceStoryHero(game.Map.Find(x.Id))).Id;
             long hero = game.Combat.SpawnCharacter(sourceHero, 10, 20);
             var mobile = new Original323MobileStoryHeroExperienceWorld(
                 game.Combat, game.Economy, game.Map);

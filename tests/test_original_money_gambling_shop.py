@@ -46,8 +46,31 @@ class OriginalMoneyShopTests(unittest.TestCase):
                           graduation['addedWoodPurchaseRights'],
                           graduation['woodPurchaseGoldCost'], graduation['woodPerPurchase']))
         self.assertEqual(['h06F', 'H0AZ'], graduation['moneyOffersRemoved'])
-        self.assertEqual({'CIK', 'CIJ', 'CJC', 'CI8'},
+        self.assertEqual({'CIK', 'CIJ', 'CJC', 'CI8', 'CI7', 'CJF', 'CJE'},
                          set(data['progressionCallbackHashes']))
+
+    def test_graduated_trait_and_rare_shop_purchases_keep_source_costs_and_pools(self):
+        data = json.loads((ROOT / 'data/original-2323C-money-gambling-shop.json').read_text())
+        rows = data['graduation']['verifiedOffers']
+        trait, rare = rows['traitPoint'], rows['rareUnit']
+        self.assertEqual(('h0AL', 'CI7', 15000, 1, 1, 3600),
+                         (trait['rawcode'], trait['callback'], trait['goldCost'],
+                          trait['pointAmount'], trait['stockMaximum'], trait['stockRegenSeconds']))
+        self.assertEqual(('H0B0', 'CJF', 5000, 'R01N', 1, 1, 3600),
+                         (rare['rawcode'], rare['callback'], rare['goldCost'],
+                          rare['requiredResearch'], rare['purchaseLimit'],
+                          rare['stockMaximum'], rare['stockRegenSeconds']))
+        self.assertEqual((99, 43, 1, 7),
+                         (rare['rareBranchPercent'], len(rare['rarePool']),
+                          rare['specialBranchPercent'], len(rare['specialPool'])))
+        self.assertIn('h05X', rare['rarePool'])
+        self.assertNotIn('h0BG', rare['rarePool'])
+        code = (ROOT / 'Assets/Scripts/Mobile/SourceModelMoneyGamblingDesk.cs').read_text()
+        self.assertIn('OriginalMissionWalletRewards.TraitPointsId', code)
+        for field, expected in [('TraitGoldCost', 15000), ('RareGoldCost', 5000),
+                                ('GraduatedStockCapacity', 1),
+                                ('GraduatedStockRefillSeconds', 3600)]:
+            self.assertEqual(expected, int(re.search(r'const int ' + field + r' = (\d+);', code)[1]))
 
     def test_runtime_values_match_the_map_profile(self):
         data = json.loads((ROOT / 'data/original-2323C-money-gambling-shop.json').read_text())

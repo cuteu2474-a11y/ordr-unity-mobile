@@ -60,11 +60,11 @@ flowchart TD
 
 ## 돈 도박 연결
 
-`SourceModelMoneyGamblingDesk`가 일반/고급 서비스와 졸업 목재 구매를 같은 공유 지갑에 연결합니다. `SourceModelRegularMoneyGambling`의 기존 두 번 추첨·보류 결과·영수증/재고 처리를 두 등급이 재사용합니다. 컨트롤러의 `PracticeMoneyGambling`은 기존 일반 도박 참조를 보존하고, `PracticeMoneyGamblingDesk`가 실제 경제 포트가 됩니다. 승인된 별도 원본 경제 포트는 덮어쓰지 않습니다.
+`SourceModelMoneyGamblingDesk`가 일반/고급 도박과 졸업 목재·특성포인트·희귀 1회 구매를 하나의 공유 지갑에 연결합니다. `Original323GraduatedRareShopWorld`가 CJE의 43개 희귀·7개 특수 객체를 원본 rawcode에 검증하고, CJF의 99%/1% 추첨·보류 결과·실물 생성/롤백·A0YE 연기 영수증을 처리합니다. `SourceModelRegularMoneyGambling`의 기존 두 번 추첨·보류 결과·영수증/재고 처리를 두 등급이 재사용합니다. 컨트롤러의 `PracticeMoneyGambling`은 기존 일반 도박 참조를 보존하고, `PracticeMoneyGamblingDesk`가 실제 경제 포트가 됩니다. 승인된 별도 원본 경제 포트는 덮어쓰지 않습니다.
 
 `SourceModelPracticeBattle.RewardActualDeath`의 웨이브 원장에 실제 격파된 보스 rawcode가 있을 때만 내부 콜백을 호출합니다. Desk는 o01V만 CIK→CIJ/R009로 기록합니다. 라운드 도달·버튼 탭·일반 적 처치로 해금하지 않습니다. CJC의 고급 반환 누계 35000 이상이면 마지막 반환·졸업·R01M·목재 구매 기회 5회를 원자 확정합니다. 비용/보상 수치는 추출 자료와 대조합니다.
 
-`DrawEconomy`가 등급별 재고·대기·손익과 최근 6건 기록을 표시합니다. 돈 도박은 유닛 도박 미션에 연결하지 않습니다. `SourceModelRegularMoneyGamblingTests`에는 해금·분기 경계·정확/초과 졸업·커밋 후 예외·기회 소비·상태 복원 회귀를 추가했습니다(실행 전).
+`DrawEconomy`가 등급별 재고·대기·손익, 졸업 상점 구매 항목과 최근 6건 기록을 표시합니다. 스토리 R01N 연구는 `Original323StoryMobileProgression.HasResearch`를 통해 H0B0 구매에 연결합니다. Q015 최상위 3회 조합은 원본 rawcode에 대조한 결과 등급으로 기록하여 동일 공유 특성 포인트 지갑으로 지급합니다. 돈 도박은 유닛 도박 미션에 연결하지 않습니다. `SourceModelRegularMoneyGamblingTests`에는 해금·분기 경계·정확/초과 졸업·커밋 후 예외·기회 소비·상태 복원·특성 구매 재고/시간·희귀 1회 소환/롤백 회귀를 추가했습니다(실행 전).
 
 ## 수정 전 확인할 경계
 

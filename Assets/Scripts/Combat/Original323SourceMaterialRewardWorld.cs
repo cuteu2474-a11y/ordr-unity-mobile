@@ -664,6 +664,8 @@ namespace Ordr.Mobile.Combat
         private long sequence;
         private bool processing;
         private readonly Func<int, int, int> rollInclusive;
+        private int? pendingBoxGold;
+        private int? pendingBoxWood;
 
         // Original S2 2.323[C] JASS: CRL -> BFi(15000,30000),
         // BFi(14,20), independent inclusive rolls. CRM -> BhU(AIxx)
@@ -737,6 +739,9 @@ namespace Ordr.Mobile.Combat
         public bool TryChoose(string earnedWispResource,
             Original323TranscendWispOutcome outcome, out IReadOnlyList<long> actorIds)
         {
+            actorIds = Array.Empty<long>();
+            if (!CanCommitChoice(earnedWispResource, new ResourceBundle()))
+                return false; // Rejected attempts cannot advance the shared original RNG.
             string[] results;
             ResourceBundle rewards = new ResourceBundle();
             switch (outcome)
@@ -755,19 +760,31 @@ namespace Ordr.Mobile.Combat
                     break;
                 case Original323TranscendWispOutcome.RewardBoxResources:
                     results = Array.Empty<string>();
-                    int rolledGold = rollInclusive(BoxGoldMin, BoxGoldMax);
-                    int rolledWood = rollInclusive(BoxWoodMin, BoxWoodMax);
-                    if (rolledGold < BoxGoldMin || rolledGold > BoxGoldMax ||
-                        rolledWood < BoxWoodMin || rolledWood > BoxWoodMax)
-                        throw new InvalidOperationException("원본 꾸러미 난수 범위 불일치");
-                    rewards.Add("gold", rolledGold).Add("wood", rolledWood);
+                    if (!pendingBoxGold.HasValue)
+                    {
+                        int value = rollInclusive(BoxGoldMin, BoxGoldMax);
+                        if (value < BoxGoldMin || value > BoxGoldMax)
+                            throw new InvalidOperationException("원본 꾸러미 골드 난수 범위 불일치");
+                        pendingBoxGold = value;
+                    }
+                    if (!pendingBoxWood.HasValue)
+                    {
+                        int value = rollInclusive(BoxWoodMin, BoxWoodMax);
+                        if (value < BoxWoodMin || value > BoxWoodMax)
+                            throw new InvalidOperationException("원본 꾸러미 목재 난수 범위 불일치");
+                        pendingBoxWood = value;
+                    }
+                    rewards.Add("gold", pendingBoxGold.Value).Add("wood", pendingBoxWood.Value);
                     break;
                 default:
                     actorIds = Array.Empty<long>();
                     return false;
             }
-            return TryCommitChoice(earnedWispResource, results,
+            bool committed = TryCommitChoice(earnedWispResource, results,
                 new ResourceBundle(), rewards, out actorIds);
+            if (committed && outcome == Original323TranscendWispOutcome.RewardBoxResources)
+                pendingBoxGold = pendingBoxWood = null;
+            return committed;
         }
 
         // Original CRM calls BhU: only one choice per unique AIxx item,
@@ -793,12 +810,9 @@ namespace Ordr.Mobile.Combat
                 out noActors, receipt) && noActors.Count == 0;
         }
 
-        private bool TryCommitChoice(string earnedWispResource,
-            IReadOnlyList<string> results, ResourceBundle additionalCosts,
-            ResourceBundle rewards, out IReadOnlyList<long> actorIds,
-            string fixedReceipt = null)
+        private bool CanCommitChoice(string earnedWispResource,
+            ResourceBundle additionalCosts)
         {
-            actorIds = Array.Empty<long>();
             if (processing || !economy.HasStarted ||
                 combat.Game.Phase != SessionPhase.Running ||
                 GameSession.ModeId != "nightmare-otherworld" ||
@@ -809,6 +823,17 @@ namespace Ordr.Mobile.Combat
             foreach (var cost in additionalCosts.Entries)
                 if (economy.Wallet.Balance(cost.Key) < cost.Value)
                     return false;
+            return true;
+        }
+
+        private bool TryCommitChoice(string earnedWispResource,
+            IReadOnlyList<string> results, ResourceBundle additionalCosts,
+            ResourceBundle rewards, out IReadOnlyList<long> actorIds,
+            string fixedReceipt = null)
+        {
+            actorIds = Array.Empty<long>();
+            if (!CanCommitChoice(earnedWispResource, additionalCosts))
+                return false;
 
             var costs = new ResourceBundle().Add(earnedWispResource, 1);
             foreach (var entry in additionalCosts.Entries) costs.Add(entry.Key, entry.Value);

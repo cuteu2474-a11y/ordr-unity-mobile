@@ -99,7 +99,7 @@ namespace Ordr.Mobile.Tests
             StringAssert.Contains("골드 180", first);
             StringAssert.Contains("선택위습 3", first);
             StringAssert.DoesNotContain("500", first, "MVP 보너스는 기본 보상이 아닙니다.");
-            StringAssert.Contains("초월위습 연습 권리 1",
+            StringAssert.Contains("초월위습 1회",
                 Original323SoloStoryScenario.BaseRewardSummary(10));
             Assert.Throws<ArgumentOutOfRangeException>(() =>
                 Original323SoloStoryScenario.BaseRewardSummary(0));

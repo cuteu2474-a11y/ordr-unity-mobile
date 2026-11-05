@@ -49,6 +49,7 @@ namespace Ordr.Mobile.Tests
         private sealed class Live
         {
             public CharacterCombatRuntime Combat;
+            public CharacterUnitCatalog Units;
             public SharedEconomySession Economy;
             public OriginalMapBaseStatCatalog Map;
             public OriginalJassFusionCatalog Registry;
@@ -66,7 +67,7 @@ namespace Ordr.Mobile.Tests
                 Data("original-unit-rawcode-label-links.json"), units, registry);
             var preview = OriginalFusionObjectPreviewCatalog.FromJson(
                 Data("original-fusion-object-reconciliation.json"), registry, units);
-            // Match app load order: source evidence/labels before 287-row overlay.
+            // Match app load order: source evidence/labels before 288-row overlay.
             if (includeSourceOnlyWikiUnits)
                 units.ApplyWikiExtension(Data("wiki-unit-catalog-extension.json"));
             var reject = new RejectUnverifiedDamageFormula();
@@ -77,12 +78,58 @@ namespace Ordr.Mobile.Tests
                 (id, x, y) => shared.Units.Add(id, x, y), id => shared.Units.Remove(id));
             world.Start();
             var fallback = new OriginalJassReadOnlyFusionPort(registry, preview, id => world.IsStoryDeployed(id));
-            return new Live { Combat = world, Economy = shared, Map = map, Registry = registry,
+            return new Live { Combat = world, Units = units, Economy = shared, Map = map, Registry = registry,
                 Fusion = new Original323CommonFusionPort(world, shared, units, map, registry, labels,
                     fallback, new Original323FusionVerifiedRestrictions(world.Game)) };
         }
         private static MobileFusionPreview Offer(Live game, string ability) => game.Fusion
             .AvailableRecipes(game.Combat.MobileUnitSnapshot()).Single(row => row.RecipeId == ability);
+
+        [Test]
+        public void GraduationRareShopUsesDistinctCjePoolAndRetainsRolledBackDraw()
+        {
+            var game = Create();
+            var assignments = Original323WispAssignedRosterMap.FromSourceJson(
+                Data("original-2323C-wisp-character-identity-assignments.json"),
+                Data("original-2323C-wisp-pools.json"), game.Units, game.Map);
+            var branch = new Rolls(99);
+            var native = new Rolls(42);
+            var world = new Original323GraduatedRareShopWorld(game.Combat,
+                game.Units, game.Map, assignments, branch, native);
+            int before = game.Combat.CharacterCount;
+            using (var tx = world.Begin())
+            {
+                long id; string rawcode, unitName;
+                Assert.IsTrue(tx.TrySpawn(out id, out rawcode, out unitName));
+                Assert.AreEqual("h05X", rawcode,
+                    "The graduated pool contains rare Rayleigh, not rare Wisp's Gaimon.");
+                Assert.AreEqual("R-43", game.Combat.Roster.Get(id).UnitId);
+                Assert.AreEqual("실버즈 레일리", unitName);
+                // Simulate a failed wallet debit: transaction is disposed uncommitted.
+            }
+            Assert.AreEqual(before, game.Combat.CharacterCount);
+            using (var tx = world.Begin())
+            {
+                long id; string rawcode, unitName;
+                Assert.IsTrue(tx.TrySpawn(out id, out rawcode, out unitName));
+                Assert.AreEqual("h05X", rawcode);
+                tx.Commit();
+                Assert.AreEqual("R-43", game.Combat.Roster.Get(id).UnitId);
+            }
+            Assert.AreEqual(before + 1, game.Combat.CharacterCount);
+            Assert.AreEqual(1, branch.Calls);
+            Assert.AreEqual(1, native.Calls);
+            var specialWorld = new Original323GraduatedRareShopWorld(game.Combat,
+                game.Units, game.Map, assignments, new Rolls(100), new Rolls(6));
+            using (var tx = specialWorld.Begin())
+            {
+                long id; string rawcode, unitName;
+                Assert.IsTrue(tx.TrySpawn(out id, out rawcode, out unitName));
+                Assert.AreEqual("h09T", rawcode);
+                tx.Commit();
+                Assert.IsTrue(game.Combat.Roster.Get(id).UnitId.StartsWith("X-"));
+            }
+        }
 
         [TestCase("A006", "U-01")]
         [TestCase("A00E", "U-02")]
@@ -969,7 +1016,7 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             var witness = new ObservedSourceMaterialEvent();
             var world = new Original323SourceMaterialRewardWorld(game.Combat,
-                game.Economy, CharacterUnitCatalog.FromJson(Data("units.json")), game.Map, witness);
+                game.Economy, game.Units, game.Map, witness);
             long result;
             Assert.IsFalse(world.TryChooseKuma(out result));
             Assert.IsFalse(world.TryRecordObservedStoryClearWisp("story-1"),
@@ -1008,7 +1055,7 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             var witness = new ObservedSourceMaterialEvent();
             var rewards = new Original323SourceMaterialRewardWorld(game.Combat,
-                game.Economy, CharacterUnitCatalog.FromJson(Data("units.json")), game.Map, witness);
+                game.Economy, game.Units, game.Map, witness);
             foreach (var material in game.Registry.FindByAbility(ability).RequiredUnitRawcodes())
             {
                 if (material.Key == Original323SourceMaterialRewardWorld.KumaRawcode) continue;
@@ -1083,7 +1130,7 @@ namespace Ordr.Mobile.Tests
             var game = Create();
             var witness = new ObservedSourceMaterialEvent();
             var world = new Original323SourceMaterialRewardWorld(game.Combat,
-                game.Economy, CharacterUnitCatalog.FromJson(Data("units.json")), game.Map, witness);
+                game.Economy, game.Units, game.Map, witness);
             IReadOnlyList<long> tokens;
             long gold = game.Economy.Wallet.Balance("gold");
             long wood = game.Economy.Wallet.Balance("wood");

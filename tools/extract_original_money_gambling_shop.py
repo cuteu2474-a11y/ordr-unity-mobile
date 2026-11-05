@@ -76,7 +76,46 @@ def extract(map_path):
         raise ValueError('High-tier lifetime cap changed')
     bodies = {name: re.search(r'^function ' + name + r' takes .*?^endfunction$',
                               source, re.M | re.S).group(0)
-              for name in ('CIK', 'CIJ', 'CJC', 'CI8')}
+              for name in ('CIK', 'CIJ', 'CJC', 'CI8', 'CI7', 'CJF', 'CJE')}
+    rare = [bytes.fromhex(code).decode('latin-1') for code in
+            re.findall(r'UnitPoolAddUnitType\(kQ,\$([0-9A-Fa-f]{8}),1\)', bodies['CJE'])]
+    special = [bytes.fromhex(code).decode('latin-1') for code in
+               re.findall(r'UnitPoolAddUnitType\(kR,\$([0-9A-Fa-f]{8}),1\)', bodies['CJE'])]
+    graduated_offers = {
+        'traitPoint': {
+            'rawcode': 'h0AL', 'name': names['h0AL']['Name'],
+            'callback': 'CI7', 'goldCost': int(balance['h0AL']['goldcost']),
+            'pointAmount': 1, 'stockMaximum': int(balance['h0AL']['stockMax']),
+            'stockRegenSeconds': int(balance['h0AL']['stockRegen']),
+            'sharedOriginalResource': 'PLAYER_STATE_RESOURCE_FOOD_USED',
+        },
+        'rareUnit': {
+            'rawcode': 'H0B0', 'name': names['H0B0']['Name'],
+            'callback': 'CJF', 'goldCost': int(balance['H0B0']['goldcost']),
+            'requiredResearch': names['H0B0']['Requires'], 'purchaseLimit': 1,
+            'stockMaximum': int(balance['H0B0']['stockMax']),
+            'stockRegenSeconds': int(balance['H0B0']['stockRegen']),
+            'rareBranchPercent': 99, 'rarePool': rare,
+            'specialBranchPercent': 1, 'specialPool': special,
+            'rareBonusAbility': 'A0YE', 'rareBonusExcept': 'h05X',
+        },
+    }
+    if (graduated_offers['traitPoint']['goldCost'] != 15000 or
+            graduated_offers['rareUnit']['goldCost'] != 5000 or
+            graduated_offers['traitPoint']['stockMaximum'] != 1 or
+            graduated_offers['rareUnit']['stockMaximum'] != 1 or
+            graduated_offers['traitPoint']['stockRegenSeconds'] != 3600 or
+            graduated_offers['rareUnit']['stockRegenSeconds'] != 3600 or
+            graduated_offers['rareUnit']['requiredResearch'] != 'R01N' or
+            len(rare) != 43 or len(special) != 7 or
+            'h05X' not in rare or 'h0BG' in rare or
+            'call SetPlayerState(Cl,PLAYER_STATE_RESOURCE_FOOD_USED,' not in bodies['CI7'] or
+            'call BC5(KF,$6830414C,function CI7)' not in source or
+            'call BC5(KF,$48304230,function CJF)' not in source or
+            'BFi(1,100)<=99' not in bodies['CJF'] or
+            'PlaceRandomUnit(kQ' not in bodies['CJF'] or
+            'PlaceRandomUnit(kR' not in bodies['CJF']):
+        raise ValueError('Graduated h0AL/H0B0 sale or CJE/CJF pool changed')
     if ('call BDB($6F303156,function CIK)' not in source or
             'call CIJ(JG)' not in bodies['CIK'] or
             'call SetPlayerTechResearched(Player(JG),$52303039,1)' not in bodies['CIJ'] or
@@ -99,7 +138,8 @@ def extract(map_path):
                        'moneyOffersRemoved': ['h06F', 'H0AZ'],
                        'addedWoodPurchaseRights': 5, 'woodPurchaseRawcode': 'h0AK',
                        'woodPurchaseGoldCost': 10000, 'woodPerPurchase': 1,
-                       'additionalShopOffers': ['h0AL', 'H0B0']},
+                       'additionalShopOffers': ['h0AL', 'H0B0'],
+                       'verifiedOffers': graduated_offers},
         'progressionCallbackHashes': {name: sha(body.encode('utf-8'))
                                      for name, body in bodies.items()},
         'retailParityVerified': False, 'nativeStockInitializationVerified': False,
@@ -110,7 +150,7 @@ def extract(map_path):
             'Native stock initial amount/refill timing and the shared Warcraft RNG remain unverified.',
             'Practice high-grade unlock follows an actual modeled o01V boss death; no free R009 unlock.',
             'Graduation stops both money offers, records R01M and five paid wood-purchase rights.',
-            'Graduation h0AL trait-point and H0B0 rare-unit shop offers remain separate follow-up work.',
+            'Graduated h0AL trait points credit the shared wallet; H0B0 CJE/CJF provides one rare/special actor after R01N.',
             'Money gambling is not unit gambling and must not increment unit-gambling missions.',
         ],
     }

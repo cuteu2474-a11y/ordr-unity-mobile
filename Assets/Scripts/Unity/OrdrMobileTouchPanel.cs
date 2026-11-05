@@ -1224,6 +1224,9 @@ namespace Ordr.Mobile.Unity
         {
             var trait = controller.ShirahoshiTrait;
             if (trait == null) return;
+            GUILayout.Label(
+                "특성포인트 획득: 스토리 8~13단계 · 개인 미션 '트리플' · 졸업 도박소 15000골드",
+                OrdrMobileUiTheme.Overline);
             if (!trait.IsEligible(instanceId))
             {
                 GUILayout.Label("특성강화: 이 유닛의 원본 구매 효과는 아직 연결되지 않았습니다.",
