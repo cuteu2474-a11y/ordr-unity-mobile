@@ -26,7 +26,6 @@
 
 ### 진행·경제·조작
 
-- [희귀함 성장과 특별함 위습](APK-희귀함-성장과-특별함위습-20261028.md)
 - [D단계: 조합·상점·도박·위습 구현 현황](D단계-경제조합-개발현황.md)
 - [Unity 독립 몬스터 전투 — 원본 JASS 기반 실행 경로](standalone-enemy-runtime.md)
 - [ORDR S2 2.323C · 스토리 건물 14종](story-building-runtime.md)
