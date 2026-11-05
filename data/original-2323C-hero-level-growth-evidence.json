@@ -1,0 +1,173 @@
+{
+  "format": "ordr-2323c-hero-growth-evidence-v1",
+  "gameVersion": "S2 2.323[C]",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sources": [
+    "Units/UnitBalance.slk (STRplus/AGIplus/INTplus + primary attribute, 58 H-rawcode forms)",
+    "war3mapMisc.txt [Misc]/[Heros] (MaxHeroLevel, NeedHeroXP, NeedHeroXPFormulaA/B, AgiAttackSpeedBonus, StrAttackBonus)",
+    "war3map.j CIB, Bz6/Bz7, CNz..CRG, transformation GetHeroXP/SetHeroXP"
+  ],
+  "maxLevel": 24,
+  "heroExperienceRequirements": [
+    33,
+    75,
+    116,
+    152
+  ],
+  "requirementFormulaFromIndex4": {
+    "previousMultiplier": 1.03,
+    "indexMultiplier": 15,
+    "constant": 0,
+    "truncatesToInteger": true
+  },
+  "mainAttributeAttackDamagePerPoint": 800,
+  "agilityAttackSpeedPercentPerPoint": 1,
+  "strengthHpBonusPerPoint": 0,
+  "intelligenceManaBonusPerPoint": 0,
+  "intelligenceManaRegenPerPoint": 0.08,
+  "agilityArmorBonusPerPoint": 0,
+  "heroGrowthGroups": [
+    {
+      "primary": "strength",
+      "strength": 0.85,
+      "agility": 0.21,
+      "intelligence": 0.21,
+      "rawcodes": [
+        "H0BT",
+        "H090",
+        "H08X",
+        "H0AY",
+        "H09D",
+        "H0C9",
+        "H095",
+        "H0BY",
+        "H0B4",
+        "H09E",
+        "H0BX",
+        "H0AE",
+        "H09A",
+        "H092",
+        "H09F",
+        "H099"
+      ]
+    },
+    {
+      "primary": "intelligence",
+      "strength": 0.21,
+      "agility": 0.21,
+      "intelligence": 0.85,
+      "rawcodes": [
+        "H094",
+        "H09B",
+        "H08V",
+        "H093",
+        "H09I",
+        "H0B6",
+        "H0BN",
+        "H0AM",
+        "H09C",
+        "H08U",
+        "H0B1",
+        "H091",
+        "H08B",
+        "H096",
+        "H0BV",
+        "H0BL",
+        "H0AA",
+        "H0C1",
+        "H097",
+        "H08Y",
+        "H0BO"
+      ]
+    },
+    {
+      "primary": "agility",
+      "strength": 0.21,
+      "agility": 0.85,
+      "intelligence": 0.21,
+      "rawcodes": [
+        "H0B3",
+        "H0CO",
+        "H09G",
+        "H0BK",
+        "H0AB",
+        "H0B5",
+        "H0B2",
+        "H0CL",
+        "H098",
+        "H08E",
+        "H08Z",
+        "H08W",
+        "H09H",
+        "H08J"
+      ]
+    },
+    {
+      "primary": "agility",
+      "strength": 0.21,
+      "agility": 1.06,
+      "intelligence": 0.21,
+      "rawcodes": [
+        "H0BE",
+        "H0BZ",
+        "H0BD",
+        "H0C0"
+      ]
+    },
+    {
+      "primary": "agility",
+      "strength": 0.42,
+      "agility": 1.7,
+      "intelligence": 0.42,
+      "rawcodes": [
+        "H05N",
+        "H0A5"
+      ]
+    },
+    {
+      "primary": "agility",
+      "strength": 0,
+      "agility": 0,
+      "intelligence": 0,
+      "rawcodes": [
+        "H08T"
+      ]
+    }
+  ],
+  "shirahoshi": {
+    "forms": [
+      "H08U",
+      "H0C1"
+    ],
+    "traitUnlock": "Bz6 consumes four actual trait points and registers Bz7 unit hero level event",
+    "milestones": [
+      {
+        "level": 16,
+        "ability": "A0L1",
+        "abilityLevel": 2
+      },
+      {
+        "level": 20,
+        "ability": "A0RU",
+        "abilityLevel": 2,
+        "oneTimeAddedStats": {
+          "strength": 10,
+          "agility": 10,
+          "intelligence": 10
+        }
+      },
+      {
+        "level": 24,
+        "ability": "A0KZ",
+        "abilityLevel": 2
+      }
+    ],
+    "warning": "This cannot be unlocked merely because the wallet holds at least four unspent trait points."
+  },
+  "knownScopeLimitations": [
+    "Original initial STR/AGI/INT are missing for most of these H-object forms in the checked subset; runtime only adds level-over-level increments, not invented base stats.",
+    "The 58 rawcodes are source object forms, not 58 distinct web catalog characters.",
+    "Other original XP award triggers and native unit level events need explicit links before full story/XP parity."
+  ]
+}

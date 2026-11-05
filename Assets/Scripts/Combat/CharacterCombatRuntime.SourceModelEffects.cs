@@ -17,6 +17,44 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<long, long> sourceModelStoryLaneRevisions =
             new Dictionary<long, long>();
         public SourceModelUnitEffects PracticeUnitEffects => sourceModelUnitEffects;
+        private Original323MobileStoryHeroExperienceWorld original323HeroLevelWorld;
+
+        // Shared actor identity for XP, attack damage and attack cadence.
+        // The source-model form override keeps the SAME mobile instance ID,
+        // as Warcraft Bjp/Bjq transformations preserve the native HeroXP.
+        internal bool TryGetOwnedSourceHeroIdentity(long instanceId,
+            out string catalogId, out string entryKind, out string activeForm)
+        {
+            catalogId = null; entryKind = null; activeForm = null;
+            CharacterInstance actor;
+            if (instanceId <= 0 || !characters.TryGetValue(instanceId, out actor))
+                return false;
+            catalogId = actor.Catalog.Id;
+            entryKind = actor.Catalog.CatalogEntryKind;
+            activeForm = sourceModelRules == null ? null :
+                sourceModelRules.SourceFormRawcodeOf(InstanceKey(instanceId));
+            return true;
+        }
+
+        public void ConfigureSourceHeroLevelProgression(
+            Original323MobileStoryHeroExperienceWorld source)
+        {
+            if (source == null || original323HeroLevelWorld != null)
+                throw new InvalidOperationException(
+                    "원본 영웅 레벨 규칙을 중복/잘못 연결했습니다.");
+            original323HeroLevelWorld = source;
+            attackPipeline.ConfigurePracticeHeroAgilitySpeed(actorKey =>
+            {
+                long id;
+                return UsesSourceModelBasicAttacks &&
+                    long.TryParse(actorKey, out id)
+                    ? original323HeroLevelWorld.AddedAttackSpeedPercentOf(id) : 0;
+            });
+        }
+
+        public Original323HeroLevelState SourceHeroLevelStateOf(long instanceId) =>
+            original323HeroLevelWorld == null ? null :
+                original323HeroLevelWorld.LevelStateOf(instanceId);
         internal void ConfigureSourceModelUnitEffects(SourceModelBasicCombatRules rules)
         {
             sourceModelRules = rules;
@@ -45,10 +83,12 @@ namespace Ordr.Mobile.Combat
                 OnSourceModelNinthSuccessfulBasicHit(attacker, rawcode, target, actual);
                 OnSourceModelTwentyFifthSuccessfulBasicHit(attacker, rawcode, target, actual);
             });
-            attackPipeline.ConfigurePracticeAttackCadence((attack, effects) => {
-                // Reuse the shared cadence path for a temporary form. Its flat
-                // interval change is distinct from percentage-based auras.
-                double speed = SourceModelUnitEffects.ResolvePracticeAttackSpeed(effects);
+            attackPipeline.ConfigurePracticeAttackCadence((attack, effects, heroSpeed) => {
+                // Native AgiAttackSpeedBonus = 1% per gained AGI. Add it to
+                // native source-model attack-speed statuses before the cap,
+                // rather than multiplying separate interval reductions.
+                double speed = SourceModelUnitEffects.ResolvePracticeAttackSpeed(effects)
+                    + heroSpeed;
                 double interval = attack.IntervalSeconds /
                     (1 + Math.Min(speed / 100.0, 4));
                 return Math.Max(.01, interval -

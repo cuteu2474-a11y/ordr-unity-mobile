@@ -917,6 +917,7 @@ namespace Ordr.Mobile.Unity
                     var heroExperience = new Original323MobileStoryHeroExperienceWorld(
                         Combat, SharedEconomy, MapBaseStats);
                     progression.ConnectMobileHeroExperience(heroExperience);
+                    Combat.ConfigureSourceHeroLevelProgression(heroExperience);
                     StoryHeroExperience = heroExperience;
                     if (originalStoryNativeAwards != null)
                         progression.ConnectAdditionalNativeEffects(originalStoryNativeAwards);

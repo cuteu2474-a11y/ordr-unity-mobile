@@ -45,7 +45,9 @@ namespace Ordr.Mobile.Combat
             double existing = actor.Catalog.Id == "E-03" &&
                 SourceModelTwentiethSkillCatalog.HasExactPassive(actor.Profile, "E-03") &&
                 SourceModelSoulStacksOf(id) >= 700 ? 100000 : 0;
-            return existing + SourceModelTwentyFifthFlatAttackPower(actor);
+            double heroGrowth = original323HeroLevelWorld == null ? 0 :
+                original323HeroLevelWorld.AdditionalBasicAttackDamageOf(id);
+            return existing + SourceModelTwentyFifthFlatAttackPower(actor) + heroGrowth;
         }
 
         // Called both for actors already present before the practice battle

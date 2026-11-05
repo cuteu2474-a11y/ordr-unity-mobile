@@ -107,9 +107,9 @@ namespace Ordr.Mobile.Combat
     }
 
     // Original CIB registers ONLY hero-type units with A07O in Hp[VT[player]].
-    // Source UnitAbilities.slk distinguishes these from ordinary attackers.
-    // The solo outcome credits live, player-owned pinned source heroes only;
-    // it does not invent native HeroXP level/stat progression for Unity.
+    // The solo outcome credits live, player-owned pinned source heroes. Its
+    // receipt-backed XP is now read as native levels/attribute growth by the
+    // source-model attack resolver; it is not an invented generic XP system.
     public sealed class Original323MobileStoryHeroExperienceWorld :
         IOriginal323StoryNativeRewardPort
     {
@@ -147,6 +147,55 @@ namespace Ordr.Mobile.Combat
         {
             if (instanceId <= 0) return 0;
             return economy.Wallet.Balance(ExperiencePrefix + instanceId);
+        }
+
+        // This source event is distinct from story trait-point awards. The
+        // original Bz6 consumes FOUR points from Shirahoshi to unlock Bz7;
+        // a mere balance of four points must never trigger it.
+        private Func<long, bool> originalShirahoshiTraitWitness;
+        public void ConnectOriginalShirahoshiFourPointTraitWitness(Func<long, bool> witness)
+        {
+            if (originalShirahoshiTraitWitness != null || witness == null)
+                throw new InvalidOperationException(
+                    "원본 시라호시 4포인트 특성 근거는 한 번만 연결할 수 있습니다.");
+            originalShirahoshiTraitWitness = witness;
+        }
+
+        // Only currently owned, actually mapped source heroes get live
+        // growth. This is a read-through of the durable XP wallet, so
+        // post-commit observers, reloads and repeated reward callbacks
+        // cannot leave a stale level or double-apply an attribute bonus.
+        public Original323HeroLevelState LevelStateOf(long instanceId)
+        {
+            string catalogId, kind, activeForm;
+            if (!combat.TryGetOwnedSourceHeroIdentity(instanceId,
+                out catalogId, out kind, out activeForm) ||
+                kind == "support-object") return null;
+            var source = objects.Find(catalogId);
+            if (!IsSourceStoryHero(source)) return null;
+            string rawcode = activeForm ?? source.OriginalRawcode;
+            bool shiraTrait = originalShirahoshiTraitWitness != null &&
+                originalShirahoshiTraitWitness(instanceId);
+            return Original323HeroLevelRules.Evaluate(
+                rawcode, ExperienceOf(instanceId), shiraTrait);
+        }
+
+        public int LevelOf(long instanceId)
+        {
+            var state = LevelStateOf(instanceId);
+            return state == null ? 0 : state.Level;
+        }
+
+        public int AdditionalBasicAttackDamageOf(long instanceId)
+        {
+            var state = LevelStateOf(instanceId);
+            return state == null ? 0 : state.AdditionalBasicAttackDamage;
+        }
+
+        public int AddedAttackSpeedPercentOf(long instanceId)
+        {
+            var state = LevelStateOf(instanceId);
+            return state == null ? 0 : state.AddedAttackSpeedPercent;
         }
 
         public bool TryApplySourceNativeReward(Original323StoryNativeReward award)

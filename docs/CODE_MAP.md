@@ -46,11 +46,11 @@ flowchart TD
 | [Original323StoryMobileProgression.cs](../Assets/Scripts/Core/Original323StoryMobileProgression.cs) | 재화·특성·연구·모바일 경험치 및 외부 원본 보상 월드 연결 |
 | [Original323SourceMaterialRewardWorld.cs](../Assets/Scripts/Combat/Original323SourceMaterialRewardWorld.cs) | 고대의 배·원본 사건 재료·초월위습 선택. Original323KumaWispChoiceWorld는 기존 이름을 유지하며 여러 선택지 처리 |
 | Original323KumaWispChoiceWorld.TryChoose / TryChooseBoxItem | 재화 꾸러미·쿠마·레일리+해적선과 고유 아이템 선택을 기존 지갑/로스터 거래로 처리. 영구 획득 플래그는 재료 소비 뒤에도 유지 |
-| Original323MobileStoryHeroExperienceWorld | 13·14단계 XP를 현재 대상별로 기록. 최신 조건은 원본 H*** 영웅과 A07O 보유. 실제 레벨/성장 효과는 미완 |
+| [Original323MobileStoryHeroExperienceWorld](../Assets/Scripts/Combat/Original323StoryNativeRewardQueue.cs), [Original323HeroLevelRules.cs](../Assets/Scripts/Combat/Original323HeroLevelRules.cs) | 13·14단계 XP 영수증·원본 H*** + A07O 자격, 58개 폼의 24레벨 임계값/정수 성장치와 시라호시 특성 조건을 읽기 전용 계산. 4포인트 실제 발동/그 외 XP 사건 연결은 별도 |
 | [CharacterCombatRuntime.StoryGreenBlood.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.StoryGreenBlood.cs), [Original323StoryGreenBloodRules.cs](../Assets/Scripts/Combat/Original323StoryGreenBloodRules.cs) | 직접 선택한 실물 유닛의 변환/강화. 같은 종류 여러 기 중 선택 개체만 처리 |
 | Original323FusionSourceItemLedger, Original323StoryNativeRewardQueue | 고유 아이템 잔액·영구 획득 기록과 단계별 영수증. 커밋 후 알림 예외로 재지급하지 않음 |
 
-5% 원본 고유 보상과 XP 자격의 출처는 [스토리 원본 근거](../data/original-2323C-story-native-reward-evidence.json)에 있습니다. 현재 수치/자격은 이 문서에 복제하지 않고 해당 코드와 자료를 함께 대조합니다.
+5% 원본 고유 보상과 XP 자격의 출처는 [스토리 원본 근거](../data/original-2323C-story-native-reward-evidence.json), 레벨·성장 수치의 출처는 [영웅 성장 근거](../data/original-2323C-hero-level-growth-evidence.json)에 있습니다. `CharacterCombatRuntime.SourceModelEffects`와 `SourceModelTwentiethSkills`는 주능력치 공격력/민첩 공속을, `SourceModelResources`는 지능 마나 재생을 적용합니다. 현재 수치/자격은 이 문서에 복제하지 않고 해당 코드와 자료를 함께 대조합니다.
 
 ## 수정 전 확인할 경계
 

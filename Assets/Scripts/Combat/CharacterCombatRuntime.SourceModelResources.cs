@@ -131,8 +131,17 @@ namespace Ordr.Mobile.Combat
             {
                 SourceModelUnitResourceSpec source;
                 if (sourceModelManagedResourceRows.TryGetValue(actor.Id, out source))
+                {
+                    // Native IntRegenBonus = 0.08 mana/sec for every additional
+                    // integer INT point earned after the starting hero level.
+                    var growth = original323HeroLevelWorld == null ? null :
+                        original323HeroLevelWorld.LevelStateOf(actor.Id);
+                    double levelManaRegen = growth == null ? 0 :
+                        growth.AddedIntelligence * .08;
                     actor.Abilities.Resources.RegenerateSourceModel(
-                        source.HealthRegeneration, source.ManaRegeneration, seconds);
+                        source.HealthRegeneration,
+                        source.ManaRegeneration + levelManaRegen, seconds);
+                }
             }
         }
 

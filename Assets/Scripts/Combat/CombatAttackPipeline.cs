@@ -227,7 +227,15 @@ namespace Ordr.Mobile.Combat
 
         private IOriginalUnitAttackModifiers originalModifierRules;
         private IOriginal323VerifiedNativeAttackCadence verifiedNativeCadence;
-        private Func<BasicAttackSpec, IReadOnlyList<CombatEffect>, double> practiceAttackCadence;
+        private Func<BasicAttackSpec, IReadOnlyList<CombatEffect>, double, double> practiceAttackCadence;
+        private Func<string, double> practiceHeroAgilitySpeed;
+        internal void ConfigurePracticeHeroAgilitySpeed(Func<string, double> speedPercent)
+        {
+            if (practiceHeroAgilitySpeed != null || speedPercent == null)
+                throw new InvalidOperationException(
+                    "원본 영웅 민첩 공속 증가 공급자는 한 번만 연결할 수 있습니다.");
+            practiceHeroAgilitySpeed = speedPercent;
+        }
         private Func<string, BasicAttackSpec> practiceAttackOverride;
         internal void ConfigurePracticeAttackOverride(Func<string, BasicAttackSpec> attack)
         {
@@ -235,11 +243,20 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("연습 변신 공격 공급자는 시작 전에 연결하세요.");
             practiceAttackOverride = attack ?? throw new ArgumentNullException(nameof(attack));
         }
-        internal void ConfigurePracticeAttackCadence(Func<BasicAttackSpec, IReadOnlyList<CombatEffect>, double> cadence)
+        internal void ConfigurePracticeAttackCadence(Func<BasicAttackSpec, IReadOnlyList<CombatEffect>, double, double> cadence)
         {
             if (practiceAttackCadence != null || verifiedNativeCadence != null || units.Count != 0)
                 throw new InvalidOperationException("연습 공속은 전투 유닛 생성 전에만 연결할 수 있습니다.");
             practiceAttackCadence = cadence ?? throw new ArgumentNullException(nameof(cadence));
+        }
+        // Preserve the existing two-parameter internal contract for source
+        // model tests and callers not yet concerned with hero stat growth.
+        internal void ConfigurePracticeAttackCadence(
+            Func<BasicAttackSpec, IReadOnlyList<CombatEffect>, double> cadence)
+        {
+            if (cadence == null) throw new ArgumentNullException(nameof(cadence));
+            ConfigurePracticeAttackCadence((attack, effects, heroSpeed) =>
+                cadence(attack, effects));
         }
         private Func<string, IReadOnlyList<CombatEffect>> getAttackerEffects;
 
@@ -481,9 +498,9 @@ namespace Ordr.Mobile.Combat
 
             // Resolve next attack time using the ORIGINAL current native
             // buffs, before declared attacks, damage dice or skill proc RNG.
-            // With no AttackSpeedBuff, preserve the exact verified base
-            // attack interval. An unresolved buff cannot silently inherit
-            // vanilla cadence or apply a made-up 1/(1+percent) shortcut.
+            // Ordinary verified attacks preserve their native timing.
+            // Only source-model hero growth adds its original AGI stat gain
+            // when there is no temporary AttackSpeedBuff.
             IReadOnlyList<CombatEffect> attackerEffects =
                 getAttackerEffects == null
                     ? (IReadOnlyList<CombatEffect>)Array.Empty<CombatEffect>()
@@ -496,11 +513,18 @@ namespace Ordr.Mobile.Combat
             foreach (var effect in attackerEffects)
                 if (effect.Type == CombatEffectType.AttackSpeedBuff)
                     hasNativeSpeedBuff = true;
-            if (hasNativeSpeedBuff)
+            double heroAgilitySpeed = practiceAttackCadence != null &&
+                practiceHeroAgilitySpeed != null
+                ? practiceHeroAgilitySpeed(attackerInstanceId) : 0;
+            if (double.IsNaN(heroAgilitySpeed) ||
+                double.IsInfinity(heroAgilitySpeed) || heroAgilitySpeed < 0)
+                throw new InvalidOperationException("원본 영웅 공속 증가량이 올바르지 않습니다.");
+            if (hasNativeSpeedBuff || heroAgilitySpeed > 0)
             {
                 if (practiceAttackCadence != null)
                 {
-                    nextAttackInterval = practiceAttackCadence(effective, attackerEffects);
+                    nextAttackInterval = practiceAttackCadence(
+                        effective, attackerEffects, heroAgilitySpeed);
                     if (double.IsNaN(nextAttackInterval) || double.IsInfinity(nextAttackInterval) || nextAttackInterval <= 0)
                         throw new InvalidOperationException("연습 공격 간격 오류");
                 }
