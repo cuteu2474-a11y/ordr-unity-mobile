@@ -77,6 +77,8 @@ M03/M04 현재 범위: `SourceModelOtherworldUnitGambling`과 `Original323Otherw
 | **F01 · 조사 후 구현** | 가이몬의 실제 획득 → 보물 탐색 → 결과 지급 연결 | `Original323GaimonDreamState.cs`, `Original323GaimonRevealPort.cs`, 기존 수동 탐색 포트·원본 보물 상태 | 보유/꿈/나미 조건과 탐색 기회·상자 생성/소모를 대조. 수동 탐색 버튼에서 원본 분포로 지급하며 지도 좌표 지정은 재도입하지 않음. 숨은 조건이 확인되지 않으면 해당 기능만 보류 |
 | **F02 · 연결 범위 조사** | 항법·크립·개인미션의 실제 게임 사건 누락 확정 | `NavigationProgression.cs`, `Original323CreepPracticeWorld.cs`, `OriginalPersonalMissionSession.cs`, `PersonalMissionGameplay.cs`, 컨트롤러 | 항목별 ‘실제 사건 생산자 → 조건 → 비용/보상 → UI’ 연결표 작성. 인터페이스/카탈로그만 있는 경로와 실행되는 경로를 분리. 기존 미션을 다시 만들지 않고 확인된 누락만 독립 구현 과제로 전환 |
 
+F02의 크립 접근 수단은 [288항목 분류](크립-접근조건-분류.md)를 완료했습니다. 실제 사냥 허용 목록은 아닙니다. 다음은 `Original323CreepPracticeWorld.cs`와 원본 구역·경로·능력을 대조해 진입/착지·공격 대상·면역/피해 조건을 각각 확정하는 일입니다. 이 조건과 실제 사건 생산자 연결이 남아 있으므로 F02 전체는 미완료입니다.
+
 ## A. 아군 피격 — 1건
 
 | ID·상태 | 구체적인 작업 | 시작할 코드·자료 | 완료 기준 |
