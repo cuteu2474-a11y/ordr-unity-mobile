@@ -12,6 +12,7 @@ namespace Ordr.Mobile.Combat
         {
             public string Key;
             public string Rawcode;
+            public long OwnerInstanceId;
             public bool StoryLane;
             public double X;
             public double Y;
@@ -36,10 +37,14 @@ namespace Ordr.Mobile.Combat
         private static string SummonAttackKey(long id) => "practice-summon:" + id;
 
         private void RegisterSourceIndependentAttack(string key, string rawcode,
-            bool storyLane, double x, double y, double? expiresAt = null,
-            CharacterSkillProfile skillProfile = null)
+            bool storyLane, double x, double y, long ownerInstanceId,
+            double? expiresAt = null, CharacterSkillProfile skillProfile = null)
         {
+            if (ownerInstanceId <= 0 || !characters.ContainsKey(ownerInstanceId))
+                throw new InvalidOperationException("실제 소유 캐릭터가 없는 독립 공격자는 등록할 수 없습니다.");
             if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
+                string.IsNullOrWhiteSpace(key) ||
+                sourceIndependentAttackers.ContainsKey(key) || unitStatuses.ContainsKey(key) ||
                 double.IsNaN(x) || double.IsInfinity(x) ||
                 double.IsNaN(y) || double.IsInfinity(y) ||
                 (expiresAt.HasValue && expiresAt.Value <= scheduler.Time))
@@ -57,11 +62,27 @@ namespace Ordr.Mobile.Combat
             // a documented mana action cannot gain an invented active spell.
             double maximumMana = resources == null ? 0 : resources.MaximumMana;
             sourceIndependentAttackers.Add(key, new SourceIndependentAttacker {
-                Key = key, Rawcode = rawcode, StoryLane = storyLane,
+                Key = key, Rawcode = rawcode,
+                OwnerInstanceId = ownerInstanceId, StoryLane = storyLane,
                 X = x, Y = y, ExpiresAt = expiresAt, SkillProfile = skillProfile,
                 MaximumMana = maximumMana, Mana = maximumMana,
                 SourceManaRegenPerSecond = resources == null ? 0 : resources.ManaRegeneration
             });
+        }
+
+        // A source-model summon/satellite/song is not a roster character,
+        // but its real hit still contributes to the live creator's story MVP.
+        // Never attribute a detached actor, unknown key or removed owner.
+        internal bool TryGetSourceIndependentAttackOwner(string attackerKey,
+            out long ownerId)
+        {
+            ownerId = 0;
+            SourceIndependentAttacker actor;
+            if (!UsesSourceModelBasicAttacks || string.IsNullOrWhiteSpace(attackerKey) ||
+                !sourceIndependentAttackers.TryGetValue(attackerKey, out actor) ||
+                !characters.ContainsKey(actor.OwnerInstanceId)) return false;
+            ownerId = actor.OwnerInstanceId;
+            return true;
         }
 
         public double? PracticeSatelliteManaOf(long id)

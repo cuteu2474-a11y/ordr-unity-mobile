@@ -132,8 +132,15 @@ namespace Ordr.Mobile.Combat
                 world.FindEncounter(targetId) == null) return;
             long actorId;
             if (!long.TryParse(actor, NumberStyles.None,
-                CultureInfo.InvariantCulture, out actorId)) return;
-            if (!combat.IsOwnedCombatCharacter(actorId)) return;
+                    CultureInfo.InvariantCulture, out actorId) ||
+                !combat.IsOwnedCombatCharacter(actorId))
+            {
+                // Uta's song soldiers, Vegapunk's satellites and timed
+                // summons use non-roster keys. Only real registered hits by
+                // a still-owned creator count toward the source-model MVP.
+                if (!combat.TryGetSourceIndependentAttackOwner(actor,
+                        out actorId)) return;
+            }
             long already;
             ownedDamage.TryGetValue(targetId, out already);
             ownedDamage[targetId] = checked(already + amount);
@@ -184,11 +191,16 @@ namespace Ordr.Mobile.Combat
             string receipt = "practice:story-stage:" + stage;
             // Commit one wallet receipt before recording the stage. Wallet
             // observers may throw AFTER a committed payment: never pay twice.
+            bool wasCommitted = economy.Wallet.HasCompletedTransaction(receipt);
             bool newGrant = false;
             try { newGrant = economy.Wallet.TryGrantOnce(receipt, rewards); }
             catch
             {
+                // Granted subscribers run AFTER the wallet commits. A
+                // throwing observer must not erase the HUD award accounting
+                // or create another payment when the same corpse is replayed.
                 if (!economy.Wallet.HasCompletedTransaction(receipt)) throw;
+                newGrant = !wasCommitted;
             }
             if (newGrant)
             {

@@ -1,3 +1,10 @@
+## 2026-11-05 · 58차 스토리 소유 공격·보상 장부
+
+- Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs: 모든 등록된 독립 공격자의 OwnerInstanceId를 저장, 실제 생존 소유자에 한해 원래 캐릭터 ID를 조회. 공격 스펙/추가 피해·사거리/확률 변경 없음.
+- Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs, .SourceModelTemporarySkills.cs, .SourceModelNativeCharacters.cs: 우타 병사·임시 소환수·베가펑크 위성 생성 지점에서 기존 소유자 ID 전달.
+- Assets/Scripts/Combat/Original323SoloStoryScenario.cs: 실제 스토리 HP 피해 이벤트의 공격 출처가 독립 유닛이면 소유자를 확인해 기존 기여 보상 적용. 사후 지급 관찰자 예외에서도 확정 영수증을 확인하고 HUD 골드·목재 누적값 보존.
+- Assets/Tests/EditMode/Original323SoloStoryScenarioTests.cs: 독립 공격자 보상 귀속/소유자 제거/결제 확정 후 알림 예외 회귀 코드 추가. 실행 검사는 사용자 요청 전 보류.
+
 ## 2026-11-05 · 57차 게임 기능 경로
 
 - Assets/Scripts/Combat/SourceModelPracticeBattle.cs: 원본 모델 사각 순환 이동 거리를 진행률 0..1로 계산하고 몬스터 위치와 동시에 적용. 한 바퀴는 처치/누수 이벤트가 아님.

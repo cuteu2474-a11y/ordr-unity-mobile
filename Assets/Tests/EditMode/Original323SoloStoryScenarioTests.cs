@@ -214,6 +214,100 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void SourceModelIndependentStoryHitsCreditTheirLiveCreator()
+        {
+            // TEST ONLY: inject the shared autonomous attack primitive. The
+            // shipping game reaches it through Uta, summons or satellites.
+            var units = CharacterUnitCatalog.FromJson(Source("units.json"));
+            var skills = CharacterSkillCatalog.FromJson(Source("character-skill-profiles.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Source("original-2323C-map-base-stats.json"), units);
+            var dice = new FirstDie();
+            var rules = new SourceModelBasicCombatRules(map, dice);
+            var combat = new CharacterCombatRuntime(units, skills, rules, rules, dice);
+            combat.Start();
+            rules.Enable();
+            combat.ConfigureSourceModelBasicAttacks(rules);
+            long owner = combat.SpawnCharacter("C-01", 0, 0);
+            var register = typeof(CharacterCombatRuntime).GetMethod(
+                "RegisterSourceIndependentAttack",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic);
+            Assert.IsNotNull(register);
+            const string key = "practice:test-story-owner";
+            register.Invoke(combat, new object[] { key, "h04O", true,
+                Original323SoloStoryScenario.BuildingX,
+                Original323SoloStoryScenario.BuildingY,
+                owner, null, null });
+
+            var wallet = new EconomyWallet();
+            using (var buildings = new Original323StoryBuildingPracticeWorld(combat,
+                Original323StoryBuildingCatalog.FromJson(
+                    Source("original-2323C-monster-object-stats.json"))))
+            using (var story = new Original323SoloStoryScenario(combat, buildings,
+                new SharedEconomySession(wallet, combat.Roster)))
+            {
+                story.Start();
+                combat.BeginWave(1);
+                combat.Step(30);
+                Assert.AreEqual(1, story.HighestDestroyedStage,
+                    "The source-object autonomous attack must damage the story building.");
+                Assert.AreEqual(680, wallet.Balance("gold"),
+                    "The 500 MVP bonus follows actual owned autonomous damage.");
+                Assert.AreEqual(680, story.AwardedGold);
+                Assert.AreEqual(2, wallet.Balance(WispResourceIds.Random));
+                combat.RemoveCharacter(owner);
+                var ownerLookup = typeof(CharacterCombatRuntime).GetMethod(
+                    "TryGetSourceIndependentAttackOwner",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+                Assert.IsNotNull(ownerLookup);
+                var args = new object[] { key, 0L };
+                Assert.IsFalse((bool)ownerLookup.Invoke(combat, args),
+                    "A removed creator cannot claim subsequent independent hits.");
+            }
+        }
+
+        [Test]
+        public void PostCommitStoryWalletObserverRetainsVisibleAwardTotals()
+        {
+            var units = CharacterUnitCatalog.FromJson(Source("units.json"));
+            var skills = CharacterSkillCatalog.FromJson(Source("character-skill-profiles.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Source("original-2323C-map-base-stats.json"), units);
+            var dummy = new SourceModelBasicCombatRules(map, new FirstDie());
+            var combat = new CharacterCombatRuntime(
+                units, skills, new TestOnlyHugeDamage(), dummy, new FirstDie());
+            combat.ConfigureVerifiedUnitAttackProvider(new TestOnlyStoryAttacker());
+            combat.Start();
+            long owner = combat.SpawnCharacter("C-01", 0, 0);
+            var dispatch = new Original323StoryManualDispatch(combat,
+                new Original323SoloStoryMovement(combat, map));
+            combat.ConfigureStoryDeployment(dispatch);
+            Assert.AreEqual(ManualActionState.Succeeded, dispatch.Dispatch(owner).State);
+
+            var wallet = new EconomyWallet();
+            wallet.Granted += _ => throw new InvalidOperationException(
+                "TEST_ONLY: observer throws after wallet commit");
+            using (var buildings = new Original323StoryBuildingPracticeWorld(combat,
+                Original323StoryBuildingCatalog.FromJson(
+                    Source("original-2323C-monster-object-stats.json"))))
+            using (var story = new Original323SoloStoryScenario(combat, buildings,
+                new SharedEconomySession(wallet, combat.Roster)))
+            {
+                story.Start();
+                combat.BeginWave(1);
+                Assert.DoesNotThrow(() => combat.Step(1.1));
+                Assert.AreEqual(1, story.HighestDestroyedStage);
+                Assert.IsTrue(wallet.HasCompletedTransaction("practice:story-stage:1"));
+                Assert.AreEqual(680, wallet.Balance("gold"));
+                Assert.AreEqual(680, story.AwardedGold,
+                    "Post-commit callback failures must not hide granted gold.");
+                Assert.AreEqual(1, buildings.DestroyedCount);
+            }
+        }
+
+        [Test]
         public void OriginalJassCwlBlocksEntryWithBossButNeverBlocksRecall()
         {
             OriginalMapBaseStatCatalog map;

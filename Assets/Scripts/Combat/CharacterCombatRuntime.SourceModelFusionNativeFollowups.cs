@@ -491,7 +491,8 @@ namespace Ordr.Mobile.Combat
             string key = "practice-uta-song:" + sequence;
             var position = roster.Get(actor.Id);
             RegisterSourceIndependentAttack(key, "h04O", IsStoryDeployed(actor.Id),
-                spawnX ?? position.X, spawnY ?? position.Y, Time + lifetime);
+                spawnX ?? position.X, spawnY ?? position.Y,
+                actor.Id, Time + lifetime);
             List<string> keys;
             if (!sourceModelUtaSongSoldierKeys.TryGetValue(actor.Id, out keys))
             {

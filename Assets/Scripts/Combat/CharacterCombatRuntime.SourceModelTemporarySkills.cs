@@ -46,8 +46,8 @@ namespace Ordr.Mobile.Combat
                 unresolvedLootAbility, spawnX, spawnY);
             if (autonomous && sourceRawcode != null)
                 RegisterSourceIndependentAttack(SummonAttackKey(summon.Id),
-                    sourceRawcode, summon.StoryLane, spawnX, spawnY, summon.ExpiresAt,
-                    owner.Profile);
+                    sourceRawcode, summon.StoryLane, spawnX, spawnY,
+                    owner.Id, summon.ExpiresAt, owner.Profile);
             sourceTemporarySummons.Add(summon);
             return summon;
         }

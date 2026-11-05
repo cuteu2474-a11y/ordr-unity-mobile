@@ -124,8 +124,8 @@ namespace Ordr.Mobile.Combat
                 ++sourceNextSatelliteId, creatorId, rawcode, scheduler.Time);
             sourceSatellites.Add(state);
             RegisterSourceIndependentAttack(SatelliteAttackKey(state.Id), rawcode,
-                IsStoryDeployed(creatorId), position.X, position.Y, null,
-                actor.Profile);
+                IsStoryDeployed(creatorId), position.X, position.Y,
+                creatorId, null, actor.Profile);
             pendingCommandEvents.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated, InstanceKey(creatorId),
                 InstanceKey(creatorId), "베가펑크 · " + state.Name,
