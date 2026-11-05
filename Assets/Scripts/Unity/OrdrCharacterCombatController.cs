@@ -998,6 +998,22 @@ namespace Ordr.Mobile.Unity
             if (presenter != null) presenter.ShowAllOwnedUnits();
             RecordSessionIssue("원본 기반 독립 전투 시작", lastRound + "R · 외부 원작 실행 불필요 · 몬스터 HP/피해 최종 원작 대조 전");
         }
+        public bool TryPlanOriginalStoryGreenBlood(long instanceId,
+            out Original323GreenBloodPlan plan, out string unitName)
+        {
+            plan = null;
+            unitName = null;
+            return commonSourceFusion != null &&
+                commonSourceFusion.TryPlanGreenBlood(instanceId, out plan, out unitName);
+        }
+
+        public ManualActionResult RequestOriginalStoryGreenBlood(long instanceId)
+        {
+            return commonSourceFusion == null
+                ? ManualActionResult.Unavailable("원본 그린블러드 거래")
+                : commonSourceFusion.UseGreenBloodOnOwnedUnit(instanceId);
+        }
+
         public int ExecutableCommonFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableCommonRecipeCount;
         public int ExecutableSpecialFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableSpecialRecipeCount;
         public int ExecutableRareFusionCount => commonSourceFusion == null ? 0 : commonSourceFusion.ExecutableRareRecipeCount;

@@ -130,6 +130,33 @@ namespace Ordr.Mobile.Tests
             Assert.IsNull(plan.ReplacementRawcode);
         }
 
+        [TestCase("h032", "SPH1")]
+        [TestCase("h043", "SPH2")]
+        [TestCase("h03G", "SPH3")]
+        [TestCase("h030", "SPH4")]
+        public void GreenBloodDirectCastMapsExactSourceActorToNativeRecipe(
+            string originalRawcode, string recipe)
+        {
+            Assert.AreEqual(recipe,
+                Original323StoryGreenBloodRules.SeraphimRecipe(originalRawcode));
+            Assert.IsNull(Original323StoryGreenBloodRules.SeraphimRecipe("h0AA"));
+        }
+
+        [Test]
+        public void GreenBloodNativeBurstUsesEachEnemyMaximumHealth()
+        {
+            Assert.AreEqual(825,
+                Original323StoryGreenBloodRules.EnhancementBurstRadius);
+            Assert.AreEqual(400000,
+                Original323StoryGreenBloodRules.EnhancementBurstDamage(0));
+            Assert.AreEqual(408000,
+                Original323StoryGreenBloodRules.EnhancementBurstDamage(2000000));
+            Assert.AreEqual(30,
+                Original323StoryGreenBloodRules.EnhancementAttackSpeedPercent);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                Original323StoryGreenBloodRules.EnhancementBurstDamage(-1));
+        }
+
         [Test]
         public void ModelRegenerationNeverResurrectsOrExceedsMaxHitPoints()
         {

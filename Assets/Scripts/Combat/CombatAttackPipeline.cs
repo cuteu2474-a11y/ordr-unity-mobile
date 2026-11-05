@@ -267,9 +267,35 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException("현재 공격 속도 버프 데이터 없음");
             foreach (var effect in active)
                 if (effect.Type == CombatEffectType.AttackSpeedBuff)
-                    return true;
+                {
+                    double sourceFactor;
+                    return !TryStandaloneGreenBloodCadence(active, out sourceFactor);
+                }
             return false;
         }
+        // The native A13C/AIas object declares exactly +30% attack speed.
+        // Mobile interval scaling is intentionally isolated to this one
+        // permanent Green Blood source; mixed-buff Warcraft stacking/phase
+        // remains deferred to an independently verified cadence provider.
+        private static bool TryStandaloneGreenBloodCadence(
+            IReadOnlyList<CombatEffect> effects, out double factor)
+        {
+            factor = 1;
+            bool found = false;
+            foreach (var effect in effects)
+            {
+                if (effect.Type != CombatEffectType.AttackSpeedBuff) continue;
+                if (found || effect.SourceId == null ||
+                    !effect.SourceId.StartsWith("story-native:CKe:A134+A13C:",
+                        StringComparison.Ordinal) ||
+                    effect.Amount != Original323StoryGreenBloodRules.EnhancementAttackSpeedPercent)
+                    return false;
+                found = true;
+                factor = 1 + effect.Amount / 100.0;
+            }
+            return found;
+        }
+
         private readonly Dictionary<string, RegisteredUnit> units =
             new Dictionary<string, RegisteredUnit>(StringComparer.Ordinal);
 
@@ -480,20 +506,30 @@ namespace Ordr.Mobile.Combat
                 }
                 else
                 {
-                string timingEvidence;
-                double verifiedNext;
-                if (verifiedNativeCadence == null ||
-                    !verifiedNativeCadence.TryResolveNextInterval(
-                        attackerInstanceId, effective, attackerEffects,
-                        scheduler.Time, out verifiedNext, out timingEvidence) ||
-                    string.IsNullOrWhiteSpace(timingEvidence))
-                    return false;
-                if (double.IsNaN(verifiedNext) ||
-                    double.IsInfinity(verifiedNext) || verifiedNext <= 0 ||
-                    double.IsInfinity(scheduler.Time + verifiedNext))
-                    throw new InvalidOperationException(
-                        "검증된 워크래프트 공격 간격이 유효하지 않습니다.");
-                nextAttackInterval = verifiedNext;
+                    double nativeFactor;
+                    if (verifiedNativeCadence == null &&
+                        TryStandaloneGreenBloodCadence(attackerEffects, out nativeFactor))
+                    {
+                        // Only the isolated A13C 30% native stat is modeled.
+                        nextAttackInterval = effective.IntervalSeconds / nativeFactor;
+                    }
+                    else
+                    {
+                        string timingEvidence;
+                        double verifiedNext;
+                        if (verifiedNativeCadence == null ||
+                            !verifiedNativeCadence.TryResolveNextInterval(
+                                attackerInstanceId, effective, attackerEffects,
+                                scheduler.Time, out verifiedNext, out timingEvidence) ||
+                            string.IsNullOrWhiteSpace(timingEvidence))
+                            return false;
+                        if (double.IsNaN(verifiedNext) ||
+                            double.IsInfinity(verifiedNext) || verifiedNext <= 0 ||
+                            double.IsInfinity(scheduler.Time + verifiedNext))
+                            throw new InvalidOperationException(
+                                "검증된 워크래프트 공격 간격이 유효하지 않습니다.");
+                        nextAttackInterval = verifiedNext;
+                    }
                 }
             }
 

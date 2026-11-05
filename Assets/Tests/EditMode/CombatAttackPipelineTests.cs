@@ -75,6 +75,39 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void NativeGreenBloodA13CAloneAcceleratesAnOtherwiseNormalAttack()
+        {
+            var c = Setup();
+            c.Resolution.Spawn(new CombatEnemy("enemy", 1000));
+            c.Pipeline.ConfigureAttackerEffectLookup(_ =>
+                new[] { new CombatEffect("story-native:CKe:A134+A13C:1",
+                    CombatEffectType.AttackSpeedBuff, CombatEffectOrigin.Aura,
+                    30, 0) });
+            c.Pipeline.RegisterUnit("unit-1", Unit(), 0);
+            Assert.IsFalse(c.Pipeline.HasUnresolvedNativeAttackSpeed("unit-1"));
+            BasicAttackResult hit;
+            Assert.IsTrue(c.Pipeline.TryBasicAttack("unit-1",
+                new[] { Target("enemy", 1) }, out hit));
+            Assert.AreEqual(Unit().BasicAttack.IntervalSeconds / 1.3,
+                c.Pipeline.NextAttackAt("unit-1").Value, 1e-6);
+        }
+
+        [Test]
+        public void GreenBloodSpeedPlusUnknownOtherBuffStillRequiresNativeStackingRules()
+        {
+            var c = Setup();
+            c.Pipeline.ConfigureAttackerEffectLookup(_ => new[] {
+                new CombatEffect("story-native:CKe:A134+A13C:1",
+                    CombatEffectType.AttackSpeedBuff, CombatEffectOrigin.Aura, 30, 0),
+                new CombatEffect("unverified-speed",
+                    CombatEffectType.AttackSpeedBuff,
+                    CombatEffectOrigin.TriggeredSkill, 20, 2)
+            });
+            c.Pipeline.RegisterUnit("unit-1", Unit(), 0);
+            Assert.IsTrue(c.Pipeline.HasUnresolvedNativeAttackSpeed("unit-1"));
+        }
+
+        [Test]
         public void AttackDeclaredCallbackExecutesBeforeBasicHitFormula()
         {
             var c = Setup();

@@ -28,6 +28,33 @@ namespace Ordr.Mobile.Combat
 
     public static class Original323StoryGreenBloodRules
     {
+        // war3map.j CKb/CKc/CKd; A13C in native AbilityData.slk.
+        public const double EnhancementBurstRadius = 825;
+        public const double EnhancementBurstFlatDamage = 400000;
+        public const double EnhancementBurstEnemyMaxHealthRatio = 0.004;
+        public const double EnhancementAttackSpeedPercent = 30;
+
+        public static double EnhancementBurstDamage(double enemyMaximumHealth)
+        {
+            if (double.IsNaN(enemyMaximumHealth) ||
+                double.IsInfinity(enemyMaximumHealth) || enemyMaximumHealth < 0)
+                throw new ArgumentOutOfRangeException(nameof(enemyMaximumHealth));
+            return EnhancementBurstFlatDamage +
+                enemyMaximumHealth * EnhancementBurstEnemyMaxHealthRatio;
+        }
+
+        public static string SeraphimRecipe(string originalUnitRawcode)
+        {
+            switch (originalUnitRawcode)
+            {
+                case "h032": return "SPH1";
+                case "h043": return "SPH2";
+                case "h03G": return "SPH3";
+                case "h030": return "SPH4";
+                default: return null;
+            }
+        }
+
         // Four EXACT special Seraphim replacements in CKe. Unknown targets
         // never receive a guessed Seraphim unit ID.
         private static readonly Dictionary<string, string> replacements =

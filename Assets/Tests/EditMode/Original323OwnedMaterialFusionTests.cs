@@ -655,6 +655,53 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void GreenBloodDirectTargetPreservesOtherIdenticalActors()
+        {
+            var game = Create();
+            string unitId;
+            Assert.IsTrue(game.Fusion.TryResolveUnit("h032", out unitId));
+            long first = game.Combat.SpawnCharacter(unitId, 12, 24);
+            long tapped = game.Combat.SpawnCharacter(unitId, 56, 78);
+            game.Economy.Wallet.Grant(new ResourceBundle().Add(
+                Original323StoryMobileProgression.GreenBloodUseResourceId, 1));
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.UseGreenBloodOnOwnedUnit(tapped).State);
+            var roster = game.Combat.MobileUnitSnapshot();
+            Assert.AreEqual(2, roster.Count);
+            Assert.IsTrue(roster.Any(x => x.InstanceId == first && x.Unit.Id == unitId));
+            Assert.IsFalse(roster.Any(x => x.InstanceId == tapped));
+            var result = roster.Single(x => x.Unit.Id == "SR-01");
+            Assert.AreEqual(56, result.Position.X);
+            Assert.AreEqual(78, result.Position.Y);
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                Original323StoryMobileProgression.GreenBloodUseResourceId));
+        }
+
+        [Test]
+        public void GreenBloodEnhancementKeepsTargetAndDebitsOnlyOnce()
+        {
+            var game = Create();
+            var eligible = game.Map.All.First(x =>
+                Original323StoryGreenBloodRules.SeraphimRecipe(x.OriginalRawcode) == null &&
+                (x.OriginalAbilityRawcodes.Contains("A912") ||
+                 x.OriginalAbilityRawcodes.Contains("A07N")));
+            long target = game.Combat.SpawnCharacter(eligible.UnitId, 42, 54);
+            game.Economy.Wallet.Grant(new ResourceBundle().Add(
+                Original323StoryMobileProgression.GreenBloodUseResourceId, 1));
+            Assert.AreEqual(ManualActionState.Succeeded,
+                game.Fusion.UseGreenBloodOnOwnedUnit(target).State);
+            Assert.IsTrue(game.Combat.HasOriginal323GreenBloodEnhancement(target));
+            Assert.IsTrue(game.Combat.MobileUnitSnapshot().Any(x => x.InstanceId == target));
+            Assert.IsTrue(game.Combat.UnitStatusOf(target).Snapshot().Any(x =>
+                x.Type == CombatEffectType.AttackSpeedBuff &&
+                x.Origin == CombatEffectOrigin.Aura && x.Amount == 30));
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                Original323StoryMobileProgression.GreenBloodUseResourceId));
+            Assert.AreEqual(ManualActionState.Rejected,
+                game.Fusion.UseGreenBloodOnOwnedUnit(target).State);
+        }
+
+        [Test]
         public void Batch42AllFiveChangesAndSixDistortedOutcomesUseExactSourceCounterTags()
         {
             var game = Create();

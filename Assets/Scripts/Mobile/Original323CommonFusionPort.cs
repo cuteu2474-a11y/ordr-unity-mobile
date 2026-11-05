@@ -1027,6 +1027,82 @@ namespace Ordr.Mobile.Mobile
             return result.AsReadOnly();
         }
 
+        // CKe A13A is a single-target spell; no unit choice is delegated to
+        // the planner when the player explicitly taps an owned actor.
+        public bool TryPlanGreenBlood(long instanceId,
+            out Original323GreenBloodPlan plan, out string unitName)
+        {
+            plan = null;
+            unitName = null;
+            foreach (var row in combat.MobileUnitSnapshot())
+            {
+                if (row.InstanceId != instanceId) continue;
+                var source = objects.Find(row.Unit.Id);
+                if (source == null) return false;
+                bool hasLegendary = false, hasHidden = false;
+                foreach (string ability in source.OriginalAbilityRawcodes)
+                {
+                    if (ability == "A912") hasLegendary = true;
+                    if (ability == "A07N") hasHidden = true;
+                }
+                unitName = row.Unit.Name;
+                return Original323StoryGreenBloodRules.TryPlan(source.OriginalRawcode,
+                    true, hasLegendary, hasHidden, out plan);
+            }
+            return false;
+        }
+
+        public ManualActionResult UseGreenBloodOnOwnedUnit(long instanceId)
+        {
+            if (busy || !economy.HasStarted || combat.Game.Phase != SessionPhase.Running)
+                return Reject("현재 그린블러드를 사용할 수 없습니다.");
+            if (economy.Wallet.Balance(
+                Original323StoryMobileProgression.GreenBloodUseResourceId) < 1)
+                return Reject("그린블러드 사용권이 없습니다.");
+            Original323GreenBloodPlan plan;
+            string unitName;
+            if (!TryPlanGreenBlood(instanceId, out plan, out unitName))
+                return Reject("자신의 전설·히든 유닛만 선택할 수 있습니다.");
+            if (plan.Kind == Original323GreenBloodActionKind.Transform)
+            {
+                string recipe = Original323StoryGreenBloodRules.SeraphimRecipe(
+                    plan.OriginalTargetRawcode);
+                if (recipe == null) return Reject("원본 세라핌 변환 대상이 아닙니다.");
+                return ConfirmFusion(recipe, new[] { instanceId });
+            }
+            if (combat.HasOriginal323GreenBloodEnhancement(instanceId))
+                return Reject("이미 그린블러드 강화를 받은 유닛입니다.");
+            busy = true;
+            try
+            {
+                var snapshot = economy.Wallet.CaptureState();
+                try
+                {
+                    var cost = new ResourceBundle().Add(
+                        Original323StoryMobileProgression.GreenBloodUseResourceId, 1);
+                    if (!economy.Wallet.TryExchange(cost, new ResourceBundle()))
+                        return Reject("그린블러드 사용권 차감에 실패했습니다.");
+                    if (!combat.ApplyOriginal323GreenBloodEnhancement(instanceId))
+                    {
+                        economy.Wallet.RestoreState(snapshot);
+                        return Reject("대상 유닛의 강화 상태가 변경됐습니다.");
+                    }
+                }
+                catch
+                {
+                    economy.Wallet.RestoreState(snapshot);
+                    throw;
+                }
+                return new ManualActionResult(ManualActionState.Succeeded,
+                    unitName + " · A134/A13C 부여 · 공격속도 +30% · 주위 825 범위 피해");
+            }
+            catch (Exception error)
+            {
+                return Reject("그린블러드 강화를 취소했습니다: " + error.Message);
+            }
+            finally { busy = false; }
+        }
+
         public ManualActionResult ConfirmFusion(string ability, IReadOnlyList<long> selected)
         {
             if (!CanCommitRecipe(ability)) return fallback.ConfirmFusion(ability, selected);
@@ -1046,17 +1122,47 @@ namespace Ordr.Mobile.Mobile
                 if (!ready.IsReadyForUserConfirmation || selected == null ||
                     selected.Count != ready.SuggestedMaterialIds.Count)
                     return Reject("재료가 변경됐습니다. 조합 목록을 새로고침해 주세요.");
-                var exact = new HashSet<long>(selected);
-                if (exact.Count != selected.Count) return Reject("같은 재료를 중복 사용할 수 없습니다.");
-                foreach (long id in ready.SuggestedMaterialIds)
-                    if (!exact.Remove(id)) return Reject("확인한 재료와 현재 재료가 다릅니다.");
+                IReadOnlyList<long> actualMaterials = ready.SuggestedMaterialIds;
+                if (resultGrades[ability] == "세라핌")
+                {
+                    // CKe selects the tapped actor, not the first copy of its
+                    // rawcode. Both actors must have the SAME source identity.
+                    if (selected.Count != 1 || ready.SuggestedMaterialIds.Count != 1)
+                        return Reject("원본 그린블러드는 유닛 한 기만 선택합니다.");
+                    MobileUnitSnapshot selectedActor = null, suggestedActor = null;
+                    foreach (var actor in owned)
+                    {
+                        if (actor.InstanceId == selected[0]) selectedActor = actor;
+                        if (actor.InstanceId == ready.SuggestedMaterialIds[0])
+                            suggestedActor = actor;
+                    }
+                    var selectedSource = selectedActor == null ? null :
+                        objects.Find(selectedActor.Unit.Id);
+                    var suggestedSource = suggestedActor == null ? null :
+                        objects.Find(suggestedActor.Unit.Id);
+                    if (selectedSource == null || suggestedSource == null ||
+                        selectedSource.OriginalRawcode != suggestedSource.OriginalRawcode ||
+                        Original323StoryGreenBloodRules.SeraphimRecipe(
+                            selectedSource.OriginalRawcode) != ability)
+                        return Reject("선택한 유닛이 원본 세라핌 변환 대상과 다릅니다.");
+                    actualMaterials = selected;
+                }
+                else
+                {
+                    var exact = new HashSet<long>(selected);
+                    if (exact.Count != selected.Count)
+                        return Reject("같은 재료를 중복 사용할 수 없습니다.");
+                    foreach (long id in ready.SuggestedMaterialIds)
+                        if (!exact.Remove(id))
+                            return Reject("확인한 재료와 현재 재료가 다릅니다.");
+                }
                 double resultX = HiddenResultX, resultY = HiddenResultY;
                 if (resultGrades[ability] == "세라핌" || resultGrades[ability] == "변화" || ability == "A011")
                 {
                     // Green Blood and Change replace the exact target actor; the
                     // ITEM Marco mobile outcome uses its first material's
                     // existing position (native cast policy remains unverified).
-                    var greenBloodTarget = new HashSet<long>(ready.SuggestedMaterialIds);
+                    var greenBloodTarget = new HashSet<long>(actualMaterials);
                     foreach (var row in owned)
                         if (greenBloodTarget.Contains(row.InstanceId))
                         {
@@ -1101,7 +1207,7 @@ namespace Ordr.Mobile.Mobile
                 if (nativeReward != null)
                     foreach (var entry in nativeReward.Entries)
                         combinedReward.Add(entry.Key, entry.Value);
-                using (var swap = combat.BeginOriginalFusionUnitSwap(ready.SuggestedMaterialIds,
+                using (var swap = combat.BeginOriginalFusionUnitSwap(actualMaterials,
                     ready.ResultUnitId, resultX, resultY))
                 {
                     created = swap.ResultInstanceId;

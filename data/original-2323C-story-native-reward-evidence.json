@@ -120,7 +120,36 @@
       "castHandlerJassLines": [
         50636,
         50698
-      ]
+      ],
+      "nativeTargetReplacements": {
+        "h032": "h09Y",
+        "h043": "h0A3",
+        "h030": "h0A1",
+        "h03G": "h0A0"
+      },
+      "sharkAfterTransform": "CEN",
+      "otherAllowedTargetAbilities": [
+        "A912",
+        "A07N"
+      ],
+      "otherGrantedAbilities": [
+        "A134",
+        "A13C"
+      ],
+      "otherGrantedAttackSpeedPercent": 30,
+      "burst": {
+        "callback": "CKd/CKc",
+        "delaySeconds": 0.03,
+        "radius": 825,
+        "flatDamage": 400000,
+        "damagePerEnemyMaxHealth": 0.004,
+        "attackType": "CHAOS",
+        "damageType": "UNIVERSAL",
+        "nativeJassLines": [
+          50600,
+          50636
+        ]
+      }
     }
   ],
   "notes": [
@@ -128,6 +157,7 @@
     "GreenBlood A13A is a single-use ability on RV player building, not an automatically free unit.",
     "Hero experience applies to Hp[VT[player]] only; the complete set of eligible hero instances must be sourced.",
     "Trait points have a separate conditional bonus for kW[JG]==ka; model queues unconditional base only.",
-    "Stage payout base money/wisps remain in distinct shared-wallet model."
+    "Stage payout base money/wisps remain in distinct shared-wallet model.",
+    "GreenBlood other-unit A134/Aimp native on-attack effect remains unverified; A13C/AIas DataA1=.3 is source-verified."
   ]
 }

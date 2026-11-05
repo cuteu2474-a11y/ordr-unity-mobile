@@ -60,6 +60,9 @@ namespace Ordr.Mobile.Unity
         private readonly HashSet<string> expandedResearchCodes =
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<int> expandedMissionSlots = new HashSet<int>();
+        private bool showStoryGreenBloodTargets;
+        private int storyGreenBloodPage;
+        private const int StoryGreenBloodPageSize = 6;
         private bool showStoryDispatch;
         private bool showStoryStageHistory;
         private bool showStoryNativeRewards;
@@ -1936,6 +1939,18 @@ namespace Ordr.Mobile.Unity
                     () => controller.RequestOriginalTranscendRayleighShipChoice());
         }
 
+        private static string GreenBloodSeraphimName(string rawcode)
+        {
+            switch (rawcode)
+            {
+                case "h09Y": return "S-베어";
+                case "h0A3": return "S-호크";
+                case "h0A0": return "S-샤크";
+                case "h0A1": return "S-스네이크";
+                default: return "세라핌";
+            }
+        }
+
         private void DrawStory()
         {
             var scenario = controller.SoloStory;
@@ -2029,22 +2044,75 @@ namespace Ordr.Mobile.Unity
                     OrdrMobileUiTheme.Gold);
                 DrawOriginalTranscendWispChoiceButtons();
             }
-            if (controller.SharedEconomy != null &&
+            if (controller.SharedEconomy != null && controller.Combat != null &&
                 controller.SharedEconomy.Wallet.Balance(
                     Original323StoryMobileProgression.GreenBloodUseResourceId) > 0)
             {
+                long remaining = controller.SharedEconomy.Wallet.Balance(
+                    Original323StoryMobileProgression.GreenBloodUseResourceId);
                 OrdrMobileUiTheme.DrawStatusRow("14단계 그린블러드",
-                    "사용권 " + controller.SharedEconomy.Wallet.Balance(
-                        Original323StoryMobileProgression.GreenBloodUseResourceId) +
-                    "회 · 보유 대상의 세라핌 변환은 조합 메뉴에서",
+                    "사용권 " + remaining + "회 · 자신의 대상 유닛을 눌러 즉시 적용",
                     OrdrMobileUiTheme.Gold);
-                if (GUILayout.Button("세라핌 변환 조합으로 이동",
-                    GUILayout.MinHeight(58)))
+                if (OrdrMobileUiTheme.DrawAccordionHeader(
+                    "그린블러드 대상 선택", "세라핌 변환 또는 전설·히든 강화",
+                    showStoryGreenBloodTargets, OrdrMobileUiTheme.Gold))
                 {
-                    currentTab = Tab.Fusion;
-                    fusionListCategory = FusionListCategory.All;
-                    fusionPage = 0;
-                    scroll = Vector2.zero;
+                    showStoryGreenBloodTargets = !showStoryGreenBloodTargets;
+                    storyGreenBloodPage = 0;
+                }
+                if (showStoryGreenBloodTargets)
+                {
+                    var eligible = new List<MobileUnitSnapshot>();
+                    foreach (var unit in controller.Combat.MobileUnitSnapshot())
+                    {
+                        Original323GreenBloodPlan plan;
+                        string unitName;
+                        if (controller.TryPlanOriginalStoryGreenBlood(
+                            unit.InstanceId, out plan, out unitName) &&
+                            (plan.Kind == Original323GreenBloodActionKind.Transform ||
+                             !controller.Combat.HasOriginal323GreenBloodEnhancement(
+                                 unit.InstanceId)))
+                            eligible.Add(unit);
+                    }
+                    if (eligible.Count == 0)
+                        GUILayout.Label("현재 사용 가능한 전설·히든 유닛이 없습니다.",
+                            OrdrMobileUiTheme.Explanation);
+                    else
+                    {
+                        int pages = (eligible.Count + StoryGreenBloodPageSize - 1) /
+                            StoryGreenBloodPageSize;
+                        storyGreenBloodPage = Math.Max(0,
+                            Math.Min(storyGreenBloodPage, pages - 1));
+                        int begin = storyGreenBloodPage * StoryGreenBloodPageSize;
+                        for (int index = begin;
+                             index < Math.Min(begin + StoryGreenBloodPageSize, eligible.Count);
+                             index++)
+                        {
+                            var unit = eligible[index];
+                            Original323GreenBloodPlan plan;
+                            string unitName;
+                            if (!controller.TryPlanOriginalStoryGreenBlood(
+                                    unit.InstanceId, out plan, out unitName)) continue;
+                            string action = plan.Kind == Original323GreenBloodActionKind.Transform
+                                ? " → " + GreenBloodSeraphimName(plan.ReplacementRawcode)
+                                : " · 공속 +30% 및 주위 피해";
+                            if (GUILayout.Button(unitName + " #" + unit.InstanceId + action,
+                                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
+                                ShowResult(controller.RequestOriginalStoryGreenBlood(
+                                    unit.InstanceId));
+                        }
+                        if (pages > 1)
+                        {
+                            GUILayout.BeginHorizontal();
+                            if (GUILayout.Button("이전", GUILayout.MinHeight(52)) &&
+                                storyGreenBloodPage > 0) storyGreenBloodPage--;
+                            GUILayout.Label((storyGreenBloodPage + 1) + " / " + pages,
+                                OrdrMobileUiTheme.Explanation);
+                            if (GUILayout.Button("다음", GUILayout.MinHeight(52)) &&
+                                storyGreenBloodPage + 1 < pages) storyGreenBloodPage++;
+                            GUILayout.EndHorizontal();
+                        }
+                    }
                 }
             }
             int rewardStage = selectedStoryRewardStage >= 1 &&
