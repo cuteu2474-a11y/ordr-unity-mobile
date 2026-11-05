@@ -1,20 +1,21 @@
 # 현재 상태
 
-마지막 실행 검사 기준 게임 코드: [78c86ac1](https://github.com/cuteu2474-a11y/ordr-unity-mobile/commit/78c86ac1f66f279c04b093b868c1793c4e28601b) · 현재 영웅 성장 변경은 검사 전 · 확인: 2026-11-05.
+기준 게임 코드: [65c02135](https://github.com/cuteu2474-a11y/ordr-unity-mobile/commit/65c02135ca7d1a7eea23f73b6f58de565b8e0479) · 확인: 2026-11-05 · 시간: 한국 시간.
 
 ## 먼저 알아둘 점
 
-**현재 다운로드 가능한 APK와 main의 게임 코드가 다릅니다.** APK는 이전 코드로 제작됐으며, 최신 코드의 선행 검사에는 실패가 남아 있습니다. 기능이 코드에 연결된 것과 휴대폰에서 정상 동작한 것은 구분합니다.
+**현재 다운로드 가능한 APK와 main의 게임 코드가 다릅니다.** APK는 이전 코드로 제작됐습니다. 발견했던 선행 검사 3건은 이 문서와 함께 반영한 도구·검사 수정본에서 해결했고, 로컬 Python 검사를 통과했습니다. 기능이 코드에 연결된 것과 휴대폰에서 정상 동작한 것은 구분합니다.
 
 | 대상 | 확인된 상태 |
 |---|---|
 | 다운로드 가능한 APK | `0.1.364`, `53d3e240`, 11월 5일 10:01 생성 |
 | 해당 APK의 검사 | Unity EditMode 2,161/2,161 통과. 필수 데이터 패킹·CRC·해시·ARM64/ARMv7·v2 서명 검증 통과 |
-| 마지막 실행 검사 대상 | `78c86ac1`. 이후 영웅 성장 코드가 추가됐으며 실행 검증 전 |
-| 최신 검사 | 11월 5일 17:25 실행: Python 337건 중 실패 3건·건너뜀 1건. Unity·APK 단계 건너뜀 |
+| 최신 게임 코드 | `65c02135`. APK 이후 게임 코드 커밋 14개. 영웅 성장 변경을 포함한 코드의 Python 회귀만 로컬 확인 |
+| 이번 로컬 검사 | Windows·Python 3.12: 340건 중 337건 통과·3건 건너뜀, 실패/오류 없음. 현황 JSON·생성 유닛 표 일치 검사 통과 |
+| 이번 미확인 범위 | Linux 패키징 검사 2건, Unity EditMode·APK 제작·기기 플레이. 새 Actions 결과는 조회하지 않음 |
 | 휴대폰 검증 | 설치·터치 조작·발열/성능·65R 전체 플레이 미확인 |
 
-[APK 실행·다운로드](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41941260044) · [최신 실패 기록](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41994323743). ZIP은 11월 19일 10:01 만료 예정입니다. 다운로드 절차와 파일 구성은 [실행과 APK](unity-editmode-test.md)에 있습니다.
+[APK 실행·다운로드](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41941260044) · [수정 전 실패 기록](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41994323743). ZIP은 11월 19일 10:01 만료 예정입니다. 다운로드 절차와 파일 구성은 [실행과 APK](unity-editmode-test.md)에 있습니다.
 
 ## 현재 코드의 기능
 
@@ -44,17 +45,23 @@ CWR 분류와 미연결 사건은 [원본 경로 감사](../data/original-2323C-
 
 꾸러미는 `Original323SourceMaterialRewardWorld` 코드를, 최근 스토리 지급·XP 자격은 [원본 근거](../data/original-2323C-story-native-reward-evidence.json), 레벨별 성장과 특성 단계는 [영웅 성장 원본 근거](../data/original-2323C-hero-level-growth-evidence.json)를 함께 확인합니다.
 
-## 최신 검사에서 확인한 문제
+## 현황을 다시 확인하는 방법
 
-1. 카탈로그가 288항목으로 늘었지만 검사 기대값은 287입니다.
-2. `data/character-runtime-coverage.json`의 저장된 현황이 현재 생성 결과와 다릅니다.
-3. 위습 보상 검사가 예전 문자열 `PendingTranscendWisps < 1`을 요구합니다. 현재 거래 경로의 실제 잔액·자격 검사를 기준으로 검토해야 합니다.
+검사 요청이 있으면 저장소 루트에서 다음 명령을 사용합니다.
 
-이 3건은 선행 Python 검사 실패입니다. 최신 Unity 컴파일이나 게임 플레이 결함 여부는 그 실행에서 확인되지 않았습니다. 수정 방향과 완료 기준은 [개발 작업](PLAYABLE_ROADMAP.md)에 모았습니다.
+```sh
+python3 tools/build_character_runtime_coverage.py --verify
+python3 tools/render_unit_status_docs.py --verify
+python3 -m unittest discover -s tests -q
+```
+
+집계는 기본 카탈로그 277개 + 확장 11개 = 288항목입니다. 추가된 TW-01/h0BR은 비전투 보상 상자이며 평타·효과·원작 전투 승인을 추가하지 않았습니다. 중복 ID·누락 항목은 생성 단계에서 거부합니다. 위습 회귀는 현재 공통 거래의 보상 자격·잔액·1회 차감·실패 롤백 경로와 대조합니다.
+
+Windows 검사에서는 기존 원본 의존 검사 1건과 POSIX 권한·`/bin/bash`가 필요한 패키징 검사 2건을 건너뛰었습니다. 후자 2건은 Linux CI에서 계속 실행됩니다. 이번 작업은 게임 수치·전투 코드·획득 권한을 바꾸지 않았습니다. 다음 작업은 [개발 작업](PLAYABLE_ROADMAP.md)을 확인합니다.
 
 ## 숫자와 근거 읽기
 
-`캐릭터별-구현목록.md`와 `unit-runtime-status.json`은 저장된 실행 범위 스냅샷입니다. 확장 카탈로그·변신체까지 집계하는 `character-runtime-coverage.json`과 집계 범위가 다르며, 후자는 현재 재생성이 필요합니다. 도감 수·평타 모델 수·효과 정의 수를 완성 유닛 수로 합산하지 않습니다.
+`캐릭터별-구현목록.md`와 `unit-runtime-status.json`은 저장된 실행 범위 스냅샷입니다. 확장 카탈로그·변신체까지 집계하는 `character-runtime-coverage.json`과 집계 범위가 다릅니다. `--verify`는 현재 입력 JSON과의 일치만 확인하므로, C# 실행 지원이 바뀌면 실제 지원 내보내기를 먼저 갱신해야 합니다. 도감 수·평타 모델 수·효과 정의 수를 완성 유닛 수로 합산하지 않습니다.
 
 원작 전체 전투 검증을 완료한 유닛으로 승인하지 않은 상태입니다. `MODEL_ONLY`는 명시적인 개발용 모델을 뜻합니다. [검증 기준](PARITY.md) · [데이터 출처](../data/README.md).
 

@@ -65,7 +65,11 @@ flowchart TD
 
 - `Assets/Tests/EditMode/`: C# 전투·거래·화면 경계 검사.
 - `tests/`: JSON·원본 감사·연결 계약 회귀.
-- `tools/build_character_runtime_coverage.py`: 확장/변신 카탈로그 집계. 최신 저장 결과는 재생성이 필요합니다.
+- `tools/build_character_runtime_coverage.py`: 기본/확장/변신 카탈로그 집계. 중복·누락 ID를 거부하고 `--verify`는 파일을 수정하지 않고 현재 입력 JSON과 비교합니다. `--output`으로 별도 결과 파일을 지정할 수 있습니다.
 - `tools/build_unit_runtime_status.py`와 `tools/render_unit_status_docs.py`: 실제 C# 지원 내보내기 기반 현황·유닛 표 생성.
+
+카탈로그 변경은 실제 ID·원본 객체·비전투/폼 분류를 대조한 뒤 집계를 재생성합니다. C# 지원 변경은 먼저 실제 지원 내보내기를 갱신합니다. 집계 도구 자체가 현재 C# 실행을 검사하는 것은 아닙니다. `tests/test_character_runtime_coverage.py`는 보상 상자의 전투 미승인, 중복/누락 거부와 CLI의 읽기 전용·오래된 결과 거부를 확인합니다.
+
+`tools/classify_original_fusion_blockers.py`는 저장소 경로를 POSIX 표기로 내보내어 Windows/Linux 결과를 일치시킵니다. Linux 전용 패키징 회귀는 POSIX 환경에서만 실행하고, 다른 환경은 명시적으로 건너뜁니다.
 
 실행 허가와 명령은 [작업 규칙](../AGENTS.md)·[실행과 APK](unity-editmode-test.md)에 있습니다.

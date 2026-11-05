@@ -2,17 +2,17 @@
   "format": "ordr-character-runtime-coverage-v1",
   "gameVersion": "S2 2.323[C]",
   "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
-  "warning": "Catalog addressability, attack-only MODEL_ONLY and actual Warcraft parity are separate states; 287 is NOT a finished combat unit count.",
+  "warning": "Catalog addressability, attack-only MODEL_ONLY and actual Warcraft parity are separate states; catalog identities are NOT a finished combat unit count.",
   "summary": {
-    "catalogIdentities": 287,
+    "catalogIdentities": 288,
     "sourceCatalogIdentities": 277,
-    "wikiExtensionIdentities": 10,
-    "independentRosterIdentities": 282,
+    "wikiExtensionIdentities": 11,
+    "independentRosterIdentities": 283,
     "alternateCombatForms": 5,
     "sourceObjectBasicAttackModels": 274,
     "sourceTooltips": 200,
     "formInheritedTooltips": 5,
-    "identitiesWithoutOwnOrInheritedTooltip": 82,
+    "identitiesWithoutOwnOrInheritedTooltip": 83,
     "fullyOriginalCombatVerified": 0,
     "byGrade": {
       "랜덤": 14,
@@ -26,7 +26,7 @@
       "재료": 2,
       "전설": 41,
       "제한됨": 10,
-      "초월함": 36,
+      "초월함": 37,
       "특별함": 33,
       "특수함": 8,
       "흔함": 9,
@@ -5005,6 +5005,25 @@
       "independentRosterIdentity": true,
       "fullyOriginalCombatVerified": false,
       "remainingWork": [
+        "상세 스킬 프로필 미수집",
+        "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
+      ]
+    },
+    {
+      "id": "TW-01",
+      "name": "꾸러미 상자 - 초월",
+      "grade": "초월함",
+      "entryKind": "support-object",
+      "variantOfUnitId": null,
+      "sourceRawcode": "h0BR",
+      "sourceBasicAttackModel": false,
+      "connectedSourceModelEffectCount": 0,
+      "ownTooltipProfile": false,
+      "inheritedTooltipProfile": false,
+      "independentRosterIdentity": true,
+      "fullyOriginalCombatVerified": false,
+      "remainingWork": [
+        "원본 객체 기본 공격 모델 없음 또는 비전투 지원 객체",
         "상세 스킬 프로필 미수집",
         "고유 스킬·보상/변신·원작 최종 전투 동등성 미인증"
       ]

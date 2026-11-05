@@ -111,7 +111,7 @@ def build(data, port):
         'format': 'ordr-fusion-blockers-v1',
         'sourceW3xSha256': objects['sourceW3xSha256'],
         'sourceJassSha256': source['sourceSha256'],
-        'executionSource': str(port.relative_to(ROOT)),
+        'executionSource': port.relative_to(ROOT).as_posix(),
         'limits': [
             'Reason codes are independently accumulated and their counts overlap.',
             'Only C# explicitly reviewed recipes are executable; registry entries are not authorization.',

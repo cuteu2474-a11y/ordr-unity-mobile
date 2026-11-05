@@ -5,6 +5,7 @@ An original Warcraft object basic attack is NOT a complete character skill kit.
 Do not infer unknown stats or award free units from this report.
 """
 from collections import Counter
+import argparse
 from pathlib import Path
 import json
 
@@ -24,6 +25,8 @@ def build(base, extension, status, profiles, source_stats, fusion):
         raise ValueError("Original W3X source changed")
     original = {unit["id"]: unit for unit in base["entries"]}
     runtime = {row["catalogId"]: row for row in status["entries"]}
+    if len(original) != len(base["entries"]) or len(runtime) != len(status["entries"]):
+        raise ValueError("Duplicate base catalog or runtime identity")
     if len(original) != len(runtime) or set(original) != set(runtime):
         raise ValueError("Base catalog/source runtime mismatch")
     if len(original) != extension["baseCatalogEntries"]:
@@ -105,7 +108,7 @@ def build(base, extension, status, profiles, source_stats, fusion):
         "format": "ordr-character-runtime-coverage-v1",
         "gameVersion": base["gameVersion"],
         "sourceW3xSha256": SOURCE_SHA,
-        "warning": "Catalog addressability, attack-only MODEL_ONLY and actual Warcraft parity are separate states; 287 is NOT a finished combat unit count.",
+        "warning": "Catalog addressability, attack-only MODEL_ONLY and actual Warcraft parity are separate states; catalog identities are NOT a finished combat unit count.",
         "summary": {
             "catalogIdentities": len(rows),
             "sourceCatalogIdentities": len(original),
@@ -127,12 +130,31 @@ def build(base, extension, status, profiles, source_stats, fusion):
     return result
 
 
-if __name__ == "__main__":
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=DATA / "character-runtime-coverage.json")
+    parser.add_argument("--verify", action="store_true",
+                        help="Compare the committed snapshot without writing it")
+    args = parser.parse_args(argv)
     output = build(load("units.json"), load("wiki-unit-catalog-extension.json"),
                    load("unit-runtime-status.json"), load("character-skill-profiles.json"),
                    load("original-2323C-unit-object-stats.json"),
                    load("original-fusion-object-reconciliation.json"))
-    target = DATA / "character-runtime-coverage.json"
-    target.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n",
-                      encoding="utf-8")
+    if args.verify:
+        if not args.output.is_file():
+            parser.exit(1, "Coverage snapshot missing; run tools/build_character_runtime_coverage.py\n")
+        try:
+            committed = json.loads(args.output.read_text(encoding="utf-8"))
+        except (ValueError, UnicodeError):
+            parser.exit(1, "Invalid coverage snapshot; regenerate and review it\n")
+        if committed != output:
+            parser.exit(1, "Coverage snapshot is outdated; run tools/build_character_runtime_coverage.py and review the diff\n")
+        print("Coverage snapshot matches current inputs")
+    else:
+        args.output.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n",
+                               encoding="utf-8", newline="\n")
     print(json.dumps(output["summary"], ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

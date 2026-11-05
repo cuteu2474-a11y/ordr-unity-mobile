@@ -64,9 +64,26 @@ class OriginalSourceMaterialAcquisitionTests(unittest.TestCase):
         panel = (ROOT / "Assets/Scripts/Unity/OrdrMobileTouchPanel.cs").read_text()
         self.assertIn('"CQB", StoryWispRawcode, 1', source)
         self.assertIn('Original323BossRoundRules.TrustedRuntimeEvidence', source)
-        self.assertIn('PendingTranscendWisps < 1', source)
-        self.assertIn('TryExchangeOnce(receipt,', source)
-        self.assertIn('RollbackUncommittedSpawn', source)
+        # Both observed and practice rewards now use the same atomic chooser.
+        # Check that transaction boundary, not the old facade property name.
+        chooser = source.split('private bool TryCommitChoice(', 1)[1]
+        commit = chooser.split('private void Rollback(', 1)[0]
+        self.assertIn('return Ready() &&', source.split(
+            'public bool TryChooseKuma(out long resultId)', 1)[1].split(
+            'public bool TryChooseRewardBox', 1)[0])
+        for gate in ('!economy.HasStarted', 'combat.Game.Phase != SessionPhase.Running',
+                     'GameSession.ModeId != "nightmare-otherworld"',
+                     'earnedWispResource != Original323SourceMaterialRewardWorld.PendingStoryWispResource',
+                     'earnedWispResource != Original323SoloStoryScenario.PracticeTranscendWisp',
+                     'economy.Wallet.Balance(earnedWispResource) < 1'):
+            self.assertIn(gate, commit)
+        self.assertLess(commit.index('economy.Wallet.Balance(earnedWispResource) < 1'),
+                        commit.index('SpawnVerifiedOriginalPositionCharacter'))
+        self.assertIn('new ResourceBundle().Add(earnedWispResource, 1)', commit)
+        self.assertIn('TryExchangeOnce(receipt, costs, rewards)', commit)
+        self.assertIn('Rollback(spawned);', commit)
+        self.assertIn('HasCompletedTransaction(receipt)', commit)
+        self.assertIn('RollbackUncommittedSpawn(actorIds[i])', chooser)
         self.assertIn('controller.PendingAllStoryTranscendWisps > 0', panel)
         self.assertIn('RequestOriginalTranscendKumaChoice()', controller)
         self.assertEqual(["CSM", "CSN", "CSO"],

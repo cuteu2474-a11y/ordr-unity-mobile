@@ -123,6 +123,8 @@ class AndroidApkVerificationTests(unittest.TestCase):
                 inspect_apk(path)
 
 
+@unittest.skipUnless(os.name == 'posix' and Path('/bin/bash').is_file(),
+                     'Requires POSIX permissions and /bin/bash; runs on Linux CI')
 class AndroidApkWorkflowPackagingTests(unittest.TestCase):
     make_apk = AndroidApkVerificationTests.make_apk
     write_manifest = AndroidApkVerificationTests.write_manifest
