@@ -323,7 +323,12 @@ namespace Ordr.Mobile.Combat
                 }
             }
             else if (owner == "I-08")
+            {
+                BulkTryGabanManaStrike(actor, primary);
+                BulkRunAttackSkill(actor, primary, "I-08:skill:1");
                 BulkRunAttackSkill(actor, primary, "I-08:skill:2");
+                BulkRunAttackSkill(actor, primary, "I-08:skill:5");
+            }
             else if (owner == "MY-01")
             {
                 BulkRunAttackSkill(actor, primary, "MY-01:skill:1");
@@ -336,10 +341,13 @@ namespace Ordr.Mobile.Combat
                     pool.SetHealth(Math.Min(pool.MaximumHealth, pool.Health + 1));
                 BulkRunAttackSkill(actor, primary, "L-02:skill:0");
             }
-            else if (owner == "L-03" &&
-                     (primary.Kind == CharacterEnemyKind.Boss ||
-                      primary.Kind == CharacterEnemyKind.Enraged))
-                BulkRunAttackSkill(actor, primary, "L-03:skill:0");
+            else if (owner == "L-03")
+            {
+                if (primary.Kind == CharacterEnemyKind.Boss ||
+                    primary.Kind == CharacterEnemyKind.Enraged)
+                    BulkRunAttackSkill(actor, primary, "L-03:skill:0");
+                BulkRunAttackSkill(actor, primary, "L-03:skill:1");
+            }
             else if (owner == "L-05")
             {
                 int count;
@@ -373,7 +381,10 @@ namespace Ordr.Mobile.Combat
                 }
             }
             else if (owner == "L-18")
+            {
+                BulkRunAttackSkill(actor, primary, "L-18:skill:0");
                 BulkRunAttackSkill(actor, primary, "L-18:skill:1");
+            }
             else if (owner == "TR-01")
             {
                 BulkRunAttackSkill(actor, primary, "TR-01:skill:1");
@@ -392,6 +403,7 @@ namespace Ordr.Mobile.Combat
             else if (owner == "MY-13")
             {
                 BulkRunAttackSkill(actor, primary, "MY-13:skill:0");
+                BulkRunAttackSkill(actor, primary, "MY-13:skill:2");
                 BulkTryHigumaRobbery(actor, primary);
             }
         }
@@ -436,6 +448,52 @@ namespace Ordr.Mobile.Combat
                             1, 2.25, "headbutt");
                 BulkSelfStatus(actor, skill, CombatEffectType.Stun, 1, .65,
                     "headbutt-recovery");
+            }
+            else if (id == "I-08:skill:1")
+            {
+                if (skill.Components.Count != 2 ||
+                    skill.Components[1].Type != "physical" ||
+                    skill.Components[1].Text("basis") != "targetMaxHealth" ||
+                    skill.Components[1].Number("percent") != 20) return;
+                BulkApplyDamagePacket(actor, primary, skill,
+                    skill.Components[0], BulkTargets(actor, primary, skill));
+                if (primary.Kind == CharacterEnemyKind.Line &&
+                    primary.Enemy.IsAlive)
+                    BulkDamage(actor, primary, skill,
+                        primary.Enemy.MaxHealth * .20, "physical");
+            }
+            else if (id == "L-03:skill:1")
+            {
+                if (skill.Components.Count != 2 ||
+                    skill.Components[1].Type != "fixed" ||
+                    skill.Components[1].Number("extraTargetMaxHealthPercent") != 7.5)
+                    return;
+                var targets = BulkTargets(actor, primary, skill);
+                BulkApplyDamagePacket(actor, primary, skill,
+                    skill.Components[0], targets);
+                foreach (var target in targets)
+                    if (target.Kind == CharacterEnemyKind.Enraged &&
+                        target.Enemy.IsAlive)
+                        BulkDamage(actor, target, skill,
+                            target.Enemy.MaxHealth * .075, "fixed");
+            }
+            else if (id == "L-18:skill:0")
+            {
+                if (skill.Components.Count != 2 ||
+                    skill.Components[0].Type != "magical" ||
+                    skill.Components[1].Type != "physical" ||
+                    skill.Components[1].Text("basis") != "skillDamage" ||
+                    skill.Components[1].Number("percent") != 225) return;
+                var targets = BulkTargets(actor, primary, skill);
+                BulkApplyDamagePacket(actor, primary, skill,
+                    skill.Components[0], targets);
+                // Skill-damage scaling uses the tooltip's stated base
+                // packet; native magic-armor-to-physical ordering is unknown.
+                if (primary.Kind != CharacterEnemyKind.Line &&
+                    primary.Enemy.IsAlive)
+                    BulkDamage(actor, primary, skill,
+                        (skill.Components[0].Number("amount") ?? 0) * 2.25,
+                        "physical");
             }
             else if (id == "MY-01:skill:3")
             {
@@ -827,6 +885,39 @@ namespace Ordr.Mobile.Combat
                 (earnGold ? "금 1500" : "나무 1"), 0));
         }
 
+        private void BulkTryGabanManaStrike(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            var skill = AdditionalAutoSkill(actor, "I-08:skill:0");
+            if (skill == null || skill.Trigger != "activeMana" ||
+                skill.Number("manaCost") != 45 ||
+                skill.Components.Count != 1 ||
+                skill.Components[0].Type != "fixed" ||
+                skill.Components[0].Text("basis") != "targetMaxHealth") return;
+            var proportions = skill.Components[0].Get("percentByTargetKind")
+                as Dictionary<string, object>;
+            if (proportions == null ||
+                OrdrJson.Number(proportions, "line") != 50 ||
+                OrdrJson.Number(proportions, "boss") != 10 ||
+                OrdrJson.Number(proportions, "story") != 5) return;
+            double fraction;
+            switch (primary.Kind)
+            {
+                case CharacterEnemyKind.Line: fraction = .5; break;
+                case CharacterEnemyKind.Boss: fraction = .1; break;
+                case CharacterEnemyKind.Story: fraction = .05; break;
+                default: return; // Enraged has no pinned separate entry.
+            }
+            ProvisionSourceModelAuraRecipientResources(actor);
+            var pool = actor.Abilities.Resources;
+            if (pool == null || !pool.CanSpend(0, 45)) return;
+            // This mobile automatic active spends the source h04F mana once;
+            // source JASS cast timing and immunity are not asserted.
+            pool.Spend(0, 45);
+            BulkDamage(actor, primary, skill,
+                primary.Enemy.MaxHealth * fraction, "fixed");
+        }
+
         private void BulkActivateAnyaFamilyPhoto(CharacterInstance actor,
             ImportedCombatSkill skill)
         {
@@ -866,6 +957,24 @@ namespace Ordr.Mobile.Combat
                 var bonusSkill = AdditionalAutoSkill(actor, "I-08:skill:2");
                 if (bonusSkill != null)
                     BulkDamage(actor, victim, bonusSkill, flat, "physical");
+            }
+            var specialHit = AdditionalAutoSkill(actor, "I-08:skill:3");
+            if (specialHit != null && specialHit.Trigger == "onAttack" &&
+                specialHit.ChancePercent == 55 &&
+                specialHit.Components.Count == 1 &&
+                specialHit.Components[0].Type == "fixed" &&
+                specialHit.Components[0].Text("basis") == "basicAttackDamage" &&
+                specialHit.Components[0].Number("percent") == 525)
+            {
+                bool storyOrBoss = victim.Kind == CharacterEnemyKind.Story ||
+                    victim.Kind == CharacterEnemyKind.Boss;
+                // The tooltip gives 55% normally and 13% vs story/boss.
+                // Use the successful basic hit's settled damage as the
+                // mobile basic-damage witness, not a made-up object roll.
+                if (sourceModelRules.NextScriptRoll(10000) <
+                    (storyOrBoss ? 1300 : 5500))
+                    BulkDamage(actor, victim, specialHit, actual * 5.25,
+                        "fixed");
             }
             var skill = AdditionalAutoSkill(actor, "I-08:skill:4");
             if (skill == null || skill.Components.Count == 0) return;
