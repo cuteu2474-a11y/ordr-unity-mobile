@@ -47,17 +47,21 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         for upgrade in ("R00F", "R01V", "Rhfc"):
             self.assertIn(upgrade, catalog)
 
-    def test_facility_game_shell_uses_read_only_cards_and_verified_resources(self):
+    def test_facilities_keep_actions_and_remove_ornamental_introductions(self):
         panel = PANEL.read_text(encoding="utf-8")
         catalog = CATALOG.read_text(encoding="utf-8")
         theme = THEME.read_text(encoding="utf-8")
-        for name in ("LUCK / 도박소", "FORGE I / 강화소", "FORGE II / 강화소",
-                     "SUPPORT / 도움소", "QUEST / 미션", "LAB / 연구소",
-                     "EXPLORE / 기록지침"):
-            self.assertIn(name, panel)
-        self.assertIn("TryGetFacilityVisual(currentTab", panel)
-        self.assertIn("DrawFacilityBanner", theme)
-        self.assertIn("DrawNavigationMark", theme)
+        # The player explicitly removed all seven decorative facility banners.
+        for caption in ("LUCK / 도박소", "FORGE I / 강화소", "FORGE II / 강화소",
+                        "SUPPORT / 도움소", "QUEST / 미션", "LAB / 연구소",
+                        "EXPLORE / 기록지침"):
+            self.assertNotIn(caption, panel)
+        self.assertNotIn("TryGetFacilityVisual(currentTab", panel)
+        self.assertNotIn("DrawFacilityBanner(", panel)
+        # Direct controls and source-backed research still exist.
+        self.assertIn("DrawLeftTab(Tab.UpgradeOne, \"강화소 1\")", panel)
+        self.assertIn("DrawLeftTab(Tab.UpgradeTwo, \"강화소 2\")", panel)
+        self.assertIn("DrawHoldActionRow(", panel)
         self.assertIn("DrawResearchPlate", theme)
         self.assertIn("DrawResearchPlate(plate", panel)
         self.assertIn("DrawAccordionHeader(", panel)
@@ -66,7 +70,6 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("GUI.Button(area, GUIContent.none", theme)
         for effect in ("+0.45/초", "+0.8/초", "+12%", "-10%"):
             self.assertIn(effect, catalog)
-        self.assertIn("구매 준비 중", theme)
 
     def test_operating_menus_are_action_first_and_require_confirm_for_spending(self):
         panel = PANEL.read_text(encoding="utf-8")
@@ -118,7 +121,7 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("DrawStatusRow(", theme)
         examples = (
             ("DrawStandbyDashboard", 'DrawStatusRow("라운드"'),
-            ("DrawOriginalChatScoreSummary", 'DrawScoreMetric("전투"'),
+            ("DrawOriginalChatScoreSummary", 'DrawScoreMetric("적 처치"'),
             ("DrawPersonalMissions", 'DrawStatusRow("미션 교체"'),
             ("DrawStory", 'DrawStatusRow("현재 목표"'),
             ("DrawHelperCow", 'DrawStatusRow("도움소 마나"'),
