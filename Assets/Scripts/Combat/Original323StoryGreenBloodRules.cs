@@ -28,7 +28,7 @@ namespace Ordr.Mobile.Combat
 
     public static class Original323StoryGreenBloodRules
     {
-        // war3map.j CKb/CKc/CKd; A13C in native AbilityData.slk.
+        // war3map.j CKb/CKc/CKd; native AbilityData.slk proves A13C/AIas\n        // DataA1=.30 and A134/Aimp is a zero-data marker (not a proc).
         public const double EnhancementBurstRadius = 825;
         public const double EnhancementBurstFlatDamage = 400000;
         public const double EnhancementBurstEnemyMaxHealthRatio = 0.004;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Combat
@@ -7,8 +8,8 @@ namespace Ordr.Mobile.Combat
     {
         // Native CKe: A134 + A13C persist on the original target. A13C/AIas
         // DataA1=.30 is modeled by the existing native attack-cadence lookup.
-        // A134/Aimp identity is preserved; no undocumented impale proc is
-        // invented. The one-shot CKd/CKc burst uses victim max HP, NOT the
+        // A134's native Aimp row has NO active data, cast range or trigger.
+        // It is an inert marker. Do not invent a passive impale proc. The one-shot CKd/CKc burst uses victim max HP, NOT the
         // green-blood target's max HP.
         private static string GreenBloodEnhancementSource(long instanceId) =>
             "story-native:CKe:A134+A13C:" + instanceId;
@@ -35,7 +36,8 @@ namespace Ordr.Mobile.Combat
                 return false;
             var status = UnitStatusOf(instanceId);
             string key = GreenBloodEnhancementSource(instanceId);
-            var position = roster.Get(instanceId);
+            bool sourceStoryLane = IsStoryDeployed(instanceId);
+            long sourceLaneRevision = SourceModelLaneRevision(instanceId);
             status.Apply(new CombatEffect(key, CombatEffectType.AttackSpeedBuff,
                 CombatEffectOrigin.Aura,
                 Original323StoryGreenBloodRules.EnhancementAttackSpeedPercent, 0));
@@ -46,10 +48,14 @@ namespace Ordr.Mobile.Combat
                     effectExecutor.SchedulePracticeSourceAttack(InstanceKey(instanceId),
                         "story-native:CKd:green-blood-burst", .03, () =>
                         {
-                            if (!characters.ContainsKey(instanceId) ||
+                            if (!CanFinishSourceModelDelayedAttack(
+                                    instanceId, sourceStoryLane, sourceLaneRevision) ||
                                 !HasOriginal323GreenBloodEnhancement(instanceId)) return;
+                            // CKd reads the target unit's location AFTER
+                            // its .03-second wait, not at item use time.
+                            var current = roster.Get(instanceId);
                             ApplyOriginal323GreenBloodBurst(instanceId,
-                                position.X, position.Y);
+                                current.X, current.Y, sourceStoryLane);
                         });
             }
             catch
@@ -68,13 +74,23 @@ namespace Ordr.Mobile.Combat
         }
 
         private void ApplyOriginal323GreenBloodBurst(long instanceId,
-            double centerX, double centerY)
+            double centerX, double centerY, bool storyLane)
         {
             string actorId = InstanceKey(instanceId);
             var destination = processingStep ? events : pendingCommandEvents;
+            var affected = new List<SpatialCombatEnemy>();
             foreach (var target in enemies.Values)
             {
-                if (!target.Enemy.IsAlive) continue;
+                if (!target.Enemy.IsAlive ||
+                    (storyLane ? target.Kind != CharacterEnemyKind.Story :
+                    target.Kind != CharacterEnemyKind.Line &&
+                    target.Kind != CharacterEnemyKind.Boss &&
+                    target.Kind != CharacterEnemyKind.Enraged)) continue;
+                affected.Add(target);
+            }
+            affected.Sort((a, b) => StringComparer.Ordinal.Compare(a.Id, b.Id));
+            foreach (var target in affected)
+            {
                 double dx = target.X - centerX, dy = target.Y - centerY;
                 if (dx * dx + dy * dy >
                     Original323StoryGreenBloodRules.EnhancementBurstRadius *

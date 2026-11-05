@@ -1094,7 +1094,7 @@ namespace Ordr.Mobile.Mobile
                     throw;
                 }
                 return new ManualActionResult(ManualActionState.Succeeded,
-                    unitName + " · A134/A13C 부여 · 공격속도 +30% · 주위 825 범위 피해");
+                    unitName + " · 공속 +30% · 825 범위 폭발 · A134 표식 / A13C 강화");
             }
             catch (Exception error)
             {

@@ -1686,6 +1686,7 @@ namespace Ordr.Mobile.Combat
                     attackPipeline.RemoveUnit(InstanceKey(id));
                 if (commonAttackPreview != null) commonAttackPreview.Remove(id);
                 characters.Remove(id);
+                ForgetOriginal323Shirahoshi(id);
                 sourceSongSoldierExpiry.Remove(id);
                 RemoveSourceModelAceFlames(id);
                 sourceModelFireFistReadyAt.Remove(id);
@@ -2263,6 +2264,7 @@ namespace Ordr.Mobile.Combat
             sourceRareLawReadyAt.Remove(instanceId);
             auras.RemoveAll(instanceId);
             characters.Remove(instanceId);
+            ForgetOriginal323Shirahoshi(instanceId);
             sourceSongSoldierExpiry.Remove(instanceId);
             RemoveSourceModelAceFlames(instanceId);
             sourceModelFireFistReadyAt.Remove(instanceId);

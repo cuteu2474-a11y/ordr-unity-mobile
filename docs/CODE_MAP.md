@@ -66,6 +66,12 @@ flowchart TD
 
 `DrawEconomy`가 등급별 재고·대기·손익, 졸업 상점 구매 항목과 최근 6건 기록을 표시합니다. 스토리 R01N 연구는 `Original323StoryMobileProgression.HasResearch`를 통해 H0B0 구매에 연결합니다. Q015 최상위 3회 조합은 원본 rawcode에 대조한 결과 등급으로 기록하여 동일 공유 특성 포인트 지갑으로 지급합니다. 돈 도박은 유닛 도박 미션에 연결하지 않습니다. `SourceModelRegularMoneyGamblingTests`에는 해금·분기 경계·정확/초과 졸업·커밋 후 예외·기회 소비·상태 복원·특성 구매 재고/시간·희귀 1회 소환/롤백 회귀를 추가했습니다(실행 전).
 
+## 시라호시·그린블러드 캐릭터 전투 연결
+
+- `Original323HeroLevelRules`의 `ShirahoshiA0L1Level/A0KZLevel`은 Bz6 특성 4포인트 구매 후 레벨 16/24에서만 2가 됩니다. `CharacterCombatRuntime.SourceModelEffects`의 공격 선언 콜백은 `CharacterCombatRuntime.SourceModelShirahoshiTraits`로 이어지고, 공통 `CombatTimedEffectQueue`와 `CombatResolution`으로 피해를 정산합니다. 같은 인스턴스 폼 변경 시 중복 초기화하지 않으며 소유 유닛 제거 시 상태를 삭제합니다.
+- `CharacterCombatRuntime.StoryGreenBlood`는 A13C의 지속 공격속도 효과와 CKd/CKc의 0.03초 지연 광역 피해를 담당합니다. A134/Aimp는 원본 `Units\\AbilityData.slk`의 0수치 표식으로 추가 주문을 발동시키지 않습니다. 지연 시 대상 위치를 재조회하고 전장 리비전을 확인합니다.
+- 시라호시의 첫 레벨 STR은 확보하지 못해 해왕류 STR 보너스는 성장 증가분만 적용합니다. 원본 난수 재현·기기 검증 전까지 완전 일치로 표기하지 않습니다.
+
 ## 수정 전 확인할 경계
 
 - 새 효과를 넣기 전에 원본 객체·능력 소유·JASS 함수·타깃·시점·피해 타입과 기존 처리기를 찾습니다. 툴팁 등록은 실행 명세 전체가 아닙니다.

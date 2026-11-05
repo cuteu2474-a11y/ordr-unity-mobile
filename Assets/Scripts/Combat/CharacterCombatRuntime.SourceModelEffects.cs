@@ -76,6 +76,10 @@ namespace Ordr.Mobile.Combat
             attackPipeline.ConfigurePracticeScriptAttackDeclared(
                 (attacker, rawcode, target) => {
                     string form = rules.SourceFormRawcodeOf(attacker);
+                    // B0H is an attack-declared event. Charge mana before
+                    // other on-attack skills can defeat the primary target.
+                    OnOriginal323ShirahoshiAttackDeclared(attacker,
+                        form == "H08U" || form == "H0C1" ? form : rawcode, target);
                     OnSourceModelScriptAttackDeclared(attacker,
                         form == "H0BY" || form == "h0AF" ? form : rawcode, target);
                 });
