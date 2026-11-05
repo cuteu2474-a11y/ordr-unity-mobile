@@ -17,6 +17,13 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, double>();
         private readonly Dictionary<long, long> bulkGiftSerials =
             new Dictionary<long, long>();
+        private readonly Dictionary<long, string> bulkArmorAuraTargets =
+            new Dictionary<long, string>();
+        // Source/recipient identity makes the passive buff reversible on
+        // roster removal and story deployment changes; resource regen itself
+        // is granted only once per eligible ally per frame.
+        private readonly Dictionary<string, long> bulkAnyaAttackSpeedRecipients =
+            new Dictionary<string, long>(StringComparer.Ordinal);
         private EconomyWallet bulkGiftWallet;
 
         // The wallet is the combat controller's existing shared wallet, not a
@@ -76,6 +83,30 @@ namespace Ordr.Mobile.Combat
             bulkAutoFlatPower.Remove(actorId);
             bulkAllyRegenerationEnds.Remove(actorId);
             bulkGiftSerials.Remove(actorId);
+            string oldTarget;
+            if (bulkArmorAuraTargets.TryGetValue(actorId, out oldTarget))
+            {
+                SpatialCombatEnemy enemy;
+                if (enemies.TryGetValue(oldTarget, out enemy))
+                    enemy.Enemy.Status.RemoveSource(
+                        "practice-tooltip:bulk:" + InstanceKey(actorId) +
+                        ":I-08:skill:4:armor-on-hit");
+                bulkArmorAuraTargets.Remove(actorId);
+            }
+            string prefix = "practice-tooltip:bulk:" + InstanceKey(actorId) +
+                ":MY-08:passive-ally-speed";
+            var removed = new List<string>();
+            foreach (var item in bulkAnyaAttackSpeedRecipients)
+                if (item.Key.StartsWith(prefix + ":", StringComparison.Ordinal))
+                    removed.Add(item.Key);
+            foreach (string source in removed)
+            {
+                long recipient = bulkAnyaAttackSpeedRecipients[source];
+                CombatStatusEngine status;
+                if (unitStatuses.TryGetValue(InstanceKey(recipient), out status))
+                    status.RemoveSource(source);
+                bulkAnyaAttackSpeedRecipients.Remove(source);
+            }
         }
 
         private List<SpatialCombatEnemy> BulkTargets(CharacterInstance actor,
@@ -191,7 +222,8 @@ namespace Ordr.Mobile.Combat
 
         private void BulkApplyDamagePacket(CharacterInstance actor,
             SpatialCombatEnemy primary, ImportedCombatSkill skill,
-            ImportedCombatEffect c, IReadOnlyList<SpatialCombatEnemy> targets)
+            ImportedCombatEffect c, IReadOnlyList<SpatialCombatEnemy> targets,
+            double damageScale = 1)
         {
             double scale = BulkScale(c);
             int hits = (int)(c.Number("hits") ?? 1);
@@ -222,7 +254,7 @@ namespace Ordr.Mobile.Combat
                     ReferenceEquals(victim, primary))
                     raw += c.Number("extraSingleAmount").Value;
                 for (int hit = 0; hit < hits && victim.Enemy.IsAlive; hit++)
-                    BulkDamage(actor, victim, skill, raw, c.Type);
+                    BulkDamage(actor, victim, skill, raw * damageScale, c.Type);
             }
         }
 
@@ -358,7 +390,10 @@ namespace Ordr.Mobile.Combat
                 BulkRunAttackSkill(actor, primary, "MY-06:skill:3");
             }
             else if (owner == "MY-13")
+            {
                 BulkRunAttackSkill(actor, primary, "MY-13:skill:0");
+                BulkTryHigumaRobbery(actor, primary);
+            }
         }
 
         private void BulkRunAttackSkill(CharacterInstance actor,
@@ -419,11 +454,14 @@ namespace Ordr.Mobile.Combat
             else if (id == "MY-13:skill:0")
             {
                 BulkApplyStandard(actor, primary, skill);
-                // 400% is the existing mobile cadence cap, not a claim of
-                // the Warcraft native attack-speed formula.
-                // The source calls this 'maximum attack speed' without a
-                // percent. The native max IAS formula is not pinned, so do
-                // not inject an invented 400% buff as an original result.
+                // Reuse the SAME existing practice max-speed policy as
+                // Katakuri, never assert Warcraft's unobserved native cap.
+                var cap = skill.Components[1];
+                if (cap.Type == "selfAttackSpeedMax" &&
+                    cap.Number("durationSeconds") == 1.25)
+                    BulkSelfStatus(actor, skill,
+                        CombatEffectType.AttackSpeedBuff, 400, 1.25,
+                        "practice-max-speed");
             }
             else if (id == "I-12:skill:1")
             {
@@ -452,18 +490,20 @@ namespace Ordr.Mobile.Combat
             }
             else if (id == "MY-06:skill:2" || id == "MY-06:skill:3")
             {
-                // Mana-based percentage scaling cannot be guessed without
-                // a source-mapped current-mana provider. Base packets only.
+                // Current MP comes from the exact source-object resource
+                // pool. The tooltip's 50%-of-current-MP bonus is capped 75%.
+                double damageScale = BulkCurrentManaDamageScale(actor, skill);
                 var targets = BulkTargets(actor, primary, skill);
                 BulkApplyDamagePacket(actor, primary, skill,
-                    skill.Components[0], targets);
+                    skill.Components[0], targets, damageScale);
                 if (id == "MY-06:skill:2" && skill.Components.Count > 1)
                 {
                     var single = skill.Components[1];
                     BulkDamage(actor, primary, skill,
-                        (single.Number("extraSingleAmount") ?? 0) +
-                        primary.Enemy.MaxHealth *
-                        (single.Number("plusTargetMaxHealthPercent") ?? 0) / 100,
+                        ((single.Number("extraSingleAmount") ?? 0) +
+                         primary.Enemy.MaxHealth *
+                         (single.Number("plusTargetMaxHealthPercent") ?? 0) / 100)
+                        * damageScale,
                         "magical");
                     BulkRestoreAllyMana(actor, skill);
                 }
@@ -474,7 +514,7 @@ namespace Ordr.Mobile.Combat
                     double bonus = skill.Components[1].Number(
                         "extraSingleTargetDamagePercent") ?? 0;
                     BulkDamage(actor, primary, skill,
-                        baseHit * 2 * bonus / 100, "magical");
+                        baseHit * 2 * bonus / 100 * damageScale, "magical");
                 }
             }
             else BulkApplyStandard(actor, primary, skill);
@@ -530,6 +570,7 @@ namespace Ordr.Mobile.Combat
 
         private void AdvanceBulkAllyRegeneration(double seconds)
         {
+            AdvanceBulkAnyaPassiveAura(seconds);
             if (seconds <= 0 || bulkAllyRegenerationEnds.Count == 0) return;
             var ended = new List<long>();
             foreach (var entry in bulkAllyRegenerationEnds)
@@ -558,6 +599,72 @@ namespace Ordr.Mobile.Combat
             foreach (long id in ended) bulkAllyRegenerationEnds.Remove(id);
         }
 
+        private void AdvanceBulkAnyaPassiveAura(double seconds)
+        {
+            if (!UsesSourceModelBasicAttacks || seconds <= 0) return;
+            var active = new Dictionary<string, long>(StringComparer.Ordinal);
+            var regened = new HashSet<long>();
+            foreach (var owner in characters.Values)
+            {
+                if (!owner.AttackReady || owner.Profile == null ||
+                    owner.Profile.UnitId != "MY-08" ||
+                    owner.Catalog.Id != "MY-08" || owner.Mapping == null ||
+                    owner.Mapping.AttackSpec.UnitRawCode != "h08M") continue;
+                // Exact values from MY-08 tooltip. The fixed mobile policy
+                // makes ally aura reach lane-wide, not a new 800-unit cap.
+                var passives = owner.Profile.Passives;
+                bool hp = false, mp = false, speed = false;
+                foreach (var passive in passives)
+                {
+                    if (passive.Type == "allyHealthRegeneration" &&
+                        passive.Number("perSecond") == 2) hp = true;
+                    if (passive.Type == "allyManaRegeneration" &&
+                        passive.Number("perSecond") == 1.75) mp = true;
+                    if (passive.Type == "allyAttackSpeedBuff" &&
+                        passive.Number("percent") == 30) speed = true;
+                }
+                if (!hp || !mp || !speed) continue;
+                string source = "practice-tooltip:bulk:" + InstanceKey(owner.Id) +
+                    ":MY-08:passive-ally-speed";
+                foreach (var ally in characters.Values)
+                {
+                    if (!ally.AttackReady ||
+                        IsStoryDeployed(ally.Id) != IsStoryDeployed(owner.Id))
+                        continue;
+                    CombatStatusEngine status;
+                    if (!unitStatuses.TryGetValue(InstanceKey(ally.Id), out status))
+                        continue;
+                    active[source + ":" + InstanceKey(ally.Id)] = ally.Id;
+                    if (!bulkAnyaAttackSpeedRecipients.ContainsKey(
+                            source + ":" + InstanceKey(ally.Id)))
+                    {
+                        status.Apply(new CombatEffect(
+                            source + ":" + InstanceKey(ally.Id),
+                            CombatEffectType.AttackSpeedBuff,
+                            CombatEffectOrigin.Aura, 30, 0));
+                    }
+                    if (!regened.Add(ally.Id)) continue;
+                    ProvisionSourceModelAuraRecipientResources(ally);
+                    var pool = ally.Abilities.Resources;
+                    if (pool == null) continue;
+                    pool.SetHealth(Math.Min(pool.MaximumHealth,
+                        pool.Health + 2 * seconds));
+                    pool.SetMana(Math.Min(pool.MaximumMana,
+                        pool.Mana + 1.75 * seconds));
+                }
+            }
+            foreach (var stale in bulkAnyaAttackSpeedRecipients)
+            {
+                if (active.ContainsKey(stale.Key)) continue;
+                CombatStatusEngine status;
+                if (unitStatuses.TryGetValue(InstanceKey(stale.Value), out status))
+                    status.RemoveSource(stale.Key);
+            }
+            bulkAnyaAttackSpeedRecipients.Clear();
+            foreach (var item in active)
+                bulkAnyaAttackSpeedRecipients.Add(item.Key, item.Value);
+        }
+
         private void BulkRestoreAllyMana(CharacterInstance actor,
             ImportedCombatSkill skill)
         {
@@ -583,6 +690,21 @@ namespace Ordr.Mobile.Combat
                     continue;
                 pool.SetMana(Math.Min(pool.MaximumMana, pool.Mana + amount));
             }
+        }
+
+        private static double BulkCurrentManaDamageScale(CharacterInstance actor,
+            ImportedCombatSkill skill)
+        {
+            var pool = actor.Abilities.Resources;
+            double? percentByMana = skill.Number("damageBonusPercentByCurrentMana");
+            double? cap = skill.Number("maxDamageBonusPercent");
+            if (pool == null || !percentByMana.HasValue || !cap.HasValue ||
+                percentByMana.Value != 50 || cap.Value != 75)
+                return 1;
+            // 100 current MP grants +50% damage, up to +75% at 150 MP.
+            // This is a tooltip-only formula; no native JASS ordering claim.
+            return 1 + Math.Min(cap.Value,
+                pool.Mana * percentByMana.Value / 100) / 100;
         }
 
         private void BulkSpawnShadowZombie(CharacterInstance actor,
@@ -656,6 +778,77 @@ namespace Ordr.Mobile.Combat
                 (goldReward ? "금 2500" : "나무 1"), 0));
         }
 
+        private void BulkTryHigumaRobbery(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            var skill = AdditionalAutoSkill(actor, "MY-13:skill:1");
+            if (skill == null || skill.Trigger != "activeHealth" ||
+                skill.Number("healthCost") != 75 ||
+                skill.Components.Count != 2 || bulkGiftWallet == null ||
+                skill.Components[0].Type != "fixed" ||
+                skill.Components[0].Number("amount") != 5000000 ||
+                skill.Components[1].Type != "currencyReward") return;
+            // Higuma's 75HP / +0.3HP/s are the pinned h0AC SLK values.
+            // An active-health tooltip is auto-fired on the first eligible
+            // attack with sufficient HP (the user-defined mobile policy).
+            ProvisionSourceModelAuraRecipientResources(actor);
+            var pool = actor.Abilities.Resources;
+            if (pool == null || !pool.CanSpend(75, 0)) return;
+            var rewardOptions = skill.Components[1].Get("outcomes") as List<object>;
+            if (rewardOptions == null || rewardOptions.Count != 2) return;
+            var goldOption = rewardOptions[0] as Dictionary<string, object>;
+            var woodOption = rewardOptions[1] as Dictionary<string, object>;
+            if (goldOption == null || woodOption == null ||
+                OrdrJson.Number(goldOption, "chancePercent") != 55 ||
+                OrdrJson.Number(woodOption, "chancePercent") != 45 ||
+                OrdrJson.Number(goldOption, "gold") != 1500 ||
+                OrdrJson.Number(woodOption, "lumber") != 1) return;
+            long serial;
+            bulkGiftSerials.TryGetValue(actor.Id, out serial);
+            if (serial == long.MaxValue) throw new OverflowException("강탈 영수증 번호 초과");
+            bool earnGold = sourceModelRules.NextScriptRoll(10000) < 5500;
+            var reward = new ResourceBundle().Add(
+                earnGold ? "gold" : "wood", earnGold ? 1500 : 1);
+            string receipt = "practice-robbery:MY-13:" + actor.Id +
+                ":" + (serial + 1);
+            double before = pool.Health;
+            pool.Spend(75, 0);
+            if (!bulkGiftWallet.TryGrantOnce(receipt, reward))
+            {
+                pool.SetHealth(before);
+                return;
+            }
+            bulkGiftSerials[actor.Id] = serial + 1;
+            BulkDamage(actor, primary, skill, 5000000, "fixed");
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
+                primary.Id, skill.Name,
+                "TOOLTIP_MODEL_ONLY HP75 소모 / " +
+                (earnGold ? "금 1500" : "나무 1"), 0));
+        }
+
+        private void BulkActivateAnyaFamilyPhoto(CharacterInstance actor,
+            ImportedCombatSkill skill)
+        {
+            if (skill.Trigger != "manual" ||
+                skill.Number("cooldownSeconds") != 75 ||
+                skill.Components.Count != 2 ||
+                skill.Components[0].Type != "generateGiftBox" ||
+                skill.Components[0].Number("count") != 1 ||
+                skill.Components[1].Type != "summonLloydAndYor" ||
+                skill.Components[1].Number("durationSeconds") != 3)
+                return;
+            if (bulkGiftWallet == null) return;
+            var point = roster.Get(actor.Id);
+            // Original companion attack rawcodes are not provided in the
+            // profile. Preserve their 3s lifecycle without inventing hits.
+            SpawnSourceTemporaryActor(actor, skill.Name, "로이드 포저",
+                3, null, spawnX: point.X, spawnY: point.Y);
+            SpawnSourceTemporaryActor(actor, skill.Name, "요르 포저",
+                3, null, spawnX: point.X, spawnY: point.Y);
+            BulkGenerateAndOpenGift(actor, skill);
+        }
+
         private void OnBulkAutoSuccessfulHit(string actorKey,
             string rawcode, string victimId, long actual)
         {
@@ -676,9 +869,31 @@ namespace Ordr.Mobile.Combat
             }
             var skill = AdditionalAutoSkill(actor, "I-08:skill:4");
             if (skill == null || skill.Components.Count == 0) return;
-            // Source data lacks a duration and exclusivity contract; do not
-            // install an invented lingering debuff. The hit event is wired,
-            // and the missing original status inputs remain visible in docs.
+            if (skill.Trigger != "onHit" ||
+                skill.Components[0].Type != "armorReduction" ||
+                skill.Components[0].Number("amount") != 60) return;
+            // No original duration exists: treat this as a live single-target
+            // attack debuff, NOT a guessed timed five-second status. The
+            // previous target loses it when Gaban hits another target or
+            // leaves the roster, and it does not stack with other tooltips.
+            string source = "practice-tooltip:bulk:" + InstanceKey(actor.Id) +
+                ":I-08:skill:4:armor-on-hit";
+            string previous;
+            if (bulkArmorAuraTargets.TryGetValue(actor.Id, out previous) &&
+                previous != victim.Id)
+            {
+                SpatialCombatEnemy other;
+                if (enemies.TryGetValue(previous, out other))
+                    other.Enemy.Status.RemoveSource(source);
+            }
+            if (!victim.Enemy.IsAlive) return;
+            double armor = victim.Kind == CharacterEnemyKind.Boss ||
+                victim.Kind == CharacterEnemyKind.Enraged ? 70 : 60;
+            victim.Enemy.Status.RemoveSource(source);
+            victim.Enemy.Status.Apply(new CombatEffect(source,
+                CombatEffectType.ArmorReduction,
+                CombatEffectOrigin.Aura, armor, 0));
+            bulkArmorAuraTargets[actor.Id] = victim.Id;
         }
 
         private void ExecuteBulkAutoAfterSkill(CharacterInstance actor,
@@ -824,11 +1039,13 @@ namespace Ordr.Mobile.Combat
                 actor.Mapping == null || actor.Profile == null ||
                 !IsBulkSourceOwner(actor.Catalog.Id,
                     actor.Mapping.AttackSpec.UnitRawCode)) return null;
-            string id = actor.Catalog.Id == "L-22" ? "L-22:skill:0" : null;
+            string id = actor.Catalog.Id == "L-22" ? "L-22:skill:0" :
+                actor.Catalog.Id == "MY-08" ? "MY-08:skill:6" : null;
             if (id == null) return null;
             var skill = AdditionalAutoSkill(actor, id);
             if (skill == null || skill.Components.Count == 0) return null;
-            double interval = skill.Number("intervalSeconds") ?? 0;
+            double interval = skill.Number("intervalSeconds") ??
+                skill.Number("cooldownSeconds") ?? 0;
             if (interval <= 0 || double.IsInfinity(interval) ||
                 double.IsNaN(interval)) return null;
             string key = InstanceKey(actor.Id) + ":" + id;
@@ -852,11 +1069,19 @@ namespace Ordr.Mobile.Combat
                 double? due = NextBulkAutoPeriodicAt(actor);
                 if (!due.HasValue || !CombatScheduler.HasReached(Time, due.Value))
                     continue;
-                var skill = AdditionalAutoSkill(actor, "L-22:skill:0");
+                string skillId = actor.Catalog.Id == "MY-08" ?
+                    "MY-08:skill:6" : "L-22:skill:0";
+                var skill = AdditionalAutoSkill(actor, skillId);
                 if (skill == null) continue;
                 additionalAutoReadyAt[InstanceKey(actor.Id) + ":" + skill.Id] =
-                    due.Value + .4;
+                    due.Value + (skill.Number("intervalSeconds") ??
+                        skill.Number("cooldownSeconds") ?? .4);
                 count++;
+                if (actor.Catalog.Id == "MY-08")
+                {
+                    BulkActivateAnyaFamilyPhoto(actor, skill);
+                    continue;
+                }
                 var candidates = BuildTargetCandidates(actor);
                 string chosen = attackPipeline.SelectDefaultTarget(
                     InstanceKey(actor.Id), candidates, TargetPriority.Nearest);
