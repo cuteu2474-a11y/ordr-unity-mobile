@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using Ordr.Mobile.Mobile;
+using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Tests
 {
@@ -32,6 +33,39 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(2, journal.CommonDrawCount("C-01"));
             Assert.AreEqual(1, journal.CommonDrawCount("C-09"));
             Assert.AreEqual(0, journal.CommonDrawCount("C-02"));
+        }
+
+
+        [Test]
+        public void UtilitySpecSumsEachOwnedSkillButOnlyOnePhasePerSkill()
+        {
+            var profiles = CharacterSkillCatalog.FromJson(
+                "{\"gameVersion\":\"S2 2.323[C]\",\"profiles\":[" +
+                "{\"unitId\":\"TEST-A\",\"sourceUrl\":\"fixture\",\"skillSpecCompleteness\":\"partial\"," +
+                "\"basicAttack\":{},\"passives\":[],\"skills\":[" +
+                "{\"name\":\"dual phase\",\"trigger\":\"onAttack\",\"components\":[" +
+                "{\"type\":\"armorReduction\",\"amount\":12}," +
+                "{\"type\":\"movementSlow\",\"percent\":45}," +
+                "{\"type\":\"lingeringSlow\",\"percent\":15}]}]}]}");
+            var snapshot = MobileOriginalUtilityBoard.Capture(
+                new[] { "TEST-A", "TEST-A", "", null }, profiles, null);
+            Assert.AreEqual(2, snapshot.UnitCount);
+            Assert.AreEqual(0, snapshot.AuraDefinitions);
+            Assert.AreEqual(2, snapshot.TriggeredDefinitions);
+            Assert.AreEqual(24d, snapshot.TriggeredArmorReduction);
+            Assert.AreEqual(90d, snapshot.TriggeredMovementSlowPercent);
+        }
+
+        [Test]
+        public void UtilitySpecNeverInventsMissingSourceNumbers()
+        {
+            var snapshot = MobileOriginalUtilityBoard.Capture(
+                new[] { "UNKNOWN" }, null, null);
+            Assert.AreEqual(1, snapshot.UnitCount);
+            Assert.AreEqual(0, snapshot.AuraDefinitions);
+            Assert.AreEqual(0, snapshot.TriggeredDefinitions);
+            Assert.AreEqual(0d, snapshot.AuraArmorReduction);
+            Assert.AreEqual(0d, snapshot.TriggeredMovementSlowPercent);
         }
 
         [Test]

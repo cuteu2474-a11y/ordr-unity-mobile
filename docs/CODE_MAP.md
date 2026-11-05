@@ -1,3 +1,10 @@
+## 2026-11-05 · 60차 유틸보드/Actions 경로
+
+- `Assets/Scripts/Mobile/MobileOriginalChatScoreboard.cs`의 `MobileOriginalUtilityBoard.Capture`: 보유 유닛 ID + 스킬 카탈로그 + 원본 합성 오라로 읽기 전용 4개 잠재 스펙 집계. 동종 중복 오라와 한 기술의 복수 감속 단계 제거. 전투/지갑/실제 디버프 상태 미변경.
+- `Assets/Scripts/Unity/OrdrMobileTouchPanel.cs`: 점수판 내부 유틸보드 페이지, 4개 참고 지표, 수동 새로고침. 싱글플레이 스토리 기여도 UI 없음.
+- `Assets/Tests/EditMode/MobileOriginalChatScoreboardTests.cs`: 중복 소유 스킬·스킬 내 중복 단계·출처 누락 수치 NUnit 회귀 추가. `tests/test_player_building_left_menu.py`: 조합 행의 신규 동적 `rowTitle` 확인과 실제 클릭·권한 경로 보존.
+- Actions #41955393463 Python 단계의 문자열 기대 불일치를 수정. 59차 카메라 NUnit 기대값 정정 유지. 신규 CI/Unity/Android 결과는 대기·미확인.
+
 ## 2026-11-05 · 59차 조합 임박 UI와 경계 검증
 
 - `MobileManualInteraction.MobileFusionPreview`: 결과 등급 `ResultGrade` + UI 전용 `MissingCommonUnits`(다른 조건 모두 통과한 경우만 값 부여). 제작 권한과 분리.

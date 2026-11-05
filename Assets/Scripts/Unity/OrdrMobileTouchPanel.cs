@@ -15,7 +15,7 @@ namespace Ordr.Mobile.Unity
     public sealed class OrdrMobileTouchPanel : MonoBehaviour
     {
         private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, LogPose, Helper, Alchemy, Missions, UpgradeOne, UpgradeTwo, Research }
-        private enum ScoreboardPage { Summary, Commons }
+        private enum ScoreboardPage { Summary, Commons, Utility }
         private enum FusionListCategory { All, NearReady }
 
         private struct FacilityVisual
@@ -42,6 +42,7 @@ namespace Ordr.Mobile.Unity
         private bool visible;
         private Tab currentTab = Tab.Play;
         private ScoreboardPage scoreboardPage;
+        private MobileUtilitySpecSnapshot utilitySpecSnapshot;
         private float nextFusionRefresh;
         private string fusionInventorySignature;
         private int selectedPracticeRounds = 65;
@@ -658,6 +659,7 @@ namespace Ordr.Mobile.Unity
             GUILayout.BeginHorizontal();
             DrawScoreboardPageButton(ScoreboardPage.Summary, "개인 기록");
             DrawScoreboardPageButton(ScoreboardPage.Commons, "흔함 획득");
+            DrawScoreboardPageButton(ScoreboardPage.Utility, "유틸보드");
             GUILayout.EndHorizontal();
             GUILayout.Space(6f);
 
@@ -665,6 +667,7 @@ namespace Ordr.Mobile.Unity
             {
                 case ScoreboardPage.Summary: DrawOriginalChatScoreSummary(); break;
                 case ScoreboardPage.Commons: DrawOriginalChatCommonDraws(); break;
+                case ScoreboardPage.Utility: DrawOriginalUtilityBoard(); break;
             }
         }
 
@@ -714,6 +717,59 @@ namespace Ordr.Mobile.Unity
                     journal.CommonDrawCount(
                         MobileOriginalChatScoreboard.CommonCatalogIds[i]) + "기",
                     OrdrMobileUiTheme.Aqua);
+        }
+
+
+        private void RefreshOriginalUtilitySpec()
+        {
+            if (Combat == null)
+            {
+                utilitySpecSnapshot = null;
+                return;
+            }
+            var unitIds = new List<string>();
+            foreach (var owned in Combat.MobileUnitSnapshot())
+                unitIds.Add(owned.Unit.Id);
+            utilitySpecSnapshot = MobileOriginalUtilityBoard.Capture(
+                unitIds, controller.Skills, controller.OriginalCombinedAuras);
+        }
+
+        private void DrawOriginalUtilityBoard()
+        {
+            // Single-player: no multiplayer story contribution leaderboard.
+            // Original utility spec is manually refreshable after roster changes.
+            if (utilitySpecSnapshot == null) RefreshOriginalUtilitySpec();
+            if (GUILayout.Button("보유 유닛 스펙 새로고침", GUILayout.MinHeight(60f)))
+                RefreshOriginalUtilitySpec();
+            var spec = utilitySpecSnapshot;
+            if (spec == null)
+            {
+                GUILayout.Label("게임 시작 후 보유 유닛의 스펙을 확인할 수 있습니다.");
+                return;
+            }
+            DrawScoreMetric("집계 유닛", spec.UnitCount + "기", OrdrMobileUiTheme.Gold);
+            DrawScoreMetric("방어력 감소 오라",
+                spec.AuraDefinitions == 0 ? "자료 없음" :
+                "-" + spec.AuraArmorReduction.ToString("0.##") + " (참고)",
+                OrdrMobileUiTheme.Aqua);
+            DrawScoreMetric("이속 감소 오라",
+                spec.AuraDefinitions == 0 ? "자료 없음" :
+                "-" + spec.AuraMovementSlowPercent.ToString("0.##") + "% (참고)",
+                OrdrMobileUiTheme.Aqua);
+            DrawScoreMetric("발동형 방어 감소",
+                spec.TriggeredDefinitions == 0 ? "자료 없음" :
+                "-" + spec.TriggeredArmorReduction.ToString("0.##") + " (잠재합)",
+                OrdrMobileUiTheme.Gold);
+            DrawScoreMetric("발동형 이속 감소",
+                spec.TriggeredDefinitions == 0 ? "자료 없음" :
+                "-" + spec.TriggeredMovementSlowPercent.ToString("0.##") + "% (잠재합)",
+                OrdrMobileUiTheme.Gold);
+            GUILayout.Label("근거: 원본 객체 오라 " + spec.AuraDefinitions +
+                "종 · 기술 자료 " + spec.TriggeredDefinitions + "건", OrdrMobileUiTheme.Overline);
+            GUILayout.Label("오라는 같은 능력 중복을 제외한 참고 합산입니다. " +
+                "발동형은 관련 기술이 모두 발동한다고 가정한 잠재 수치입니다. " +
+                "원본 기술 자료가 일부 미완이며, 실제 적에게 적용된 값·강화·면역·중첩 결과는 아닙니다.",
+                OrdrMobileUiTheme.Overline);
         }
 
         private void DrawPlay()

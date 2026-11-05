@@ -74,7 +74,7 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
             ("DrawStory", "private void DrawFusion(",
              "DrawStatusRow(name", "RequestOriginalStoryBuilding(stage)"),
             ("DrawFusion", "private void DrawFusionConfirmation(",
-             "DrawActionRow(offer.Title", "pendingFusion = offer"),
+             "DrawActionRow(rowTitle", "pendingFusion = offer"),
             ("DrawTreasureGacha", "private void DrawAutomaticWispStatus(",
              "DrawActionRow(\"보물 탐색\"", "RequestMobileTreasureGacha()"),
             ("DrawHelperCow", "private void DrawAlchemyPanel(",
@@ -98,6 +98,10 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("RequestStoryRecall(unit.InstanceId)", panel)
         self.assertIn("RequestLowerGradeSale(", panel)
         self.assertIn("CanExecuteFusionRecipe(offer.RecipeId)", panel)
+        # The action title now explains near-ready common-material shortages.
+        # Keep checking a real clickable row and its confirmation flow.
+        self.assertIn("string rowTitle = fusionListCategory", panel)
+        self.assertIn("GUI.enabled = previousEnabled && offer.IsReady && executable", panel)
         self.assertIn("MobileFusionProductionAssistant.CraftRepeated(", panel)
         self.assertIn("판매 확인", panel)
         self.assertIn("분해 시작", panel)
