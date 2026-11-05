@@ -46,11 +46,11 @@
 
 | 파일·위치 | 적용할 내용 |
 |---|---|
-| [OrdrBattlefieldArt.cs](../../../Assets/Scripts/Unity/OrdrBattlefieldArt.cs) · `EnemySprite(bool isBoss)` | 기존 절차 생성 일반/보스 그림 대신 두 원본을 로드/공유. 로딩 실패 시 기존 대체 그림 유지 |
-| [OrdrUnitWorldPresenter.cs](../../../Assets/Scripts/Unity/OrdrUnitWorldPresenter.cs) · `SyncEnemies` | 적 ID·좌표·보스 여부·실제 HP바는 유지. 스프라이트의 크기/발 위치와 HP바 간격만 맞춤 |
+| [OrdrBattlefieldArt.cs](../../Assets/Scripts/Unity/OrdrBattlefieldArt.cs) · `EnemySprite(bool isBoss)` | 기존 절차 생성 일반/보스 그림 대신 두 원본을 로드/공유. 로딩 실패 시 기존 대체 그림 유지 |
+| [OrdrUnitWorldPresenter.cs](../../Assets/Scripts/Unity/OrdrUnitWorldPresenter.cs) · `SyncEnemies` | 적 ID·좌표·보스 여부·실제 HP바는 유지. 스프라이트의 크기/발 위치와 HP바 간격만 맞춤 |
 | 같은 파일 · `GetAvailableCue / SpawnAttackCue / UpdateAttackCue` | `BasicAttackCueKind`에 맞춰 참격·마법탄·명중 섬광을 연결. 기존 동시 표시 상한과 재사용 풀 유지 |
 | 같은 파일 · `GetAvailableSkillCue / SpawnSkillCue / UpdateSkillCue` | 링·섬광 자리에 광역 충격파/명중 이미지를 선택적으로 사용. 모든 스킬을 원형 광역으로 바꾸지 않음 |
-| [OrdrStoryBattlefieldView.cs](../../../Assets/Scripts/Unity/OrdrStoryBattlefieldView.cs) | 실제 파견 유닛의 공격 표시와 건물 실제 피해 표시를 구분하며 같은 효과 원본 재사용 |
+| [OrdrStoryBattlefieldView.cs](../../Assets/Scripts/Unity/OrdrStoryBattlefieldView.cs) | 실제 파견 유닛의 공격 표시와 건물 실제 피해 표시를 구분하며 같은 효과 원본 재사용 |
 
 현재 공격 표시 코드에는 예고용 `preview`와 비행 진행률로 표시하는 섬광이 있습니다. 이 PNG로 교체했다고 실제 명중 이벤트 연결까지 끝난 것으로 표시하지 않습니다. **예고/시전/이동 연출과 실제 피해 확인 연출을 분리**하고 기존 이벤트 생산자를 먼저 확인합니다.
 
