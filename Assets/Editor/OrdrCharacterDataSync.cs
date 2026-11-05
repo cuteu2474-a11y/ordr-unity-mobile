@@ -16,7 +16,6 @@ namespace Ordr.Mobile.Editor
     {
         private static readonly string[] DataFiles =
         {
-            "mobile-practice-battle-model.json",
             "mobile-standalone-enemy-model.json",
             "practice-native-inherited-defaults.json",
             "units.json",
@@ -117,6 +116,17 @@ namespace Ordr.Mobile.Editor
 
             Directory.CreateDirectory(target);
             int changed = 0;
+            int removed = 0;
+            // Retire the 10R/20R catalog from Resources, including incremental builds.
+            // The repository copy remains available to low-level regression tests.
+            string retired = Path.Combine(target, "mobile-practice-battle-model.json");
+            if (File.Exists(retired))
+            {
+                File.Delete(retired);
+                string retiredMeta = retired + ".meta";
+                if (File.Exists(retiredMeta)) File.Delete(retiredMeta);
+                removed++;
+            }
             foreach (string file in DataFiles)
             {
                 string from = Path.Combine(source, file);
@@ -131,14 +141,15 @@ namespace Ordr.Mobile.Editor
                 changed++;
             }
 
-            if (changed > 0)
+            if (changed > 0 || removed > 0)
                 // A build may follow immediately. In that case the newly
                 // copied JSON must be fully imported before scene packaging.
                 AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
 
-            if (changed > 0 || logIfUnchanged)
+            if (changed > 0 || removed > 0 || logIfUnchanged)
                 Debug.Log("ORDR 원본 도감 데이터 " + changed +
-                    "개 파일 동기화. 게임 기능·공식의 검증 또는 실행 결과는 아닙니다.");
+                    "개 동기화, 미사용 캐시 " + removed +
+                    "개 정리. 게임 기능·공식의 검증 또는 실행 결과는 아닙니다.");
         }
     }
 

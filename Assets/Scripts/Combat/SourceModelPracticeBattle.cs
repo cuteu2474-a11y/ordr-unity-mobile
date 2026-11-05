@@ -81,7 +81,7 @@ namespace Ordr.Mobile.Combat
                 !Equals(OrdrJson.Value(root, "safeForVerifiedMonsterWaveRuntime"), false) ||
                 Number(root, "initialEnemyLimit") != EnemyLimit ||
                 Number(root, "roundRandomWisps") != RoundWisps)
-                throw new FormatException("별도 연습 전투 모델의 출처·미검증 표시가 필요합니다.");
+                throw new FormatException("몬스터 전투 모델의 출처·미검증 표시가 필요합니다.");
             var points = new List<CombatPathPoint>();
             foreach (var raw in OrdrJson.Array(OrdrJson.Value(root, "routeCenters"), "route"))
             {
@@ -244,7 +244,7 @@ namespace Ordr.Mobile.Combat
         {
             if (Started || !economy.HasStarted || combat.Game.Phase != SessionPhase.Running ||
                 combat.Game.CurrentWave != 0 || !combat.UsesSourceModelBasicAttacks)
-                throw new InvalidOperationException("유닛 준비 상태에서 연습 전투를 시작하세요.");
+                throw new InvalidOperationException("유닛 준비 상태에서 전투를 시작하세요.");
             combat.ConfigureSourceModelRouteCorners(catalog.RouteCorners);
             waves.VerifiedMonsterDefeated += RewardActualDeath;
             combat.SourceModelTimeAdvancing += MoveLivingMonsters;

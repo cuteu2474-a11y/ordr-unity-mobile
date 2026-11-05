@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Build source-derived standalone enemy simulations, without external live witnesses.
 
-The 20-round training model and 65-round standalone model are intentionally
-distinct from the unimplemented Warcraft-client-parity approval path.
+The 65-round standalone model is the only runtime model. The legacy 20-round
+catalog remains regenerable solely for low-level regression fixtures. Neither
+is an original-client-parity approval path.
 """
 import argparse
 import hashlib
@@ -15,7 +16,7 @@ MAP_SHA = '0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c'
 JASS_SHA = '96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d'
 
 
-def build(data, jass_path, balance_path, last_round=20):
+def build(data, jass_path, balance_path, last_round=65):
     if last_round not in (20, 65):
         raise ValueError('Supported source-derived wave catalogs end at 20 or 65')
     raw = jass_path.read_bytes()
@@ -102,11 +103,14 @@ def main():
     p.add_argument('--jass', required=True, type=Path)
     p.add_argument('--balance', required=True, type=Path)
     p.add_argument('--data', type=Path, default=Path('data'))
-    p.add_argument('--output', type=Path, default=Path('data/mobile-practice-battle-model.json'))
-    p.add_argument('--last-round', type=int, choices=(20, 65), default=20)
+    p.add_argument('--output', type=Path)
+    p.add_argument('--last-round', type=int, choices=(20, 65), default=65)
     a = p.parse_args()
+    if a.last_round == 20 and a.output is None:
+        p.error('Legacy 20-round test fixtures require an explicit --output path')
+    output = a.output or Path('data/mobile-standalone-enemy-model.json')
     result = build(a.data, a.jass, a.balance, a.last_round)
-    a.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print(str(a.last_round) + '-round source-derived monster model written; original-client parity remains unverified')
 
 

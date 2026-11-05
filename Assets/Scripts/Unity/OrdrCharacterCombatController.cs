@@ -944,21 +944,16 @@ namespace Ordr.Mobile.Unity
             catch { buildings.Dispose(); throw; }
         }
 
-        public void BeginPracticeBattle(int lastRound = 10)
+        public void BeginStandaloneBattle()
         {
             if (Combat == null) ConfigureCatalogOnlyWorld(unchecked((uint)Environment.TickCount));
             if (sourceModelDamage == null || PracticeBattle != null || Combat.Game.CurrentWave != 0 ||
                 (Combat.Game.Phase != SessionPhase.NotStarted && !IsUnitPreparation))
-                throw new InvalidOperationException("새 게임 또는 유닛 준비 상태에서 연습을 시작하세요.");
-            if (lastRound != 10 && lastRound != 20 && lastRound != 65)
-                throw new ArgumentOutOfRangeException(nameof(lastRound));
+                throw new InvalidOperationException("새 게임 또는 유닛 준비 상태에서 전투를 시작하세요.");
             // Standalone Unity simulation uses the source-derived 65-round
             // model directly. No Warcraft instance or external live-event
             // witness is required to drive combat. Parity flags stay false.
-            string resource = lastRound == 65
-                ? "OrdrData/mobile-standalone-enemy-model"
-                : "OrdrData/mobile-practice-battle-model";
-            var data = Resources.Load<TextAsset>(resource);
+            var data = Resources.Load<TextAsset>("OrdrData/mobile-standalone-enemy-model");
             if (data == null) throw new InvalidOperationException("원본 기반 몬스터 전투 자료가 APK에 없습니다.");
             var creepData = Resources.Load<TextAsset>(
                 "OrdrData/original-2323C-monster-object-stats");
@@ -966,7 +961,7 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("크립 원본 객체 자료가 APK에 없습니다.");
             var creepCatalog = Original323CreepObjectCatalog.FromJson(creepData.text);
             var prepared = new SourceModelPracticeBattle(Combat, VerifiedWaveDirector, SharedEconomy,
-                new SourceModelPracticeCatalog(data.text, lastRound), OriginalMonsterSpawnIdentities,
+                new SourceModelPracticeCatalog(data.text, 65), OriginalMonsterSpawnIdentities,
                 sourceModelDamage, sessionScriptRandom, () =>
                 {
                     PersonalMissions?.OnRoundStarted();
@@ -1006,7 +1001,7 @@ namespace Ordr.Mobile.Unity
             PracticeBattle.Start();
             var presenter = GetComponent<OrdrUnitWorldPresenter>();
             if (presenter != null) presenter.ShowAllOwnedUnits();
-            RecordSessionIssue("원본 기반 독립 전투 시작", lastRound + "R · 외부 원작 실행 불필요 · 몬스터 HP/피해 최종 원작 대조 전");
+            RecordSessionIssue("원본 기반 독립 전투 시작", "65R · 외부 원작 실행 불필요 · 몬스터 HP/피해 최종 원작 대조 전");
         }
         public bool TryPlanOriginalStoryGreenBlood(long instanceId,
             out Original323GreenBloodPlan plan, out string unitName)

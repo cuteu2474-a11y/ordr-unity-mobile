@@ -45,7 +45,6 @@ namespace Ordr.Mobile.Unity
         private MobileUtilitySpecSnapshot utilitySpecSnapshot;
         private float nextFusionRefresh;
         private string fusionInventorySignature;
-        private int selectedPracticeRounds = 65;
         private bool showUnitDetails;
         private long? expandedOwnedUnitId;
         private string expandedOwnedGroupId;
@@ -717,7 +716,7 @@ namespace Ordr.Mobile.Unity
             var gold = OrdrMobileUiTheme.Gold;
             var aqua = OrdrMobileUiTheme.Aqua;
             DrawScoreMetric("전투", controller.IsUnitPreparation ? "출격 준비" :
-                controller.PracticeBattle != null ? selectedPracticeRounds + "R 연습" :
+                controller.PracticeBattle != null ? "65R 전투" :
                 "원본 세션", gold);
             if (controller.Original323HelperNavigation != null &&
                 controller.Original323HelperNavigation.ChosenNavigation != null)
@@ -819,15 +818,10 @@ namespace Ordr.Mobile.Unity
             {
                 bool previous = GUI.enabled;
                 GUI.enabled = previous && Combat.CharacterCount > 0;
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button(selectedPracticeRounds == 10 ? "10R ✓" : "10R", GUILayout.MinHeight(54))) selectedPracticeRounds = 10;
-                if (GUILayout.Button(selectedPracticeRounds == 20 ? "20R ✓" : "20R", GUILayout.MinHeight(54))) selectedPracticeRounds = 20;
-                if (GUILayout.Button(selectedPracticeRounds == 65 ? "65R ✓" : "65R", GUILayout.MinHeight(54))) selectedPracticeRounds = 65;
-                GUILayout.EndHorizontal();
-                if (GUILayout.Button("준비 완료 · " + selectedPracticeRounds + "R 전투 시작",
+                if (GUILayout.Button("준비 완료 · 65R 전투 시작",
                     OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
                 {
-                    try { controller.BeginPracticeBattle(selectedPracticeRounds); notice = "전투 시작 · 소환과 조합은 계속할 수 있습니다."; }
+                    try { controller.BeginStandaloneBattle(); notice = "전투 시작 · 소환과 조합은 계속할 수 있습니다."; }
                     catch (Exception error) { notice = error.Message; }
                 }
                 GUI.enabled = previous;

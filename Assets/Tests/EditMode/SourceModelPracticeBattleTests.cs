@@ -277,8 +277,8 @@ namespace Ordr.Mobile.Tests
                     .Invoke(owner, null);
                 owner.BeginUnitPreparation();
                 for (int i = 0; i < 3; i++) owner.Combat.SpawnCharacter("C-01", -4000, 4000);
-                owner.BeginPracticeBattle();
-                owner.PracticeBattle.Advance(.1);
+                owner.BeginStandaloneBattle();
+                owner.PracticeBattle.Advance(21.1);
                 var offer = owner.ManualActions.PreviewFusion(owner.Combat.MobileUnitSnapshot())
                     .Single(x => x.RecipeId == "A012");
                 Assert.AreEqual(Ordr.Mobile.Mobile.ManualActionState.Succeeded,
@@ -308,8 +308,8 @@ namespace Ordr.Mobile.Tests
                 owner.Combat.SpawnCharacter("S-07", -4000, 4000);
                 owner.Combat.SpawnCharacter("S-12", -4000, 4000);
                 owner.Combat.SpawnCharacter("S-18", -4000, 4000);
-                owner.BeginPracticeBattle();
-                owner.PracticeBattle.Advance(.1);
+                owner.BeginStandaloneBattle();
+                owner.PracticeBattle.Advance(21.1);
                 var offer = owner.ManualActions.PreviewFusion(owner.Combat.MobileUnitSnapshot())
                     .Single(x => x.RecipeId == "A00F");
                 Assert.AreEqual(Ordr.Mobile.Mobile.ManualActionState.Succeeded,
@@ -375,10 +375,9 @@ namespace Ordr.Mobile.Tests
                 owner.BeginUnitPreparation();
                 owner.Combat.SpawnCharacter("C-01", -4000, 4000);
                 long wisps = owner.WispBalance(WispResourceIds.Random);
-                Assert.Throws<ArgumentOutOfRangeException>(() => owner.BeginPracticeBattle(42));
                 Assert.AreEqual(0, owner.Combat.Game.CurrentWave);
                 Assert.AreEqual(wisps, owner.WispBalance(WispResourceIds.Random));
-                owner.BeginPracticeBattle(65);
+                owner.BeginStandaloneBattle();
                 Assert.AreEqual(65, owner.PracticeBattle.LastRound);
                 Assert.AreEqual(1, owner.Combat.Game.CurrentWave);
                 Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
@@ -494,7 +493,7 @@ namespace Ordr.Mobile.Tests
                 owner.BeginUnitPreparation();
                 long id = owner.Combat.SpawnCharacter("C-01", -4768, 3232);
                 long balance = owner.WispBalance(WispResourceIds.Random);
-                owner.BeginPracticeBattle();
+                owner.BeginStandaloneBattle();
                 Assert.IsNotNull(owner.PracticeBattle);
                 Assert.IsFalse(owner.HasSourceVerifiedDamageRuntime);
                 Assert.IsFalse(owner.IsUnitPreparation);
@@ -506,7 +505,7 @@ namespace Ordr.Mobile.Tests
                 typeof(OrdrCharacterCombatController).GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance)
                     .Invoke(owner, null);
                 Assert.AreEqual(0, owner.Combat.Time);
-                Assert.Throws<InvalidOperationException>(() => owner.BeginPracticeBattle());
+                Assert.Throws<InvalidOperationException>(() => owner.BeginStandaloneBattle());
                 Assert.Throws<InvalidOperationException>(() => owner.BeginVerifiedFirstWave());
             }
             finally { UnityEngine.Object.DestroyImmediate(root); }
