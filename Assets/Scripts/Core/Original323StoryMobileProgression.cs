@@ -17,6 +17,7 @@ namespace Ordr.Mobile.Core
             new HashSet<string>(StringComparer.Ordinal);
         private IOriginal323StoryNativeRewardPort externalEffects;
         private IOriginal323StoryNativeRewardPort storyMaterialEffects;
+        private IOriginal323StoryNativeRewardPort storyHeroExperienceEffects;
         private IOriginal323StoryTraitSelection traitSelection;
         private readonly EconomyWallet sharedWallet;
         private bool traitPointsAlreadySettled;
@@ -61,6 +62,15 @@ namespace Ordr.Mobile.Core
             storyMaterialEffects = port;
         }
 
+        public void ConnectMobileHeroExperience(
+            IOriginal323StoryNativeRewardPort port)
+        {
+            if (storyHeroExperienceEffects != null || port == null ||
+                ReferenceEquals(port, this))
+                throw new InvalidOperationException("스토리 경험치 월드를 중복/잘못 연결했습니다.");
+            storyHeroExperienceEffects = port;
+        }
+
         private static bool KnownResearch(int stage, string rawcode) =>
             (stage == 5 && rawcode == "R01N") ||
             (stage == 8 && rawcode == "R01O") ||
@@ -79,6 +89,23 @@ namespace Ordr.Mobile.Core
                 if (!storyMaterialEffects.TryApplySourceNativeReward(award)) return false;
                 applied.Add(award.Receipt);
                 return true;
+            }
+            if (award.Kind == Original323StoryNativeRewardKind.HeroExperience &&
+                (award.Stage == 13 || award.Stage == 14) &&
+                award.Amount == 300 && award.OriginalRawcode == "Hp[VT]")
+            {
+                // A real native group adapter always has precedence. The
+                // default solo runtime stores mobile XP for pinned owned
+                // combat actors only; it never claims source-level parity.
+                if ((externalEffects != null &&
+                     externalEffects.TryApplySourceNativeReward(award)) ||
+                    (storyHeroExperienceEffects != null &&
+                     storyHeroExperienceEffects.TryApplySourceNativeReward(award)))
+                {
+                    applied.Add(award.Receipt);
+                    return true;
+                }
+                return false;
             }
             if (award.Kind == Original323StoryNativeRewardKind.Research &&
                 award.Amount == 1 &&

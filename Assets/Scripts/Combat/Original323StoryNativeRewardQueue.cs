@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Ordr.Mobile.Core;
+using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
 {
@@ -101,6 +103,83 @@ namespace Ordr.Mobile.Combat
                 applied++;
             }
             return applied;
+        }
+    }
+
+    // The source Hp[VT[player]] handle is absent from the standalone Unity
+    // game. The mobile outcome models it as live, player-owned combat
+    // characters with pinned map identities (never noncombat CWR materials).
+    // XP is a per-instance game-state ledger. It never invents a Warcraft
+    // level threshold, damage bonus or a recipient that is not on the roster.
+    public sealed class Original323MobileStoryHeroExperienceWorld :
+        IOriginal323StoryNativeRewardPort
+    {
+        private const string ExperiencePrefix = "story:hero-xp:actor:";
+        private readonly CharacterCombatRuntime combat;
+        private readonly SharedEconomySession economy;
+        private readonly OriginalMapBaseStatCatalog objects;
+        public int LastAwardedHeroCount { get; private set; }
+
+        public Original323MobileStoryHeroExperienceWorld(
+            CharacterCombatRuntime runtime, SharedEconomySession session,
+            OriginalMapBaseStatCatalog originalObjects)
+        {
+            combat = runtime ?? throw new ArgumentNullException(nameof(runtime));
+            economy = session ?? throw new ArgumentNullException(nameof(session));
+            objects = originalObjects ?? throw new ArgumentNullException(nameof(originalObjects));
+            if (!ReferenceEquals(combat.Roster, economy.Units) ||
+                objects.SourceW3xSha256 != OriginalCommonSaleRules.OriginalMapSha256 ||
+                GameSession.ModeId != "nightmare-otherworld")
+                throw new ArgumentException("스토리 경험치 원본 객체·공유 로스터가 일치하지 않습니다.");
+        }
+
+        public long ExperienceOf(long instanceId)
+        {
+            if (instanceId <= 0) return 0;
+            return economy.Wallet.Balance(ExperiencePrefix + instanceId);
+        }
+
+        public bool TryApplySourceNativeReward(Original323StoryNativeReward award)
+        {
+            if (award == null ||
+                award.Kind != Original323StoryNativeRewardKind.HeroExperience ||
+                (award.Stage != 13 && award.Stage != 14) ||
+                award.OriginalRawcode != "Hp[VT]" || award.Amount != 300 ||
+                award.Receipt != "story:native:" + award.Stage +
+                    ":HeroExperience:Hp[VT]" ||
+                !economy.HasStarted || combat.Game.Phase != SessionPhase.Running)
+                return false;
+            if (economy.Wallet.HasCompletedTransaction(award.Receipt))
+                return true;
+            var bundle = new ResourceBundle();
+            int recipients = 0;
+            foreach (var owned in combat.MobileUnitSnapshot())
+            {
+                // The independent hero-group handle is not ported. This
+                // explicit solo result policy uses only pinned, owned
+                // character instances. No future acquisition gets old XP.
+                if (owned.Unit == null ||
+                    owned.Unit.CatalogEntryKind == "support-object" ||
+                    owned.Unit.IsAlternateForm ||
+                    objects.Find(owned.Unit.Id) == null ||
+                    objects.Find(owned.Unit.Id).Attack1 == null)
+                    continue;
+                bundle.Add(ExperiencePrefix + owned.InstanceId, award.Amount);
+                recipients++;
+            }
+            try
+            {
+                if (!economy.Wallet.TryGrantOnce(award.Receipt, bundle) &&
+                    !economy.Wallet.HasCompletedTransaction(award.Receipt))
+                    return false;
+            }
+            catch
+            {
+                if (!economy.Wallet.HasCompletedTransaction(award.Receipt))
+                    throw;
+            }
+            LastAwardedHeroCount = recipients;
+            return true;
         }
     }
 }

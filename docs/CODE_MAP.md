@@ -1,3 +1,10 @@
+## 2026-11-05 · 63차 스토리 보상 실제 선택·경험치 장부
+
+- `Original323KumaWispChoiceWorld`: 원본 CQB e01A/10단계 모델 획득을 별도 지갑으로 보존하며 원본 KM-01 동일성 검증→유닛 임시 생성→1회 지갑 차감→실물 확정/롤백. 중복 출처 정산 마커 사용.
+- `Original323SoloStoryScenario`: 10단계 자체 보상은 원본 CQB 수령 증거가 이미 있는 경우 중복 지급하지 않음. `Original323SourceMaterialRewardWorld`: 역방향 중복 영수증 방지.
+- `Original323MobileStoryHeroExperienceWorld`: 13·14단계 300XP × 현재 보유·원본 매핑·평타 있는 유닛, 한 영수증에 일괄 커밋. `Original323StoryMobileProgression`의 외부 원본 월드 우선, 모바일 XP 대체 월드 차순.
+- `OrdrCharacterCombatController`/ `OrdrMobileTouchPanel`: 스토리 XP와 초월위습 사용, 그린블러드 SPH1~4 원자 조합으로 이동·현황 표시. 레벨업/기타 A13A 강화는 별도 소스 근거 필요.
+
 ## 2026-11-05 · 62차 스토리 관리 UI와 안전한 수동 복귀
 
 - OrdrMobileTouchPanel.DrawStory / DrawStoryDispatchPanel: 현재 스토리 건물 HP·진행·출현/파괴 제한·연구/기본 보상/네이티브 적용 현황, 건물별 기록, 선택 유닛 직접 이동, 필터·페이지·일괄 복귀 확인.

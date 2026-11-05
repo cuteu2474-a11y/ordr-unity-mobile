@@ -783,6 +783,18 @@ namespace Ordr.Mobile.Unity
         public Original323SoloStoryScenario SoloStory { get; private set; }
         private IOriginal323StoryNativeRewardPort originalStoryNativeAwards;
         public Original323StoryMobileProgression StoryProgression { get; private set; }
+        private Original323KumaWispChoiceWorld practiceStoryKumaChoice;
+        public Original323MobileStoryHeroExperienceWorld StoryHeroExperience { get; private set; }
+        public long PendingPracticeStoryTranscendWisps =>
+            SoloStory != null && SoloStory.HighestDestroyedStage >= 10 &&
+            SharedEconomy != null
+                ? SharedEconomy.Wallet.Balance(
+                    Original323SoloStoryScenario.PracticeTranscendWisp)
+                : 0;
+        public long PendingAllStoryTranscendWisps =>
+            checked(PendingPracticeStoryTranscendWisps +
+                (OriginalSourceMaterialRewards == null ? 0 :
+                 OriginalSourceMaterialRewards.PendingTranscendWisps));
         public void ConfigureOriginal323StoryNativeAwards(IOriginal323StoryNativeRewardPort port)
         {
             originalStoryNativeAwards = port ??
@@ -902,10 +914,18 @@ namespace Ordr.Mobile.Unity
                     progression.ConnectStoryMaterialEffects(
                         new Original323AncientShipStoryRewardPort(Combat,
                             SharedEconomy, Units, MapBaseStats));
+                    var heroExperience = new Original323MobileStoryHeroExperienceWorld(
+                        Combat, SharedEconomy, MapBaseStats);
+                    progression.ConnectMobileHeroExperience(heroExperience);
+                    StoryHeroExperience = heroExperience;
                     if (originalStoryNativeAwards != null)
                         progression.ConnectAdditionalNativeEffects(originalStoryNativeAwards);
                     scenario.ConfigureNativeAwardPort(progression);
                     scenario.Start();
+                    // Do not grant at menu/open time. The original outcome
+                    // is minted only after a committed stage-ten story clear.
+                    practiceStoryKumaChoice = new Original323KumaWispChoiceWorld(
+                        Combat, SharedEconomy, Units, MapBaseStats);
                 }
                 catch { scenario.Dispose(); throw; }
                 StoryProgression = progression;
@@ -1252,22 +1272,40 @@ namespace Ordr.Mobile.Unity
         // story transcendence Wisp. This does not choose for the player.
         public ManualActionResult RequestOriginalTranscendKumaChoice()
         {
-            if (OriginalSourceMaterialRewards == null)
-                return ManualActionResult.Unavailable("스토리 초월위습 보상 확인");
+            if (!runGate.CanAdvance || IsUnitPreparation)
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "전투 진행 중에만 초월위습을 사용할 수 있습니다.");
+            if (PendingAllStoryTranscendWisps < 1)
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "획득한 스토리 초월위습이 없습니다.");
             long actorId;
             try
             {
-                if (!OriginalSourceMaterialRewards.TryChooseKuma(out actorId))
+                // The source-confirmed e01A and the earned solo practice
+                // entitlement remain separate wallet keys and receipts.
+                // Both consume exactly one token into one physical Kuma.
+                if (OriginalSourceMaterialRewards != null &&
+                    OriginalSourceMaterialRewards.PendingTranscendWisps > 0)
+                {
+                    if (!OriginalSourceMaterialRewards.TryChooseKuma(out actorId))
+                        return new ManualActionResult(ManualActionState.Rejected,
+                            "원본 초월위습 선택을 완료할 수 없습니다.");
+                }
+                else if (practiceStoryKumaChoice == null ||
+                    !practiceStoryKumaChoice.TryChooseKuma(
+                        Original323SoloStoryScenario.PracticeTranscendWisp,
+                        out actorId))
                     return new ManualActionResult(ManualActionState.Rejected,
-                        "원본 스토리 보상 초월위습이 없거나 현재 사용할 수 없습니다.");
+                        "10단계 격파 보상 초월위습을 사용할 수 없습니다.");
                 return new ManualActionResult(ManualActionState.Succeeded,
-                    "초월위습 1개 사용 · 바솔로뮤 쿠마 획득");
+                    "스토리 초월위습 1개 사용 · 바솔로뮤 쿠마 실제 유닛 획득");
             }
             catch (Exception error)
             {
                 Debug.LogException(error);
+                RecordSessionIssue("스토리 초월위습 선택 실패", error.Message);
                 return new ManualActionResult(ManualActionState.Rejected,
-                    "초월위습 교환 실패 · 원본 보유 상태를 유지했습니다.");
+                    "초월위습 교환 처리 확인이 필요합니다. 보유 수량을 다시 확인해 주세요.");
             }
         }
 

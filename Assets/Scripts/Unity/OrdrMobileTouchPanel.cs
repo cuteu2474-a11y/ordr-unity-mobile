@@ -1106,6 +1106,15 @@ namespace Ordr.Mobile.Unity
                         "  ·  MP " + resources.Mana.ToString("0.#") +
                         "/" + resources.MaximumMana.ToString("0.#"),
                         OrdrMobileUiTheme.Overline);
+                if (controller.StoryHeroExperience != null)
+                {
+                    long storyXp = controller.StoryHeroExperience.ExperienceOf(
+                        Combat.Roster.SelectedId.Value);
+                    if (storyXp > 0)
+                        GUILayout.Label("스토리 획득 경험치 +" + storyXp +
+                            " (모바일 경험치 장부 · 레벨 효과 별도)",
+                            OrdrMobileUiTheme.Overline);
+                }
                 var form = Combat.PracticeFormOf(Combat.Roster.SelectedId.Value);
                 if (!string.IsNullOrEmpty(form))
                 {
@@ -1919,9 +1928,43 @@ namespace Ordr.Mobile.Unity
                 OrdrMobileUiTheme.DrawStatusRow("연구·특성",
                     "연구 " + progression.Researches.Count + "개 · 특성포인트 " +
                     progression.TraitPoints + "개", OrdrMobileUiTheme.Aqua);
+            if (controller.StoryHeroExperience != null &&
+                scenario.HighestDestroyedStage >= 13)
+                OrdrMobileUiTheme.DrawStatusRow("스토리 영웅 경험치",
+                    "13·14단계 격파 시 보유 전투 유닛마다 +300 XP" +
+                    " · 원본 레벨 상승 공식 별도",
+                    OrdrMobileUiTheme.Aqua);
             OrdrMobileUiTheme.DrawStatusRow("원본 추가 보상",
                 "실제 적용 대기 " + scenario.NativeRewards.PendingCount + "건",
                 OrdrMobileUiTheme.Aqua);
+            if (controller.PendingAllStoryTranscendWisps > 0)
+            {
+                OrdrMobileUiTheme.DrawStatusRow("10단계 초월위습",
+                    "남은 선택 " + controller.PendingAllStoryTranscendWisps + "회",
+                    OrdrMobileUiTheme.Gold);
+                if (GUILayout.Button("초월위습 → 쿠마 획득",
+                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(62)))
+                    RunWispDirect("스토리 초월위습 · 쿠마",
+                        () => controller.RequestOriginalTranscendKumaChoice());
+            }
+            if (controller.SharedEconomy != null &&
+                controller.SharedEconomy.Wallet.Balance(
+                    Original323StoryMobileProgression.GreenBloodUseResourceId) > 0)
+            {
+                OrdrMobileUiTheme.DrawStatusRow("14단계 그린블러드",
+                    "사용권 " + controller.SharedEconomy.Wallet.Balance(
+                        Original323StoryMobileProgression.GreenBloodUseResourceId) +
+                    "회 · 보유 대상의 세라핌 변환은 조합 메뉴에서",
+                    OrdrMobileUiTheme.Gold);
+                if (GUILayout.Button("세라핌 변환 조합으로 이동",
+                    GUILayout.MinHeight(58)))
+                {
+                    currentTab = Tab.Fusion;
+                    fusionListCategory = FusionListCategory.All;
+                    fusionPage = 0;
+                    scroll = Vector2.zero;
+                }
+            }
             int rewardStage = selectedStoryRewardStage >= 1 &&
                 selectedStoryRewardStage <= Original323StoryUnlockRules.FinalStage ?
                 selectedStoryRewardStage :
@@ -2540,23 +2583,24 @@ namespace Ordr.Mobile.Unity
             DrawAutomaticWispStatus("특별위습", WispResourceIds.Special);
             DrawAutomaticWispStatus("희귀위습", WispResourceIds.Rare);
             DrawAutomaticWispStatus("전설위습", WispResourceIds.Legendary);
-            // Source-confirmed story boss reward only. An ordinary menu
-            // press can NEVER simulate a missing CQB award event.
-            if (controller.OriginalSourceMaterialRewards != null)
+            // Source-observed CQB tokens and story-10 practice entitlements
+            // share only the user choice. Neither is granted by opening UI.
+            if (controller.PendingAllStoryTranscendWisps > 0)
             {
-                var rewards = controller.OriginalSourceMaterialRewards;
-                if (rewards.PendingTranscendWisps > 0)
-                {
-                    GUILayout.BeginVertical(GUI.skin.box);
-                    GUILayout.Label("스토리 보상 초월위습 " +
-                        rewards.PendingTranscendWisps + "개",
-                        OrdrMobileUiTheme.SectionTitle);
-                    if (GUILayout.Button("초월위습 1개 → 바솔로뮤 쿠마 선택",
-                        OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
-                        RunWispDirect("스토리 초월위습 · 쿠마",
-                            () => controller.RequestOriginalTranscendKumaChoice());
-                    GUILayout.EndVertical();
-                }
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.Label("스토리 보상 초월위습 " +
+                    controller.PendingAllStoryTranscendWisps + "개",
+                    OrdrMobileUiTheme.SectionTitle);
+                if (controller.PendingPracticeStoryTranscendWisps > 0)
+                    GUILayout.Label("10단계 격파 보상 " +
+                        controller.PendingPracticeStoryTranscendWisps +
+                        "개 · 선택하면 실제 쿠마 유닛이 생성됩니다.",
+                        OrdrMobileUiTheme.Explanation);
+                if (GUILayout.Button("초월위습 1개 → 바솔로뮤 쿠마 선택",
+                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
+                    RunWispDirect("스토리 초월위습 · 쿠마",
+                        () => controller.RequestOriginalTranscendKumaChoice());
+                GUILayout.EndVertical();
             }
 
             DrawEconomy(ManualEconomyCategory.Wisp);

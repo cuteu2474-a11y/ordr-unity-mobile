@@ -108,6 +108,7 @@ namespace Ordr.Mobile.Combat
         public const string TokenCatalogId = "LT-01";
         public const string StoryWispRawcode = "e01A";
         public const string PendingStoryWispResource = "source:story-transcend-wisp";
+        public const string SettledStoryWispMarker = "story:transcend-stage10:original-settled";
         // CSN creates its player-owned result at the player-zero start.
         public const double SourceStartX = -3776.0;
         public const double SourceStartY = 4480.0;
@@ -117,9 +118,7 @@ namespace Ordr.Mobile.Combat
         private readonly IOriginal323SourceMaterialEventWitness witness;
         private readonly Original323CwrAcquisitionRoutes cwrAcquisitions;
         private bool inFlight;
-        private long nextChoice;
-        private readonly string choiceReceiptPrefix =
-            "original323:story-choice-kuma:" + Guid.NewGuid().ToString("N") + ":";
+        private readonly Original323KumaWispChoiceWorld kumaChoice;
 
         public Original323SourceMaterialRewardWorld(CharacterCombatRuntime world,
             SharedEconomySession session, CharacterUnitCatalog units,
@@ -138,6 +137,8 @@ namespace Ordr.Mobile.Combat
             RequireIdentity(units, originalObjects,
                 KumaCatalogId, KumaRawcode, "초월함",
                 "verified-source-story-transcend-choice");
+            kumaChoice = new Original323KumaWispChoiceWorld(
+                combat, economy, units, originalObjects);
             RequireIdentity(units, originalObjects,
                 TokenCatalogId, TokenRawcode, "재료",
                 "verified-source-unit-gambling-reward");
@@ -274,8 +275,17 @@ namespace Ordr.Mobile.Combat
             {
                 try
                 {
-                    return economy.Wallet.TryGrantOnce(receipt,
-                        new ResourceBundle().Add(PendingStoryWispResource, 1));
+                    // The practice stage-10 payout and the independently
+                    // observed CQB are two proofs of ONE stage reward.
+                    // A marker survives even if the player used the Wisp.
+                    bool alreadyEarned =
+                        economy.Wallet.HasCompletedTransaction("practice:story-stage:10") ||
+                        economy.Wallet.Balance(SettledStoryWispMarker) > 0;
+                    var award = new ResourceBundle();
+                    if (economy.Wallet.Balance(SettledStoryWispMarker) == 0)
+                        award.Add(SettledStoryWispMarker, 1);
+                    if (!alreadyEarned) award.Add(PendingStoryWispResource, 1);
+                    return economy.Wallet.TryGrantOnce(receipt, award);
                 }
                 catch
                 {
@@ -294,35 +304,8 @@ namespace Ordr.Mobile.Combat
         public bool TryChooseKuma(out long resultId)
         {
             resultId = 0;
-            if (!Ready() || PendingTranscendWisps < 1) return false;
-            inFlight = true;
-            long spawned = 0;
-            try
-            {
-                long next = checked(nextChoice + 1);
-                string receipt = choiceReceiptPrefix + next;
-                spawned = combat.SpawnVerifiedOriginalPositionCharacter(KumaCatalogId,
-                    SourceStartX, SourceStartY);
-                bool debited = economy.Wallet.TryExchangeOnce(receipt,
-                    new ResourceBundle().Add(PendingStoryWispResource, 1),
-                    new ResourceBundle());
-                if (!debited)
-                {
-                    combat.RollbackUncommittedSpawn(spawned);
-                    return false;
-                }
-                nextChoice = next;
-                resultId = spawned;
-                return true;
-            }
-            catch
-            {
-                // A wallet post-commit exception cannot duplicate the result:
-                // the empty payout produces no Granted callback in this path.
-                if (spawned != 0) combat.RollbackUncommittedSpawn(spawned);
-                throw;
-            }
-            finally { inFlight = false; }
+            return Ready() &&
+                kumaChoice.TryChooseKuma(PendingStoryWispResource, out resultId);
         }
 
         // CJK = high-grade unit gamble fail; CJM = otherworld unit gamble
@@ -618,6 +601,86 @@ namespace Ordr.Mobile.Combat
                     economy.Wallet.RestoreState(beforeWallet);
                     if (checkpointRandom != null)
                         checkpointRandom.RestoreCheckpoint(checkpoint);
+                }
+                throw;
+            }
+            finally { processing = false; }
+        }
+    }
+
+    // A single, receipt-backed target-spawn transaction consumes either
+    // a witnessed CQB e01A or an explicitly earned mobile story-stage token.
+    // The two award SOURCES stay separate; choice, rollback and identity
+    // validation are shared and never create a free Kuma.
+    public sealed class Original323KumaWispChoiceWorld
+    {
+        private readonly CharacterCombatRuntime combat;
+        private readonly SharedEconomySession economy;
+        private readonly string receiptNamespace =
+            "original323:kuma-choice:" + Guid.NewGuid().ToString("N") + ":";
+        private long sequence;
+        private bool processing;
+
+        public Original323KumaWispChoiceWorld(CharacterCombatRuntime world,
+            SharedEconomySession session, CharacterUnitCatalog units,
+            OriginalMapBaseStatCatalog objects)
+        {
+            combat = world ?? throw new ArgumentNullException(nameof(world));
+            economy = session ?? throw new ArgumentNullException(nameof(session));
+            var kuma = units == null ? null : units.Find(
+                Original323SourceMaterialRewardWorld.KumaCatalogId);
+            var source = objects == null ? null : objects.Find(
+                Original323SourceMaterialRewardWorld.KumaCatalogId);
+            if (!ReferenceEquals(combat.Roster, economy.Units) ||
+                objects == null || objects.SourceW3xSha256 != OriginalCommonSaleRules.OriginalMapSha256 ||
+                kuma == null || kuma.Grade != "초월함" ||
+                source == null ||
+                source.OriginalRawcode != Original323SourceMaterialRewardWorld.KumaRawcode ||
+                source.MappingStatus != "verified-source-story-transcend-choice" ||
+                source.Attack1 != null ||
+                GameSession.ModeId != "nightmare-otherworld")
+                throw new ArgumentException("초월위습 쿠마 원본 객체 신원이 일치하지 않습니다.");
+        }
+
+        public bool TryChooseKuma(string earnedWispResource, out long actorId)
+        {
+            actorId = 0;
+            if (processing || !economy.HasStarted ||
+                combat.Game.Phase != SessionPhase.Running ||
+                (earnedWispResource != Original323SourceMaterialRewardWorld.PendingStoryWispResource &&
+                 earnedWispResource != Original323SoloStoryScenario.PracticeTranscendWisp) ||
+                economy.Wallet.Balance(earnedWispResource) < 1)
+                return false;
+            processing = true;
+            long spawned = 0;
+            long next = checked(sequence + 1);
+            string receipt = receiptNamespace + next;
+            try
+            {
+                spawned = combat.SpawnVerifiedOriginalPositionCharacter(
+                    Original323SourceMaterialRewardWorld.KumaCatalogId,
+                    Original323SourceMaterialRewardWorld.SourceStartX,
+                    Original323SourceMaterialRewardWorld.SourceStartY);
+                if (!economy.Wallet.TryExchangeOnce(receipt,
+                    new ResourceBundle().Add(earnedWispResource, 1),
+                    new ResourceBundle()))
+                {
+                    combat.RollbackUncommittedSpawn(spawned);
+                    return false;
+                }
+                sequence = next;
+                actorId = spawned;
+                return true;
+            }
+            catch
+            {
+                if (!economy.Wallet.HasCompletedTransaction(receipt) && spawned != 0)
+                    combat.RollbackUncommittedSpawn(spawned);
+                else if (economy.Wallet.HasCompletedTransaction(receipt))
+                {
+                    sequence = next;
+                    actorId = spawned;
+                    return spawned != 0;
                 }
                 throw;
             }

@@ -72,7 +72,7 @@ namespace Ordr.Mobile.Combat
             if (reward.Uncommon > 0) parts.Add("안흔함위습 " + reward.Uncommon);
             if (reward.Special > 0) parts.Add("특별위습 " + reward.Special);
             if (reward.Rare > 0) parts.Add("희귀위습 " + reward.Rare);
-            if (stage == 10) parts.Add("초월위습 연습 권리 1");
+            if (stage == 10) parts.Add("초월위습 1회 · 쿠마 선택 가능");
             return string.Join(" · ", parts.ToArray());
         }
 
@@ -167,7 +167,7 @@ namespace Ordr.Mobile.Combat
         }
 
         private static ResourceBundle Bundle(Payout payout, bool contributor,
-            int stage)
+            int stage, bool nativeStageTenAlreadySettled)
         {
             var result = new ResourceBundle();
             if (payout.Gold > 0) result.Add("gold",
@@ -186,7 +186,8 @@ namespace Ordr.Mobile.Combat
             if (payout.Rare > 0) result.Add(WispResourceIds.Rare, payout.Rare);
             // Actual CQB gives a physical e01A actor; do not grant a
             // source-verified Kuma entitlement from a MODEL_ONLY kill.
-            if (stage == 10) result.Add(PracticeTranscendWisp, 1);
+            if (stage == 10 && !nativeStageTenAlreadySettled)
+                result.Add(PracticeTranscendWisp, 1);
             // Native research, talents, XP, h05Y and Green Blood are
             // typed obligations, not fake wallet currencies.
             return result;
@@ -207,7 +208,9 @@ namespace Ordr.Mobile.Combat
             bool contributor = ownedDamage.TryGetValue(id, out damage) && damage > 0;
             ownedDamage.Remove(id);
             var payout = Pay[stage];
-            var rewards = Bundle(payout, contributor, stage);
+            var rewards = Bundle(payout, contributor, stage,
+                economy.Wallet.Balance(
+                    Original323SourceMaterialRewardWorld.SettledStoryWispMarker) > 0);
             string receipt = "practice:story-stage:" + stage;
             // Commit one wallet receipt before recording the stage. Wallet
             // observers may throw AFTER a committed payment: never pay twice.

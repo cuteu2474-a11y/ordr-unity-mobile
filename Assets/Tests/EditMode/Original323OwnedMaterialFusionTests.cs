@@ -1108,5 +1108,96 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(9999, game.Economy.Wallet.Balance("gold"));
             Assert.AreEqual(7, game.Economy.Wallet.Balance("wood"));
         }
+
+        [Test]
+        public void StoryTenPracticeWispIsConsumedIntoExactlyOneOwnedKuma()
+        {
+            var game = Create();
+            var choices = new Original323KumaWispChoiceWorld(
+                game.Combat, game.Economy, game.Units, game.Map);
+            long result;
+            Assert.IsFalse(choices.TryChooseKuma(
+                Original323SoloStoryScenario.PracticeTranscendWisp, out result));
+            int before = game.Combat.MobileUnitSnapshot().Count;
+            Assert.IsTrue(game.Economy.Wallet.TryGrantOnce(
+                "practice:story-stage:10",
+                new ResourceBundle().Add(
+                    Original323SoloStoryScenario.PracticeTranscendWisp, 1)));
+            Assert.IsTrue(choices.TryChooseKuma(
+                Original323SoloStoryScenario.PracticeTranscendWisp, out result));
+            Assert.Greater(result, 0);
+            Assert.AreEqual(0, game.Economy.Wallet.Balance(
+                Original323SoloStoryScenario.PracticeTranscendWisp));
+            Assert.AreEqual(before + 1, game.Combat.MobileUnitSnapshot().Count);
+            Assert.AreEqual(Original323SourceMaterialRewardWorld.KumaCatalogId,
+                game.Combat.MobileUnitSnapshot()
+                    .Single(x => x.InstanceId == result).Unit.Id);
+            Assert.IsFalse(choices.TryChooseKuma(
+                Original323SoloStoryScenario.PracticeTranscendWisp, out result));
+            Assert.AreEqual(before + 1, game.Combat.MobileUnitSnapshot().Count);
+            Assert.IsFalse(choices.TryChooseKuma(
+                Original323SourceMaterialRewardWorld.PendingStoryWispResource,
+                out result), "연습 보상으로 원본 증명 e01A 권리는 획득하지 않습니다.");
+        }
+
+        [Test]
+        public void StageThirteenAndFourteenExperienceAccruesPerOwnedCombatActorOnly()
+        {
+            var game = Create();
+            string sourceHero = game.Units.All.First(x =>
+                x.CatalogEntryKind != "support-object" &&
+                !x.IsAlternateForm && game.Map.Find(x.Id) != null &&
+                game.Map.Find(x.Id).Attack1 != null).Id;
+            long hero = game.Combat.SpawnCharacter(sourceHero, 10, 20);
+            var mobile = new Original323MobileStoryHeroExperienceWorld(
+                game.Combat, game.Economy, game.Map);
+            var model = new Original323StoryMobileProgression(game.Economy.Wallet);
+            model.ConnectMobileHeroExperience(mobile);
+            var queue = new Original323StoryNativeRewardQueue();
+            queue.RecordCommittedClear(13);
+            Assert.AreEqual(2, queue.ApplyPending(model),
+                "13단계 특성포인트와 XP가 각각 한 번 처리됩니다.");
+            Assert.AreEqual(300, mobile.ExperienceOf(hero));
+            Assert.AreEqual(0, queue.PendingCount);
+            Assert.AreEqual(0, queue.ApplyPending(model));
+            Assert.AreEqual(300, mobile.ExperienceOf(hero));
+            long lateHero = game.Combat.SpawnCharacter(sourceHero, 30, 40);
+            Assert.AreEqual(0, mobile.ExperienceOf(lateHero),
+                "이전에 받은 경험치를 새 유닛에 소급 지급하지 않습니다.");
+            queue.RecordCommittedClear(14);
+            Assert.AreEqual(2, queue.ApplyPending(model),
+                "14단계 그린블러드 1회와 현재 보유 유닛 XP를 따로 처리합니다.");
+            Assert.AreEqual(600, mobile.ExperienceOf(hero));
+            Assert.AreEqual(300, mobile.ExperienceOf(lateHero));
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(
+                Original323StoryMobileProgression.GreenBloodUseResourceId));
+            Assert.AreEqual(0, queue.ApplyPending(model));
+            Assert.AreEqual(600, mobile.ExperienceOf(hero));
+        }
+
+
+        [Test]
+        public void WitnessedStoryTenRewardCannotDoubleClaimAfterPracticeClear()
+        {
+            var game = Create();
+            var witness = new SettledSourceWitness();
+            witness.Confirmed.Add("story10:CQB:e01A:1");
+            var source = new Original323SourceMaterialRewardWorld(
+                game.Combat, game.Economy, game.Units, game.Map,
+                witness, game.Registry);
+            Assert.IsTrue(game.Economy.Wallet.TryGrantOnce(
+                "practice:story-stage:10",
+                new ResourceBundle().Add(
+                    Original323SoloStoryScenario.PracticeTranscendWisp, 1)));
+            Assert.IsTrue(source.TryRecordObservedStoryClearWisp("story10"));
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(
+                Original323SoloStoryScenario.PracticeTranscendWisp));
+            Assert.AreEqual(0, source.PendingTranscendWisps,
+                "같은 10단계에서 연습/원본 초월위습을 2개 지급할 수 없습니다.");
+            Assert.AreEqual(1, game.Economy.Wallet.Balance(
+                Original323SourceMaterialRewardWorld.SettledStoryWispMarker));
+            Assert.IsFalse(source.TryRecordObservedStoryClearWisp("story10"));
+        }
+
     }
 }
