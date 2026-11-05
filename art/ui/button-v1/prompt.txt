@@ -1,0 +1,9 @@
+Generation: built-in image_gen; transparent_background=true
+
+Use case: ui-mockup
+Asset type: one reusable production game UI button background PNG, intended for a landscape mobile strategy game.
+Primary request: Create exactly ONE blank, neutral grayscale, subtly beveled rectangular button skin, adaptable to navy, gold, teal or gray via runtime color tint. This is the actual isolated button texture, not a UI screenshot, not a presentation, not a collection of states.
+Style: restrained polished strategy-game interface; dark brushed gunmetal, smooth quiet center, fine silver-gray edge, shallow inset border, very subtle top-edge light. Clean and legible at small phone sizes.
+Composition: straight-on perfectly orthographic horizontal rounded rectangle, approximately 3:1 width to height, centered and nearly filling the canvas with only tiny equal transparent margins. Small corner radius. Symmetric corners. Straight horizontal and vertical edges, continuous uniform border thickness. Keep all corner detail within the outer 8 percent of the rectangle width; the central region must be quiet and stretchable for nine-slice use.
+Palette: strictly neutral grayscale only, medium-dark charcoal interior and lighter gray rim; no colored accents. Interior opaque, only the area outside the button transparent.
+Constraints: absolutely no text, letters, numbers, icons, symbols, arrowheads, badges, decorative ornaments, extra buttons, diagram labels, nine-slice guides, scene, perspective, cast shadow, outer glow, watermark, checkerboard pattern, or baked background. No scratches or large-scale center texture. Genuine transparent background. Make it usable for both a short close button and a long summon action when sliced.
