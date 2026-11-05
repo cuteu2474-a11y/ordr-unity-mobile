@@ -172,7 +172,7 @@ namespace Ordr.Mobile.Unity
         private void LateUpdate()
         {
             // The actual main camera must occupy the main battlefield only,
-            // not the ribbon or the separate (currently placeholder) story area.
+            // not the ribbon or the separate story siege display.
             if (worldCamera == null) worldCamera = Camera.main;
             if (worldCamera == null) return;
             Rect safe = Screen.safeArea;

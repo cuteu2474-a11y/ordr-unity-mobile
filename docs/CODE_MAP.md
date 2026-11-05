@@ -52,6 +52,12 @@ flowchart TD
 
 5% 원본 고유 보상과 XP 자격의 출처는 [스토리 원본 근거](../data/original-2323C-story-native-reward-evidence.json), 레벨·성장 수치의 출처는 [영웅 성장 근거](../data/original-2323C-hero-level-growth-evidence.json)에 있습니다. `CharacterCombatRuntime.SourceModelEffects`와 `SourceModelTwentiethSkills`는 주능력치 공격력/민첩 공속을, `SourceModelResources`는 지능 마나 재생을 적용합니다. 현재 수치/자격은 이 문서에 복제하지 않고 해당 코드와 자료를 함께 대조합니다.
 
+## 스토리 공성 표시
+
+`OrdrMainSceneShell`이 `OrdrStoryBattlefieldView`의 수명과 표시를 관리합니다. 오른쪽 건물·HP, 왼쪽 일렬 파견 대형은 화면 좌표로만 배치하며 런타임 위치를 옮기지 않습니다. `OnCombatEvent`의 실제 공격/시전/스킬 피해와 `ActualEnemyDamage`를 구분하여, 건물 피격은 실제 HP 피해에서만 발생합니다. 독립 소환수는 기존 소유자 조회를 재사용합니다.
+
+파견 스냅샷은 0.12초 간격으로 갱신하고 없어진 유닛/오래된 연출을 제거합니다. 화면 크기별 한 줄 페이지·개별 선택과 클리핑을 적용합니다. 효과 시간은 `Combat.Time`이므로 일시정지/앱 전환 동안 멈춥니다. 화면 비활성화·세션 교체 시 이벤트를 해제하고 이전 건물 ID의 효과가 다음 건물에 번지지 않게 합니다. Unity/기기 화면 확인은 아직 하지 않았습니다.
+
 ## 수정 전 확인할 경계
 
 - 새 효과를 넣기 전에 원본 객체·능력 소유·JASS 함수·타깃·시점·피해 타입과 기존 처리기를 찾습니다. 툴팁 등록은 실행 명세 전체가 아닙니다.
