@@ -1,98 +1,59 @@
 # 코드 구조
 
-이 문서는 수정할 코드와 재사용 경계를 안내합니다. 기능 상태는 [현재 상태](START_HERE.md), 남은 작업은 [개발 작업](PLAYABLE_ROADMAP.md)에서 확인합니다.
+> **새 작업의 코드 지도:** 무엇을 고쳐야 하는지 빠르게 찾는 문서입니다. 기능 구현률·APK 차이는 [현재 상태](START_HERE.md), 미완료 작업은 [개발 작업](PLAYABLE_ROADMAP.md), 실제 조작은 [화면·조작](화면-조작-시스템.md)에 있습니다. **이 문서에 날짜별 개발 일지나 기능별 확률·비용을 중복 기록하지 않습니다.**
 
-## 실행 흐름
+## 1. 실행 흐름
 
 ```mermaid
 flowchart TD
   A["MainGame / OrdrMainSceneShell"] --> B["OrdrCharacterCombatController"]
-  B --> C["공유 지갑·로스터 / 준비·수동 조작"]
+  B --> C["공유 지갑·실물 로스터 / 수동 거래"]
   B --> D["SourceModelPracticeBattle / CombatWaveDirector"]
   D --> E["CharacterCombatRuntime"]
-  E --> F["대상·공격·상태·HP·처치"]
-  F --> G["스토리·미션·보상 / 화면 이벤트"]
+  E --> F["공격·상태·HP·처치"]
+  F --> G["스토리·미션·보상 사건"]
+  B --> H["OrdrMobileTouchPanel / 전장 표시"]
 ```
 
-개발용 연습과 원작 검증 경로는 공통 런타임을 사용하지만 승인 의미가 다릅니다. 모델 입력을 원본 관측 공급자로 바꿔 감싸지 않습니다.
+**컨트롤러는 연결과 수명**, **전투 런타임은 실제 판정**, **지갑·로스터는 거래**, **화면은 사용자 요청과 표시**를 담당합니다. UI에서 전투 수치나 보상을 따로 계산하지 않습니다.
 
-## 영역별 진입점
+## 2. 영역별 실제 진입점
 
-아래 파일명은 저장소의 같은 이름을 검색하면 찾을 수 있습니다.
-
-| 영역 | 파일·함수 | 책임 |
+| 작업 영역 | 먼저 열 파일 | 재사용할 역할 |
 |---|---|---|
-| 시작·세션 구성 | [OrdrCharacterCombatController.cs](../Assets/Scripts/Unity/OrdrCharacterCombatController.cs), [OrdrMainSceneShell.cs](../Assets/Scripts/Unity/OrdrMainSceneShell.cs) | 준비·전투·정지 시계와 동일 세션의 데이터/서비스 연결 |
-| 메뉴·터치 | [OrdrMobileTouchPanel.cs](../Assets/Scripts/Unity/OrdrMobileTouchPanel.cs) | DrawUnits·DrawFusion·DrawStory·DrawWisp. 피해나 재화를 직접 계산하지 않음 |
-| 유닛·조합 탐색 | MobileOwnedRosterBrowser, MobileFusionBrowser, MobileStoryDispatchBrowser | 보유 개체 선택·등급 필터·원본 재료 탐색·조합 임박. 제작 권한과 구분 |
-| 전장 표시 | [OrdrUnitWorldPresenter.cs](../Assets/Scripts/Unity/OrdrUnitWorldPresenter.cs), MobileMapSkillLayout, OrdrBattlefieldArt | 고정 배경·카메라 경계·초상화·공격 이펙트. 표시 Transform과 런타임 좌표를 분리 |
-| 도감·원본 객체 | [CharacterUnitCatalog.cs](../Assets/Scripts/Data/CharacterUnitCatalog.cs), [OriginalMapBaseStatCatalog.cs](../Assets/Scripts/Data/OriginalMapBaseStatCatalog.cs) | 프로젝트 ID와 원본 rawcode·공격 객체·출처 연결 |
-| 전투 | [CharacterCombatRuntime.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.cs), CombatAttackPipeline, CombatScheduler, CombatResolution | 공격 선언/명중·대상·HP·사망의 공통 정산 |
-| 모델 스킬 | CharacterCombatRuntime.SourceModel*.cs, SourceModel*SkillCatalog | 승인된 원본/도감 패킷 실행. 같은 기술의 JASS와 툴팁 중복 실행 방지 |
-| 자동 기술 추가 모델 | [CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs) | 명시적 유닛+rawcode 범위의 도감 자동 13효과, 확률·절대 대기시간·지속 피해·후속기·주기 시계. 원본 검증 경로와 구별 |
-| 자동 기술 추가 묶음 | [CharacterCombatRuntime.SourceModelBulkAutoSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs) | 후보 26건의 선언 공격·성공 명중·조건부 자원 소비·후속 기술·주기 타격. 일부 효과는 부분 연결이고 검증 전 |
-| C03 콜백 추가분 | [SourceModelSixthAttackCatalog.cs](../Assets/Scripts/Combat/SourceModelSixthAttackCatalog.cs), [CharacterCombatRuntime.SourceModelAttackSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs) | 원본 공격 콜백 5개 피해 원자/확률 분리, HP비례 선택·지연 공격 공통 큐. 원본 보조 주문 미확정분은 연기 |
-| 자원·폼·소환 | SourceModelUnitResourceCatalog, SourceModelResources, SourceModelTemporarySkills, SourceModelIndependentAttacks | HP/MP·재생·폼·소환 수명·소유자·전장 변경 정리 |
-| 상태·오라 | CombatStatusEngine, SourceModelUnitEffects, Original323AuraCommonRules | 상태 적용/만료·원본 정체성·중첩 경계. 아군 방어 상태와 실제 피격 공급은 별개 |
-| 라운드·이동 | [SourceModelPracticeBattle.cs](../Assets/Scripts/Combat/SourceModelPracticeBattle.cs), [CombatWaveDirector.cs](../Assets/Scripts/Combat/CombatWaveDirector.cs) | 독립 웨이브·이동률·적 생존·보상·종료. Step(0)으로 잔여 계산을 소진한 뒤 다음 출현 |
-| 지갑·로스터 | SharedEconomySession, EconomyTransactions, UnitRoster | 실제 인스턴스와 단일 지갑·거래 영수증·롤백 |
-| 조합 | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs), OriginalJassFusionPlanner, OriginalJassFusionAtomicCoordinator, OriginalFusionUnitSwap | 원본 조건 순서·재료 예약·실제 교체와 비용. 미리보기만으로 실행 허가하지 않음 |
-| 위습 | MobileWispService, Original323MobileWispOutcomeWorld, OriginalWispCombatRewardWorld | 원본 풀·실물 생성·재화 차감·실패 롤백·보류된 추첨 결과 재사용 |
-| 원작 피해 계약 | Ordr323DamageWorldBinding, Ordr323OriginalDamageRules, Ordr323MapDamageMath | 원본 공격·방어·면역·정수화 계약. 실제 공급자 완성 여부 별도 확인 |
-| 빌드·데이터 | [OrdrCharacterDataSync.cs](../Assets/Editor/OrdrCharacterDataSync.cs), [OrdrAndroidDevelopmentBuild.cs](../Assets/Editor/OrdrAndroidDevelopmentBuild.cs) | data→Resources 동기화·필수 패킹·APK 해시 증빙 |
+| **시작·세션** | [OrdrCharacterCombatController.cs](../Assets/Scripts/Unity/OrdrCharacterCombatController.cs), [OrdrMainSceneShell.cs](../Assets/Scripts/Unity/OrdrMainSceneShell.cs) | 원본 데이터·공통 서비스 연결, 시작/정지/재시작 및 동일 세션 유지 |
+| **메뉴·입력·전장 UI** | [OrdrMobileTouchPanel.cs](../Assets/Scripts/Unity/OrdrMobileTouchPanel.cs), [OrdrMobileUiTheme.cs](../Assets/Scripts/Unity/OrdrMobileUiTheme.cs), [OrdrUnitWorldPresenter.cs](../Assets/Scripts/Unity/OrdrUnitWorldPresenter.cs) | 큰 버튼·가로 레이아웃·원본 좌표와 표시 좌표 구분 |
+| **원본 유닛 객체** | [CharacterUnitCatalog.cs](../Assets/Scripts/Data/CharacterUnitCatalog.cs), [OriginalMapBaseStatCatalog.cs](../Assets/Scripts/Data/OriginalMapBaseStatCatalog.cs) | 프로젝트 ID와 `rawcode`, 원본 객체/능력 데이터 연결 |
+| **공통 전투** | [CharacterCombatRuntime.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.cs), CombatAttackPipeline, CombatScheduler, CombatResolution | 대상·공격 선언/명중·피해·상태·사망의 공통 정산 |
+| **특수/자동 기술** | [CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs), [CharacterCombatRuntime.SourceModelBulkAutoSkills.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs), [SourceModelSixthAttackCatalog.cs](../Assets/Scripts/Combat/SourceModelSixthAttackCatalog.cs) | 도감 기반 모델·원본 JASS 콜백을 별도 근거와 승인 범위로 처리. 네이티브 효과 중복 실행 금지 |
+| **오라·자원·소환수** | CombatStatusEngine, SourceModelResources, SourceModelIndependentAttacks, SourceModelTemporarySkills | 지속시간·MP/HP·소유자 변경·전장 리비전·독립 소환 생명주기 |
+| **라운드·몬스터** | [SourceModelPracticeBattle.cs](../Assets/Scripts/Combat/SourceModelPracticeBattle.cs), [CombatWaveDirector.cs](../Assets/Scripts/Combat/CombatWaveDirector.cs) | 웨이브·적 이동·피해/보상·종료와 논리 시간 |
+| **지갑·실물 거래** | [SharedEconomySession.cs](../Assets/Scripts/Core/SharedEconomySession.cs), [EconomyTransactions.cs](../Assets/Scripts/Core/EconomyTransactions.cs), UnitRoster | 비용·보상·영수증·되돌리기, 여러 기능이 사용하는 한 지갑 |
+| **조합** | [Original323CommonFusionPort.cs](../Assets/Scripts/Mobile/Original323CommonFusionPort.cs), [OriginalJassFusionPlanner.cs](../Assets/Scripts/Mobile/OriginalJassFusionPlanner.cs), [OriginalJassFusionAtomicCoordinator.cs](../Assets/Scripts/Mobile/OriginalJassFusionAtomicCoordinator.cs) | 원본 조건·재료 후보·확정 시 재검사·실물 교체 |
+| **위습** | [MobileWispService.cs](../Assets/Scripts/Core/MobileWispService.cs), [Original323MobileWispOutcomeWorld.cs](../Assets/Scripts/Combat/Original323MobileWispOutcomeWorld.cs), [OriginalWispCombatRewardWorld.cs](../Assets/Scripts/Combat/OriginalWispCombatRewardWorld.cs) | 원본 보상 풀·실물 생성·보류 결과·실패 롤백 |
+| **경제·돈 도박** | [SourceModelMoneyGamblingDesk.cs](../Assets/Scripts/Mobile/SourceModelMoneyGamblingDesk.cs), [SourceModelRegularMoneyGambling.cs](../Assets/Scripts/Mobile/SourceModelRegularMoneyGambling.cs), [Original323GraduatedRareShopWorld.cs](../Assets/Scripts/Mobile/Original323GraduatedRareShopWorld.cs) | 돈 도박·졸업/구매·재고·보류 추첨을 공유 지갑으로 정산 |
+| **스토리·보상** | [Original323SoloStoryScenario.cs](../Assets/Scripts/Combat/Original323SoloStoryScenario.cs), [Original323StoryMobileProgression.cs](../Assets/Scripts/Core/Original323StoryMobileProgression.cs), [Original323SourceMaterialRewardWorld.cs](../Assets/Scripts/Combat/Original323SourceMaterialRewardWorld.cs) | 14개 건물·수동 파견·보상·성장·고유 아이템/초월위습 |
+| **스토리 표시** | [OrdrStoryBattlefieldView.cs](../Assets/Scripts/Unity/OrdrStoryBattlefieldView.cs) | 건물 HP/실제 피해 사건을 화면에만 표시. 파견 실물 좌표를 옮기지 않음 |
+| **원작 피해 계약** | Ordr323DamageWorldBinding, Ordr323OriginalDamageRules, Ordr323MapDamageMath | 방어·면역·정수화와 원본 공격 구분. 실제 공급자 승인 여부 별도 |
+| **데이터·빌드** | [OrdrCharacterDataSync.cs](../Assets/Editor/OrdrCharacterDataSync.cs), [OrdrAndroidDevelopmentBuild.cs](../Assets/Editor/OrdrAndroidDevelopmentBuild.cs) | `data/` → Unity Resources 동기화·기존 APK 제작 |
 
-## 스토리와 최근 보상 연결
+파일 목록은 **찾아갈 진입점**입니다. 인터페이스/등록/데이터가 있다고 그 기능이 최신 APK에서 완성됐다는 뜻은 아닙니다.
 
-| 연결점 | 현재 역할 |
-|---|---|
-| [Original323SoloStoryScenario.cs](../Assets/Scripts/Combat/Original323SoloStoryScenario.cs) | 14개 건물·시간 제한·격파 정산. 독립 공격자의 피해는 살아 있는 원소유자에게 귀속 |
-| [Original323StoryMobileProgression.cs](../Assets/Scripts/Core/Original323StoryMobileProgression.cs) | 재화·특성·연구·모바일 경험치 및 외부 원본 보상 월드 연결 |
-| [Original323SourceMaterialRewardWorld.cs](../Assets/Scripts/Combat/Original323SourceMaterialRewardWorld.cs) | 고대의 배·원본 사건 재료·초월위습 선택. Original323KumaWispChoiceWorld는 기존 이름을 유지하며 여러 선택지 처리 |
-| Original323KumaWispChoiceWorld.TryChoose / TryChooseBoxItem | 재화 꾸러미·쿠마·레일리+해적선과 고유 아이템 선택을 기존 지갑/로스터 거래로 처리. 영구 획득 플래그는 재료 소비 뒤에도 유지 |
-| [Original323MobileStoryHeroExperienceWorld](../Assets/Scripts/Combat/Original323StoryNativeRewardQueue.cs), [Original323HeroLevelRules.cs](../Assets/Scripts/Combat/Original323HeroLevelRules.cs) | 13·14단계 XP·원본 H*** + A07O 자격, 58개 폼/24레벨 성장. 같은 보상 파일의 Original323ShirahoshiTraitPurchase가 Bz6 4포인트 원자 차감/영수증을 처리하고 성장 판독에 연결. XP바는 OrdrMobileTouchPanel에서 표시, 특수 능력 실전 발동은 별도 |
-| [CharacterCombatRuntime.StoryGreenBlood.cs](../Assets/Scripts/Combat/CharacterCombatRuntime.StoryGreenBlood.cs), [Original323StoryGreenBloodRules.cs](../Assets/Scripts/Combat/Original323StoryGreenBloodRules.cs) | 직접 선택한 실물 유닛의 변환/강화. 같은 종류 여러 기 중 선택 개체만 처리 |
-| Original323FusionSourceItemLedger, Original323StoryNativeRewardQueue | 고유 아이템 잔액·영구 획득 기록과 단계별 영수증. 커밋 후 알림 예외로 재지급하지 않음 |
+## 3. 공통 엔진을 바꾸기 전 확인할 것
 
-5% 원본 고유 보상과 XP 자격의 출처는 [스토리 원본 근거](../data/original-2323C-story-native-reward-evidence.json), 레벨·성장 수치의 출처는 [영웅 성장 근거](../data/original-2323C-hero-level-growth-evidence.json)에 있습니다. `CharacterCombatRuntime.SourceModelEffects`와 `SourceModelTwentiethSkills`는 주능력치 공격력/민첩 공속을, `SourceModelResources`는 지능 마나 재생을 적용합니다. 현재 수치/자격은 이 문서에 복제하지 않고 해당 코드와 자료를 함께 대조합니다.
+1. **원본 근거:** 유닛 `rawcode`, 능력·조건·확률·비용·타깃·전장/시점이 확인됐는지 대조합니다. 추측한 값으로 실제 지급을 열지 않습니다.
+2. **중복 호출:** 동일한 스킬을 도감 모델·JASS 콜백·네이티브 패시브가 이중 실행하지 않는지 확인합니다.
+3. **실제 인스턴스:** 조합·판매·사망·파견·변신 뒤 예약 타격·오라·소환수 소유자가 남지 않게 합니다. 화면 마커와 실물 로스터는 별도입니다.
+4. **거래/난수:** 비용 차감·유닛 생성·성공 기록은 원자적으로 처리하고, 보류된 위습/도박 추첨을 실패마다 다시 뽑지 않습니다. **커밋 후 알림 예외를 거래 실패로 오인해 중복 지급하지 않습니다.**
+5. **게임 시간:** 일시정지·앱 전환·세션 교체 때 스킬 만료·재고 충전·화면 이벤트의 시간과 구독 해제를 확인합니다.
 
-## 스토리 공성 표시
+## 4. 상세 규칙·검증 자료는 어디에 있나요?
 
-`OrdrMainSceneShell`이 `OrdrStoryBattlefieldView`의 수명과 표시를 관리합니다. 오른쪽 건물·HP, 왼쪽 일렬 파견 대형은 화면 좌표로만 배치하며 런타임 위치를 옮기지 않습니다. `OnCombatEvent`의 실제 공격/시전/스킬 피해와 `ActualEnemyDamage`를 구분하여, 건물 피격은 실제 HP 피해에서만 발생합니다. 독립 소환수는 기존 소유자 조회를 재사용합니다.
+- 게임 정책: [작업 규칙](../AGENTS.md) · [원작 동등성 분류](PARITY.md)
+- 수동 조작·가시성: [화면·조작](화면-조작-시스템.md)
+- 조합·위습·돈 도박: [조합](조합-시스템.md) · [위습](위습-시스템.md) · [경제·도박](경제-도박-시스템.md)
+- 작업/완료 기준: [개발 작업](PLAYABLE_ROADMAP.md)
+- 원본 추출 파일: [데이터 안내](../data/README.md) · `data/original-2323C-*.json`
+- 검사/빌드: `Assets/Tests/EditMode/`, `tests/`, `tools/build_character_runtime_coverage.py`, [실행 안내](unity-editmode-test.md)
 
-파견 스냅샷은 0.12초 간격으로 갱신하고 없어진 유닛/오래된 연출을 제거합니다. 화면 크기별 한 줄 페이지·개별 선택과 클리핑을 적용합니다. 효과 시간은 `Combat.Time`이므로 일시정지/앱 전환 동안 멈춥니다. 화면 비활성화·세션 교체 시 이벤트를 해제하고 이전 건물 ID의 효과가 다음 건물에 번지지 않게 합니다. Unity/기기 화면 확인은 아직 하지 않았습니다.
-
-## 돈 도박 연결
-
-`SourceModelMoneyGamblingDesk`가 일반/고급 도박과 졸업 목재·특성포인트·희귀 1회 구매를 하나의 공유 지갑에 연결합니다. `Original323GraduatedRareShopWorld`가 CJE의 43개 희귀·7개 특수 객체를 원본 rawcode에 검증하고, CJF의 99%/1% 추첨·보류 결과·실물 생성/롤백·A0YE 연기 영수증을 처리합니다. `SourceModelRegularMoneyGambling`의 기존 두 번 추첨·보류 결과·영수증/재고 처리를 두 등급이 재사용합니다. 컨트롤러의 `PracticeMoneyGambling`은 기존 일반 도박 참조를 보존하고, `PracticeMoneyGamblingDesk`가 실제 경제 포트가 됩니다. 승인된 별도 원본 경제 포트는 덮어쓰지 않습니다.
-
-`SourceModelPracticeBattle.RewardActualDeath`의 웨이브 원장에 실제 격파된 보스 rawcode가 있을 때만 내부 콜백을 호출합니다. Desk는 o01V만 CIK→CIJ/R009로 기록합니다. 라운드 도달·버튼 탭·일반 적 처치로 해금하지 않습니다. CJC의 고급 반환 누계 35000 이상이면 마지막 반환·졸업·R01M·목재 구매 기회 5회를 원자 확정합니다. 비용/보상 수치는 추출 자료와 대조합니다.
-
-`DrawEconomy`가 등급별 재고·대기·손익, 졸업 상점 구매 항목과 최근 6건 기록을 표시합니다. 스토리 R01N 연구는 `Original323StoryMobileProgression.HasResearch`를 통해 H0B0 구매에 연결합니다. Q015 최상위 3회 조합은 원본 rawcode에 대조한 결과 등급으로 기록하여 동일 공유 특성 포인트 지갑으로 지급합니다. 돈 도박은 유닛 도박 미션에 연결하지 않습니다. `SourceModelRegularMoneyGamblingTests`에는 해금·분기 경계·정확/초과 졸업·커밋 후 예외·기회 소비·상태 복원·특성 구매 재고/시간·희귀 1회 소환/롤백 회귀를 추가했습니다(실행 전).
-
-## 시라호시·그린블러드 캐릭터 전투 연결
-
-- `Original323HeroLevelRules`의 `ShirahoshiA0L1Level/A0KZLevel`은 Bz6 특성 4포인트 구매 후 레벨 16/24에서만 2가 됩니다. `CharacterCombatRuntime.SourceModelEffects`의 공격 선언 콜백은 `CharacterCombatRuntime.SourceModelShirahoshiTraits`로 이어지고, 공통 `CombatTimedEffectQueue`와 `CombatResolution`으로 피해를 정산합니다. 같은 인스턴스 폼 변경 시 중복 초기화하지 않으며 소유 유닛 제거 시 상태를 삭제합니다.
-- `CharacterCombatRuntime.StoryGreenBlood`는 A13C의 지속 공격속도 효과와 CKd/CKc의 0.03초 지연 광역 피해를 담당합니다. A134/Aimp는 원본 `Units\\AbilityData.slk`의 0수치 표식으로 추가 주문을 발동시키지 않습니다. 지연 시 대상 위치를 재조회하고 전장 리비전을 확인합니다.
-- 시라호시의 첫 레벨 STR은 확보하지 못해 해왕류 STR 보너스는 성장 증가분만 적용합니다. 원본 난수 재현·기기 검증 전까지 완전 일치로 표기하지 않습니다.
-
-## 수정 전 확인할 경계
-
-- 새 효과를 넣기 전에 원본 객체·능력 소유·JASS 함수·타깃·시점·피해 타입과 기존 처리기를 찾습니다. 툴팁 등록은 실행 명세 전체가 아닙니다.
-- 소유자 제거·조합·판매·폼 변경·파견 이동 때 예약 공격과 상태를 정리합니다. 지연 공격은 선언 당시 전장 리비전을 확인합니다.
-- 지갑 커밋 뒤 관찰자 예외와 커밋 전 실패를 구분합니다. 영수증이 확정된 거래는 재지급하지 않습니다.
-- 위습 자동 정산은 컨트롤러의 deferAutomaticUntilFlush/FlushAutomaticSafely 경계를 유지합니다. 보류된 추첨 결과를 실패마다 다시 뽑지 않습니다.
-- 최적화는 측정 뒤 진행합니다. 대상 선정·난수 호출 순서·효과 만료·처치 보상·거래 잠금을 바꾸지 않습니다.
-- 캐릭터 초상화는 개인용 Resources 우선, 없으면 HTTPS 다운로드/기기 캐시와 대체 아이콘을 사용합니다. [개인용 이미지 안내](PRIVATE_PORTRAIT_BUILD.md).
-
-## 검사와 현황 자료
-
-- `Assets/Tests/EditMode/`: C# 전투·거래·화면 경계 검사.
-- `tests/`: JSON·원본 감사·연결 계약 회귀.
-- `tools/build_character_runtime_coverage.py`: 기본/확장/변신 카탈로그 집계. 중복·누락 ID를 거부하고 `--verify`는 파일을 수정하지 않고 현재 입력 JSON과 비교합니다. `--output`으로 별도 결과 파일을 지정할 수 있습니다.
-- `tools/build_unit_runtime_status.py`와 `tools/render_unit_status_docs.py`: 실제 C# 지원 내보내기 기반 현황·유닛 표 생성.
-
-카탈로그 변경은 실제 ID·원본 객체·비전투/폼 분류를 대조한 뒤 집계를 재생성합니다. C# 지원 변경은 먼저 실제 지원 내보내기를 갱신합니다. 집계 도구 자체가 현재 C# 실행을 검사하는 것은 아닙니다. `tests/test_character_runtime_coverage.py`는 보상 상자의 전투 미승인, 중복/누락 거부와 CLI의 읽기 전용·오래된 결과 거부를 확인합니다.
-
-`tools/classify_original_fusion_blockers.py`는 저장소 경로를 POSIX 표기로 내보내어 Windows/Linux 결과를 일치시킵니다. Linux 전용 패키징 회귀는 POSIX 환경에서만 실행하고, 다른 환경은 명시적으로 건너뜁니다.
-
-실행 허가와 명령은 [작업 규칙](../AGENTS.md)·[실행과 APK](unity-editmode-test.md)에 있습니다.
+**검사 명령·Actions 실행은 사용자 요청 시에만** 합니다. 문서 자체는 Unity/휴대폰 동작 검증을 대신하지 않습니다.
