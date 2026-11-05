@@ -1,0 +1,56 @@
+[
+  {
+    "Name": "enemy-boss-v1.png",
+    "Width": 1254,
+    "Height": 1254,
+    "PixelFormat": "Format32bppArgb",
+    "CornerAlpha": 0,
+    "CenterAlpha": 253,
+    "Bytes": 1713800
+  },
+  {
+    "Name": "enemy-grunt-v1.png",
+    "Width": 1254,
+    "Height": 1254,
+    "PixelFormat": "Format32bppArgb",
+    "CornerAlpha": 0,
+    "CenterAlpha": 253,
+    "Bytes": 808639
+  },
+  {
+    "Name": "fx-area-shockwave-v1.png",
+    "Width": 1254,
+    "Height": 1254,
+    "PixelFormat": "Format32bppArgb",
+    "CornerAlpha": 0,
+    "CenterAlpha": 0,
+    "Bytes": 422740
+  },
+  {
+    "Name": "fx-magic-projectile-v1.png",
+    "Width": 1774,
+    "Height": 887,
+    "PixelFormat": "Format32bppArgb",
+    "CornerAlpha": 0,
+    "CenterAlpha": 253,
+    "Bytes": 365406
+  },
+  {
+    "Name": "fx-physical-impact-v1.png",
+    "Width": 1254,
+    "Height": 1254,
+    "PixelFormat": "Format32bppArgb",
+    "CornerAlpha": 0,
+    "CenterAlpha": 254,
+    "Bytes": 494084
+  },
+  {
+    "Name": "fx-sword-slash-v1.png",
+    "Width": 1254,
+    "Height": 1254,
+    "PixelFormat": "Format32bppArgb",
+    "CornerAlpha": 0,
+    "CenterAlpha": 0,
+    "Bytes": 339850
+  }
+]

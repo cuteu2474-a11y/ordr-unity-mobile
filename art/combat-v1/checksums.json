@@ -1,0 +1,38 @@
+[
+  {
+    "file": "enemy-grunt-v1.png",
+    "bytes": 808639,
+    "sha256": "bc783a63ba7279da529800e1f7f1f9cd24941162cd217560110b5dbbe90f8c76",
+    "git_blob_sha": "da2f0870781ef022498b3691ba0ce0c9fa9b13a4"
+  },
+  {
+    "file": "enemy-boss-v1.png",
+    "bytes": 1713800,
+    "sha256": "d69ee8e0f20434c37997e7ea08c4fdd6ff11cbf43e3ccc437bddb26d2708adde",
+    "git_blob_sha": "8eb3114e6e4f51295f16d32ccbfab59d06f8a782"
+  },
+  {
+    "file": "fx-physical-impact-v1.png",
+    "bytes": 494084,
+    "sha256": "0943f07480bcd7d6b5cac7626a6e8eaa2d13a814af407eb2a55547df088b7264",
+    "git_blob_sha": "95539a8afe836ed2b9367e7d2a42987592ee5e6b"
+  },
+  {
+    "file": "fx-sword-slash-v1.png",
+    "bytes": 339850,
+    "sha256": "b0635074e71a04b37c329f67b6b5cddd33f84e9d78e78bfd16f95e6d3069fae6",
+    "git_blob_sha": "69408e6350ea55ef49436c23ef2d7dde607f5c67"
+  },
+  {
+    "file": "fx-magic-projectile-v1.png",
+    "bytes": 365406,
+    "sha256": "99b8b045afee9487b5b1883c3f156dc64c86bc88f9e571f05435be11bfd0e104",
+    "git_blob_sha": "3ee400d45bcd27feac2075ab9a6e057fab03a2c3"
+  },
+  {
+    "file": "fx-area-shockwave-v1.png",
+    "bytes": 422740,
+    "sha256": "004cc5c30fabbdbae47ef1586e16577e95d2032d6fc6ab7eebf40804673b7cda",
+    "git_blob_sha": "4c9432699ceaa1be525a5ce0e4f17111d77a95b1"
+  }
+]
