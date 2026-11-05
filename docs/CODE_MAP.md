@@ -1,3 +1,10 @@
+## 2026-11-05 · 59차 조합 임박 UI와 경계 검증
+
+- `MobileManualInteraction.MobileFusionPreview`: 결과 등급 `ResultGrade` + UI 전용 `MissingCommonUnits`(다른 조건 모두 통과한 경우만 값 부여). 제작 권한과 분리.
+- `Original323CommonFusionPort.AvailableRecipes`: 원본 planner의 부족 재료 종류 수와 기타 차단 이유, 카탈로그 흔함 등급을 함께 확인. 원본 거래/조건 불변.
+- `MobileFusionBrowser.SelectNearReadyHighGrade`, `OrdrMobileTouchPanel.DrawFusion`: 전체/임박 탭, 결과 등급 내림차순 → 흔함 부족 수 오름차순, 미충족 제작 버튼 비활성화. 기존 검색·즐겨찾기·원본 재료 필터 보존.
+- `MobileOwnedUnitFormationTests`: Actions에서 실패한 가로 ±10 경계 여백을 실제 `MaximumContainedHalfHeight` 계산에 맞게 정정. 프로덕션 카메라 수학은 정상으로 확인되어 미수정. Unity/Android 실행 결과는 아직 미확인.
+
 ## 2026-11-05 · 58차 스토리 소유 공격·보상 장부
 
 - Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs: 모든 등록된 독립 공격자의 OwnerInstanceId를 저장, 실제 생존 소유자에 한해 원래 캐릭터 ID를 조회. 공격 스펙/추가 피해·사거리/확률 변경 없음.

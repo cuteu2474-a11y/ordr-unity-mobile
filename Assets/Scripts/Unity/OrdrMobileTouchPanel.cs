@@ -16,6 +16,7 @@ namespace Ordr.Mobile.Unity
     {
         private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, LogPose, Helper, Alchemy, Missions, UpgradeOne, UpgradeTwo, Research }
         private enum ScoreboardPage { Summary, Commons }
+        private enum FusionListCategory { All, NearReady }
 
         private struct FacilityVisual
         {
@@ -97,6 +98,7 @@ namespace Ordr.Mobile.Unity
         private string fusionSearch = "";
         private bool fusionMaterialsReadyOnly;
         private bool fusionExecutableOnly;
+        private FusionListCategory fusionListCategory = FusionListCategory.All;
         private int fusionPage;
         private int originalJassPage;
         private string routeId;
@@ -140,8 +142,14 @@ namespace Ordr.Mobile.Unity
             nextFusionRefresh = Time.unscaledTime + 0.5f;
             var owned = Combat.MobileUnitSnapshot();
             var signature = new System.Text.StringBuilder();
-            signature.Append(Combat.Game.Phase);
-            signature.Append(':').Append(controller.SharedEconomy.Wallet.Balance("wood"));
+            signature.Append(Combat.Game.Phase).Append(':').Append(Combat.Game.CurrentWave);
+            // Recipe affordability can change without roster or wood changes:
+            // gold, special counters, items and one-time wallet receipts all
+            // participate in the live category refresh.
+            var walletState = controller.SharedEconomy.Wallet.CaptureState();
+            foreach (var balance in walletState.Balances)
+                signature.Append('|').Append(balance.Id).Append(':').Append(balance.Amount);
+            signature.Append("|receipts:").Append(walletState.CompletedRewards.Count);
             foreach (var unit in owned)
                 signature.Append('|').Append(unit.InstanceId).Append(':').Append(unit.Unit.Id)
                     .Append(':').Append(Combat.IsStoryDeployed(unit.InstanceId));
@@ -1090,6 +1098,7 @@ namespace Ordr.Mobile.Unity
             if (GUILayout.Button("행운의 토큰 사용 조합 보기", GUILayout.MinHeight(64)))
             {
                 fusionSearch = "토큰";
+                fusionListCategory = FusionListCategory.All;
                 fusionMaterialsReadyOnly = false;
                 fusionExecutableOnly = false;
                 showOnlyBookmarkedFusion = false;
@@ -1417,6 +1426,7 @@ namespace Ordr.Mobile.Unity
                 {
                     SelectTab(Tab.Fusion);
                     fusionSearch = group.Name;
+                    fusionListCategory = FusionListCategory.All;
                     showOnlyBookmarkedFusion = false;
                     fusionPage = 0;
                     fusionMaterialsReadyOnly = false;
@@ -1704,6 +1714,44 @@ namespace Ordr.Mobile.Unity
             DrawFusionGoalStatus();
             DrawFusionConfirmation();
             DrawChoiceWispMerge();
+            // A navigation-only category: immediately craftable entries and
+            // source-authorized recipes blocked exclusively by common units.
+            var nearReadyOffers = MobileFusionBrowser.SelectNearReadyHighGrade(
+                fusionOffers, controller.ManualActions.CanExecuteFusionRecipe);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(fusionListCategory == FusionListCategory.All ?
+                    "전체 조합 ✓" : "전체 조합",
+                fusionListCategory == FusionListCategory.All ?
+                    OrdrMobileUiTheme.PrimaryButton : GUI.skin.button,
+                GUILayout.MinHeight(62f)))
+            {
+                if (fusionListCategory != FusionListCategory.All)
+                {
+                    fusionListCategory = FusionListCategory.All;
+                    fusionPage = 0;
+                    expandedRecipeId = null;
+                    scroll = Vector2.zero;
+                }
+            }
+            if (GUILayout.Button(fusionListCategory == FusionListCategory.NearReady ?
+                    "조합 임박 " + nearReadyOffers.Count + " ✓" :
+                    "조합 임박 " + nearReadyOffers.Count,
+                fusionListCategory == FusionListCategory.NearReady ?
+                    OrdrMobileUiTheme.PrimaryButton : GUI.skin.button,
+                GUILayout.MinHeight(62f)))
+            {
+                if (fusionListCategory != FusionListCategory.NearReady)
+                {
+                    fusionListCategory = FusionListCategory.NearReady;
+                    fusionPage = 0;
+                    expandedRecipeId = null;
+                    scroll = Vector2.zero;
+                }
+            }
+            GUILayout.EndHorizontal();
+            if (fusionListCategory == FusionListCategory.NearReady)
+                GUILayout.Label("즉시 조합 가능 또는 흔함 유닛만 부족 · 결과 등급 높은 순 · 같은 등급은 부족한 수 적은 순",
+                    OrdrMobileUiTheme.Overline);
             GUILayout.BeginVertical(GUI.skin.box);
             string query = GUILayout.TextField(fusionSearch, GUILayout.MinHeight(56));
             if (!string.Equals(query, fusionSearch, StringComparison.Ordinal))
@@ -1714,8 +1762,9 @@ namespace Ordr.Mobile.Unity
                 scroll = Vector2.zero;
             }
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(fusionMaterialsReadyOnly ?
-                "유닛 재료 확보 ✓" : "모든 조합", GUILayout.MinHeight(60)))
+            if (fusionListCategory == FusionListCategory.All &&
+                GUILayout.Button(fusionMaterialsReadyOnly ?
+                "유닛 재료 보유 ✓" : "재료 보유만", GUILayout.MinHeight(60)))
             {
                 fusionMaterialsReadyOnly = !fusionMaterialsReadyOnly;
                 fusionPage = 0;
@@ -1731,8 +1780,10 @@ namespace Ordr.Mobile.Unity
             }
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
-            bool onlyExecutable = GUILayout.Toggle(fusionExecutableOnly,
-                "실제 제작만 (안흔함 " + controller.ExecutableCommonFusionCount +
+            bool onlyExecutable = fusionExecutableOnly;
+            if (fusionListCategory == FusionListCategory.All)
+                onlyExecutable = GUILayout.Toggle(fusionExecutableOnly,
+                "제작 경로 연결만 (안흔함 " + controller.ExecutableCommonFusionCount +
                 " / 특별함 " + controller.ExecutableSpecialFusionCount +
                 " / 희귀함 " + controller.ExecutableRareFusionCount +
                 " / 전설 " + controller.ExecutableLegendaryFusionCount +
@@ -1763,8 +1814,10 @@ namespace Ordr.Mobile.Unity
             }
 
             int matches, pages, resolved;
-            IReadOnlyList<MobileFusionPreview> browsedOffers = fusionOffers;
-            if (fusionExecutableOnly)
+            IReadOnlyList<MobileFusionPreview> browsedOffers =
+                fusionListCategory == FusionListCategory.NearReady ?
+                    nearReadyOffers : fusionOffers;
+            if (fusionListCategory == FusionListCategory.All && fusionExecutableOnly)
             {
                 var executableOffers = new List<MobileFusionPreview>();
                 foreach (var offer in fusionOffers)
@@ -1775,24 +1828,33 @@ namespace Ordr.Mobile.Unity
             if (showOnlyBookmarkedFusion)
                 browsedOffers = fusionBookmarks.Filter(browsedOffers);
             var visibleOffers = MobileFusionBrowser.Select(browsedOffers,
-                fusionSearch, fusionMaterialsReadyOnly, fusionPage,
+                fusionSearch, fusionListCategory == FusionListCategory.All &&
+                fusionMaterialsReadyOnly, fusionPage,
                 FusionPageSize, out matches, out pages, out resolved);
             fusionPage = resolved;
-            GUILayout.Label("조합식 " + matches + " / " + fusionOffers.Count +
-                "건 · " + (resolved + 1) + "/" + pages + "쪽");
+            GUILayout.Label("조합식 " + matches + " / " + browsedOffers.Count +
+                "건 · " + (resolved + 1) + "/" + pages + "쪽" +
+                (fusionListCategory == FusionListCategory.NearReady ?
+                    " · 높은 등급순" : ""));
             if (matches == 0)
                 GUILayout.Label("검색 결과 없음");
             foreach (var offer in visibleOffers)
             {
                 bool executable = controller.ManualActions.CanExecuteFusionRecipe(offer.RecipeId);
-                string status = !offer.HasAllUnitMaterials ? "유닛 재료 미확보" :
+                string status = fusionListCategory == FusionListCategory.NearReady ?
+                    (offer.IsReady ? "지금 조합 가능" :
+                        "흔함 유닛 " + offer.MissingCommonUnits.Value + "기만 부족") :
+                    !offer.HasAllUnitMaterials ? "유닛 재료 미확보" :
                     !executable ? "유닛 재료 확보 · 원본 제작 미승인" :
                     offer.IsReady ? "재료 준비 · 제작 가능" : "제작 조건·재화 확인 필요";
                 bool expanded = expandedRecipeId == offer.RecipeId;
                 GUILayout.BeginHorizontal();
                 bool previousEnabled = GUI.enabled;
                 GUI.enabled = previousEnabled && offer.IsReady && executable;
-                if (OrdrMobileUiTheme.DrawActionRow(offer.Title,
+                string rowTitle = fusionListCategory == FusionListCategory.NearReady ?
+                    offer.Title + (offer.IsReady ? " · 조합 가능" :
+                        " · 흔함 " + offer.MissingCommonUnits.Value + "기 부족") : offer.Title;
+                if (OrdrMobileUiTheme.DrawActionRow(rowTitle,
                     "제작", OrdrMobileUiTheme.Gold, 72f))
                 {
                     pendingFusion = offer;

@@ -153,7 +153,7 @@ namespace Ordr.Mobile.Mobile
                     " | " + recipe.Gold + "골드 / 목재 " + recipe.Lumber +
                     " / " + string.Join(" + ", new List<string>(recipe.SpecialRequirements).ToArray());
                 result.Add(new MobileFusionPreview(recipe.ResultUnitId, recipe.ResultName,
-                    summary, selected, missing, allUnitsOwned));
+                    summary, selected, missing, allUnitsOwned, "신비함"));
             }
             result.Sort((a, b) => string.CompareOrdinal(a.RecipeId, b.RecipeId));
             return result.AsReadOnly();

@@ -49,6 +49,11 @@ namespace Ordr.Mobile.Mobile
     {
         public string RecipeId { get; private set; }
         public string Title { get; private set; }
+        // Catalog outcome grade for presentation only; never grants crafting authority.
+        public string ResultGrade { get; private set; }
+        // Only populated when missing common units are the sole outstanding
+        // requirement of an otherwise executable source-backed recipe.
+        public int? MissingCommonUnits { get; private set; }
         public string OriginalMaterialsAndCost { get; private set; }
         public IReadOnlyList<long> SuggestedMaterialInstances { get; private set; }
         public IReadOnlyList<string> MissingMaterials { get; private set; }
@@ -64,7 +69,8 @@ namespace Ordr.Mobile.Mobile
 
         public MobileFusionPreview(string recipeId, string title,
             string originalMaterialsAndCost, IEnumerable<long> materialIds,
-            IEnumerable<string> missingMaterials, bool? allUnitMaterialsOwned = null)
+            IEnumerable<string> missingMaterials, bool? allUnitMaterialsOwned = null,
+            string resultGrade = null, int? missingCommonUnits = null)
         {
             if (string.IsNullOrWhiteSpace(recipeId) || string.IsNullOrWhiteSpace(title) ||
                 string.IsNullOrWhiteSpace(originalMaterialsAndCost))
@@ -88,6 +94,11 @@ namespace Ordr.Mobile.Mobile
             }
             RecipeId = recipeId;
             Title = title;
+            if (missingCommonUnits.HasValue &&
+                (missingCommonUnits.Value < 1 || missing.Count == 0))
+                throw new ArgumentOutOfRangeException(nameof(missingCommonUnits));
+            ResultGrade = resultGrade;
+            MissingCommonUnits = missingCommonUnits;
             OriginalMaterialsAndCost = originalMaterialsAndCost;
             SuggestedMaterialInstances = materials.AsReadOnly();
             MissingMaterials = missing.AsReadOnly();

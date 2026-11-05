@@ -26,6 +26,7 @@ namespace Ordr.Mobile.Mobile
     {
         public string Id { get; private set; }
         public string ResultUnitId { get; private set; }
+        public string ResultGrade { get; private set; }
         public string Name { get; private set; }
         public string SourceUrl { get; private set; }
         public int Gold { get; private set; }
@@ -40,8 +41,10 @@ namespace Ordr.Mobile.Mobile
             ResultUnitId = OrdrJson.RequiredString(source, "resultUnitId");
             Name = OrdrJson.RequiredString(source, "name");
             SourceUrl = OrdrJson.RequiredString(source, "sourceUrl");
-            if (units.Find(ResultUnitId) == null)
+            var resultUnit = units.Find(ResultUnitId);
+            if (resultUnit == null)
                 throw new FormatException("조합 결과 유닛이 카탈로그에 없습니다: " + ResultUnitId);
+            ResultGrade = resultUnit.Grade;
             if (!SourceUrl.StartsWith("https://ordr.kr/character/", StringComparison.Ordinal))
                 throw new FormatException("원작 도감 출처가 확인되지 않은 조합식: " + Id);
             if (OrdrJson.RequiredString(source, "verifiedAs") != "ordr-2.323-web-catalog")

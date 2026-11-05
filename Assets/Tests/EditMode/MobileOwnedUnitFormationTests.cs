@@ -130,7 +130,15 @@ namespace Ordr.Mobile.Tests
             Assert.AreEqual(-30f, center.y, .001f);
             Assert.IsTrue(MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
                 new Vector2(40f, -20f), 60f, 1.5f, board, out center));
-            Assert.AreEqual(Vector2.zero, center);
+            // At the vertical zoom limit the camera is locked to y=0,
+            // but a horizontal margin of 10 still exists (100 - 60*1.5).
+            Assert.AreEqual(new Vector2(10f, 0f), center);
+            Assert.IsTrue(MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
+                new Vector2(-40f, 20f), 60f, 1.5f, board, out center));
+            Assert.AreEqual(new Vector2(-10f, 0f), center);
+            Assert.IsTrue(MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
+                new Vector2(40f, -20f), 50f, 2f, board, out center));
+            Assert.AreEqual(new Vector2(0f, -10f), center);
             Assert.IsFalse(MobileBattlefieldCameraNavigation.TryClampToWorldBounds(
                 Vector2.zero, 61f, 1.5f, board, out center));
         }

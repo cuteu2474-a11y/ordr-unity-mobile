@@ -70,6 +70,45 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void NearReadyCountsOnlyMissingCommonsAndNeverGrantsCraftPermission()
+        {
+            var game = Create();
+            const string ability = "A006"; // Native uncommon recipe, two common inputs.
+            Assert.IsTrue(game.Fusion.CanCommitRecipe(ability));
+            var required = game.Registry.FindByAbility(ability).RequiredUnitRawcodes();
+            Assert.AreEqual(2, required.Count);
+            bool withheld = false;
+            string withheldUnitId = null;
+            foreach (var material in required)
+            {
+                string unitId;
+                Assert.IsTrue(game.Fusion.TryResolveUnit(material.Key, out unitId));
+                Assert.AreEqual("흔함", game.Units.Require(unitId).Grade);
+                int count = material.Value;
+                if (!withheld)
+                {
+                    count--;
+                    withheld = true;
+                    withheldUnitId = unitId;
+                }
+                for (int i = 0; i < count; i++)
+                    game.Combat.SpawnCharacter(unitId, 100, 200);
+            }
+            var near = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == ability);
+            Assert.IsFalse(near.IsReady, "Near-ready is a hint, never commit authority.");
+            Assert.AreEqual(1, near.MissingCommonUnits,
+                string.Join(";", near.MissingMaterials));
+            Assert.IsFalse(near.HasAllUnitMaterials);
+            game.Combat.SpawnCharacter(withheldUnitId, 100, 200);
+            var ready = game.Fusion.AvailableRecipes(game.Combat.MobileUnitSnapshot())
+                .Single(x => x.RecipeId == ability);
+            Assert.IsTrue(ready.IsReady,
+                string.Join(";", ready.MissingMaterials));
+            Assert.IsNull(ready.MissingCommonUnits);
+        }
+
+        [Test]
         public void AllTwentyFourNonCraftRegistrationsAreRoutedWithoutFreeCrafting()
         {
             var game = Create();

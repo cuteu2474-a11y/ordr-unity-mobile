@@ -354,6 +354,7 @@ namespace Ordr.Mobile.Mobile
         private const double HiddenResultX = -3776.0;
         private const double HiddenResultY = 4480.0;
         private readonly CharacterCombatRuntime combat;
+        private readonly CharacterUnitCatalog unitCatalog;
         private readonly SharedEconomySession economy;
         private readonly OriginalMapBaseStatCatalog objects;
         private readonly OriginalJassFusionPlanner planner;
@@ -419,6 +420,7 @@ namespace Ordr.Mobile.Mobile
             Original323FusionVerifiedRestrictions verifiedSourceRestrictions = null)
         {
             combat = world ?? throw new ArgumentNullException(nameof(world));
+            unitCatalog = units ?? throw new ArgumentNullException(nameof(units));
             economy = shared ?? throw new ArgumentNullException(nameof(shared));
             objects = originalObjects ?? throw new ArgumentNullException(nameof(originalObjects));
             originalRegistrations = registrations ?? throw new ArgumentNullException(nameof(registrations));
@@ -959,10 +961,31 @@ namespace Ordr.Mobile.Mobile
                     economy.Wallet, offer.RecipeId, out nativeReason))
                     missing.Add(nativeReason);
                 bool allUnitsOwned = true;
+                bool deficitsAreOnlyCommons = true;
+                int missingCommonUnits = 0;
+                int deficitMaterialKinds = 0;
                 foreach (var material in ready.Materials)
-                    if (material.MissingCount > 0) allUnitsOwned = false;
+                {
+                    if (material.MissingCount <= 0) continue;
+                    allUnitsOwned = false;
+                    deficitMaterialKinds++;
+                    var unit = string.IsNullOrWhiteSpace(material.CatalogUnitId) ?
+                        null : unitCatalog.Find(material.CatalogUnitId);
+                    if (unit == null || unit.Grade != "흔함")
+                        deficitsAreOnlyCommons = false;
+                    else
+                        missingCommonUnits += material.MissingCount;
+                }
                 if (!economy.HasStarted || combat.Game.Phase != SessionPhase.Running)
                     missing.Add("먼저 유닛 준비 또는 게임을 시작해 주세요.");
+                // Exactly one planner shortage blocker per deficient UNIT.
+                // Any extra unresolved special rule, currency, PICK, duplicate
+                // identity or native-ledger blocker disqualifies near-ready.
+                int? nearReadyCommonCount = missingCommonUnits > 0 &&
+                    deficitsAreOnlyCommons &&
+                    ready.BlockingReasons.Count == deficitMaterialKinds &&
+                    missing.Count == ready.BlockingReasons.Count ?
+                    (int?)missingCommonUnits : null;
                 var parts = new List<string>();
                 foreach (var material in ready.Materials)
                     parts.Add(material.Name + " ×" + material.RequiredCount +
@@ -998,7 +1021,8 @@ namespace Ordr.Mobile.Mobile
                         ? " · 원본 부가효과 미검증" : "") +
                     (Original323FusionCountLedger.IsCounterFusion(offer.RecipeId)
                         ? " · 횟수 한도는 모바일 모델" : ""),
-                    ready.SuggestedMaterialIds, missing, allUnitsOwned));
+                    ready.SuggestedMaterialIds, missing, allUnitsOwned,
+                    resultGrades[offer.RecipeId], nearReadyCommonCount));
             }
             return result.AsReadOnly();
         }

@@ -7,6 +7,64 @@ namespace Ordr.Mobile.Mobile
     // triggers game logic or changes source recipe readiness.
     public static class MobileFusionBrowser
     {
+        // Live near-ready catalog: all non-common conditions must already be met.
+        // A candidate with only common deficits is visible, but cannot be
+        // committed until original source checks pass again on user confirmation.
+        public static IReadOnlyList<MobileFusionPreview> SelectNearReadyHighGrade(
+            IReadOnlyList<MobileFusionPreview> all, Func<string, bool> canExecute)
+        {
+            if (all == null) throw new ArgumentNullException(nameof(all));
+            if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
+            var nearReady = new List<MobileFusionPreview>();
+            foreach (var offer in all)
+            {
+                if (offer == null)
+                    throw new ArgumentException("조합식 목록에 빈 항목이 있습니다.", nameof(all));
+                if (!canExecute(offer.RecipeId)) continue;
+                if (offer.IsReady || (offer.MissingCommonUnits.HasValue &&
+                    offer.MissingCommonUnits.Value > 0))
+                    nearReady.Add(offer);
+            }
+            nearReady.Sort((a, b) =>
+            {
+                int grade = GradePriority(b.ResultGrade).CompareTo(GradePriority(a.ResultGrade));
+                if (grade != 0) return grade;
+                // Immediately craftable before missing commons within same grade.
+                int missingA = a.IsReady ? 0 : a.MissingCommonUnits.Value;
+                int missingB = b.IsReady ? 0 : b.MissingCommonUnits.Value;
+                int deficit = missingA.CompareTo(missingB);
+                if (deficit != 0) return deficit;
+                int name = string.CompareOrdinal(a.Title, b.Title);
+                return name != 0 ? name : string.CompareOrdinal(a.RecipeId, b.RecipeId);
+            });
+            return nearReady.AsReadOnly();
+        }
+
+        // UI-only ordering. Special grades are presented above regular grades;
+        // original fusion prerequisites, prices and outcomes are unchanged.
+        private static int GradePriority(string grade)
+        {
+            switch (grade)
+            {
+                case "신비함": return 160;
+                case "세라핌": return 150;
+                case "불멸의": return 140;
+                case "영원한": return 130;
+                case "초월함": return 120;
+                case "왜곡됨": return 110;
+                case "제한됨": return 100;
+                case "변화": return 90;
+                case "히든": case "해적선": return 80;
+                case "전설": return 70;
+                case "희귀함": return 60;
+                case "특수함": return 55;
+                case "특별함": return 50;
+                case "안흔함": return 40;
+                case "흔함": return 30;
+                case "랜덤": return 20;
+                default: return 0;
+            }
+        }
         public static IReadOnlyList<MobileFusionPreview> Select(
             IReadOnlyList<MobileFusionPreview> all, string search,
             bool materialsReadyOnly, int requestedPage, int pageSize,

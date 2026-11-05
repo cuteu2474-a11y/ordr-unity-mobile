@@ -102,6 +102,76 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void NearReadyShowsReadyAndCommonOnlyDeficitsSortedByGradeThenMissingCount()
+        {
+            var low = new MobileFusionPreview("L", "나미", "재료",
+                new long[] { 17 }, new string[0], true, "희귀함");
+            var high = new MobileFusionPreview("H", "샹크스", "재료",
+                new long[] { 18 }, new string[0], true, "영원한");
+            var sameGradeReady = new MobileFusionPreview("M0", "루피", "재료",
+                new long[] { 19 }, new string[0], true, "전설");
+            var sameGradeOne = new MobileFusionPreview("M1", "로빈", "흔함",
+                new long[] { 20 }, new[] { "재료 부족: h003 1기" },
+                false, "전설", 1);
+            var sameGradeThree = new MobileFusionPreview("M3", "조로", "흔함",
+                new long[] { 21 }, new[] { "재료 부족: h003 3기" },
+                false, "전설", 3);
+            var lowNear = new MobileFusionPreview("LN", "상디", "흔함",
+                new long[] { 22 }, new[] { "재료 부족: h001 2기" },
+                false, "특수함", 2);
+            var sourceLocked = new MobileFusionPreview("X", "미승인", "재료",
+                new long[] { 23 }, new string[0], true, "신비함");
+            var cashBlocked = new MobileFusionPreview("C", "골드 부족", "골드",
+                new long[] { 24 }, new[] { "골드 부족" }, true, "불멸의");
+            var rareBlocked = new MobileFusionPreview("R", "희귀 재료 부족", "희귀",
+                new long[] { 25 }, new[] { "재료 부족: h123 1기" }, false, "초월함");
+            var inventory = new[] { low, sameGradeThree, rareBlocked, cashBlocked,
+                sourceLocked, lowNear, sameGradeOne, sameGradeReady, high };
+            var result = MobileFusionBrowser.SelectNearReadyHighGrade(inventory,
+                id => id != "X");
+
+            CollectionAssert.AreEqual(new[] { "H", "M0", "M1", "M3", "L", "LN" },
+                new[] { result[0].RecipeId, result[1].RecipeId,
+                    result[2].RecipeId, result[3].RecipeId,
+                    result[4].RecipeId, result[5].RecipeId });
+            Assert.AreEqual(6, result.Count);
+            Assert.AreSame(low, inventory[0], "Filtering must not reorder inventory.");
+            Assert.IsFalse(cashBlocked.IsReady);
+            Assert.IsTrue(sourceLocked.IsReady, "Materials never grant commit authority.");
+            Assert.AreEqual(1, sameGradeOne.MissingCommonUnits);
+            int matching, pages, resolved;
+            var page = MobileFusionBrowser.Select(result, "", false, 0, 2,
+                out matching, out pages, out resolved);
+            Assert.AreEqual(6, matching);
+            Assert.AreEqual(3, pages);
+            Assert.AreEqual("H", page[0].RecipeId);
+            Assert.AreEqual("M0", page[1].RecipeId);
+        }
+
+        [Test]
+        public void NearReadyRejectsInvalidSourcesAndKeepsStableSameGradeOrdering()
+        {
+            var z = new MobileFusionPreview("Z", "조로 · 초월함", "재료",
+                new long[] { 18 }, new string[0], true, "초월함");
+            var a = new MobileFusionPreview("A", "루피 · 초월함", "재료",
+                new long[] { 19 }, new string[0], true, "초월함");
+            var ready = MobileFusionBrowser.SelectNearReadyHighGrade(
+                new[] { z, a }, id => true);
+            Assert.AreEqual("A", ready[0].RecipeId);
+            Assert.AreEqual("Z", ready[1].RecipeId);
+            Assert.Throws<ArgumentNullException>(() =>
+                MobileFusionBrowser.SelectNearReadyHighGrade(null, id => true));
+            Assert.Throws<ArgumentNullException>(() =>
+                MobileFusionBrowser.SelectNearReadyHighGrade(new[] { a }, null));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                new MobileFusionPreview("BAD", "나미", "재료", new long[] { 1 },
+                    new string[0], true, "흔함", 1));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                new MobileFusionPreview("BAD", "나미", "재료", new long[] { 1 },
+                    new[] { "재료 부족" }, false, "흔함", 0));
+        }
+
+        [Test]
         public void EmptyResultsAndInvalidPageSizesAreHandledSafely()
         {
             var offers = new[] { Offer("R1", "나미", "우솝") };

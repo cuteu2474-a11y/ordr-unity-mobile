@@ -51,7 +51,8 @@ namespace Ordr.Mobile.Mobile
                 List<string> missing;
                 FindMaterialsAndDeficits(recipe, owned, out selected, out missing);
                 result.Add(new MobileFusionPreview(recipe.Id, recipe.Name,
-                    BuildMaterialSummary(recipe), selected, missing));
+                    BuildMaterialSummary(recipe), selected, missing,
+                    null, recipe.ResultGrade));
             }
             result.Sort((a, b) => string.CompareOrdinal(a.RecipeId, b.RecipeId));
             return result.AsReadOnly();
