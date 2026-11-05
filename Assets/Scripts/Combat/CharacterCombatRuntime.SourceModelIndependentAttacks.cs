@@ -28,6 +28,10 @@ namespace Ordr.Mobile.Combat
             // Native B6o's attackonce command selects the next basic hit
             // target; it must never create an additional free damage packet.
             public string AttackOnceTargetId;
+            // Source zombie rawcode is not pinned; an explicit model shadow
+            // inherits the owner's native attack object and common buffs.
+            public bool ModelShadowZombie;
+            public readonly List<string> ShadowInheritedSources = new List<string>();
         }
 
         private readonly Dictionary<string, SourceIndependentAttacker> sourceIndependentAttackers =
@@ -222,6 +226,8 @@ namespace Ordr.Mobile.Combat
                 BasicAttackResult hit;
                 try
                 {
+                    if (actor.ModelShadowZombie)
+                        RefreshModelShadowZombieInheritedStatuses(actor);
                     if (!attackPipeline.TryBasicAttack(key, candidates, out hit)) continue;
                 }
                 catch (NotSupportedException ex)
@@ -241,7 +247,7 @@ namespace Ordr.Mobile.Combat
                 SpatialCombatEnemy victim;
                 if (enemies.TryGetValue(hit.TargetId, out victim))
                 {
-                    CompleteSourceIndependentHit(actor, victim);
+                    CompleteSourceIndependentHit(actor, victim, hit.ActualDamage);
                     TryAutoCastSourceSatelliteMana(actor, victim);
                 }
                 if (enemies.TryGetValue(hit.TargetId, out victim) && !victim.Enemy.IsAlive)
@@ -456,9 +462,43 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        private void CompleteSourceIndependentHit(SourceIndependentAttacker actor,
-            SpatialCombatEnemy primary)
+        private void RefreshModelShadowZombieInheritedStatuses(
+            SourceIndependentAttacker actor)
         {
+            CombatStatusEngine shadow;
+            if (!unitStatuses.TryGetValue(actor.Key, out shadow)) return;
+            foreach (var previous in actor.ShadowInheritedSources)
+                shadow.RemoveSource(previous);
+            actor.ShadowInheritedSources.Clear();
+            CombatStatusEngine owner;
+            if (!unitStatuses.TryGetValue(
+                InstanceKey(actor.OwnerInstanceId), out owner)) return;
+            var effects = owner.Snapshot();
+            for (int i = 0; i < effects.Count; i++)
+            {
+                var effect = effects[i];
+                if (effect.Type != CombatEffectType.AttackSpeedBuff &&
+                    effect.Type != CombatEffectType.AttackPowerBuff) continue;
+                string source = "practice-shadow:" + actor.Key + ":" + i;
+                shadow.Apply(new CombatEffect(source, effect.Type,
+                    CombatEffectOrigin.Aura, effect.Amount, 0));
+                actor.ShadowInheritedSources.Add(source);
+            }
+        }
+
+        private void CompleteSourceIndependentHit(SourceIndependentAttacker actor,
+            SpatialCombatEnemy primary, long actualDamage)
+        {
+            if (actor.ModelShadowZombie)
+            {
+                // Tooltip-only 60%-of-basic splash, using the common
+                // armor-aware executor; not native Zombie callback proof.
+                if (actualDamage > 0)
+                    ApplySourceModelAreaPacket(actor.Key, actor.StoryLane,
+                        primary, 375, actualDamage * .60,
+                        Ordr323AttackType.Spells, "장군좀비 폭발 공격");
+                return;
+            }
             if (actor.Rawcode == "h085")
             {
                 var skill = FindProfileSkill(actor.SkillProfile, "인술 분신");

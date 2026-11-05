@@ -60,7 +60,16 @@ namespace Ordr.Mobile.Combat
                 // mana. Those native events require h067's pinned SLK pool
                 // even if the separate tooltip active is not auto-castable.
                 (actor.Catalog.Id == "E-09" &&
-                 actor.Mapping.AttackSpec.UnitRawCode == "h067"))
+                 actor.Mapping.AttackSpec.UnitRawCode == "h067") ||
+                // Exact source W3X SLK objects: HP35, HP30, MP145, HP45/MP75.
+                (actor.Catalog.Id == "L-02" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h02P") ||
+                (actor.Catalog.Id == "L-03" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h09Z") ||
+                (actor.Catalog.Id == "MY-06" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h09N") ||
+                (actor.Catalog.Id == "MY-08" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h08M"))
                 return true;
             // TR-26 has a documented mana-gated on-attack packet rather
             // than an activeMana skill; its original SLK pool is still needed.
@@ -123,10 +132,24 @@ namespace Ordr.Mobile.Combat
             sourceModelManagedResourceRows.Add(actor.Id, stats);
         }
 
+        // An L-18 ally regen aura must work on every mapped unit, including
+        // units without a personal HP/MP cost skill. Provision only the
+        // recipient's matching original SLK object, never guessed stats.
+        private void ProvisionSourceModelAuraRecipientResources(CharacterInstance actor)
+        {
+            if (!UsesSourceModelBasicAttacks || sourceModelResourceCatalog == null ||
+                actor == null || actor.Mapping == null ||
+                actor.Abilities.Resources != null) return;
+            var stats = sourceModelResourceCatalog.Find(actor.Catalog.Id);
+            if (stats == null ||
+                stats.OriginalRawcode != actor.Mapping.AttackSpec.UnitRawCode) return;
+            actor.Abilities.ConfigureResources(stats.CreateStartingPool());
+            sourceModelManagedResourceRows.Add(actor.Id, stats);
+        }
+
         private void AdvanceSourceModelResources(double seconds)
         {
-            if (!UsesSourceModelBasicAttacks || sourceModelManagedResourceRows.Count == 0)
-                return;
+            if (!UsesSourceModelBasicAttacks) return;
             foreach (var actor in characters.Values)
             {
                 SourceModelUnitResourceSpec source;
@@ -143,6 +166,8 @@ namespace Ordr.Mobile.Combat
                         source.ManaRegeneration + levelManaRegen, seconds);
                 }
             }
+            // Count ally +0.25 HP/MP against the same status clock.
+            AdvanceBulkAllyRegeneration(seconds);
         }
 
         // Explicitly allow-listed complete tooltip/model actives

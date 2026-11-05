@@ -385,6 +385,9 @@ namespace Ordr.Mobile.Combat
                 ScheduleSourceModelLightningVolley(caster, accepted, targets);
             else
                 ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);
+            // Family followups run for approved Anya HP/MP casts too.
+            if (caster.Catalog.Id == "MY-08")
+                ExecuteAdditionalAutoFollowup(caster, primary, accepted);
             RemoveDefeatedEnemies();
             return true;
         }

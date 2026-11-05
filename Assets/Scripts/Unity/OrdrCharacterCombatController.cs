@@ -2789,6 +2789,8 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("이미 공유 경제 세션이 있습니다.");
             SharedEconomy = new SharedEconomySession(new EconomyWallet(), world.Roster);
             Combat = world;
+            if (Combat.UsesSourceModelBasicAttacks)
+                Combat.ConfigureSourceModelGiftWallet(SharedEconomy.Wallet);
             VerifiedWaveDirector.VerifiedMonsterDefeated += OnVerifiedMonsterDefeated;
             // Wave/HUD counters already record ordinary escapes. Avoid
             // flooding the bounded diagnostic error log with every mob exit.

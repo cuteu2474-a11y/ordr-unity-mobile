@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
 
 namespace Ordr.Mobile.Combat
@@ -12,6 +13,22 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, int>();
         private readonly Dictionary<long, double> bulkAutoFlatPower =
             new Dictionary<long, double>();
+        private readonly Dictionary<long, double> bulkAllyRegenerationEnds =
+            new Dictionary<long, double>();
+        private readonly Dictionary<long, long> bulkGiftSerials =
+            new Dictionary<long, long>();
+        private EconomyWallet bulkGiftWallet;
+
+        // The wallet is the combat controller's existing shared wallet, not a
+        // parallel stash that would desynchronise the gold/wood HUD.
+        public void ConfigureSourceModelGiftWallet(EconomyWallet wallet)
+        {
+            if (!UsesSourceModelBasicAttacks || processingStep ||
+                pendingStepSeconds != 0 || bulkGiftWallet != null)
+                throw new InvalidOperationException(
+                    "원본 연습 선물상자 지갑은 시작 전에 한 번만 연결합니다.");
+            bulkGiftWallet = wallet ?? throw new ArgumentNullException(nameof(wallet));
+        }
 
         private static bool HasBulkAutomaticOwner(string rawcode)
         {
@@ -57,6 +74,8 @@ namespace Ordr.Mobile.Combat
         {
             bulkAutoAttackCounts.Remove(actorId);
             bulkAutoFlatPower.Remove(actorId);
+            bulkAllyRegenerationEnds.Remove(actorId);
+            bulkGiftSerials.Remove(actorId);
         }
 
         private List<SpatialCombatEnemy> BulkTargets(CharacterInstance actor,
@@ -311,6 +330,13 @@ namespace Ordr.Mobile.Combat
                     {
                         additionalAutoReadyAt[key] = Time + 8.5;
                         AdditionalAutoDeleteLine(actor, primary, absorb);
+                        // The source records this 8.5-second event but does
+                        // not specify an independent proc probability. Bind
+                        // the companion effects to this SAME accepted event.
+                        BulkSelfStatus(actor, absorb,
+                            CombatEffectType.AttackSpeedBuff, 35, 3,
+                            "shadow-absorption-speed");
+                        BulkSpawnShadowZombie(actor, absorb);
                     }
                 }
             }
@@ -343,8 +369,8 @@ namespace Ordr.Mobile.Combat
             if (skill.Components.Count == 0) return;
             if (id == "L-02:skill:0" || id == "L-03:skill:0")
             {
-                // HP abilities require a verified resource pool. The unit
-                // catalog does not currently pin either actor's SLK HP.
+                // The exact SLK object HP is provisioned by the shared
+                // source resource catalog (h02P/h09Z, no invented HP).
                 var pool = actor.Abilities.Resources;
                 double cost = skill.Number("healthCost") ?? 0;
                 if (pool == null || cost <= 0 || !pool.CanSpend(cost, 0)) return;
@@ -439,6 +465,7 @@ namespace Ordr.Mobile.Combat
                         primary.Enemy.MaxHealth *
                         (single.Number("plusTargetMaxHealthPercent") ?? 0) / 100,
                         "magical");
+                    BulkRestoreAllyMana(actor, skill);
                 }
                 else if (id == "MY-06:skill:3" &&
                     skill.Components.Count > 1)
@@ -492,7 +519,141 @@ namespace Ordr.Mobile.Combat
                 state.RemoveSource(source);
                 state.Apply(new CombatEffect(source, CombatEffectType.AttackPowerBuff,
                     CombatEffectOrigin.TriggeredSkill, percent, duration));
+                ProvisionSourceModelAuraRecipientResources(ally);
+                // L-18's source packet also specifies +0.25 HP / MP per
+                // second for the same six seconds. Keep this on the same
+                // status clock so a large combat frame cannot over-credit.
+                bulkAllyRegenerationEnds[ally.Id] =
+                    state.CurrentTime + duration;
             }
+        }
+
+        private void AdvanceBulkAllyRegeneration(double seconds)
+        {
+            if (seconds <= 0 || bulkAllyRegenerationEnds.Count == 0) return;
+            var ended = new List<long>();
+            foreach (var entry in bulkAllyRegenerationEnds)
+            {
+                CharacterInstance ally;
+                CombatStatusEngine status;
+                if (!characters.TryGetValue(entry.Key, out ally) ||
+                    !unitStatuses.TryGetValue(InstanceKey(entry.Key), out status))
+                {
+                    ended.Add(entry.Key);
+                    continue;
+                }
+                double active = Math.Min(seconds,
+                    Math.Max(0, entry.Value - status.CurrentTime));
+                var pool = ally.Abilities.Resources;
+                if (pool != null && active > 0)
+                {
+                    pool.SetHealth(Math.Min(pool.MaximumHealth,
+                        pool.Health + .25 * active));
+                    pool.SetMana(Math.Min(pool.MaximumMana,
+                        pool.Mana + .25 * active));
+                }
+                if (entry.Value <= status.CurrentTime + seconds)
+                    ended.Add(entry.Key);
+            }
+            foreach (long id in ended) bulkAllyRegenerationEnds.Remove(id);
+        }
+
+        private void BulkRestoreAllyMana(CharacterInstance actor,
+            ImportedCombatSkill skill)
+        {
+            if (skill.Components.Count < 3 ||
+                skill.Components[2].Type != "manaRestoration" ||
+                skill.Components[2].Text("to") != "nearbyAllies") return;
+            double amount = skill.Components[2].Number("amount") ?? 0;
+            if (amount <= 0) return;
+            foreach (var ally in characters.Values)
+            {
+                if (ally.Id == actor.Id || !ally.AttackReady ||
+                    IsStoryDeployed(ally.Id) != IsStoryDeployed(actor.Id))
+                    continue;
+                var pool = ally.Abilities.Resources;
+                if (pool == null || pool.MaximumMana <= 0) continue;
+                // The source lacks a separate nearby radius; use the
+                // skill's pinned 415 AoE, not global lane-wide mana.
+                var origin = roster.Get(actor.Id);
+                var target = roster.Get(ally.Id);
+                double dx = origin.X - target.X, dy = origin.Y - target.Y;
+                double radius = skill.Number("radius") ?? 0;
+                if (radius <= 0 || dx * dx + dy * dy > radius * radius)
+                    continue;
+                pool.SetMana(Math.Min(pool.MaximumMana, pool.Mana + amount));
+            }
+        }
+
+        private void BulkSpawnShadowZombie(CharacterInstance actor,
+            ImportedCombatSkill skill)
+        {
+            foreach (var component in skill.Components)
+            {
+                if (component.Type != "summon" ||
+                    component.Text("unit") != "장군좀비" ||
+                    component.Get("inheritsAttackSpeedAndAttackPower") == null)
+                    continue;
+                double? lifetime = component.Number("durationSeconds");
+                if (!lifetime.HasValue || lifetime.Value <= 0 ||
+                    component.Number("basicAttackExplosivePercent") != 60 ||
+                    component.Number("basicAttackRadius") != 375) return;
+                var point = roster.Get(actor.Id);
+                // This skill says it inherits the owner's attack stats but
+                // supplies no zombie object ID. A model-only shadow uses
+                // the exact owner's source object, never a fake zombie ID.
+                var summon = SpawnSourceTemporaryActor(actor, skill.Name,
+                    "장군좀비", lifetime.Value,
+                    actor.Mapping.AttackSpec.UnitRawCode,
+                    spawnX: point.X, spawnY: point.Y, modeledCombat: true);
+                SourceIndependentAttacker attacker;
+                if (sourceIndependentAttackers.TryGetValue(
+                    SummonAttackKey(summon.Id), out attacker))
+                    attacker.ModelShadowZombie = true;
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillActivated,
+                    InstanceKey(actor.Id), null, skill.Name,
+                    "TOOLTIP_MODEL_ONLY 장군좀비 18초 / 원본 개별 소환 확률 미확인", 0));
+                return;
+            }
+        }
+
+        private void BulkGenerateAndOpenGift(CharacterInstance actor,
+            ImportedCombatSkill sourceSkill)
+        {
+            var opened = AdditionalAutoSkill(actor, "MY-08:skill:5");
+            if (bulkGiftWallet == null || opened == null ||
+                opened.Trigger != "onGiftBoxOpened" ||
+                opened.Components.Count != 2 ||
+                opened.Components[0].Type != "rewardGold" ||
+                opened.Components[1].Type != "rewardLumber" ||
+                opened.Components[0].Number("chancePercent") != 70 ||
+                opened.Components[1].Number("chancePercent") != 30)
+            {
+                ReportSourceModelNextThirtyDeferred(InstanceKey(actor.Id),
+                    null, "와쿠와쿠 선물상자 공유 지갑 또는 보상 명세 누락");
+                return;
+            }
+            double gold = opened.Components[0].Number("amount") ?? 0;
+            double wood = opened.Components[1].Number("amount") ?? 0;
+            if (gold != 2500 || wood != 1) return;
+            long serial;
+            bulkGiftSerials.TryGetValue(actor.Id, out serial);
+            if (serial == long.MaxValue) throw new OverflowException("선물상자 번호 초과");
+            serial++;
+            bool goldReward = sourceModelRules.NextScriptRoll(10000) < 7000;
+            var reward = new ResourceBundle().Add(
+                goldReward ? "gold" : "wood", goldReward ? 2500 : 1);
+            // Once receipt: a repeated callback can never pay the same gift
+            // twice. Opening happens immediately in the mobile model.
+            string receipt = "practice-gift:MY-08:" + actor.Id + ":" + serial;
+            if (!bulkGiftWallet.TryGrantOnce(receipt, reward)) return;
+            bulkGiftSerials[actor.Id] = serial;
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated,
+                InstanceKey(actor.Id), null, sourceSkill.Name,
+                "TOOLTIP_MODEL_ONLY 선물상자 생성·자동 개봉 / " +
+                (goldReward ? "금 2500" : "나무 1"), 0));
         }
 
         private void OnBulkAutoSuccessfulHit(string actorKey,
@@ -524,10 +685,23 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy primary, ImportedCombatSkill activated)
         {
             if (actor == null || activated == null ||
-                !primary.Enemy.IsAlive || actor.Mapping == null ||
+                actor.Mapping == null ||
                 !IsBulkSourceOwner(actor.Catalog.Id,
                     actor.Mapping.AttackSpec.UnitRawCode)) return;
             string id = activated.Id;
+            if (actor.Catalog.Id == "MY-08" &&
+                (id == "MY-08:skill:1" || id == "MY-08:skill:2"))
+            {
+                var gift = AdditionalAutoSkill(actor, "MY-08:skill:4");
+                if (gift != null && gift.Trigger == "onFamilySkill" &&
+                    gift.Components.Count == 1 &&
+                    gift.Components[0].Type == "generateGiftBox" &&
+                    gift.Components[0].Number("count") == 1 &&
+                    AdditionalAutoRoll(gift))
+                    BulkGenerateAndOpenGift(actor, gift);
+                return;
+            }
+            if (primary == null || !primary.Enemy.IsAlive) return;
             if (id == "MY-01:skill:1")
             {
                 var follow = AdditionalAutoSkill(actor, "MY-01:skill:2");
