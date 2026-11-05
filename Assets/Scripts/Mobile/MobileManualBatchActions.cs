@@ -10,6 +10,7 @@ namespace Ordr.Mobile.Mobile
     {
         public const int MaximumUnitSales = 10;
         public const int MaximumResourceDraws = 10;
+        public const int MaximumStoryRecalls = 10;
 
         public static ManualActionResult SellSelected(
             IReadOnlyList<long> selected, Func<long, bool> canSellNow,
@@ -50,6 +51,47 @@ namespace Ordr.Mobile.Mobile
                 completed++;
             }
             return Report(completed, selected.Count, null);
+        }
+
+        // Explicitly confirmed convenience recall. Validate all actors
+        // up front, then recheck each actual CWL/CWM state before the move.
+        // A partial failure is reported; no extra stage/reward is granted.
+        public static ManualActionResult RecallStoryUnits(
+            IReadOnlyList<long> ids, Func<long, bool> canRecallNow,
+            Func<long, ManualActionResult> recallOne)
+        {
+            if (ids == null || canRecallNow == null || recallOne == null)
+                throw new ArgumentNullException("복귀 대상과 원본 이동 서비스가 필요합니다.");
+            if (ids.Count < 1 || ids.Count > MaximumStoryRecalls)
+                return Reject("스토리 일괄 복귀는 1~10기만 처리할 수 있습니다.");
+            var unique = new HashSet<long>();
+            foreach (long id in ids)
+                if (id <= 0 || !unique.Add(id))
+                    return Reject("스토리 복귀 대상이 중복되거나 존재하지 않습니다.");
+            foreach (long id in ids)
+                if (!canRecallNow(id))
+                    return Reject("복귀할 수 없는 유닛이 포함됐습니다. 다시 선택해 주세요.");
+
+            int completed = 0;
+            foreach (long id in ids)
+            {
+                if (!canRecallNow(id))
+                    return Report(completed, ids.Count,
+                        "전장 이동 조건이 변경됐습니다.", "스토리 복귀");
+                ManualActionResult outcome;
+                try { outcome = recallOne(id); }
+                catch (Exception error)
+                {
+                    return Report(completed, ids.Count,
+                        "원본 스토리 복귀 오류: " + error.Message, "스토리 복귀");
+                }
+                if (outcome == null || outcome.State != ManualActionState.Succeeded)
+                    return Report(completed, ids.Count,
+                        outcome == null ? "원본 복귀 결과가 없습니다." : outcome.Message,
+                        "스토리 복귀");
+                completed++;
+            }
+            return Report(completed, ids.Count, null, "스토리 복귀");
         }
 
         public static ManualActionResult RepeatExplicitResourceUse(

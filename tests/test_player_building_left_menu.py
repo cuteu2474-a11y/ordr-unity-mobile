@@ -72,7 +72,7 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
             ("DrawOwnedUnitIndex", "private void DrawUnitConfirmations(",
              "DrawActionRow(group.Name +", "DrawUnitConfirmations(entry.InstanceId)"),
             ("DrawStory", "private void DrawFusion(",
-             "DrawStatusRow(name", "RequestOriginalStoryBuilding(stage)"),
+             'DrawStatusRow("현재 목표"', "RequestOriginalStoryBuilding(stage)"),
             ("DrawFusion", "private void DrawFusionConfirmation(",
              "DrawActionRow(rowTitle", "pendingFusion = offer"),
             ("DrawTreasureGacha", "private void DrawAutomaticWispStatus(",
@@ -94,8 +94,8 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("expandedMissionSlots", panel)
         self.assertNotIn("expandedStoryStages", panel)
         self.assertNotIn("expandedEconomyOffers", panel)
-        self.assertIn("RequestStoryDispatch(unit.InstanceId)", panel)
-        self.assertIn("RequestStoryRecall(unit.InstanceId)", panel)
+        self.assertIn("manual.RequestStoryDispatch(actor.InstanceId)", panel)
+        self.assertIn("manual.RequestStoryRecall(actor.InstanceId)", panel)
         self.assertIn("RequestLowerGradeSale(", panel)
         self.assertIn("CanExecuteFusionRecipe(offer.RecipeId)", panel)
         # The action title now explains near-ready common-material shortages.
@@ -116,7 +116,7 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
             ("DrawStandbyDashboard", 'DrawStatusRow("라운드"'),
             ("DrawOriginalChatScoreSummary", 'DrawScoreMetric("전투"'),
             ("DrawPersonalMissions", 'DrawStatusRow("미션 교체"'),
-            ("DrawStory", "DrawStatusRow(name"),
+            ("DrawStory", 'DrawStatusRow("현재 목표"'),
             ("DrawHelperCow", 'DrawStatusRow("도움소 마나"'),
             ("DrawTreasureGacha", 'DrawStatusRow("남은 보물"'),
         )

@@ -283,6 +283,14 @@ namespace Ordr.Mobile.Mobile
                 new ManualActionResult(ManualActionState.Rejected, "스토리 파견 결과를 확인하지 못했습니다.");
         }
 
+        // UI-only readiness: the same original movement gate is rechecked
+        // inside RequestStoryDispatch at the moment of the actual action.
+        public bool CanDispatchStory(long instanceId)
+        {
+            return instanceId > 0 && story != null &&
+                !story.IsDeployed(instanceId) && story.CanDispatch(instanceId);
+        }
+
         public bool IsStoryDeployed(long instanceId)
         {
             return story != null && story.IsDeployed(instanceId);

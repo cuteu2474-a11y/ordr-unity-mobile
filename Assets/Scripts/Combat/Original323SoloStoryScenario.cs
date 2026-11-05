@@ -56,6 +56,26 @@ namespace Ordr.Mobile.Combat
         public const string PracticeTranscendWisp = "practice:story:e01A";
         public const string PendingNativeSideEffects = "practice:story:pending-native-rewards";
 
+        // Read-only preview from the SAME original payout table as the real
+        // wallet receipt. Contributor bonuses and pending native effects are
+        // intentionally excluded (single-player UI does not show MVP).
+        public static string BaseRewardSummary(int stage)
+        {
+            if (stage < 1 || stage >= Pay.Length)
+                throw new ArgumentOutOfRangeException(nameof(stage));
+            var reward = Pay[stage];
+            var parts = new List<string>();
+            if (reward.Gold > 0) parts.Add("골드 " + reward.Gold);
+            if (reward.Wood > 0) parts.Add("목재 " + reward.Wood);
+            if (reward.Choice > 0) parts.Add("선택위습 " + reward.Choice);
+            if (reward.Random > 0) parts.Add("랜덤위습 " + reward.Random);
+            if (reward.Uncommon > 0) parts.Add("안흔함위습 " + reward.Uncommon);
+            if (reward.Special > 0) parts.Add("특별위습 " + reward.Special);
+            if (reward.Rare > 0) parts.Add("희귀위습 " + reward.Rare);
+            if (stage == 10) parts.Add("초월위습 연습 권리 1");
+            return string.Join(" · ", parts.ToArray());
+        }
+
         private readonly CharacterCombatRuntime combat;
         private readonly Original323StoryBuildingPracticeWorld world;
         private readonly SharedEconomySession economy;

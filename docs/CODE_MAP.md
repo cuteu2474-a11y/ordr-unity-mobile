@@ -1,3 +1,11 @@
+## 2026-11-05 · 62차 스토리 관리 UI와 안전한 수동 복귀
+
+- OrdrMobileTouchPanel.DrawStory / DrawStoryDispatchPanel: 현재 스토리 건물 HP·진행·출현/파괴 제한·연구/기본 보상/네이티브 적용 현황, 건물별 기록, 선택 유닛 직접 이동, 필터·페이지·일괄 복귀 확인.
+- Original323SoloStoryScenario.BaseRewardSummary: 14개 스토리 원본 기본 지급 배열 Pay의 읽기 전용 UI 표기(기여/MVP 추가분 제외), 실제 지갑 거래/출현 시간 불변.
+- MobileManualInteraction.CanDispatchStory + MobileStoryDispatchBrowser.Select: 원본 파견 가능 조건만 사용하여 실제 보유 유닛·파견 상태별 조회, 등급순 정렬 및 페이지 처리.
+- MobileManualBatchActions.RecallStoryUnits: 최대 10개 고유 실물 ID의 원본 복귀 가능 여부 사전 검사·원본 호출 직전 재검사·순차 결과 정산, 부분 실패 중단.
+- MobileStoryDispatchBrowserTests 및 tests/test_player_building_left_menu.py: 스토리 브라우저·복귀·기본 보상 회귀 코드와 리팩터링 UI 계약. 실행 검증 미완료.
+
 ## 2026-11-05 · 61차 유닛 목록·선택·원본 조합 재료 탐색
 
 - MobileOwnedRosterBrowser.Group: 보유 실물 기반 등급 필터, MobileFusionBrowser.GradePriority 재사용한 높은 등급 순 안정 정렬; 판매·분해 판정·인스턴스 불변.

@@ -57,6 +57,12 @@ namespace Ordr.Mobile.Unity
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<int> expandedMissionSlots = new HashSet<int>();
         private bool showStoryDispatch;
+        private bool showStoryStageHistory;
+        private bool showStoryNativeRewards;
+        private bool confirmStoryRecallAll;
+        private int selectedStoryRewardStage;
+        private int storyRosterPage;
+        private MobileStoryRosterFilter storyRosterFilter = MobileStoryRosterFilter.All;
         private bool showOriginalAudit;
         private readonly Dictionary<Tab, Vector2> tabScrollPositions = new Dictionary<Tab, Vector2>();
         private int ownedPage;
@@ -1838,110 +1844,287 @@ namespace Ordr.Mobile.Unity
 
         private void DrawStory()
         {
-            GUILayout.Label("스토리 건물 14종", OrdrMobileUiTheme.Subheading);
             var scenario = controller.SoloStory;
-            if (scenario != null)
-            {
-                GUILayout.Label("스토리 진행 " + scenario.HighestDestroyedStage + "/14 격파 · " +
-                    "현재 건물 " + scenario.ActiveStage, OrdrMobileUiTheme.Subheading);
-                if (scenario.EggheadWaitRemaining > 0)
-                    GUILayout.Label("에그헤드 등장까지 " +
-                        Math.Ceiling(scenario.EggheadWaitRemaining) + "초");
-                if (scenario.EggheadDeadlineRemaining > 0)
-                    GUILayout.Label("에그헤드 파괴 제한시간 " +
-                        Math.Ceiling(scenario.EggheadDeadlineRemaining) + "초");
-                if (!string.IsNullOrWhiteSpace(scenario.LastNotice))
-                    GUILayout.Label(scenario.LastNotice);
-                var progression = controller.StoryProgression;
-                if (progression != null)
-                    GUILayout.Label("스토리 연구 " + progression.Researches.Count +
-                        "개 · 기본 특성포인트 " + progression.TraitPoints + "개");
-            }
             var catalog = controller.StoryBuildingCatalog;
             var world = controller.PracticeStoryBuildings;
-            if (catalog == null)
-                GUILayout.Label("스토리 건물 준비 중", OrdrMobileUiTheme.Overline);
-            else
+            if (scenario == null || catalog == null || world == null)
             {
-                for (int stage = 1; stage <= 14; stage++)
-                {
-                    var building = catalog.Find(stage);
-                    if (building == null) continue;
-                    string status = "미배치";
-                    bool alive = false, settled = false;
-                    if (world != null)
-                    {
-                        foreach (var encounter in world.Encounters)
-                        {
-                            if (encounter.Building.Stage != stage) continue;
-                            alive = encounter.State == Original323StoryBuildingState.Alive;
-                            settled = encounter.SourceSettlementConfirmed;
-                            status = encounter.SourceSettlementConfirmed ? "원본 정산 확인" :
-                                scenario != null && encounter.State == Original323StoryBuildingState.Destroyed
-                                    ? "연습 파괴 완료 · 기본 보상 지급" :
-                                alive ? "건물 유지" :
-                                encounter.State == Original323StoryBuildingState.Destroyed
-                                    ? "파괴 · 원본 보상 대조 필요" : "제거 기록";
-                            if (alive)
-                            {
-                                var enemy = Combat.EnemyOf(encounter.EnemyId);
-                                if (enemy != null)
-                                    status += " · HP " + enemy.Health + "/" + enemy.MaxHealth;
-                            }
-                        }
-                    }
-                    string shortStatus = settled ? "정산 확인" :
-                        alive ? "건물 유지" :
-                        status.StartsWith("연습 파괴 완료", StringComparison.Ordinal)
-                            ? "파괴 완료" : status;
-                    string name = stage.ToString("00") + "  " + building.Name;
-                    if (controller.CanRequestOriginalStoryBuilding && !alive && !settled)
-                    {
-                        if (OrdrMobileUiTheme.DrawActionRow(name,
-                            "출현", OrdrMobileUiTheme.Gold))
-                            ShowResult(controller.RequestOriginalStoryBuilding(stage));
-                    }
-                    else
-                        OrdrMobileUiTheme.DrawStatusRow(name,
-                            shortStatus, OrdrMobileUiTheme.Aqua);
-                    if (alive && status.IndexOf("HP ", StringComparison.Ordinal) >= 0)
-                        GUILayout.Label(status, OrdrMobileUiTheme.Overline);
-                }
+                GUILayout.Label("스토리 건물과 전투 월드 연결을 기다리는 중입니다.");
+                return;
             }
-            if (!controller.ManualActions.HasStoryService)
-                OrdrMobileUiTheme.DrawStatusRow("스토리 파견",
-                    "준비 중", OrdrMobileUiTheme.Gold);
-            if (OrdrMobileUiTheme.DrawAccordionHeader("스토리 파견 관리",
-                "유닛 목록", showStoryDispatch, OrdrMobileUiTheme.Gold))
-                showStoryDispatch = !showStoryDispatch;
-            if (showStoryDispatch)
+
+            // The player needs one immediate objective, not fourteen large
+            // buttons hiding the live fight under a scrolling panel.
+            GUILayout.Label("스토리 항해", OrdrMobileUiTheme.Subheading);
+            GUILayout.BeginVertical(GUI.skin.box);
+            int activeStage = scenario.ActiveStage;
+            int cleared = scenario.HighestDestroyedStage;
+            string headline = scenario.CompletedAllBuildings ? "14개 스토리 건물 격파 완료" :
+                scenario.LostByStory ? "스토리 패배" :
+                scenario.EggheadWaitRemaining > 0 ? "에그헤드 등장 대기" :
+                activeStage <= 0 ? "첫 스토리 건물 준비 중" :
+                activeStage.ToString("00") + " / 14 · " +
+                    (catalog.Find(activeStage) == null ? "스토리 건물" :
+                        catalog.Find(activeStage).Name);
+            OrdrMobileUiTheme.DrawStatusRow("현재 목표", headline,
+                scenario.LostByStory ? OrdrMobileUiTheme.Gold : OrdrMobileUiTheme.Aqua);
+            OrdrMobileUiTheme.DrawStatusRow("격파 진행",
+                cleared + " / " + Original323StoryUnlockRules.FinalStage + "개",
+                OrdrMobileUiTheme.Gold);
+            Original323StoryBuildingEncounter active = null;
+            foreach (var entry in world.Encounters)
+                if (entry.Building.Stage == activeStage &&
+                    entry.State == Original323StoryBuildingState.Alive)
+                    active = entry;
+            if (active != null)
+            {
+                var enemy = Combat.EnemyOf(active.EnemyId);
+                if (enemy != null)
+                {
+                    double percent = enemy.MaxHealth <= 0 ? 0 :
+                        Math.Max(0, Math.Min(100, 100.0 * enemy.Health / enemy.MaxHealth));
+                    OrdrMobileUiTheme.DrawStatusRow("현재 건물 HP",
+                        enemy.Health + " / " + enemy.MaxHealth +
+                        " · " + percent.ToString("0.#") + "%",
+                        OrdrMobileUiTheme.Aqua);
+                }
+                if (!active.SourceVerifiedSpawn)
+                    GUILayout.Label("전투 HP는 원본 객체 기반 연습 모델입니다.",
+                        OrdrMobileUiTheme.Overline);
+            }
+            if (scenario.EggheadWaitRemaining > 0)
+                OrdrMobileUiTheme.DrawStatusRow("에그헤드 출현까지",
+                    Math.Ceiling(scenario.EggheadWaitRemaining) + "초",
+                    OrdrMobileUiTheme.Gold);
+            else if (scenario.EggheadDeadlineRemaining > 0)
+                OrdrMobileUiTheme.DrawStatusRow("에그헤드 파괴 기한",
+                    Math.Ceiling(scenario.EggheadDeadlineRemaining) + "초",
+                    OrdrMobileUiTheme.Gold);
+            if (!scenario.CompletedAllBuildings && !scenario.LostByStory &&
+                cleared < Original323StoryUnlockRules.NightmareRequiredDestroyedStage &&
+                Combat.Game.CurrentWave <= Original323StoryUnlockRules.CheckpointRound)
+                GUILayout.Label("악몽 목표: 35라운드 시작 전 와노쿠니(13단계) 격파" +
+                    " · 현재 " + Combat.Game.CurrentWave + "라운드",
+                    OrdrMobileUiTheme.Explanation);
+            if (!string.IsNullOrWhiteSpace(scenario.LastNotice))
+                GUILayout.Label(scenario.LastNotice, OrdrMobileUiTheme.Overline);
+            GUILayout.EndVertical();
+
+            GUILayout.BeginVertical(GUI.skin.box);
+            OrdrMobileUiTheme.DrawStatusRow("스토리 획득",
+                "골드 " + scenario.AwardedGold + " · 목재 " + scenario.AwardedWood,
+                OrdrMobileUiTheme.Gold);
+            var progression = controller.StoryProgression;
+            if (progression != null)
+                OrdrMobileUiTheme.DrawStatusRow("연구·특성",
+                    "연구 " + progression.Researches.Count + "개 · 특성포인트 " +
+                    progression.TraitPoints + "개", OrdrMobileUiTheme.Aqua);
+            OrdrMobileUiTheme.DrawStatusRow("원본 추가 보상",
+                "실제 적용 대기 " + scenario.NativeRewards.PendingCount + "건",
+                OrdrMobileUiTheme.Aqua);
+            int rewardStage = selectedStoryRewardStage >= 1 &&
+                selectedStoryRewardStage <= Original323StoryUnlockRules.FinalStage ?
+                selectedStoryRewardStage :
+                Math.Max(1, Math.Min(Original323StoryUnlockRules.FinalStage,
+                    scenario.CompletedAllBuildings ||
+                    scenario.EggheadWaitRemaining > 0 ? 14 :
+                    activeStage > 0 ? activeStage : cleared + 1));
+            var rewardBuilding = catalog.Find(rewardStage);
+            GUILayout.Label("기본 보상 미리보기 · " + rewardStage + "단계 " +
+                (rewardBuilding == null ? "" : rewardBuilding.Name),
+                OrdrMobileUiTheme.Subheading);
+            GUILayout.Label(Original323SoloStoryScenario.BaseRewardSummary(rewardStage),
+                OrdrMobileUiTheme.Explanation);
+            GUILayout.Label("원본 추가 보상은 실제 대상에 적용될 때만 완료 처리됩니다.",
+                OrdrMobileUiTheme.Overline);
+            if (OrdrMobileUiTheme.DrawAccordionHeader("추가 보상 적용 상태",
+                scenario.NativeRewards.PendingCount + "건 대기",
+                showStoryNativeRewards, OrdrMobileUiTheme.Gold))
+                showStoryNativeRewards = !showStoryNativeRewards;
+            if (showStoryNativeRewards)
             {
                 GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                foreach (var unit in Combat.MobileUnitSnapshot())
+                if (scenario.NativeRewards.Awards.Count == 0)
+                    GUILayout.Label("아직 격파로 발생한 원본 추가 보상이 없습니다.");
+                foreach (var award in scenario.NativeRewards.Awards)
                 {
-                    GUILayout.BeginHorizontal();
-                    string name = unit.Unit.Name + " (" + unit.Unit.Grade + ") #" + unit.InstanceId;
-                    GUILayout.Label(name, GUILayout.MinWidth(110), GUILayout.ExpandWidth(true));
-                    if (GUILayout.Button("선택", GUILayout.Width(64), GUILayout.MinHeight(64)))
-                    {
-                        Combat.Roster.Select(unit.InstanceId);
-                        notice = name + " 선택";
-                    }
-                    if (controller.ManualActions.IsStoryDeployed(unit.InstanceId))
-                    {
-                        if (controller.ManualActions.CanRecallStory(unit.InstanceId))
-                        {
-                            if (GUILayout.Button("복귀", GUILayout.Width(72), GUILayout.MinHeight(64)))
-                                ShowResult(controller.ManualActions.RequestStoryRecall(unit.InstanceId));
-                        }
-                        else GUILayout.Label("파견 중", GUILayout.Width(72));
-                    }
-                    else if (GUILayout.Button("파견", GUILayout.Width(72), GUILayout.MinHeight(64)))
-                        ShowResult(controller.ManualActions.RequestStoryDispatch(unit.InstanceId));
-                    GUILayout.EndHorizontal();
+                    string kind = award.Kind == Original323StoryNativeRewardKind.Research ?
+                        "연구 해금" :
+                        award.Kind == Original323StoryNativeRewardKind.TraitPoints ?
+                        "특성포인트" :
+                        award.Kind == Original323StoryNativeRewardKind.AncientShip ?
+                        "고대의 배" :
+                        award.Kind == Original323StoryNativeRewardKind.HeroExperience ?
+                        "영웅 경험치" : "그린블러드";
+                    OrdrMobileUiTheme.DrawStatusRow(award.Stage + "단계 · " + kind,
+                        award.Applied ? "실제 적용 완료" : "대상 연결·적용 대기",
+                        award.Applied ? OrdrMobileUiTheme.Aqua : OrdrMobileUiTheme.Gold);
                 }
                 GUILayout.EndVertical();
             }
+            GUILayout.EndVertical();
+
+            DrawStoryDispatchPanel();
+
+            if (OrdrMobileUiTheme.DrawAccordionHeader("스토리 건물 14종 기록",
+                "격파 " + cleared + " / 14 · 건물별 보상 보기",
+                showStoryStageHistory, OrdrMobileUiTheme.Aqua))
+                showStoryStageHistory = !showStoryStageHistory;
+            if (!showStoryStageHistory) return;
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            for (int stage = 1; stage <= Original323StoryUnlockRules.FinalStage; stage++)
+            {
+                var building = catalog.Find(stage);
+                if (building == null) continue;
+                Original323StoryBuildingEncounter encountered = null;
+                foreach (var entry in world.Encounters)
+                    if (entry.Building.Stage == stage) encountered = entry;
+                bool alive = encountered != null &&
+                    encountered.State == Original323StoryBuildingState.Alive;
+                bool modelCleared = stage <= cleared;
+                string state = encountered != null && encountered.SourceSettlementConfirmed ?
+                    "원본 정산 확인" : modelCleared ? "격파 완료" :
+                    alive ? "공격 중" :
+                    stage == 14 && scenario.EggheadWaitRemaining > 0 ? "등장 대기" :
+                    "미등장";
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button(stage.ToString("00") + "  " + building.Name +
+                    " · " + state +
+                    (selectedStoryRewardStage == stage ? " ✓" : ""),
+                    GUILayout.MinHeight(58)))
+                    selectedStoryRewardStage = stage;
+                if (controller.CanRequestOriginalStoryBuilding && !alive &&
+                    (encountered == null || !encountered.SourceSettlementConfirmed) &&
+                    GUILayout.Button("원본 출현 확인",
+                        GUILayout.Width(112), GUILayout.MinHeight(58)))
+                    ShowResult(controller.RequestOriginalStoryBuilding(stage));
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndVertical();
+        }
+
+        private void DrawStoryDispatchPanel()
+        {
+            var manual = controller.ManualActions;
+            if (manual == null || !manual.HasStoryService)
+                OrdrMobileUiTheme.DrawStatusRow("스토리 파견",
+                    "원본 이동 서비스 준비 중", OrdrMobileUiTheme.Gold);
+            if (Combat == null || manual == null) return;
+            long? selected = Combat.Roster.SelectedId;
+            if (selected.HasValue)
+            {
+                bool deployed = manual.IsStoryDeployed(selected.Value);
+                bool canAct = deployed ? manual.CanRecallStory(selected.Value) :
+                    manual.CanDispatchStory(selected.Value);
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("선택 유닛 #" + selected.Value +
+                    (deployed ? " · 스토리 파견 중" : " · 메인 전장"),
+                    OrdrMobileUiTheme.Overline);
+                bool wasEnabled = GUI.enabled;
+                GUI.enabled = wasEnabled && canAct;
+                if (GUILayout.Button(deployed ? "선택 유닛 복귀" : "선택 유닛 파견",
+                    GUILayout.MinHeight(60)))
+                    ShowResult(deployed ?
+                        manual.RequestStoryRecall(selected.Value) :
+                        manual.RequestStoryDispatch(selected.Value));
+                GUI.enabled = wasEnabled;
+                GUILayout.EndHorizontal();
+            }
+            if (OrdrMobileUiTheme.DrawAccordionHeader("스토리 파견 관리",
+                "파견 유닛·파견 가능 유닛", showStoryDispatch, OrdrMobileUiTheme.Gold))
+                showStoryDispatch = !showStoryDispatch;
+            if (!showStoryDispatch) return;
+
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            var owned = OwnedUnitsForFrame();
+            int deployedCount, readyCount, recallCount, matched, pages, resolved;
+            var visibleUnits = MobileStoryDispatchBrowser.Select(owned,
+                manual.IsStoryDeployed, manual.CanDispatchStory, manual.CanRecallStory,
+                storyRosterFilter, storyRosterPage, 8,
+                out deployedCount, out readyCount, out recallCount,
+                out matched, out pages, out resolved);
+            storyRosterPage = resolved;
+            OrdrMobileUiTheme.DrawStatusRow("파견 현황",
+                deployedCount + "기 파견 · " + readyCount + "기 파견 가능",
+                OrdrMobileUiTheme.Aqua);
+            if (readyCount == 0)
+                GUILayout.Label("보스·미션 진행 중이거나 원본 입장 조건에 맞지 않으면" +
+                    " 새 유닛을 파견할 수 없습니다.", OrdrMobileUiTheme.Overline);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(storyRosterFilter == MobileStoryRosterFilter.All ?
+                "전체 ✓" : "전체", GUILayout.MinHeight(54)))
+            { storyRosterFilter = MobileStoryRosterFilter.All; storyRosterPage = 0; }
+            if (GUILayout.Button(storyRosterFilter == MobileStoryRosterFilter.ReadyToDispatch ?
+                "파견 가능 ✓" : "파견 가능", GUILayout.MinHeight(54)))
+            { storyRosterFilter = MobileStoryRosterFilter.ReadyToDispatch; storyRosterPage = 0; }
+            if (GUILayout.Button(storyRosterFilter == MobileStoryRosterFilter.Deployed ?
+                "파견 중 ✓" : "파견 중", GUILayout.MinHeight(54)))
+            { storyRosterFilter = MobileStoryRosterFilter.Deployed; storyRosterPage = 0; }
+            GUILayout.EndHorizontal();
+
+            if (recallCount > 0)
+            {
+                if (!confirmStoryRecallAll)
+                {
+                    if (GUILayout.Button("파견 유닛 최대 10기 일괄 복귀",
+                        GUILayout.MinHeight(60)))
+                        confirmStoryRecallAll = true;
+                }
+                else
+                {
+                    GUILayout.Label("복귀 가능한 파견 유닛을 최대 10기까지 원본 조건으로 순차 복귀합니다." +
+                        " 일부 실패 시 이미 복귀한 유닛은 유지됩니다.",
+                        OrdrMobileUiTheme.Explanation);
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button("복귀 확정", GUILayout.MinHeight(60)))
+                    {
+                        var targetIds = new List<long>();
+                        // Read a fresh roster when committing, not a cached UI page.
+                        foreach (var unit in Combat.MobileUnitSnapshot())
+                            if (manual.CanRecallStory(unit.InstanceId) &&
+                                targetIds.Count < MobileManualBatchActions.MaximumStoryRecalls)
+                                targetIds.Add(unit.InstanceId);
+                        if (targetIds.Count > 0)
+                            ShowResult(MobileManualBatchActions.RecallStoryUnits(
+                                targetIds, manual.CanRecallStory, manual.RequestStoryRecall));
+                        else notice = "현재 복귀 가능한 스토리 유닛이 없습니다.";
+                        confirmStoryRecallAll = false;
+                    }
+                    if (GUILayout.Button("취소", GUILayout.MinHeight(60)))
+                        confirmStoryRecallAll = false;
+                    GUILayout.EndHorizontal();
+                }
+            }
+            else confirmStoryRecallAll = false;
+
+            GUILayout.Label("조건에 맞는 유닛 " + matched + "기 · 높은 등급순",
+                OrdrMobileUiTheme.Overline);
+            DrawPager(storyRosterPage, pages, page => storyRosterPage = page);
+            foreach (var unit in visibleUnits)
+            {
+                var actor = unit.Unit;
+                GUILayout.BeginHorizontal();
+                DrawCharacterPortrait(actor.Unit.Id, 48f);
+                if (OrdrMobileUiTheme.DrawActionRow(actor.Unit.Name,
+                    actor.Unit.Grade + " · #" + actor.InstanceId +
+                    (unit.IsDeployed ? " · 파견 중" : ""),
+                    OrdrMobileUiTheme.Aqua, 68f))
+                {
+                    Combat.Roster.Select(actor.InstanceId);
+                    notice = actor.Unit.Name + " 선택";
+                }
+                bool enabled = GUI.enabled;
+                GUI.enabled = enabled && (unit.IsDeployed ? unit.CanRecall : unit.CanDispatch);
+                if (GUILayout.Button(unit.IsDeployed ? "복귀" : "파견",
+                    GUILayout.Width(68f), GUILayout.MinHeight(68f)))
+                    ShowResult(unit.IsDeployed ?
+                        manual.RequestStoryRecall(actor.InstanceId) :
+                        manual.RequestStoryDispatch(actor.InstanceId));
+                GUI.enabled = enabled;
+                GUILayout.EndHorizontal();
+            }
+            DrawPager(storyRosterPage, pages, page => storyRosterPage = page);
+            GUILayout.EndVertical();
         }
 
         private void DrawFusion()
