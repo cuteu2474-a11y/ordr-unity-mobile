@@ -5,7 +5,7 @@ using Ordr.Mobile.Combat;
 namespace Ordr.Mobile.Core
 {
     // Real local campaign flags for source-confirmed story research and base
-    // trait points. Other Warcraft native effects are never marked as applied
+    // otherworld-gambling charges. Other native effects are never marked as applied
     // until their actual actor/hero subsystem acknowledges the action.
     public sealed class Original323StoryMobileProgression :
         IOriginal323StoryNativeRewardPort
@@ -19,9 +19,22 @@ namespace Ordr.Mobile.Core
         private IOriginal323StoryNativeRewardPort storyMaterialEffects;
         private IOriginal323StoryNativeRewardPort storyHeroExperienceEffects;
         private IOriginal323StoryTraitSelection traitSelection;
+        private Func<bool> casinoNavigation;
         private readonly EconomyWallet sharedWallet;
-        private bool traitPointsAlreadySettled;
-        public int TraitPoints { get; private set; }
+        private bool gamblingChargesAlreadySettled;
+        // Compatibility readout: BdL never awards trait points. Purchasable
+        // or mission trait points remain exclusively in the shared wallet.
+        public int TraitPoints => 0;
+        private long awardedGamblingCharges;
+        public long GamblingCharges => sharedWallet == null ? awardedGamblingCharges :
+            sharedWallet.Balance(Original323OtherworldGamblingRules.ChargesResource);
+
+        public void ConfigureOtherworldGamblingNavigation(Func<bool> hasCasinoNavigation)
+        {
+            if (casinoNavigation != null || traitSelection != null || gamblingChargesAlreadySettled)
+                throw new InvalidOperationException("스토리 도박 충전 항법은 최초 한 번 연결합니다.");
+            casinoNavigation = hasCasinoNavigation ?? throw new ArgumentNullException(nameof(hasCasinoNavigation));
+        }
 
         // The parameterless model remains usable for source-only audits.
         // Live solo sessions bind the same wallet used by missions and units.
@@ -33,9 +46,9 @@ namespace Ordr.Mobile.Core
         public void ConfigureOriginalStoryTraitSelection(
             IOriginal323StoryTraitSelection source)
         {
-            if (traitPointsAlreadySettled)
+            if (gamblingChargesAlreadySettled || casinoNavigation != null)
                 throw new InvalidOperationException(
-                    "기본 스토리 특성포인트 정산 후에는 선택 상태를 바꿀 수 없습니다.");
+                    "스토리 도박 충전 정산 후에는 항법 공급자를 바꿀 수 없습니다.");
             traitSelection = source ??
                 throw new ArgumentNullException(nameof(source));
         }
@@ -115,27 +128,28 @@ namespace Ordr.Mobile.Core
                 applied.Add(award.Receipt);
                 return true;
             }
-            // Original BdL grants 1 base point; a further +1 depends on
-            // kW[player] == ka and MUST NOT be inferred from story completion.
-            if (award.Kind == Original323StoryNativeRewardKind.TraitPoints &&
+            // BdL edits kP and H0AW stock. It NEVER changes FOOD_USED.
+            // Casino kW[player]==ka adds one extra gambling charge.
+            if (award.Kind == Original323StoryNativeRewardKind.GamblingCharges &&
                 award.Stage >= 8 && award.Stage <= 13 &&
                 award.Amount == 1 && award.OriginalRawcode == "BdL")
             {
-                int originalPoints = award.Amount;
-                if (traitSelection != null && traitSelection.HasDoublePointStoryTrait())
-                    originalPoints = checked(originalPoints + 1);
+                int originalCharges = award.Amount;
+                if ((casinoNavigation != null && casinoNavigation()) ||
+                    (traitSelection != null && traitSelection.HasDoublePointStoryTrait()))
+                    originalCharges = checked(originalCharges + 1);
                 if (sharedWallet != null)
                 {
                     // The native obligation is settled only once the actual
                     // spendable balance and durable receipt have been committed.
                     // A post-commit observer may throw: its receipt still wins
-                    // so replay never grants another set of points.
+                    // so replay never grants another set of charges.
                     try
                     {
                         if (!sharedWallet.TryGrantOnce(award.Receipt,
                             new ResourceBundle().Add(
-                                OriginalMissionWalletRewards.TraitPointsId,
-                                originalPoints)) &&
+                                Original323OtherworldGamblingRules.ChargesResource,
+                                originalCharges)) &&
                             !sharedWallet.HasCompletedTransaction(award.Receipt))
                             return false;
                     }
@@ -145,8 +159,8 @@ namespace Ordr.Mobile.Core
                             throw;
                     }
                 }
-                TraitPoints = checked(TraitPoints + originalPoints);
-                traitPointsAlreadySettled = true;
+                awardedGamblingCharges = checked(awardedGamblingCharges + originalCharges);
+                gamblingChargesAlreadySettled = true;
                 applied.Add(award.Receipt);
                 return true;
             }

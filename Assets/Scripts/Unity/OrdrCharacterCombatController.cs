@@ -863,6 +863,7 @@ namespace Ordr.Mobile.Unity
         }
         public SourceModelRegularMoneyGambling PracticeMoneyGambling { get; private set; }
         public SourceModelMoneyGamblingDesk PracticeMoneyGamblingDesk { get; private set; }
+        public SourceModelOtherworldUnitGambling PracticeUnitGambling { get; private set; }
 
         // Source-confirmed creep placement and unit eligibility are not yet known.
         // Call only for an explicitly requested object-base practice encounter.
@@ -923,6 +924,9 @@ namespace Ordr.Mobile.Unity
                     heroExperience.ConnectOriginalShirahoshiFourPointTraitWitness(
                         shirahoshiTrait.HasActivated);
                     progression.ConnectMobileHeroExperience(heroExperience);
+                    progression.ConfigureOtherworldGamblingNavigation(() =>
+                        PracticeUnitGambling != null && PracticeUnitGambling.Navigation ==
+                            Original323GamblingNavigation.Casino);
                     Combat.ConfigureSourceHeroLevelProgression(heroExperience);
                     StoryHeroExperience = heroExperience;
                     ShirahoshiTrait = shirahoshiTrait;
@@ -998,6 +1002,8 @@ namespace Ordr.Mobile.Unity
             if (PracticeMoneyGamblingDesk != null)
                 prepared.MoneyGamblingBossDefeated = PracticeMoneyGamblingDesk.RecordDefeatedSourceBoss;
             PracticeCreeps = new Original323CreepPracticeWorld(Combat, creepCatalog);
+            PracticeCreeps.EncounterDefeated += encounter =>
+                PracticeUnitGambling?.RecordThirdCreepDefeated(encounter.OriginalObject.Rawcode);
             PracticeBattle.Start();
             var presenter = GetComponent<OrdrUnitWorldPresenter>();
             if (presenter != null) presenter.ShowAllOwnedUnits();
@@ -2970,6 +2976,17 @@ namespace Ordr.Mobile.Unity
                                 shopBonus),
                             () => StoryProgression != null &&
                                 StoryProgression.HasResearch("R01N"));
+                        if (OriginalJassFusions != null)
+                        {
+                            PracticeUnitGambling = new SourceModelOtherworldUnitGambling(
+                                SharedEconomy.Wallet, Combat.Game, sessionScriptRandom,
+                                () => runGate.CanAdvance,
+                                new Original323OtherworldGamblingWorld(Combat, Units, MapBaseStats,
+                                    new Original323CwrAcquisitionRoutes(OriginalJassFusions, Units, MapBaseStats),
+                                    map, shopBonus));
+                            PracticeUnitGambling.PostCommitObserverFailed += Debug.LogException;
+                            PracticeMoneyGamblingDesk.ConfigureOtherworld(PracticeUnitGambling);
+                        }
                     }
                     usesBuiltInAutomaticUncommonWisps = true;
                 }

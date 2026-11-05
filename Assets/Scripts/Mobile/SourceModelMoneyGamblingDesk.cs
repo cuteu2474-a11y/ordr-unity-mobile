@@ -46,6 +46,7 @@ namespace Ordr.Mobile.Mobile
 
         public SourceModelRegularMoneyGambling Regular { get; }
         public SourceModelRegularMoneyGambling High { get; }
+        public SourceModelOtherworldUnitGambling Otherworld { get; private set; }
         public bool Graduated => wallet.Balance(GraduatedResource) > 0;
         public long WoodRights => wallet.Balance(WoodRightsResource);
         public bool HasBoughtRare => wallet.Balance(RarePurchasedResource) > 0;
@@ -66,6 +67,13 @@ namespace Ordr.Mobile.Mobile
                 Original323MoneyGamblingTier.HighGrade, () => wallet.Balance(UnlockResource) > 0);
             Regular.PostCommitObserverFailed += Report;
             High.PostCommitObserverFailed += Report;
+        }
+
+        // Connected after the original 50 source identities have been validated.
+        public void ConfigureOtherworld(SourceModelOtherworldUnitGambling service)
+        {
+            if (Otherworld != null) throw new InvalidOperationException("이세계 도박 중복 연결");
+            Otherworld = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         // Connected after the original 50 source identities have been validated.
@@ -125,7 +133,7 @@ namespace Ordr.Mobile.Mobile
             if (Graduated)
             {
                 RefreshGraduatedStock();
-                return new[] {
+                var graduatedOffers = new List<MobileManualOffer> {
                     new MobileManualOffer(WoodOfferId, "졸업 상점 · 목재 구매",
                         "10000골드 → 목재 1개 · 남은 구매 기회 " + WoodRights + "회"),
                     new MobileManualOffer(TraitOfferId, "졸업 상점 · 특성 포인트",
@@ -138,10 +146,13 @@ namespace Ordr.Mobile.Mobile
                             rareWorld == null ? " · 소환 월드 미연결" :
                             " · 재고 " + rareStock + "/1"))
                 };
+                if (Otherworld != null) graduatedOffers.AddRange(Otherworld.AvailableOffers(category));
+                return graduatedOffers.AsReadOnly();
             }
             var offers = new List<MobileManualOffer>();
             offers.AddRange(Regular.AvailableOffers(category));
             offers.AddRange(High.AvailableOffers(category));
+            if (Otherworld != null) offers.AddRange(Otherworld.AvailableOffers(category));
             return offers.AsReadOnly();
         }
 
@@ -157,6 +168,8 @@ namespace Ordr.Mobile.Mobile
                 if (offerId == SourceModelRegularMoneyGambling.OfferId)
                     return Regular.Confirm(category, offerId);
                 if (offerId == HighOfferId) return High.Confirm(category, offerId);
+                if (offerId == SourceModelOtherworldUnitGambling.OfferId && Otherworld != null)
+                    return Otherworld.Confirm(category, offerId);
                 if (!Graduated)
                     return new ManualActionResult(ManualActionState.Rejected,
                         "돈 도박 졸업 후 이용할 수 있는 항목입니다.");

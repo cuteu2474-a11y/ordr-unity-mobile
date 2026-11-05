@@ -2,9 +2,9 @@ using System;
 
 namespace Ordr.Mobile.Core
 {
-    // Actual 2.323[C] game trait choice kW[player] determines whether BdL
-    // adds +1 EXTRA point. This must be read from an owned, verified player
-    // selection; it cannot be inferred from Nightmare difficulty or hero grade.
+    // Legacy adapter name. The actual kW[player]==ka choice is CASINO:
+    // BdL adds +1 EXTRA OTHERWORLD GAMBLING CHARGE, never a trait point.
+    // This must come from the actual selected navigation, not hero grade.
     public interface IOriginal323StoryTraitSelection
     {
         bool HasDoublePointStoryTrait();

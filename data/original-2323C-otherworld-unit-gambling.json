@@ -1,0 +1,190 @@
+{
+  "format": "ordr-original-2323C-otherworld-unit-gambling-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceUnitBalanceSha256": "f7f26217d8097b9791723feb02d9181277d9afb1947dc0a3bf553ce590ab3af5",
+  "offer": {
+    "rawcode": "H0AW",
+    "callback": "CJM",
+    "requiredResearch": "R00P",
+    "goldCost": 3500,
+    "lumberCost": 5,
+    "stockMaximumOverride": 16,
+    "stockRegenSecondsOverride": 3600,
+    "stockStartOverride": null,
+    "stockAccounting": "kP is event-charged; no synthetic initial stock or passive refill enabled"
+  },
+  "baseSuccessPercent": 15,
+  "randomSuccessRawcodes": [
+    "h06U",
+    "h06V",
+    "h070",
+    "h06T",
+    "h09L",
+    "h06Z",
+    "h073",
+    "h09K",
+    "h06Y",
+    "h071",
+    "h072",
+    "h06W",
+    "h065",
+    "h06X"
+  ],
+  "casinoFailureRareRawcodes": [
+    "h09X",
+    "h01Q",
+    "h025",
+    "h01L",
+    "h022",
+    "h021",
+    "h020",
+    "h01Z",
+    "h01Y",
+    "h01X",
+    "h01W",
+    "h01V",
+    "h01U",
+    "h01T",
+    "h02M",
+    "h01S",
+    "h01R",
+    "h01M",
+    "h01N",
+    "h01O",
+    "h05L",
+    "h01P",
+    "h02I",
+    "h029",
+    "h028",
+    "h027",
+    "h026",
+    "h02A",
+    "h024",
+    "h02C",
+    "h02D",
+    "h02G",
+    "h02F",
+    "h02E",
+    "h04H",
+    "h023",
+    "h02B",
+    "h02H",
+    "h02J",
+    "h02K",
+    "h02L",
+    "h05K"
+  ],
+  "failureTokenRawcode": "h06G",
+  "navigation": {
+    "None": "15% success; failure pays one h06G",
+    "Casino": "failure rolls BFi(1,2); 1 replaces token with kd[BFi(0,41)] + A0YE. BdL charges +1 extra. CKR conversion is 2*kP+j4.",
+    "RiskHedge": "threshold 15+kc; paid failure adds kc+=15; success clears kc",
+    "ExchangeHouse": "ordinary CJM outcome; its other navigation effects are separate"
+  },
+  "successBonusAbility": "A0YZ",
+  "successBonusActualMeaning": "CRl manual random-unit reroll, normally consumes one h06G; RiskHedge waives token. Not an attack buff.",
+  "charges": {
+    "storyStages": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "storyCallbacks": [
+      "CPg",
+      "CPv",
+      "CQB",
+      "CQQ",
+      "CQf",
+      "CQv"
+    ],
+    "thirdCreep": {
+      "rawcode": "n00G",
+      "callback": "CM9",
+      "oncePerPlayer": true
+    },
+    "seaKing": {
+      "callback": "CNU",
+      "parent": "CNV",
+      "mobileProducerConnected": false
+    },
+    "basePerEvent": 1,
+    "casinoPerEvent": 2,
+    "sourceNormalTotal": 8,
+    "sourceCasinoTotal": 16,
+    "traitPointsFromBdL": 0
+  },
+  "functions": {
+    "BdL": {
+      "sha256": "9ec43794b02df21e3bc98651b482b7f3e905f93265b5e31b1e985b5e6b3f76bd",
+      "firstLine": 8424,
+      "body": "function BdL takes integer JG,integer Hk returns nothing\nif kW[JG]==ka then\nset Hk=Hk+1\nendif\nset kP[JG]=kP[JG]+Hk\ncall AddUnitToStock(i6[JG],$48304157,kP[JG],16)\nendfunction"
+    },
+    "CJM": {
+      "sha256": "c250da144529864cb4c23b3bab052e06b20e894dc9d0d7831d38d97e320c7f5f",
+      "firstLine": 49431,
+      "body": "function CJM takes nothing returns nothing\nlocal integer JG=GetPlayerId(GetTriggerPlayer())\nlocal real EN=GetPlayerStartLocationX(Player(JG))\nlocal real JS=GetPlayerStartLocationY(Player(JG))\nlocal integer e2=15\ncall BdD(GetSoldUnit())\nset kP[JG]=kP[JG]-1\nset j4[JG]=j4[JG]+1\nif kW[JG]==kX then\nset e2=e2+kc[JG]\nendif\nif BFi(1,100)>e2 then\nif kW[JG]==ka and BFi(1,2)==1 then\nset bj_lastCreatedUnit=CreateUnit(Player(JG),kd[BFi(0,41)],EN,JS,bj_UNIT_FACING)\ncall UnitAddAbility(bj_lastCreatedUnit,$41305945)\ncall DisplayTimedTextToPlayer(Player(JG),0,0,5,\"|cffF15F5F[시스템]|r |cffffae00도박광 :: 카지노|r 항법효과로 \"+GetUnitName(bj_lastCreatedUnit)+\" 획득!\")\nelse\nset bj_lastCreatedUnit=CreateUnit(Player(JG),$68303647,EN,JS,bj_UNIT_FACING)\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,GetPlayerName(Player(JG))+\"|r 님이 |cffff8200이세계유닛 도박|r을 |cffff0000실패|r 하셨습니다.\")\ncall DisplayTimedTextToPlayer(Player(JG),0,0,5,\"|cffffdead◈|r |cffff0000이세계유닛 도박|r을 실패하여 \"+GetUnitName(bj_lastCreatedUnit)+\" 1개 획득\")\nendif\nif kW[JG]==kX then\nset kc[JG]=kc[JG]+15\ncall DisplayTimedTextToPlayer(Player(JG),0,0,5,\"|cffF15F5F[시스템]|r |cffffae00도박광 :: 리스크헷지|r 항법효과로 |cffff8200이세계유닛 도박|r 확률이 |cffff0000\"+I2S(kc[JG])+\"%|r 증가합니다.\")\nendif\nelse\nset j5[JG]=j5[JG]+1\nset kc[JG]=0\nset bj_lastCreatedUnit=CreateUnit(Player(JG),ke[BFi(0,13)],EN,JS,bj_UNIT_FACING)\ncall UnitAddAbility(bj_lastCreatedUnit,$4130595A)\ncall IssueImmediateOrder(bj_lastCreatedUnit,\"holdposition\")\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,GetPlayerName(Player(JG))+\"|r 님이 |cffff8200이세계유닛 도박|r으로 \"+GetUnitName(bj_lastCreatedUnit)+\" 획득!\")\nendif\nendfunction"
+    },
+    "CKR": {
+      "sha256": "bab4edec759b82f5fa1751a2bc0446fdf27b3011e774404bb04a96e2e8bb5df9",
+      "firstLine": 50321,
+      "body": "function CKR takes integer Hk,integer JG returns nothing\nif Hk==1 then\nif not ku[JG] then\ncall DisplayTimedTextToPlayer(Player(JG),0,0,3,\"|cff04ffc4[알림]|r |cffffae00도박광 :: 카지노|r 을(를) 선택하셨습니다.\")\nendif\nset kW[JG]=ka\ncall SetPlayerTechMaxAllowed(Player(JG),$68303642,0)\ncall SetPlayerTechMaxAllowed(Player(JG),$68303643,0)\nset LN[JG]=LN[JG]+1\ncall DisplayTimedTextToPlayer(Player(JG),0,0,3,\"|cffF15F5F[시스템]|r |cffffae00도박광|r 항법효과로 희귀 리롤 횟수가 |cffff00001|r회 증가했습니다.\")\nif LN[JG]>0 then\ncall SetPlayerAbilityAvailable(Player(JG),$41305945,true)\nendif\nset kx=wp()\nset im[kx]=Player(JG)\nset io[kx]=\"ReplaceableTextures\\\\CommandButtons\\\\BTNGlyph.blp\"\ncall BCy(kx)\nif k4 then\ncall DisplayTimedTextToPlayer(Player(JG),0,0,3,\"|cffF15F5F[시스템]|r |cff4FC9DE[이세계모드] 카지노효과로 이세계 도박 횟수가 추가됩니다.\")\nset kP[JG]=2*kP[JG]+j4[JG]\ncall AddUnitToStock(i6[JG],$48304157,kP[JG],16)\nendif\nset LR[JG]=\"카지노\"\nset P9[JG]=true\nelseif Hk==2 then\nif not ku[JG] then\ncall DisplayTimedTextToPlayer(Player(JG),0,0,3,\"|cff04ffc4[알림]|r |cffffae00도박광 :: 리스크헷지|r 을(를) 선택하셨습니다.\")\nendif\nset kW[JG]=kX\nset LN[JG]=LN[JG]+2\ncall DisplayTimedTextToPlayer(Player(JG),0,0,3,\"|cffF15F5F[시스템]|r |cffffae00도박광|r 항법효과로 희귀 리롤 횟수가 |cffff00002|r회 증가했습니다.\")\nif LN[JG]>0 then\ncall SetPlayerAbilityAvailable(Player(JG),$41305945,true)\nendif\nset kx=wp()\nset im[kx]=Player(JG)\nset io[kx]=\"ReplaceableTextures\\\\CommandButtons\\\\BTNGlyph.blp\"\ncall BCy(kx)\nset LR[JG]=\"리스크헷지\"\nset P9[JG]=true\nelseif Hk==3 then\nif not ku[JG] then\ncall DisplayTimedTextToPlayer(Player(JG),0,0,3,\"|cff04ffc4[알림]|r |cffffae00도박광 :: 환전소|r 을(를) 선택하셨습니다.\")\nendif\nset kW[JG]=ki\ncall SetPlayerTechMaxAllowed(Player(JG),$68303644,0)\nif LN[JG]>0 then\ncall SetPlayerAbilityAvailable(Player(JG),$41305945,true)\nendif\nset k5[JG]=CreateUnit(Player(JG),$68304255,GetUnitX(i6[JG])+220,GetUnitY(i6[JG]),270)\ncall SetPlayerAbilityAvailable(Player(JG),$41304D41,false)\nif kj[JG]==null then\nset kj[JG]=CreateItemLoc($49303039,GetStartLocationLoc(GetPlayerStartLocation(Player(JG))))\ncall SetItemUserData(kj[JG],JG)\ncall SetItemCharges(kj[JG],0)\ncall UnitAddItemSwapped(kj[JG],k5[JG])\nendif\nif k4 then\ncall DisplayTimedTextToPlayer(Player(JG),0,0,3,\"|cffF15F5F[시스템]|r |cff4FC9DE[이세계모드] 환전소 효과로 환전소에 랜덤전용 유닛이 입고됩니다.\")\ncall SetPlayerAbilityAvailable(Player(JG),$41304D41,true)\nendif\nset kx=wp()\nset im[kx]=Player(JG)\nset io[kx]=\"ReplaceableTextures\\\\CommandButtons\\\\BTNGlyph.blp\"\ncall BCy(kx)\nset LR[JG]=\"환전소\"\nset P9[JG]=true\nendif\nset LQ[JG]=\"도박광\"\nendfunction"
+    },
+    "CM9": {
+      "sha256": "be93fa2ec5d751eed33a942bd19927e929596a606aa61c83cec2366c90bbc8de",
+      "firstLine": 52002,
+      "body": "function CM9 takes nothing returns nothing\nlocal integer JG=GetUnitAbilityLevel(GetTriggerUnit(),$41393041)-1\nif no[JG] then\nreturn\nendif\nset no[JG]=true\ncall BdL(JG,1)\nset LX[JG]=LX[JG]+1\nif LX[JG]<0 then\ncall AddHeroXP(a0[JG],270,true)\nendif\nif GetLocalPlayer()==Player(JG) then\ncall DzFrameShow(Pu[nm],true)\nendif\nendfunction"
+    },
+    "CNU": {
+      "sha256": "615986a6e6ac0a18abf9d6458580d5d48d9e4c2b9b38191d49ac2b0c0670bba8",
+      "firstLine": 52290,
+      "body": "function CNU takes nothing returns nothing\nlocal integer EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall SetPlayerState(Player(EK),PLAYER_STATE_RESOURCE_GOLD,GetPlayerState(Player(EK),PLAYER_STATE_RESOURCE_GOLD)+3000)\ncall Bc4(Player(EK),1)\ncall Bhd(Player(EK),1,0)\ncall ForGroup(Hp[VT[EK]],function CNT)\ncall BdL(EK,1)\nendif\nset EK=EK+1\nendloop\nendfunction"
+    },
+    "CPg": {
+      "sha256": "931bc021943c562902efae3126590a36e422e81c4c796d47fa30e9b9260d517e",
+      "firstLine": 54174,
+      "body": "function CPg takes nothing returns nothing\nlocal integer iv\nlocal integer EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall Bcf(Player(EK),8000)\ncall Bci(Player(EK),4)\ncall Bc2(Player(EK),3)\ncall SetPlayerTechResearched(Player(EK),$5230314F,1)\ncall BdL(EK,1)\nif BFi(1,100)<=5 then\nif not BhZ(Player(EK),$41493032) then\nset iv=BhV(Player(EK),$41493032)\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,10,GetPlayerName(Player(EK))+\"|r 님이 \"+GetObjectName(qV)+\" 를 파괴하여 \"+GetObjectName(iv)+\" 획득!\")\nendif\nendif\nendif\nset EK=EK+1\nendloop\nendfunction"
+    },
+    "CPv": {
+      "sha256": "ae126564e95c9de61759d361b176722b53dd570d7d90dbbab40806c35d0308d7",
+      "firstLine": 54384,
+      "body": "function CPv takes nothing returns nothing\nlocal integer EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall Bcf(Player(EK),9000)\ncall Bci(Player(EK),5)\ncall Bc4(Player(EK),1)\ncall CreateUnit(Player(EK),$68303559,GetPlayerStartLocationX(Player(EK)),GetPlayerStartLocationY(Player(EK)),bj_UNIT_FACING)\ncall SetPlayerTechResearched(Player(EK),$52303150,1)\ncall BdL(EK,1)\nendif\nset EK=EK+1\nendloop\nendfunction"
+    },
+    "CQB": {
+      "sha256": "5555be9b65d7da22c5743347ecc2d2634efc3ba3c7bc88516384ae7cb4753489",
+      "firstLine": 54588,
+      "body": "function CQB takes nothing returns nothing\nlocal integer EK=0\nlocal real EN=GetRectCenterX(B9)\nlocal real JS=GetRectCenterY(B9)\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall Bcf(Player(EK),10000)\ncall Bci(Player(EK),4)\ncall Bcz(Player(EK),2)\ncall Bcy(Player(EK),rE,1,EN,JS,bj_UNIT_FACING)\ncall SetPlayerTechResearched(Player(EK),$52303151,1)\ncall BdL(EK,1)\nendif\nset EK=EK+1\nendloop\nendfunction"
+    },
+    "CQQ": {
+      "sha256": "5d2cdf9a1ab8c7bd4022c1b87c3205543e8276f3936e3501c1814b5fec38af72",
+      "firstLine": 54798,
+      "body": "function CQQ takes nothing returns nothing\nlocal integer EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall Bcf(Player(EK),12500)\ncall Bci(Player(EK),4)\ncall Bc4(Player(EK),3)\ncall Bc0(Player(EK),2)\ncall BdL(EK,1)\nendif\nset EK=EK+1\nendloop\nendfunction"
+    },
+    "CQf": {
+      "sha256": "52627b2ce494a056f17ab9b2f06665b3a7ae4e6d7de15c5e6d8e740517ae6a79",
+      "firstLine": 55005,
+      "body": "function CQf takes nothing returns nothing\nlocal integer EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall Bcf(Player(EK),10000)\ncall Bci(Player(EK),3)\ncall Bcl(Player(EK),1)\ncall Bc4(Player(EK),3)\ncall Bc1(Player(EK),2)\ncall SetPlayerTechResearched(Player(EK),$52303153,1)\ncall BdL(EK,1)\nendif\nset EK=EK+1\nendloop\nendfunction"
+    },
+    "CQv": {
+      "sha256": "d813d98831fbb535984f3eaa9e4748fe4bfd14cf505fb74e18167e7a499ab2c9",
+      "firstLine": 55218,
+      "body": "function CQv takes nothing returns nothing\nlocal integer EK=0\nloop\nexitwhen EK>=LG\nif Ji[EK] then\ncall Bcf(Player(EK),5000)\ncall Bci(Player(EK),3)\ncall Bc4(Player(EK),2)\ncall ForGroup(Hp[VT[EK]],function CQu)\ncall BdL(EK,1)\nendif\nset EK=EK+1\nendloop\nendfunction"
+    },
+    "CRl": {
+      "sha256": "16ac78a926495382e95bd9e12283640f3e961ed7311b2a4c4812406cd5c6fc4d",
+      "firstLine": 55842,
+      "body": "function CRl takes nothing returns nothing\nlocal integer Cl\nlocal integer JG=GetPlayerId(GetOwningPlayer(GetTriggerUnit()))\nlocal real EN=GetUnitX(GetTriggerUnit())\nlocal real JS=GetUnitY(GetTriggerUnit())\nlocal integer VM=GetUnitTypeId(GetTriggerUnit())\nlocal integer hP=0\nlocal string sV=GetUnitName(GetTriggerUnit())\nlocal integer sY=0\nlocal boolean sX=false\nif kW[JG]!=kX then\nset sX=true\nendif\nif sX then\nset Cl=BiE()\ncall GroupEnumUnitsOfPlayer(Hp[Cl],Player(JG),Filter(function CRk))\nset sY=Bib(Cl)\nif sY<=0 then\ncall DisplayTimedTextToPlayer(Player(JG),0,0,5,\"|cffff0000[오류]|r |cffFF8200행운의 토큰|r이 부족합니다. 필요 개수 : |cffFF00001개|r\")\ncall IssueImmediateOrder(GetTriggerUnit(),\"stop\")\nreturn\nendif\ncall BdD(Bif(Cl))\ncall BiF(Cl)\nendif\ncall BdD(GetTriggerUnit())\nloop\nset hP=BFi(0,13)\nexitwhen ke[hP]!=VM\nendloop\nset bj_lastCreatedUnit=CreateUnit(Player(JG),ke[hP],EN,JS,bj_UNIT_FACING)\ncall IssueImmediateOrder(bj_lastCreatedUnit,\"holdposition\")\ncall DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS,5,GetPlayerName(Player(JG))+\"님이 |cffff8200랜덤유닛 리롤|r 을(를) 사용하여 \\n\"+sV+\" → \"+GetUnitName(bj_lastCreatedUnit)+\" 으로 변환되었습니다!\")\nendfunction"
+    }
+  },
+  "retailParityVerified": false,
+  "limits": [
+    "Mobile live path connects story 8..13 and actual third-creep death; sea-king challenge producer is not yet wired.",
+    "The live game currently selects no gambling navigation. Casino/RiskHedge source branches are injectable rules; full navigation selection, CKR conversion and rare reroll entitlements remain separate.",
+    "A0YZ and A0YE are deferred per-instance source ability metadata; actual reroll gameplay is not enabled.",
+    "Pending draws survive failed retries in the current service, but full combat/RNG/pending-draw save and restoration is not implemented.",
+    "No Unity, NUnit, Python or APK execution was performed for this change. Source file extraction and hash/read comparisons are not gameplay tests."
+  ]
+}

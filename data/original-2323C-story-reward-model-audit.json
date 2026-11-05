@@ -17,12 +17,12 @@
     "random": "Bcz",
     "uncommon": "Bc0",
     "special": "Bc1",
-    "rare": "Bc2"
+    "rare": "Bc2",
+    "otherworldGamblingCharges": "BdL (kP/H0AW), not trait points"
   },
   "stage10UniqueReward": "e01A transcend wisp (practice-only isolated balance; unverified for real Kuma claim)",
   "nativeSideEffectsNotYetExecutable": [
     "research R01N/R01O/R01P/R01Q/R01S",
-    "trait points BdL",
     "hero experience",
     "ancient pirate ship",
     "Egghead Green Blood record directive",
@@ -267,5 +267,18 @@
       "qualifiedRandomWisp_e0IX": 1,
       "sourceJassLine": 55472
     }
-  ]
+  ],
+  "mobileOtherworldChargeConnection": {
+    "storyStages": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "walletResource": "source:unit-gambling:CJM:charges",
+    "sourceEvidence": "original-2323C-otherworld-unit-gambling.json",
+    "executionVerified": false
+  }
 }

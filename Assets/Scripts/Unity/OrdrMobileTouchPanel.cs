@@ -2056,9 +2056,9 @@ namespace Ordr.Mobile.Unity
                 OrdrMobileUiTheme.Gold);
             var progression = controller.StoryProgression;
             if (progression != null)
-                OrdrMobileUiTheme.DrawStatusRow("연구·특성",
-                    "연구 " + progression.Researches.Count + "개 · 특성포인트 " +
-                    progression.TraitPoints + "개", OrdrMobileUiTheme.Aqua);
+                OrdrMobileUiTheme.DrawStatusRow("연구·유닛 도박",
+                    "연구 " + progression.Researches.Count + "개 · 남은 도박 충전 " +
+                    progression.GamblingCharges + "회", OrdrMobileUiTheme.Aqua);
             if (controller.StoryHeroExperience != null &&
                 scenario.HighestDestroyedStage >= 13)
                 OrdrMobileUiTheme.DrawStatusRow("스토리 영웅 경험치",
@@ -2180,6 +2180,8 @@ namespace Ordr.Mobile.Unity
                         "연구 해금" :
                         award.Kind == Original323StoryNativeRewardKind.TraitPoints ?
                         "특성포인트" :
+                        award.Kind == Original323StoryNativeRewardKind.GamblingCharges ?
+                        "유닛 도박 충전" :
                         award.Kind == Original323StoryNativeRewardKind.AncientShip ?
                         "고대의 배" :
                         award.Kind == Original323StoryNativeRewardKind.HeroExperience ?
@@ -3181,6 +3183,18 @@ namespace Ordr.Mobile.Unity
                             GUILayout.Label("아직 실행한 돈 도박이 없습니다.");
                     }
                 }
+            }
+
+            if (category == ManualEconomyCategory.Gambling && controller.PracticeUnitGambling != null)
+            {
+                var units = controller.PracticeUnitGambling;
+                OrdrMobileUiTheme.DrawStatusRow("이세계 유닛 도박",
+                    "남은 충전 " + units.Charges + "회 · 성공 " + units.SuccessPercent + "%",
+                    OrdrMobileUiTheme.Aqua);
+                GUILayout.Label("3500골드 + 목재 5개 + 충전 1회 · 당첨: 랜덤전용 1기 / 실패: 행운의 토큰 1개");
+                GUILayout.Label("시도 " + units.Attempts + "회 · 당첨 " + units.Wins +
+                    "회 · 스토리 8~13단계/3단계 크립 격파로 충전");
+                foreach (string result in units.RecentResults) GUILayout.Label(result);
             }
 
             // Selection is one tap, but real currency spending still confirms.

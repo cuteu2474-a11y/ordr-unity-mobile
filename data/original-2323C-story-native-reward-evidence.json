@@ -89,51 +89,57 @@
     },
     {
       "stage": 8,
-      "kind": "trait-points",
+      "kind": "otherworld-gambling-charges",
       "baseAmount": 1,
       "function": "BdL",
-      "conditionalBonus": "kW[JG] == ka grants additional +1",
-      "jassLine": 54184
+      "conditionalBonus": "kW[JG] == ka (Casino) grants one additional H0AW charge, never a trait point",
+      "jassLine": 54184,
+      "result": "kP[JG]+=Hk; AddUnitToStock(i6[JG],H0AW,kP[JG],16)"
     },
     {
       "stage": 9,
-      "kind": "trait-points",
+      "kind": "otherworld-gambling-charges",
       "baseAmount": 1,
       "function": "BdL",
-      "conditionalBonus": "kW[JG] == ka grants additional +1",
-      "jassLine": 54394
+      "conditionalBonus": "kW[JG] == ka (Casino) grants one additional H0AW charge, never a trait point",
+      "jassLine": 54394,
+      "result": "kP[JG]+=Hk; AddUnitToStock(i6[JG],H0AW,kP[JG],16)"
     },
     {
       "stage": 10,
-      "kind": "trait-points",
+      "kind": "otherworld-gambling-charges",
       "baseAmount": 1,
       "function": "BdL",
-      "conditionalBonus": "kW[JG] == ka grants additional +1",
-      "jassLine": 54600
+      "conditionalBonus": "kW[JG] == ka (Casino) grants one additional H0AW charge, never a trait point",
+      "jassLine": 54600,
+      "result": "kP[JG]+=Hk; AddUnitToStock(i6[JG],H0AW,kP[JG],16)"
     },
     {
       "stage": 11,
-      "kind": "trait-points",
+      "kind": "otherworld-gambling-charges",
       "baseAmount": 1,
       "function": "BdL",
-      "conditionalBonus": "kW[JG] == ka grants additional +1",
-      "jassLine": 54807
+      "conditionalBonus": "kW[JG] == ka (Casino) grants one additional H0AW charge, never a trait point",
+      "jassLine": 54807,
+      "result": "kP[JG]+=Hk; AddUnitToStock(i6[JG],H0AW,kP[JG],16)"
     },
     {
       "stage": 12,
-      "kind": "trait-points",
+      "kind": "otherworld-gambling-charges",
       "baseAmount": 1,
       "function": "BdL",
-      "conditionalBonus": "kW[JG] == ka grants additional +1",
-      "jassLine": 55016
+      "conditionalBonus": "kW[JG] == ka (Casino) grants one additional H0AW charge, never a trait point",
+      "jassLine": 55016,
+      "result": "kP[JG]+=Hk; AddUnitToStock(i6[JG],H0AW,kP[JG],16)"
     },
     {
       "stage": 13,
-      "kind": "trait-points",
+      "kind": "otherworld-gambling-charges",
       "baseAmount": 1,
       "function": "BdL",
-      "conditionalBonus": "kW[JG] == ka grants additional +1",
-      "jassLine": 55227
+      "conditionalBonus": "kW[JG] == ka (Casino) grants one additional H0AW charge, never a trait point",
+      "jassLine": 55227,
+      "result": "kP[JG]+=Hk; AddUnitToStock(i6[JG],H0AW,kP[JG],16)"
     },
     {
       "stage": 13,
@@ -206,5 +212,11 @@
     "GreenBlood other-unit A134/Aimp native on-attack effect remains unverified; A13C/AIas DataA1=.3 is source-verified.",
     "Three JASS source 5% unique-drop branches use persistent BhZ acquisition flags; the mobile wallet marker is separate from the consumable item right and is shared with box/source pickup.",
     "The unique item shell's BhL native passive/item ability effects have not all been ported; recorded ownership is not full source item ability parity."
-  ]
+  ],
+  "bdLMeaningCorrection": {
+    "function": "BdL",
+    "firstLine": 8424,
+    "sourceBodySha256": "9ec43794b02df21e3bc98651b482b7f3e905f93265b5e31b1e985b5e6b3f76bd",
+    "actualEffect": "Otherworld unit gambling charges (kP), not FOOD_USED / trait points"
+  }
 }

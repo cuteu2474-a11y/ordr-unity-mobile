@@ -85,7 +85,7 @@ namespace Ordr.Mobile.Combat
         }
 
         // Original B4a one-ability-per-PLAYER checkout. The Android shared
-        // wallet accepts source-confirmed story BdL and personal mission points;
+        // wallet accepts source-confirmed purchases and personal mission points;
         // it remains unavailable until those entitlements are actually earned.
         // Purchased satellites have their own identity, separate from the
         // character fusion roster, and cannot yield invented combat/rewards.

@@ -56,10 +56,10 @@ namespace Ordr.Mobile.Tests
             for (int i = 1; i <= 14; i++) effects.RecordCommittedClear(i);
             for (int i = 1; i <= 14; i++) effects.RecordCommittedClear(i);
             Assert.AreEqual(15, effects.Awards.Count,
-                "5 tech, 6 trait, ancient ship, 2 hero XP and Green Blood");
+                "5 tech, 6 gambling charges, ancient ship, 2 hero XP and Green Blood");
             var model = new Original323StoryMobileProgression();
             Assert.AreEqual(11, effects.ApplyPending(model));
-            Assert.AreEqual(6, model.TraitPoints);
+            Assert.AreEqual(6, model.GamblingCharges);
             Assert.AreEqual(5, model.Researches.Count);
             Assert.IsTrue(model.HasResearch("R01N"));
             Assert.IsTrue(model.HasResearch("R01O"));
@@ -77,11 +77,11 @@ namespace Ordr.Mobile.Tests
                 "Ancient ship + two hero XP remain unexecuted");
             Assert.AreEqual(0, effects.ApplyPending(model));
             Assert.AreEqual(1, fake.Applied);
-            Assert.AreEqual(6, model.TraitPoints);
+            Assert.AreEqual(6, model.GamblingCharges);
         }
 
         [Test]
-        public void DuplicateNativeClaimCanNeverGrantAdditionalTraitPoints()
+        public void DuplicateNativeClaimCanNeverGrantAdditionalGamblingCharges()
         {
             var queue = new Original323StoryNativeRewardQueue();
             var model = new Original323StoryMobileProgression();
@@ -89,9 +89,9 @@ namespace Ordr.Mobile.Tests
             queue.RecordCommittedClear(8);
             Assert.AreEqual(2, queue.Awards.Count);
             Assert.AreEqual(2, queue.ApplyPending(model));
-            Assert.AreEqual(1, model.TraitPoints);
+            Assert.AreEqual(1, model.GamblingCharges);
             Assert.AreEqual(0, queue.ApplyPending(model));
-            Assert.AreEqual(1, model.TraitPoints);
+            Assert.AreEqual(1, model.GamblingCharges);
             Assert.Throws<ArgumentOutOfRangeException>(() => queue.RecordCommittedClear(15));
         }
     }

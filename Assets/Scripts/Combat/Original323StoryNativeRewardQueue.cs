@@ -7,7 +7,8 @@ namespace Ordr.Mobile.Combat
 {
     public enum Original323StoryNativeRewardKind
     {
-        Research, TraitPoints, AncientShip, HeroExperience, GreenBloodSkill
+        Research, TraitPoints, AncientShip, HeroExperience, GreenBloodSkill,
+        GamblingCharges
     }
 
     public sealed class Original323StoryNativeReward
@@ -81,7 +82,7 @@ namespace Ordr.Mobile.Combat
                     "A13A", 1); break;
             }
             if (stage >= 8 && stage <= 13)
-                Add(stage, Original323StoryNativeRewardKind.TraitPoints, "BdL", 1);
+                Add(stage, Original323StoryNativeRewardKind.GamblingCharges, "BdL", 1);
             if (stage == 13 || stage == 14)
                 Add(stage, Original323StoryNativeRewardKind.HeroExperience, "Hp[VT]", 300);
         }

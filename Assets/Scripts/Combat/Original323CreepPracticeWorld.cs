@@ -47,6 +47,7 @@ namespace Ordr.Mobile.Combat
         { get { return encounters.AsReadOnly(); } }
         public int DefeatedCount { get; private set; }
         public int EscapedCount { get; private set; }
+        public event Action<Original323CreepEncounter> EncounterDefeated;
 
         public Original323CreepPracticeWorld(CharacterCombatRuntime combat,
             Original323CreepObjectCatalog catalog)
@@ -107,6 +108,7 @@ namespace Ordr.Mobile.Combat
             {
                 encounter.State = Original323CreepEncounterState.Defeated;
                 DefeatedCount++;
+                EncounterDefeated?.Invoke(encounter);
             }
             else
             {

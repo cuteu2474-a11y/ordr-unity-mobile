@@ -64,7 +64,7 @@ namespace Ordr.Mobile.Combat
     }
 
     // The user explicitly requested empty character shells first.
-    // A0YE is retained as UNIMPLEMENTED source metadata per spawned instance,
+    // A0YE/A0YZ are retained as UNIMPLEMENTED source metadata per spawned instance,
     // not a native buff or ability. This must never authorize combat parity.
     public sealed class Original323WispDeferredAbilityRegistry :
         IOriginalWispDeferredBonusPort
@@ -80,7 +80,7 @@ namespace Ordr.Mobile.Combat
 
         public bool TryDeferOriginalAbility(long instanceId, string rawcode)
         {
-            if (instanceId <= 0 || rawcode != "A0YE" ||
+            if (instanceId <= 0 || (rawcode != "A0YE" && rawcode != "A0YZ") ||
                 pending.ContainsKey(instanceId))
                 return false;
             try
