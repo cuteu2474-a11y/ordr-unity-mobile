@@ -780,13 +780,16 @@ namespace Ordr.Mobile.Combat
                 return false;
             string walletId = Original323FusionSourceItemLedger.WalletId(itemRawcode);
             string receipt = "original323:unique-box-item:" + itemRawcode;
-            if (economy.Wallet.Balance(walletId) > 0 ||
+            if (Original323FusionSourceItemLedger.WasEverObtained(
+                    economy.Wallet, itemRawcode) ||
                 economy.Wallet.HasCompletedTransaction(receipt))
                 return false;
             IReadOnlyList<long> noActors;
             return TryCommitChoice(earnedWispResource, Array.Empty<string>(),
                 new ResourceBundle(),
-                new ResourceBundle().Add(walletId, 1).Add("wood", BoxItemWoodBonus),
+                new ResourceBundle().Add(walletId, 1)
+                    .Add(Original323FusionSourceItemLedger.EverObtainedWalletId(itemRawcode), 1)
+                    .Add("wood", BoxItemWoodBonus),
                 out noActors, receipt) && noActors.Count == 0;
         }
 

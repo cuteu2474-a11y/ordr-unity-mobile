@@ -6,6 +6,51 @@
   "effects": [
     {
       "stage": 5,
+      "kind": "unique-item-drop",
+      "rawcode": "AI03",
+      "probabilityPercent": 5,
+      "condition": "BFi(1,100)<=5 && !BhZ(player,AI03)",
+      "sourceFunction": "COw",
+      "jassLines": [
+        53550,
+        53561,
+        53562
+      ],
+      "result": "BhV(player,AI03)",
+      "mobile": "atomic stage receipt, acquired flag"
+    },
+    {
+      "stage": 6,
+      "kind": "unique-item-drop",
+      "rawcode": "AI00",
+      "probabilityPercent": 5,
+      "condition": "BFi(1,100)<=5 && !BhZ(player,AI00)",
+      "sourceFunction": "CPC",
+      "jassLines": [
+        53764,
+        53774,
+        53775
+      ],
+      "result": "BhV(player,AI00)",
+      "mobile": "atomic stage receipt, acquired flag"
+    },
+    {
+      "stage": 8,
+      "kind": "unique-item-drop",
+      "rawcode": "AI02",
+      "probabilityPercent": 5,
+      "condition": "BFi(1,100)<=5 && !BhZ(player,AI02)",
+      "sourceFunction": "CPg",
+      "jassLines": [
+        54174,
+        54185,
+        54186
+      ],
+      "result": "BhV(player,AI02)",
+      "mobile": "atomic stage receipt, acquired flag"
+    },
+    {
+      "stage": 5,
       "kind": "research",
       "rawcode": "R01N",
       "jassLine": 53560
@@ -155,9 +200,11 @@
   "notes": [
     "Ancient ship is a physical unit h05Y awarded at stage 9; it is not e01A stage-10 transcend Wisp.",
     "GreenBlood A13A is a single-use ability on RV player building, not an automatically free unit.",
-    "Hero experience applies to Hp[VT[player]] only; the complete set of eligible hero instances must be sourced.",
+    "Hero XP CIB registration requires GetUnitAbilityLevel(A07O)>0 and UNIT_TYPE_HERO; only eligible owned pinned H rawcodes receive the stage 13/14 +300 mobile XP ledger; native level/stat conversion remains unimplemented.",
     "Trait points have a separate conditional bonus for kW[JG]==ka; model queues unconditional base only.",
     "Stage payout base money/wisps remain in distinct shared-wallet model.",
-    "GreenBlood other-unit A134/Aimp native on-attack effect remains unverified; A13C/AIas DataA1=.3 is source-verified."
+    "GreenBlood other-unit A134/Aimp native on-attack effect remains unverified; A13C/AIas DataA1=.3 is source-verified.",
+    "Three JASS source 5% unique-drop branches use persistent BhZ acquisition flags; the mobile wallet marker is separate from the consumable item right and is shared with box/source pickup.",
+    "The unique item shell's BhL native passive/item ability effects have not all been ported; recorded ownership is not full source item ability parity."
   ]
 }

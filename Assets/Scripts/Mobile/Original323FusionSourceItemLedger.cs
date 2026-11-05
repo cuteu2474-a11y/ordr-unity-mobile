@@ -44,6 +44,9 @@ namespace Ordr.Mobile.Mobile
         public const string NikaItemRawcode = "AI01";
         public const string UtaItemRawcode = "AI00";
         public const string ItemWalletPrefix = "source:item:";
+        // BhP/BhZ save a persistent acquired flag independently of item use.
+        // This marker is shared by 5%-story drops, source pickups and h0BR.
+        public const string EverObtainedPrefix = "source:unique-obtained:";
         // Original CRN/CRM A14A..A14J unique-box order. A successful
         // choice grants the unlocked AIxx flag once plus four lumber.
         // Item effects beyond the three CWR ingredient uses remain shells.
@@ -75,6 +78,23 @@ namespace Ordr.Mobile.Mobile
             if (wallet == null) throw new ArgumentNullException(nameof(wallet));
             if (FindShell(originalItemRawcode) == null) return 0;
             return wallet.Balance(WalletId(originalItemRawcode));
+        }
+
+        public static string EverObtainedWalletId(string originalItemRawcode)
+        {
+            if (FindShell(originalItemRawcode) == null)
+                throw new ArgumentException("원본 고유 아이템 ID가 아닙니다.", nameof(originalItemRawcode));
+            return EverObtainedPrefix + originalItemRawcode;
+        }
+
+        public static bool WasEverObtained(EconomyWallet wallet, string originalItemRawcode)
+        {
+            if (wallet == null || FindShell(originalItemRawcode) == null) return false;
+            // Old saves may have a source:item balance or a box receipt but no
+            // explicit marker. Accept those proofs without duplicating drops.
+            return wallet.Balance(EverObtainedWalletId(originalItemRawcode)) > 0 ||
+                wallet.Balance(WalletId(originalItemRawcode)) > 0 ||
+                wallet.HasCompletedTransaction("original323:unique-box-item:" + originalItemRawcode);
         }
 
         public static string WalletId(string originalItemRawcode)
@@ -140,7 +160,8 @@ namespace Ordr.Mobile.Mobile
                 receiptId.Length > 160 || count <= 0 || count > 100 ||
                 FindShell(originalItemRawcode) == null) return false;
             string receipt = "original323:item-pickup:" + receiptId;
-            if (wallet.HasCompletedTransaction(receipt)) return false;
+            if (wallet.HasCompletedTransaction(receipt) ||
+                WasEverObtained(wallet, originalItemRawcode)) return false;
             string evidence;
             if (!witness.TryConfirmPlayerItemReceipt(receiptId, originalItemRawcode,
                     count, out evidence) ||
@@ -149,7 +170,8 @@ namespace Ordr.Mobile.Mobile
             try
             {
                 return wallet.TryGrantOnce(receipt,
-                    new ResourceBundle().Add(WalletId(originalItemRawcode), count));
+                    new ResourceBundle().Add(WalletId(originalItemRawcode), count)
+                        .Add(EverObtainedWalletId(originalItemRawcode), 1));
             }
             catch
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Ordr.Mobile.Core;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Mobile;
 
 namespace Ordr.Mobile.Combat
 {
@@ -31,10 +32,9 @@ namespace Ordr.Mobile.Combat
             }
         }
 
-        // Source: JASS CNw..CRE, 52731..55503. The full native event also
-        // includes research/trait/experience/ship, later unlocks and
-        // contribution scoring. Those remain flagged as NOT yet reproduced.
-        // Resource payments below are explicitly limited to practice gameplay.
+        // Source: JASS CNw..CRE, 52731..55503. Native side effects use
+        // the typed reward queue; stage 5/6/8 unique item lotteries share
+        // the ordinary payout receipt. Combat and hero levels remain models.
         private static readonly Payout[] Pay = {
             new Payout(0,0,0,0,0,0,0,0,0,0,0,0),
             new Payout(180,0,3,1,0,0,0,500,0,1,0,0),
@@ -72,9 +72,27 @@ namespace Ordr.Mobile.Combat
             if (reward.Uncommon > 0) parts.Add("안흔함위습 " + reward.Uncommon);
             if (reward.Special > 0) parts.Add("특별위습 " + reward.Special);
             if (reward.Rare > 0) parts.Add("희귀위습 " + reward.Rare);
-            if (stage == 10) parts.Add("초월위습 1회 · 쿠마 선택 가능");
+            if (stage == 10) parts.Add("초월위습 1회 · 3가지 선택");
+            string optional = SourceUniqueItemForStage(stage);
+            if (optional != null) parts.Add("5% 고유 아이템 " + optional + " (미획득 시)");
             return string.Join(" · ", parts.ToArray());
         }
+
+        // COw (stage 5) AI03, CPC (stage 6) AI00, CPg (stage 8) AI02:
+        // BFi(1,100)<=5 then not BhZ(...) then BhV(...).
+        public static string SourceUniqueItemForStage(int stage)
+        {
+            switch (stage)
+            {
+                case 5: return "AI03";
+                case 6: return "AI00";
+                case 8: return "AI02";
+                default: return null;
+            }
+        }
+
+        private readonly Func<int, int, int> rollInclusive;
+        public string LastUniqueItemAward { get; private set; }
 
         private readonly CharacterCombatRuntime combat;
         private readonly Original323StoryBuildingPracticeWorld world;
@@ -113,11 +131,15 @@ namespace Ordr.Mobile.Combat
 
         public Original323SoloStoryScenario(CharacterCombatRuntime live,
             Original323StoryBuildingPracticeWorld buildings,
-            SharedEconomySession session)
+            SharedEconomySession session,
+            Func<int, int, int> storyUniqueRandom = null)
         {
             combat = live ?? throw new ArgumentNullException(nameof(live));
             world = buildings ?? throw new ArgumentNullException(nameof(buildings));
             economy = session ?? throw new ArgumentNullException(nameof(session));
+            var random = new Random();
+            rollInclusive = storyUniqueRandom ??
+                ((minimum, maximum) => random.Next(minimum, maximum + 1));
             if (!ReferenceEquals(combat.Roster, economy.Units) ||
                 GameSession.ModeId != "nightmare-otherworld")
                 throw new ArgumentException("악몽 이세계 공유 전투·지갑이 필요합니다.");
@@ -208,13 +230,30 @@ namespace Ordr.Mobile.Combat
             bool contributor = ownedDamage.TryGetValue(id, out damage) && damage > 0;
             ownedDamage.Remove(id);
             var payout = Pay[stage];
+            string receipt = "practice:story-stage:" + stage;
+            // Decide the source 5% branch before the SAME atomic clear receipt.
+            // Replayed deaths never reroll. BhZ's saved flag survives spending.
+            bool wasCommitted = economy.Wallet.HasCompletedTransaction(receipt);
             var rewards = Bundle(payout, contributor, stage,
                 economy.Wallet.Balance(
                     Original323SourceMaterialRewardWorld.SettledStoryWispMarker) > 0);
-            string receipt = "practice:story-stage:" + stage;
-            // Commit one wallet receipt before recording the stage. Wallet
-            // observers may throw AFTER a committed payment: never pay twice.
-            bool wasCommitted = economy.Wallet.HasCompletedTransaction(receipt);
+            string uniqueDrop = SourceUniqueItemForStage(stage);
+            bool awardedUniqueItem = false;
+            if (!wasCommitted && uniqueDrop != null)
+            {
+                int roll = rollInclusive(1, 100);
+                if (roll < 1 || roll > 100)
+                    throw new InvalidOperationException("스토리 고유 아이템 원본 난수 범위 오류");
+                if (roll <= 5 && !Original323FusionSourceItemLedger.WasEverObtained(
+                        economy.Wallet, uniqueDrop))
+                {
+                    rewards.Add(Original323FusionSourceItemLedger.WalletId(uniqueDrop), 1);
+                    rewards.Add(Original323FusionSourceItemLedger.EverObtainedWalletId(uniqueDrop), 1);
+                    awardedUniqueItem = true;
+                }
+            }
+            // Commit before stage progression. Wallet observers may throw
+            // AFTER a committed payment: never issue a second roll or item.
             bool newGrant = false;
             try { newGrant = economy.Wallet.TryGrantOnce(receipt, rewards); }
             catch
@@ -229,6 +268,7 @@ namespace Ordr.Mobile.Combat
             {
                 AwardedGold += payout.Gold + (contributor ? payout.MvpGold : 0);
                 AwardedWood += payout.Wood + (contributor ? payout.ContributionWood : 0);
+                if (awardedUniqueItem) LastUniqueItemAward = uniqueDrop;
             }
             completed.Add(stage);
             HighestDestroyedStage = Math.Max(HighestDestroyedStage, stage);
@@ -252,6 +292,8 @@ namespace Ordr.Mobile.Combat
             }
             else
                 LastNotice = record.Building.Name + " 격파";
+            if (newGrant && awardedUniqueItem)
+                LastNotice += " · 고유 아이템 " + uniqueDrop + " 획득";
         }
 
         // Called at the source-model round-start boundary, before round combat

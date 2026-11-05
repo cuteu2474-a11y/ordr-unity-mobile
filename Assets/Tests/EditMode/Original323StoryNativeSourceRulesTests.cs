@@ -13,6 +13,27 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void SourceUniqueItemsRememberOwnershipEvenAfterFusionSpend()
+        {
+            var wallet = new EconomyWallet();
+            Assert.IsFalse(Ordr.Mobile.Mobile.Original323FusionSourceItemLedger
+                .WasEverObtained(wallet, "AI00"));
+            wallet.Grant(new ResourceBundle()
+                .Add(Ordr.Mobile.Mobile.Original323FusionSourceItemLedger.WalletId("AI00"), 1)
+                .Add(Ordr.Mobile.Mobile.Original323FusionSourceItemLedger.EverObtainedWalletId("AI00"), 1));
+            Assert.IsTrue(wallet.TryExchangeOnce("story-test-unique-spend",
+                new ResourceBundle().Add(
+                    Ordr.Mobile.Mobile.Original323FusionSourceItemLedger.WalletId("AI00"), 1),
+                new ResourceBundle()));
+            Assert.IsTrue(Ordr.Mobile.Mobile.Original323FusionSourceItemLedger
+                .WasEverObtained(wallet, "AI00"));
+            Assert.AreEqual("AI03", Original323SoloStoryScenario.SourceUniqueItemForStage(5));
+            Assert.AreEqual("AI00", Original323SoloStoryScenario.SourceUniqueItemForStage(6));
+            Assert.AreEqual("AI02", Original323SoloStoryScenario.SourceUniqueItemForStage(8));
+            Assert.IsNull(Original323SoloStoryScenario.SourceUniqueItemForStage(7));
+        }
+
+        [Test]
         public void OriginalDoubleTraitPointBranchUsesExplicitSelection()
         {
             var queue = new Original323StoryNativeRewardQueue();

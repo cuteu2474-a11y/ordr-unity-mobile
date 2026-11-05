@@ -106,11 +106,10 @@ namespace Ordr.Mobile.Combat
         }
     }
 
-    // The source Hp[VT[player]] handle is absent from the standalone Unity
-    // game. The mobile outcome models it as live, player-owned combat
-    // characters with pinned map identities (never noncombat CWR materials).
-    // XP is a per-instance game-state ledger. It never invents a Warcraft
-    // level threshold, damage bonus or a recipient that is not on the roster.
+    // Original CIB registers ONLY hero-type units with A07O in Hp[VT[player]].
+    // Source UnitAbilities.slk distinguishes these from ordinary attackers.
+    // The solo outcome credits live, player-owned pinned source heroes only;
+    // it does not invent native HeroXP level/stat progression for Unity.
     public sealed class Original323MobileStoryHeroExperienceWorld :
         IOriginal323StoryNativeRewardPort
     {
@@ -131,6 +130,17 @@ namespace Ordr.Mobile.Combat
                 objects.SourceW3xSha256 != OriginalCommonSaleRules.OriginalMapSha256 ||
                 GameSession.ModeId != "nightmare-otherworld")
                 throw new ArgumentException("스토리 경험치 원본 객체·공유 로스터가 일치하지 않습니다.");
+        }
+
+        // Original JASS CIB: ability A07O AND UNIT_TYPE_HERO. The source
+        // object's uppercase H-prefix identifies the native hero unit class.
+        public static bool IsSourceStoryHero(OriginalMapCharacterBasics source)
+        {
+            if (source == null || string.IsNullOrEmpty(source.OriginalRawcode) ||
+                source.OriginalRawcode[0] != 'H') return false;
+            foreach (string ability in source.OriginalAbilityRawcodes)
+                if (ability == "A07O") return true;
+            return false;
         }
 
         public long ExperienceOf(long instanceId)
@@ -155,14 +165,12 @@ namespace Ordr.Mobile.Combat
             int recipients = 0;
             foreach (var owned in combat.MobileUnitSnapshot())
             {
-                // The independent hero-group handle is not ported. This
-                // explicit solo result policy uses only pinned, owned
-                // character instances. No future acquisition gets old XP.
+                // A transformed mapped hero still qualifies when its actual
+                // source form has both the original hero type and A07O.
+                // Unmapped forms and ordinary attackers never inherit XP.
                 if (owned.Unit == null ||
                     owned.Unit.CatalogEntryKind == "support-object" ||
-                    owned.Unit.IsAlternateForm ||
-                    objects.Find(owned.Unit.Id) == null ||
-                    objects.Find(owned.Unit.Id).Attack1 == null)
+                    !IsSourceStoryHero(objects.Find(owned.Unit.Id)))
                     continue;
                 bundle.Add(ExperiencePrefix + owned.InstanceId, award.Amount);
                 recipients++;

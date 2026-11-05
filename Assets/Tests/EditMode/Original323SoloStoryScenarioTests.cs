@@ -34,6 +34,27 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void StoryExperienceTargetsOnlyOriginalA07OHeroObjects()
+        {
+            var units = CharacterUnitCatalog.FromJson(Source("units.json"));
+            var map = OriginalMapBaseStatCatalog.FromJson(
+                Source("original-2323C-map-base-stats.json"), units);
+            var eligible = map.All.Where(
+                Original323MobileStoryHeroExperienceWorld.IsSourceStoryHero).ToArray();
+            Assert.Greater(eligible.Length, 0,
+                "Source hero data must include the JASS CIB A07O group.");
+            foreach (var hero in eligible)
+            {
+                Assert.AreEqual('H', hero.OriginalRawcode[0]);
+                CollectionAssert.Contains(hero.OriginalAbilityRawcodes, "A07O");
+            }
+            foreach (var character in map.All.Where(x =>
+                x.OriginalRawcode != null && x.OriginalRawcode[0] != 'H'))
+                Assert.IsFalse(Original323MobileStoryHeroExperienceWorld
+                    .IsSourceStoryHero(character));
+        }
+
+        [Test]
         public void LoguetownSpawnsBeforeFirstWaveAndNeverConsumesWaveCapacity()
         {
             OriginalMapBaseStatCatalog map;
@@ -163,7 +184,8 @@ namespace Ordr.Mobile.Tests
                 Original323StoryBuildingCatalog.FromJson(
                     Source("original-2323C-monster-object-stats.json"))))
             using (var story = new Original323SoloStoryScenario(combat, buildings,
-                new SharedEconomySession(wallet, combat.Roster)))
+                new SharedEconomySession(wallet, combat.Roster),
+                (min, max) => 1))
             {
                 story.Start();
                 combat.BeginWave(1);
@@ -176,6 +198,16 @@ namespace Ordr.Mobile.Tests
                     Assert.AreEqual(0, combat.Game.AliveEnemies,
                         "Story targets must not affect wave overflow counts");
                 }
+                // Source COw/CPC/CPg (5%, 1..100) win in this fixture.
+                Assert.AreEqual(1, wallet.Balance(
+                    Original323FusionSourceItemLedger.WalletId("AI03")));
+                Assert.AreEqual(1, wallet.Balance(
+                    Original323FusionSourceItemLedger.WalletId("AI00")));
+                Assert.AreEqual(1, wallet.Balance(
+                    Original323FusionSourceItemLedger.WalletId("AI02")));
+                Assert.IsTrue(Original323FusionSourceItemLedger.WasEverObtained(
+                    wallet, "AI03"));
+                Assert.AreEqual("AI02", story.LastUniqueItemAward);
                 Assert.IsFalse(story.CompletedAllBuildings);
                 Assert.AreEqual(13, buildings.DestroyedCount);
                 Assert.AreEqual(13, buildings.Encounters.Count);

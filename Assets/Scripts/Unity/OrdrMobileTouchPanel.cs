@@ -2031,9 +2031,13 @@ namespace Ordr.Mobile.Unity
             if (controller.StoryHeroExperience != null &&
                 scenario.HighestDestroyedStage >= 13)
                 OrdrMobileUiTheme.DrawStatusRow("스토리 영웅 경험치",
-                    "13·14단계 격파 시 보유 전투 유닛마다 +300 XP" +
-                    " · 원본 레벨 상승 공식 별도",
+                    "13·14단계 격파 시 원본 A07O 영웅 그룹에 +300 XP" +
+                    " · 레벨·스탯 반영 별도",
                     OrdrMobileUiTheme.Aqua);
+            if (!string.IsNullOrEmpty(scenario.LastUniqueItemAward))
+                OrdrMobileUiTheme.DrawStatusRow("스토리 고유 아이템",
+                    scenario.LastUniqueItemAward + " 획득 · 원본 5% 추첨 보상",
+                    OrdrMobileUiTheme.Gold);
             OrdrMobileUiTheme.DrawStatusRow("원본 추가 보상",
                 "실제 적용 대기 " + scenario.NativeRewards.PendingCount + "건",
                 OrdrMobileUiTheme.Aqua);
