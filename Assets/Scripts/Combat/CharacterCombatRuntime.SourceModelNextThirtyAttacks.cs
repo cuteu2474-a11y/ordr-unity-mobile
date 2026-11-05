@@ -385,6 +385,10 @@ namespace Ordr.Mobile.Combat
                 ScheduleSourceModelLightningVolley(caster, accepted, targets);
             else
                 ApplySourceModelNextThirtySkill(caster, primary, accepted, targets);
+            // Sans's added 30-bone Gaster packet uses the same accepted
+            // cast and already-paid 100 MP; never auto-spend a second time.
+            if (accepted.Id == "MY-07:skill:2")
+                BulkApplySansEnhancedGaster(caster, primary, accepted, targets);
             // Family followups run for approved Anya HP/MP casts too.
             if (caster.Catalog.Id == "MY-08")
                 ExecuteAdditionalAutoFollowup(caster, primary, accepted);

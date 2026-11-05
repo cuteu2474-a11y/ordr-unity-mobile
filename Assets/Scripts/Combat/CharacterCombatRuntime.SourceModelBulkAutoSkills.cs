@@ -13,6 +13,10 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, int>();
         private readonly Dictionary<long, double> bulkAutoFlatPower =
             new Dictionary<long, double>();
+        // Sans's Q is an ally-targeted command, not a periodic attack proc.
+        // Keep its source-defined bones until this specific Sans leaves the roster.
+        private readonly Dictionary<long, int> bulkSansBones =
+            new Dictionary<long, int>();
         private readonly Dictionary<long, double> bulkAllyRegenerationEnds =
             new Dictionary<long, double>();
         private readonly Dictionary<long, long> bulkGiftSerials =
@@ -35,6 +39,119 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException(
                     "원본 연습 선물상자 지갑은 시작 전에 한 번만 연결합니다.");
             bulkGiftWallet = wallet ?? throw new ArgumentNullException(nameof(wallet));
+        }
+
+        // UI/command entry point for the tooltip's explicit Brook-targeted Q.
+        // The source profile gives no cooldown or Brook-consumption rule: do
+        // not invent either one, and never repeatedly fire this from Step().
+        public bool TryActivateSourceModelSansBoneQ(long sansInstanceId,
+            long brookInstanceId)
+        {
+            if (!UsesSourceModelBasicAttacks || sourceModelRules == null ||
+                game.Phase != SessionPhase.Running || processingStep ||
+                pendingStepSeconds != 0 || sansInstanceId == brookInstanceId)
+                return false;
+            CharacterInstance sans, brook;
+            if (!characters.TryGetValue(sansInstanceId, out sans) ||
+                !characters.TryGetValue(brookInstanceId, out brook) ||
+                !sans.AttackReady || sans.Mapping == null ||
+                !IsBulkSourceOwner(sans.Catalog.Id,
+                    sans.Mapping.AttackSpec.UnitRawCode) ||
+                sans.Catalog.Id != "MY-07" ||
+                IsStoryDeployed(sansInstanceId) != IsStoryDeployed(brookInstanceId))
+                return false;
+            string grade = brook.Catalog.Id == "U-03" ? "안흔함" :
+                brook.Catalog.Id == "R-18" ? "희귀함" : null;
+            if (grade == null) return false;
+            var q = AdditionalAutoSkill(sans, "MY-07:skill:0");
+            if (q == null || q.Trigger != "manual" ||
+                q.Name != "체력본충(Q)") return false;
+            int gain = 0;
+            foreach (var effect in q.Components)
+                if (effect.Type == "boneGain" &&
+                    effect.Text("targetUnitGrade") == grade)
+                    gain = (int)(effect.Number("amount") ?? 0);
+            if (gain <= 0) return false;
+            int current;
+            bulkSansBones.TryGetValue(sansInstanceId, out current);
+            // Never wrap the ledger and accidentally deactivate upgrades.
+            bulkSansBones[sansInstanceId] =
+                current > int.MaxValue - gain ? int.MaxValue : current + gain;
+            pendingCommandEvents.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated,
+                InstanceKey(sansInstanceId), InstanceKey(brookInstanceId),
+                q.Name, "TOOLTIP_MODEL_ONLY / 뼈 +" + gain, 0));
+            if (!BulkSansIsEnhanced(sans) && current < 30)
+                return true;
+            // Aura groups are reconciled only after the whole Q transaction.
+            RefreshEnemyAuras();
+            return true;
+        }
+
+        public int SourceModelSansBonesOf(long sansInstanceId)
+        {
+            CharacterInstance actor;
+            int bones;
+            return characters.TryGetValue(sansInstanceId, out actor) &&
+                actor.Catalog.Id == "MY-07" &&
+                bulkSansBones.TryGetValue(sansInstanceId, out bones) ? bones : 0;
+        }
+
+        private bool BulkSansIsEnhanced(CharacterInstance actor)
+        {
+            if (actor == null || actor.Catalog.Id != "MY-07" ||
+                actor.Profile == null || actor.Profile.UnitId != "MY-07")
+                return false;
+            object value;
+            var condition = actor.Profile.OriginalFields.TryGetValue(
+                "enhancedCondition", out value) ?
+                value as Dictionary<string, object> : null;
+            object resource, required;
+            if (condition == null ||
+                !condition.TryGetValue("resource", out resource) ||
+                !condition.TryGetValue("required", out required) ||
+                resource as string != "bones") return false;
+            int bones;
+            bulkSansBones.TryGetValue(actor.Id, out bones);
+            return bones >= Convert.ToInt32(required);
+        }
+
+        private List<Dictionary<string, object>> BulkSansEnhancedChanges(
+            CharacterInstance actor)
+        {
+            var result = new List<Dictionary<string, object>>();
+            if (!BulkSansIsEnhanced(actor)) return result;
+            object value;
+            if (!actor.Profile.OriginalFields.TryGetValue(
+                    "enhancedChanges", out value)) return result;
+            var changes = value as List<object>;
+            if (changes != null)
+                foreach (var change in changes)
+                {
+                    var fields = change as Dictionary<string, object>;
+                    if (fields != null) result.Add(fields);
+                }
+            return result;
+        }
+
+        private double BulkSansEnhancedAuraAmount(CharacterInstance actor,
+            CombatEffectType type, double originalAmount)
+        {
+            foreach (var change in BulkSansEnhancedChanges(actor))
+            {
+                object kind, name, value;
+                if (!change.TryGetValue("type", out kind) ||
+                    !change.TryGetValue("name", out name) ||
+                    kind as string != "replacePassive") continue;
+                bool armor = type == CombatEffectType.ArmorReduction &&
+                    name as string == "armorReductionAura";
+                bool slow = type == CombatEffectType.MovementSlowPercent &&
+                    name as string == "movementSlowAura";
+                if (armor && change.TryGetValue("amount", out value) ||
+                    slow && change.TryGetValue("percent", out value))
+                    return Convert.ToDouble(value);
+            }
+            return originalAmount;
         }
 
         private static bool HasBulkAutomaticOwner(string rawcode)
@@ -81,6 +198,7 @@ namespace Ordr.Mobile.Combat
         {
             bulkAutoAttackCounts.Remove(actorId);
             bulkAutoFlatPower.Remove(actorId);
+            bulkSansBones.Remove(actorId);
             bulkAllyRegenerationEnds.Remove(actorId);
             bulkGiftSerials.Remove(actorId);
             string oldTarget;
@@ -306,11 +424,12 @@ namespace Ordr.Mobile.Combat
             if (owner == "MY-07")
             {
                 BulkRunAttackSkill(actor, primary, "MY-07:skill:1");
+                BulkTrySansJudgment(actor, primary);
                 int count;
                 bulkAutoAttackCounts.TryGetValue(actor.Id, out count);
                 count++;
                 bulkAutoAttackCounts[actor.Id] = count;
-                if (count % 20 == 0)
+                if (count % 20 == 0 && !BulkSansIsEnhanced(actor))
                 {
                     var tired = AdditionalAutoSkill(actor, "MY-07:skill:3");
                     if (tired != null && tired.Components.Count == 2)
@@ -431,6 +550,32 @@ namespace Ordr.Mobile.Combat
                 bulkAutoFlatPower.TryGetValue(actor.Id, out current);
                 bulkAutoFlatPower[actor.Id] = Math.Max(current,
                     skill.Components[0].Number("amount") ?? 0);
+            }
+            else if (id == "MY-07:skill:1")
+            {
+                BulkApplyStandard(actor, primary, skill);
+                int bones;
+                bulkSansBones.TryGetValue(actor.Id, out bones);
+                foreach (var component in skill.Components)
+                    if (component.Type == "extraCast")
+                    {
+                        int per = (int)(component.Number("perBones") ?? 0);
+                        int each = (int)(component.Number("countPer") ?? 0);
+                        if (per <= 0 || each <= 0) break;
+                        // Guard the simulation's frame budget, not a
+                        // claimed original Warcraft maximum bone count.
+                        long extra = (long)(bones / per) * each;
+                        if (extra > 1024)
+                        {
+                            ReportSourceModelNextThirtyDeferred(
+                                InstanceKey(actor.Id), primary.Id,
+                                "샌즈 추가 발동 1024회/프레임 안전 제한; 남은 발동 보류");
+                            extra = 1024;
+                        }
+                        for (long n = 0; n < extra; n++)
+                            BulkApplyStandard(actor, primary, skill);
+                        break;
+                    }
             }
             else if (id == "L-05:skill:0")
             {
@@ -577,6 +722,82 @@ namespace Ordr.Mobile.Combat
             }
             else BulkApplyStandard(actor, primary, skill);
             ExecuteBulkAutoAfterSkill(actor, primary, skill);
+        }
+
+        private void BulkTrySansJudgment(CharacterInstance actor,
+            SpatialCombatEnemy primary)
+        {
+            foreach (var change in BulkSansEnhancedChanges(actor))
+            {
+                object type, name;
+                if (!change.TryGetValue("type", out type) ||
+                    !change.TryGetValue("name", out name) ||
+                    type as string != "unlockSkill" ||
+                    name as string != "심판자") continue;
+                var unlocked = new ImportedCombatSkill("MY-07", 4,
+                    new Dictionary<string, object>(change, StringComparer.Ordinal));
+                if (unlocked.Trigger == "onAttack" &&
+                    unlocked.Target == "single" &&
+                    AdditionalAutoRoll(unlocked) &&
+                    unlocked.Components.Count == 1 &&
+                    unlocked.Components[0].Type == "physical")
+                    BulkApplyStandard(actor, primary, unlocked);
+                return;
+            }
+        }
+
+        // The base Gaster packet is cast by the existing approved active
+        // executor (100 original MP, 24 x 350,000 magic). Only the enhanced
+        // extras belong here, after that SAME approved successful cast.
+        private void BulkApplySansEnhancedGaster(CharacterInstance actor,
+            SpatialCombatEnemy primary, ImportedCombatSkill accepted,
+            IReadOnlyList<SpatialCombatEnemy> targets)
+        {
+            if (actor == null || accepted == null ||
+                accepted.Id != "MY-07:skill:2" ||
+                !BulkSansIsEnhanced(actor)) return;
+            foreach (var change in BulkSansEnhancedChanges(actor))
+            {
+                object kind, skillName, raw;
+                if (!change.TryGetValue("type", out kind) ||
+                    !change.TryGetValue("skill", out skillName) ||
+                    kind as string != "addSkillEffect" ||
+                    skillName as string != accepted.Name ||
+                    !change.TryGetValue("components", out raw)) continue;
+                var components = raw as List<object>;
+                if (components == null) return;
+                int hitCount = 0;
+                foreach (var original in accepted.Components)
+                    if (original.Type == "magical" &&
+                        original.Number("hits").HasValue)
+                        hitCount = (int)original.Number("hits").Value;
+                foreach (var entry in components)
+                {
+                    var fields = entry as Dictionary<string, object>;
+                    if (fields == null) continue;
+                    var effect = new ImportedCombatEffect(fields);
+                    if (effect.Type == "physical" && hitCount > 0)
+                    {
+                        for (int hit = 0; hit < hitCount; hit++)
+                            BulkApplyDamagePacket(actor, primary, accepted,
+                                effect, targets);
+                    }
+                    else if (effect.Type == "damageOverTime" &&
+                        effect.Text("school") == "magical")
+                        BulkTimedDamage(actor, targets, accepted,
+                            effect.Number("amountPerTick") ?? 0, "magical",
+                            effect.Number("intervalSeconds") ?? 0,
+                            effect.Number("durationSeconds") ?? 0);
+                    else if (effect.Type == "armorReduction")
+                        foreach (var victim in targets)
+                            BulkStatus(actor, victim, accepted,
+                                CombatEffectType.ArmorReduction,
+                                effect.Number("amount") ?? 0,
+                                effect.Number("durationSeconds") ?? 0,
+                                "enhanced-gaster-armor");
+                }
+                return;
+            }
         }
 
         private void BulkApplyStandardStatusOnly(CharacterInstance actor,

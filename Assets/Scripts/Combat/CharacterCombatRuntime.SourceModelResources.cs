@@ -61,6 +61,9 @@ namespace Ordr.Mobile.Combat
                 // even if the separate tooltip active is not auto-castable.
                 (actor.Catalog.Id == "E-09" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "h067") ||
+                // Sans's mana100 is pinned to source h083, not inferred.
+                (actor.Catalog.Id == "MY-07" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h083") ||
                 // Exact source W3X SLK objects: HP35, HP30, MP145, HP45/MP75.
                 (actor.Catalog.Id == "L-02" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "h02P") ||
