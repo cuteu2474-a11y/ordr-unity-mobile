@@ -1,3 +1,10 @@
+## 2026-11-05 · 57차 게임 기능 경로
+
+- Assets/Scripts/Combat/SourceModelPracticeBattle.cs: 원본 모델 사각 순환 이동 거리를 진행률 0..1로 계산하고 몬스터 위치와 동시에 적용. 한 바퀴는 처치/누수 이벤트가 아님.
+- Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEffects.cs: MoveSourceModelEnemy(id,x,y,pathProgress)로 진행도를 실물 SpatialCombatEnemy에 기록; CharacterCombatRuntime.BuildTargetCandidates와 기존 CombatTargeting.FurthestAlongPath에서 사용.
+- Assets/Scripts/Combat/CombatWaveDirector.cs: 각 스폰 시각 전에 StepCombatFully로 남은 전투 계산 시간을 Step(0)에서 소진한 후 다음 적을 생성. 이벤트 병합·원본 웨이브 장부 유지, 64회 초과는 명시적 오류.
+- Assets/Tests/EditMode/SourceModelPracticeBattleTests.cs: 실제 진행률·표적 선택·랩 리셋·부적절한 거리 입력 검증 **작성만**. Unity/Android/Python/APK 실행 검사 미실시. 시각 이펙트 관련 파일 미변경.
+
 ## 2026-11-05 · 월드 표시/카메라 경계/전투 가독성
 
 - `Assets/Scripts/Unity/MobileMapSkillLayout.cs`: `MobileBattlefieldCameraNavigation.MaximumContainedHalfHeight/TryClampToWorldBounds`로 유효 월드 배경 안에 전체 카메라 뷰포트가 들어가는 순수 표시 계산을 제공합니다. 전투/원본 이동 좌표를 바꾸지 않습니다.

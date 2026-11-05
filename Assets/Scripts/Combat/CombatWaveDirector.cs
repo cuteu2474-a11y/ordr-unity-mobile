@@ -319,6 +319,25 @@ namespace Ordr.Mobile.Combat
             elapsed = 0; nextSpawn = 0;
         }
 
+        // A crowded formation may exceed CharacterCombatRuntime's safe attack
+        // budget for one Step. Drain the exact unprocessed time with zero NEW
+        // seconds before spawning the next monster or exposing a later round.
+        // Never skip attacks, re-add elapsed time, or synthesize a kill.
+        private static void StepCombatFully(CharacterCombatRuntime combat,
+            double seconds, List<CharacterCombatEvent> events)
+        {
+            events.AddRange(combat.Step(seconds));
+            const int maximumContinuationBatches = 64;
+            int batches = 0;
+            while (combat.PendingSimulationSeconds > 0)
+            {
+                if (++batches > maximumContinuationBatches)
+                    throw new InvalidOperationException(
+                        "한 전투 구간의 공격량이 안전 처리 상한을 초과했습니다.");
+                events.AddRange(combat.Step(0));
+            }
+        }
+
         public IReadOnlyList<CharacterCombatEvent> Step(
             CharacterCombatRuntime combat, double seconds)
         {
@@ -336,11 +355,8 @@ namespace Ordr.Mobile.Combat
             {
                 double spawnTime = active.Spawns[nextSpawn].AtSeconds;
                 double advance = Math.Max(0, spawnTime - elapsed);
-                events.AddRange(combat.Step(advance));
+                StepCombatFully(combat, advance, events);
                 elapsed += advance;
-                if (combat.PendingSimulationSeconds > 0)
-                    throw new InvalidOperationException(
-                        "전투 계산 지연 중입니다. 출현 시점을 건너뛰지 않습니다.");
 
                 // Spawn same-time monsters before attacking any of them.
                 while (nextSpawn < active.Spawns.Count &&
@@ -368,7 +384,7 @@ namespace Ordr.Mobile.Combat
                     nextSpawn++;
                 }
             }
-            events.AddRange(combat.Step(end - elapsed));
+            StepCombatFully(combat, end - elapsed, events);
             elapsed = end;
             return events.AsReadOnly();
         }

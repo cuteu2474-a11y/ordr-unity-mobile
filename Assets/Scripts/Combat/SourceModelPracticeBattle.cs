@@ -46,6 +46,14 @@ namespace Ordr.Mobile.Combat
             return rounds[RoundKey(number, kind == CharacterEnemyKind.Boss ? "boss" : "line")];
         }
         public CombatPathPoint Position(double travelled) => route.AtDistance(travelled % route.Length);
+        // TargetPriority.FurthestAlongPath consumes this 0..1 route progress.
+        // A lap is never an escape; after looping, priority follows the current lap.
+        public double PathProgress(double travelled)
+        {
+            if (double.IsNaN(travelled) || double.IsInfinity(travelled) || travelled < 0)
+                throw new ArgumentOutOfRangeException(nameof(travelled));
+            return (travelled % route.Length) / route.Length;
+        }
 
         public SourceModelPracticeCatalog(string json, int lastRound = 10)
         {
@@ -351,7 +359,8 @@ namespace Ordr.Mobile.Combat
                 var point = catalog.Position(travelled);
                 // A completed lap remains a living enemy. No invented leak,
                 // kill, reward, or player-life reduction at the route end.
-                combat.MoveSourceModelEnemy(enemy.Id, point.X, point.Y);
+                combat.MoveSourceModelEnemy(enemy.Id, point.X, point.Y,
+                    catalog.PathProgress(travelled));
             }
         }
         private void RewardActualDeath(int spawnWave, string id)

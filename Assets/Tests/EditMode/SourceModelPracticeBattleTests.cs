@@ -156,6 +156,44 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void MovingMonstersExposeRealRouteProgressForFrontTargetPriority()
+        {
+            using (var game = Create())
+            {
+                game.Battle.Advance(.5);
+                var born = game.Combat.MobileEnemySnapshot().Single();
+                Assert.AreEqual(0, born.PathProgress, 1e-12);
+                game.Battle.Advance(.1);
+                var moving = game.Combat.MobileEnemySnapshot().Single();
+                Assert.Greater(moving.PathProgress, born.PathProgress);
+                Assert.Less(moving.PathProgress, 1);
+                Assert.AreEqual(moving.Id, CombatTargeting.Select(
+                    new[] {
+                        new TargetCandidate("back", 0, born.PathProgress, true),
+                        new TargetCandidate(moving.Id, 100, moving.PathProgress, true)
+                    }, 0, TargetPriority.FurthestAlongPath, true));
+                Assert.AreEqual(0, game.Combat.PendingSimulationSeconds);
+            }
+            var catalog = new SourceModelPracticeCatalog(
+                Data("mobile-practice-battle-model.json"));
+            var corners = catalog.RouteCorners;
+            double lap = 0;
+            for (int i = 0; i < corners.Count; i++)
+            {
+                var from = corners[i];
+                var to = corners[(i + 1) % corners.Count];
+                double dx = to.X - from.X, dy = to.Y - from.Y;
+                lap += Math.Sqrt(dx * dx + dy * dy);
+            }
+            Assert.AreEqual(.25, catalog.PathProgress(lap * .25), 1e-9);
+            Assert.AreEqual(.25, catalog.PathProgress(lap * 1.25), 1e-9);
+            Assert.AreEqual(0, catalog.PathProgress(lap), 1e-9);
+            Assert.Throws<ArgumentOutOfRangeException>(() => catalog.PathProgress(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                catalog.PathProgress(double.NaN));
+        }
+
+        [Test]
         public void TenRoundPracticeCanBeCompletedUsingActualObjectAttackStats()
         {
             // Strong TEST formation skips player recruitment, but every hit

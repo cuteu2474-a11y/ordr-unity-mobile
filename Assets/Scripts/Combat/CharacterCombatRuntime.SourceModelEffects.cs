@@ -149,10 +149,13 @@ namespace Ordr.Mobile.Combat
                 "MODEL_ONLY B4C/Bd2 공격 선언 +10, A04P 누적 " + (current + 10) +
                 "; +20/+2 확률·변신·복합 방깎 중첩은 미검증", 0));
         }
-        internal void MoveSourceModelEnemy(string id, double x, double y)
+        internal void MoveSourceModelEnemy(string id, double x, double y, double pathProgress)
         {
             BlockExternalMutationDuringOriginalFusion();
             if (!UsesSourceModelBasicAttacks || !processingStep) throw new InvalidOperationException("연습 이동 단계가 아닙니다.");
+            if (double.IsNaN(pathProgress) || double.IsInfinity(pathProgress) ||
+                pathProgress < 0 || pathProgress > 1)
+                throw new ArgumentOutOfRangeException(nameof(pathProgress));
             SpatialCombatEnemy enemy;
             if (enemies.TryGetValue(id, out enemy) && enemy.Enemy.IsAlive)
             {
@@ -160,7 +163,8 @@ namespace Ordr.Mobile.Combat
                     enemy.Kind != CharacterEnemyKind.Boss &&
                     enemy.Kind != CharacterEnemyKind.Enraged)
                     throw new InvalidOperationException("비웨이브/스토리 건물은 라운드 경로를 이동하지 않습니다.");
-                enemy.Move(x, y, 0);
+                // The path progress feeds furthest-along targeting, not escape or HP rules.
+                enemy.Move(x, y, pathProgress);
             }
         }
         private void RefreshSourceModelAuras()
