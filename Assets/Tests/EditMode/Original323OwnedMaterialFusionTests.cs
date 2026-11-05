@@ -935,12 +935,14 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void Batch46ThreeItemShellsShareActualFusionWalletWithoutDummyEffects()
+        public void Batch66TenSourceItemShellsShareActualFusionWalletWithoutDummyEffects()
         {
             var game = Create();
             var shells = Original323FusionSourceItemLedger.ItemShells;
-            CollectionAssert.AreEqual(new[] { "AI00", "AI01", "AI02" },
-                shells.Select(x => x.Rawcode).ToArray());
+            CollectionAssert.AreEqual(new[] {
+                "AI02", "AI00", "AI01", "AI03", "AI18",
+                "AI21", "AI17", "AI19", "AI16", "AI20"
+            }, shells.Select(x => x.Rawcode).ToArray());
             foreach (var item in shells)
             {
                 Assert.IsFalse(item.HasImplementedUseEffect, item.Rawcode);
@@ -1166,11 +1168,19 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void StoryTenBoxResourcesRedeemsImmediatelyWithoutPhysicalBox()
+        public void StoryTenBoxResourcesRedeemsOriginalIndependentRollsWithoutBoxActor()
         {
             var game = Create();
+            int randomCalls = 0;
             var choices = new Original323KumaWispChoiceWorld(
-                game.Combat, game.Economy, game.Units, game.Map);
+                game.Combat, game.Economy, game.Units, game.Map,
+                (min, max) => {
+                    randomCalls++;
+                    Assert.AreEqual(randomCalls == 1 ?
+                        Original323KumaWispChoiceWorld.BoxGoldMin :
+                        Original323KumaWispChoiceWorld.BoxWoodMin, min);
+                    return max;
+                });
             var wallet = game.Economy.Wallet;
             Assert.IsTrue(wallet.TryGrantOnce("test:box:resources",
                 new ResourceBundle().Add(
@@ -1182,11 +1192,12 @@ namespace Ordr.Mobile.Tests
             Assert.IsTrue(choices.TryChoose(
                 Original323SoloStoryScenario.PracticeTranscendWisp,
                 Original323TranscendWispOutcome.RewardBoxResources, out actors));
+            Assert.AreEqual(2, randomCalls);
             Assert.AreEqual(0, actors.Count, "모바일은 빈 꾸러미 상자를 생성하지 않습니다.");
             Assert.AreEqual(roster, game.Combat.MobileUnitSnapshot().Count);
-            Assert.AreEqual(gold + Original323KumaWispChoiceWorld.ProvisionalBoxGold,
+            Assert.AreEqual(gold + Original323KumaWispChoiceWorld.BoxGoldMax,
                 wallet.Balance("gold"));
-            Assert.AreEqual(wood + Original323KumaWispChoiceWorld.ProvisionalBoxWood,
+            Assert.AreEqual(wood + Original323KumaWispChoiceWorld.BoxWoodMax,
                 wallet.Balance("wood"));
             Assert.AreEqual(0, wallet.Balance(
                 Original323SoloStoryScenario.PracticeTranscendWisp));
@@ -1196,62 +1207,50 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
-        public void StoryTenBoxRandomOnlySelectionConsumesWispAndTwelveWoodTogether()
+        public void StoryTenBoxUniqueItemGrantsWoodAndOneVerifiedItemRight()
         {
             var game = Create();
             var wallet = game.Economy.Wallet;
             var choices = new Original323KumaWispChoiceWorld(
                 game.Combat, game.Economy, game.Units, game.Map);
-            var targets = Original323CwrAcquisitionRoutes.RandomOnlyUnitCatalogIds();
-            Assert.AreEqual(14, targets.Count);
-            Assert.IsTrue(wallet.TryGrantOnce("test:box:random", new ResourceBundle()
-                .Add(Original323SoloStoryScenario.PracticeTranscendWisp, 1)
-                .Add("wood", Original323KumaWispChoiceWorld.RandomOnlyWoodCost)));
+            Assert.AreEqual(10, Original323FusionSourceItemLedger.ItemShells.Count);
+            Assert.IsTrue(wallet.TryGrantOnce("test:box:item", new ResourceBundle()
+                .Add(Original323SoloStoryScenario.PracticeTranscendWisp, 1)));
             long wood = wallet.Balance("wood");
             int roster = game.Combat.MobileUnitSnapshot().Count;
-            long actorId;
-            Assert.IsFalse(choices.TryChooseRandomOnly(
-                Original323SoloStoryScenario.PracticeTranscendWisp,
-                "R-43", out actorId), "랜덤전용 이외의 유닛은 선택할 수 없습니다.");
-            Assert.IsTrue(choices.TryChooseRandomOnly(
-                Original323SoloStoryScenario.PracticeTranscendWisp,
-                targets[2], out actorId));
-            Assert.AreEqual(targets[2], game.Combat.MobileUnitSnapshot()
-                .Single(x => x.InstanceId == actorId).Unit.Id);
-            Assert.AreEqual(roster + 1, game.Combat.MobileUnitSnapshot().Count);
-            Assert.AreEqual(wood - Original323KumaWispChoiceWorld.RandomOnlyWoodCost,
+            Assert.IsFalse(choices.TryChooseBoxItem(
+                Original323SoloStoryScenario.PracticeTranscendWisp, "R-43"));
+            Assert.IsTrue(choices.TryChooseBoxItem(
+                Original323SoloStoryScenario.PracticeTranscendWisp, "AI02"));
+            Assert.AreEqual(roster, game.Combat.MobileUnitSnapshot().Count);
+            Assert.AreEqual(wood + Original323KumaWispChoiceWorld.BoxItemWoodBonus,
                 wallet.Balance("wood"));
+            Assert.AreEqual(1, wallet.Balance(
+                Original323FusionSourceItemLedger.WalletId("AI02")));
+            Assert.IsTrue(wallet.HasCompletedTransaction(
+                "original323:unique-box-item:AI02"));
             Assert.AreEqual(0, wallet.Balance(
                 Original323SoloStoryScenario.PracticeTranscendWisp));
-            Assert.IsFalse(choices.TryChooseRandomOnly(
-                Original323SoloStoryScenario.PracticeTranscendWisp,
-                targets[0], out actorId));
+            Assert.IsFalse(choices.TryChooseBoxItem(
+                Original323SoloStoryScenario.PracticeTranscendWisp, "AI02"));
         }
 
         [Test]
-        public void StoryTenBoxRandomOnlyInsufficientWoodDoesNotSpendWispOrSpawn()
+        public void StoryTenBoxAlreadyOwnedItemDoesNotSpendWisp()
         {
             var game = Create();
             var wallet = game.Economy.Wallet;
             var choices = new Original323KumaWispChoiceWorld(
                 game.Combat, game.Economy, game.Units, game.Map);
-            long initialWood = wallet.Balance("wood");
-            if (initialWood > 0)
-                Assert.IsTrue(wallet.TryExchange(
-                    new ResourceBundle().Add("wood", initialWood),
-                    new ResourceBundle()));
-            Assert.IsTrue(wallet.TryGrantOnce("test:box:no-wood", new ResourceBundle()
-                .Add(Original323SoloStoryScenario.PracticeTranscendWisp, 1)));
-            int roster = game.Combat.MobileUnitSnapshot().Count;
-            long actor;
-            Assert.IsFalse(choices.TryChooseRandomOnly(
-                Original323SoloStoryScenario.PracticeTranscendWisp,
-                Original323CwrAcquisitionRoutes.RandomOnlyUnitCatalogIds()[0],
-                out actor));
-            Assert.AreEqual(roster, game.Combat.MobileUnitSnapshot().Count);
+            Assert.IsTrue(wallet.TryGrantOnce("test:box:already-owned", new ResourceBundle()
+                .Add(Original323SoloStoryScenario.PracticeTranscendWisp, 1)
+                .Add(Original323FusionSourceItemLedger.WalletId("AI00"), 1)));
+            long wood = wallet.Balance("wood");
+            Assert.IsFalse(choices.TryChooseBoxItem(
+                Original323SoloStoryScenario.PracticeTranscendWisp, "AI00"));
             Assert.AreEqual(1, wallet.Balance(
                 Original323SoloStoryScenario.PracticeTranscendWisp));
-            Assert.AreEqual(0, wallet.Balance("wood"));
+            Assert.AreEqual(wood, wallet.Balance("wood"));
         }
 
         [Test]

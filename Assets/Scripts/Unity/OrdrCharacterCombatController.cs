@@ -1294,20 +1294,19 @@ namespace Ordr.Mobile.Unity
                 Original323TranscendWispOutcome.RewardBoxResources);
         }
 
-        public ManualActionResult RequestOriginalTranscendBoxRandomOnlyChoice(
-            string randomOnlyCatalogId)
+        public ManualActionResult RequestOriginalTranscendBoxItemChoice(
+            string itemRawcode)
         {
-            if (string.IsNullOrEmpty(randomOnlyCatalogId) ||
-                Units == null || Units.Find(randomOnlyCatalogId) == null)
+            if (Original323FusionSourceItemLedger.FindShell(itemRawcode) == null)
                 return new ManualActionResult(ManualActionState.Rejected,
-                    "선택한 랜덤전용 유닛을 찾지 못했습니다.");
+                    "원본 꾸러미 아이템 목록에 없는 선택입니다.");
             return RequestOriginalTranscendWispChoice(
-                Original323TranscendWispOutcome.RewardBox, randomOnlyCatalogId);
+                Original323TranscendWispOutcome.RewardBox, itemRawcode);
         }
 
         private ManualActionResult RequestOriginalTranscendWispChoice(
             Original323TranscendWispOutcome outcome,
-            string randomOnlyCatalogId = null)
+            string chosenItemRawcode = null)
         {
             if (!runGate.CanAdvance || IsUnitPreparation)
                 return new ManualActionResult(ManualActionState.Rejected,
@@ -1316,19 +1315,17 @@ namespace Ordr.Mobile.Unity
                 return new ManualActionResult(ManualActionState.Rejected,
                     "획득한 스토리 초월위습이 없습니다.");
             IReadOnlyList<long> actorIds = Array.Empty<long>();
+            long previousGold = SharedEconomy.Wallet.Balance("gold");
+            long previousWood = SharedEconomy.Wallet.Balance("wood");
             try
             {
                 bool succeeded;
                 if (OriginalSourceMaterialRewards != null &&
                     OriginalSourceMaterialRewards.PendingTranscendWisps > 0)
                 {
-                    if (randomOnlyCatalogId != null)
-                    {
-                        long randomActor;
-                        succeeded = OriginalSourceMaterialRewards.TryChooseBoxRandomOnly(
-                            randomOnlyCatalogId, out randomActor);
-                        if (succeeded) actorIds = new[] { randomActor };
-                    }
+                    if (chosenItemRawcode != null)
+                        succeeded = OriginalSourceMaterialRewards.TryChooseBoxItem(
+                            chosenItemRawcode);
                     else switch (outcome)
                     {
                         case Original323TranscendWispOutcome.RewardBox:
@@ -1350,15 +1347,11 @@ namespace Ordr.Mobile.Unity
                             break;
                     }
                 }
-                else if (randomOnlyCatalogId != null)
-                {
-                    long randomActor;
+                else if (chosenItemRawcode != null)
                     succeeded = practiceStoryKumaChoice != null &&
-                        practiceStoryKumaChoice.TryChooseRandomOnly(
+                        practiceStoryKumaChoice.TryChooseBoxItem(
                             Original323SoloStoryScenario.PracticeTranscendWisp,
-                            randomOnlyCatalogId, out randomActor);
-                    if (succeeded) actorIds = new[] { randomActor };
-                }
+                            chosenItemRawcode);
                 else
                     succeeded = practiceStoryKumaChoice != null &&
                         practiceStoryKumaChoice.TryChoose(
@@ -1369,21 +1362,18 @@ namespace Ordr.Mobile.Unity
                         "초월위습을 선택하지 못했습니다. 재료와 유닛 상태를 확인해 주세요.");
 
                 string message;
-                if (randomOnlyCatalogId != null)
-                {
-                    var selected = Units.Find(randomOnlyCatalogId);
-                    message = "초월위습 1개 + 목재 " +
-                        Original323KumaWispChoiceWorld.RandomOnlyWoodCost +
-                        "개 사용 · 랜덤전용 " + selected.Name + " 획득";
-                }
+                if (chosenItemRawcode != null)
+                    message = "초월위습 1개 사용 · 고유 아이템 " +
+                        chosenItemRawcode + " 획득 · 목재 +" +
+                        Original323KumaWispChoiceWorld.BoxItemWoodBonus;
                 else switch (outcome)
                 {
                     case Original323TranscendWispOutcome.RewardBoxResources:
                         message = "초월위습 1개 사용 · 골드 +" +
-                            Original323KumaWispChoiceWorld.ProvisionalBoxGold +
+                            (SharedEconomy.Wallet.Balance("gold") - previousGold) +
                             ", 목재 +" +
-                            Original323KumaWispChoiceWorld.ProvisionalBoxWood +
-                            " (원본 수치 확인 전 임시값)";
+                            (SharedEconomy.Wallet.Balance("wood") - previousWood) +
+                            " (원본 CRL 난수 보상)";
                         break;
                     case Original323TranscendWispOutcome.RewardBox:
                         message = "스토리 초월위습 1개 사용 · 꾸러미 상자 - 초월 1기 획득";

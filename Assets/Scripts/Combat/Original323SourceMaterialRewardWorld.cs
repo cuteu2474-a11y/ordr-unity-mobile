@@ -339,11 +339,10 @@ namespace Ordr.Mobile.Combat
                 out noActors) && noActors.Count == 0;
         }
 
-        public bool TryChooseBoxRandomOnly(string catalogId, out long actorId)
+        public bool TryChooseBoxItem(string itemRawcode)
         {
-            actorId = 0;
-            return Ready() && kumaChoice.TryChooseRandomOnly(
-                PendingStoryWispResource, catalogId, out actorId);
+            return Ready() && kumaChoice.TryChooseBoxItem(
+                PendingStoryWispResource, itemRawcode);
         }
 
         // CJK = high-grade unit gamble fail; CJM = otherworld unit gamble
@@ -664,22 +663,26 @@ namespace Ordr.Mobile.Combat
             "original323:transcend-choice:" + Guid.NewGuid().ToString("N") + ":";
         private long sequence;
         private bool processing;
-        private readonly HashSet<string> allowedRandomOnlyIds =
-            new HashSet<string>(StringComparer.Ordinal);
+        private readonly Func<int, int, int> rollInclusive;
 
-        // TEMPORARY balance values: Warcraft h0BR A149/A0KA effect payloads
-        // are not in the extracted JASS. Keep all unverified numbers here,
-        // never misrepresent them as decoded S2 2.323[C] values.
-        public const long ProvisionalBoxGold = 5000;
-        public const long ProvisionalBoxWood = 17;
-        public const long RandomOnlyWoodCost = 12;
+        // Original S2 2.323[C] JASS: CRL -> BFi(15000,30000),
+        // BFi(14,20), independent inclusive rolls. CRM -> BhU(AIxx)
+        // succeeds once for each unique item and gives +4 lumber.
+        public const int BoxGoldMin = 15000;
+        public const int BoxGoldMax = 30000;
+        public const int BoxWoodMin = 14;
+        public const int BoxWoodMax = 20;
+        public const int BoxItemWoodBonus = 4;
 
         public Original323KumaWispChoiceWorld(CharacterCombatRuntime world,
             SharedEconomySession session, CharacterUnitCatalog units,
-            OriginalMapBaseStatCatalog objects)
+            OriginalMapBaseStatCatalog objects,
+            Func<int, int, int> inclusiveRandom = null)
         {
             combat = world ?? throw new ArgumentNullException(nameof(world));
             economy = session ?? throw new ArgumentNullException(nameof(session));
+            var random = new Random();
+            rollInclusive = inclusiveRandom ?? ((min, max) => random.Next(min, max + 1));
             if (units == null || objects == null ||
                 !ReferenceEquals(combat.Roster, economy.Units) ||
                 objects.SourceW3xSha256 != OriginalCommonSaleRules.OriginalMapSha256 ||
@@ -716,17 +719,8 @@ namespace Ordr.Mobile.Combat
                 shipSource.MappingStatus != "verified-source-wisp-pirate-ship")
                 throw new ArgumentException("CSO/B8 레일리·해적선 원본과 불일치");
 
-            // This list is the source-backed CWR random-only roster, rather
-            // than every unit whose UI happens to have the "랜덤" label.
-            foreach (string catalogId in Original323CwrAcquisitionRoutes.RandomOnlyUnitCatalogIds())
-            {
-                var unit = units.Find(catalogId);
-                var source = objects.Find(catalogId);
-                if (unit == null || unit.Grade != "랜덤" ||
-                    source == null || string.IsNullOrEmpty(source.OriginalRawcode))
-                    throw new ArgumentException("꾸러미 상자 랜덤전용 대상 누락: " + catalogId);
-                allowedRandomOnlyIds.Add(catalogId);
-            }
+            if (Original323FusionSourceItemLedger.ItemShells.Count != 10)
+                throw new ArgumentException("CRN/CRM 꾸러미 고유 아이템 10종 목록 불일치");
         }
 
         public bool TryChooseKuma(string earnedWispResource, out long actorId)
@@ -761,7 +755,12 @@ namespace Ordr.Mobile.Combat
                     break;
                 case Original323TranscendWispOutcome.RewardBoxResources:
                     results = Array.Empty<string>();
-                    rewards.Add("gold", ProvisionalBoxGold).Add("wood", ProvisionalBoxWood);
+                    int rolledGold = rollInclusive(BoxGoldMin, BoxGoldMax);
+                    int rolledWood = rollInclusive(BoxWoodMin, BoxWoodMax);
+                    if (rolledGold < BoxGoldMin || rolledGold > BoxGoldMax ||
+                        rolledWood < BoxWoodMin || rolledWood > BoxWoodMax)
+                        throw new InvalidOperationException("원본 꾸러미 난수 범위 불일치");
+                    rewards.Add("gold", rolledGold).Add("wood", rolledWood);
                     break;
                 default:
                     actorIds = Array.Empty<long>();
@@ -771,28 +770,30 @@ namespace Ordr.Mobile.Combat
                 new ResourceBundle(), rewards, out actorIds);
         }
 
-        // h0BR's selectable random-only reward is redeemed directly on
-        // mobile. The 12-wood surcharge and the acquired e01A are one debit.
-        public bool TryChooseRandomOnly(string earnedWispResource,
-            string randomOnlyCatalogId, out long actorId)
+        // Original CRM calls BhU: only one choice per unique AIxx item,
+        // and successful selection grants four wood, never costs twelve.
+        // Use the item-specific durable wallet receipt even if the wallet
+        // item right is later spent as a verified CWR fusion ingredient.
+        public bool TryChooseBoxItem(string earnedWispResource, string itemRawcode)
         {
-            actorId = 0;
-            if (string.IsNullOrEmpty(randomOnlyCatalogId) ||
-                !allowedRandomOnlyIds.Contains(randomOnlyCatalogId))
+            if (Original323FusionSourceItemLedger.FindShell(itemRawcode) == null)
                 return false;
-            IReadOnlyList<long> actors;
-            if (!TryCommitChoice(earnedWispResource,
-                    new[] { randomOnlyCatalogId },
-                    new ResourceBundle().Add("wood", RandomOnlyWoodCost),
-                    new ResourceBundle(), out actors) || actors.Count != 1)
+            string walletId = Original323FusionSourceItemLedger.WalletId(itemRawcode);
+            string receipt = "original323:unique-box-item:" + itemRawcode;
+            if (economy.Wallet.Balance(walletId) > 0 ||
+                economy.Wallet.HasCompletedTransaction(receipt))
                 return false;
-            actorId = actors[0];
-            return true;
+            IReadOnlyList<long> noActors;
+            return TryCommitChoice(earnedWispResource, Array.Empty<string>(),
+                new ResourceBundle(),
+                new ResourceBundle().Add(walletId, 1).Add("wood", BoxItemWoodBonus),
+                out noActors, receipt) && noActors.Count == 0;
         }
 
         private bool TryCommitChoice(string earnedWispResource,
             IReadOnlyList<string> results, ResourceBundle additionalCosts,
-            ResourceBundle rewards, out IReadOnlyList<long> actorIds)
+            ResourceBundle rewards, out IReadOnlyList<long> actorIds,
+            string fixedReceipt = null)
         {
             actorIds = Array.Empty<long>();
             if (processing || !economy.HasStarted ||
@@ -812,7 +813,7 @@ namespace Ordr.Mobile.Combat
             processing = true;
             var spawned = new List<long>(results.Count);
             long next = checked(sequence + 1);
-            string receipt = receiptNamespace + next;
+            string receipt = fixedReceipt ?? receiptNamespace + next;
             try
             {
                 // Spawn all roster rewards before the single wallet exchange.

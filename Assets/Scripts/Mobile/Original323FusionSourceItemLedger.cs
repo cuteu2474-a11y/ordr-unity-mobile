@@ -9,8 +9,8 @@ namespace Ordr.Mobile.Mobile
     // and Uta ET07/AI00. The 96201e80 JASS creates those inventory items
     // on successful A011, ET02, and ET07 respectively.
     // These are original inventory item rawcodes, never a free recipe unlock.
-    // Native item acquisition has no verified source producer in this port:
-    // only a witnessed, unique inventory receipt may credit the saved wallet.
+    // Source-witnessed pickups and the source-verified h0BR unique-box path
+    // are separate authorized producers. Neither is a free recipe unlock.
     public interface IOriginal323FusionItemReceiptWitness
     {
         // Witness MUST confirm the original single player's actual item gain,
@@ -19,8 +19,9 @@ namespace Ordr.Mobile.Mobile
             int awardedCount, out string nativeEvidence);
     }
 
-    // Temporary inventory presentation only. It does not grant an item,
-    // define a usable spell, alter combat stats, or invent a loot producer.
+    // Inventory presentation only. A verified receipt or box redemption
+    // grants the corresponding saved wallet right; the full item effects
+    // are not automatically implemented by this shell.
     // Actual source item object effects can replace these shells later.
     public sealed class Original323FusionItemShell
     {
@@ -43,11 +44,21 @@ namespace Ordr.Mobile.Mobile
         public const string NikaItemRawcode = "AI01";
         public const string UtaItemRawcode = "AI00";
         public const string ItemWalletPrefix = "source:item:";
+        // Original CRN/CRM A14A..A14J unique-box order. A successful
+        // choice grants the unlocked AIxx flag once plus four lumber.
+        // Item effects beyond the three CWR ingredient uses remain shells.
         private static readonly IReadOnlyList<Original323FusionItemShell> itemShells =
             Array.AsReadOnly(new[] {
+                new Original323FusionItemShell(MarcoItemRawcode, "마르코(제한) 조합 재료"),
                 new Original323FusionItemShell(UtaItemRawcode, "우타(영원) 조합 재료"),
                 new Original323FusionItemShell(NikaItemRawcode, "니카(영원) 조합 재료"),
-                new Original323FusionItemShell(MarcoItemRawcode, "마르코(제한) 조합 재료")
+                new Original323FusionItemShell("AI03", "고유 아이템 후속 능력 연결 대기"),
+                new Original323FusionItemShell("AI18", "도움소 마나 재생 +0.5 후속 효과 연결 대기"),
+                new Original323FusionItemShell("AI21", "고유 아이템 후속 능력 연결 대기"),
+                new Original323FusionItemShell("AI17", "고유 아이템 후속 능력 연결 대기"),
+                new Original323FusionItemShell("AI19", "라인존 마법방어력 -5% 후속 효과 연결 대기"),
+                new Original323FusionItemShell("AI16", "고유 아이템 후속 능력 연결 대기"),
+                new Original323FusionItemShell("AI20", "라인존 폭발 피해 +5% 후속 효과 연결 대기")
             });
 
         public static IReadOnlyList<Original323FusionItemShell> ItemShells => itemShells;

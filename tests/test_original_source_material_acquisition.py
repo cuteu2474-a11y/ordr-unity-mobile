@@ -87,6 +87,29 @@ class OriginalSourceMaterialAcquisitionTests(unittest.TestCase):
         self.assertNotIn('new Original323SourceMaterialRewardWorld(', panel)
         self.assertNotIn('GameMode.NightmareOtherworld', source)
 
+    def test_original_box_rolls_and_unique_items_replace_provisional_values(self):
+        source = (ROOT / "Assets/Scripts/Combat/Original323SourceMaterialRewardWorld.cs").read_text()
+        panel = (ROOT / "Assets/Scripts/Unity/OrdrMobileTouchPanel.cs").read_text()
+        items = (ROOT / "Assets/Scripts/Mobile/Original323FusionSourceItemLedger.cs").read_text()
+        box = self.audit["status"]["mobileDirectBoxRedemptions"]
+        self.assertEqual((15000, 30000, 14, 20),
+                         (box["resources"]["goldMin"], box["resources"]["goldMax"],
+                          box["resources"]["woodMin"], box["resources"]["woodMax"]))
+        self.assertTrue(box["resources"]["inclusiveIndependentRolls"])
+        self.assertEqual(4, box["uniqueItems"]["woodBonusOnSuccessfulChoice"])
+        self.assertEqual(["AI02", "AI00", "AI01", "AI03", "AI18", "AI21",
+                          "AI17", "AI19", "AI16", "AI20"],
+                         box["uniqueItems"]["choiceItemRawcodes"])
+        self.assertEqual(10, len(box["uniqueItems"]["choiceAbilityRawcodes"]))
+        self.assertIn("public const int BoxGoldMin = 15000;", source)
+        self.assertIn("public const int BoxWoodMax = 20;", source)
+        self.assertIn("public const int BoxItemWoodBonus = 4;", source)
+        self.assertIn("TryChooseBoxItem", source)
+        self.assertIn("Original323FusionSourceItemLedger.ItemShells", panel)
+        self.assertIn('"AI20"', items)
+        self.assertNotIn("ProvisionalBoxGold", source)
+        self.assertNotIn("RandomOnlyWoodCost", source)
+
     def test_tokens_require_source_parent_event_not_money_gambling(self):
         source = (ROOT / "Assets/Scripts/Combat/Original323SourceMaterialRewardWorld.cs").read_text()
         tokens = self.audit["tokenSources"]

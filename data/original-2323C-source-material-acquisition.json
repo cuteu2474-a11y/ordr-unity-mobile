@@ -82,8 +82,25 @@
           "A0KA",
           "Avul"
         ],
-        "verifiedOutcome": "spawn source box actor; native item/ability activation not yet reconstructed",
-        "consumesWispCount": 1
+        "verifiedOutcome": "original h0BR: CRL independent inclusive gold 15000..30000 and lumber 14..20; CRM chooses one of 10 unique AIxx items, success grants lumber +4",
+        "consumesWispCount": 1,
+        "directRedemptionFunctions": [
+          "CRL",
+          "CRM"
+        ],
+        "boxResourceAbilityRawcode": "A0KA",
+        "boxItemAbilityRawcodes": [
+          "A14A",
+          "A14B",
+          "A14C",
+          "A14D",
+          "A14E",
+          "A14F",
+          "A14G",
+          "A14H",
+          "A14I",
+          "A14J"
+        ]
       },
       {
         "option": 2,
@@ -190,17 +207,49 @@
     "rewardBoxAbilityEffectsUnverified": true,
     "mobileDirectBoxRedemptions": {
       "resources": {
-        "gold": 5000,
-        "wood": 17,
-        "status": "provisional-mobile-balance-values-not-decoded-from-source-A149-A0KA"
+        "goldMin": 15000,
+        "goldMax": 30000,
+        "woodMin": 14,
+        "woodMax": 20,
+        "inclusiveIndependentRolls": true,
+        "source": "CRL: BFi(15000,30000); BFi(14,20)",
+        "verified": true
       },
-      "randomOnly": {
-        "catalogIds": "CWR A800/RDUN fourteen validated RN-01..RN-14",
-        "woodCost": 12,
-        "status": "implemented-mobile-choice-unconfirmed-native-h0BR-ability-payload"
+      "uniqueItems": {
+        "choiceAbilityRawcodes": [
+          "A14A",
+          "A14B",
+          "A14C",
+          "A14D",
+          "A14E",
+          "A14F",
+          "A14G",
+          "A14H",
+          "A14I",
+          "A14J"
+        ],
+        "choiceItemRawcodes": [
+          "AI02",
+          "AI00",
+          "AI01",
+          "AI03",
+          "AI18",
+          "AI21",
+          "AI17",
+          "AI19",
+          "AI16",
+          "AI20"
+        ],
+        "woodBonusOnSuccessfulChoice": 4,
+        "uniqueOncePerItem": true,
+        "source": "CRM -> BhU -> BhP; CRN maps A14A..A14J",
+        "verified": true,
+        "downstreamItemEffects": "three CWR ingredient uses wired; remaining unique-item passive/active effects not yet fully implemented"
       },
-      "transactions": "one e01A + wood if applicable, atomic debit/credit and roster rollback; no intermediate box spawn"
-    }
+      "transactions": "one e01A spent atomically with immediate resource reward or unique item right +4 lumber; no intermediate h0BR actor for direct redemption"
+    },
+    "rewardBoxItemPassiveEffectsPartiallyUnimplemented": true,
+    "rewardBoxChoiceOutcomesVerified": true
   },
   "caveats": [
     "Do not treat W3X UnitBalance stock costs of the token actors as acquisition prices.",
@@ -208,6 +257,6 @@
     "Do not grant luck tokens for money gambling CJB/CJC.",
     "Do not apply mutated-mode bans to nightmare-otherworld.",
     "Mobile reward bridge is not a complete story boss/advanced unit-gambling implementation.",
-    "CSM/B6 h0BR is a source-confirmed reward-box actor; mobile now directly grants a chosen reward but A149/A0KA values and target eligibility have not been decoded from the W3X. Current resource quantities and 12-wood option require original-source verification."
+    "CRL/CRM amounts and 10 item identities are directly verified in original 2.323[C] war3map.j; complete BhL item passive/active effects still require separate implementation."
   ]
 }

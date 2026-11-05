@@ -54,9 +54,9 @@ namespace Ordr.Mobile.Unity
         private bool showChoiceWisp;
         private bool showRandomWispActions = true;
         private bool showTranscendBoxChoices;
-        private bool showTranscendRandomOnlyChoices;
-        private int transcendRandomPage;
-        private const int TranscendRandomPageSize = 7;
+        private bool showTranscendBoxItemChoices;
+        private int transcendBoxItemPage;
+        private const int TranscendBoxItemPageSize = 5;
         private readonly HashSet<string> expandedResearchCodes =
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<int> expandedMissionSlots = new HashSet<int>();
@@ -1870,56 +1870,59 @@ namespace Ordr.Mobile.Unity
                 GUILayout.BeginVertical(GUI.skin.box);
                 GUILayout.Label("상자 생성 없이 보상 즉시 수령 · 추가 확인 없음",
                     OrdrMobileUiTheme.Explanation);
-                if (GUILayout.Button("골드 +" +
-                    Original323KumaWispChoiceWorld.ProvisionalBoxGold +
-                    " · 목재 +" +
-                    Original323KumaWispChoiceWorld.ProvisionalBoxWood +
-                    " 수령", OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
+                if (GUILayout.Button("골드 " +
+                    Original323KumaWispChoiceWorld.BoxGoldMin.ToString("N0") +
+                    "~" + Original323KumaWispChoiceWorld.BoxGoldMax.ToString("N0") +
+                    " · 목재 " + Original323KumaWispChoiceWorld.BoxWoodMin +
+                    "~" + Original323KumaWispChoiceWorld.BoxWoodMax +
+                    " 무작위 수령",
+                    OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
                     RunWispDirect("초월위습 · 골드·목재 보상",
                         () => controller.RequestOriginalTranscendBoxResourcesChoice());
-                GUILayout.Label("※ 지급량은 상자 능력 원본 수치 확인 전 임시값입니다.",
+                GUILayout.Label("원본 CRL: 골드·목재를 각각 독립적으로 추첨합니다.",
                     OrdrMobileUiTheme.Explanation);
 
-                long wood = controller.SharedEconomy == null ? 0 :
-                    controller.SharedEconomy.Wallet.Balance("wood");
                 if (OrdrMobileUiTheme.DrawAccordionHeader(
-                    "랜덤전용 유닛 선택",
-                    "목재 " + Original323KumaWispChoiceWorld.RandomOnlyWoodCost + "개",
-                    showTranscendRandomOnlyChoices, OrdrMobileUiTheme.Aqua))
-                    showTranscendRandomOnlyChoices = !showTranscendRandomOnlyChoices;
-                if (showTranscendRandomOnlyChoices)
+                    "고유 아이템 선택",
+                    "10종 중 1개 · 목재 +4",
+                    showTranscendBoxItemChoices, OrdrMobileUiTheme.Aqua))
+                    showTranscendBoxItemChoices = !showTranscendBoxItemChoices;
+                if (showTranscendBoxItemChoices)
                 {
-                    GUILayout.Label("초월위습 1개 + 목재 " +
-                        Original323KumaWispChoiceWorld.RandomOnlyWoodCost +
-                        "개를 함께 사용합니다. 현재 목재 " + wood + "개",
+                    GUILayout.Label("원본 CRM: 미획득 아이템 1개 선택 시 목재 4개 추가 지급. " +
+                        "이미 획득한 고유 아이템은 다시 선택할 수 없습니다.",
                         OrdrMobileUiTheme.Explanation);
-                    var candidates = Original323CwrAcquisitionRoutes.RandomOnlyUnitCatalogIds();
-                    int pageCount = (candidates.Count + TranscendRandomPageSize - 1) /
-                        TranscendRandomPageSize;
-                    transcendRandomPage = Mathf.Clamp(transcendRandomPage, 0,
+                    var candidates = Original323FusionSourceItemLedger.ItemShells;
+                    int pageCount = (candidates.Count + TranscendBoxItemPageSize - 1) /
+                        TranscendBoxItemPageSize;
+                    transcendBoxItemPage = Mathf.Clamp(transcendBoxItemPage, 0,
                         Math.Max(0, pageCount - 1));
-                    int start = transcendRandomPage * TranscendRandomPageSize;
+                    int start = transcendBoxItemPage * TranscendBoxItemPageSize;
                     for (int i = start; i < Math.Min(candidates.Count,
-                            start + TranscendRandomPageSize); i++)
+                            start + TranscendBoxItemPageSize); i++)
                     {
-                        string id = candidates[i];
-                        var unit = controller.Units == null ? null : controller.Units.Find(id);
-                        string name = unit == null ? id : unit.Name;
+                        var item = candidates[i];
+                        string rawcode = item.Rawcode;
+                        var wallet = controller.SharedEconomy == null ? null :
+                            controller.SharedEconomy.Wallet;
+                        bool owned = wallet != null &&
+                            (wallet.Balance(Original323FusionSourceItemLedger.WalletId(rawcode)) > 0 ||
+                             wallet.HasCompletedTransaction("original323:unique-box-item:" + rawcode));
                         bool enabled = GUI.enabled;
-                        GUI.enabled = enabled &&
-                            wood >= Original323KumaWispChoiceWorld.RandomOnlyWoodCost;
-                        if (GUILayout.Button(name + " 선택",
+                        GUI.enabled = enabled && !owned;
+                        if (GUILayout.Button(item.DisplayName +
+                            (owned ? " · 획득 완료" : " · 선택 (+목재 4)"),
                             OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(56)))
                         {
-                            string chosen = id;
-                            string chosenName = name;
-                            RunWispDirect("초월위습 · " + chosenName,
-                                () => controller.RequestOriginalTranscendBoxRandomOnlyChoice(chosen));
+                            string chosen = rawcode;
+                            RunWispDirect("초월위습 · 고유 아이템 " + chosen,
+                                () => controller.RequestOriginalTranscendBoxItemChoice(chosen));
                         }
                         GUI.enabled = enabled;
+                        GUILayout.Label(item.OriginalFusionUse, OrdrMobileUiTheme.Explanation);
                     }
-                    DrawPager(transcendRandomPage, pageCount,
-                        next => transcendRandomPage = next);
+                    DrawPager(transcendBoxItemPage, pageCount,
+                        next => transcendBoxItemPage = next);
                 }
                 GUILayout.EndVertical();
             }
