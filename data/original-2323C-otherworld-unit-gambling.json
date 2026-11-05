@@ -83,7 +83,7 @@
     "ExchangeHouse": "ordinary CJM outcome; its other navigation effects are separate"
   },
   "successBonusAbility": "A0YZ",
-  "successBonusActualMeaning": "CRl manual random-unit reroll, normally consumes one h06G; RiskHedge waives token. Not an attack buff.",
+  "successBonusActualMeaning": "CRl manual single-use random-unit reroll. One physical h06G is consumed unless RiskHedge; result has no A0YZ. Not an attack buff.",
   "charges": {
     "storyStages": [
       8,
@@ -182,9 +182,9 @@
   "retailParityVerified": false,
   "limits": [
     "Mobile live path connects story 8..13 and actual third-creep death; sea-king challenge producer is not yet wired.",
-    "The live game currently selects no gambling navigation. Casino/RiskHedge source branches are injectable rules; full navigation selection, CKR conversion and rare reroll entitlements remain separate.",
-    "A0YZ and A0YE are deferred per-instance source ability metadata; actual reroll gameplay is not enabled.",
+    "Casino/RiskHedge are selectable after round 20 through the same one-choice lock as helper navigation. Casino converts remaining charges to 2*kP+j4, grants +1 rare reroll and doubles later BdL grants. RiskHedge grants +2 rare rerolls. Exchange-house shop/comp remains separate.",
+    "A0YE/CRj manual rare reroll and A0YZ/CRl single-use random reroll now consume actual roster materials. Native ANsg inherited costs/cast timing are not certified.",
     "Pending draws survive failed retries in the current service, but full combat/RNG/pending-draw save and restoration is not implemented.",
-    "No Unity, NUnit, Python or APK execution was performed for this change. Source file extraction and hash/read comparisons are not gameplay tests."
+    "No Unity, NUnit, Python or APK execution was performed. Source extraction/hash comparisons and authored regression cases are not gameplay test results."
   ]
 }

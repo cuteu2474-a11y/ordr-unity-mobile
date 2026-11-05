@@ -864,6 +864,30 @@ namespace Ordr.Mobile.Unity
         public SourceModelRegularMoneyGambling PracticeMoneyGambling { get; private set; }
         public SourceModelMoneyGamblingDesk PracticeMoneyGamblingDesk { get; private set; }
         public SourceModelOtherworldUnitGambling PracticeUnitGambling { get; private set; }
+        public SourceModelGamblingNavigation PracticeGamblingNavigation { get; private set; }
+        public SourceModelUnitGambling PracticeTierUnitGambling { get; private set; }
+        public SourceModelUnitReroll PracticeUnitReroll { get; private set; }
+        public ManualActionResult RequestUnitReroll(long actor)
+        {
+            if (Combat == null || Combat.Roster.SelectedId != actor || PracticeUnitReroll == null)
+                return new ManualActionResult(ManualActionState.Rejected, "리롤할 보유 유닛을 먼저 선택해 주세요.");
+            try { return PracticeUnitReroll.TryReroll(actor); }
+            catch (Exception error)
+            {
+                Debug.LogException(error);
+                return new ManualActionResult(ManualActionState.Rejected, "리롤 처리 실패. 재료와 보류 결과를 유지합니다.");
+            }
+        }
+        private Original323NavigationSelection originalNavigationSelection;
+        public Original323NavigationSelection OriginalNavigationSelection
+        {
+            get
+            {
+                if (originalNavigationSelection == null && Combat != null)
+                    originalNavigationSelection = new Original323NavigationSelection(Combat.Game);
+                return originalNavigationSelection;
+            }
+        }
 
         // Source-confirmed creep placement and unit eligibility are not yet known.
         // Call only for an explicitly requested object-base practice encounter.
@@ -1583,7 +1607,7 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("원본 도움소가 이미 만들어졌습니다.");
             var actor = new Ordr323OriginalHelperCowActor(0);
             Original323HelperCow = actor;
-            Original323HelperNavigation = new Ordr323OriginalHelperNavigation(Combat.Game, actor);
+            Original323HelperNavigation = new Ordr323OriginalHelperNavigation(Combat.Game, actor, OriginalNavigationSelection);
             ConfigureOriginalHelperCowWorld(new OriginalHelperCowManaWorld(
                 () => Original323HelperCow, 0));
         }
@@ -3017,9 +3041,9 @@ namespace Ordr.Mobile.Unity
                     {
                         // The graduated CJF pool is different from e019:
                         // 43 rare units including h05X and 7 specials.
-                        var shopBonus = (IOriginalWispDeferredBonusPort)
-                            (deferredWispAbilities ??
-                             new Original323WispDeferredAbilityRegistry(Combat));
+                        if (deferredWispAbilities == null)
+                            deferredWispAbilities = new Original323WispDeferredAbilityRegistry(Combat);
+                        var shopBonus = (IOriginalWispDeferredBonusPort)deferredWispAbilities;
                         PracticeMoneyGamblingDesk.ConfigureRareReward(
                             new Original323GraduatedRareShopWorld(
                                 Combat, Units, MapBaseStats, map,
@@ -3029,12 +3053,31 @@ namespace Ordr.Mobile.Unity
                                 StoryProgression.HasResearch("R01N"));
                         if (OriginalJassFusions != null)
                         {
+                            PracticeGamblingNavigation = new SourceModelGamblingNavigation(
+                                SharedEconomy.Wallet, OriginalNavigationSelection, () => runGate.CanAdvance,
+                                () => (PracticeUnitGambling != null && PracticeUnitGambling.HasPendingDraw) ||
+                                    (PracticeTierUnitGambling != null && PracticeTierUnitGambling.HasPendingDraw) ||
+                                    (PracticeUnitReroll != null && PracticeUnitReroll.HasPendingDraw));
+                            PracticeGamblingNavigation.PostCommitObserverFailed += Debug.LogException;
+                            var gamblingRoutes = new Original323CwrAcquisitionRoutes(OriginalJassFusions, Units, MapBaseStats);
+                            var gamblingRoster = new Original323UnitGamblingWorld(Combat, Units, MapBaseStats,
+                                map, gamblingRoutes, deferredWispAbilities);
+                            PracticeTierUnitGambling = new SourceModelUnitGambling(SharedEconomy.Wallet, Combat.Game,
+                                sessionScriptRandom, new MobileUniformWispRandom(), gamblingRoster, () => runGate.CanAdvance,
+                                () => PracticeGamblingNavigation.Navigation,
+                                (receipt, tier, won) => PersonalMissions?.RecordGamble(receipt, tier, won));
+                            PracticeTierUnitGambling.PostCommitObserverFailed += Debug.LogException;
+                            PracticeMoneyGamblingDesk.ConfigureUnitTiers(PracticeTierUnitGambling);
+                            PracticeUnitReroll = new SourceModelUnitReroll(Combat, SharedEconomy.Wallet, gamblingRoster,
+                                deferredWispAbilities, sessionScriptRandom, () => runGate.CanAdvance,
+                                () => PracticeGamblingNavigation.Navigation);
+                            PracticeUnitReroll.PostCommitObserverFailed += Debug.LogException;
                             PracticeUnitGambling = new SourceModelOtherworldUnitGambling(
                                 SharedEconomy.Wallet, Combat.Game, sessionScriptRandom,
                                 () => runGate.CanAdvance,
                                 new Original323OtherworldGamblingWorld(Combat, Units, MapBaseStats,
                                     new Original323CwrAcquisitionRoutes(OriginalJassFusions, Units, MapBaseStats),
-                                    map, shopBonus));
+                                    map, shopBonus), () => PracticeGamblingNavigation.Navigation);
                             PracticeUnitGambling.PostCommitObserverFailed += Debug.LogException;
                             PracticeMoneyGamblingDesk.ConfigureOtherworld(PracticeUnitGambling);
                         }

@@ -47,6 +47,12 @@ namespace Ordr.Mobile.Mobile
         public SourceModelRegularMoneyGambling Regular { get; }
         public SourceModelRegularMoneyGambling High { get; }
         public SourceModelOtherworldUnitGambling Otherworld { get; private set; }
+        public SourceModelUnitGambling UnitTiers { get; private set; }
+        public void ConfigureUnitTiers(SourceModelUnitGambling service)
+        {
+            if (UnitTiers != null) throw new InvalidOperationException("유닛 도박 중복 연결");
+            UnitTiers = service ?? throw new ArgumentNullException(nameof(service));
+        }
         public bool Graduated => wallet.Balance(GraduatedResource) > 0;
         public long WoodRights => wallet.Balance(WoodRightsResource);
         public bool HasBoughtRare => wallet.Balance(RarePurchasedResource) > 0;
@@ -147,12 +153,14 @@ namespace Ordr.Mobile.Mobile
                             " · 재고 " + rareStock + "/1"))
                 };
                 if (Otherworld != null) graduatedOffers.AddRange(Otherworld.AvailableOffers(category));
+                if (UnitTiers != null) graduatedOffers.AddRange(UnitTiers.AvailableOffers(category));
                 return graduatedOffers.AsReadOnly();
             }
             var offers = new List<MobileManualOffer>();
             offers.AddRange(Regular.AvailableOffers(category));
             offers.AddRange(High.AvailableOffers(category));
             if (Otherworld != null) offers.AddRange(Otherworld.AvailableOffers(category));
+            if (UnitTiers != null) offers.AddRange(UnitTiers.AvailableOffers(category));
             return offers.AsReadOnly();
         }
 
@@ -170,6 +178,10 @@ namespace Ordr.Mobile.Mobile
                 if (offerId == HighOfferId) return High.Confirm(category, offerId);
                 if (offerId == SourceModelOtherworldUnitGambling.OfferId && Otherworld != null)
                     return Otherworld.Confirm(category, offerId);
+                if (UnitTiers != null && (offerId == Original323UnitGamblingRules.OfferId(OriginalGambleTier.Low) ||
+                    offerId == Original323UnitGamblingRules.OfferId(OriginalGambleTier.Middle) ||
+                    offerId == Original323UnitGamblingRules.OfferId(OriginalGambleTier.High)))
+                    return UnitTiers.Confirm(category, offerId);
                 if (!Graduated)
                     return new ManualActionResult(ManualActionState.Rejected,
                         "돈 도박 졸업 후 이용할 수 있는 항목입니다.");

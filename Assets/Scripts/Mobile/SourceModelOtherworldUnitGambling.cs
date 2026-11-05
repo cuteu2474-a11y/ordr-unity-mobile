@@ -38,6 +38,7 @@ namespace Ordr.Mobile.Mobile
         private readonly List<string> recent = new List<string>();
         public IReadOnlyList<string> RecentResults => recent.AsReadOnly();
         public event Action<Exception> PostCommitObserverFailed;
+        public bool HasPendingDraw => processing || pending != null;
         public long Charges => wallet.Balance(Original323OtherworldGamblingRules.ChargesResource);
         public long Attempts => wallet.Balance(Original323OtherworldGamblingRules.AttemptsResource);
         public long Wins => wallet.Balance(Original323OtherworldGamblingRules.WinsResource);

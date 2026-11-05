@@ -88,6 +88,8 @@ namespace Ordr.Mobile.Unity
         private readonly MobileWispActionJournal wispActions = new MobileWispActionJournal();
         private bool showWispHistory;
         private bool showMoneyGamblingHistory;
+        private Original323GamblingNavigation? pendingGamblingNavigation;
+        private long? pendingUnitReroll;
         private MobileTreasureGachaResult lastTreasureResult;
         private int lastTreasureRound;
         private long? pendingCommonSaleId;
@@ -1078,9 +1080,39 @@ namespace Ordr.Mobile.Unity
             // Evolution, tokens and source item shells are still available
             // below in collapsible management sections, without new tabs.
             GUILayout.Label("유닛 관리", OrdrMobileUiTheme.Subheading);
-            if (detail != null) DrawSelectedUnitCard(detail);
+            if (detail != null)
+            {
+                DrawSelectedUnitCard(detail);
+                if (Combat.Roster.SelectedId.HasValue) DrawSelectedUnitReroll(Combat.Roster.SelectedId.Value);
+            }
             DrawOwnedUnitIndex();
             DrawOptionalUnitManagement();
+        }
+
+        private void DrawSelectedUnitReroll(long actor)
+        {
+            var service = controller.PracticeUnitReroll;
+            if (service == null || !service.HasRerollAbility(actor)) return;
+            if (pendingUnitReroll.HasValue && pendingUnitReroll.Value != actor) pendingUnitReroll = null;
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            GUILayout.Label("유닛 리롤 · " + service.CostLabel(actor));
+            bool enabled = GUI.enabled;
+            GUI.enabled = enabled && service.CanReroll(actor);
+            if (pendingUnitReroll == actor)
+            {
+                GUILayout.Label("선택한 유닛을 소모하고 다른 유닛 1기로 교체합니다.");
+                if (GUILayout.Button("리롤 확정", GUILayout.MinHeight(64f)))
+                {
+                    ShowResult(controller.RequestUnitReroll(actor));
+                    pendingUnitReroll = null;
+                }
+            }
+            else if (GUILayout.Button("선택 유닛 리롤", GUILayout.MinHeight(64f)))
+                pendingUnitReroll = actor;
+            GUI.enabled = enabled;
+            if (pendingUnitReroll.HasValue && GUILayout.Button("취소", GUILayout.MinHeight(60f)))
+                pendingUnitReroll = null;
+            GUILayout.EndVertical();
         }
 
         private void DrawSelectedUnitCard(UnitImplementationDefinition detail)
@@ -3263,13 +3295,21 @@ namespace Ordr.Mobile.Unity
                 }
             }
 
+            if (category == ManualEconomyCategory.Gambling) DrawGamblingNavigation();
+            if (category == ManualEconomyCategory.Gambling && controller.PracticeTierUnitGambling != null)
+                foreach (string result in controller.PracticeTierUnitGambling.RecentResults) GUILayout.Label(result);
+
             if (category == ManualEconomyCategory.Gambling && controller.PracticeUnitGambling != null)
             {
                 var units = controller.PracticeUnitGambling;
                 OrdrMobileUiTheme.DrawStatusRow("이세계 유닛 도박",
                     "남은 충전 " + units.Charges + "회 · 성공 " + units.SuccessPercent + "%",
                     OrdrMobileUiTheme.Aqua);
-                GUILayout.Label("3500골드 + 목재 5개 + 충전 1회 · 당첨: 랜덤전용 1기 / 실패: 행운의 토큰 1개");
+                GUILayout.Label(units.Navigation == Original323GamblingNavigation.Casino ?
+                    "3500골드 + 목재 5개 + 충전 1회 · 실패 중 50%: 희귀 유닛 / 나머지: 토큰" :
+                    "3500골드 + 목재 5개 + 충전 1회 · 당첨: 랜덤전용 1기 / 실패: 토큰");
+                if (units.Navigation == Original323GamblingNavigation.RiskHedge)
+                    GUILayout.Label("실패 누적 확률 +" + units.RiskBonus + "%p · 당첨 시 초기화");
                 GUILayout.Label("시도 " + units.Attempts + "회 · 당첨 " + units.Wins +
                     "회 · 스토리 8~13단계/3단계 크립 격파로 충전");
                 foreach (string result in units.RecentResults) GUILayout.Label(result);
@@ -3327,6 +3367,47 @@ namespace Ordr.Mobile.Unity
                     notice = "구매 확인";
                 }
             }
+        }
+
+        private void DrawGamblingNavigation()
+        {
+            var navigation = controller.PracticeGamblingNavigation;
+            if (navigation == null) return;
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            OrdrMobileUiTheme.DrawStatusRow("항법",
+                navigation.ChosenNavigation ?? "21R부터 한 가지 선택", OrdrMobileUiTheme.Aqua);
+            GUILayout.Label("희귀 리롤 " + navigation.RareRerolls + "회 · 보유 유닛을 선택해 사용");
+            if (navigation.ChosenNavigation == null)
+            {
+                GUILayout.Label("카지노: 이세계 충전 2배·실패 보상 강화, 하급·중급 도박 이용 불가");
+                GUILayout.Label("리스크헷지: 이세계 실패마다 +15%p, 리롤 재료 무료, 고급 실패 보상 추가");
+                bool enabled = GUI.enabled;
+                GUI.enabled = enabled && navigation.CanChoose;
+                if (pendingGamblingNavigation.HasValue)
+                {
+                    string label = pendingGamblingNavigation.Value == Original323GamblingNavigation.Casino ? "카지노" : "리스크헷지";
+                    GUILayout.Label(label + " 선택 후 다른 항법으로 바꿀 수 없습니다.");
+                    if (GUILayout.Button(label + " 항법 확정", GUILayout.MinHeight(64f)))
+                    {
+                        notice = navigation.TryChoose(pendingGamblingNavigation.Value) ? "항법을 선택했습니다." : "항법 선택 조건 미충족";
+                        pendingGamblingNavigation = null;
+                        pendingEconomy = null;
+                        RefreshCurrent();
+                    }
+                }
+                else
+                {
+                    if (GUILayout.Button("카지노 선택", GUILayout.MinHeight(64f)))
+                        pendingGamblingNavigation = Original323GamblingNavigation.Casino;
+                    if (GUILayout.Button("리스크헷지 선택", GUILayout.MinHeight(64f)))
+                        pendingGamblingNavigation = Original323GamblingNavigation.RiskHedge;
+                }
+                GUI.enabled = enabled;
+                if (pendingGamblingNavigation.HasValue && GUILayout.Button("취소", GUILayout.MinHeight(60f)))
+                    pendingGamblingNavigation = null;
+                if (!navigation.CanChoose) GUILayout.Label("21R 이후 · 일시정지 해제 · 보류 거래 완료 후 선택");
+            }
+            GUILayout.EndVertical();
         }
 
         private static void DrawMoneyGamblingRecord(SourceModelRegularMoneyGambling shop)

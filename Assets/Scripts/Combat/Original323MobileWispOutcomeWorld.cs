@@ -64,8 +64,8 @@ namespace Ordr.Mobile.Combat
     }
 
     // The user explicitly requested empty character shells first.
-    // A0YE/A0YZ are retained as UNIMPLEMENTED source metadata per spawned instance,
-    // not a native buff or ability. This must never authorize combat parity.
+    // A0YE/A0YZ ownership is retained per spawned instance for manual reroll,
+    // not a combat buff or native execution witness. This never authorizes combat parity.
     public sealed class Original323WispDeferredAbilityRegistry :
         IOriginalWispDeferredBonusPort
     {
@@ -90,6 +90,12 @@ namespace Ordr.Mobile.Combat
             catch (KeyNotFoundException) { return false; }
             pending.Add(instanceId, rawcode);
             return true;
+        }
+
+        public bool HasAbility(long instanceId, string rawcode)
+        {
+            string value;
+            return pending.TryGetValue(instanceId, out value) && value == rawcode;
         }
 
         public void Forget(long instanceId)

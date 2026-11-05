@@ -10,39 +10,40 @@ namespace Ordr.Mobile.Combat
     {
         private readonly GameSession game;
         private readonly Ordr323OriginalHelperCowActor helper;
-        public string ChosenNavigation { get; private set; }
+        private readonly Original323NavigationSelection selection;
+        public string ChosenNavigation => selection.ChosenNavigation;
 
         public Ordr323OriginalHelperNavigation(GameSession session,
-            Ordr323OriginalHelperCowActor actualHelper)
+            Ordr323OriginalHelperCowActor actualHelper,
+            Original323NavigationSelection sharedSelection = null)
         {
             game = session ?? throw new ArgumentNullException(nameof(session));
             helper = actualHelper ?? throw new ArgumentNullException(nameof(actualHelper));
+            selection = sharedSelection ?? new Original323NavigationSelection(game);
         }
 
         public bool CanChooseMaximumOutput =>
             game.Phase == SessionPhase.Running && game.CurrentWave > 20 &&
-            ChosenNavigation == null && helper.IsAlive &&
+            selection.CanChoose && helper.IsAlive &&
             !helper.MaximumOutputNavigationChosen && !helper.AlchemyNavigationChosen;
 
         public bool CanChooseAlchemy =>
             game.Phase == SessionPhase.Running && game.CurrentWave > 20 &&
-            ChosenNavigation == null && helper.IsAlive &&
+            selection.CanChoose && helper.IsAlive &&
             !helper.MaximumOutputNavigationChosen && !helper.AlchemyNavigationChosen;
 
         public bool TryChooseAlchemy()
         {
             if (!CanChooseAlchemy) return false;
-            helper.ApplyVerifiedAlchemyNavigation();
-            ChosenNavigation = "최고의도움 :: 연금술";
-            return true;
+            return selection.TryChoose("최고의도움 :: 연금술",
+                helper.ApplyVerifiedAlchemyNavigation);
         }
 
         public bool TryChooseMaximumOutput()
         {
             if (!CanChooseMaximumOutput) return false;
-            helper.ApplyVerifiedMaximumOutputNavigation();
-            ChosenNavigation = "최고의도움 :: 최대출력";
-            return true;
+            return selection.TryChoose("최고의도움 :: 최대출력",
+                helper.ApplyVerifiedMaximumOutputNavigation);
         }
     }
 
