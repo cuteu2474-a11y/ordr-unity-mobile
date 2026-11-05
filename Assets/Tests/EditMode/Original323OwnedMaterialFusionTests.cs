@@ -1166,6 +1166,95 @@ namespace Ordr.Mobile.Tests
         }
 
         [Test]
+        public void StoryTenBoxResourcesRedeemsImmediatelyWithoutPhysicalBox()
+        {
+            var game = Create();
+            var choices = new Original323KumaWispChoiceWorld(
+                game.Combat, game.Economy, game.Units, game.Map);
+            var wallet = game.Economy.Wallet;
+            Assert.IsTrue(wallet.TryGrantOnce("test:box:resources",
+                new ResourceBundle().Add(
+                    Original323SoloStoryScenario.PracticeTranscendWisp, 1)));
+            long gold = wallet.Balance("gold");
+            long wood = wallet.Balance("wood");
+            int roster = game.Combat.MobileUnitSnapshot().Count;
+            IReadOnlyList<long> actors;
+            Assert.IsTrue(choices.TryChoose(
+                Original323SoloStoryScenario.PracticeTranscendWisp,
+                Original323TranscendWispOutcome.RewardBoxResources, out actors));
+            Assert.AreEqual(0, actors.Count, "모바일은 빈 꾸러미 상자를 생성하지 않습니다.");
+            Assert.AreEqual(roster, game.Combat.MobileUnitSnapshot().Count);
+            Assert.AreEqual(gold + Original323KumaWispChoiceWorld.ProvisionalBoxGold,
+                wallet.Balance("gold"));
+            Assert.AreEqual(wood + Original323KumaWispChoiceWorld.ProvisionalBoxWood,
+                wallet.Balance("wood"));
+            Assert.AreEqual(0, wallet.Balance(
+                Original323SoloStoryScenario.PracticeTranscendWisp));
+            Assert.IsFalse(choices.TryChoose(
+                Original323SoloStoryScenario.PracticeTranscendWisp,
+                Original323TranscendWispOutcome.RewardBoxResources, out actors));
+        }
+
+        [Test]
+        public void StoryTenBoxRandomOnlySelectionConsumesWispAndTwelveWoodTogether()
+        {
+            var game = Create();
+            var wallet = game.Economy.Wallet;
+            var choices = new Original323KumaWispChoiceWorld(
+                game.Combat, game.Economy, game.Units, game.Map);
+            var targets = Original323CwrAcquisitionRoutes.RandomOnlyUnitCatalogIds();
+            Assert.AreEqual(14, targets.Count);
+            Assert.IsTrue(wallet.TryGrantOnce("test:box:random", new ResourceBundle()
+                .Add(Original323SoloStoryScenario.PracticeTranscendWisp, 1)
+                .Add("wood", Original323KumaWispChoiceWorld.RandomOnlyWoodCost)));
+            long wood = wallet.Balance("wood");
+            int roster = game.Combat.MobileUnitSnapshot().Count;
+            long actorId;
+            Assert.IsFalse(choices.TryChooseRandomOnly(
+                Original323SoloStoryScenario.PracticeTranscendWisp,
+                "R-43", out actorId), "랜덤전용 이외의 유닛은 선택할 수 없습니다.");
+            Assert.IsTrue(choices.TryChooseRandomOnly(
+                Original323SoloStoryScenario.PracticeTranscendWisp,
+                targets[2], out actorId));
+            Assert.AreEqual(targets[2], game.Combat.MobileUnitSnapshot()
+                .Single(x => x.InstanceId == actorId).Unit.Id);
+            Assert.AreEqual(roster + 1, game.Combat.MobileUnitSnapshot().Count);
+            Assert.AreEqual(wood - Original323KumaWispChoiceWorld.RandomOnlyWoodCost,
+                wallet.Balance("wood"));
+            Assert.AreEqual(0, wallet.Balance(
+                Original323SoloStoryScenario.PracticeTranscendWisp));
+            Assert.IsFalse(choices.TryChooseRandomOnly(
+                Original323SoloStoryScenario.PracticeTranscendWisp,
+                targets[0], out actorId));
+        }
+
+        [Test]
+        public void StoryTenBoxRandomOnlyInsufficientWoodDoesNotSpendWispOrSpawn()
+        {
+            var game = Create();
+            var wallet = game.Economy.Wallet;
+            var choices = new Original323KumaWispChoiceWorld(
+                game.Combat, game.Economy, game.Units, game.Map);
+            long initialWood = wallet.Balance("wood");
+            if (initialWood > 0)
+                Assert.IsTrue(wallet.TryExchange(
+                    new ResourceBundle().Add("wood", initialWood),
+                    new ResourceBundle()));
+            Assert.IsTrue(wallet.TryGrantOnce("test:box:no-wood", new ResourceBundle()
+                .Add(Original323SoloStoryScenario.PracticeTranscendWisp, 1)));
+            int roster = game.Combat.MobileUnitSnapshot().Count;
+            long actor;
+            Assert.IsFalse(choices.TryChooseRandomOnly(
+                Original323SoloStoryScenario.PracticeTranscendWisp,
+                Original323CwrAcquisitionRoutes.RandomOnlyUnitCatalogIds()[0],
+                out actor));
+            Assert.AreEqual(roster, game.Combat.MobileUnitSnapshot().Count);
+            Assert.AreEqual(1, wallet.Balance(
+                Original323SoloStoryScenario.PracticeTranscendWisp));
+            Assert.AreEqual(0, wallet.Balance("wood"));
+        }
+
+        [Test]
         public void StoryTenRayleighShipChoiceSpawnsTwoForExactlyOneWisp()
         {
             var game = Create();

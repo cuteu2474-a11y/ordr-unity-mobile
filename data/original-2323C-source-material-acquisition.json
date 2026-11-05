@@ -187,7 +187,20 @@
       "CSN/h04S",
       "CSO/h05X+h060"
     ],
-    "rewardBoxAbilityEffectsUnverified": true
+    "rewardBoxAbilityEffectsUnverified": true,
+    "mobileDirectBoxRedemptions": {
+      "resources": {
+        "gold": 5000,
+        "wood": 17,
+        "status": "provisional-mobile-balance-values-not-decoded-from-source-A149-A0KA"
+      },
+      "randomOnly": {
+        "catalogIds": "CWR A800/RDUN fourteen validated RN-01..RN-14",
+        "woodCost": 12,
+        "status": "implemented-mobile-choice-unconfirmed-native-h0BR-ability-payload"
+      },
+      "transactions": "one e01A + wood if applicable, atomic debit/credit and roster rollback; no intermediate box spawn"
+    }
   },
   "caveats": [
     "Do not treat W3X UnitBalance stock costs of the token actors as acquisition prices.",
@@ -195,6 +208,6 @@
     "Do not grant luck tokens for money gambling CJB/CJC.",
     "Do not apply mutated-mode bans to nightmare-otherworld.",
     "Mobile reward bridge is not a complete story boss/advanced unit-gambling implementation.",
-    "CSM/B6 h0BR is a source-confirmed reward-box actor; A149/A0KA native ability outcomes must be separately audited before mobile resource or random-unit exchange."
+    "CSM/B6 h0BR is a source-confirmed reward-box actor; mobile now directly grants a chosen reward but A149/A0KA values and target eligibility have not been decoded from the W3X. Current resource quantities and 12-wood option require original-source verification."
   ]
 }

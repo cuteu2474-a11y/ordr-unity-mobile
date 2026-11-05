@@ -331,6 +331,21 @@ namespace Ordr.Mobile.Combat
                 out resultIds);
         }
 
+        public bool TryChooseBoxResources()
+        {
+            IReadOnlyList<long> noActors;
+            return Ready() && kumaChoice.TryChoose(
+                PendingStoryWispResource, Original323TranscendWispOutcome.RewardBoxResources,
+                out noActors) && noActors.Count == 0;
+        }
+
+        public bool TryChooseBoxRandomOnly(string catalogId, out long actorId)
+        {
+            actorId = 0;
+            return Ready() && kumaChoice.TryChooseRandomOnly(
+                PendingStoryWispResource, catalogId, out actorId);
+        }
+
         // CJK = high-grade unit gamble fail; CJM = otherworld unit gamble
         // fail; CGk = gift chest; CCk = verified bonus; CKJ = Compu exchange.
         // The witness proves the FULL parent transaction, including purchase,
@@ -635,9 +650,10 @@ namespace Ordr.Mobile.Combat
     // The mobile choice is one atomic roster+wallet transaction per Wisp.
     public enum Original323TranscendWispOutcome
     {
-        RewardBox,       // CSM: h0BR, "꾸러미 상자 - 초월"
+        RewardBox,       // Legacy CSM: physical h0BR on already-issued saves
         Kuma,            // CSN: h04S
-        RayleighAndShip  // CSO: h05X + h060
+        RayleighAndShip, // CSO: h05X + h060
+        RewardBoxResources // Mobile redemption of h0BR, no intermediate actor
     }
 
     public sealed class Original323KumaWispChoiceWorld
@@ -648,6 +664,15 @@ namespace Ordr.Mobile.Combat
             "original323:transcend-choice:" + Guid.NewGuid().ToString("N") + ":";
         private long sequence;
         private bool processing;
+        private readonly HashSet<string> allowedRandomOnlyIds =
+            new HashSet<string>(StringComparer.Ordinal);
+
+        // TEMPORARY balance values: Warcraft h0BR A149/A0KA effect payloads
+        // are not in the extracted JASS. Keep all unverified numbers here,
+        // never misrepresent them as decoded S2 2.323[C] values.
+        public const long ProvisionalBoxGold = 5000;
+        public const long ProvisionalBoxWood = 17;
+        public const long RandomOnlyWoodCost = 12;
 
         public Original323KumaWispChoiceWorld(CharacterCombatRuntime world,
             SharedEconomySession session, CharacterUnitCatalog units,
@@ -690,6 +715,18 @@ namespace Ordr.Mobile.Combat
                 shipSource.OriginalRawcode != Original323SourceMaterialRewardWorld.PirateShipRawcode ||
                 shipSource.MappingStatus != "verified-source-wisp-pirate-ship")
                 throw new ArgumentException("CSO/B8 레일리·해적선 원본과 불일치");
+
+            // This list is the source-backed CWR random-only roster, rather
+            // than every unit whose UI happens to have the "랜덤" label.
+            foreach (string catalogId in Original323CwrAcquisitionRoutes.RandomOnlyUnitCatalogIds())
+            {
+                var unit = units.Find(catalogId);
+                var source = objects.Find(catalogId);
+                if (unit == null || unit.Grade != "랜덤" ||
+                    source == null || string.IsNullOrEmpty(source.OriginalRawcode))
+                    throw new ArgumentException("꾸러미 상자 랜덤전용 대상 누락: " + catalogId);
+                allowedRandomOnlyIds.Add(catalogId);
+            }
         }
 
         public bool TryChooseKuma(string earnedWispResource, out long actorId)
@@ -706,17 +743,8 @@ namespace Ordr.Mobile.Combat
         public bool TryChoose(string earnedWispResource,
             Original323TranscendWispOutcome outcome, out IReadOnlyList<long> actorIds)
         {
-            actorIds = Array.Empty<long>();
-            if (processing || !economy.HasStarted ||
-                combat.Game.Phase != SessionPhase.Running ||
-                GameSession.ModeId != "nightmare-otherworld" ||
-                (earnedWispResource != Original323SourceMaterialRewardWorld.PendingStoryWispResource &&
-                 earnedWispResource != Original323SoloStoryScenario.PracticeTranscendWisp) ||
-                economy.Wallet.Balance(earnedWispResource) < 1 ||
-                !Enum.IsDefined(typeof(Original323TranscendWispOutcome), outcome))
-                return false;
-
             string[] results;
+            ResourceBundle rewards = new ResourceBundle();
             switch (outcome)
             {
                 case Original323TranscendWispOutcome.RewardBox:
@@ -731,25 +759,70 @@ namespace Ordr.Mobile.Combat
                         Original323SourceMaterialRewardWorld.PirateShipCatalogId
                     };
                     break;
+                case Original323TranscendWispOutcome.RewardBoxResources:
+                    results = Array.Empty<string>();
+                    rewards.Add("gold", ProvisionalBoxGold).Add("wood", ProvisionalBoxWood);
+                    break;
                 default:
+                    actorIds = Array.Empty<long>();
                     return false;
             }
+            return TryCommitChoice(earnedWispResource, results,
+                new ResourceBundle(), rewards, out actorIds);
+        }
+
+        // h0BR's selectable random-only reward is redeemed directly on
+        // mobile. The 12-wood surcharge and the acquired e01A are one debit.
+        public bool TryChooseRandomOnly(string earnedWispResource,
+            string randomOnlyCatalogId, out long actorId)
+        {
+            actorId = 0;
+            if (string.IsNullOrEmpty(randomOnlyCatalogId) ||
+                !allowedRandomOnlyIds.Contains(randomOnlyCatalogId))
+                return false;
+            IReadOnlyList<long> actors;
+            if (!TryCommitChoice(earnedWispResource,
+                    new[] { randomOnlyCatalogId },
+                    new ResourceBundle().Add("wood", RandomOnlyWoodCost),
+                    new ResourceBundle(), out actors) || actors.Count != 1)
+                return false;
+            actorId = actors[0];
+            return true;
+        }
+
+        private bool TryCommitChoice(string earnedWispResource,
+            IReadOnlyList<string> results, ResourceBundle additionalCosts,
+            ResourceBundle rewards, out IReadOnlyList<long> actorIds)
+        {
+            actorIds = Array.Empty<long>();
+            if (processing || !economy.HasStarted ||
+                combat.Game.Phase != SessionPhase.Running ||
+                GameSession.ModeId != "nightmare-otherworld" ||
+                (earnedWispResource != Original323SourceMaterialRewardWorld.PendingStoryWispResource &&
+                 earnedWispResource != Original323SoloStoryScenario.PracticeTranscendWisp) ||
+                economy.Wallet.Balance(earnedWispResource) < 1)
+                return false;
+            foreach (var cost in additionalCosts.Entries)
+                if (economy.Wallet.Balance(cost.Key) < cost.Value)
+                    return false;
+
+            var costs = new ResourceBundle().Add(earnedWispResource, 1);
+            foreach (var entry in additionalCosts.Entries) costs.Add(entry.Key, entry.Value);
+
             processing = true;
-            var spawned = new List<long>(results.Length);
+            var spawned = new List<long>(results.Count);
             long next = checked(sequence + 1);
             string receipt = receiptNamespace + next;
             try
             {
-                // Never spend the Wisp before both source objects exist.
-                // A failure on the second ship/hero spawn removes the first.
+                // Spawn all roster rewards before the single wallet exchange.
+                // If the debit fails, remove every newly spawned actor.
                 foreach (string catalogId in results)
                     spawned.Add(combat.SpawnVerifiedOriginalPositionCharacter(
                         catalogId,
                         Original323SourceMaterialRewardWorld.SourceStartX,
                         Original323SourceMaterialRewardWorld.SourceStartY));
-                if (!economy.Wallet.TryExchangeOnce(receipt,
-                    new ResourceBundle().Add(earnedWispResource, 1),
-                    new ResourceBundle()))
+                if (!economy.Wallet.TryExchangeOnce(receipt, costs, rewards))
                 {
                     Rollback(spawned);
                     return false;
@@ -760,12 +833,12 @@ namespace Ordr.Mobile.Combat
             }
             catch
             {
-                // Post-commit observer errors cannot resurrect a spent Wisp.
+                // Granted observers execute AFTER the wallet commit.
                 if (economy.Wallet.HasCompletedTransaction(receipt))
                 {
                     sequence = next;
                     actorIds = spawned.AsReadOnly();
-                    return spawned.Count == results.Length;
+                    return spawned.Count == results.Count;
                 }
                 Rollback(spawned);
                 throw;

@@ -8,7 +8,8 @@ namespace Ordr.Mobile.Mobile
 {
     // CWR does not contain 266 ordinary recipes: these 24 registrations are
     // notifications, random rewards, or navigation hints. Their result units
-    // must arrive through their own source event, never ConfirmFusion().
+    // arrive through verified source events or explicit transcend-box redemption,
+    // never ConfirmFusion().
     public sealed class Original323CwrAcquisitionRoutes
     {
         private static readonly string[,] RandomOnly = {
@@ -28,6 +29,16 @@ namespace Ordr.Mobile.Mobile
         };
         private readonly Dictionary<string, string> randomCatalogIds =
             new Dictionary<string, string>(StringComparer.Ordinal);
+
+        // Keep the selectable roster tied to the same fourteen validated
+        // CWR A800/RDUN registrations used by source random awards.
+        public static IReadOnlyList<string> RandomOnlyUnitCatalogIds()
+        {
+            var ids = new List<string>(RandomOnly.GetLength(0));
+            for (int i = 0; i < RandomOnly.GetLength(0); i++)
+                ids.Add(RandomOnly[i, 2]);
+            return ids.AsReadOnly();
+        }
 
         public int RandomOnlyRegistrationCount => RandomOnly.GetLength(0);
         public int RareWispSpecialRegistrationCount => RareWispSpecial.GetLength(0);

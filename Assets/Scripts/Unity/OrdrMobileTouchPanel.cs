@@ -53,6 +53,10 @@ namespace Ordr.Mobile.Unity
         private string expandedRecipeId;
         private bool showChoiceWisp;
         private bool showRandomWispActions = true;
+        private bool showTranscendBoxChoices;
+        private bool showTranscendRandomOnlyChoices;
+        private int transcendRandomPage;
+        private const int TranscendRandomPageSize = 7;
         private readonly HashSet<string> expandedResearchCodes =
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<int> expandedMissionSlots = new HashSet<int>();
@@ -1851,16 +1855,74 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndHorizontal();
         }
 
-        // Both Story and Wisp menus expose the same three verified e01A
-        // results. A click is the player's choice; never auto-select.
+        // One shared menu in Story and Wisp. ① expands into direct mobile
+        // redemptions; neither path creates an inert intermediate box actor.
         private void DrawOriginalTranscendWispChoiceButtons()
         {
             GUILayout.Label("초월위습 1개로 보상 하나 선택",
                 OrdrMobileUiTheme.Explanation);
-            if (GUILayout.Button("① 꾸러미 상자 - 초월",
-                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
-                RunWispDirect("스토리 초월위습 · 꾸러미 상자",
-                    () => controller.RequestOriginalTranscendRewardBoxChoice());
+            if (OrdrMobileUiTheme.DrawAccordionHeader(
+                "① 꾸러미 상자 - 초월", "보상 2종", showTranscendBoxChoices,
+                OrdrMobileUiTheme.Gold))
+                showTranscendBoxChoices = !showTranscendBoxChoices;
+            if (showTranscendBoxChoices)
+            {
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.Label("상자 생성 없이 보상 즉시 수령 · 추가 확인 없음",
+                    OrdrMobileUiTheme.Explanation);
+                if (GUILayout.Button("골드 +" +
+                    Original323KumaWispChoiceWorld.ProvisionalBoxGold +
+                    " · 목재 +" +
+                    Original323KumaWispChoiceWorld.ProvisionalBoxWood +
+                    " 수령", OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
+                    RunWispDirect("초월위습 · 골드·목재 보상",
+                        () => controller.RequestOriginalTranscendBoxResourcesChoice());
+                GUILayout.Label("※ 지급량은 상자 능력 원본 수치 확인 전 임시값입니다.",
+                    OrdrMobileUiTheme.Explanation);
+
+                long wood = controller.SharedEconomy == null ? 0 :
+                    controller.SharedEconomy.Wallet.Balance("wood");
+                if (OrdrMobileUiTheme.DrawAccordionHeader(
+                    "랜덤전용 유닛 선택",
+                    "목재 " + Original323KumaWispChoiceWorld.RandomOnlyWoodCost + "개",
+                    showTranscendRandomOnlyChoices, OrdrMobileUiTheme.Aqua))
+                    showTranscendRandomOnlyChoices = !showTranscendRandomOnlyChoices;
+                if (showTranscendRandomOnlyChoices)
+                {
+                    GUILayout.Label("초월위습 1개 + 목재 " +
+                        Original323KumaWispChoiceWorld.RandomOnlyWoodCost +
+                        "개를 함께 사용합니다. 현재 목재 " + wood + "개",
+                        OrdrMobileUiTheme.Explanation);
+                    var candidates = Original323CwrAcquisitionRoutes.RandomOnlyUnitCatalogIds();
+                    int pageCount = (candidates.Count + TranscendRandomPageSize - 1) /
+                        TranscendRandomPageSize;
+                    transcendRandomPage = Mathf.Clamp(transcendRandomPage, 0,
+                        Math.Max(0, pageCount - 1));
+                    int start = transcendRandomPage * TranscendRandomPageSize;
+                    for (int i = start; i < Math.Min(candidates.Count,
+                            start + TranscendRandomPageSize); i++)
+                    {
+                        string id = candidates[i];
+                        var unit = controller.Units == null ? null : controller.Units.Find(id);
+                        string name = unit == null ? id : unit.Name;
+                        bool enabled = GUI.enabled;
+                        GUI.enabled = enabled &&
+                            wood >= Original323KumaWispChoiceWorld.RandomOnlyWoodCost;
+                        if (GUILayout.Button(name + " 선택",
+                            OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(56)))
+                        {
+                            string chosen = id;
+                            string chosenName = name;
+                            RunWispDirect("초월위습 · " + chosenName,
+                                () => controller.RequestOriginalTranscendBoxRandomOnlyChoice(chosen));
+                        }
+                        GUI.enabled = enabled;
+                    }
+                    DrawPager(transcendRandomPage, pageCount,
+                        next => transcendRandomPage = next);
+                }
+                GUILayout.EndVertical();
+            }
             if (GUILayout.Button("② 바솔로뮤 쿠마",
                 OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
                 RunWispDirect("스토리 초월위습 · 쿠마",
@@ -1869,8 +1931,6 @@ namespace Ordr.Mobile.Unity
                 OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(58)))
                 RunWispDirect("스토리 초월위습 · 레일리·해적선",
                     () => controller.RequestOriginalTranscendRayleighShipChoice());
-            GUILayout.Label("①은 원본 꾸러미 상자 유닛 지급입니다. 상자 능력의 세부 교환 효과는 미검증입니다.",
-                OrdrMobileUiTheme.Explanation);
         }
 
         private void DrawStory()
