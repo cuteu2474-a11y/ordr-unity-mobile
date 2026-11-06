@@ -1433,6 +1433,11 @@ namespace Ordr.Mobile.Combat
                 // no summons or lasting roots may keep attacking/holding a
                 // main-lane enemy after their owner enters a story lane.
                 EndSourceChopperBurst(instanceId, true);
+                // Native casting/realm effects belong to the old lane.
+                // Their scheduled callbacks also check the lane revision,
+                // so cancelling the attack gate cannot revive old damage.
+                if (sourceFormCastFinishes.Remove(instanceId))
+                    sourceFormCastWake = true;
                 ForgetSourceModelTwentyFifthActor(instanceId);
                 ForgetSourceModelEleventhActor(instanceId);
                 RefreshSourceTemporaryActors();
@@ -2760,7 +2765,8 @@ namespace Ordr.Mobile.Combat
                 if (processed >= budget) break;
                 var unit = characters[id];
                 if (!unit.AttackReady || unit.AttackBlockedByMissingFormula ||
-                    unit.Mapping == null || unit.Profile == null) continue;
+                    unit.Mapping == null || unit.Profile == null ||
+                    SourceFormIsCasting(id)) continue;
                 var candidates = BuildTargetCandidates(unit);
                 var primaryId = attackPipeline.SelectDefaultTarget(
                     InstanceKey(unit.Id), candidates, TargetPriority.Nearest);

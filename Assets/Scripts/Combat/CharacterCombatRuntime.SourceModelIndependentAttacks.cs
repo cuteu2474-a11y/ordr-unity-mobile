@@ -248,6 +248,9 @@ namespace Ordr.Mobile.Combat
                 if (enemies.TryGetValue(hit.TargetId, out victim))
                 {
                     CompleteSourceIndependentHit(actor, victim, hit.ActualDamage);
+                    if (actor.Rawcode == "h05D" && hit.BasicHitApplied)
+                        OnSourceMoriaShadowPositiveHit(actor.OwnerInstanceId,
+                            victim, hit.ActualDamage);
                     TryAutoCastSourceSatelliteMana(actor, victim);
                 }
                 if (enemies.TryGetValue(hit.TargetId, out victim) && !victim.Enemy.IsAlive)

@@ -111,6 +111,21 @@ namespace Ordr.Mobile.Combat
                 }
         }
 
+        // Self-destruct summons retire at impact instead of lingering until
+        // their fallback timed-life expiry. Shares the same unregister path
+        // used for owner death and lane changes.
+        private bool RetireSourceTemporaryActor(long summonId)
+        {
+            for (int i = sourceTemporarySummons.Count - 1; i >= 0; i--)
+            {
+                if (sourceTemporarySummons[i].Id != summonId) continue;
+                UnregisterSourceIndependentAttack(SummonAttackKey(summonId));
+                sourceTemporarySummons.RemoveAt(i);
+                return true;
+            }
+            return false;
+        }
+
         private void RefreshSourceTemporaryActors()
         {
             if (!UsesSourceModelBasicAttacks) return;

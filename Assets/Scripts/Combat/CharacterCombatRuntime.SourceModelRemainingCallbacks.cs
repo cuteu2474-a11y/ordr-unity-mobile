@@ -99,8 +99,6 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, string>();
         private readonly Dictionary<long, double> remainingBurgessArmorUntil =
             new Dictionary<long, double>();
-        private readonly HashSet<long> remainingMoriaHasArmor = new HashSet<long>();
-        private readonly HashSet<long> remainingGojoB07E = new HashSet<long>();
         private long remainingCallbackSerial;
 
         private void ForgetSourceRemainingCallbacks(long actorId)
@@ -109,8 +107,6 @@ namespace Ordr.Mobile.Combat
             remainingHancockBuffUntil.Remove(actorId);
             remainingHancockEnhancedTarget.Remove(actorId);
             remainingBurgessArmorUntil.Remove(actorId);
-            remainingMoriaHasArmor.Remove(actorId);
-            remainingGojoB07E.Remove(actorId);
         }
 
         private static SourceScriptAttackSpec RemainingHitSpec(string id,
@@ -198,6 +194,40 @@ namespace Ordr.Mobile.Combat
             return candidates;
         }
 
+        // The original frostarmor buffs B01N/B07E do not have a source-verified
+        // armor amount. Record the permanent buff *identity* in the shared
+        // status lifecycle, with zero numeric armor, so a future dispel can
+        // remove it without a separate permanent, undispellable hash gate.
+        private static string RemainingFrostArmorSource(long actorId, string ability) =>
+            "practice-native:frostarmor:" + ability + ":" + actorId;
+
+        private bool RemainingHasFrostArmor(CharacterInstance actor, string ability)
+        {
+            string source = RemainingFrostArmorSource(actor.Id, ability);
+            foreach (var effect in unitStatuses[InstanceKey(actor.Id)].Snapshot())
+                if (effect.SourceId == source &&
+                    effect.Type == CombatEffectType.ArmorBuff) return true;
+            return false;
+        }
+
+        private void RemainingGrantFrostArmor(CharacterInstance actor,
+            SpatialCombatEnemy target, SourceRemainingCallback spec,
+            string ability, string buff)
+        {
+            string owner = InstanceKey(actor.Id);
+            string source = RemainingFrostArmorSource(actor.Id, ability);
+            unitStatuses[owner].RemoveSource(source);
+            // Buff lasts until dispelled in W3X. The aura-origin sentinel
+            // models an infinite identity, not an invented armor bonus.
+            unitStatuses[owner].Apply(new CombatEffect(source,
+                CombatEffectType.ArmorBuff, CombatEffectOrigin.Aura, 0, 0));
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.StatusApplied, owner, owner,
+                actor.Catalog.Name + " · " + buff,
+                "MODEL_ONLY " + ability + "/" + buff +
+                " 강화 상태 등록 / 수치 미확인·해제 가능", 0));
+        }
+
         private bool RemainingHasNativeBuff(CharacterInstance actor, string buff)
         {
             string id = "practice-native:source-remaining-bloodlust:" + buff + ":" +
@@ -255,9 +285,29 @@ namespace Ordr.Mobile.Combat
                         new SourceScriptHit(SourceScriptHitShape.ProjectileLine,
                             250, 1050, 6000, 1, 1, Ordr323AttackType.Spells));
                     break;
-                case "R-24": // h06O/A03A Asds. Approach delay is unverified.
-                    RemainingDelayedHits(actor, target, spec, .35,
-                        RemainingDirect(500));
+                case "R-24": // h06O/A03A Asds, 3.5s source timed life.
+                    // The native order is selfdestruct on the chosen victim.
+                    // We expose the object as a temporary non-roster actor;
+                    // the .35s point impact is still a labeled approximation.
+                    var doll = SpawnSourceTemporaryActor(actor,
+                        "BpT · 장난감 자폭", "슈가 장난감 자폭", 3.5, "h06O",
+                        false, position.X, position.Y);
+                    RemainingProc(actor, target, spec,
+                        "h06O 장난감 생성 / 3.5초 수명 / target selfdestruct");
+                    bool dollLane = IsStoryDeployed(actor.Id);
+                    long dollRevision = SourceModelLaneRevision(actor.Id);
+                    double impactX = target.X, impactY = target.Y;
+                    var dollImpact = RemainingHitSpec(spec.CatalogId,
+                        spec.Rawcode, spec.Jass, RemainingDirect(500));
+                    effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
+                        "remaining-doll:" + actor.Id + ":" + doll.Id,
+                        .35, () => {
+                            if (!CanFinishSourceModelDelayedAttack(actor.Id,
+                                    dollLane, dollRevision) ||
+                                !RetireSourceTemporaryActor(doll.Id)) return;
+                            ApplySourceScriptHits(actor, target, dollImpact,
+                                dollImpact.OnProc, impactX, impactY);
+                        });
                     break;
                 case "R-29": // e0KE/A03O ANfl max 9 enemies.
                     foreach (var victim in RemainingNativeTargets(actor,
@@ -396,8 +446,8 @@ namespace Ordr.Mobile.Combat
                 // BsL casts e03T/A0AV (frostarmor, B01N) on the first
                 // attack. Later attacks are gated while that buff remains;
                 // the W3X object gives duration zero (indefinite).
-                if (remainingMoriaHasArmor.Contains(actor.Id)) return;
-                remainingMoriaHasArmor.Add(actor.Id);
+                if (RemainingHasFrostArmor(actor, "A0AV")) return;
+                RemainingGrantFrostArmor(actor, target, spec, "A0AV", "B01N");
                 RemainingNativeBloodlust(actor, spec, target,
                     "A0AW", "B01O", 3, 35);
                 RemainingProc(actor, target, spec, "비강화 공격/그림자 흡수");
@@ -405,8 +455,21 @@ namespace Ordr.Mobile.Combat
                     RemainingDirect(800000,
                         lineMaxHealthMultiplier: 2,
                         lineAttackOverride: Ordr323AttackType.Chaos));
-                RemainingDeferred(actor, target, spec,
-                    "A0AV/B01N 강화 표식 적용; 18초 h05D 소환과 디스펠 아직 미연결");
+                // BsL places h05D 300 units behind the damaged enemy,
+                // relative to the attacking Moria. Native life is 18s.
+                var moriaPosition = roster.Get(actor.Id);
+                double direction = Math.Atan2(
+                    target.Y - moriaPosition.Y, target.X - moriaPosition.X);
+                double shadowX = target.X - 300 * Math.Cos(direction);
+                double shadowY = target.Y - 300 * Math.Sin(direction);
+                bool hasShadowAttack = sourceModelRules != null &&
+                    sourceModelRules.SourceObjectAttack("h05D") != null;
+                var shadow = SpawnSourceTemporaryActor(actor,
+                    "BsL · 그림자 소환", "모리아 그림자", 18, "h05D", false,
+                    shadowX, shadowY, hasShadowAttack);
+                RemainingProc(actor, target, spec,
+                    "h05D 그림자 " + shadow.Id + " 소환 / 18초 / " +
+                    (hasShadowAttack ? "객체 평타 연결" : "원본 공격 주사위 미공급"));
                 return;
             }
 
@@ -522,10 +585,15 @@ namespace Ordr.Mobile.Combat
                     {
                         mp.SetMana(0);
                         RemainingProc(actor, target, spec, "MP185 변신 조건");
-                        // CGY: after the .05+.6+.05+.04 setup, 50 ticks
-                        // of 450000 + 0.45% target max HP at caster
-                        // radius 1600, one tick every .1s.
-                        for (int pulse = 1; pulse <= 50; pulse++)
+                        // CGd pauses the owner, then CGY executes 50 hits
+                        // starting at .74s; the final unpause is at 6.2s.
+                        // Reuse the established form-cast gate to suppress
+                        // ordinary basic attacks during the native realm.
+                        bool realmLane = IsStoryDeployed(actor.Id);
+                        long realmRevision = SourceModelLaneRevision(actor.Id);
+                        double realmEnds = effectExecutor.Time + 6.2;
+                        sourceFormCastFinishes[actor.Id] = realmEnds;
+                        for (int pulse = 0; pulse < 50; pulse++)
                             RemainingDelayedHits(actor, target, spec,
                                 .74 + pulse * .1,
                                 new SourceScriptHit(
@@ -533,8 +601,28 @@ namespace Ordr.Mobile.Combat
                                     1600, 0, 450000, 1, 1,
                                     Ordr323AttackType.Chaos,
                                     targetMaxHealthMultiplier: .0045));
-                        RemainingDeferred(actor, target, spec,
-                            "CGY 50회 영역 피해 연결; 원본 일시정지/변신 모델·면역 미검증");
+                        if (remainingCallbackSerial == long.MaxValue)
+                            throw new OverflowException("영역 전개 예약 순번 범위 초과");
+                        long realmSerial = ++remainingCallbackSerial;
+                        effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
+                            "remaining-gojo-realm:" + actor.Id + ":" + realmSerial,
+                            6.2, () => {
+                                double currentFinish;
+                                if (!sourceFormCastFinishes.TryGetValue(actor.Id,
+                                        out currentFinish) || currentFinish != realmEnds)
+                                    return;
+                                sourceFormCastFinishes.Remove(actor.Id);
+                                sourceFormCastWake = true;
+                                if (CanFinishSourceModelDelayedAttack(actor.Id,
+                                        realmLane, realmRevision))
+                                    events.Add(new CharacterCombatEvent(
+                                        CharacterCombatEventType.SkillActivated,
+                                        InstanceKey(actor.Id), target.Id,
+                                        actor.Catalog.Name + " 영역 전개",
+                                        "MODEL_ONLY CGY 종료 / 일반 공격 재개", 0));
+                            });
+                        RemainingProc(actor, target, spec,
+                            "CGY 50회 영역 피해 / 6.2초 일반 공격 일시정지");
                     }
                     else mp.SetMana(Math.Min(185, mp.Mana + 1));
                 }
@@ -557,7 +645,7 @@ namespace Ordr.Mobile.Combat
                     // CGc issues h04V/A10C frostarmor on the caster:
                     // permanent B07E until dispelled. Later rolls take
                     // the CGa 1.5m path, not the CGc 4.5m + 4% path.
-                    bool frostArmor = remainingGojoB07E.Contains(actor.Id);
+                    bool frostArmor = RemainingHasFrostArmor(actor, "A10C");
                     RemainingProc(actor, target, spec,
                         frostArmor ? "CGa 10% 아오" : "CGc 10% 무라사키");
                     if (frostArmor)
@@ -565,7 +653,8 @@ namespace Ordr.Mobile.Combat
                             RemainingCircle(800, 1500000));
                     else
                     {
-                        remainingGojoB07E.Add(actor.Id);
+                        RemainingGrantFrostArmor(actor, target, spec,
+                            "A10C", "B07E");
                         RemainingDelayedHits(actor, target, spec, 1.13,
                             new SourceScriptHit(SourceScriptHitShape.Circle,
                                 800, 0, 4500000, 1, 1,
@@ -573,9 +662,28 @@ namespace Ordr.Mobile.Combat
                                 targetMaxHealthMultiplier: .04));
                     }
                     RemainingDeferred(actor, target, spec,
-                        "A10C/B07E 강화 표식 유지; 시각 효과/디스펠 미연결");
+                        "A10C/B07E 강화 상태 기록 / WC3 시각효과·실제 디스펠 이벤트 미연결");
                 }
             }
+        }
+
+        // BsM registers BsL for h05D shadows as well as h02N Moria.
+        // A shadow cannot re-cast its owner's gated frostarmor/summon,
+        // but BsL always opens the BsK damage-listener; its positive native
+        // hit therefore splashes half the confirmed receipt too.
+        private void OnSourceMoriaShadowPositiveHit(long ownerId,
+            SpatialCombatEnemy target, long confirmedDamage)
+        {
+            CharacterInstance moria;
+            SourceRemainingCallback spec;
+            if (confirmedDamage <= 0 || !characters.TryGetValue(ownerId, out moria) ||
+                moria.Catalog.Id != "L-12" ||
+                !SourceRemainingCallbackCatalog.TryGet("h02N", out spec) ||
+                !CanAttackInThisLane(moria, target)) return;
+            RemainingHitsAfterBasic(moria, target, spec, confirmedDamage,
+                new SourceScriptHit(SourceScriptHitShape.Circle, 375, 0,
+                    0, 1, 1, Ordr323AttackType.Chaos,
+                    basicHitDamageMultiplier: .5));
         }
 
         private void OnSourceRemainingAfterPositiveBasicHit(

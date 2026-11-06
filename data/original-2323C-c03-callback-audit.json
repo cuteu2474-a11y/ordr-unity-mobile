@@ -438,5 +438,13 @@
       "widthOrTargetCapOrDuration"
     ],
     "limitations": "W3X numeric source values are verified, native spell collision/target filters/visual lifecycle remain model-only; Apxf helper lifetime and Asds area are not inferred."
+  },
+  "followupRuntimeConnection": {
+    "status": "code only; Unity/EditMode/APK not run",
+    "callbacks": {
+      "R-24": "h06O tracked 3.5s temporary actor; 0.35s model target impact retires it; native travel and Asds radius unverified",
+      "L-12": "h05D tracked 18s at target-relative 300 distance; independent attack only if original source object attack exists; shadow positive-hit splash routed; B01N identity in shared status (armor amount unknown)",
+      "MY-01": "CGY schedules 50 hits starting 0.74s at 0.1s cadence, suppresses owner basic/periodic attacks through 6.2s, safely clears on lane change; B07E identity in shared status (native immunity/visual transformation unverified)"
+    }
   }
 }
