@@ -25,19 +25,26 @@ namespace Ordr.Mobile.Combat
         // Original A904 story marker can replace (not add to) the
         // normal hit's damage operand; keep one hit/defense application.
         public double StoryDamage { get; private set; }
+        // BFi(5000,100000): exact inclusive integer source roll;
+        // zero bounds mean the ordinary fixed/ranged damage path.
+        public int RandomIntegerMinimum { get; private set; }
+        public int RandomIntegerMaximum { get; private set; }
 
         internal SourceScriptHit(SourceScriptHitShape shape, double radius,
             double length, double damage, double minimum, double maximum,
             Ordr323AttackType attack,
             double bossCurrentHealthPercent = 0,
             double enragedMaxHealthPercent = 0,
-            bool storyOnly = false, double storyDamage = 0)
+            bool storyOnly = false, double storyDamage = 0,
+            int randomIntegerMinimum = 0, int randomIntegerMaximum = 0)
         {
             Shape = shape; Radius = radius; Length = length; Damage = damage;
             Minimum = minimum; Maximum = maximum; Attack = attack;
             BossCurrentHealthPercent = bossCurrentHealthPercent;
             EnragedMaxHealthPercent = enragedMaxHealthPercent;
             StoryOnly = storyOnly; StoryDamage = storyDamage;
+            RandomIntegerMinimum = randomIntegerMinimum;
+            RandomIntegerMaximum = randomIntegerMaximum;
         }
     }
 

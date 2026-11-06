@@ -59,6 +59,27 @@
       "jassCallback": "Bpp",
       "sourceHit": "11% Bpp->Bpo stage at ~0.625 s: radius 600 AoE 10000 then direct 35000 (70000 if A904 story marker), NORMAL/universal",
       "remaining": "e058 native inferno/order unverified; A904 mapped to practice Story kind; exact staged timing/native armor remains unverified"
+    },
+    {
+      "catalogId": "R-10",
+      "rawcode": "h01Y",
+      "jassCallback": "Bo2",
+      "sourceHit": "15% Bo2/Bo1 after positive basic-hit: inclusive integer 5000..100000 direct, then radius375 7000 AoE",
+      "remaining": "e01D thunderbolt native stun, original declaration-phase roll vs model successful-hit phase, native caster IG and final defense unverified"
+    },
+    {
+      "catalogId": "R-33",
+      "rawcode": "h02F",
+      "jassCallback": "Bpm",
+      "sourceHit": "Bpm: first 8% Bpk on positive hit gives radius450 AoE 10000; otherwise independent 8% Bpl gives delayed ~0.45s radius375 AoE 16000 and direct50000",
+      "remaining": "Bpl is originally attack-declared even if basic attack misses; practice after-hit phase does not resolve that edge, dummy thunderbolt and final defense unverified"
+    },
+    {
+      "catalogId": "H-01",
+      "rawcode": "h043",
+      "jassCallback": "BrW",
+      "sourceHit": "two independent 15% positive-basic-hit branches: BrU radius600 AoE 200000 and BrV direct 252500 multiplied by 1..1.5",
+      "remaining": "original declaration-phase roll and damage-listener staging vs practice successful-hit phase; e03E native carrionswarm and final defense unverified"
     }
   ],
   "remainingCallbacksRequiringNativeOrMultiStepJass": [
@@ -93,12 +114,6 @@
       "jassCallback": "Bow"
     },
     {
-      "catalogId": "R-10",
-      "name": "모몬가",
-      "rawcode": "h01Y",
-      "jassCallback": "Bo2"
-    },
-    {
       "catalogId": "R-16",
       "name": "베이비 5",
       "rawcode": "h02M",
@@ -127,12 +142,6 @@
       "name": "제프",
       "rawcode": "h02G",
       "jassCallback": "Bph"
-    },
-    {
-      "catalogId": "R-33",
-      "name": "조로 현상금 사냥꾼",
-      "rawcode": "h02F",
-      "jassCallback": "Bpm"
     },
     {
       "catalogId": "R-36",
@@ -175,12 +184,6 @@
       "name": "핸콕",
       "rawcode": "h032",
       "jassCallback": "BtV"
-    },
-    {
-      "catalogId": "H-01",
-      "name": "검호",
-      "rawcode": "h043",
-      "jassCallback": "BrW"
     },
     {
       "catalogId": "D-06",

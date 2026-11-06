@@ -84,6 +84,7 @@ namespace Ordr.Mobile.Combat
                         form == "H0BY" || form == "h0AF" ? form : rawcode, target);
                 });
             attackPipeline.ConfigurePracticeSuccessfulBasicHit((attacker, rawcode, target, actual) => {
+                OnSourceModelAfterSuccessfulBasicHit(attacker, rawcode, target, actual);
                 OnSourceModelNinthSuccessfulBasicHit(attacker, rawcode, target, actual);
                 OnSourceModelTwentyFifthSuccessfulBasicHit(attacker, rawcode, target, actual);
                 OnBulkAutoSuccessfulHit(attacker, rawcode, target, actual);

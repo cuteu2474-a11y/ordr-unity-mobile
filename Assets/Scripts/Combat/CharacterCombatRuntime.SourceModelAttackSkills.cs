@@ -266,6 +266,82 @@ namespace Ordr.Mobile.Combat
                     0));
         }
 
+
+        // The original w5 dispatcher runs BEFORE damage, whereas Bo1,
+        // BrU/BrV and Bpk react only to a POSITIVE basic-hit damage event.
+        // Reuse the combat pipeline's successful-hit observer; never award
+        // these effects on a missed, blocked, or zero-damage basic attack.
+        private long sourceAfterHitAttackSerial;
+
+        private void OnSourceModelAfterSuccessfulBasicHit(
+            string attackerId, string rawcode, string primaryTargetId, long actual)
+        {
+            SourceAfterHitAttackUnit entry;
+            if (actual <= 0 || !UsesSourceModelBasicAttacks ||
+                sourceModelRules == null || !processingStep ||
+                game.Phase != SessionPhase.Running ||
+                !SourceModelAfterHitAttackCatalog.TryGet(rawcode, out entry))
+                return;
+
+            long id;
+            CharacterInstance actor;
+            SpatialCombatEnemy primary;
+            if (!long.TryParse(attackerId, NumberStyles.Integer,
+                    CultureInfo.InvariantCulture, out id) ||
+                !characters.TryGetValue(id, out actor) ||
+                !actor.AttackReady || actor.Mapping == null ||
+                actor.Catalog.Id != entry.CatalogId ||
+                (actor.Mapping.AttackSpec.UnitRawCode != rawcode &&
+                 sourceModelRules.SourceFormRawcodeOf(attackerId) != rawcode) ||
+                !enemies.TryGetValue(primaryTargetId, out primary) ||
+                !CanAttackInThisLane(actor, primary))
+                return;
+
+            // Independent branches each draw once; R-33 uses elseif and
+            // therefore draws its second 8% roll ONLY if the first failed.
+            foreach (var script in entry.Branches)
+            {
+                int roll = sourceModelRules.NextScriptRoll(script.RollSides) + 1;
+                if (roll > script.RollSuccess) continue;
+
+                string skillName = actor.Catalog.Name + " 공격 기술";
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillActivated,
+                    attackerId, primaryTargetId, skillName,
+                    "MODEL_ONLY " + script.JassFunction +
+                    " 기본공격 적중 후 " + roll + "/" + script.RollSides, 0));
+
+                if (script.DelaySeconds > 0)
+                {
+                    double pinnedX = primary.X, pinnedY = primary.Y;
+                    bool sourceStoryLane = IsStoryDeployed(actor.Id);
+                    long sourceLaneRevision = SourceModelLaneRevision(actor.Id);
+                    if (sourceAfterHitAttackSerial == long.MaxValue)
+                        throw new OverflowException("후속 기술 사건 순번 범위 초과");
+                    long serial = ++sourceAfterHitAttackSerial;
+                    effectExecutor.SchedulePracticeSourceAttack(attackerId,
+                        "practice-after-hit:" + attackerId + ":" + serial,
+                        script.DelaySeconds, () => {
+                            if (CanFinishSourceModelDelayedAttack(actor.Id,
+                                    sourceStoryLane, sourceLaneRevision))
+                                ApplySourceScriptHits(actor, primary, script,
+                                    script.OnProc, pinnedX, pinnedY);
+                        });
+                }
+                else
+                    ApplySourceScriptHits(actor, primary, script, script.OnProc);
+
+                if (!string.IsNullOrWhiteSpace(script.DeferredNativeEffect))
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EffectDeferred,
+                        attackerId, primaryTargetId, skillName,
+                        "원본 네이티브 추가 효과 미검증: " +
+                        script.DeferredNativeEffect, 0));
+
+                if (entry.ExclusiveAlternatives) break;
+            }
+        }
+
         private List<SpatialCombatEnemy> SourceScriptTargets(
             CharacterInstance actor, SpatialCombatEnemy primary, SourceScriptHit hit,
             double? pinnedX = null, double? pinnedY = null)
@@ -398,6 +474,10 @@ namespace Ordr.Mobile.Combat
                     // CCE selects ONE damage operand by the enemy marker,
                     // it does not add the boss/enraged percentage to 35000.
                     double raw = hit.Damage;
+                    if (hit.RandomIntegerMaximum > 0)
+                        raw = hit.RandomIntegerMinimum +
+                            sourceModelRules.NextScriptRoll(
+                                hit.RandomIntegerMaximum - hit.RandomIntegerMinimum + 1);
                     if (target.Kind == CharacterEnemyKind.Story &&
                         hit.StoryDamage > 0)
                         raw = hit.StoryDamage;
