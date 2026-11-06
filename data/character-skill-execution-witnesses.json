@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "policy": "Validated static handler+entry+component witnesses only; no test/parity claim.",
+  "witnesses": [
+    {
+      "skillId": "L-08:skill:2",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "ApplySourceManualSupport",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": [
+        "\"L-08\"",
+        "\"외과수술(W)\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "도감 수치 기반 자동 지원·재생 모델. 원본 대상 선정과 버프 중첩·Unity 실행은 별도."
+    },
+    {
+      "skillId": "H-08:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "ApplySourceManualSupport",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": [
+        "\"H-08\"",
+        "\"선택 아군 가속\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "도감 수치 기반 자동 지원·재생 모델. 원본 대상 선정과 버프 중첩·Unity 실행은 별도."
+    },
+    {
+      "skillId": "T-03:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "ApplySourceManualSupport",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": [
+        "\"T-03\"",
+        "\"과열\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "도감 수치 기반 자동 지원·재생 모델. 원본 대상 선정과 버프 중첩·Unity 실행은 별도."
+    },
+    {
+      "skillId": "R-31:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "ApplySourceManualSupport",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": [
+        "\"R-31\"",
+        "\"호르몬 버프\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "도감 수치 기반 자동 지원·재생 모델. 원본 대상 선정과 버프 중첩·Unity 실행은 별도."
+    },
+    {
+      "skillId": "R-38:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "ApplySourceManualSupport",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": [
+        "\"R-38\"",
+        "\"로어\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "도감 수치 기반 자동 지원·재생 모델. 원본 대상 선정과 버프 중첩·Unity 실행은 별도."
+    },
+    {
+      "skillId": "RN-11:skill:1",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "ApplySourceManualSupport",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": [
+        "\"RN-11\"",
+        "\"판단력(Q)\""
+      ],
+      "effectIndexes": [
+        0,
+        1,
+        2
+      ],
+      "note": "도감 수치 기반 자동 지원·재생 모델. 원본 대상 선정과 버프 중첩·Unity 실행은 별도."
+    },
+    {
+      "skillId": "H-18:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "ApplySourceManualSupport",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": [
+        "\"H-18\"",
+        "\"체력회복 공격력 버프\""
+      ],
+      "effectIndexes": [
+        0,
+        1
+      ],
+      "note": "도감 수치 기반 자동 지원·재생 모델. 원본 대상 선정과 버프 중첩·Unity 실행은 별도."
+    },
+    {
+      "skillId": "RN-03:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "SourceManualBurst",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": [
+        "\"RN-03\"",
+        "\"폭렬 익스플로전\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "도감 Q 데미지·기절 연습 모델. 원본 저항·상태 판정은 미검증."
+    },
+    {
+      "skillId": "RN-04:skill:1",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "SourceManualBurst",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": [
+        "\"RN-04\"",
+        "\"저격(Q)\""
+      ],
+      "effectIndexes": [
+        0,
+        1
+      ],
+      "note": "도감 Q 데미지·기절 연습 모델. 원본 저항·상태 판정은 미검증."
+    },
+    {
+      "skillId": "E-05:skill:2",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "TrySourceBuggyAllyAttackBuff",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs",
+      "entryCall": "TrySourceBuggyAllyAttackBuff(actor);",
+      "identityTokens": [
+        "\"E-05\"",
+        "\"전투 아군 공격력 버프\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "공격 선언 독립 4.5% 확률 버프 모델. 타 버프와 배타성 미검증."
+    },
+    {
+      "skillId": "R-05:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelRareLaw.cs",
+      "handlerSymbol": "AutoCastSourceRareLawAcceleration",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceRareLawAcceleration();",
+      "identityTokens": [
+        "\"R-05\"",
+        "\"외과수술 가속\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "기존 로우 +120% 가속 실행 경로. 원본 자동 대상 선택 미검증."
+    },
+    {
+      "skillId": "S-05:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEffects.cs",
+      "handlerSymbol": "TrySourceModelLowFrenzy",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs",
+      "entryCall": "TrySourceModelLowFrenzy(attackerId);",
+      "identityTokens": [
+        "\"S-05\"",
+        "A08B"
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "기존 원본 A08B 자가 가속 모델; 사용자가 선택한 아군 대상 정책과는 다를 수 있음."
+    },
+    {
+      "skillId": "L-19:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs",
+      "handlerSymbol": "ExecuteSourceSugar",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs",
+      "entryCall": "ExecuteSourceModelOriginalSpecial(actor, primary);",
+      "identityTokens": [
+        "case \"L-19\"",
+        "\"하비하비열매\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "원본 Btq 공격 선언 소환 모델; 자폭 물리 효과·판매 보상 및 실제 소환 연출 동등성 미검증."
+    },
+    {
+      "skillId": "L-19:skill:1",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs",
+      "handlerSymbol": "ExecuteSourceSugar",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs",
+      "entryCall": "ExecuteSourceModelOriginalSpecial(actor, primary);",
+      "identityTokens": [
+        "case \"L-19\"",
+        "\"장난감 No.31\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "원본 Btq 공격 선언 소환 모델; 자폭 물리 효과·판매 보상 및 실제 소환 연출 동등성 미검증."
+    },
+    {
+      "skillId": "L-32:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs",
+      "handlerSymbol": "ExecuteSourceKuma",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs",
+      "entryCall": "ExecuteSourceModelOriginalSpecial(actor, primary);",
+      "identityTokens": [
+        "case \"L-32\"",
+        "\"우르스스 쇼크\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "기존 BtL 원본 공격 선언 피해 일부 연결. 추가 상태/면역은 보류."
+    },
+    {
+      "skillId": "L-32:skill:1",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs",
+      "handlerSymbol": "ExecuteSourceKuma",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs",
+      "entryCall": "ExecuteSourceModelOriginalSpecial(actor, primary);",
+      "identityTokens": [
+        "case \"L-32\"",
+        "\"발바닥발바닥 열매\""
+      ],
+      "effectIndexes": [
+        0
+      ],
+      "note": "기존 BtL 원본 공격 선언 피해 일부 연결. 추가 상태/면역은 보류."
+    }
+  ]
+}

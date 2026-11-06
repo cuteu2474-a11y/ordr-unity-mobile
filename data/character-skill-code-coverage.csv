@@ -1,0 +1,555 @@
+skill_id,unit_id,unit_name,grade,skill_name,trigger,status,covered_effects,total_effects,handler_symbols,runtime_reference_files,verification
+D-01:skill:0,D-01,블랙마리아,왜곡됨,범위 마법,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+D-01:skill:1,D-01,블랙마리아,왜곡됨,13타 고정피해,everyNthAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+D-01:skill:2,D-01,블랙마리아,왜곡됨,마리아네트 전환,manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+D-01:skill:3,D-01,블랙마리아,왜곡됨,꼼짝말란 마리아,periodic,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+D-01:skill:4,D-01,블랙마리아,왜곡됨,멈춰서란 마리아,passive,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+D-01:skill:5,D-01,블랙마리아,왜곡됨,타오르란 마리아,periodic,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+D-02:skill:0,D-02,코알라,왜곡됨,어인공수도,activeMana,registration_only,0,3,,Assets/Scripts/Combat/CharacterActiveAbilities.cs,Unity/Android/원작 대조 미실시
+D-02:skill:1,D-02,코알라,왜곡됨,기와 돌려차기,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
+D-02:skill:2,D-02,코알라,왜곡됨,단일 스턴,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+D-03:skill:0,D-03,퀸,왜곡됨,브라키오 붐버,activeMana,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+D-03:skill:1,D-03,퀸,왜곡됨,역재,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+D-03:skill:2,D-03,퀸,왜곡됨,빙귀,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+D-04:skill:0,D-04,페로나,왜곡됨,카미카제 랩,activeMana,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+D-04:skill:1,D-04,페로나,왜곡됨,고스트 랩,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNineteenthSkills.cs,Unity/Android/원작 대조 미실시
+D-04:skill:2,D-04,페로나,왜곡됨,네거티브 홀로우,onAttackWithAbsoluteCooldown,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+D-05:skill:0,D-05,포트거스.D.에이스,왜곡됨,불주먹,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighteenthSkills.cs,Unity/Android/원작 대조 미실시
+D-06:skill:0,D-06,바제스,왜곡됨,매 평타 추가 피해,onEveryHit,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+D-06:skill:1,D-06,바제스,왜곡됨,파동 엘보,periodic,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+E-01:skill:0,E-01,니카(루피),영원한,거대화,activeHealth,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+E-01:skill:1,E-01,니카(루피),영원한,마나 광역기,activeMana,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+E-01:skill:2,E-01,니카(루피),영원한,혼합 광역 타격,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+E-01:skill:3,E-01,니카(루피),영원한,단일 크리티컬,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+E-01:skill:4,E-01,니카(루피),영원한,이동속도 연계 물리,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+E-01:skill:5,E-01,니카(루피),영원한,거대화 타격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+E-02:skill:0,E-02,니카(스네이크),영원한,거대화,activeHealth,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+E-02:skill:1,E-02,니카(스네이크),영원한,마나 광역 공격,activeMana,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+E-02:skill:2,E-02,니카(스네이크),영원한,혼합 광역 타격,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+E-02:skill:3,E-02,니카(스네이크),영원한,치명타,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+E-02:skill:4,E-02,니카(스네이크),영원한,속도비례 물리타격,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+E-02:skill:5,E-02,니카(스네이크),영원한,거대화 전용 타격,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+E-03:skill:0,E-03,류마,영원한,마나 공격,activeMana,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs,Unity/Android/원작 대조 미실시
+E-03:skill:1,E-03,류마,영원한,영혼 고정 타격,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs,Unity/Android/원작 대조 미실시
+E-03:skill:2,E-03,류마,영원한,기본 피해량 조건 범위 공격,afterBasicDamageThreshold,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs,Unity/Android/원작 대조 미실시
+E-03:skill:3,E-03,류마,영원한,영혼 마법 타격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs,Unity/Android/원작 대조 미실시
+E-03:skill:4,E-03,류마,영원한,혼 스택 마법 타격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs,Unity/Android/원작 대조 미실시
+E-03:skill:5,E-03,류마,영원한,영혼 획득,onAttack,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs",Unity/Android/원작 대조 미실시
+E-03:skill:6,E-03,류마,영원한,참룡도,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs,Unity/Android/원작 대조 미실시
+E-04:skill:0,E-04,미호크,영원한,마나 고정 피해,activeMana,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-04:skill:1,E-04,미호크,영원한,원형·직선 마법 타격,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+E-04:skill:2,E-04,미호크,영원한,매 타격 추가 마법,onEveryAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-04:skill:3,E-04,미호크,영원한,치명타,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-04:skill:4,E-04,미호크,영원한,연속 범위 타격,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-04:skill:5,E-04,미호크,영원한,범위 마법 타격,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-04:skill:6,E-04,미호크,영원한,확정 스턴,onEveryAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-05:skill:0,E-05,버기,영원한,버기 필살타,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
+E-05:skill:1,E-05,버기,영원한,해적단 소환,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSeventeenthSpecials.cs,Unity/Android/원작 대조 미실시
+E-05:skill:2,E-05,버기,영원한,전투 아군 공격력 버프,onAttack,model_witness,1,1,TrySourceBuggyAllyAttackBuff,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+E-05:skill:3,E-05,버기,영원한,언변 강화,manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+E-06:skill:0,E-06,비비,영원한,광역 난사,activeMana,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+E-06:skill:1,E-06,비비,영원한,알라바스타 강화,manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+E-06:skill:2,E-06,비비,영원한,건 공격,onSkillOrAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+E-06:skill:3,E-06,비비,영원한,범위 마법,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-06:skill:4,E-06,비비,영원한,헤드샷,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+E-06:skill:5,E-06,비비,영원한,3연사,onSkill,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+E-06:skill:6,E-06,비비,영원한,알라바스타 건,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+E-07:skill:0,E-07,에이스,영원한,대염계 염제,activeMana,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifthSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+E-07:skill:1,E-07,에이스,영원한,발동형 불꽃 지속 피해,onSkillActivated,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifthSkills.cs,Unity/Android/원작 대조 미실시
+E-07:skill:2,E-07,에이스,영원한,불기둥,onAttack,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifthSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+E-07:skill:3,E-07,에이스,영원한,불주먹,onAttack,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifthSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+E-07:skill:4,E-07,에이스,영원한,적 중심 마법,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-08:skill:0,E-08,오뎅,영원한,마나 광역 스턴,activeMana,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+E-08:skill:1,E-08,오뎅,영원한,적중 시 마법 증폭,onSkillActivated,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+E-08:skill:2,E-08,오뎅,영원한,단일 스턴,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-08:skill:3,E-08,오뎅,영원한,범위 물리,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-08:skill:4,E-08,오뎅,영원한,기본 공격 추가,onEveryAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+E-08:skill:5,E-08,오뎅,영원한,마법 광역,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+E-08:skill:6,E-08,오뎅,영원한,꺼지지 않는 상처,onSkillActivated,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+E-09:skill:0,E-09,우타,영원한,광역 노래 마법,activeMana,registration_only,0,4,,,Unity/Android/원작 대조 미실시
+E-09:skill:1,E-09,우타,영원한,확률 광역 스턴,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+E-09:skill:2,E-09,우타,영원한,음표 병사 연계,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+E-09:skill:3,E-09,우타,영원한,3연타 마법,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+E-09:skill:4,E-09,우타,영원한,라인·보스 추가 피해,onAttack,registration_only,0,4,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+E-10:skill:0,E-10,카번딧슈,영원한,기면증,activeMana,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+E-10:skill:1,E-10,카번딧슈,영원한,미검,onAttack,registration_only,0,3,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+E-10:skill:2,E-10,카번딧슈,영원한,치명타 단일 스턴,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
+E-10:skill:3,E-10,카번딧슈,영원한,혼합 범위 타격,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+E-10:skill:4,E-10,카번딧슈,영원한,하쿠바 인격,onSummon,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+E-11:skill:0,E-11,테조로,영원한,골드 연계 체력 소모 공격,activeHealth,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs,Unity/Android/원작 대조 미실시
+E-11:skill:1,E-11,테조로,영원한,공격 발동 마법 타격,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs,Unity/Android/원작 대조 미실시
+E-11:skill:2,E-11,테조로,영원한,곤 인페르노,periodic,registration_only,0,3,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs",Unity/Android/원작 대조 미실시
+E-11:skill:3,E-11,테조로,영원한,곤 인페르노 2회 누적 발동,counter,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs,Unity/Android/원작 대조 미실시
+E-12:skill:0,E-12,핸콕,영원한,마나 25회 타격,activeMana,unresolved,0,4,,,Unity/Android/원작 대조 미실시
+E-12:skill:1,E-12,핸콕,영원한,패기 접근,onEnemyEnterRange,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+E-12:skill:2,E-12,핸콕,영원한,단일 치명타,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+E-12:skill:3,E-12,핸콕,영원한,혼합 공격,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+E-12:skill:4,E-12,핸콕,영원한,직선 마법 버프,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+E-12:skill:5,E-12,핸콕,영원한,혼합 스턴 타격,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+H-02:skill:0,H-02,레드포스호,히든,보스·광폭화 함포,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+H-04:skill:0,H-04,료쿠규,히든,거대 숲 물리,activeMana,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+H-04:skill:1,H-04,료쿠규,히든,숲 물리,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+H-05:skill:0,H-05,류마,히든,흑도 슈스이,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
+H-07:skill:0,H-07,반더데켄,히든,갑판 포격,activeMana,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+H-07:skill:1,H-07,반더데켄,히든,단일 선행 피해,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+H-08:skill:0,H-08,발라티에,히든,선택 아군 가속,manual,model_witness,1,1,ApplySourceManualSupport,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+H-09:skill:0,H-09,방주맥심,히든,뇌영,activeMana,registration_only,0,4,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+H-10:skill:0,H-10,베르고,히든,맥시멈 스윙,activeMana,registration_only,0,4,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs",Unity/Android/원작 대조 미실시
+H-10:skill:1,H-10,베르고,히든,기본 공격 발동형 타격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+H-11:skill:0,H-11,봉쿠레,히든,스턴 타격,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+H-12:skill:0,H-12,사보,히든,용의 발톱,onAttack,registration_only,0,4,,,Unity/Android/원작 대조 미실시
+H-13:skill:0,H-13,스튜시,히든,흡혈 범위 타격,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+H-14:skill:0,H-14,시류,히든,혈우,activeMana,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs,Unity/Android/원작 대조 미실시
+H-14:skill:1,H-14,시류,히든,흉포한 검술,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+H-15:skill:0,H-15,써니호,히든,베가펑크 지식 탑재 포격,activeMana,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+H-15:skill:1,H-15,써니호,히든,일반 포격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
+H-16:skill:0,H-16,아오키지,히든,얼음 충격,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+H-17:skill:0,H-17,아카이누,히든,명구,onAttack,unresolved,0,4,,,Unity/Android/원작 대조 미실시
+H-18:skill:0,H-18,이완코브,히든,체력회복 공격력 버프,manual,model_witness,2,2,ApplySourceManualSupport,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+H-18:skill:1,H-18,이완코브,히든,광역 스턴,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+H-19:skill:0,H-19,캐럿,히든,범위 마법·증폭,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+H-19:skill:1,H-19,캐럿,히든,라인 체력 비례,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+H-20:skill:0,H-20,키쿠노죠,히든,잔설검,activeMana,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs,Unity/Android/원작 대조 미실시
+H-20:skill:1,H-20,키쿠노죠,히든,눈보라,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+H-21:skill:0,H-21,킬러,히든,돌격 연타,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs,Unity/Android/원작 대조 미실시
+H-22:skill:0,H-22,피셔타이거,히든,증오,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+H-22:skill:1,H-22,피셔타이거,히든,마리조아붕괴,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+I-01:skill:0,I-01,거프,불멸의,특제 대포환,activeMana,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+I-01:skill:1,I-01,거프,불멸의,무장색 패기,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
+I-01:skill:2,I-01,거프,불멸의,육식 체,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+I-01:skill:3,I-01,거프,불멸의,기본 공격 범위 추가,onEveryAttack,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs",Unity/Android/원작 대조 미실시
+I-01:skill:4,I-01,거프,불멸의,크리티컬 단일 스턴,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+I-02:skill:0,I-02,드래곤,불멸의,마나 낙뢰,activeMana,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+I-02:skill:1,I-02,드래곤,불멸의,범위 마법 스턴,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs, Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs",Unity/Android/원작 대조 미실시
+I-02:skill:2,I-02,드래곤,불멸의,용오름,onSkillActivated,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+I-02:skill:3,I-02,드래곤,불멸의,삭풍,onSkillActivated,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+I-03:skill:0,I-03,레일리,불멸의,패기발산,activeMana,registration_only,0,4,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+I-03:skill:1,I-03,레일리,불멸의,기본 공격 광역 추가,onEveryAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+I-03:skill:2,I-03,레일리,불멸의,단일 스턴,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+I-03:skill:3,I-03,레일리,불멸의,범위 마법,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+I-03:skill:4,I-03,레일리,불멸의,순속,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+I-03:skill:5,I-03,레일리,불멸의,분신,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTemporarySkills.cs,Unity/Android/원작 대조 미실시
+I-04:skill:0,I-04,로져,불멸의,광역 혼합 피해,activeMana,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs,Unity/Android/원작 대조 미실시
+I-04:skill:1,I-04,로져,불멸의,범위 참격,onAttack,registration_only,0,3,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+I-04:skill:2,I-04,로져,불멸의,타격·단일 스턴,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+I-04:skill:3,I-04,로져,불멸의,광역 물리 타격,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+I-04:skill:4,I-04,로져,불멸의,주변 지속 피해,periodic,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+I-05:skill:0,I-05,불릿,불멸의,데어 슈테르크슈테 스트라이크,activeMana,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs,Unity/Android/원작 대조 미실시
+I-05:skill:1,I-05,불릿,불멸의,패왕색 패기,onAttack,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs",Unity/Android/원작 대조 미실시
+I-05:skill:2,I-05,불릿,불멸의,육식 체,onAttack,registration_only,0,3,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyFirstEquipment.cs",Unity/Android/원작 대조 미실시
+I-05:skill:3,I-05,불릿,불멸의,괴물의 후계자,onEveryAttack,registration_only,0,3,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentiethSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyFirstEquipment.cs",Unity/Android/원작 대조 미실시
+I-05:skill:4,I-05,불릿,불멸의,유니언 아르마다,itemUpgrade,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyFirstEquipment.cs,Unity/Android/원작 대조 미실시
+I-06:skill:0,I-06,빅맘,불멸의,대자재천신,activeHealth,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+I-06:skill:1,I-06,빅맘,불멸의,영혼포식,onAttack,unresolved,0,4,,,Unity/Android/원작 대조 미실시
+I-06:skill:2,I-06,빅맘,불멸의,영혼 축적,onExecute,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+I-06:skill:3,I-06,빅맘,불멸의,기본 공격 추가,onEveryAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+I-06:skill:4,I-06,빅맘,불멸의,범위 고정 타격,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+I-07:skill:0,I-07,센고쿠,불멸의,체력 소모 폭발 공격,activeHealth,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+I-07:skill:1,I-07,센고쿠,불멸의,마법 타격,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+I-07:skill:2,I-07,센고쿠,불멸의,광역 마법 스턴,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+I-08:skill:0,I-08,스코퍼가반,불멸의,전체체력 비례 고정피해,activeMana,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs,Unity/Android/원작 대조 미실시
+I-08:skill:1,I-08,스코퍼가반,불멸의,단일 물리 타격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+I-08:skill:2,I-08,스코퍼가반,불멸의,공격력 상승,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+I-08:skill:3,I-08,스코퍼가반,불멸의,기본 공격 추가 고정피해,onAttack,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs",Unity/Android/원작 대조 미실시
+I-08:skill:4,I-08,스코퍼가반,불멸의,공격 대상 방어 감소,onHit,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+I-08:skill:5,I-08,스코퍼가반,불멸의,타격·스턴,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+I-09:skill:0,I-09,시키,불멸의,마나 광역 스턴,activeMana,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+I-09:skill:1,I-09,시키,불멸의,부유물 소환,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+I-09:skill:2,I-09,시키,불멸의,부유물 연속 타격,summonedUnitOnAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+I-09:skill:3,I-09,시키,불멸의,범위 마법 스턴,onAttack,registration_only,0,3,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+I-09:skill:4,I-09,시키,불멸의,물리 마법 혼합,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+I-09:skill:5,I-09,시키,불멸의,폐함대선,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+I-10:skill:0,I-10,제트,불멸의,마나 광역 공격,activeMana,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+I-10:skill:1,I-10,제트,불멸의,직선 마법 공격,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+I-10:skill:2,I-10,제트,불멸의,차지 버스트,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+I-10:skill:3,I-10,제트,불멸의,매 타격 스턴,onEveryAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+I-11:skill:0,I-11,카이도,불멸의,체력 소모 광역 공격,activeHealth,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+I-11:skill:1,I-11,카이도,불멸의,인간형 타격,onAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNativeCharacters.cs,Unity/Android/원작 대조 미실시
+I-11:skill:2,I-11,카이도,불멸의,인간형 열 번째 공격,everyNthAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNativeCharacters.cs,Unity/Android/원작 대조 미실시
+I-11:skill:3,I-11,카이도,불멸의,용형 타격,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNativeCharacters.cs,Unity/Android/원작 대조 미실시
+I-11:skill:4,I-11,카이도,불멸의,용형 열 번째 공격,everyNthAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNativeCharacters.cs,Unity/Android/원작 대조 미실시
+I-11:skill:5,I-11,카이도,불멸의,약육강식,onAttackAndSkill,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNativeCharacters.cs,Unity/Android/원작 대조 미실시
+I-12:skill:0,I-12,흰수염,불멸의,체력 소모 범위 공격,activeHealth,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+I-12:skill:1,I-12,흰수염,불멸의,괴천,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+I-12:skill:2,I-12,흰수염,불멸의,마법 둔화,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+L-01:skill:0,L-01,검은수염,전설,어둠어둠 열매,activeHealth,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyFourthSkills.cs,Unity/Android/원작 대조 미실시
+L-01:skill:1,L-01,검은수염,전설,크로우즈 Lv2,onAttack,unresolved,0,5,,,Unity/Android/원작 대조 미실시
+L-02:skill:0,L-02,나미,전설,크리마텍트 Lv2,onAttackOrHealth,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+L-03:skill:0,L-03,네코마무시,전설,분노 폭발,onBossAttackOrHealth,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+L-03:skill:1,L-03,네코마무시,전설,전격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+L-04:skill:0,L-04,드래곤,전설,바람바람 열매,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-05:skill:0,L-05,라분,전설,박치기,onAttackOrEveryNthAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+L-06:skill:0,L-06,레이쥬,전설,핑크호넷,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNineteenthSkills.cs,Unity/Android/원작 대조 미실시
+L-06:skill:1,L-06,레이쥬,전설,독구슬,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNineteenthSkills.cs,Unity/Android/원작 대조 미실시
+L-07:skill:0,L-07,레일리,전설,패기발산,activeMana,registration_only,0,4,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+L-07:skill:1,L-07,레일리,전설,명왕의 검술,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-08:skill:0,L-08,트라팔가 로우,전설,인젝션 샷,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+L-08:skill:1,L-08,트라팔가 로우,전설,수술수술열매,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+L-08:skill:2,L-08,트라팔가 로우,전설,외과수술(W),manual,model_witness,1,1,ApplySourceManualSupport,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+L-09:skill:0,L-09,루치,전설,육왕건,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+L-09:skill:1,L-09,루치,전설,육식 Lv4,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-10:skill:0,L-10,루피 나이트메어,전설,기본공격 치명타,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-10:skill:1,L-10,루피 나이트메어,전설,원혼 폭발,onDamageDealtThreshold,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+L-10:skill:2,L-10,루피 나이트메어,전설,원혼폭발 추가 공격력 성장,onSkillActivated,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+L-11:skill:0,L-11,마르코 환수종,전설,깃털폭격,activeHealth,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+L-11:skill:1,L-11,마르코 환수종,전설,불사조불사조열매,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-12:skill:0,L-12,모리아,전설,그림자흡수,onAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+L-13:skill:0,L-13,바르톨로메오,전설,배리어 볼,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+L-13:skill:1,L-13,바르톨로메오,전설,배리어배리어열매,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-13:skill:2,L-13,바르톨로메오,전설,배리어 피스트,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-14:skill:0,L-14,브륄레,전설,미러미러열매,manual,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-15:skill:0,L-15,블랙마리아,전설,왼손은 수면제,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+L-15:skill:1,L-15,블랙마리아,전설,오른손은 황천길,everyNthAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-15:skill:2,L-15,블랙마리아,전설,타격 스턴,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+L-16:skill:0,L-16,상디,전설,슈트코스,onEachBasicAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-16:skill:1,L-16,상디,전설,검은다리,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+L-17:skill:0,L-17,샹크스,전설,패왕색의 검무,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-17:skill:1,L-17,샹크스,전설,패왕색 패기 접근 발동,onEnemyEnterRange,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+L-17:skill:2,L-17,샹크스,전설,기본공격 치명타,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+L-18:skill:0,L-18,센고쿠,전설,사람사람열매,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs",Unity/Android/원작 대조 미실시
+L-18:skill:1,L-18,센고쿠,전설,인의는 사라지지 않는다,onAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+L-19:skill:0,L-19,슈가,전설,하비하비열매,onAttack,model_witness,1,1,ExecuteSourceSugar,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
+L-19:skill:1,L-19,슈가,전설,장난감 No.31,onAttack,model_witness,1,1,ExecuteSourceSugar,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
+L-19:skill:2,L-19,슈가,전설,장난감화(R),manual,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-20:skill:0,L-20,스모커,전설,화이트 아웃,activeMana,registration_only,0,5,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyFourthSkills.cs, Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs",Unity/Android/원작 대조 미실시
+L-20:skill:1,L-20,스모커,전설,화이트바인,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-20:skill:2,L-20,스모커,전설,화이트블로우,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-21:skill:0,L-21,시노부,전설,급습,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs,Unity/Android/원작 대조 미실시
+L-21:skill:1,L-21,시노부,전설,인술 분신,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTemporarySkills.cs",Unity/Android/원작 대조 미실시
+L-21:skill:2,L-21,시노부,전설,보물 색별(R),manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+L-22:skill:0,L-22,시저,전설,가스가스열매,periodic,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+L-23:skill:0,L-23,시키,전설,바위낙하,onAttack,registration_only,0,4,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+L-23:skill:1,L-23,시키,전설,바닷물 가두기,onAttack,registration_only,0,3,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+L-24:skill:0,L-24,에이스,전설,산화 부지화,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+L-24:skill:1,L-24,에이스,전설,십자화,onSkillActivated,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+L-25:skill:0,L-25,울티,전설,미티어 울두건,activeHealth,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs,Unity/Android/원작 대조 미실시
+L-25:skill:1,L-25,울티,전설,울두건,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+L-26:skill:0,L-26,제파,전설,흑완,onAttack,unresolved,0,4,,,Unity/Android/원작 대조 미실시
+L-26:skill:1,L-26,제파,전설,무장색의 패기,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-27:skill:0,L-27,조로,전설,사자의노래,onAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
+L-27:skill:1,L-27,조로,전설,평타 크리티컬,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+L-27:skill:2,L-27,조로,전설,보스 대상 일격,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-28:skill:0,L-28,징베,전설,어인가라데,activeMana,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs,Unity/Android/원작 대조 미실시
+L-28:skill:1,L-28,징베,전설,해류 한판 업어치기,onBasicAttackWithAbsoluteCooldown,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+L-28:skill:2,L-28,징베,전설,단일 타격 스턴,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-29:skill:0,L-29,쵸파 유력강화,전설,발굽 로제오,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+L-30:skill:0,L-30,카르가라,전설,샨디아의 창,activeMana,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+L-30:skill:1,L-30,카르가라,전설,평타 크리티컬,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-31:skill:0,L-31,코비,전설,용기의 외침,activeMana,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+L-31:skill:1,L-31,코비,전설,육식 - 체,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-31:skill:2,L-31,코비,전설,지건,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+L-32:skill:0,L-32,쿠마 폭군,전설,우르스스 쇼크,activeMana,partial_witness,1,2,ExecuteSourceKuma,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
+L-32:skill:1,L-32,쿠마 폭군,전설,발바닥발바닥 열매,onAttack,partial_witness,1,2,ExecuteSourceKuma,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
+L-32:skill:2,L-32,쿠마 폭군,전설,전이,manual,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-33:skill:0,L-33,크래커,전설,나선찌르기,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+L-33:skill:1,L-33,크래커,전설,크래커 비스킷,manual,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-34:skill:0,L-34,킹,전설,화재,onAttack,registration_only,0,4,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwelfthForms.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyNinthSkills.cs",Unity/Android/원작 대조 미실시
+L-35:skill:0,L-35,토키,전설,시간시간열매,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+L-36:skill:0,L-36,핸콕,전설,매료매료 열매,onAttack,unresolved,0,6,,,Unity/Android/원작 대조 미실시
+L-36:skill:1,L-36,핸콕,전설,피스톨 키스,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+L-37:skill:0,L-37,후지토라,전설,중력검,onAttack,registration_only,0,4,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs, Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs",Unity/Android/원작 대조 미실시
+L-38:skill:0,L-38,흰수염,전설,기선 제압,activeHealth,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+L-38:skill:1,L-38,흰수염,전설,흔들흔들 열매,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+L-39:skill:0,L-39,히바리,전설,백발백중,onNthSuccessfulBasicHit,registration_only,0,5,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+L-39:skill:1,L-39,히바리,전설,사랑의도시락(B),manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+LI-01:skill:0,LI-01,레드필드,제한됨,핏빛 범위 공격,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+LI-01:skill:1,LI-01,레드필드,제한됨,광역 마법 공격,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+LI-01:skill:2,LI-01,레드필드,제한됨,단일 스턴,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
+LI-01:skill:3,LI-01,레드필드,제한됨,평타 단일 고정,onEveryAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
+LI-02:skill:0,LI-02,레베카,제한됨,단일 스턴,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+LI-02:skill:1,LI-02,레베카,제한됨,광역 물리 둔화,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFusionNativeFollowups.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+LI-02:skill:2,LI-02,레베카,제한됨,물리 연계,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+LI-03:skill:0,LI-03,마르코,제한됨,불사조 상태 폭발,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+LI-03:skill:1,LI-03,마르코,제한됨,인간형 돌진,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+LI-04:skill:0,LI-04,시노부,제한됨,암습,activeHealth,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+LI-04:skill:1,LI-04,시노부,제한됨,암행,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+LI-04:skill:2,LI-04,시노부,제한됨,광역 마법,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+LI-04:skill:3,LI-04,시노부,제한됨,인술 분신,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTemporarySkills.cs",Unity/Android/원작 대조 미실시
+LI-05:skill:0,LI-05,아인,제한됨,되감기,onSkillActivated,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+LI-05:skill:1,LI-05,아인,제한됨,2연타 마법,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs,Unity/Android/원작 대조 미실시
+LI-05:skill:2,LI-05,아인,제한됨,3연타 마법,onAttack,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs",Unity/Android/원작 대조 미실시
+LI-05:skill:3,LI-05,아인,제한됨,단일 스턴,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+LI-06:skill:0,LI-06,알비다,제한됨,범위 광역 스턴,activeMana,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+LI-06:skill:1,LI-06,알비다,제한됨,확정 단일 스턴,onEveryAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+LI-06:skill:2,LI-06,알비다,제한됨,3타 물리 넉백,everyNthHit,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+LI-06:skill:3,LI-06,알비다,제한됨,미끌미끌 슈플,onAttackWithAbsoluteCooldown,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+LI-07:skill:0,LI-07,에넬,제한됨,뇌영,activeMana,registration_only,0,4,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+LI-07:skill:1,LI-07,에넬,제한됨,낙뢰 4연타,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+LI-07:skill:2,LI-07,에넬,제한됨,대상 접근 시 낙뢰,onEnemyEnterRange,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+LI-07:skill:3,LI-07,에넬,제한됨,100만 볼트방전,periodic,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+LI-08:skill:0,LI-08,카타쿠리,제한됨,자기 가속,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+LI-08:skill:1,LI-08,카타쿠리,제한됨,단일 타격,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+LI-08:skill:2,LI-08,카타쿠리,제한됨,광역 마법,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+LI-08:skill:3,LI-08,카타쿠리,제한됨,접근 상대 강타,onEnemyEnterRange,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+LI-09:skill:0,LI-09,크로커다일,제한됨,단일 참격,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+LI-09:skill:1,LI-09,크로커다일,제한됨,광역 물리,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+LI-09:skill:2,LI-09,크로커다일,제한됨,혼합 스턴,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+LI-10:skill:0,LI-10,킹,제한됨,처형자,verifiedCondition,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+LI-10:skill:1,LI-10,킹,제한됨,참수,verifiedCondition,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+LI-10:skill:2,LI-10,킹,제한됨,잔혹한 검술,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+LI-10:skill:3,LI-10,킹,제한됨,화재,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwelfthForms.cs,Unity/Android/원작 대조 미실시
+LI-10:skill:4,LI-10,킹,제한됨,단일 둔화,onEveryAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwelfthForms.cs,Unity/Android/원작 대조 미실시
+MY-01:skill:0,MY-01,고죠 사토루,신비함,영역전개 무량공처,activeMana,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+MY-01:skill:1,MY-01,고죠 사토루,신비함,술식 반전 혁,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-01:skill:2,MY-01,고죠 사토루,신비함,무라사키,onSkillActivated,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-01:skill:3,MY-01,고죠 사토루,신비함,술식 순전 창,onAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-02:skill:0,MY-02,네즈코,신비함,오니,onEveryAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+MY-02:skill:1,MY-02,네즈코,신비함,할퀴기,onEveryAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+MY-02:skill:2,MY-02,네즈코,신비함,휩쓸기,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+MY-02:skill:3,MY-02,네즈코,신비함,혈귀술 폭혈,activeMana,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+MY-03:skill:0,MY-03,료우기 시키,신비함,무명의 달,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-03:skill:1,MY-03,료우기 시키,신비함,은폐 나이프,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+MY-03:skill:2,MY-03,료우기 시키,신비함,흔들리는 도의 소매,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-03:skill:3,MY-03,료우기 시키,신비함,직사의 마안,onSkillActivated,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-03:skill:4,MY-03,료우기 시키,신비함,유식 직사의 마안,activeMana,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+MY-04:skill:0,MY-04,미나토,신비함,비뢰신 이의 단 나선환,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
+MY-04:skill:1,MY-04,미나토,신비함,나선섬광초륜무후삼식,activeMana,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+MY-04:skill:2,MY-04,미나토,신비함,섬광연무,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+MY-05:skill:0,MY-05,바쿠야,신비함,만해 천본앵경엄,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+MY-05:skill:1,MY-05,바쿠야,신비함,섬경 천본앵경엄,periodic,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs",Unity/Android/원작 대조 미실시
+MY-05:skill:2,MY-05,바쿠야,신비함,종경백제검,activeMana,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+MY-05:skill:3,MY-05,바쿠야,신비함,천본앵,onSkillActivated,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-06:skill:0,MY-06,부릉냐,신비함,사이버 엔젤 cfg,onSkillActivated,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-06:skill:1,MY-06,부릉냐,신비함,이성의 창조물,activeMana,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+MY-06:skill:2,MY-06,부릉냐,신비함,데이터 질주,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-06:skill:3,MY-06,부릉냐,신비함,무기화 빌드 Lv2,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-07:skill:0,MY-07,샌즈,신비함,체력본충(Q),manual,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-07:skill:1,MY-07,샌즈,신비함,단단한 뼈,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-07:skill:2,MY-07,샌즈,신비함,가스터 블래스터,activeMana,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+MY-07:skill:3,MY-07,샌즈,신비함,피곤함,afterBasicAttacks,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-08:skill:0,MY-08,아냐 포저,신비함,독심술,onEnemyEnterRange,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+MY-08:skill:1,MY-08,아냐 포저,신비함,로이드 포저,activeHealth,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-08:skill:2,MY-08,아냐 포저,신비함,요르 포저,activeMana,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-08:skill:3,MY-08,아냐 포저,신비함,스타캐치 애로우,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+MY-08:skill:4,MY-08,아냐 포저,신비함,와쿠와쿠,onFamilySkill,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-08:skill:5,MY-08,아냐 포저,신비함,선물상자,onGiftBoxOpened,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-08:skill:6,MY-08,아냐 포저,신비함,가족사진(Q),manual,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-09:skill:0,MY-09,야쿠모 유카리,신비함,행방불명,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-09:skill:1,MY-09,야쿠모 유카리,신비함,비광충,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+MY-09:skill:2,MY-09,야쿠모 유카리,신비함,생사의 경계,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+MY-09:skill:3,MY-09,야쿠모 유카리,신비함,폐역하차 여행,activeMana,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+MY-10:skill:0,MY-10,콘파쿠 요우무,신비함,검술을 다루는 정도의 능력,onEveryAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-10:skill:1,MY-10,콘파쿠 요우무,신비함,인귀 미래영겁참,activeMana,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+MY-10:skill:2,MY-10,콘파쿠 요우무,신비함,단령검 성불득탈참,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+MY-10:skill:3,MY-10,콘파쿠 요우무,신비함,단미검 미진자항참,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighteenthSkills.cs,Unity/Android/원작 대조 미실시
+MY-10:skill:4,MY-10,콘파쿠 요우무,신비함,혼백 유명구문지총명의 법,activeHealth,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+MY-11:skill:0,MY-11,쿠죠 죠타로,신비함,마왕,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+MY-11:skill:1,MY-11,쿠죠 죠타로,신비함,러쉬,activeHealth,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+MY-11:skill:2,MY-11,쿠죠 죠타로,신비함,스타 플라티나 더월드,activeMana,unresolved,0,4,,,Unity/Android/원작 대조 미실시
+MY-11:skill:3,MY-11,쿠죠 죠타로,신비함,스타 플라티나,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
+MY-11:skill:4,MY-11,쿠죠 죠타로,신비함,오라,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+MY-12:skill:0,MY-12,타츠마키,신비함,짓누르기,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+MY-12:skill:1,MY-12,타츠마키,신비함,염동 회오리,activeHealth,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+MY-12:skill:2,MY-12,타츠마키,신비함,협회수당,manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+MY-12:skill:3,MY-12,타츠마키,신비함,염동 운석낙하,activeMana,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+MY-13:skill:0,MY-13,히그마,신비함,총알세례,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-13:skill:1,MY-13,히그마,신비함,강탈,activeHealth,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+MY-13:skill:2,MY-13,히그마,신비함,권총 던지기,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+R-02:skill:0,R-02,거프,희귀함,거프 타격,onAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs,Unity/Android/원작 대조 미실시
+R-03:skill:0,R-03,검은수염,희귀함,검은수염 어둠,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
+R-05:skill:0,R-05,트라팔가 로우 죽음의 외과의사,희귀함,외과수술 가속,manual,model_witness,1,1,AutoCastSourceRareLawAcceleration,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelRareLaw.cs,Unity/Android/원작 대조 미실시
+R-07:skill:0,R-07,류마,희귀함,흑도 슈스이,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
+R-17:skill:0,R-17,벤 베크만,희귀함,단일 물리 스턴,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+R-17:skill:1,R-17,벤 베크만,희귀함,마법 단일 강화,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+R-25:skill:0,R-25,시류,희귀함,단일 스턴 타격,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+R-25:skill:1,R-25,시류,희귀함,현재 체력 폭발,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighteenthSkills.cs,Unity/Android/원작 대조 미실시
+R-26:skill:0,R-26,아오키지,희귀함,빙결 광역,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+R-31:skill:0,R-31,이완코브,희귀함,호르몬 버프,manual,model_witness,1,1,ApplySourceManualSupport,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+R-31:skill:1,R-31,이완코브,희귀함,범위 마법 스턴,onAttack,registration_only,0,2,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+R-38:skill:0,R-38,크로커다일 Mr.0,희귀함,로어,manual,model_witness,1,1,ApplySourceManualSupport,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+R-42:skill:0,R-42,핸콕,희귀함,단일 타격·스턴,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+R-42:skill:1,R-42,핸콕,희귀함,매혹 계열 범위 공격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighteenthSkills.cs,Unity/Android/원작 대조 미실시
+RN-01:skill:0,RN-01,K,랜덤,미닛츠 스파이크,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+RN-01:skill:1,RN-01,K,랜덤,체인 드라이브,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+RN-01:skill:2,RN-01,K,랜덤,최대 속도,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+RN-01:skill:3,RN-01,K,랜덤,히트 드라이브,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+RN-02:skill:0,RN-02,나루토,랜덤,대옥 나선환,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+RN-02:skill:1,RN-02,나루토,랜덤,풍둔 나선 수리검,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+RN-03:skill:0,RN-03,메구밍,랜덤,폭렬 익스플로전,manual,model_witness,1,1,SourceManualBurst,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+RN-04:skill:0,RN-04,센토 이스즈,랜덤,페인 브링어,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs,Unity/Android/원작 대조 미실시
+RN-04:skill:1,RN-04,센토 이스즈,랜덤,저격(Q),manual,model_witness,2,2,SourceManualBurst,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+RN-05:skill:0,RN-05,야가미 라이토,랜덤,데스노트,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+RN-06:skill:0,RN-06,엘리자베스,랜덤,다크니스 에로우,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+RN-06:skill:1,RN-06,엘리자베스,랜덤,행운의 토큰(Q),manual,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+RN-06:skill:2,RN-06,엘리자베스,랜덤,토큰 교환,verifiedCondition,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+RN-07:skill:0,RN-07,옌,랜덤,광역 마법,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+RN-08:skill:0,RN-08,요츠바,랜덤,떼쓰기(Q),manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+RN-09:skill:0,RN-09,이사야마 요미,랜덤,영능력,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+RN-10:skill:0,RN-10,이치의 율자,랜덤,무기화 빌드 Lv1,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighteenthSkills.cs,Unity/Android/원작 대조 미실시
+RN-11:skill:0,RN-11,토우마,랜덤,보스 크리티컬,onAttackAgainstBoss,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+RN-11:skill:1,RN-11,토우마,랜덤,판단력(Q),manual,model_witness,3,3,ApplySourceManualSupport,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+RN-12:skill:0,RN-12,이치고,랜덤,검은 월아천충,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+RN-12:skill:1,RN-12,이치고,랜덤,천쇄참월,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
+RN-13:skill:0,RN-13,페이몬,랜덤,비상식량,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+RN-13:skill:1,RN-13,페이몬,랜덤,슈퍼 페이몬 선풍,activeMana,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+RN-14:skill:0,RN-14,하네카와 츠바사,랜덤,고양이 발톱,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+S-05:skill:0,S-05,트라팔가 로우,특별함,선택 아군 가속,manual,model_witness,1,1,TrySourceModelLowFrenzy,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+S-32:skill:0,S-32,파이러츠 도킹5,특별함,파이러츠 도킹5 단일 스킬,onSkillUse,unresolved,0,4,,,Unity/Android/원작 대조 미실시
+SR-01:skill:0,SR-01,S-스네이크,세라핌,단일 타격,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+SR-01:skill:1,SR-01,S-스네이크,세라핌,매료 범위기,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+SR-01:skill:2,SR-01,S-스네이크,세라핌,피스톨 키스,onAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+SR-01:skill:3,SR-01,S-스네이크,세라핌,피스톨 키스 6회 발동 보너스,afterNthSkillActivation,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNinthSkills.cs,Unity/Android/원작 대조 미실시
+SR-02:skill:0,SR-02,S-호크,세라핌,단일 타격,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+SR-02:skill:1,SR-02,S-호크,세라핌,일섬,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNineteenthSkills.cs,Unity/Android/원작 대조 미실시
+SR-02:skill:2,SR-02,S-호크,세라핌,광역 참격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNineteenthSkills.cs,Unity/Android/원작 대조 미실시
+SR-03:skill:0,SR-03,S-샤크,세라핌,체력 소모 광역공격,activeHealth,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs,Unity/Android/원작 대조 미실시
+SR-03:skill:1,SR-03,S-샤크,세라핌,단일 타격,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+SR-04:skill:0,SR-04,S-베어,세라핌,단일 타격,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+SR-04:skill:1,SR-04,S-베어,세라핌,우르수스 쇼크,periodicOrCounter,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+SR-04:skill:2,SR-04,S-베어,세라핌,압력포 :: 베어,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+SR-04:skill:3,SR-04,S-베어,세라핌,파시피스타 레이저,onAttackWithAbsoluteCooldown,unresolved,0,5,,,Unity/Android/원작 대조 미실시
+T-01:skill:0,T-01,도플라밍고,변화,오버히트,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs,Unity/Android/원작 대조 미실시
+T-01:skill:1,T-01,도플라밍고,변화,실실열매,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+T-02:skill:0,T-02,비비,변화,공작스트링,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+T-02:skill:1,T-02,비비,변화,공작슬래셔,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+T-03:skill:0,T-03,베이비 5,변화,과열,manual,model_witness,1,1,ApplySourceManualSupport,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
+T-03:skill:1,T-03,베이비 5,변화,무기무기열매,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNineteenthSkills.cs,Unity/Android/원작 대조 미실시
+T-04:skill:0,T-04,카쿠,변화,람각,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNineteenthSkills.cs, Assets/Scripts/Combat/Original323ScriptAttackEffectCoordinator.cs",Unity/Android/원작 대조 미실시
+T-05:skill:0,T-05,캐럿,변화,고속전격,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+T-05:skill:1,T-05,캐럿,변화,일렉트리컬 루나,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+T-05:skill:2,T-05,캐럿,변화,달빛걸음,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+TR-01:skill:0,TR-01,검은수염,초월함,체력 소모 지진,activeHealth,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+TR-01:skill:1,TR-01,검은수염,초월함,흔들흔들 열매,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+TR-01:skill:2,TR-01,검은수염,초월함,흔들흔들 연계,onSkillActivated,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+TR-01:skill:3,TR-01,검은수염,초월함,직선 마법 공격,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+TR-01:skill:4,TR-01,검은수염,초월함,단일 증폭·제어,onAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+TR-02:skill:0,TR-02,나미,초월함,날씨조작술,periodic,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+TR-02:skill:1,TR-02,나미,초월함,미라쥬 템포,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+TR-02:skill:2,TR-02,나미,초월함,미라쥬 연계,onSkillActivated,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs,Unity/Android/원작 대조 미실시
+TR-02:skill:3,TR-02,나미,초월함,낙뢰,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
+TR-03:skill:0,TR-03,도플라밍고,초월함,각성,activeMana,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTenthForms.cs,Unity/Android/원작 대조 미실시
+TR-03:skill:1,TR-03,도플라밍고,초월함,범위 물리 타격,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs,Unity/Android/원작 대조 미실시
+TR-03:skill:2,TR-03,도플라밍고,초월함,실실 열매·오색실,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+TR-03:skill:3,TR-03,도플라밍고,초월함,다중절단,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+TR-03:skill:4,TR-03,도플라밍고,초월함,각성 추가 공격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTenthForms.cs,Unity/Android/원작 대조 미실시
+TR-04:skill:0,TR-04,로빈,초월함,체력 소모 광역 공격,activeHealth,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+TR-04:skill:1,TR-04,로빈,초월함,범위 마법 스턴,onAttack,registration_only,0,2,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+TR-04:skill:2,TR-04,로빈,초월함,혼합 타격,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+TR-04:skill:3,TR-04,로빈,초월함,멀티샷 추가 피해,onAttack,registration_only,0,1,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+TR-05:skill:0,TR-05,트라팔가 로우,초월함,룸,activeMana,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyFifthSkills.cs,Unity/Android/원작 대조 미실시
+TR-05:skill:1,TR-05,트라팔가 로우,초월함,룸 연계 광역 공격,activeHealth,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyFifthSkills.cs,Unity/Android/원작 대조 미실시
+TR-05:skill:2,TR-05,트라팔가 로우,초월함,인젝션 샷,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyFifthSkills.cs,Unity/Android/원작 대조 미실시
+TR-05:skill:3,TR-05,트라팔가 로우,초월함,수술수술 열매,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-06:skill:0,TR-06,료쿠규,초월함,숲인간 변신,activeMana,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTenthForms.cs,Unity/Android/원작 대조 미실시
+TR-06:skill:1,TR-06,료쿠규,초월함,숲 범위·직선 지속 공격,periodicOnSkill,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+TR-06:skill:2,TR-06,료쿠규,초월함,전방위 흡수,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+TR-06:skill:3,TR-06,료쿠규,초월함,숲가꾸기,onAttack,unresolved,0,4,,,Unity/Android/원작 대조 미실시
+TR-07:skill:0,TR-07,루치,초월함,격투 스턴,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-07:skill:1,TR-07,루치,초월함,람각,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAttackSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifthSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/Original323ScriptAttackEffectCoordinator.cs",Unity/Android/원작 대조 미실시
+TR-07:skill:2,TR-07,루치,초월함,지건,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-07:skill:3,TR-07,루치,초월함,육왕건,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifthSkills.cs,Unity/Android/원작 대조 미실시
+TR-08:skill:0,TR-08,루피,초월함,레드호크,activeMana,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-08:skill:1,TR-08,루피,초월함,평타 광역 연계,onAttack,registration_only,0,4,,,Unity/Android/원작 대조 미실시
+TR-08:skill:2,TR-08,루피,초월함,기간트 개틀링,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-09:skill:0,TR-09,바질호킨스,초월함,체력 소모 연타,activeHealth,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixthSkills.cs,Unity/Android/원작 대조 미실시
+TR-09:skill:1,TR-09,바질호킨스,초월함,마나 광역 공격,activeMana,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+TR-09:skill:2,TR-09,바질호킨스,초월함,광역 3연타,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-09:skill:3,TR-09,바질호킨스,초월함,평타 광역 추가,onEveryAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-09:skill:4,TR-09,바질호킨스,초월함,크리티컬,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-09:skill:5,TR-09,바질호킨스,초월함,단일 스턴 타격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixthSkills.cs,Unity/Android/원작 대조 미실시
+TR-09:skill:6,TR-09,바질호킨스,초월함,점치기,manual,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+TR-10:skill:0,TR-10,브룩,초월함,마나 광역 공격,activeMana,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+TR-10:skill:1,TR-10,브룩,초월함,범위 마법타격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-10:skill:2,TR-10,브룩,초월함,찌르기,onAttack,unresolved,0,4,,,Unity/Android/원작 대조 미실시
+TR-10:skill:3,TR-10,브룩,초월함,타격 스턴,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-11:skill:0,TR-11,사보,초월함,마나 범위 타격,activeMana,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-11:skill:1,TR-11,사보,초월함,불꽃 주먹,onAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixthSkills.cs,Unity/Android/원작 대조 미실시
+TR-11:skill:2,TR-11,사보,초월함,넓은 주먹,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-11:skill:3,TR-11,사보,초월함,기본공격 크리티컬,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+TR-11:skill:4,TR-11,사보,초월함,화염용왕,attackWithPeriodicCooldown,registration_only,0,4,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSeventhSkills.cs",Unity/Android/원작 대조 미실시
+TR-12:skill:0,TR-12,상디,초월함,유성소바 킥,activeMana,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-12:skill:1,TR-12,상디,초월함,검은다리,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-12:skill:2,TR-12,상디,초월함,불꽃 스펙트럼,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-12:skill:3,TR-12,상디,초월함,무통 샷,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-13:skill:0,TR-13,샹크스,초월함,카무사리,activeManaOrPeriodic,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+TR-13:skill:1,TR-13,샹크스,초월함,패기 접근 효과,onEnemyEnterRange,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+TR-13:skill:2,TR-13,샹크스,초월함,원형 마법 스턴,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-13:skill:3,TR-13,샹크스,초월함,자신중심 마법 스턴,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-13:skill:4,TR-13,샹크스,초월함,단일 크리티컬,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+TR-14:skill:0,TR-14,스네이크맨,초월함,킹코브라,activeMana,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-14:skill:1,TR-14,스네이크맨,초월함,블랙 맘바 각성,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTemporarySkills.cs,Unity/Android/원작 대조 미실시
+TR-14:skill:2,TR-14,스네이크맨,초월함,무장색 패기,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixthSkills.cs,Unity/Android/원작 대조 미실시
+TR-14:skill:3,TR-14,스네이크맨,초월함,컬버린,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixthSkills.cs,Unity/Android/원작 대조 미실시
+TR-14:skill:4,TR-14,스네이크맨,초월함,크리티컬·단일 스턴,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+TR-15:skill:0,TR-15,시라호시,초월함,해왕류 다이브,activeMana,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-15:skill:1,TR-15,시라호시,초월함,고대병기 포세이돈,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-15:skill:2,TR-15,시라호시,초월함,해류조정,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-15:skill:3,TR-15,시라호시,초월함,물리 치명타,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+TR-16:skill:0,TR-16,아오키지,초월함,아이스 에이지,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelResources.cs",Unity/Android/원작 대조 미실시
+TR-16:skill:1,TR-16,아오키지,초월함,얼음얼음 열매,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-16:skill:2,TR-16,아오키지,초월함,페잔트백,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-16:skill:3,TR-16,아오키지,초월함,아이스 사브르,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-17:skill:0,TR-17,아카이누,초월함,유성화산,activeMana,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+TR-17:skill:1,TR-17,아카이누,초월함,범위 스턴 타격,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-17:skill:2,TR-17,아카이누,초월함,명구,onAttack,unresolved,0,4,,,Unity/Android/원작 대조 미실시
+TR-17:skill:3,TR-17,아카이누,초월함,스킬 사용 잔불,onSkillActivated,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+TR-17:skill:4,TR-17,아카이누,초월함,철저한 정의,onAttackAgainstSpecialTarget,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+TR-18:skill:0,TR-18,야마토,초월함,인수화,activeHealth,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTemporarySkills.cs,Unity/Android/원작 대조 미실시
+TR-18:skill:1,TR-18,야마토,초월함,패왕색 휘감기,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+TR-18:skill:2,TR-18,야마토,초월함,마환인,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+TR-18:skill:3,TR-18,야마토,초월함,스턴 물리 타격,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-18:skill:4,TR-18,야마토,초월함,미환인,onAttackWithCondition,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+TR-18:skill:5,TR-18,야마토,초월함,무시빙아,firstAttackAfterTransform,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+TR-19:skill:0,TR-19,우솝,초월함,파이어 버드 스타,activeMana,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+TR-19:skill:1,TR-19,우솝,초월함,저격,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixthSkills.cs,Unity/Android/원작 대조 미실시
+TR-19:skill:2,TR-19,우솝,초월함,화염성,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-19:skill:3,TR-19,우솝,초월함,치명타,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-20:skill:0,TR-20,조로,초월함,1080 번뇌봉,activeMana,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-20:skill:1,TR-20,조로,초월함,사자의 노래 Lv.2,onAttack,registration_only,0,4,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+TR-20:skill:2,TR-20,조로,초월함,삼도류 - 까마귀 마물 사냥,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+TR-20:skill:3,TR-20,조로,초월함,삼도류 - 극 호랑이 사냥,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+TR-20:skill:4,TR-20,조로,초월함,크리티컬 타격,onAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+TR-21:skill:0,TR-21,보니,초월함,니카같은 미래,activeMana,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+TR-21:skill:1,TR-21,보니,초월함,오일쇼크,onAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+TR-21:skill:2,TR-21,보니,초월함,임사체험,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+TR-21:skill:3,TR-21,보니,초월함,해방의 니카 펀치,onTransform,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEleventhForms.cs,Unity/Android/원작 대조 미실시
+TR-21:skill:4,TR-21,보니,초월함,스턴 광역 마법,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwelfthForms.cs,Unity/Android/원작 대조 미실시
+TR-21:skill:5,TR-21,보니,초월함,세월관통,onAgeStacksReached,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwelfthForms.cs,Unity/Android/원작 대조 미실시
+TR-21:skill:6,TR-21,보니,초월함,니카펀치,onAgeStacksReached,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwelfthForms.cs,Unity/Android/원작 대조 미실시
+TR-22:skill:0,TR-22,징베,초월함,어인가라데,activeMana,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs,Unity/Android/원작 대조 미실시
+TR-22:skill:1,TR-22,징베,초월함,해류 공격,onAttack,registration_only,0,5,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs,Unity/Android/원작 대조 미실시
+TR-22:skill:2,TR-22,징베,초월함,진각,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-22:skill:3,TR-22,징베,초월함,타격 스턴,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-22:skill:4,TR-22,징베,초월함,물리 추가 타격,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-23:skill:0,TR-23,쵸파,초월함,럼블볼 폭주,activeMana,registration_only,0,4,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEffects.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNativeCharacters.cs",Unity/Android/원작 대조 미실시
+TR-24:skill:0,TR-24,코비,초월함,어니스티 임팩트,activeHealth,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-24:skill:1,TR-24,코비,초월함,육식 Type 코비,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-24:skill:2,TR-24,코비,초월함,콤비네이션 어택,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-24:skill:3,TR-24,코비,초월함,기본 공격 특수 피해,onEveryAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixthSkills.cs",Unity/Android/원작 대조 미실시
+TR-24:skill:4,TR-24,코비,초월함,군함 백,everyNthRound,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelEighthSkills.cs,Unity/Android/원작 대조 미실시
+TR-25:skill:0,TR-25,키드,초월함,펑크 깁슨,activeHealth,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyFifthSkills.cs,Unity/Android/원작 대조 미실시
+TR-25:skill:1,TR-25,키드,초월함,리펠,onAttack,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-25:skill:2,TR-25,키드,초월함,자성 타격,onAttack,registration_only,0,4,,,Unity/Android/원작 대조 미실시
+TR-25:skill:3,TR-25,키드,초월함,단일 대체 공격,onEveryAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-26:skill:0,TR-26,키자루,초월함,마나 연타 광역기,onAttackWithMana,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelResources.cs,Unity/Android/원작 대조 미실시
+TR-26:skill:1,TR-26,키자루,초월함,빛의 기둥,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-26:skill:2,TR-26,키자루,초월함,팔지경,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelCompositeEffects.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",Unity/Android/원작 대조 미실시
+TR-26:skill:3,TR-26,키자루,초월함,단일 치명타,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-26:skill:4,TR-26,키자루,초월함,레이저,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs,Unity/Android/원작 대조 미실시
+TR-27:skill:0,TR-27,타시기,초월함,난향접,activeMana,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+TR-27:skill:1,TR-27,타시기,초월함,박무,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+TR-27:skill:2,TR-27,타시기,초월함,육식 체,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs,Unity/Android/원작 대조 미실시
+TR-27:skill:3,TR-27,타시기,초월함,단일 스턴 타격,onBasicAttackOrSkill,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+TR-28:skill:0,TR-28,프랑키,초월함,라디칼 빔,activeMana,registration_only,0,1,,,Unity/Android/원작 대조 미실시
+TR-28:skill:1,TR-28,프랑키,초월함,조선공,manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+TR-28:skill:2,TR-28,프랑키,초월함,꾸드방,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+TR-28:skill:3,TR-28,프랑키,초월함,제너럴 빔,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTenthForms.cs,Unity/Android/원작 대조 미실시
+TR-28:skill:4,TR-28,프랑키,초월함,제너럴 소드,onEveryAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTenthForms.cs,Unity/Android/원작 대조 미실시
+TR-28:skill:5,TR-28,프랑키,초월함,솔져도크 시스템,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+TR-29:skill:0,TR-29,후지토라,초월함,씽크홀,activeMana,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+TR-29:skill:1,TR-29,후지토라,초월함,중력장,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
+TR-29:skill:2,TR-29,후지토라,초월함,중력검,onAttack,registration_only,0,4,,Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs,Unity/Android/원작 대조 미실시
+TR-30:skill:0,TR-30,베가펑크,초월함,베가펑크 마나 공격,activeMana,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNativeCharacters.cs,Unity/Android/원작 대조 미실시
+TR-30:skill:1,TR-30,베가펑크,초월함,릴리스 마나 공격,satelliteActiveMana,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs,Unity/Android/원작 대조 미실시
+TR-30:skill:2,TR-30,베가펑크,초월함,릴리스 단일 스턴,satelliteOnAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs,Unity/Android/원작 대조 미실시
+TR-30:skill:3,TR-30,베가펑크,초월함,릴리스 광역 마법,satelliteOnAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs,Unity/Android/원작 대조 미실시
+TR-30:skill:4,TR-30,베가펑크,초월함,아틀라스 마나 공격,satelliteActiveMana,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs,Unity/Android/원작 대조 미실시
+TR-30:skill:5,TR-30,베가펑크,초월함,아틀라스 평타·치명타,satelliteOnAttack,registration_only,0,3,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs,Unity/Android/원작 대조 미실시
+TR-30:skill:6,TR-30,베가펑크,초월함,아틀라스 날뛰기,satelliteOnAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelIndependentAttacks.cs,Unity/Android/원작 대조 미실시
+X-01:skill:0,X-01,모건,특수함,도끼손,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+X-02:skill:0,X-02,베티,특수함,고무,manual,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+X-04:skill:0,X-04,아이스버그,특수함,조선공(B),manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+X-04:skill:1,X-04,아이스버그,특수함,조선공의 망치,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
+X-05:skill:0,X-05,오타마,특수함,경단먹이기(Q),manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+X-06:skill:0,X-06,페루,특수함,알라바스타의 수호신,active,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+X-07:skill:0,X-07,폭시,특수함,데비백 파이트,manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시

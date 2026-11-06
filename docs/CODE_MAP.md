@@ -17,6 +17,8 @@ flowchart TD
 
 **컨트롤러는 연결과 수명**, **전투 런타임은 실제 판정**, **지갑·로스터는 거래**, **화면은 사용자 요청과 표시**를 담당합니다. UI에서 전투 수치나 보상을 따로 계산하지 않습니다.
 
+**기술 중복 방지 도구:** [`audit_character_skill_coverage.py`](../tools/audit_character_skill_coverage.py)는 전체 `Assets/Scripts/**/*.cs`·도감 프로필·유닛 레지스트리·[수동 코드 증거](../data/character-skill-execution-witnesses.json)를 함께 읽어 기술 554개와 개별 효과를 감사합니다. `--inspect L-19:skill:2`로 후보 실행 경로를 살펴보고, `--write`로 [기술 감사표](스킬-구현-현황.md)·[JSON](../data/character-skill-code-coverage.json)·[CSV](../data/character-skill-code-coverage.csv)를 생성합니다. 이 도구는 전투 실행 테스트나 구현 완성률 계산기가 아닙니다.
+
 **원본 공격 콜백:** `CharacterCombatRuntime.SourceModelRemainingCallbacks.cs`에서 JASS `Bnw`~`CGd` 확률·객체 능력 수치·명중 후 단계·예약 피해를 처리하고, 네이티브 지정 대상 우선 선택과 마젤란 무작위 보조 시전자 위치, 키자루의 모바일 무제한 첫 도달을 관리합니다. `CharacterCombatRuntime.SourceModelAttackSkills.cs`는 모바일 무제한 시전 대상 도달을 위해 `ProjectileLine` 회랑을 선택 대상까지 연장하되 폭은 유지하며, 희귀 아카이누 블리자드 추첨·히든 아카이누 보스 누적/광폭화 B05G 상태별 타격을 맡고, `CharacterCombatRuntime.SourceModelRemainingCallbacks.cs`의 공용 서리 갑옷 상태는 바제스 B07T의 명중 피해별 유효시간과 아카이누 B05G의 디스펠 가능 신분을 관리합니다. `CharacterCombatRuntime.SourceModelTemporarySkills.cs`는 변신 시전과 분리된 **공격 일시정지/복귀·더미 수명** 및 자폭·시간 만료·소유자 정리의 단일 소환수 종료 경로를 처리합니다. 슈가 `h06O` 사망은 `BpS/e01M` 사건을 발행하지만 화면 렌더링은 미연결입니다. `SourceModelUnitEffects.cs`는 `Ablo` 공속 버프, `CharacterCombatRuntime.SourceModelLegacyFollowups.cs`는 적 `A04R`·원본 포인트를 맡습니다. 미확인 주문 피해·면역·투사체와 버프 소멸은 `EffectDeferred`로 구분합니다.
 
 ## 2. 영역별 실제 진입점

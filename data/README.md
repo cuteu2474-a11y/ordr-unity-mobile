@@ -8,6 +8,8 @@
 |---|---|
 | `units.json`, `wiki-unit-catalog-extension.json` | 기본 카탈로그와 확장/변신/지원 객체. 모두 독립 전투 유닛이라는 뜻은 아님 |
 | `character-skill-profiles.json` | 도감 툴팁. 실제 호출·조건·피해 계산의 완전한 실행 명세와 구분 |
+| `character-skill-execution-witnesses.json` | 기술 ID·효과 인덱스마다 사람이 확인한 기존 핸들러·상위 호출부 증거. 실행·원작 동등성 검증과 별개 |
+| `character-skill-code-coverage.json`, `.csv` | 554개 기술·효과의 정적 코드 감사 결과. 이름 검색은 후보일 뿐, 미구현이나 완료 확정이 아님 ([설명 문서](../docs/스킬-구현-현황.md)) |
 | `original-2323C-map-base-stats.json`, `original-2323C-unit-object-stats.json` | 원본 rawcode·기본 공격·HP/MP/재생 등 객체 근거 |
 | `original-jass-fusion-registry.json` | 원본 CWR 등록식 266건. 일반 미리보기 265건과 TEST 1건이며 전부 제작 허가는 아님 |
 | `original-2323C-legendary-growth.json` | 전설 조합의 원본 재료·목재 소비·보류 조건을 확인하는 감사 자료 ([생성/대조 도구](../tools/audit_original_legendary_growth.py)) |
@@ -28,6 +30,8 @@
 4. 실행 범위가 바뀌면 실제 C# 지원 내보내기·현황 JSON·생성 문서를 갱신합니다. 검사 실행은 사용자 요청에 따릅니다.
 
 ## 대표 생성 도구
+
+캐릭터 스킬 착수 전 `python3 tools/audit_character_skill_coverage.py --inspect L-19:skill:2`처럼 ID별 기존 근거를 확인합니다. 소스·도감·수동 증거가 바뀐 경우 `python3 tools/audit_character_skill_coverage.py --write`로 감사 JSON·CSV·문서를 함께 갱신합니다. `--verify`는 생성물 동기화만 확인하며 게임 실행 검증은 아닙니다. 증거 없는 스킬은 **미구현 확정이 아니라 별도 검토**로 남깁니다.
 
 | 대상 | 도구 | 입력 |
 |---|---|---|
