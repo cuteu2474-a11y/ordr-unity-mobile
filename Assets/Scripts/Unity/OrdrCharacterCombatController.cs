@@ -1022,6 +1022,8 @@ namespace Ordr.Mobile.Unity
                 originalResources.text, MapBaseStats);
             sourceModelDamage.Enable();
             Combat.ConfigureSourceModelBasicAttacks(sourceModelDamage);
+            if (PlayerBuildingResearch != null)
+                Combat.ConfigureSourceModelPlayerResearch(PlayerBuildingResearch);
             Combat.ConfigureSourceModelPlayerGold(() => SharedEconomy.Wallet.Balance("gold"));
             Combat.ConfigureSourceModelAccumulatedClearCount(() => AccumulatedClearCount);
             Combat.ConfigureSourceModelFusionNativeReceipts(
@@ -1241,6 +1243,7 @@ namespace Ordr.Mobile.Unity
         }
         public SharedEconomySession SharedEconomy { get; private set; }
         public Original323PlayerUpgradeSession PlayerBuildingUpgrades { get; private set; }
+        public Original323PlayerResearchSession PlayerBuildingResearch { get; private set; }
         private IReadOnlyList<Original323VerifiedUpgradeStep> verifiedUpgradeSteps;
         private IOriginal323VerifiedUpgradeWorld verifiedUpgradeWorld;
 
@@ -3062,6 +3065,14 @@ namespace Ordr.Mobile.Unity
                 verifiedUpgradeSteps, verifiedUpgradeWorld,
                 verifiedUpgradeSteps == null && verifiedUpgradeWorld == null
                     ? sourceModelDamage?.PlayerUpgrades : null);
+            if (sourceModelDamage != null)
+            {
+                PlayerBuildingResearch = new Original323PlayerResearchSession(
+                    SharedEconomy.Wallet, Combat.Game,
+                    rawcode => rawcode != "Rhfc" ||
+                        Combat.HasVerifiedNativeMovementForResearch);
+                sourceModelDamage.ConfigurePlayerResearch(PlayerBuildingResearch);
+            }
             if (Combat.UsesSourceModelBasicAttacks)
                 Combat.ConfigureSourceModelGiftWallet(SharedEconomy.Wallet);
             VerifiedWaveDirector.VerifiedMonsterDefeated += OnVerifiedMonsterDefeated;

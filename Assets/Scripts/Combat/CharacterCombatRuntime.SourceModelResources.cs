@@ -1,11 +1,26 @@
 using System;
 using System.Collections.Generic;
 using Ordr.Mobile.Data;
+using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Combat
 {
     public sealed partial class CharacterCombatRuntime
     {
+        private Original323PlayerResearchSession sourceModelPlayerResearch;
+        private bool sourceModelClimateWasActive;
+        public bool HasVerifiedNativeMovementForResearch =>
+            verifiedNativeMovement != null;
+        public void ConfigureSourceModelPlayerResearch(
+            Original323PlayerResearchSession source)
+        {
+            if (!UsesSourceModelBasicAttacks || processingStep ||
+                pendingStepSeconds != 0 || sourceModelPlayerResearch != null)
+                throw new InvalidOperationException("연구소 모델 연결 시점이 잘못됐습니다.");
+            sourceModelPlayerResearch = source ??
+                throw new ArgumentNullException(nameof(source));
+        }
+
         private SourceModelUnitResourceCatalog sourceModelResourceCatalog;
         private readonly Dictionary<long, SourceModelUnitResourceSpec>
             sourceModelManagedResourceRows =
@@ -183,6 +198,63 @@ namespace Ordr.Mobile.Combat
             // Count ally +0.25 HP/MP against the same status clock.
             AdvanceBulkAllyRegeneration(seconds);
             AdvanceSourceManualRegeneration(seconds);
+            AdvanceSourceModelPlayerResearch(seconds);
+        }
+
+        private void AdvanceSourceModelPlayerResearch(double seconds)
+        {
+            if (sourceModelPlayerResearch == null) return;
+            bool health = sourceModelPlayerResearch.HasStarted("Rhgb");
+            bool mana = sourceModelPlayerResearch.HasStarted("Rhpt");
+            if (seconds > 0 && (health || mana))
+            {
+                foreach (var actor in characters.Values)
+                {
+                    // h06S's line-zone AUau/AHab do not heal story assaulters.
+                    if (IsStoryDeployed(actor.Id)) continue;
+                    ProvisionSourceModelAuraRecipientResources(actor);
+                    var pool = actor.Abilities.Resources;
+                    if (pool == null) continue;
+                    if (health)
+                        pool.SetHealth(Math.Min(pool.MaximumHealth,
+                            pool.Health + 0.45 * seconds));
+                    if (mana)
+                        pool.SetMana(Math.Min(pool.MaximumMana,
+                            pool.Mana + 0.8 * seconds));
+                }
+            }
+            // A0P9 is a speed debuff, never a substitute for a different
+            // source's native route resolver. With no verified AOae movement
+            // integrator the laboratory refuses the purchase at Quote().
+            bool climate = sourceModelPlayerResearch.HasStarted("Rhfc") &&
+                verifiedNativeMovement != null;
+            if (!climate && !sourceModelClimateWasActive) return;
+            const string climateSource = "practice-research:A0P9";
+            foreach (var entry in enemies)
+            {
+                var enemy = entry.Value;
+                if (enemy.Kind != CharacterEnemyKind.Line &&
+                    enemy.Kind != CharacterEnemyKind.Boss &&
+                    enemy.Kind != CharacterEnemyKind.Enraged)
+                    continue;
+                CombatStatusEngine state;
+                if (!statuses.TryGetValue(entry.Key, out state)) continue;
+                bool present = false;
+                foreach (var effect in state.Snapshot())
+                    if (effect.SourceId == climateSource &&
+                        effect.Type == CombatEffectType.MovementSlowPercent)
+                    {
+                        present = true;
+                        break;
+                    }
+                if (climate && enemy.Enemy.IsAlive && !present)
+                    state.Apply(new CombatEffect(climateSource,
+                        CombatEffectType.MovementSlowPercent, CombatEffectOrigin.Aura,
+                        10, 0));
+                else if (!climate && present)
+                    state.RemoveSource(climateSource);
+            }
+            sourceModelClimateWasActive = climate;
         }
 
         // Explicitly allow-listed complete tooltip/model actives

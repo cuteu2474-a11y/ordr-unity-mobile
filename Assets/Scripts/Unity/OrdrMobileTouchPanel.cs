@@ -642,26 +642,59 @@ namespace Ordr.Mobile.Unity
             var original = Original323PlayerBuildingResearchCatalog.ForBuilding(buildingRawcode);
             if (buildingRawcode == Original323PlayerBuildingResearchCatalog.ResearchBuilding)
             {
-                // The separate laboratory has no verified purchase port yet.
-                // Its four tooltips stay informational, never fake-purchasable.
-                for (int i = 0; i < original.Count; i++)
+                var laboratory = controller != null ? controller.PlayerBuildingResearch : null;
+                foreach (var research in original)
                 {
-                    var research = original[i];
-                    string key = buildingRawcode + ":" + research.Rawcode;
-                    bool expanded = expandedResearchCodes.Contains(key);
-                    if (OrdrMobileUiTheme.DrawAccordionHeader(research.Name,
-                        research.EffectSummary, expanded, new Color(.44f, .88f, .96f)))
+                    var quote = laboratory?.Quote(research.Rawcode);
+                    bool started = quote?.Level == 1;
+                    string title = research.Name + "  " + (started ? "1" : "0") +
+                        "/" + research.MaximumLevel;
+                    string caption = ResearchStatusText(quote);
+                    if (quote?.Cost != null)
+                        caption = UpgradePriceText(quote.Cost) + " · " + caption;
+                    if (quote?.Status == Original323ResearchStartStatus.InsufficientResources)
+                        caption = UpgradeShortageText(quote.Cost);
+                    string key = "research:" + research.Rawcode;
+                    var press = OrdrMobileUiTheme.DrawHoldActionRow(key, title,
+                        caption, new Color(.44f, .88f, .96f),
+                        upgradePressGesture, 88f);
+                    if (press == MobileLongPressResult.Tap)
                     {
-                        if (expanded) expandedResearchCodes.Remove(key);
-                        else expandedResearchCodes.Add(key);
-                        expanded = !expanded;
+                        if (laboratory == null)
+                            notice = "연구소 모델이 연결되지 않았습니다.";
+                        else
+                        {
+                            try
+                            {
+                                var result = laboratory.Start(research.Rawcode);
+                                notice = result == Original323ResearchStartStatus.Started
+                                    ? research.Name + " 연구 시작 · 오라 적용"
+                                    : result == Original323ResearchStartStatus.InsufficientResources
+                                        ? UpgradeShortageText(quote?.Cost)
+                                        : ResearchStatusText(laboratory.Quote(research.Rawcode));
+                            }
+                            catch (Exception error)
+                            {
+                                notice = "연구 시작 실패 · 거래 복구: " + error.Message;
+                            }
+                        }
                     }
-                    if (!expanded) continue;
+                    else if (press == MobileLongPressResult.Hold)
+                    {
+                        if (expandedResearchCodes.Contains(key))
+                            expandedResearchCodes.Remove(key);
+                        else expandedResearchCodes.Add(key);
+                    }
+                    if (!expandedResearchCodes.Contains(key)) continue;
                     GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                    Rect plate = GUILayoutUtility.GetRect(0f, 138f, GUILayout.ExpandWidth(true));
-                    OrdrMobileUiTheme.DrawResearchPlate(plate, i + 1, research.Name,
-                        research.EffectSummary, research.MaximumLevel,
-                        new Color(.44f, .88f, .96f));
+                    GUILayout.Label(research.EffectSummary);
+                    if (quote?.Cost != null)
+                        GUILayout.Label("연구 시작 비용: " + UpgradePriceText(quote.Cost));
+                    GUILayout.Label("원본 CV8: 연구 시작 시 오라 부여");
+                    GUILayout.Label("연구 완료·취소·환불은 원본 실행 확인 전");
+                    if (research.Rawcode == "Rhfc" &&
+                        quote?.Status == Original323ResearchStartStatus.EffectUnavailable)
+                        GUILayout.Label("이동 감속 원본 처리기 연결 시 구매 가능");
                     GUILayout.EndVertical();
                 }
                 return;
@@ -723,6 +756,23 @@ namespace Ordr.Mobile.Unity
                             Math.Ceiling(quote.CooldownRemaining).ToString("0") + "초");
                 }
                 GUILayout.EndVertical();
+            }
+        }
+
+        private static string ResearchStatusText(Original323ResearchQuote quote)
+        {
+            if (quote == null) return "연구소 미연결";
+            switch (quote.Status)
+            {
+                case Original323ResearchStartStatus.Started: return "연구 시작";
+                case Original323ResearchStartStatus.AlreadyStarted: return "시작됨 · 오라 적용";
+                case Original323ResearchStartStatus.InsufficientResources: return "재화 부족";
+                case Original323ResearchStartStatus.NotRunning: return "전투 시작 대기";
+                case Original323ResearchStartStatus.EffectUnavailable:
+                    return "전투 효과 미연결 · 결제 불가";
+                case Original323ResearchStartStatus.InconsistentReceipt:
+                    return "연구 장부·영수증 불일치";
+                default: return "연구 시작 불가";
             }
         }
 

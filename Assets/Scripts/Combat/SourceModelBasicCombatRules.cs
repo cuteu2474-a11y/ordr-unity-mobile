@@ -32,6 +32,14 @@ namespace Ordr.Mobile.Combat
         public bool Enabled { get; private set; }
         public SourceModelUnitEffects UnitEffects { get; private set; }
         public SourceModelPlayerUpgrades PlayerUpgrades { get; private set; }
+        public Ordr.Mobile.Core.Original323PlayerResearchSession PlayerResearch { get; private set; }
+        public void ConfigurePlayerResearch(
+            Ordr.Mobile.Core.Original323PlayerResearchSession research)
+        {
+            if (Enabled || PlayerResearch != null)
+                throw new InvalidOperationException("연구소 오라는 전투 시작 전에 한 번만 연결합니다.");
+            PlayerResearch = research ?? throw new ArgumentNullException(nameof(research));
+        }
         public void ConfigurePlayerUpgrades(SourceModelPlayerUpgrades upgrades)
         {
             if (Enabled || PlayerUpgrades != null)
@@ -116,8 +124,13 @@ namespace Ordr.Mobile.Combat
             if (!Enabled || !independentAttacks.ContainsKey(rawcode) ||
                 !byRawcode.TryGetValue(rawcode, out evidence))
                 throw new NotSupportedException("원본 독립 객체 공격력 주사위 자료가 없습니다.");
-            return checked(evidence.RollObjectBaseDamage(random) +
-                (long)(PlayerUpgrades?.AttackBonus(rawcode) ?? 0));
+            double basePower = evidence.RollObjectBaseDamage(random) +
+                (PlayerUpgrades?.AttackBonus(rawcode) ?? 0);
+            if (PlayerResearch?.HasStarted("Rhra") == true)
+                basePower *= 1.12;
+            if (basePower < 0 || basePower >= long.MaxValue)
+                throw new OverflowException("연구소 공격력 보정 범위를 초과했습니다.");
+            return (long)Math.Floor(basePower);
         }
         internal void SetSourceForm(string instanceId, string rawcode)
         {
@@ -214,6 +227,10 @@ namespace Ordr.Mobile.Combat
             }
             double power = SourceModelUnitEffects.ResolvePracticeAttackPower(request.AttackerEffects);
             rawDamage *= 1 + power / 100.0;
+            // Source h06S/Rhra starts A0P8 at RESEARCH_START (ACac +12%).
+            // Player-owned basic attacks gain it once; no extra skill packet.
+            if (PlayerResearch?.HasStarted("Rhra") == true)
+                rawDamage *= 1.12;
             if (UnitEffects != null) rawDamage = UnitEffects.BeforeBasicHit(request, target, rawDamage);
             double reduction = SourceModelUnitEffects.ResolvePracticeArmorReduction(target.Status.Snapshot());
             double damage = Ordr323MapDamageMath.ApplyVerifiedFactors(
