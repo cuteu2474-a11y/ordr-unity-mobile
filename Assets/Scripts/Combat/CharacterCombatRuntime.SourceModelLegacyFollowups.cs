@@ -19,6 +19,16 @@ namespace Ordr.Mobile.Combat
         private readonly Dictionary<string, int> sourcePracticeA04RLevels =
             new Dictionary<string, int>(StringComparer.Ordinal);
         private long sourceFollowupSequence;
+        // UnitData.slk points: all registered original o*** wave rows are
+        // 100 except these 200-point rows. Never infer points for story/creeps.
+        private readonly Dictionary<string, int> sourcePracticePointValues =
+            new Dictionary<string, int>(StringComparer.Ordinal);
+        private static readonly HashSet<string> Source200PointWaveRawcodes =
+            new HashSet<string>(StringComparer.Ordinal) {
+                "o001", "o00J", "o01V", "o01W", "o01X", "o01Y", "o01Z",
+                "o02B", "o02C", "o02D", "o02E", "o02F", "o02J", "o02K",
+                "o02L", "o02M", "o02N", "o02Q", "o02R", "o02S", "o031", "o032"
+            };
 
         // The 68 pinned ORDR line/boss object rawcodes ALL list A04R in
         // Units/UnitAbilities.slk (initial native level 1). We register only
@@ -32,6 +42,15 @@ namespace Ordr.Mobile.Combat
                 originalRawcode[0] != 'o' || sourcePracticeA04RLevels.ContainsKey(enemyId))
                 throw new InvalidOperationException("연습 원본 웨이브 A04R 객체 자료 불일치");
             sourcePracticeA04RLevels.Add(enemyId, 1);
+            sourcePracticePointValues.Add(enemyId,
+                Source200PointWaveRawcodes.Contains(originalRawcode) ? 200 : 100);
+        }
+
+        internal int? PracticeSourcePointValue(string enemyId)
+        {
+            int points;
+            return sourcePracticePointValues.TryGetValue(enemyId ?? "", out points)
+                ? (int?)points : null;
         }
 
         internal int? PracticeSourceA04RLevel(string enemyId)

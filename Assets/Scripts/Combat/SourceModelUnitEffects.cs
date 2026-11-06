@@ -186,6 +186,7 @@ namespace Ordr.Mobile.Combat
             foreach (var effect in effects)
                 if (effect.Type == CombatEffectType.AttackSpeedBuff &&
                     (effect.SourceId.StartsWith("practice-native:A08B:", StringComparison.Ordinal) ||
+                     effect.SourceId.StartsWith("practice-native:source-remaining-bloodlust:", StringComparison.Ordinal) ||
                      effect.SourceId.EndsWith(":TR-24:skill:4", StringComparison.Ordinal)))
                     value = Math.Max(value, effect.Amount);
                 else if (effect.Type == CombatEffectType.AttackSpeedBuff &&

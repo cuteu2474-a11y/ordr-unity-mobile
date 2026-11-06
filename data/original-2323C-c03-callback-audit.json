@@ -218,118 +218,225 @@
     "sourceCode": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelRemainingCallbacks.cs",
     "rows": 17,
     "withExplicitJassDamageSubset": 7,
-    "nativeOnlyDeferred": 10,
+    "nativeOnlyDeferred": 0,
     "source": "pinned original war3map.j",
     "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
     "notes": [
-      "31 audited callback rows now have a JASS registration/dispatch path (14 prior partially-damaging plus 17 new).",
-      "The 17 native-or-multistep rows remain NOT original-complete; 10 have only verified proc/ordered-spell intent without invented native spell damage.",
-      "Original JASS data and the catalog tooltip may disagree; native immunity, bonus stat providers, form buffs, and target point value are separate blockers.",
-      "No Unity/Python/NUnit/APK or parity tests executed."
+      "Ten native helper casts now use original W3X ability object damage or timed bloodlust buffs; exact Warcraft native target/physics/lifetime remains deferred.",
+      "Seven multi-stage callbacks use original JASS numeric path with target point values (65R originals), A04R level increases, timed buff gates, and Gojo domain pulses where available.",
+      "No claim of fully completed 17 Warcraft effects. Native immunity, helper lifetimes, real summoned units, strength/hero levels, target point values outside registered wave, and native dispel remain open.",
+      "No Unity/Python/NUnit/APK gameplay tests executed; only read-only W3X object extraction."
     ],
     "entries": [
       {
         "catalogId": "S-06",
         "rawcode": "h00R",
         "jassCallback": "Bnw",
-        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+        "mobileDispatch": "W3X-object numeric basic damage/buff in source-model; remaining native geometry/lifetime/immunity deferred"
       },
       {
         "catalogId": "S-07",
         "rawcode": "h00U",
         "jassCallback": "Bny",
-        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+        "mobileDispatch": "W3X-object numeric basic damage/buff in source-model; remaining native geometry/lifetime/immunity deferred"
       },
       {
         "catalogId": "R-08",
         "rawcode": "h022",
         "jassCallback": "Bou",
-        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+        "mobileDispatch": "W3X-object numeric basic damage/buff in source-model; remaining native geometry/lifetime/immunity deferred"
       },
       {
         "catalogId": "R-09",
         "rawcode": "h01Z",
         "jassCallback": "Bow",
-        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+        "mobileDispatch": "W3X-object numeric basic damage/buff in source-model; remaining native geometry/lifetime/immunity deferred"
       },
       {
         "catalogId": "R-22",
         "rawcode": "h029",
         "jassCallback": "BpO",
-        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+        "mobileDispatch": "W3X-object numeric basic damage/buff in source-model; remaining native geometry/lifetime/immunity deferred"
       },
       {
         "catalogId": "R-24",
         "rawcode": "h027",
         "jassCallback": "BpT",
-        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+        "mobileDispatch": "W3X-object numeric basic damage/buff in source-model; remaining native geometry/lifetime/immunity deferred"
       },
       {
         "catalogId": "R-29",
         "rawcode": "h024",
         "jassCallback": "Bpb",
-        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+        "mobileDispatch": "W3X-object numeric basic damage/buff in source-model; remaining native geometry/lifetime/immunity deferred"
       },
       {
         "catalogId": "R-32",
         "rawcode": "h02G",
         "jassCallback": "Bph",
-        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+        "mobileDispatch": "W3X-object numeric basic damage/buff in source-model; remaining native geometry/lifetime/immunity deferred"
       },
       {
         "catalogId": "R-36",
         "rawcode": "h023",
         "jassCallback": "Bpv",
-        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+        "mobileDispatch": "W3X-object numeric basic damage/buff in source-model; remaining native geometry/lifetime/immunity deferred"
       },
       {
         "catalogId": "R-39",
         "rawcode": "h01R",
         "jassCallback": "Bpz",
-        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+        "mobileDispatch": "W3X-object numeric basic damage/buff in source-model; remaining native geometry/lifetime/immunity deferred"
       },
       {
         "catalogId": "L-02",
         "rawcode": "h02P",
         "jassCallback": "BsU",
-        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+        "mobileDispatch": "JASS-multistep model with additional source gates/receipts; specialized original runtime parity pending"
       },
       {
         "catalogId": "L-05",
         "rawcode": "h02Q",
         "jassCallback": "Bsf",
-        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+        "mobileDispatch": "JASS-multistep model with additional source gates/receipts; specialized original runtime parity pending"
       },
       {
         "catalogId": "L-12",
         "rawcode": "h02N",
         "jassCallback": "BsL",
-        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+        "mobileDispatch": "JASS-multistep model with additional source gates/receipts; specialized original runtime parity pending"
       },
       {
         "catalogId": "L-36",
         "rawcode": "h032",
         "jassCallback": "BtV",
-        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+        "mobileDispatch": "JASS-multistep model with additional source gates/receipts; specialized original runtime parity pending"
       },
       {
         "catalogId": "D-06",
         "rawcode": "h09V",
         "jassCallback": "CD0",
-        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+        "mobileDispatch": "JASS-multistep model with additional source gates/receipts; specialized original runtime parity pending"
       },
       {
         "catalogId": "TR-01",
         "rawcode": "H090",
         "jassCallback": "Bz1",
-        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+        "mobileDispatch": "JASS-multistep model with additional source gates/receipts; specialized original runtime parity pending"
       },
       {
         "catalogId": "MY-01",
         "rawcode": "h09M",
         "jassCallback": "CGd",
-        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+        "mobileDispatch": "JASS-multistep model with additional source gates/receipts; specialized original runtime parity pending"
       }
-    ]
+    ],
+    "nativeObjectModelConnected": 10
+  },
+  "nativeAbilityEvidence": {
+    "origin": "Original 2.323[C] W3X embedded Units/AbilityData.slk + Units/UnitAbilities.slk; Units/UnitData.slk for points",
+    "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+    "records": [
+      [
+        "S-06",
+        "e0KE",
+        "A08D",
+        "AUcs",
+        600,
+        800,
+        200
+      ],
+      [
+        "S-07",
+        "e0KD",
+        "A08I",
+        "Ablo",
+        3.6,
+        1.75,
+        "B00F"
+      ],
+      [
+        "R-08",
+        "e00U",
+        "A0FC",
+        "AEfk",
+        10000,
+        1150,
+        10
+      ],
+      [
+        "R-09",
+        "e01C",
+        "A0FE",
+        "Apxf",
+        1250,
+        1000,
+        0.09
+      ],
+      [
+        "R-22",
+        "e01J",
+        "A0TP",
+        "AUcs",
+        6000,
+        1050,
+        250
+      ],
+      [
+        "R-24",
+        "h06O",
+        "A03A",
+        "Asds",
+        500,
+        10000,
+        3.5
+      ],
+      [
+        "R-29",
+        "e0KE",
+        "A03O",
+        "ANfl",
+        7000,
+        1750,
+        9
+      ],
+      [
+        "R-32",
+        "e0KE",
+        "A0F1",
+        "Ablo",
+        4,
+        3,
+        "B02H"
+      ],
+      [
+        "R-36",
+        "e0KH",
+        "A07K",
+        "AUcs",
+        8000,
+        1700,
+        200
+      ],
+      [
+        "R-39",
+        "e0KG",
+        "A054",
+        "AOcl",
+        6000,
+        8,
+        1250
+      ]
+    ],
+    "recordColumns": [
+      "catalogId",
+      "nativeUnit",
+      "ability",
+      "warcraftAbilityType",
+      "dataA",
+      "rangeOrDataB",
+      "widthOrTargetCapOrDuration"
+    ],
+    "limitations": "W3X numeric source values are verified, native spell collision/target filters/visual lifecycle remain model-only; Apxf helper lifetime and Asds area are not inferred."
   }
 }

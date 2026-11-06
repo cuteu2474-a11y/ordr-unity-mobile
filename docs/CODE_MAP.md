@@ -17,6 +17,8 @@ flowchart TD
 
 **컨트롤러는 연결과 수명**, **전투 런타임은 실제 판정**, **지갑·로스터는 거래**, **화면은 사용자 요청과 표시**를 담당합니다. UI에서 전투 수치나 보상을 따로 계산하지 않습니다.
 
+**17종 원본 공격 콜백:** `CharacterCombatRuntime.SourceModelRemainingCallbacks.cs`에서 JASS `Bnw`~`CGd` 확률·원본 객체 능력 수치·명중 후 단계·예약 피해를 처리합니다. `SourceModelUnitEffects.cs`는 `Ablo` 공속 버프를, `CharacterCombatRuntime.SourceModelLegacyFollowups.cs`는 적 `A04R`·원본 포인트를 맡습니다. 소환수/투사체·면역과 버프 소멸은 `EffectDeferred`로 추적합니다.
+
 ## 2. 영역별 실제 진입점
 
 | 작업 영역 | 먼저 열 파일 | 재사용할 역할 |

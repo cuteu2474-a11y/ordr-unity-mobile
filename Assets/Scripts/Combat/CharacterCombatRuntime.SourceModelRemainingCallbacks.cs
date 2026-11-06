@@ -5,9 +5,10 @@ using Ordr.Mobile.Core;
 
 namespace Ordr.Mobile.Combat
 {
-    // Remaining C03 JASS attack callbacks. A registration is NOT a claim
-    // that the Warcraft native spell itself is reproduced: callbacks that
-    // only cast a native dummy remain explicitly deferred.
+    // C03 attack callbacks reconciled against war3map.j and the original
+    // Units/AbilityData.slk + Units/UnitAbilities.slk inside the pinned W3X.
+    // Native orders are executed as explicitly labeled mobile approximations;
+    // order geometry, buff immunity and Warcraft target selection remain open.
     internal sealed class SourceRemainingCallback
     {
         internal readonly string CatalogId;
@@ -32,25 +33,25 @@ namespace Ordr.Mobile.Combat
 
         private static readonly SourceRemainingCallback[] Entries = {
             new SourceRemainingCallback("S-06", "h00R", "Bnw", 100, 10,
-                "e0KE carrionswarm 원본 피해/타격 대상 미추출"),
+                "A08D/사거리800/폭200/피해600 확인; 원본 자기위치 주문 방향 미검증"),
             new SourceRemainingCallback("S-07", "h00U", "Bny", 100, 16,
-                "B00F가 없을 때 e0KD bloodlust의 지속/능력치 미추출"),
+                "A08I/B00F 1.75초/공격속도 +360% 확인; 원본 중첩·시전 지연 미검증"),
             new SourceRemainingCallback("R-08", "h022", "Bou", 100, 10,
-                "e00U fanofknives 네이티브 피해/범위 미추출"),
+                "A0FC 피해10000/반경1150/최대10명 확인; 실제 투사체 판정 미검증"),
             new SourceRemainingCallback("R-09", "h01Z", "Bow", 100, 10,
-                "e01C 보조 소환의 지속 피해/폭발 조건 미추출"),
+                "A0FE 피해1250/간격.09/사거리1000 확인; 소환체 종료조건 미검증"),
             new SourceRemainingCallback("R-22", "h029", "BpO", 100, 10,
-                "e01J carrionswarm 및 세 보조 개체의 타격 자료 미추출"),
+                "A0TP 피해6000/길이1050/폭250; 추가 3소환은 주문명령 부재"),
             new SourceRemainingCallback("R-24", "h027", "BpT", 100, 10,
-                "h06O selfdestruct 대상·변이/소환 종료 미모델"),
+                "A03A 폭발 수치500·10000 확인; 접근시간·피해영역 미검증"),
             new SourceRemainingCallback("R-29", "h024", "Bpb", 1000, 125,
-                "e0KE forkedlightning의 네이티브 대상/피해 미추출"),
+                "A03O 피해7000/최대9명/사거리1750 확인; 원본 부채꼴 판정 미검증"),
             new SourceRemainingCallback("R-32", "h02G", "Bph", 100, 10,
-                "e0KE bloodlust 본체 강화의 버프 지속/중첩 미추출"),
+                "A0F1/B02H 3초/공격속도 +400% 확인; 원본 중첩 미검증"),
             new SourceRemainingCallback("R-36", "h023", "Bpv", 100, 13,
-                "e0KH carrionswarm 타격/피해 미추출; 기존 A0F6 15%와 별도"),
+                "A07K 피해8000/길이1700/폭200; 기존 A0F6 15%와 별도"),
             new SourceRemainingCallback("R-39", "h01R", "Bpz", 100, 15,
-                "e0KG chainlightning 타격 대상/피해 미추출"),
+                "A054 피해6000/최대8명/도약1250/감쇠-0.1 확인; 도약 순서 미검증"),
             new SourceRemainingCallback("L-02", "h02P", "BsU", 1000, 88,
                 "Bd8(XL) 중첩 및 적 자격·면역 미검증"),
             new SourceRemainingCallback("L-05", "h02Q", "Bsf/Bse", 100, 27,
@@ -92,11 +93,24 @@ namespace Ordr.Mobile.Combat
     {
         private readonly Dictionary<long, int> remainingLaboonPositiveHits =
             new Dictionary<long, int>();
+        private readonly Dictionary<long, double> remainingHancockBuffUntil =
+            new Dictionary<long, double>();
+        private readonly Dictionary<long, string> remainingHancockEnhancedTarget =
+            new Dictionary<long, string>();
+        private readonly Dictionary<long, double> remainingBurgessArmorUntil =
+            new Dictionary<long, double>();
+        private readonly HashSet<long> remainingMoriaHasArmor = new HashSet<long>();
+        private readonly HashSet<long> remainingGojoB07E = new HashSet<long>();
         private long remainingCallbackSerial;
 
         private void ForgetSourceRemainingCallbacks(long actorId)
         {
             remainingLaboonPositiveHits.Remove(actorId);
+            remainingHancockBuffUntil.Remove(actorId);
+            remainingHancockEnhancedTarget.Remove(actorId);
+            remainingBurgessArmorUntil.Remove(actorId);
+            remainingMoriaHasArmor.Remove(actorId);
+            remainingGojoB07E.Remove(actorId);
         }
 
         private static SourceScriptAttackSpec RemainingHitSpec(string id,
@@ -148,6 +162,141 @@ namespace Ordr.Mobile.Combat
             ApplySourceScriptHits(actor, target, s, s.OnProc);
         }
 
+        private void RemainingHitsAfterBasic(CharacterInstance actor,
+            SpatialCombatEnemy target, SourceRemainingCallback spec,
+            long confirmedBasicDamage, params SourceScriptHit[] hits)
+        {
+            var s = RemainingHitSpec(spec.CatalogId, spec.Rawcode, spec.Jass, hits);
+            ApplySourceScriptHits(actor, target, s, s.OnProc,
+                sourceBasicDamage: confirmedBasicDamage);
+        }
+
+        // A source-order radius is centered on the native dummy (attacker),
+        // not on the damaged enemy. Limit AEfk/ANfl to original max targets.
+        private List<SpatialCombatEnemy> RemainingNativeTargets(
+            CharacterInstance actor, double cx, double cy, double radius,
+            int maximum, HashSet<string> excluded = null)
+        {
+            var candidates = new List<SpatialCombatEnemy>();
+            double radiusSquared = radius * radius;
+            foreach (var candidate in enemies.Values)
+            {
+                if (!candidate.Enemy.IsAlive ||
+                    !CanAttackInThisLane(actor, candidate) ||
+                    (excluded != null && excluded.Contains(candidate.Id))) continue;
+                double x = candidate.X - cx, y = candidate.Y - cy;
+                if (x * x + y * y <= radiusSquared) candidates.Add(candidate);
+            }
+            candidates.Sort((a, b) => {
+                double da = (a.X - cx) * (a.X - cx) + (a.Y - cy) * (a.Y - cy);
+                double db = (b.X - cx) * (b.X - cx) + (b.Y - cy) * (b.Y - cy);
+                int d = da.CompareTo(db);
+                return d == 0 ? StringComparer.Ordinal.Compare(a.Id, b.Id) : d;
+            });
+            if (candidates.Count > maximum)
+                candidates.RemoveRange(maximum, candidates.Count - maximum);
+            return candidates;
+        }
+
+        private bool RemainingHasNativeBuff(CharacterInstance actor, string buff)
+        {
+            string id = "practice-native:source-remaining-bloodlust:" + buff + ":" +
+                InstanceKey(actor.Id);
+            foreach (var effect in unitStatuses[InstanceKey(actor.Id)].Snapshot())
+                if (effect.SourceId == id &&
+                    effect.Type == CombatEffectType.AttackSpeedBuff) return true;
+            return false;
+        }
+
+        private void RemainingNativeBloodlust(CharacterInstance actor,
+            SourceRemainingCallback spec, SpatialCombatEnemy target,
+            string abilityId, string buffId, double duration, double speedPercent)
+        {
+            string owner = InstanceKey(actor.Id);
+            string id = "practice-native:source-remaining-bloodlust:" + buffId + ":" + owner;
+            var status = unitStatuses[owner];
+            status.RemoveSource(id);
+            status.Apply(new CombatEffect(id, CombatEffectType.AttackSpeedBuff,
+                CombatEffectOrigin.TriggeredSkill, speedPercent, duration));
+            RemainingProc(actor, target, spec,
+                abilityId + "/" + buffId + " +" + speedPercent + "% / " +
+                duration.ToString(CultureInfo.InvariantCulture) + "초");
+        }
+
+        private void ExecuteRemainingNative(CharacterInstance actor,
+            SpatialCombatEnemy target, SourceRemainingCallback spec)
+        {
+            var position = roster.Get(actor.Id);
+            switch (spec.CatalogId)
+            {
+                case "S-06": // e0KE/A08D AUcs, point order at caster location.
+                    RemainingHits(actor, target, spec,
+                        new SourceScriptHit(SourceScriptHitShape.ProjectileLine,
+                            200, 800, 600, 1, 1, Ordr323AttackType.Spells));
+                    break;
+                case "S-07": // e0KD/A08I Ablo, B00F refresh gate.
+                    if (!RemainingHasNativeBuff(actor, "B00F"))
+                        RemainingNativeBloodlust(actor, spec, target,
+                            "A08I", "B00F", 1.75, 360);
+                    break;
+                case "R-08": // e00U/A0FC AEfk: ten knives at most.
+                    foreach (var victim in RemainingNativeTargets(actor,
+                        position.X, position.Y, 1150, 10))
+                        RemainingHits(actor, victim, spec, RemainingDirect(10000));
+                    break;
+                case "R-09": // e01C/A0FE Apxf: first fire, lifetime unknown.
+                    var nearby = RemainingNativeTargets(actor,
+                        position.X, position.Y, 1150, 1);
+                    if (nearby.Count > 0)
+                        RemainingHits(actor, nearby[0], spec, RemainingDirect(1250));
+                    break;
+                case "R-22": // e01J/A0TP AUcs; three unordered FX dummies.
+                    RemainingHits(actor, target, spec,
+                        new SourceScriptHit(SourceScriptHitShape.ProjectileLine,
+                            250, 1050, 6000, 1, 1, Ordr323AttackType.Spells));
+                    break;
+                case "R-24": // h06O/A03A Asds. Approach delay is unverified.
+                    RemainingDelayedHits(actor, target, spec, .35,
+                        RemainingDirect(500));
+                    break;
+                case "R-29": // e0KE/A03O ANfl max 9 enemies.
+                    foreach (var victim in RemainingNativeTargets(actor,
+                        position.X, position.Y, 1750, 9))
+                        RemainingHits(actor, victim, spec, RemainingDirect(7000));
+                    break;
+                case "R-32": // e0KE/A0F1 Ablo, B02H.
+                    RemainingNativeBloodlust(actor, spec, target,
+                        "A0F1", "B02H", 3, 400);
+                    break;
+                case "R-36": // e0KH/A07K AUcs, target-oriented point order.
+                    RemainingHits(actor, target, spec,
+                        new SourceScriptHit(SourceScriptHitShape.ProjectileLine,
+                            200, 1700, 8000, 1, 1, Ordr323AttackType.Spells));
+                    break;
+                case "R-39": // e0KG/A054 AOcl: eight jumps, 1250 between.
+                    var seen = new HashSet<string>(StringComparer.Ordinal);
+                    var current = target;
+                    double damage = 6000;
+                    for (int bounce = 0; bounce < 8 && current != null; bounce++)
+                    {
+                        if (bounce == 0)
+                        {
+                            double dx = current.X - position.X;
+                            double dy = current.Y - position.Y;
+                            if (dx * dx + dy * dy > 1600 * 1600) break;
+                        }
+                        seen.Add(current.Id);
+                        RemainingHits(actor, current, spec, RemainingDirect(damage));
+                        var others = RemainingNativeTargets(actor, current.X,
+                            current.Y, 1250, 1, seen);
+                        current = others.Count > 0 ? others[0] : null;
+                        damage *= 1.1; // A054 DataC=-0.1 (negative decay).
+                    }
+                    break;
+            }
+            RemainingDeferred(actor, target, spec);
+        }
+
         private void RemainingDelayedHits(CharacterInstance actor,
             SpatialCombatEnemy target, SourceRemainingCallback spec,
             double delay, params SourceScriptHit[] hits)
@@ -167,12 +316,36 @@ namespace Ordr.Mobile.Combat
                 });
         }
 
+        // Bd8 is not a generic slow: XL in the pinned JASS is A04R.
+        // Only wave enemies registered with an object-level witness can
+        // gain an additional native magic-defense level here.
+        private void RemainingNamiA04R(CharacterInstance actor,
+            SpatialCombatEnemy primary, SourceRemainingCallback spec)
+        {
+            foreach (var enemy in RemainingNativeTargets(actor,
+                primary.X, primary.Y, 575, int.MaxValue))
+            {
+                int oldLevel, nextLevel;
+                if (!sourcePracticeA04RLevels.TryGetValue(enemy.Id, out oldLevel) ||
+                    !Ordr323OriginalA04R.TryPlanIncrease(oldLevel, 1, out nextLevel))
+                {
+                    RemainingDeferred(actor, enemy, spec,
+                        "Bd8/A04R: 대상 원본 레벨 또는 상한 미검증");
+                    continue;
+                }
+                sourcePracticeA04RLevels[enemy.Id] = nextLevel;
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillActivated, InstanceKey(actor.Id),
+                    enemy.Id, "나미 · 마법 방어 단계 변화",
+                    "MODEL_ONLY Bd8: A04R " + oldLevel + "→" + nextLevel, 0));
+            }
+        }
+
         private void OnSourceRemainingDeclared(CharacterInstance actor,
             SpatialCombatEnemy target, SourceRemainingCallback spec)
         {
-            // Ten callbacks have only an externally-defined native dummy
-            // order. Their exact source proc rolls are executable, but do
-            // not replace undocumented spell damage with invented values.
+            // The ten native casts resolve source-object numeric impacts
+            // through the same damage/status engine as scripted callbacks.
             if (spec.CatalogId != "L-02" && spec.CatalogId != "L-12" &&
                 spec.CatalogId != "L-36" && spec.CatalogId != "TR-01" &&
                 spec.CatalogId != "MY-01" && spec.CatalogId != "L-05" &&
@@ -181,8 +354,8 @@ namespace Ordr.Mobile.Combat
                 if (sourceModelRules.NextScriptRoll(spec.Sides) < spec.Successes)
                 {
                     RemainingProc(actor, target, spec,
-                        spec.Successes + "/" + spec.Sides + " 보조 주문 선언");
-                    RemainingDeferred(actor, target, spec);
+                        spec.Successes + "/" + spec.Sides + " 원본 보조 주문");
+                    ExecuteRemainingNative(actor, target, spec);
                 }
                 return;
             }
@@ -206,37 +379,51 @@ namespace Ordr.Mobile.Combat
                     RemainingProc(actor, target, spec, "HP35 크리마텍트");
                     RemainingHits(actor, target, spec,
                         RemainingCircle(575, 225000, 1, 1.5));
-                    RemainingDeferred(actor, target, spec);
+                    RemainingNamiA04R(actor, target, spec);
                 }
                 if (sourceModelRules.NextScriptRoll(1000) < 88)
                 {
                     RemainingProc(actor, target, spec, "독립 88/1000 크리마텍트");
                     RemainingHits(actor, target, spec,
                         RemainingCircle(575, 225000, 1, 1.5));
-                    RemainingDeferred(actor, target, spec);
+                    RemainingNamiA04R(actor, target, spec);
                 }
                 return;
             }
 
             if (spec.CatalogId == "L-12")
             {
-                // BsL explicitly deals one hit per attack when B01N is
-                // absent. Native buff tracking is not yet available; this
-                // source-model branch uses the unbuffed result and flags it.
+                // BsL casts e03T/A0AV (frostarmor, B01N) on the first
+                // attack. Later attacks are gated while that buff remains;
+                // the W3X object gives duration zero (indefinite).
+                if (remainingMoriaHasArmor.Contains(actor.Id)) return;
+                remainingMoriaHasArmor.Add(actor.Id);
+                RemainingNativeBloodlust(actor, spec, target,
+                    "A0AW", "B01O", 3, 35);
                 RemainingProc(actor, target, spec, "비강화 공격/그림자 흡수");
                 RemainingHits(actor, target, spec,
                     RemainingDirect(800000,
                         lineMaxHealthMultiplier: 2,
                         lineAttackOverride: Ordr323AttackType.Chaos));
-                RemainingDeferred(actor, target, spec);
+                RemainingDeferred(actor, target, spec,
+                    "A0AV/B01N 강화 표식 적용; 18초 h05D 소환과 디스펠 아직 미연결");
                 return;
             }
 
             if (spec.CatalogId == "L-36")
             {
-                // BtV uses B01A buff to select the guaranteed BtT branch;
-                // absent a proven native buff provider use the unbuffed 10%
-                // BtU and keep the alternative as deferred, not a fake proc.
+                // A096 Ablo lasts exactly .4s and applies B01A. Its next
+                // attack during that window enters BtT with no 10% roll.
+                remainingHancockEnhancedTarget.Remove(actor.Id);
+                double until;
+                if (remainingHancockBuffUntil.TryGetValue(actor.Id, out until) &&
+                    until > effectExecutor.Time)
+                {
+                    remainingHancockEnhancedTarget[actor.Id] = target.Id;
+                    RemainingProc(actor, target, spec,
+                        "B01A 0.4초 내 BtT 확정 · 실제 적중 피해 대기");
+                    return;
+                }
                 if (sourceModelRules.NextScriptRoll(100) < 10)
                 {
                     RemainingProc(actor, target, spec, "BtU 10% 매료 타격");
@@ -254,8 +441,9 @@ namespace Ordr.Mobile.Combat
                 }
                 if (sourceModelRules.NextScriptRoll(100) < 8)
                 {
-                    RemainingProc(actor, target, spec, "A096 독립 8% 자기 강화");
-                    RemainingDeferred(actor, target, spec);
+                    remainingHancockBuffUntil[actor.Id] = effectExecutor.Time + .4;
+                    RemainingNativeBloodlust(actor, spec, target,
+                        "A096", "B01A", .4, 45);
                 }
                 return;
             }
@@ -334,8 +522,19 @@ namespace Ordr.Mobile.Combat
                     {
                         mp.SetMana(0);
                         RemainingProc(actor, target, spec, "MP185 변신 조건");
+                        // CGY: after the .05+.6+.05+.04 setup, 50 ticks
+                        // of 450000 + 0.45% target max HP at caster
+                        // radius 1600, one tick every .1s.
+                        for (int pulse = 1; pulse <= 50; pulse++)
+                            RemainingDelayedHits(actor, target, spec,
+                                .74 + pulse * .1,
+                                new SourceScriptHit(
+                                    SourceScriptHitShape.AttackerCircle,
+                                    1600, 0, 450000, 1, 1,
+                                    Ordr323AttackType.Chaos,
+                                    targetMaxHealthMultiplier: .0045));
                         RemainingDeferred(actor, target, spec,
-                            "원본 metamorphosis/영역과 상태 잠금 별도 엔진 필요");
+                            "CGY 50회 영역 피해 연결; 원본 일시정지/변신 모델·면역 미검증");
                     }
                     else mp.SetMana(Math.Min(185, mp.Mana + 1));
                 }
@@ -355,14 +554,26 @@ namespace Ordr.Mobile.Combat
                 }
                 if (sourceModelRules.NextScriptRoll(100) < 10)
                 {
-                    RemainingProc(actor, target, spec, "CGc 10% 무라사키");
-                    RemainingDelayedHits(actor, target, spec, 1.16,
-                        new SourceScriptHit(SourceScriptHitShape.Circle,
-                            800, 0, 4500000, 1, 1,
-                            Ordr323AttackType.Spells,
-                            targetMaxHealthMultiplier: .04));
+                    // CGc issues h04V/A10C frostarmor on the caster:
+                    // permanent B07E until dispelled. Later rolls take
+                    // the CGa 1.5m path, not the CGc 4.5m + 4% path.
+                    bool frostArmor = remainingGojoB07E.Contains(actor.Id);
+                    RemainingProc(actor, target, spec,
+                        frostArmor ? "CGa 10% 아오" : "CGc 10% 무라사키");
+                    if (frostArmor)
+                        RemainingDelayedHits(actor, target, spec, 1.43,
+                            RemainingCircle(800, 1500000));
+                    else
+                    {
+                        remainingGojoB07E.Add(actor.Id);
+                        RemainingDelayedHits(actor, target, spec, 1.13,
+                            new SourceScriptHit(SourceScriptHitShape.Circle,
+                                800, 0, 4500000, 1, 1,
+                                Ordr323AttackType.Spells,
+                                targetMaxHealthMultiplier: .04));
+                    }
                     RemainingDeferred(actor, target, spec,
-                        "B07E 버프 시 CGa 대신 CGc로 처리하는 모바일 분기");
+                        "A10C/B07E 강화 표식 유지; 시각 효과/디스펠 미연결");
                 }
             }
         }
@@ -375,7 +586,8 @@ namespace Ordr.Mobile.Combat
                 game.Phase != SessionPhase.Running) return;
             SourceRemainingCallback spec;
             if (!SourceRemainingCallbackCatalog.TryGet(rawcode, out spec) ||
-                (spec.CatalogId != "L-05" && spec.CatalogId != "D-06")) return;
+                (spec.CatalogId != "L-05" && spec.CatalogId != "D-06" &&
+                 spec.CatalogId != "L-12" && spec.CatalogId != "L-36")) return;
             long id;
             CharacterInstance actor;
             SpatialCombatEnemy target;
@@ -402,24 +614,84 @@ namespace Ordr.Mobile.Combat
                 remainingLaboonPositiveHits[actor.Id] = 0;
                 RemainingProc(actor, target, spec,
                     everySeventh ? "7번째 적중 보장" : "적중 뒤 27% 박치기");
-                // The source also deals 3000 * GetUnitPointValue(target).
-                // That W3X object integer is absent from the enemy runtime;
-                // model only its separate explicit 175000 radius575 packet.
+                // Source UnitData.slk gives wave points 100/200. Only
+                // registered exact original spawn rawcodes may use them.
+                int? points = PracticeSourcePointValue(target.Id);
+                if (points.HasValue)
+                    RemainingHits(actor, target, spec,
+                        RemainingDirect(3000 * points.Value,
+                            Ordr323AttackType.Siege));
+                else
+                    RemainingDeferred(actor, target, spec,
+                        "대상은 65R 원본 포인트 등록 대상이 아니므로 직접 피해 보류");
                 RemainingHits(actor, target, spec,
                     RemainingCircle(575, 175000));
-                RemainingDeferred(actor, target, spec);
                 return;
             }
 
-            // CDz is a 1.2s positive-damage listener, then an attack-order
-            // animation. No arbitrary proc roll; the original B07T buff
-            // changes the path and remains separately deferred here.
-            RemainingProc(actor, target, spec, "양성 피해 확인 후 파동 엘보");
-            RemainingDelayedHits(actor, target, spec, .69,
-                RemainingCircle(425, 360000),
-                RemainingDirect(720000, lineCurrentHealthMultiplier: .36,
-                    lineAttackOverride: Ordr323AttackType.Siege));
-            RemainingDeferred(actor, target, spec);
+            if (spec.CatalogId == "L-36")
+            {
+                string expected;
+                if (!remainingHancockEnhancedTarget.TryGetValue(actor.Id,
+                        out expected) || expected != target.Id) return;
+                remainingHancockEnhancedTarget.Remove(actor.Id);
+                RemainingProc(actor, target, spec, "BtT · 양성 적중 확인 후 확정 매료");
+                RemainingHitsAfterBasic(actor, target, spec, actual,
+                    new SourceScriptHit(SourceScriptHitShape.Circle, 345, 0,
+                        85000, 1, 1, Ordr323AttackType.Spells,
+                        basicHitDamageMultiplier: 1.25));
+                RemainingHits(actor, target, spec,
+                    RemainingDirect(150000,
+                        lineMaxHealthMultiplier: .07,
+                        lineAttackOverride: Ordr323AttackType.Hero));
+                return;
+            }
+
+            if (spec.CatalogId == "L-12")
+            {
+                // BsK observes a positive native hit and splashes 50% of
+                // that receipt to enemies around the original target.
+                RemainingHitsAfterBasic(actor, target, spec, actual,
+                    new SourceScriptHit(SourceScriptHitShape.Circle, 375, 0,
+                        0, 1, 1, Ordr323AttackType.Chaos,
+                        basicHitDamageMultiplier: .5));
+                if (sourceModelRules.NextScriptRoll(100) < 10)
+                {
+                    RemainingProc(actor, target, spec, "BsK 10% 그림자 추격");
+                    RemainingDelayedHits(actor, target, spec, .03,
+                        RemainingCircle(400, 250000));
+                    RemainingDelayedHits(actor, target, spec, .08,
+                        RemainingDirect(200000));
+                    RemainingDelayedHits(actor, target, spec, 1.08,
+                        RemainingDirect(200000));
+                }
+                return;
+            }
+
+            // CDz: A133 frostarmor applies B07T; a second hit while its
+            // 12s follow-up window is active takes the .03s quick path.
+            double armorUntil;
+            bool armored = remainingBurgessArmorUntil.TryGetValue(actor.Id,
+                out armorUntil) && armorUntil > effectExecutor.Time;
+            if (armored)
+            {
+                RemainingProc(actor, target, spec,
+                    "B07T · .03초 후 빠른 파동 엘보");
+                RemainingDelayedHits(actor, target, spec, .03,
+                    RemainingCircle(425, 100000),
+                    RemainingDirect(200000, lineCurrentHealthMultiplier: .10,
+                        lineAttackOverride: Ordr323AttackType.Siege));
+            }
+            else
+            {
+                remainingBurgessArmorUntil[actor.Id] = effectExecutor.Time + 12;
+                RemainingProc(actor, target, spec,
+                    "B07T 획득 · .69초 후 파동 엘보");
+                RemainingDelayedHits(actor, target, spec, .69,
+                    RemainingCircle(425, 360000),
+                    RemainingDirect(720000, lineCurrentHealthMultiplier: .36,
+                        lineAttackOverride: Ordr323AttackType.Siege));
+            }
         }
     }
 }
