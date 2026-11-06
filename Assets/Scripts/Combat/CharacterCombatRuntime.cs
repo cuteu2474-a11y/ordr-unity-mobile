@@ -316,6 +316,16 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, CharacterInstance>();
         // CMx PauseUnit equivalent: no movement, targeting or auto-attack
         // while a live unit is interpreting the Poneglyph.
+        private sealed class SharedObjectiveDeployment
+        {
+            public string EnemyId;
+            public double ReturnX;
+            public double ReturnY;
+        }
+
+        private readonly Dictionary<long, SharedObjectiveDeployment> sharedObjectiveDeployed =
+            new Dictionary<long, SharedObjectiveDeployment>();
+
         private readonly HashSet<long> originalPoneglyphChanneling =
             new HashSet<long>();
         private readonly Dictionary<string, SpatialCombatEnemy> enemies =
@@ -1502,6 +1512,70 @@ namespace Ordr.Mobile.Combat
         {
             return storyDispatch != null && storyDispatch.IsDeployed(instanceId);
         }
+        public bool IsSharedObjectiveDeployed(long instanceId) =>
+            sharedObjectiveDeployed.ContainsKey(instanceId);
+
+        public string SharedObjectiveTargetOf(long instanceId)
+        {
+            SharedObjectiveDeployment assignment;
+            return sharedObjectiveDeployed.TryGetValue(instanceId, out assignment)
+                ? assignment.EnemyId : null;
+        }
+
+        // Manual side-objective sortie: one live actor, one source-observed
+        // target. The unit is never simultaneously in story or main combat.
+        public bool TryDispatchToSharedObjective(long instanceId, string enemyId)
+        {
+            CharacterInstance actor;
+            SpatialCombatEnemy target;
+            if (Game.Phase != SessionPhase.Running ||
+                !characters.TryGetValue(instanceId, out actor) ||
+                sharedObjectiveDeployed.ContainsKey(instanceId) ||
+                originalPoneglyphChanneling.Contains(instanceId) ||
+                IsStoryDeployed(instanceId) ||
+                !enemies.TryGetValue(enemyId ?? "", out target) ||
+                !target.Enemy.IsAlive ||
+                (target.Kind != CharacterEnemyKind.SeaKing &&
+                 target.Kind != CharacterEnemyKind.Challenge) ||
+                target.Enemy.Defenses == null ||
+                string.IsNullOrWhiteSpace(target.Enemy.Defenses.Source) ||
+                !target.Enemy.Defenses.Source.StartsWith(
+                    "original observed shared objective ", StringComparison.Ordinal))
+                return false;
+            var before = roster.Get(instanceId);
+            var assignment = new SharedObjectiveDeployment {
+                EnemyId = enemyId, ReturnX = before.X, ReturnY = before.Y
+            };
+            CancelOriginalUnitCast(instanceId);
+            roster.Move(instanceId, target.X, target.Y);
+            sharedObjectiveDeployed.Add(instanceId, assignment);
+            RefreshEnemyAuras();
+            return true;
+        }
+
+        public bool TryRecallFromSharedObjective(long instanceId)
+        {
+            SharedObjectiveDeployment assignment;
+            if (!sharedObjectiveDeployed.TryGetValue(instanceId, out assignment))
+                return false;
+            sharedObjectiveDeployed.Remove(instanceId);
+            if (characters.ContainsKey(instanceId))
+            {
+                CancelOriginalUnitCast(instanceId);
+                roster.Move(instanceId, assignment.ReturnX, assignment.ReturnY);
+                RefreshEnemyAuras();
+            }
+            return true;
+        }
+
+        public void RecallSharedObjectiveParticipants(string enemyId)
+        {
+            if (string.IsNullOrEmpty(enemyId)) return;
+            var ids = new List<long>();
+            foreach (var entry in sharedObjectiveDeployed)
+                if (entry.Value.EnemyId == enemyId) ids.Add(entry.Key);
+            foreach (long id in ids) TryRecallFromSharedObjective(id);
+        }
 
         public bool IsOriginalPoneglyphChanneling(long instanceId) =>
             originalPoneglyphChanneling.Contains(instanceId);
@@ -1510,7 +1584,8 @@ namespace Ordr.Mobile.Combat
         {
             if (channeling)
             {
-                if (!characters.ContainsKey(instanceId) || IsStoryDeployed(instanceId))
+                if (!characters.ContainsKey(instanceId) || IsStoryDeployed(instanceId) ||
+                    IsSharedObjectiveDeployed(instanceId))
                     throw new InvalidOperationException(
                         "포네그리프 해독은 메인 전장의 보유 유닛으로만 시작합니다.");
                 CancelOriginalUnitCast(instanceId);
@@ -2281,6 +2356,7 @@ namespace Ordr.Mobile.Combat
             if (!characters.TryGetValue(instanceId, out instance))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터 인스턴스.");
             originalPoneglyphChanneling.Remove(instanceId);
+            sharedObjectiveDeployed.Remove(instanceId);
             CancelOriginalUnitCast(instanceId);
             if (instance.AttackReady) attackPipeline.RemoveUnit(InstanceKey(instanceId));
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
@@ -2338,8 +2414,10 @@ namespace Ordr.Mobile.Combat
             BlockExternalMutationDuringOriginalFusion();
             if (!characters.ContainsKey(instanceId))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
-            if (originalPoneglyphChanneling.Contains(instanceId))
-                throw new InvalidOperationException("포네그리프 해독 중에는 유닛을 이동할 수 없습니다.");
+            if (originalPoneglyphChanneling.Contains(instanceId) ||
+                sharedObjectiveDeployed.ContainsKey(instanceId))
+                throw new InvalidOperationException(
+                    "해독/공유 목표 출전 중에는 일반 이동할 수 없습니다.");
             roster.Move(instanceId, x, y);
             CancelOriginalUnitCast(instanceId);
             RefreshEnemyAuras();
@@ -2530,6 +2608,11 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy enemy)
         {
             if (originalPoneglyphChanneling.Contains(unit.Id)) return false;
+            SharedObjectiveDeployment sharedTarget;
+            if (sharedObjectiveDeployed.TryGetValue(unit.Id, out sharedTarget))
+                return enemy.Enemy.Id == sharedTarget.EnemyId &&
+                    (enemy.Kind == CharacterEnemyKind.SeaKing ||
+                     enemy.Kind == CharacterEnemyKind.Challenge);
             // 크립/해왕류/도전은 별도 출전 허가가 없는 한 일반 전장에 섞이지 않는다.
             if (enemy.Kind == CharacterEnemyKind.Creep ||
                 enemy.Kind == CharacterEnemyKind.SeaKing ||

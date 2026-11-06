@@ -3022,6 +3022,53 @@ namespace Ordr.Mobile.Unity
                     Original323PoneglyphSession.SharedMissionNames[i],
                     OrdrMobileUiTheme.Overline);
             }
+            if (controller.SharedObjectives != null && Combat != null)
+            {
+                GUILayout.Label("실제 출현한 공유 목표", OrdrMobileUiTheme.Subheading);
+                var observedTargets = controller.SharedObjectives.Encounters;
+                foreach (var encounter in observedTargets)
+                {
+                    var name = Original323PoneglyphSession.SharedMissionNames[
+                        (int)encounter.Plan.Mission];
+                    bool alive = encounter.State ==
+                        Original323SharedObjectiveState.Alive;
+                    string state = alive ? "전투 중" :
+                        encounter.State == Original323SharedObjectiveState.Completed ?
+                            "완료" :
+                        encounter.State == Original323SharedObjectiveState.DefeatedUnverified ?
+                            "격파 · 원본 정산 확인 대기" : "소멸";
+                    long health = 0, maxHealth = 0;
+                    foreach (var enemy in Combat.MobileEnemySnapshot())
+                        if (enemy.Id == encounter.EnemyId)
+                        {
+                            health = enemy.Health;
+                            maxHealth = enemy.MaxHealth;
+                            break;
+                        }
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(name + " · " + state +
+                        (alive ? " · HP " + health + "/" + maxHealth : ""),
+                        OrdrMobileUiTheme.Overline,
+                        GUILayout.MinWidth(0), GUILayout.ExpandWidth(true));
+                    var selected = Combat.Roster.SelectedId;
+                    bool deployed = selected.HasValue &&
+                        Combat.SharedObjectiveTargetOf(selected.Value) ==
+                            encounter.EnemyId;
+                    bool previousEnabled = GUI.enabled;
+                    GUI.enabled = previousEnabled && selected.HasValue &&
+                        (alive || deployed) && !controller.IsUnitPreparation;
+                    if (GUILayout.Button(deployed ? "복귀" : "출전",
+                        GUILayout.Width(88), GUILayout.MinHeight(50)) &&
+                        selected.HasValue)
+                        notice = deployed
+                            ? controller.RequestSharedObjectiveRecall(selected.Value)
+                            : controller.RequestSharedObjectiveDispatch(
+                                selected.Value, encounter.EnemyId);
+                    GUI.enabled = previousEnabled;
+                    GUILayout.EndHorizontal();
+                }
+            }
+
             OrdrMobileUiTheme.DrawStatusRow("포네그리프",
                 session.Phase == Original323PoneglyphPhase.Locked ? "잠김" :
                 session.Phase == Original323PoneglyphPhase.Ready ? "해독 가능" :

@@ -41,12 +41,28 @@ namespace Ordr.Mobile.Combat
         public long PendingGateAdmirals => economy.Wallet.Balance(PendingGateAdmiralResource);
         public long PendingAdmiralBuffs => economy.Wallet.Balance(PendingAdmiralBuffResource);
 
+        // A gate outcome is no longer pending only after the randomly
+        // selected, source-witnessed admiral has physically spawned.
+        public bool TryRecordRealGateAdmiralSpawn(string sourceSpawnEventId)
+        {
+            if (string.IsNullOrWhiteSpace(sourceSpawnEventId)) return false;
+            string receipt = "shared:original323:gate-admiral-spawn:" +
+                sourceSpawnEventId;
+            if (economy.Wallet.HasCompletedTransaction(receipt)) return true;
+            return economy.Wallet.TryExchangeOnce(receipt,
+                new ResourceBundle().Add(PendingGateAdmiralResource, 1),
+                new ResourceBundle());
+        }
+
         public bool TrySettle(Original323SharedMissionKind kind, string sourceEventId,
             int currentRound, string sourceEvidence)
         {
             if (combat.Game.Phase != SessionPhase.Running ||
                 !Original323BossRoundRules.TrustedRuntimeEvidence(sourceEvidence) ||
-                !missions.CanRecordVerifiedSharedMission(kind, sourceEventId, currentRound))
+                !missions.CanRecordVerifiedSharedMission(kind, sourceEventId, currentRound) ||
+                (kind == Original323SharedMissionKind.MarineAdmiral &&
+                 !missions.IsSharedMissionCompleted(
+                     Original323SharedMissionKind.JusticeGate)))
                 return false;
 
             // Keep the original award fixed for each kind. Native excavation,

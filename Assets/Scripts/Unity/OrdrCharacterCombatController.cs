@@ -1220,7 +1220,7 @@ namespace Ordr.Mobile.Unity
             runGate.SetManualPause(paused);
         }
 
-        private void OnDestroy() { Wisps?.Dispose(); PracticeBattle?.Dispose(); SoloStory?.Dispose(); PracticeCreeps?.Dispose(); PracticeStoryBuildings?.Dispose(); UnitDecompositions?.Dispose(); }
+        private void OnDestroy() { Wisps?.Dispose(); PracticeBattle?.Dispose(); SoloStory?.Dispose(); PracticeCreeps?.Dispose(); PracticeStoryBuildings?.Dispose(); SharedObjectives?.Dispose(); UnitDecompositions?.Dispose(); }
 
         private void OnApplicationPause(bool paused)
         {
@@ -2192,6 +2192,66 @@ namespace Ordr.Mobile.Unity
         public Original323TreasureHunt OriginalTreasureHunt { get; private set; }
         public Original323PoneglyphSession Poneglyph { get; private set; }
         public Original323SharedMissionRewardWorld SharedMissionRewards { get; private set; }
+        public Original323SharedObjectiveWorld SharedObjectives { get; private set; }
+        private IOriginal323SharedObjectiveWitness originalSharedObjectiveWitness;
+
+        // A real runtime/replay must authorize the full Nightmare spawn plan
+        // and independently certify the matching death. No default model
+        // substitutes basic SLK HP for unknown final objective HP.
+        public void ConfigureOriginal323SharedObjectiveWitness(
+            IOriginal323SharedObjectiveWitness witness)
+        {
+            if (witness == null || originalSharedObjectiveWitness != null ||
+                (Combat != null && Combat.Game.Phase != SessionPhase.NotStarted))
+                throw new InvalidOperationException(
+                    "공유 목표 증거 공급자는 게임 시작 전 한 번만 연결해야 합니다.");
+            originalSharedObjectiveWitness = witness;
+        }
+
+        public Original323SharedObjectiveEncounter ObserveOriginal323SharedObjectiveSpawn(
+            Original323SharedObjectiveSpawnPlan plan)
+        {
+            if (SharedObjectives == null)
+                throw new InvalidOperationException("공유 목표 원본 사건 공급자 미연결");
+            return SharedObjectives.ObserveSpawn(plan);
+        }
+
+        public bool ObserveOriginal323SharedObjectiveDefeat(
+            string enemyId, string sourceDefeatEventId) =>
+            SharedObjectives != null &&
+            SharedObjectives.TrySettleDefeat(enemyId, sourceDefeatEventId);
+
+        public string RequestSharedObjectiveDispatch(long instanceId, string enemyId)
+        {
+            if (Combat == null || SharedObjectives == null ||
+                Combat.Game.Phase != SessionPhase.Running ||
+                !SharedObjectives.IsLiveTarget(enemyId))
+                return "실제 출현이 확인된 공유 목표가 없습니다.";
+            if (MapBaseStats == null)
+                return "원본 유닛 자료가 연결되지 않았습니다.";
+            string catalogId = null;
+            foreach (var owned in Combat.MobileUnitSnapshot())
+                if (owned.InstanceId == instanceId && owned.Unit != null)
+                {
+                    catalogId = owned.Unit.Id;
+                    break;
+                }
+            if (catalogId == null) return "보유한 유닛을 먼저 선택해 주세요.";
+            var mapped = MapBaseStats.Find(catalogId);
+            if (mapped == null || mapped.OriginalAbilityRawcodes == null)
+                return "원본 객체 신원이 확인되지 않은 유닛입니다.";
+            foreach (var ability in mapped.OriginalAbilityRawcodes)
+                if (ability == "Aloc")
+                    return "이동할 수 없는 원본 유닛입니다.";
+            return Combat.TryDispatchToSharedObjective(instanceId, enemyId)
+                ? "공유 목표 출전 · 유닛 #" + instanceId
+                : "이미 다른 전장에 있거나 공유 목표 출전이 불가능합니다.";
+        }
+
+        public string RequestSharedObjectiveRecall(long instanceId) =>
+            Combat != null && Combat.TryRecallFromSharedObjective(instanceId)
+                ? "공유 목표에서 복귀했습니다."
+                : "복귀할 공유 목표 출전 유닛이 없습니다.";
         private IOriginal323PoneglyphEventWitness originalPoneglyphWitness;
         public MobileTreasureGacha MobileTreasureGacha { get; private set; }
         public Original323GaimonRevealPort GaimonReveal { get; private set; }
@@ -3400,6 +3460,10 @@ namespace Ordr.Mobile.Unity
                 originalSharedScriptRandom == null ? sessionScriptRandom :
                     originalSharedScriptRandom.ForPurpose(
                         Original323ScriptRandomPurpose.OtherOriginalScriptCall));
+            if (originalSharedObjectiveWitness != null)
+                SharedObjectives = new Original323SharedObjectiveWorld(
+                    Combat, SharedMissionRewards, Poneglyph,
+                    originalSharedObjectiveWitness);
             AttachVerifiedSoloHelperCow();
         }
 
