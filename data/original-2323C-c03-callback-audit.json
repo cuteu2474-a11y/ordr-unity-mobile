@@ -2,7 +2,7 @@
   "gameVersion": "S2 2.323[C]",
   "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
   "scope": "source-model practice battle only; no original/WC3 parity claim",
-  "date": "2026-11-05",
+  "date": "2026-11-06",
   "connected": [
     {
       "catalogId": "X-01",
@@ -38,6 +38,27 @@
       "jassCallback": "Bq9",
       "sourceHit": "line/story only: independent 16% -> direct 250000 + radius500 AoE 100000; story(A904) additional direct 375000; NORMAL universal",
       "remaining": "boss/enraged shield branch, native buffs/firebolt and final resistance not modeled; damage withheld from those kinds"
+    },
+    {
+      "catalogId": "R-04",
+      "rawcode": "h01L",
+      "jassCallback": "Boe",
+      "sourceHit": "10%: radius 350 around attacked target, 6000 NORMAL/universal damage to every enemy (Bod)",
+      "remaining": "visual dummy e010, exact Warcraft enumeration/defense unverified"
+    },
+    {
+      "catalogId": "R-06",
+      "rawcode": "h01X",
+      "jassCallback": "Boo",
+      "sourceHit": "Boo->Bon 15% stage: at ~0.32 s 30000 direct + radius 500 AoE 22500, NORMAL/universal",
+      "remaining": "e013 native thunderbolt/stun unverified; 85% damage-listener branch has no direct JASS hit; stage timing modeled approximately"
+    },
+    {
+      "catalogId": "R-34",
+      "rawcode": "h02E",
+      "jassCallback": "Bpp",
+      "sourceHit": "11% Bpp->Bpo stage at ~0.625 s: radius 600 AoE 10000 then direct 35000 (70000 if A904 story marker), NORMAL/universal",
+      "remaining": "e058 native inferno/order unverified; A904 mapped to practice Story kind; exact staged timing/native armor remains unverified"
     }
   ],
   "remainingCallbacksRequiringNativeOrMultiStepJass": [
@@ -58,18 +79,6 @@
       "name": "X-드레이크",
       "rawcode": "h09X",
       "jassCallback": "BoS"
-    },
-    {
-      "catalogId": "R-04",
-      "name": "도플라밍고",
-      "rawcode": "h01L",
-      "jassCallback": "Boe"
-    },
-    {
-      "catalogId": "R-06",
-      "name": "루피 기어써드",
-      "rawcode": "h01X",
-      "jassCallback": "Boo"
     },
     {
       "catalogId": "R-08",
@@ -124,12 +133,6 @@
       "name": "조로 현상금 사냥꾼",
       "rawcode": "h02F",
       "jassCallback": "Bpm"
-    },
-    {
-      "catalogId": "R-34",
-      "name": "죠즈",
-      "rawcode": "h02E",
-      "jassCallback": "Bpp"
     },
     {
       "catalogId": "R-36",
@@ -201,7 +204,7 @@
   "caveats": [
     "Rawcode callback presence alone is NOT proof a missing skill. Other registered tooltip/native/special paths were excluded from this subset.",
     "Do not register independent tooltip equivalents for these callbacks; legacy source-code precedence suppresses duplicate proc damage.",
-    "No Unity, Python, NUnit or APK execution was requested or performed in this batch.",
+    "This skill batch has not been executed in Unity, Python, NUnit or APK; code paths require integrated verification.",
     "MY-02 has an existing independent NinthSkills implementation; excluded from this catalog to prevent duplicate 50000 scripted damage."
   ]
 }

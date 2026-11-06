@@ -7,7 +7,7 @@ namespace Ordr.Mobile.Combat
 {
     public sealed partial class CharacterCombatRuntime
     {
-        // These twenty-six script callbacks run ONLY in the independent offline
+        // These source-script callbacks run ONLY in the independent offline
         // practice model. The original verified/WC3 observer path is untouched.
         // Warcraft native dummy casts, exact defense semantics, original
         // enumeration order and final damage quantization remain unverified.
@@ -47,7 +47,8 @@ namespace Ordr.Mobile.Combat
                 SourceModelThirdAttackCatalog.TryGet(rawcode, out script) ||
                 SourceModelFourthAttackCatalog.TryGet(rawcode, out script) ||
                 SourceModelFifthAttackCatalog.TryGet(rawcode, out script) ||
-                SourceModelSixthAttackCatalog.TryGet(rawcode, out script);
+                SourceModelSixthAttackCatalog.TryGet(rawcode, out script) ||
+                SourceModelSeventhAttackCatalog.TryGet(rawcode, out script);
             bool hasBatch = SourceModelBatchAttackCatalog.TryGet(rawcode, out batch);
             bool hasNext = SourceModelNextThirtySkillCatalog.TryGet(
                 rawcode, out nextThirty);
@@ -397,6 +398,9 @@ namespace Ordr.Mobile.Combat
                     // CCE selects ONE damage operand by the enemy marker,
                     // it does not add the boss/enraged percentage to 35000.
                     double raw = hit.Damage;
+                    if (target.Kind == CharacterEnemyKind.Story &&
+                        hit.StoryDamage > 0)
+                        raw = hit.StoryDamage;
                     if (target.Kind == CharacterEnemyKind.Boss &&
                         hit.BossCurrentHealthPercent > 0)
                         raw = target.Enemy.Health *
