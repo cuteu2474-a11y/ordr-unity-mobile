@@ -1,0 +1,36 @@
+{
+  "generator": "built-in image_gen",
+  "generatedAt": "2026-11-06",
+  "runtimeIntegrated": false,
+  "files": {
+    "quantity-button-v1.png": {
+      "width": 1254,
+      "height": 1254,
+      "bitDepth": 8,
+      "colorType": 6,
+      "interlace": 0,
+      "bytes": 484646,
+      "sha256": "cef589f09843729bc9bd2f58db9d010e29c9faae25e792bdc7b87b1089a74957",
+      "alpha": {
+        "transparent": 1095499,
+        "opaque": 354,
+        "partial": 476663
+      },
+      "visibleBounds": {
+        "left": 0,
+        "top": 224,
+        "right": 1253,
+        "bottom": 1149
+      }
+    },
+    "battlefield-ground-v1.png": {
+      "width": 1536,
+      "height": 1024,
+      "bitDepth": 8,
+      "colorType": 2,
+      "interlace": 0,
+      "bytes": 2349060,
+      "sha256": "f17781c9617e30ff7bb7163bbd0f83aadb1e1fa8fc7922125fb22c4ce42439ef"
+    }
+  }
+}
