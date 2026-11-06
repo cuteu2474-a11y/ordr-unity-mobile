@@ -103,6 +103,7 @@ namespace Ordr.Mobile.Combat
 
         private void ForgetSourceRemainingCallbacks(long actorId)
         {
+            ForgetSourceAkainuBoss(actorId);
             remainingLaboonPositiveHits.Remove(actorId);
             remainingHancockBuffUntil.Remove(actorId);
             remainingHancockEnhancedTarget.Remove(actorId);
@@ -589,10 +590,8 @@ namespace Ordr.Mobile.Combat
                         // starting at .74s; the final unpause is at 6.2s.
                         // Reuse the established form-cast gate to suppress
                         // ordinary basic attacks during the native realm.
-                        bool realmLane = IsStoryDeployed(actor.Id);
-                        long realmRevision = SourceModelLaneRevision(actor.Id);
-                        double realmEnds = effectExecutor.Time + 6.2;
-                        sourceFormCastFinishes[actor.Id] = realmEnds;
+                        BeginSourceAttackPause(actor, target,
+                            "고죠 · 무량공처", 6.2);
                         for (int pulse = 0; pulse < 50; pulse++)
                             RemainingDelayedHits(actor, target, spec,
                                 .74 + pulse * .1,
@@ -601,26 +600,6 @@ namespace Ordr.Mobile.Combat
                                     1600, 0, 450000, 1, 1,
                                     Ordr323AttackType.Chaos,
                                     targetMaxHealthMultiplier: .0045));
-                        if (remainingCallbackSerial == long.MaxValue)
-                            throw new OverflowException("영역 전개 예약 순번 범위 초과");
-                        long realmSerial = ++remainingCallbackSerial;
-                        effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
-                            "remaining-gojo-realm:" + actor.Id + ":" + realmSerial,
-                            6.2, () => {
-                                double currentFinish;
-                                if (!sourceFormCastFinishes.TryGetValue(actor.Id,
-                                        out currentFinish) || currentFinish != realmEnds)
-                                    return;
-                                sourceFormCastFinishes.Remove(actor.Id);
-                                sourceFormCastWake = true;
-                                if (CanFinishSourceModelDelayedAttack(actor.Id,
-                                        realmLane, realmRevision))
-                                    events.Add(new CharacterCombatEvent(
-                                        CharacterCombatEventType.SkillActivated,
-                                        InstanceKey(actor.Id), target.Id,
-                                        actor.Catalog.Name + " 영역 전개",
-                                        "MODEL_ONLY CGY 종료 / 일반 공격 재개", 0));
-                            });
                         RemainingProc(actor, target, spec,
                             "CGY 50회 영역 피해 / 6.2초 일반 공격 일시정지");
                     }
@@ -734,6 +713,9 @@ namespace Ordr.Mobile.Combat
                         "대상은 65R 원본 포인트 등록 대상이 아니므로 직접 피해 보류");
                 RemainingHits(actor, target, spec,
                     RemainingCircle(575, 175000));
+                // Bse pauses Laboon after the confirmed positive-hit proc,
+                // then restores its queued attack order after .65s.
+                BeginSourceAttackPause(actor, target, "라분 · 박치기", .65);
                 return;
             }
 
@@ -795,6 +777,9 @@ namespace Ordr.Mobile.Combat
                 remainingBurgessArmorUntil[actor.Id] = effectExecutor.Time + 12;
                 RemainingProc(actor, target, spec,
                     "B07T 획득 · .69초 후 파동 엘보");
+                // CDz: .315 + .375 windup, .35 recovery; release at 1.04s.
+                BeginSourceAttackPause(actor, target,
+                    "바제스 · 파동 엘보", 1.04);
                 RemainingDelayedHits(actor, target, spec, .69,
                     RemainingCircle(425, 360000),
                     RemainingDirect(720000, lineCurrentHealthMultiplier: .36,

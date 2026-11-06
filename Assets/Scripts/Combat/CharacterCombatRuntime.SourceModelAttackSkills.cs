@@ -7,6 +7,75 @@ namespace Ordr.Mobile.Combat
 {
     public sealed partial class CharacterCombatRuntime
     {
+        private readonly Dictionary<long, string> sourceAkainuBossTargets =
+            new Dictionary<long, string>();
+        private readonly Dictionary<long, int> sourceAkainuBossStacks =
+            new Dictionary<long, int>();
+        private long sourceAkainuBossSerial;
+
+        private void ForgetSourceAkainuBoss(long actorId)
+        {
+            sourceAkainuBossTargets.Remove(actorId);
+            sourceAkainuBossStacks.Remove(actorId);
+        }
+
+        // Bq9's boss branch bypasses the ordinary 16% hit and opens Bq8.
+        // Consecutive attacks against the SAME boss strengthen the delayed
+        // impact; changing bosses resets the original per-attacker counter.
+        private void ExecuteSourceAkainuBossDeclared(CharacterInstance actor,
+            SpatialCombatEnemy target)
+        {
+            int stacks;
+            string lastTarget;
+            if (sourceAkainuBossTargets.TryGetValue(actor.Id, out lastTarget) &&
+                lastTarget == target.Id &&
+                sourceAkainuBossStacks.TryGetValue(actor.Id, out stacks))
+                stacks = checked(stacks + 1);
+            else stacks = 1;
+            sourceAkainuBossTargets[actor.Id] = target.Id;
+            sourceAkainuBossStacks[actor.Id] = stacks;
+
+            var position = roster.Get(actor.Id);
+            double dx = target.X - position.X, dy = target.Y - position.Y;
+            double distance = Math.Sqrt(dx * dx + dy * dy);
+            // Bq8's projectile starts 10 units forward, advances 30 per .01s,
+            // then waits .1s after entering the target's 60-unit radius.
+            double steps = Math.Ceiling(Math.Max(0, distance - 70) / 30);
+            double delay = .01 * (steps + 1) + .1;
+            bool lane = IsStoryDeployed(actor.Id);
+            long revision = SourceModelLaneRevision(actor.Id);
+            double impactX = target.X, impactY = target.Y;
+            var packet = new SourceScriptAttackSpec("H-17", "h03Z",
+                "Bq8", 1, 1, Array.Empty<SourceScriptHit>(),
+                new[] {
+                    new SourceScriptHit(SourceScriptHitShape.Direct,
+                        0, 0, 250000.0 * stacks, 1, 1,
+                        Ordr323AttackType.Spells),
+                    new SourceScriptHit(SourceScriptHitShape.Circle,
+                        500, 0, 100000, 1, 1, Ordr323AttackType.Spells),
+                    new SourceScriptHit(SourceScriptHitShape.Direct,
+                        0, 0, 2500000.0 * stacks, 1, 1,
+                        Ordr323AttackType.Spells)
+                }, null);
+            if (sourceAkainuBossSerial == long.MaxValue)
+                throw new OverflowException("히든 아카이누 보스 공격 예약 순번 초과");
+            long serial = ++sourceAkainuBossSerial;
+            effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
+                "practice-akainu-boss:" + actor.Id + ":" + serial,
+                delay, () => {
+                    if (CanFinishSourceModelDelayedAttack(actor.Id, lane, revision))
+                        ApplySourceScriptHits(actor, target, packet,
+                            packet.OnProc, impactX, impactY);
+                });
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated,
+                InstanceKey(actor.Id), target.Id, "아카이누 · 보스 연속 타격",
+                "MODEL_ONLY Bq9→Bq8 보스 " + stacks +
+                "중첩 / 지연 " +
+                delay.ToString(CultureInfo.InvariantCulture) +
+                "초 / A14X·B05G 방어력 증가 미공급", 0));
+        }
+
         // These source-script callbacks run ONLY in the independent offline
         // practice model. The original verified/WC3 observer path is untouched.
         // Warcraft native dummy casts, exact defense semantics, original
@@ -194,13 +263,25 @@ namespace Ordr.Mobile.Combat
             // a null SourceScriptAttackSpec after those callbacks.
             if (script == null) return;
 
-            // Bq9 uses a different native shield/buff branch against boss
-            // markers and unshielded enraged targets. Until the buff state
-            // is represented, never misapply its 16% damage branch there.
-            if (script.CatalogId == "H-17" &&
-                (primary.Kind == CharacterEnemyKind.Boss ||
-                 primary.Kind == CharacterEnemyKind.Enraged))
-                return;
+            // Bq9 always takes its consecutive-hit Bq8 branch on a boss.
+            // Enraged enemies first require the native B05G buff state:
+            // do not substitute the unrelated 16% normal target packet.
+            if (script.CatalogId == "H-17")
+            {
+                if (primary.Kind == CharacterEnemyKind.Boss)
+                {
+                    ExecuteSourceAkainuBossDeclared(actor, primary);
+                    return;
+                }
+                if (primary.Kind == CharacterEnemyKind.Enraged)
+                {
+                    events.Add(new CharacterCombatEvent(
+                        CharacterCombatEventType.EffectDeferred,
+                        attackerId, primary.Id, "아카이누 · 광폭화 조건",
+                        "MODEL_ONLY Bq9 A14X/B05G 네이티브 버프 수명 미확인", 0));
+                    return;
+                }
+            }
 
             // JASS Btd (Cracker) uses Bcb every attacked event, THEN rolls
             // its separate e04X/area branch. Do not reverse this ordering.
@@ -214,10 +295,20 @@ namespace Ordr.Mobile.Combat
             // so preserve the branch and report the unmodeled native cast.
             if (script.CatalogId == "R-27" &&
                 sourceModelRules.NextScriptRoll(100) < 10)
+            {
+                var blizzard = SpawnSourceTemporaryActor(actor,
+                    "BpZ · 블리자드", "아카이누 블리자드", 3, "e0KE",
+                    false, primary.X, primary.Y);
+                events.Add(new CharacterCombatEvent(
+                    CharacterCombatEventType.SkillActivated, attackerId,
+                    primaryTargetId, actor.Catalog.Name + " 블리자드",
+                    "MODEL_ONLY BpZ 10% e0KE 보조 유닛 " + blizzard.Id +
+                    " 생성·3초 원본 수명", 0));
                 events.Add(new CharacterCombatEvent(
                     CharacterCombatEventType.EffectDeferred, attackerId,
                     primaryTargetId, actor.Catalog.Name + " 블리자드",
-                    "MODEL_ONLY BpZ 첫 번째 10% ABlz 보조 주문 피해 미연결", 0));
+                    "MODEL_ONLY ABlz 원본 타격·빙결·면역 미공급", 0));
+            }
             int roll = script.RollSides == 1 ? 1 :
                 sourceModelRules.NextScriptRoll(script.RollSides) + 1;
             // Independent clone proc, after the already-registered Bt2 roll:
@@ -234,6 +325,9 @@ namespace Ordr.Mobile.Combat
                 roll + "/" + script.RollSides,
                 0));
             BeforeSourceModelLegacyProc(actor, primary, script);
+            if (script.CatalogId == "R-06")
+                BeginSourceAttackPause(actor, primary,
+                    "루피 기어써드 · 거인 공격", .44);
             if (script.DelaySeconds > 0)
             {
                 // BoB captures the attacked unit's LOCATION at state 0. The

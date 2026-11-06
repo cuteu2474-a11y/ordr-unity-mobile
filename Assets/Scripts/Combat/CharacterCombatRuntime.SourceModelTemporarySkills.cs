@@ -52,13 +52,66 @@ namespace Ordr.Mobile.Combat
             return summon;
         }
 
+        // Native JASS EXPauseUnit casts share one interruption-safe owner gate.
+        // Its scheduled release is ignored after death, fusion, lane change
+        // or a later cast that extended the same pause.
+        private long sourceAttackPauseSerial;
+        private readonly Dictionary<long, double> sourceAttackPauseFinishes =
+            new Dictionary<long, double>();
+        private readonly Dictionary<long, long> sourceAttackPauseTokens =
+            new Dictionary<long, long>();
+        private void BeginSourceAttackPause(CharacterInstance actor,
+            SpatialCombatEnemy target, string skillName, double seconds)
+        {
+            if (actor == null || seconds <= 0 ||
+                double.IsNaN(seconds) || double.IsInfinity(seconds))
+                throw new ArgumentOutOfRangeException(nameof(seconds));
+            double until = effectExecutor.Time + seconds;
+            double previous;
+            if (sourceAttackPauseFinishes.TryGetValue(actor.Id, out previous) &&
+                previous >= until) return;
+            sourceAttackPauseFinishes[actor.Id] = until;
+            bool lane = IsStoryDeployed(actor.Id);
+            long revision = SourceModelLaneRevision(actor.Id);
+            if (sourceAttackPauseSerial == long.MaxValue)
+                throw new OverflowException("원본 일시정지 예약 순번 범위 초과");
+            long token = ++sourceAttackPauseSerial;
+            sourceAttackPauseTokens[actor.Id] = token;
+            string key = "practice-attack-pause:" + actor.Id + ":" + token;
+            effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
+                key, seconds, () => {
+                    double activeUntil;
+                    long activeToken;
+                    if (!sourceAttackPauseTokens.TryGetValue(actor.Id,
+                            out activeToken) || activeToken != token ||
+                        !sourceAttackPauseFinishes.TryGetValue(actor.Id,
+                            out activeUntil) || activeUntil != until) return;
+                    sourceAttackPauseTokens.Remove(actor.Id);
+                    sourceAttackPauseFinishes.Remove(actor.Id);
+                    sourceFormCastWake = true;
+                    if (CanFinishSourceModelDelayedAttack(actor.Id, lane, revision))
+                        events.Add(new CharacterCombatEvent(
+                            CharacterCombatEventType.SkillActivated,
+                            InstanceKey(actor.Id), target.Id, skillName,
+                            "MODEL_ONLY 원본 EXPauseUnit 해제 / 평타 재개", 0));
+                });
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated,
+                InstanceKey(actor.Id), target.Id, skillName,
+                "MODEL_ONLY 원본 EXPauseUnit 정지 / " +
+                seconds.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                "초", 0));
+        }
+
         // These two rawcode paths are deliberately separate from the verified
         // Warcraft observer and from the existing script damage catalogs.
         private static bool IsStandaloneSourceTemporaryAttack(string rawcode) =>
             rawcode == "H0B2" || rawcode == "h049";
 
         private bool SourceFormIsCasting(long id) =>
-            UsesSourceModelBasicAttacks && sourceFormCastFinishes.ContainsKey(id);
+            UsesSourceModelBasicAttacks &&
+            (sourceFormCastFinishes.ContainsKey(id) ||
+             sourceAttackPauseFinishes.ContainsKey(id));
 
         public string PracticeFormOf(long id)
         {
@@ -99,6 +152,8 @@ namespace Ordr.Mobile.Combat
         private void RemoveSourceTemporaryActors(long ownerId)
         {
             sourceFormCastFinishes.Remove(ownerId);
+            sourceAttackPauseFinishes.Remove(ownerId);
+            sourceAttackPauseTokens.Remove(ownerId);
             sourceFormNames.Remove(ownerId);
             ForgetSourceModelTenthForm(ownerId);
             ForgetNativeSourceCharacter(ownerId);
@@ -219,7 +274,7 @@ namespace Ordr.Mobile.Combat
                 ImportedCombatSkill skill = FindSourceSkill(actor, "블랙 맘바 각성");
                 SourceModelFormSpec form;
                 if (!SourceModelTemporarySkillCatalog.TryReadCompleteForm(skill, out form) ||
-                    sourceFormCastFinishes.ContainsKey(actor.Id) ||
+                    SourceFormIsCasting(actor.Id) ||
                     !SourceRollSkill(skill)) return;
                 double castTime = skill.Number("castTimeSeconds").Value;
                 bool lane = IsStoryDeployed(actor.Id);
