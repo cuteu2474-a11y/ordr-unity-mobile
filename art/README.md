@@ -5,6 +5,7 @@
 | 묶음 | 포함 | 사용법 |
 |---|---|---|
 | [공통 버튼 v1](ui/button-v1/) | 글자 없는 회색 공통 버튼 배경 1장 | [크기·색상 상태·9분할](ui/button-v1/README.md) |
+| [UI 바탕 v1](ui/skin-v1/) | 말풍선·작은 버튼·팝업 패널 3장 | [글자 분리·색상 상태·늘림/꼬리 처리](ui/skin-v1/README.md) |
 | [적·이펙트 v1](combat-v1/) | 일반 적·보스 2장, 타격·참격·마법탄·광역 링 4장 | [파일별 용도·Unity 연결 위치·주의점](combat-v1/README.md) |
 | [스토리 요새 v1](story-building-v1/) | 투명 배경의 공통 공격 대상 건물 1장 | [배치·HP·피격 표시 연결](story-building-v1/README.md) |
 
