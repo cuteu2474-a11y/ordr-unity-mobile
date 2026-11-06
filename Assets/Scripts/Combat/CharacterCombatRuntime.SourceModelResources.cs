@@ -65,6 +65,11 @@ namespace Ordr.Mobile.Combat
                 (actor.Catalog.Id == "MY-07" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "h083") ||
                 // Exact source W3X SLK objects: HP35, HP30, MP145, HP45/MP75.
+                // Marco's Bso is an HP25 counter: first positive hit
+                // consumes 25->1, then confirmed hits restore +1.
+                // Use only the pinned h02T source SLK pool (HP25, regen .5).
+                (actor.Catalog.Id == "L-11" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h02T") ||
                 (actor.Catalog.Id == "L-02" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "h02P") ||
                 (actor.Catalog.Id == "L-03" &&

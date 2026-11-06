@@ -29,6 +29,9 @@ namespace Ordr.Mobile.Combat
         // zero bounds mean the ordinary fixed/ranged damage path.
         public int RandomIntegerMinimum { get; private set; }
         public int RandomIntegerMaximum { get; private set; }
+        // C03 callbacks whose damage is proportional to the confirmed basic
+        // hit. Their native damage-listener armor inversion is not yet exact.
+        public double BasicHitDamageMultiplier { get; private set; }
 
         internal SourceScriptHit(SourceScriptHitShape shape, double radius,
             double length, double damage, double minimum, double maximum,
@@ -36,7 +39,8 @@ namespace Ordr.Mobile.Combat
             double bossCurrentHealthPercent = 0,
             double enragedMaxHealthPercent = 0,
             bool storyOnly = false, double storyDamage = 0,
-            int randomIntegerMinimum = 0, int randomIntegerMaximum = 0)
+            int randomIntegerMinimum = 0, int randomIntegerMaximum = 0,
+            double basicHitDamageMultiplier = 0)
         {
             Shape = shape; Radius = radius; Length = length; Damage = damage;
             Minimum = minimum; Maximum = maximum; Attack = attack;
@@ -45,6 +49,7 @@ namespace Ordr.Mobile.Combat
             StoryOnly = storyOnly; StoryDamage = storyDamage;
             RandomIntegerMinimum = randomIntegerMinimum;
             RandomIntegerMaximum = randomIntegerMaximum;
+            BasicHitDamageMultiplier = basicHitDamageMultiplier;
         }
     }
 

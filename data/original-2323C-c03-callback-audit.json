@@ -80,6 +80,27 @@
       "jassCallback": "BrW",
       "sourceHit": "two independent 15% positive-basic-hit branches: BrU radius600 AoE 200000 and BrV direct 252500 multiplied by 1..1.5",
       "remaining": "original declaration-phase roll and damage-listener staging vs practice successful-hit phase; e03E native carrionswarm and final defense unverified"
+    },
+    {
+      "catalogId": "R-01",
+      "rawcode": "h09X",
+      "jassCallback": "BoS",
+      "sourceHit": "positive-hit callback: radius235 CHAOS AoE, 22% of confirmed basic-hit damage (source BoQ uses BdV-inverted event damage)",
+      "remaining": "one-second original damage listener, BdV armor inversion, enemy JD scaling, A904 marker and native friendly-fire target filter not yet exact"
+    },
+    {
+      "catalogId": "R-16",
+      "rawcode": "h02M",
+      "jassCallback": "BpI",
+      "sourceHit": "15% declaration proc modeled on successful basic hit: radius450 6000 x1..2 plus direct10000 NORMAL/universal from BpG/BpH",
+      "remaining": "original e01H dummy thunderbolt must actually land to trigger BpE; model uses positive basic-hit proxy, native damage/stun/contact and original attack declaration on miss not exact"
+    },
+    {
+      "catalogId": "L-11",
+      "rawcode": "h02T",
+      "jassCallback": "Bsp",
+      "sourceHit": "positive-hit 10000 + 0.85*actual basic-hit damage CHAOS radius285; source HP25 threshold resets to1 and follows with .4*(475000+4.75*hit) direct and radius525 same base",
+      "remaining": "source damage inversion, native fanofknives, h0BQ alternate form, staged exact frames and native resistance still separate; HP25 model uses pinned SLK resources"
     }
   ],
   "remainingCallbacksRequiringNativeOrMultiStepJass": [
@@ -96,12 +117,6 @@
       "jassCallback": "Bny"
     },
     {
-      "catalogId": "R-01",
-      "name": "X-드레이크",
-      "rawcode": "h09X",
-      "jassCallback": "BoS"
-    },
-    {
       "catalogId": "R-08",
       "name": "마르코 불사조",
       "rawcode": "h022",
@@ -112,12 +127,6 @@
       "name": "마젤란",
       "rawcode": "h01Z",
       "jassCallback": "Bow"
-    },
-    {
-      "catalogId": "R-16",
-      "name": "베이비 5",
-      "rawcode": "h02M",
-      "jassCallback": "BpI"
     },
     {
       "catalogId": "R-22",
@@ -166,12 +175,6 @@
       "name": "라분",
       "rawcode": "h02Q",
       "jassCallback": "Bsf"
-    },
-    {
-      "catalogId": "L-11",
-      "name": "마르코 환수종",
-      "rawcode": "h02T",
-      "jassCallback": "Bsp"
     },
     {
       "catalogId": "L-12",

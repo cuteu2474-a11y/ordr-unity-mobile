@@ -39,6 +39,23 @@ namespace Ordr.Mobile.Combat
             new SourceScriptHit(SourceScriptHitShape.Circle, radius, 0,
                 amount, 1, 1, Ordr323AttackType.Spells);
 
+        private static SourceScriptHit DerivedCircle(double radius, double flat,
+            double basicFactor, Ordr323AttackType attack) =>
+            new SourceScriptHit(SourceScriptHitShape.Circle, radius, 0,
+                flat, 1, 1, attack, basicHitDamageMultiplier: basicFactor);
+
+        private static SourceScriptHit DerivedDirect(double flat,
+            double basicFactor, double multiplier,
+            Ordr323AttackType attack) =>
+            new SourceScriptHit(SourceScriptHitShape.Direct, 0, 0,
+                flat, multiplier, multiplier, attack,
+                basicHitDamageMultiplier: basicFactor);
+
+        private static SourceScriptHit RangedCircle(double radius, double flat,
+            double minimum, double maximum) =>
+            new SourceScriptHit(SourceScriptHitShape.Circle, radius, 0,
+                flat, minimum, maximum, Ordr323AttackType.Spells);
+
         private static SourceScriptAttackSpec Branch(string catalogId, string rawcode,
             string jass, int successes, SourceScriptHit[] hits,
             string nativeEffect = null, double delay = 0) =>
@@ -75,7 +92,43 @@ namespace Ordr.Mobile.Combat
                     new[] { Circle(600, 200000) },
                     "e03E carrionswarm native projectile not modeled"),
                 Branch("H-01", "h043", "BrW/BrV", 15,
-                    new[] { Direct(252500, 1, 1.5) }))
+                    new[] { Direct(252500, 1, 1.5) })),
+
+            // R-01 / BoS->BoR->BoQ: one-second positive basic-damage
+            // listener, then 22% of BdV-inverted damage in radius235.
+            // Practice uses confirmed post-defense damage as the operand;
+            // original armor inversion, JD level and ally filtering differ.
+            new SourceAfterHitAttackUnit("R-01", "h09X", false,
+                Branch("R-01", "h09X", "BoS/BoR/BoQ", 100,
+                    new[] { DerivedCircle(235, 0, .22,
+                        Ordr323AttackType.Chaos) },
+                    "BdV armor inversion, target JD scaling and A904 immunity not exact")),
+
+            // R-16 / BpI->BpH: 15% declaration -> e01H thunderbolt
+            // native damage -> positive DUMMY-hit listener -> 6000*1..2
+            // radius450 and 10000 direct. Practice uses the successful
+            // basic-hit event as an explicit mobile approximation.
+            new SourceAfterHitAttackUnit("R-16", "h02M", false,
+                Branch("R-16", "h02M", "BpI/BpH/BpG", 15,
+                    new[] { RangedCircle(450, 6000, 1, 2),
+                        Direct(10000) },
+                    "e01H native thunderbolt hit and stun gate not modeled")),
+
+            // L-11 / Bsp->Bso: every positive attack-damage event splashes
+            // 10000 + 0.85 * event damage at radius285. Original attack
+            // damage inversion is unverified in the practice model.
+            // At original SLK HP25, source Bso executes a second burst.
+            new SourceAfterHitAttackUnit("L-11", "h02T", false,
+                Branch("L-11", "h02T", "Bsp/Bso", 100,
+                    new[] { DerivedCircle(285, 10000, .85,
+                        Ordr323AttackType.Chaos) }),
+                Branch("L-11", "h02T", "Bso/HP25", 100,
+                    new[] { DerivedDirect(475000, 4.75, .4,
+                            Ordr323AttackType.Chaos),
+                        DerivedCircle(525, 475000, 4.75,
+                            Ordr323AttackType.Chaos) },
+                    "HP25 native fanofknives, exact frame timing and resistance unverified",
+                    .20))
         };
 
         private static readonly Dictionary<string, SourceAfterHitAttackUnit>

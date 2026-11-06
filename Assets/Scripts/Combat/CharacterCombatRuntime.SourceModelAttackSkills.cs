@@ -301,8 +301,36 @@ namespace Ordr.Mobile.Combat
             // therefore draws its second 8% roll ONLY if the first failed.
             foreach (var script in entry.Branches)
             {
-                int roll = sourceModelRules.NextScriptRoll(script.RollSides) + 1;
+                // An original 100% damage listener does not consume an
+                // extra BFi RNG call at its positive-hit stage.
+                int roll = script.RollSuccess == script.RollSides
+                    ? script.RollSides
+                    : sourceModelRules.NextScriptRoll(script.RollSides) + 1;
                 if (roll > script.RollSuccess) continue;
+
+                if (script.JassFunction == "Bso/HP25")
+                {
+                    // h02T source balance is HP25, regen .5. No guessed HP
+                    // is accepted: this counter belongs to a pinned pool.
+                    var hp = actor.Abilities.Resources;
+                    if (hp == null ||
+                        !sourceModelManagedResourceRows.ContainsKey(actor.Id) ||
+                        Math.Abs(hp.MaximumHealth - 25) > .0001)
+                    {
+                        events.Add(new CharacterCombatEvent(
+                            CharacterCombatEventType.EffectDeferred,
+                            attackerId, primaryTargetId,
+                            actor.Catalog.Name + " 불사조 HP 기술",
+                            "MODEL_ONLY Bso 원본 HP25 자원 미공급: 후속 타격 보류", 0));
+                        continue;
+                    }
+                    if (hp.Health < 25 - .0001)
+                    {
+                        hp.SetHealth(Math.Min(25, hp.Health + 1));
+                        continue;
+                    }
+                    hp.SetHealth(1);
+                }
 
                 string skillName = actor.Catalog.Name + " 공격 기술";
                 events.Add(new CharacterCombatEvent(
@@ -325,11 +353,12 @@ namespace Ordr.Mobile.Combat
                             if (CanFinishSourceModelDelayedAttack(actor.Id,
                                     sourceStoryLane, sourceLaneRevision))
                                 ApplySourceScriptHits(actor, primary, script,
-                                    script.OnProc, pinnedX, pinnedY);
+                                    script.OnProc, pinnedX, pinnedY, actual);
                         });
                 }
                 else
-                    ApplySourceScriptHits(actor, primary, script, script.OnProc);
+                    ApplySourceScriptHits(actor, primary, script, script.OnProc,
+                        sourceBasicDamage: actual);
 
                 if (!string.IsNullOrWhiteSpace(script.DeferredNativeEffect))
                     events.Add(new CharacterCombatEvent(
@@ -446,7 +475,8 @@ namespace Ordr.Mobile.Combat
         private void ApplySourceScriptHits(CharacterInstance actor,
             SpatialCombatEnemy primary, SourceScriptAttackSpec script,
             IReadOnlyList<SourceScriptHit> hits,
-            double? pinnedX = null, double? pinnedY = null)
+            double? pinnedX = null, double? pinnedY = null,
+            long sourceBasicDamage = 0)
         {
             string attackerId = InstanceKey(actor.Id);
             foreach (var hit in hits)
@@ -473,7 +503,8 @@ namespace Ordr.Mobile.Combat
                         sourceModelRules.NextScriptRoll(1000000) / 1000000.0;
                     // CCE selects ONE damage operand by the enemy marker,
                     // it does not add the boss/enraged percentage to 35000.
-                    double raw = hit.Damage;
+                    double raw = hit.Damage +
+                        hit.BasicHitDamageMultiplier * sourceBasicDamage;
                     if (hit.RandomIntegerMaximum > 0)
                         raw = hit.RandomIntegerMinimum +
                             sourceModelRules.NextScriptRoll(
