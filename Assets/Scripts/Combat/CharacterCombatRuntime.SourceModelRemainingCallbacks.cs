@@ -167,6 +167,25 @@ namespace Ordr.Mobile.Combat
 
         // A source-order radius is centered on the native dummy (attacker),
         // not on the damaged enemy. Limit AEfk/ANfl to original max targets.
+        // A directed ANfl order must strike the explicitly ordered primary
+        // before choosing additional eligible fork targets. In the mobile
+        // unlimited-range policy, 1750 is not a reason to drop the target.
+        private List<SpatialCombatEnemy> RemainingOrderedNativeTargets(
+            CharacterInstance actor, SpatialCombatEnemy primary,
+            double x, double y, double secondaryRadius, int maximum)
+        {
+            var result = new List<SpatialCombatEnemy>();
+            if (maximum < 1 || primary == null || !primary.Enemy.IsAlive ||
+                !CanAttackInThisLane(actor, primary)) return result;
+            result.Add(primary);
+            var excluded = new HashSet<string>(StringComparer.Ordinal) {
+                primary.Id
+            };
+            result.AddRange(RemainingNativeTargets(actor, x, y,
+                secondaryRadius, maximum - 1, excluded));
+            return result;
+        }
+
         private List<SpatialCombatEnemy> RemainingNativeTargets(
             CharacterInstance actor, double cx, double cy, double radius,
             int maximum, HashSet<string> excluded = null)
@@ -266,7 +285,8 @@ namespace Ordr.Mobile.Combat
         }
 
         private void ExecuteRemainingNative(CharacterInstance actor,
-            SpatialCombatEnemy target, SourceRemainingCallback spec)
+            SpatialCombatEnemy target, SourceRemainingCallback spec,
+            double magellanSpawnRadians)
         {
             var position = roster.Get(actor.Id);
             switch (spec.CatalogId)
@@ -286,9 +306,16 @@ namespace Ordr.Mobile.Combat
                         position.X, position.Y, 1150, 10))
                         RemainingHits(actor, victim, spec, RemainingDirect(10000));
                     break;
-                case "R-09": // e01C/A0FE Apxf: first fire, lifetime unknown.
+                case "R-09": // Bow: random 150-offset dummy, A0FE/Apxf.
+                    // BFj(0,360) is evaluated before the 10% JASS branch.
+                    // The dummy has NO source-verified lifetime, so only
+                    // the first 1250 Phoenix Fire object packet is modeled.
+                    double poisonX = position.X + 150 * Math.Cos(magellanSpawnRadians);
+                    double poisonY = position.Y + 150 * Math.Sin(magellanSpawnRadians);
                     var nearby = RemainingNativeTargets(actor,
-                        position.X, position.Y, 1150, 1);
+                        poisonX, poisonY, 1000, 1);
+                    RemainingProc(actor, target, spec,
+                        "e01C 죽음 애니메이션 / 시전자 반경 150 무작위 위치");
                     if (nearby.Count > 0)
                         RemainingHits(actor, nearby[0], spec, RemainingDirect(1250));
                     break;
@@ -321,9 +348,9 @@ namespace Ordr.Mobile.Combat
                                 dollImpact.OnProc, impactX, impactY);
                         });
                     break;
-                case "R-29": // e0KE/A03O ANfl max 9 enemies.
-                    foreach (var victim in RemainingNativeTargets(actor,
-                        position.X, position.Y, 1750, 9))
+                case "R-29": // e0KE/A03O ANfl, ordered target + up to 8 forks.
+                    foreach (var victim in RemainingOrderedNativeTargets(
+                        actor, target, position.X, position.Y, 1750, 9))
                         RemainingHits(actor, victim, spec, RemainingDirect(7000));
                     break;
                 case "R-32": // e0KE/A0F1 Ablo, B02H.
@@ -341,12 +368,9 @@ namespace Ordr.Mobile.Combat
                     double damage = 6000;
                     for (int bounce = 0; bounce < 8 && current != null; bounce++)
                     {
-                        if (bounce == 0)
-                        {
-                            double dx = current.X - position.X;
-                            double dy = current.Y - position.Y;
-                            if (dx * dx + dy * dy > 1600 * 1600) break;
-                        }
+                        // A054 1600 cast range is removed by mobile's
+                        // unlimited-reach rule; 1250 bounce radius and 8
+                        // unique targets remain exactly bounded.
                         seen.Add(current.Id);
                         RemainingHits(actor, current, spec, RemainingDirect(damage));
                         var others = RemainingNativeTargets(actor, current.X,
@@ -413,11 +437,18 @@ namespace Ordr.Mobile.Combat
                 spec.CatalogId != "MY-01" && spec.CatalogId != "L-05" &&
                 spec.CatalogId != "D-06")
             {
+                // Bow computes its random dummy position BEFORE BFi's
+                // attack-proc draw. Preserve this independent draw even
+                // when Magellan's 10% proc does not activate.
+                double magellanSpawnRadians = spec.CatalogId == "R-09"
+                    ? sourceModelRules.NextScriptRoll(1000000) *
+                        (2 * Math.PI / 1000000.0) : 0;
                 if (sourceModelRules.NextScriptRoll(spec.Sides) < spec.Successes)
                 {
                     RemainingProc(actor, target, spec,
                         spec.Successes + "/" + spec.Sides + " 원본 보조 주문");
-                    ExecuteRemainingNative(actor, target, spec);
+                    ExecuteRemainingNative(actor, target, spec,
+                        magellanSpawnRadians);
                 }
                 return;
             }

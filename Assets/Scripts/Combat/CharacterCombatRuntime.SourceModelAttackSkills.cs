@@ -529,14 +529,20 @@ namespace Ordr.Mobile.Combat
                 else if ((hit.Shape == SourceScriptHitShape.RankyakuLine ||
                           hit.Shape == SourceScriptHitShape.ProjectileLine) && length > 0)
                 {
-                    // AUcs/A0VS geometry from W3A. Current target defines
-                    // the MOBILE automatic direction; the original native
-                    // PointAtAttackerLocation trajectory is still unverified.
+                    // AUcs/A0VS geometry from W3A. The point-cast range
+                    // must not discard the selected enemy on the same lane:
+                    // mobile uses unlimited spell reach, but keeps the
+                    // original corridor half-width and minimum segment
+                    // length. Native projectile flight/physics are still
+                    // separate from this deterministic damage footprint.
                     double x = candidate.X - position.X;
                     double y = candidate.Y - position.Y;
                     double forward = (x * dx + y * dy) / length;
                     double side = Math.Abs(x * dy - y * dx) / length;
-                    if (forward >= 0 && forward <= hit.Length &&
+                    double forwardLimit = hit.Shape ==
+                        SourceScriptHitShape.ProjectileLine
+                            ? Math.Max(hit.Length, length) : hit.Length;
+                    if (forward >= 0 && forward <= forwardLimit &&
                         side <= hit.Radius)
                         found.Add(candidate);
                 }
