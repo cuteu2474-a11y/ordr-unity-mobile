@@ -24,7 +24,7 @@ namespace Ordr.Mobile.Combat
         // No new RNG or hero attributes: the existing one-roll skill trigger,
         // shared source-object basic attack power, current target health and
         // common armor/HP ledger provide the explicit tooltip results.
-        private static double SourceModelEighteenthRawDamageAdjustment(
+        private double SourceModelEighteenthRawDamageAdjustment(
             CharacterInstance actor, SpatialCombatEnemy primary,
             ImportedCombatSkill skill, ImportedCombatEffect component,
             SpatialCombatEnemy target, double raw)

@@ -60,7 +60,7 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
-        private static double SourceModelSixteenthDamageAdjustment(
+        private double SourceModelSixteenthDamageAdjustment(
             CharacterInstance actor, SpatialCombatEnemy primary,
             ImportedCombatSkill skill, ImportedCombatEffect component,
             SpatialCombatEnemy target, double raw)
