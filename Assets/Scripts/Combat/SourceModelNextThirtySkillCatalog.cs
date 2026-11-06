@@ -199,6 +199,36 @@ namespace Ordr.Mobile.Combat
         // unsupported. Tooltip packets are a practice model, never JASS parity.
         public static bool CanModelCompleteAttack(ImportedCombatSkill skill)
         {
+            // I-10's two remaining skills have shapes that the generic
+            // tooltip allow-list rejects: a 330-wide line with a boss-only
+            // bonus and a short self-buff whose hit occurs during the buff.
+            // Approve only these exact owner-bound source-model packets.
+            if (skill != null && skill.Id == "I-10:skill:1")
+                return skill.Name == "직선 마법 공격" &&
+                    skill.Trigger == "onAttack" &&
+                    skill.Target == "line" && skill.Radius == 330 &&
+                    skill.ChancePercent == 6.5 &&
+                    skill.OriginalFields.Count == 6 &&
+                    skill.Components.Count == 1 &&
+                    skill.Components[0].Type == "magical" &&
+                    skill.Components[0].Fields.Count == 3 &&
+                    skill.Components[0].Number("amount") == 1000000 &&
+                    skill.Components[0].Number("extraBossPercent") == 100;
+            if (skill != null && skill.Id == "I-10:skill:2")
+                return skill.Name == "차지 버스트" &&
+                    skill.Trigger == "onAttack" &&
+                    skill.Target == "area" && skill.Radius == 500 &&
+                    skill.ChancePercent == 10 &&
+                    skill.OriginalFields.Count == 6 &&
+                    skill.Components.Count == 2 &&
+                    skill.Components[0].Type == "selfBuff" &&
+                    skill.Components[0].Fields.Count == 2 &&
+                    skill.Components[0].Number("durationSeconds") == 0.7 &&
+                    skill.Components[1].Type == "magical" &&
+                    skill.Components[1].Fields.Count == 4 &&
+                    skill.Components[1].Number("amount") == 400000 &&
+                    skill.Components[1].Text("scope") == "duringBuff" &&
+                    skill.Components[1].Number("extraSingleMagicalAmount") == 1250000;
             if (SourceModelTwentyNinthSkillCatalog.IsSpecial(skill))
                 return SourceModelTwentyNinthSkillCatalog.CanModelExact(skill);
             if (SourceModelTwentyEighthSkillCatalog.IsSpecial(skill))

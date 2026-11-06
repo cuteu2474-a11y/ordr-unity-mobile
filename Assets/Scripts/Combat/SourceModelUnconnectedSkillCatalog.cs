@@ -91,7 +91,8 @@ namespace Ordr.Mobile.Combat
             // Its native object supplies the exact 160 mana maximum; only
             // this complete tooltip packet is approved for automatic casts.
             new SourceModelUnconnectedSkillRow("I-10", "h04G",
-                new[] { "매 타격 스턴" }, new[] { "마나 광역 공격" }),
+                new[] { "매 타격 스턴", "직선 마법 공격", "차지 버스트" },
+                new[] { "마나 광역 공격" }),
             // First composite-effect batch: reuse the same active resource,
             // lane, target and damage execution path as existing practice casts.
             new SourceModelUnconnectedSkillRow("I-09", "h04B",

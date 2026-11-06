@@ -71,6 +71,10 @@ namespace Ordr.Mobile.Combat
 
             int completedModels = 0;
             var activatedThisAttack = new HashSet<string>(StringComparer.Ordinal);
+            // An existing 0.7s Zephyr charge applies once on this attack.
+            // A same-attack 10% refresh must not double-hit the target.
+            bool zephyrChargeHit = catalogId == "I-10" &&
+                ApplySourceModelZephyrChargedBasicAttack(actor, primary);
             foreach (string approvedName in approvedNames)
             {
                 ImportedCombatSkill skill = null;
@@ -154,6 +158,7 @@ namespace Ordr.Mobile.Combat
                     (skill.Id == "E-03:skill:5" && skill.Target == null) ?
                     SourceScriptHitShape.Direct :
                     (skill.Id == "TR-26:skill:4" ||
+                     skill.Id == "I-10:skill:1" ||
                      SourceModelEighteenthSkillCatalog.IsSpecial(skill)) &&
                     skill.Target == "line" ?
                     SourceScriptHitShape.ProjectileLine :
@@ -207,6 +212,9 @@ namespace Ordr.Mobile.Combat
                     ApplySourceModelTwentiethSkill(actor, primary, skill, targets);
                 else if (skill.Id == "TR-16:skill:0")
                     ScheduleSourceModelIceAge(actor, primary, skill);
+                else if (skill.Id == "I-10:skill:2")
+                    ActivateSourceModelZephyrCharge(actor, primary, skill,
+                        zephyrChargeHit);
                 else
                     ApplySourceModelNextThirtySkill(actor, primary, skill, targets,
                         activatedThisAttack);
@@ -672,6 +680,11 @@ namespace Ordr.Mobile.Combat
                         skill, component, target, multiplier) :
                         (component.Number("amount") ??
                          component.Number("amountPerHit") ?? 0) * multiplier;
+                    // Zephyr's line proc doubles the magical packet only
+                    // against bosses. The bonus must not reach story/line.
+                    if (skill.Id == "I-10:skill:1" &&
+                        target.Kind == CharacterEnemyKind.Boss)
+                        raw *= 1 + component.Number("extraBossPercent").Value / 100;
                     // Death Note's complete packet is 25% of CURRENT HP,
                     // not max HP, and never applies to boss/story targets.
                     if (skill.Id == "RN-05:skill:0")

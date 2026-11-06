@@ -3,6 +3,32 @@
   "policy": "Validated static handler+entry+component witnesses only; no test/parity claim.",
   "witnesses": [
     {
+      "skillId": "I-10:skill:1",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",
+      "handlerSymbol": "ApplySourceModelNextThirtySkill",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",
+      "entryCall": "ApplySourceModelNextThirtySkill(actor, primary, skill, targets,",
+      "identityTokens": [
+        "\"I-10:skill:1\"",
+        "\"I-10\""
+      ],
+      "effectIndexes": [0],
+      "note": "제트 h04G의 6.5% 직선 마법 공격을 공격 선언 시 330 폭의 직선 회랑에 연결. 마법 피해 100만, 보스에 한해 100% 추가. 원본 사거리·방어·난수 순서 및 실기 검증은 미실시."
+    },
+    {
+      "skillId": "I-10:skill:2",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelZephyrCharge.cs",
+      "handlerSymbol": "ActivateSourceModelZephyrCharge",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs",
+      "entryCall": "ActivateSourceModelZephyrCharge(actor, primary, skill,",
+      "identityTokens": [
+        "\"I-10:skill:2\"",
+        "\"h04G\""
+      ],
+      "effectIndexes": [0, 1],
+      "note": "제트 h04G의 10% 차지 버스트를 시전자/전장에 묶인 0.7초 상태로 연결. 활성 중 선언된 평타마다 원형 500 범위 40만 마법 및 지정 단일 대상 125만 추가 피해를 한 번씩 적용. 원본 애니메이션 시점·재발동 상세·실기 검증은 미실시."
+    },
+    {
       "skillId": "D-06:skill:0",
       "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBurgessBasic.cs",
       "handlerSymbol": "OnSourceModelBurgessSuccessfulBasicHit",
