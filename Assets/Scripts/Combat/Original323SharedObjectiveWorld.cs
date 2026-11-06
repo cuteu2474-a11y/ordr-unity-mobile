@@ -48,6 +48,23 @@ namespace Ordr.Mobile.Combat
             Y = y;
         }
 
+        // Five world objectives require both a source-observed encounter and
+        // an actual combat defeat. Story/timing/treasure missions have their
+        // own separately witnessed completion paths.
+        public static bool RequiresCombatDefeat(Original323SharedMissionKind kind)
+        {
+            switch (kind)
+            {
+                case Original323SharedMissionKind.RumbarSouls:
+                case Original323SharedMissionKind.JusticeGate:
+                case Original323SharedMissionKind.ShandoraBell:
+                case Original323SharedMissionKind.SeaKing:
+                case Original323SharedMissionKind.MarineAdmiral:
+                    return true;
+                default: return false;
+            }
+        }
+
         public static bool IsOriginalIdentity(Original323SharedMissionKind kind,
             string key, string rawcode)
         {
@@ -90,6 +107,11 @@ namespace Ordr.Mobile.Combat
         public Original323SharedObjectiveState State { get; internal set; }
         public string SpawnEvidence { get; internal set; }
         public string DefeatEvidence { get; internal set; }
+        // Source death confirmation can precede the local combat death.
+        // Neither confirmation alone grants the mission reward.
+        public string ConfirmedDefeatEventId { get; internal set; }
+        public string ConfirmedDefeatEvidence { get; internal set; }
+        public bool GateSpawnDebtSettled { get; internal set; }
     }
 
     // Native-authorized side objectives share the real combat damage/death
@@ -107,6 +129,8 @@ namespace Ordr.Mobile.Combat
                 StringComparer.Ordinal);
         private readonly HashSet<string> usedSpawnIds =
             new HashSet<string>(StringComparer.Ordinal);
+        // Claim a trusted source-death ID as soon as it is witnessed,
+        // including when the corresponding local enemy is still alive.
         private readonly HashSet<string> usedDefeatIds =
             new HashSet<string>(StringComparer.Ordinal);
         private int serial;
@@ -183,34 +207,64 @@ namespace Ordr.Mobile.Combat
             history.Add(record);
             usedSpawnIds.Add(plan.SourceEventId);
             serial++;
-            if (plan.Mission == Original323SharedMissionKind.MarineAdmiral &&
-                !awards.TryRecordRealGateAdmiralSpawn(plan.SourceEventId))
-                throw new InvalidOperationException(
-                    "실제 해군대장 출현 후 출현 의무 정산 실패");
+            // Debit only AFTER the observed admiral has physically spawned.
+            // A temporarily failing wallet transaction must not leave an
+            // untracked living enemy or pretend its gate obligation was spent.
+            record.GateSpawnDebtSettled =
+                plan.Mission != Original323SharedMissionKind.MarineAdmiral ||
+                awards.TryRecordRealGateAdmiralSpawn(plan.SourceEventId);
             return record;
         }
 
-        // Delayed native defeat confirmation can arrive after the combat
-        // death callback. The enemy must first have actually died in combat.
+        // Native death and local combat death may arrive in either order.
+        // A witnessed native event is claimed once, but payout requires both.
         public bool TrySettleDefeat(string enemyId, string sourceDefeatEventId)
         {
             if (disposed || string.IsNullOrWhiteSpace(sourceDefeatEventId) ||
-                sourceDefeatEventId.Length > 256 ||
-                usedDefeatIds.Contains(sourceDefeatEventId)) return false;
+                sourceDefeatEventId.Length > 256) return false;
             var record = Find(enemyId);
             if (record == null ||
-                record.State != Original323SharedObjectiveState.DefeatedUnverified)
+                (record.State != Original323SharedObjectiveState.Alive &&
+                 record.State != Original323SharedObjectiveState.DefeatedUnverified))
                 return false;
+
+            if (record.ConfirmedDefeatEventId != null)
+            {
+                // The original event has already been witnessed. A retry
+                // never reuses the witness or swaps in another event ID.
+                if (record.ConfirmedDefeatEventId != sourceDefeatEventId)
+                    return false;
+                return record.State == Original323SharedObjectiveState.Alive ||
+                    TryFinalizeDefeat(record);
+            }
+            if (usedDefeatIds.Contains(sourceDefeatEventId)) return false;
+
             string evidence;
             if (!witness.TryConfirmDefeat(record.Plan, enemyId,
                 sourceDefeatEventId, out evidence) ||
                 !Original323BossRoundRules.TrustedRuntimeEvidence(evidence))
                 return false;
-            if (!awards.TrySettle(record.Plan.Mission,
-                sourceDefeatEventId, combat.Game.CurrentWave, evidence))
-                return false;
+            record.ConfirmedDefeatEventId = sourceDefeatEventId;
+            record.ConfirmedDefeatEvidence = evidence;
             usedDefeatIds.Add(sourceDefeatEventId);
-            record.DefeatEvidence = evidence;
+            return record.State == Original323SharedObjectiveState.Alive ||
+                TryFinalizeDefeat(record);
+        }
+
+        private bool TryFinalizeDefeat(Original323SharedObjectiveEncounter record)
+        {
+            if (record.State != Original323SharedObjectiveState.DefeatedUnverified ||
+                string.IsNullOrEmpty(record.ConfirmedDefeatEventId))
+                return false;
+            if (!record.GateSpawnDebtSettled)
+            {
+                record.GateSpawnDebtSettled =
+                    awards.TryRecordRealGateAdmiralSpawn(record.Plan.SourceEventId);
+                if (!record.GateSpawnDebtSettled) return false;
+            }
+            if (!awards.TrySettleDefeatedObjective(record, combat.Game.CurrentWave))
+                return false;
+            record.DefeatEvidence = record.ConfirmedDefeatEvidence;
             record.State = Original323SharedObjectiveState.Completed;
             return true;
         }
@@ -225,8 +279,11 @@ namespace Ordr.Mobile.Combat
                 ? Original323SharedObjectiveState.DefeatedUnverified
                 : Original323SharedObjectiveState.Removed;
             combat.RecallSharedObjectiveParticipants(id);
-            if (record.State == Original323SharedObjectiveState.DefeatedUnverified)
-                TrySettleDefeat(id, "shared:combat-kill:" + record.Plan.SourceEventId);
+            // Never fabricate a native death event ID from a combat callback.
+            // Only an independently witnessed event can settle the reward.
+            if (record.State == Original323SharedObjectiveState.DefeatedUnverified &&
+                record.ConfirmedDefeatEventId != null)
+                TryFinalizeDefeat(record);
         }
 
         public void Dispose()

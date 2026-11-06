@@ -2287,6 +2287,11 @@ namespace Ordr.Mobile.Unity
         public bool ObserveOriginal323SharedMission(
             Original323SharedMissionKind kind, string sourceEventId)
         {
+            // Objective deaths cannot skip the observed enemy's real HP,
+            // its actual combat exit and its independent native death witness.
+            // Only story deadline / treasure collection missions use this lane.
+            if (Original323SharedObjectiveSpawnPlan.RequiresCombatDefeat(kind))
+                return false;
             if (Poneglyph == null || originalPoneglyphWitness == null ||
                 Combat == null || Combat.Game.Phase != SessionPhase.Running)
                 return false;

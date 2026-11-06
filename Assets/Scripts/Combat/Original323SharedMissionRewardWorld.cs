@@ -49,13 +49,48 @@ namespace Ordr.Mobile.Combat
             string receipt = "shared:original323:gate-admiral-spawn:" +
                 sourceSpawnEventId;
             if (economy.Wallet.HasCompletedTransaction(receipt)) return true;
-            return economy.Wallet.TryExchangeOnce(receipt,
-                new ResourceBundle().Add(PendingGateAdmiralResource, 1),
-                new ResourceBundle());
+            try
+            {
+                if (economy.Wallet.TryExchangeOnce(receipt,
+                    new ResourceBundle().Add(PendingGateAdmiralResource, 1),
+                    new ResourceBundle()))
+                    return true;
+            }
+            catch
+            {
+                // Transaction observers may throw after an irrevocable debit.
+                // Trust the wallet receipt, never debit a second admiral.
+                if (!economy.Wallet.HasCompletedTransaction(receipt)) throw;
+            }
+            return economy.Wallet.HasCompletedTransaction(receipt);
         }
 
+        // Story deadlines and treasure collection have their own native
+        // event witnesses. A building/boss mission must pass through a
+        // source-observed enemy encounter instead of this public entrypoint.
         public bool TrySettle(Original323SharedMissionKind kind, string sourceEventId,
             int currentRound, string sourceEvidence)
+        {
+            return !Original323SharedObjectiveSpawnPlan.RequiresCombatDefeat(kind) &&
+                TrySettleVerified(kind, sourceEventId, currentRound, sourceEvidence);
+        }
+
+        internal bool TrySettleDefeatedObjective(
+            Original323SharedObjectiveEncounter encounter, int currentRound)
+        {
+            return encounter != null && encounter.Plan != null &&
+                encounter.State == Original323SharedObjectiveState.DefeatedUnverified &&
+                Original323SharedObjectiveSpawnPlan.RequiresCombatDefeat(
+                    encounter.Plan.Mission) &&
+                !string.IsNullOrWhiteSpace(encounter.ConfirmedDefeatEventId) &&
+                !string.IsNullOrWhiteSpace(encounter.ConfirmedDefeatEvidence) &&
+                TrySettleVerified(encounter.Plan.Mission,
+                    encounter.ConfirmedDefeatEventId, currentRound,
+                    encounter.ConfirmedDefeatEvidence);
+        }
+
+        private bool TrySettleVerified(Original323SharedMissionKind kind,
+            string sourceEventId, int currentRound, string sourceEvidence)
         {
             if (combat.Game.Phase != SessionPhase.Running ||
                 !Original323BossRoundRules.TrustedRuntimeEvidence(sourceEvidence) ||
