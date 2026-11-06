@@ -790,7 +790,7 @@ namespace Ordr.Mobile.Unity
             return string.Join(" · ", parts.ToArray());
         }
 
-        private static string UpgradeResourceName(string id) => id == "gold" ? "골드" : id == "lumber" ? "목재" : id;
+        private static string UpgradeResourceName(string id) => id == "gold" ? "골드" : (id == "wood" || id == "lumber") ? "목재" : id;
 
         private static string UpgradePriceText(ResourceBundle cost)
         {
@@ -2964,8 +2964,6 @@ namespace Ordr.Mobile.Unity
 
             bool valid = treasure != null && controller.MobileTreasureGacha != null &&
                 controller.MobileTreasureGacha.CanAttempt &&
-                controller.HasOwnedOriginalGaimon &&
-                controller.GaimonDream.Applied &&
                 Combat != null && Combat.Game.Phase == SessionPhase.Running &&
                 !controller.IsUnitPreparation && Combat.Game.CurrentWave > 0;
             bool wasEnabled = GUI.enabled;
@@ -2978,11 +2976,10 @@ namespace Ordr.Mobile.Unity
             }
             GUI.enabled = wasEnabled;
             if (!valid)
-                GUILayout.Label(!controller.HasOwnedOriginalGaimon ? "가이몬 필요" :
-                    controller.MobileTreasureGacha == null ||
-                    !controller.MobileTreasureGacha.CanAttempt ? "탐색 준비 중" :
-                    !controller.GaimonDream.Applied ? "가이몬의 꿈 필요" :
-                    "진행 중인 라운드에서 사용 가능",
+                GUILayout.Label(controller.MobileTreasureGacha == null ||
+                    !controller.MobileTreasureGacha.CanAttempt
+                        ? "원본 탐색 기회·실제 보물 출현 확인 대기"
+                        : "진행 중인 라운드에서 사용 가능",
                     OrdrMobileUiTheme.Overline);
 
             // The verified reveal is only a status; it never pays out again.
@@ -3612,7 +3609,11 @@ namespace Ordr.Mobile.Unity
                 }
             }
 
-            if (category == ManualEconomyCategory.Gambling) DrawGamblingNavigation();
+            if (category == ManualEconomyCategory.Gambling)
+            {
+                DrawGamblingNavigation();
+                DrawCompuExchange();
+            }
 
             if (category == ManualEconomyCategory.Gambling && controller.PracticeUnitGambling != null)
             {
@@ -3716,7 +3717,9 @@ namespace Ordr.Mobile.Unity
                 GUI.enabled = enabled && navigation.CanChoose;
                 if (pendingGamblingNavigation.HasValue)
                 {
-                    string label = pendingGamblingNavigation.Value == Original323GamblingNavigation.Casino ? "카지노" : "리스크헷지";
+                    string label = pendingGamblingNavigation.Value == Original323GamblingNavigation.Casino
+                        ? "카지노" : pendingGamblingNavigation.Value == Original323GamblingNavigation.RiskHedge
+                        ? "리스크헷지" : "환전소";
                     GUILayout.Label(label + " 선택 후 다른 항법으로 바꿀 수 없습니다.");
                     if (GUILayout.Button(label + " 항법 확정", GUILayout.MinHeight(64f)))
                     {
@@ -3750,12 +3753,68 @@ namespace Ordr.Mobile.Unity
                             expandedGamblingOfferId == "nav:hedge" ? null : "nav:hedge";
                     if (expandedGamblingOfferId == "nav:hedge")
                         GUILayout.Label("실패마다 당첨 확률 +15%p · 리롤 재료 무료 · 고급 실패 보상 추가");
+                    GUI.enabled = enabled && navigation.CanChooseExchangeHouse;
+                    MobileLongPressResult exchangePress =
+                        OrdrMobileUiTheme.DrawHoldActionRow("nav:exchange-house",
+                            "환전소 선택", "선택", OrdrMobileUiTheme.Gold,
+                            gamblingPressGesture);
+                    GUI.enabled = enabled;
+                    if (exchangePress == MobileLongPressResult.Tap)
+                        pendingGamblingNavigation = Original323GamblingNavigation.ExchangeHouse;
+                    else if (exchangePress == MobileLongPressResult.Hold)
+                        expandedGamblingOfferId =
+                            expandedGamblingOfferId == "nav:exchange-house" ? null : "nav:exchange-house";
+                    if (expandedGamblingOfferId == "nav:exchange-house")
+                        GUILayout.Label("21R 이후 원본 콤푸(I009) 전용 교환 7종 · 시작 충전 0 · 다른 항법과 중복 불가");
+                    if (!navigation.CanChooseExchangeHouse)
+                        GUILayout.Label("원본 콤푸 획득 사건이 연결되기 전에는 환전소 항법 선택 불가",
+                            OrdrMobileUiTheme.Overline);
                 }
                 GUI.enabled = enabled;
                 if (pendingGamblingNavigation.HasValue && GUILayout.Button("취소", GUILayout.MinHeight(60f)))
                     pendingGamblingNavigation = null;
                 if (!navigation.CanChoose) GUILayout.Label("21R 이후 · 일시정지 해제 · 보류 거래 완료 후 선택");
             }
+            GUILayout.EndVertical();
+        }
+
+        private void DrawCompuExchange()
+        {
+            var exchange = controller.PracticeCompuExchange;
+            if (exchange == null ||
+                controller.PracticeGamblingNavigation == null ||
+                controller.PracticeGamblingNavigation.Navigation !=
+                    Original323GamblingNavigation.ExchangeHouse)
+                return;
+
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            GUILayout.Label("원본 환전소 · 콤푸 교환", OrdrMobileUiTheme.Subheading);
+            OrdrMobileUiTheme.DrawStatusRow("콤푸(I009) 잔량",
+                exchange.Compu + "개", OrdrMobileUiTheme.Aqua);
+            GUILayout.Label("원본 최초 충전 0 · 콤푸 실제 획득 이벤트 확인분만 사용할 수 있습니다.",
+                OrdrMobileUiTheme.Overline);
+            string[] recipes = { "CKD", "CKE", "CKF", "CKG", "CKH", "CKI", "CKJ" };
+            string[] titles = {
+                "골드/위습 추첨", "목재 1~2개", "흔함선택위습 1~2",
+                "해적선 1기", "일반 아이템 발굴", "유니크 아이템 발굴",
+                "랜덤전용 유닛 + 행운의 토큰"
+            };
+            for (int i = 0; i < recipes.Length; i++)
+            {
+                bool enabled = GUI.enabled;
+                GUI.enabled = enabled && exchange.CanExchange(recipes[i]);
+                if (OrdrMobileUiTheme.DrawActionRow(
+                    titles[i] + " · " + SourceModelCompuExchange.Cost(recipes[i]) + "콤푸",
+                    "교환", OrdrMobileUiTheme.Gold, 80f))
+                {
+                    var result = controller.RequestCompuExchange(recipes[i]);
+                    notice = result.Message;
+                    RefreshCurrent();
+                }
+                GUI.enabled = enabled;
+            }
+            GUILayout.Label("아이템 발굴 2종은 원본 아이템 실물 지급 연결 전까지 사용 불가.",
+                OrdrMobileUiTheme.Overline);
             GUILayout.EndVertical();
         }
 

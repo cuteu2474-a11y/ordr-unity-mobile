@@ -69,10 +69,10 @@ namespace Ordr.Mobile.Core
         {
             switch (rawcode)
             {
-                case "Rhgb": return new ResourceBundle().Add("gold", 25000).Add("lumber", 2);
-                case "Rhra": return new ResourceBundle().Add("gold", 15000).Add("lumber", 1);
-                case "Rhpt": return new ResourceBundle().Add("gold", 25000).Add("lumber", 3);
-                case "Rhfc": return new ResourceBundle().Add("gold", 15000).Add("lumber", 2);
+                case "Rhgb": return new ResourceBundle().Add("gold", 25000).Add("wood", 2);
+                case "Rhra": return new ResourceBundle().Add("gold", 15000).Add("wood", 1);
+                case "Rhpt": return new ResourceBundle().Add("gold", 25000).Add("wood", 3);
+                case "Rhfc": return new ResourceBundle().Add("gold", 15000).Add("wood", 2);
                 default: return null;
             }
         }

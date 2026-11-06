@@ -881,6 +881,29 @@ namespace Ordr.Mobile.Unity
         public SourceModelMoneyGamblingDesk PracticeMoneyGamblingDesk { get; private set; }
         public SourceModelOtherworldUnitGambling PracticeUnitGambling { get; private set; }
         public SourceModelGamblingNavigation PracticeGamblingNavigation { get; private set; }
+        public SourceModelCompuExchange PracticeCompuExchange { get; private set; }
+        public void ConfigureCompuExchangeSources(
+            IOriginal323CompuAwardWitness verifiedAwards,
+            IOriginal323CompuItemWorld physicalItems = null)
+        {
+            if (PracticeCompuExchange == null || verifiedAwards == null)
+                throw new InvalidOperationException("콤푸 환전소와 원본 보상 증빙이 필요합니다.");
+            PracticeCompuExchange.ConfigureVerifiedAwardWitness(verifiedAwards);
+            if (physicalItems != null)
+                PracticeCompuExchange.ConfigureItemWorld(physicalItems);
+        }
+
+        public bool RecordSourceConfirmedCompuAward(string originalEventId, long amount) =>
+            PracticeCompuExchange != null &&
+            PracticeCompuExchange.RecordObservedAward(originalEventId, amount);
+
+        public ManualActionResult RequestCompuExchange(string recipe)
+        {
+            if (PracticeCompuExchange == null)
+                return new ManualActionResult(ManualActionState.Rejected,
+                    "환전소 월드가 연결되지 않았습니다.");
+            return PracticeCompuExchange.Exchange(recipe);
+        }
         public SourceModelUnitGambling PracticeTierUnitGambling { get; private set; }
         public SourceModelUnitReroll PracticeUnitReroll { get; private set; }
         public ManualActionResult RequestUnitReroll(long actor)
@@ -2471,15 +2494,17 @@ namespace Ordr.Mobile.Unity
             if (Combat == null || IsUnitPreparation ||
                 Combat.Game.Phase != SessionPhase.Running ||
                 Combat.Game.CurrentWave < 1 ||
-                !HasOwnedOriginalGaimon || !GaimonDream.Applied ||
                 MobileTreasureGacha == null)
                 return new MobileTreasureGachaResult(
                     MobileTreasureOutcome.Unavailable,0,0,
                     "원작 보물 가챠 확률·탐색 기회 검증 대기");
-            return MobileTreasureGacha.TrySearch(Combat.Game.CurrentWave,
-                true, GaimonDream.NamiBonusWhenApplied,
+            var result = MobileTreasureGacha.TrySearch(Combat.Game.CurrentWave,
+                GaimonDream != null && GaimonDream.Applied,
+                GaimonDream != null && GaimonDream.Applied && GaimonDream.NamiBonusWhenApplied,
                 GaimonReveal == null ? null :
                 GaimonReveal.ActiveRevealedChests(Combat.Game.CurrentWave));
+            TrySettleTreasureHunterAfterCollection(result.Collected > 0, result.Collected);
+            return result;
         }
 
         // Source-verified BFj coordinates, actual BeN spell cast and atomic
@@ -2533,19 +2558,27 @@ namespace Ordr.Mobile.Unity
             var search = OriginalTreasureHunt.SearchObserved(
                 Combat.Game.CurrentWave,castX,castY,gaimon,
                 gaimonAndNami,extraQuantityRoll,berryDisabled,revealOnly);
-            // YI is the number of successfully found source-world chests.
-            // Only actual settled discoveries count; reveal-only searches,
-            // model previews and insufficient finds cannot complete CNf.
-            if (!revealOnly && search.WasAuthorized && search.Collected > 0 &&
-                OriginalTreasureHunt.CollectedCount >= 16 &&
-                SharedMissionRewards != null &&
-                !string.IsNullOrWhiteSpace(
-                    OriginalTreasureHunt.LastCollectedCastEvidence))
-                SharedMissionRewards.TrySettle(
-                    Original323SharedMissionKind.TreasureHunter,
-                    "treasure:found-16", Combat.Game.CurrentWave,
-                    OriginalTreasureHunt.LastCollectedCastEvidence);
+            TrySettleTreasureHunterAfterCollection(
+                !revealOnly && search.WasAuthorized, search.Collected);
             return search;
+        }
+
+        // Both UI-originated search and source-observed casts share the SAME
+        // original YI=16 settlement, never a mere reveal or preview.
+        private void TrySettleTreasureHunterAfterCollection(
+            bool sourceConfirmed, int collected)
+        {
+            if (!sourceConfirmed || collected <= 0 ||
+                Combat == null || OriginalTreasureHunt == null ||
+                OriginalTreasureHunt.CollectedCount < 16 ||
+                SharedMissionRewards == null ||
+                string.IsNullOrWhiteSpace(
+                    OriginalTreasureHunt.LastCollectedCastEvidence))
+                return;
+            SharedMissionRewards.TrySettle(
+                Original323SharedMissionKind.TreasureHunter,
+                "treasure:found-16", Combat.Game.CurrentWave,
+                OriginalTreasureHunt.LastCollectedCastEvidence);
         }
 
         public void ConfigureOriginal323TreasureWalletWorld(
@@ -3348,9 +3381,17 @@ namespace Ordr.Mobile.Unity
                                 SharedEconomy.Wallet, OriginalNavigationSelection, () => runGate.CanAdvance,
                                 () => (PracticeUnitGambling != null && PracticeUnitGambling.HasPendingDraw) ||
                                     (PracticeTierUnitGambling != null && PracticeTierUnitGambling.HasPendingDraw) ||
-                                    (PracticeUnitReroll != null && PracticeUnitReroll.HasPendingDraw));
+                                    (PracticeUnitReroll != null && PracticeUnitReroll.HasPendingDraw),
+                                () => PracticeCompuExchange != null &&
+                                    PracticeCompuExchange.HasVerifiedAwardWitness);
                             PracticeGamblingNavigation.PostCommitObserverFailed += Debug.LogException;
                             var gamblingRoutes = new Original323CwrAcquisitionRoutes(OriginalJassFusions, Units, MapBaseStats);
+                            PracticeCompuExchange = new SourceModelCompuExchange(
+                                SharedEconomy.Wallet, Combat.Game, sessionScriptRandom,
+                                () => runGate.CanAdvance,
+                                () => PracticeGamblingNavigation.Navigation,
+                                new Original323CompuUnitWorld(
+                                    Combat, Units, MapBaseStats, gamblingRoutes));
                             var gamblingRoster = new Original323UnitGamblingWorld(Combat, Units, MapBaseStats,
                                 map, gamblingRoutes, deferredWispAbilities);
                             PracticeTierUnitGambling = new SourceModelUnitGambling(SharedEconomy.Wallet, Combat.Game,

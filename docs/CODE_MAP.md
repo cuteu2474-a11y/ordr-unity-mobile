@@ -2,6 +2,13 @@
 
 > **새 작업의 코드 지도:** 무엇을 고쳐야 하는지 빠르게 찾는 문서입니다. 기능 구현률·APK 차이는 [현재 상태](START_HERE.md), 미완료 작업은 [개발 작업](PLAYABLE_ROADMAP.md), 실제 조작은 [화면·조작](화면-조작-시스템.md)에 있습니다. **이 문서에 날짜별 개발 일지나 기능별 확률·비용을 중복 기록하지 않습니다.**
 
+## 이번 추가 연결(2026-11-07, 코드만)
+
+- 기록지침 보물 탐색: `OrdrMobileTouchPanel.DrawTreasureGacha` → `OrdrCharacterCombatController.RequestMobileTreasureGacha` → `MobileTreasureGacha` → `Original323TreasureHunt`; 가이몬은 필수 조건이 아닌 범위/수량 보정, 실제 16개 보물사냥꾼 정산 공통 메서드.
+- 환전소: `SourceModelGamblingNavigation`의 `ExchangeHouse` → `SourceModelCompuExchange`(CKD~CKJ, I009 공유 잔액·1회 거래·보류 추첨) → `Original323CompuUnitWorld`(해적선/랜덤전용/토큰 실물 소환·원자 롤백) → 모바일 도박 화면. 콤푸 공급자/일반·유니크 아이템 실물 포트는 **미연결**.
+- 연구소: `Original323PlayerResearchSession.SourceCost`는 공유 지갑 `wood` 키를 사용. `OrdrMobileTouchPanel.UpgradeResourceName`은 `wood/lumber` 모두 목재로 표시.
+- 세 경로 모두 실행·실기 검증은 미실시.
+
 ## 1. 실행 흐름
 
 ```mermaid

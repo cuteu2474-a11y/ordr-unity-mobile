@@ -10,7 +10,7 @@ namespace Ordr.Mobile.Mobile
         public const string RareRerollsResource = "source:reroll:LN";
         private readonly EconomyWallet wallet;
         private readonly Original323NavigationSelection selection;
-        private readonly Func<bool> gate, pending;
+        private readonly Func<bool> gate, pending, exchangeReady;
         public event Action<Exception> PostCommitObserverFailed;
         public Original323GamblingNavigation Navigation =>
             (Original323GamblingNavigation)wallet.Balance(NavigationResource);
@@ -18,13 +18,16 @@ namespace Ordr.Mobile.Mobile
         public string ChosenNavigation => selection.ChosenNavigation;
         public bool CanChoose => selection.CanChoose && Navigation == Original323GamblingNavigation.None &&
             gate() && !pending();
+        public bool CanChooseExchangeHouse => CanChoose && exchangeReady();
         public SourceModelGamblingNavigation(EconomyWallet shared,
-            Original323NavigationSelection sharedSelection, Func<bool> interaction, Func<bool> hasPendingDraw)
+            Original323NavigationSelection sharedSelection, Func<bool> interaction,
+            Func<bool> hasPendingDraw, Func<bool> hasVerifiedCompuSupply = null)
         {
             wallet = shared ?? throw new ArgumentNullException(nameof(shared));
             selection = sharedSelection ?? throw new ArgumentNullException(nameof(sharedSelection));
             gate = interaction ?? throw new ArgumentNullException(nameof(interaction));
             pending = hasPendingDraw ?? throw new ArgumentNullException(nameof(hasPendingDraw));
+            exchangeReady = hasVerifiedCompuSupply ?? (() => false);
             // Native initialization sets LN=2, independently of navigation.
             const string receipt = "source:reroll:initial-LN-2";
             try { wallet.TryGrantOnce(receipt, new ResourceBundle().Add(RareRerollsResource, 2)); }
@@ -32,14 +35,21 @@ namespace Ordr.Mobile.Mobile
         }
         public bool TryChoose(Original323GamblingNavigation navigation)
         {
-            // Exchange-house requires its own shop/comp system, not a label.
             if ((navigation != Original323GamblingNavigation.Casino &&
-                 navigation != Original323GamblingNavigation.RiskHedge) || !CanChoose) return false;
-            string label = navigation == Original323GamblingNavigation.Casino ? "카지노" : "리스크헷지";
+                 navigation != Original323GamblingNavigation.RiskHedge &&
+                 navigation != Original323GamblingNavigation.ExchangeHouse) || !CanChoose ||
+                 (navigation == Original323GamblingNavigation.ExchangeHouse && !exchangeReady()))
+                return false;
+            string label = navigation == Original323GamblingNavigation.Casino ? "카지노" :
+                navigation == Original323GamblingNavigation.RiskHedge ? "리스크헷지" : "환전소";
             return selection.TryChoose("도박광 :: " + label, () =>
             {
-                var rewards = new ResourceBundle().Add(NavigationResource, (int)navigation)
-                    .Add(RareRerollsResource, navigation == Original323GamblingNavigation.Casino ? 1 : 2);
+                var rewards = new ResourceBundle().Add(NavigationResource, (int)navigation);
+                if (navigation != Original323GamblingNavigation.ExchangeHouse)
+                    rewards.Add(RareRerollsResource,
+                        navigation == Original323GamblingNavigation.Casino ? 1 : 2);
+                // CKR(3) creates I009 with zero charges. It does NOT grant
+                // an invented starting Compu or gambling reroll bonus.
                 if (navigation == Original323GamblingNavigation.Casino)
                 {
                     // CKR kP'=2*kP+j4. Increment by kP+j4; do not erase spent attempts.
