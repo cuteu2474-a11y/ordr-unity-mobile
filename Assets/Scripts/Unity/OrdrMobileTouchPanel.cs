@@ -161,7 +161,9 @@ namespace Ordr.Mobile.Unity
             signature.Append("|receipts:").Append(walletState.CompletedRewards.Count);
             foreach (var unit in owned)
                 signature.Append('|').Append(unit.InstanceId).Append(':').Append(unit.Unit.Id)
-                    .Append(':').Append(Combat.IsStoryDeployed(unit.InstanceId));
+                    .Append(':').Append(Combat.IsStoryDeployed(unit.InstanceId))
+                    .Append(':').Append(Combat.IsSharedObjectiveDeployed(unit.InstanceId))
+                    .Append(':').Append(Combat.IsOriginalPoneglyphChanneling(unit.InstanceId));
             string value = signature.ToString();
             if (value == fusionInventorySignature) return;
             fusionInventorySignature = value;
@@ -2467,11 +2469,15 @@ namespace Ordr.Mobile.Unity
             if (selected.HasValue)
             {
                 bool deployed = manual.IsStoryDeployed(selected.Value);
+                bool shared = Combat.IsSharedObjectiveDeployed(selected.Value);
+                bool decoding = Combat.IsOriginalPoneglyphChanneling(selected.Value);
                 bool canAct = deployed ? manual.CanRecallStory(selected.Value) :
                     manual.CanDispatchStory(selected.Value);
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("선택 유닛 #" + selected.Value +
-                    (deployed ? " · 스토리 파견 중" : " · 메인 전장"),
+                    (deployed ? " · 스토리 파견 중" :
+                     shared ? " · 공유 목표 출전 중" :
+                     decoding ? " · 포네그리프 해독 중" : " · 메인 전장"),
                     OrdrMobileUiTheme.Overline);
                 bool wasEnabled = GUI.enabled;
                 GUI.enabled = wasEnabled && canAct;

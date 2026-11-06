@@ -2338,7 +2338,8 @@ namespace Ordr.Mobile.Unity
             }
             UnitState unit;
             if (!TryGetOwnedPoneglyphUnit(instanceId, out unit) ||
-                Combat.IsStoryDeployed(instanceId))
+                Combat.IsStoryDeployed(instanceId) ||
+                Combat.IsSharedObjectiveDeployed(instanceId))
             {
                 reason = "메인 전장의 보유 유닛 필요";
                 return false;
@@ -2805,7 +2806,7 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("신비 조합 화면을 연결할 전투 월드가 없습니다.");
             if (mysticCatalog == null) throw new ArgumentNullException(nameof(mysticCatalog));
             mysticFusionPort = new OtherworldMysticFusionPreviewPort(
-                mysticCatalog, id => Combat.IsStoryDeployed(id), null,
+                mysticCatalog, id => Combat.IsLockedFromRosterTransactions(id), null,
                 resource => SharedEconomy.Wallet.Balance(resource));
             RebuildVerifiedFusionCatalog();
         }
@@ -3237,18 +3238,18 @@ namespace Ordr.Mobile.Unity
             if (OriginalJassFusions != null && OriginalUnitRawcodes != null)
                 OriginalFusionPlanner = new OriginalJassFusionPlanner(
                     OriginalJassFusions, OriginalUnitRawcodes,
-                    id => Combat.IsStoryDeployed(id), null, Units);
+                    id => Combat.IsLockedFromRosterTransactions(id), null, Units);
             if (VerifiedFusionRecipes != null)
                 FusionAssistance = new AssistedFusionService(VerifiedFusionRecipes,
                     () => Combat.MobileUnitSnapshot(),
-                    id => Combat.IsStoryDeployed(id));
+                    id => Combat.IsLockedFromRosterTransactions(id));
             // Display the full 265 source-registered recipes and their unit
             // deficits even when an irreversible original transaction is NOT
             // connected. The preview adapter is always non-executable.
             if (OriginalJassFusions != null && OriginalFusionObjectPreview != null)
                 originalJassReadOnlyFusionPort = new OriginalJassReadOnlyFusionPort(
                     OriginalJassFusions, OriginalFusionObjectPreview,
-                    id => Combat.IsStoryDeployed(id));
+                    id => Combat.IsLockedFromRosterTransactions(id));
             if (originalJassReadOnlyFusionPort != null && MapBaseStats != null &&
                 OriginalUnitRawcodes != null)
             {
@@ -3350,7 +3351,7 @@ namespace Ordr.Mobile.Unity
             }
             if (mysticFusionPort == null && OtherworldMysticFusions != null)
                 mysticFusionPort = new OtherworldMysticFusionPreviewPort(
-                    OtherworldMysticFusions, id => Combat.IsStoryDeployed(id),
+                    OtherworldMysticFusions, id => Combat.IsLockedFromRosterTransactions(id),
                     null, resource => SharedEconomy.Wallet.Balance(resource));
             if (originalFusionPort == null)
                 RebuildVerifiedFusionCatalog();

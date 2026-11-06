@@ -49,7 +49,8 @@ namespace Ordr.Mobile.Mobile
         public bool IsDeployed(long id) => deployed.Contains(id);
 
         public bool CanDispatch(long id) =>
-            Owned(id) && !deployed.Contains(id) && movement.CanDispatch(id);
+            Owned(id) && !deployed.Contains(id) &&
+            !combat.IsLockedFromRosterTransactions(id) && movement.CanDispatch(id);
 
         public ManualActionResult Dispatch(long id)
         {

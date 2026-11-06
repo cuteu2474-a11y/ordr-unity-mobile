@@ -143,7 +143,7 @@ namespace Ordr.Mobile.Combat
                 foreach (long id in materialIds)
                 {
                     if (!world.characters.ContainsKey(id) ||
-                        world.IsStoryDeployed(id))
+                        world.IsLockedFromRosterTransactions(id))
                         throw new InvalidOperationException(
                             "원본 조합 재료가 사라지거나 파견됐습니다.");
                     UnitState oldLocation = sourcePositions[id];
@@ -236,7 +236,7 @@ namespace Ordr.Mobile.Combat
             foreach (long id in exactMaterials)
             {
                 if (id <= 0 || !unique.Add(id) ||
-                    !characters.ContainsKey(id) || IsStoryDeployed(id))
+                    !characters.ContainsKey(id) || IsLockedFromRosterTransactions(id))
                     throw new InvalidOperationException(
                         "존재하지 않거나 파견 중인 원본 재료 인스턴스");
                 materials.Add(id);
@@ -261,7 +261,7 @@ namespace Ordr.Mobile.Combat
         {
             if (activeOriginalFusionSwap != null || processingStep ||
                 pendingStepSeconds != 0 || game.Phase != SessionPhase.Running ||
-                !characters.ContainsKey(instanceId) || IsStoryDeployed(instanceId))
+                !characters.ContainsKey(instanceId) || IsLockedFromRosterTransactions(instanceId))
                 throw new InvalidOperationException("현재 유닛을 판매할 수 없습니다.");
             var ticket = new OriginalFusionUnitSwap(this,
                 new List<long> { instanceId }, true);
@@ -285,7 +285,7 @@ namespace Ordr.Mobile.Combat
             foreach (long id in instanceIds)
             {
                 if (id <= 0 || !unique.Add(id) ||
-                    !characters.ContainsKey(id) || IsStoryDeployed(id))
+                    !characters.ContainsKey(id) || IsLockedFromRosterTransactions(id))
                     throw new InvalidOperationException(
                         "원본 재료 인스턴스가 중복·파견·제거되었습니다.");
                 ids.Add(id);
@@ -1515,6 +1515,13 @@ namespace Ordr.Mobile.Combat
         public bool IsSharedObjectiveDeployed(long instanceId) =>
             sharedObjectiveDeployed.ContainsKey(instanceId);
 
+        // A deployed or decoding actor remains in the roster for combat, but
+        // cannot be used as fusion material or removed by commerce. Death and
+        // explicit battle cleanup still use RemoveCharacter directly.
+        public bool IsLockedFromRosterTransactions(long instanceId) =>
+            IsStoryDeployed(instanceId) || IsSharedObjectiveDeployed(instanceId) ||
+            IsOriginalPoneglyphChanneling(instanceId);
+
         public string SharedObjectiveTargetOf(long instanceId)
         {
             SharedObjectiveDeployment assignment;
@@ -1529,6 +1536,8 @@ namespace Ordr.Mobile.Combat
             CharacterInstance actor;
             SpatialCombatEnemy target;
             if (Game.Phase != SessionPhase.Running ||
+                activeOriginalFusionSwap != null || processingStep ||
+                pendingStepSeconds != 0 ||
                 !characters.TryGetValue(instanceId, out actor) ||
                 sharedObjectiveDeployed.ContainsKey(instanceId) ||
                 originalPoneglyphChanneling.Contains(instanceId) ||
@@ -1555,6 +1564,10 @@ namespace Ordr.Mobile.Combat
 
         public bool TryRecallFromSharedObjective(long instanceId)
         {
+            // Do not relocate a roster actor while an unrelated reversible
+            // sale/fusion is staging its source positions and status revision.
+            if (activeOriginalFusionSwap != null && !internalOriginalFusionMutation)
+                return false;
             SharedObjectiveDeployment assignment;
             if (!sharedObjectiveDeployed.TryGetValue(instanceId, out assignment))
                 return false;

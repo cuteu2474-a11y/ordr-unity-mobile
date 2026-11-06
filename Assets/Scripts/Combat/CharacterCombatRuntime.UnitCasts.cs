@@ -27,7 +27,7 @@ namespace Ordr.Mobile.Combat
                         !world.originalUnitCasts.TryGetValue(source.InstanceId, out active) ||
                         !Object.ReferenceEquals(this, active) ||
                         !world.characters.ContainsKey(source.InstanceId) ||
-                        world.IsStoryDeployed(source.InstanceId)) return false;
+                        world.IsLockedFromRosterTransactions(source.InstanceId)) return false;
                     var now = world.roster.Get(source.InstanceId);
                     return now.UnitId == source.UnitId && now.X == source.X && now.Y == source.Y;
                 }
@@ -46,7 +46,8 @@ namespace Ordr.Mobile.Combat
         {
             BlockExternalMutationDuringOriginalFusion();
             if (processingStep || pendingStepSeconds != 0 || Game.Phase != SessionPhase.Running ||
-                !characters.ContainsKey(id) || IsStoryDeployed(id) || originalUnitCasts.ContainsKey(id))
+                !characters.ContainsKey(id) || IsLockedFromRosterTransactions(id) ||
+                originalUnitCasts.ContainsKey(id))
                 throw new InvalidOperationException("현재 이 유닛은 시전할 수 없습니다.");
             var cast = new OriginalUnitCast(this, roster.Get(id));
             originalUnitCasts.Add(id, cast);

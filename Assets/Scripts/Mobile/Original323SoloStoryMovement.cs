@@ -30,7 +30,9 @@ namespace Ordr.Mobile.Mobile
 
         private bool IsCombatUnit(long instanceId)
         {
-            if (instanceId <= 0 || combat.Game.Phase != SessionPhase.Running)
+            if (instanceId <= 0 || combat.Game.Phase != SessionPhase.Running ||
+                combat.IsSharedObjectiveDeployed(instanceId) ||
+                combat.IsOriginalPoneglyphChanneling(instanceId))
                 return false;
             foreach (var unit in combat.MobileUnitSnapshot())
             {
