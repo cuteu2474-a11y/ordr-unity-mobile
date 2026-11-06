@@ -72,6 +72,12 @@ namespace Ordr.Mobile.Combat
                  actor.Mapping.AttackSpec.UnitRawCode == "h02T") ||
                 (actor.Catalog.Id == "L-02" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "h02P") ||
+                // Bz1 HP85 and CGd MP185 are literal source-object
+                // counters, not profile-invented starting resources.
+                (actor.Catalog.Id == "TR-01" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "H090") ||
+                (actor.Catalog.Id == "MY-01" &&
+                 actor.Mapping.AttackSpec.UnitRawCode == "h09M") ||
                 (actor.Catalog.Id == "L-03" &&
                  actor.Mapping.AttackSpec.UnitRawCode == "h09Z") ||
                 (actor.Catalog.Id == "MY-06" &&

@@ -201,6 +201,7 @@ namespace Ordr.Mobile.Combat
 
         private void ForgetBulkAutomaticSkills(long actorId)
         {
+            ForgetSourceRemainingCallbacks(actorId);
             bulkAutoAttackCounts.Remove(actorId);
             bulkAutoFlatPower.Remove(actorId);
             bulkSansBones.Remove(actorId);
@@ -456,15 +457,13 @@ namespace Ordr.Mobile.Combat
             }
             else if (owner == "MY-01")
             {
-                BulkRunAttackSkill(actor, primary, "MY-01:skill:1");
-                BulkRunAttackSkill(actor, primary, "MY-01:skill:3");
+                // CGd has two independent JASS 10% rolls and an MP185
+                // transform. Its 5%/10% tooltip packets would double-hit.
             }
             else if (owner == "L-02")
             {
-                var pool = actor.Abilities.Resources;
-                if (pool != null)
-                    pool.SetHealth(Math.Min(pool.MaximumHealth, pool.Health + 1));
-                BulkRunAttackSkill(actor, primary, "L-02:skill:0");
+                // BsU owns both HP35 and 88/1000 AoE rolls. Only the
+                // JASS-backed remaining-callback path may advance them.
             }
             else if (owner == "L-03")
             {
@@ -475,10 +474,8 @@ namespace Ordr.Mobile.Combat
             }
             else if (owner == "L-05")
             {
-                int count;
-                bulkAutoAttackCounts.TryGetValue(actor.Id, out count);
-                bulkAutoAttackCounts[actor.Id] = ++count;
-                BulkRunAttackSkill(actor, primary, "L-05:skill:0", count % 7 == 0);
+                // Bsf/Bse counts confirmed positive hits, not all
+                // declarations; the source-owned callback handles its 7/27%.
             }
             else if (owner == "L-12")
             {
@@ -512,9 +509,8 @@ namespace Ordr.Mobile.Combat
             }
             else if (owner == "TR-01")
             {
-                BulkRunAttackSkill(actor, primary, "TR-01:skill:1");
-                BulkRunAttackSkill(actor, primary, "TR-01:skill:3");
-                BulkRunAttackSkill(actor, primary, "TR-01:skill:4");
+                // Bz1 rolls HP85, 175/1000, 10% and 4%. All matching
+                // generic tooltip rolls are superseded to prevent double RNG.
             }
             else if (owner == "TR-02")
                 BulkRunAttackSkill(actor, primary, "TR-02:skill:3");

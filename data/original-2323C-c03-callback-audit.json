@@ -212,5 +212,124 @@
     "Do not register independent tooltip equivalents for these callbacks; legacy source-code precedence suppresses duplicate proc damage.",
     "This skill batch has not been executed in Unity, Python, NUnit or APK; code paths require integrated verification.",
     "MY-02 has an existing independent NinthSkills implementation; excluded from this catalog to prevent duplicate 50000 scripted damage."
-  ]
+  ],
+  "registeredRemainingCallbackDispatch": {
+    "date": "2026-11-06",
+    "sourceCode": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelRemainingCallbacks.cs",
+    "rows": 17,
+    "withExplicitJassDamageSubset": 7,
+    "nativeOnlyDeferred": 10,
+    "source": "pinned original war3map.j",
+    "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+    "notes": [
+      "31 audited callback rows now have a JASS registration/dispatch path (14 prior partially-damaging plus 17 new).",
+      "The 17 native-or-multistep rows remain NOT original-complete; 10 have only verified proc/ordered-spell intent without invented native spell damage.",
+      "Original JASS data and the catalog tooltip may disagree; native immunity, bonus stat providers, form buffs, and target point value are separate blockers.",
+      "No Unity/Python/NUnit/APK or parity tests executed."
+    ],
+    "entries": [
+      {
+        "catalogId": "S-06",
+        "rawcode": "h00R",
+        "jassCallback": "Bnw",
+        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+      },
+      {
+        "catalogId": "S-07",
+        "rawcode": "h00U",
+        "jassCallback": "Bny",
+        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+      },
+      {
+        "catalogId": "R-08",
+        "rawcode": "h022",
+        "jassCallback": "Bou",
+        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+      },
+      {
+        "catalogId": "R-09",
+        "rawcode": "h01Z",
+        "jassCallback": "Bow",
+        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+      },
+      {
+        "catalogId": "R-22",
+        "rawcode": "h029",
+        "jassCallback": "BpO",
+        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+      },
+      {
+        "catalogId": "R-24",
+        "rawcode": "h027",
+        "jassCallback": "BpT",
+        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+      },
+      {
+        "catalogId": "R-29",
+        "rawcode": "h024",
+        "jassCallback": "Bpb",
+        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+      },
+      {
+        "catalogId": "R-32",
+        "rawcode": "h02G",
+        "jassCallback": "Bph",
+        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+      },
+      {
+        "catalogId": "R-36",
+        "rawcode": "h023",
+        "jassCallback": "Bpv",
+        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+      },
+      {
+        "catalogId": "R-39",
+        "rawcode": "h01R",
+        "jassCallback": "Bpz",
+        "mobileDispatch": "native-order-proc-only; damage and Warcraft spell deferred"
+      },
+      {
+        "catalogId": "L-02",
+        "rawcode": "h02P",
+        "jassCallback": "BsU",
+        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+      },
+      {
+        "catalogId": "L-05",
+        "rawcode": "h02Q",
+        "jassCallback": "Bsf",
+        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+      },
+      {
+        "catalogId": "L-12",
+        "rawcode": "h02N",
+        "jassCallback": "BsL",
+        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+      },
+      {
+        "catalogId": "L-36",
+        "rawcode": "h032",
+        "jassCallback": "BtV",
+        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+      },
+      {
+        "catalogId": "D-06",
+        "rawcode": "h09V",
+        "jassCallback": "CD0",
+        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+      },
+      {
+        "catalogId": "TR-01",
+        "rawcode": "H090",
+        "jassCallback": "Bz1",
+        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+      },
+      {
+        "catalogId": "MY-01",
+        "rawcode": "h09M",
+        "jassCallback": "CGd",
+        "mobileDispatch": "explicit-JASS-subset-in-practice-model; missing native/conditional parts deferred"
+      }
+    ]
+  }
 }

@@ -20,6 +20,9 @@ namespace Ordr.Mobile.Combat
             if (rawcode == "h01H" && UsesSourceModelBasicAttacks && processingStep)
                 TrySourceModelLowFrenzy(attackerId);
             SourceScriptAttackSpec script = null;
+            SourceRemainingCallback remaining = null;
+            bool hasRemaining = SourceRemainingCallbackCatalog.TryGet(
+                rawcode, out remaining);
             SourceModelBatchAttackSpec batch = null;
             SourceModelNextThirtyUnit nextThirty = null;
             SourceModelUnconnectedSkillRow unconnected = null;
@@ -68,6 +71,7 @@ namespace Ordr.Mobile.Combat
                 (!nativeUtaForm && !practiceBonney && !eleventhFormOwner &&
                  !hasLegacyScript && !hasBatch && !hasNext &&
                  !hasUnconnected && !ninthOwner && !standaloneTemporary &&
+                 !hasRemaining &&
                  !specialFromJass && !nativeFromJass && !hasAdditionalAuto))
                 return;
 
@@ -87,6 +91,8 @@ namespace Ordr.Mobile.Combat
             // Independent model-only tooltip packets may coexist with an
             // original script/native basic hit. Their explicit owner ID and
             // rawcode gates prevent foreign-profile and duplicate rolls.
+            if (hasRemaining && actor.Catalog.Id == remaining.CatalogId)
+                OnSourceRemainingDeclared(actor, primary, remaining);
             ExecuteAdditionalAutomaticAttack(actor, primary, rawcode);
 
             // B8V is an ATTACK-DECLARED self-buff, not a successful-hit
@@ -276,6 +282,8 @@ namespace Ordr.Mobile.Combat
         private void OnSourceModelAfterSuccessfulBasicHit(
             string attackerId, string rawcode, string primaryTargetId, long actual)
         {
+            OnSourceRemainingAfterPositiveBasicHit(attackerId, rawcode,
+                primaryTargetId, actual);
             SourceAfterHitAttackUnit entry;
             if (actual <= 0 || !UsesSourceModelBasicAttacks ||
                 sourceModelRules == null || !processingStep ||
@@ -504,7 +512,15 @@ namespace Ordr.Mobile.Combat
                     // CCE selects ONE damage operand by the enemy marker,
                     // it does not add the boss/enraged percentage to 35000.
                     double raw = hit.Damage +
-                        hit.BasicHitDamageMultiplier * sourceBasicDamage;
+                        hit.BasicHitDamageMultiplier * sourceBasicDamage +
+                        hit.TargetMaxHealthMultiplier * target.Enemy.MaxHealth +
+                        hit.TargetCurrentHealthMultiplier * target.Enemy.Health;
+                    if (target.Kind == CharacterEnemyKind.Line &&
+                        hit.LineMaxHealthMultiplier > 0)
+                        raw = target.Enemy.MaxHealth * hit.LineMaxHealthMultiplier;
+                    else if (target.Kind == CharacterEnemyKind.Line &&
+                             hit.LineCurrentHealthMultiplier > 0)
+                        raw = target.Enemy.Health * hit.LineCurrentHealthMultiplier;
                     if (hit.RandomIntegerMaximum > 0)
                         raw = hit.RandomIntegerMinimum +
                             sourceModelRules.NextScriptRoll(
@@ -526,7 +542,11 @@ namespace Ordr.Mobile.Combat
                     // reference model. Damage type / armor bypass / native
                     // immunity still need original Warcraft comparison.
                     double modeled = Ordr323MapDamageMath.ApplyVerifiedFactors(
-                        sourceDamage, hit.Attack, armor, true, true,
+                        sourceDamage,
+                        target.Kind == CharacterEnemyKind.Line &&
+                        hit.LineAttackOverride.HasValue
+                            ? hit.LineAttackOverride.Value : hit.Attack,
+                        armor, true, true,
                         target.Enemy.Defenses.BaseArmor.Value -
                         SourceModelUnitEffects.ResolvePracticeArmorReduction(
                             target.Enemy.Status.Snapshot()), false, 0, 1);

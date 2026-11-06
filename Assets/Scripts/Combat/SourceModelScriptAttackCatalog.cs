@@ -32,6 +32,11 @@ namespace Ordr.Mobile.Combat
         // C03 callbacks whose damage is proportional to the confirmed basic
         // hit. Their native damage-listener armor inversion is not yet exact.
         public double BasicHitDamageMultiplier { get; private set; }
+        public double TargetMaxHealthMultiplier { get; private set; }
+        public double TargetCurrentHealthMultiplier { get; private set; }
+        public double LineMaxHealthMultiplier { get; private set; }
+        public double LineCurrentHealthMultiplier { get; private set; }
+        public Ordr323AttackType? LineAttackOverride { get; private set; }
 
         internal SourceScriptHit(SourceScriptHitShape shape, double radius,
             double length, double damage, double minimum, double maximum,
@@ -40,7 +45,12 @@ namespace Ordr.Mobile.Combat
             double enragedMaxHealthPercent = 0,
             bool storyOnly = false, double storyDamage = 0,
             int randomIntegerMinimum = 0, int randomIntegerMaximum = 0,
-            double basicHitDamageMultiplier = 0)
+            double basicHitDamageMultiplier = 0,
+            double targetMaxHealthMultiplier = 0,
+            double targetCurrentHealthMultiplier = 0,
+            double lineMaxHealthMultiplier = 0,
+            double lineCurrentHealthMultiplier = 0,
+            Ordr323AttackType? lineAttackOverride = null)
         {
             Shape = shape; Radius = radius; Length = length; Damage = damage;
             Minimum = minimum; Maximum = maximum; Attack = attack;
@@ -50,6 +60,11 @@ namespace Ordr.Mobile.Combat
             RandomIntegerMinimum = randomIntegerMinimum;
             RandomIntegerMaximum = randomIntegerMaximum;
             BasicHitDamageMultiplier = basicHitDamageMultiplier;
+            TargetMaxHealthMultiplier = targetMaxHealthMultiplier;
+            TargetCurrentHealthMultiplier = targetCurrentHealthMultiplier;
+            LineMaxHealthMultiplier = lineMaxHealthMultiplier;
+            LineCurrentHealthMultiplier = lineCurrentHealthMultiplier;
+            LineAttackOverride = lineAttackOverride;
         }
     }
 
