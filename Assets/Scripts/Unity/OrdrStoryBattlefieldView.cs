@@ -115,11 +115,11 @@ namespace Ordr.Mobile.Unity
                     alignment = TextAnchor.MiddleLeft, clipping = TextClipping.Clip };
                 tiny = new GUIStyle(caption) { alignment = TextAnchor.MiddleCenter };
             }
-            float header = Mathf.Min(18f * scale, area.height * .25f);
+            float header = Mathf.Min(26f * scale, area.height * .25f);
             float footer = Mathf.Min(17f * scale, area.height * .23f);
             float ground = area.height - footer - 2f;
-            float size = Mathf.Min(40f * scale, Mathf.Max(12f, ground - header - 4f));
-            float buildingWidth = Mathf.Min(80f * scale, area.width * .24f);
+            float size = Mathf.Min(52f * scale, Mathf.Max(12f, ground - header - 12f * scale));
+            float buildingWidth = Mathf.Min(150f * scale, area.width * .30f);
             float buildingX = area.width - buildingWidth - 8f;
             float rowWidth = Mathf.Max(1f, buildingX - 24f);
             int capacity = Mathf.Max(1, Mathf.FloorToInt(rowWidth / (size + 9f)));
@@ -144,16 +144,25 @@ namespace Ordr.Mobile.Unity
                 bool hasTarget = enemy != null && enemy.Health > 0;
                 string title = hasTarget ? alive.Building.Stage + ". " + alive.Building.Name +
                     "   HP " + enemy.Health + " / " + enemy.MaxHealth : "스토리 전장";
-                GUI.Label(new Rect(6, 0, area.width - 12, header), title, caption);
+                if (hasTarget)
+                {
+                    Color text = caption.normal.textColor;
+                    caption.normal.textColor = OrdrMobileUiTheme.Gold;
+                    var titleContent = new GUIContent(title);
+                    while (caption.fontSize > 11 && caption.CalcSize(titleContent).x > area.width - 12f)
+                        caption.fontSize--;
+                    GUI.Label(new Rect(6, 0, area.width - 12, header), titleContent, caption);
+                    caption.normal.textColor = text;
+                }
                 var displayed = alive ?? last;
                 float flash = combat != null && displayed != null && hitTarget == displayed.EnemyId
                     ? Fade(combat.Time - hitAt, .24f) : 0;
-                DrawBuilding(new Rect(buildingX, header + 4, buildingWidth,
-                    Mathf.Max(10, ground - header - 4)), hasTarget, flash);
+                DrawBuilding(new Rect(buildingX, header + 10f * scale, buildingWidth,
+                    Mathf.Max(10, ground - header - 10f * scale)), hasTarget, flash);
                 if (hasTarget)
                 {
                     float ratio = Mathf.Clamp01((float)((double)enemy.Health / enemy.MaxHealth));
-                    Rect bar = new Rect(buildingX, header + 1, buildingWidth, 3);
+                    Rect bar = new Rect(8f, header + 1f, area.width - 16f, 5f * scale);
                     Fill(bar, new Color(.10f, .13f, .18f));
                     bar.width *= ratio;
                     Fill(bar, Color.Lerp(new Color(.95f, .3f, .2f),
@@ -213,13 +222,14 @@ namespace Ordr.Mobile.Unity
                         Fill(new Rect(dot.x - 2, dot.y - 2, 5, 5), tint);
                     }
                 }
-                string status = "파견 " + deployed.Count + "기";
+                string status = "파견 유닛 " + deployed.Count + "기";
                 if (controller.SoloStory != null)
                 {
-                    status += " · " + controller.SoloStory.HighestDestroyedStage + "/14";
+                    status += " · 스토리 " + controller.SoloStory.HighestDestroyedStage + "/14";
                     if (controller.SoloStory.EggheadDeadlineRemaining > 0)
                         status += " · 제한 " + Math.Ceiling(controller.SoloStory.EggheadDeadlineRemaining) + "초";
                 }
+                caption.fontSize = Mathf.Max(9, Mathf.RoundToInt(footer * .76f));
                 GUI.Label(new Rect(6, area.height - footer, area.width - 90f * scale, footer),
                     status, caption);
                 if (pages > 1)
@@ -254,18 +264,33 @@ namespace Ordr.Mobile.Unity
             float shake = Mathf.Sin(hit * 25f) * hit * 3f;
             r.x += shake;
             Fill(new Rect(r.x, r.yMax - 3, r.width, 3), new Color(.12f, .18f, .23f));
-            Fill(new Rect(r.x + r.width * .12f, r.y + r.height * .28f,
-                r.width * .76f, r.height * .72f), wall);
-            for (int i = 0; i < 3; i++)
+            Texture2D texture = OrdrBattlefieldArt.StoryFortressTexture;
+            if (texture != null)
             {
-                float x = r.x + r.width * (.10f + i * .30f);
-                Fill(new Rect(x, r.y, r.width * .20f, r.height * .4f), wall);
-                Fill(new Rect(x - 1, r.y, r.width * .20f + 2, 3), OrdrMobileUiTheme.Gold);
-                Fill(new Rect(x + r.width * .07f, r.y + r.height * .4f,
-                    r.width * .06f, r.height * .16f), new Color(.08f, .14f, .21f));
+                Rect image = OrdrBattlefieldArt.FitTexture(r, texture, OrdrBattlefieldArt.StoryFortressUv);
+                Color before = GUI.color;
+                try
+                {
+                    GUI.color = Color.Lerp(Color.white, new Color(1f,.65f,.42f,1f), hit * .65f);
+                    GUI.DrawTextureWithTexCoords(image, texture, OrdrBattlefieldArt.StoryFortressUv);
+                }
+                finally { GUI.color = before; }
             }
-            Fill(new Rect(r.center.x - r.width * .08f, r.yMax - r.height * .35f,
-                r.width * .16f, r.height * .35f), new Color(.08f, .14f, .21f));
+            else
+            {
+                Fill(new Rect(r.x + r.width * .12f, r.y + r.height * .28f,
+                    r.width * .76f, r.height * .72f), wall);
+                for (int i = 0; i < 3; i++)
+                {
+                    float x = r.x + r.width * (.10f + i * .30f);
+                    Fill(new Rect(x, r.y, r.width * .20f, r.height * .4f), wall);
+                    Fill(new Rect(x - 1, r.y, r.width * .20f + 2, 3), OrdrMobileUiTheme.Gold);
+                    Fill(new Rect(x + r.width * .07f, r.y + r.height * .4f,
+                        r.width * .06f, r.height * .16f), new Color(.08f, .14f, .21f));
+                }
+                Fill(new Rect(r.center.x - r.width * .08f, r.yMax - r.height * .35f,
+                    r.width * .16f, r.height * .35f), new Color(.08f, .14f, .21f));
+            }
             if (hit > 0)
             {
                 Color spark = new Color(1, .85f, .4f, hit);

@@ -60,12 +60,12 @@ namespace Ordr.Mobile.Unity
                 throw new ArgumentOutOfRangeException(nameof(safe), "가로 전장 표시 공간이 부족합니다.");
 
             // Fill the space below the resource strip to the bottom inset.
-            // The ribbon stays touch-sized; main/story keep their 80:20 ratio.
+            // The ribbon stays touch-sized; the smaller story area gets 24% of field space for the visible fortress.
             float playableHeight = available;
             float ribbonHeight = Mathf.Min(
                 Mathf.Max(52f * uiScale, safe.height * 0.083f), playableHeight * 0.27f);
             float fieldSpace = playableHeight - ribbonHeight - gap * 2f;
-            float storyHeight = fieldSpace * 0.20f;
+            float storyHeight = fieldSpace * 0.24f;
             float battleHeight = fieldSpace - storyHeight;
             float ribbonTop = mapTop + battleHeight + gap;
             float storyTop = ribbonTop + ribbonHeight + gap;

@@ -21,7 +21,7 @@ __pycache__/
 # Unity Editor가 원본 /data JSON에서 자동 복사하는 읽기 전용 캐시
 Assets/Resources/OrdrData/
 Assets/Resources/OrdrData.meta
-Assets/Resources.meta
+# Resources root/OrdrArt metadata is versioned for approved runtime artwork.
 
 # Personal-use catalog portraits are injected locally before a private APK build.
 # Never publish fan-site image binaries or generated Unity metadata to public GitHub.

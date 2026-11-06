@@ -4,10 +4,15 @@ using UnityEngine;
 
 namespace Ordr.Mobile.Unity
 {
-    // Small authored-at-runtime visual assets: no downloaded IP or device
-    // network traffic. Generated once, cached, and used only for rendering.
+    // Approved offline Resources art, with cached procedural fallbacks.
+    // Presentation only: no network, private portraits or gameplay mutation.
     public static class OrdrBattlefieldArt
     {
+        public const string GroundResource = "OrdrArt/BattlefieldGround";
+        public const string QuantityResource = "OrdrArt/QuantityButton";
+        public const string FortressResource = "OrdrArt/StoryFortress";
+        private static Texture2D sharedGround, quantity, fortress;
+        private static bool groundLoaded, quantityLoaded, fortressLoaded;
         private static Sprite board;
         private static Sprite gradeFrame;
         private static Sprite enemy;
@@ -26,7 +31,58 @@ namespace Ordr.Mobile.Unity
             new Dictionary<string, Sprite>(StringComparer.Ordinal);
 
         public static Color BackgroundColor => new Color(0.035f, 0.070f, 0.110f, 1f);
-        public static Sprite BoardSprite => board ?? (board = MakeSprite(BoardTexture(), 256));
+        public static Texture2D SharedGroundTexture =>
+            LoadOnce(ref sharedGround, ref groundLoaded, GroundResource);
+        public static Texture2D QuantityButtonTexture =>
+            LoadOnce(ref quantity, ref quantityLoaded, QuantityResource);
+        public static Texture2D StoryFortressTexture =>
+            LoadOnce(ref fortress, ref fortressLoaded, FortressResource);
+
+        // UVs trim only the approved PNGs' transparent safety margins.
+        // Normalized coordinates also survive importer downscaling.
+        public static Rect QuantityButtonUv => new Rect(
+            145f / 1254f, 373f / 1254f, 964f / 1254f, 504f / 1254f);
+        public static Rect StoryFortressUv => new Rect(
+            26f / 1402f, 116f / 1122f, 1348f / 1402f, 792f / 1122f);
+        public static Sprite BoardSprite
+        {
+            get
+            {
+                if (board == null)
+                {
+                    Texture2D texture = SharedGroundTexture ?? BoardTexture();
+                    board = MakeSprite(texture, texture.width);
+                }
+                return board;
+            }
+        }
+
+        private static Texture2D LoadOnce(ref Texture2D texture, ref bool loaded, string path)
+        {
+            if (!loaded) { texture = Resources.Load<Texture2D>(path); loaded = true; }
+            return texture;
+        }
+
+        // Fit the art's actual (possibly non-square) bounds to the SAME world
+        // rectangle as before; texture aspect must never change camera/path geometry.
+        public static Vector3 BoardScaleForBounds(Vector2 worldSize, Sprite sprite)
+        {
+            if (sprite == null || worldSize.x <= 0f || worldSize.y <= 0f ||
+                sprite.bounds.size.x <= 0f || sprite.bounds.size.y <= 0f)
+                throw new ArgumentException("전장 그림과 양수 표시 크기가 필요합니다.");
+            return new Vector3(worldSize.x / sprite.bounds.size.x,
+                worldSize.y / sprite.bounds.size.y, 1f);
+        }
+
+        public static Rect FitTexture(Rect area, Texture2D texture, Rect uv)
+        {
+            if (texture == null || area.width <= 0f || area.height <= 0f ||
+                uv.width <= 0f || uv.height <= 0f) return new Rect(area.center, Vector2.zero);
+            float aspect = texture.width * uv.width / (texture.height * uv.height);
+            float width = Mathf.Min(area.width, area.height * aspect);
+            float height = width / aspect;
+            return new Rect(area.center.x - width * .5f, area.yMax - height, width, height);
+        }
         public static Sprite GradeFrame => gradeFrame ?? (gradeFrame = MakeSprite(FrameTexture(), 96));
         public static Sprite EnemySprite(bool isBoss)
         {
@@ -100,7 +156,7 @@ namespace Ordr.Mobile.Unity
                     return Color.clear;
                 }), 80));
         public static Texture2D StoryTexture =>
-            story ?? (story = MakeTexture(256, 96, (x, y) =>
+            SharedGroundTexture ?? (story ?? (story = MakeTexture(256, 96, (x, y) =>
             {
                 float g = 0.5f + 0.5f * Mathf.Sin(x * .07f);
                 float edge = (x < 3 || x > 252 || y < 3 || y > 92) ? 1f : 0f;
@@ -111,7 +167,7 @@ namespace Ordr.Mobile.Unity
                 if (edge > 0) c = new Color(.42f, .64f, .67f, 1f);
                 c.a = 1f;
                 return c;
-            }));
+            })));
         public static Texture2D HeaderTexture =>
             header ?? (header = MakeTexture(256, 36, (x, y) =>
             {
@@ -191,17 +247,7 @@ namespace Ordr.Mobile.Unity
                     new Color(.21f, .35f, .38f), .22f);
                 // No decorative pretend lane. Only the active model's real
                 // movement waypoints may draw a route above this base art.
-                // Faint nautical compass-rose chart embellishment.
-                float dx = x - 218f, dy = y - 43f;
-                float distance = Mathf.Sqrt(dx * dx + dy * dy);
-                if (Mathf.Abs(distance - 26f) < 1.25f ||
-                    ((Mathf.Abs(dx) < 1.5f || Mathf.Abs(dy) < 1.5f) && distance < 30f))
-                    color = Color.Lerp(color, new Color(.81f, .65f, .40f), .47f);
-                if (x < 4 || x > 251 || y < 4 || y > 251)
-                    color = new Color(.40f, .34f, .21f);
-                if ((x < 9 || x > 246 || y < 9 || y > 246) &&
-                    (x % 15 == 0 || y % 15 == 0))
-                    color = Color.Lerp(color, new Color(.83f, .62f, .33f), .6f);
+                // No decorative compass or pretend path when artwork is missing.
                 color.a = 1f;
                 return color;
             });
@@ -296,7 +342,7 @@ namespace Ordr.Mobile.Unity
         {
             var sprite = Sprite.Create(texture,
                 new Rect(0f, 0f, texture.width, texture.height),
-                new Vector2(.5f, .5f), pixelsPerUnit);
+                new Vector2(.5f, .5f), pixelsPerUnit, 0, SpriteMeshType.FullRect);
             sprite.hideFlags = HideFlags.DontSave;
             return sprite;
         }

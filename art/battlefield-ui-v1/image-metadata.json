@@ -1,7 +1,7 @@
 {
   "generator": "built-in image_gen",
   "generatedAt": "2026-11-06",
-  "runtimeIntegrated": false,
+  "runtimeIntegrated": true,
   "files": {
     "quantity-button-v1.png": {
       "width": 1254,
@@ -32,5 +32,13 @@
       "bytes": 2349060,
       "sha256": "f17781c9617e30ff7bb7163bbd0f83aadb1e1fa8fc7922125fb22c4ce42439ef"
     }
+  },
+  "integrationStatus": "code-connected-unverified",
+  "unityExecutionVerified": false,
+  "apkBuiltForThisChange": false,
+  "runtimeResources": {
+    "ground": "Assets/Resources/OrdrArt/BattlefieldGround.png",
+    "quantity": "Assets/Resources/OrdrArt/QuantityButton.png",
+    "fortress": "Assets/Resources/OrdrArt/StoryFortress.png"
   }
 }

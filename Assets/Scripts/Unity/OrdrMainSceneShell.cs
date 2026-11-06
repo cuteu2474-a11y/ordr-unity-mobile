@@ -77,7 +77,7 @@ namespace Ordr.Mobile.Unity
                     return;
                 }
                 var layout = MobileMapSkillLayout.Calculate(safe, Screen.height, scale);
-                OrdrMobileUiTheme.DrawMapCorners(layout.Battle, OrdrMobileUiTheme.Gold);
+                OrdrMobileUiTheme.DrawMapCorners(layout.Battle, new Color(.28f, .43f, .46f, .65f));
                 var combat = controller == null ? null : controller.Combat;
                 Rect hud = new Rect(layout.Battle.x + 5f * scale,
                     layout.Battle.y + 4f * scale,
@@ -86,7 +86,7 @@ namespace Ordr.Mobile.Unity
                     ScaleMode.StretchToFill);
                 var hudStyle = new GUIStyle(OrdrMobileUiTheme.Overline) {
                     alignment = TextAnchor.MiddleCenter,
-                    fontSize = Mathf.RoundToInt(13f * scale),
+                    fontSize = Mathf.RoundToInt(16f * scale),
                     fontStyle = FontStyle.Bold, wordWrap = false };
                 hudStyle.normal.textColor = Color.white;
                 int count = GetComponent<OrdrUnitWorldPresenter>()?.MainOwnedUnitCount ?? 0;
@@ -96,9 +96,15 @@ namespace Ordr.Mobile.Unity
                 GUI.Label(hud, metrics, hudStyle);
 
                 // Story remains a smaller, visually separate battlefield.
-                GUI.DrawTexture(layout.Story, OrdrBattlefieldArt.StoryTexture,
-                    ScaleMode.StretchToFill);
-                OrdrMobileUiTheme.DrawMapCorners(layout.Story, OrdrMobileUiTheme.Aqua);
+                Color groundColor = GUI.color;
+                try
+                {
+                    GUI.color = new Color(.94f, .88f, .76f, 1f);
+                    GUI.DrawTexture(layout.Story, OrdrBattlefieldArt.StoryTexture,
+                        ScaleMode.ScaleAndCrop);
+                }
+                finally { GUI.color = groundColor; }
+                OrdrMobileUiTheme.DrawMapCorners(layout.Story, new Color(.38f, .46f, .43f, .6f));
                 if (controller != null &&
                     Time.unscaledTime - controller.EvolutionNoticeShownAt < 2.3f &&
                     !string.IsNullOrEmpty(controller.EvolutionNotice))

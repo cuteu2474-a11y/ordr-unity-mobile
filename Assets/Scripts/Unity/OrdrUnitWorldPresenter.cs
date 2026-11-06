@@ -128,6 +128,7 @@ namespace Ordr.Mobile.Unity
             battlefieldBoard = deck.AddComponent<SpriteRenderer>();
             battlefieldBoard.sprite = OrdrBattlefieldArt.BoardSprite;
             battlefieldBoard.sortingOrder = -100;
+            battlefieldBoard.color = new Color(.82f, .94f, .98f, 1f);
             if (worldCamera != null)
                 worldCamera.backgroundColor = OrdrBattlefieldArt.BackgroundColor;
         }
@@ -221,8 +222,8 @@ namespace Ordr.Mobile.Unity
                 {
                     battlefieldBoard.transform.position = new Vector3(
                         fixedBoardBounds.center.x, fixedBoardBounds.center.y, 0f);
-                    battlefieldBoard.transform.localScale = new Vector3(
-                        fixedBoardBounds.width, fixedBoardBounds.height, 1f);
+                    battlefieldBoard.transform.localScale = OrdrBattlefieldArt.BoardScaleForBounds(
+                        fixedBoardBounds.size, battlefieldBoard.sprite);
                 }
             }
             ApplyCenteredFormation(layout);

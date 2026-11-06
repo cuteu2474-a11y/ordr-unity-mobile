@@ -15,6 +15,8 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle sectionTitle;
         private static GUIStyle currencyText;
         private static GUIStyle panel;
+        private static GUIStyle borderlessPanel;
+        private static GUIStyle closeButton;
         private static GUIStyle navButton;
         private static GUIStyle overline;
         private static GUIStyle subheading;
@@ -46,6 +48,8 @@ namespace Ordr.Mobile.Unity
         internal static GUIStyle SectionTitle { get { return sectionTitle; } }
         internal static GUIStyle CurrencyText { get { return currencyText; } }
         internal static GUIStyle Panel { get { return panel; } }
+        internal static GUIStyle BorderlessPanel { get { return borderlessPanel; } }
+        internal static GUIStyle CloseButton { get { return closeButton; } }
         internal static GUIStyle NavButton { get { return navButton; } }
         internal static GUIStyle Overline { get { return overline; } }
         internal static GUIStyle Subheading { get { return subheading; } }
@@ -100,6 +104,13 @@ namespace Ordr.Mobile.Unity
             themedSkin.button.wordWrap = true;
             themedSkin.button.clipping = TextClipping.Clip;
             themedSkin.button.margin = new RectOffset(3, 3, 4, 4);
+            closeButton = new GUIStyle(themedSkin.button);
+            Texture2D closeFace = Plate(new Color(.25f,.28f,.32f),
+                new Color(.11f,.14f,.18f),new Color(.63f,.68f,.72f));
+            Background(closeButton, closeFace, hover, Color.white);
+            closeButton.fontSize = 28;
+            closeButton.padding = new RectOffset(0,0,0,0);
+            closeButton.wordWrap = false;
 
             themedSkin.label = new GUIStyle(source.label);
             themedSkin.label.normal.textColor = Text;
@@ -135,6 +146,10 @@ namespace Ordr.Mobile.Unity
             currencyText.fontSize = 18;
             panel = new GUIStyle(themedSkin.box);
             panel.padding = new RectOffset(12,12,11,11);
+            borderlessPanel = new GUIStyle(panel);
+            Texture2D drawerBackground = Flat(new Color(.035f,.055f,.085f,1f));
+            Background(borderlessPanel, drawerBackground, drawerBackground, Text);
+            borderlessPanel.border = new RectOffset(0,0,0,0);
             navButton = new GUIStyle(themedSkin.button);
             navButton.alignment = TextAnchor.MiddleCenter;
             navButton.padding = new RectOffset(8,8,7,7);
@@ -381,7 +396,8 @@ namespace Ordr.Mobile.Unity
         // Text and collapse state are supplied by the owner, never inferred
         // from gameplay data or used to execute an action.
         internal static bool DrawAccordionHeader(string title, string meta,
-            bool expanded, Color tint, float height = 72f, bool countBadge = false)
+            bool expanded, Color tint, float height = 72f, bool countBadge = false,
+            long remainingCount = 0)
         {
             Rect area = GUILayoutUtility.GetRect(0f, height,
                 GUILayout.ExpandWidth(true));
@@ -401,7 +417,7 @@ namespace Ordr.Mobile.Unity
                 title,accordionTitle);
             if (metaWidth>0f)
             {
-                if (countBadge) DrawWispCountBadge(area, meta, tint);
+                if (countBadge) DrawWispCountBadge(area, meta, remainingCount);
                 else GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
                     metaWidth,area.height-18f),meta,accordionMeta);
             }
@@ -411,13 +427,13 @@ namespace Ordr.Mobile.Unity
         // Ordinary rows act on a single tap. Gambling rows distinguish a
         // short tap from a hold without changing their shared presentation.
         internal static bool DrawActionRow(string title, string meta,
-            Color tint, float height = 72f, bool countBadge = false)
+            Color tint, float height = 72f, bool countBadge = false, long remainingCount = 0)
         {
             Rect area = GUILayoutUtility.GetRect(0f, height,
                 GUILayout.ExpandWidth(true));
             bool pressed = GUI.Button(area, GUIContent.none, accordionClosed);
             if (Event.current.type == EventType.Repaint)
-                DrawActionRowFace(area, title, meta, tint, countBadge);
+                DrawActionRowFace(area, title, meta, tint, countBadge, remainingCount);
             return pressed;
         }
 
@@ -447,7 +463,7 @@ namespace Ordr.Mobile.Unity
         }
 
         private static void DrawActionRowFace(Rect area, string title,
-            string meta, Color tint, bool countBadge)
+            string meta, Color tint, bool countBadge, long remainingCount = 0)
         {
             Stroke(new Rect(area.x+5f,area.y+12f,4f,
                 Mathf.Max(0f,area.height-24f)),tint);
@@ -462,35 +478,77 @@ namespace Ordr.Mobile.Unity
                 title,accordionTitle);
             if (metaWidth>0f)
             {
-                if (countBadge) DrawWispCountBadge(area, meta, tint);
+                if (countBadge) DrawWispCountBadge(area, meta, remainingCount);
                 else GUI.Label(new Rect(area.xMax-metaWidth-18f,area.y+9f,
                     metaWidth,area.height-18f),meta,accordionMeta);
             }
         }
 
-        // Keep quantities legible even when a zero-balance action is disabled.
-        // This is a read-only overlay; the parent row remains the only touch target.
-        private static void DrawWispCountBadge(Rect area, string count, Color tint)
+        // Button face only: the parent header/action is still the single
+        // original touch target. Do not create a second purchase/retry command.
+        private static void DrawWispCountBadge(Rect area, string count, long remaining)
         {
-            float width = 112f;
+            float width = Mathf.Min(112f, area.width * .38f);
             float height = Mathf.Min(60f, area.height - 10f);
             Rect badge = new Rect(area.xMax - width - 12f,
                 area.y + (area.height - height) * .5f, width, height);
             bool wasEnabled = GUI.enabled;
-            GUI.enabled = true;
-            GUI.Box(badge, GUIContent.none, accordionOpen);
-            Stroke(new Rect(badge.x+4f, badge.y+8f, 4f,
-                Mathf.Max(0f,badge.height-16f)), tint);
-            GUI.Label(new Rect(badge.x+11f,badge.y+3f,badge.width-18f,18f),
-                "남은 수량", wispCountCaption);
-            var value = new GUIStyle(wispCountValue);
-            var content = new GUIContent(count);
-            while (value.fontSize > 16 &&
-                value.CalcSize(content).x > badge.width-18f)
-                value.fontSize--;
-            GUI.Label(new Rect(badge.x+10f,badge.y+20f,
-                badge.width-16f,badge.height-23f),content,value);
-            GUI.enabled = wasEnabled;
+            Color before = GUI.color;
+            try
+            {
+                // Keep zero/blocked quantities readable, but leave input to
+                // the original parent control and its existing enabled gate.
+                GUI.enabled = true;
+                Color tint = remaining > 0 && wasEnabled ? Gold : new Color(.66f,.70f,.75f,1f);
+                var texture = OrdrBattlefieldArt.QuantityButtonTexture;
+                if (texture != null)
+                    DrawQuantitySlices(badge, texture, OrdrBattlefieldArt.QuantityButtonUv, tint);
+                else
+                {
+                    GUI.color = before * tint;
+                    GUI.Box(badge, GUIContent.none, accordionClosed);
+                }
+                GUI.color = before;
+                GUI.Label(new Rect(badge.x+6f,badge.y+3f,badge.width-12f,18f),
+                    "남은 수량", wispCountCaption);
+                var value = new GUIStyle(wispCountValue);
+                var content = new GUIContent(count);
+                while (value.fontSize > 10 && value.CalcSize(content).x > badge.width-12f)
+                    value.fontSize--;
+                GUI.Label(new Rect(badge.x+6f,badge.y+20f,
+                    badge.width-12f,badge.height-23f),content,value);
+            }
+            finally { GUI.color = before; GUI.enabled = wasEnabled; }
+        }
+
+        // GPU-only nine-slice of the trimmed sprite UV, so transparent
+        // generation margins never shrink the face. No readable texture copy.
+        private static void DrawQuantitySlices(Rect area, Texture2D texture, Rect uv, Color tint)
+        {
+            float corner = Mathf.Min(10f, Mathf.Min(area.width * .25f, area.height * .25f));
+            Color before = GUI.color;
+            try
+            {
+                GUI.color = before * tint;
+                for (int row = 0; row < 3; row++)
+                for (int column = 0; column < 3; column++)
+                {
+                    float x = column == 0 ? area.xMin : column == 1 ?
+                        area.xMin + corner : area.xMax - corner;
+                    float y = row == 0 ? area.yMin : row == 1 ?
+                        area.yMin + corner : area.yMax - corner;
+                    float width = column == 1 ? area.width - corner * 2f : corner;
+                    float height = row == 1 ? area.height - corner * 2f : corner;
+                    float u = column == 0 ? uv.xMin : column == 1 ?
+                        uv.xMin + uv.width * .12f : uv.xMax - uv.width * .12f;
+                    float v = row == 0 ? uv.yMax - uv.height * .20f :
+                        row == 1 ? uv.yMin + uv.height * .20f : uv.yMin;
+                    GUI.DrawTextureWithTexCoords(new Rect(x,y,width,height), texture,
+                        new Rect(u,v,uv.width * (column == 1 ? .76f : .12f),
+                            uv.height * (row == 1 ? .60f : .20f)));
+                }
+            }
+            finally { GUI.color = before; }
         }
 
         internal static void DrawResearchPlate(Rect area, int ordinal,
@@ -542,6 +600,15 @@ namespace Ordr.Mobile.Unity
             GUI.color=tint;
             GUI.DrawTexture(area,Texture2D.whiteTexture);
             GUI.color=before;
+        }
+
+        private static Texture2D Flat(Color color)
+        {
+            var texture = new Texture2D(1,1,TextureFormat.RGBA32,false);
+            texture.hideFlags = HideFlags.HideAndDontSave;
+            texture.SetPixel(0,0,color);
+            texture.Apply(false,true);
+            return texture;
         }
 
         // Tiny CPU-generated textured plates, drawn once and 9-sliced.

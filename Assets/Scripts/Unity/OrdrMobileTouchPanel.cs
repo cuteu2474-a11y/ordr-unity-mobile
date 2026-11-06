@@ -481,9 +481,7 @@ namespace Ordr.Mobile.Unity
         private void DrawRightDrawer(MobileMapSkillLayout layout, float scale)
         {
             Rect area = MobileMapSkillLayout.Scaled(layout.RightDrawer, scale);
-            GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
-            OrdrMobileUiTheme.DrawPanelAccent(new Rect(0,0,area.width,area.height),
-                OrdrMobileUiTheme.Gold);
+            GUILayout.BeginArea(area, OrdrMobileUiTheme.BorderlessPanel);
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             // The chat scoreboard uses its own page selector; a second large
@@ -499,7 +497,8 @@ namespace Ordr.Mobile.Unity
                 DrawScoreboardPageButton(ScoreboardPage.Commons, "흔함 획득");
                 DrawScoreboardPageButton(ScoreboardPage.Utility, "유틸보드");
             }
-            if (GUILayout.Button("닫기", GUILayout.Width(64f), GUILayout.MinHeight(52f)))
+            if (GUILayout.Button(new GUIContent("×", "닫기"), OrdrMobileUiTheme.CloseButton,
+                GUILayout.Width(56f), GUILayout.MinHeight(52f)))
                 CloseDrawer();
             GUILayout.EndHorizontal();
 
@@ -570,7 +569,7 @@ namespace Ordr.Mobile.Unity
         private void DrawStandbyDashboard(MobileMapSkillLayout layout,float scale)
         {
             Rect area = MobileMapSkillLayout.Scaled(layout.RightDrawer, scale);
-            GUILayout.BeginArea(area, OrdrMobileUiTheme.Panel);
+            GUILayout.BeginArea(area, OrdrMobileUiTheme.BorderlessPanel);
             dashboardScroll = BeginPanelScroll(dashboardScroll);
             if (Combat == null)
                 GUILayout.Label("전투 대기");
@@ -2918,7 +2917,7 @@ namespace Ordr.Mobile.Unity
             GUI.enabled = wasEnabled && ready && balance > 0 &&
                 controller.CanProcessAutomaticWisps;
             if (OrdrMobileUiTheme.DrawActionRow(name,
-                balance + "개", OrdrMobileUiTheme.Aqua, 76f, true))
+                balance + "개", OrdrMobileUiTheme.Aqua, 76f, true, balance))
                 notice = controller.RequestAutomaticWispRetry().Message;
             GUI.enabled = wasEnabled;
             // A failed automatic grant is never rerolled; keep its reason visible.
@@ -2984,7 +2983,8 @@ namespace Ordr.Mobile.Unity
         {
             if (OrdrMobileUiTheme.DrawAccordionHeader("랜덤위습",
                 controller.WispBalance(WispResourceIds.Random) + "개",
-                showRandomWispActions, OrdrMobileUiTheme.Gold, 80f, true))
+                showRandomWispActions, OrdrMobileUiTheme.Gold, 80f, true,
+                controller.WispBalance(WispResourceIds.Random)))
                 showRandomWispActions = !showRandomWispActions;
             if (!showRandomWispActions) return;
 
