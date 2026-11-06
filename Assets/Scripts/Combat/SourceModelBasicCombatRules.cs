@@ -31,6 +31,13 @@ namespace Ordr.Mobile.Combat
         }
         public bool Enabled { get; private set; }
         public SourceModelUnitEffects UnitEffects { get; private set; }
+        public SourceModelPlayerUpgrades PlayerUpgrades { get; private set; }
+        public void ConfigurePlayerUpgrades(SourceModelPlayerUpgrades upgrades)
+        {
+            if (Enabled || PlayerUpgrades != null)
+                throw new InvalidOperationException("강화 모델은 독립 전투 시작 전에 한 번만 연결하세요.");
+            PlayerUpgrades = upgrades ?? throw new ArgumentNullException(nameof(upgrades));
+        }
         public void ConfigureUnitEffects(SourceModelUnitEffects effects)
         {
             if (Enabled || UnitEffects != null) throw new InvalidOperationException("연습 효과는 시작 전에 연결하세요.");
@@ -109,7 +116,8 @@ namespace Ordr.Mobile.Combat
             if (!Enabled || !independentAttacks.ContainsKey(rawcode) ||
                 !byRawcode.TryGetValue(rawcode, out evidence))
                 throw new NotSupportedException("원본 독립 객체 공격력 주사위 자료가 없습니다.");
-            return evidence.RollObjectBaseDamage(random);
+            return checked(evidence.RollObjectBaseDamage(random) +
+                (long)(PlayerUpgrades?.AttackBonus(rawcode) ?? 0));
         }
         internal void SetSourceForm(string instanceId, string rawcode)
         {
@@ -195,7 +203,8 @@ namespace Ordr.Mobile.Combat
                 if (!AllowsPracticeAttackerEffect(effect))
                     throw new NotSupportedException("연습의 출처가 확인되지 않은 공격 효과입니다.");
             double rawDamage = attack.RollObjectBaseDamage(random) +
-                SourceModelTemporarySkillCatalog.FlatFormPower(request.AttackerEffects);
+                SourceModelTemporarySkillCatalog.FlatFormPower(request.AttackerEffects) +
+                (PlayerUpgrades?.AttackBonus(rawcode) ?? 0);
             if (sourceModelFlatAttackPower != null)
             {
                 double flat = sourceModelFlatAttackPower(request.UnitInstanceId);
@@ -226,4 +235,5 @@ namespace Ordr.Mobile.Combat
         { throw new NotSupportedException("연습 전투의 미연결 스킬 피해는 계산하지 않습니다."); }
     }
 }
+
 

@@ -52,7 +52,7 @@ namespace Ordr.Mobile.Combat
                     return raw + SourceModelFifteenthStrength(actor.Id) * 10000;
                 case "TR-27:skill:2":
                     return 350000 + SourceModelFifteenthStrength(actor.Id) * 2500 +
-                        actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower * 6;
+                        SourceModelUpgradeAdjustedAttackPower(actor) * 6;
                 case "T-01:skill:0":
                     return raw + (target.Kind == CharacterEnemyKind.Line ?
                         target.Enemy.Health * .25 : 0);
@@ -95,3 +95,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

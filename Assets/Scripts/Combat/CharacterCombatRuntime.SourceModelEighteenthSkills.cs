@@ -43,7 +43,7 @@ namespace Ordr.Mobile.Combat
                     return target.Enemy.Health * .15;
                 case "MY-10:skill:3":
                     if (component.Type == "physical")
-                        return actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower *
+                        return SourceModelUpgradeAdjustedAttackPower(actor) *
                             8 + 900000;
                     if (component.Type == "fixed")
                         return target.Enemy.MaxHealth * .04;
@@ -53,3 +53,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

@@ -559,7 +559,7 @@ namespace Ordr.Mobile.Combat
                 passive.Number("amount").Value :
                 SourceModelSeventhKnownAttackBuff(actor.Id,
                     actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower +
-                    SourceModelTwentyFifthFlatAttackPower(actor)) *
+                    SourceModelTwentyFifthFlatAttackPower(actor) + SourceModelUpgradeAttackBonus(actor.Id)) *
                     passive.Number("attackPowerPercent").Value / 100;
             foreach (var target in targets)
                 if (!ReferenceEquals(target, primary))
@@ -641,3 +641,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

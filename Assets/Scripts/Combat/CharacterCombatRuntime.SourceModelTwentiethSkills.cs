@@ -212,7 +212,7 @@ namespace Ordr.Mobile.Combat
                         break;
                     case "E-03:skill:6":
                         SourceModelTwentiethDamage(actor, target, skill,
-                            actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower * 12.0,
+                            SourceModelUpgradeAdjustedAttackPower(actor) * 12.0,
                             "physical");
                         SourceModelTwentiethStun(actor, target, skill, 3, true);
                         break;
@@ -306,7 +306,7 @@ namespace Ordr.Mobile.Combat
                             ActivateSourceModelBulletRokushiki(actor, skill);
                         break;
                     case "I-05:skill:3":
-                        double basic = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
+                        double basic = SourceModelUpgradeAdjustedAttackPower(actor);
                         if (SourceModelTwentiethChance(sourceModelRules, 15)) basic *= 4;
                         SourceModelTwentiethDamage(actor, target, skill, basic, "physical");
                         if (SourceModelTwentiethChance(sourceModelRules, 15))
@@ -405,3 +405,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

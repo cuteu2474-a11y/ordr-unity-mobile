@@ -120,7 +120,7 @@ namespace Ordr.Mobile.Combat
                 var skill = actor.Profile.Skills[0];
                 if (!SourceModelTwentyNinthSkillCatalog.CanModelExact(skill)) return;
                 var component = skill.Components[1];
-                double damage = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower *
+                double damage = SourceModelUpgradeAdjustedAttackPower(actor) *
                     component.Number("basicAttackPercent").Value / 100 +
                     component.Number("flatAmount").Value;
                 var targets = SourceScriptTargets(actor, primary, new SourceScriptHit(
@@ -250,3 +250,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

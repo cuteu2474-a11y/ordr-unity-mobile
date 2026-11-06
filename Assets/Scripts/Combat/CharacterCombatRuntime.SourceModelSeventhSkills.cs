@@ -93,7 +93,7 @@ namespace Ordr.Mobile.Combat
             if (!unitStatuses.TryGetValue(InstanceKey(actorId), out status)) return raw;
             // Both the Zoro DoT's tooltip and Koby's inherited base attack
             // refer to buffs. Reuse the normal strongest-known-buff policy;
-            // unsupported upgrade ranks are never guessed.
+            // Fixed spell/DOT amounts are not native basic attack damage.
             return raw * (1 + SourceModelUnitEffects.ResolvePracticeAttackPower(
                 status.Snapshot()) / 100);
         }
@@ -167,7 +167,8 @@ namespace Ordr.Mobile.Combat
                         foreach (var target in hitTargets)
                             ApplySourceModelSeventhTimedHit(actor, target,
                                 skill.Name, SourceModelSeventhKnownAttackBuff(actor.Id,
-                                    attack * component.Number("basicAttackExplosivePercent").Value / 100),
+                                    (attack + SourceModelUpgradeAttackBonus(actor.Id)) *
+                                    component.Number("basicAttackExplosivePercent").Value / 100),
                                 "explosive");
                         ApplySourceModelSeventhTimedHit(actor, victim, skill.Name,
                             component.Number("singleMagicalDamagePerHit").Value,
@@ -176,3 +177,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

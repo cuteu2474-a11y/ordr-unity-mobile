@@ -418,7 +418,7 @@ namespace Ordr.Mobile.Combat
         {
             if (!SourceModelNinthSkillCatalog.Approved(skill)) return raw;
             if (component.Number("basicAttackPercent").HasValue)
-                raw += actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower *
+                raw += SourceModelUpgradeAdjustedAttackPower(actor) *
                     component.Number("basicAttackPercent").Value / 100;
             if (component.Number("flatAmount").HasValue)
                 raw += component.Number("flatAmount").Value;
@@ -452,3 +452,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

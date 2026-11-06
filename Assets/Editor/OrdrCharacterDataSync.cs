@@ -25,6 +25,7 @@ namespace Ordr.Mobile.Editor
             "original-2323C-map-base-stats.json",
             // Original UnitBalance.slk HP/mana/regen; source-model only.
             "original-2323C-unit-object-stats.json",
+            "original-2323C-player-upgrade-runtime.json",
             "original-2323C-native-pure-passives.json",
             "original-2323C-all-unit-aura-audit.json",
             "original-2323C-monster-wave-script-evidence.json",
@@ -166,3 +167,4 @@ namespace Ordr.Mobile.Editor
     }
 }
 #endif
+

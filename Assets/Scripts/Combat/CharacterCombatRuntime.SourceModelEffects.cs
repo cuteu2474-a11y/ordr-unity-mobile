@@ -43,13 +43,6 @@ namespace Ordr.Mobile.Combat
                 throw new InvalidOperationException(
                     "원본 영웅 레벨 규칙을 중복/잘못 연결했습니다.");
             original323HeroLevelWorld = source;
-            attackPipeline.ConfigurePracticeHeroAgilitySpeed(actorKey =>
-            {
-                long id;
-                return UsesSourceModelBasicAttacks &&
-                    long.TryParse(actorKey, out id)
-                    ? original323HeroLevelWorld.AddedAttackSpeedPercentOf(id) : 0;
-            });
         }
 
         public Original323HeroLevelState SourceHeroLevelStateOf(long instanceId) =>
@@ -59,6 +52,16 @@ namespace Ordr.Mobile.Combat
         {
             sourceModelRules = rules;
             sourceModelUnitEffects = rules.UnitEffects;
+            // Upgrade IAS and gained hero AGI enter the existing shared cap once.
+            // Resolve rawcodes at attack time so later units/forms inherit tech.
+            attackPipeline.ConfigurePracticeHeroAgilitySpeed(actorKey =>
+            {
+                if (!UsesSourceModelBasicAttacks) return 0;
+                long id;
+                double hero = original323HeroLevelWorld != null && long.TryParse(actorKey, out id)
+                    ? original323HeroLevelWorld.AddedAttackSpeedPercentOf(id) : 0;
+                return hero + (rules.PlayerUpgrades?.AttackSpeedPercent(SourceUpgradeRawcodeOf(actorKey)) ?? 0);
+            });
             rules.ConfigurePracticeFlatAttackPower(SourceModelTwentiethFlatAttackPower);
             SourceModelTimeAdvancing += AdvanceSourceModelEighthTimeline;
             SourceModelTimeAdvancing += AdvanceSourceModelNinthProjectiles;
@@ -101,6 +104,26 @@ namespace Ordr.Mobile.Combat
                     SourceModelTemporarySkillCatalog.FormIntervalReduction(effects));
             });
         }
+        private double SourceModelUpgradeAttackBonus(long actorId) =>
+            sourceModelRules?.PlayerUpgrades?.AttackBonus(SourceUpgradeRawcodeOf(InstanceKey(actorId))) ?? 0;
+
+        private double SourceModelUpgradeAdjustedAttackPower(CharacterInstance actor)
+        {
+            if (sourceModelRules?.PlayerUpgrades == null)
+                return actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
+            var attack = sourceModelRules.FormAttackOf(InstanceKey(actor.Id)) ?? actor.Mapping.AttackSpec.BasicAttack;
+            return attack.NominalAttackPower + SourceModelUpgradeAttackBonus(actor.Id);
+        }
+
+        private string SourceUpgradeRawcodeOf(string actorKey)
+        {
+            string form = sourceModelRules?.SourceFormRawcodeOf(actorKey);
+            if (form != null) return form;
+            if (long.TryParse(actorKey, out var id) && characters.TryGetValue(id, out var actor))
+                return actor.Mapping?.AttackSpec.UnitRawCode;
+            return sourceIndependentAttackers.TryGetValue(actorKey, out var independent) ? independent.Rawcode : null;
+        }
+
         private void TrySourceModelLowFrenzy(string attackerId)
         {
             long id;
@@ -455,4 +478,5 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+
 

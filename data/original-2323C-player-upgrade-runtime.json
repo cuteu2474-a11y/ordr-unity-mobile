@@ -1,0 +1,1643 @@
+{
+  "format": "ordr-source-player-upgrades-v1",
+  "sourceW3xSha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+  "sourceJassSha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+  "sourceFiles": {
+    "Units/UnitBalance.slk": "f7f26217d8097b9791723feb02d9181277d9afb1947dc0a3bf553ce590ab3af5",
+    "Units/UpgradeData.slk": "0343cc53ccb5be4e54005d93bee867f55536abe07e3afa329f35cf2408347b13"
+  },
+  "runtimeParityVerified": false,
+  "modelNotes": [
+    "Sparse SLK lumber/time fields remain absent in evidence; standalone source model uses no extra debit/wait, not a native lifecycle approval.",
+    "CUo initial tech levels and CV8 research-start increments are modeled once; no speculative second native completion increment.",
+    "Requires12/R00H modeled at next level 12 and later, unlocked by CIN level-20 Crocodile o01W defeat; native level-index semantics unverified."
+  ],
+  "shopIds": [
+    "R00F",
+    "R008",
+    "R002",
+    "R00E",
+    "R003",
+    "R004",
+    "R000",
+    "R019",
+    "R032",
+    "R02O",
+    "R015",
+    "R00X",
+    "R013",
+    "R007",
+    "R014",
+    "R016",
+    "R02C",
+    "R01V"
+  ],
+  "initialLevels": {
+    "R00E": 1,
+    "R008": 1,
+    "R000": 1,
+    "R003": 1,
+    "R002": 1,
+    "R019": 1,
+    "R004": 1,
+    "R001": 1,
+    "R01Y": 1,
+    "R02S": 1,
+    "R01X": 1,
+    "R02V": 1,
+    "R02B": 1,
+    "R01Z": 1,
+    "R01J": 1,
+    "R006": 1,
+    "R022": 1,
+    "R02Q": 1,
+    "R00C": 1,
+    "R00D": 1,
+    "R005": 1,
+    "R02W": 1,
+    "R02J": 1,
+    "R020": 1,
+    "R023": 1,
+    "R01T": 1,
+    "R01U": 1,
+    "R01V": 1
+  },
+  "linkedTechUpdates": {
+    "R004": [
+      {
+        "id": "R022",
+        "from": "R022"
+      },
+      {
+        "id": "R006",
+        "from": "R006"
+      },
+      {
+        "id": "R02Q",
+        "from": "R02Q"
+      },
+      {
+        "id": "R01T",
+        "from": "R01T"
+      },
+      {
+        "id": "R01U",
+        "from": "R01U"
+      }
+    ],
+    "R002": [
+      {
+        "id": "R023",
+        "from": "R023"
+      },
+      {
+        "id": "R020",
+        "from": "R020"
+      }
+    ],
+    "R000": [
+      {
+        "id": "R02V",
+        "from": "R02V"
+      },
+      {
+        "id": "R01X",
+        "from": "R01X"
+      },
+      {
+        "id": "R01J",
+        "from": "R01J"
+      },
+      {
+        "id": "R01Z",
+        "from": "R01Z"
+      },
+      {
+        "id": "R02B",
+        "from": "R02B"
+      },
+      {
+        "id": "R02S",
+        "from": "R02S"
+      },
+      {
+        "id": "R01Y",
+        "from": "R01Y"
+      },
+      {
+        "id": "R001",
+        "from": "R001"
+      }
+    ],
+    "R003": [
+      {
+        "id": "R00C",
+        "from": "R00C"
+      },
+      {
+        "id": "R005",
+        "from": "R005"
+      },
+      {
+        "id": "R02W",
+        "from": "R005"
+      },
+      {
+        "id": "R00D",
+        "from": "R00D"
+      },
+      {
+        "id": "R02J",
+        "from": "R02J"
+      }
+    ]
+  },
+  "upgrades": [
+    {
+      "id": "R000",
+      "maxLevel": 21,
+      "goldBase": 70,
+      "goldMod": 50,
+      "attackBase": 7250,
+      "attackMod": 725,
+      "speedBase": 1.95,
+      "speedMod": 0.05,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R001",
+      "maxLevel": 21,
+      "goldBase": 60,
+      "goldMod": 50,
+      "attackBase": 725,
+      "attackMod": 725,
+      "speedBase": 1.6,
+      "speedMod": 0.05,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R002",
+      "maxLevel": 21,
+      "goldBase": 100,
+      "goldMod": 50,
+      "attackBase": 30000,
+      "attackMod": 2500,
+      "speedBase": 2.1,
+      "speedMod": 0.06,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R003",
+      "maxLevel": 21,
+      "goldBase": 100,
+      "goldMod": 50,
+      "attackBase": 22500,
+      "attackMod": 2150,
+      "speedBase": 2.15,
+      "speedMod": 0.06,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R004",
+      "maxLevel": 21,
+      "goldBase": 90,
+      "goldMod": 50,
+      "attackBase": 20000,
+      "attackMod": 2000,
+      "speedBase": 1.85,
+      "speedMod": 0.05,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R005",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 50000,
+      "attackMod": 5250,
+      "speedBase": 1.65,
+      "speedMod": 0.07,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R006",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 60000,
+      "attackMod": 6000,
+      "speedBase": 0.6,
+      "speedMod": 0.04,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R007",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 9000,
+      "attackMod": 9000,
+      "speedBase": 0.05,
+      "speedMod": 0.07,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R008",
+      "maxLevel": 16,
+      "goldBase": 10,
+      "goldMod": 20,
+      "attackBase": 200,
+      "attackMod": 200,
+      "speedBase": 0.7,
+      "speedMod": 0.04,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R00C",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 22500,
+      "attackMod": 6000,
+      "speedBase": 0.75,
+      "speedMod": 0.07,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R00D",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 50000,
+      "attackMod": 5000,
+      "speedBase": 0.77,
+      "speedMod": 0.09,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R00E",
+      "maxLevel": 15,
+      "goldBase": 5,
+      "goldMod": 5,
+      "attackBase": 20,
+      "attackMod": 30,
+      "speedBase": 0.25,
+      "speedMod": 0.02,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R00F",
+      "maxLevel": 7,
+      "goldBase": 3,
+      "goldMod": 2,
+      "attackBase": 3,
+      "attackMod": 3,
+      "speedBase": 0,
+      "speedMod": 0,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R00X",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 4000,
+      "attackMod": 4000,
+      "speedBase": 0.14,
+      "speedMod": 0.15,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R013",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 7000,
+      "attackMod": 7000,
+      "speedBase": 0.2,
+      "speedMod": 0.14,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R014",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 5000,
+      "attackMod": 5000,
+      "speedBase": 0.14,
+      "speedMod": 0.14,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R015",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 2500,
+      "attackMod": 2500,
+      "speedBase": 0.15,
+      "speedMod": 0.15,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R016",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 4500,
+      "attackMod": 4500,
+      "speedBase": 0.3,
+      "speedMod": 0.15,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R019",
+      "maxLevel": 21,
+      "goldBase": 90,
+      "goldMod": 40,
+      "attackBase": 1000,
+      "attackMod": 1000,
+      "speedBase": 0.25,
+      "speedMod": 0.14,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R01J",
+      "maxLevel": 21,
+      "goldBase": 120,
+      "goldMod": 70,
+      "attackBase": 2500,
+      "attackMod": 1500,
+      "speedBase": 0.35,
+      "speedMod": 0.04,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R01T",
+      "maxLevel": 21,
+      "goldBase": 60,
+      "goldMod": 50,
+      "attackBase": 700,
+      "attackMod": 700,
+      "speedBase": 1.6,
+      "speedMod": 0.06,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R01U",
+      "maxLevel": 21,
+      "goldBase": 60,
+      "goldMod": 50,
+      "attackBase": 500,
+      "attackMod": 4000,
+      "speedBase": 0.4,
+      "speedMod": 0.02,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R01V",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 3500,
+      "attackMod": 3500,
+      "speedBase": 0.15,
+      "speedMod": 0.15,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R01X",
+      "maxLevel": 21,
+      "goldBase": 120,
+      "goldMod": 70,
+      "attackBase": 9850,
+      "attackMod": 850,
+      "speedBase": 0.76,
+      "speedMod": 0.07,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R01Y",
+      "maxLevel": 21,
+      "goldBase": 90,
+      "goldMod": 50,
+      "attackBase": 16000,
+      "attackMod": 1600,
+      "speedBase": 0.6,
+      "speedMod": 0.06,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R01Z",
+      "maxLevel": 21,
+      "goldBase": 120,
+      "goldMod": 70,
+      "attackBase": 3000,
+      "attackMod": 1200,
+      "speedBase": 0.85,
+      "speedMod": 0.06,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R020",
+      "maxLevel": 21,
+      "goldBase": 100,
+      "goldMod": 60,
+      "attackBase": 60000,
+      "attackMod": 6000,
+      "speedBase": 0.5,
+      "speedMod": 0.05,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R022",
+      "maxLevel": 21,
+      "goldBase": 90,
+      "goldMod": 60,
+      "attackBase": 35000,
+      "attackMod": 3500,
+      "speedBase": 0.7,
+      "speedMod": 0.06,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R023",
+      "maxLevel": 21,
+      "goldBase": 100,
+      "goldMod": 60,
+      "attackBase": 67500,
+      "attackMod": 6750,
+      "speedBase": 0.45,
+      "speedMod": 0.05,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R02B",
+      "maxLevel": 21,
+      "goldBase": 120,
+      "goldMod": 70,
+      "attackBase": 5000,
+      "attackMod": 2000,
+      "speedBase": 1.35,
+      "speedMod": 0.04,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R02C",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 4500,
+      "attackMod": 4500,
+      "speedBase": 0.13,
+      "speedMod": 0.13,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R02J",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 35000,
+      "attackMod": 3500,
+      "speedBase": 1.5,
+      "speedMod": 0.06,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R02O",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 4000,
+      "attackMod": 4000,
+      "speedBase": 0.15,
+      "speedMod": 0.15,
+      "requiresBossFromLevel": 12
+    },
+    {
+      "id": "R02Q",
+      "maxLevel": 21,
+      "goldBase": 90,
+      "goldMod": 60,
+      "attackBase": 30000,
+      "attackMod": 3000,
+      "speedBase": 0.7,
+      "speedMod": 0.07,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R02S",
+      "maxLevel": 21,
+      "goldBase": 90,
+      "goldMod": 50,
+      "attackBase": 9000,
+      "attackMod": 3500,
+      "speedBase": 0.4,
+      "speedMod": 0.03,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R02V",
+      "maxLevel": 21,
+      "goldBase": 120,
+      "goldMod": 70,
+      "attackBase": 4000,
+      "attackMod": 1500,
+      "speedBase": 0.8,
+      "speedMod": 0.05,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R02W",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 42500,
+      "attackMod": 4250,
+      "speedBase": 1.6,
+      "speedMod": 0.05,
+      "requiresBossFromLevel": 0
+    },
+    {
+      "id": "R032",
+      "maxLevel": 21,
+      "goldBase": 110,
+      "goldMod": 80,
+      "attackBase": 4500,
+      "attackMod": 4500,
+      "speedBase": 0.1,
+      "speedMod": 0.15,
+      "requiresBossFromLevel": 12
+    }
+  ],
+  "unitUpgrades": {
+    "H05N": [
+      "R005"
+    ],
+    "H08B": [
+      "R003"
+    ],
+    "H08E": [
+      "R003"
+    ],
+    "H08J": [
+      "R003"
+    ],
+    "H08U": [
+      "R003"
+    ],
+    "H08V": [
+      "R003"
+    ],
+    "H08W": [
+      "R003"
+    ],
+    "H08X": [
+      "R00C"
+    ],
+    "H08Y": [
+      "R003"
+    ],
+    "H08Z": [
+      "R003"
+    ],
+    "H090": [
+      "R003"
+    ],
+    "H091": [
+      "R003"
+    ],
+    "H092": [
+      "R00D"
+    ],
+    "H093": [
+      "R003"
+    ],
+    "H094": [
+      "R003"
+    ],
+    "H095": [
+      "R003"
+    ],
+    "H096": [
+      "R003"
+    ],
+    "H097": [
+      "R003"
+    ],
+    "H098": [
+      "R003"
+    ],
+    "H099": [
+      "R003"
+    ],
+    "H09A": [
+      "R02J"
+    ],
+    "H09B": [
+      "R003"
+    ],
+    "H09C": [
+      "R003"
+    ],
+    "H09D": [
+      "R003"
+    ],
+    "H09E": [
+      "R003"
+    ],
+    "H09F": [
+      "R003"
+    ],
+    "H09G": [
+      "R003"
+    ],
+    "H09H": [
+      "R003"
+    ],
+    "H09I": [
+      "R003"
+    ],
+    "H0A5": [
+      "R005"
+    ],
+    "H0AA": [
+      "R003"
+    ],
+    "H0AB": [
+      "R003"
+    ],
+    "H0AE": [
+      "R00C"
+    ],
+    "H0AM": [
+      "R003"
+    ],
+    "H0AY": [
+      "R02J"
+    ],
+    "H0B1": [
+      "R003"
+    ],
+    "H0B2": [
+      "R003"
+    ],
+    "H0B3": [
+      "R003"
+    ],
+    "H0B4": [
+      "R003"
+    ],
+    "H0B5": [
+      "R003"
+    ],
+    "H0B6": [
+      "R003"
+    ],
+    "H0BD": [
+      "R02W"
+    ],
+    "H0BE": [
+      "R02W"
+    ],
+    "H0BK": [
+      "R003"
+    ],
+    "H0BL": [
+      "R003"
+    ],
+    "H0BN": [
+      "R003"
+    ],
+    "H0BO": [
+      "R003"
+    ],
+    "H0BT": [
+      "R003"
+    ],
+    "H0BV": [
+      "R003"
+    ],
+    "H0BX": [
+      "R003"
+    ],
+    "H0BY": [
+      "R003"
+    ],
+    "H0BZ": [
+      "R02W"
+    ],
+    "H0C0": [
+      "R02W"
+    ],
+    "H0C1": [
+      "R003"
+    ],
+    "H0C9": [
+      "R003"
+    ],
+    "H0CL": [
+      "R003"
+    ],
+    "H0CO": [
+      "R00C"
+    ],
+    "h001": [
+      "R00F"
+    ],
+    "h002": [
+      "R00F"
+    ],
+    "h003": [
+      "R00F"
+    ],
+    "h004": [
+      "R00F"
+    ],
+    "h005": [
+      "R00F"
+    ],
+    "h006": [
+      "R00F"
+    ],
+    "h007": [
+      "R00F"
+    ],
+    "h008": [
+      "R00F"
+    ],
+    "h009": [
+      "R00F"
+    ],
+    "h00A": [
+      "R00F"
+    ],
+    "h00B": [
+      "R00E"
+    ],
+    "h00C": [
+      "R00F"
+    ],
+    "h00D": [
+      "R00F"
+    ],
+    "h00E": [
+      "R00F"
+    ],
+    "h00F": [
+      "R00F"
+    ],
+    "h00G": [
+      "R00F"
+    ],
+    "h00H": [
+      "R00F"
+    ],
+    "h00I": [
+      "R00F"
+    ],
+    "h00J": [
+      "R00F"
+    ],
+    "h00K": [
+      "R00F"
+    ],
+    "h00L": [
+      "R00F"
+    ],
+    "h00M": [
+      "R00F"
+    ],
+    "h00N": [
+      "R00F"
+    ],
+    "h00O": [
+      "R00F"
+    ],
+    "h00P": [
+      "R00E"
+    ],
+    "h00Q": [
+      "R00E"
+    ],
+    "h00R": [
+      "R00E"
+    ],
+    "h00S": [
+      "R00E"
+    ],
+    "h00T": [
+      "R00E"
+    ],
+    "h00U": [
+      "R00E"
+    ],
+    "h00V": [
+      "R00E"
+    ],
+    "h00W": [
+      "R00E"
+    ],
+    "h00X": [
+      "R00E"
+    ],
+    "h00Y": [
+      "R00E"
+    ],
+    "h00Z": [
+      "R00E"
+    ],
+    "h010": [
+      "R00E"
+    ],
+    "h011": [
+      "R00E"
+    ],
+    "h012": [
+      "R00E"
+    ],
+    "h013": [
+      "R00E"
+    ],
+    "h014": [
+      "R00E"
+    ],
+    "h015": [
+      "R00E"
+    ],
+    "h016": [
+      "R00E"
+    ],
+    "h017": [
+      "R00E"
+    ],
+    "h018": [
+      "R00E"
+    ],
+    "h019": [
+      "R00E"
+    ],
+    "h01A": [
+      "R00E"
+    ],
+    "h01B": [
+      "R00E"
+    ],
+    "h01C": [
+      "R00E"
+    ],
+    "h01D": [
+      "R00E"
+    ],
+    "h01E": [
+      "R00E"
+    ],
+    "h01F": [
+      "R00E"
+    ],
+    "h01G": [
+      "R00E"
+    ],
+    "h01H": [
+      "R00E"
+    ],
+    "h01I": [
+      "R00E"
+    ],
+    "h01J": [
+      "R00E"
+    ],
+    "h01K": [
+      "R00E"
+    ],
+    "h01L": [
+      "R008"
+    ],
+    "h01M": [
+      "R008"
+    ],
+    "h01N": [
+      "R008"
+    ],
+    "h01O": [
+      "R008"
+    ],
+    "h01P": [
+      "R008"
+    ],
+    "h01Q": [
+      "R008"
+    ],
+    "h01R": [
+      "R008"
+    ],
+    "h01S": [
+      "R008"
+    ],
+    "h01T": [
+      "R008"
+    ],
+    "h01U": [
+      "R008"
+    ],
+    "h01V": [
+      "R008"
+    ],
+    "h01W": [
+      "R008"
+    ],
+    "h01X": [
+      "R008"
+    ],
+    "h01Y": [
+      "R008"
+    ],
+    "h01Z": [
+      "R008"
+    ],
+    "h020": [
+      "R008"
+    ],
+    "h021": [
+      "R008"
+    ],
+    "h022": [
+      "R008"
+    ],
+    "h023": [
+      "R008"
+    ],
+    "h024": [
+      "R008"
+    ],
+    "h025": [
+      "R008"
+    ],
+    "h026": [
+      "R008"
+    ],
+    "h027": [
+      "R008"
+    ],
+    "h028": [
+      "R008"
+    ],
+    "h029": [
+      "R008"
+    ],
+    "h02A": [
+      "R008"
+    ],
+    "h02B": [
+      "R008"
+    ],
+    "h02C": [
+      "R008"
+    ],
+    "h02D": [
+      "R008"
+    ],
+    "h02E": [
+      "R008"
+    ],
+    "h02F": [
+      "R008"
+    ],
+    "h02G": [
+      "R008"
+    ],
+    "h02H": [
+      "R008"
+    ],
+    "h02I": [
+      "R008"
+    ],
+    "h02J": [
+      "R008"
+    ],
+    "h02K": [
+      "R008"
+    ],
+    "h02L": [
+      "R008"
+    ],
+    "h02M": [
+      "R008"
+    ],
+    "h02N": [
+      "R02V"
+    ],
+    "h02O": [
+      "R000"
+    ],
+    "h02P": [
+      "R000"
+    ],
+    "h02Q": [
+      "R01J"
+    ],
+    "h02R": [
+      "R000"
+    ],
+    "h02S": [
+      "R01Z"
+    ],
+    "h02T": [
+      "R000"
+    ],
+    "h02U": [
+      "R000"
+    ],
+    "h02V": [
+      "R000"
+    ],
+    "h02W": [
+      "R000"
+    ],
+    "h02X": [
+      "R02S"
+    ],
+    "h02Y": [
+      "R02B"
+    ],
+    "h02Z": [
+      "R000"
+    ],
+    "h030": [
+      "R000"
+    ],
+    "h031": [
+      "R01X"
+    ],
+    "h032": [
+      "R000"
+    ],
+    "h033": [
+      "R000"
+    ],
+    "h034": [
+      "R000"
+    ],
+    "h035": [
+      "R000"
+    ],
+    "h036": [
+      "R000"
+    ],
+    "h037": [
+      "R000"
+    ],
+    "h038": [
+      "R000"
+    ],
+    "h039": [
+      "R000"
+    ],
+    "h03A": [
+      "R000"
+    ],
+    "h03B": [
+      "R000"
+    ],
+    "h03C": [
+      "R000"
+    ],
+    "h03E": [
+      "R000"
+    ],
+    "h03F": [
+      "R000"
+    ],
+    "h03G": [
+      "R000"
+    ],
+    "h03H": [
+      "R000"
+    ],
+    "h03I": [
+      "R000"
+    ],
+    "h03J": [
+      "R001"
+    ],
+    "h03K": [
+      "R000"
+    ],
+    "h03L": [
+      "R001"
+    ],
+    "h03M": [
+      "R001"
+    ],
+    "h03N": [
+      "R001"
+    ],
+    "h03O": [
+      "R001"
+    ],
+    "h03P": [
+      "R001"
+    ],
+    "h03Q": [
+      "R001"
+    ],
+    "h03R": [
+      "R001"
+    ],
+    "h03S": [
+      "R02S"
+    ],
+    "h03T": [
+      "R001"
+    ],
+    "h03U": [
+      "R001"
+    ],
+    "h03V": [
+      "R01T"
+    ],
+    "h03W": [
+      "R001"
+    ],
+    "h03X": [
+      "R001"
+    ],
+    "h03Y": [
+      "R001"
+    ],
+    "h03Z": [
+      "R001"
+    ],
+    "h040": [
+      "R004"
+    ],
+    "h041": [
+      "R001"
+    ],
+    "h042": [
+      "R000"
+    ],
+    "h043": [
+      "R01Y"
+    ],
+    "h044": [
+      "R001"
+    ],
+    "h045": [
+      "R001"
+    ],
+    "h046": [
+      "R001"
+    ],
+    "h047": [
+      "R001"
+    ],
+    "h048": [
+      "R01T"
+    ],
+    "h049": [
+      "R002"
+    ],
+    "h04A": [
+      "R002"
+    ],
+    "h04B": [
+      "R002"
+    ],
+    "h04C": [
+      "R002"
+    ],
+    "h04D": [
+      "R002"
+    ],
+    "h04E": [
+      "R002"
+    ],
+    "h04F": [
+      "R002"
+    ],
+    "h04G": [
+      "R002"
+    ],
+    "h04H": [
+      "R008"
+    ],
+    "h04J": [
+      "R002"
+    ],
+    "h04O": [
+      "R003"
+    ],
+    "h04Q": [
+      "R020"
+    ],
+    "h04S": [
+      "R003"
+    ],
+    "h04T": [
+      "R003"
+    ],
+    "h04U": [
+      "R01U"
+    ],
+    "h04Y": [
+      "R020"
+    ],
+    "h055": [
+      "R001"
+    ],
+    "h057": [
+      "R013"
+    ],
+    "h058": [
+      "R007"
+    ],
+    "h059": [
+      "R00X"
+    ],
+    "h05A": [
+      "R014"
+    ],
+    "h05B": [
+      "R015"
+    ],
+    "h05C": [
+      "R016"
+    ],
+    "h05D": [
+      "R02V"
+    ],
+    "h05E": [
+      "R004"
+    ],
+    "h05F": [
+      "R004"
+    ],
+    "h05G": [
+      "R004"
+    ],
+    "h05H": [
+      "R004"
+    ],
+    "h05I": [
+      "R006"
+    ],
+    "h05J": [
+      "R002"
+    ],
+    "h05K": [
+      "R008"
+    ],
+    "h05L": [
+      "R008"
+    ],
+    "h05O": [
+      "R004"
+    ],
+    "h05P": [
+      "R004"
+    ],
+    "h05Q": [
+      "R004"
+    ],
+    "h05R": [
+      "R004"
+    ],
+    "h05S": [
+      "R004"
+    ],
+    "h05V": [
+      "R01T"
+    ],
+    "h05W": [
+      "R004"
+    ],
+    "h05X": [
+      "R008"
+    ],
+    "h060": [
+      "R00F",
+      "R00E"
+    ],
+    "h065": [
+      "R019"
+    ],
+    "h067": [
+      "R032"
+    ],
+    "h068": [
+      "R003"
+    ],
+    "h06A": [
+      "R01V"
+    ],
+    "h06G": [
+      "R003"
+    ],
+    "h06H": [
+      "R015"
+    ],
+    "h06I": [
+      "R000"
+    ],
+    "h06L": [
+      "R000"
+    ],
+    "h06N": [
+      "R000"
+    ],
+    "h06O": [
+      "R008"
+    ],
+    "h06P": [
+      "R000"
+    ],
+    "h06T": [
+      "R019"
+    ],
+    "h06U": [
+      "R019"
+    ],
+    "h06V": [
+      "R019"
+    ],
+    "h06W": [
+      "R019"
+    ],
+    "h06X": [
+      "R019"
+    ],
+    "h06Y": [
+      "R019"
+    ],
+    "h06Z": [
+      "R019"
+    ],
+    "h070": [
+      "R019"
+    ],
+    "h071": [
+      "R019"
+    ],
+    "h072": [
+      "R019"
+    ],
+    "h073": [
+      "R019"
+    ],
+    "h076": [
+      "R001"
+    ],
+    "h077": [
+      "R004"
+    ],
+    "h078": [
+      "R000"
+    ],
+    "h079": [
+      "R003"
+    ],
+    "h07F": [
+      "R000"
+    ],
+    "h07G": [
+      "R003"
+    ],
+    "h07H": [
+      "R000"
+    ],
+    "h07I": [
+      "R022"
+    ],
+    "h07J": [
+      "R004"
+    ],
+    "h07K": [
+      "R000"
+    ],
+    "h07L": [
+      "R001"
+    ],
+    "h07M": [
+      "R023"
+    ],
+    "h07N": [
+      "R004"
+    ],
+    "h07O": [
+      "R023"
+    ],
+    "h07R": [
+      "R002"
+    ],
+    "h07Z": [
+      "R007"
+    ],
+    "h081": [
+      "R002"
+    ],
+    "h084": [
+      "R004"
+    ],
+    "h085": [
+      "R000"
+    ],
+    "h086": [
+      "R004"
+    ],
+    "h087": [
+      "R000"
+    ],
+    "h08D": [
+      "R003"
+    ],
+    "h08F": [
+      "R01T"
+    ],
+    "h08I": [
+      "R019"
+    ],
+    "h08K": [
+      "R020"
+    ],
+    "h08M": [
+      "R019"
+    ],
+    "h08N": [
+      "R004"
+    ],
+    "h08O": [
+      "R004"
+    ],
+    "h08Q": [
+      "R004"
+    ],
+    "h08R": [
+      "R02O"
+    ],
+    "h08S": [
+      "R000"
+    ],
+    "h09K": [
+      "R019"
+    ],
+    "h09L": [
+      "R019"
+    ],
+    "h09M": [
+      "R019"
+    ],
+    "h09N": [
+      "R019"
+    ],
+    "h09Q": [
+      "R004"
+    ],
+    "h09R": [
+      "R019"
+    ],
+    "h09T": [
+      "R004"
+    ],
+    "h09U": [
+      "R016"
+    ],
+    "h09V": [
+      "R01T"
+    ],
+    "h09W": [
+      "R019"
+    ],
+    "h09X": [
+      "R008"
+    ],
+    "h09Y": [
+      "R000"
+    ],
+    "h09Z": [
+      "R000"
+    ],
+    "h0A0": [
+      "R000"
+    ],
+    "h0A1": [
+      "R000"
+    ],
+    "h0A2": [
+      "R019"
+    ],
+    "h0A3": [
+      "R001"
+    ],
+    "h0A6": [
+      "R019"
+    ],
+    "h0A7": [
+      "R001"
+    ],
+    "h0A8": [
+      "R000"
+    ],
+    "h0A9": [
+      "R000"
+    ],
+    "h0AC": [
+      "R019"
+    ],
+    "h0AD": [
+      "R023"
+    ],
+    "h0AF": [
+      "R032"
+    ],
+    "h0AH": [
+      "R000"
+    ],
+    "h0AI": [
+      "R02Q"
+    ],
+    "h0AJ": [
+      "R003"
+    ],
+    "h0AV": [
+      "R002"
+    ],
+    "h0B8": [
+      "R002"
+    ],
+    "h0B9": [
+      "R002"
+    ],
+    "h0BA": [
+      "R002"
+    ],
+    "h0BB": [
+      "R002"
+    ],
+    "h0BC": [
+      "R019"
+    ],
+    "h0BF": [
+      "R019"
+    ],
+    "h0BG": [
+      "R004"
+    ],
+    "h0BM": [
+      "R002"
+    ],
+    "h0BP": [
+      "R003"
+    ],
+    "h0BQ": [
+      "R000"
+    ],
+    "h0BW": [
+      "R023"
+    ],
+    "h0C2": [
+      "R019"
+    ],
+    "h0C6": [
+      "R020"
+    ],
+    "h0C8": [
+      "R001"
+    ],
+    "h0CA": [
+      "R000"
+    ],
+    "h0CC": [
+      "R019"
+    ],
+    "h0CD": [
+      "R019"
+    ],
+    "h0CE": [
+      "R019"
+    ],
+    "h0CF": [
+      "R003"
+    ],
+    "h0CI": [
+      "R01T"
+    ],
+    "h0CJ": [
+      "R02C"
+    ],
+    "h0CK": [
+      "R004"
+    ],
+    "h0CM": [
+      "R01X"
+    ],
+    "h0CN": [
+      "R000"
+    ],
+    "h0CP": [
+      "R000"
+    ]
+  }
+}

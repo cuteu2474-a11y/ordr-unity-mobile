@@ -673,11 +673,14 @@ namespace Ordr.Mobile.Unity
             {
                 var quote = service != null ? service.Quote(upgrade.Rawcode) : null;
                 string level = quote == null ? "0" : quote.Level.ToString();
-                string caption = level + "/" + upgrade.MaximumLevel + " · " +
-                    UpgradeStatusText(quote);
+                string title = upgrade.Name.Replace(" 업그레이드", "") + "  " + level + "/" + upgrade.MaximumLevel;
+                string caption = UpgradeStatusText(quote);
+                if (quote?.NextCost != null) caption = UpgradePriceText(quote.NextCost) + "\n" + caption;
+                if (quote?.Status == Original323UpgradePurchaseStatus.InsufficientResources)
+                    caption = UpgradePriceText(quote.NextCost) + "\n" + UpgradeShortageText(quote.NextCost);
                 string key = "upgrade:" + upgrade.Rawcode;
                 MobileLongPressResult press = OrdrMobileUiTheme.DrawHoldActionRow(
-                    key, upgrade.Name, caption, tint, upgradePressGesture, 76f);
+                    key, title, caption, tint, upgradePressGesture, 88f);
                 if (press == MobileLongPressResult.Tap)
                 {
                     if (service == null)
@@ -689,7 +692,8 @@ namespace Ordr.Mobile.Unity
                             var result = service.Purchase(upgrade.Rawcode);
                             notice = result == Original323UpgradePurchaseStatus.Succeeded
                                 ? upgrade.Name + " " + service.LevelOf(upgrade.Rawcode) + "단계"
-                                : UpgradeFailureText(result);
+                                : result == Original323UpgradePurchaseStatus.InsufficientResources
+                                    ? UpgradeShortageText(quote?.NextCost) : UpgradeFailureText(result);
                         }
                         catch (Exception error)
                         {
@@ -702,15 +706,17 @@ namespace Ordr.Mobile.Unity
                     if (expandedResearchCodes.Contains(key)) expandedResearchCodes.Remove(key);
                     else expandedResearchCodes.Add(key);
                 }
-                // Long-press is the ONLY place for verbose cost/effect descriptions.
+                // A tap buys one level; hold reveals effects and prerequisites.
                 if (!expandedResearchCodes.Contains(key)) continue;
                 GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                if (quote == null || quote.NextStep == null)
+                if (quote == null || quote.NextCost == null)
                     GUILayout.Label("다음 단계의 원본 비용·효과 자료 없음");
                 else
                 {
-                    GUILayout.Label("필요: " + UpgradePriceText(quote.NextStep.Cost));
-                    GUILayout.Label(quote.NextStep.EffectSummary);
+                    GUILayout.Label("필요: " + UpgradePriceText(quote.NextCost));
+                    GUILayout.Label(quote.NextEffectSummary);
+                    if (quote.Status == Original323UpgradePurchaseStatus.PrerequisiteMissing)
+                        GUILayout.Label("20라운드 보스 크로커다일 처치 후 강화할 수 있습니다.");
                     if (quote.CooldownRemaining > 0)
                         GUILayout.Label("대기 " +
                             Math.Ceiling(quote.CooldownRemaining).ToString("0") + "초");
@@ -719,11 +725,25 @@ namespace Ordr.Mobile.Unity
             }
         }
 
+        private string UpgradeShortageText(ResourceBundle cost)
+        {
+            if (cost == null || controller?.SharedEconomy == null) return "필요 재화 확인 불가";
+            var parts = new List<string>();
+            foreach (var entry in cost.Entries)
+            {
+                long missing = Math.Max(0, entry.Value - controller.SharedEconomy.Wallet.Balance(entry.Key));
+                if (missing > 0) parts.Add(UpgradeResourceName(entry.Key) + " " + missing.ToString("N0") + " 부족");
+            }
+            return string.Join(" · ", parts.ToArray());
+        }
+
+        private static string UpgradeResourceName(string id) => id == "gold" ? "골드" : id == "lumber" ? "목재" : id;
+
         private static string UpgradePriceText(ResourceBundle cost)
         {
             var parts = new List<string>();
             foreach (var entry in cost.Entries)
-                parts.Add(entry.Key + " " + entry.Value);
+                parts.Add(UpgradeResourceName(entry.Key) + " " + entry.Value.ToString("N0"));
             return string.Join(" · ", parts.ToArray());
         }
 
@@ -739,6 +759,7 @@ namespace Ordr.Mobile.Unity
                 case Original323UpgradePurchaseStatus.NotRunning: return "대기";
                 case Original323UpgradePurchaseStatus.Cooldown: return "재사용 대기";
                 case Original323UpgradePurchaseStatus.InsufficientResources: return "재화 부족";
+                case Original323UpgradePurchaseStatus.PrerequisiteMissing: return "20R 보스 처치 필요";
                 default: return "강화 불가";
             }
         }
@@ -753,6 +774,8 @@ namespace Ordr.Mobile.Unity
                     return "원본 강화 전투 효과가 연결되지 않았습니다.";
                 case Original323UpgradePurchaseStatus.InsufficientResources:
                     return "강화에 필요한 재화가 부족합니다.";
+                case Original323UpgradePurchaseStatus.PrerequisiteMissing:
+                    return "20라운드 보스 크로커다일을 처치해야 합니다.";
                 case Original323UpgradePurchaseStatus.MaximumLevel:
                     return "최대 강화 단계입니다.";
                 case Original323UpgradePurchaseStatus.NotRunning:

@@ -63,7 +63,7 @@ namespace Ordr.Mobile.Core
     {
         Succeeded, UnknownUpgrade, NotRunning, MaximumLevel,
         SourceMissing, WorldMissing, Cooldown, InsufficientResources,
-        TransactionDeclined, EffectRejected
+        TransactionDeclined, EffectRejected, PrerequisiteMissing
     }
 
     public sealed class Original323UpgradeQuote
@@ -72,16 +72,20 @@ namespace Ordr.Mobile.Core
         public int Level { get; }
         public int MaximumLevel { get; }
         public Original323VerifiedUpgradeStep NextStep { get; }
+        public Original323SourceUpgradeStep NextSourceStep { get; }
+        public ResourceBundle NextCost => NextStep != null ? NextStep.Cost : NextSourceStep?.Cost;
+        public string NextEffectSummary => NextStep != null ? NextStep.EffectSummary : NextSourceStep?.EffectSummary;
         public Original323UpgradePurchaseStatus Status { get; }
         public double CooldownRemaining { get; }
         public bool CanBuy => Status == Original323UpgradePurchaseStatus.Succeeded;
 
         public Original323UpgradeQuote(string rawcode, int level, int maximumLevel,
             Original323VerifiedUpgradeStep step,
-            Original323UpgradePurchaseStatus status, double remaining)
+            Original323UpgradePurchaseStatus status, double remaining,
+            Original323SourceUpgradeStep sourceStep = null)
         {
             Rawcode = rawcode; Level = level; MaximumLevel = maximumLevel;
-            NextStep = step; Status = status; CooldownRemaining = remaining;
+            NextStep = step; NextSourceStep = sourceStep; Status = status; CooldownRemaining = remaining;
         }
     }
 
@@ -101,16 +105,21 @@ namespace Ordr.Mobile.Core
         private readonly Dictionary<string, double> nextPurchaseAt =
             new Dictionary<string, double>(StringComparer.Ordinal);
         private readonly IOriginal323VerifiedUpgradeWorld world;
+        private readonly IOriginal323SourceUpgradeModel sourceModel;
         private bool purchasing;
 
         public Original323PlayerUpgradeSession(EconomyWallet wallet, GameSession game,
             Func<double> gameTime, IEnumerable<Original323VerifiedUpgradeStep> sourceSteps = null,
-            IOriginal323VerifiedUpgradeWorld verifiedWorld = null)
+            IOriginal323VerifiedUpgradeWorld verifiedWorld = null,
+            IOriginal323SourceUpgradeModel sourceModel = null)
         {
             this.wallet = wallet ?? throw new ArgumentNullException(nameof(wallet));
             this.game = game ?? throw new ArgumentNullException(nameof(game));
             this.gameTime = gameTime ?? throw new ArgumentNullException(nameof(gameTime));
             world = verifiedWorld;
+            if (sourceModel != null && (sourceSteps != null || verifiedWorld != null))
+                throw new ArgumentException("원본 검증 실행자와 독립 강화 모델은 동시에 연결할 수 없습니다.");
+            this.sourceModel = sourceModel;
             foreach (var building in new[] {
                 Original323PlayerBuildingResearchCatalog.FirstUpgradeBuilding,
                 Original323PlayerBuildingResearchCatalog.SecondUpgradeBuilding })
@@ -122,12 +131,14 @@ namespace Ordr.Mobile.Core
 
         public int LevelOf(string rawcode)
         {
+            if (sourceModel != null) return sourceModel.LevelOf(rawcode);
             int value;
             return rawcode != null && levels.TryGetValue(rawcode, out value) ? value : 0;
         }
 
         public void RegisterSourceStep(Original323VerifiedUpgradeStep step)
         {
+            if (sourceModel != null) throw new InvalidOperationException("독립 모델에 검증 단계를 혼합할 수 없습니다.");
             if (step == null) throw new ArgumentNullException(nameof(step));
             Original323PlayerBuildingResearch item;
             if (!catalog.TryGetValue(step.Rawcode, out item) || step.Level > item.MaximumLevel)
@@ -149,11 +160,15 @@ namespace Ordr.Mobile.Core
                     Original323UpgradePurchaseStatus.MaximumLevel, 0);
             Original323VerifiedUpgradeStep step;
             steps.TryGetValue(StepKey(rawcode, level + 1), out step);
+            var modelStep = sourceModel?.NextStep(rawcode);
+            ResourceBundle cost = step != null ? step.Cost : modelStep?.Cost;
             var status = Original323UpgradePurchaseStatus.Succeeded;
             double remaining = 0;
-            if (step == null) status = Original323UpgradePurchaseStatus.SourceMissing;
-            else if (world == null || !world.CanApply(step))
+            if (cost == null) status = Original323UpgradePurchaseStatus.SourceMissing;
+            else if (sourceModel == null && (world == null || !world.CanApply(step)))
                 status = Original323UpgradePurchaseStatus.WorldMissing;
+            else if (sourceModel != null && !sourceModel.IsUnlocked(rawcode, level + 1))
+                status = Original323UpgradePurchaseStatus.PrerequisiteMissing;
             else if (game.Phase != SessionPhase.Running)
                 status = Original323UpgradePurchaseStatus.NotRunning;
             else
@@ -162,15 +177,15 @@ namespace Ordr.Mobile.Core
                 if (nextPurchaseAt.TryGetValue(rawcode, out deadline))
                     remaining = Math.Max(0, deadline - gameTime());
                 if (remaining > 0) status = Original323UpgradePurchaseStatus.Cooldown;
-                else foreach (var cost in step.Cost.Entries)
-                    if (wallet.Balance(cost.Key) < cost.Value)
+                else foreach (var entry in cost.Entries)
+                    if (wallet.Balance(entry.Key) < entry.Value)
                     {
                         status = Original323UpgradePurchaseStatus.InsufficientResources;
                         break;
                     }
             }
             return new Original323UpgradeQuote(rawcode, level, item.MaximumLevel, step,
-                status, remaining);
+                status, remaining, modelStep);
         }
 
         public Original323UpgradePurchaseStatus Purchase(string rawcode)
@@ -179,35 +194,45 @@ namespace Ordr.Mobile.Core
             var quote = Quote(rawcode);
             if (!quote.CanBuy) return quote.Status;
             var step = quote.NextStep;
-            string receipt = StepKey(rawcode, step.Level);
+            int nextLevel = quote.Level + 1;
+            string receipt = StepKey(rawcode, nextLevel);
             if (wallet.HasCompletedTransaction(receipt))
                 return Original323UpgradePurchaseStatus.TransactionDeclined;
             var before = wallet.CaptureState();
+            var modelBefore = sourceModel?.CaptureState();
             purchasing = true;
             try
             {
-                if (!wallet.TryExchangeOnce(receipt, step.Cost, new ResourceBundle()))
+                if (!wallet.TryExchangeOnce(receipt, quote.NextCost, new ResourceBundle()))
                     return Original323UpgradePurchaseStatus.TransactionDeclined;
                 try
                 {
-                    if (!world.TryApply(step, quote.Level))
+                    if (!(sourceModel != null ? sourceModel.TryApply(quote.NextSourceStep, quote.Level) :
+                        world.TryApply(step, quote.Level)))
                     {
-                        try { world.Undo(step, quote.Level); }
+                        try { Undo(step, quote.Level, modelBefore); }
                         finally { wallet.RestoreState(before); }
                         return Original323UpgradePurchaseStatus.EffectRejected;
                     }
                 }
                 catch
                 {
-                    try { world.Undo(step, quote.Level); }
+                    try { Undo(step, quote.Level, modelBefore); }
                     finally { wallet.RestoreState(before); }
                     throw;
                 }
-                levels[rawcode] = step.Level;
-                nextPurchaseAt[rawcode] = gameTime() + step.CooldownSeconds;
+                levels[rawcode] = nextLevel;
+                nextPurchaseAt[rawcode] = gameTime() + (step?.CooldownSeconds ?? 0);
                 return Original323UpgradePurchaseStatus.Succeeded;
             }
             finally { purchasing = false; }
+        }
+
+        private void Undo(Original323VerifiedUpgradeStep step, int previousLevel,
+            Original323SourceUpgradeState state)
+        {
+            if (sourceModel != null) sourceModel.RestoreState(state);
+            else world.Undo(step, previousLevel);
         }
 
         private static string StepKey(string rawcode, int level) =>

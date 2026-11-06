@@ -323,7 +323,7 @@ namespace Ordr.Mobile.Combat
             {
                 var giant = FindSourceSkill(actor, "거대화");
                 if (!SourceModelEleventhGiant(giant)) return;
-                double baseDamage = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
+                double baseDamage = SourceModelUpgradeAdjustedAttackPower(actor);
                 foreach (var victim in SourceModelEleventhCircle(actor, primary, 450))
                     ApplySourceModelSeventhTimedHit(actor, victim, "거대화 평타",
                         200000 + baseDamage * 2, "physical");
@@ -483,7 +483,7 @@ namespace Ordr.Mobile.Combat
             if (resource.Health - cost < 15 || !resource.CanSpend(cost, 0) ||
                 !SourceRollSkill(skill)) return;
             resource.Spend(cost, 0);
-            double basic = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
+            double basic = SourceModelUpgradeAdjustedAttackPower(actor);
             foreach (var target in SourceModelEleventhCircle(actor, primary,
                          phoenix ? 500 : 450))
                 ApplySourceModelSeventhTimedHit(actor, target, skill.Name,
@@ -501,3 +501,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

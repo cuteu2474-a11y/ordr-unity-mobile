@@ -1023,8 +1023,11 @@ namespace Ordr.Mobile.Unity
             Combat.ConfigureSourceModelUnitResources(sourcePool);
             EnsureSoloStoryStarted(creepData.text);
             PracticeBattle = prepared;
-            if (PracticeMoneyGamblingDesk != null)
-                prepared.MoneyGamblingBossDefeated = PracticeMoneyGamblingDesk.RecordDefeatedSourceBoss;
+            prepared.MoneyGamblingBossDefeated = (enemyId, rawcode) =>
+            {
+                sourceModelDamage.PlayerUpgrades?.ObserveOriginalBossDefeated(rawcode);
+                PracticeMoneyGamblingDesk?.RecordDefeatedSourceBoss(enemyId, rawcode);
+            };
             PracticeCreeps = new Original323CreepPracticeWorld(Combat, creepCatalog);
             PracticeCreeps.EncounterDefeated += encounter =>
                 PracticeUnitGambling?.RecordThirdCreepDefeated(encounter.OriginalObject.Rawcode);
@@ -2889,7 +2892,9 @@ namespace Ordr.Mobile.Unity
             Combat = world;
             PlayerBuildingUpgrades = new Original323PlayerUpgradeSession(
                 SharedEconomy.Wallet, Combat.Game, () => Combat.Time,
-                verifiedUpgradeSteps, verifiedUpgradeWorld);
+                verifiedUpgradeSteps, verifiedUpgradeWorld,
+                verifiedUpgradeSteps == null && verifiedUpgradeWorld == null
+                    ? sourceModelDamage?.PlayerUpgrades : null);
             if (Combat.UsesSourceModelBasicAttacks)
                 Combat.ConfigureSourceModelGiftWallet(SharedEconomy.Wallet);
             VerifiedWaveDirector.VerifiedMonsterDefeated += OnVerifiedMonsterDefeated;
@@ -3142,6 +3147,12 @@ namespace Ordr.Mobile.Unity
                 throw new InvalidOperationException("원본 객체가 로드된 새 월드에서만 구성하세요.");
             var random = new SeededNonOriginalProcRandom(seed);
             sourceModelDamage = new SourceModelBasicCombatRules(MapBaseStats, random);
+            if (verifiedUpgradeSteps == null && verifiedUpgradeWorld == null)
+            {
+                var upgradeData = Resources.Load<TextAsset>("OrdrData/original-2323C-player-upgrade-runtime");
+                if (upgradeData == null) throw new InvalidOperationException("강화소 원본 모델 자료가 APK에 없습니다.");
+                sourceModelDamage.ConfigurePlayerUpgrades(new SourceModelPlayerUpgrades(upgradeData.text));
+            }
             if (OriginalNativePassives != null && OriginalCombinedAuras != null)
                 sourceModelDamage.ConfigureUnitEffects(new SourceModelUnitEffects(
                     OriginalNativePassives, OriginalCombinedAuras, random,

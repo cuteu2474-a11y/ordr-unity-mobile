@@ -66,7 +66,7 @@ namespace Ordr.Mobile.Combat
             SpatialCombatEnemy target, double raw)
         {
             if (!SourceModelSixteenthSkillCatalog.IsSpecial(skill)) return raw;
-            double basic = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
+            double basic = SourceModelUpgradeAdjustedAttackPower(actor);
             switch (skill.Id)
             {
                 case "LI-05:skill:2":
@@ -107,3 +107,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+

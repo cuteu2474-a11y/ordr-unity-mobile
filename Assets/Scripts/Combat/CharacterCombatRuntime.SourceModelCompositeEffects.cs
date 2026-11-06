@@ -213,7 +213,7 @@ namespace Ordr.Mobile.Combat
                 SourceModelNextThirtySkillCatalog.IsSeventhCompositeSkill(skill) ||
                 SourceModelNextThirtySkillCatalog.IsEighthCompositeSkill(skill))
             {
-                double basic = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
+                double basic = SourceModelUpgradeAdjustedAttackPower(actor);
                 // Kizaru's second component is a primary-only bonus based on
                 // the full three-hit packet; the first packet itself is not
                 // repeated by this component.
@@ -321,7 +321,7 @@ namespace Ordr.Mobile.Combat
                     component.Number("percent").Value / 100 * multiplier;
             if (component.Text("basis") == "basicAttackDamage")
             {
-                double rawAttack = actor.Mapping.AttackSpec.BasicAttack.NominalAttackPower;
+                double rawAttack = SourceModelUpgradeAdjustedAttackPower(actor);
                 double total = rawAttack * component.Number("percent").Value / 100 +
                     (component.Number("flatAmount") ?? 0);
                 var kinds = component.Get("targetKindMultiplier") as
@@ -457,3 +457,4 @@ namespace Ordr.Mobile.Combat
         }
     }
 }
+
