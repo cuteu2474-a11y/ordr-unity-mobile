@@ -171,6 +171,7 @@ namespace Ordr.Mobile.Combat
             if (hasRemaining && actor.Catalog.Id == remaining.CatalogId)
                 OnSourceRemainingDeclared(actor, primary, remaining);
             ExecuteAdditionalAutomaticAttack(actor, primary, rawcode);
+            TrySourceBuggyAllyAttackBuff(actor);
 
             // B8V is an ATTACK-DECLARED self-buff, not a successful-hit
             // proc. It must run even when Tezoro's 12% spell does not roll.

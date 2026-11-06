@@ -21,6 +21,7 @@ namespace Ordr.Mobile.Combat
                     expired.Add(key);
             foreach (var key in expired) additionalAutoReadyAt.Remove(key);
             ForgetBulkAutomaticSkills(instanceId);
+            ForgetSourceManualSupport(instanceId, true);
         }
 
         private static bool HasAdditionalAutomaticAttack(string rawcode)

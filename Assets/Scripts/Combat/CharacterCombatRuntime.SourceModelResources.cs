@@ -182,6 +182,7 @@ namespace Ordr.Mobile.Combat
             }
             // Count ally +0.25 HP/MP against the same status clock.
             AdvanceBulkAllyRegeneration(seconds);
+            AdvanceSourceManualRegeneration(seconds);
         }
 
         // Explicitly allow-listed complete tooltip/model actives

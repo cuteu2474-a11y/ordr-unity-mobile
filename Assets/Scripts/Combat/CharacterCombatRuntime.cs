@@ -1439,6 +1439,7 @@ namespace Ordr.Mobile.Combat
                 EndSourceChopperBurst(instanceId, true);
                 ForgetSourceModelTwentyFifthActor(instanceId);
                 ForgetSourceModelEleventhActor(instanceId);
+                ForgetSourceManualSupport(instanceId, false);
                 RefreshSourceTemporaryActors();
             }
             RefreshEnemyAuras();

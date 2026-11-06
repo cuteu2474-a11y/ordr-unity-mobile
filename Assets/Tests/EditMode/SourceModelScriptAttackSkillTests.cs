@@ -3350,43 +3350,77 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(0, live.Combat.PracticeSummonsOf(live.ActorId).Count);
             }
         }
-        [Test]
-        public void HancockNativeBuffGatesEnhancedHitThroughSharedStatus()
+
+        [TestCase("L-08", "외과수술(W)", CombatEffectType.AttackSpeedBuff, 150d, 12d)]
+        [TestCase("H-08", "선택 아군 가속", CombatEffectType.AttackSpeedBuff, 150d, 12d)]
+        [TestCase("T-03", "과열", CombatEffectType.AttackSpeedBuff, 150d, 12d)]
+        [TestCase("R-31", "호르몬 버프", CombatEffectType.AttackPowerBuff, 35d, 25d)]
+        [TestCase("R-38", "로어", CombatEffectType.AttackPowerBuff, 20d, 15d)]
+        [TestCase("RN-11", "판단력(Q)", CombatEffectType.AttackPowerBuff, 40d, 50d)]
+        [TestCase("H-18", "체력회복 공격력 버프", CombatEffectType.AttackPowerBuff, 45d, 50d)]
+        public void BatchManualSupportUsesPinnedTooltipAndOneCooldown(
+            string unitId, string name, CombatEffectType kind,
+            double amount, double duration)
         {
-            // BtV/BtT must honor B01A in the same status engine used by
-            // native dispel and expiry, not a second unobservable timer.
-            const string prefix = "practice-native:source-remaining-bloodlust:B01A:";
-            using (var buffed = Create("L-36", false, -4900, 5400))
+            using (var live = Create(unitId, false, -4900, 5400,
+                withSourceResources: true))
             {
-                buffed.Combat.UnitStatusOf(buffed.ActorId).Apply(
-                    new CombatEffect(prefix + buffed.ActorId,
-                        CombatEffectType.AttackSpeedBuff,
-                        CombatEffectOrigin.TriggeredSkill, 45, 30));
-                var events = buffed.Battle.Advance(5);
-                Assert.IsTrue(events.Any(x =>
-                    x.Type == CharacterCombatEventType.Attack));
-                Assert.IsTrue(events.Any(x =>
-                    x.Type == CharacterCombatEventType.SkillActivated &&
-                    x.Detail.Contains("BtT")),
-                    "An existing native B01A buff must open the confirmed-hit lane.");
-            }
-            using (var dispelled = Create("L-36", false, -4900, 5400))
-            {
-                var status = dispelled.Combat.UnitStatusOf(dispelled.ActorId);
-                string source = prefix + dispelled.ActorId;
-                status.Apply(new CombatEffect(source,
-                    CombatEffectType.AttackSpeedBuff,
-                    CombatEffectOrigin.TriggeredSkill, 45, 30));
-                status.RemoveSource(source);
-                var events = dispelled.Battle.Advance(5);
-                Assert.IsTrue(events.Any(x =>
-                    x.Type == CharacterCombatEventType.Attack));
-                Assert.IsFalse(events.Any(x =>
-                    x.Type == CharacterCombatEventType.SkillActivated &&
-                    x.Detail.Contains("BtT")),
-                    "Dispel must not leave a phantom enhanced attack.");
+                long ally = live.Combat.SpawnCharacter("C-01", -4900, 5400);
+                live.Battle.Advance(1);
+                Assert.AreEqual(1, live.Combat.AutoCastSourceManualSupportAndBurst(),
+                    unitId + " automatic mobile manual cast");
+                long target = unitId == "H-18" ? live.ActorId : ally;
+                Assert.IsTrue(live.Combat.UnitStatusOf(target).Snapshot().Any(x =>
+                    x.Type == kind && x.Amount == amount &&
+                    x.DurationSeconds == duration &&
+                    x.SourceId.StartsWith("practice-source-manual:")), name);
+                Assert.AreEqual(0, live.Combat.AutoCastSourceManualSupportAndBurst(),
+                    "manual buff must not cast twice before cooldown");
+                live.Combat.RemoveCharacter(live.ActorId);
+                Assert.IsFalse(live.Combat.UnitStatusOf(ally).Snapshot().Any(x =>
+                    x.SourceId.StartsWith("practice-source-manual:")),
+                    "caster removal releases recipient buffs");
             }
         }
 
+        [TestCase("RN-03", "폭렬 익스플로전")]
+        [TestCase("RN-04", "저격(Q)")]
+        public void BatchManualAreaAndSniperProduceOriginalTooltipDamageEvents(
+            string unitId, string skillName)
+        {
+            using (var live = Create(unitId, false, -4900, 5400))
+            {
+                int casts = 0;
+                for (int tick = 0; tick < 20 && casts == 0; tick++)
+                {
+                    live.Battle.Advance(1);
+                    casts += live.Combat.AutoCastSourceManualSupportAndBurst();
+                }
+                Assert.AreEqual(1, casts, skillName);
+                Assert.AreEqual(0, live.Combat.AutoCastSourceManualSupportAndBurst(),
+                    "Q cooldown is applied before subsequent frames");
+            }
+        }
+
+        [Test]
+        public void BuggyIndependentAllyBuffProcsWithoutDuplicateNativeDamageRoll()
+        {
+            using (var live = Create("E-05", true, -4900, 5400))
+            {
+                long ally = live.Combat.SpawnCharacter("C-01", -4900, 5400);
+                var seen = new List<CharacterCombatEvent>();
+                for (int tick = 0; tick < 50 && !seen.Any(e =>
+                    e.Type == CharacterCombatEventType.StatusApplied &&
+                    e.SkillName == "전투 아군 공격력 버프"); tick++)
+                    seen.AddRange(live.Battle.Advance(.25));
+                Assert.IsTrue(seen.Any(e =>
+                    e.Type == CharacterCombatEventType.StatusApplied &&
+                    e.SkillName == "전투 아군 공격력 버프"));
+                Assert.IsTrue(live.Combat.UnitStatusOf(ally).Snapshot().Any(e =>
+                    e.SourceId.StartsWith("practice-source-buggy:") &&
+                    e.Type == CombatEffectType.AttackPowerBuff &&
+                    e.Amount == 33 && e.DurationSeconds == 4.5));
+            }
+        }
     }
 }
