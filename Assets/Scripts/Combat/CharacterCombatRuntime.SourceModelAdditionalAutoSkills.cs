@@ -20,6 +20,10 @@ namespace Ordr.Mobile.Combat
                 if (key.StartsWith(prefix, StringComparison.Ordinal))
                     expired.Add(key);
             foreach (var key in expired) additionalAutoReadyAt.Remove(key);
+            // RemoveCharacter does not pass through the story/form reset.
+            // These extra states must also be cleared on sale/fusion/rollback.
+            ForgetSourceModelBurgessElbow(instanceId);
+            SourceModelZephyrForgetOwner(instanceId);
             ForgetBulkAutomaticSkills(instanceId);
             ForgetSourceManualSupport(instanceId, true);
         }
@@ -412,7 +416,8 @@ namespace Ordr.Mobile.Combat
 
         private static bool HasAdditionalAutomaticPeriodic(string catalogId)
         {
-            return catalogId == "TR-02" || catalogId == "MY-05";
+            return catalogId == "TR-02" || catalogId == "MY-05" ||
+                catalogId == "D-06";
         }
 
         private double? NextAdditionalAutoPeriodicAt(CharacterInstance actor)
@@ -422,8 +427,10 @@ namespace Ordr.Mobile.Combat
                 actor.Profile == null || actor.Profile.UnitId != actor.Catalog.Id)
                 return null;
             string id = actor.Catalog.Id == "TR-02" ? "TR-02:skill:0" :
-                "MY-05:skill:1";
+                actor.Catalog.Id == "D-06" ? "D-06:skill:1" : "MY-05:skill:1";
             var skill = AdditionalAutoSkill(actor, id);
+            if (actor.Catalog.Id == "D-06" &&
+                !HasSourceModelBurgessElbow(actor)) return null;
             if (skill == null || skill.Components.Count == 0) return null;
             double? period = skill.Number("intervalSeconds") ??
                 skill.Number("periodSeconds");
@@ -460,7 +467,8 @@ namespace Ordr.Mobile.Combat
                 if (!actor.AttackReady || actor.Mapping == null ||
                     !HasAdditionalAutomaticPeriodic(actor.Catalog.Id)) continue;
                 var skillId = actor.Catalog.Id == "TR-02" ?
-                    "TR-02:skill:0" : "MY-05:skill:1";
+                    "TR-02:skill:0" : actor.Catalog.Id == "D-06" ?
+                    "D-06:skill:1" : "MY-05:skill:1";
                 var skill = AdditionalAutoSkill(actor, skillId);
                 double? due = NextAdditionalAutoPeriodicAt(actor);
                 if (skill == null || !due.HasValue ||
@@ -469,6 +477,8 @@ namespace Ordr.Mobile.Combat
                     skill.Number("periodSeconds")).Value;
                 additionalAutoReadyAt[InstanceKey(actor.Id) + ":" + skillId] =
                     due.Value + period;
+                if (actor.Catalog.Id == "D-06")
+                    ResetSourceModelBurgessElbowReduction(actor.Id);
                 count++;
                 var candidates = BuildTargetCandidates(actor);
                 string target = attackPipeline.SelectDefaultTarget(
@@ -479,7 +489,11 @@ namespace Ordr.Mobile.Combat
                 var targets = AdditionalAutoCircle(actor, primary,
                     skill.Number("radius").Value,
                     actor.Catalog.Id == "MY-05");
-                if (actor.Catalog.Id == "TR-02")
+                if (actor.Catalog.Id == "D-06")
+                {
+                    ApplySourceModelBurgessElbow(actor, primary, targets);
+                }
+                else if (actor.Catalog.Id == "TR-02")
                 {
                     var damage = skill.Components[0];
                     for (int hit = 0; hit < (int)damage.Number("hits").Value; hit++)

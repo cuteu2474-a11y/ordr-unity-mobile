@@ -29,6 +29,19 @@
       "note": "제트 h04G의 10% 차지 버스트를 시전자/전장에 묶인 0.7초 상태로 연결. 활성 중 선언된 평타마다 원형 500 범위 40만 마법 및 지정 단일 대상 125만 추가 피해를 한 번씩 적용. 원본 애니메이션 시점·재발동 상세·실기 검증은 미실시."
     },
     {
+      "skillId": "D-06:skill:1",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBurgessBasic.cs",
+      "handlerSymbol": "ApplySourceModelBurgessElbow",
+      "entryFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs",
+      "entryCall": "ApplySourceModelBurgessElbow(actor, primary, targets);",
+      "identityTokens": [
+        "\"D-06:skill:1\"",
+        "\"h09V\""
+      ],
+      "effectIndexes": [0, 1],
+      "note": "바제스 h09V의 12초 주기 파동 엘보를 공통 주기 시계와 명중 이벤트에 연결. 평타 실제 피해 1만당 1초·주기당 최대 9초 감소, 대상 중심 425 범위의 마법36만/라인 현재HP36% 폭발/특수 적72만 마법 및 살아 있는 일반 적 2.5초 기절. 소수 피해 나눗셈·원본 발동 프레임/면역/기기 동작은 미검증."
+    },
+    {
       "skillId": "D-06:skill:0",
       "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBurgessBasic.cs",
       "handlerSymbol": "OnSourceModelBurgessSuccessfulBasicHit",

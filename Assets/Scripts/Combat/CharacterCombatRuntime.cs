@@ -2619,6 +2619,11 @@ namespace Ordr.Mobile.Combat
                 foreach (var entry in unit.Mapping.ActivatedSkills)
                 {
                     if (entry.Value.Trigger != "periodic") continue;
+                    // Burgess has a separate, damage-reduced periodic clock.
+                    // Never schedule the same owner packet in both engines.
+                    if (UsesSourceModelBasicAttacks &&
+                        unit.Catalog.Id == "D-06" &&
+                        entry.Key == "D-06:skill:1") continue;
                     double? scheduled = attackPipeline.NextPeriodicSkillAt(
                         InstanceKey(unit.Id), entry.Key);
                     if (scheduled.HasValue &&
@@ -2802,6 +2807,9 @@ namespace Ordr.Mobile.Combat
                     if (processed >= budget) break;
                     ImportedCombatSkill skill = unit.Mapping.ActivatedSkills[skillId];
                     if (skill.Trigger != "periodic") continue;
+                    if (UsesSourceModelBasicAttacks &&
+                        unit.Catalog.Id == "D-06" &&
+                        skill.Id == "D-06:skill:1") continue;
                     double? due = attackPipeline.NextPeriodicSkillAt(
                         InstanceKey(id), skillId);
                     if (!due.HasValue ||

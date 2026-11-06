@@ -47,6 +47,7 @@ namespace Ordr.Mobile.Combat
             SourceModelTwentyNinthForgetOwner(id);
             SourceModelThirtiethForgetOwner(id);
             SourceModelZephyrForgetOwner(id);
+            ForgetSourceModelBurgessElbow(id);
             string prefix = InstanceKey(id) + ":";
             var removed = new List<string>();
             foreach (var item in sourceModelBonneyAge.Keys)

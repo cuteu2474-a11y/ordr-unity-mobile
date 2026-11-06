@@ -23,6 +23,8 @@ flowchart TD
 
 **제트 I-10 도감 모델:** `SourceModelUnconnectedSkillCatalog.cs`에서 대상 기술을 승인하고 `SourceModelNextThirtySkillCatalog.cs`에서 ID·프로필 전 필드를 검사합니다. `CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs`는 직선 330·보스 가산을 적용하고, `CharacterCombatRuntime.SourceModelZephyrCharge.cs`는 0.7초 충전·단일 대상 추가 피해·소유자/전장 변경 정리를 담당합니다. 기존 피해·타깃 처리 재사용, 원작 애니메이션·Unity 실행 미검증.
 
+**바제스 D-06 주기 피해:** `CharacterCombatRuntime.SourceModelBurgessBasic.cs`는 성공 평타 피해로 `파동 엘보` 대기시간을 주기당 최대 9초 당기고, 범위 마법·현재 HP 폭발·특수 적 추가 피해·일반 적 기절을 실행합니다. `CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs`의 공용 주기 시계와 `CharacterCombatRuntime.cs`의 중복 발동 방지 분기를 재사용합니다. `CharacterCombatRuntime.SourceModelAdditionalAutoSkills.cs`의 판매·조합 정리와 `CharacterCombatRuntime.SourceModelEleventhForms.cs`의 전장 변경 정리가 상태를 제거합니다. 제트의 차지 상태도 두 경로에서 함께 정리합니다. 원본 시전 프레임·라운딩/면역 및 실기 미검증.
+
 ## 2. 영역별 실제 진입점
 
 | 작업 영역 | 먼저 열 파일 | 재사용할 역할 |
