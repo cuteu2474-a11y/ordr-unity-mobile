@@ -3350,5 +3350,43 @@ namespace Ordr.Mobile.Tests
                 Assert.AreEqual(0, live.Combat.PracticeSummonsOf(live.ActorId).Count);
             }
         }
+        [Test]
+        public void HancockNativeBuffGatesEnhancedHitThroughSharedStatus()
+        {
+            // BtV/BtT must honor B01A in the same status engine used by
+            // native dispel and expiry, not a second unobservable timer.
+            const string prefix = "practice-native:source-remaining-bloodlust:B01A:";
+            using (var buffed = Create("L-36", false, -4900, 5400))
+            {
+                buffed.Combat.UnitStatusOf(buffed.ActorId).Apply(
+                    new CombatEffect(prefix + buffed.ActorId,
+                        CombatEffectType.AttackSpeedBuff,
+                        CombatEffectOrigin.TriggeredSkill, 45, 30));
+                var events = buffed.Battle.Advance(5);
+                Assert.IsTrue(events.Any(x =>
+                    x.Type == CharacterCombatEventType.Attack));
+                Assert.IsTrue(events.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.Detail.Contains("BtT")),
+                    "An existing native B01A buff must open the confirmed-hit lane.");
+            }
+            using (var dispelled = Create("L-36", false, -4900, 5400))
+            {
+                var status = dispelled.Combat.UnitStatusOf(dispelled.ActorId);
+                string source = prefix + dispelled.ActorId;
+                status.Apply(new CombatEffect(source,
+                    CombatEffectType.AttackSpeedBuff,
+                    CombatEffectOrigin.TriggeredSkill, 45, 30));
+                status.RemoveSource(source);
+                var events = dispelled.Battle.Advance(5);
+                Assert.IsTrue(events.Any(x =>
+                    x.Type == CharacterCombatEventType.Attack));
+                Assert.IsFalse(events.Any(x =>
+                    x.Type == CharacterCombatEventType.SkillActivated &&
+                    x.Detail.Contains("BtT")),
+                    "Dispel must not leave a phantom enhanced attack.");
+            }
+        }
+
     }
 }

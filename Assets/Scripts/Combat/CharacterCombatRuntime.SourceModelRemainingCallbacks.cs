@@ -93,8 +93,6 @@ namespace Ordr.Mobile.Combat
     {
         private readonly Dictionary<long, int> remainingLaboonPositiveHits =
             new Dictionary<long, int>();
-        private readonly Dictionary<long, double> remainingHancockBuffUntil =
-            new Dictionary<long, double>();
         private readonly Dictionary<long, string> remainingHancockEnhancedTarget =
             new Dictionary<long, string>();
         private long remainingCallbackSerial;
@@ -103,7 +101,6 @@ namespace Ordr.Mobile.Combat
         {
             ForgetSourceAkainuBoss(actorId);
             remainingLaboonPositiveHits.Remove(actorId);
-            remainingHancockBuffUntil.Remove(actorId);
             remainingHancockEnhancedTarget.Remove(actorId);
         }
 
@@ -531,9 +528,10 @@ namespace Ordr.Mobile.Combat
                 // A096 Ablo lasts exactly .4s and applies B01A. Its next
                 // attack during that window enters BtT with no 10% roll.
                 remainingHancockEnhancedTarget.Remove(actor.Id);
-                double until;
-                if (remainingHancockBuffUntil.TryGetValue(actor.Id, out until) &&
-                    until > effectExecutor.Time)
+                // B01A is an actual dispellable status in the shared engine.
+                // Never infer a buff from a parallel wall-clock dictionary:
+                // early dispel and form/owner cleanup must change this branch.
+                if (RemainingHasNativeBuff(actor, "B01A"))
                 {
                     remainingHancockEnhancedTarget[actor.Id] = target.Id;
                     RemainingProc(actor, target, spec,
@@ -557,7 +555,6 @@ namespace Ordr.Mobile.Combat
                 }
                 if (sourceModelRules.NextScriptRoll(100) < 8)
                 {
-                    remainingHancockBuffUntil[actor.Id] = effectExecutor.Time + .4;
                     RemainingNativeBloodlust(actor, spec, target,
                         "A096", "B01A", .4, 45);
                 }
@@ -775,7 +772,12 @@ namespace Ordr.Mobile.Combat
             {
                 string expected;
                 if (!remainingHancockEnhancedTarget.TryGetValue(actor.Id,
-                        out expected) || expected != target.Id) return;
+                        out expected) || expected != target.Id ||
+                    !RemainingHasNativeBuff(actor, "B01A"))
+                {
+                    remainingHancockEnhancedTarget.Remove(actor.Id);
+                    return;
+                }
                 remainingHancockEnhancedTarget.Remove(actor.Id);
                 RemainingProc(actor, target, spec, "BtT · 양성 적중 확인 후 확정 매료");
                 RemainingHitsAfterBasic(actor, target, spec, actual,
