@@ -15,17 +15,17 @@ namespace Ordr.Mobile.Combat
         {
             internal readonly string CatalogId, Rawcode, Name, Trigger, Target;
             internal readonly double Speed, Power, HealthRegen, ManaRegen;
-            internal readonly double Duration, Cooldown;
+            internal readonly double Duration, Cooldown, ManaCost;
             internal readonly bool Area, Self;
             internal SourceManualSupportSpec(string id, string raw, string name,
                 string trigger, string target, double speed, double power,
                 double hp, double mp, double duration, double cooldown,
-                bool area = false, bool self = false)
+                bool area = false, bool self = false, double manaCost = 0)
             {
                 CatalogId = id; Rawcode = raw; Name = name; Trigger = trigger;
                 Target = target; Speed = speed; Power = power;
                 HealthRegen = hp; ManaRegen = mp;
-                Duration = duration; Cooldown = cooldown;
+                Duration = duration; Cooldown = cooldown; ManaCost = manaCost;
                 Area = area; Self = self;
             }
         }
@@ -56,7 +56,12 @@ namespace Ordr.Mobile.Combat
             // No target selector is documented for H-18. Apply the
             // specified buff and regeneration to the casting unit only.
             new SourceManualSupportSpec("H-18", "h03Y", "체력회복 공격력 버프",
-                "manual", null, 0, 45, 1, 0, 50, 30, self: true)
+                "manual", null, 0, 45, 1, 0, 50, 30, self: true),
+            // Koby's separate 115-MP support skill is not his ordinary
+            // on-attack proc, and must not be re-rolled when casting.
+            new SourceManualSupportSpec("L-31", "h03E", "용기의 외침",
+                "activeMana", "alliedArea", 0, 20, 1, 1, 5, 0,
+                area: true, manaCost: 115)
         };
 
         private readonly Dictionary<long, double> sourceManualReadyAt =
@@ -182,6 +187,18 @@ namespace Ordr.Mobile.Combat
                 skill.Number("cooldownSeconds") !=
                     (spec.Cooldown > 0 ? (double?)spec.Cooldown : null))
                 return false;
+            if (spec.CatalogId == "L-31")
+                return skill.Number("manaCost") == 115 && skill.Radius == 900 &&
+                    skill.Components.Count == 3 &&
+                    skill.Components[0].Type == "allyAttackPowerBuff" &&
+                    skill.Components[0].Number("percent") == 20 &&
+                    skill.Components[0].Number("durationSeconds") == 5 &&
+                    skill.Components[1].Type == "allyHealthRegeneration" &&
+                    skill.Components[1].Number("perSecond") == 1 &&
+                    skill.Components[1].Number("durationSeconds") == 5 &&
+                    skill.Components[2].Type == "allyManaRegeneration" &&
+                    skill.Components[2].Number("perSecond") == 1 &&
+                    skill.Components[2].Number("durationSeconds") == 5;
             if (spec.CatalogId == "RN-11")
                 return skill.Components.Count == 3 &&
                     skill.Components[0].Type == "allyHealthRegeneration" &&
@@ -257,6 +274,9 @@ namespace Ordr.Mobile.Combat
         private void ApplySourceManualSupport(CharacterInstance actor,
             SourceManualSupportSpec spec, IReadOnlyList<long> recipients)
         {
+            // Charge once for the entire effect packet, never per recipient.
+            if (spec.ManaCost > 0)
+                actor.Abilities.Resources.Spend(0, spec.ManaCost);
             foreach (long recipientId in recipients)
             {
                 string source = "practice-source-manual:" + actor.Id + ":" +
@@ -413,6 +433,10 @@ namespace Ordr.Mobile.Combat
                         actor.Mapping.AttackSpec.UnitRawCode != spec.Rawcode ||
                         !SourceManualSupportMatches(spec,
                             SourceManualSkill(actor, spec.Name))) continue;
+                    if (spec.ManaCost > 0 &&
+                        (actor.Abilities.Resources == null ||
+                         !actor.Abilities.Resources.CanSpend(0, spec.ManaCost)))
+                        continue;
                     var recipients = SourceManualRecipientsFor(actor, spec, ids);
                     if (recipients.Count == 0) continue;
                     ApplySourceManualSupport(actor, spec, recipients);

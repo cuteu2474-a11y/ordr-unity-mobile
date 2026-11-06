@@ -245,6 +245,46 @@
         0
       ],
       "note": "기존 BtL 원본 공격 선언 피해 일부 연결. 추가 상태/면역은 보류."
+    },
+    {
+      "skillId": "L-31:skill:0",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs",
+      "handlerSymbol": "ApplySourceManualSupport",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceManualSupportAndBurst();",
+      "identityTokens": ["\"L-31\"", "\"용기의 외침\""],
+      "effectIndexes": [0, 1, 2],
+      "note": "115 MP 1회 사용·같은 전장 공격력20%/HP·MP 초당1·5초 모델. 분노 스킬의 원본 배타적 중첩·Unity 실기는 미검증."
+    },
+    {
+      "skillId": "E-05:skill:3",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBuggyEloquence.cs",
+      "handlerSymbol": "TryPurchaseSourceBuggyEloquence",
+      "entryFile": "Assets/Scripts/Unity/OrdrMobileTouchPanel.cs",
+      "entryCall": "Combat.TryPurchaseSourceBuggyEloquence(selectedId)",
+      "identityTokens": ["\"E-05\"", "\"언변 강화\""],
+      "effectIndexes": [0],
+      "note": "공유 지갑 회당3333골드/최대5회 영수증·같은 전장 1000공격력+1%공속 최고 오라 모델. 실제 원본 범위/중첩·복구 동일성 미검증."
+    },
+    {
+      "skillId": "L-19:skill:2",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualUtility.cs",
+      "handlerSymbol": "TryAutoCastSugarToy",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceModelManualUtility();",
+      "identityTokens": ["\"L-19\"", "\"장난감화(R)\""],
+      "effectIndexes": [0],
+      "note": "일반 라인 대상 무피해 제거 및 30초 소환수 생성 모델. 장난감 만료 판매보상은 구현 근거 없어 일부 효과 판정."
+    },
+    {
+      "skillId": "L-32:skill:2",
+      "handlerFile": "Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualUtility.cs",
+      "handlerSymbol": "TryAutoCastKumaTransfer",
+      "entryFile": "Assets/Scripts/Unity/OrdrCharacterCombatController.cs",
+      "entryCall": "Combat.AutoCastSourceModelManualUtility();",
+      "identityTokens": ["\"L-32\"", "\"전이\""],
+      "effectIndexes": [0],
+      "note": "같은 라인 반경275 적을 시전자 앞쪽으로 이동시키는 모바일 결과 모델. 보유 스턴 기술의 네이티브 시전은 보류."
     }
   ]
 }

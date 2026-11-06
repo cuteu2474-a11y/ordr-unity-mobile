@@ -47,7 +47,8 @@ namespace Ordr.Mobile.Combat
                 SourceModelSoulStacksOf(id) >= 700 ? 100000 : 0;
             double heroGrowth = original323HeroLevelWorld == null ? 0 :
                 original323HeroLevelWorld.AdditionalBasicAttackDamageOf(id);
-            return existing + SourceModelTwentyFifthFlatAttackPower(actor) + heroGrowth;
+            return existing + SourceModelTwentyFifthFlatAttackPower(actor) +
+                heroGrowth + SourceBuggyFlatAura(id);
         }
 
         // Called both for actors already present before the practice battle

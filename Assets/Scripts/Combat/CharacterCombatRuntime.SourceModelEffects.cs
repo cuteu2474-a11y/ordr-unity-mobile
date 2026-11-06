@@ -60,7 +60,8 @@ namespace Ordr.Mobile.Combat
                 long id;
                 double hero = original323HeroLevelWorld != null && long.TryParse(actorKey, out id)
                     ? original323HeroLevelWorld.AddedAttackSpeedPercentOf(id) : 0;
-                return hero + (rules.PlayerUpgrades?.AttackSpeedPercent(SourceUpgradeRawcodeOf(actorKey)) ?? 0);
+                return hero + SourceBuggySpeedAura(actorKey) +
+                    (rules.PlayerUpgrades?.AttackSpeedPercent(SourceUpgradeRawcodeOf(actorKey)) ?? 0);
             });
             rules.ConfigurePracticeFlatAttackPower(SourceModelTwentiethFlatAttackPower);
             SourceModelTimeAdvancing += AdvanceSourceModelEighthTimeline;

@@ -3621,6 +3621,7 @@ namespace Ordr.Mobile.Unity
                     Combat.AutoCastApprovedSourceModelActives();
                     Combat.AutoCastSourceRareLawAcceleration();
                     Combat.AutoCastSourceManualSupportAndBurst();
+                    Combat.AutoCastSourceModelManualUtility();
                 }
                 catch (Exception ex)
                 {

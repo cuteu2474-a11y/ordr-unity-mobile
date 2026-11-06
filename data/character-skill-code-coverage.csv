@@ -46,7 +46,7 @@ E-04:skill:6,E-04,미호크,영원한,확정 스턴,onEveryAttack,registration_o
 E-05:skill:0,E-05,버기,영원한,버기 필살타,onAttack,registration_only,0,2,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSixteenthSkills.cs,Unity/Android/원작 대조 미실시
 E-05:skill:1,E-05,버기,영원한,해적단 소환,onAttack,registration_only,0,1,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelSeventeenthSpecials.cs,Unity/Android/원작 대조 미실시
 E-05:skill:2,E-05,버기,영원한,전투 아군 공격력 버프,onAttack,model_witness,1,1,TrySourceBuggyAllyAttackBuff,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
-E-05:skill:3,E-05,버기,영원한,언변 강화,manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
+E-05:skill:3,E-05,버기,영원한,언변 강화,manual,model_witness,1,1,TryPurchaseSourceBuggyEloquence,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBuggyEloquence.cs,Unity/Android/원작 대조 미실시
 E-06:skill:0,E-06,비비,영원한,광역 난사,activeMana,unresolved,0,2,,,Unity/Android/원작 대조 미실시
 E-06:skill:1,E-06,비비,영원한,알라바스타 강화,manual,unresolved,0,1,,,Unity/Android/원작 대조 미실시
 E-06:skill:2,E-06,비비,영원한,건 공격,onSkillOrAttack,unresolved,0,3,,,Unity/Android/원작 대조 미실시
@@ -209,8 +209,8 @@ L-17:skill:2,L-17,샹크스,전설,기본공격 치명타,onAttack,unresolved,0,
 L-18:skill:0,L-18,센고쿠,전설,사람사람열매,onAttack,registration_only,0,2,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelFifteenthSkills.cs",Unity/Android/원작 대조 미실시
 L-18:skill:1,L-18,센고쿠,전설,인의는 사라지지 않는다,onAttack,registration_only,0,4,,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelBulkAutoSkills.cs,Unity/Android/원작 대조 미실시
 L-19:skill:0,L-19,슈가,전설,하비하비열매,onAttack,model_witness,1,1,ExecuteSourceSugar,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
-L-19:skill:1,L-19,슈가,전설,장난감 No.31,onAttack,model_witness,1,1,ExecuteSourceSugar,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
-L-19:skill:2,L-19,슈가,전설,장난감화(R),manual,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-19:skill:1,L-19,슈가,전설,장난감 No.31,onAttack,model_witness,1,1,ExecuteSourceSugar,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualUtility.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs",Unity/Android/원작 대조 미실시
+L-19:skill:2,L-19,슈가,전설,장난감화(R),manual,partial_witness,1,2,TryAutoCastSugarToy,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualUtility.cs,Unity/Android/원작 대조 미실시
 L-20:skill:0,L-20,스모커,전설,화이트 아웃,activeMana,registration_only,0,5,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyFourthSkills.cs, Assets/Scripts/Combat/Ordr323VerifiedDefenseSkillLinks.cs",Unity/Android/원작 대조 미실시
 L-20:skill:1,L-20,스모커,전설,화이트바인,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
 L-20:skill:2,L-20,스모커,전설,화이트블로우,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
@@ -235,12 +235,12 @@ L-28:skill:2,L-28,징베,전설,단일 타격 스턴,onAttack,registration_only,
 L-29:skill:0,L-29,쵸파 유력강화,전설,발굽 로제오,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
 L-30:skill:0,L-30,카르가라,전설,샨디아의 창,activeMana,registration_only,0,1,,,Unity/Android/원작 대조 미실시
 L-30:skill:1,L-30,카르가라,전설,평타 크리티컬,onAttack,unresolved,0,2,,,Unity/Android/원작 대조 미실시
-L-31:skill:0,L-31,코비,전설,용기의 외침,activeMana,unresolved,0,3,,,Unity/Android/원작 대조 미실시
+L-31:skill:0,L-31,코비,전설,용기의 외침,activeMana,model_witness,3,3,ApplySourceManualSupport,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualSupport.cs,Unity/Android/원작 대조 미실시
 L-31:skill:1,L-31,코비,전설,육식 - 체,onAttack,registration_only,0,2,,,Unity/Android/원작 대조 미실시
 L-31:skill:2,L-31,코비,전설,지건,onAttack,registration_only,0,3,,,Unity/Android/원작 대조 미실시
 L-32:skill:0,L-32,쿠마 폭군,전설,우르스스 쇼크,activeMana,partial_witness,1,2,ExecuteSourceKuma,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
 L-32:skill:1,L-32,쿠마 폭군,전설,발바닥발바닥 열매,onAttack,partial_witness,1,2,ExecuteSourceKuma,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelOriginalSpecials.cs,Unity/Android/원작 대조 미실시
-L-32:skill:2,L-32,쿠마 폭군,전설,전이,manual,unresolved,0,2,,,Unity/Android/원작 대조 미실시
+L-32:skill:2,L-32,쿠마 폭군,전설,전이,manual,partial_witness,1,2,TryAutoCastKumaTransfer,Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelManualUtility.cs,Unity/Android/원작 대조 미실시
 L-33:skill:0,L-33,크래커,전설,나선찌르기,onAttack,unresolved,0,1,,,Unity/Android/원작 대조 미실시
 L-33:skill:1,L-33,크래커,전설,크래커 비스킷,manual,unresolved,0,2,,,Unity/Android/원작 대조 미실시
 L-34:skill:0,L-34,킹,전설,화재,onAttack,registration_only,0,4,,"Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelNextThirtyAttacks.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwelfthForms.cs, Assets/Scripts/Combat/CharacterCombatRuntime.SourceModelTwentyNinthSkills.cs",Unity/Android/원작 대조 미실시

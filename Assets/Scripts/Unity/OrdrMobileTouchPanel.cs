@@ -1612,6 +1612,24 @@ namespace Ordr.Mobile.Unity
                     SourceModelTwentyFifthSkillCatalog.CanModelExactKidEnhancement(
                         detail.Profile))
                     GUILayout.Label("특성강화: 펑크 크래시 · 댐드 펑크 (구매 자격 확인 시에만 교체)");
+                if (detail.Unit.Id == "E-05" && Combat != null &&
+                    Combat.Roster.SelectedId.HasValue &&
+                    Combat.UsesSourceModelBasicAttacks)
+                {
+                    long selectedId = Combat.Roster.SelectedId.Value;
+                    int eloquence = Combat.SourceBuggyEloquenceUsesOf(selectedId);
+                    GUILayout.Label("언변 강화 " + eloquence + "/5 · 1회 3333골드");
+                    bool enabled = GUI.enabled;
+                    GUI.enabled = enabled && eloquence < 5 &&
+                        controller.SharedEconomy != null &&
+                        controller.SharedEconomy.Wallet.Balance("gold") >= 3333;
+                    if (GUILayout.Button("언변 강화 구매",
+                        OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(64)))
+                        notice = Combat.TryPurchaseSourceBuggyEloquence(selectedId)
+                            ? "언변 강화 " + (eloquence + 1) + "/5 완료"
+                            : "강화 대상·골드·구매 횟수를 확인해 주세요.";
+                    GUI.enabled = enabled;
+                }
             }
             if (detail.Grade == "안흔함" &&
                 controller.OriginalUncommonAbilities != null)

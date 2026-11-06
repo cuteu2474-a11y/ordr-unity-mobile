@@ -333,6 +333,20 @@ namespace Ordr.Mobile.Combat
             return true;
         }
 
+        // Non-damage deletion/transformation counts as a removed wave enemy,
+        // but must not fabricate a DamageApplied event or a damage amount.
+        public bool TryResolveNonDamageDefeat(string enemyId)
+        {
+            CombatEnemy enemy;
+            if (string.IsNullOrWhiteSpace(enemyId) ||
+                !enemies.TryGetValue(enemyId, out enemy) || !enemy.IsAlive)
+                return false;
+            if (!nonWaveEnemyIds.Remove(enemyId)) session.DefeatEnemy();
+            enemies.Remove(enemyId);
+            EnemyExited?.Invoke(enemyId, CombatEnemyExitReason.Defeated);
+            return true;
+        }
+
         public CombatEnemy GetEnemy(string enemyId)
         {
             CombatEnemy enemy;
