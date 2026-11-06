@@ -19,9 +19,9 @@ namespace Ordr.Mobile.Combat
             sourceAkainuBossStacks.Remove(actorId);
         }
 
-        // Bq9's boss branch bypasses the ordinary 16% hit and opens Bq8.
-        // Consecutive attacks against the SAME boss strengthen the delayed
-        // impact; changing bosses resets the original per-attacker counter.
+        // Bq9 opens Bq8 on bosses, or on A903/enraged targets before the
+        // caster receives B05G. Consecutive protected-target attacks share
+        // the original per-attacker target/counter, resetting on new targets.
         private void ExecuteSourceAkainuBossDeclared(CharacterInstance actor,
             SpatialCombatEnemy target)
         {
@@ -45,6 +45,15 @@ namespace Ordr.Mobile.Combat
             bool lane = IsStoryDeployed(actor.Id);
             long revision = SourceModelLaneRevision(actor.Id);
             double impactX = target.X, impactY = target.Y;
+            // Bq8: Bdi boss gets 2.5m × stack; A903/enraged instead
+            // receives an additional 18% of its maximum health as Chaos.
+            SourceScriptHit finisher = target.Kind == CharacterEnemyKind.Boss
+                ? new SourceScriptHit(SourceScriptHitShape.Direct,
+                    0, 0, 2500000.0 * stacks, 1, 1,
+                    Ordr323AttackType.Spells)
+                : new SourceScriptHit(SourceScriptHitShape.Direct,
+                    0, 0, 0, 1, 1, Ordr323AttackType.Chaos,
+                    enragedMaxHealthPercent: 18);
             var packet = new SourceScriptAttackSpec("H-17", "h03Z",
                 "Bq8", 1, 1, Array.Empty<SourceScriptHit>(),
                 new[] {
@@ -53,9 +62,7 @@ namespace Ordr.Mobile.Combat
                         Ordr323AttackType.Spells),
                     new SourceScriptHit(SourceScriptHitShape.Circle,
                         500, 0, 100000, 1, 1, Ordr323AttackType.Spells),
-                    new SourceScriptHit(SourceScriptHitShape.Direct,
-                        0, 0, 2500000.0 * stacks, 1, 1,
-                        Ordr323AttackType.Spells)
+                    finisher
                 }, null);
             if (sourceAkainuBossSerial == long.MaxValue)
                 throw new OverflowException("히든 아카이누 보스 공격 예약 순번 초과");
@@ -70,10 +77,11 @@ namespace Ordr.Mobile.Combat
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.SkillActivated,
                 InstanceKey(actor.Id), target.Id, "아카이누 · 보스 연속 타격",
-                "MODEL_ONLY Bq9→Bq8 보스 " + stacks +
-                "중첩 / 지연 " +
+                "MODEL_ONLY Bq9→Bq8 " +
+                (target.Kind == CharacterEnemyKind.Boss ? "보스" : "광폭화") +
+                " " + stacks + "중첩 / 지연 " +
                 delay.ToString(CultureInfo.InvariantCulture) +
-                "초 / A14X·B05G 방어력 증가 미공급", 0));
+                "초 / A14X·B05G 방어력 수치 미공급", 0));
         }
 
         // These source-script callbacks run ONLY in the independent offline
@@ -263,22 +271,17 @@ namespace Ordr.Mobile.Combat
             // a null SourceScriptAttackSpec after those callbacks.
             if (script == null) return;
 
-            // Bq9 always takes its consecutive-hit Bq8 branch on a boss.
-            // Enraged enemies first require the native B05G buff state:
-            // do not substitute the unrelated 16% normal target packet.
+            // Bq9: every boss attack, and the first enraged attack
+            // while A14X/B05G is absent, grants frostarmor and opens Bq8.
+            // Later enraged attacks with the buff use the separate 16% roll.
             if (script.CatalogId == "H-17")
             {
-                if (primary.Kind == CharacterEnemyKind.Boss)
+                bool enraged = primary.Kind == CharacterEnemyKind.Enraged;
+                if (primary.Kind == CharacterEnemyKind.Boss ||
+                    (enraged && !RemainingHasFrostArmor(actor, "A14X")))
                 {
+                    ApplySourceNativeFrostArmorIdentity(actor, "A14X", "B05G");
                     ExecuteSourceAkainuBossDeclared(actor, primary);
-                    return;
-                }
-                if (primary.Kind == CharacterEnemyKind.Enraged)
-                {
-                    events.Add(new CharacterCombatEvent(
-                        CharacterCombatEventType.EffectDeferred,
-                        attackerId, primary.Id, "아카이누 · 광폭화 조건",
-                        "MODEL_ONLY Bq9 A14X/B05G 네이티브 버프 수명 미확인", 0));
                     return;
                 }
             }
@@ -347,6 +350,22 @@ namespace Ordr.Mobile.Combat
             }
             else
                 ApplySourceScriptHits(actor, primary, script, script.OnProc);
+
+            // Bq9: when an enraged A903 target is already protected by
+            // B05G, the successful ordinary 16% packet adds exactly one
+            // 18%-of-max-HP Chaos hit. Bosses never enter this branch.
+            if (script.CatalogId == "H-17" &&
+                primary.Kind == CharacterEnemyKind.Enraged)
+            {
+                var enragedBonus = new SourceScriptAttackSpec(
+                    "H-17", "h03Z", "Bq9", 1, 1,
+                    Array.Empty<SourceScriptHit>(),
+                    new[] { new SourceScriptHit(SourceScriptHitShape.Direct,
+                        0, 0, 0, 1, 1, Ordr323AttackType.Chaos,
+                        enragedMaxHealthPercent: 18) }, null);
+                ApplySourceScriptHits(actor, primary, enragedBonus,
+                    enragedBonus.OnProc);
+            }
 
             // RN-04 already resolves CCg's 17%/1.5m damage and delayed
             // primary-target Faerie Fire in the JASS-backed callback. Only

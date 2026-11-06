@@ -97,8 +97,6 @@ namespace Ordr.Mobile.Combat
             new Dictionary<long, double>();
         private readonly Dictionary<long, string> remainingHancockEnhancedTarget =
             new Dictionary<long, string>();
-        private readonly Dictionary<long, double> remainingBurgessArmorUntil =
-            new Dictionary<long, double>();
         private long remainingCallbackSerial;
 
         private void ForgetSourceRemainingCallbacks(long actorId)
@@ -107,7 +105,6 @@ namespace Ordr.Mobile.Combat
             remainingLaboonPositiveHits.Remove(actorId);
             remainingHancockBuffUntil.Remove(actorId);
             remainingHancockEnhancedTarget.Remove(actorId);
-            remainingBurgessArmorUntil.Remove(actorId);
         }
 
         private static SourceScriptAttackSpec RemainingHitSpec(string id,
@@ -211,22 +208,36 @@ namespace Ordr.Mobile.Combat
             return false;
         }
 
-        private void RemainingGrantFrostArmor(CharacterInstance actor,
-            SpatialCombatEnemy target, SourceRemainingCallback spec,
-            string ability, string buff)
+        // Keep verified native buff identities in the shared status engine,
+        // where existing dispels, expiry and caster removal all apply.
+        // An indefinite W3X armor buff has duration zero; the explicitly
+        // timed Burgess B07T follows its positive-hit damage-dependent timer.
+        private void ApplySourceNativeFrostArmorIdentity(
+            CharacterInstance actor, string ability, string buff,
+            double duration = 0)
         {
             string owner = InstanceKey(actor.Id);
             string source = RemainingFrostArmorSource(actor.Id, ability);
             unitStatuses[owner].RemoveSource(source);
-            // Buff lasts until dispelled in W3X. The aura-origin sentinel
-            // models an infinite identity, not an invented armor bonus.
             unitStatuses[owner].Apply(new CombatEffect(source,
-                CombatEffectType.ArmorBuff, CombatEffectOrigin.Aura, 0, 0));
+                CombatEffectType.ArmorBuff,
+                duration > 0 ? CombatEffectOrigin.TriggeredSkill :
+                    CombatEffectOrigin.Aura, 0, duration));
             events.Add(new CharacterCombatEvent(
                 CharacterCombatEventType.StatusApplied, owner, owner,
                 actor.Catalog.Name + " · " + buff,
                 "MODEL_ONLY " + ability + "/" + buff +
-                " 강화 상태 등록 / 수치 미확인·해제 가능", 0));
+                " 강화 상태 등록 / 수치 미확인·해제 가능" +
+                (duration > 0 ? " / " +
+                 duration.ToString(CultureInfo.InvariantCulture) + "초" : ""),
+                0));
+        }
+
+        private void RemainingGrantFrostArmor(CharacterInstance actor,
+            SpatialCombatEnemy target, SourceRemainingCallback spec,
+            string ability, string buff)
+        {
+            ApplySourceNativeFrostArmorIdentity(actor, ability, buff);
         }
 
         private bool RemainingHasNativeBuff(CharacterInstance actor, string buff)
@@ -758,11 +769,10 @@ namespace Ordr.Mobile.Combat
                 return;
             }
 
-            // CDz: A133 frostarmor applies B07T; a second hit while its
-            // 12s follow-up window is active takes the .03s quick path.
-            double armorUntil;
-            bool armored = remainingBurgessArmorUntil.TryGetValue(actor.Id,
-                out armorUntil) && armorUntil > effectExecutor.Time;
+            // CDz: A133 frostarmor applies B07T. A subsequent positive
+            // hit while the native B07T status remains takes the .03s path.
+            // B07T is dispellable and may expire before another hit.
+            bool armored = RemainingHasFrostArmor(actor, "A133");
             if (armored)
             {
                 RemainingProc(actor, target, spec,
@@ -774,7 +784,14 @@ namespace Ordr.Mobile.Combat
             }
             else
             {
-                remainingBurgessArmorUntil[actor.Id] = effectExecutor.Time + 12;
+                // CDz schedules removal after .315+.375+.35 windup/recovery,
+                // then 12-min(confirmedBasicDamage/10000, 9) seconds.
+                // Using the original positive basic-hit receipt prevents a
+                // fixed 12-second approximation and permits real dispels.
+                double armorSeconds = 1.04 +
+                    12 - Math.Min(actual / 10000.0, 9);
+                ApplySourceNativeFrostArmorIdentity(actor,
+                    "A133", "B07T", armorSeconds);
                 RemainingProc(actor, target, spec,
                     "B07T 획득 · .69초 후 파동 엘보");
                 // CDz: .315 + .375 windup, .35 recovery; release at 1.04s.

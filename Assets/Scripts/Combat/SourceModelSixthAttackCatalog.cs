@@ -42,9 +42,10 @@ namespace Ordr.Mobile.Combat
             new SourceScriptAttackSpec("R-40", "h02J", "Bp1", 100, 10,
                 Array.Empty<SourceScriptHit>(),
                 new[] { Circle(400, 6000, 1, 1.5) }, null),
-            // Bq9: line/story targets (boss/enraged take an earlier buff
-            // branch). 16% yields 250000 direct + 100000 AoE;
-            // story(A904) has an additional direct 375000.
+            // Bq9: boss and unbuffed A903/enraged targets enter Bq8
+            // before any 16% roll. After B05G, enraged attacks use this
+            // 16% branch and add 18% max HP once in the runtime.
+            // Story(A904) adds an additional direct 375000.
             new SourceScriptAttackSpec("H-17", "h03Z", "Bq9", 100, 16,
                 Array.Empty<SourceScriptHit>(),
                 new[] {
