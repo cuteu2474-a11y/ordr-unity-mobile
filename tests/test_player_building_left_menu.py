@@ -81,7 +81,7 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
             ("DrawStory", "private void DrawFusion(",
              'DrawStatusRow("현재 목표"', "RequestOriginalStoryBuilding(stage)"),
             ("DrawFusion", "private void DrawFusionConfirmation(",
-             "DrawActionRow(rowTitle", "pendingFusion = offer"),
+             "DrawFusionRecipeCard(offer)", "pendingFusion = offer"),
             ("DrawTreasureGacha", "private void DrawAutomaticWispStatus(",
              "DrawActionRow(\"보물 탐색\"", "RequestMobileTreasureGacha()"),
             ("DrawHelperCow", "private void DrawAlchemyPanel(",
@@ -104,12 +104,22 @@ class PlayerBuildingLeftMenuTests(unittest.TestCase):
         self.assertIn("manual.RequestStoryDispatch(actor.InstanceId)", panel)
         self.assertIn("manual.RequestStoryRecall(actor.InstanceId)", panel)
         self.assertIn("RequestLowerGradeSale(", panel)
-        self.assertIn("CanExecuteFusionRecipe(offer.RecipeId)", panel)
-        # The action title now explains near-ready common-material shortages.
-        # Keep checking a real clickable row and its confirmation flow.
-        self.assertIn("string rowTitle = fusionListCategory", panel)
-        self.assertIn("GUI.enabled = previousEnabled && offer.IsReady && executable", panel)
-        self.assertIn("MobileFusionProductionAssistant.CraftRepeated(", panel)
+        # The fusion UI was split into filter, card, material strip and fixed
+        # confirmation methods. Assert each action and source guard, not the
+        # removed legacy row-title implementation.
+        self.assertRegex(panel, r"CanExecuteFusionRecipe\(\s*offer\.RecipeId\)")
+        self.assertIn('DrawFusionCategoryButton(FusionListCategory.Ready, "가능")', panel)
+        self.assertIn('DrawFusionCategoryButton(FusionListCategory.NearReady, "임박")', panel)
+        self.assertIn("GUILayout.Button(FusionDisplayName(offer) + grade", panel)
+        self.assertIn("DrawFusionMaterialRow(offer);", panel)
+        self.assertIn("GUI.enabled = enabled && canCraft;", panel)
+        self.assertRegex(panel, r"CraftRepeated\(\s*latest\.RecipeId, 1,")
+        self.assertNotIn("fusionRepeatCount", panel)
+        self.assertNotIn("fusionSearch", panel)
+        drawer = panel.split("private void DrawRightDrawer(", 1)[1].split(
+            "private void DrawStandbyDashboard(", 1)[0]
+        self.assertLess(drawer.index("EndPanelScroll(area);"),
+                        drawer.index("DrawFusionConfirmation();"))
         self.assertIn("판매 확인", panel)
         self.assertIn("분해 시작", panel)
         self.assertIn("유닛 소비 및 연금술 확정", panel)

@@ -43,7 +43,9 @@ namespace Ordr.Mobile.Tests
             }
             public long Actor(string raw, string ability = null)
             {
-                long id = Combat.SpawnVerifiedOriginalPositionCharacter(World.CatalogId(raw), -3500, 4300);
+                // Arrange a player-owned source through the public runtime API.
+                // Original placement is exercised by the gambling world itself.
+                long id = Combat.SpawnCharacter(World.CatalogId(raw), -3500, 4300);
                 if (ability != null) Assert.IsTrue(Registry.TryDeferOriginalAbility(id, ability));
                 return id;
             }

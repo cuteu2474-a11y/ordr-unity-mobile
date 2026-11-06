@@ -14,7 +14,7 @@
 | 해당 APK의 검사 | Unity EditMode 2,161/2,161 통과. 필수 데이터 패킹·CRC·해시·ARM64/ARMv7·v2 서명 검증 통과 |
 | 최신 main 코드 | 조합·위습·졸업 도박소와 13+26개 도감 자동 효과 경로·원본 콜백 5건 등이 연결돼 있습니다. 일부 기술은 발동 경로만 연결된 상태이며 전체 통합 검증 대기 |
 | 이전 도구 수정 검사 | Windows·Python 3.12: 340건 중 337건 통과·3건 건너뜀, 실패/오류 없음. 현황 JSON·생성 유닛 표 일치 검사 통과 |
-| 최근 실패·이번 수정 | 실행 [#42057808399](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/42057808399)에서 C# 컴파일을 통과하고 Unity EditMode 2,234건 중 2,227건 통과·7건 실패해 APK 단계가 건너뛰어졌습니다. 원인: 해적선 분류 표기 불일치(3건), 가반 I-08 `activeMana`의 평타 중 선소모(1건), 스토리 `BdL` 충전을 특성포인트로 잘못 기대한 검사(1건), 모건 치명타 이외 기술을 함께 판정한 검사(2건). 해당 경로와 검사를 함께 수정했으며 **새 Unity·APK 검증 결과는 아직 확인되지 않았습니다.** |
+| 최근 실패·이번 수정 | [#42135654073](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/42135654073)은 조합 UI를 개편한 뒤 낡은 Python UI 구조 단언 2건 때문에 342건 중 2건 실패(1건 건너뜀)하여 Unity/APK가 실행되지 않았습니다. 직전 [#42126805095](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/42126805095)은 Python을 통과했지만 Unity EditMode 테스트의 내부 전용 `SpawnVerifiedOriginalPositionCharacter` 직접 호출 때문에 C# CS1061 컴파일 실패했습니다. UI 검사 기준을 실제 카드/하단 단일 거래 흐름에 맞게 고치고, 테스트 준비 유닛은 공개 `SpawnCharacter`로 생성하도록 수정했습니다. **신규 Unity 검증 및 APK 성공은 새 Actions 결과 확인 전까지 미확인입니다.** |
 | 휴대폰 검증 | 설치·터치 조작·발열/성능·65R 전체 플레이 미확인 |
 
 [APK 실행·다운로드](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41941260044) · [수정 전 실패 기록](https://github.com/cuteu2474-a11y/ordr-unity-mobile/actions/runs/41994323743). ZIP은 11월 19일 10:01 만료 예정입니다. 다운로드 절차와 파일 구성은 [실행과 APK](unity-editmode-test.md)에 있습니다.
