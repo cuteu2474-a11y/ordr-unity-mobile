@@ -16,7 +16,7 @@ namespace Ordr.Mobile.Unity
     {
         private enum Tab { Play, Units, Story, Fusion, Shop, Gambling, Wisp, LogPose, Helper, Alchemy, Missions, UpgradeOne, UpgradeTwo, Research }
         private enum ScoreboardPage { Summary, Commons, Utility }
-        private enum FusionListCategory { All, NearReady }
+        private enum FusionListCategory { All, Ready, NearReady, Bookmarked }
 
         [SerializeField] private OrdrCharacterCombatController controller;
         [SerializeField] private bool openByDefault;
@@ -99,13 +99,13 @@ namespace Ordr.Mobile.Unity
         private MobileFusionPreview pendingFusion;
         private readonly MobileFusionBookmarks fusionBookmarks = new MobileFusionBookmarks();
         private readonly MobileFusionGoalTracker fusionGoal = new MobileFusionGoalTracker();
-        private bool showOnlyBookmarkedFusion;
-        private int fusionRepeatCount = 1;
-        // The catalog has hundreds of recipes; only draw one phone-sized page.
-        // These controls never authorize the original fusion transaction.
-        private string fusionSearch = "";
+        // UI-only browsing: original source checks remain authoritative.
+        private string fusionGradeFilter = "전체";
+        private string fusionShortcutQuery = "";
+        private Vector2 fusionGradeScroll;
+        private readonly Dictionary<string, Vector2> fusionMaterialScroll =
+            new Dictionary<string, Vector2>(StringComparer.Ordinal);
         private bool fusionMaterialsReadyOnly;
-        private bool fusionExecutableOnly;
         private FusionListCategory fusionListCategory = FusionListCategory.All;
         private int fusionPage;
         private int originalJassPage;
@@ -198,6 +198,7 @@ namespace Ordr.Mobile.Unity
             expandedGamblingOfferId = null;
             currentTab = selected;
             visible = true;
+            if (selected != Tab.Fusion) fusionShortcutQuery = "";
             if (selected == Tab.Play) scoreboardPage = ScoreboardPage.Summary;
             Vector2 remembered;
             scroll = restoreScroll && tabScrollPositions.TryGetValue(selected, out remembered)
@@ -555,6 +556,10 @@ namespace Ordr.Mobile.Unity
                 }
                 GUILayout.EndVertical();
             }
+            // The one-transaction confirmation is last in the right drawer,
+            // outside the scroll even when an action notice is present.
+            if (currentTab == Tab.Fusion)
+                DrawFusionConfirmation();
 
             GUILayout.EndVertical();
             GUILayout.EndArea();
@@ -1439,14 +1444,14 @@ namespace Ordr.Mobile.Unity
                 OrdrMobileUiTheme.Explanation);
             if (GUILayout.Button("행운의 토큰 사용 조합 보기", GUILayout.MinHeight(64)))
             {
-                fusionSearch = "토큰";
                 fusionListCategory = FusionListCategory.All;
+                fusionGradeFilter = "전체";
                 fusionMaterialsReadyOnly = false;
-                fusionExecutableOnly = false;
-                showOnlyBookmarkedFusion = false;
                 fusionPage = 0;
                 originalJassPage = 0;
                 SelectTab(Tab.Fusion);
+                // A token shortcut is a removable list filter, not a name-search box.
+                fusionShortcutQuery = "토큰";
             }
             OrdrMobileUiTheme.DrawStatusRow("위습 교환",
                 owned < MobileLuckyTokenInventory.WispExchangeCost
@@ -2484,289 +2489,342 @@ namespace Ordr.Mobile.Unity
             GUILayout.EndVertical();
         }
 
+        // The battlefield and left menu remain visible while this compact
+        // recipe browser lives in the existing right-hand drawer.
         private void DrawFusion()
         {
             DrawFusionGoalStatus();
-            DrawFusionConfirmation();
-            DrawChoiceWispMerge();
-            // A navigation-only category: immediately craftable entries and
-            // source-authorized recipes blocked exclusively by common units.
+
             var nearReadyOffers = MobileFusionBrowser.SelectNearReadyHighGrade(
                 fusionOffers, controller.ManualActions.CanExecuteFusionRecipe);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(fusionListCategory == FusionListCategory.All ?
-                    "전체 조합 ✓" : "전체 조합",
-                fusionListCategory == FusionListCategory.All ?
-                    OrdrMobileUiTheme.PrimaryButton : GUI.skin.button,
-                GUILayout.MinHeight(62f)))
-            {
-                if (fusionListCategory != FusionListCategory.All)
-                {
-                    fusionListCategory = FusionListCategory.All;
-                    fusionPage = 0;
-                    expandedRecipeId = null;
-                    scroll = Vector2.zero;
-                }
-            }
-            if (GUILayout.Button(fusionListCategory == FusionListCategory.NearReady ?
-                    "조합 임박 " + nearReadyOffers.Count + " ✓" :
-                    "조합 임박 " + nearReadyOffers.Count,
-                fusionListCategory == FusionListCategory.NearReady ?
-                    OrdrMobileUiTheme.PrimaryButton : GUI.skin.button,
-                GUILayout.MinHeight(62f)))
-            {
-                if (fusionListCategory != FusionListCategory.NearReady)
-                {
-                    fusionListCategory = FusionListCategory.NearReady;
-                    fusionPage = 0;
-                    expandedRecipeId = null;
-                    scroll = Vector2.zero;
-                }
-            }
+            DrawFusionCategoryButton(FusionListCategory.All, "전체");
+            DrawFusionCategoryButton(FusionListCategory.Ready, "가능");
+            DrawFusionCategoryButton(FusionListCategory.NearReady, "임박");
+            DrawFusionCategoryButton(FusionListCategory.Bookmarked, "★ 저장");
             GUILayout.EndHorizontal();
-            if (fusionListCategory == FusionListCategory.NearReady)
-                GUILayout.Label("즉시 조합 가능 또는 흔함 유닛만 부족 · 결과 등급 높은 순 · 같은 등급은 부족한 수 적은 순",
-                    OrdrMobileUiTheme.Overline);
-            GUILayout.BeginVertical(GUI.skin.box);
-            string query = GUILayout.TextField(fusionSearch, GUILayout.MinHeight(56));
-            if (!string.Equals(query, fusionSearch, StringComparison.Ordinal))
-            {
-                fusionSearch = query;
-                fusionPage = 0;
-                originalJassPage = 0;
-                scroll = Vector2.zero;
-            }
+
+            // Only navigation wraps horizontally; each recipe's UNIT, gold and
+            // wood requirements occupy one independent horizontal strip.
+            fusionGradeScroll = GUILayout.BeginScrollView(fusionGradeScroll,
+                false, false, GUI.skin.horizontalScrollbar, GUIStyle.none,
+                GUILayout.Height(61f));
+            GUILayout.BeginHorizontal();
+            DrawFusionGradeButton("전체");
+            DrawFusionGradeButton("희귀");
+            DrawFusionGradeButton("전설");
+            DrawFusionGradeButton("히든");
+            DrawFusionGradeButton("초월");
+            DrawFusionGradeButton("불멸");
+            DrawFusionGradeButton("기타");
+            GUILayout.EndHorizontal();
+            GUILayout.EndScrollView();
+
             GUILayout.BeginHorizontal();
             if (fusionListCategory == FusionListCategory.All &&
                 GUILayout.Button(fusionMaterialsReadyOnly ?
-                "유닛 재료 보유 ✓" : "재료 보유만", GUILayout.MinHeight(60)))
+                    "유닛 보유 ✓" : "유닛 보유", GUILayout.MinHeight(48f)))
             {
                 fusionMaterialsReadyOnly = !fusionMaterialsReadyOnly;
                 fusionPage = 0;
                 scroll = Vector2.zero;
             }
-            if (GUILayout.Button("검색 초기화", GUILayout.MinHeight(60)))
+            if (!string.IsNullOrEmpty(fusionShortcutQuery) &&
+                GUILayout.Button("토큰 조합 ×", GUILayout.MinHeight(48f)))
             {
-                fusionSearch = "";
-                fusionMaterialsReadyOnly = false;
-                fusionPage = 0;
-                originalJassPage = 0;
-                scroll = Vector2.zero;
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
-            bool onlyExecutable = fusionExecutableOnly;
-            if (fusionListCategory == FusionListCategory.All)
-                onlyExecutable = GUILayout.Toggle(fusionExecutableOnly,
-                "제작 경로 연결만 (안흔함 " + controller.ExecutableCommonFusionCount +
-                " / 특별함 " + controller.ExecutableSpecialFusionCount +
-                " / 희귀함 " + controller.ExecutableRareFusionCount +
-                " / 전설 " + controller.ExecutableLegendaryFusionCount +
-                " / 신비함 " + controller.ExecutableMysticFusionCount + "종)",
-                GUILayout.MinHeight(56));
-            if (onlyExecutable != fusionExecutableOnly)
-            {
-                fusionExecutableOnly = onlyExecutable;
-                fusionPage = 0;
-            }
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button(showOnlyBookmarkedFusion ? "전체 제작식" :
-                "즐겨찾기 " + fusionBookmarks.Count + "개만", GUILayout.MinHeight(56)))
-            {
-                showOnlyBookmarkedFusion = !showOnlyBookmarkedFusion;
+                fusionShortcutQuery = "";
                 fusionPage = 0;
                 scroll = Vector2.zero;
             }
             GUILayout.EndHorizontal();
 
-            if (!controller.ManualActions.HasExecutableFusionService)
-                OrdrMobileUiTheme.DrawStatusRow("제작",
-                    "준비 중", OrdrMobileUiTheme.Gold);
-            if (GUILayout.Button("보유 재료 새로고침", GUILayout.MinHeight(64)))
+            IReadOnlyList<MobileFusionPreview> source = fusionOffers;
+            if (fusionListCategory == FusionListCategory.NearReady)
+                source = nearReadyOffers;
+            var filtered = new List<MobileFusionPreview>();
+            foreach (var offer in source)
             {
-                RefreshCurrent();
-                pendingFusion = null;
+                bool executable = controller.ManualActions.CanExecuteFusionRecipe(
+                    offer.RecipeId);
+                if (fusionListCategory == FusionListCategory.Ready &&
+                    (!offer.IsReady || !executable)) continue;
+                if (fusionListCategory == FusionListCategory.NearReady &&
+                    (!offer.MissingCommonUnits.HasValue || offer.IsReady)) continue;
+                if (fusionListCategory == FusionListCategory.Bookmarked &&
+                    !fusionBookmarks.Contains(offer.RecipeId)) continue;
+                if (fusionGradeFilter != "전체" &&
+                    FusionGradeBucket(offer.ResultGrade) != fusionGradeFilter)
+                    continue;
+                filtered.Add(offer);
             }
 
             int matches, pages, resolved;
-            IReadOnlyList<MobileFusionPreview> browsedOffers =
-                fusionListCategory == FusionListCategory.NearReady ?
-                    nearReadyOffers : fusionOffers;
-            if (fusionListCategory == FusionListCategory.All && fusionExecutableOnly)
-            {
-                var executableOffers = new List<MobileFusionPreview>();
-                foreach (var offer in fusionOffers)
-                    if (controller.ManualActions.CanExecuteFusionRecipe(offer.RecipeId))
-                        executableOffers.Add(offer);
-                browsedOffers = executableOffers.AsReadOnly();
-            }
-            if (showOnlyBookmarkedFusion)
-                browsedOffers = fusionBookmarks.Filter(browsedOffers);
-            var visibleOffers = MobileFusionBrowser.Select(browsedOffers,
-                fusionSearch, fusionListCategory == FusionListCategory.All &&
-                fusionMaterialsReadyOnly, fusionPage,
-                FusionPageSize, out matches, out pages, out resolved);
+            var visibleOffers = MobileFusionBrowser.Select(filtered.AsReadOnly(),
+                fusionShortcutQuery,
+                fusionListCategory == FusionListCategory.All &&
+                    fusionMaterialsReadyOnly,
+                fusionPage, FusionPageSize, out matches, out pages, out resolved);
             fusionPage = resolved;
-            GUILayout.Label("조합식 " + matches + " / " + browsedOffers.Count +
-                "건 · " + (resolved + 1) + "/" + pages + "쪽" +
-                (fusionListCategory == FusionListCategory.NearReady ?
-                    " · 높은 등급순" : ""));
+            GUILayout.Label(matches + "건 · " + (resolved + 1) + "/" + pages,
+                OrdrMobileUiTheme.Overline);
             if (matches == 0)
-                GUILayout.Label("검색 결과 없음");
+                GUILayout.Label("해당하는 조합이 없습니다.", OrdrMobileUiTheme.Overline);
             foreach (var offer in visibleOffers)
-            {
-                bool executable = controller.ManualActions.CanExecuteFusionRecipe(offer.RecipeId);
-                string status = fusionListCategory == FusionListCategory.NearReady ?
-                    (offer.IsReady ? "지금 조합 가능" :
-                        "흔함 유닛 " + offer.MissingCommonUnits.Value + "기만 부족") :
-                    !offer.HasAllUnitMaterials ? "유닛 재료 미확보" :
-                    !executable ? "유닛 재료 확보 · 원본 제작 미승인" :
-                    offer.IsReady ? "재료 준비 · 제작 가능" : "제작 조건·재화 확인 필요";
-                bool expanded = expandedRecipeId == offer.RecipeId;
-                GUILayout.BeginHorizontal();
-                bool previousEnabled = GUI.enabled;
-                GUI.enabled = previousEnabled && offer.IsReady && executable;
-                string rowTitle = fusionListCategory == FusionListCategory.NearReady ?
-                    offer.Title + (offer.IsReady ? " · 조합 가능" :
-                        " · 흔함 " + offer.MissingCommonUnits.Value + "기 부족") : offer.Title;
-                if (OrdrMobileUiTheme.DrawActionRow(rowTitle,
-                    "제작", OrdrMobileUiTheme.Gold, 72f))
-                {
-                    pendingFusion = offer;
-                    fusionRepeatCount = 1;
-                    pendingEconomy = null;
-                    scroll = Vector2.zero;
-                    notice = "제작 대기";
-                }
-                GUI.enabled = previousEnabled;
-                if (GUILayout.Button(expanded ? "접기" : "상세",
-                    GUILayout.Width(80f), GUILayout.MinHeight(72f)))
-                {
-                    expandedRecipeId = expanded ? null : offer.RecipeId;
-                    expanded = !expanded;
-                }
-                GUILayout.EndHorizontal();
-                if (!expanded) continue;
-                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
-                OrdrMobileUiTheme.DrawStatusRow("재료",
-                    status, OrdrMobileUiTheme.Aqua);
-                if (expandedRecipeId == offer.RecipeId)
-                {
-                    if (GUILayout.Button(fusionBookmarks.Contains(offer.RecipeId) ? "즐겨찾기 해제" : "즐겨찾기 저장",
-                        GUILayout.MinHeight(56)))
-                    {
-                        bool nowSaved = fusionBookmarks.Toggle(offer.RecipeId);
-                        if (!nowSaved && !fusionBookmarks.Contains(offer.RecipeId))
-                            notice = "즐겨찾기 해제 또는 최대 12개입니다.";
-                    }
-                    if (GUILayout.Button(fusionGoal.RecipeId == offer.RecipeId ? "목표 조합 해제" : "목표로 추적",
-                        GUILayout.MinHeight(56)))
-                    {
-                        bool tracking = fusionGoal.Toggle(offer.RecipeId);
-                        notice = tracking ? "목표 설정 완료" : "목표 추적을 해제했습니다.";
-                    }
-                    GUILayout.Label(offer.OriginalMaterialsAndCost);
-                    if (offer.MissingMaterials.Count != 0)
-                        GUILayout.Label("부족/미승인: " + string.Join(", ", ToStringArray(offer.MissingMaterials)));
-                    else
-                        GUILayout.Label("재료 확보");
-                    if (controller.OriginalJassFusions != null &&
-                        controller.OriginalFusionObjectPreview != null &&
-                        controller.OriginalJassFusions.FindByAbility(offer.RecipeId) != null &&
-                        GUILayout.Button(routeId == offer.RecipeId ? "경로 닫기" : "하위 조합 경로", GUILayout.MinHeight(56)))
-                    {
-                        if (routeId == offer.RecipeId)
-                        {
-                            routeId = null;
-                            routeSteps = new OriginalJassFusionDependencyStep[0];
-                        }
-                        else
-                        {
-                            routeSteps = new OriginalJassFusionDependencyPlanner(controller.OriginalJassFusions,
-                                controller.OriginalFusionObjectPreview).Build(offer.RecipeId, 4);
-                            routeId = offer.RecipeId;
-                        }
-                    }
-                }
-                GUILayout.EndVertical();
-            }
-            if (routeId != null)
-            {
-                GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label("하위 조합 경로", OrdrMobileUiTheme.Subheading);
-                foreach (var step in routeSteps)
-                    GUILayout.Label(new string('　', Math.Min(step.Depth, 5)) +
-                        "· " + step.Name + " ×" + step.Count +
-                        (step.Source == null ? " · 하위 조합 없음" :
-                        " · 하위 조합 / 추가 조건 " + step.SpecialCount + "개") +
-                        (step.DepthLimited ? " · 더 깊은 경로 있음" : ""));
-                GUILayout.EndVertical();
-            }
-            if (pages > 1)
-            {
-                GUILayout.BeginHorizontal();
-                bool previous = GUI.enabled;
-                GUI.enabled = previous && resolved > 0;
-                if (GUILayout.Button("이전", GUILayout.MinHeight(60)))
-                {
-                    fusionPage--;
-                    scroll = Vector2.zero;
-                }
-                GUI.enabled = previous && resolved + 1 < pages;
-                if (GUILayout.Button("다음", GUILayout.MinHeight(60)))
-                {
-                    fusionPage++;
-                    scroll = Vector2.zero;
-                }
-                GUI.enabled = previous;
-                GUILayout.EndHorizontal();
-            }
-            if (GUILayout.Button(showOriginalAudit ? "원본 등록식 닫기" : "원본 등록식 보기",
-                GUILayout.MinHeight(56f)))
+                DrawFusionRecipeCard(offer);
+
+            DrawPager(resolved, pages, page => fusionPage = page);
+            DrawChoiceWispMerge();
+            if (GUILayout.Button(showOriginalAudit ? "원본 등록식 닫기" :
+                "원본 등록식 보기", GUILayout.MinHeight(48f)))
                 showOriginalAudit = !showOriginalAudit;
             if (showOriginalAudit) DrawOriginalJassAudit();
         }
 
+        private void DrawFusionCategoryButton(FusionListCategory category,
+            string title)
+        {
+            bool selected = fusionListCategory == category;
+            if (!GUILayout.Button(title,
+                selected ? OrdrMobileUiTheme.SelectedTab : GUI.skin.button,
+                GUILayout.MinHeight(52f), GUILayout.MinWidth(0f),
+                GUILayout.ExpandWidth(true))) return;
+            if (selected) return;
+            fusionListCategory = category;
+            fusionPage = 0;
+            expandedRecipeId = null;
+            scroll = Vector2.zero;
+        }
+
+        private void DrawFusionGradeButton(string grade)
+        {
+            bool selected = fusionGradeFilter == grade;
+            if (!GUILayout.Button(grade,
+                selected ? OrdrMobileUiTheme.SelectedTab : GUI.skin.button,
+                GUILayout.Width(82f), GUILayout.MinHeight(48f))) return;
+            if (selected) return;
+            fusionGradeFilter = grade;
+            fusionPage = 0;
+            scroll = Vector2.zero;
+        }
+
+        private static string FusionGradeBucket(string grade)
+        {
+            if (grade == "희귀함" || grade == "희귀") return "희귀";
+            if (grade == "전설") return "전설";
+            if (grade == "히든" || grade == "해적선") return "히든";
+            if (grade == "초월함" || grade == "초월") return "초월";
+            if (grade == "불멸의" || grade == "불멸") return "불멸";
+            return "기타";
+        }
+
+        private static string FusionDisplayName(MobileFusionPreview offer)
+        {
+            int separator = offer.Title.IndexOf(" · ", StringComparison.Ordinal);
+            return separator >= 0 ? offer.Title.Substring(0, separator) : offer.Title;
+        }
+
+        private void DrawFusionResultPortrait(MobileFusionPreview offer, float size)
+        {
+            string unitId = null;
+            var registration = controller.OriginalJassFusions == null ? null :
+                controller.OriginalJassFusions.FindByAbility(offer.RecipeId);
+            if (registration != null && registration.Results.Count == 1 &&
+                registration.Results[0].Kind == "UNIT" &&
+                controller.OriginalFusionObjectPreview != null)
+            {
+                var result = controller.OriginalFusionObjectPreview.Find(
+                    registration.Results[0].Rawcode);
+                if (result != null) unitId = result.CatalogUnitId;
+            }
+            if (!string.IsNullOrEmpty(unitId))
+            {
+                Sprite portrait = OrdrCharacterPortraits.Find(unitId);
+                if (portrait == null) portrait = OrdrBattlefieldArt.UnitSprite(unitId);
+                if (portrait != null)
+                {
+                    GUILayout.Box(portrait.texture, GUILayout.Width(size),
+                        GUILayout.Height(size));
+                    return;
+                }
+            }
+            GUILayout.Box("◆", GUILayout.Width(size), GUILayout.Height(size));
+        }
+
+        private void DrawFusionRecipeCard(MobileFusionPreview offer)
+        {
+            bool selected = pendingFusion != null &&
+                pendingFusion.RecipeId == offer.RecipeId;
+            bool executable = controller.ManualActions.CanExecuteFusionRecipe(
+                offer.RecipeId);
+            bool canCraft = offer.IsReady && executable;
+            bool expanded = expandedRecipeId == offer.RecipeId;
+            GUILayout.BeginVertical(selected ? OrdrMobileUiTheme.FusionSelectedCard :
+                GUI.skin.box);
+            GUILayout.BeginHorizontal();
+            DrawFusionResultPortrait(offer, 52f);
+            string grade = string.IsNullOrEmpty(offer.ResultGrade) ? "" :
+                "\n" + offer.ResultGrade;
+            if (GUILayout.Button(FusionDisplayName(offer) + grade,
+                selected ? OrdrMobileUiTheme.SelectedTab : GUI.skin.button,
+                GUILayout.MinHeight(58f), GUILayout.MinWidth(0f),
+                GUILayout.ExpandWidth(true)))
+            {
+                pendingFusion = offer;
+                pendingEconomy = null;
+                notice = "";
+            }
+            GUILayout.Label(canCraft ? "● 가능" :
+                !executable ? "● 잠김" : "● 부족",
+                OrdrMobileUiTheme.Overline, GUILayout.Width(58f),
+                GUILayout.Height(54f));
+            if (GUILayout.Button(fusionBookmarks.Contains(offer.RecipeId) ?
+                "★" : "☆", GUILayout.Width(42f), GUILayout.MinHeight(54f)))
+                fusionBookmarks.Toggle(offer.RecipeId);
+            if (GUILayout.Button(expanded ? "접기" : "상세",
+                GUILayout.Width(58f), GUILayout.MinHeight(54f)))
+                expandedRecipeId = expanded ? null : offer.RecipeId;
+            GUILayout.EndHorizontal();
+
+            DrawFusionMaterialRow(offer);
+            if (expanded)
+            {
+                GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+                if (offer.MissingMaterials.Count != 0)
+                    GUILayout.Label("부족/미승인: " +
+                        string.Join(", ", ToStringArray(offer.MissingMaterials)));
+                if (GUILayout.Button(fusionGoal.RecipeId == offer.RecipeId ?
+                    "목표 해제" : "목표로 추적", GUILayout.MinHeight(48f)))
+                    fusionGoal.Toggle(offer.RecipeId);
+                if (controller.OriginalJassFusions != null &&
+                    controller.OriginalFusionObjectPreview != null &&
+                    controller.OriginalJassFusions.FindByAbility(offer.RecipeId) != null &&
+                    GUILayout.Button(routeId == offer.RecipeId ?
+                        "하위 경로 닫기" : "하위 조합 경로", GUILayout.MinHeight(48f)))
+                {
+                    if (routeId == offer.RecipeId)
+                    {
+                        routeId = null;
+                        routeSteps = new OriginalJassFusionDependencyStep[0];
+                    }
+                    else
+                    {
+                        routeSteps = new OriginalJassFusionDependencyPlanner(
+                            controller.OriginalJassFusions,
+                            controller.OriginalFusionObjectPreview)
+                            .Build(offer.RecipeId, 4);
+                        routeId = offer.RecipeId;
+                    }
+                }
+                if (routeId == offer.RecipeId)
+                    foreach (var step in routeSteps)
+                        GUILayout.Label(new string('　', Math.Min(step.Depth, 5)) +
+                            "· " + step.Name + " ×" + step.Count);
+                GUILayout.EndVertical();
+            }
+            GUILayout.EndVertical();
+        }
+
+        // Existing preview strings are source-backed: "UNIT ×2 (보유 1)",
+        // "골드 1000 (보유 800)", "목재 7 (보유 7)" and special conditions.
+        // Show all of them on a single swipeable strip, without turning a
+        // display-only deficit into transaction authority.
+        private void DrawFusionMaterialRow(MobileFusionPreview offer)
+        {
+            Vector2 value;
+            if (!fusionMaterialScroll.TryGetValue(offer.RecipeId, out value))
+                value = Vector2.zero;
+            value = GUILayout.BeginScrollView(value, false, false,
+                GUI.skin.horizontalScrollbar, GUIStyle.none,
+                GUILayout.Height(47f));
+            GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+            string[] pieces = offer.OriginalMaterialsAndCost.Split(
+                new[] { " + ", " · ", " | " }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string raw in pieces)
+            {
+                if (raw == "추가 재화 없음" ||
+                    raw == "원본 부가효과 미검증" ||
+                    raw == "횟수 한도는 모바일 모델") continue;
+                string label = raw.Replace("골드 ", "돈 ")
+                    .Replace("목재 ", "나무 ")
+                    .Replace("등록 GOLD ", "돈 ")
+                    .Replace("WOOD ", "나무 ");
+                int ownership = FusionMaterialOwnership(raw);
+                GUIStyle chip = ownership < 0 ?
+                    OrdrMobileUiTheme.FusionNeutralChip :
+                    ownership == 0 ? OrdrMobileUiTheme.FusionReadyChip :
+                    OrdrMobileUiTheme.FusionMissingChip;
+                float width = Mathf.Max(68f, chip.CalcSize(
+                    new GUIContent(label)).x + 12f);
+                GUILayout.Label(label, chip, GUILayout.Width(width),
+                    GUILayout.Height(36f));
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.EndScrollView();
+            fusionMaterialScroll[offer.RecipeId] = value;
+        }
+
+        // -1 unknown condition, 0 fully owned, 1 shortage.
+        private static int FusionMaterialOwnership(string material)
+        {
+            int position = material.LastIndexOf("(보유 ", StringComparison.Ordinal);
+            if (position < 0) return -1;
+            int end = material.IndexOf(')', position);
+            if (end < 0) return -1;
+            long owned;
+            if (!long.TryParse(material.Substring(position + 4,
+                end - position - 4), out owned)) return -1;
+            string required = material.Substring(0, position).TrimEnd();
+            int countStart = required.LastIndexOf('×');
+            if (countStart < 0) countStart = required.LastIndexOf(' ');
+            if (countStart < 0) return -1;
+            long count;
+            if (!long.TryParse(required.Substring(countStart + 1).Trim(),
+                out count)) return -1;
+            return owned < count ? 1 : 0;
+        }
+
+        // Fixed footer: one click starts exactly ONE authoritative transaction.
+        // Never keep a repeat-count selector or a stale clickable preview.
         private void DrawFusionConfirmation()
         {
             if (pendingFusion == null) return;
-            GUILayout.BeginVertical(GUI.skin.box);
-            GUILayout.Label("제작 확인", OrdrMobileUiTheme.Subheading);
-            GUILayout.Label("선택됨: " + pendingFusion.Title);
-            GUILayout.Label(pendingFusion.OriginalMaterialsAndCost);
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button(fusionRepeatCount == 1 ? "1회 ✓" : "1회",
-                GUILayout.MinHeight(66))) fusionRepeatCount = 1;
-            if (GUILayout.Button(fusionRepeatCount == 3 ? "3회 ✓" : "3회",
-                GUILayout.MinHeight(66))) fusionRepeatCount = 3;
-            if (GUILayout.Button(fusionRepeatCount == 5 ? "5회 ✓" : "5회",
-                GUILayout.MinHeight(66))) fusionRepeatCount = 5;
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            bool priorEnabled = GUI.enabled;
-            GUI.enabled = priorEnabled &&
-                controller.ManualActions.CanExecuteFusionRecipe(
-                    pendingFusion.RecipeId);
-            if (GUILayout.Button(fusionRepeatCount == 1 ? "조합 확정" :
-                "동일 조합 " + fusionRepeatCount + "회 확정",
-                OrdrMobileUiTheme.PrimaryButton, GUILayout.MinHeight(66)))
+            MobileFusionPreview latest = null;
+            foreach (var offer in fusionOffers)
+                if (offer.RecipeId == pendingFusion.RecipeId)
+                {
+                    latest = offer;
+                    break;
+                }
+            if (latest == null)
             {
-                string recipe = pendingFusion.RecipeId;
-                int amount = fusionRepeatCount;
+                pendingFusion = null;
+                return;
+            }
+            bool canCraft = latest.IsReady &&
+                controller.ManualActions.CanExecuteFusionRecipe(latest.RecipeId);
+            GUILayout.BeginHorizontal(OrdrMobileUiTheme.FusionSelectedCard);
+            DrawFusionResultPortrait(latest, 48f);
+            GUILayout.Label(FusionDisplayName(latest),
+                OrdrMobileUiTheme.Subheading, GUILayout.MinWidth(0f),
+                GUILayout.ExpandWidth(true), GUILayout.MinHeight(62f));
+            bool enabled = GUI.enabled;
+            GUI.enabled = enabled && canCraft;
+            if (GUILayout.Button("조합 확정", OrdrMobileUiTheme.PrimaryButton,
+                GUILayout.Width(118f), GUILayout.MinHeight(62f)))
+            {
                 ShowResult(MobileFusionProductionAssistant.CraftRepeated(
-                    recipe, amount,
+                    latest.RecipeId, 1,
                     controller.ManualActions.CanExecuteFusionRecipe,
                     () => controller.ManualActions.PreviewFusion(
                         Combat.MobileUnitSnapshot()),
                     controller.ManualActions.ConfirmFusion));
                 pendingFusion = null;
-                fusionRepeatCount = 1;
                 RefreshCurrent();
             }
-            GUI.enabled = priorEnabled;
-            if (GUILayout.Button("취소", GUILayout.MinHeight(66))) pendingFusion = null;
+            GUI.enabled = enabled;
+            if (GUILayout.Button("×", GUILayout.Width(42f),
+                GUILayout.MinHeight(62f))) pendingFusion = null;
             GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
         }
 
         private void DrawChoiceWispMerge()
@@ -3208,16 +3266,7 @@ namespace Ordr.Mobile.Unity
             {
                 // Source-audit list is READ ONLY and has its own pagination.
                 // Unlike the old 18-item cap, every named result is accessible.
-                var filtered = new List<JassFusionReadiness>();
-                foreach (var item in originalJassPreview)
-                {
-                    if (string.IsNullOrWhiteSpace(fusionSearch) ||
-                        item.ResultName.IndexOf(fusionSearch.Trim(),
-                            StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        item.AbilityRawcode.IndexOf(fusionSearch.Trim(),
-                            StringComparison.OrdinalIgnoreCase) >= 0)
-                        filtered.Add(item);
-                }
+                var filtered = new List<JassFusionReadiness>(originalJassPreview);
                 int pages = Math.Max(1,
                     1 + (Math.Max(1, filtered.Count) - 1) / OriginalJassPageSize);
                 originalJassPage = Math.Max(0,

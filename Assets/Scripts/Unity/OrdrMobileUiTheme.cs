@@ -36,6 +36,10 @@ namespace Ordr.Mobile.Unity
         private static GUIStyle scoreCardCaption;
         private static GUIStyle scoreCardValue;
         private static GUIStyle scoreCardFooter;
+        private static GUIStyle fusionReadyChip;
+        private static GUIStyle fusionMissingChip;
+        private static GUIStyle fusionNeutralChip;
+        private static GUIStyle fusionSelectedCard;
 
         internal static GUIStyle SelectedTab { get { return selectedTab; } }
         internal static GUIStyle PrimaryButton { get { return primaryButton; } }
@@ -48,6 +52,10 @@ namespace Ordr.Mobile.Unity
         internal static GUIStyle SkillButton { get { return skillButton; } }
         internal static GUIStyle Explanation { get { return explanation; } }
         internal static GUIStyle AccordionBody { get { return accordionBody; } }
+        internal static GUIStyle FusionReadyChip { get { return fusionReadyChip; } }
+        internal static GUIStyle FusionMissingChip { get { return fusionMissingChip; } }
+        internal static GUIStyle FusionNeutralChip { get { return fusionNeutralChip; } }
+        internal static GUIStyle FusionSelectedCard { get { return fusionSelectedCard; } }
         internal const float ComfortableTapHeight = 56f;
         internal const float PrimaryTapHeight = 64f;
         internal static readonly Color Aqua = new Color(0.31f, 0.87f, 0.78f, 1f);
@@ -194,6 +202,24 @@ namespace Ordr.Mobile.Unity
             accordionBody = new GUIStyle(themedSkin.box);
             accordionBody.margin = new RectOffset(7,7,0,12);
             accordionBody.padding = new RectOffset(14,14,14,16);
+
+            // The fusion strip uses game-themed, readable materials without
+            // changing any source-backed readiness or consumption rules.
+            Texture2D fusionReadyPlate = Plate(new Color(.08f,.30f,.27f),
+                new Color(.04f,.18f,.16f), new Color(.34f,.77f,.60f));
+            Texture2D fusionMissingPlate = Plate(new Color(.40f,.17f,.20f),
+                new Color(.24f,.09f,.12f), new Color(.90f,.42f,.46f));
+            Texture2D fusionNeutralPlate = Plate(new Color(.18f,.26f,.37f),
+                new Color(.09f,.15f,.25f), new Color(.50f,.62f,.72f));
+            Texture2D fusionSelectedPlate = Plate(new Color(.20f,.25f,.35f),
+                new Color(.09f,.14f,.24f), new Color(.95f,.72f,.36f));
+            fusionReadyChip = CreateFusionChip(fusionReadyPlate, new Color(.72f,1f,.85f));
+            fusionMissingChip = CreateFusionChip(fusionMissingPlate, new Color(1f,.78f,.79f));
+            fusionNeutralChip = CreateFusionChip(fusionNeutralPlate, Text);
+            fusionSelectedCard = new GUIStyle(themedSkin.box);
+            Background(fusionSelectedCard, fusionSelectedPlate, fusionSelectedPlate, Text);
+            fusionSelectedCard.border = new RectOffset(9,9,9,9);
+            fusionSelectedCard.padding = new RectOffset(12,12,10,10);
             wispCountCaption = new GUIStyle(accordionMeta);
             wispCountCaption.fontSize = 13;
             wispCountCaption.fontStyle = FontStyle.Bold;
@@ -519,6 +545,22 @@ namespace Ordr.Mobile.Unity
         }
 
         // Tiny CPU-generated textured plates, drawn once and 9-sliced.
+        private static GUIStyle CreateFusionChip(Texture2D background,
+            Color textColor)
+        {
+            GUIStyle chip = new GUIStyle(themedSkin.box);
+            Background(chip, background, background, textColor);
+            chip.border = new RectOffset(9,9,9,9);
+            chip.padding = new RectOffset(9,9,6,6);
+            chip.margin = new RectOffset(2,2,1,1);
+            chip.fontSize = 14;
+            chip.fontStyle = FontStyle.Bold;
+            chip.alignment = TextAnchor.MiddleCenter;
+            chip.wordWrap = false;
+            chip.clipping = TextClipping.Clip;
+            return chip;
+        }
+
         private static Texture2D Plate(Color bright, Color dark, Color border)
         {
             const int size=32, radius=7;
