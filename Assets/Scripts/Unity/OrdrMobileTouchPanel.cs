@@ -72,6 +72,7 @@ namespace Ordr.Mobile.Unity
         private long? pendingUnitReroll;
         private MobileTreasureGachaResult lastTreasureResult;
         private int lastTreasureRound;
+        private int poneglyphUnitPage;
         private long? pendingCommonSaleId;
         private string pendingCommonSaleName;
         private int pendingMissionReroll = -1;
@@ -2899,6 +2900,7 @@ namespace Ordr.Mobile.Unity
 
         private void DrawTreasureGacha()
         {
+            DrawPoneglyphPanel();
             var treasure = controller.OriginalTreasureHunt;
             if (treasure != null)
                 OrdrMobileUiTheme.DrawStatusRow("남은 보물",
@@ -2946,6 +2948,114 @@ namespace Ordr.Mobile.Unity
                     GUILayout.Label("획득 " + lastTreasureResult.RewardText());
                 GUILayout.EndVertical();
             }
+        }
+
+        private void DrawPoneglyphPanel()
+        {
+            GUILayout.BeginVertical(OrdrMobileUiTheme.AccordionBody);
+            GUILayout.Label("공유 도전과제 · 포네그리프", OrdrMobileUiTheme.Subheading);
+            var session = controller.Poneglyph;
+            if (session == null)
+            {
+                GUILayout.Label("게임을 시작하면 공유 도전과제 기록이 활성화됩니다.",
+                    OrdrMobileUiTheme.Explanation);
+                GUILayout.EndVertical();
+                return;
+            }
+
+            OrdrMobileUiTheme.DrawStatusRow("공유 미션",
+                session.SharedCompletedCount + "/8", OrdrMobileUiTheme.Gold);
+            for (int i = 0; i < Original323PoneglyphSession.SharedMissionNames.Length; i++)
+            {
+                var kind = (Original323SharedMissionKind)i;
+                GUILayout.Label((session.IsSharedMissionCompleted(kind) ? "✓ " : "□ ") +
+                    Original323PoneglyphSession.SharedMissionNames[i],
+                    OrdrMobileUiTheme.Overline);
+            }
+            OrdrMobileUiTheme.DrawStatusRow("포네그리프",
+                session.Phase == Original323PoneglyphPhase.Locked ? "잠김" :
+                session.Phase == Original323PoneglyphPhase.Ready ? "해독 가능" :
+                session.Phase == Original323PoneglyphPhase.Decoding ? "해독 진행 중" :
+                "해독 완료", OrdrMobileUiTheme.Aqua);
+            OrdrMobileUiTheme.DrawStatusRow("해석자 보정",
+                session.InterpreterActive ? "활성 · 50초" : "미획득 · 150초",
+                OrdrMobileUiTheme.Gold);
+
+            if (session.Phase == Original323PoneglyphPhase.Locked)
+                GUILayout.Label("8종 모두 실제로 완료해야 해독이 열립니다. " +
+                    "원본 공유 미션 사건이 아직 연결되지 않은 경우 자동 달성 처리하지 않습니다.",
+                    OrdrMobileUiTheme.Explanation);
+            else if (session.Phase == Original323PoneglyphPhase.Decoding)
+            {
+                OrdrMobileUiTheme.DrawStatusRow("해독 유닛",
+                    "#" + session.ActiveUnitId.Value, OrdrMobileUiTheme.Aqua);
+                OrdrMobileUiTheme.DrawStatusRow("남은 시간",
+                    Math.Ceiling(session.RemainingSeconds(Combat.Time)) + "초",
+                    OrdrMobileUiTheme.Gold);
+                if (OrdrMobileUiTheme.DrawActionRow("해독 중단",
+                    "중단", OrdrMobileUiTheme.Gold, 80f))
+                    notice = controller.RequestStopPoneglyph();
+            }
+            else if (session.Phase == Original323PoneglyphPhase.Ready &&
+                Combat != null)
+            {
+                GUILayout.Label("실제로 보유한 유닛을 선택해 해독을 시작합니다. " +
+                    "원본 금지 기술 9종(Aloc 포함)을 현재 인스턴스 기준으로 확인합니다.",
+                    OrdrMobileUiTheme.Explanation);
+                var owned = OwnedUnitsForFrame();
+                const int pageSize = 8;
+                int pages = Math.Max(1, (owned.Count + pageSize - 1) / pageSize);
+                poneglyphUnitPage = Math.Max(0, Math.Min(poneglyphUnitPage, pages - 1));
+                if (pages > 1)
+                {
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button("이전", GUILayout.MinHeight(50)))
+                        poneglyphUnitPage = Math.Max(0, poneglyphUnitPage - 1);
+                    GUILayout.Label((poneglyphUnitPage + 1) + "/" + pages,
+                        OrdrMobileUiTheme.Overline);
+                    if (GUILayout.Button("다음", GUILayout.MinHeight(50)))
+                        poneglyphUnitPage = Math.Min(pages - 1, poneglyphUnitPage + 1);
+                    GUILayout.EndHorizontal();
+                }
+                for (int i = poneglyphUnitPage * pageSize;
+                    i < owned.Count && i < (poneglyphUnitPage + 1) * pageSize; i++)
+                {
+                    var actor = owned[i];
+                    string reason;
+                    bool eligible = controller.CanDecodePoneglyph(actor.InstanceId, out reason);
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(actor.Unit.Name + " · #" + actor.InstanceId,
+                        OrdrMobileUiTheme.Overline,
+                        GUILayout.MinWidth(0), GUILayout.ExpandWidth(true));
+                    bool enabled = GUI.enabled;
+                    GUI.enabled = enabled && eligible &&
+                        Combat.Game.Phase == SessionPhase.Running &&
+                        !controller.IsUnitPreparation && Combat.Game.CurrentWave > 0;
+                    if (GUILayout.Button(eligible ? "해독 시작" : "불가",
+                        GUILayout.Width(108), GUILayout.MinHeight(54)))
+                        notice = controller.RequestStartPoneglyph(actor.InstanceId);
+                    GUI.enabled = enabled;
+                    GUILayout.EndHorizontal();
+                    if (!eligible)
+                        GUILayout.Label(reason, OrdrMobileUiTheme.Overline);
+                }
+                if (owned.Count == 0)
+                    GUILayout.Label("보유 중인 해독 후보 유닛이 없습니다.",
+                        OrdrMobileUiTheme.Explanation);
+            }
+            else if (session.Phase == Original323PoneglyphPhase.Completed)
+            {
+                var revealed = session.VisibleRevealedChests(controller.OriginalTreasureHunt);
+                OrdrMobileUiTheme.DrawStatusRow("공개된 보물",
+                    revealed.Count + "개 남음", OrdrMobileUiTheme.Aqua);
+                foreach (var chest in revealed)
+                    GUILayout.Label("보물 " + chest.OriginalChestId +
+                        " · X " + chest.X.ToString("0.#") +
+                        " / Y " + chest.Y.ToString("0.#"),
+                        OrdrMobileUiTheme.Overline);
+            }
+            GUILayout.Label(session.LastMessage, OrdrMobileUiTheme.Explanation);
+            GUILayout.EndVertical();
         }
 
         private void DrawAutomaticWispStatus(string name, string id)

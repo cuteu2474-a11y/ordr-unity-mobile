@@ -2171,8 +2171,146 @@ namespace Ordr.Mobile.Unity
         }
 
         public Original323TreasureHunt OriginalTreasureHunt { get; private set; }
+        public Original323PoneglyphSession Poneglyph { get; private set; }
+        private IOriginal323PoneglyphEventWitness originalPoneglyphWitness;
         public MobileTreasureGacha MobileTreasureGacha { get; private set; }
         public Original323GaimonRevealPort GaimonReveal { get; private set; }
+
+        // Shared-mission completion, the three interpreter commands and
+        // per-instance dynamic abilities require a real committed event witness.
+        // The default standalone model does not invent completion receipts.
+        public void ConfigureOriginal323PoneglyphEvents(
+            IOriginal323PoneglyphEventWitness witness)
+        {
+            if (witness == null) throw new ArgumentNullException(nameof(witness));
+            if (originalPoneglyphWitness != null ||
+                (Combat != null && Combat.Game.Phase != SessionPhase.NotStarted))
+                throw new InvalidOperationException(
+                    "공유 도전과제 원본 이벤트는 게임 시작 전 한 번만 연결하세요.");
+            originalPoneglyphWitness = witness;
+        }
+
+        public bool ObserveOriginal323SharedMission(
+            Original323SharedMissionKind kind, string sourceEventId)
+        {
+            if (Poneglyph == null || originalPoneglyphWitness == null ||
+                Combat == null || Combat.Game.Phase != SessionPhase.Running)
+                return false;
+            string evidence;
+            int round = Combat.Game.CurrentWave;
+            return originalPoneglyphWitness.TryConfirmSharedMission(
+                    kind, sourceEventId, round, out evidence) &&
+                Original323BossRoundRules.TrustedRuntimeEvidence(evidence) &&
+                Poneglyph.RecordVerifiedSharedMission(kind, sourceEventId,
+                    round, evidence);
+        }
+
+        public bool ObserveOriginal323InterpreterCommand(
+            string originalCommand, string sourceEventId)
+        {
+            if (Poneglyph == null || originalPoneglyphWitness == null ||
+                Combat == null || Combat.Game.Phase != SessionPhase.Running)
+                return false;
+            string evidence;
+            return originalPoneglyphWitness.TryConfirmInterpreterCommand(
+                    originalCommand, sourceEventId, out evidence) &&
+                Original323BossRoundRules.TrustedRuntimeEvidence(evidence) &&
+                Poneglyph.EnableVerifiedInterpreter(originalCommand,
+                    sourceEventId, evidence);
+        }
+
+        private bool TryGetOwnedPoneglyphUnit(long instanceId, out UnitState unit)
+        {
+            unit = default(UnitState);
+            if (Combat == null) return false;
+            foreach (var entry in Combat.MobileUnitSnapshot())
+                if (entry.InstanceId == instanceId)
+                {
+                    unit = Combat.Roster.Get(instanceId);
+                    return true;
+                }
+            return false;
+        }
+
+        public bool ObserveOriginal323PoneglyphAbilityState(long instanceId,
+            string abilityRawcode, bool present, string sourceEventId)
+        {
+            UnitState ownedUnit;
+            if (Poneglyph == null || originalPoneglyphWitness == null ||
+                Combat == null || Combat.Game.Phase != SessionPhase.Running ||
+                !TryGetOwnedPoneglyphUnit(instanceId, out ownedUnit)) return false;
+            string evidence;
+            if (!originalPoneglyphWitness.TryConfirmUnitAbilityState(
+                    instanceId, abilityRawcode, present, sourceEventId,
+                    out evidence) ||
+                !Original323BossRoundRules.TrustedRuntimeEvidence(evidence))
+                return false;
+            Poneglyph.RecordVerifiedAbilityState(instanceId, abilityRawcode,
+                present);
+            return true;
+        }
+
+        public bool CanDecodePoneglyph(long instanceId, out string reason)
+        {
+            if (Poneglyph == null || Combat == null || MapBaseStats == null)
+            {
+                reason = "원본 해독 상태 미연결";
+                return false;
+            }
+            UnitState unit;
+            if (!TryGetOwnedPoneglyphUnit(instanceId, out unit) ||
+                Combat.IsStoryDeployed(instanceId))
+            {
+                reason = "메인 전장의 보유 유닛 필요";
+                return false;
+            }
+            OriginalMapCharacterBasics original =
+                MapBaseStats.Find(unit.UnitId);
+            if (original == null || string.IsNullOrEmpty(original.OriginalRawcode) ||
+                original.OriginalAbilityRawcodes == null)
+            {
+                reason = "원본 유닛 기술 매핑 미확인";
+                return false;
+            }
+            return Poneglyph.IsEligible(instanceId,
+                original.OriginalAbilityRawcodes, out reason);
+        }
+
+        public string RequestStartPoneglyph(long instanceId)
+        {
+            if (Combat == null || Poneglyph == null ||
+                Combat.Game.Phase != SessionPhase.Running ||
+                IsUnitPreparation || Combat.Game.CurrentWave < 1)
+                return "진행 중인 전투 라운드에서만 해독할 수 있습니다.";
+            string reason;
+            if (!CanDecodePoneglyph(instanceId, out reason)) return reason;
+            UnitState unit;
+            if (!TryGetOwnedPoneglyphUnit(instanceId, out unit))
+                return "해독 유닛이 존재하지 않습니다.";
+            var original = MapBaseStats.Find(unit.UnitId);
+            if (!Poneglyph.TryStart(instanceId, original.OriginalAbilityRawcodes,
+                Combat.Time, out reason)) return reason;
+            try
+            {
+                Combat.SetOriginalPoneglyphChanneling(instanceId, true);
+            }
+            catch (Exception ex)
+            {
+                Poneglyph.Interrupt("해독 시작 불가 · " + ex.Message);
+                return Poneglyph.LastMessage;
+            }
+            return reason;
+        }
+
+        public string RequestStopPoneglyph()
+        {
+            if (Poneglyph == null || !Poneglyph.ActiveUnitId.HasValue)
+                return "진행 중인 해독이 없습니다.";
+            long unitId = Poneglyph.ActiveUnitId.Value;
+            Poneglyph.Interrupt("해독 중단 · 재시도 가능");
+            Combat?.SetOriginalPoneglyphChanneling(unitId, false);
+            return Poneglyph.LastMessage;
+        }
 
         // A verified original CCQ/R event is observed by the native
         // adapter, NOT by a new mobile manual button. Never pay from reveal.
@@ -3216,6 +3354,7 @@ namespace Ordr.Mobile.Unity
                     evolutionNativeRandom ?? new Original323MobileNativePoolRandom(
                         new MobileUniformWispRandom()));
             PersonalMissions = preparedMissions;
+            Poneglyph = new Original323PoneglyphSession();
             AttachVerifiedSoloHelperCow();
         }
 
@@ -3516,6 +3655,8 @@ namespace Ordr.Mobile.Unity
                 RecordFullGameClearOnce();
                 PersonalMissions?.OnGameFinished();
                 UnitDecompositions?.Advance(0); // Cancel source casts after game end.
+                if (Poneglyph != null && Poneglyph.ActiveUnitId.HasValue)
+                    RequestStopPoneglyph();
                 return;
             }
             // CCP applies only after a committed Gaimon is visible in the
@@ -3634,6 +3775,20 @@ namespace Ordr.Mobile.Unity
                 }
             }
             UnitDecompositions?.Advance(Math.Max(0.0, Combat.Time - timeBeforeStep));
+            if (Poneglyph != null && Poneglyph.ActiveUnitId.HasValue)
+            {
+                long activeId = Poneglyph.ActiveUnitId.Value;
+                UnitState activeUnit;
+                bool exists = TryGetOwnedPoneglyphUnit(activeId, out activeUnit);
+                if (Poneglyph.Advance(Combat.Time, exists,
+                    OriginalTreasureHunt, Combat.Game.CurrentWave))
+                {
+                    // Always unlock, including death/removal and zero-chest completion.
+                    Combat.SetOriginalPoneglyphChanneling(activeId, false);
+                    Poneglyph.ForgetUnit(activeId);
+                    RecordSessionIssue("포네그리프", Poneglyph.LastMessage);
+                }
+            }
             // The same advancing combat clock drives helper mana regen.
             // UI redraws and wall time must not regenerate extra mana.
             if (Original323HelperCow != null)

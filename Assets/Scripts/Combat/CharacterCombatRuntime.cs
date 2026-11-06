@@ -314,6 +314,10 @@ namespace Ordr.Mobile.Combat
         private readonly CharacterSkillEffectExecutor effectExecutor;
         private readonly Dictionary<long, CharacterInstance> characters =
             new Dictionary<long, CharacterInstance>();
+        // CMx PauseUnit equivalent: no movement, targeting or auto-attack
+        // while a live unit is interpreting the Poneglyph.
+        private readonly HashSet<long> originalPoneglyphChanneling =
+            new HashSet<long>();
         private readonly Dictionary<string, SpatialCombatEnemy> enemies =
             new Dictionary<string, SpatialCombatEnemy>(StringComparer.Ordinal);
         private readonly Dictionary<string, CombatStatusEngine> statuses =
@@ -1499,6 +1503,23 @@ namespace Ordr.Mobile.Combat
             return storyDispatch != null && storyDispatch.IsDeployed(instanceId);
         }
 
+        public bool IsOriginalPoneglyphChanneling(long instanceId) =>
+            originalPoneglyphChanneling.Contains(instanceId);
+
+        public void SetOriginalPoneglyphChanneling(long instanceId, bool channeling)
+        {
+            if (channeling)
+            {
+                if (!characters.ContainsKey(instanceId) || IsStoryDeployed(instanceId))
+                    throw new InvalidOperationException(
+                        "포네그리프 해독은 메인 전장의 보유 유닛으로만 시작합니다.");
+                CancelOriginalUnitCast(instanceId);
+                originalPoneglyphChanneling.Add(instanceId);
+            }
+            else originalPoneglyphChanneling.Remove(instanceId);
+            RefreshEnemyAuras();
+        }
+
         // Independent observer for per-enemy defeat or escape. Driven by
         // CombatResolution after the original session counters are updated.
         public event Action<string, CombatEnemyExitReason> EnemyExited;
@@ -2259,6 +2280,7 @@ namespace Ordr.Mobile.Combat
             CharacterInstance instance;
             if (!characters.TryGetValue(instanceId, out instance))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터 인스턴스.");
+            originalPoneglyphChanneling.Remove(instanceId);
             CancelOriginalUnitCast(instanceId);
             if (instance.AttackReady) attackPipeline.RemoveUnit(InstanceKey(instanceId));
             if (commonAttackPreview != null) commonAttackPreview.Remove(instanceId);
@@ -2316,6 +2338,8 @@ namespace Ordr.Mobile.Combat
             BlockExternalMutationDuringOriginalFusion();
             if (!characters.ContainsKey(instanceId))
                 throw new KeyNotFoundException("존재하지 않는 캐릭터.");
+            if (originalPoneglyphChanneling.Contains(instanceId))
+                throw new InvalidOperationException("포네그리프 해독 중에는 유닛을 이동할 수 없습니다.");
             roster.Move(instanceId, x, y);
             CancelOriginalUnitCast(instanceId);
             RefreshEnemyAuras();
@@ -2505,6 +2529,7 @@ namespace Ordr.Mobile.Combat
         private bool CanAttackInThisLane(CharacterInstance unit,
             SpatialCombatEnemy enemy)
         {
+            if (originalPoneglyphChanneling.Contains(unit.Id)) return false;
             // 크립/해왕류/도전은 별도 출전 허가가 없는 한 일반 전장에 섞이지 않는다.
             if (enemy.Kind == CharacterEnemyKind.Creep ||
                 enemy.Kind == CharacterEnemyKind.SeaKing ||
