@@ -1,0 +1,3478 @@
+{
+  "source": {
+    "name": "ORDR_S2_2.323[C].w3x",
+    "sha256": "0794996c9bc73eaa3020f20ebc45fb37cfa64a6e98ffe8aa0dfa3b356e77bc5c",
+    "jass_sha256": "96201e80edec1b2764f85818760306c6b2f0becd390ba4d63f41c86f3dfaff6d",
+    "data_path": "Units/UpgradeData.slk",
+    "strings_path": "Units/CampaignUpgradeStrings.txt",
+    "ability_path": "Units/AbilityData.slk",
+    "custom_ability_path": "war3map.w3a"
+  },
+  "evidence_status": "SOURCE_OBJECT_AND_JASS_EXTRACTED; GAMEPLAY_NOT_RUN",
+  "step_columns": [
+    "level",
+    "gold_source_formula",
+    "lumber_source_formula",
+    "time_source_formula",
+    "effect1_source_formula",
+    "effect2_source_formula"
+  ],
+  "formula_note": "The level rows evaluate explicit SLK base+(level-1)*mod, NOT confirmed real purchase charges or Warcraft native effect stacking. A missing base field is null (no assertion of free cost).",
+  "initialization": {
+    "function": "CUo",
+    "research_start": "CV9 -> CV8",
+    "event": "EVENT_PLAYER_UNIT_RESEARCH_START"
+  },
+  "research_granted_auras": {
+    "Rhfc": {
+      "ability": "A0P9",
+      "native_ability_code": "AOae",
+      "target": "air,enemies,ground",
+      "area": 1850.0,
+      "data_a": -0.1,
+      "data_b": 0.0,
+      "buff": "B056",
+      "source": "Units/AbilityData.slk"
+    },
+    "Rhpt": {
+      "ability": "A0PB",
+      "native_ability_code": "AHab",
+      "target": "air,invulnerable,organic,ground,player",
+      "area": 99999.0,
+      "data_a": 0.8,
+      "data_b": null,
+      "buff": "B058",
+      "source": "Units/AbilityData.slk"
+    },
+    "Rhra": {
+      "ability": "A0P8",
+      "native_ability_code": "ACac",
+      "target": "air,invulnerable,organic,ground,player",
+      "area": 99999.0,
+      "data_a": 0.11999999731779099,
+      "data_b": null,
+      "buff": "B00O",
+      "source": "war3map.w3a"
+    },
+    "Rhgb": {
+      "ability": "A0PA",
+      "native_ability_code": "AUau",
+      "target": "air,invulnerable,organic,ground,player",
+      "area": 99999.0,
+      "data_a": 0.0,
+      "data_b": 0.45,
+      "buff": "B057",
+      "source": "Units/AbilityData.slk"
+    }
+  },
+  "shops": {
+    "h06Q": [
+      {
+        "id": "R00F",
+        "name": "흔함류 업그레이드(Q)",
+        "max_level": 7,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 3,
+          "goldmod": 2,
+          "base1": 0.03,
+          "mod1": 0.03,
+          "effect2": "ratx",
+          "base2": 3.0,
+          "mod2": 3.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": null,
+        "requires_count": null,
+        "tooltip": "흔함, 안흔함 유닛들의 공격력을 3 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            3,
+            null,
+            null,
+            null,
+            3.0
+          ],
+          [
+            2,
+            5,
+            null,
+            null,
+            null,
+            6.0
+          ],
+          [
+            3,
+            7,
+            null,
+            null,
+            null,
+            9.0
+          ],
+          [
+            4,
+            9,
+            null,
+            null,
+            null,
+            12.0
+          ],
+          [
+            5,
+            11,
+            null,
+            null,
+            null,
+            15.0
+          ],
+          [
+            6,
+            13,
+            null,
+            null,
+            null,
+            18.0
+          ],
+          [
+            7,
+            15,
+            null,
+            null,
+            null,
+            21.0
+          ]
+        ]
+      },
+      {
+        "id": "R008",
+        "name": "희귀 유닛 업그레이드(E)",
+        "max_level": 16,
+        "startup_level_set_by_jass": 1,
+        "source_fields": {
+          "goldbase": 10,
+          "goldmod": 20,
+          "effect1": "rats",
+          "base1": 0.7,
+          "mod1": 0.04,
+          "effect2": "ratx",
+          "base2": 200.0,
+          "mod2": 200.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": null,
+        "requires_count": null,
+        "tooltip": "희귀 유닛들의 공격력을 200, 공격속도를 4% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            10,
+            null,
+            null,
+            0.7,
+            200.0
+          ],
+          [
+            2,
+            30,
+            null,
+            null,
+            0.74,
+            400.0
+          ],
+          [
+            3,
+            50,
+            null,
+            null,
+            0.7799999999999999,
+            600.0
+          ],
+          [
+            4,
+            70,
+            null,
+            null,
+            0.82,
+            800.0
+          ],
+          [
+            5,
+            90,
+            null,
+            null,
+            0.86,
+            1000.0
+          ],
+          [
+            6,
+            110,
+            null,
+            null,
+            0.8999999999999999,
+            1200.0
+          ],
+          [
+            7,
+            130,
+            null,
+            null,
+            0.94,
+            1400.0
+          ],
+          [
+            8,
+            150,
+            null,
+            null,
+            0.98,
+            1600.0
+          ],
+          [
+            9,
+            170,
+            null,
+            null,
+            1.02,
+            1800.0
+          ],
+          [
+            10,
+            190,
+            null,
+            null,
+            1.06,
+            2000.0
+          ],
+          [
+            11,
+            210,
+            null,
+            null,
+            1.1,
+            2200.0
+          ],
+          [
+            12,
+            230,
+            null,
+            null,
+            1.14,
+            2400.0
+          ],
+          [
+            13,
+            250,
+            null,
+            null,
+            1.18,
+            2600.0
+          ],
+          [
+            14,
+            270,
+            null,
+            null,
+            1.22,
+            2800.0
+          ],
+          [
+            15,
+            290,
+            null,
+            null,
+            1.26,
+            3000.0
+          ],
+          [
+            16,
+            310,
+            null,
+            null,
+            1.2999999999999998,
+            3200.0
+          ]
+        ]
+      },
+      {
+        "id": "R002",
+        "name": "불멸 유닛 업그레이드(F)",
+        "max_level": 21,
+        "startup_level_set_by_jass": 1,
+        "source_fields": {
+          "goldbase": 100,
+          "goldmod": 50,
+          "effect1": "rats",
+          "base1": 2.1,
+          "mod1": 0.06,
+          "effect2": "ratx",
+          "base2": 30000.0,
+          "mod2": 2500.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "불멸 유닛 기본 공격속도 증가량 : 210%|n불멸 유닛들의 공격력을 2500, 공격속도를 6% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            100,
+            null,
+            null,
+            2.1,
+            30000.0
+          ],
+          [
+            2,
+            150,
+            null,
+            null,
+            2.16,
+            32500.0
+          ],
+          [
+            3,
+            200,
+            null,
+            null,
+            2.22,
+            35000.0
+          ],
+          [
+            4,
+            250,
+            null,
+            null,
+            2.2800000000000002,
+            37500.0
+          ],
+          [
+            5,
+            300,
+            null,
+            null,
+            2.34,
+            40000.0
+          ],
+          [
+            6,
+            350,
+            null,
+            null,
+            2.4,
+            42500.0
+          ],
+          [
+            7,
+            400,
+            null,
+            null,
+            2.46,
+            45000.0
+          ],
+          [
+            8,
+            450,
+            null,
+            null,
+            2.52,
+            47500.0
+          ],
+          [
+            9,
+            500,
+            null,
+            null,
+            2.58,
+            50000.0
+          ],
+          [
+            10,
+            550,
+            null,
+            null,
+            2.64,
+            52500.0
+          ],
+          [
+            11,
+            600,
+            null,
+            null,
+            2.7,
+            55000.0
+          ],
+          [
+            12,
+            650,
+            null,
+            null,
+            2.76,
+            57500.0
+          ],
+          [
+            13,
+            700,
+            null,
+            null,
+            2.8200000000000003,
+            60000.0
+          ],
+          [
+            14,
+            750,
+            null,
+            null,
+            2.88,
+            62500.0
+          ],
+          [
+            15,
+            800,
+            null,
+            null,
+            2.94,
+            65000.0
+          ],
+          [
+            16,
+            850,
+            null,
+            null,
+            3.0,
+            67500.0
+          ],
+          [
+            17,
+            900,
+            null,
+            null,
+            3.06,
+            70000.0
+          ],
+          [
+            18,
+            950,
+            null,
+            null,
+            3.12,
+            72500.0
+          ],
+          [
+            19,
+            1000,
+            null,
+            null,
+            3.18,
+            75000.0
+          ],
+          [
+            20,
+            1050,
+            null,
+            null,
+            3.24,
+            77500.0
+          ],
+          [
+            21,
+            1100,
+            null,
+            null,
+            3.3,
+            80000.0
+          ]
+        ]
+      },
+      {
+        "id": "R00E",
+        "name": "특별 유닛 업그레이드(W)",
+        "max_level": 15,
+        "startup_level_set_by_jass": 1,
+        "source_fields": {
+          "goldbase": 5,
+          "goldmod": 5,
+          "effect1": "rats",
+          "base1": 0.25,
+          "mod1": 0.02,
+          "effect2": "ratx",
+          "base2": 20.0,
+          "mod2": 30.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": null,
+        "requires_count": null,
+        "tooltip": "특별 유닛들의 공격력을 25, 공격속도를 3% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            5,
+            null,
+            null,
+            0.25,
+            20.0
+          ],
+          [
+            2,
+            10,
+            null,
+            null,
+            0.27,
+            50.0
+          ],
+          [
+            3,
+            15,
+            null,
+            null,
+            0.29,
+            80.0
+          ],
+          [
+            4,
+            20,
+            null,
+            null,
+            0.31,
+            110.0
+          ],
+          [
+            5,
+            25,
+            null,
+            null,
+            0.33,
+            140.0
+          ],
+          [
+            6,
+            30,
+            null,
+            null,
+            0.35,
+            170.0
+          ],
+          [
+            7,
+            35,
+            null,
+            null,
+            0.37,
+            200.0
+          ],
+          [
+            8,
+            40,
+            null,
+            null,
+            0.39,
+            230.0
+          ],
+          [
+            9,
+            45,
+            null,
+            null,
+            0.41000000000000003,
+            260.0
+          ],
+          [
+            10,
+            50,
+            null,
+            null,
+            0.43,
+            290.0
+          ],
+          [
+            11,
+            55,
+            null,
+            null,
+            0.45,
+            320.0
+          ],
+          [
+            12,
+            60,
+            null,
+            null,
+            0.47,
+            350.0
+          ],
+          [
+            13,
+            65,
+            null,
+            null,
+            0.49,
+            380.0
+          ],
+          [
+            14,
+            70,
+            null,
+            null,
+            0.51,
+            410.0
+          ],
+          [
+            15,
+            75,
+            null,
+            null,
+            0.53,
+            440.0
+          ]
+        ]
+      },
+      {
+        "id": "R003",
+        "name": "초월 유닛 업그레이드(D)",
+        "max_level": 21,
+        "startup_level_set_by_jass": 1,
+        "source_fields": {
+          "goldbase": 100,
+          "goldmod": 50,
+          "effect1": "rats",
+          "base1": 2.15,
+          "mod1": 0.06,
+          "effect2": "ratx",
+          "base2": 22500.0,
+          "mod2": 2150.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "초월 유닛 기본 공격속도 증가량 : 215%|n초월 유닛들의 공격력을 2150, 공격속도를 6% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            100,
+            null,
+            null,
+            2.15,
+            22500.0
+          ],
+          [
+            2,
+            150,
+            null,
+            null,
+            2.21,
+            24650.0
+          ],
+          [
+            3,
+            200,
+            null,
+            null,
+            2.27,
+            26800.0
+          ],
+          [
+            4,
+            250,
+            null,
+            null,
+            2.33,
+            28950.0
+          ],
+          [
+            5,
+            300,
+            null,
+            null,
+            2.3899999999999997,
+            31100.0
+          ],
+          [
+            6,
+            350,
+            null,
+            null,
+            2.4499999999999997,
+            33250.0
+          ],
+          [
+            7,
+            400,
+            null,
+            null,
+            2.51,
+            35400.0
+          ],
+          [
+            8,
+            450,
+            null,
+            null,
+            2.57,
+            37550.0
+          ],
+          [
+            9,
+            500,
+            null,
+            null,
+            2.63,
+            39700.0
+          ],
+          [
+            10,
+            550,
+            null,
+            null,
+            2.69,
+            41850.0
+          ],
+          [
+            11,
+            600,
+            null,
+            null,
+            2.75,
+            44000.0
+          ],
+          [
+            12,
+            650,
+            null,
+            null,
+            2.8099999999999996,
+            46150.0
+          ],
+          [
+            13,
+            700,
+            null,
+            null,
+            2.87,
+            48300.0
+          ],
+          [
+            14,
+            750,
+            null,
+            null,
+            2.9299999999999997,
+            50450.0
+          ],
+          [
+            15,
+            800,
+            null,
+            null,
+            2.9899999999999998,
+            52600.0
+          ],
+          [
+            16,
+            850,
+            null,
+            null,
+            3.05,
+            54750.0
+          ],
+          [
+            17,
+            900,
+            null,
+            null,
+            3.11,
+            56900.0
+          ],
+          [
+            18,
+            950,
+            null,
+            null,
+            3.17,
+            59050.0
+          ],
+          [
+            19,
+            1000,
+            null,
+            null,
+            3.23,
+            61200.0
+          ],
+          [
+            20,
+            1050,
+            null,
+            null,
+            3.29,
+            63350.0
+          ],
+          [
+            21,
+            1100,
+            null,
+            null,
+            3.3499999999999996,
+            65500.0
+          ]
+        ]
+      },
+      {
+        "id": "R004",
+        "name": "제한 유닛 업그레이드(S)",
+        "max_level": 21,
+        "startup_level_set_by_jass": 1,
+        "source_fields": {
+          "goldbase": 90,
+          "goldmod": 50,
+          "effect1": "rats",
+          "base1": 1.85,
+          "mod1": 0.05,
+          "effect2": "ratx",
+          "base2": 20000.0,
+          "mod2": 2000.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "제한 유닛 기본 공격속도 증가량 : 185%|n왜곡 유닛 기본 공격속도 증가량 : 160%|n변화, 특수, 제한 유닛들의 공격력을 2000, 공격속도를 6% 증가시킵니다.|n왜곡 유닛들의 공격력을 700, 공격속도를 6% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            90,
+            null,
+            null,
+            1.85,
+            20000.0
+          ],
+          [
+            2,
+            140,
+            null,
+            null,
+            1.9000000000000001,
+            22000.0
+          ],
+          [
+            3,
+            190,
+            null,
+            null,
+            1.9500000000000002,
+            24000.0
+          ],
+          [
+            4,
+            240,
+            null,
+            null,
+            2.0,
+            26000.0
+          ],
+          [
+            5,
+            290,
+            null,
+            null,
+            2.0500000000000003,
+            28000.0
+          ],
+          [
+            6,
+            340,
+            null,
+            null,
+            2.1,
+            30000.0
+          ],
+          [
+            7,
+            390,
+            null,
+            null,
+            2.1500000000000004,
+            32000.0
+          ],
+          [
+            8,
+            440,
+            null,
+            null,
+            2.2,
+            34000.0
+          ],
+          [
+            9,
+            490,
+            null,
+            null,
+            2.25,
+            36000.0
+          ],
+          [
+            10,
+            540,
+            null,
+            null,
+            2.3000000000000003,
+            38000.0
+          ],
+          [
+            11,
+            590,
+            null,
+            null,
+            2.35,
+            40000.0
+          ],
+          [
+            12,
+            640,
+            null,
+            null,
+            2.4000000000000004,
+            42000.0
+          ],
+          [
+            13,
+            690,
+            null,
+            null,
+            2.45,
+            44000.0
+          ],
+          [
+            14,
+            740,
+            null,
+            null,
+            2.5,
+            46000.0
+          ],
+          [
+            15,
+            790,
+            null,
+            null,
+            2.5500000000000003,
+            48000.0
+          ],
+          [
+            16,
+            840,
+            null,
+            null,
+            2.6,
+            50000.0
+          ],
+          [
+            17,
+            890,
+            null,
+            null,
+            2.6500000000000004,
+            52000.0
+          ],
+          [
+            18,
+            940,
+            null,
+            null,
+            2.7,
+            54000.0
+          ],
+          [
+            19,
+            990,
+            null,
+            null,
+            2.75,
+            56000.0
+          ],
+          [
+            20,
+            1040,
+            null,
+            null,
+            2.8000000000000003,
+            58000.0
+          ],
+          [
+            21,
+            1090,
+            null,
+            null,
+            2.85,
+            60000.0
+          ]
+        ]
+      },
+      {
+        "id": "R000",
+        "name": "전설 유닛 업그레이드(R)",
+        "max_level": 21,
+        "startup_level_set_by_jass": 1,
+        "source_fields": {
+          "goldbase": 70,
+          "goldmod": 50,
+          "effect1": "rats",
+          "base1": 1.95,
+          "mod1": 0.05,
+          "effect2": "ratx",
+          "base2": 7250.0,
+          "mod2": 725.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "전설 유닛 기본 공격속도 증가량 : 175%|n히든 유닛 기본 공격속도 증가량 : 160%|n전설, 히든 유닛들의 공격력을 725, 공격속도를 5% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            70,
+            null,
+            null,
+            1.95,
+            7250.0
+          ],
+          [
+            2,
+            120,
+            null,
+            null,
+            2.0,
+            7975.0
+          ],
+          [
+            3,
+            170,
+            null,
+            null,
+            2.05,
+            8700.0
+          ],
+          [
+            4,
+            220,
+            null,
+            null,
+            2.1,
+            9425.0
+          ],
+          [
+            5,
+            270,
+            null,
+            null,
+            2.15,
+            10150.0
+          ],
+          [
+            6,
+            320,
+            null,
+            null,
+            2.2,
+            10875.0
+          ],
+          [
+            7,
+            370,
+            null,
+            null,
+            2.25,
+            11600.0
+          ],
+          [
+            8,
+            420,
+            null,
+            null,
+            2.3,
+            12325.0
+          ],
+          [
+            9,
+            470,
+            null,
+            null,
+            2.35,
+            13050.0
+          ],
+          [
+            10,
+            520,
+            null,
+            null,
+            2.4,
+            13775.0
+          ],
+          [
+            11,
+            570,
+            null,
+            null,
+            2.45,
+            14500.0
+          ],
+          [
+            12,
+            620,
+            null,
+            null,
+            2.5,
+            15225.0
+          ],
+          [
+            13,
+            670,
+            null,
+            null,
+            2.55,
+            15950.0
+          ],
+          [
+            14,
+            720,
+            null,
+            null,
+            2.6,
+            16675.0
+          ],
+          [
+            15,
+            770,
+            null,
+            null,
+            2.65,
+            17400.0
+          ],
+          [
+            16,
+            820,
+            null,
+            null,
+            2.7,
+            18125.0
+          ],
+          [
+            17,
+            870,
+            null,
+            null,
+            2.75,
+            18850.0
+          ],
+          [
+            18,
+            920,
+            null,
+            null,
+            2.8,
+            19575.0
+          ],
+          [
+            19,
+            970,
+            null,
+            null,
+            2.85,
+            20300.0
+          ],
+          [
+            20,
+            1020,
+            null,
+            null,
+            2.9,
+            21025.0
+          ],
+          [
+            21,
+            1070,
+            null,
+            null,
+            2.95,
+            21750.0
+          ]
+        ]
+      },
+      {
+        "id": "R019",
+        "name": "랜덤전용 유닛 업그레이드(A)",
+        "max_level": 21,
+        "startup_level_set_by_jass": 1,
+        "source_fields": {
+          "goldbase": 90,
+          "goldmod": 40,
+          "effect1": "rats",
+          "base1": 0.25,
+          "mod1": 0.14,
+          "effect2": "ratx",
+          "base2": 1000.0,
+          "mod2": 1000.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "랜덤전용 유닛 기본 공격속도 증가량 : 25%|n랜덤전용 유닛들의 공격력을 1000, 공격속도를 14% 증가시킵니다.|n신비 유닛은 최종 공격속도가 25% 더 높습니다.",
+        "steps": [
+          [
+            1,
+            90,
+            null,
+            null,
+            0.25,
+            1000.0
+          ],
+          [
+            2,
+            130,
+            null,
+            null,
+            0.39,
+            2000.0
+          ],
+          [
+            3,
+            170,
+            null,
+            null,
+            0.53,
+            3000.0
+          ],
+          [
+            4,
+            210,
+            null,
+            null,
+            0.67,
+            4000.0
+          ],
+          [
+            5,
+            250,
+            null,
+            null,
+            0.81,
+            5000.0
+          ],
+          [
+            6,
+            290,
+            null,
+            null,
+            0.9500000000000001,
+            6000.0
+          ],
+          [
+            7,
+            330,
+            null,
+            null,
+            1.09,
+            7000.0
+          ],
+          [
+            8,
+            370,
+            null,
+            null,
+            1.23,
+            8000.0
+          ],
+          [
+            9,
+            410,
+            null,
+            null,
+            1.37,
+            9000.0
+          ],
+          [
+            10,
+            450,
+            null,
+            null,
+            1.5100000000000002,
+            10000.0
+          ],
+          [
+            11,
+            490,
+            null,
+            null,
+            1.6500000000000001,
+            11000.0
+          ],
+          [
+            12,
+            530,
+            null,
+            null,
+            1.79,
+            12000.0
+          ],
+          [
+            13,
+            570,
+            null,
+            null,
+            1.9300000000000002,
+            13000.0
+          ],
+          [
+            14,
+            610,
+            null,
+            null,
+            2.0700000000000003,
+            14000.0
+          ],
+          [
+            15,
+            650,
+            null,
+            null,
+            2.21,
+            15000.0
+          ],
+          [
+            16,
+            690,
+            null,
+            null,
+            2.35,
+            16000.0
+          ],
+          [
+            17,
+            730,
+            null,
+            null,
+            2.49,
+            17000.0
+          ],
+          [
+            18,
+            770,
+            null,
+            null,
+            2.6300000000000003,
+            18000.0
+          ],
+          [
+            19,
+            810,
+            null,
+            null,
+            2.7700000000000005,
+            19000.0
+          ],
+          [
+            20,
+            850,
+            null,
+            null,
+            2.91,
+            20000.0
+          ],
+          [
+            21,
+            890,
+            null,
+            null,
+            3.0500000000000003,
+            21000.0
+          ]
+        ]
+      }
+    ],
+    "h06R": [
+      {
+        "id": "R032",
+        "name": "|CFFC15AF4[영원]우타 업그레이드(V)",
+        "max_level": 21,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 110,
+          "goldmod": 80,
+          "effect1": "rats",
+          "base1": 0.1,
+          "mod1": 0.15,
+          "effect2": "ratx",
+          "base2": 4500.0,
+          "mod2": 4500.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "|CFFC15AF4[영원]|r 기본 공격속도 증가량 10% |n업그레이드 시 공격력을 4500, 공격속도를 15% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            110,
+            null,
+            null,
+            0.1,
+            4500.0
+          ],
+          [
+            2,
+            190,
+            null,
+            null,
+            0.25,
+            9000.0
+          ],
+          [
+            3,
+            270,
+            null,
+            null,
+            0.4,
+            13500.0
+          ],
+          [
+            4,
+            350,
+            null,
+            null,
+            0.5499999999999999,
+            18000.0
+          ],
+          [
+            5,
+            430,
+            null,
+            null,
+            0.7,
+            22500.0
+          ],
+          [
+            6,
+            510,
+            null,
+            null,
+            0.85,
+            27000.0
+          ],
+          [
+            7,
+            590,
+            null,
+            null,
+            0.9999999999999999,
+            31500.0
+          ],
+          [
+            8,
+            670,
+            null,
+            null,
+            1.1500000000000001,
+            36000.0
+          ],
+          [
+            9,
+            750,
+            null,
+            null,
+            1.3,
+            40500.0
+          ],
+          [
+            10,
+            830,
+            null,
+            null,
+            1.45,
+            45000.0
+          ],
+          [
+            11,
+            910,
+            null,
+            null,
+            1.6,
+            49500.0
+          ],
+          [
+            12,
+            990,
+            null,
+            null,
+            1.75,
+            54000.0
+          ],
+          [
+            13,
+            1070,
+            null,
+            null,
+            1.9,
+            58500.0
+          ],
+          [
+            14,
+            1150,
+            null,
+            null,
+            2.05,
+            63000.0
+          ],
+          [
+            15,
+            1230,
+            null,
+            null,
+            2.2,
+            67500.0
+          ],
+          [
+            16,
+            1310,
+            null,
+            null,
+            2.35,
+            72000.0
+          ],
+          [
+            17,
+            1390,
+            null,
+            null,
+            2.5,
+            76500.0
+          ],
+          [
+            18,
+            1470,
+            null,
+            null,
+            2.65,
+            81000.0
+          ],
+          [
+            19,
+            1550,
+            null,
+            null,
+            2.8,
+            85500.0
+          ],
+          [
+            20,
+            1630,
+            null,
+            null,
+            2.95,
+            90000.0
+          ],
+          [
+            21,
+            1710,
+            null,
+            null,
+            3.1,
+            94500.0
+          ]
+        ]
+      },
+      {
+        "id": "R02O",
+        "name": "|CFFC15AF4[영원]오뎅 업그레이드(D)",
+        "max_level": 21,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 110,
+          "goldmod": 80,
+          "effect1": "rats",
+          "base1": 0.15,
+          "mod1": 0.15,
+          "effect2": "ratx",
+          "base2": 4000.0,
+          "mod2": 4000.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "|CFFC15AF4[영원]|r 기본 공격속도 증가량 15% |n업그레이드 시 공격력을 4000, 공격속도를 15% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            110,
+            null,
+            null,
+            0.15,
+            4000.0
+          ],
+          [
+            2,
+            190,
+            null,
+            null,
+            0.3,
+            8000.0
+          ],
+          [
+            3,
+            270,
+            null,
+            null,
+            0.44999999999999996,
+            12000.0
+          ],
+          [
+            4,
+            350,
+            null,
+            null,
+            0.6,
+            16000.0
+          ],
+          [
+            5,
+            430,
+            null,
+            null,
+            0.75,
+            20000.0
+          ],
+          [
+            6,
+            510,
+            null,
+            null,
+            0.9,
+            24000.0
+          ],
+          [
+            7,
+            590,
+            null,
+            null,
+            1.0499999999999998,
+            28000.0
+          ],
+          [
+            8,
+            670,
+            null,
+            null,
+            1.2,
+            32000.0
+          ],
+          [
+            9,
+            750,
+            null,
+            null,
+            1.3499999999999999,
+            36000.0
+          ],
+          [
+            10,
+            830,
+            null,
+            null,
+            1.4999999999999998,
+            40000.0
+          ],
+          [
+            11,
+            910,
+            null,
+            null,
+            1.65,
+            44000.0
+          ],
+          [
+            12,
+            990,
+            null,
+            null,
+            1.7999999999999998,
+            48000.0
+          ],
+          [
+            13,
+            1070,
+            null,
+            null,
+            1.9499999999999997,
+            52000.0
+          ],
+          [
+            14,
+            1150,
+            null,
+            null,
+            2.1,
+            56000.0
+          ],
+          [
+            15,
+            1230,
+            null,
+            null,
+            2.25,
+            60000.0
+          ],
+          [
+            16,
+            1310,
+            null,
+            null,
+            2.4,
+            64000.0
+          ],
+          [
+            17,
+            1390,
+            null,
+            null,
+            2.55,
+            68000.0
+          ],
+          [
+            18,
+            1470,
+            null,
+            null,
+            2.6999999999999997,
+            72000.0
+          ],
+          [
+            19,
+            1550,
+            null,
+            null,
+            2.8499999999999996,
+            76000.0
+          ],
+          [
+            20,
+            1630,
+            null,
+            null,
+            3.0,
+            80000.0
+          ],
+          [
+            21,
+            1710,
+            null,
+            null,
+            3.15,
+            84000.0
+          ]
+        ]
+      },
+      {
+        "id": "R015",
+        "name": "|CFFC15AF4[영원]카벤딧슈 업그레이드(X)",
+        "max_level": 21,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 110,
+          "goldmod": 80,
+          "effect1": "rats",
+          "base1": 0.15,
+          "mod1": 0.15,
+          "effect2": "ratx",
+          "base2": 2500.0,
+          "mod2": 2500.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "|CFFC15AF4[영원]|r 기본 공격속도 증가량 15% |n업그레이드 시 공격력을 2500, 공격속도를 15% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            110,
+            null,
+            null,
+            0.15,
+            2500.0
+          ],
+          [
+            2,
+            190,
+            null,
+            null,
+            0.3,
+            5000.0
+          ],
+          [
+            3,
+            270,
+            null,
+            null,
+            0.44999999999999996,
+            7500.0
+          ],
+          [
+            4,
+            350,
+            null,
+            null,
+            0.6,
+            10000.0
+          ],
+          [
+            5,
+            430,
+            null,
+            null,
+            0.75,
+            12500.0
+          ],
+          [
+            6,
+            510,
+            null,
+            null,
+            0.9,
+            15000.0
+          ],
+          [
+            7,
+            590,
+            null,
+            null,
+            1.0499999999999998,
+            17500.0
+          ],
+          [
+            8,
+            670,
+            null,
+            null,
+            1.2,
+            20000.0
+          ],
+          [
+            9,
+            750,
+            null,
+            null,
+            1.3499999999999999,
+            22500.0
+          ],
+          [
+            10,
+            830,
+            null,
+            null,
+            1.4999999999999998,
+            25000.0
+          ],
+          [
+            11,
+            910,
+            null,
+            null,
+            1.65,
+            27500.0
+          ],
+          [
+            12,
+            990,
+            null,
+            null,
+            1.7999999999999998,
+            30000.0
+          ],
+          [
+            13,
+            1070,
+            null,
+            null,
+            1.9499999999999997,
+            32500.0
+          ],
+          [
+            14,
+            1150,
+            null,
+            null,
+            2.1,
+            35000.0
+          ],
+          [
+            15,
+            1230,
+            null,
+            null,
+            2.25,
+            37500.0
+          ],
+          [
+            16,
+            1310,
+            null,
+            null,
+            2.4,
+            40000.0
+          ],
+          [
+            17,
+            1390,
+            null,
+            null,
+            2.55,
+            42500.0
+          ],
+          [
+            18,
+            1470,
+            null,
+            null,
+            2.6999999999999997,
+            45000.0
+          ],
+          [
+            19,
+            1550,
+            null,
+            null,
+            2.8499999999999996,
+            47500.0
+          ],
+          [
+            20,
+            1630,
+            null,
+            null,
+            3.0,
+            50000.0
+          ],
+          [
+            21,
+            1710,
+            null,
+            null,
+            3.15,
+            52500.0
+          ]
+        ]
+      },
+      {
+        "id": "R00X",
+        "name": "|CFFC15AF4[영원]에이스 업그레이드(A)",
+        "max_level": 21,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 110,
+          "goldmod": 80,
+          "effect1": "rats",
+          "base1": 0.14,
+          "mod1": 0.15,
+          "effect2": "ratx",
+          "base2": 4000.0,
+          "mod2": 4000.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "|CFFC15AF4[영원]|r 기본 공격속도 증가량 14% |n업그레이드 시 공격력을 4000, 공격속도를 15% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            110,
+            null,
+            null,
+            0.14,
+            4000.0
+          ],
+          [
+            2,
+            190,
+            null,
+            null,
+            0.29000000000000004,
+            8000.0
+          ],
+          [
+            3,
+            270,
+            null,
+            null,
+            0.44,
+            12000.0
+          ],
+          [
+            4,
+            350,
+            null,
+            null,
+            0.59,
+            16000.0
+          ],
+          [
+            5,
+            430,
+            null,
+            null,
+            0.74,
+            20000.0
+          ],
+          [
+            6,
+            510,
+            null,
+            null,
+            0.89,
+            24000.0
+          ],
+          [
+            7,
+            590,
+            null,
+            null,
+            1.04,
+            28000.0
+          ],
+          [
+            8,
+            670,
+            null,
+            null,
+            1.19,
+            32000.0
+          ],
+          [
+            9,
+            750,
+            null,
+            null,
+            1.3399999999999999,
+            36000.0
+          ],
+          [
+            10,
+            830,
+            null,
+            null,
+            1.4899999999999998,
+            40000.0
+          ],
+          [
+            11,
+            910,
+            null,
+            null,
+            1.6400000000000001,
+            44000.0
+          ],
+          [
+            12,
+            990,
+            null,
+            null,
+            1.79,
+            48000.0
+          ],
+          [
+            13,
+            1070,
+            null,
+            null,
+            1.94,
+            52000.0
+          ],
+          [
+            14,
+            1150,
+            null,
+            null,
+            2.09,
+            56000.0
+          ],
+          [
+            15,
+            1230,
+            null,
+            null,
+            2.24,
+            60000.0
+          ],
+          [
+            16,
+            1310,
+            null,
+            null,
+            2.39,
+            64000.0
+          ],
+          [
+            17,
+            1390,
+            null,
+            null,
+            2.54,
+            68000.0
+          ],
+          [
+            18,
+            1470,
+            null,
+            null,
+            2.69,
+            72000.0
+          ],
+          [
+            19,
+            1550,
+            null,
+            null,
+            2.84,
+            76000.0
+          ],
+          [
+            20,
+            1630,
+            null,
+            null,
+            2.99,
+            80000.0
+          ],
+          [
+            21,
+            1710,
+            null,
+            null,
+            3.14,
+            84000.0
+          ]
+        ]
+      },
+      {
+        "id": "R013",
+        "name": "|CFFC15AF4[영원]비비 업그레이드(F)",
+        "max_level": 21,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 110,
+          "goldmod": 80,
+          "effect1": "rats",
+          "base1": 0.2,
+          "mod1": 0.14,
+          "effect2": "ratx",
+          "base2": 7000.0,
+          "mod2": 7000.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "|CFFC15AF4[영원]|r 기본 공격속도 증가량 20%|n업그레이드 시 공격력을 7000, 공격속도를 14% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            110,
+            null,
+            null,
+            0.2,
+            7000.0
+          ],
+          [
+            2,
+            190,
+            null,
+            null,
+            0.34,
+            14000.0
+          ],
+          [
+            3,
+            270,
+            null,
+            null,
+            0.48000000000000004,
+            21000.0
+          ],
+          [
+            4,
+            350,
+            null,
+            null,
+            0.6200000000000001,
+            28000.0
+          ],
+          [
+            5,
+            430,
+            null,
+            null,
+            0.76,
+            35000.0
+          ],
+          [
+            6,
+            510,
+            null,
+            null,
+            0.9000000000000001,
+            42000.0
+          ],
+          [
+            7,
+            590,
+            null,
+            null,
+            1.04,
+            49000.0
+          ],
+          [
+            8,
+            670,
+            null,
+            null,
+            1.1800000000000002,
+            56000.0
+          ],
+          [
+            9,
+            750,
+            null,
+            null,
+            1.32,
+            63000.0
+          ],
+          [
+            10,
+            830,
+            null,
+            null,
+            1.4600000000000002,
+            70000.0
+          ],
+          [
+            11,
+            910,
+            null,
+            null,
+            1.6,
+            77000.0
+          ],
+          [
+            12,
+            990,
+            null,
+            null,
+            1.74,
+            84000.0
+          ],
+          [
+            13,
+            1070,
+            null,
+            null,
+            1.8800000000000001,
+            91000.0
+          ],
+          [
+            14,
+            1150,
+            null,
+            null,
+            2.0200000000000005,
+            98000.0
+          ],
+          [
+            15,
+            1230,
+            null,
+            null,
+            2.16,
+            105000.0
+          ],
+          [
+            16,
+            1310,
+            null,
+            null,
+            2.3000000000000003,
+            112000.0
+          ],
+          [
+            17,
+            1390,
+            null,
+            null,
+            2.4400000000000004,
+            119000.0
+          ],
+          [
+            18,
+            1470,
+            null,
+            null,
+            2.5800000000000005,
+            126000.0
+          ],
+          [
+            19,
+            1550,
+            null,
+            null,
+            2.7200000000000006,
+            133000.0
+          ],
+          [
+            20,
+            1630,
+            null,
+            null,
+            2.8600000000000003,
+            140000.0
+          ],
+          [
+            21,
+            1710,
+            null,
+            null,
+            3.0000000000000004,
+            147000.0
+          ]
+        ]
+      },
+      {
+        "id": "R007",
+        "name": "|CFFC15AF4[영원]미호크 업그레이드(C)",
+        "max_level": 21,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 110,
+          "goldmod": 80,
+          "effect1": "rats",
+          "base1": 0.05,
+          "mod1": 0.07,
+          "effect2": "ratx",
+          "base2": 9000.0,
+          "mod2": 9000.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "|CFFC15AF4[영원]|r 기본 공격속도 증가량 5%|n업그레이드 시 공격력을 9000, 공격속도를 7% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            110,
+            null,
+            null,
+            0.05,
+            9000.0
+          ],
+          [
+            2,
+            190,
+            null,
+            null,
+            0.12000000000000001,
+            18000.0
+          ],
+          [
+            3,
+            270,
+            null,
+            null,
+            0.19,
+            27000.0
+          ],
+          [
+            4,
+            350,
+            null,
+            null,
+            0.26,
+            36000.0
+          ],
+          [
+            5,
+            430,
+            null,
+            null,
+            0.33,
+            45000.0
+          ],
+          [
+            6,
+            510,
+            null,
+            null,
+            0.4,
+            54000.0
+          ],
+          [
+            7,
+            590,
+            null,
+            null,
+            0.47000000000000003,
+            63000.0
+          ],
+          [
+            8,
+            670,
+            null,
+            null,
+            0.54,
+            72000.0
+          ],
+          [
+            9,
+            750,
+            null,
+            null,
+            0.6100000000000001,
+            81000.0
+          ],
+          [
+            10,
+            830,
+            null,
+            null,
+            0.6800000000000002,
+            90000.0
+          ],
+          [
+            11,
+            910,
+            null,
+            null,
+            0.7500000000000001,
+            99000.0
+          ],
+          [
+            12,
+            990,
+            null,
+            null,
+            0.8200000000000001,
+            108000.0
+          ],
+          [
+            13,
+            1070,
+            null,
+            null,
+            0.8900000000000001,
+            117000.0
+          ],
+          [
+            14,
+            1150,
+            null,
+            null,
+            0.9600000000000002,
+            126000.0
+          ],
+          [
+            15,
+            1230,
+            null,
+            null,
+            1.03,
+            135000.0
+          ],
+          [
+            16,
+            1310,
+            null,
+            null,
+            1.1,
+            144000.0
+          ],
+          [
+            17,
+            1390,
+            null,
+            null,
+            1.1700000000000002,
+            153000.0
+          ],
+          [
+            18,
+            1470,
+            null,
+            null,
+            1.2400000000000002,
+            162000.0
+          ],
+          [
+            19,
+            1550,
+            null,
+            null,
+            1.3100000000000003,
+            171000.0
+          ],
+          [
+            20,
+            1630,
+            null,
+            null,
+            1.3800000000000001,
+            180000.0
+          ],
+          [
+            21,
+            1710,
+            null,
+            null,
+            1.4500000000000002,
+            189000.0
+          ]
+        ]
+      },
+      {
+        "id": "R014",
+        "name": "|CFFC15AF4[영원]버기 업그레이드(Z)",
+        "max_level": 21,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 110,
+          "goldmod": 80,
+          "effect1": "rats",
+          "base1": 0.14,
+          "mod1": 0.14,
+          "effect2": "ratx",
+          "base2": 5000.0,
+          "mod2": 5000.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "|CFFC15AF4[영원]|r 기본 공격속도 증가량 14% |n업그레이드 시 공격력을 5000, 공격속도를 14% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            110,
+            null,
+            null,
+            0.14,
+            5000.0
+          ],
+          [
+            2,
+            190,
+            null,
+            null,
+            0.28,
+            10000.0
+          ],
+          [
+            3,
+            270,
+            null,
+            null,
+            0.42000000000000004,
+            15000.0
+          ],
+          [
+            4,
+            350,
+            null,
+            null,
+            0.56,
+            20000.0
+          ],
+          [
+            5,
+            430,
+            null,
+            null,
+            0.7000000000000001,
+            25000.0
+          ],
+          [
+            6,
+            510,
+            null,
+            null,
+            0.8400000000000001,
+            30000.0
+          ],
+          [
+            7,
+            590,
+            null,
+            null,
+            0.9800000000000001,
+            35000.0
+          ],
+          [
+            8,
+            670,
+            null,
+            null,
+            1.12,
+            40000.0
+          ],
+          [
+            9,
+            750,
+            null,
+            null,
+            1.2600000000000002,
+            45000.0
+          ],
+          [
+            10,
+            830,
+            null,
+            null,
+            1.4000000000000004,
+            50000.0
+          ],
+          [
+            11,
+            910,
+            null,
+            null,
+            1.54,
+            55000.0
+          ],
+          [
+            12,
+            990,
+            null,
+            null,
+            1.6800000000000002,
+            60000.0
+          ],
+          [
+            13,
+            1070,
+            null,
+            null,
+            1.8200000000000003,
+            65000.0
+          ],
+          [
+            14,
+            1150,
+            null,
+            null,
+            1.9600000000000004,
+            70000.0
+          ],
+          [
+            15,
+            1230,
+            null,
+            null,
+            2.1,
+            75000.0
+          ],
+          [
+            16,
+            1310,
+            null,
+            null,
+            2.24,
+            80000.0
+          ],
+          [
+            17,
+            1390,
+            null,
+            null,
+            2.3800000000000003,
+            85000.0
+          ],
+          [
+            18,
+            1470,
+            null,
+            null,
+            2.5200000000000005,
+            90000.0
+          ],
+          [
+            19,
+            1550,
+            null,
+            null,
+            2.6600000000000006,
+            95000.0
+          ],
+          [
+            20,
+            1630,
+            null,
+            null,
+            2.8000000000000003,
+            100000.0
+          ],
+          [
+            21,
+            1710,
+            null,
+            null,
+            2.9400000000000004,
+            105000.0
+          ]
+        ]
+      },
+      {
+        "id": "R016",
+        "name": "|CFFC15AF4[영원]핸콕 업그레이드(S)",
+        "max_level": 21,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 110,
+          "goldmod": 80,
+          "effect1": "rats",
+          "base1": 0.3,
+          "mod1": 0.15,
+          "effect2": "ratx",
+          "base2": 4500.0,
+          "mod2": 4500.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "|CFFC15AF4[영원]|r 기본 공격속도 증가량 30% |n업그레이드 시 공격력을 4500, 공격속도를 15% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            110,
+            null,
+            null,
+            0.3,
+            4500.0
+          ],
+          [
+            2,
+            190,
+            null,
+            null,
+            0.44999999999999996,
+            9000.0
+          ],
+          [
+            3,
+            270,
+            null,
+            null,
+            0.6,
+            13500.0
+          ],
+          [
+            4,
+            350,
+            null,
+            null,
+            0.75,
+            18000.0
+          ],
+          [
+            5,
+            430,
+            null,
+            null,
+            0.8999999999999999,
+            22500.0
+          ],
+          [
+            6,
+            510,
+            null,
+            null,
+            1.05,
+            27000.0
+          ],
+          [
+            7,
+            590,
+            null,
+            null,
+            1.2,
+            31500.0
+          ],
+          [
+            8,
+            670,
+            null,
+            null,
+            1.35,
+            36000.0
+          ],
+          [
+            9,
+            750,
+            null,
+            null,
+            1.5,
+            40500.0
+          ],
+          [
+            10,
+            830,
+            null,
+            null,
+            1.65,
+            45000.0
+          ],
+          [
+            11,
+            910,
+            null,
+            null,
+            1.8,
+            49500.0
+          ],
+          [
+            12,
+            990,
+            null,
+            null,
+            1.95,
+            54000.0
+          ],
+          [
+            13,
+            1070,
+            null,
+            null,
+            2.0999999999999996,
+            58500.0
+          ],
+          [
+            14,
+            1150,
+            null,
+            null,
+            2.25,
+            63000.0
+          ],
+          [
+            15,
+            1230,
+            null,
+            null,
+            2.4,
+            67500.0
+          ],
+          [
+            16,
+            1310,
+            null,
+            null,
+            2.55,
+            72000.0
+          ],
+          [
+            17,
+            1390,
+            null,
+            null,
+            2.6999999999999997,
+            76500.0
+          ],
+          [
+            18,
+            1470,
+            null,
+            null,
+            2.8499999999999996,
+            81000.0
+          ],
+          [
+            19,
+            1550,
+            null,
+            null,
+            2.9999999999999996,
+            85500.0
+          ],
+          [
+            20,
+            1630,
+            null,
+            null,
+            3.15,
+            90000.0
+          ],
+          [
+            21,
+            1710,
+            null,
+            null,
+            3.3,
+            94500.0
+          ]
+        ]
+      },
+      {
+        "id": "R02C",
+        "name": "|CFFC15AF4[영원]류마 업그레이드(Q)",
+        "max_level": 21,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 110,
+          "goldmod": 80,
+          "effect1": "rats",
+          "base1": 0.13,
+          "mod1": 0.13,
+          "effect2": "ratx",
+          "base2": 4500.0,
+          "mod2": 4500.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "|CFFC15AF4[영원]|r 류마의 공격력을 4500, 공격속도를 13% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            110,
+            null,
+            null,
+            0.13,
+            4500.0
+          ],
+          [
+            2,
+            190,
+            null,
+            null,
+            0.26,
+            9000.0
+          ],
+          [
+            3,
+            270,
+            null,
+            null,
+            0.39,
+            13500.0
+          ],
+          [
+            4,
+            350,
+            null,
+            null,
+            0.52,
+            18000.0
+          ],
+          [
+            5,
+            430,
+            null,
+            null,
+            0.65,
+            22500.0
+          ],
+          [
+            6,
+            510,
+            null,
+            null,
+            0.78,
+            27000.0
+          ],
+          [
+            7,
+            590,
+            null,
+            null,
+            0.91,
+            31500.0
+          ],
+          [
+            8,
+            670,
+            null,
+            null,
+            1.04,
+            36000.0
+          ],
+          [
+            9,
+            750,
+            null,
+            null,
+            1.17,
+            40500.0
+          ],
+          [
+            10,
+            830,
+            null,
+            null,
+            1.2999999999999998,
+            45000.0
+          ],
+          [
+            11,
+            910,
+            null,
+            null,
+            1.4300000000000002,
+            49500.0
+          ],
+          [
+            12,
+            990,
+            null,
+            null,
+            1.56,
+            54000.0
+          ],
+          [
+            13,
+            1070,
+            null,
+            null,
+            1.69,
+            58500.0
+          ],
+          [
+            14,
+            1150,
+            null,
+            null,
+            1.8199999999999998,
+            63000.0
+          ],
+          [
+            15,
+            1230,
+            null,
+            null,
+            1.9500000000000002,
+            67500.0
+          ],
+          [
+            16,
+            1310,
+            null,
+            null,
+            2.08,
+            72000.0
+          ],
+          [
+            17,
+            1390,
+            null,
+            null,
+            2.21,
+            76500.0
+          ],
+          [
+            18,
+            1470,
+            null,
+            null,
+            2.34,
+            81000.0
+          ],
+          [
+            19,
+            1550,
+            null,
+            null,
+            2.4699999999999998,
+            85500.0
+          ],
+          [
+            20,
+            1630,
+            null,
+            null,
+            2.6,
+            90000.0
+          ],
+          [
+            21,
+            1710,
+            null,
+            null,
+            2.73,
+            94500.0
+          ]
+        ]
+      },
+      {
+        "id": "R01V",
+        "name": "|CFFC15AF4[영원]테조로 업그레이드(W)",
+        "max_level": 21,
+        "startup_level_set_by_jass": 1,
+        "source_fields": {
+          "goldbase": 110,
+          "goldmod": 80,
+          "effect1": "rats",
+          "base1": 0.15,
+          "mod1": 0.15,
+          "effect2": "ratx",
+          "base2": 3500.0,
+          "mod2": 3500.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": "R00H",
+        "requires_count": "21",
+        "tooltip": "|CFFC15AF4[영원]|r 기본 공격속도 증가량 15% |n업그레이드 시 공격력을 3500, 공격속도를 15% 증가시킵니다.",
+        "steps": [
+          [
+            1,
+            110,
+            null,
+            null,
+            0.15,
+            3500.0
+          ],
+          [
+            2,
+            190,
+            null,
+            null,
+            0.3,
+            7000.0
+          ],
+          [
+            3,
+            270,
+            null,
+            null,
+            0.44999999999999996,
+            10500.0
+          ],
+          [
+            4,
+            350,
+            null,
+            null,
+            0.6,
+            14000.0
+          ],
+          [
+            5,
+            430,
+            null,
+            null,
+            0.75,
+            17500.0
+          ],
+          [
+            6,
+            510,
+            null,
+            null,
+            0.9,
+            21000.0
+          ],
+          [
+            7,
+            590,
+            null,
+            null,
+            1.0499999999999998,
+            24500.0
+          ],
+          [
+            8,
+            670,
+            null,
+            null,
+            1.2,
+            28000.0
+          ],
+          [
+            9,
+            750,
+            null,
+            null,
+            1.3499999999999999,
+            31500.0
+          ],
+          [
+            10,
+            830,
+            null,
+            null,
+            1.4999999999999998,
+            35000.0
+          ],
+          [
+            11,
+            910,
+            null,
+            null,
+            1.65,
+            38500.0
+          ],
+          [
+            12,
+            990,
+            null,
+            null,
+            1.7999999999999998,
+            42000.0
+          ],
+          [
+            13,
+            1070,
+            null,
+            null,
+            1.9499999999999997,
+            45500.0
+          ],
+          [
+            14,
+            1150,
+            null,
+            null,
+            2.1,
+            49000.0
+          ],
+          [
+            15,
+            1230,
+            null,
+            null,
+            2.25,
+            52500.0
+          ],
+          [
+            16,
+            1310,
+            null,
+            null,
+            2.4,
+            56000.0
+          ],
+          [
+            17,
+            1390,
+            null,
+            null,
+            2.55,
+            59500.0
+          ],
+          [
+            18,
+            1470,
+            null,
+            null,
+            2.6999999999999997,
+            63000.0
+          ],
+          [
+            19,
+            1550,
+            null,
+            null,
+            2.8499999999999996,
+            66500.0
+          ],
+          [
+            20,
+            1630,
+            null,
+            null,
+            3.0,
+            70000.0
+          ],
+          [
+            21,
+            1710,
+            null,
+            null,
+            3.15,
+            73500.0
+          ]
+        ]
+      }
+    ],
+    "h06S": [
+      {
+        "id": "Rhgb",
+        "name": "해상 디너(R)",
+        "max_level": 1,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 25000,
+          "goldmod": 50,
+          "lumberbase": 2,
+          "timebase": 100,
+          "base1": 3.0,
+          "mod1": 0.0,
+          "base2": 0.0,
+          "mod2": 0.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": null,
+        "requires_count": null,
+        "tooltip": "|cffffdead◈|r 자신의 라인존 유닛 체력 초당 0.45 증가",
+        "steps": [
+          [
+            1,
+            25000,
+            2,
+            100,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "id": "Rhra",
+        "name": "카리스마(W)",
+        "max_level": 1,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 15000,
+          "lumberbase": 1,
+          "timebase": 100,
+          "base1": 1.0,
+          "mod1": 1.0,
+          "base2": 0.0,
+          "mod2": 0.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": null,
+        "requires_count": null,
+        "tooltip": "|cffffdead◈|r 자신의 유닛 공격력 12% 증가",
+        "steps": [
+          [
+            1,
+            15000,
+            1,
+            100,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "id": "Rhpt",
+        "name": "식량 보급(E)",
+        "max_level": 1,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 25000,
+          "lumberbase": 3,
+          "timebase": 100,
+          "base1": 20.0,
+          "mod1": 20.0,
+          "base2": 0.325,
+          "mod2": 0.325,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": null,
+        "requires_count": null,
+        "tooltip": "|cffffdead◈|r 자신의 라인존 유닛 마나 초당 0.8 증가",
+        "steps": [
+          [
+            1,
+            25000,
+            3,
+            100,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "id": "Rhfc",
+        "name": "기후 변화(Q)",
+        "max_level": 1,
+        "startup_level_set_by_jass": null,
+        "source_fields": {
+          "goldbase": 15000,
+          "lumberbase": 2,
+          "timebase": 100,
+          "base1": 0.0,
+          "mod1": 0.0,
+          "base2": 0.0,
+          "mod2": 0.0,
+          "base3": 0.0,
+          "mod3": 0.0,
+          "base4": 0.0,
+          "mod4": 0.0
+        },
+        "requires_12": null,
+        "requires_count": null,
+        "tooltip": "|cffffdead◈|r 자신의 라인존 적 이동속도 10% 감소",
+        "steps": [
+          [
+            1,
+            15000,
+            2,
+            100,
+            null,
+            null
+          ]
+        ]
+      }
+    ]
+  }
+}

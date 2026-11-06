@@ -40,7 +40,7 @@
 | 확장 카탈로그 집계 | [build_character_runtime_coverage.py](../tools/build_character_runtime_coverage.py) | 현재 카탈로그·저장된 실행 범위·원본/도감 JSON |
 | 돈 도박 상점 | [extract_original_money_gambling_shop.py](../tools/extract_original_money_gambling_shop.py) | 원본 W3X |
 
-**연구·강화소 단계별 수치:** 현재 저장소에는 2.323[C] W3X 원본과 각 단계의 비용·효과를 내보낸 전용 증거표/추출기가 없습니다. [현재 확인된 4개 연구·18개 강화 목록과 원본 추출 순서](../docs/전체-아이템-시설-목록.md)를 따릅니다. 원본 `Units/UpgradeData.slk`·문자열·있다면 `war3map.w3q` 수정 정보·JASS 실행 사건을 함께 대조해야 하며, **테스트 fixture·툴팁만으로 가격/전투 효과를 승인하지 않습니다.**
+**연구·강화소 원본 실측:** [original-2323C-player-research-upgrades.json](original-2323C-player-research-upgrades.json)은 라이브러리 고정 SHA `ORDR_S2_2.323[C].w3x`의 SLK·문자열·JASS·W3A를 읽은 **연구 4종 + 강화 18종의 353개 레벨 필드 계산표**입니다. 각 `steps`의 `gold_source_formula` 등은 원본 `base+(level-1)×mod`의 **필드 투영값**이지 실제 결제/전투 검증 결과가 아닙니다. `startup_level_set_by_jass`는 `CUo`가 초기 1레벨을 설정한 8종만 표시하며, `null`은 0레벨 확정값이 아닙니다. 미기재 목재·시간은 `null`로 보존합니다. [원본 수치 설명](../docs/원본-연구-강화-실측.md) · [재추출 도구](../tools/measure_original_player_upgrades.py). 원본 W3X 자체는 저장소에 넣지 않습니다.
 
 도구별 입력과 옵션은 소스를 확인하고, 실행 허가가 있으면 `--help`를 사용합니다. 원본·외부 도구가 없는 환경에서 가짜 입력이나 임시 완료 플래그를 만들지 않습니다. 도박 상점 재고 모델과 R009 해금·유닛 도박의 승인 범위도 구분합니다.
 
