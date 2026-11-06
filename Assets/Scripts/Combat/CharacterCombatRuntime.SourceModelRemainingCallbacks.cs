@@ -43,7 +43,7 @@ namespace Ordr.Mobile.Combat
             new SourceRemainingCallback("R-22", "h029", "BpO", 100, 10,
                 "A0TP 피해6000/길이1050/폭250; 추가 3소환은 주문명령 부재"),
             new SourceRemainingCallback("R-24", "h027", "BpT", 100, 10,
-                "A03A 폭발 수치500·10000 확인; 접근시간·피해영역 미검증"),
+                "A03A 폭발 수치500·10000 확인; 접근시간·피해영역/실제 피해량 미검증"),
             new SourceRemainingCallback("R-29", "h024", "Bpb", 1000, 125,
                 "A03O 피해7000/최대9명/사거리1750 확인; 원본 부채꼴 판정 미검증"),
             new SourceRemainingCallback("R-32", "h02G", "Bph", 100, 10,
@@ -325,9 +325,10 @@ namespace Ordr.Mobile.Combat
                             250, 1050, 6000, 1, 1, Ordr323AttackType.Spells));
                     break;
                 case "R-24": // h06O/A03A Asds, 3.5s source timed life.
-                    // The native order is selfdestruct on the chosen victim.
-                    // We expose the object as a temporary non-roster actor;
-                    // the .35s point impact is still a labeled approximation.
+                    // BpT orders selfdestruct on the attacked live unit; BpS
+                    // fires e01M when h06O actually dies. The 0.35s model
+                    // approach and 500-point single victim packet remain
+                    // provisional until Asds geometry/movement are verified.
                     var doll = SpawnSourceTemporaryActor(actor,
                         "BpT · 장난감 자폭", "슈가 장난감 자폭", 3.5, "h06O",
                         false, position.X, position.Y);
@@ -335,17 +336,26 @@ namespace Ordr.Mobile.Combat
                         "h06O 장난감 생성 / 3.5초 수명 / target selfdestruct");
                     bool dollLane = IsStoryDeployed(actor.Id);
                     long dollRevision = SourceModelLaneRevision(actor.Id);
-                    double impactX = target.X, impactY = target.Y;
                     var dollImpact = RemainingHitSpec(spec.CatalogId,
                         spec.Rawcode, spec.Jass, RemainingDirect(500));
                     effectExecutor.SchedulePracticeSourceAttack(InstanceKey(actor.Id),
                         "remaining-doll:" + actor.Id + ":" + doll.Id,
                         .35, () => {
+                            SpatialCombatEnemy ordered;
                             if (!CanFinishSourceModelDelayedAttack(actor.Id,
                                     dollLane, dollRevision) ||
-                                !RetireSourceTemporaryActor(doll.Id)) return;
-                            ApplySourceScriptHits(actor, target, dollImpact,
-                                dollImpact.OnProc, impactX, impactY);
+                                !enemies.TryGetValue(target.Id, out ordered) ||
+                                !ReferenceEquals(target, ordered) ||
+                                !ordered.Enemy.IsAlive ||
+                                !CanAttackInThisLane(actor, ordered)) return;
+                            // Use the victim's current coordinates when it
+                            // has moved since the order. If the target is
+                            // lost, do not invent a new target or explosion:
+                            // the doll lives until its 3.5s timed death.
+                            if (!RetireSourceTemporaryActor(
+                                    doll.Id, ordered.Id, ordered.X, ordered.Y)) return;
+                            ApplySourceScriptHits(actor, ordered, dollImpact,
+                                dollImpact.OnProc);
                         });
                     break;
                 case "R-29": // e0KE/A03O ANfl, ordered target + up to 8 forks.

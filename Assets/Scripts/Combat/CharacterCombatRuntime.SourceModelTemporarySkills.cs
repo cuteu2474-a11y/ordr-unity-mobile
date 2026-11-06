@@ -159,23 +159,44 @@ namespace Ordr.Mobile.Combat
             ForgetNativeSourceCharacter(ownerId);
             for (int i = sourceTemporarySummons.Count - 1; i >= 0; i--)
                 if (sourceTemporarySummons[i].OwnerId == ownerId)
-                {
-                    UnregisterSourceIndependentAttack(
-                        SummonAttackKey(sourceTemporarySummons[i].Id));
-                    sourceTemporarySummons.RemoveAt(i);
-                }
+                    EndSourceTemporaryActorAt(i, false);
         }
 
-        // Self-destruct summons retire at impact instead of lingering until
-        // their fallback timed-life expiry. Shares the same unregister path
-        // used for owner death and lane changes.
-        private bool RetireSourceTemporaryActor(long summonId)
+        // Use one retirement path for a native timed-life death, a skill
+        // self-destruction, and silent cleanup after owner loss/lane changes.
+        // BpU registers BpS on *h06O death*: the e01M visual is triggered
+        // once on impact or timed-life expiry, never on silent owner cleanup.
+        private void EndSourceTemporaryActorAt(int index, bool nativeDeath,
+            string targetId = null, double? deathX = null, double? deathY = null)
+        {
+            var summon = sourceTemporarySummons[index];
+            UnregisterSourceIndependentAttack(SummonAttackKey(summon.Id));
+            sourceTemporarySummons.RemoveAt(index);
+            if (!nativeDeath || summon.SourceUnitRawcode != "h06O" ||
+                !characters.ContainsKey(summon.OwnerId) ||
+                IsStoryDeployed(summon.OwnerId) != summon.StoryLane) return;
+            double x = deathX ?? summon.SpawnX;
+            double y = deathY ?? summon.SpawnY;
+            events.Add(new CharacterCombatEvent(
+                CharacterCombatEventType.SkillActivated,
+                InstanceKey(summon.OwnerId), targetId,
+                "슈가 · 장난감 자폭 사망",
+                "MODEL_ONLY BpS / h06O 사망 → e01M 사망 연출 생성 위치 (" +
+                x.ToString(System.Globalization.CultureInfo.InvariantCulture) + ", " +
+                y.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                ") / 시각 객체 렌더링 미연결", 0));
+        }
+
+        // A native selfdestruct order kills its helper on arrival, not at
+        // an unrelated timer expiry. Retire at most once; later timed-life
+        // refresh then has no doll left to terminate again.
+        private bool RetireSourceTemporaryActor(long summonId, string targetId = null,
+            double? deathX = null, double? deathY = null)
         {
             for (int i = sourceTemporarySummons.Count - 1; i >= 0; i--)
             {
                 if (sourceTemporarySummons[i].Id != summonId) continue;
-                UnregisterSourceIndependentAttack(SummonAttackKey(summonId));
-                sourceTemporarySummons.RemoveAt(i);
+                EndSourceTemporaryActorAt(i, true, targetId, deathX, deathY);
                 return true;
             }
             return false;
@@ -187,11 +208,13 @@ namespace Ordr.Mobile.Combat
             for (int i = sourceTemporarySummons.Count - 1; i >= 0; i--)
             {
                 var summon = sourceTemporarySummons[i];
-                if (summon.ExpiresAt > effectExecutor.Time &&
-                    characters.ContainsKey(summon.OwnerId) &&
-                    IsStoryDeployed(summon.OwnerId) == summon.StoryLane) continue;
-                UnregisterSourceIndependentAttack(SummonAttackKey(summon.Id));
-                sourceTemporarySummons.RemoveAt(i);
+                bool validOwnerLane = characters.ContainsKey(summon.OwnerId) &&
+                    IsStoryDeployed(summon.OwnerId) == summon.StoryLane;
+                if (validOwnerLane && summon.ExpiresAt > effectExecutor.Time) continue;
+                // Warcraft timed life fires the unit death trigger. Explicit
+                // owner removal and transfer between lanes do not count as
+                // a spell explosion or a collectible/material award.
+                EndSourceTemporaryActorAt(i, validOwnerLane);
             }
         }
 
