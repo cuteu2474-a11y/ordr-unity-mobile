@@ -85,8 +85,15 @@ namespace Ordr.Mobile.Combat
                         .Add(PendingExcavationResource, 1);
                     break;
                 case Original323SharedMissionKind.SeaKing:
+                    // CNU calls BdL(EK,1) in the very same verified completion.
+                    // Share this mission receipt with the other awards so a
+                    // replay cannot credit the same charge independently.
                     rewards.Add("gold", 3000).Add(WispResourceIds.Choice, 1)
-                        .Add(PendingExcavationResource, 1);
+                        .Add(PendingExcavationResource, 1)
+                        .Add(Original323OtherworldGamblingRules.ChargesResource,
+                            Original323OtherworldGamblingRules.ChargesPerBdLEvent(
+                                economy.Wallet.Balance(SourceModelGamblingNavigation.NavigationResource) ==
+                                    (int)Original323GamblingNavigation.Casino));
                     AddLiveHeroExperience(rewards, 325);
                     break;
                 case Original323SharedMissionKind.FastAlabasta:

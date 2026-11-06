@@ -134,10 +134,9 @@ namespace Ordr.Mobile.Core
                 award.Stage >= 8 && award.Stage <= 13 &&
                 award.Amount == 1 && award.OriginalRawcode == "BdL")
             {
-                int originalCharges = award.Amount;
-                if ((casinoNavigation != null && casinoNavigation()) ||
-                    (traitSelection != null && traitSelection.HasDoublePointStoryTrait()))
-                    originalCharges = checked(originalCharges + 1);
+                int originalCharges = Original323OtherworldGamblingRules.ChargesPerBdLEvent(
+                    (casinoNavigation != null && casinoNavigation()) ||
+                    (traitSelection != null && traitSelection.HasDoublePointStoryTrait()));
                 if (sharedWallet != null)
                 {
                     // The native obligation is settled only once the actual

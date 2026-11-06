@@ -13,6 +13,9 @@ namespace Ordr.Mobile.Core
         public const int WoodCost = 5;
         public const int BaseSuccessPercent = 15;
         public const string ChargesResource = "source:unit-gambling:CJM:charges";
+        // Original BdL(JG, 1): casino navigation kW[JG]==ka adds one more.
+        // Used by story rewards, the first n00G kill, and sea-king CNU.
+        public static int ChargesPerBdLEvent(bool casinoNavigation) => casinoNavigation ? 2 : 1;
         public const string AttemptsResource = "source:unit-gambling:CJM:attempts";
         public const string WinsResource = "source:unit-gambling:CJM:wins";
         public const string RiskBonusResource = "source:unit-gambling:CJM:kc";

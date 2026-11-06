@@ -71,7 +71,8 @@ namespace Ordr.Mobile.Mobile
         private void GrantChargeOnce(string receipt)
         {
             if (wallet.HasCompletedTransaction(receipt)) return;
-            int count = Navigation == Original323GamblingNavigation.Casino ? 2 : 1;
+            int count = Original323OtherworldGamblingRules.ChargesPerBdLEvent(
+                Navigation == Original323GamblingNavigation.Casino);
             try { wallet.TryGrantOnce(receipt, new ResourceBundle().Add(
                 Original323OtherworldGamblingRules.ChargesResource, count)); }
             catch (Exception error)
@@ -88,7 +89,7 @@ namespace Ordr.Mobile.Mobile
                 "3500골드 + 목재 5개 + 충전 1회 · 성공 " + SuccessPercent +
                 "%: 랜덤전용 14종 중 1기 · 실패: 행운의 토큰 1개" +
                 (Navigation == Original323GamblingNavigation.Casino ? " (실패 중 50%는 희귀 유닛으로 대체)" : "") +
-                " · 남은 충전 " + Charges + "회 · 스토리 8~13단계/3단계 크립 실제 격파로 충전") };
+                " · 남은 충전 " + Charges + "회 · 스토리 8~13단계/3단계 크립/해왕류 실제 격파로 충전") };
         }
 
         private int Roll(ref int? saved, int minimum, int maximum)
